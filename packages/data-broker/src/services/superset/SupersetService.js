@@ -42,9 +42,10 @@ export class SupersetService extends Service {
    * @private
    */
   async pullAnalytics(dataSources, options) {
+    const { dataServiceMapping } = options;
     let mergedResults = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
-      this.groupBySupersetInstanceCode(dataSources),
+      this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
     )) {
       const supersetInstance = await this.models.supersetInstance.findOne({
         code: supersetInstanceCode,
@@ -99,12 +100,14 @@ export class SupersetService extends Service {
 
   /**
    * @param {DataElement[]} dataSources
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Object}
    */
-  groupBySupersetInstanceCode(dataSources) {
+  groupBySupersetInstanceCode(dataSources, dataServiceMapping) {
     const dataSourcesBySupersetInstanceCode = {};
     for (const dataSource of dataSources) {
-      const { config } = dataSource;
+      const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+      const { config } = mapping;
       const { supersetInstanceCode } = config;
       if (!supersetInstanceCode) {
         throw new Error(`Data Element ${dataSource.code} missing supersetInstanceCode`);
