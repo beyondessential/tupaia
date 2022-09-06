@@ -111,8 +111,9 @@ const mapStateToProps = (state, ownProps) => {
     measureOrgUnits = selectMeasuresWithDisplayInfo(state, displayedMapOverlayCodes);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
 
-    const getDisplayedDescendants = parents => {
-      if (!Array.isArray(parents) || parents.length === 0) return parents;
+    const getDisplayedDescendants = (parents, depth) => {
+      if (depth > 5) return null; // prevent infinite loops
+      if (!Array.isArray(parents) || parents.length === 0) return null;
 
       const children = parents
         .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
@@ -130,10 +131,10 @@ const mapStateToProps = (state, ownProps) => {
       if (hasShadedPolygonChildren) return children;
 
       // otherwise look deeper
-      return getDisplayedDescendants(children);
+      return getDisplayedDescendants(children, depth + 1);
     };
 
-    const displayedDescendants = getDisplayedDescendants(currentChildren);
+    const displayedDescendants = getDisplayedDescendants(currentChildren, 1);
     if (displayedDescendants) displayedChildren = displayedDescendants;
   }
 
