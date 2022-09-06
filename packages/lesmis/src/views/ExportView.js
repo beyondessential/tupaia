@@ -35,21 +35,18 @@ const EXPORT_VIEWS = {
         page++;
         return page;
       });
-      const [{ dashboard: selectedDashboard }] = useUrlSearchParams();
-      return { getNextPage, selectedDashboard };
+      return { getNextPage };
     },
     PageContainer: PreviewPage,
     PageContent: PreviewPageContent,
   },
   [PDF_DOWNLOAD_VIEW]: {
     getExtraExportViewProps: () => {
-      const [
-        { exportWithLabels: withLabels, exportWithTable: withTable, dashboard: selectedDashboard },
-      ] = useUrlSearchParams();
+      const [{ exportWithLabels: withLabels, exportWithTable: withTable }] = useUrlSearchParams();
       const exportWithLabels = !!withLabels;
       const exportWithTable = !!withTable;
       const exportOptions = { exportWithLabels, exportWithTable };
-      return { exportOptions, selectedDashboard };
+      return { exportOptions };
     },
     PageContainer: A4Page,
     PageContent: A4PageContent,

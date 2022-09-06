@@ -21,7 +21,7 @@ import {
   useDashboardItemsExportToPDF,
   useUrlParams,
   useUrlSearchParam,
-  useUrlSearchParams,
+  useDashboardDropdownOptions,
 } from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
 import { DASHBOARD_EXPORT_PREVIEW, ExportView as BaseExportView } from '../../views/ExportView';
@@ -55,7 +55,7 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
   const [exportWithLabels, setExportWithLabels] = useState(null);
   const [exportWithTable, setExportWithTable] = useState(null);
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const [{ dashboard }] = useUrlSearchParams();
+  const { selectedOption } = useDashboardDropdownOptions();
   const { locale, entityCode } = useUrlParams();
 
   const toggleExportWithLabels = () => {
@@ -65,14 +65,14 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
     setExportWithTable(exportWithTable ? null : true);
   };
 
-  const fileName = `${title}-${dashboard}-dashboards-export`;
+  const fileName = `${title}-${selectedOption.value}-dashboards-export`;
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF({
     exportWithLabels,
     exportWithTable,
     year: selectedYear,
     locale,
     entityCode,
-    dashboard,
+    dashboard: selectedOption.value,
   });
 
   const isFetching = useIsFetching() > 0;
