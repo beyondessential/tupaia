@@ -76,17 +76,6 @@ const PanelTabPanel = styled.div`
   }
 `;
 
-const CustomReportName = styled.span`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  > div {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
 export const Panel = () => {
   const { hasDataError, setDataError } = useVizConfigError();
   const { jsonToggleEnabled } = useTabPanel();
@@ -125,7 +114,7 @@ export const Panel = () => {
     return (
       <Container>
         <PanelNav>
-          <CustomReportName>Custom Report: {vizData.customReport}</CustomReportName>
+          <>Custom Report: {vizData.customReport}</>
           <PlayButton />
         </PanelNav>
       </Container>
