@@ -10,6 +10,7 @@ import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
+import { LogsModal } from '../../logsTable';
 
 const Container = styled(PageBody)`
   overflow: auto;
@@ -57,6 +58,7 @@ export const ResourcePage = ({
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
+      <LogsModal />
     </>
   );
 };

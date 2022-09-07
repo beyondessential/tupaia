@@ -4,7 +4,7 @@
  */
 
 // TODO: Switch to 'Awaited' when upgrading to typescript 4.5+
-export type Resolved<T> = T extends Promise<infer R> ? R : T;
+export type Resolved<T> = T extends PromiseLike<infer R> ? R : T;
 
 /**
  * Returns keys of type that cannot be null, eg.
