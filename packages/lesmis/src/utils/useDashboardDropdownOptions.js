@@ -4,7 +4,7 @@
  */
 
 import { useEntityData } from '../api';
-import { SUB_DASHBOARD_OPTIONS } from '../constants';
+import { DROPDOWN_OPTIONS } from '../constants';
 import { useI18n } from './I18n';
 import { useUrlParams } from './useUrlParams';
 import { useUrlSearchParams } from './useUrlSearchParams';
@@ -23,15 +23,13 @@ export const useDashboardDropdownOptions = () => {
       case 'profile':
         // those not included anywhere else
         return ({ dashboardCode }) =>
-          !SUB_DASHBOARD_OPTIONS.some(({ value: code }) =>
-            dashboardCode.startsWith(`LESMIS_${code}`),
-          );
+          !DROPDOWN_OPTIONS.some(({ value: code }) => dashboardCode.startsWith(`LESMIS_${code}`));
       default:
         return ({ dashboardCode }) => dashboardCode.startsWith(`LESMIS_${value}`);
     }
   };
 
-  const dropdownOptions = SUB_DASHBOARD_OPTIONS.map(config => {
+  const dropdownOptions = DROPDOWN_OPTIONS.map(config => {
     const { value, labelCode, componentPropConfig, ...restOfConfigs } = config;
     const label = value === 'profile' ? getProfileLabel(entityData?.type) : translate(labelCode);
     const filterSubDashboards = getFilter(value);

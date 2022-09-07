@@ -21,7 +21,7 @@ export const FAVOURITE_DASHBOARD_TAB_VIEW = 'FavouriteDashboardTabView';
 export const TAB_TEMPLATE = 'TabTemplate';
 
 // Dashboard Constants
-export const SUB_DASHBOARD_OPTIONS = [
+export const DROPDOWN_OPTIONS = [
   {
     value: 'profile',
     tabViewType: DASHBOARD_REPORT_TAB_VIEW,
