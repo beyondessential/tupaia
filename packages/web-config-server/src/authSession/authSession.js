@@ -15,6 +15,7 @@ const auth = () => async (req, res, next) => {
     // if using basic or bearer auth, check credentials and set access policy for that user
     const authHeaderUser = await getUserFromAuthHeader(req);
     if (authHeaderUser) {
+      req.userJson = { userId: authHeaderUser.id };
       req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
       next();
       return;

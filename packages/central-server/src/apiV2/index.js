@@ -119,7 +119,7 @@ import {
   GETSyncGroupLogsCount,
   ManuallySyncSyncGroup,
 } from './syncGroups';
-
+import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -259,6 +259,7 @@ apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
+apiV2.post('/userFavouriteDashboardItems', useRouteHandler(POSTUpdateUserFavouriteDashboardItem));
 apiV2.post('/projects', useRouteHandler(CreateProject));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));

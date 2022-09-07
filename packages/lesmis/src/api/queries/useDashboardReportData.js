@@ -66,7 +66,10 @@ export const useDashboardReportDataWithConfig = ({
     ...query,
     data: {
       reportData: query.data?.reportData,
-      dashboardItemConfig: { ...dashboardItem, dashboardName: dashboard?.dashboardName },
+      dashboardItemConfig: {
+        ...dashboardItem,
+        dashboardName: dashboard?.dashboardName,
+      },
       reportCodes,
     },
   };
