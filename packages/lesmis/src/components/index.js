@@ -23,6 +23,7 @@ export * from './MapOverlaysPanel';
 export * from './MiniMap';
 export * from './NavBar';
 export * from './PageHeader';
+export * from './PanelComponent';
 export * from './RejectButton';
 export * from './SearchBar';
 export * from './ScrollToTopButton';

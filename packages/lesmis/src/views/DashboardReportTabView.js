@@ -16,6 +16,7 @@ import {
   Tab,
   TabPanel,
   ScrollToTopButton,
+  PanelComponent,
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam, useStickyBar, useDefaultDashboardTab } from '../utils';
@@ -32,23 +33,6 @@ const DashboardSection = styled(FlexColumn)`
   align-items: center;
   justify-content: flex-start;
   min-height: 40rem;
-`;
-
-const PanelComponent = styled(FlexColumn)`
-  position: relative;
-  flex: 1;
-  justify-content: flex-start;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  max-width: 100%;
-
-  &.active {
-    position: absolute;
-    opacity: 0;
-    z-index: -1;
-    height: 0;
-    overflow: hidden;
-  }
 `;
 
 export const DashboardReportTabView = ({

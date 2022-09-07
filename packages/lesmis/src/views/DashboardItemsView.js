@@ -4,27 +4,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { yearToApiDates } from '../api/queries/utils';
-import { DashboardReport, FlexColumn, TabPanel } from '../components';
+import { DashboardReport, PanelComponent, TabPanel } from '../components';
 
 const InfoAlert = styled(SmallAlert)`
   margin: auto;
-`;
-
-const PanelComponent = styled(FlexColumn)`
-  position: relative;
-  flex: 1;
-  justify-content: flex-start;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  max-width: 100%;
-
-  &.active {
-    position: absolute;
-    opacity: 0;
-    z-index: -1;
-    height: 0;
-    overflow: hidden;
-  }
 `;
 
 const DashboardItemsView = ({
