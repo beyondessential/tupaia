@@ -6,12 +6,21 @@ import React from 'react';
 import { ListVisual as ListVisualComponent } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { VisualHeader } from './VisualHeader';
+import { FavouriteButton } from '../FavouriteButton';
 
 export const ListVisual = props => {
-  const { name, isEnlarged } = props;
+  const { name, isEnlarged, isFavourite, handleFavouriteStatusChange } = props;
+
   return (
     <>
-      {!isEnlarged && <VisualHeader name={name} />}
+      {!isEnlarged && (
+        <VisualHeader name={name}>
+          <FavouriteButton
+            isFavourite={isFavourite}
+            handleFavouriteStatusChange={handleFavouriteStatusChange}
+          />
+        </VisualHeader>
+      )}
       <ListVisualComponent {...props} />
     </>
   );
@@ -20,9 +29,12 @@ export const ListVisual = props => {
 ListVisual.propTypes = {
   isEnlarged: PropTypes.bool,
   name: PropTypes.string,
+  isFavourite: PropTypes.bool.isRequired,
+  handleFavouriteStatusChange: PropTypes.func,
 };
 
 ListVisual.defaultProps = {
   isEnlarged: false,
   name: null,
+  handleFavouriteStatusChange: () => {},
 };

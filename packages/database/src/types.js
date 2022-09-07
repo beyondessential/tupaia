@@ -60,5 +60,6 @@ export const TYPES = {
   SYNC_SERVICE_LOG: 'sync_service_log',
   USER_ACCOUNT: 'user_account',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
+  USER_FAVOURITE_DASHBOARD_ITEM: 'user_favourite_dashboard_item',
   USER_SESSION: 'userSession',
 };

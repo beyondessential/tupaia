@@ -18,11 +18,18 @@ import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
+import { FavouriteButton } from '../FavouriteButton';
 
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
   overflow: auto;
+`;
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 17px;
 `;
 
 const ExportContainer = styled(FlexColumn)`
@@ -139,6 +146,8 @@ export const Chart = ({
   error,
   isEnlarged,
   isExporting,
+  isFavourite,
+  handleFavouriteStatusChange,
 }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
 
@@ -173,7 +182,13 @@ export const Chart = ({
   ) : (
     <>
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
-        <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+        <GridContainer>
+          <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+          <FavouriteButton
+            isFavourite={isFavourite}
+            handleFavouriteStatusChange={handleFavouriteStatusChange}
+          />
+        </GridContainer>
       </VisualHeader>
       <Body>
         <ChartTable
