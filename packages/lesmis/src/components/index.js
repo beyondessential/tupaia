@@ -24,6 +24,7 @@ export * from './NavBar';
 export * from './PageHeader';
 export * from './RejectButton';
 export * from './SearchBar';
+export * from './ScrollToTopButton';
 export * from './Tabs';
 export * from './ThemeTest';
 export * from './VitalsLoader';

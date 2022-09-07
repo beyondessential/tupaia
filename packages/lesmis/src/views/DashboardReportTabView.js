@@ -6,9 +6,17 @@
 import React, { useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import { useDashboardData } from '../api/queries';
-import { FetchLoader, TabsLoader, FlexColumn, TabBar, Tabs, Tab, TabPanel } from '../components';
+import {
+  FetchLoader,
+  TabsLoader,
+  FlexColumn,
+  TabBar,
+  Tabs,
+  Tab,
+  TabPanel,
+  ScrollToTopButton,
+} from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam, useStickyBar, useDefaultDashboardTab } from '../utils';
 import { DashboardSearch } from '../components/DashboardSearch';
@@ -24,18 +32,6 @@ const DashboardSection = styled(FlexColumn)`
   align-items: center;
   justify-content: flex-start;
   min-height: 40rem;
-`;
-
-const ScrollToTopButton = styled(ArrowUpward)`
-  position: fixed;
-  bottom: 29px;
-  right: 32px;
-  cursor: pointer;
-  font-size: 50px;
-  color: white;
-  padding: 10px;
-  background: ${props => props.theme.palette.text.primary};
-  border-radius: 3px;
 `;
 
 const PanelComponent = styled(FlexColumn)`
