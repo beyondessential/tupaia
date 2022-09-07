@@ -5,52 +5,22 @@
  */
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import { FlexStart } from '@tupaia/ui-components';
-import { useDashboardData } from '../api/queries';
-import { useStickyBar, useDashboardDropdownOptions } from '../utils';
+import { useStickyBar, useDropdownOptionsWithFavouriteDashboardItems } from '../utils';
 import { DashboardSearch } from '../components/DashboardSearch';
 import FavouriteDashboardView from './FavouriteDashboardView';
+import { ScrollToTopButton } from '../components';
 
-const ScrollToTopButton = styled(ArrowUpward)`
-  position: fixed;
-  bottom: 29px;
-  right: 32px;
-  cursor: pointer;
-  font-size: 50px;
-  color: white;
-  padding: 10px;
-  background: ${props => props.theme.palette.text.primary};
-  border-radius: 3px;
-`;
-
-const getDropDownOptionsWithFavouriteDashboardItems = (data = []) => {
-  const { favouriteDropdownOption, otherDropdownOptions } = useDashboardDropdownOptions();
-  const subDashboardsWithFavouriteDashboardItems = data.filter(
-    favouriteDropdownOption.componentProps.filterSubDashboards,
-  );
-
-  const filteredDropdownOptions = otherDropdownOptions.map(dropdownOption => {
-    const { filterSubDashboards } = dropdownOption.componentProps;
-    const subDashboards = subDashboardsWithFavouriteDashboardItems.filter(filterSubDashboards);
-
-    return { ...dropdownOption, subDashboards };
-  });
-
-  return filteredDropdownOptions.filter(dropdownOption => dropdownOption.subDashboards.length > 0);
-};
-
-export const FavouriteDashboardTabView = ({ entityCode, TabBarLeftSection, year }) => {
+export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
   const dashboardsRef = useRef(null);
   const [searchIsActive, setSearchIsActive] = useState(false);
-
-  const { isScrolledPastTop, scrollToTop } = useStickyBar(dashboardsRef);
-  const { data, isLoading, isError, error } = useDashboardData({
-    entityCode,
-    includeDrillDowns: false,
-  });
-  const dropdownOptions = getDropDownOptionsWithFavouriteDashboardItems(data);
+  const { isScrolledPastTop, scrollToTop, onLoadTabBar } = useStickyBar(dashboardsRef);
+  const {
+    dropdownOptionsWithFavouriteDashboardItems: dropdownOptions,
+    isLoading,
+    isError,
+    error,
+  } = useDropdownOptionsWithFavouriteDashboardItems();
 
   const getResultsEl = () => {
     return dashboardsRef;
@@ -61,32 +31,33 @@ export const FavouriteDashboardTabView = ({ entityCode, TabBarLeftSection, year 
   };
 
   return (
-    <div ref={dashboardsRef}>
-      <FlexStart>
+    <div>
+      <FlexStart ref={onLoadTabBar}>
         <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
         <TabBarLeftSection />
       </FlexStart>
 
-      {dropdownOptions.map(({ subDashboards, label }) => {
-        return (
-          <FavouriteDashboardView
-            subDashboards={subDashboards}
-            label={label}
-            searchIsActive={searchIsActive}
-            isLoading={isLoading}
-            isError={isError}
-            error={error}
-            year={year}
-          />
-        );
-      })}
+      <div ref={dashboardsRef}>
+        {dropdownOptions.map(({ subDashboards, label }) => {
+          return (
+            <FavouriteDashboardView
+              subDashboards={subDashboards}
+              label={label}
+              searchIsActive={searchIsActive}
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
+              year={year}
+            />
+          );
+        })}
+      </div>
       {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}
     </div>
   );
 };
 
 FavouriteDashboardTabView.propTypes = {
-  entityCode: PropTypes.string.isRequired,
   TabBarLeftSection: PropTypes.func.isRequired,
   year: PropTypes.string,
 };

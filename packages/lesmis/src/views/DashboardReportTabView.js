@@ -59,7 +59,7 @@ export const DashboardReportTabView = ({
 }) => {
   const dashboardsRef = useRef(null);
   const [searchIsActive, setSearchIsActive] = useState(false);
-  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
+  const [selectedSubDashboard, setSelectedSubDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
@@ -69,14 +69,14 @@ export const DashboardReportTabView = ({
     data,
     filterSubDashboards,
   ]);
-  const activeSubDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
+  const activeSubDashboard = useDefaultDashboardTab(selectedSubDashboard, subDashboards);
 
   const getResultsEl = () => {
     return dashboardsRef;
   };
 
   const handleChangeDashboard = (event, newValue) => {
-    setSelectedDashboard(newValue);
+    setSelectedSubDashboard(newValue);
     scrollToTop();
   };
 
