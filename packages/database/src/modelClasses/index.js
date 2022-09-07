@@ -48,13 +48,13 @@ import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
-import { SyncServiceModel } from './SyncService';
-import { SyncServiceLogModel } from './SyncServiceLog';
+import { SyncGroupLogModel } from './SyncGroupLog';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
 import { DataServiceEntityModel } from './DataServiceEntity';
 import { DhisInstanceModel } from './DhisInstance';
+import { SupersetInstanceModel } from './SupersetInstance';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -98,14 +98,14 @@ export const modelClasses = {
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
   Report: ReportModel,
+  SupersetInstance: SupersetInstanceModel,
   Survey: SurveyModel,
   SurveyGroup: SurveyGroupModel,
   SurveyResponse: SurveyResponseModel,
   SurveyResponseComment: SurveyResponseCommentModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
-  SyncService: SyncServiceModel,
-  SyncServiceLog: SyncServiceLogModel,
+  SyncGroupLog: SyncGroupLogModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
@@ -142,3 +142,4 @@ export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
+export { SupersetInstanceModel } from './SupersetInstance';

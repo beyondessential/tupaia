@@ -4,7 +4,7 @@
  */
 
 import { ReportServerAggregator } from '../aggregator';
-import { FetchReportQuery, ReportConfig } from '../types';
+import { FetchReportQuery, StandardOrCustomReportConfig } from '../types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildFetch, FetchResponse } from './fetch';
@@ -13,14 +13,15 @@ import { buildOutput } from './output';
 import { Row } from './types';
 import { OutputType } from './output/functions/outputBuilders';
 import { QueryBuilder } from './query';
+import { CustomReportOutputType, customReports } from './customReports';
 
 export interface BuiltReport {
-  results: OutputType;
+  results: OutputType | CustomReportOutputType;
 }
 
 export class ReportBuilder {
   private readonly reqContext: ReqContext;
-  private config?: ReportConfig;
+  private config?: StandardOrCustomReportConfig;
   private testData?: Row[];
 
   public constructor(reqContext: ReqContext) {
@@ -43,6 +44,16 @@ export class ReportBuilder {
   ): Promise<BuiltReport> => {
     if (!this.config) {
       throw new Error('Report requires a config be set');
+    }
+
+    if ('customReport' in this.config) {
+      const customReportBuilder = customReports[this.config.customReport];
+      if (!customReportBuilder) {
+        throw new Error(`Custom report ${this.config.customReport} does not exist`);
+      }
+
+      const customReportData = await customReportBuilder(this.reqContext, query);
+      return { results: customReportData };
     }
 
     const fetch = this.testData

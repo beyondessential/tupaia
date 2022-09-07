@@ -65,6 +65,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Map Overlay Group Relation',
       editEndpoint: 'mapOverlayGroupRelations',
       fields: [...FIELDS],
     },

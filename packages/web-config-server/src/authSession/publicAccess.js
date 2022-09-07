@@ -21,6 +21,7 @@ export const PUBLIC_COUNTRY_CODES = [
   'TK',
   'TL',
   'TO',
+  'TV',
   'VE',
   'VU',
   'WS',

@@ -107,6 +107,27 @@ describe('DashboardVisualisationExtractor', () => {
           },
         });
       });
+
+      it('can get a draft report which uses a custom report', () => {
+        const extractor = new DashboardVisualisationExtractor(
+          {
+            code: 'viz',
+            data: { customReport: 'custom' },
+            presentation: {},
+          },
+          yup.object(),
+          draftReportValidator,
+        );
+
+        const report = extractor.getReport();
+
+        expect(report).toEqual({
+          code: 'viz',
+          config: {
+            customReport: 'custom',
+          },
+        });
+      });
     });
 
     describe('getReport() - legacyReport', () => {

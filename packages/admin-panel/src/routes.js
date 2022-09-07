@@ -30,6 +30,7 @@ import {
   DataElementsPage,
   DataGroupsPage,
   ProjectsPage,
+  SyncGroupsPage,
 } from './pages/resources';
 
 export const ROUTES = [
@@ -67,6 +68,11 @@ export const ROUTES = [
         label: 'Survey Responses',
         to: '/survey-responses',
         component: SurveyResponsesPage,
+      },
+      {
+        label: 'Sync Groups',
+        to: '/sync-groups',
+        component: SyncGroupsPage,
       },
     ],
   },

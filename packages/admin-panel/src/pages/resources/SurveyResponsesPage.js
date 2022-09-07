@@ -100,6 +100,7 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Survey Response',
       editEndpoint: 'surveyResponses',
       fields: [
         entityName,
@@ -127,10 +128,6 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   },
 ];
 
-const EDIT_CONFIG = {
-  title: 'Edit Survey Response',
-};
-
 const ANSWER_FIELDS = [
   {
     Header: 'Question',
@@ -152,6 +149,7 @@ export const ANSWER_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Answer',
       editEndpoint: 'answers',
       fields: ANSWER_FIELDS,
     },
@@ -197,7 +195,6 @@ export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
     defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
     ExportModalComponent={SurveyResponsesExportModal}
     {...props}

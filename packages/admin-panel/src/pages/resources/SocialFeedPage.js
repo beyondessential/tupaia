@@ -81,6 +81,7 @@ export const SOCIAL_FEED_COLUMNS = [
     source: 'id',
     type: 'edit',
     actionConfig: {
+      title: 'Edit Social Feed item',
       editEndpoint: 'feedItems',
       fields: FIELDS,
     },
@@ -94,10 +95,6 @@ export const SOCIAL_FEED_COLUMNS = [
     },
   },
 ];
-
-const EDIT_CONFIG = {
-  title: 'Edit Social Feed item',
-};
 
 const CREATE_CONFIG = {
   title: 'Add Social Feed item',
@@ -113,7 +110,6 @@ export const SocialFeedPage = ({ getHeaderEl }) => (
     endpoint="feedItems"
     baseFilter={{ type: 'markdown' }}
     columns={SOCIAL_FEED_COLUMNS}
-    editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={data => ({ ...data, type: 'markdown' })}
     getHeaderEl={getHeaderEl}

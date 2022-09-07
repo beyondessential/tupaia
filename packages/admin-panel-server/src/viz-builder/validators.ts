@@ -10,8 +10,22 @@ export const baseVisualisationValidator = yup.object().shape({
   data: yup.object().required(),
 });
 
-export const baseVisualisationDataValidator = yup.object().shape({
+const baseCustomReportDataValidator = yup.object().shape({
+  customReport: yup.string().required(),
+});
+
+const baseStandardReportDataValidator = yup.object().shape({
   fetch: yup.object().required(),
+});
+
+export const baseVisualisationDataValidator = yup.lazy<
+  typeof baseStandardReportDataValidator | typeof baseCustomReportDataValidator
+>((dataConfig: unknown) => {
+  if (typeof dataConfig === 'object' && dataConfig && 'customReport' in dataConfig) {
+    return baseCustomReportDataValidator;
+  }
+
+  return baseStandardReportDataValidator;
 });
 
 export const draftReportValidator = yup.object().shape({

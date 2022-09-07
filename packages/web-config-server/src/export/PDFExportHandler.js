@@ -1,11 +1,12 @@
-import { downloadPageAsPdf } from '@tupaia/tsutils';
+import { downloadPageAsPDF } from '@tupaia/tsutils';
+import { convertToCDNHost } from '@tupaia/utils';
 
 export const PDFExportHandler = async (req, res) => {
   const { pdfPageUrl } = req.body;
-  const { cookie } = req.headers;
-  const { host: cookieDomain } = req.headers;
+  const { cookie, host, via } = req.headers;
+  const cookieDomain = via && via.includes('cloudfront.net') ? convertToCDNHost(host) : host;
 
-  const buffer = await downloadPageAsPdf(pdfPageUrl, cookie, cookieDomain);
+  const buffer = await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);
   res.set({
     'Content-Type': 'application/pdf',
     'Content-Length': buffer.length,
