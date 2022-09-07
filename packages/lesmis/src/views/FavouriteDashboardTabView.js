@@ -5,11 +5,21 @@
  */
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { FlexStart } from '@tupaia/ui-components';
+import styled from 'styled-components';
+
 import { useStickyBar, useDropdownOptionsWithFavouriteDashboardItems } from '../utils';
-import { DashboardSearch } from '../components/DashboardSearch';
 import FavouriteDashboardView from './FavouriteDashboardView';
-import { ScrollToTopButton } from '../components';
+import { FlexColumn, ScrollToTopButton, TabBar, DashboardSearch } from '../components';
+
+const TabBarContainer = styled.div`
+  z-index: 3;
+  position: relative;
+`;
+
+const DashboardSection = styled(FlexColumn)`
+  justify-content: flex-start;
+  min-height: 40rem;
+`;
 
 export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
   const dashboardsRef = useRef(null);
@@ -31,29 +41,31 @@ export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
   };
 
   return (
-    <div>
-      <FlexStart ref={onLoadTabBar}>
-        <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
-        <TabBarLeftSection />
-      </FlexStart>
-
-      <div ref={dashboardsRef}>
-        {dropdownOptions.map(({ subDashboards, label }) => {
-          return (
+    <>
+      <TabBarContainer ref={onLoadTabBar}>
+        {(!isScrolledPastTop || searchIsActive) && (
+          <TabBar>
+            <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
+            <TabBarLeftSection />
+          </TabBar>
+        )}
+      </TabBarContainer>
+      <DashboardSection ref={dashboardsRef}>
+        {!searchIsActive &&
+          dropdownOptions?.map(({ subDashboards, label }) => (
             <FavouriteDashboardView
               subDashboards={subDashboards}
               label={label}
-              searchIsActive={searchIsActive}
               isLoading={isLoading}
               isError={isError}
               error={error}
               year={year}
             />
-          );
-        })}
-      </div>
+          ))}
+      </DashboardSection>
+
       {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}
-    </div>
+    </>
   );
 };
 

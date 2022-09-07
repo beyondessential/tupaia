@@ -27,7 +27,6 @@ import {
 } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-
 import { DashboardExportModal } from '../components/DashboardExportModal';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import { FavouriteDashboardTabView } from './FavouriteDashboardTabView';

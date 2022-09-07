@@ -11,7 +11,7 @@ import {
   FetchLoader,
   TabsLoader,
   FlexColumn,
-  TabBar,
+  TabBar as BaseTabBar,
   Tabs,
   Tab as BaseTab,
   TabBarSection as BaseTabBarSection,
@@ -29,6 +29,10 @@ const Tab = styled(BaseTab)`
   padding: 1rem 0;
 `;
 
+const TabBar = styled(BaseTabBar)`
+  margin-top: -1px;
+`;
+
 const StickyTabBarContainer = styled.div`
   position: sticky;
   top: ${NAVBAR_HEIGHT_INT}px;
@@ -41,15 +45,7 @@ const DashboardSection = styled(FlexColumn)`
   min-height: 40rem;
 `;
 
-const FavouriteDashboardView = ({
-  subDashboards,
-  label,
-  searchIsActive,
-  isLoading,
-  year,
-  isError,
-  error,
-}) => {
+const FavouriteDashboardView = ({ subDashboards, label, isLoading, year, isError, error }) => {
   const [selectedSubDashboard, setSelectedSubDashboard] = useState(
     useDefaultDashboardTab(null, subDashboards),
   );
@@ -84,14 +80,9 @@ const FavouriteDashboardView = ({
         </TabBar>
       </StickyTabBarContainer>
       <DashboardSection>
-        <FetchLoader
-          isLoading={isLoading && !searchIsActive}
-          isError={isError && !searchIsActive}
-          error={error}
-        >
+        <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           <DashboardItemsView
             subDashboards={subDashboards}
-            searchIsActive={searchIsActive}
             activeSubDashboard={activeSubDashboard}
             year={year}
             isFavouriteDashboardItemsOnly
@@ -107,7 +98,6 @@ export default FavouriteDashboardView;
 FavouriteDashboardView.propTypes = {
   subDashboards: PropTypes.array,
   label: PropTypes.string,
-  searchIsActive: PropTypes.bool,
   isLoading: PropTypes.bool,
   isError: PropTypes.bool,
   error: PropTypes.string,
@@ -117,7 +107,6 @@ FavouriteDashboardView.propTypes = {
 FavouriteDashboardView.defaultProps = {
   subDashboards: [],
   label: '',
-  searchIsActive: true,
   isLoading: true,
   isError: true,
   error: '',

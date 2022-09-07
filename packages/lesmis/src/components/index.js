@@ -5,6 +5,7 @@
 
 export * from './ApproveButton';
 export * from './Breadcrumbs';
+export * from './DashboardSearch';
 export * from './DashboardReport';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';

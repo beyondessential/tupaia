@@ -11,4 +11,5 @@ export const ScrollToTopButton = styled(ArrowUpward)`
   padding: 10px;
   background: ${props => props.theme.palette.text.primary};
   border-radius: 3px;
+  z-index: 5;
 `;
