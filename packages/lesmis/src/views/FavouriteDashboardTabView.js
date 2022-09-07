@@ -26,9 +26,7 @@ const ScrollToTopButton = styled(ArrowUpward)`
 `;
 
 const getDropDownOptionsWithFavouriteDashboardItems = (data = []) => {
-  const { dropdownOptions } = useDashboardDropdownOptions();
-  const favouriteDropdownOption = dropdownOptions.find(({ value }) => value === 'favourites');
-  const otherDropdownOptions = dropdownOptions.filter(({ value }) => value !== 'favourites');
+  const { favouriteDropdownOption, otherDropdownOptions } = useDashboardDropdownOptions();
   const subDashboardsWithFavouriteDashboardItems = data.filter(
     favouriteDropdownOption.componentProps.filterSubDashboards,
   );

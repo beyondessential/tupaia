@@ -54,6 +54,8 @@ export const useDashboardDropdownOptions = () => {
 
   return {
     dropdownOptions,
+    favouriteDropdownOption: dropdownOptions.find(({ value }) => value === 'favourites'),
+    otherDropdownOptions: dropdownOptions.filter(({ value }) => value !== 'favourites'),
     selectedOption: selectedOption || defaultProfileOption,
   };
 };
