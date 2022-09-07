@@ -50,14 +50,14 @@ const FavouriteDashboardView = ({
   isError,
   error,
 }) => {
-  const [selectedDashboard, setSelectedDashboard] = useState(
+  const [selectedSubDashboard, setSelectedSubDashboard] = useState(
     useDefaultDashboardTab(null, subDashboards),
   );
 
-  const activeDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
+  const activeSubDashboard = useDefaultDashboardTab(selectedSubDashboard, subDashboards);
 
-  const handleChangeDashboard = (event, newValue) => {
-    setSelectedDashboard(newValue);
+  const handleChangeSubDashboard = (event, newValue) => {
+    setSelectedSubDashboard(newValue);
   };
 
   return (
@@ -70,8 +70,8 @@ const FavouriteDashboardView = ({
             <>
               <TabBarSection>{label}</TabBarSection>
               <Tabs
-                value={activeDashboard}
-                onChange={handleChangeDashboard}
+                value={activeSubDashboard}
+                onChange={handleChangeSubDashboard}
                 variant="scrollable"
                 scrollButtons="auto"
               >
@@ -92,8 +92,9 @@ const FavouriteDashboardView = ({
           <DashboardItemsView
             subDashboards={subDashboards}
             searchIsActive={searchIsActive}
-            activeDashboard={activeDashboard}
+            activeSubDashboard={activeSubDashboard}
             year={year}
+            isFavouriteDashboardItemsOnly
           />
         </FetchLoader>
       </DashboardSection>

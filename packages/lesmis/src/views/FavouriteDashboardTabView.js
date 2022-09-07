@@ -27,15 +27,18 @@ const ScrollToTopButton = styled(ArrowUpward)`
 
 const getDropDownOptionsWithFavouriteDashboardItems = (data = []) => {
   const { dropdownOptions } = useDashboardDropdownOptions();
+  const favouriteDropdownOption = dropdownOptions.find(({ value }) => value === 'favourites');
+  const otherDropdownOptions = dropdownOptions.filter(({ value }) => value !== 'favourites');
+  const subDashboardsWithFavouriteDashboardItems = data.filter(
+    favouriteDropdownOption.componentProps.filterSubDashboards,
+  );
 
-  const filteredDropdownOptions = dropdownOptions
-    .filter(({ value }) => value !== 'favourites')
-    .map(dropdownOption => {
-      const { filterSubDashboards } = dropdownOption.componentProps;
-      const subDashboards = data.filter(filterSubDashboards);
+  const filteredDropdownOptions = otherDropdownOptions.map(dropdownOption => {
+    const { filterSubDashboards } = dropdownOption.componentProps;
+    const subDashboards = subDashboardsWithFavouriteDashboardItems.filter(filterSubDashboards);
 
-      return { ...dropdownOption, subDashboards };
-    });
+    return { ...dropdownOption, subDashboards };
+  });
 
   return filteredDropdownOptions.filter(dropdownOption => dropdownOption.subDashboards.length > 0);
 };
@@ -48,7 +51,6 @@ export const FavouriteDashboardTabView = ({ entityCode, TabBarLeftSection, year 
   const { data, isLoading, isError, error } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
-    hasFavouriteItemsOnly: true,
   });
   const dropdownOptions = getDropDownOptionsWithFavouriteDashboardItems(data);
 

@@ -69,6 +69,7 @@ export const useDashboardReportDataWithConfig = ({
       dashboardItemConfig: {
         ...dashboardItem,
         dashboardName: dashboard?.dashboardName,
+        dashboardCode: dashboard?.dashboardCode,
       },
       reportCodes,
     },

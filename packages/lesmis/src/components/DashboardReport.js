@@ -70,7 +70,12 @@ export const DashboardReport = React.memo(
 
     const handleFavouriteStatusChange = () => {
       const newFavouriteStatus = !isFavourite;
-      updateFavouriteDashboardItemDebounced.current(newFavouriteStatus, config.code);
+      updateFavouriteDashboardItemDebounced.current(
+        newFavouriteStatus,
+        config.code,
+        config.dashboardCode,
+        entityCode,
+      );
       setIsFavourite(newFavouriteStatus);
     };
 

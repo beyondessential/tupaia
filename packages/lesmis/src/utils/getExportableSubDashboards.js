@@ -4,6 +4,8 @@ import { useUrlParams } from './useUrlParams';
 
 export const getExportableSubDashboards = dropdownOption => {
   const { entityCode } = useUrlParams();
+  // const hasFavouriteItemsOnly = dropdownOption.value === 'favourites';
+
   const { data } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
@@ -15,12 +17,12 @@ export const getExportableSubDashboards = dropdownOption => {
     if (!isExportable) {
       return [];
     }
-    const { componentProps, label, useYearSelector } = dropdownOption;
+    const { componentProps, useYearSelector } = dropdownOption;
     const { filterSubDashboards } = componentProps;
     return data
       ?.filter(filterSubDashboards)
-      .map(configs => ({ ...configs, dashboardLabel: label, useYearSelector }));
-  }, [data, JSON.stringify(dropdownOption)]);
+      .map(configs => ({ ...configs, dashboardLabel: configs.dashboardName, useYearSelector }));
+  }, [data, dropdownOption.value]);
 
   const totalPage = exportableSubDashboards?.reduce(
     (totalNum, { items }) => totalNum + Math.max(1, items.length),

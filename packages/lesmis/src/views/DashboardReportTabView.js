@@ -73,7 +73,7 @@ export const DashboardReportTabView = ({
     data,
     filterSubDashboards,
   ]);
-  const activeDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
+  const activeSubDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
 
   const getResultsEl = () => {
     return dashboardsRef;
@@ -99,7 +99,7 @@ export const DashboardReportTabView = ({
           ) : (
             <>
               <Tabs
-                value={activeDashboard}
+                value={activeSubDashboard}
                 onChange={handleChangeDashboard}
                 variant="scrollable"
                 scrollButtons="auto"
@@ -123,12 +123,12 @@ export const DashboardReportTabView = ({
               className={searchIsActive ? 'active' : ''}
               Panel={PanelComponent}
               key={dashboard.dashboardId}
-              isSelected={dashboard.dashboardName === activeDashboard}
+              isSelected={dashboard.dashboardName === activeSubDashboard}
             >
               <DashboardItemsView
                 subDashboards={subDashboards}
                 searchIsActive={searchIsActive}
-                activeDashboard={activeDashboard}
+                activeSubDashboard={activeSubDashboard}
                 year={year}
               />
             </TabPanel>

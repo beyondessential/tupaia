@@ -27,7 +27,13 @@ const PanelComponent = styled(FlexColumn)`
   }
 `;
 
-const DashboardItemsView = ({ subDashboards, searchIsActive, activeDashboard, year }) => {
+const DashboardItemsView = ({
+  subDashboards,
+  searchIsActive,
+  activeSubDashboard,
+  year,
+  isFavouriteDashboardItemsOnly,
+}) => {
   const { startDate, endDate } = yearToApiDates(year);
 
   return (
@@ -37,18 +43,24 @@ const DashboardItemsView = ({ subDashboards, searchIsActive, activeDashboard, ye
           className={searchIsActive ? 'active' : ''}
           Panel={PanelComponent}
           key={subDashboard.dashboardId}
-          isSelected={subDashboard.dashboardName === activeDashboard}
+          isSelected={subDashboard.dashboardName === activeSubDashboard}
         >
           {subDashboard.items.length > 0 ? (
-            subDashboard.items.map(item => (
-              <DashboardReport
-                key={item.code}
-                reportCode={item.reportCode}
-                name={item.name}
-                startDate={startDate}
-                endDate={endDate}
-              />
-            ))
+            subDashboard.items
+              .filter(
+                item =>
+                  !isFavouriteDashboardItemsOnly ||
+                  (isFavouriteDashboardItemsOnly && item.isFavourite),
+              )
+              .map(item => (
+                <DashboardReport
+                  key={item.code}
+                  reportCode={item.reportCode}
+                  name={item.name}
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+              ))
           ) : (
             <InfoAlert key={subDashboard.dashboardName} severity="info" variant="standard">
               There are no reports available for this dashboard
@@ -66,10 +78,12 @@ DashboardItemsView.propTypes = {
   subDashboards: PropTypes.array.isRequired,
   searchIsActive: PropTypes.bool.isRequired,
   year: PropTypes.string,
-  activeDashboard: PropTypes.string,
+  activeSubDashboard: PropTypes.string,
+  isFavouriteDashboardItemsOnly: PropTypes.bool,
 };
 
 DashboardItemsView.defaultProps = {
   year: null,
-  activeDashboard: null,
+  activeSubDashboard: null,
+  isFavouriteDashboardItemsOnly: false,
 };
