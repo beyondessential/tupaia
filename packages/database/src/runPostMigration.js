@@ -21,6 +21,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'admin_panel_session',
   'analytics',
   'data_service_sync_group', // config is too large for triggers
+  'data_table', // config is too large for triggers
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
