@@ -137,12 +137,14 @@ const CREATE_CONFIG = {
   },
 };
 
-const EDIT_CONFIG = {
-  title: 'Edit Project',
-};
-
 export const ProjectsPage = ({ getHeaderEl }) => (
-  <ResourcePage title="Projects" endpoint="projects" columns={COLUMNS} getHeaderEl={getHeaderEl} />
+  <ResourcePage
+    title="Projects"
+    endpoint="projects"
+    columns={COLUMNS}
+    getHeaderEl={getHeaderEl}
+    createConfig={CREATE_CONFIG}
+  />
 );
 
 ProjectsPage.propTypes = {
