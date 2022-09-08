@@ -22,15 +22,17 @@ import { FlexSpaceBetween } from '@tupaia/ui-components';
 
 import StaticMap from '../components/StaticMap';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
-import { setDashboardGroup, closeDropdownOverlays } from '../actions';
+import { setDashboardGroup, closeDropdownOverlays, setOrgUnit } from '../actions';
 import { DashboardGroup } from './DashboardGroup';
 import { getOrgUnitPhotoUrl } from '../utils';
 import { DropDownMenu } from '../components/DropDownMenu';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectCurrentOrgUnitBounds,
   selectCurrentProject,
+  selectCurrentBreadcrumbs,
 } from '../selectors';
 import { DEFAULT_BOUNDS } from '../defaults';
 import DashboardExportModal from './DashboardExportModal';
@@ -42,6 +44,16 @@ const MuiButton = styled(MuiIconButton)`
   margin: 5px 10px 0px 10px;
   background-color: transparent;
   color: white;
+`;
+
+const BreadcrumbBackground = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 80px;
+  background: linear-gradient(180deg, #2b2d38 0%, rgba(43, 45, 56, 0) 94.27%);
+  padding: 5px 10px;
 `;
 
 export class Dashboard extends Component {
@@ -144,9 +156,26 @@ export class Dashboard extends Component {
     );
   }
 
+  renderBreadcrumbs() {
+    const { breadcrumbs, onChangeOrgUnit, isLoading } = this.props;
+
+    if (breadcrumbs.length < 2) {
+      return null;
+    }
+
+    return (
+      <BreadcrumbBackground>
+        <Breadcrumbs
+          breadcrumbs={breadcrumbs}
+          onChangeOrgUnit={onChangeOrgUnit}
+          isLoading={isLoading}
+        />
+      </BreadcrumbBackground>
+    );
+  }
+
   renderMetaMedia() {
     const { currentOrganisationUnit, contractedWidth } = this.props;
-
     // Important: Overhead of inserting a leaflet map into the DOM is high, therefore
     // css display properties are used to show and hide the map when needed and the
     // map is only inserted once.
@@ -155,6 +184,7 @@ export class Dashboard extends Component {
 
     return (
       <div style={{ ...DASHBOARD_STYLES.metaImageHolder, height: mediaWidth * IMAGE_HEIGHT_RATIO }}>
+        {this.renderBreadcrumbs(currentOrganisationUnit)}
         {this.renderMiniMap(showMap)}
         {this.renderPhoto(!showMap)}
       </div>
@@ -282,6 +312,13 @@ Dashboard.propTypes = {
   isSidePanelExpanded: PropTypes.bool.isRequired,
   contractedWidth: PropTypes.number,
   isLoading: PropTypes.bool,
+  breadcrumbs: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      code: PropTypes.string,
+    }),
+  ).isRequired,
+  onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {
@@ -303,6 +340,7 @@ const mapStateToProps = state => {
   const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
   const currentDashboardName = selectCurrentDashboardName(state);
   const currentProject = selectCurrentProject(state);
+  const breadcrumbs = selectCurrentBreadcrumbs(state);
 
   const dashboardNames = [];
   // sort group names based on current project
@@ -328,6 +366,7 @@ const mapStateToProps = state => {
     dashboardNames,
     currentGroupDashboard,
     currentDashboardName,
+    breadcrumbs,
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
@@ -339,6 +378,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onSetDashboardGroup: name => dispatch(setDashboardGroup(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
+    onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+      dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    },
   };
 };
 
