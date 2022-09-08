@@ -12,7 +12,7 @@ dependencies_already_visited=($@)
 
 # if no package.json entrypoint is specified, just return all internal dependencies
 if [ -z ${package_path} ]; then
-  echo "ui-components" "tsutils" "utils" "access-policy" "admin-panel" "aggregator" "api-client" "auth" "database" "data-api" "data-broker" "data-lake-api" "dhis-api" "expression-parser" "indicators" "weather-api" "server-boilerplate" "kobo-api"
+  echo "ui-components" "tsutils" "utils" "access-policy" "admin-panel" "aggregator" "api-client" "auth" "database" "data-api" "data-broker" "data-lake-api" "dhis-api" "expression-parser" "indicators" "weather-api" "server-boilerplate" "kobo-api" "superset-api"
   exit 0
 fi
 

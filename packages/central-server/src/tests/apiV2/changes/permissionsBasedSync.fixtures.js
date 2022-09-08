@@ -74,6 +74,12 @@ const SURVEYS = [
     permissionGroup: PERM_SYNC_PG_ADMIN.name,
     countries: [PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code],
   },
+  {
+    code: 'PERM_SYNC_SURVEY_5',
+    name: 'Permission based sync survey 5',
+    permissionGroup: PERM_SYNC_PG_PUBLIC.name,
+    countries: [], // No countries means available to all countries
+  },
 ];
 
 const QUESTIONS = [

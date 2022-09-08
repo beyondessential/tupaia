@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTable from '@material-ui/core/Table';
-import { TablePaginator } from './TablePaginator';
+import { TablePaginator, DEFAULT_ROWS_PER_PAGE_OPTIONS } from './TablePaginator';
 import { TableHeader } from './TableHeader';
 import { TableBody } from './TableBody';
 import { TableMessageProvider } from './TableMessageProvider';
@@ -39,6 +39,7 @@ export const Table = React.memo(
     order,
     page,
     rowsPerPage,
+    rowsPerPageOptions,
     rowIdKey,
     isFetching,
     className,
@@ -74,6 +75,7 @@ export const Table = React.memo(
             isFetching,
             count,
             rowsPerPage,
+            rowsPerPageOptions,
             onChangePage,
             onChangeRowsPerPage,
           }}
@@ -103,6 +105,7 @@ Table.propTypes = {
   order: PropTypes.string,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
   rowIdKey: PropTypes.string,
   className: PropTypes.string,
 };
@@ -125,6 +128,7 @@ Table.defaultProps = {
   order: 'asc',
   page: null,
   rowsPerPage: 10,
+  rowsPerPageOptions: DEFAULT_ROWS_PER_PAGE_OPTIONS,
   rowIdKey: 'id',
   className: null,
 };

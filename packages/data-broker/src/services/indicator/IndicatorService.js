@@ -38,8 +38,7 @@ export class IndicatorService extends Service {
 
     return {
       results: await this.api.buildAnalytics(indicatorCodes, options),
-      // TODO: either implement properly in #tupaia-backlog/1153,
-      // or remove entirely in #tupaia-backlog/issues/1154
+      // TODO: either implement properly in #NOT-521 or remove entirely in #NOT-522
       metadata: { dataElementCodeToName: {} },
     };
   }

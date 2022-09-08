@@ -1,0 +1,24 @@
+{
+  "name": "@tupaia/superset-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fetches data from a Superset API, in the form of analytics",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/superset-api"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn package:test"
+  },
+  "dependencies": {
+    "@tupaia/utils": "1.0.0",
+    "winston": "^3.3.3"
+  }
+}

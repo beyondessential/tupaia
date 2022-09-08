@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { InputField } from '../widgets';
+import { checkVisibilityCriteriaAreMet } from '../utilities';
 
 export const Editor = ({ fields, recordData, onEditField }) => {
   const onInputChange = (inputKey, inputValue, editConfig = {}) => {
@@ -42,9 +43,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
 
           // show or hide a field based on another field's value
           if (visibilityCriteria) {
-            return Object.entries(visibilityCriteria).every(
-              ([key, value]) => recordData[key] === value,
-            );
+            return checkVisibilityCriteriaAreMet(visibilityCriteria, recordData);
           }
 
           return true;

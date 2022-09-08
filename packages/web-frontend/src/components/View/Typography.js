@@ -15,3 +15,7 @@ export const ViewTitle = styled(Typography)`
   line-height: 130%;
   text-align: center;
 `;
+
+export const PDFExportViewTitle = styled(ViewTitle)`
+  color: black;
+`;

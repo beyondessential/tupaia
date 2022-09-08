@@ -4,8 +4,6 @@
  */
 
 import winston from 'winston';
-import keyBy from 'lodash.keyby';
-
 import { aggregateAnalytics } from '@tupaia/aggregator';
 import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
@@ -545,6 +543,31 @@ export class DhisApi {
       });
     }
     return dataElements;
+  }
+
+  async fetchDataGroup(dataGroupCode, dataElementCodes, includeOptions) {
+    if (!dataGroupCode) {
+      throw new Error('Please provide a data group code');
+    }
+
+    const dataGroup = await this.getRecord({
+      type: PROGRAM,
+      codes: [dataGroupCode],
+      fields: ['code', 'name'],
+    });
+
+    if (!dataGroup) {
+      throw new Error(`Cannot find Data Group: ${dataGroupCode}`);
+    }
+
+    const dataElementsMetadata = await this.fetchDataElements(dataElementCodes, { includeOptions });
+
+    const dataGroupMetadata = {
+      ...dataGroup,
+      dataElements: dataElementsMetadata,
+    };
+
+    return dataGroupMetadata;
   }
 
   buildFetchIndicatorsQuery = queryInput => {

@@ -116,6 +116,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       type: 'edit',
       source: 'id',
       actionConfig: {
+        title: 'Edit Dashboard Item',
         editEndpoint: DASHBOARD_ITEMS_ENDPOINT,
         fields: [...FIELDS, ...extraEditFields],
       },
@@ -136,9 +137,6 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       endpoint={DASHBOARD_ITEMS_ENDPOINT}
       columns={columns}
       importConfig={IMPORT_CONFIG}
-      editConfig={{
-        title: 'Edit Dashboard Item',
-      }}
       LinksComponent={renderNewDashboardVizButton}
       getHeaderEl={getHeaderEl}
       {...props}

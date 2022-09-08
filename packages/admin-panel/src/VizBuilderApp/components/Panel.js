@@ -88,7 +88,7 @@ export const Panel = () => {
   ] = useVizConfig();
 
   const {
-    visualisation: { data: finalData },
+    visualisation: { data: vizData },
   } = useVisualisation();
 
   const handleChange = (event, newValue) => {
@@ -107,6 +107,19 @@ export const Panel = () => {
   const isTabDisabled = tabId => {
     return tab !== tabId && hasDataError;
   };
+
+  const isCustomReport = 'customReport' in vizData;
+  // Custom report vizes don't support any configuration so just show the name
+  if (isCustomReport) {
+    return (
+      <Container>
+        <PanelNav>
+          <>Custom Report: {vizData.customReport}</>
+          <PlayButton />
+        </PanelNav>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -128,7 +141,7 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={finalData.fetch}
+            value={vizData.fetch}
             onChange={value => setTabValue('fetch', value)}
             onInvalidChange={handleInvalidChange}
           />
@@ -144,7 +157,7 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={finalData.aggregate}
+            value={vizData.aggregate}
             onChange={value => setTabValue('aggregate', value)}
             onInvalidChange={handleInvalidChange}
           />
@@ -161,7 +174,7 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={finalData.transform}
+            value={vizData.transform}
             onChange={value => setTabValue('transform', value)}
             onInvalidChange={handleInvalidChange}
           />
