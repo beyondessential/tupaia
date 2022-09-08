@@ -3,18 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { legacy_configToDhisInstanceCode } from '@tupaia/utils';
 import {
   getApiForDataSource,
   getApiFromServerName,
   getApisForDataSources,
-  getApisForLegacyDataSourceConfig,
 } from '../../../services/dhis/getDhisApi';
-
-jest.mock('@tupaia/utils', () => ({
-  ...jest.requireActual('@tupaia/utils'),
-  legacy_configToDhisInstanceCode: jest.fn(),
-}));
 
 const TEST_DHIS_INSTANCE = {
   code: 'test_dhis_instance',
@@ -39,14 +32,6 @@ const TEST_DATA_SOURCE_2 = {
   config: {
     dhisInstanceCode: 'test_dhis_instance',
   },
-};
-
-const TEST_DATA_SERVICE_1 = {
-  isDataRegional: true,
-};
-
-const TEST_DATA_SERVICE_2 = {
-  isDataRegional: false,
 };
 
 const mockModels = {
@@ -78,29 +63,6 @@ describe('getDhisApi', () => {
       const apis = await getApisForDataSources(mockModels, [
         TEST_DATA_SOURCE_1,
         TEST_DATA_SOURCE_2,
-      ]);
-      expect(apis.length).toBe(1);
-    });
-  });
-
-  describe('getApisForLegacyDataSourceConfig()', () => {
-    beforeAll(() => {
-      legacy_configToDhisInstanceCode.mockReturnValue('test_dhis_instance');
-    });
-
-    it('resolves', async () => {
-      const apis = await getApisForLegacyDataSourceConfig(mockModels, [TEST_DATA_SERVICE_1]);
-      expect(apis.length).toBe(1);
-      expect(apis[0].getServerName()).toBe('test_dhis_instance');
-    });
-
-    it('only returns unique apis', async () => {
-      // (See RN-104)
-      // This should not be possible due to unique constraint on code (serverName)
-      // but we test for it regardless to be safe.
-      const apis = await getApisForLegacyDataSourceConfig(mockModels, [
-        TEST_DATA_SERVICE_1,
-        TEST_DATA_SERVICE_2,
       ]);
       expect(apis.length).toBe(1);
     });

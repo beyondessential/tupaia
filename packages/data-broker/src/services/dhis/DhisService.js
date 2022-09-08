@@ -3,12 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  getApiForDataSource,
-  getApiFromServerName,
-  getApisForDataSources,
-  getApisForLegacyDataSourceConfig,
-} from './getDhisApi';
+import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import { Service } from '../Service';
 import { DhisTranslator } from './translators';
 import {
@@ -18,9 +13,6 @@ import {
   DataGroupMetadataPuller,
   DeprecatedEventsPuller,
 } from './pullers';
-
-const DEFAULT_DATA_SERVICE = { isDataRegional: true };
-const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
 
 export class DhisService extends Service {
   constructor(models) {
@@ -151,29 +143,8 @@ export class DhisService extends Service {
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async getPullApis(dataSources, entityCodes, detectDataServices, dataServices) {
-    const apis = detectDataServices
-      ? await getApisForDataSources(this.models, dataSources)
-      : await getApisForLegacyDataSourceConfig(this.models, dataServices);
-
-    return apis;
-  }
-
   async pull(dataSources, type, options = {}) {
-    const {
-      organisationUnitCode,
-      organisationUnitCodes,
-      dataServices = DEFAULT_DATA_SERVICES,
-      detectDataServices = false,
-    } = options;
-
-    const entityCodes = organisationUnitCodes || [organisationUnitCode];
-
-    // TODO remove the `detectDataServices` flag after
-    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
-
-    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
-
+    const apis = await getApisForDataSources(this.models, dataSources);
     const { useDeprecatedApi = false } = options;
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
@@ -182,16 +153,8 @@ export class DhisService extends Service {
   }
 
   async pullMetadata(dataSources, type, options) {
-    const {
-      organisationUnitCode,
-      organisationUnitCodes,
-      dataServices = DEFAULT_DATA_SERVICES,
-      detectDataServices = false,
-    } = options;
-
+    const apis = await getApisForDataSources(this.models, dataSources);
     const puller = this.metadataPullers[type];
-    const entityCodes = organisationUnitCodes || [organisationUnitCode];
-    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
 
     const results = [];
     const pullForApi = async api => {

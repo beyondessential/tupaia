@@ -54,7 +54,6 @@ export const stubGetDhisApi = mockDhisApi => {
   // Mock return value of all getDhisApi functions to return this mock api
   jest.spyOn(GetDhisApi, 'getApiForDataSource').mockReturnValue(mockDhisApi);
   jest.spyOn(GetDhisApi, 'getApisForDataSources').mockReturnValue([mockDhisApi]);
-  jest.spyOn(GetDhisApi, 'getApisForLegacyDataSourceConfig').mockReturnValue([mockDhisApi]);
   jest.spyOn(GetDhisApi, 'getApiFromServerName').mockReturnValue(mockDhisApi);
 };
 

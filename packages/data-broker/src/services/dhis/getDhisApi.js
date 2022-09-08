@@ -4,7 +4,7 @@
  */
 
 import { DhisApi } from '@tupaia/dhis-api';
-import { createClassExtendingProxy, legacy_configToDhisInstanceCode } from '@tupaia/utils';
+import { createClassExtendingProxy } from '@tupaia/utils';
 import { DhisCodeToIdTranslator } from './translators';
 
 const instances = {};
@@ -29,21 +29,6 @@ export const getApisForDataSources = async (models, dataSources) => {
   const apis = new Set();
   for (const dataSource of dataSources) {
     const { dhisInstanceCode } = dataSource.config;
-    const dhisInstance = await getDhisInstanceByCode(models, dhisInstanceCode);
-    apis.add(await getDhisApiInstance(models, dhisInstance));
-  }
-  return Array.from(apis);
-};
-
-/**
- * @param {{}} models
- * @param {{ isDataRegional: boolean }[]} dataServices
- * @return {Promise<DhisApi[]>}
- */
-export const getApisForLegacyDataSourceConfig = async (models, dataServices) => {
-  const apis = new Set();
-  for (const dataService of dataServices) {
-    const dhisInstanceCode = legacy_configToDhisInstanceCode(dataService);
     const dhisInstance = await getDhisInstanceByCode(models, dhisInstanceCode);
     apis.add(await getDhisApiInstance(models, dhisInstance));
   }

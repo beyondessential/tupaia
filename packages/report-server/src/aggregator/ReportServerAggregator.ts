@@ -42,16 +42,16 @@ export class ReportServerAggregator {
         period,
         startDate,
         endDate,
-        detectDataServices: true,
       },
       { aggregations },
     );
   }
 
   private async getDateElementCodes(programCode: string) {
-    const { dataElements } = (await this.aggregator.fetchDataGroup(programCode, {
-      detectDataServices: true,
-    })) as EventMetaData;
+    const { dataElements } = (await this.aggregator.fetchDataGroup(
+      programCode,
+      {},
+    )) as EventMetaData;
     return dataElements.map(({ code }) => code);
   }
 
@@ -83,7 +83,6 @@ export class ReportServerAggregator {
         period,
         startDate,
         endDate,
-        detectDataServices: true,
       },
       { aggregations },
     );
