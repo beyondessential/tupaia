@@ -1,16 +1,18 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
+
+import { AccessPolicy } from '@tupaia/access-policy';
+import { TupaiaApiClient } from '@tupaia/api-client';
+import { DataTableServerModelRegistry } from '../../types';
 
 declare global {
   namespace Express {
     export interface Request {
-      ctx: Record<string, unknown>;
-    }
-
-    export interface Response {
-      ctx: Record<string, unknown>;
+      accessPolicy: AccessPolicy;
+      models: DataTableServerModelRegistry;
+      ctx: { services: TupaiaApiClient };
     }
   }
 }

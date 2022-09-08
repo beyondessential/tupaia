@@ -11,12 +11,12 @@ const DATA_TABLE_TYPES = {
   INTERNAL: 'internal',
 };
 
-class DataTableType extends DatabaseType {
+export class DataTableType extends DatabaseType {
   static databaseType = TYPES.DATA_TABLE;
 }
 
 export class DataTableModel extends DatabaseModel {
-  DATA_TABLE_TYPES = DATA_TABLE_TYPES;
+  static DATA_TABLE_TYPES = DATA_TABLE_TYPES;
 
   get DatabaseTypeClass() {
     return DataTableType;

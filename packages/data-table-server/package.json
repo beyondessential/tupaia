@@ -25,6 +25,10 @@
     "test": "yarn package:test"
   },
   "dependencies": {
+    "@tupaia/access-policy": "3.0.0",
+    "@tupaia/aggregator": "1.0.0",
+    "@tupaia/api-client": "3.1.0",
+    "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",

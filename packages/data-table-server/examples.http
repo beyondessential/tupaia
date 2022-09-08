@@ -14,3 +14,17 @@
 GET http://{{host}}/{{version}}/test HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+
+### Fetch data from analytics data-table
+POST http://{{host}}/{{version}}/dataTable/analytics/fetchData HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "dataElementCodes": ["PSSS_AFR_Cases"],
+    "organisationUnitCodes": ["TO"],
+    "hierarchy": "psss",
+    "startDate": "2020-01-01",
+    "endDate" : "2020-12-31"
+}
