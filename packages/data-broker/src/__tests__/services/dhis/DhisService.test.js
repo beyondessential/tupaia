@@ -264,86 +264,24 @@ describe('DhisService', () => {
 
     describe('pull api resolution', () => {
       let getApisForDataSourcesSpy;
-      let getApisForLegacyDataSourceConfigSpy;
 
       beforeEach(() => {
         getApisForDataSourcesSpy = jest.spyOn(GetDhisApi, 'getApisForDataSources');
-        getApisForLegacyDataSourceConfigSpy = jest.spyOn(
-          GetDhisApi,
-          'getApisForLegacyDataSourceConfig',
-        );
       });
 
-      it('has a default data service', async () => {
-        const dataSources = [DATA_SOURCES.POP01, DATA_SOURCES.POP02];
-        const options = {
-          organisationUnitCodes: ['TO'],
-        };
-
-        const mockedDhisApi = createMockDhisApi({ serverName: 'myDhisApi1' });
-        getApisForLegacyDataSourceConfigSpy.mockReturnValue(mockedDhisApi);
-
-        await dhisService.pull(dataSources, 'dataElement', options);
-
-        expect(getApisForLegacyDataSourceConfigSpy).toHaveBeenCalledOnceWith(
-          expect.anything(),
-          [{ isDataRegional: true }], // default data service legacy config
-        );
-
-        // expect those apis to be passed to pull
-        expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
-          mockedDhisApi,
-          expect.anything(),
-          expect.anything(),
-        );
-      });
-
-      it('allows data services to be explicitly specified', async () => {
-        const dataSources = [DATA_SOURCES.POP01, DATA_SOURCES.POP02];
-        const options = {
-          organisationUnitCodes: ['TO'],
-          dataServices: [{ isDataRegional: true }, { isDataRegional: false }],
-        };
-
-        const mockedDhisApi1 = createMockDhisApi({ serverName: 'myDhisApi1' });
-        const mockedDhisApi2 = createMockDhisApi({ serverName: 'myDhisApi2' });
-        getApisForLegacyDataSourceConfigSpy.mockReturnValue([mockedDhisApi1, mockedDhisApi2]);
-
-        await dhisService.pull(dataSources, 'dataElement', options);
-
-        // expect DhisService to ask for the apis for the given data services
-        expect(getApisForLegacyDataSourceConfigSpy).toHaveBeenCalledOnceWith(expect.anything(), [
-          { isDataRegional: true },
-          { isDataRegional: false },
-        ]);
-
-        // expect those apis to be passed to pull
-        expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
-          [mockedDhisApi1, mockedDhisApi2],
-          expect.anything(),
-          expect.anything(),
-        );
-      });
-
-      it('allows flag detectDataServices', async () => {
+      it('looks up the api from the given data source', async () => {
         const dataSources = [
           {
             ...DATA_SOURCES.POP01,
             config: { dhisInstanceCode: 'test_dhis_instance_1' },
           },
-          {
-            ...DATA_SOURCES.POP02,
-            config: {}, // no dhisInstanceCode, means we need to resolve dhis instance by entity
-          },
         ];
         const options = {
           organisationUnitCodes: ['TO'],
-          detectDataServices: true,
         };
 
         const mockedDhisApi1 = createMockDhisApi({ serverName: 'myDhisApi1' });
-        const mockedDhisApi2 = createMockDhisApi({ serverName: 'myDhisApi2' });
-        getApisForDataSourcesSpy.mockReturnValue([mockedDhisApi1, mockedDhisApi2]);
+        getApisForDataSourcesSpy.mockReturnValue([mockedDhisApi1]);
 
         await dhisService.pull(dataSources, 'dataElement', options);
 
@@ -352,7 +290,7 @@ describe('DhisService', () => {
 
         // expect those apis to be passed to pull
         expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
-          [mockedDhisApi1, mockedDhisApi2],
+          [mockedDhisApi1],
           expect.anything(),
           expect.anything(),
         );
