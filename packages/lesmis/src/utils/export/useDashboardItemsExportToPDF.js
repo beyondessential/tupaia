@@ -10,7 +10,7 @@ import { stringifyQuery } from '@tupaia/utils';
 import { post } from '../../api';
 
 export const useDashboardItemsExportToPDF = options => {
-  const { locale, entityCode, ...restOfoptions } = options;
+  const { locale, entityCode, ...restOfOptions } = options;
   const [isExporting, setIsExporting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -19,7 +19,7 @@ export const useDashboardItemsExportToPDF = options => {
     try {
       const hostname = `${window.location.protocol}//${window.location.host}`;
       const endpoint = `${locale}/pdf-export/${entityCode}`;
-      const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfoptions);
+      const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfOptions);
 
       const response = await post('pdf', {
         data: { pdfPageUrl },

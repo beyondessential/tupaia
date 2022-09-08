@@ -8,26 +8,47 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
+import MuiBox from '@material-ui/core/Box';
 import { VitalsView } from './VitalsView';
-import { TabPanel, TabBarSection, YearSelector } from '../components';
+import { TabPanel, TabBarSection, YearSelector, TabBar } from '../components';
 import {
   useUrlParams,
   useUrlSearchParams,
   useUrlSearchParam,
-  getExportableDashboards,
+  getExportableSubDashboards,
+  useDashboardDropdownOptions,
 } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
+
 import { DashboardExportModal } from '../components/DashboardExportModal';
+import { DashboardReportTabView } from './DashboardReportTabView';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
   width: 14rem;
   text-transform: capitalize;
 `;
+
+const TabTemplate = ({ TabBarLeftSection, body }) => {
+  return (
+    <>
+      <TabBar>
+        <TabBarLeftSection />
+      </TabBar>
+      <MuiBox p={5} minHeight={600}>
+        {body}
+      </MuiBox>
+    </>
+  );
+};
+
+TabTemplate.propTypes = {
+  TabBarLeftSection: PropTypes.func.isRequired,
+  body: PropTypes.string.isRequired,
+};
 
 export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const isFetching = useIsFetching('dashboardReport');
@@ -38,8 +59,7 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const { dropdownOptions, selectedOption } = useDashboardDropdownOptions();
-  const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
-  const { exportableDashboards, totalPage } = getExportableDashboards(profileDropDownOptions);
+  const { totalPage } = getExportableSubDashboards(selectedOption);
 
   const handleDashboardChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null });
@@ -48,42 +68,44 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   return (
     <ErrorBoundary>
       <VitalsView entityCode={entityCode} entityType={entityData?.type} />
-      {dropdownOptions.map(({ value, TabComponent, useYearSelector, componentProps }) => (
-        <TabPanel key={value} isSelected={value === selectedOption.value} Panel={React.Fragment}>
-          <TabComponent
-            {...componentProps}
-            entityCode={entityCode}
-            year={useYearSelector && selectedYear}
-            TabBarLeftSection={() => (
-              <TabBarSection>
-                <StyledSelect
-                  id="dashboardtab"
-                  options={dropdownOptions}
-                  value={selectedOption.value}
-                  onChange={handleDashboardChange}
-                  showPlaceholder={false}
-                  SelectProps={{
-                    MenuProps: { disablePortal: true },
-                  }}
-                />
-                {useYearSelector && (
-                  <YearSelector
-                    value={selectedYear}
-                    onChange={setSelectedYear}
-                    isLoading={!!isFetching}
+      {dropdownOptions.map(({ value, useTabTemplate, useYearSelector, componentProps }) => {
+        const TabComponent = useTabTemplate ? TabTemplate : DashboardReportTabView;
+        return (
+          <TabPanel key={value} isSelected={value === selectedOption.value} Panel={React.Fragment}>
+            <TabComponent
+              {...componentProps}
+              entityCode={entityCode}
+              year={useYearSelector && selectedYear}
+              TabBarLeftSection={() => (
+                <TabBarSection>
+                  <StyledSelect
+                    id="dashboardtab"
+                    options={dropdownOptions}
+                    value={selectedOption.value}
+                    onChange={handleDashboardChange}
+                    showPlaceholder={false}
+                    SelectProps={{
+                      MenuProps: { disablePortal: true },
+                    }}
                   />
-                )}
-              </TabBarSection>
-            )}
-          />
-        </TabPanel>
-      ))}
+                  {useYearSelector && (
+                    <YearSelector
+                      value={selectedYear}
+                      onChange={setSelectedYear}
+                      isLoading={!!isFetching}
+                    />
+                  )}
+                </TabBarSection>
+              )}
+            />
+          </TabPanel>
+        );
+      })}
       <DashboardReportModal />
       <DashboardExportModal
         title={entityData?.name ? entityData?.name : ''}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        exportableDashboards={exportableDashboards}
         totalPage={totalPage}
       />
     </ErrorBoundary>
