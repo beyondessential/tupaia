@@ -1,0 +1,16 @@
+@hostname = localhost
+@port = 8010
+@host = {{hostname}}:{{port}}
+@version = v1
+
+@contentType = application/json
+
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+
+### /test
+GET http://{{host}}/{{version}}/test HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
