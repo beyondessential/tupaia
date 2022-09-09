@@ -4,14 +4,13 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { ReportModel } from './models';
-
-import type { DateSpecs } from './reportBuilder';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { ReportModel } from './models';
+import type { DateSpecs } from './reportBuilder';
 
 export type RequestContext = {
   services: TupaiaApiClient;
-}
+};
 
 export interface ReportServerModelRegistry extends ModelRegistry {
   readonly report: ReportModel;
@@ -37,7 +36,11 @@ export type Aggregation = string | AggregationObject;
 
 type Transform = string | Record<string, unknown>;
 
-export interface ReportConfig {
+type CustomReportConfig = {
+  customReport: string;
+};
+
+export type ReportConfig = {
   fetch: {
     dataElements?: string[];
     dataGroups?: string[];
@@ -48,7 +51,9 @@ export interface ReportConfig {
   };
   transform: Transform[];
   output?: Record<string, unknown>;
-}
+};
+
+export type StandardOrCustomReportConfig = ReportConfig | CustomReportConfig;
 
 export interface Event {
   event: string;

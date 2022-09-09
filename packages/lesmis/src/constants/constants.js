@@ -18,12 +18,43 @@ export const LESMIS_PERMISSION_GROUPS = {
 // Dashboard Constants
 export const SUB_DASHBOARD_OPTIONS = [
   {
+    code: 'profile',
+    useYearSelector: true,
+    exportToPDF: true,
+  },
+  {
+    code: 'indicators',
+    label: 'dashboards.freeIndicatorSelection',
+    exportToPDF: true,
+    useTabTemplate: true,
+    componentPropConfig: {
+      body: 'Free Indicator Selection',
+    },
+  },
+  {
+    code: 'ESSDP_Plan',
+    label: 'dashboards.essdpPlan202125M&eFramework',
+    useTabTemplate: true,
+    componentPropConfig: {
+      body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
+    },
+  },
+  {
     code: 'ESSDP_EarlyChildhood',
     label: 'dashboards.essdpEarlyChildhoodEducationSubSector',
   },
-  { code: 'ESSDP_Primary', label: 'dashboards.essdpPrimarySubSector' },
-  { code: 'ESSDP_LowerSecondary', label: 'dashboards.essdpLowerSecondarySubSector' },
-  { code: 'ESSDP_UpperSecondary', label: 'dashboards.essdpUpperSecondarySubSector' },
+  {
+    code: 'ESSDP_Primary',
+    label: 'dashboards.essdpPrimarySubSector',
+  },
+  {
+    code: 'ESSDP_LowerSecondary',
+    label: 'dashboards.essdpLowerSecondarySubSector',
+  },
+  {
+    code: 'ESSDP_UpperSecondary',
+    label: 'dashboards.essdpUpperSecondarySubSector',
+  },
   {
     code: 'EmergencyInEducation',
     label: 'dashboards.emergencyInEducation',
