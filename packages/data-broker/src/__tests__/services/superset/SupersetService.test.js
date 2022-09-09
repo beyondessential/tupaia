@@ -72,7 +72,7 @@ describe('SupersetService', () => {
             {
               dataSource: DATA_ELEMENTS.ITEM_1,
               service_type: 'superset',
-              config: { supersetInstanceCode: 'SUPERSET_INSTANCE_B' }, // different
+              config: { supersetInstanceCode: 'SUPERSET_INSTANCE_B', supersetChartId: 456 }, // different
             },
           ]),
         });

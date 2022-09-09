@@ -54,7 +54,7 @@ export class SupersetService extends Service {
         throw new Error(`No superset instance found with code "${supersetInstanceCode}"`);
       const api = await getSupersetApiInstance(this.models, supersetInstance);
       for (const [chartId, chartDataSources] of Object.entries(
-        this.groupByChartId(instanceDataSources),
+        this.groupByChartId(instanceDataSources, dataServiceMapping),
       )) {
         const results = await this.pullForApiForChart(api, chartId, chartDataSources);
         mergedResults = mergedResults.concat(results);
@@ -124,10 +124,11 @@ export class SupersetService extends Service {
    * @param {DataElement[]} dataSources
    * @return {Object}
    */
-  groupByChartId(dataSources) {
+  groupByChartId(dataSources, dataServiceMapping) {
     const dataSourcesByChartId = {};
     for (const dataSource of dataSources) {
-      const { config } = dataSource;
+      const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+      const { config } = mapping;
       const { supersetChartId } = config;
       if (!supersetChartId) {
         throw new Error(`Data Element ${dataSource.code} missing supersetChartId`);
