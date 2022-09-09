@@ -56,7 +56,12 @@ export class SupersetService extends Service {
       for (const [chartId, chartDataSources] of Object.entries(
         this.groupByChartId(instanceDataSources, dataServiceMapping),
       )) {
-        const results = await this.pullForApiForChart(api, chartId, chartDataSources);
+        const results = await this.pullForApiForChart(
+          api,
+          chartId,
+          chartDataSources,
+          dataServiceMapping,
+        );
         mergedResults = mergedResults.concat(results);
       }
     }
@@ -72,10 +77,11 @@ export class SupersetService extends Service {
    * @param {SupersetApi} api
    * @param {string} chartId
    * @param {DataElement[]} dataElements
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Promise<Object[]>} analytic results
    * @private
    */
-  async pullForApiForChart(api, chartId, dataElements) {
+  async pullForApiForChart(api, chartId, dataElements, dataServiceMapping) {
     const response = await api.chartData(chartId);
     const { data } = response.result[0];
 
@@ -83,9 +89,13 @@ export class SupersetService extends Service {
     for (const datum of data) {
       const { item_code: itemCode, store_code: storeCode, value, date } = datum;
 
-      const dataElement = dataElements.find(
-        de => de.code === itemCode || de.config.supersetItemCode === itemCode,
-      );
+      let dataElement = dataElements.find(de => de.code === itemCode);
+      if (!dataElement) {
+        // Check by supersetItemCode
+        dataElement = dataServiceMapping.dataElementMapping.find(mapping =>
+          mapping.config.supersetItemCode === itemCode ? mapping.dataSource : false,
+        );
+      }
       if (!dataElement) continue; // unneeded data
 
       results.push({
@@ -122,6 +132,7 @@ export class SupersetService extends Service {
 
   /**
    * @param {DataElement[]} dataSources
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Object}
    */
   groupByChartId(dataSources, dataServiceMapping) {
