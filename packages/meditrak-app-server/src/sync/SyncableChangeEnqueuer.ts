@@ -32,8 +32,8 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
     );
   }
 
-  private addToSyncQueue(transactionModels: MeditrakAppServerModelRegistry, change: Change) {
-    return transactionModels.meditrakSyncQueue.updateOrCreate(
+  private addToSyncQueue(transactingModels: MeditrakAppServerModelRegistry, change: Change) {
+    return transactingModels.meditrakSyncQueue.updateOrCreate(
       {
         record_id: change.record_id,
       },
@@ -45,9 +45,9 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
   }
 
   protected async handleChanges(
-    transactionModels: MeditrakAppServerModelRegistry,
+    transactingModels: MeditrakAppServerModelRegistry,
     changes: Change[],
   ) {
-    await Promise.all(changes.map(change => this.addToSyncQueue(transactionModels, change)));
+    await Promise.all(changes.map(change => this.addToSyncQueue(transactingModels, change)));
   }
 }
