@@ -18,8 +18,14 @@ export const DATA_ELEMENTS = {
     config: { dhisInstanceCode: 'dhis_instance_1' },
     databaseType: TYPES.DATA_ELEMENT,
   },
-  DE_3_MAPPED_MULTI: {
-    code: 'DE_3_MAPPED_MULTI',
+  DE_3_MAPPED: {
+    code: 'DE_3_MAPPED',
+    service_type: 'dhis',
+    config: { dhisInstanceCode: 'dhis_instance_1' },
+    databaseType: TYPES.DATA_ELEMENT,
+  },
+  DE_4_MAPPED_INVALID: {
+    code: 'DE_4_MAPPED_INVALID',
     service_type: 'dhis',
     config: { dhisInstanceCode: 'dhis_instance_1' },
     databaseType: TYPES.DATA_ELEMENT,
@@ -48,6 +54,7 @@ export const DHIS_INSTANCES = {
 };
 
 const DATA_ELEMENT_DATA_SERVICES = [
+  // DE_2_MAPPED is a normal mapping where different data services store data for different countries
   {
     data_element_code: 'DE_2_MAPPED',
     country_code: 'FJ',
@@ -60,14 +67,28 @@ const DATA_ELEMENT_DATA_SERVICES = [
     service_type: 'dhis',
     service_config: { dhisInstanceCode: 'dhis_instance_3' },
   },
+  // DE_3_MAPPED is a normal mapping where a single data service stores data for different countries
   {
-    data_element_code: 'DE_3_MAPPED_MULTI',
+    data_element_code: 'DE_3_MAPPED',
+    country_code: 'FJ',
+    service_type: 'dhis',
+    service_config: { dhisInstanceCode: 'dhis_instance_3' },
+  },
+  {
+    data_element_code: 'DE_3_MAPPED',
+    country_code: 'TO',
+    service_type: 'dhis',
+    service_config: { dhisInstanceCode: 'dhis_instance_3' },
+  },
+  // DE_4_MAPPED_INVALID has multiple mappings for the same country, not allowed
+  {
+    data_element_code: 'DE_4_MAPPED_INVALID',
     country_code: 'FJ',
     service_type: 'dhis',
     service_config: { dhisInstanceCode: 'dhis_instance_2' },
   },
   {
-    data_element_code: 'DE_3_MAPPED_MULTI',
+    data_element_code: 'DE_4_MAPPED_INVALID',
     country_code: 'FJ',
     service_type: 'dhis',
     service_config: { dhisInstanceCode: 'dhis_instance_3' },
