@@ -19,7 +19,6 @@ import MuiIconButton from '@material-ui/core/Button';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import styled from 'styled-components';
 import { FlexSpaceBetween } from '@tupaia/ui-components';
-
 import StaticMap from '../components/StaticMap';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
 import { setDashboardGroup, closeDropdownOverlays, setOrgUnit } from '../actions';
@@ -184,7 +183,7 @@ export class Dashboard extends Component {
 
     return (
       <div style={{ ...DASHBOARD_STYLES.metaImageHolder, height: mediaWidth * IMAGE_HEIGHT_RATIO }}>
-        {this.renderBreadcrumbs(currentOrganisationUnit)}
+        {this.renderBreadcrumbs()}
         {this.renderMiniMap(showMap)}
         {this.renderPhoto(!showMap)}
       </div>
