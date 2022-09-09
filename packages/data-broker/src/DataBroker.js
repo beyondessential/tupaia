@@ -186,11 +186,12 @@ export class DataBroker {
   async pull(dataSourceSpec, options = {}) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const { type } = dataSourceSpec;
-    const { organisationUnitCode } = options;
+    const { organisationUnitCode, organisationUnitCodes } = options;
+    const orgUnitCodes = organisationUnitCodes || [organisationUnitCode];
 
-    const dataServiceMapping = await this.dataServiceResolver.getMappingByOrgUnitCode(
+    const dataServiceMapping = await this.dataServiceResolver.getMappingByOrgUnitCodes(
       dataSources,
-      organisationUnitCode,
+      orgUnitCodes,
     );
     const nestedResults = await Promise.all(
       Object.entries(dataServiceMapping.dataSourcesByServiceType()).map(

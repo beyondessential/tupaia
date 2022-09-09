@@ -111,6 +111,7 @@ describe('DataBroker', () => {
         dataBroker = new DataBroker();
         dataBroker.dataServiceResolver = {
           getMappingByOrgUnitCode: jest.fn().mockReturnValue(FAKE_MAPPING),
+          getMappingByOrgUnitCodes: jest.fn().mockReturnValue(FAKE_MAPPING),
         };
       });
 
