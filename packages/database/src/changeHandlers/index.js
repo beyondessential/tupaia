@@ -5,5 +5,5 @@
 
 export { AnalyticsRefresher } from './AnalyticsRefresher';
 export { ChangeHandler } from './ChangeHandler';
-export { EntityHierarchyCacher } from './EntityHierarchyCacher';
+export { EntityHierarchyCacher } from './entityHierarchyCacher';
 export { SurveyResponseOutdater } from './SurveyResponseOutdater';
