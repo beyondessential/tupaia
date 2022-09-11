@@ -62,16 +62,11 @@ export class DataServiceMapping {
 
   /**
    * @param {DataSource} dataSource
-   * @return {{ service_type: string, config: Object } | null}
+   * @return {DataServiceMappingEntry | null}
    */
   mappingForDataSource(dataSource) {
     for (const mapping of this.allMappings()) {
-      if (mapping.dataSource === dataSource) {
-        return {
-          service_type: mapping.service_type,
-          config: mapping.config,
-        };
-      }
+      if (mapping.dataSource === dataSource) return mapping;
     }
     return null;
   }

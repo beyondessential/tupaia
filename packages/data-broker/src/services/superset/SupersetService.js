@@ -92,9 +92,12 @@ export class SupersetService extends Service {
       let dataElement = dataElements.find(de => de.code === itemCode);
       if (!dataElement) {
         // Check by supersetItemCode
-        dataElement = dataServiceMapping.dataElementMapping.find(mapping =>
-          mapping.config.supersetItemCode === itemCode ? mapping.dataSource : false,
-        );
+        const mappingMatchingSupersetItemCode = dataElements
+          .map(de => dataServiceMapping.mappingForDataSource(de))
+          .find(mapping => mapping.config.supersetItemCode === itemCode);
+        if (mappingMatchingSupersetItemCode) {
+          dataElement = mappingMatchingSupersetItemCode.dataSource;
+        }
       }
       if (!dataElement) continue; // unneeded data
 
