@@ -75,3 +75,14 @@ Authorization: {{authorization}}
     ]
   }
 }
+
+### Fetch Report With Test Config for custom report
+POST {{baseUrl}}/testReport?organisationUnitCodes=VU&hierarchy=explore HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+  "testConfig": {
+    "customReport": "testCustomReport"
+  }
+}

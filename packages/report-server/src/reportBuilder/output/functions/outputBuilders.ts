@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { Resolved } from '@tupaia/tsutils';
 import { buildDefault } from './default';
 import { buildMatrix } from './matrix';
 import { buildRawDataExport } from './rawDataExport';
 
-type Await<T> = T extends PromiseLike<infer U> ? U : T;
-
-export type OutputType = Await<
+export type OutputType = Resolved<
   ReturnType<ReturnType<typeof outputBuilders[keyof typeof outputBuilders]>>
 >;
 

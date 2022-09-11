@@ -16,7 +16,13 @@ import {
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
 import { OptionsBar } from './components';
-import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
+import {
+  I18n,
+  useDashboardItemsExportToPDF,
+  useUrlParams,
+  useUrlSearchParam,
+  useDashboardDropdownOptions,
+} from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
 import { DASHBOARD_EXPORT_PREVIEW, ExportView as BaseExportView } from '../../views/ExportView';
 
@@ -49,6 +55,7 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
   const [exportWithLabels, setExportWithLabels] = useState(null);
   const [exportWithTable, setExportWithTable] = useState(null);
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const { selectedOption } = useDashboardDropdownOptions();
   const { locale, entityCode } = useUrlParams();
 
   const toggleExportWithLabels = () => {
@@ -58,13 +65,14 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
     setExportWithTable(exportWithTable ? null : true);
   };
 
-  const fileName = `${title}-dashboards-export`;
+  const fileName = `${title}-${selectedOption.value}-dashboards-export`;
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF({
     exportWithLabels,
     exportWithTable,
     year: selectedYear,
     locale,
     entityCode,
+    dashboard: selectedOption.value,
   });
 
   const isFetching = useIsFetching() > 0;
@@ -77,6 +85,7 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
   };
   const onClose = () => {
     setIsOpen(false);
+    setPage(1);
   };
 
   return (

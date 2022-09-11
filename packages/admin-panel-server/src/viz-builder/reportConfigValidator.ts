@@ -53,7 +53,11 @@ const dateSpecsValidator = polymorphic({
   string: yup.string().min(4),
 });
 
-export const configValidator = yup.object().shape({
+const customReportConfigValidator = yup.object().shape({
+  customReport: yup.string().required(),
+});
+
+const standardConfigValidator = yup.object().shape({
   fetch: yup
     .object()
     .shape(
@@ -69,4 +73,15 @@ export const configValidator = yup.object().shape({
     .required(),
   transform: yup.array().required(),
   output: yup.object(),
+});
+
+// TODO: Consolidate this and the validator in @tupaia/report-server in a common @tupaia/types package
+export const configValidator = yup.lazy<
+  typeof standardConfigValidator | typeof customReportConfigValidator
+>((config: unknown) => {
+  if (typeof config === 'object' && config && 'customReport' in config) {
+    return customReportConfigValidator;
+  }
+
+  return standardConfigValidator;
 });
