@@ -103,9 +103,9 @@ export class ControlBar extends PureComponent {
       : null;
 
     return (
-      <ControlBarContainer>
+      <ControlBarContainer onBlur={this.props.onControlBlur}>
         <SearchBarContainer>
-          <TopBar onBlur={this.props.onControlBlur}>
+          <TopBar>
             <IconContainer>
               <SearchIcon />
             </IconContainer>
