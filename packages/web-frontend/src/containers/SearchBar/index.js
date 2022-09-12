@@ -60,6 +60,8 @@ const styles = {
   },
   searchResponseText: {
     paddingTop: 14,
+    overflowY: 'auto',
+    minHeight: 20,
   },
   hierarchyItem: {
     flexGrow: 1,
