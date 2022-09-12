@@ -4,7 +4,7 @@
  */
 
 import { useEntityData } from '../api';
-import { DROPDOWN_OPTIONS } from '../constants';
+import { DROPDOWN_OPTIONS, FAVOURITES_DASHBOARD_CODE, PROFILE_DASHBOARD_CODE } from '../constants';
 import { useI18n } from './I18n';
 import { useUrlParams } from './useUrlParams';
 import { useUrlSearchParams } from './useUrlSearchParams';
@@ -18,9 +18,9 @@ export const useDashboardDropdownOptions = () => {
 
   const getFilter = value => {
     switch (value) {
-      case 'favourites':
+      case FAVOURITES_DASHBOARD_CODE:
         return ({ items }) => items.some(item => item.isFavourite);
-      case 'profile':
+      case PROFILE_DASHBOARD_CODE:
         // those not included anywhere else
         return ({ dashboardCode }) =>
           !DROPDOWN_OPTIONS.some(({ value: code }) => dashboardCode.startsWith(`LESMIS_${code}`));
@@ -31,7 +31,8 @@ export const useDashboardDropdownOptions = () => {
 
   const dropdownOptions = DROPDOWN_OPTIONS.map(config => {
     const { value, labelCode, componentPropConfig, ...restOfConfigs } = config;
-    const label = value === 'profile' ? getProfileLabel(entityData?.type) : translate(labelCode);
+    const label =
+      value === PROFILE_DASHBOARD_CODE ? getProfileLabel(entityData?.type) : translate(labelCode);
     const filterSubDashboards = getFilter(value);
     const options = {
       value,

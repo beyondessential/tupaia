@@ -15,6 +15,7 @@ import {
 
 import { PreviewPage } from '../components/DashboardExportModal/components';
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
+import { PROFILE_DASHBOARD_CODE } from '../constants';
 
 export const DASHBOARD_EXPORT_PREVIEW = 'DashboardExportPreview';
 export const PDF_DOWNLOAD_VIEW = 'PDFDownloadView';
@@ -99,7 +100,7 @@ export const ExportView = ({ viewProps, viewType, className }) => {
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
   const { selectedOption } = useDashboardDropdownOptions();
   const { exportableSubDashboards } = getExportableSubDashboards(selectedOption);
-  const isProfileSelected = selectedOption.value === 'profile';
+  const isProfileSelected = selectedOption.value === PROFILE_DASHBOARD_CODE;
 
   return (
     <Container className={className}>

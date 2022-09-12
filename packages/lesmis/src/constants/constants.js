@@ -20,16 +20,19 @@ export const DASHBOARD_REPORT_TAB_VIEW = 'DashboardReportTabView';
 export const FAVOURITE_DASHBOARD_TAB_VIEW = 'FavouriteDashboardTabView';
 export const TAB_TEMPLATE = 'TabTemplate';
 
+export const PROFILE_DASHBOARD_CODE = 'profile';
+export const FAVOURITES_DASHBOARD_CODE = 'favourites';
+
 // Dashboard Constants
 export const DROPDOWN_OPTIONS = [
   {
-    value: 'profile',
+    value: PROFILE_DASHBOARD_CODE,
     tabViewType: DASHBOARD_REPORT_TAB_VIEW,
     useYearSelector: true,
     exportToPDF: true,
   },
   {
-    value: 'favourites',
+    value: FAVOURITES_DASHBOARD_CODE,
     tabViewType: FAVOURITE_DASHBOARD_TAB_VIEW,
     labelCode: 'dashboards.favourites',
     exportToPDF: true,

@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useDashboardData } from '../api';
+import { FAVOURITES_DASHBOARD_CODE } from '../constants';
 import { useDashboardDropdownOptions } from './useDashboardDropdownOptions';
 import { useUrlParams } from './useUrlParams';
 
 export const getExportableSubDashboards = dropdownOption => {
   const { entityCode } = useUrlParams();
   const { otherDropdownOptions } = useDashboardDropdownOptions();
-  const isFavouriteDashboard = dropdownOption.value === 'favourites';
+  const isFavouriteDashboard = dropdownOption.value === FAVOURITES_DASHBOARD_CODE;
 
   const { data } = useDashboardData({
     entityCode,
