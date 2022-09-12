@@ -24,6 +24,7 @@ describe('GET /changes/count', async () => {
   });
 
   after(() => {
+    meditrakSyncQueue.stopListeningForChanges();
     app.revokeAccess();
   });
 
