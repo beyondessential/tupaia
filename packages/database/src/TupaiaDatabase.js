@@ -8,6 +8,7 @@ import { types as pgTypes } from 'pg';
 import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
+import { hashStringToInt } from '@tupaia/tsutils';
 
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
@@ -189,6 +190,17 @@ export class TupaiaDatabase {
    */
   async getTimezone() {
     return (await this.executeSql('show timezone'))[0];
+  }
+
+  /**
+   * Acquires an advisory lock for the current transaction
+   * Lock will be immediately released once the transaction ends
+   * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
+   * @param {string} lockKey unique identifier key for the lock
+   */
+  async acquireAdvisoryLockForTransaction(lockKey) {
+    const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
+    return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
   }
 
   /**

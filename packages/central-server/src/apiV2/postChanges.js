@@ -69,6 +69,8 @@ export async function postChanges(req, res) {
     await ACTION_HANDLERS[action](models, translatedPayload);
 
     if (action === SUBMIT_SURVEY_RESPONSE) {
+      // TODO: Rework this functionality, as directly calling an analytics refresh here is both inefficient
+      // and may create duplicate records in the analytics table
       const { waitForAnalyticsRebuild } = rest;
       if (waitForAnalyticsRebuild) {
         const { database } = models;
