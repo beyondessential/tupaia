@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
@@ -53,6 +53,10 @@ export const DashboardReport = React.memo(
     const drillDownPathname = `/${locale}/${entityCode}/dashboard`;
 
     const [isFavourite, setIsFavourite] = useState(config.isFavourite);
+    useEffect(() => {
+      setIsFavourite(config.isFavourite);
+    }, [config.isFavourite]);
+
     const updateFavouriteDashboardItem = useUpdateFavouriteDashboardItem();
     /**
      * Enable lodash.debounce in onChange function.
@@ -66,7 +70,11 @@ export const DashboardReport = React.memo(
 
     const handleFavouriteStatusChange = () => {
       const newFavouriteStatus = !isFavourite;
-      updateFavouriteDashboardItemDebounced.current(newFavouriteStatus, config.code);
+      updateFavouriteDashboardItemDebounced.current({
+        newFavouriteStatus,
+        dashboardItemCode: config.code,
+        entityCode,
+      });
       setIsFavourite(newFavouriteStatus);
     };
 
