@@ -6,7 +6,7 @@
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 
-export abstract class AbstractDataTable<
+export abstract class DataTableService<
   ParamsSchema extends yup.AnySchema = yup.AnySchema,
   ConfigSchema extends yup.AnySchema = yup.AnySchema,
   RecordSchema = unknown

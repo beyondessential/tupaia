@@ -7,7 +7,7 @@ import { Aggregator } from '@tupaia/aggregator';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataBroker } from '@tupaia/data-broker';
 import { yup, yupUtils, hasNoContent, takesDateForm } from '@tupaia/utils';
-import { AbstractDataTable } from '../AbstractDataTable';
+import { DataTableService } from '../DataTableService';
 
 const paramsSchema = yup.object().shape({
   hierarchy: yup.string().required(),
@@ -35,7 +35,7 @@ const configSchema = yup.object();
 
 type Analytic = { period: string; organisationUnit: string; dataElement: string; value: unknown };
 
-export class AnalyticsDataTable extends AbstractDataTable<
+export class AnalyticsDataTableService extends DataTableService<
   typeof paramsSchema,
   typeof configSchema,
   Analytic

@@ -6,7 +6,7 @@
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { createDataTable } from '../dataTable';
+import { createDataTableService } from '../dataTableService';
 
 export type FetchDataTableDataRequest = Request<
   { dataTableCode: string },
@@ -16,7 +16,7 @@ export type FetchDataTableDataRequest = Request<
 >;
 
 export class FetchDataTableDataRoute extends Route<FetchDataTableDataRequest> {
-  private async findDataTableObject() {
+  private async findDataTable() {
     const { models, params } = this.req;
     const { dataTableCode } = params;
     const dataTable = await models.dataTable.findOne({ code: dataTableCode });
@@ -30,17 +30,17 @@ export class FetchDataTableDataRoute extends Route<FetchDataTableDataRequest> {
   public async buildResponse() {
     const { body, accessPolicy, ctx } = this.req;
 
-    const dataTableObject = await this.findDataTableObject();
-    const permissionGroups = dataTableObject.permission_groups;
+    const dataTable = await this.findDataTable();
+    const permissionGroups = dataTable.permission_groups;
 
     if (!(permissionGroups.includes('*') || permissionGroups.some(accessPolicy.allowsAnywhere))) {
-      throw new Error(`User does not have permission to access data table ${dataTableObject.code}`);
+      throw new Error(`User does not have permission to access data table ${dataTable.code}`);
     }
 
-    const dataTable = createDataTable(dataTableObject, ctx.services);
+    const dataTableService = createDataTableService(dataTable, ctx.services);
 
     const requestParams = { ...body };
-    const data = await dataTable.fetchData(requestParams);
+    const data = await dataTableService.fetchData(requestParams);
     return { data };
   }
 }
