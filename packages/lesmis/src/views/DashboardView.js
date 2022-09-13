@@ -19,12 +19,17 @@ import {
   useDashboardDropdownOptions,
 } from '../utils';
 import { useEntityData } from '../api/queries';
-import { DEFAULT_DATA_YEAR } from '../constants';
+import {
+  DEFAULT_DATA_YEAR,
+  DASHBOARD_REPORT_TAB_VIEW,
+  FAVOURITE_DASHBOARD_TAB_VIEW,
+  TAB_TEMPLATE,
+} from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-
 import { DashboardExportModal } from '../components/DashboardExportModal';
 import { DashboardReportTabView } from './DashboardReportTabView';
+import { FavouriteDashboardTabView } from './FavouriteDashboardTabView';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -50,6 +55,18 @@ TabTemplate.propTypes = {
   body: PropTypes.string.isRequired,
 };
 
+const getTabComponent = tabViewType => {
+  switch (tabViewType) {
+    case DASHBOARD_REPORT_TAB_VIEW:
+      return DashboardReportTabView;
+    case FAVOURITE_DASHBOARD_TAB_VIEW:
+      return FavouriteDashboardTabView;
+    case TAB_TEMPLATE:
+    default:
+      return TabTemplate;
+  }
+};
+
 export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
@@ -68,8 +85,9 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   return (
     <ErrorBoundary>
       <VitalsView entityCode={entityCode} entityType={entityData?.type} />
-      {dropdownOptions.map(({ value, useTabTemplate, useYearSelector, componentProps }) => {
-        const TabComponent = useTabTemplate ? TabTemplate : DashboardReportTabView;
+      {dropdownOptions.map(({ value, tabViewType, useYearSelector, componentProps }) => {
+        const TabComponent = getTabComponent(tabViewType);
+
         return (
           <TabPanel key={value} isSelected={value === selectedOption.value} Panel={React.Fragment}>
             <TabComponent
