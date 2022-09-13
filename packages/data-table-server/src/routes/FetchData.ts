@@ -8,14 +8,14 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { createDataTableService } from '../dataTableService';
 
-export type FetchDataTableDataRequest = Request<
+export type FetchDataRequest = Request<
   { dataTableCode: string },
   { data: unknown[] },
   Record<string, unknown>,
   Record<string, unknown>
 >;
 
-export class FetchDataTableDataRoute extends Route<FetchDataTableDataRequest> {
+export class FetchDataRoute extends Route<FetchDataRequest> {
   private async findDataTable() {
     const { models, params } = this.req;
     const { dataTableCode } = params;
