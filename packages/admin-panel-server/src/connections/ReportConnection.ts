@@ -5,7 +5,7 @@
 
 import { QueryParameters, ApiConnection, RequestBody } from '@tupaia/server-boilerplate';
 
-const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
+const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
 /**
  * @deprecated use @tupaia/api-client
