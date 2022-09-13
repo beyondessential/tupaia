@@ -53,8 +53,12 @@ export const useDashboardDropdownOptions = () => {
 
   return {
     dropdownOptions,
-    favouriteDropdownOption: dropdownOptions.find(({ value }) => value === 'favourites'),
-    otherDropdownOptions: dropdownOptions.filter(({ value }) => value !== 'favourites'),
+    favouriteDropdownOption: dropdownOptions.find(
+      ({ value }) => value === FAVOURITES_DASHBOARD_CODE,
+    ),
+    otherDropdownOptions: dropdownOptions.filter(
+      ({ value }) => value !== FAVOURITES_DASHBOARD_CODE,
+    ),
     selectedOption: selectedOption || defaultProfileOption,
   };
 };
