@@ -32,10 +32,13 @@ export abstract class DataTableService<
     return this.paramsSchema.validateSync(params);
   }
 
-  protected abstract safelyFetchData(params: yup.InferType<ParamsSchema>): Promise<RecordSchema[]>;
+  /**
+   * Implement in concrete class
+   */
+  protected abstract pullData(params: yup.InferType<ParamsSchema>): Promise<RecordSchema[]>;
 
   public fetchData(params: unknown) {
     const validatedParams = this.validateParams(params);
-    return this.safelyFetchData(validatedParams);
+    return this.pullData(validatedParams);
   }
 }

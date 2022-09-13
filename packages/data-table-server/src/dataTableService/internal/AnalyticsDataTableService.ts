@@ -35,6 +35,9 @@ const configSchema = yup.object();
 
 type Analytic = { period: string; organisationUnit: string; dataElement: string; value: unknown };
 
+/**
+ * DataTableService for pulling data from data-broker's fetchAnalytics() endpoint
+ */
 export class AnalyticsDataTableService extends DataTableService<
   typeof paramsSchema,
   typeof configSchema,
@@ -44,7 +47,7 @@ export class AnalyticsDataTableService extends DataTableService<
     super(paramsSchema, configSchema, apiClient, config);
   }
 
-  protected async safelyFetchData(params: {
+  protected async pullData(params: {
     hierarchy: string;
     dataElementCodes: string[];
     organisationUnitCodes: string[];
