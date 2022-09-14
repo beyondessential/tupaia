@@ -124,6 +124,7 @@ export { CountryModel } from './Country';
 export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
+export { DataTableModel, DataTableType } from './DataTable';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
