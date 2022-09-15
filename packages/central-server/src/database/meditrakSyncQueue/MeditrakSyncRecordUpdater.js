@@ -3,64 +3,23 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import winston from 'winston';
-import { ChangeHandler } from '@tupaia/database';
-
-const modelValidator = model => {
-  if (!model.meditrakConfig.minAppVersion) {
-    throw new Error(
-      `Model for ${model.databaseType} must have a meditrakConfig.minAppVersion property`,
-    );
-  }
-  return true;
-};
-
-const stripDataFromChange = change => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  // eslint-disable-next-line camelcase
-  const { old_record, new_record, ...restOfRecord } = change;
-  return { ...restOfRecord };
-};
-
 const arraysAreSame = (arr1, arr2) =>
   arr1.length === arr2.length && arr1.every(item => arr2.includes(item));
 
-/**
- * Adds server side changes to the meditrakSyncQueue
- */
-export class MeditrakSyncQueue extends ChangeHandler {
+export class MeditrakSyncRecordUpdater {
   constructor(models) {
-    super(models);
-    this.syncQueueModel = models.meditrakSyncQueue;
-
-    const typesToSync = models.getTypesToSyncWithMeditrak();
-    const modelNamesToSync = Object.entries(models)
-      .filter(([, model]) => typesToSync.includes(model.databaseType))
-      .map(([modelName]) => modelName);
-    const modelsToSync = typesToSync.map(type => models.getModelForDatabaseType(type));
-    modelsToSync.forEach(model => modelValidator(model));
-    this.changeTranslators = Object.fromEntries(
-      modelNamesToSync.map(model => [model, change => [stripDataFromChange(change)]]),
-    );
-
-    // Keep all the data for surveys, as we want to check if the permissions have changed
-    this.changeTranslators.survey = change => [change];
-  }
-
-  async refreshPermissionsBasedView() {
-    try {
-      const start = Date.now();
-      await this.models.database.executeSql(
-        `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
-      );
-      const end = Date.now();
-      winston.info(`permissions_based_meditrak_sync_queue refresh took: ${end - start}ms`);
-    } catch (error) {
-      winston.error(`permissions_based_meditrak_sync_queue refresh failed: ${error.message}`);
-    }
+    this.models = models;
   }
 
   /**
+   * @public
+   */
+  async updateSyncRecords(changes) {
+    return Promise.all(changes.map(change => this.processChange(change)));
+  }
+
+  /**
+   * @private
    * We need to check for permissions changes when processing survey changes
    * If the permissions have changed, we need to update all related records
    */
@@ -125,6 +84,9 @@ export class MeditrakSyncQueue extends ChangeHandler {
     return Promise.all(allChanges.map(change => this.addToSyncQueue(change)));
   }
 
+  /**
+   * @private
+   */
   processChange(change) {
     if (change.record_type === 'survey') {
       return this.processSurveyChange(change);
@@ -133,8 +95,11 @@ export class MeditrakSyncQueue extends ChangeHandler {
     return this.addToSyncQueue(change);
   }
 
+  /**
+   * @private
+   */
   addToSyncQueue(change) {
-    return this.syncQueueModel.updateOrCreate(
+    return this.models.meditrakSyncQueue.updateOrCreate(
       {
         record_id: change.record_id,
       },
@@ -143,10 +108,5 @@ export class MeditrakSyncQueue extends ChangeHandler {
         change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
       },
     );
-  }
-
-  async handleChanges(changes) {
-    await Promise.all(changes.map(change => this.processChange(change)));
-    await this.refreshPermissionsBasedView();
   }
 }

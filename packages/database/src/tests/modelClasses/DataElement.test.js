@@ -88,16 +88,6 @@ describe('DataElement', () => {
           );
         });
       });
-
-      it('should allow `dhisInstanceCode` to be null', () => {
-        assertConfigIsSanitized(
-          {
-            serviceType: 'dhis',
-          },
-          { dhisInstanceCode: null },
-          { dhisInstanceCode: null },
-        );
-      });
     });
 
     describe('tupaia service', () => {

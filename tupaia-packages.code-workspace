@@ -45,6 +45,10 @@
       "path": "packages/data-lake-api"
     },
     {
+      "name": "data-table-server",
+      "path": "packages/data-table-server"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },

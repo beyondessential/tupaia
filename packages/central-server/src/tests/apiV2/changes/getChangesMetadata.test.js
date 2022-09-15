@@ -45,6 +45,7 @@ describe('GET /changes/metadata', async () => {
   });
 
   after(() => {
+    meditrakSyncQueue.stopListeningForChanges();
     app.revokeAccess();
   });
 

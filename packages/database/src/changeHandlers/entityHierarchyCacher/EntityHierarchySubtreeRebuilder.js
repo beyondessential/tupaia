@@ -1,120 +1,43 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
+
 import { reduceToDictionary } from '@tupaia/utils';
-import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
+import { ORG_UNIT_ENTITY_TYPES } from '../../modelClasses/Entity';
 
-const REBUILD_DEBOUNCE_TIME = 1000; // wait 1 second after changes before rebuilding, to avoid double-up
-
-export class EntityHierarchyCacher {
+export class EntityHierarchySubtreeRebuilder {
   constructor(models) {
     this.models = models;
-    this.changeHandlerCancellers = [];
-    this.scheduledRebuildJobs = [];
-    this.scheduledRebuildTimeout = null;
   }
 
-  listenForChanges() {
-    this.changeHandlerCancellers = [
-      this.models.entity.addChangeHandler(this.handleEntityChange),
-      this.models.entityRelation.addChangeHandler(this.handleEntityRelationChange),
-      this.models.entityHierarchy.addChangeHandler(this.handleEntityHierarchyChange),
-    ];
-  }
-
-  stopListeningForChanges() {
-    this.changeHandlerCancellers.forEach(c => c());
-    this.changeHandlerCancellers = [];
-  }
-
-  handleEntityChange = async ({ record_id: entityId }) => {
-    // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
-    // rebuild all hierarchies
-    const hierarchies = await this.models.entityHierarchy.all();
-    const hierarchyTasks = hierarchies.map(async ({ id: hierarchyId }) => {
-      return this.scheduleRebuildOfSubtree(hierarchyId, entityId);
-    });
-    await Promise.all(hierarchyTasks);
-  };
-
-  handleEntityRelationChange = async ({ old_record: oldRecord, new_record: newRecord }) => {
-    // delete and rebuild subtree from both old and new record, in case hierarchy and/or parent_id
-    // have changed
-    const tasks = [oldRecord, newRecord]
-      .filter(r => r)
-      .map(r => this.scheduleRebuildOfSubtree(r.entity_hierarchy_id, r.parent_id));
-    return Promise.all(tasks);
-  };
-
-  handleEntityHierarchyChange = async ({
-    record_id: hierarchyId,
-    old_record: oldRecord,
-    new_record: newRecord,
-  }) => {
-    if (oldRecord && newRecord) {
-      if (oldRecord.canonical_types === newRecord.canonical_types) {
-        return null; // if the canonical types are the same, the change won't invalidate the cache
-      }
-    }
-    const projectsUsingHierarchy = await this.models.project.find({
-      entity_hierarchy_id: hierarchyId,
-    });
-    // delete and rebuild full hierarchy of any project using this entity
-    const tasks = projectsUsingHierarchy.map(p =>
-      this.scheduleRebuildOfSubtree(hierarchyId, p.entity_id),
-    );
-    return Promise.all(tasks);
-  };
-
-  // add the hierarchy to the list to be rebuilt, with a debounce so that we don't rebuild
-  // many times for a bulk lot of changes
-  scheduleRebuildOfSubtree(hierarchyId, rootEntityId) {
-    const promiseForJob = new Promise(resolve => {
-      this.scheduledRebuildJobs.push({ hierarchyId, rootEntityId, resolve });
-    });
-
-    // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
-    if (this.scheduledRebuildTimeout) {
-      clearTimeout(this.scheduledRebuildTimeout);
-    }
-
-    // schedule the rebuild to happen after an adequate period of debouncing
-    this.scheduledRebuildTimeout = setTimeout(this.runScheduledRebuild, REBUILD_DEBOUNCE_TIME);
-
-    // return the promise for the caller to await
-    return promiseForJob;
-  }
-
-  runScheduledRebuild = async () => {
-    // remove timeout so any jobs added now get scheduled anew
-    this.scheduledRebuildTimeout = null;
-
-    // retrieve the current set of jobs
-    const jobs = this.scheduledRebuildJobs;
-    this.scheduledRebuildJobs = [];
-
+  /**
+   * @public
+   * Rebuilds subtrees listed in the rebuild jobs
+   * @param {{hierarchyId: string; rootEntityId: string}[]} rebuildJobs
+   */
+  async rebuildSubtrees(rebuildJobs) {
     // get the subtrees to delete, then run the delete
     const subtreesForDelete = {};
-    jobs.forEach(({ hierarchyId, rootEntityId }) => {
+    rebuildJobs.forEach(({ hierarchyId, rootEntityId }) => {
       if (!subtreesForDelete[hierarchyId]) {
         subtreesForDelete[hierarchyId] = new Set();
       }
       subtreesForDelete[hierarchyId].add(rootEntityId);
     });
-    const deleteTasks = Object.entries(subtreesForDelete).map(
-      async ([hierarchyId, rootEntityIds]) => this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
+    const deletes = Object.entries(subtreesForDelete).map(async ([hierarchyId, rootEntityIds]) =>
+      this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
     );
-    await Promise.all(deleteTasks);
+    await Promise.all(deletes);
 
     // get the unique set of hierarchies to be rebuilt, then run the rebuild
     const hierarchiesForRebuild = Object.keys(subtreesForDelete);
     await this.buildAndCacheHierarchies(hierarchiesForRebuild);
+  }
 
-    // resolve all jobs
-    jobs.forEach(j => j.resolve());
-  };
-
+  /**
+   * @private
+   */
   async deleteSubtrees(hierarchyId, rootEntityIds) {
     const descendantRelations = await this.models.ancestorDescendantRelation.find({
       ancestor_id: rootEntityIds,
@@ -123,17 +46,18 @@ export class EntityHierarchyCacher {
     const entityIdsForDelete = [...rootEntityIds, ...descendantRelations.map(r => r.descendant_id)];
     await this.models.database.executeSqlInBatches(entityIdsForDelete, batchOfEntityIds => [
       `
-        DELETE FROM ancestor_descendant_relation
-        WHERE
-          entity_hierarchy_id = ?
-        AND
-          descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')});
-      `,
+            DELETE FROM ancestor_descendant_relation
+            WHERE
+              entity_hierarchy_id = ?
+            AND
+              descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')});
+          `,
       [hierarchyId, ...batchOfEntityIds],
     ]);
   }
 
   /**
+   * @public
    * @param {string[]} hierarchyIds The specific hierarchies to cache (defaults to all)
    */
   async buildAndCacheHierarchies(hierarchyIds) {
@@ -144,12 +68,16 @@ export class EntityHierarchyCacher {
     await Promise.all(projectTasks);
   }
 
+  /**
+   * @public
+   */
   async buildAndCacheProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
     return this.fetchAndCacheDescendants(hierarchyId, { [projectEntityId]: [] });
   }
 
   /**
+   * @private
    * Recursively traverse the alternative hierarchy that begins with the specified parents.
    * At each generation, choose children via 'entity_relation' if any exist, or the canonical
    * entity.parent_id if none do
@@ -183,6 +111,9 @@ export class EntityHierarchyCacher {
     await this.fetchAndCacheDescendants(hierarchyId, childIdToAncestorIds);
   }
 
+  /**
+   * @private
+   */
   async fetchChildIdToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
     const relations = useEntityRelationLinks
@@ -198,6 +129,9 @@ export class EntityHierarchyCacher {
     return childIdToAncestorIds;
   }
 
+  /**
+   * @private
+   */
   getEntityRelationChildrenCriteria(hierarchyId, parentIds) {
     return {
       parent_id: parentIds,
@@ -205,17 +139,26 @@ export class EntityHierarchyCacher {
     };
   }
 
+  /**
+   * @private
+   */
   async countEntityRelationChildren(hierarchyId, parentIds) {
     const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
     return this.models.entityRelation.count(criteria);
   }
 
+  /**
+   * @private
+   */
   async getRelationsViaEntityRelation(hierarchyId, parentIds) {
     // get any matching alternative hierarchy relationships leading out of these parents
     const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
     return this.models.entityRelation.find(criteria);
   }
 
+  /**
+   * @private
+   */
   async getCanonicalChildrenCriteria(hierarchyId, parentIds) {
     // Only include entities of types that are considered canonical, either using a custom set of
     // canonical types defined by the hierarchy, or the default, which is org unit types.
@@ -231,18 +174,27 @@ export class EntityHierarchyCacher {
     };
   }
 
+  /**
+   * @private
+   */
   async countCanonicalChildren(hierarchyId, parentIds) {
     const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
     return this.models.entity.count(criteria);
   }
 
+  /**
+   * @private
+   */
   async getRelationsCanonically(hierarchyId, parentIds) {
     const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
-    const children = await this.models.entity.find(criteria, { columns: ['id', 'parent_id'] });
+    const children = await this.models.entity.find(criteria, {
+      columns: ['id', 'parent_id'],
+    });
     return children.map(c => ({ child_id: c.id, parent_id: c.parent_id }));
   }
 
   /**
+   * @private
    * Stores the generation of ancestor/descendant info in the database
    * @param {string} hierarchyId
    * @param {Entity[]} childIdToAncestorIds   Ids of the child entities as keys, with the ids of their

@@ -21,11 +21,44 @@ const Container = styled.div`
   padding: 3rem;
 `;
 
+const NotEnlargedContainer = styled(Container)`
+  height: 350px;
+  overflow-y: hidden;
+  outline: 1px solid yellow;
+`;
+
+const EnlargedContainer = styled(Container)`
+  height: 500px;
+  outline: 1px solid yellow;
+`;
+
 const Template = args => {
   return (
     <Container>
       <ListVisual {...args} />
     </Container>
+  );
+};
+
+const NotEnlargedTemplate = args => {
+  return (
+    <>
+      <NotEnlargedContainer>
+        <ListVisual {...args} />
+      </NotEnlargedContainer>
+      <button>See more...</button>
+    </>
+  );
+};
+
+const EnlargedTemplate = args => {
+  return (
+    <>
+      <EnlargedContainer>
+        <ListVisual {...args} />
+      </EnlargedContainer>
+      <button>See less...</button>
+    </>
   );
 };
 
@@ -37,6 +70,22 @@ const reportCodes = {
 
 export const LightTheme = Template.bind({});
 LightTheme.args = {
+  viewContent,
+  reportCodes,
+  drilldownPathname: `/LA_Huoixai%20District/dashboard`,
+  isEnlarged: true,
+};
+
+export const NotEnlarged = NotEnlargedTemplate.bind({});
+NotEnlarged.args = {
+  viewContent,
+  reportCodes,
+  drilldownPathname: `/LA_Huoixai%20District/dashboard`,
+  isEnlarged: false,
+};
+
+export const Enlarged = EnlargedTemplate.bind({});
+Enlarged.args = {
   viewContent,
   reportCodes,
   drilldownPathname: `/LA_Huoixai%20District/dashboard`,
