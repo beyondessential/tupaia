@@ -19,7 +19,7 @@ describe('GET /changes/count', async () => {
 
     // Set up real sync queue for testing the /changes endpoint
     await createPermissionsBasedMeditrakSyncQueue(models.database);
-    meditrakSyncQueue.setDebounceTime(100); // Faster debounce time for tests
+    meditrakSyncQueue.setDebounceTime(50); // Faster debounce time for tests
     meditrakSyncQueue.listenForChanges();
   });
 
@@ -50,7 +50,8 @@ describe('GET /changes/count', async () => {
     }
     // Wait one second for the triggers to have properly added the changes to the queue
     await oneSecondSleep();
-    await meditrakSyncQueue.scheduleChangeQueueHandler();
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
     const response = await app.get(`changes/count?since=${since}`);
     expect(response.body.changeCount).to.equal(numberOfQuestionsToAdd);
   });
@@ -74,6 +75,10 @@ describe('GET /changes/count', async () => {
 
     // Add some more questions
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeSecondUpdate = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToAddInSecondUpdate = randomIntBetween(1, 20);
@@ -84,6 +89,10 @@ describe('GET /changes/count', async () => {
 
     // Delete some of the questions added in the first update
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeFirstDelete = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToDeleteFromFirstUpdate = randomIntBetween(
@@ -96,6 +105,10 @@ describe('GET /changes/count', async () => {
 
     // Delete some of the questions added in the second update
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeSecondDelete = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToDeleteFromSecondUpdate = randomIntBetween(
@@ -106,8 +119,9 @@ describe('GET /changes/count', async () => {
       await models.question.deleteById(newQuestionsInSecondUpdate[i].id);
     }
 
-    // Wait one second for the triggers to have properly added the changes to the queue
+    // Wait for the triggers to have properly added the changes to the queue
     await oneSecondSleep();
+    await models.database.waitForAllChangeHandlers();
 
     // If syncing from before the first update, should only need to sync the number of records that
     // actually need to be added. No need to know about deletes of records we never integrated
@@ -116,7 +130,6 @@ describe('GET /changes/count', async () => {
     const totalDeletes =
       numberOfQuestionsToDeleteFromFirstUpdate + numberOfQuestionsToDeleteFromSecondUpdate;
     const netNewRecords = grossNewRecords - totalDeletes;
-    await meditrakSyncQueue.scheduleChangeQueueHandler();
     let response = await app.get(`changes/count?since=${timestampBeforeFirstUpdate}`);
     expect(response.body.changeCount).to.equal(netNewRecords);
 
@@ -151,7 +164,8 @@ describe('GET /changes/count', async () => {
     await upsertEntity(); // version 1.7.102
 
     await oneSecondSleep();
-    await meditrakSyncQueue.scheduleChangeQueueHandler();
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
     let response = await app.get(`changes/count?since=${since}&appVersion=0.0.1`);
     expect(response.body.changeCount).to.equal(1);
 
