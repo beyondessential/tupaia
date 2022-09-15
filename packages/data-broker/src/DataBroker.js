@@ -4,7 +4,7 @@
  */
 
 import { lower } from 'case';
-import groupBy from 'lodash.groupby';
+import isequal from 'lodash.isequal';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { countDistinct, toArray } from '@tupaia/utils';
@@ -189,22 +189,17 @@ export class DataBroker {
     const { organisationUnitCode, organisationUnitCodes } = options;
     const orgUnitCodes = organisationUnitCodes || [organisationUnitCode];
 
-    const dataServiceMapping = await this.dataServiceResolver.getMappingByOrgUnitCodes(
-      dataSources,
-      orgUnitCodes,
-    );
+    const pulls = await this.getPulls(dataSources, orgUnitCodes);
     const nestedResults = await Promise.all(
-      Object.entries(dataServiceMapping.dataSourcesByServiceType()).map(
-        ([serviceType, dataSources]) => {
-          return this.pullForServiceAndType(
-            dataSources,
-            options,
-            type,
-            serviceType,
-            dataServiceMapping,
-          );
-        },
-      ),
+      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
+        return this.pullForServiceAndType(
+          dataSourcesForThisPull,
+          options,
+          type,
+          serviceType,
+          dataServiceMapping,
+        );
+      }),
     );
     const mergeResults = this.resultMergers[type];
 
@@ -302,5 +297,72 @@ export class DataBroker {
       serviceType,
       dataServiceMapping,
     };
+  }
+
+  async getPulls(dataSources, orgUnitCodes) {
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
+
+    // Note: each service will pull for ALL org units and ALL data sources.
+    // This will likely lead to problems in the future, for now this is ok because
+    // our services happily ignore extra org units, and our vizes do not ask for
+    // data elements that don't exist in dhis (dhis throws if it cant find it).
+
+    // First we get the mapping for each country, then if any two countries have the
+    // exact same mapping we simply combine them
+    const orgUnitCountryCodes = orgUnits
+      .map(orgUnit => orgUnit.country_code)
+      .filter(countryCode => countryCode !== null && countryCode !== undefined);
+    const countryCodes = [...new Set(orgUnitCountryCodes)];
+
+    if (countryCodes.length === 1) {
+      // No special logic needed, exit early
+      const [countryCode] = countryCodes;
+      const dataServiceMapping = await this.dataServiceResolver.getMappingByCountryCode(
+        dataSources,
+        countryCode,
+      );
+      return Object.entries(dataServiceMapping.dataSourcesByServiceType()).map(
+        ([serviceType, dataSourcesForThisServiceType]) => ({
+          dataSources: dataSourcesForThisServiceType,
+          serviceType,
+          dataServiceMapping,
+        }),
+      );
+    }
+
+    const mappingsByCountryCode = {};
+    for (const countryCode of countryCodes) {
+      mappingsByCountryCode[countryCode] = await this.dataServiceResolver.getMappingByCountryCode(
+        dataSources,
+        countryCode,
+      );
+    }
+
+    const uniqueMappings = [];
+    for (const mappingA of Object.values(mappingsByCountryCode)) {
+      let alreadyAdded = false;
+      for (const mappingB of uniqueMappings) {
+        if (mappingA === mappingB) continue;
+        if (mappingA.equals(mappingB)) {
+          alreadyAdded = true;
+          break;
+        }
+      }
+      if (!alreadyAdded) uniqueMappings.push(mappingA);
+    }
+
+    // And finally split each by service type
+    const pulls = [];
+    for (const mapping of uniqueMappings) {
+      for (const serviceType of mapping.uniqueServiceTypes()) {
+        pulls.push({
+          dataSources,
+          serviceType,
+          dataServiceMapping: mapping,
+        });
+      }
+    }
+
+    return pulls;
   }
 }

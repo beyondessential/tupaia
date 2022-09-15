@@ -66,6 +66,8 @@ export const DATA_BY_SERVICE = {
 export const ENTITIES = {
   TO_FACILITY_01: { code: 'TO_FACILITY_01', country_code: 'TO' },
   FJ_FACILITY_01: { code: 'FJ_FACILITY_01', country_code: 'FJ' },
+  TO: { code: 'TO', country_code: 'TO', type: 'country' },
+  FJ: { code: 'FJ', country_code: 'FJ', type: 'country' },
 };
 
 export const DATA_ELEMENT_DATA_SERVICES = [

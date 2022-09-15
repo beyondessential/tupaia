@@ -111,7 +111,7 @@ describe('DataBroker', () => {
         dataBroker = new DataBroker();
         dataBroker.dataServiceResolver = {
           getMappingByOrgUnitCode: jest.fn().mockReturnValue(FAKE_MAPPING),
-          getMappingByOrgUnitCodes: jest.fn().mockReturnValue(FAKE_MAPPING),
+          getMappingByCountryCode: jest.fn().mockReturnValue(FAKE_MAPPING),
         };
       });
 
@@ -127,6 +127,62 @@ describe('DataBroker', () => {
           );
         }),
       );
+    });
+
+    describe('multiple org units pull', () => {
+      // When pulling we can specify multiple org units and this triggers some special logic.
+      //
+      // For each data element, a different data service can be defined per country, see
+      // "mapped by country" above. If the org units are in different countries, then a data
+      // element could resolve to multiple services. E.g. Data Element Patient_Age could be
+      // in DHIS-tonga for Tonga, and in Superset-Fiji for Fiji. This logic then
+      // attempts to minimise the number of calls to any one service type, in the example
+      // above there should only be one call to DHIS and one to Superset.
+      //
+      // Note: all resulting pull calls to a data service are given ALL org unit codes and
+      // ALL data element codes. Some data services are ok with this, and some will throw
+      // an error if the org unit / data element does not exist there.
+
+      const assertServicePulledDataElementsOnce = (service, dataElements, options) =>
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataElements,
+          'dataElement',
+          expect.objectContaining(options),
+        );
+
+      it('pulls from different data services for the same data element', async () => {
+        const dataBroker = new DataBroker();
+        const multipleCountryOptions = {
+          organisationUnitCodes: ['FJ_FACILITY_01', 'TO_FACILITY_01'],
+        };
+        await dataBroker.pull(
+          { code: ['MAPPED_01', 'MAPPED_02'], type: 'dataElement' },
+          multipleCountryOptions,
+        );
+
+        expect(createServiceMock).toHaveBeenCalledTimes(2);
+        expect(createServiceMock).toHaveBeenCalledWith(
+          expect.anything(),
+          'test',
+          expect.anything(),
+        );
+        expect(createServiceMock).toHaveBeenCalledWith(
+          expect.anything(),
+          'other',
+          expect.anything(),
+        );
+
+        assertServicePulledDataElementsOnce(
+          SERVICES.test,
+          [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
+          multipleCountryOptions, // all org units
+        );
+        assertServicePulledDataElementsOnce(
+          SERVICES.other,
+          [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
+          multipleCountryOptions, // all org units
+        );
+      });
     });
   });
 
