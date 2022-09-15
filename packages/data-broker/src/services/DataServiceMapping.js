@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import isequal from 'lodash.isequal';
+
 /**
  * @typedef {DataElement|DataGroup} DataSource
  */
@@ -69,5 +71,29 @@ export class DataServiceMapping {
       if (mapping.dataSource === dataSource) return mapping;
     }
     return null;
+  }
+
+  /**
+   * @param {DataServiceMapping} other
+   * @returns boolean
+   */
+  equals(other) {
+    if (this.dataElementMapping.length !== other.dataElementMapping.length) return false;
+    if (this.dataGroupMapping.length !== other.dataGroupMapping.length) return false;
+    for (let i = 0; i < this.dataElementMapping.length; i++) {
+      const mA = this.dataElementMapping[i];
+      const mB = other.dataElementMapping[i];
+      if (mA.dataSource.code !== mB.dataSource.code) return false;
+      if (mA.serviceType != mB.serviceType) return false;
+      if (!isequal(mA.config, mB.config)) return false;
+    }
+    for (let i = 0; i < this.dataGroupMapping.length; i++) {
+      const mA = this.dataGroupMapping[i];
+      const mB = other.dataGroupMapping[i];
+      if (mA.dataSource.code !== mB.dataSource.code) return false;
+      if (mA.serviceType != mB.serviceType) return false;
+      if (!isequal(mA.config, mB.config)) return false;
+    }
+    return true;
   }
 }
