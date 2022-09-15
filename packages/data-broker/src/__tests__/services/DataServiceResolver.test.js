@@ -22,7 +22,7 @@ describe('DataServiceResolver', () => {
     expect(
       resolver.getMapping([DATA_ELEMENTS.DE_4_MAPPED_INVALID], ENTITIES.FJ_Facility_1),
     ).toBeRejectedWith(
-      'Conflicting mappings found for Data Source DE_4_MAPPED_INVALID when fetching for orgUnits FJ_Facility_1',
+      'Multiple mappings found for Data Element DE_4_MAPPED_INVALID for country FJ',
     ));
 
   describe('data elements', () => {
@@ -79,40 +79,6 @@ describe('DataServiceResolver', () => {
           dataGroupMapping: [],
         },
       ));
-
-    describe('multiple org units', () => {
-      /**
-       * In this case, we are wanting to know where DE_2_MAPPED is stored, for data in multiple countries.
-       * The answer must be a single data service.
-       */
-
-      it('throws if it resolves a single data element to multiple data services', () =>
-        expect(
-          resolver.getMappingMultipleOrgUnits(
-            [DATA_ELEMENTS.DE_2_MAPPED],
-            [ENTITIES.FJ_Facility_1, ENTITIES.TO_Facility_1],
-          ),
-        ).toBeRejectedWith(
-          'Conflicting mappings found for Data Source DE_2_MAPPED when fetching for orgUnits FJ_Facility_1,TO_Facility_1',
-        ));
-
-      it('returns the data service', () =>
-        expect(
-          resolver.getMappingMultipleOrgUnits(
-            [DATA_ELEMENTS.DE_3_MAPPED],
-            [ENTITIES.FJ_Facility_1, ENTITIES.TO_Facility_1],
-          ),
-        ).resolves.toEqual({
-          dataElementMapping: [
-            {
-              dataSource: DATA_ELEMENTS.DE_3_MAPPED,
-              service_type: 'dhis',
-              config: { dhisInstanceCode: 'dhis_instance_3' },
-            },
-          ],
-          dataGroupMapping: [],
-        }));
-    });
   });
 
   describe('data groups', () => {

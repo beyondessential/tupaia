@@ -4,7 +4,6 @@
  */
 
 import { TYPES } from '@tupaia/database';
-import isequal from 'lodash.isequal';
 import { DataServiceMapping } from './DataServiceMapping';
 
 /**
@@ -28,38 +27,16 @@ export class DataServiceResolver {
    * @returns {Promise<DataServiceMapping>}
    */
   async getMapping(dataSources, orgUnit) {
-    if (orgUnit) {
-      return this.getMappingMultipleOrgUnits(dataSources, [orgUnit]);
-    }
-    return this.getMappingMultipleOrgUnits(dataSources, []);
-  }
-
-  /**
-   * Similar to getMapping, but allows passing multiple orgUnitCodes where each
-   * dataSource must resolve to a single DataServiceMappingEntry or an error will be thrown.
-   *
-   * This can be used when e.g. you have a data element which is stored on a DHIS Server
-   * which stores data for multiple countries against that data element. If you ask for the
-   * data service for that data element, you should get the single DHIS Server.
-   *
-   * @public
-   * @param {DataSource[]} dataSources
-   * @param {Entity[]} [orgUnits]
-   * @returns {Promise<DataServiceMapping>}
-   */
-  async getMappingMultipleOrgUnits(dataSources, orgUnits = []) {
     const dataElements = dataSources.filter(ds => ds.databaseType === TYPES.DATA_ELEMENT);
     const dataGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_GROUP);
 
     const mapping = new DataServiceMapping();
-    mapping.dataElementMapping = await this.resolveDataElements(dataElements, orgUnits);
+    mapping.dataElementMapping = await this.resolveDataElements(dataElements, orgUnit);
     mapping.dataGroupMapping = await this.resolveDataGroups(dataGroups);
     return mapping;
   }
 
   /**
-   * Convenience method
-   * @see getMapping
    * @public
    * @param {DataSource[]} dataSources
    * @param {string} [orgUnitCode]
@@ -73,19 +50,14 @@ export class DataServiceResolver {
   }
 
   /**
-   * Convenience method
-   * @see getMappingMultipleOrgUnits
    * @public
    * @param {DataSource[]} dataSources
-   * @param {string[]} orgUnitCodes
-   * @return {Promise<DataServiceMapping>}
+   * @param {string} countryCode two letter country code, equivalent to Entity.country_code
+   * @returns {Promise<DataServiceMapping>}
    */
-  async getMappingByOrgUnitCodes(dataSources, orgUnitCodes) {
-    if (Array.isArray(orgUnitCodes) && orgUnitCodes.length > 0) {
-      const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
-      return this.getMappingMultipleOrgUnits(dataSources, orgUnits);
-    }
-    return this.getMapping(dataSources, undefined);
+  async getMappingByCountryCode(dataSources, countryCode) {
+    const orgUnit = await this.models.entity.findOne({ code: countryCode, type: 'country' });
+    return this.getMapping(dataSources, orgUnit);
   }
 
   /**
@@ -94,50 +66,25 @@ export class DataServiceResolver {
    * @param {Entity[]} [orgUnits]
    * @returns {Promise<DataServiceMappingEntry[]>}
    */
-  async resolveDataElements(dataElements, orgUnits = []) {
-    const countryCodes = orgUnits
-      .map(orgUnit => orgUnit.country_code)
-      .filter(countryCode => countryCode !== null && countryCode !== undefined);
+  async resolveDataElements(dataElements, orgUnit) {
+    const countryCode = orgUnit ? orgUnit.country_code : null;
     const dataElementCodes = dataElements.map(de => de.code);
 
-    const mappings =
-      countryCodes.length > 0
-        ? await this.models.dataElementDataService.find({
-            country_code: countryCodes,
-            data_element_code: dataElementCodes,
-          })
-        : [];
+    const mappings = countryCode
+      ? await this.models.dataElementDataService.find({
+          country_code: countryCode,
+          data_element_code: dataElementCodes,
+        })
+      : [];
 
     const resolved = [];
     for (const dataElement of dataElements) {
       const deMappings = mappings.filter(m => m.data_element_code === dataElement.code);
 
       if (deMappings.length > 1) {
-        // If they all resolve to the same data service, this is fine
-        const resolveToTheSameDataService = (mappingA, mappingB) => {
-          if (mappingA.service_type !== mappingB.service_type) return false;
-          return isequal(mappingA.service_config, mappingB.service_config);
-        };
-        for (const mappingA of deMappings) {
-          for (const mappingB of deMappings) {
-            if (mappingA === mappingB) continue;
-            if (!resolveToTheSameDataService(mappingA, mappingB)) {
-              throw new Error(
-                `Conflicting mappings found for Data Source ${
-                  dataElement.code
-                } when fetching for orgUnits ${orgUnits.map(o => o.code).join(',')}`,
-              );
-            }
-          }
-        }
-        // all data element mappings are the same, use first
-        const [deMapping] = deMappings;
-        resolved.push({
-          dataSource: dataElement,
-          service_type: deMapping.service_type,
-          config: deMapping.service_config,
-        });
-        continue;
+        throw new Error(
+          `Multiple mappings found for Data Element ${dataElement.code} for country ${countryCode}`,
+        );
       }
 
       if (deMappings.length === 1) {
