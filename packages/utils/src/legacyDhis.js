@@ -104,20 +104,3 @@ export const legacy_getDhisServerName = ({
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   return serverName;
 };
-
-/**
- * @deprecated Use data-broker instead
- *
- * Legacy to modern config mapping function. Clean up after legacy reports are all migrated.
- *
- * Note: some parts of Tupaia will not function correctly in deployments where a DHIS Instance
- * with code 'regional' does not exist
- *
- * @param {{ isDataRegional: boolean}} legacyConfig
- * @return {string|undefined} DhisInstance code
- */
-export const legacy_configToDhisInstanceCode = legacyConfig => {
-  const { isDataRegional = true } = legacyConfig;
-  if (isDataRegional) return 'regional';
-  return undefined;
-};
