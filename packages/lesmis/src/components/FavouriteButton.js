@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FavouriteButton as FavouriteButtonComponent } from '@tupaia/ui-components';
+import { FavouriteButton as FavouriteButtonComponent, Tooltip } from '@tupaia/ui-components';
 import { useUser } from '../api';
 
 export const FavouriteButton = ({ isFavourite, handleFavouriteStatusChange }) => {
   const { isLoggedIn } = useUser();
   if (!isLoggedIn || isFavourite === null) {
-    return null;
+    return (
+      <Tooltip title="Log in/sign up to save favourites">
+        <FavouriteButtonComponent isDisabled />
+      </Tooltip>
+    );
   }
 
   return (

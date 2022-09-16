@@ -19,6 +19,7 @@ import {
   ErrorOutlinedButton,
   GreyOutlinedButton,
   FavouriteButton,
+  FlexColumn as BaseFlexColumn,
 } from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
@@ -30,6 +31,10 @@ export default {
 const Container = styled(MuiBox)`
   max-width: 1200px;
   padding: 1rem;
+`;
+
+const FlexColumn = styled(BaseFlexColumn)`
+  width: 20px;
 `;
 
 export const primary = () => (
@@ -121,13 +126,13 @@ export const favourite = () => {
   const [state, setState] = useState(false);
 
   return (
-    <Container>
+    <FlexColumn>
       <FavouriteButton
         isFavourite={state}
         onChange={() => {
           setState(!state);
         }}
       />
-    </Container>
+    </FlexColumn>
   );
 };
