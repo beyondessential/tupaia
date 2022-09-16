@@ -99,7 +99,7 @@ describe('Creating a project', async () => {
 
         expect(result).to.deep.equal({
           error:
-            'Invalid content for field "countries" causing message "Some provided countries do not exist"',
+            'Invalid content for field "countries" causing message "One or more provided countries do not exist"',
         });
       });
 
