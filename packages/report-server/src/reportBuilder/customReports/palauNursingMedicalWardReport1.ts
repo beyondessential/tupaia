@@ -7,10 +7,10 @@ import { getNursingReport } from './getNursingReport';
 import { FetchReportQuery } from '../../types';
 import { ReqContext } from '../context';
 
-export const palauNursingSurgicalWardReport = async (
+export const palauNursingMedicalWardReport1 = async (
   reqContext: ReqContext,
   query: FetchReportQuery,
 ) => {
-  const dataSetCode = 'SW01';
+  const dataSetCode = 'PW_MW01';
   return getNursingReport(reqContext, query, dataSetCode);
 };
