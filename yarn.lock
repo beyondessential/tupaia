@@ -5217,12 +5217,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/data-table-server@workspace:packages/data-table-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/data-table-server@workspace:packages/data-table-server"
+  dependencies:
+    "@tupaia/access-policy": 3.0.0
+    "@tupaia/aggregator": 1.0.0
+    "@tupaia/api-client": 3.1.0
+    "@tupaia/data-broker": 1.0.0
+    "@tupaia/database": 1.0.0
+    "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/utils": 1.0.0
+    dotenv: ^8.2.0
+    express: ^4.16.2
+    winston: ^3.2.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/database@1.0.0, @tupaia/database@workspace:packages/database":
   version: 0.0.0-use.local
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
     "@babel/node": ^7.10.5
     "@tupaia/auth": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     cross-env: ^7.0.2
     db-migrate: ^0.11.5
@@ -5779,6 +5797,7 @@ __metadata:
     markdown-to-jsx: ^6.4.1
     material-ui: ^0.18.3
     material-ui-datetimepicker: ^1.0.7
+    mockdate: ^3.0.5
     moment: ^2.21.0
     moment-timezone: ^0.5.14
     npm-run-all: ^4.1.5
