@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { useStickyBar, useDropdownOptionsWithFavouriteDashboardItems } from '../utils';
 import FavouriteDashboardView from './FavouriteDashboardView';
 import { FlexColumn, ScrollToTopButton, TabBar, DashboardSearch } from '../components';
+import NoFavouritesView from './NoFavouritesView';
 
 const TabBarContainer = styled.div`
   z-index: 3;
@@ -51,9 +52,11 @@ export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
         )}
       </TabBarContainer>
       <DashboardSection ref={dashboardsRef}>
+        {!searchIsActive && dropdownOptions.length === 0 && <NoFavouritesView />}
         {!searchIsActive &&
-          dropdownOptions?.map(({ subDashboards, label }) => (
+          dropdownOptions?.map(({ value, subDashboards, label }) => (
             <FavouriteDashboardView
+              key={value}
               subDashboards={subDashboards}
               label={label}
               isLoading={isLoading}

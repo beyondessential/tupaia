@@ -29,6 +29,7 @@ export const LoginLink = () => {
         pathname: `/${locale}/login`,
         state: { referer: history.location },
       }}
+      className="login-link"
     >
       <I18n t="home.logIn" />
     </LoginLinkButton>
