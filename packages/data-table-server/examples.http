@@ -28,3 +28,17 @@ Authorization: {{authorization}}
     "startDate": "2020-01-01",
     "endDate" : "2020-12-31"
 }
+
+### Fetch data from events data-table
+POST http://{{host}}/{{version}}/dataTable/events/fetchData HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "dataGroupCode": "PSSS_WNR",
+    "dataElementCodes": ["PSSS_AFR_Cases", "PSSS_ILI_Cases", "PSSS_DIA_Cases"],
+    "organisationUnitCodes": ["TO"],
+    "hierarchy": "psss",
+    "startDate": "2020-01-01",
+    "endDate" : "2020-12-31"
+}
