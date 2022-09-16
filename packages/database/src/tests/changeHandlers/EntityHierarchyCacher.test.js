@@ -3,16 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import sinon from 'sinon';
 import { expect } from 'chai';
-import { sleep } from '@tupaia/utils';
 import {
   getTestModels,
   populateTestData,
   clearTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
-import { EntityHierarchyCacher } from '../../changeHandlers/EntityHierarchyCacher';
+import { EntityHierarchyCacher } from '../../changeHandlers';
+import { EntityHierarchySubtreeRebuilder } from '../../changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
 
 import {
   TEST_DATA,
@@ -35,13 +34,17 @@ import {
   HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED,
 } from './EntityHierarchyCacher.fixtures';
 
+const TEST_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
+
 describe('EntityHierarchyCacher', () => {
   const models = getTestModels();
   const hierarchyCacher = new EntityHierarchyCacher(models);
+  const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(models);
+  hierarchyCacher.setDebounceTime(TEST_DEBOUNCE_TIME); // short debounce time so tests run more quickly
 
   const buildAndCacheProject = async projectCode => {
     const project = await models.project.findOne({ code: projectCode });
-    await hierarchyCacher.buildAndCacheProject(project);
+    await subtreeRebuilder.buildAndCacheProject(project);
   };
   const assertRelationsMatch = async (projectCode, relations) => {
     await models.database.waitForAllChangeHandlers();
@@ -267,38 +270,5 @@ describe('EntityHierarchyCacher', () => {
       canonical_types: ['project', 'country', 'facility'],
     });
     await assertRelationsMatch('project_wind_test', HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED);
-  });
-
-  it('batches multiple changes', async () => {
-    sinon.stub(EntityHierarchyCacher.prototype, 'buildAndCacheHierarchies');
-
-    // make a bunch of different changes, with small delays between each to model real life
-    const sleepTime = 250; // sleep for 250 ms between each change
-
-    // create an entity
-    await upsertDummyRecord(models.entity, { id: 'entity_ac_test', parent_id: 'entity_a_test' });
-    await sleep(sleepTime);
-
-    // update an entity relation
-    await models.entityRelation.update(
-      {
-        parent_id: 'entity_aa_test',
-        child_id: 'entity_ab_test',
-        entity_hierarchy_id: 'hierarchy_storm_test',
-      },
-      { parent_id: 'entity_aab_test' },
-    );
-    await sleep(sleepTime);
-
-    // delete an entity
-    const entityToDelete = 'entity_aaa_test';
-    await models.entityRelation.delete({ child_id: entityToDelete }); // can't delete entity until entity relation is gone
-    await models.entity.delete({ id: entityToDelete });
-    await sleep(sleepTime);
-
-    await models.database.waitForAllChangeHandlers();
-
-    expect(hierarchyCacher.buildAndCacheHierarchies).to.have.been.calledOnce;
-    EntityHierarchyCacher.prototype.buildAndCacheHierarchies.restore();
   });
 });

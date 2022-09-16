@@ -15,7 +15,7 @@ const SERVICE_TYPES = {
 
 const CONFIG_SCHEMA_BY_SERVICE = {
   [SERVICE_TYPES.DHIS]: {
-    dhisInstanceCode: { default: 'regional', allowNull: true },
+    dhisInstanceCode: { default: 'regional' },
   },
   [SERVICE_TYPES.TUPAIA]: {},
   [SERVICE_TYPES.INDICATOR]: {},

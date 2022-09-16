@@ -18,7 +18,7 @@ describe('ChangeHandler', () => {
 
   class TestChangeHandler extends ChangeHandler {
     constructor(modelsInstance) {
-      super(modelsInstance);
+      super(modelsInstance, 'test-change-handler');
 
       this.resetMocks();
     }
@@ -75,7 +75,9 @@ describe('ChangeHandler', () => {
   it('translates changes before handling them', async () => {
     const record = await upsertDummyRecord(models.project);
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.been.calledOnceWith([record.id]);
+    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(sinon.match.object, [
+      record.id,
+    ]);
   });
 
   it('handles multiple changes in batches', async () => {
@@ -114,12 +116,18 @@ describe('ChangeHandler', () => {
 
     const projectIds1 = await submitProjectBatch();
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(projectIds1);
+    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(
+      sinon.match.object,
+      projectIds1,
+    );
     changeHandler.resetMocks();
 
     const projectIds2 = await submitProjectBatch();
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(projectIds2);
+    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(
+      sinon.match.object,
+      projectIds2,
+    );
   });
 
   it('only runs one queue handler at a time', async () => {
@@ -195,7 +203,7 @@ describe('ChangeHandler', () => {
 
     beforeEach(() => {
       processedIds = [];
-      changeHandler.handleChanges = sinon.stub().callsFake(changeIds => {
+      changeHandler.handleChanges = sinon.stub().callsFake((transactingModels, changeIds) => {
         if (changeIds.includes(rejectedId)) {
           throw new Error(`Rejected id found: ${rejectedId}`);
         }

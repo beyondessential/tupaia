@@ -4,73 +4,32 @@
  */
 
 import { DhisApi } from '@tupaia/dhis-api';
-import { createClassExtendingProxy, legacy_configToDhisInstanceCode } from '@tupaia/utils';
+import { createClassExtendingProxy } from '@tupaia/utils';
 import { DhisCodeToIdTranslator } from './translators';
 
 const instances = {};
 
 /**
  * @param {{}} models
- * @param {DhisInstanceResolver} dhisInstanceResolver
  * @param {DataSource} dataSource
- * @param {{}} dataValue
  * @return {Promise<DhisApi>}
  */
-export const getApiForValue = async (models, dhisInstanceResolver, dataSource, dataValue) => {
-  const { orgUnit: entityCode } = dataValue;
-  const { dhisInstanceCode: dataSourceDhisInstanceCode } = dataSource.config;
-  const dhisInstance = await dhisInstanceResolver.get({
-    dataSourceDhisInstanceCode,
-    entityCodes: [entityCode],
-  });
-  return getDhisApiInstance(models, dhisInstance);
+export const getApiForDataSource = async (models, dataSource) => {
+  const [api] = await getApisForDataSources(models, [dataSource]);
+  return api;
 };
 
 /**
  * @param {{}} models
- * @param {DhisInstanceResolver} dhisInstanceResolver
  * @param {DataSource[]} dataSources
  * @param {string[]} entityCodes
  * @return {Promise<DhisApi[]>}
  */
-export const getApisForDataSources = async (
-  models,
-  dhisInstanceResolver,
-  dataSources,
-  entityCodes,
-) => {
+export const getApisForDataSources = async (models, dataSources) => {
   const apis = new Set();
   for (const dataSource of dataSources) {
-    const { dhisInstanceCode: dataSourceDhisInstanceCode } = dataSource.config;
-    const dhisInstance = await dhisInstanceResolver.get({
-      dataSourceDhisInstanceCode,
-      entityCodes,
-    });
-    apis.add(await getDhisApiInstance(models, dhisInstance));
-  }
-  return Array.from(apis);
-};
-
-/**
- * @param {{}} models
- * @param {DhisInstanceResolver} dhisInstanceResolver
- * @param {{ isDataRegional: boolean }[]} dataServices
- * @param {string[]} entityCodes
- * @return {Promise<DhisApi[]>}
- */
-export const getApisForLegacyDataSourceConfig = async (
-  models,
-  dhisInstanceResolver,
-  dataServices,
-  entityCodes,
-) => {
-  const apis = new Set();
-  for (const dataService of dataServices) {
-    const dataSourceDhisInstanceCode = legacy_configToDhisInstanceCode(dataService);
-    const dhisInstance = await dhisInstanceResolver.get({
-      dataSourceDhisInstanceCode,
-      entityCodes,
-    });
+    const { dhisInstanceCode } = dataSource.config;
+    const dhisInstance = await getDhisInstanceByCode(models, dhisInstanceCode);
     apis.add(await getDhisApiInstance(models, dhisInstance));
   }
   return Array.from(apis);
@@ -87,6 +46,22 @@ export const getApiFromServerName = async (models, serverName) => {
     throw new Error(`Could not find DHIS Instance with serverName '${serverName}'`);
   }
   return getDhisApiInstance(models, dhisInstance);
+};
+
+/**
+ * @param {} models
+ * @param {string} dhisInstanceCode
+ * @return {Promise<DhisInstance>}
+ */
+const getDhisInstanceByCode = async (models, dhisInstanceCode) => {
+  if (!dhisInstanceCode) {
+    throw new Error(`No DHIS instance code specified`);
+  }
+  const dhisInstance = await models.dhisInstance.findOne({ code: dhisInstanceCode });
+  if (!dhisInstance) {
+    throw new Error(`No DHIS instance found with code ${dhisInstanceCode}`);
+  }
+  return dhisInstance;
 };
 
 /**

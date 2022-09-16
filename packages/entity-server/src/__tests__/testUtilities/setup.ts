@@ -21,6 +21,7 @@ import { createApp } from '../../app';
 
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
+hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
 
 const userAccountEmail = 'ash-ketchum@pokemon.org';
 const userAccountPassword = 'test';
@@ -37,10 +38,10 @@ export const setupTestData = async () => {
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
   });
 
-  const insertedProjects = await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
-  await hierarchyCacher.buildAndCacheHierarchies(
-    insertedProjects.map(insertedProject => insertedProject.entityHierarchy.id),
-  );
+  hierarchyCacher.listenForChanges();
+  await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
+  await models.database.waitForAllChangeHandlers();
+  hierarchyCacher.stopListeningForChanges();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 

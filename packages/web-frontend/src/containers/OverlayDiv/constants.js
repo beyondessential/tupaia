@@ -1,6 +1,7 @@
 import { isMobile } from '../../utils';
 
 export const LANDING = 'landing';
+export const VIEW_PROJECTS = 'viewProjects';
 export const PROJECT_LANDING = 'projectLanding';
 export const DISASTER = 'disaster';
 export const REQUEST_PROJECT_ACCESS = 'requestProjectAccess';

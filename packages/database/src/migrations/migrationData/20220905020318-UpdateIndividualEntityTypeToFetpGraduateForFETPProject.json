@@ -1,0 +1,482 @@
+[
+ {
+  "parent_code": "SB_Honiara",
+  "code": "FETP-LT0O",
+  "name": "Seraphina Elisha"
+ },
+ {
+  "parent_code": "SB_Honiara",
+  "code": "FETP-B08Y",
+  "name": "Cynthia Joshua"
+ },
+ {
+  "parent_code": "PG_Bougainville_South Bougainville",
+  "code": "FETP-SVT1",
+  "name": "Launo Molomdatso"
+ },
+ {
+  "parent_code": "PG_National Capital District",
+  "code": "FETP-2G3X",
+  "name": "Mary Kaevakore"
+ },
+ {
+  "parent_code": "PG_Manus",
+  "code": "FETP-PEIX",
+  "name": "David Resson Lapun"
+ },
+ {
+  "parent_code": "PG_Madang_Bogia",
+  "code": "FETP-IO9M",
+  "name": "Herman Yiyiri"
+ },
+ {
+  "parent_code": "PG_Central_Kairuku-Hiri",
+  "code": "FETP-V6U5",
+  "name": "McKenzie Kupo"
+ },
+ {
+  "parent_code": "PG_Milne Bay_Kiriwina-Goodenough",
+  "code": "FETP-0L1U",
+  "name": "Michael Tounokon"
+ },
+ {
+  "parent_code": "PG_Central_Kairuku-Hiri",
+  "code": "FETP-HTR7",
+  "name": "Diana Pololi"
+ },
+ {
+  "parent_code": "PG_Western Highlands",
+  "code": "FETP-PHEF",
+  "name": "Benson Safi"
+ },
+ {
+  "parent_code": "PG_East New Britain",
+  "code": "FETP-XYMR",
+  "name": "Geraldine Wambo"
+ },
+ {
+  "parent_code": "PG_Western_South Fly",
+  "code": "FETP-Z2WP",
+  "name": "Moses Dina"
+ },
+ {
+  "parent_code": "PG_Gulf_Kerema",
+  "code": "FETP-IHBP",
+  "name": "Yautoka Mwawesi"
+ },
+ {
+  "parent_code": "PG_National Capital District",
+  "code": "FETP-78NT",
+  "name": "Geraldine Towaira"
+ },
+ {
+  "parent_code": "PG_East New Britain",
+  "code": "FETP-2BY0",
+  "name": "Elsie Stanley Buka"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-P4N7",
+  "name": "Debbie Kisa"
+ },
+ {
+  "parent_code": "PG_Sandaun_Vanimo-Green River",
+  "code": "FETP-3VCJ",
+  "name": "Symphorian Sumun"
+ },
+ {
+  "parent_code": "PG_ESepik_Yangoru Saussia",
+  "code": "FETP-7O3P",
+  "name": "Glenis Wopmi"
+ },
+ {
+  "parent_code": "PG_Milne Bay_Alotau",
+  "code": "FETP-NKJM",
+  "name": "Ridley Mwaisiga"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-EJQ2",
+  "name": "Janlyn Kumbu"
+ },
+ {
+  "parent_code": "PG_West New Britain",
+  "code": "FETP-QPQN",
+  "name": "Bethseba Peni"
+ },
+ {
+  "parent_code": "PG_Jiwaka",
+  "code": "FETP-JCOT",
+  "name": "Augustine Kumba"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-Y3TO",
+  "name": "Abel Marome"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-M5BJ",
+  "name": "Rosemary Robert"
+ },
+ {
+  "parent_code": "PG_ESepik_Maprik",
+  "code": "FETP-5QZG",
+  "name": "Margaret Morisause"
+ },
+ {
+  "parent_code": "PG_Simbu_Kundiawa-Gembogl",
+  "code": "FETP-3J2M",
+  "name": "Titus Tun Windinga"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-3F0Y",
+  "name": "Elaine Hevoho"
+ },
+ {
+  "parent_code": "PG_Enga",
+  "code": "FETP-3C3X",
+  "name": "Gerald Kepa"
+ },
+ {
+  "parent_code": "PG_National Capital District",
+  "code": "FETP-Q6IR",
+  "name": "Joyce Sauk"
+ },
+ {
+  "parent_code": "PG_Bougainville",
+  "code": "FETP-DYO3",
+  "name": "Alois Pukienei"
+ },
+ {
+  "parent_code": "PG_Simbu_Kerowagi",
+  "code": "FETP-CS2L",
+  "name": "Steven Joe"
+ },
+ {
+  "parent_code": "PG_SHighlands_Ialibu-Pangia",
+  "code": "FETP-WSLS",
+  "name": "Hellen Kambaiye"
+ },
+ {
+  "parent_code": "PG_ENewBritain_Rabaul",
+  "code": "FETP-IHNV",
+  "name": "Deborah Ulaias"
+ },
+ {
+  "parent_code": "PG_EHighlands_Obura-Wonenara",
+  "code": "FETP-1H38",
+  "name": "Enos Turia"
+ },
+ {
+  "parent_code": "PG_Western Highlands",
+  "code": "FETP-AWYS",
+  "name": "Albert Duu Kapun"
+ },
+ {
+  "parent_code": "PG_SHighlands_Mendi-Munihu",
+  "code": "FETP-ISN8",
+  "name": "James Timtund"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-14CZ",
+  "name": "Rosemarie Luluai"
+ },
+ {
+  "parent_code": "PG_Enga_Kompiam",
+  "code": "FETP-AN0I",
+  "name": "Tania Yamo"
+ },
+ {
+  "parent_code": "PG_Morobe_Bulolo",
+  "code": "FETP-P7S9",
+  "name": "Gershom Guambelek"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-POPN",
+  "name": "Martha Pogo"
+ },
+ {
+  "parent_code": "PG_East Sepik",
+  "code": "FETP-S72P",
+  "name": "Maggie William"
+ },
+ {
+  "parent_code": "PG_EHighlands_Henganofi",
+  "code": "FETP-R8WC",
+  "name": "Timen Apae"
+ },
+ {
+  "parent_code": "PG_Manus_Manus",
+  "code": "FETP-36WM",
+  "name": "Philip Popai"
+ },
+ {
+  "parent_code": "PG_Madang_Madang",
+  "code": "FETP-MBNV",
+  "name": "Karoi Kamac"
+ },
+ {
+  "parent_code": "PG_Sandaun_Aitape-Lumi",
+  "code": "FETP-SKGQ",
+  "name": "Bernnedine Smaghi"
+ },
+ {
+  "parent_code": "PG_WNewBritain_Talasea",
+  "code": "FETP-SMZS",
+  "name": "Richard Bulo"
+ },
+ {
+  "parent_code": "PG_New Ireland_Kavieng",
+  "code": "FETP-S9XO",
+  "name": "Gabriel Ndras"
+ },
+ {
+  "parent_code": "PG_Oro_Ijivitari",
+  "code": "FETP-0WX7",
+  "name": "Kornelli Michael Siluwedi"
+ },
+ {
+  "parent_code": "PG_Oro_Sohe",
+  "code": "FETP-TODV",
+  "name": "Rhogeal Bambi"
+ },
+ {
+  "parent_code": "PG_Morobe_Markham",
+  "code": "FETP-END6",
+  "name": "Brian Manari"
+ },
+ {
+  "parent_code": "PG_SHighlands_Mendi-Munihu",
+  "code": "FETP-FL45",
+  "name": "Ruth Alalo"
+ },
+ {
+  "parent_code": "PG_Hela_Tari-Pori",
+  "code": "FETP-4KNV",
+  "name": "Emmanuel Hapolo"
+ },
+ {
+  "parent_code": "PG_Hela_Komo-Magarima",
+  "code": "FETP-XPV5",
+  "name": "Michael Kingi"
+ },
+ {
+  "parent_code": "PG_Madang_Rai Coast",
+  "code": "FETP-PLE1",
+  "name": "Chris Kerowa"
+ },
+ {
+  "parent_code": "PG_Simbu_Kundiawa-Gembogl",
+  "code": "FETP-A5NM",
+  "name": "Rose Pari Talpa"
+ },
+ {
+  "parent_code": "PG_SHighlands_Kagua-Erave",
+  "code": "FETP-UOVP",
+  "name": "Philip Max"
+ },
+ {
+  "parent_code": "PG_WNewBritain_Kandrian-Gloucester",
+  "code": "FETP-P1YX",
+  "name": "Ambrose Sengel"
+ },
+ {
+  "parent_code": "PG_New Ireland_Namatanai",
+  "code": "FETP-E7SF",
+  "name": "Peter Ati"
+ },
+ {
+  "parent_code": "PG_EHighlands_Goroka",
+  "code": "FETP-FYML",
+  "name": "Anita Fabian"
+ },
+ {
+  "parent_code": "PG_ESepik_Angoram",
+  "code": "FETP-COF9",
+  "name": "Geoffrey Kaitap"
+ },
+ {
+  "parent_code": "PG_Morobe_Kabwum",
+  "code": "FETP-GUND",
+  "name": "John Landime"
+ },
+ {
+  "parent_code": "PG_SHighlands_Nipa-Kutubu",
+  "code": "FETP-HFQU",
+  "name": "Clare Andawa"
+ },
+ {
+  "parent_code": "PG_Simbu_Karimui-Nomane",
+  "code": "FETP-D8DS",
+  "name": "William Ugo"
+ },
+ {
+  "parent_code": "PG_Western_Middle Fly",
+  "code": "FETP-WAUD",
+  "name": "Ronny Urafime"
+ },
+ {
+  "parent_code": "PG_Western_South Fly",
+  "code": "FETP-SU1C",
+  "name": "Gabriel Kama"
+ },
+ {
+  "parent_code": "PG_WHighlands_Mt Hagen",
+  "code": "FETP-LNZW",
+  "name": "Paul Ulg"
+ },
+ {
+  "parent_code": "PG_East Sepik",
+  "code": "FETP-QBXC",
+  "name": "Stanley Masi"
+ },
+ {
+  "parent_code": "PG_Morobe",
+  "code": "FETP-XDRP",
+  "name": "Stewart Sarieng Pau"
+ },
+ {
+  "parent_code": "PG_Madang",
+  "code": "FETP-Y1O2",
+  "name": "Catherine Anis"
+ },
+ {
+  "parent_code": "PG_Western Highlands",
+  "code": "FETP-U9TW",
+  "name": "Sai Haguai"
+ },
+ {
+  "parent_code": "PG_Southern Highlands",
+  "code": "FETP-IO9O",
+  "name": "Randy Joe Pora"
+ },
+ {
+  "parent_code": "PG_Western_North Fly",
+  "code": "FETP-1D1V",
+  "name": "John Kepolon"
+ },
+ {
+  "parent_code": "PG_East New Britain",
+  "code": "FETP-I96L",
+  "name": "Clare Pidik"
+ },
+ {
+  "parent_code": "PG_Enga",
+  "code": "FETP-S3CU",
+  "name": "Ezekiel Punta"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-MSH3",
+  "name": "Christopher Aquame"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-JPT6",
+  "name": "William Biau"
+ },
+ {
+  "parent_code": "PG_Gulf_Kikori",
+  "code": "FETP-RW3S",
+  "name": "Timothy Ananias"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-KHGF",
+  "name": "Nellie Tumu"
+ },
+ {
+  "parent_code": "PG_National Capital District",
+  "code": "FETP-9SFK",
+  "name": "Rosemary Bates"
+ },
+ {
+  "parent_code": "PG_Gulf_Kerema",
+  "code": "FETP-5VLT",
+  "name": "Jenny Sau"
+ },
+ {
+  "parent_code": "PG_Eastern Highlands",
+  "code": "FETP-WZIN",
+  "name": "Kamsy Yamba"
+ },
+ {
+  "parent_code": "PG_Hela_Tari-Pori",
+  "code": "FETP-ZUIX",
+  "name": "Rocky Wakinda"
+ },
+ {
+  "parent_code": "PG_Enga",
+  "code": "FETP-PWEI",
+  "name": "Likas Lakain"
+ },
+ {
+  "parent_code": "PG_Bougainville",
+  "code": "FETP-FTHC",
+  "name": "Roselyn Gatana"
+ },
+ {
+  "parent_code": "PG_Oro",
+  "code": "FETP-YJDU",
+  "name": "Gibson Kungkene"
+ },
+ {
+  "parent_code": "PG_Morobe",
+  "code": "FETP-C04B",
+  "name": "Edwin Benny"
+ },
+ {
+  "parent_code": "PG_Milne Bay",
+  "code": "FETP-YLUK",
+  "name": "Ashley Tabogani"
+ },
+ {
+  "parent_code": "PG_National Capital District",
+  "code": "FETP-KJZP",
+  "name": "Israel Naraman"
+ },
+ {
+  "parent_code": "PG_Central",
+  "code": "FETP-L5ZX",
+  "name": "Judith Ame"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-832V",
+  "name": "James Teio"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-56E3",
+  "name": "Gerard Sui"
+ },
+ {
+  "parent_code": "PG_Central",
+  "code": "FETP-ZAEL",
+  "name": "Richard Oake"
+ },
+ {
+  "parent_code": "PG_EHighlands_Goroka",
+  "code": "FETP-OOJO",
+  "name": "Bob Bomai"
+ },
+ {
+  "parent_code": "PG_Western_North Fly",
+  "code": "FETP-TG6Z",
+  "name": "Georgina Tendiki"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-ML91",
+  "name": "Pauline Mukura"
+ },
+ {
+  "parent_code": "PG",
+  "code": "FETP-QLGW",
+  "name": "William Mark"
+ }
+]

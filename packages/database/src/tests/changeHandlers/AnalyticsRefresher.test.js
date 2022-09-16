@@ -261,7 +261,7 @@ describe('AnalyticsRefresher', () => {
       {
         id: 'dataElement001_test',
       },
-      { service_type: 'dhis' },
+      { service_type: 'dhis', config: { dhisInstanceCode: 'regional' } },
     );
     const updatedAnalytics = ANALYTICS.filter(analytic => analytic.data_element_code !== 'Q001');
     await assertAnalyticsMatch(updatedAnalytics);

@@ -37,8 +37,15 @@ export class ChangeHandler {
 
   changeHandlerCancellers = [];
 
-  constructor(models) {
+  lockKey = null;
+
+  /**
+   * @param {ModelRegistry} models
+   * @param {string} lockKey
+   */
+  constructor(models, lockKey) {
     this.models = models;
+    this.lockKey = lockKey;
   }
 
   setDebounceTime(debounceTime) {
@@ -50,7 +57,7 @@ export class ChangeHandler {
    * @protected
    */
   // eslint-disable-next-line no-unused-vars
-  async handleChanges(change) {
+  async handleChanges(transactingModels, changes) {
     throw new Error('Any subclass of ChangeHandler must implement the "handleChanges" method');
   }
 
@@ -70,7 +77,8 @@ export class ChangeHandler {
       ([recordType, translator]) =>
         this.models[recordType].addChangeHandler(async changeDetails => {
           // Translate changes and schedule their handling as a batch at a later stage
-          this.changeQueue.push(...translator(changeDetails));
+          const translatedChanges = await translator(changeDetails);
+          this.changeQueue.push(...translatedChanges);
           return this.scheduleChangeQueueHandler();
         }),
     );
@@ -117,7 +125,12 @@ export class ChangeHandler {
       success = true;
 
       try {
-        await this.handleChanges(currentQueue);
+        await this.models.wrapInTransaction(async transactingModels => {
+          // Acquire a database advisory lock for the transaction
+          // Ensures no other server instance can execute its change handler at the same time
+          await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+          await this.handleChanges(transactingModels, currentQueue);
+        });
       } catch (error) {
         winston.warn(
           [
