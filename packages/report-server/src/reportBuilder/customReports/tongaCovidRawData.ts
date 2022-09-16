@@ -28,8 +28,6 @@ interface AncestorData {
   islandByIndividual: Record<string, string>;
 }
 
-const NOW = new Date();
-
 const getRelationships = (reqContext: ReqContext, options: RelationshipsOptions) => {
   const {
     hierarchy,
@@ -54,14 +52,27 @@ const useAncestorData = async (
   hierarchy: string,
   individualsByCode: string[],
 ) => {
-  const villageCodeByIndividualCodes: Record<string, string> = await getRelationships(reqContext, {
+  const villageOptions: RelationshipsOptions = {
     hierarchy,
     individualsByCode,
     groupBy: 'descendant',
     queryOptions: {},
     ancestorOptions: { filter: { type: 'village' } },
     descendantOptions: { filter: { type: 'individual' } },
-  });
+  };
+
+  const islandOptions: RelationshipsOptions = {
+    hierarchy,
+    individualsByCode,
+    groupBy: 'descendant',
+    queryOptions: { field: 'name' },
+    ancestorOptions: { filter: { type: 'district' } },
+    descendantOptions: { filter: { type: 'individual' } },
+  };
+  const villageCodeByIndividualCodes: Record<string, string> = await getRelationships(
+    reqContext,
+    villageOptions,
+  );
   const villageCodes = new Set<string>();
   Object.values(villageCodeByIndividualCodes).forEach((code: string) => {
     villageCodes.add(code);
@@ -86,14 +97,7 @@ const useAncestorData = async (
     };
   });
 
-  const islandNameByIndividualCodes = await getRelationships(reqContext, {
-    hierarchy,
-    individualsByCode,
-    groupBy: 'descendant',
-    queryOptions: { field: 'name' },
-    ancestorOptions: { filter: { type: 'district' } },
-    descendantOptions: { filter: { type: 'individual' } },
-  });
+  const islandNameByIndividualCodes = await getRelationships(reqContext, islandOptions);
 
   return {
     villageByIndividual: individualCodeByVillageNameAndCode,
@@ -131,8 +135,10 @@ const fetchEvents = async (
     );
   };
 
-  const registrationEvents = await fetch(registrationOptions);
-  const resultsEvents = await fetch(resultsOptions);
+  const [registrationEvents, resultsEvents] = await Promise.all(
+    [registrationOptions, resultsOptions].map(fetch),
+  );
+
   return { registrationEvents, resultsEvents };
 };
 
@@ -163,7 +169,7 @@ const combineAndFlatten = (
     };
   });
   const { villageByIndividual, islandByIndividual } = ancestorData;
-
+  const now = new Date();
   const dataWithUpdatesAndAddOns = matchedData.map(event => {
     const {
       orgUnit,
@@ -176,7 +182,8 @@ const combineAndFlatten = (
       orgUnit as keyof typeof Event
     ];
     const islandName: string = islandByIndividual[orgUnit];
-    const age = getAge(dob);
+
+    const age = getAge(dob, now);
     return {
       'Test ID': orgUnit,
       'Island Group': islandName,
@@ -192,12 +199,12 @@ const combineAndFlatten = (
   return dataWithUpdatesAndAddOns;
 };
 
-const getAge = (dob: string | undefined) => {
+const getAge = (dob: string | undefined, now: Date) => {
   if (!dob) {
     return 'unknown';
   }
   const dobDate = new Date(dob);
-  const age = isDate(dobDate) && differenceInYears(NOW, dobDate);
+  const age = isDate(dobDate) && differenceInYears(now, dobDate);
   return age;
 };
 
@@ -301,5 +308,5 @@ export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchRepo
     return { title: key, key };
   });
 
-  return { columns, rows };
+  return { columns, rows: rows.filter((row, index) => index < 20) };
 };
