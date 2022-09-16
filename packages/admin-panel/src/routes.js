@@ -31,6 +31,7 @@ import {
   DataGroupsPage,
   ProjectsPage,
   SyncGroupsPage,
+  DataTablesPage,
 } from './pages/resources';
 
 export const ROUTES = [
@@ -120,6 +121,11 @@ export const ROUTES = [
         label: 'Indicators',
         to: '/indicators',
         component: IndicatorsPage,
+      },
+      {
+        label: 'Data-Tables',
+        to: '/dataTables',
+        component: DataTablesPage,
       },
       {
         label: 'Social Feed',
