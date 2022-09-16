@@ -23,6 +23,7 @@ export const useDropdownOptionsWithFavouriteDashboardItems = () => {
   const { data, isLoading, isError, error } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
+    isFavouriteOnly: true,
   });
 
   const dropdownOptionsWithFavouriteDashboardItems = getDropdownOptionsWithFavouriteDashboardItems(
