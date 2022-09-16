@@ -40,7 +40,7 @@ export const ENTITIES = {
     name: 'DL HOUSEHOLD 1',
     type: 'household',
     metadata: {
-      dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_1' },
+      dhis: { trackedEntityId: 'tracked_entity_id_dl_household_1' },
     },
     isTrackedEntity: () => true,
     getParent: async () => DL_FACILITY_A,
@@ -50,7 +50,7 @@ export const ENTITIES = {
     name: 'DL HOUSEHOLD 2',
     type: 'household',
     metadata: {
-      dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_2' },
+      dhis: { trackedEntityId: 'tracked_entity_id_dl_household_2' },
     },
     isTrackedEntity: () => true,
     getParent: async () => DL_FACILITY_A,

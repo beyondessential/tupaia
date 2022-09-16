@@ -583,7 +583,6 @@ export const VIEW_STYLES = {
 
 export const USER_BAR_STYLES = {
   container: {
-    marginTop: 13,
     marginLeft: 10,
     display: 'flex',
     justifyContent: 'flex-end',

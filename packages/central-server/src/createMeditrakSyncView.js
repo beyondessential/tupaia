@@ -11,7 +11,7 @@ import { TupaiaDatabase } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import winston from './log';
-import { createPermissionsBasedMeditrakSyncQueue } from './database/createPermissionsBasedMeditrakSyncQueue';
+import { createPermissionsBasedMeditrakSyncQueue } from './database';
 
 (async () => {
   /**

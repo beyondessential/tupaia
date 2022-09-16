@@ -44,12 +44,12 @@ const ViewProjectsButton = styled(Button)`
   }
 `;
 
-export const LandingPage = ({ isUserLoggedIn }) => {
+export const LandingPage = ({ isUserLoggedIn, isViewingProjects }) => {
   const [isProjectsPageVisible, setIsProjectsPageVisible] = React.useState(false);
   const showProjects = React.useCallback(() => setIsProjectsPageVisible(true));
   const hideProjects = React.useCallback(() => setIsProjectsPageVisible(false));
 
-  const isLoginPageVisible = !isUserLoggedIn && !isProjectsPageVisible;
+  const isLoginPageVisible = !isViewingProjects && !isUserLoggedIn && !isProjectsPageVisible;
 
   return (
     <Container>
@@ -75,4 +75,9 @@ export const LandingPage = ({ isUserLoggedIn }) => {
 
 LandingPage.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
+  isViewingProjects: PropTypes.bool,
+};
+
+LandingPage.defaultProps = {
+  isViewingProjects: false,
 };

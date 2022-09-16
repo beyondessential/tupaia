@@ -21,7 +21,13 @@ import { ProjectLandingPage } from './components/ProjectLandingPage';
 import { RequestProjectAccessDialog } from './components/RequestProjectAccessDialog';
 import Disaster from './components/Disaster';
 import { selectProjectByCode, selectCurrentProject } from '../../selectors';
-import { LANDING, PROJECT_LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
+import {
+  LANDING,
+  VIEW_PROJECTS,
+  PROJECT_LANDING,
+  DISASTER,
+  REQUEST_PROJECT_ACCESS,
+} from './constants';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -70,6 +76,10 @@ export const OverlayDiv = ({
 
   const components = {
     [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
+    [VIEW_PROJECTS]: () => (
+      // Opens the LandingPage, but snaps to the 'View Projects' section
+      <LandingPage isUserLoggedIn={isUserLoggedIn} isViewingProjects transition />
+    ),
     [PROJECT_LANDING]: () => (
       <ProjectLandingPage
         selectExplore={selectExploreProject}

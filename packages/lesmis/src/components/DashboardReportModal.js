@@ -38,16 +38,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Wrapper = styled.div`
   position: relative;
   height: 100%;
-  background: ${props => (props.$isExporting ? 'none' : COLORS.GREY_F9)};
   min-height: 720px;
 `;
 
-const Container = styled(MuiContainer)`
+const FixedHeightContainer = styled(MuiContainer)`
   padding: 0 6.25rem 3rem;
   padding-bottom: 5vh;
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: ${props => (props.$isExporting ? 'none' : COLORS.GREY_F9)};
+`;
+
+const ScrollingContainer = styled(FixedHeightContainer)`
+  height: auto;
 `;
 
 const Header = styled(FlexSpaceBetween)`
@@ -205,6 +209,8 @@ export const DashboardReportModal = () => {
   const exportWithLabels = exportFormatId === 'pngWithLabels';
   const exportWithTable = exportFormatId === 'pngWithTable';
 
+  const VisualContainer = config?.type === 'list' ? ScrollingContainer : FixedHeightContainer;
+
   return (
     <MuiDialog
       scroll="paper"
@@ -222,7 +228,7 @@ export const DashboardReportModal = () => {
         </Box>
       </ExportLoader>
       <Wrapper ref={exportRef} $isExporting={isExporting}>
-        <Container maxWidth="xl">
+        <VisualContainer maxWidth="xl" $isExporting={isExporting}>
           <Header>
             <Box maxWidth={580}>
               <Heading variant="h3">{dashboardTitle}</Heading>
@@ -266,7 +272,7 @@ export const DashboardReportModal = () => {
           {isExporting && (
             <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
           )}
-        </Container>
+        </VisualContainer>
       </Wrapper>
     </MuiDialog>
   );

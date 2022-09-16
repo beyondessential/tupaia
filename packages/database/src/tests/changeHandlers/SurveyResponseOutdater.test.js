@@ -7,7 +7,7 @@
 
 import { expect } from 'chai';
 
-import { SurveyResponseOutdater } from '../../changeHandlers/SurveyResponseOutdater';
+import { SurveyResponseOutdater } from '../../changeHandlers';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,

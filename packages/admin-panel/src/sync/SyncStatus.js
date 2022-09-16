@@ -25,6 +25,10 @@ const SyncStatusContainer = styled.div`
   display: flex;
 `;
 
+const PaddedSyncMessage = styled.div`
+  padding-left: 3px;
+`;
+
 const StatusMessageContainer = styled.div`
   display: flex;
   align-items: center;
@@ -153,7 +157,7 @@ export const SyncStatus = props => {
         <Tooltip title={errorMessage}>
           <StatusMessageContainer>
             <SyncFailingIcon />
-            <div>Network error</div>
+            <PaddedSyncMessage>Network error</PaddedSyncMessage>
           </StatusMessageContainer>
         </Tooltip>
       </SyncStatusContainer>
@@ -169,7 +173,7 @@ export const SyncStatus = props => {
         <Tooltip title={logMessage}>
           <StatusMessageContainer>
             <SyncFailingIcon />
-            <div>Sync failing</div>
+            <PaddedSyncMessage>Sync failing</PaddedSyncMessage>
           </StatusMessageContainer>
         </Tooltip>
       </SyncStatusContainer>
@@ -197,7 +201,7 @@ export const SyncStatus = props => {
       <Tooltip title={logMessage}>
         <StatusMessageContainer>
           <SyncSuccessIcon />
-          <div>Sync online</div>
+          <PaddedSyncMessage>Sync online</PaddedSyncMessage>
         </StatusMessageContainer>
       </Tooltip>
     </SyncStatusContainer>
