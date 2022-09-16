@@ -32,6 +32,7 @@ import { GETDataElements, EditDataElements, DeleteDataElements } from './dataEle
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETDataTables } from './dataTables';
 import { GETEntities } from './GETEntities';
+import { GETEntityTypes } from './GETEntityTypes';
 import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -44,6 +45,7 @@ import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
+import { CreateProject } from './projects';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
@@ -188,6 +190,7 @@ apiV2.get('/mapOverlayGroupRelations/:recordId?', useRouteHandler(GETMapOverlayG
 apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/entities', useRouteHandler(GETEntities));
+apiV2.get('/entityTypes', allowAnyone(GETEntityTypes));
 apiV2.get('/surveyGroups/:recordId?', useRouteHandler(GETSurveyGroups));
 apiV2.get('/surveyResponses/:parentRecordId/answers', useRouteHandler(GETAnswers));
 apiV2.get('/surveyResponses/:recordId?', useRouteHandler(GETSurveyResponses));
@@ -256,6 +259,7 @@ apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
+apiV2.post('/projects', useRouteHandler(CreateProject));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 
