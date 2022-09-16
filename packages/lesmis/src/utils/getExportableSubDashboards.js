@@ -12,6 +12,7 @@ export const getExportableSubDashboards = dropdownOption => {
   const { data } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
+    isFavouriteOnly: isFavouriteDashboard,
   });
 
   const isExportable = dropdownOption.exportToPDF;
