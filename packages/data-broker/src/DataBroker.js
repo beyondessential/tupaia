@@ -214,7 +214,7 @@ export class DataBroker {
     // Permission checkers will throw if they fail
     await permissionChecker(dataSources);
     const service = this.createService(serviceType);
-    return service.pull(dataSources, type, { dataServiceMapping, ...options });
+    return service.pull(dataSources, type, { ...options, dataServiceMapping });
   };
 
   mergeAnalytics = (target = { results: [], metadata: {} }, source) => {
