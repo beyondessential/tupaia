@@ -6,7 +6,7 @@
 import { yup } from '@tupaia/utils';
 
 import { Context } from '../../context';
-import { Row } from '../../types';
+import { FieldValue, Row } from '../../types';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import {
@@ -14,6 +14,7 @@ import {
   starSingleOrMultipleColumnsValidator,
 } from './transformValidators';
 import { getColumnMatcher } from './helpers';
+import { TransformTable } from '../table';
 
 type UpdateColumnsParams = {
   insert: { [key: string]: string };
@@ -28,33 +29,54 @@ export const paramsValidator = yup.object().shape({
   where: yup.string(),
 });
 
-const updateColumns = (rows: Row[], params: UpdateColumnsParams, context: Context): Row[] => {
-  const parser = new TransformParser(rows, context);
-  return rows.map(row => {
-    const returnNewRow = params.where(parser);
-    if (!returnNewRow) {
+const updateColumns = (table: TransformTable, params: UpdateColumnsParams, context: Context) => {
+  const parser = new TransformParser(table, context);
+  const newColumns: Record<string, FieldValue[]> = {};
+  const skippedRows: Record<number, Row> = {};
+  const columnNames = table.getColumns();
+  table.getRows().forEach((row, rowIndex) => {
+    const shouldEditThisRow = params.where(parser);
+    if (!shouldEditThisRow) {
+      skippedRows[rowIndex] = row;
       parser.next();
-      return row;
+      return;
     }
-    const newRow: Row = {};
+
     Object.entries(params.insert).forEach(([key, expression]) => {
-      newRow[parser.evaluate(key)] = parser.evaluate(expression);
-    });
-
-    Object.entries(row).forEach(([field, value]) => {
-      if (field in newRow) {
-        // Field already defined
-        return;
+      const columnName = parser.evaluate(key);
+      const columnValue = parser.evaluate(expression);
+      if (!newColumns[columnName]) {
+        newColumns[columnName] = table.hasColumn(columnName)
+          ? table.getColumnValues(columnName) // Upserting a column, so fill with current column values
+          : new Array(table.length()).fill(undefined); // Creating a new column, so fill with undefined
       }
-
-      if (params.shouldIncludeColumn(field)) {
-        newRow[field] = value;
-      }
+      newColumns[columnName].splice(rowIndex, 1, columnValue);
     });
 
     parser.next();
-    return newRow;
   });
+
+  // Drop columns that should no longer be in the table
+  const columnsToDelete = columnNames.filter(columnName => !params.shouldIncludeColumn(columnName));
+
+  // Insert the new columns
+  const columnUpserts = Object.entries(newColumns).map(([columnName, values]) => ({
+    columnName,
+    values,
+  }));
+
+  // Drop, then re-insert the original skipped rows
+  const rowsToDrop = Object.keys(skippedRows).map(rowIndexString => parseInt(rowIndexString));
+  const rowReinserts = Object.entries(skippedRows).map(([rowIndexString, row]) => ({
+    row,
+    index: parseInt(rowIndexString),
+  }));
+
+  return table
+    .dropColumns(columnsToDelete)
+    .upsertColumns(columnUpserts)
+    .dropRows(rowsToDrop)
+    .insertRows(rowReinserts);
 };
 
 const buildParams = (params: unknown): UpdateColumnsParams => {
@@ -80,5 +102,5 @@ const buildParams = (params: unknown): UpdateColumnsParams => {
 
 export const buildUpdateColumns = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => updateColumns(rows, builtParams, context);
+  return (table: TransformTable) => updateColumns(table, builtParams, context);
 };
