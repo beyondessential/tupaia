@@ -4,7 +4,6 @@
  */
 
 import { Context } from '../../context';
-import { Row } from '../../types';
 
 import {
   buildInsertColumns,
@@ -26,8 +25,12 @@ import {
   buildGatherColumns,
   paramsValidator as gatherColumnsParamsValidator,
 } from './gatherColumns';
+import { TransformTable } from '../table';
 
-type TransformBuilder = (params: unknown, context: Context) => (rows: Row[]) => Row[];
+type TransformBuilder = (
+  params: unknown,
+  context: Context,
+) => (table: TransformTable) => TransformTable;
 
 export const transformBuilders: Record<string, TransformBuilder> = {
   insertColumns: buildInsertColumns,
