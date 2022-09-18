@@ -138,7 +138,7 @@ describe('functions', () => {
     describe('orgUnitAttribute()', () => {
       const context = {
         orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji', attributes: { x: 1 }},
+          { id: '1234', code: 'FJ', name: 'Fiji', attributes: { x: 1 } },
           { id: '5678', code: 'TO', name: 'Tonga', attributes: { y: 2 } },
         ],
       };
