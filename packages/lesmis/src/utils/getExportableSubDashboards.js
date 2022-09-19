@@ -43,7 +43,7 @@ export const getExportableSubDashboards = dropdownOption => {
             ...configs,
             dashboardLabel: otherDropdownOptions[index].label,
             sortOrder: index,
-            useYearSelector,
+            useYearSelector: otherDropdownOptions[index].useYearSelector,
           };
         })
         .sort((a, b) => a.sortOrder - b.sortOrder);

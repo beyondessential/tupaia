@@ -14,8 +14,10 @@ import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
-import { I18n, useUrlParams } from '../utils';
+import { I18n, useIsFavouriteDashboardSelected, useUrlParams, useUrlSearchParam } from '../utils';
 import { useUpdateFavouriteDashboardItem } from '../api';
+import { DEFAULT_DATA_YEAR } from '../constants';
+import { yearToApiDates } from '../api/queries/utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -36,18 +38,17 @@ const Footer = styled(FlexEnd)`
 `;
 
 export const DashboardReport = React.memo(
-  ({
-    name,
-    exportOptions,
-    reportCode,
-    startDate,
-    endDate,
-    isEnlarged,
-    isExporting,
-    useYearSelector,
-  }) => {
+  ({ name, exportOptions, reportCode, isEnlarged, isExporting, useYearSelector }) => {
     const { search } = useLocation();
     const { locale, entityCode } = useUrlParams();
+    // TODO: will be removed when implementing year selector for favourite dashboard, currently use default year.
+    const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
+    const [selectedYear] = isFavouriteDashboardSelected
+      ? [DEFAULT_DATA_YEAR]
+      : useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+    const { startDate, endDate } = useYearSelector
+      ? yearToApiDates(selectedYear)
+      : yearToApiDates();
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
@@ -127,8 +128,6 @@ export const DashboardReport = React.memo(
 
 DashboardReport.propTypes = {
   exportOptions: PropTypes.object,
-  startDate: PropTypes.string,
-  endDate: PropTypes.string,
   name: PropTypes.string,
   reportCode: PropTypes.string,
   isEnlarged: PropTypes.bool,
@@ -138,8 +137,6 @@ DashboardReport.propTypes = {
 
 DashboardReport.defaultProps = {
   exportOptions: null,
-  startDate: null,
-  endDate: null,
   reportCode: null,
   name: null,
   isEnlarged: false,

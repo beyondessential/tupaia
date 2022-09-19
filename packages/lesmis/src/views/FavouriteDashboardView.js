@@ -49,7 +49,6 @@ const FavouriteDashboardView = ({
   subDashboards,
   label,
   isLoading,
-  year,
   isError,
   error,
   useYearSelector,
@@ -92,7 +91,6 @@ const FavouriteDashboardView = ({
           <DashboardItemsView
             subDashboards={subDashboards}
             activeSubDashboard={activeSubDashboard}
-            year={year}
             useYearSelector={useYearSelector}
             isFavouriteDashboardItemsOnly
           />
@@ -111,7 +109,6 @@ FavouriteDashboardView.propTypes = {
   isError: PropTypes.bool,
   useYearSelector: PropTypes.bool,
   error: PropTypes.string,
-  year: PropTypes.string,
 };
 
 FavouriteDashboardView.defaultProps = {
@@ -121,5 +118,4 @@ FavouriteDashboardView.defaultProps = {
   isError: true,
   useYearSelector: false,
   error: '',
-  year: null,
 };

@@ -22,7 +22,7 @@ const DashboardSection = styled(FlexColumn)`
   min-height: 40rem;
 `;
 
-export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
+export const FavouriteDashboardTabView = ({ TabBarLeftSection }) => {
   const dashboardsRef = useRef(null);
   const [searchIsActive, setSearchIsActive] = useState(false);
   const { isScrolledPastTop, scrollToTop, onLoadTabBar } = useStickyBar(dashboardsRef);
@@ -62,7 +62,6 @@ export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
               isLoading={isLoading}
               isError={isError}
               error={error}
-              year={year}
               useYearSelector={useYearSelector}
             />
           ))}
@@ -75,9 +74,4 @@ export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
 
 FavouriteDashboardTabView.propTypes = {
   TabBarLeftSection: PropTypes.func.isRequired,
-  year: PropTypes.string,
-};
-
-FavouriteDashboardTabView.defaultProps = {
-  year: null,
 };

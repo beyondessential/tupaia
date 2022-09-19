@@ -38,8 +38,8 @@ const DashboardSection = styled(FlexColumn)`
 export const DashboardReportTabView = ({
   entityCode,
   TabBarLeftSection,
-  year,
   filterSubDashboards,
+  useYearSelector,
 }) => {
   const dashboardsRef = useRef(null);
   const [searchIsActive, setSearchIsActive] = useState(false);
@@ -109,7 +109,7 @@ export const DashboardReportTabView = ({
                 subDashboards={subDashboards}
                 searchIsActive={searchIsActive}
                 activeSubDashboard={activeSubDashboard}
-                year={year}
+                useYearSelector={useYearSelector}
               />
             </TabPanel>
           ))}
@@ -123,10 +123,10 @@ export const DashboardReportTabView = ({
 DashboardReportTabView.propTypes = {
   entityCode: PropTypes.string.isRequired,
   TabBarLeftSection: PropTypes.func.isRequired,
-  year: PropTypes.string,
   filterSubDashboards: PropTypes.func.isRequired,
+  useYearSelector: PropTypes.bool,
 };
 
 DashboardReportTabView.defaultProps = {
-  year: null,
+  useYearSelector: false,
 };

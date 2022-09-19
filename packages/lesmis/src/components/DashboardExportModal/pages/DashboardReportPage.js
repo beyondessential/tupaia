@@ -4,8 +4,7 @@ import { Divider, Typography } from '@material-ui/core';
 
 import { EntityDetails, DashboardTitleContainer } from '../components';
 import { DashboardReport } from '../../DashboardReport';
-import { yearToApiDates } from '../../../api/queries/utils';
-import { useUrlSearchParam } from '../../../utils';
+import { useIsFavouriteDashboardSelected, useUrlSearchParam } from '../../../utils';
 import { DEFAULT_DATA_YEAR } from '../../../constants';
 import Header from '../components/Header';
 
@@ -20,8 +19,12 @@ export const DashboardReportPage = ({
   PageContent,
   ...configs
 }) => {
-  const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const { startDate, endDate } = useYearSelector ? yearToApiDates(selectedYear) : yearToApiDates();
+  // TODO: will be removed when implementing year selector for favourite dashboard, currently use default year.
+  const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
+  const [selectedYear] = isFavouriteDashboardSelected
+    ? [DEFAULT_DATA_YEAR]
+    : useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+
   return (
     <PageContainer {...configs}>
       <Header
@@ -39,8 +42,6 @@ export const DashboardReportPage = ({
         <DashboardReport
           reportCode={item.reportCode}
           name={item.name}
-          startDate={startDate}
-          endDate={endDate}
           exportOptions={exportOptions}
           isExporting // render exporting format
           isEnlarged // render exporting format
