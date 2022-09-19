@@ -3,11 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import {
   getApiForDataSource,
   getApiFromServerName,
   getApisForDataSources,
 } from '../../../services/dhis/getDhisApi';
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 const TEST_DHIS_INSTANCE = {
   code: 'test_dhis_instance',
@@ -34,24 +36,42 @@ const TEST_DATA_SOURCE_2 = {
   },
 };
 
-const mockModels = {
+const DATA_SOURCES = [TEST_DATA_SOURCE_1, TEST_DATA_SOURCE_2];
+
+export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
+  Object.values(DATA_SOURCES).map(de => ({
+    dataSource: de,
+    service_type: de.service_type,
+    config: de.config,
+  })),
+  [],
+);
+
+const mockModels = baseCreateModelsStub({
   dhisInstance: {
-    find: async () => TEST_DHIS_INSTANCES,
-    findOne: async ({ code }) => TEST_DHIS_INSTANCES.find(instance => instance.code === code),
+    records: TEST_DHIS_INSTANCES,
   },
-};
+});
 
 describe('getDhisApi', () => {
   describe('getApiForDataSource()', () => {
     it('resolves', async () => {
-      const api = await getApiForDataSource(mockModels, TEST_DATA_SOURCE_1);
+      const api = await getApiForDataSource(
+        mockModels,
+        TEST_DATA_SOURCE_1,
+        DEFAULT_DATA_SERVICE_MAPPING,
+      );
       expect(api.getServerName()).toBe('test_dhis_instance');
     });
   });
 
   describe('getApisForDataSources()', () => {
     it('resolves', async () => {
-      const apis = await getApisForDataSources(mockModels, [TEST_DATA_SOURCE_1]);
+      const apis = await getApisForDataSources(
+        mockModels,
+        [TEST_DATA_SOURCE_1],
+        DEFAULT_DATA_SERVICE_MAPPING,
+      );
       expect(apis.length).toBe(1);
       expect(apis[0].getServerName()).toBe('test_dhis_instance');
     });
@@ -60,10 +80,11 @@ describe('getDhisApi', () => {
       // (See RN-104)
       // This should not be possible due to unique constraint on code (serverName)
       // but we test for it regardless to be safe.
-      const apis = await getApisForDataSources(mockModels, [
-        TEST_DATA_SOURCE_1,
-        TEST_DATA_SOURCE_2,
-      ]);
+      const apis = await getApisForDataSources(
+        mockModels,
+        [TEST_DATA_SOURCE_1, TEST_DATA_SOURCE_2],
+        DEFAULT_DATA_SERVICE_MAPPING,
+      );
       expect(apis.length).toBe(1);
     });
   });
