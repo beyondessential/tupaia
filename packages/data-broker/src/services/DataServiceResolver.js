@@ -29,10 +29,12 @@ export class DataServiceResolver {
   async getMapping(dataSources, orgUnit) {
     const dataElements = dataSources.filter(ds => ds.databaseType === TYPES.DATA_ELEMENT);
     const dataGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_GROUP);
+    const syncGroups = dataSources.filter(ds => ds.databaseType === TYPES.SYNC_GROUP);
 
     const mapping = new DataServiceMapping();
     mapping.dataElementMapping = await this.resolveDataElements(dataElements, orgUnit);
     mapping.dataGroupMapping = await this.resolveDataGroups(dataGroups);
+    mapping.syncGroupMapping = await this.resolveDataGroups(syncGroups);
     return mapping;
   }
 
@@ -121,6 +123,24 @@ export class DataServiceResolver {
         dataSource: dataGroup,
         service_type: dataGroup.service_type,
         config: dataGroup.config,
+      });
+    }
+    return resolved;
+  }
+
+  /**
+   * Convenience method. Only Data Elements are supported, Sync Groups use their default mapping.
+   * @private
+   * @param {SyncGroup[]} syncGroups
+   * @returns {Promise<DataServiceMappingEntry[]>}
+   */
+  async resolveSyncGroups(syncGroups) {
+    const resolved = [];
+    for (const syncGroup of syncGroups) {
+      resolved.push({
+        dataSource: syncGroup,
+        service_type: syncGroup.service_type,
+        config: syncGroup.config,
       });
     }
     return resolved;

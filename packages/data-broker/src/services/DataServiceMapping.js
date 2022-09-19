@@ -6,7 +6,7 @@
 import isequal from 'lodash.isequal';
 
 /**
- * @typedef {DataElement|DataGroup} DataSource
+ * @typedef {DataElement|DataGroup|SyncGroup} DataSource
  */
 
 /**
@@ -25,9 +25,12 @@ export class DataServiceMapping {
 
   dataGroupMapping;
 
-  constructor(dataElementMapping = [], dataGroupMapping = []) {
+  syncGroupMapping;
+
+  constructor(dataElementMapping = [], dataGroupMapping = [], syncGroupMapping = []) {
     this.dataElementMapping = dataElementMapping;
     this.dataGroupMapping = dataGroupMapping;
+    this.syncGroupMapping = syncGroupMapping;
   }
 
   uniqueServiceTypes() {
@@ -37,6 +40,9 @@ export class DataServiceMapping {
     }
     for (const dgMapping of this.dataGroupMapping) {
       set.add(dgMapping.service_type);
+    }
+    for (const sgMapping of this.syncGroupMapping) {
+      set.add(sgMapping.service_type);
     }
     return Array.from(set);
   }
@@ -52,6 +58,9 @@ export class DataServiceMapping {
     for (const dgMapping of this.dataGroupMapping) {
       map[dgMapping.service_type].push(dgMapping.dataSource);
     }
+    for (const sgMapping of this.syncGroupMapping) {
+      map[sgMapping.service_type].push(sgMapping.dataSource);
+    }
     return map;
   }
 
@@ -59,7 +68,7 @@ export class DataServiceMapping {
    * @return {DataServiceMappingEntry[]}
    */
   allMappings() {
-    return [...this.dataElementMapping, ...this.dataGroupMapping];
+    return [...this.dataElementMapping, ...this.dataGroupMapping, ...this.syncGroupMapping];
   }
 
   /**
@@ -93,6 +102,12 @@ export class DataServiceMapping {
       if (mA.dataSource.code !== mB.dataSource.code) return false;
       if (mA.serviceType != mB.serviceType) return false;
       if (!isequal(mA.config, mB.config)) return false;
+    }
+    for (let i = 0; i < this.syncGroupMapping.length; i++) {
+      const mA = this.syncGroupMapping[i];
+      const mB = other.syncGroupMapping[i];
+      if (mA.dataSource.code !== mB.dataSource.code) return false;
+      if (mA.serviceType != mB.serviceType) return false;
     }
     return true;
   }

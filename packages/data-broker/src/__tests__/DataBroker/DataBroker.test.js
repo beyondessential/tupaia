@@ -68,6 +68,36 @@ describe('DataBroker', () => {
       );
     });
 
+    describe('no org unit', () => {
+      const NO_OU_OPT = {};
+
+      const testData = [
+        ['push', 1, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }]], 'test'],
+        ['push', 2, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }]], 'test'],
+        ['push', 3, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], NO_OU_OPT], 'test'],
+        ['push', 4, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }], NO_OU_OPT], 'test'],
+        ['delete', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['delete', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+        ['pull', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['pull', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+        ['pullMetadata', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['pullMetadata', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+      ];
+
+      testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
+        it(`resolves the default service: ${methodUnderTest}-${testNum}`, async () => {
+          // The default service being the one specified on the de/dg rather than the country mapping tables
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceNameUsed,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
     describe('mapped by country', () => {
       // Only DataElements currently support mapping by country
       const testData = [
