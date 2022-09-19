@@ -13,6 +13,7 @@ import { FlexSpaceBetween, FlexStart } from '../Layout';
 const Header = styled(FlexSpaceBetween)`
   padding: 1.25rem 1.875rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  text-align: center;
 `;
 
 const Title = styled(Typography)`

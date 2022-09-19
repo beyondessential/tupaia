@@ -54,7 +54,7 @@ export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
       <DashboardSection ref={dashboardsRef}>
         {!searchIsActive && dropdownOptions.length === 0 && <NoFavouritesView />}
         {!searchIsActive &&
-          dropdownOptions?.map(({ value, subDashboards, label }) => (
+          dropdownOptions?.map(({ value, subDashboards, label, useYearSelector }) => (
             <FavouriteDashboardView
               key={value}
               subDashboards={subDashboards}
@@ -63,6 +63,7 @@ export const FavouriteDashboardTabView = ({ TabBarLeftSection, year }) => {
               isError={isError}
               error={error}
               year={year}
+              useYearSelector={useYearSelector}
             />
           ))}
       </DashboardSection>

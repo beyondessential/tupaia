@@ -44,6 +44,7 @@ export const DashboardReportPage = ({
           exportOptions={exportOptions}
           isExporting // render exporting format
           isEnlarged // render exporting format
+          useYearSelector={useYearSelector}
         />
       </PageContent>
     </PageContainer>

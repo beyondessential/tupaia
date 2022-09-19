@@ -15,6 +15,7 @@ const DashboardItemsView = ({
   searchIsActive,
   activeSubDashboard,
   year,
+  useYearSelector,
   isFavouriteDashboardItemsOnly,
 }) => {
   const { startDate, endDate } = yearToApiDates(year);
@@ -42,6 +43,7 @@ const DashboardItemsView = ({
                   name={item.name}
                   startDate={startDate}
                   endDate={endDate}
+                  useYearSelector={useYearSelector}
                 />
               ))
           ) : (
@@ -63,10 +65,12 @@ DashboardItemsView.propTypes = {
   year: PropTypes.string,
   activeSubDashboard: PropTypes.string,
   isFavouriteDashboardItemsOnly: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
 };
 
 DashboardItemsView.defaultProps = {
   year: null,
   activeSubDashboard: null,
   isFavouriteDashboardItemsOnly: false,
+  useYearSelector: false,
 };
