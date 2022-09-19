@@ -75,7 +75,7 @@ const getChildren = ({
   };
 
   return items.length > 0 ? (
-    subDashboard.items.map((item, index) => {
+    items.map((item, index) => {
       return (
         <DashboardReportPage
           key={item.code}

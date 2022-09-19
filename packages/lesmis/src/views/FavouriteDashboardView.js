@@ -45,7 +45,14 @@ const DashboardSection = styled(FlexColumn)`
   min-height: 40rem;
 `;
 
-const FavouriteDashboardView = ({ subDashboards, label, isLoading, year, isError, error }) => {
+const FavouriteDashboardView = ({
+  subDashboards,
+  label,
+  isLoading,
+  isError,
+  error,
+  useYearSelector,
+}) => {
   const [selectedSubDashboard, setSelectedSubDashboard] = useState(
     useDefaultDashboardTab(null, subDashboards),
   );
@@ -84,7 +91,7 @@ const FavouriteDashboardView = ({ subDashboards, label, isLoading, year, isError
           <DashboardItemsView
             subDashboards={subDashboards}
             activeSubDashboard={activeSubDashboard}
-            year={year}
+            useYearSelector={useYearSelector}
             isFavouriteDashboardItemsOnly
           />
         </FetchLoader>
@@ -100,8 +107,8 @@ FavouriteDashboardView.propTypes = {
   label: PropTypes.string,
   isLoading: PropTypes.bool,
   isError: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
   error: PropTypes.string,
-  year: PropTypes.string,
 };
 
 FavouriteDashboardView.defaultProps = {
@@ -109,6 +116,6 @@ FavouriteDashboardView.defaultProps = {
   label: '',
   isLoading: true,
   isError: true,
+  useYearSelector: false,
   error: '',
-  year: null,
 };

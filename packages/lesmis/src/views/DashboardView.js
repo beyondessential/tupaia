@@ -93,7 +93,7 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
             <TabComponent
               {...componentProps}
               entityCode={entityCode}
-              year={useYearSelector && selectedYear}
+              useYearSelector={useYearSelector}
               TabBarLeftSection={() => (
                 <TabBarSection>
                   <StyledSelect

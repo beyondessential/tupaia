@@ -10,6 +10,7 @@ export * from './useAutocomplete';
 export * from './useDashboardDropdownOptions';
 export * from './useDefaultDashboardTab';
 export * from './useHomeUrl';
+export * from './useIsFavouriteDashboardSelected';
 export * from './usePortal';
 export * from './useStickyBar';
 export * from './useUrlParams';

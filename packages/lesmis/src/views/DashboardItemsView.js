@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { yearToApiDates } from '../api/queries/utils';
 import { DashboardReport, PanelComponent, TabPanel } from '../components';
 
 const InfoAlert = styled(SmallAlert)`
@@ -14,11 +13,9 @@ const DashboardItemsView = ({
   subDashboards,
   searchIsActive,
   activeSubDashboard,
-  year,
+  useYearSelector,
   isFavouriteDashboardItemsOnly,
 }) => {
-  const { startDate, endDate } = yearToApiDates(year);
-
   return (
     <>
       {subDashboards?.map(subDashboard => (
@@ -40,8 +37,7 @@ const DashboardItemsView = ({
                   key={item.code}
                   reportCode={item.reportCode}
                   name={item.name}
-                  startDate={startDate}
-                  endDate={endDate}
+                  useYearSelector={useYearSelector}
                 />
               ))
           ) : (
@@ -60,13 +56,13 @@ export default DashboardItemsView;
 DashboardItemsView.propTypes = {
   subDashboards: PropTypes.array.isRequired,
   searchIsActive: PropTypes.bool.isRequired,
-  year: PropTypes.string,
   activeSubDashboard: PropTypes.string,
   isFavouriteDashboardItemsOnly: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
 };
 
 DashboardItemsView.defaultProps = {
-  year: null,
   activeSubDashboard: null,
   isFavouriteDashboardItemsOnly: false,
+  useYearSelector: false,
 };

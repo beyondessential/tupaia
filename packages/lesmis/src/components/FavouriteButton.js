@@ -9,7 +9,7 @@ export const FavouriteButton = ({ isFavourite, handleFavouriteStatusChange }) =>
     return (
       <Tooltip title="Log in/sign up to save favourites">
         <span>
-          <FavouriteButtonComponent isDisabled />
+          <FavouriteButtonComponent onChange={() => {}} isDisabled />
         </span>
       </Tooltip>
     );
