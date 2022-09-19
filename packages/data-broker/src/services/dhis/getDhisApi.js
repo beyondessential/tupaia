@@ -12,10 +12,11 @@ const instances = {};
 /**
  * @param {{}} models
  * @param {DataSource} dataSource
+ * @param {DataServiceMapping} dataServiceMapping
  * @return {Promise<DhisApi>}
  */
-export const getApiForDataSource = async (models, dataSource) => {
-  const [api] = await getApisForDataSources(models, [dataSource]);
+export const getApiForDataSource = async (models, dataSource, dataServiceMapping) => {
+  const [api] = await getApisForDataSources(models, [dataSource], dataServiceMapping);
   return api;
 };
 
@@ -23,12 +24,16 @@ export const getApiForDataSource = async (models, dataSource) => {
  * @param {{}} models
  * @param {DataSource[]} dataSources
  * @param {string[]} entityCodes
+ * @param {DataServiceMapping} dataServiceMapping
  * @return {Promise<DhisApi[]>}
  */
-export const getApisForDataSources = async (models, dataSources) => {
+export const getApisForDataSources = async (models, dataSources, dataServiceMapping) => {
   const apis = new Set();
   for (const dataSource of dataSources) {
-    const { dhisInstanceCode } = dataSource.config;
+    const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+    if (!mapping) throw new Error(`No mapping for Data Source ${dataSource.code}`);
+    const { config } = mapping;
+    const { dhisInstanceCode } = config;
     const dhisInstance = await getDhisInstanceByCode(models, dhisInstanceCode);
     apis.add(await getDhisApiInstance(models, dhisInstance));
   }

@@ -20,6 +20,7 @@ export { UsersPage } from './UsersPage';
 export { SocialFeedPage } from './SocialFeedPage';
 export { DisasterResponsePage } from './DisasterResponsePage';
 export { DataGroupsPage, DataElementsPage } from './DataSourcesPage';
+export { DataTablesPage } from './DataTablesPage';
 export { AccessRequestsPage } from './AccessRequestsPage';
 export { MapOverlaysPage } from './MapOverlaysPage';
 export { MapOverlayGroupsPage } from './MapOverlayGroupsPage';

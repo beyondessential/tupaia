@@ -42,9 +42,10 @@ export class SupersetService extends Service {
    * @private
    */
   async pullAnalytics(dataSources, options) {
+    const { dataServiceMapping } = options;
     let mergedResults = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
-      this.groupBySupersetInstanceCode(dataSources),
+      this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
     )) {
       const supersetInstance = await this.models.supersetInstance.findOne({
         code: supersetInstanceCode,
@@ -53,9 +54,14 @@ export class SupersetService extends Service {
         throw new Error(`No superset instance found with code "${supersetInstanceCode}"`);
       const api = await getSupersetApiInstance(this.models, supersetInstance);
       for (const [chartId, chartDataSources] of Object.entries(
-        this.groupByChartId(instanceDataSources),
+        this.groupByChartId(instanceDataSources, dataServiceMapping),
       )) {
-        const results = await this.pullForApiForChart(api, chartId, chartDataSources);
+        const results = await this.pullForApiForChart(
+          api,
+          chartId,
+          chartDataSources,
+          dataServiceMapping,
+        );
         mergedResults = mergedResults.concat(results);
       }
     }
@@ -71,10 +77,11 @@ export class SupersetService extends Service {
    * @param {SupersetApi} api
    * @param {string} chartId
    * @param {DataElement[]} dataElements
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Promise<Object[]>} analytic results
    * @private
    */
-  async pullForApiForChart(api, chartId, dataElements) {
+  async pullForApiForChart(api, chartId, dataElements, dataServiceMapping) {
     const response = await api.chartData(chartId);
     const { data } = response.result[0];
 
@@ -82,9 +89,16 @@ export class SupersetService extends Service {
     for (const datum of data) {
       const { item_code: itemCode, store_code: storeCode, value, date } = datum;
 
-      const dataElement = dataElements.find(
-        de => de.code === itemCode || de.config.supersetItemCode === itemCode,
-      );
+      let dataElement = dataElements.find(de => de.code === itemCode);
+      if (!dataElement) {
+        // Check by supersetItemCode
+        const mappingMatchingSupersetItemCode = dataElements
+          .map(de => dataServiceMapping.mappingForDataSource(de))
+          .find(mapping => mapping.config.supersetItemCode === itemCode);
+        if (mappingMatchingSupersetItemCode) {
+          dataElement = mappingMatchingSupersetItemCode.dataSource;
+        }
+      }
       if (!dataElement) continue; // unneeded data
 
       results.push({
@@ -99,12 +113,14 @@ export class SupersetService extends Service {
 
   /**
    * @param {DataElement[]} dataSources
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Object}
    */
-  groupBySupersetInstanceCode(dataSources) {
+  groupBySupersetInstanceCode(dataSources, dataServiceMapping) {
     const dataSourcesBySupersetInstanceCode = {};
     for (const dataSource of dataSources) {
-      const { config } = dataSource;
+      const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+      const { config } = mapping;
       const { supersetInstanceCode } = config;
       if (!supersetInstanceCode) {
         throw new Error(`Data Element ${dataSource.code} missing supersetInstanceCode`);
@@ -119,12 +135,14 @@ export class SupersetService extends Service {
 
   /**
    * @param {DataElement[]} dataSources
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Object}
    */
-  groupByChartId(dataSources) {
+  groupByChartId(dataSources, dataServiceMapping) {
     const dataSourcesByChartId = {};
     for (const dataSource of dataSources) {
-      const { config } = dataSource;
+      const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+      const { config } = mapping;
       const { supersetChartId } = config;
       if (!supersetChartId) {
         throw new Error(`Data Element ${dataSource.code} missing supersetChartId`);
