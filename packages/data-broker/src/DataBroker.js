@@ -187,7 +187,8 @@ export class DataBroker {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const { type } = dataSourceSpec;
     const { organisationUnitCode, organisationUnitCodes } = options;
-    const orgUnitCodes = organisationUnitCodes || [organisationUnitCode];
+    const orgUnitCodes =
+      organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : null);
 
     const pulls = await this.getPulls(dataSources, orgUnitCodes);
     const nestedResults = await Promise.all(
@@ -299,7 +300,26 @@ export class DataBroker {
     };
   }
 
+  /**
+   * @param {DataSource[]} dataSources
+   * @param {string[]|null} orgUnitCodes
+   * @return {Promise<any[]>}
+   */
   async getPulls(dataSources, orgUnitCodes) {
+    // Special case where no org unit is provided
+    if (orgUnitCodes === null) {
+      const pulls = [];
+      const mapping = await this.dataServiceResolver.getMapping(dataSources);
+      for (const serviceType of mapping.uniqueServiceTypes()) {
+        pulls.push({
+          dataSources,
+          serviceType,
+          dataServiceMapping: mapping,
+        });
+      }
+      return pulls;
+    }
+
     const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
 
     // Note: each service will pull for ALL org units and ALL data sources.
