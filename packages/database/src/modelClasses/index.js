@@ -29,6 +29,7 @@ import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LegacyReportModel } from './LegacyReport';
+import { UserFavouriteDashboardItemModel } from './UserFavouriteDashboardItem';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 import { MapOverlayModel } from './MapOverlay';
@@ -111,6 +112,7 @@ export const modelClasses = {
   SyncGroupLog: SyncGroupLogModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
+  UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
 };
 
