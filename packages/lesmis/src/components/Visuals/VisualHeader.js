@@ -24,15 +24,23 @@ const Title = styled(Typography)`
   margin-right: 1rem;
 `;
 
-export const VisualHeader = ({ name, isLoading, children }) => (
-  <Header>
-    <FlexStart>
-      <Title>{name}</Title>
-      {isLoading && <CircularProgress size={30} />}
-    </FlexStart>
-    {children}
-  </Header>
-);
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: ${props => 'auto '.repeat(props.$numberOfChildren)};
+  gap: 17px;
+`;
+
+export const VisualHeader = ({ name, isLoading, children }) => {
+  return (
+    <Header>
+      <FlexStart>
+        <Title>{name}</Title>
+        {isLoading && <CircularProgress size={30} />}
+      </FlexStart>
+      <GridContainer $numberOfChildren={children.length || 0}>{children}</GridContainer>
+    </Header>
+  );
+};
 
 VisualHeader.propTypes = {
   name: PropTypes.string,

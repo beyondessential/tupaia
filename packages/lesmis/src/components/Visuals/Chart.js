@@ -27,12 +27,6 @@ const Wrapper = styled.div`
   overflow: auto;
 `;
 
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto;
-  gap: 17px;
-`;
-
 const ExportContainer = styled(FlexColumn)`
   justify-content: flex-start;
 
@@ -184,14 +178,12 @@ export const Chart = ({
   ) : (
     <>
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
-        <GridContainer>
-          <YearLabel useYearSelector={useYearSelector} />
-          <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
-          <FavouriteButton
-            isFavourite={isFavourite}
-            handleFavouriteStatusChange={handleFavouriteStatusChange}
-          />
-        </GridContainer>
+        <YearLabel useYearSelector={useYearSelector} />
+        <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+        <FavouriteButton
+          isFavourite={isFavourite}
+          handleFavouriteStatusChange={handleFavouriteStatusChange}
+        />
       </VisualHeader>
       <Body>
         <ChartTable
