@@ -10,7 +10,7 @@ export class AnalyticsRefresher extends ChangeHandler {
   debounceTime = 1000;
 
   constructor(models) {
-    super(models);
+    super(models, 'analytics-refresher');
 
     this.changeTranslators = {
       answer: () => [],
@@ -33,7 +33,7 @@ export class AnalyticsRefresher extends ChangeHandler {
     }
   };
 
-  handleChanges() {
-    AnalyticsRefresher.refreshAnalytics(this.models.database);
+  handleChanges(transactingModels) {
+    return AnalyticsRefresher.refreshAnalytics(transactingModels.database);
   }
 }

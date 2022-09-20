@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import {
-  getApiForValue,
+  getApiForDataSource,
   getApiFromServerName,
   getApisForDataSources,
-  getApisForLegacyDataSourceConfig,
 } from '../../../services/dhis/getDhisApi';
-
-jest.mock('../../../services/dhis/DhisInstanceResolver');
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 const TEST_DHIS_INSTANCE = {
   code: 'test_dhis_instance',
@@ -37,35 +36,31 @@ const TEST_DATA_SOURCE_2 = {
   },
 };
 
-const TEST_DATA_SERVICE_1 = {
-  isDataRegional: true,
-};
+const DATA_SOURCES = [TEST_DATA_SOURCE_1, TEST_DATA_SOURCE_2];
 
-const TEST_DATA_SERVICE_2 = {
-  isDataRegional: false,
-};
+export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
+  Object.values(DATA_SOURCES).map(de => ({
+    dataSource: de,
+    service_type: de.service_type,
+    config: de.config,
+  })),
+  [],
+);
 
-const mockModels = {
+const mockModels = baseCreateModelsStub({
   dhisInstance: {
-    find: async () => TEST_DHIS_INSTANCES,
-    findOne: async ({ code }) => TEST_DHIS_INSTANCES.find(instance => instance.code === code),
+    records: TEST_DHIS_INSTANCES,
   },
-};
-
-const mockDhisResolver = {
-  get: jest.fn().mockReturnValue(TEST_DHIS_INSTANCE),
-};
+});
 
 describe('getDhisApi', () => {
-  describe('getApiForValue()', () => {
+  describe('getApiForDataSource()', () => {
     it('resolves', async () => {
-      const api = await getApiForValue(mockModels, mockDhisResolver, TEST_DATA_SOURCE_1, {
-        orgUnit: 'TO_FACILITY_1',
-      });
-      expect(mockDhisResolver.get).toHaveBeenCalledOnceWith({
-        dataSourceDhisInstanceCode: 'test_dhis_instance',
-        entityCodes: ['TO_FACILITY_1'],
-      });
+      const api = await getApiForDataSource(
+        mockModels,
+        TEST_DATA_SOURCE_1,
+        DEFAULT_DATA_SERVICE_MAPPING,
+      );
       expect(api.getServerName()).toBe('test_dhis_instance');
     });
   });
@@ -74,14 +69,9 @@ describe('getDhisApi', () => {
     it('resolves', async () => {
       const apis = await getApisForDataSources(
         mockModels,
-        mockDhisResolver,
         [TEST_DATA_SOURCE_1],
-        ['TO_FACILITY_1'],
+        DEFAULT_DATA_SERVICE_MAPPING,
       );
-      expect(mockDhisResolver.get).toHaveBeenCalledOnceWith({
-        dataSourceDhisInstanceCode: 'test_dhis_instance',
-        entityCodes: ['TO_FACILITY_1'],
-      });
       expect(apis.length).toBe(1);
       expect(apis[0].getServerName()).toBe('test_dhis_instance');
     });
@@ -90,80 +80,11 @@ describe('getDhisApi', () => {
       // (See RN-104)
       // This should not be possible due to unique constraint on code (serverName)
       // but we test for it regardless to be safe.
-      const dhisInstanceA = {
-        code: 'test_dhis_instance',
-        config: {
-          devUrl: 'https://example.com/1',
-        },
-      };
-      const dhisInstanceB = {
-        code: 'test_dhis_instance',
-        config: {
-          devUrl: 'https://example.com/2',
-        },
-      };
-
-      // Resolver returns two different DHIS instances, with the same serverName
-      const dhisResolver = {
-        get: jest.fn().mockResolvedValueOnce(dhisInstanceA).mockResolvedValueOnce(dhisInstanceB),
-      };
-
       const apis = await getApisForDataSources(
         mockModels,
-        dhisResolver,
         [TEST_DATA_SOURCE_1, TEST_DATA_SOURCE_2],
-        ['TO'],
+        DEFAULT_DATA_SERVICE_MAPPING,
       );
-
-      expect(apis.length).toBe(1);
-    });
-  });
-
-  describe('getApisForLegacyDataSourceConfig()', () => {
-    it('resolves', async () => {
-      const apis = await getApisForLegacyDataSourceConfig(
-        mockModels,
-        mockDhisResolver,
-        [TEST_DATA_SERVICE_1],
-        ['TO_FACILITY_1'],
-      );
-      expect(mockDhisResolver.get).toHaveBeenCalledOnceWith({
-        dataSourceDhisInstanceCode: 'regional',
-        entityCodes: ['TO_FACILITY_1'],
-      });
-      expect(apis.length).toBe(1);
-      expect(apis[0].getServerName()).toBe('test_dhis_instance');
-    });
-
-    it('only returns unique apis', async () => {
-      // (See RN-104)
-      // This should not be possible due to unique constraint on code (serverName)
-      // but we test for it regardless to be safe.
-      const dhisInstanceA = {
-        code: 'test_dhis_instance',
-        config: {
-          devUrl: 'https://example.com/1',
-        },
-      };
-      const dhisInstanceB = {
-        code: 'test_dhis_instance',
-        config: {
-          devUrl: 'https://example.com/2',
-        },
-      };
-
-      // Resolver returns two different DHIS instances, with the same serverName
-      const dhisResolver = {
-        get: jest.fn().mockResolvedValueOnce(dhisInstanceA).mockResolvedValueOnce(dhisInstanceB),
-      };
-
-      const apis = await getApisForLegacyDataSourceConfig(
-        mockModels,
-        dhisResolver,
-        [TEST_DATA_SERVICE_1, TEST_DATA_SERVICE_2],
-        ['TO'],
-      );
-
       expect(apis.length).toBe(1);
     });
   });

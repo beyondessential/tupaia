@@ -49,6 +49,8 @@ RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/package.json ./packages/data-broker
 RUN mkdir -p ./packages/data-lake-api
 COPY packages/data-lake-api/package.json ./packages/data-lake-api
+RUN mkdir -p ./packages/data-table-server
+COPY packages/data-table-server/package.json ./packages/data-table-server
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
 RUN mkdir -p ./packages/devops

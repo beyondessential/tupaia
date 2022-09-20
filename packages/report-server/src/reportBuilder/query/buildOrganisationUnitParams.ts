@@ -79,7 +79,7 @@ export const buildOrganisationUnitParams = async (
     .filter(({ country_code }) =>
       accessPolicy.allows(country_code as Exclude<typeof country_code, null>, permissionGroup),
     )
-    .map(({ code }) => code);
+    .map(({ code }: { code: string }) => code);
 
   if (codesWithAccess.length === 0) {
     throw new Error(`No '${permissionGroup}' access to any one of entities: ${codesToFetch}`);

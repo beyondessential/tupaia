@@ -5190,6 +5190,7 @@ __metadata:
     case: ^1.5.5
     lodash.flatten: ^4.4.0
     lodash.groupby: ^4.6.0
+    lodash.isequal: ^4.5.0
     lodash.keyby: ^4.6.0
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
@@ -5216,12 +5217,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/data-table-server@workspace:packages/data-table-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/data-table-server@workspace:packages/data-table-server"
+  dependencies:
+    "@tupaia/access-policy": 3.0.0
+    "@tupaia/aggregator": 1.0.0
+    "@tupaia/api-client": 3.1.0
+    "@tupaia/data-broker": 1.0.0
+    "@tupaia/database": 1.0.0
+    "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/utils": 1.0.0
+    dotenv: ^8.2.0
+    express: ^4.16.2
+    winston: ^3.2.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/database@1.0.0, @tupaia/database@workspace:packages/database":
   version: 0.0.0-use.local
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
     "@babel/node": ^7.10.5
     "@tupaia/auth": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     cross-env: ^7.0.2
     db-migrate: ^0.11.5
@@ -5380,6 +5399,7 @@ __metadata:
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
+    lodash.debounce: ^4.0.8
     lodash.keyby: ^4.6.0
     npm-run-all: ^4.1.5
     prop-types: ^15.7.2
@@ -5778,6 +5798,7 @@ __metadata:
     markdown-to-jsx: ^6.4.1
     material-ui: ^0.18.3
     material-ui-datetimepicker: ^1.0.7
+    mockdate: ^3.0.5
     moment: ^2.21.0
     moment-timezone: ^0.5.14
     npm-run-all: ^4.1.5
@@ -10328,17 +10349,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001015, caniuse-lite@npm:^1.0.30001022, caniuse-lite@npm:^1.0.30001043, caniuse-lite@npm:^1.0.30001061, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001261":
-  version: 1.0.30001313
-  resolution: "caniuse-lite@npm:1.0.30001313"
-  checksum: 49f2dcd1fa493a09a5247dcf3a4da3b9df355131b1fc1fd08b67ae7683c300ed9b9eef6a5424b4ac7e5d1ff0e129d2a0b4adf2a6a5a04ab5c2c0b2c590e935be
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001370":
-  version: 1.0.30001373
-  resolution: "caniuse-lite@npm:1.0.30001373"
-  checksum: cd2f027e2fcf66ed3b0e3eccec89df871f951f2e7600944fae2c3f6f1c37ac82392e573c279e15bf851b75f9696472e38d33fd52d964819ffb8af7af4078ceba
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001015, caniuse-lite@npm:^1.0.30001022, caniuse-lite@npm:^1.0.30001043, caniuse-lite@npm:^1.0.30001061, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001261, caniuse-lite@npm:^1.0.30001370":
+  version: 1.0.30001390
+  resolution: "caniuse-lite@npm:1.0.30001390"
+  checksum: 5ba4ae64e27c61e1c7d7125223159d6cf7fa3cdbf8f00b9ec83a06f274ff45ddcbfebe509716fa31ae2664b70ef9e1d1c4a5b9430e717852992358121d9ee9be
   languageName: node
   linkType: hard
 

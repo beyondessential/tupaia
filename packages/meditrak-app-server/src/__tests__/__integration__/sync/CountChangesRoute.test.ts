@@ -21,7 +21,7 @@ describe('changes/count', () => {
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
     getTestModels() as MeditrakAppServerModelRegistry,
   );
-  syncableChangeEnqueuer.setDebounceTime(100);
+  syncableChangeEnqueuer.setDebounceTime(50);
 
   beforeAll(async () => {
     syncableChangeEnqueuer.listenForChanges();
@@ -112,6 +112,10 @@ describe('changes/count', () => {
 
     // Add some more questions
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeSecondUpdate = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToAddInSecondUpdate = randomIntBetween(1, 20);
@@ -122,6 +126,10 @@ describe('changes/count', () => {
 
     // Delete some of the questions added in the first update
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeFirstDelete = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToDeleteFromFirstUpdate = randomIntBetween(
@@ -134,6 +142,10 @@ describe('changes/count', () => {
 
     // Delete some of the questions added in the second update
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeSecondDelete = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToDeleteFromSecondUpdate = randomIntBetween(

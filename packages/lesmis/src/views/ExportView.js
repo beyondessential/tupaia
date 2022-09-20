@@ -7,10 +7,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexColumn, A4PageContent, A4Page } from '@tupaia/ui-components';
 
-import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
-import { getExportableDashboards, useUrlSearchParams } from '../utils';
+import {
+  useDashboardDropdownOptions,
+  getExportableSubDashboards,
+  useUrlSearchParams,
+} from '../utils';
+
 import { PreviewPage } from '../components/DashboardExportModal/components';
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
+import { PROFILE_DASHBOARD_CODE } from '../constants';
 
 export const DASHBOARD_EXPORT_PREVIEW = 'DashboardExportPreview';
 export const PDF_DOWNLOAD_VIEW = 'PDFDownloadView';
@@ -31,18 +36,21 @@ const EXPORT_VIEWS = {
         page++;
         return page;
       });
-      return { getNextPage };
+      const [{ dashboard: selectedDashboard }] = useUrlSearchParams();
+      return { getNextPage, selectedDashboard };
     },
     PageContainer: PreviewPage,
     PageContent: PreviewPageContent,
   },
   [PDF_DOWNLOAD_VIEW]: {
     getExtraExportViewProps: () => {
-      let [{ exportWithLabels, exportWithTable }] = useUrlSearchParams();
-      exportWithLabels = !!exportWithLabels;
-      exportWithTable = !!exportWithTable;
+      const [
+        { exportWithLabels: withLabels, exportWithTable: withTable, dashboard: selectedDashboard },
+      ] = useUrlSearchParams();
+      const exportWithLabels = !!withLabels;
+      const exportWithTable = !!withTable;
       const exportOptions = { exportWithLabels, exportWithTable };
-      return { exportOptions };
+      return { exportOptions, selectedDashboard };
     },
     PageContainer: A4Page,
     PageContent: A4PageContent,
@@ -67,7 +75,7 @@ const getChildren = ({
   };
 
   return items.length > 0 ? (
-    subDashboard.items.map((item, index) => {
+    items.map((item, index) => {
       return (
         <DashboardReportPage
           key={item.code}
@@ -90,15 +98,14 @@ const getChildren = ({
 export const ExportView = ({ viewProps, viewType, className }) => {
   const { getExtraExportViewProps, PageContainer, PageContent } = EXPORT_VIEWS[viewType];
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
-
-  const { dropdownOptions } = useDashboardDropdownOptions();
-  const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
-  const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
+  const { selectedOption } = useDashboardDropdownOptions();
+  const { exportableSubDashboards } = getExportableSubDashboards(selectedOption);
+  const isProfileSelected = selectedOption.value === PROFILE_DASHBOARD_CODE;
 
   return (
     <Container className={className}>
-      {exportableDashboards?.map((subDashboard, index) => {
-        const isFirstPageProfile = index === 0;
+      {exportableSubDashboards?.map((subDashboard, index) => {
+        const isFirstPageProfile = isProfileSelected && index === 0;
         return getChildren({
           subDashboard,
           isFirstPageProfile,

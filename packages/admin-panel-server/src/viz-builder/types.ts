@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ReportConfig } from '@tupaia/report-server';
+import { ReportConfig, StandardOrCustomReportConfig } from '@tupaia/report-server';
 
 export type VizData = {
   dataElements: ReportConfig['fetch']['dataElements'];
@@ -22,7 +22,7 @@ export enum PreviewMode {
 export type Report = {
   code: string;
   permissionGroup: string;
-  config: ReportConfig;
+  config: StandardOrCustomReportConfig;
 };
 
 export type LegacyReport = {
@@ -47,7 +47,7 @@ export type CamelKeysToSnake<T extends Record<string, unknown>> = {
 export type ExpandType<T> = T extends Record<string, unknown>
   ? T extends infer O
     ? {
-      [K in keyof O]: ExpandType<O[K]>;
-    }
+        [K in keyof O]: ExpandType<O[K]>;
+      }
     : never
   : T;

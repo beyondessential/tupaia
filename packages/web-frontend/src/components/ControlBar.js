@@ -23,15 +23,23 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import OpenIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
-import CloseIcon from 'material-ui/svg-icons/navigation/arrow-drop-up';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
 import { TRANS_BLACK_MORE, CONTROL_BAR_WIDTH, WHITE } from '../styles';
 
 const wrapperPadding = 14;
 
-const Container = styled.div`
+const ControlBarContainer = styled.div`
+  height: 100%;
+`;
+
+const SearchBarContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+`;
+
+const SearchResultsContainer = styled.div`
   display: flex;
   flex-grow: ${props => (props.expanded ? 1 : 0)};
   flex-shrink: ${props => (props.expanded ? 1 : 0)};
@@ -54,6 +62,12 @@ const TopBar = styled.div`
   height: 50px;
   padding-left: ${wrapperPadding}px;
   padding-right: ${wrapperPadding}px;
+  background-color: rgba(0, 0, 0, 0.2);
+  font-size: 0.875rem;
+  height: 31px;
+  border-radius: 18px;
+  cursor: auto;
+  pointer-events: auto;
 `;
 
 const Expansion = styled.div`
@@ -63,7 +77,6 @@ const Expansion = styled.div`
   padding-left: ${wrapperPadding}px;
   padding-right: ${wrapperPadding}px;
   overflow: hidden;
-  border-radius: 0 0 8px 8px;
 `;
 
 const IconContainer = styled.div`
@@ -88,37 +101,35 @@ export class ControlBar extends PureComponent {
           onExpandClick();
         }
       : null;
-    const ExpandIcon = props =>
-      isExpanded ? (
-        <CloseIcon {...props} onClick={onExpandClick} />
-      ) : (
-        <OpenIcon {...props} onClick={onExpandClick} />
-      );
 
     return (
-      <Container onBlur={this.props.onControlBlur} expanded={isExpanded}>
-        <TopBar>
-          <IconContainer>
-            <SearchIcon />
-          </IconContainer>
-          <TextField
-            name="ControlBarField"
-            onChange={searchChange}
-            onFocus={searchFocus}
-            hintText={hintText}
-            underlineShow={false}
-            autoComplete="off"
-            style={{
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: '0%',
-              paddingLeft: 6,
-            }}
-          />
-          <ExpandIcon />
-        </TopBar>
-        {isExpanded ? <Expansion>{children}</Expansion> : null}
-      </Container>
+      <ControlBarContainer onBlur={this.props.onControlBlur}>
+        <SearchBarContainer>
+          <TopBar>
+            <IconContainer>
+              <SearchIcon />
+            </IconContainer>
+            <TextField
+              name="ControlBarField"
+              onChange={searchChange}
+              onFocus={searchFocus}
+              hintText={hintText}
+              underlineShow={false}
+              autoComplete="off"
+              style={{
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: '0%',
+                paddingLeft: 6,
+                fontSize: '0.875rem',
+              }}
+            />
+          </TopBar>
+        </SearchBarContainer>
+        <SearchResultsContainer expanded={isExpanded}>
+          {isExpanded ? <Expansion>{children}</Expansion> : null}
+        </SearchResultsContainer>
+      </ControlBarContainer>
     );
   }
 }

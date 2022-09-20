@@ -76,6 +76,16 @@ export class DashboardVisualisationExtractor<
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
+    if (validatedData.customReport) {
+      return {
+        config: {
+          customReport: validatedData.customReport,
+        },
+        code,
+        permissionGroup,
+      };
+    }
+
     const { fetch: vizFetch, aggregate, transform } = validatedData;
 
     const fetch = omitBy(
