@@ -5,6 +5,6 @@
 
 import { TransformTable } from '../../transform';
 
-export const buildDefault = () => {
+export const buildRows = () => {
   return (table: TransformTable) => table.getRows();
 };
