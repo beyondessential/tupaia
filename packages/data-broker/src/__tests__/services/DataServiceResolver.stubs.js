@@ -41,6 +41,15 @@ export const DATA_GROUPS = {
   },
 };
 
+export const SYNC_GROUPS = {
+  SG_1: {
+    code: 'SG_1',
+    service_type: 'kobo',
+    config: {},
+    databaseType: TYPES.SYNC_GROUP,
+  },
+};
+
 export const ENTITIES = {
   FJ_Facility_1: { code: 'FJ_Facility_1', country_code: 'FJ' },
   TO_Facility_1: { code: 'TO_Facility_1', country_code: 'TO' },

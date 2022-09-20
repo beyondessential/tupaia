@@ -11,9 +11,14 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardData } from '../../api';
-import { useI18n, usePortal, useUrlParams, useAutocomplete } from '../../utils';
+import {
+  useI18n,
+  usePortal,
+  useUrlParams,
+  useAutocomplete,
+  useDashboardDropdownOptions,
+} from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
-import { SUB_DASHBOARD_OPTIONS } from '../../constants';
 
 // Setting the button size directly allows a smooth animation
 const BUTTON_SIZE = '50px';
@@ -84,8 +89,9 @@ const ClearButton = styled(MuiIconButton)`
 `;
 
 const useDashboardItems = () => {
-  const { getProfileLabel, translate } = useI18n();
+  const { getProfileLabel } = useI18n();
   const { entityCode } = useUrlParams();
+  const { otherDropdownOptions } = useDashboardDropdownOptions();
 
   const { data } = useDashboardData({
     entityCode,
@@ -97,17 +103,13 @@ const useDashboardItems = () => {
   }
 
   return data.reduce((allItems, { dashboardName, entityName, entityType, ...dashboard }) => {
-    const subDashboard = SUB_DASHBOARD_OPTIONS.find(option =>
-      dashboard.dashboardCode.startsWith(`LESMIS_${option.code}`),
+    const subDashboard = otherDropdownOptions.find(option =>
+      dashboard.dashboardCode.startsWith(`LESMIS_${option.value}`),
     );
-
-    const subDashboardName = subDashboard
-      ? translate(subDashboard.label)
-      : getProfileLabel(entityType);
 
     const items = dashboard.items.map(item => ({
       ...item,
-      subDashboardName,
+      subDashboardName: subDashboard ? subDashboard.label : getProfileLabel(entityType),
       dashboardName,
       entityName,
     }));
