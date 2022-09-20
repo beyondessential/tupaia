@@ -31,12 +31,42 @@ const NEW_FACILITIES = [
   {
     code: 'UNFPA PSRO Warehouse',
     name: 'UNFPA PSRO Warehouse',
-    parentCode: 'UW',
+    countryCode: 'UW',
+    parentCode: 'UNFPA PSRO SUB_DISTRICT',
   },
   {
     code: 'FPBS',
     name: 'Fiji Pharmaceutical and Biomedical Services Warehouse',
+    countryCode: 'FW',
+    parentCode: 'UNFPA FPBS SUB_DISTRICT',
+  },
+];
+
+const NEW_DISTRICTS = [
+  {
+    code: 'UNFPA PSRO DISTRICT',
+    name: 'UNFPA PSRO DISTRICT',
+    parentCode: 'UW',
+  },
+  {
+    code: 'UNFPA FPBS DISTRICT',
+    name: 'UNFPA FPBS DISTRICT',
     parentCode: 'FW',
+  },
+];
+
+const NEW_SUB_DISTRICTS = [
+  {
+    code: 'UNFPA PSRO SUB_DISTRICT',
+    name: 'UNFPA PSRO SUB_DISTRICT',
+    countryCode: 'UW',
+    parentCode: 'UNFPA PSRO DISTRICT',
+  },
+  {
+    code: 'UNFPA FPBS SUB_DISTRICT',
+    name: 'UNFPA FPBS SUB_DISTRICT',
+    countryCode: 'FW',
+    parentCode: 'UNFPA FPBS DISTRICT',
   },
 ];
 
@@ -66,7 +96,7 @@ const createCountry = async (db, { code, name }) => {
   });
 };
 
-const createFacility = async (db, { code, name, parentCode }) => {
+const createFacility = async (db, { code, name, countryCode, parentCode }) => {
   const parentId = await codeToId(db, 'entity', parentCode);
   const unfpaHierarchyId = await nameToId(db, 'entity_hierarchy', 'unfpa');
 
@@ -77,13 +107,49 @@ const createFacility = async (db, { code, name, parentCode }) => {
     name,
     parent_id: parentId,
     type: 'facility',
-    country_code: 'FW',
+    country_code: countryCode,
   });
   await insertObject(db, 'entity_relation', {
     id: generateId(),
     parent_id: parentId,
     child_id: newEntityId,
     entity_hierarchy_id: unfpaHierarchyId,
+  });
+};
+
+const createSubDistrict = async (db, { code, name, countryCode, parentCode }) => {
+  const parentId = await codeToId(db, 'entity', parentCode);
+  const unfpaHierarchyId = await nameToId(db, 'entity_hierarchy', 'unfpa');
+
+  const newEntityId = generateId();
+  await insertObject(db, 'entity', {
+    id: newEntityId,
+    code,
+    name,
+    parent_id: parentId,
+    type: 'sub_district',
+    country_code: countryCode,
+  });
+  await insertObject(db, 'entity_relation', {
+    id: generateId(),
+    parent_id: parentId,
+    child_id: newEntityId,
+    entity_hierarchy_id: unfpaHierarchyId,
+  });
+};
+
+// Do not need to be added to entity_relation, as not for other countries' districts
+const createDistrict = async (db, { code, name, parentCode }) => {
+  const parentId = await codeToId(db, 'entity', parentCode);
+
+  const newEntityId = generateId();
+  await insertObject(db, 'entity', {
+    id: newEntityId,
+    code,
+    name,
+    parent_id: parentId,
+    type: 'district',
+    country_code: parentCode,
   });
 };
 
@@ -94,7 +160,7 @@ const rollbackCreateCountry = async (db, code) => {
   db.runSql(`DELETE FROM entity WHERE id = '${entityId}'`);
 };
 
-const rollbackCreateFacility = async (db, code) => {
+const rollbackCreateEntities = async (db, code) => {
   const entityId = await codeToId(db, 'entity', code);
   await db.runSql(`DELETE FROM entity_relation WHERE child_id = '${entityId}'`);
   await db.runSql(`DELETE FROM entity WHERE id = '${entityId}'`);
@@ -104,6 +170,12 @@ exports.up = async function (db) {
   for (const newCountry of NEW_COUNTRIES) {
     await createCountry(db, newCountry);
   }
+  for (const newDistrict of NEW_DISTRICTS) {
+    await createDistrict(db, newDistrict);
+  }
+  for (const newSubDistrict of NEW_SUB_DISTRICTS) {
+    await createSubDistrict(db, newSubDistrict);
+  }
   for (const newFacility of NEW_FACILITIES) {
     await createFacility(db, newFacility);
   }
@@ -111,7 +183,13 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   for (const newFacility of NEW_FACILITIES) {
-    await rollbackCreateFacility(db, newFacility.code);
+    await rollbackCreateEntities(db, newFacility.code);
+  }
+  for (const newSubDistrict of NEW_SUB_DISTRICTS) {
+    await rollbackCreateEntities(db, newSubDistrict.code);
+  }
+  for (const newDistrict of NEW_DISTRICTS) {
+    await rollbackCreateEntities(db, newDistrict.code);
   }
   for (const newCountry of NEW_COUNTRIES) {
     await rollbackCreateCountry(db, newCountry.code);
