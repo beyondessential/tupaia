@@ -44,8 +44,10 @@ export const getExportableSubDashboards = dropdownOption => {
             dashboardLabel: otherDropdownOptions[index].label,
             sortOrder: index,
             useYearSelector: otherDropdownOptions[index].useYearSelector,
+            exportToPDF: otherDropdownOptions[index].exportToPDF,
           };
         })
+        .filter(({ exportToPDF }) => exportToPDF)
         .sort((a, b) => a.sortOrder - b.sortOrder);
     }
 
