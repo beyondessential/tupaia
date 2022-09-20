@@ -90,7 +90,7 @@ import {
   EditUserEntityPermissions,
   GETUserEntityPermissions,
 } from './userEntityPermissions';
-import { EditEntity } from './entities';
+import { EditEntity, DeleteEntityHandler } from './entities';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
@@ -309,6 +309,7 @@ apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandl
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntityHandler));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
 apiV2.delete('/optionSets/:recordId', useRouteHandler(DeleteOptionSets));

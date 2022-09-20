@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  constructRecordExistsWithId,
-  DatabaseError,
-  respond,
-} from '@tupaia/utils';
+import { constructRecordExistsWithId, DatabaseError, respond } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
 
 /**
