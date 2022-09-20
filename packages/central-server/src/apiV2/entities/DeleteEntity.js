@@ -7,7 +7,7 @@ import { BESAdminDeleteHandler } from '../DeleteHandler';
 
 const UNDELETEABLE_ENTITY_TYPES = ['project', 'country'];
 
-export class DeleteEntityHandler extends BESAdminDeleteHandler {
+export class DeleteEntity extends BESAdminDeleteHandler {
   async deleteRecord() {
     const entity = await this.resourceModel.findById(this.recordId);
     if (UNDELETEABLE_ENTITY_TYPES.includes(entity.type)) {
