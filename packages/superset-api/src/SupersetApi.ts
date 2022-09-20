@@ -10,6 +10,7 @@ import {
 } from './types';
 import { Agent as HttpsAgent } from 'https';
 import winston from 'winston';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const MAX_RETRIES = 1;
 const MAX_FETCH_WAIT_TIME = 45 * 1000; // 45 seconds
@@ -20,6 +21,7 @@ export class SupersetApi {
   protected insecure: boolean;
   protected insecureAgent: HttpsAgent;
   protected accessToken: string | null = null;
+  protected proxyAgent?: HttpsProxyAgent;
 
   public constructor(serverName: string, baseUrl: string, insecure: boolean = false) {
     if (!serverName) throw new Error('Argument serverName required');
@@ -28,6 +30,10 @@ export class SupersetApi {
     this.baseUrl = baseUrl;
     this.insecure = insecure;
     this.insecureAgent = new HttpsAgent({ rejectUnauthorized: false });
+    if (process.env.PROXY_URL) {
+      winston.info(`Superset using proxy ${process.env.PROXY_URL}`);
+      this.proxyAgent = new HttpsProxyAgent(process.env.PROXY_URL);
+    }
   }
 
   public async chartData(chartId: number): Promise<ChartDataResponseSchema> {
@@ -52,6 +58,7 @@ export class SupersetApi {
       },
     };
     if (this.insecure) fetchConfig.agent = this.insecureAgent;
+    if (this.proxyAgent) fetchConfig.agent = this.proxyAgent;
     winston.info(`Superset fetch ${this.insecure ? '(insecure) ' : ' '}${url}`);
 
     const result = await fetchWithTimeout(url, fetchConfig, MAX_FETCH_WAIT_TIME);
@@ -96,6 +103,7 @@ export class SupersetApi {
       headers: { 'Content-Type': 'application/json' },
     };
     if (this.insecure) fetchConfig.agent = this.insecureAgent;
+    if (this.proxyAgent) fetchConfig.agent = this.proxyAgent;
 
     winston.info(`Superset refresh access token ${this.insecure ? '(insecure) ' : ' '}${url}`);
     const result = await fetchWithTimeout(url, fetchConfig, MAX_FETCH_WAIT_TIME);

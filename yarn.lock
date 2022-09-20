@@ -5623,6 +5623,7 @@ __metadata:
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
   dependencies:
     "@tupaia/utils": 1.0.0
+    https-proxy-agent: ^5.0.1
     winston: ^3.3.3
   languageName: unknown
   linkType: soft
@@ -17871,7 +17872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:5.0.1":
+"https-proxy-agent@npm:5.0.1, https-proxy-agent@npm:^5.0.1":
   version: 5.0.1
   resolution: "https-proxy-agent@npm:5.0.1"
   dependencies:

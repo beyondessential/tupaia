@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",
+    "https-proxy-agent": "^5.0.1",
     "winston": "^3.3.3"
   }
 }
