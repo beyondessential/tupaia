@@ -10,6 +10,7 @@ import {
 } from './assertSurveyResponsePermissions';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertEntityPermissions } from '../GETEntities';
+import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 
 /**
  * Handles endpoints:
@@ -47,5 +48,17 @@ export class GETSurveyResponses extends GETHandler {
 
     // Apply regular permissions
     return this.getPermissionsFilter(dbConditions, options);
+  }
+
+  async countRecords(criteria) {
+    // Only join tables that we are filtering on
+    const { multiJoin } = getQueryOptionsForColumns(
+      Object.keys(criteria),
+      this.recordType,
+      this.customJoinConditions,
+      this.defaultJoinType,
+    );
+
+    return this.database.count(this.recordType, criteria, { multiJoin });
   }
 }
