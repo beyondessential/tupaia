@@ -11,8 +11,7 @@ import SURVEYS from './data/tongaCovidRawData.json';
 
 interface RelationshipsOptions {
   hierarchy: string;
-  individualsByCode: string[];
-  groupBy: 'ancestor' | 'descendant';
+  entityCodes: string[];
   queryOptions?: any;
   ancestorOptions?: any;
   descendantOptions?: any;
@@ -23,39 +22,26 @@ interface Options {
   dataElementCodes: string[];
 }
 
-interface AncestorData {
-  villageByIndividual: Record<string, Record<string, string>>;
-  islandByIndividual: Record<string, string>;
-}
-
 const getRelationships = (reqContext: ReqContext, options: RelationshipsOptions) => {
-  const {
-    hierarchy,
-    individualsByCode,
-    groupBy,
-    queryOptions,
-    ancestorOptions,
-    descendantOptions,
-  } = options;
+  const { hierarchy, entityCodes, queryOptions, ancestorOptions, descendantOptions } = options;
   return reqContext.services.entity.getRelationshipsOfEntities(
     hierarchy,
-    individualsByCode,
-    groupBy,
+    entityCodes,
+    'descendant',
     queryOptions,
     ancestorOptions,
     descendantOptions,
-  );
+  ) as Promise<Record<string, string>>;
 };
 
-const useAncestorData = async (
+const fetchVillagesAndIslands = async (
   reqContext: ReqContext,
   hierarchy: string,
-  individualsByCode: string[],
+  entityCodes: string[],
 ) => {
   const villageOptions: RelationshipsOptions = {
     hierarchy,
-    individualsByCode,
-    groupBy: 'descendant',
+    entityCodes,
     queryOptions: {},
     ancestorOptions: { filter: { type: 'village' } },
     descendantOptions: { filter: { type: 'individual' } },
@@ -63,41 +49,42 @@ const useAncestorData = async (
 
   const islandOptions: RelationshipsOptions = {
     hierarchy,
-    individualsByCode,
-    groupBy: 'descendant',
-    queryOptions: { field: 'name' },
-    ancestorOptions: { filter: { type: 'district' } },
+    entityCodes,
+    queryOptions: {},
+    ancestorOptions: { field: 'name', filter: { type: 'district' } },
     descendantOptions: { filter: { type: 'individual' } },
   };
-  const villageCodeByIndividualCodes: Record<string, string> = await getRelationships(
-    reqContext,
-    villageOptions,
+  const [villageCodeByIndividualCodes, islandNameByIndividualCodes] = await Promise.all(
+    [villageOptions, islandOptions].map(options => getRelationships(reqContext, options)),
   );
+
   const villageCodes = new Set<string>();
   Object.values(villageCodeByIndividualCodes).forEach((code: string) => {
     villageCodes.add(code);
   });
   const includedVillageCodes = [...villageCodes];
-  const villageCodesAndNames = await reqContext.services.entity.getEntities(
+  const villageCodesAndNames = (await reqContext.services.entity.getEntities(
     hierarchy,
     includedVillageCodes,
     {
       fields: ['code', 'name'],
     },
-  );
-  const individualCodeByVillageNameAndCode: Record<string, Record<string, string>> = {};
+  )) as { code: string; name: string }[];
+  const individualCodeByVillageNameAndCode: Record<string, { code: string; name: string }> = {};
   Object.keys(villageCodeByIndividualCodes).forEach(individualCode => {
     const villageCode = villageCodeByIndividualCodes[individualCode];
-    const { name } = villageCodesAndNames.find(
-      (village: Record<string, string>) => village.code === villageCode,
-    );
+    const villageWithCode = villageCodesAndNames.find(village => village.code === villageCode);
+
+    if (!villageWithCode) {
+      throw new Error(`Could not find village with code: ${villageCode}`);
+    }
+
+    const { name } = villageWithCode;
     individualCodeByVillageNameAndCode[individualCode] = {
       code: villageCode,
       name,
     };
   });
-
-  const islandNameByIndividualCodes = await getRelationships(reqContext, islandOptions);
 
   return {
     villageByIndividual: individualCodeByVillageNameAndCode,
@@ -107,7 +94,7 @@ const useAncestorData = async (
 
 const fetchEvents = async (
   reqContext: ReqContext,
-  individualsByCode: string[],
+  entityCodes: string[],
   hierarchy: string,
   startDate?: string,
   endDate?: string,
@@ -128,7 +115,7 @@ const fetchEvents = async (
     return aggregator.fetchEvents(
       programCode,
       undefined,
-      individualsByCode,
+      entityCodes,
       hierarchy,
       { startDate, endDate, period },
       dataElementCodes,
@@ -142,11 +129,7 @@ const fetchEvents = async (
   return { registrationEvents, resultsEvents };
 };
 
-const combineAndFlatten = (
-  registrationEvents: Event[],
-  resultEvents: Event[],
-  ancestorData: AncestorData,
-) => {
+const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) => {
   const matchedData: Record<string, any>[] = resultEvents.map(resultEvent => {
     const { dataValues: resultDataValues, orgUnit: resultOrgUnit, eventDate } = resultEvent;
     const matchingRegistration = registrationEvents.find(
@@ -168,7 +151,6 @@ const combineAndFlatten = (
       ...resultDataValues,
     };
   });
-  const { villageByIndividual, islandByIndividual } = ancestorData;
   const now = new Date();
   const dataWithUpdatesAndAddOns = matchedData.map(event => {
     const {
@@ -178,17 +160,10 @@ const combineAndFlatten = (
       C19T004: dob,
       eventDate: dateSpecimenCollected,
     } = event;
-    const { code: villageCode, name: villageName } = villageByIndividual[
-      orgUnit as keyof typeof Event
-    ];
-    const islandName: string = islandByIndividual[orgUnit];
 
     const age = getAge(dob, now);
     return {
       'Test ID': orgUnit,
-      'Island Group': islandName,
-      'Village Code': villageCode,
-      Address: villageName,
       'Estimated Recovery Date': getEstimatedRecoveryDate(result, dateSpecimenCollected, onsetDate),
       dateSpecimenCollected,
       Age: age,
@@ -246,9 +221,6 @@ const parseRowData = (rowData: Record<string, any>) => {
         break;
       }
       case 'Test ID':
-      case 'Island Group':
-      case 'Village Code':
-      case 'Address':
       case 'Age':
       case 'Estimated Recovery Date':
         formattedRow[fieldKey] = rowData[fieldKey];
@@ -266,35 +238,43 @@ const parseRowData = (rowData: Record<string, any>) => {
   return formattedRow;
 };
 
+const addVillageAndIsland = (
+  rows: Record<string, any>[],
+  villageByIndividual: Record<string, { code: string; name: string }>,
+  islandByIndividual: Record<string, string>,
+) => {
+  return rows.map(row => {
+    const { orgUnit } = row;
+    const { code: villageCode, name: villageName } = villageByIndividual[orgUnit];
+    const islandName = islandByIndividual[orgUnit];
+    return {
+      ...row,
+      'Village Code': villageCode,
+      Address: villageName,
+      'Island Group': islandName,
+    };
+  });
+};
+
 export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchReportQuery) => {
   const { organisationUnitCodes: entityCodes, hierarchy, startDate, endDate, period } = query;
-  const individuals = await reqContext.services.entity.getDescendantsOfEntities(
+
+  const individualCodes = await reqContext.services.entity.getDescendantsOfEntities(
     hierarchy,
     entityCodes,
-    { filter: { type: 'individual' } },
-  );
-  const individualsByCode = individuals.map((ind: Record<string, unknown>) => ind.code);
-
-  const ancestorData: AncestorData = await useAncestorData(
-    reqContext,
-    hierarchy,
-    individualsByCode,
+    { field: 'code', filter: { type: 'individual' } },
   );
 
   const { registrationEvents, resultsEvents } = await fetchEvents(
     reqContext,
-    individualsByCode,
+    individualCodes,
     hierarchy,
     startDate,
     endDate,
     period,
   );
 
-  const builtEvents: Record<string, any>[] = combineAndFlatten(
-    registrationEvents,
-    resultsEvents,
-    ancestorData,
-  );
+  const builtEvents: Record<string, any>[] = combineAndFlatten(registrationEvents, resultsEvents);
   const rows = builtEvents
     .map(rowData => parseRowData(rowData))
     .sort((row, nextRow) => {
@@ -302,11 +282,26 @@ export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchRepo
         return 0;
       }
       return 1;
-    });
+    })
+    .filter((row, index) => index < 20);
+
+  const individualsInRows = Array.from(new Set<string>(rows.map(row => row.orgUnit)));
+
+  const { villageByIndividual, islandByIndividual } = await fetchVillagesAndIslands(
+    reqContext,
+    hierarchy,
+    individualsInRows,
+  );
+
+  const rowsWithVillageAndIsland = addVillageAndIsland(
+    rows,
+    villageByIndividual,
+    islandByIndividual,
+  );
 
   const columns: Record<string, string>[] = SURVEYS.columns.map(key => {
     return { title: key, key };
   });
 
-  return { columns, rows: rows.filter((row, index) => index < 20) };
+  return { columns, rows: rowsWithVillageAndIsland };
 };
