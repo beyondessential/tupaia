@@ -8,7 +8,7 @@ import {
   assertSurveyResponsePermissions,
   createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
 import { assertEntityPermissions } from '../GETEntities';
 import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 
@@ -51,9 +51,18 @@ export class GETSurveyResponses extends GETHandler {
   }
 
   async countRecords(criteria) {
+    // remove conjunction criteria
+    const columnsInCountQuery = Object.keys(criteria).filter(column => !column.startsWith('_'));
+
+    // Always filter by survey permissions and entity permissions for non BES Admin users
+    // See: createSurveyResponseDBFilter
+    if (!hasBESAdminAccess(this.accessPolicy)) {
+      columnsInCountQuery.push('entity.id', 'survey.id');
+    }
+
     // Only join tables that we are filtering on
     const { multiJoin } = getQueryOptionsForColumns(
-      Object.keys(criteria),
+      columnsInCountQuery,
       this.recordType,
       this.customJoinConditions,
       this.defaultJoinType,
