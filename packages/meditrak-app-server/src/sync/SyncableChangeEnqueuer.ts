@@ -48,6 +48,9 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
     transactingModels: MeditrakAppServerModelRegistry,
     changes: Change[],
   ) {
-    await Promise.all(changes.map(change => this.addToSyncQueue(transactingModels, change)));
+    for (let i = 0; i < changes.length; i++) {
+      const change = changes[i];
+      await this.addToSyncQueue(transactingModels, change);
+    }
   }
 }
