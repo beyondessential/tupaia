@@ -6,7 +6,7 @@
 // @ts-expect-error db-migrate has no types unfortunately
 import DBMigrate from 'db-migrate';
 import * as dotenv from 'dotenv';
-import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
+import { requireEnv } from '@tupaia/utils';
 import { getConnectionConfig } from '@tupaia/database';
 
 dotenv.config(); // Load the environment variables into process.env

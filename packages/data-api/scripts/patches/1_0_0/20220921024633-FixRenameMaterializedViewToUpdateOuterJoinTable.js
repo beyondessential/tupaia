@@ -13,6 +13,12 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  // Remove orphaned outer join details from previous use of broken renameMaterializedView function
+  await db.runSql(`
+    DELETE FROM pg$mviews_oj_details
+    WHERE view_name = 'analytics_tmp'
+  `);
+
   await db.runSql(`
 CREATE OR REPLACE
 FUNCTION    mv$renameMaterializedView
