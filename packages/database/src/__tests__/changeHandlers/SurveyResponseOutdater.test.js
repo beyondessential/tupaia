@@ -76,18 +76,19 @@ describe('SurveyResponseOutdater', () => {
 
     for (const [surveyResponseId, expected] of Object.entries(expectedByResponseId)) {
       const surveyResponse = surveyResponses.find(r => r.id === surveyResponseId);
-      const survey = await models.survey.findById(surveyResponse.survey_id);
-      const entity = await models.entity.findById(surveyResponse.entity_id);
-      const responseDescriptionFields = {
-        survey_code: survey.code,
-        entity_id: entity.code,
-        data_time: surveyResponse.data_time,
-      };
-      const message = `Failed assertion for survey response ${JSON.stringify(
-        responseDescriptionFields,
-      )}`;
+      // TODO use custom assertion message when jest-expect-message is re-enabled
+      // const survey = await models.survey.findById(surveyResponse.survey_id);
+      // const entity = await models.entity.findById(surveyResponse.entity_id);
+      // const responseDescriptionFields = {
+      //   survey_code: survey.code,
+      //   entity_id: entity.code,
+      //   data_time: surveyResponse.data_time,
+      // };
+      // const message = `Failed assertion for survey response ${JSON.stringify(
+      //   responseDescriptionFields,
+      // )}`;
 
-      expect(surveyResponse).toHaveProperty('outdated', expected, message);
+      expect(surveyResponse).toHaveProperty('outdated', expected);
     }
   };
 
