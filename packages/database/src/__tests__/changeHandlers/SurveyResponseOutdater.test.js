@@ -5,8 +5,6 @@
 
 /* eslint-disable camelcase */
 
-import { expect } from 'chai';
-
 import { SurveyResponseOutdater } from '../../changeHandlers';
 import {
   buildAndInsertSurveys,
@@ -89,14 +87,14 @@ describe('SurveyResponseOutdater', () => {
         responseDescriptionFields,
       )}`;
 
-      expect(surveyResponse).to.have.property('outdated', expected, message);
+      expect(surveyResponse).toHaveProperty('outdated', expected, message);
     }
   };
 
   let tonga;
   let vanuatu;
 
-  before(async () => {
+  beforeAll(async () => {
     tonga = await findOrCreateDummyRecord(models.entity, { code: 'TO' });
     vanuatu = await findOrCreateDummyRecord(models.entity, { code: 'VU' });
     await upsertDummyRecord(models.user, { id: userId });

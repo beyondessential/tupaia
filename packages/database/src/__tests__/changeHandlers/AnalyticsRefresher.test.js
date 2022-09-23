@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   getTestModels,
   populateTestData,
@@ -58,7 +57,7 @@ describe('AnalyticsRefresher', () => {
       const matchingAnalytics = remainingAnalytics.filter(analytic =>
         matchingFields.every(field => analytic[field] === expectedAnalytic[field]),
       );
-      expect(matchingAnalytics.length).to.equal(
+      expect(matchingAnalytics.length).toBe(
         1,
         `No matching analytic found.\nExpected:\n${JSON.stringify(
           expectedAnalytic,
@@ -69,7 +68,7 @@ describe('AnalyticsRefresher', () => {
       );
       matchedAnalytics = matchedAnalytics.concat(matchingAnalytics);
     });
-    expect(remainingAnalytics.length).to.equal(
+    expect(remainingAnalytics.length).toBe(
       0,
       `Unexpected analytics remaining: ${remainingAnalytics.map(JSON.stringify)}`,
     ); // All analytics were matched
