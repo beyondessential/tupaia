@@ -106,22 +106,22 @@ describe('migrationUtilities', () => {
         'UPDATE "table" SET "column" = array_remove("column", ?) WHERE condition',
       ));
 
-    it('should remove a number value', async () =>
+    it('removes a number value', async () =>
       expect(
         removeArrayValue(dbStub, 'table', 'column', 0, 'condition'),
       ).resolves.toHaveProperty('replacementParams', [0]));
 
-    it('should remove a string value', async () =>
+    it('removes a string value', async () =>
       expect(
         removeArrayValue(dbStub, 'table', 'column', 'string', 'condition'),
       ).resolves.toHaveProperty('replacementParams', ['string']));
 
-    it('should remove a boolean value', async () =>
+    it('removes a boolean value', async () =>
       expect(
         removeArrayValue(dbStub, 'table', 'column', false, 'condition'),
       ).resolves.toHaveProperty('replacementParams', [false]));
 
-    it('should remove an object value', async () => {
+    it('removes an object value', async () => {
       const object = {
         a: 1,
         b: true,
