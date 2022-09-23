@@ -14363,6 +14363,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-import-resolver-babel-module@npm:^5.3.1":
+  version: 5.3.1
+  resolution: "eslint-import-resolver-babel-module@npm:5.3.1"
+  dependencies:
+    pkg-up: ^3.1.0
+    resolve: ^1.20.0
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+    babel-plugin-module-resolver: ^3.0.0 || ^4.0.0
+  checksum: cd26740e9b9b7bb12667aabcc5c3e0e39a401b32b2890dfc4fd2444a00910f7e23fdb65cbb6084b026ade43899f824a2c762ce6078f5eb977762b8dda31aca1a
+  languageName: node
+  linkType: hard
+
 "eslint-import-resolver-node@npm:^0.3.3":
   version: 0.3.4
   resolution: "eslint-import-resolver-node@npm:0.3.4"
@@ -14575,6 +14588,13 @@ __metadata:
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7
   checksum: 4f2814eb3e9811cbacd6694e64c504f2cebefaf7d1751bb858e7aceb09efecbce3e41389b64b4c6760ca072027050d397dd005eabaf6f4fa7391b8e086fc8d66
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-module-resolver@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "eslint-plugin-module-resolver@npm:1.5.0"
+  checksum: b9d2211df499d755417c41ecb75fe092ec036d4788fcc81cffe4c509919f7a2480e543681ab3ca8eaf1339fc4d72efeaf5dd33d5d2d943455e15292a7630f3fb
   languageName: node
   linkType: hard
 
@@ -33774,7 +33794,9 @@ __metadata:
     concurrently: ^5.2.0
     cypress-dotenv: ^1.2.2
     eslint: ^7.9.0
+    eslint-import-resolver-babel-module: ^5.3.1
     eslint-plugin-cypress: ^2.11.1
+    eslint-plugin-module-resolver: ^1.5.0
     jest: ^27.0.6
     jest-extended: ^0.11.5
     jest-when: ^2.7.2
