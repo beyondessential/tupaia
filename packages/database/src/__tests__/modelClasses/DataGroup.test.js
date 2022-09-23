@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { DataGroupModel, DataGroupType } from '../../modelClasses/DataGroup';
 
 describe('DataGroup', () => {
@@ -22,7 +20,7 @@ describe('DataGroup', () => {
     const assertConfigIsSanitized = ({ serviceType }, config, expectedConfig) => {
       const dataGroup = createDataGroup({ serviceType, config });
       dataGroup.sanitizeConfig();
-      expect(dataGroup.config).to.deep.equal(expectedConfig);
+      expect(dataGroup.config).toStrictEqual(expectedConfig);
     };
 
     it('dhis service', () => {

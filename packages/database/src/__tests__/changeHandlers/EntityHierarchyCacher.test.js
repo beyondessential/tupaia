@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   getTestModels,
   populateTestData,
@@ -59,7 +58,7 @@ describe('EntityHierarchyCacher', () => {
         descendant_id: r.descendant_id,
         generational_distance: r.generational_distance,
       })),
-    ).to.deep.equalInAnyOrder(relations);
+    ).toIncludeSameMembers(relations);
   };
 
   beforeEach(async () => {
@@ -76,16 +75,19 @@ describe('EntityHierarchyCacher', () => {
     await clearTestData(models.database);
   });
 
-  describe('buildAndCacheProject', async () => {
+  describe('buildAndCacheProject', () => {
     const assertProjectRelationsCorrectlyBuilt = async (projectCode, expected) => {
       await assertRelationsMatch(projectCode, expected);
     };
+
     it('handles a hierarchy that is fully canonical', async () => {
       await assertProjectRelationsCorrectlyBuilt('project_ocean_test', INITIAL_HIERARCHY_OCEAN);
     });
+
     it('handles a hierarchy that has entity relation links', async () => {
       await assertProjectRelationsCorrectlyBuilt('project_storm_test', INITIAL_HIERARCHY_STORM);
     });
+
     it('handles a hierarchy that has a custom set of canonical types', async () => {
       await buildAndCacheProject('project_wind_test');
       await assertProjectRelationsCorrectlyBuilt('project_wind_test', INITIAL_HIERARCHY_WIND);
@@ -181,7 +183,7 @@ describe('EntityHierarchyCacher', () => {
     );
   });
 
-  describe('deletes a subtree and rebuilds when an entity relation parent_id changes', async () => {
+  describe('deletes a subtree and rebuilds when an entity relation parent_id changes', () => {
     it('handles a change low down in the hierarchy', async () => {
       // change the parent of the aba -> aaa entity to abb
       await models.entityRelation.update(

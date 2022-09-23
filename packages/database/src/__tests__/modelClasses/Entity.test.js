@@ -1,8 +1,7 @@
-import { expect } from 'chai';
 import { upsertDummyRecord, getTestModels, findOrCreateDummyRecord } from '../../testUtilities';
 
 const assertHaveEqualIds = (expectedObject, actualObject) => {
-  expect(actualObject).to.have.property('id', expectedObject.id);
+  expect(actualObject).toHaveProperty('id', expectedObject.id);
 };
 
 const ORG_UNIT_ENTITY_TYPES = [
@@ -61,13 +60,13 @@ describe('EntityModel', () => {
     ORG_UNIT_ENTITY_TYPES.forEach(type => {
       it(`should return true if its type is ${type}`, async () => {
         const entity = await upsertEntity({ type });
-        expect(entity.isOrganisationUnit()).to.be.true;
+        expect(entity.isOrganisationUnit()).toBe(true);
       });
     });
 
     it('should return false if its type is not an organisation unit type', async () => {
       const entity = await upsertEntity({ type: NON_ORG_UNIT_ENTITY_TYPE });
-      expect(entity.isOrganisationUnit()).to.be.false;
+      expect(entity.isOrganisationUnit()).toBe(false);
     });
   });
 
@@ -75,13 +74,13 @@ describe('EntityModel', () => {
     ORG_UNIT_ENTITY_TYPES.forEach(type => {
       it(`should return false if its type is ${type}`, async () => {
         const entity = await upsertEntity({ type });
-        expect(entity.isTrackedEntity()).to.be.false;
+        expect(entity.isTrackedEntity()).toBe(false);
       });
     });
 
     it('should return true if its type is not an organisation unit type', async () => {
       const entity = await upsertEntity({ type: NON_ORG_UNIT_ENTITY_TYPE });
-      expect(entity.isTrackedEntity()).to.be.true;
+      expect(entity.isTrackedEntity()).toBe(true);
     });
   });
 
