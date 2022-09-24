@@ -10,7 +10,7 @@ import { testCustomReport } from '../../../reportBuilder/customReports/testCusto
 
 import { entityApiMock } from '../testUtils';
 
-describe('buildContext', () => {
+describe('testCustomReport', () => {
   const HIERARCHY = 'test_hierarchy';
   const ENTITIES = {
     test_hierarchy: [
