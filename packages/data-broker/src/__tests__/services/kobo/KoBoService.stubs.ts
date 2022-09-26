@@ -23,14 +23,15 @@ const mockFindOne = <T extends Record<string, unknown>>(array: T[], criteria: Db
 export const createModelsStub = () =>
   (({
     dataServiceEntity: {
-      find: (criteria: DbConditions<MockDataServiceEntity>) =>
-        mockFind(MOCK_DB_DATA.dataServiceEntity, criteria),
+      find: (dbConditions: DbConditions<MockDataServiceEntity>) =>
+        mockFind(MOCK_DB_DATA.dataServiceEntity, dbConditions),
       findOne: (criteria: DbConditions<MockDataServiceEntity>) =>
         mockFindOne(MOCK_DB_DATA.dataServiceEntity, criteria),
     },
     entity: {
-      find: (criteria: DbConditions<Entity>) => mockFind(MOCK_DB_DATA.entity, criteria),
-      findOne: (criteria: DbConditions<Entity>) => mockFindOne(MOCK_DB_DATA.entity, criteria),
+      find: (dbConditions: DbConditions<Entity>) => mockFind(MOCK_DB_DATA.entity, dbConditions),
+      findOne: (dbConditions: DbConditions<Entity>) =>
+        mockFindOne(MOCK_DB_DATA.entity, dbConditions),
     },
     dataSource: {
       getTypes: () => ({

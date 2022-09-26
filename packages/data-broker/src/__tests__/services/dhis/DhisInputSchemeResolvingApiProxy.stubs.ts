@@ -7,7 +7,7 @@ import type { DhisApi } from '@tupaia/dhis-api';
 import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInputSchemeResolvingApiProxy';
 import { DataBrokerModelRegistry } from '../../../types';
 
-const DATA_SOURCES = [
+const DATA_ELEMENTS = [
   { code: 'EL1', config: { dhisId: 'dhisId_el1' } },
   { code: 'EL2', config: { dhisId: 'dhisId_el2' } },
   { code: 'EL3', config: {} },
@@ -23,28 +23,31 @@ const DATA_SERVICE_ENTITIES = [{ entity_code: 'ORG1', config: { dhis_id: 'dhisId
 const createModelsStub = () =>
   ({
     dataElement: {
-      find: async filter =>
-        DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code)),
-      findOne: async filter => {
-        const results = DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code));
+      find: async (dbConditions: { code: string[] }) =>
+        DATA_ELEMENTS.filter(dataElement => dbConditions.code.includes(dataElement.code)),
+      findOne: async (dbConditions: { code: string[] }) => {
+        const results = DATA_ELEMENTS.filter(dataElement =>
+          dbConditions.code.includes(dataElement.code),
+        );
         const [first] = results;
         return first;
       },
     },
     dataServiceEntity: {
-      find: async filter =>
-        filter['config->>dhis_id']
+      find: async (dbConditions: { 'config->>dhis_id': string[]; entity_code: string[] }) =>
+        dbConditions['config->>dhis_id']
           ? DATA_SERVICE_ENTITIES.filter(mapping =>
-              filter['config->>dhis_id'].includes(mapping.config.dhis_id),
+              dbConditions['config->>dhis_id'].includes(mapping.config.dhis_id),
             )
           : DATA_SERVICE_ENTITIES.filter(mapping =>
-              filter.entity_code.includes(mapping.entity_code),
+              dbConditions.entity_code.includes(mapping.entity_code),
             ),
     },
     dataGroup: {
-      find: async filter => DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code)),
-      findOne: async filter => {
-        const results = DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code));
+      find: async (dbConditions: { code: string[] }) =>
+        DATA_GROUPS.filter(dataGroup => dbConditions.code.includes(dataGroup.code)),
+      findOne: async (dbConditions: { code: string[] }) => {
+        const results = DATA_GROUPS.filter(dataGroup => dbConditions.code.includes(dataGroup.code));
         const [first] = results;
         return first;
       },

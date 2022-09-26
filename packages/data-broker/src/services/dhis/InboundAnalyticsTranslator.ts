@@ -52,7 +52,7 @@ export class InboundAnalyticsTranslator {
     this.rows = rows;
     this.metadata = metadata;
     this.dataSources = dataSources;
-    this.dataElementKeyToSourceCode = this.getDataElementKeyToSourceCode(dataSources);
+    this.dataElementKeyToSourceCode = this.getDataElementKeyToSourceCode();
     this.categoryOptionsCombos = this.getDimensionItems(DIMENSIONS.CATEGORY_OPTION_COMBO);
 
     return {

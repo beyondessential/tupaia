@@ -1,7 +1,10 @@
 import { ApiResultTranslator } from '../../../services/weather/ApiResultTranslator';
 import { WeatherResult } from '../../../services/weather/types';
+import { EntityInstance } from '../../../types';
 
 describe('ApiResultTranslator', () => {
+  const entity = { code: 'MELB', name: 'Melbourne' } as EntityInstance;
+
   const mockApiResponse = (): Record<string, WeatherResult | null> => {
     return {
       MELB: {
@@ -19,13 +22,12 @@ describe('ApiResultTranslator', () => {
             datetime: '2020-08-21',
           },
         ],
-        sources: [],
       },
     };
   };
 
   it('translates event results', () => {
-    const translator = new ApiResultTranslator([{ code: 'MELB', name: 'Melbourne' }], 'events', [
+    const translator = new ApiResultTranslator([entity], 'events', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
     ]);
@@ -57,7 +59,7 @@ describe('ApiResultTranslator', () => {
   });
 
   it('translates analytics results', () => {
-    const translator = new ApiResultTranslator([{ code: 'MELB' }], 'analytics', [
+    const translator = new ApiResultTranslator([entity], 'analytics', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
     ]);
@@ -93,17 +95,9 @@ describe('ApiResultTranslator', () => {
   });
 
   it('handles null API result input', () => {
-    const translatorEvents = new ApiResultTranslator(
-      [{ code: 'MELB', name: 'Melbourne' }],
-      'events',
-      [],
-    );
+    const translatorEvents = new ApiResultTranslator([entity], 'events', []);
 
-    const translatorAnalytics = new ApiResultTranslator(
-      [{ code: 'MELB', name: 'Melbourne' }],
-      'analytics',
-      [],
-    );
+    const translatorAnalytics = new ApiResultTranslator([entity], 'analytics', []);
 
     const actualEvents = translatorEvents.translate({
       MELB: null,

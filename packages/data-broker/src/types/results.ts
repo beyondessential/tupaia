@@ -6,17 +6,9 @@
 export interface Analytic {
   dataElement: string;
   organisationUnit: string;
-  period: string;
+  period: string; // should be in format YYYYMMDD e.g. "20210103"
   value: string | number;
 }
-
-export interface AnalyticCluster {
-  organisationUnit: string;
-  period: string;
-  dataValues: Record<string, string | number>;
-}
-
-export type ArrayAnalytic = [string, string, string, string | number];
 
 export interface DataElementMetadata {
   code: string;

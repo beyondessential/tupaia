@@ -3,18 +3,29 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataSource } from '../../../types';
+import { DataElement, DataGroup, ServiceType } from '../../../types';
 
-const createDataSource = (fields: Partial<DataSource>): DataSource => ({ config: {}, ...fields });
+const dataElement = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
+  code,
+  service_type,
+  dataElementCode: code,
+  config: {},
+  permission_groups: ['*'],
+});
 
-export const DATA_SOURCES: Record<string, DataSource> = {
-  POP01: createDataSource({ type: 'dataElement', code: 'POP01' }),
-  POP02: createDataSource({ type: 'dataElement', code: 'POP02' }),
-  POP01_GROUP: createDataSource({ type: 'dataGroup', code: 'POP01' }), // intentionally the same as `POP01` data element, as their type should differentiate them
-  POP02_GROUP: createDataSource({ type: 'dataGroup', code: 'POP02' }),
+export const DATA_ELEMENTS: Record<string, DataElement> = {
+  POP01: dataElement({ code: 'POP01', service_type: 'tupaia' }),
+  POP02: dataElement({ code: 'POP02', service_type: 'tupaia' }),
 };
 
-export const DATA_ELEMENTS = {
+export const DATA_GROUPS: Record<string, DataGroup> = {
+  // intentionally sharing a code with the `POP01` data element,
+  // since their type should differentiate them
+  POP01_GROUP: { code: 'POP01', service_type: 'tupaia', config: {} },
+  POP02_GROUP: { code: 'POP02', service_type: 'tupaia', config: {} },
+};
+
+export const DATA_ELEMENT_METADATA = {
   POP01: {
     code: 'POP01',
     name: 'Population 1',

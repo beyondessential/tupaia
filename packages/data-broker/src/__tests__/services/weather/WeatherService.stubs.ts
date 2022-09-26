@@ -1,26 +1,21 @@
 import { EntityModel } from '@tupaia/database';
 import { createJestMockInstance } from '@tupaia/utils';
-import { WeatherResult } from '../../../services/weather/types';
+import { DataElement, WeatherResult } from '../../../services/weather/types';
 import { PullOptions } from '../../../services/weather/WeatherService';
-import { DataSource, DataSourceType, Entity } from '../../../types';
+import { DataBrokerModelRegistry, DataGroup, Entity } from '../../../types';
 
 interface MockModelResponseMap {
-  entity: {
+  entity?: {
     find?: Entity[];
   };
-  dataElement: {
-    find?: DataSource[];
+  dataElement?: {
+    find?: DataElement[];
   };
-  dataGroup: {
-    find?: DataSource[];
-    getDataElementsInDataGroup?: DataSource[];
+  dataGroup?: {
+    find?: DataGroup[];
+    getDataElementsInDataGroup?: DataElement[];
   };
 }
-
-type DataSourceInstance = DataSource & {
-  model: Record<string, unknown>;
-  id: string;
-};
 
 export const createWeatherApiStub = (
   historicDailyResponse: WeatherResult,
@@ -48,7 +43,6 @@ export const createWeatherApiStubWithMockResponse = () => {
           datetime: '2020-08-21',
         },
       ],
-      sources: [],
     },
     {
       data: [
@@ -79,17 +73,17 @@ export const createMockModelsStub = (responseMap?: MockModelResponseMap) => {
     entity: new EntityModel({ fetchSchemaForTable: () => {} }), // no database
     dataElement: {},
     dataGroup: {},
-  };
+  } as DataBrokerModelRegistry;
 
-  if (responseMap && responseMap.entity && responseMap.entity.find) {
+  if (responseMap?.entity?.find) {
     mockModels.entity.find = jest.fn().mockResolvedValue(responseMap.entity.find);
   }
 
-  if (responseMap && responseMap.dataElement && responseMap.dataElement.find) {
+  if (responseMap?.dataElement?.find) {
     mockModels.dataElement.find = jest.fn().mockResolvedValue(responseMap.dataElement.find);
   }
 
-  if (responseMap && responseMap.dataGroup && responseMap.dataGroup.getDataElementsInDataGroup) {
+  if (responseMap?.dataGroup?.getDataElementsInDataGroup) {
     mockModels.dataGroup.getDataElementsInDataGroup = jest
       .fn()
       .mockResolvedValue(responseMap.dataGroup.getDataElementsInDataGroup);
@@ -106,34 +100,45 @@ export const createMockModelsStubWithMockEntity = async (fieldValues?: Entity) =
       find: [mockEntity],
     },
     dataElement: {
-      find: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }],
+      find: [
+        {
+          code: 'WTHR_PRECIP',
+          dataElementCode: 'WTHR_PRECIP',
+          service_type: 'weather',
+          config: {},
+          permission_groups: ['*'],
+        },
+      ],
     },
     dataGroup: {
-      getDataElementsInDataGroup: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }], // the mock data group has element PRECIP
+      getDataElementsInDataGroup: [
+        // the mock data group has element PRECIP
+        {
+          code: 'WTHR_PRECIP',
+          dataElementCode: 'WTHR_PRECIP',
+          service_type: 'weather',
+          config: {},
+          permission_groups: ['*'],
+        },
+      ],
     },
   });
 
   return mockModels;
 };
 
-export const getMockDataSourcesArg = (
-  overrides?: Partial<DataSourceInstance>,
-): DataSourceInstance[] => {
+export const getMockDataSourcesArg = (overrides?: Partial<DataElement>): DataElement[] => {
+  const code = overrides?.code || 'WTHR_PRECIP';
   return [
     {
-      model: {},
-      id: '123_PRECIP',
-      code: 'WTHR_PRECIP',
-      type: 'dataElement',
+      code,
+      dataElementCode: code,
       service_type: 'weather',
       config: {},
+      permission_groups: ['*'],
       ...overrides,
     },
   ];
-};
-
-export const getMockTypeArg = (): DataSourceType => {
-  return 'dataElement';
 };
 
 export const getMockOptionsArg = (overrides?: PullOptions) => {

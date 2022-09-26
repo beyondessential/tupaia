@@ -16,6 +16,7 @@ export interface PullEventsOptions {
   period?: string;
   startDate?: string;
   endDate?: string;
+  useDeprecatedApi?: boolean;
 }
 
 export class EventsPuller {

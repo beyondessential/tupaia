@@ -10,9 +10,13 @@ import * as BuildEvents from '../../../../services/dhis/buildAnalytics/buildEven
 import { EventsPuller, PullEventsOptions } from '../../../../services/dhis/pullers';
 import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 import { DhisEventAnalytics } from '../../../../services/dhis/types';
-import { DataGroup } from '../../../../types';
 
 describe('EventsPuller', () => {
+  const basicOptions = {
+    organisationUnitCodes: ['TO'],
+    dataServices: [{ isDataRegional: true }],
+  };
+
   let eventsPuller: EventsPuller;
   let dhisApi: DhisApi;
 
@@ -25,40 +29,34 @@ describe('EventsPuller', () => {
 
   it('throws an error if multiple data groups are provided', async () =>
     expect(
-      eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP, DATA_GROUPS.DIFF_GROUP], {}),
+      eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP, DATA_GROUPS.DIFF_GROUP], basicOptions),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   describe('DHIS API invocation', () => {
-    const assertEventAnalyticsApiWasInvokedCorrectly = async ({
-      dataSources,
-      options = {},
-      invocationArgs,
-    }: {
-      dataSources: DataGroup[];
-      options: PullEventsOptions;
-      invocationArgs: Record<string, unknown>;
-    }) => {
-      await eventsPuller.pull([dhisApi], dataSources, options);
-      expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(invocationArgs);
-    };
+    it('correctly invokes the event analytics api in DHIS', async () => {
+      await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], basicOptions);
+      expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+        expect.objectContaining({ programCode: 'POP01' }),
+      );
+    });
 
-    it('correctly invokes the event analytics api in DHIS', () =>
-      assertEventAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_GROUPS.POP01_GROUP],
-        invocationArgs: expect.objectContaining({ programCode: 'POP01' }),
-      }));
-
-    it('forces `dataElementIdScheme` option to `code`', async () =>
-      assertEventAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_GROUPS.POP01_GROUP],
-        options: { dataElementIdScheme: 'id' },
-        invocationArgs: expect.objectContaining({ dataElementIdScheme: 'code' }),
-      }));
+    it('forces `dataElementIdScheme` option to `code`', async () => {
+      await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+        ...basicOptions,
+        dataElementIdScheme: 'id',
+      } as PullEventsOptions);
+      expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+        expect.objectContaining({ dataElementIdScheme: 'code' }),
+      );
+    });
 
     it('`dataElementCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async (dataElementCodes?: string[]) =>
         expect(
-          eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], { dataElementCodes }),
+          eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+            ...basicOptions,
+            dataElementCodes,
+          }),
         ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
@@ -66,25 +64,36 @@ describe('EventsPuller', () => {
 
     it('supports various API options', async () => {
       const options = {
+        dataServices: [{ isDataRegional: true }],
+        organisationUnitCodes: ['TO'],
         dataElementCodes: ['POP01', 'POP02'],
         period: '20200427',
         startDate: '20200731',
         endDate: '20200904',
       };
 
-      return assertEventAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_GROUPS.POP01_GROUP],
-        options,
-        invocationArgs: expect.objectContaining(options),
-      });
+      await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], options);
+      expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+        expect.objectContaining({
+          // dataServices: [{ isDataRegional: true }], this field is excluded
+          organisationUnitCodes: ['TO'],
+          dataElementCodes: ['POP01', 'POP02'],
+          period: '20200427',
+          startDate: '20200731',
+          endDate: '20200904',
+        }),
+      );
     });
 
-    it('translates data source element to DHIS element codes if required', () =>
-      assertEventAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_GROUPS.POP01_GROUP],
-        options: { dataElementCodes: ['POP01', 'DIF01'] },
-        invocationArgs: expect.objectContaining({ dataElementCodes: ['POP01', 'DIF01_DHIS'] }),
-      }));
+    it('translates data source element to DHIS element codes if required', async () => {
+      await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+        ...basicOptions,
+        dataElementCodes: ['POP01', 'DIF01'],
+      });
+      expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+        expect.objectContaining({ dataElementCodes: ['POP01', 'DIF01_DHIS'] }),
+      );
+    });
   });
 
   describe('data building', () => {
@@ -115,7 +124,10 @@ describe('EventsPuller', () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
         const dataElementCodes = ['POP01', 'POP02'];
 
-        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], { dataElementCodes });
+        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+          ...basicOptions,
+          dataElementCodes,
+        });
         expect(buildEventsMock).toHaveBeenCalledOnceWith(
           getEventAnalyticsResponse,
           dataElementCodes,
@@ -148,7 +160,10 @@ describe('EventsPuller', () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
 
         const dataElementCodes = ['DIF01'];
-        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], { dataElementCodes });
+        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+          ...basicOptions,
+          dataElementCodes,
+        });
         expect(buildEventsMock).toHaveBeenCalledOnceWith(
           translatedEventAnalyticsResponse,
           dataElementCodes,
@@ -172,7 +187,7 @@ describe('EventsPuller', () => {
       buildEventsMock.mockReturnValue(events);
 
       return expect(
-        eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {}),
+        eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], basicOptions),
       ).resolves.toStrictEqual(events);
     });
   });

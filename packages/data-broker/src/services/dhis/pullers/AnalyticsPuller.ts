@@ -96,7 +96,7 @@ export class AnalyticsPuller {
   private pullAnalyticsForDhisDataType = async (
     apis: DhisApi[],
     dataSources: DataElement[],
-    options?: PullAnalyticsOptions,
+    options: PullAnalyticsOptions,
     dhisDataType?: DataType,
   ) => {
     const pullAnalyticsForApi = this.getPullAnalyticsForApiMethod({ ...options, dhisDataType });
@@ -109,7 +109,7 @@ export class AnalyticsPuller {
     const pullAnalyticsForOptions = async (
       api: DhisApi,
       dataSourceList: DataElement[],
-      pullOptions?: PullAnalyticsOptions,
+      pullOptions: PullAnalyticsOptions,
     ) => {
       const { results, metadata } = await pullAnalyticsForApi(api, dataSourceList, pullOptions);
       response.results.push(...results);
@@ -263,7 +263,7 @@ export class AnalyticsPuller {
   public pull = async (
     apis: DhisApi[],
     dataSources: DataElement[],
-    options?: PullAnalyticsOptions,
+    options: PullAnalyticsOptions,
   ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
     const response: AnalyticResults = {

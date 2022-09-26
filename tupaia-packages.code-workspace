@@ -130,6 +130,7 @@
     }
   ],
   "settings": {
+    "cSpell.caseSensitive": false,
     "cSpell.language": "en-GB",
     "cSpell.words": [
       "analytics",

@@ -6,7 +6,7 @@
 import {
   DataElement as BaseDataElement,
   DataGroup as BaseDataGroup,
-  DataSource as BaseDataSourceI,
+  DataSource as BaseDataSource,
 } from '../../types';
 
 export type DataType = 'DataElement' | 'Indicator' | 'ProgramIndicator';
@@ -27,7 +27,7 @@ type DataElementConfig = DataSourceConfig &
     };
   }>;
 
-export type DataSource = BaseDataSourceI & { config: DataSourceConfig };
+export type DataSource = BaseDataSource & { config: DataSourceConfig };
 export type DataElement = BaseDataElement & { config: DataElementConfig };
 export type DataGroup = BaseDataGroup & { config: DataSourceConfig };
 

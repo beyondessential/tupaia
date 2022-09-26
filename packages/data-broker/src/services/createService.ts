@@ -8,7 +8,7 @@ import { DataLakeApi } from '@tupaia/data-lake-api';
 import { IndicatorApi } from '@tupaia/indicators';
 import { WeatherApi } from '@tupaia/weather-api';
 import { KoBoApi } from '@tupaia/kobo-api';
-import type { DataBroker } from '../DataBroker';
+import { DataBroker } from '../DataBroker';
 import { DataBrokerModelRegistry, ServiceType } from '../types';
 import { TupaiaService } from './tupaia';
 import { DataLakeService } from './data-lake';

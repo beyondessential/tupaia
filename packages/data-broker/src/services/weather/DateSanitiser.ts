@@ -8,8 +8,8 @@ export class DateSanitiser {
    *
    * This is for observed weather data (i.e. historic)
    */
-  public sanitiseHistoricDateRange(startDate?: string | null, endDate?: string | null) {
-    if (startDate > endDate) {
+  public sanitiseHistoricDateRange(startDate?: string, endDate?: string) {
+    if (!!startDate && !!endDate && startDate > endDate) {
       throw new Error('Start date must be before (or equal to) end date');
     }
 

@@ -1,6 +1,15 @@
 import { ValidationError } from '@tupaia/utils';
 import type { WeatherApi } from '@tupaia/weather-api';
-import { DataBrokerModelRegistry, DataSource, DataSourceType, EntityInstance } from '../../types';
+import {
+  AnalyticResults,
+  DataBrokerModelRegistry,
+  DataGroup,
+  DataSource,
+  DataSourceType,
+  EntityInstance,
+  EventResults,
+} from '../../types';
+import { EMPTY_ANALYTICS_RESULTS } from '../../utils';
 import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
@@ -25,6 +34,16 @@ export class WeatherService extends Service {
   /**
    * Note, if no period specified will return current weather
    */
+  public async pull(
+    dataSources: DataElement[],
+    type: 'dataElement',
+    options?: PullOptions,
+  ): Promise<AnalyticResults>;
+  public async pull(
+    dataSources: DataGroup[],
+    type: 'dataGroup',
+    options?: PullOptions,
+  ): Promise<EventResults>;
   public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions = {}) {
     this.validateOptions(options);
 
@@ -71,6 +90,8 @@ export class WeatherService extends Service {
 
       return this.getHistoricWeather(entities, startDate, endDate, apiResultTranslator);
     }
+
+    return resultFormat === 'analytics' ? EMPTY_ANALYTICS_RESULTS : ([] as EventResults);
   }
 
   /**
