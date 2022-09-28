@@ -12,7 +12,7 @@ import {
   yup,
   yupUtils,
 } from '@tupaia/utils';
-import { MeditrakAppServerModelRegistry } from '../../types';
+import { MeditrakAppServerModelRegistry } from '../../../types';
 
 const clinicOrEntityIdExist = (surveyResponse: Record<string, unknown>) =>
   !(surveyResponse.clinic_id || surveyResponse.entity_id);

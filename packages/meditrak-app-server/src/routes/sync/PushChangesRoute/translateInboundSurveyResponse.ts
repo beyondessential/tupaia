@@ -7,7 +7,7 @@ import * as cloneDeep from 'lodash.clonedeep';
 import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
 import { UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
-import { MeditrakAppServerModelRegistry } from '../../types';
+import { MeditrakAppServerModelRegistry } from '../../../types';
 
 /**
  * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1", assessor_name: "User One" }
