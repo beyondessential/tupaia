@@ -73,7 +73,9 @@ export class DashboardVisualisationExtractor<
     return this.dashboardItemValidator.validateSync(this.vizToDashboardItem());
   }
 
-  private vizToReport(previewMode: PreviewMode = PreviewMode.DATA): Record<keyof Report, unknown> {
+  private vizToReport(
+    previewMode: PreviewMode = PreviewMode.PRESENTATION,
+  ): Record<keyof Report, unknown> {
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 

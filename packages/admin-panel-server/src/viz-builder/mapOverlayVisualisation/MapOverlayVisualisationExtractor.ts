@@ -78,7 +78,9 @@ export class MapOverlayVisualisationExtractor<
     return this.mapOverlayValidator.validateSync(this.vizToMapOverlay());
   }
 
-  private vizToReport(previewMode: PreviewMode = PreviewMode.DATA): Record<keyof Report, unknown> {
+  private vizToReport(
+    previewMode: PreviewMode = PreviewMode.PRESENTATION,
+  ): Record<keyof Report, unknown> {
     const { code, reportPermissionGroup: permissionGroup, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
