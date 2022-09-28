@@ -11,6 +11,7 @@ import type { MapOverlayVisualisationResource } from './types';
 import type { LegacyReport, Report, ExpandType } from '../types';
 import { PreviewMode } from '../types';
 import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
+import { getVizOutputConfig } from '../utils';
 
 export class MapOverlayVisualisationExtractor<
   MapOverlayValidator extends yup.AnyObjectSchema,
@@ -77,7 +78,7 @@ export class MapOverlayVisualisationExtractor<
     return this.mapOverlayValidator.validateSync(this.vizToMapOverlay());
   }
 
-  private vizToReport(previewMode?: PreviewMode): Record<keyof Report, unknown> {
+  private vizToReport(previewMode: PreviewMode = PreviewMode.DATA): Record<keyof Report, unknown> {
     const { code, reportPermissionGroup: permissionGroup, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
@@ -90,11 +91,14 @@ export class MapOverlayVisualisationExtractor<
       },
       isNil,
     );
+
+    const output = getVizOutputConfig(previewMode, presentation);
+
     const config = omitBy(
       {
         fetch,
         transform,
-        output: previewMode === PreviewMode.PRESENTATION ? presentation?.output : null,
+        output,
       },
       isNil,
     );
