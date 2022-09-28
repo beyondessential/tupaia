@@ -13,6 +13,7 @@ import {
   yupUtils,
 } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
+import { SurveyResponseObject } from './types';
 
 const clinicOrEntityIdExist = (surveyResponse: Record<string, unknown>) =>
   !(surveyResponse.clinic_id || surveyResponse.entity_id);
@@ -65,7 +66,7 @@ const constructAnswerValidator = (models: MeditrakAppServerModelRegistry) =>
 
 export const validateSurveyResponseObject = async (
   models: MeditrakAppServerModelRegistry,
-  surveyResponseObject: Record<string, unknown>,
+  surveyResponseObject: SurveyResponseObject,
 ) => {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');

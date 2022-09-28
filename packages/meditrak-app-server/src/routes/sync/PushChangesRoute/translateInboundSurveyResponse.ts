@@ -8,6 +8,7 @@ import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
 import { UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
+import { SurveyResponseObject } from './types';
 
 /**
  * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1", assessor_name: "User One" }
@@ -53,23 +54,23 @@ const constructAnswerTranslators = (models: MeditrakAppServerModelRegistry) => (
 });
 
 type Translator<T> = {
-  [key in keyof T]?: (fieldValue: unknown) => Promise<Record<string, unknown>>;
+  [key in keyof T]?: (fieldValue: string) => Promise<SurveyResponseObject>;
 };
 
-const translateObjectFields = async <T extends Record<string, unknown>>(
+const translateObjectFields = async <T extends SurveyResponseObject>(
   object: T,
   objectTranslators: Translator<T>,
 ) => {
   await Promise.all(
     Object.entries(object).map(async ([field, value]) => {
-      const translator = objectTranslators[field as keyof typeof object];
+      const translator = objectTranslators[field];
       if (translator) {
-        const newFields = await translator(value);
+        const newFields = await translator(value as string);
         // eslint-disable-next-line no-param-reassign
-        delete object[field as keyof typeof object];
+        delete object[field];
         Object.entries(newFields).forEach(([newField, newValue]) => {
           // eslint-disable-next-line no-param-reassign
-          object[newField as keyof T] = newValue;
+          object[newField as keyof T] = newValue as T[keyof T];
         });
       }
     }),
@@ -77,7 +78,7 @@ const translateObjectFields = async <T extends Record<string, unknown>>(
 };
 
 const requiresSurveyResponseTranslation = (
-  surveyResponseObject: Record<string, unknown>,
+  surveyResponseObject: SurveyResponseObject,
   surveyResponseTranslators: ReturnType<typeof constructSurveyResponseTranslators>,
   answerTranslators: ReturnType<typeof constructAnswerTranslators>,
 ) => {
@@ -103,7 +104,7 @@ const requiresSurveyResponseTranslation = (
 
 export async function translateSurveyResponseObject(
   models: MeditrakAppServerModelRegistry,
-  surveyResponseObject?: Record<string, unknown>,
+  surveyResponseObject?: SurveyResponseObject,
 ) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
