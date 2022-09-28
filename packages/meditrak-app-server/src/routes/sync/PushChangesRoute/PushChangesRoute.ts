@@ -9,6 +9,8 @@ import { ValidationError, yup } from '@tupaia/utils';
 import { addSurveyImage } from './addSurveyImage';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
 import { translateSurveyResponseObject } from './translateInboundSurveyResponse';
+import { populateData } from './populateData';
+import { upsertCreatedData } from './upsertCreatedData';
 
 const VALID_ACTIONS = ['SubmitSurveyResponse', 'AddSurveyImage'];
 
@@ -47,7 +49,12 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           this.req.models,
           translatedPayload,
         );
-        surveyResponses.push(validatedSurveyResponse);
+        await upsertCreatedData(this.req.models, validatedSurveyResponse);
+        const surveyResponseWithPopulatedData = await populateData(
+          this.req.models,
+          validatedSurveyResponse,
+        );
+        surveyResponses.push({ ...surveyResponseWithPopulatedData, ...rest });
       } else {
         const validatedPayload = addSurveyImageValidator.validateSync(payload);
         surveyImages.push(validatedPayload);
