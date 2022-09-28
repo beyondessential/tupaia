@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import { format, differenceInYears, addDays, isDate } from 'date-fns';
+import keyBy from 'lodash.keyby';
 import { createAggregator } from '@tupaia/aggregator';
 import { ReportServerAggregator } from '../../aggregator';
 import { FetchReportQuery, Event } from '../../types';
@@ -34,11 +35,7 @@ const getRelationships = (reqContext: ReqContext, options: RelationshipsOptions)
   ) as Promise<Record<string, string>>;
 };
 
-const fetchVillagesAndIslands = async (
-  reqContext: ReqContext,
-  hierarchy: string,
-  entityCodes: string[],
-) => {
+const fetchEntities = async (reqContext: ReqContext, hierarchy: string, entityCodes: string[]) => {
   const villageOptions: RelationshipsOptions = {
     hierarchy,
     entityCodes,
@@ -58,6 +55,7 @@ const fetchVillagesAndIslands = async (
     [villageOptions, islandOptions].map(options => getRelationships(reqContext, options)),
   );
 
+  const individualCodes = Object.keys(villageCodeByIndividualCodes);
   const villageCodes = new Set<string>();
   Object.values(villageCodeByIndividualCodes).forEach((code: string) => {
     villageCodes.add(code);
@@ -87,6 +85,7 @@ const fetchVillagesAndIslands = async (
   });
 
   return {
+    individualCodes,
     villageByIndividual: individualCodeByVillageNameAndCode,
     islandByIndividual: islandNameByIndividualCodes,
   };
@@ -130,11 +129,11 @@ const fetchEvents = async (
 };
 
 const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) => {
+  const registrationEventsByOrgUnit = keyBy(registrationEvents, 'orgUnit');
   const matchedData: Record<string, any>[] = resultEvents.map(resultEvent => {
     const { dataValues: resultDataValues, orgUnit: resultOrgUnit, eventDate } = resultEvent;
-    const matchingRegistration = registrationEvents.find(
-      registrationEvent => registrationEvent.orgUnit === resultEvent.orgUnit,
-    );
+    const matchingRegistration = registrationEventsByOrgUnit[resultEvent.orgUnit];
+
     if (!matchingRegistration) {
       return {
         orgUnit: resultOrgUnit,
@@ -259,10 +258,10 @@ const addVillageAndIsland = (
 export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchReportQuery) => {
   const { organisationUnitCodes: entityCodes, hierarchy, startDate, endDate, period } = query;
 
-  const individualCodes = await reqContext.services.entity.getDescendantsOfEntities(
+  const { individualCodes, villageByIndividual, islandByIndividual } = await fetchEntities(
+    reqContext,
     hierarchy,
     entityCodes,
-    { field: 'code', filter: { type: 'individual' } },
   );
 
   const { registrationEvents, resultsEvents } = await fetchEvents(
@@ -275,23 +274,7 @@ export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchRepo
   );
 
   const builtEvents: Record<string, any>[] = combineAndFlatten(registrationEvents, resultsEvents);
-  const rows = builtEvents
-    .map(rowData => parseRowData(rowData))
-    .sort((row, nextRow) => {
-      if (row['Test ID'] === nextRow['Test ID']) {
-        return 0;
-      }
-      return 1;
-    })
-    .filter((row, index) => index < 20);
-
-  const individualsInRows = Array.from(new Set<string>(rows.map(row => row.orgUnit)));
-
-  const { villageByIndividual, islandByIndividual } = await fetchVillagesAndIslands(
-    reqContext,
-    hierarchy,
-    individualsInRows,
-  );
+  const rows = builtEvents.map(rowData => parseRowData(rowData));
 
   const rowsWithVillageAndIsland = addVillageAndIsland(
     rows,
