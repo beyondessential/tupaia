@@ -57,7 +57,7 @@ const dhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi');
 
 const models = {
   entity: {
-    find: jest.fn(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code))),
+    find: ({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code)),
   },
 };
 

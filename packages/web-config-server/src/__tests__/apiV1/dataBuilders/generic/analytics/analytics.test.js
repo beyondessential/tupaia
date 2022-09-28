@@ -16,10 +16,6 @@ describe('analytics', () => {
     fetchAnalytics: jest.fn().mockResolvedValue({ results: ANALYTICS }),
   });
 
-  beforeEach(() => {
-    aggregator.fetchAnalytics.mockReset();
-  });
-
   it('fetches analytics using the `dataElementCodes` specified in the config', async () => {
     const dataElementCodes = ['TEST01', 'TEST02'];
     await analytics({ dataBuilderConfig: { dataElementCodes } }, aggregator);

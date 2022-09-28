@@ -108,7 +108,7 @@ const PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES = {
 
 const models = {
   entity: {
-    findOne: jest.fn(({ code }) => {
+    findOne: ({ code }) => {
       switch (code) {
         case PARENT_ORG_UNIT.code:
           return PARENT_ORG_UNIT;
@@ -123,7 +123,7 @@ const models = {
         default:
           return null;
       }
-    }),
+    },
   },
 };
 

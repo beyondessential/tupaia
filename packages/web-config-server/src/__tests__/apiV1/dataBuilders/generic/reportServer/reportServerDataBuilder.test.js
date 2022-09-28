@@ -56,15 +56,12 @@ const ENTITY_HIERARCHIES = [
 
 const req = { session: { userJson: { userName: 'test' } } };
 
-const fetchReport = jest.fn(
-  (reportCode, query, body) => REPORT_SERVER_RESPONSES[reportRequestKey(reportCode, query, body)],
-);
+const fetchReport = (reportCode, query, body) =>
+  REPORT_SERVER_RESPONSES[reportRequestKey(reportCode, query, body)];
 
-const findProject = jest.fn(({ code }) => PROJECTS.find(project => project.code === code));
+const findProject = ({ code }) => PROJECTS.find(project => project.code === code);
 
-const findEntityHierarchyById = jest.fn(id =>
-  ENTITY_HIERARCHIES.find(hierarchy => hierarchy.id === id),
-);
+const findEntityHierarchyById = id => ENTITY_HIERARCHIES.find(hierarchy => hierarchy.id === id);
 
 const reportConnection = { fetchReport };
 const models = {

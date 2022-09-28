@@ -28,10 +28,6 @@ describe('analyticsPerPeriod', () => {
     })),
   });
 
-  beforeEach(() => {
-    aggregator.fetchAnalytics.mockReset();
-  });
-
   it('uses an `aggregationType` if specified in the config', async () => {
     const aggregationType = 'SUM';
     await analyticsPerPeriod(

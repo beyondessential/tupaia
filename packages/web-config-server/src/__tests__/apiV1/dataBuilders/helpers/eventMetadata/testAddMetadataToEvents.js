@@ -9,9 +9,7 @@ import { EVENTS, ORG_UNITS } from './eventMetadata.fixtures';
 export const testAddMetadataToEvents = () => {
   const models = {
     entity: {
-      find: jest.fn(({ code }) =>
-        ORG_UNITS.filter(({ code: currentCode }) => code.includes(currentCode)),
-      ),
+      find: ({ code }) => ORG_UNITS.filter(({ code: currentCode }) => code.includes(currentCode)),
     },
   };
 

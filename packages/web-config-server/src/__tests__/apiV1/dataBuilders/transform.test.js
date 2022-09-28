@@ -18,7 +18,7 @@ const ORG_UNITS = {
 
 const models = {
   entity: {
-    findOne: jest.fn(({ code }) => ORG_UNITS[code] || null),
+    findOne: ({ code }) => ORG_UNITS[code] || null,
   },
 };
 

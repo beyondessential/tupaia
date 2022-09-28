@@ -34,8 +34,9 @@ const dataServices = [{ isDataRegional: false }];
 const entity = {};
 const query = { organisationUnitCode: 'TO' };
 
-const fetchEvents = jest.fn().mockResolvedValue(EVENTS);
-const aggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator', { fetchEvents });
+const aggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator', {
+  fetchEvents: async () => EVENTS,
+});
 const dhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi');
 
 describe('selectUniqueValueFromEvents', () => {

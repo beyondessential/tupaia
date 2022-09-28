@@ -3,9 +3,7 @@ import { basicDataVillage } from '/apiV1/dataBuilders/generic/orgUnit/basicDataV
 
 const createEntity = parents =>
   createJestMockInstance('@tupaia/database', 'EntityType', {
-    getParent: jest.fn(async hierarchyId =>
-      parents.find(parent => parent && parent.hierarchy === hierarchyId),
-    ),
+    getParent: async hierarchyId => parents.find(parent => parent?.hierarchy === hierarchyId),
   });
 
 const projects = {
@@ -13,7 +11,7 @@ const projects = {
   lily: { entity_hierarchy_id: 'lily_hierarchy' },
 };
 const projectModel = createJestMockInstance('@tupaia/database', 'DatabaseModel', {
-  findOne: jest.fn(({ code: projectCode }) => projects[projectCode]),
+  findOne: ({ code: projectCode }) => projects[projectCode],
 });
 
 const models = { project: projectModel };
