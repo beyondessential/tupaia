@@ -12,7 +12,7 @@ import {
   SurveyModel,
   UserModel,
 } from '@tupaia/database';
-import { FeedItemModel, MeditrakSyncQueueModel } from './models';
+import { FeedItemModel, MeditrakSyncQueueModel, SurveyResponseModel } from './models';
 
 export type RequestContext = {
   services: TupaiaApiClient;
@@ -25,5 +25,6 @@ export interface MeditrakAppServerModelRegistry extends ModelRegistry {
   readonly optionSet: OptionSetModel;
   readonly question: QuestionModel;
   readonly survey: SurveyModel;
+  readonly surveyResponse: SurveyResponseModel;
   readonly user: UserModel;
 }
