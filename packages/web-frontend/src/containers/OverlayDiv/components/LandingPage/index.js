@@ -45,11 +45,11 @@ const ViewProjectsButton = styled(Button)`
 `;
 
 export const LandingPage = ({ isUserLoggedIn, isViewingProjects }) => {
-  const [isProjectsPageVisible, setIsProjectsPageVisible] = React.useState(false);
+  const [isProjectsPageVisible, setIsProjectsPageVisible] = React.useState(isViewingProjects);
   const showProjects = React.useCallback(() => setIsProjectsPageVisible(true));
   const hideProjects = React.useCallback(() => setIsProjectsPageVisible(false));
 
-  const isLoginPageVisible = !isViewingProjects && !isUserLoggedIn && !isProjectsPageVisible;
+  const isLoginPageVisible = !isUserLoggedIn && !isProjectsPageVisible;
 
   return (
     <Container>
