@@ -82,7 +82,7 @@ describe('calculateOperationForAnalytics', () => {
         condition: { value: 'Yes', operator: 'regex' },
       });
       expect(result1).toBe('Yes');
-      const result2 = calculateOperationForAnalytics(models, analytics, {
+      const result2 = await calculateOperationForAnalytics(models, analytics, {
         operator: 'CHECK_CONDITION',
         dataElement: 'uniqueCode',
         condition: { value: 'No', operator: 'regex' },
