@@ -18,11 +18,6 @@ interface RelationshipsOptions {
   descendantOptions?: any;
 }
 
-interface Options {
-  programCode: string;
-  dataElementCodes: string[];
-}
-
 const getRelationships = (reqContext: ReqContext, options: RelationshipsOptions) => {
   const { hierarchy, entityCodes, queryOptions, ancestorOptions, descendantOptions } = options;
   return reqContext.services.entity.getRelationshipsOfEntities(
@@ -99,59 +94,54 @@ const fetchEvents = async (
   endDate?: string,
   period?: string,
 ) => {
-  const registrationOptions = {
-    programCode: 'C19T_Registration',
-    dataElementCodes: SURVEYS.C19T_Registration.dataElementCodes,
-  };
-  const resultsOptions = {
-    programCode: 'C19T_Results',
-    dataElementCodes: SURVEYS.C19T_Results.dataElementCodes,
-  };
-
   const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
-  const fetch = async (options: Options) => {
-    const { programCode, dataElementCodes } = options;
-    return aggregator.fetchEvents(
-      programCode,
-      undefined,
-      entityCodes,
-      hierarchy,
-      { startDate, endDate, period },
-      dataElementCodes,
-    );
-  };
-
-  const [registrationEvents, resultsEvents] = await Promise.all(
-    [registrationOptions, resultsOptions].map(fetch),
+  const resultEventsPromise = aggregator.fetchEvents(
+    'C19T_Results',
+    undefined,
+    entityCodes,
+    hierarchy,
+    { startDate, endDate, period },
+    SURVEYS.C19T_Results.dataElementCodes,
   );
+  const registrationEventsPromise = aggregator.fetchEvents(
+    'C19T_Registration',
+    undefined,
+    entityCodes,
+    hierarchy,
+    {},
+    SURVEYS.C19T_Registration.dataElementCodes,
+  );
+
+  const [registrationEvents, resultsEvents] = await Promise.all([
+    registrationEventsPromise,
+    resultEventsPromise,
+  ]);
 
   return { registrationEvents, resultsEvents };
 };
 
 const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) => {
   const registrationEventsByOrgUnit = keyBy(registrationEvents, 'orgUnit');
-  const matchedData: Record<string, any>[] = resultEvents.map(resultEvent => {
-    const { dataValues: resultDataValues, orgUnit: resultOrgUnit, eventDate } = resultEvent;
-    const matchingRegistration = registrationEventsByOrgUnit[resultEvent.orgUnit];
+  const combinedEvents: Record<string, any>[] = [];
+  resultEvents.forEach(resultEvent => {
+    const { dataValues: resultDataValues, orgUnit, eventDate } = resultEvent;
+    const matchingRegistration = registrationEventsByOrgUnit[orgUnit];
 
     if (!matchingRegistration) {
-      return {
-        orgUnit: resultOrgUnit,
-        eventDate,
-        ...resultDataValues,
-      };
+      return;
     }
-    const { dataValues: registrationDataValues, orgUnit } = matchingRegistration;
 
-    return {
+    const { dataValues: registrationDataValues } = matchingRegistration;
+
+    combinedEvents.push({
       orgUnit,
       eventDate,
       ...registrationDataValues,
       ...resultDataValues,
-    };
+    });
   });
   const now = new Date();
-  const dataWithUpdatesAndAddOns = matchedData.map(event => {
+  const dataWithUpdatesAndAddOns = combinedEvents.map(event => {
     const {
       orgUnit,
       C19T033: result,
@@ -201,9 +191,17 @@ const getEstimatedRecoveryDate = (
   return isDate(recoveryDate) && format(recoveryDate, 'yyyy-mm-dd');
 };
 
+const binaryToYesNo = (value: unknown) => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  return value === 1 ? 'Yes' : 'No';
+};
+
 const parseRowData = (rowData: Record<string, any>) => {
   const formattedRow: Record<string, any> = {};
-  const { codesToNames } = SURVEYS;
+  const { codesToNames, binaryAndCheckboxQuestions } = SURVEYS;
   Object.keys(rowData).forEach(fieldKey => {
     switch (fieldKey) {
       case 'dateSpecimenCollected': {
@@ -225,12 +223,11 @@ const parseRowData = (rowData: Record<string, any>) => {
         formattedRow[fieldKey] = rowData[fieldKey];
         break;
       default: {
-        const name = codesToNames[fieldKey as keyof typeof codesToNames];
-        if (!name) {
-          formattedRow[fieldKey] = rowData[fieldKey];
-        } else {
-          formattedRow[name] = rowData[fieldKey];
-        }
+        const name = codesToNames[fieldKey as keyof typeof codesToNames] || fieldKey;
+        const value = binaryAndCheckboxQuestions.includes(fieldKey)
+          ? binaryToYesNo(rowData[fieldKey])
+          : rowData[fieldKey];
+        formattedRow[name] = value;
       }
     }
   });
