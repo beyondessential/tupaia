@@ -30,6 +30,8 @@ import {
   DataElementsPage,
   DataGroupsPage,
   ProjectsPage,
+  SyncGroupsPage,
+  DataTablesPage,
 } from './pages/resources';
 
 export const ROUTES = [
@@ -67,6 +69,11 @@ export const ROUTES = [
         label: 'Survey Responses',
         to: '/survey-responses',
         component: SurveyResponsesPage,
+      },
+      {
+        label: 'Sync Groups',
+        to: '/sync-groups',
+        component: SyncGroupsPage,
       },
     ],
   },
@@ -114,6 +121,11 @@ export const ROUTES = [
         label: 'Indicators',
         to: '/indicators',
         component: IndicatorsPage,
+      },
+      {
+        label: 'Data-Tables',
+        to: '/dataTables',
+        component: DataTablesPage,
       },
       {
         label: 'Social Feed',

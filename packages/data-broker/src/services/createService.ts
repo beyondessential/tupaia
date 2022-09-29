@@ -16,6 +16,7 @@ import { DhisService } from './dhis';
 import { IndicatorService } from './indicator';
 import { WeatherService } from './weather/WeatherService';
 import { KoBoService } from './kobo/KoBoService';
+import { SupersetService } from './superset/SupersetService';
 import { Service } from './Service';
 
 export const createService = (
@@ -39,6 +40,8 @@ export const createService = (
       return new WeatherService(models, new WeatherApi());
     case 'kobo':
       return new KoBoService(models, new KoBoApi());
+    case 'superset':
+      return new SupersetService(models);
     default:
       throw new Error(`Invalid service type: ${type}`);
   }

@@ -12,11 +12,10 @@ import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { EntityVitalsItem, FlexStart, I18n, MiniMap, VitalsLoader } from '../components';
 import { useVitalsData } from '../api/queries';
-import { useUrlParams } from '../utils';
+import { useI18n, useUrlParams } from '../utils';
 
 const Heading = styled(Typography)`
   font-weight: 600;
-  font-size: 18px;
   line-height: 140%;
   text-transform: capitalize;
   color: ${props => props.theme.palette.primary.main};
@@ -24,7 +23,6 @@ const Heading = styled(Typography)`
 
 const SubHeading = styled(Heading)`
   font-weight: 500;
-  font-size: 16px;
 `;
 
 const HorizontalDivider = styled(MuiDivider)`
@@ -73,154 +71,168 @@ const CountryView = ({ vitals }) => (
   </VitalsContainer>
 );
 
-const ProvinceView = ({ vitals }) => (
-  <VitalsContainer>
-    <Heading variant="h4">
-      <I18n t="dashboards.provinceDetails" />
-    </Heading>
-    <ThreeColGrid>
-      <EntityVitalsItem
-        name={<I18n t="dashboards.provinceCode" />}
-        value={vitals.code}
-        icon="LocationPin"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.provincePopulation" />}
-        value={vitals.Population?.toLocaleString()}
-        icon="Group"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.numberOfSchools" />}
-        value={vitals.NumberOfSchools?.toLocaleString()}
-        icon="School"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.numberOfStudents" />}
-        value={vitals.NumberOfStudents?.toLocaleString()}
-        icon="Study"
-      />
-    </ThreeColGrid>
-  </VitalsContainer>
-);
+const ProvinceView = ({ vitals }) => {
+  const { translate } = useI18n();
 
-const DistrictView = ({ vitals }) => (
-  <VitalsContainer>
-    <Heading variant="h4">
-      <I18n t="dashboards.districtDetails" />
-    </Heading>
-    <ThreeColGrid>
-      <EntityVitalsItem
-        name={<I18n t="dashboards.districtCode" />}
-        value={vitals.code}
-        icon="LocationPin"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.districtPopulation" />}
-        value={vitals.Population?.toLocaleString()}
-        icon="Group"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.priorityDistrict" />}
-        value={vitals.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
-        icon="Notepad"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.numberOfSchools" />}
-        value={vitals.NumberOfSchools?.toLocaleString()}
-        icon="School"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.numberOfStudents" />}
-        value={vitals.NumberOfStudents?.toLocaleString()}
-        icon="Study"
-      />
-    </ThreeColGrid>
-    <HorizontalDivider />
-    <MuiBox mt={2}>
-      <SubHeading variant="h4">
+  return (
+    <VitalsContainer>
+      <Heading variant="h4">
         <I18n t="dashboards.provinceDetails" />
-      </SubHeading>
-      <FlexStart mt={1} mb={4}>
-        <EntityVitalsItem
-          name={<I18n t="dashboards.nameOfProvince" />}
-          value={vitals.parentVitals?.name}
-          mr={4}
-        />
+      </Heading>
+      <ThreeColGrid>
         <EntityVitalsItem
           name={<I18n t="dashboards.provinceCode" />}
-          value={vitals.parentVitals?.code}
-          mr={4}
+          value={vitals.code}
+          icon="LocationPin"
         />
         <EntityVitalsItem
           name={<I18n t="dashboards.provincePopulation" />}
-          value={vitals.parentVitals?.Population?.toLocaleString()}
+          value={vitals[translate('dashboards.Population')]?.toLocaleString()}
+          icon="Group"
         />
-      </FlexStart>
-    </MuiBox>
-  </VitalsContainer>
-);
-
-const SchoolView = ({ vitals }) => (
-  <VitalsContainer>
-    <Heading variant="h4">
-      <I18n t="dashboards.schoolDetails" />
-    </Heading>
-    <ThreeColGrid>
-      <EntityVitalsItem
-        name={<I18n t="dashboards.schoolCode" />}
-        value={vitals.code}
-        icon="LocationPin"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.numberOfStudents" />}
-        value={vitals.NumberOfStudents?.toLocaleString()}
-        icon="Study"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.completeSchool" />}
-        value={vitals.SchoolComplete ? 'Yes' : 'No'}
-        icon="Notepad"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.distanceToMainRoad" />}
-        value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
-        icon="Road"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.location" />}
-        value={vitals.point?.map(x => x.toFixed(3)).join(', ')}
-        icon="PushPin"
-      />
-      <EntityVitalsItem
-        name={<I18n t="dashboards.schoolType" />}
-        value={vitals.attributes?.type}
-        icon="School"
-      />
-    </ThreeColGrid>
-    <HorizontalDivider />
-    <MuiBox mt={2}>
-      <SubHeading variant="h4">
-        <I18n t="dashboards.districtDetails" />
-      </SubHeading>
-      <FlexStart mt={1} mb={4}>
         <EntityVitalsItem
-          name={<I18n t="dashboards.nameOfDistrict" />}
-          value={vitals.parentVitals?.name}
-          mr={4}
+          name={<I18n t="dashboards.numberOfSchools" />}
+          value={vitals.NumberOfSchools?.toLocaleString()}
+          icon="School"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.numberOfStudents" />}
+          value={vitals.NumberOfStudents?.toLocaleString()}
+          icon="Study"
+        />
+      </ThreeColGrid>
+    </VitalsContainer>
+  );
+};
+
+const DistrictView = ({ vitals }) => {
+  const { translate } = useI18n();
+
+  return (
+    <VitalsContainer>
+      <Heading variant="h4">
+        <I18n t="dashboards.districtDetails" />
+      </Heading>
+      <ThreeColGrid>
+        <EntityVitalsItem
+          name={<I18n t="dashboards.districtCode" />}
+          value={vitals.code}
+          icon="LocationPin"
         />
         <EntityVitalsItem
           name={<I18n t="dashboards.districtPopulation" />}
-          value={vitals.parentVitals?.Population?.toLocaleString()}
-          mr={4}
+          value={vitals[translate('dashboards.Population')]?.toLocaleString()}
+          icon="Group"
         />
         <EntityVitalsItem
           name={<I18n t="dashboards.priorityDistrict" />}
-          value={vitals.parentVitals?.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
+          value={vitals.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
+          icon="Notepad"
         />
-      </FlexStart>
-    </MuiBox>
-  </VitalsContainer>
-);
+        <EntityVitalsItem
+          name={<I18n t="dashboards.numberOfSchools" />}
+          value={vitals.NumberOfSchools?.toLocaleString()}
+          icon="School"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.numberOfStudents" />}
+          value={vitals.NumberOfStudents?.toLocaleString()}
+          icon="Study"
+        />
+      </ThreeColGrid>
+      <HorizontalDivider />
+      <MuiBox mt={2}>
+        <SubHeading variant="h4">
+          <I18n t="dashboards.provinceDetails" />
+        </SubHeading>
+        <FlexStart mt={1} mb={4}>
+          <EntityVitalsItem
+            name={<I18n t="dashboards.nameOfProvince" />}
+            value={vitals.parentVitals?.name}
+            mr={4}
+          />
+          <EntityVitalsItem
+            name={<I18n t="dashboards.provinceCode" />}
+            value={vitals.parentVitals?.code}
+            mr={4}
+          />
+          <EntityVitalsItem
+            name={<I18n t="dashboards.provincePopulation" />}
+            value={vitals.parentVitals?.[translate('dashboards.Population')]?.toLocaleString()}
+          />
+        </FlexStart>
+      </MuiBox>
+    </VitalsContainer>
+  );
+};
+
+const SchoolView = ({ vitals }) => {
+  const { translate } = useI18n();
+
+  return (
+    <VitalsContainer>
+      <Heading variant="h4">
+        <I18n t="dashboards.schoolDetails" />
+      </Heading>
+      <ThreeColGrid>
+        <EntityVitalsItem
+          name={<I18n t="dashboards.schoolCode" />}
+          value={vitals.code}
+          icon="LocationPin"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.numberOfStudents" />}
+          value={vitals.NumberOfStudents?.toLocaleString()}
+          icon="Study"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.completeSchool" />}
+          value={vitals.SchoolComplete ? 'Yes' : 'No'}
+          icon="Notepad"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.distanceToMainRoad" />}
+          value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
+          icon="Road"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.location" />}
+          value={vitals.point?.map(x => x.toFixed(3)).join(', ')}
+          icon="PushPin"
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.schoolType" />}
+          value={vitals.attributes?.type}
+          icon="School"
+        />
+      </ThreeColGrid>
+      <HorizontalDivider />
+      <MuiBox mt={2}>
+        <SubHeading variant="h4">
+          <I18n t="dashboards.districtDetails" />
+        </SubHeading>
+        <FlexStart mt={1} mb={4}>
+          <EntityVitalsItem
+            name={<I18n t="dashboards.nameOfDistrict" />}
+            value={vitals.parentVitals?.name}
+            mr={4}
+          />
+          <EntityVitalsItem
+            name={<I18n t="dashboards.districtPopulation" />}
+            value={vitals.parentVitals?.[translate('dashboards.Population')]?.toLocaleString()}
+            mr={4}
+          />
+          <EntityVitalsItem
+            name={<I18n t="dashboards.priorityDistrict" />}
+            value={
+              vitals.parentVitals?.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'
+            }
+          />
+        </FlexStart>
+      </MuiBox>
+    </VitalsContainer>
+  );
+};
 
 const Wrapper = styled.section`
   background: #fbfbfb;
@@ -294,7 +306,7 @@ const Logo = styled.div`
   height: 100%;
 `;
 
-const VITALS_VIEWS = {
+export const VITALS_VIEWS = {
   country: CountryView,
   district: ProvinceView,
   sub_district: DistrictView,

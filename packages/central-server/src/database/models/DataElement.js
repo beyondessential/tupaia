@@ -8,7 +8,7 @@ import {
   DataElementModel as CommonDataElementModel,
 } from '@tupaia/database';
 
-export const DATA_SOURCE_SERVICE_TYPES = ['dhis', 'tupaia', 'data-lake'];
+export const DATA_SOURCE_SERVICE_TYPES = ['dhis', 'tupaia', 'data-lake', 'superset'];
 
 const getSurveyDateCode = surveyCode => `${surveyCode}SurveyDate`;
 
@@ -28,7 +28,7 @@ export class DataElementType extends CommonDataElementType {
       },
       {
         service_type: 'dhis',
-        config: { isDataRegional: this.config.isDataRegional },
+        config: { dhisInstanceCode: this.config.dhisInstanceCode },
       },
     );
     await this.attachDataElement(dataElementId);

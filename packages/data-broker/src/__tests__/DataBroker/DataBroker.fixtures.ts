@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataElement, DataGroup, ServiceType } from '../../types';
+import { DataElement, DataElementDataService, DataGroup, Entity, ServiceType } from '../../types';
 import { ServiceResults } from './DataBroker.stubs';
 
 const dataElement = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
@@ -20,6 +20,14 @@ export const DATA_ELEMENTS: Record<string, DataElement> = {
   DHIS_01: dataElement({ code: 'DHIS_01', service_type: 'dhis' }),
   DHIS_02: dataElement({ code: 'DHIS_02', service_type: 'dhis' }),
   TUPAIA_01: dataElement({ code: 'TUPAIA_01', service_type: 'tupaia' }),
+  MAPPED_01: dataElement({
+    code: 'MAPPED_01',
+    service_type: 'test',
+  }),
+  MAPPED_02: dataElement({
+    code: 'MAPPED_02',
+    service_type: 'test',
+  }),
 };
 export const DATA_GROUPS: Record<string, DataGroup> = {
   DHIS_PROGRAM_01: { code: 'DHIS_PROGRAM_01', service_type: 'dhis', config: {} },
@@ -74,3 +82,37 @@ export const DATA_BY_SERVICE: Record<string, ServiceResults> = {
     dataElements: [{ code: 'TUPAIA_01', name: 'Tupaia element 1' }],
   },
 };
+
+export const ENTITIES: Record<string, Entity> = {
+  TO_FACILITY_01: {
+    code: 'TO_FACILITY_01',
+    name: 'Tonga facility 1',
+    country_code: 'TO',
+    type: 'facility',
+    config: {},
+  },
+  FJ_FACILITY_01: {
+    code: 'FJ_FACILITY_01',
+    name: 'Fiji facility 1',
+    country_code: 'FJ',
+    type: 'facility',
+    config: {},
+  },
+  TO: { code: 'TO', name: 'Tonga', country_code: 'TO', type: 'country', config: {} },
+  FJ: { code: 'FJ', name: 'Fiji', country_code: 'FJ', type: 'country', config: {} },
+};
+
+export const DATA_ELEMENT_DATA_SERVICES: DataElementDataService[] = [
+  {
+    data_element_code: 'MAPPED_01',
+    country_code: 'FJ',
+    service_type: 'other',
+    service_config: { cow: 'moo' },
+  },
+  {
+    data_element_code: 'MAPPED_02',
+    country_code: 'FJ',
+    service_type: 'other',
+    service_config: { sheep: 'baaaa' },
+  },
+];

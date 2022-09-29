@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { FetchOptions as PullIndicatorsOptions, IndicatorApi } from '@tupaia/indicators';
+import type { FetchOptions as BaseFetchOptions, IndicatorApi } from '@tupaia/indicators';
 import {
   AnalyticResults,
   DataBrokerModelRegistry,
@@ -12,6 +12,9 @@ import {
   DataSourceType,
 } from '../../types';
 import { Service } from '../Service';
+import type { PullOptions as BasePullOptions } from '../Service';
+
+type PullOptions = BasePullOptions & BaseFetchOptions;
 
 export class IndicatorService extends Service {
   private readonly api: IndicatorApi;
@@ -33,16 +36,16 @@ export class IndicatorService extends Service {
   public async pull(
     dataSources: DataElement[],
     type: 'dataElement',
-    options: PullIndicatorsOptions,
+    options: PullOptions,
   ): Promise<AnalyticResults>;
   public async pull(
     dataSources: DataSource[],
     type: DataSourceType,
-    options: Record<string, unknown>,
+    options: PullOptions,
   ): Promise<AnalyticResults | never> {
     switch (type) {
       case this.dataSourceTypes.DATA_ELEMENT:
-        return this.pullAnalytics(dataSources as DataElement[], options as PullIndicatorsOptions);
+        return this.pullAnalytics(dataSources as DataElement[], options as PullOptions);
       case this.dataSourceTypes.DATA_GROUP:
         throw new Error('Event pulling is not supported in IndicatorService');
       case this.dataSourceTypes.SYNC_GROUP:
@@ -52,13 +55,12 @@ export class IndicatorService extends Service {
     }
   }
 
-  private async pullAnalytics(dataSources: DataElement[], options: PullIndicatorsOptions) {
+  private async pullAnalytics(dataSources: DataElement[], options: PullOptions) {
     const indicatorCodes = dataSources.map(({ code }) => code);
 
     return {
       results: await this.api.buildAnalytics(indicatorCodes, options),
-      // TODO: either implement properly in #tupaia-backlog/1153,
-      // or remove entirely in #tupaia-backlog/issues/1154
+      // TODO: either implement properly in #NOT-521 or remove entirely in #NOT-522
       metadata: { dataElementCodeToName: {} },
     };
   }

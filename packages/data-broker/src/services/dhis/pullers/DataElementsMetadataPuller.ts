@@ -8,12 +8,14 @@ import groupBy from 'lodash.groupby';
 import type { DhisApi } from '@tupaia/dhis-api';
 import { DataElementModel } from '../../../types';
 import { DataElement } from '../types';
-import { DhisTranslator } from '../DhisTranslator';
+import { DhisTranslator } from '../translators';
+import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
 
-type PullOptions = Partial<{
-  additionalFields: string[];
-  includeOptions: boolean;
-}>;
+type PullOptions = BasePullMetadataOptions &
+  Partial<{
+    additionalFields: string[];
+    includeOptions: boolean;
+  }>;
 
 export class DataElementsMetadataPuller {
   private readonly dataSourceModel: DataElementModel;

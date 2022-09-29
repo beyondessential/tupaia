@@ -3,15 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable react/static-property-placement */
-
 import { lower } from 'case';
-import groupBy from 'lodash.groupby';
-
-import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { countDistinct, toArray } from '@tupaia/utils';
+import { toArray } from '@tupaia/utils';
 import { createService } from './services';
+import { DataServiceResolver } from './services/DataServiceResolver';
 import {
   Analytic,
   AnalyticResults as RawAnalyticResults,
@@ -24,6 +20,8 @@ import {
   SyncGroupResults,
 } from './types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from './utils';
+import type { AccessPolicy } from '@tupaia/access-policy';
+import { DataServiceMapping } from './services/DataServiceMapping';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -81,14 +79,16 @@ export class DataBroker {
   public readonly context: Context;
 
   private readonly models: DataBrokerModelRegistry;
+  private readonly dataServiceResolver: DataServiceResolver;
   private readonly resultMergers: Record<DataSourceType, ResultMerger>;
   private readonly fetchers: Record<DataSourceType, Fetcher>;
   private readonly permissionCheckers: Record<DataSourceType, PermissionChecker>;
   private userPermissions: string[] | undefined;
 
-  public constructor(context = {}) {
+  constructor(context = {}) {
     this.context = context;
     this.models = getModelRegistry();
+    this.dataServiceResolver = new DataServiceResolver(this.models);
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
@@ -213,24 +213,32 @@ export class DataBroker {
     return createService(this.models, serviceType, this);
   }
 
-  public async push(dataSourceSpec: DataSourceSpec, data: unknown) {
+  public async push(dataSourceSpec: DataSourceSpec, data: unknown, options: any = {}) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
-    if (countDistinct(dataSources, 'service_type') > 1) {
-      throw new Error('Cannot push data belonging to different services');
-    }
-    const service = this.createService(dataSources[0].service_type);
-    return service.push(dataSources, data, { type: dataSourceSpec.type });
+    const { type: dataSourceType } = dataSourceSpec;
+    const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
+      dataSources,
+      options,
+    );
+
+    const service = this.createService(serviceType);
+    return service.push(dataSources, data, { type: dataSourceType, dataServiceMapping });
   }
 
-  public async delete(
-    dataSourceSpec: DataSourceSpec,
-    data: unknown,
-    options: Record<string, unknown>,
-  ) {
+  async delete(dataSourceSpec: DataSourceSpec, data: unknown, options: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const [dataSource] = dataSources;
-    const service = this.createService(dataSource.service_type);
-    return service.delete(dataSource, data, { type: dataSourceSpec.type, ...options });
+    const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
+      dataSources,
+      options,
+    );
+
+    const service = this.createService(serviceType);
+    return service.delete(dataSource, data, {
+      type: dataSourceSpec.type,
+      dataServiceMapping,
+      ...options,
+    });
   }
 
   public async pull(
@@ -245,16 +253,25 @@ export class DataBroker {
     dataSourceSpec: DataSourceSpec<'syncGroup'>,
     options: Record<string, unknown>,
   ): Promise<SyncGroupResults>;
-  public async pull(dataSourceSpec: DataSourceSpec, options: Record<string, unknown>) {
+  public async pull(dataSourceSpec: DataSourceSpec, options: Record<string, unknown> = {}) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const { type } = dataSourceSpec;
+    const { organisationUnitCode, organisationUnitCodes } = options;
+    const orgUnitCodes =
+      (organisationUnitCodes as string[]) ||
+      (organisationUnitCode ? [organisationUnitCode as string] : null);
 
-    const dataSourcesByService = groupBy(dataSources, 'service_type');
-    const dataSourceFetches = Object.values(dataSourcesByService);
+    const pulls = await this.getPulls(dataSources, orgUnitCodes);
     const nestedResults = await Promise.all(
-      dataSourceFetches.map(dataSourceForFetch =>
-        this.pullForServiceAndType(dataSourceForFetch, options, type),
-      ),
+      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
+        return this.pullForServiceAndType(
+          dataSourcesForThisPull,
+          options,
+          type,
+          serviceType,
+          dataServiceMapping,
+        );
+      }),
     );
     const mergeResults = this.resultMergers[type];
 
@@ -265,20 +282,21 @@ export class DataBroker {
     );
   }
 
-  private pullForServiceAndType = async (
+  pullForServiceAndType = async (
     dataSources: DataSource[],
     options: Record<string, unknown>,
     type: DataSourceType,
+    serviceType: ServiceType,
+    dataServiceMapping: DataServiceMapping,
   ) => {
-    const { service_type: serviceType } = dataSources[0];
     const permissionChecker = this.permissionCheckers[type];
     // Permission checkers will throw if they fail
     await permissionChecker(dataSources);
     const service = this.createService(serviceType);
-    return service.pull(dataSources, type, options);
+    return service.pull(dataSources, type, { ...options, dataServiceMapping });
   };
 
-  private mergeAnalytics = (
+  mergeAnalytics = (
     target: AnalyticResults = EMPTY_ANALYTICS_RESULTS,
     source: RawAnalyticResults,
   ) => {
@@ -330,12 +348,127 @@ export class DataBroker {
 
   public async pullMetadata(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
-    if (countDistinct(dataSources, 'service_type') > 1) {
-      throw new Error('Cannot pull metadata for data sources belonging to different services');
-    }
-    const service = this.createService(dataSources[0].service_type);
+    const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
+      dataSources,
+      options,
+    );
+
+    const service = this.createService(serviceType);
     // `dataSourceSpec` is defined  for a single `type`
     const { type } = dataSourceSpec;
-    return service.pullMetadata(dataSources, type, options);
+    return service.pullMetadata(dataSources, type, { dataServiceMapping, ...options });
+  }
+
+  /**
+   * Given some DataSources, returns a single serviceType or throws an error if multiple found
+   */
+  private async getSingleServiceAndMapping(
+    dataSources: DataSource[],
+    options: Record<string, any> = {},
+  ): Promise<{ serviceType: ServiceType; dataServiceMapping: DataServiceMapping }> {
+    const { organisationUnitCode } = options;
+
+    const dataServiceMapping = await this.dataServiceResolver.getMappingByOrgUnitCode(
+      dataSources,
+      organisationUnitCode,
+    );
+    if (dataServiceMapping.uniqueServiceTypes().length > 1) {
+      throw new Error('Multiple data service types found, only a single service type expected');
+    }
+
+    const [serviceType] = dataServiceMapping.uniqueServiceTypes();
+    return {
+      serviceType,
+      dataServiceMapping,
+    };
+  }
+  private async getPulls(
+    dataSources: DataSource[],
+    orgUnitCodes: string[] | null,
+  ): Promise<
+    {
+      dataSources: DataSource[];
+      serviceType: ServiceType;
+      dataServiceMapping: DataServiceMapping;
+    }[]
+  > {
+    // Special case where no org unit is provided
+    if (orgUnitCodes === null) {
+      const pulls = [];
+      const mapping = await this.dataServiceResolver.getMapping(dataSources);
+      for (const serviceType of mapping.uniqueServiceTypes()) {
+        pulls.push({
+          dataSources,
+          serviceType,
+          dataServiceMapping: mapping,
+        });
+      }
+      return pulls;
+    }
+
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
+
+    // Note: each service will pull for ALL org units and ALL data sources.
+    // This will likely lead to problems in the future, for now this is ok because
+    // our services happily ignore extra org units, and our vizes do not ask for
+    // data elements that don't exist in dhis (dhis throws if it cant find it).
+
+    // First we get the mapping for each country, then if any two countries have the
+    // exact same mapping we simply combine them
+    const orgUnitCountryCodes = orgUnits
+      .map(orgUnit => orgUnit.country_code)
+      .filter(countryCode => countryCode !== null && countryCode !== undefined);
+    const countryCodes = [...new Set(orgUnitCountryCodes)];
+
+    if (countryCodes.length === 1) {
+      // No special logic needed, exit early
+      const [countryCode] = countryCodes;
+      const dataServiceMapping = await this.dataServiceResolver.getMappingByCountryCode(
+        dataSources,
+        countryCode,
+      );
+      return Object.entries(dataServiceMapping.dataSourcesByServiceType()).map(
+        ([serviceType, dataSourcesForThisServiceType]) => ({
+          dataSources: dataSourcesForThisServiceType,
+          serviceType: serviceType as ServiceType,
+          dataServiceMapping,
+        }),
+      );
+    }
+
+    const mappingsByCountryCode: Record<string, DataServiceMapping> = {};
+    for (const countryCode of countryCodes) {
+      mappingsByCountryCode[countryCode] = await this.dataServiceResolver.getMappingByCountryCode(
+        dataSources,
+        countryCode,
+      );
+    }
+
+    const uniqueMappings: DataServiceMapping[] = [];
+    for (const mappingA of Object.values(mappingsByCountryCode)) {
+      let alreadyAdded = false;
+      for (const mappingB of uniqueMappings) {
+        if (mappingA === mappingB) continue;
+        if (mappingA.equals(mappingB)) {
+          alreadyAdded = true;
+          break;
+        }
+      }
+      if (!alreadyAdded) uniqueMappings.push(mappingA);
+    }
+
+    // And finally split each by service type
+    const pulls = [];
+    for (const mapping of uniqueMappings) {
+      for (const serviceType of mapping.uniqueServiceTypes()) {
+        pulls.push({
+          dataSources,
+          serviceType,
+          dataServiceMapping: mapping,
+        });
+      }
+    }
+
+    return pulls;
   }
 }

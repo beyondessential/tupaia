@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import type { DhisApi } from '@tupaia/dhis-api';
 import {
   AnalyticResults,
@@ -14,45 +15,53 @@ import {
   EventResults,
   OutboundEvent,
 } from '../../types';
+import type {
+  PullMetadataOptions as BasePullMetadataOptions,
+  PullOptions as BasePullOptions,
+  PushOptions as BasePushOptions,
+  DeleteOptions as BaseDeleteOptions,
+} from '../Service';
 import { Service } from '../Service';
-import { DhisTranslator } from './DhisTranslator';
-import { getDhisApiInstance } from './getDhisApiInstance';
+import { DhisTranslator } from './translators';
 import {
   AnalyticsPuller,
   DataElementsMetadataPuller,
+  DataGroupMetadataPuller,
   DeprecatedEventsPuller,
   EventsPuller,
   PullAnalyticsOptions,
   PullEventsOptions,
 } from './pullers';
 import { DataElement, DataGroup, DataServiceConfig, DataSource } from './types';
+import { DataServiceMapping } from '../DataServiceMapping';
 
-const DEFAULT_DATA_SERVICE = { isDataRegional: true };
-const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
-
-type PushOptions = {
-  type: DataSourceType;
+type DataElementPushOptions = BasePushOptions & {
+  type: 'dataElement';
+};
+type DataGroupPushOptions = BasePushOptions & {
+  type: 'dataGroup';
 };
 
-type PullOptions = Partial<{
-  organisationUnitCode: string;
-  organisationUnitCodes: string[];
-  dataServices: DataServiceConfig[];
-  detectDataServices: boolean;
-  useDeprecatedApi: boolean;
-}>;
+type PullOptions = BasePullOptions &
+  Partial<{
+    organisationUnitCode: string;
+    organisationUnitCodes: string[];
+    dataServices: DataServiceConfig[];
+    detectDataServices: boolean;
+    useDeprecatedApi: boolean;
+  }>;
 
-type DeleteOptions = {
+type DeleteOptions = BaseDeleteOptions & {
   serverName?: string;
-  type: DataSourceType;
 };
 
-type PullMetadataOptions = Partial<{
-  organisationUnitCode: string;
-  dataServices: DataServiceConfig[];
-  additionalFields: string[];
-  includeOptions: boolean;
-}>;
+export type PullMetadataOptions = BasePullMetadataOptions &
+  Partial<{
+    organisationUnitCode: string;
+    dataServices: DataServiceConfig[];
+    additionalFields: string[];
+    includeOptions: boolean;
+  }>;
 
 interface DeleteEventData {
   dhisReference: string;
@@ -86,12 +95,16 @@ type Puller =
 type MetadataPuller = (
   api: DhisApi,
   dataSources: DataElement[],
-  options: PullMetadataOptions,
+  options: any,
 ) => Promise<DataElementMetadata[]>;
+
+type MetadataMerger = any;
 
 export class DhisService extends Service {
   private readonly translator: DhisTranslator;
   private readonly dataElementsMetadataPuller: DataElementsMetadataPuller;
+  private readonly dataGroupMetadataPuller: DataGroupMetadataPuller;
+
   private readonly analyticsPuller: AnalyticsPuller;
   private readonly eventsPuller: EventsPuller;
   private readonly deprecatedEventsPuller: DeprecatedEventsPuller;
@@ -99,6 +112,7 @@ export class DhisService extends Service {
   private readonly deleters: Record<string, Deleter>;
   private readonly pullers: Record<string, Puller>;
   private readonly metadataPullers: Record<string, MetadataPuller>;
+  private readonly metadataMergers: Record<string, MetadataMerger>;
 
   public constructor(models: DataBrokerModelRegistry) {
     super(models);
@@ -108,20 +122,22 @@ export class DhisService extends Service {
       this.models.dataElement,
       this.translator,
     );
+    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(
+      this.models.dataGroup,
+      this.translator,
+    );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataElement,
+      this.models,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
-    this.deprecatedEventsPuller = new DeprecatedEventsPuller(
-      this.models.dataElement,
-      this.translator,
-    );
+    this.eventsPuller = new EventsPuller(this.models, this.translator);
+    this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models, this.translator);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
+    this.metadataMergers = this.getMetadataMergers();
   }
 
   private getPushers() {
@@ -151,45 +167,60 @@ export class DhisService extends Service {
   private getMetadataPullers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.dataGroupMetadataPuller.pull.bind(this),
     };
   }
 
-  private getApiForValue = (dataSource: DataSource, dataValue: DataValue | DeleteEventData) => {
-    const { isDataRegional } = dataSource.config;
-    const { orgUnit: entityCode } = dataValue as Partial<DataValue>;
-    return getDhisApiInstance({ entityCode, isDataRegional }, this.models);
-  };
+  private getMetadataMergers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: (results: any) =>
+        results.reduce((existingResults: any, result: any) => existingResults.concat(result)),
+      [this.dataSourceTypes.DATA_GROUP]: (results: any) => results[0],
+    };
+  }
 
-  private validatePushData(dataSources: DataSource[], dataValues: DataValue[]) {
-    const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
-    if (
-      dataSources.some(
-        (dataSource, i) => this.getApiForValue(dataSource, dataValues[i]).serverName !== serverName,
-      )
-    ) {
-      throw new Error('All data being pushed must be for the same DHIS2 instance');
+  private async validatePushData(
+    dataSources: DataSource[],
+    dataValues: DataValue[],
+    dataServiceMapping: DataServiceMapping,
+  ) {
+    const { serverName } = await getApiForDataSource(
+      this.models,
+      dataSources[0],
+      dataServiceMapping,
+    );
+    for (let i = 0; i < dataSources.length; i++) {
+      const { serverName: otherServerName } = await getApiForDataSource(
+        this.models,
+        dataSources[i],
+        dataServiceMapping,
+      );
+      if (otherServerName !== serverName) {
+        throw new Error(`All data being pushed must be for the same DHIS2 instance`);
+      }
     }
   }
 
   public async push(
     dataSources: DataElement[],
     data: DataValue | DataValue[],
-    { type }: { type: 'dataElement' },
+    options: DataElementPushOptions,
   ): Promise<PushResults>;
   public async push(
     dataSources: DataGroup[],
     data: OutboundEvent | OutboundEvent[],
-    { type }: { type: 'dataGroup' },
+    options: DataGroupPushOptions,
   ): Promise<PushResults>;
   public async push(
     dataSources: DataSource[],
     data: unknown,
-    { type }: PushOptions,
+    options: BasePushOptions,
   ): Promise<PushResults> {
+    const { type, dataServiceMapping } = options;
     const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
-    this.validatePushData(dataSources, dataValues);
-    const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
+    await this.validatePushData(dataSources, dataValues, dataServiceMapping);
+    const api = await getApiForDataSource(this.models, dataSources[0], dataServiceMapping); // all are for the same instance
     const diagnostics = await pushData(api, dataValues, dataSources as any);
     return { diagnostics, serverName: api.getServerName() };
   }
@@ -227,11 +258,15 @@ export class DhisService extends Service {
   public async delete(
     dataSource: DataSource,
     data: DataValue | DeleteEventData,
-    { serverName, type }: DeleteOptions,
+    options: DeleteOptions,
   ): Promise<Diagnostics> {
-    const api = serverName
-      ? getDhisApiInstance({ serverName }, this.models)
-      : this.getApiForValue(dataSource, data);
+    const { serverName, type, dataServiceMapping } = options;
+    let api: DhisApi;
+    if (serverName) {
+      api = await getApiFromServerName(this.models, serverName);
+    } else {
+      api = await getApiForDataSource(this.models, dataSource, dataServiceMapping);
+    }
     const deleteData = this.deleters[type];
     return deleteData(api, data as any, dataSource as any);
   }
@@ -242,7 +277,7 @@ export class DhisService extends Service {
       [dataValue],
       [dataSource],
     );
-    return api.deleteDataValue(translatedDataValue);
+    return api.deleteDataValue(translatedDataValue as any);
   }
 
   private deleteEvent = async (api: DhisApi, data: DeleteEventData) =>
@@ -251,43 +286,20 @@ export class DhisService extends Service {
   public async pull(
     dataSources: DataElement[],
     type: 'dataElement',
-    options?: PullAnalyticsOptions,
+    options: PullAnalyticsOptions,
   ): Promise<AnalyticResults>;
   public async pull(
     dataSources: DataGroup[],
     type: 'dataGroup',
-    options?: PullEventsOptions,
+    options: PullEventsOptions,
   ): Promise<EventResults>;
-  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions = {}) {
-    const {
-      organisationUnitCode,
-      organisationUnitCodes,
-      dataServices: inputDataServices = DEFAULT_DATA_SERVICES,
-      detectDataServices = false,
-    } = options;
-    let dataServices = inputDataServices;
-    // TODO remove the `detectDataServices` flag after
-    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
-    if (detectDataServices) {
-      dataServices = dataSources.map(ds => {
-        const { isDataRegional = true } = ds.config;
-        return { isDataRegional };
-      });
-    }
-
-    const entityCodes = organisationUnitCodes || [organisationUnitCode as string];
-
-    const { useDeprecatedApi = false } = options;
+  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
+    const { dataServiceMapping, useDeprecatedApi = false } = options;
+    const apis = await getApisForDataSources(this.models, dataSources, dataServiceMapping);
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
     const pullData = this.pullers[pullerKey];
-
-    const apis: Set<DhisApi> = new Set();
-    dataServices.forEach(({ isDataRegional }) => {
-      apis.add(getDhisApiInstance({ entityCodes, isDataRegional }, this.models));
-    });
-
-    return pullData(Array.from(apis), dataSources as any, options as any);
+    return pullData(apis, dataSources as any, options as any);
   }
 
   public async pullMetadata(
@@ -300,19 +312,22 @@ export class DhisService extends Service {
     type: DataSourceType,
     options: PullMetadataOptions,
   ) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
-    const pullMetadata = this.metadataPullers[type];
-    const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }, this.models),
+    const { dataServiceMapping } = options;
+    const apis: DhisApi[] = await getApisForDataSources(
+      this.models,
+      dataSources,
+      dataServiceMapping,
     );
+    const puller = this.metadataPullers[type];
 
     const results: DataElementMetadata[] = [];
     const pullForApi = async (api: DhisApi) => {
-      const newResults = await pullMetadata(api, dataSources as any, options as any);
+      const newResults = await puller(api, dataSources as any, options as any);
       results.push(...newResults);
     };
     await Promise.all(apis.map(pullForApi));
 
-    return results;
+    const mergeMetadata = this.metadataMergers[type];
+    return mergeMetadata(results);
   }
 }

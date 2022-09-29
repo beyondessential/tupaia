@@ -14,12 +14,17 @@ import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
 import { DataElement, WeatherResult } from './types';
+import type {
+  PullOptions as BasePullOptions,
+  PullMetadataOptions as BasePullMetadataOptions,
+} from '../Service';
 
-export type PullOptions = Partial<{
-  organisationUnitCodes: string[];
-  startDate: string;
-  endDate: string;
-}>;
+export type PullOptions = BasePullOptions &
+  Partial<{
+    organisationUnitCodes: string[];
+    startDate: string;
+    endDate: string;
+  }>;
 
 export class WeatherService extends Service {
   private readonly api: WeatherApi;
@@ -37,14 +42,14 @@ export class WeatherService extends Service {
   public async pull(
     dataSources: DataElement[],
     type: 'dataElement',
-    options?: PullOptions,
+    options: PullOptions,
   ): Promise<AnalyticResults>;
   public async pull(
     dataSources: DataGroup[],
     type: 'dataGroup',
-    options?: PullOptions,
+    options: PullOptions,
   ): Promise<EventResults>;
-  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions = {}) {
+  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
     this.validateOptions(options);
 
     const { startDate, endDate } = options;
@@ -100,7 +105,7 @@ export class WeatherService extends Service {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     dataSources: DataElement[],
     type: DataSourceType,
-    options: Record<string, unknown>,
+    options: BasePullMetadataOptions,
     /* eslint-enable @typescript-eslint/no-unused-vars */
   ) {
     const dataElements = await this.models.dataElement.find({

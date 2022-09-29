@@ -8,24 +8,28 @@ import { buildTransform } from '../../../../reportBuilder/transform';
 
 describe('parser', () => {
   it('can do lookups', () => {
-    const transform = buildTransform([
-      {
-        transform: 'updateColumns',
-        insert: {
-          variable: '=$BCD1',
-          current: '=@current.BCD1',
-          index: '=@index',
-          previous: '=@previous.BCD1',
-          next: '=@next.BCD1',
-          lastAll: '=last(@all.BCD1)',
-          sumAllPrevious: '=sum(@allPrevious.BCD1)',
-          sumWhereMatchingOrgUnit:
-            '=sum(where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
-          tableLength: '=length(@table)',
+    const transform = buildTransform(
+      [
+        {
+          transform: 'updateColumns',
+          insert: {
+            variable: '=$BCD1',
+            current: '=@current.BCD1',
+            index: '=@index',
+            previous: '=@previous.BCD1',
+            next: '=@next.BCD1',
+            lastAll: '=last(@all.BCD1)',
+            sumAllPrevious: '=sum(@allPrevious.BCD1)',
+            sumWhereMatchingOrgUnit:
+              '=sum(where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
+            tableLength: '=length(@table)',
+            requestParam: '= @params.animal',
+          },
+          exclude: '*',
         },
-        exclude: '*',
-      },
-    ]);
+      ],
+      { query: { animal: 'cat' } },
+    );
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
       {
         variable: 4,
@@ -36,6 +40,7 @@ describe('parser', () => {
         sumAllPrevious: 4,
         sumWhereMatchingOrgUnit: 11,
         tableLength: 6,
+        requestParam: 'cat',
       },
       {
         variable: 2,
@@ -47,6 +52,7 @@ describe('parser', () => {
         sumAllPrevious: 6,
         sumWhereMatchingOrgUnit: 11,
         tableLength: 6,
+        requestParam: 'cat',
       },
       {
         variable: 5,
@@ -58,6 +64,7 @@ describe('parser', () => {
         sumAllPrevious: 11,
         sumWhereMatchingOrgUnit: 11,
         tableLength: 6,
+        requestParam: 'cat',
       },
       {
         variable: 7,
@@ -69,6 +76,7 @@ describe('parser', () => {
         sumAllPrevious: 18,
         sumWhereMatchingOrgUnit: 17,
         tableLength: 6,
+        requestParam: 'cat',
       },
       {
         variable: 8,
@@ -80,6 +88,7 @@ describe('parser', () => {
         sumAllPrevious: 26,
         sumWhereMatchingOrgUnit: 17,
         tableLength: 6,
+        requestParam: 'cat',
       },
       {
         variable: 2,
@@ -90,6 +99,7 @@ describe('parser', () => {
         sumAllPrevious: 28,
         sumWhereMatchingOrgUnit: 17,
         tableLength: 6,
+        requestParam: 'cat',
       },
     ]);
   });

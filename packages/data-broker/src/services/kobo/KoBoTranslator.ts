@@ -3,15 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
-
 import { DataBrokerModelRegistry, Event } from '../../types';
 import { KoboSubmission, QuestionMapping } from './types';
 
 export class KoBoTranslator {
   private readonly models: DataBrokerModelRegistry;
 
-  public constructor(models: DataBrokerModelRegistry) {
+  constructor(models: DataBrokerModelRegistry) {
     this.models = models;
   }
 
@@ -42,13 +40,21 @@ export class KoBoTranslator {
       ...restOfFields
     } = result;
 
+    if (!koboEntityCode) {
+      throw new Error(
+        `Cannot find a question in the Kobo survey response matching the entityQuestionCode: ${entityQuestion}`,
+      );
+    }
+
     const { orgUnit, orgUnitName } = await this.fetchEntityInfoFromKoBoAnswer(koboEntityCode);
     // Map kobo questions to tupaia question codes
     const dataValues: Event['dataValues'] = {};
-    for (const [tupaia, { koboQuestionCode, answerMap }] of Object.entries(questionMapping)) {
+    for (const [tupaiaQuestionCode, { koboQuestionCode, answerMap }] of Object.entries(
+      questionMapping,
+    )) {
       if (restOfFields[koboQuestionCode] !== undefined) {
         const koboValue = restOfFields[koboQuestionCode];
-        dataValues[tupaia] =
+        dataValues[tupaiaQuestionCode] =
           answerMap?.[koboValue] !== undefined ? answerMap[koboValue] : koboValue;
       }
     }

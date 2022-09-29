@@ -37,7 +37,7 @@ import { SignupForm } from '../SignupForm';
 import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
-import { LANDING } from '../OverlayDiv/constants';
+import { LANDING, VIEW_PROJECTS } from '../OverlayDiv/constants';
 import { USER_BAR_STYLES, DARK_BLUE, WHITE } from '../../styles';
 import { OneTimeLoginForm } from '../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../styles/LightThemeProvider';
@@ -179,7 +179,10 @@ export class UserBar extends Component {
     return (
       <div style={USER_BAR_STYLES.container}>
         <div style={USER_BAR_STYLES.userMenu}>
-          <UserMenu openLandingPage={this.props.onOpenLandingPage} />
+          <UserMenu
+            openLandingPage={this.props.onOpenLandingPage}
+            openViewProjects={this.props.onOpenViewProjects}
+          />
           <EmailVerifyNag />
         </div>
         {form}
@@ -191,6 +194,7 @@ export class UserBar extends Component {
 UserBar.propTypes = {
   onOpenUserPage: PropTypes.func.isRequired,
   onOpenLandingPage: PropTypes.func.isRequired,
+  onOpenViewProjects: PropTypes.func.isRequired,
   onCloseUserDialog: PropTypes.func.isRequired,
   isDialogVisible: PropTypes.bool.isRequired,
   dialogPage: PropTypes.oneOf([
@@ -236,6 +240,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onCloseUserDialog: () => dispatch(closeUserPage()),
     onOpenLandingPage: () => dispatch(setOverlayComponent(LANDING)),
+    onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
   };
 };

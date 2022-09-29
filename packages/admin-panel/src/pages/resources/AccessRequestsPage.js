@@ -84,6 +84,7 @@ const USER_COLUMNS = [
     type: 'bulkEdit',
     width: 150,
     actionConfig: {
+      title: 'Edit & Approve Access Requests',
       bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
       bulkUpdateEndpoint: `${ACCESS_REQUESTS_ENDPOINT}`,
       baseFilter: { approved: null },
@@ -147,6 +148,7 @@ const EXPANSION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit & Approve Access Request',
       editEndpoint: 'accessRequests',
       fields: [
         ...ACCESS_REQUEST_FIELDS,
@@ -179,9 +181,6 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
     columns={USER_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     baseFilter={{ approved: null }}
-    editConfig={{
-      title: 'Edit & Approve Access Request',
-    }}
     getHeaderEl={getHeaderEl}
     onProcessDataForSave={(editedFields, recordData) => {
       if (!Array.isArray(recordData)) {

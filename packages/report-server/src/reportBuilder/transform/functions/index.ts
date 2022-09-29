@@ -22,6 +22,10 @@ import { buildMergeRows, paramsValidator as mergeRowsParamsValidator } from './m
 import { buildSortRows, paramsValidator as sortRowsParamsValidator } from './sortRows';
 import { buildExcludeRows, paramsValidator as excludeRowsParamsValidator } from './excludeRows';
 import { buildInsertRows, paramsValidator as insertRowsParamsValidator } from './insertRows';
+import {
+  buildGatherColumns,
+  paramsValidator as gatherColumnsParamsValidator,
+} from './gatherColumns';
 
 type TransformBuilder = (params: unknown, context: Context) => (rows: Row[]) => Row[];
 
@@ -33,6 +37,7 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   sortRows: buildSortRows,
   excludeRows: buildExcludeRows,
   insertRows: buildInsertRows,
+  gatherColumns: buildGatherColumns,
 };
 
 export const transformSchemas: Record<
@@ -49,4 +54,5 @@ export const transformSchemas: Record<
   sortRows: sortRowsParamsValidator.describe(),
   excludeRows: excludeRowsParamsValidator.describe(),
   insertRows: insertRowsParamsValidator.describe(),
+  gatherColumns: gatherColumnsParamsValidator.describe(),
 };

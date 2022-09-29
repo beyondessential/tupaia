@@ -7,12 +7,8 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { AnalyticResults, DataElementModel } from '../../../types';
-import {
-  buildAnalyticsFromDhisAnalytics,
-  buildAnalyticsFromDhisEventAnalytics,
-} from '../buildAnalytics';
-import { DhisTranslator } from '../DhisTranslator';
+import { AnalyticResults, DataBrokerModelRegistry, DataElementModel } from '../../../types';
+import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
 import {
   DataElement,
   DataServiceConfig,
@@ -21,29 +17,32 @@ import {
   DhisEventAnalytics,
 } from '../types';
 import { DataElementsMetadataPuller } from './DataElementsMetadataPuller';
+import { PullOptions } from '../../Service';
+import { DhisTranslator } from '../translators';
 
-export type PullAnalyticsOptions = Partial<{
-  programCodes?: string[];
-  organisationUnitCode: string;
-  organisationUnitCodes: string[];
-  dataServices: DataServiceConfig[];
-  period: string;
-  startDate: string;
-  endDate: string;
-  dataPeriodType: string;
-}>;
+export type PullAnalyticsOptions = PullOptions &
+  Partial<{
+    programCodes?: string[];
+    organisationUnitCode: string;
+    organisationUnitCodes: string[];
+    dataServices: DataServiceConfig[];
+    period: string;
+    startDate: string;
+    endDate: string;
+    dataPeriodType: string;
+  }>;
 
 export class AnalyticsPuller {
-  private readonly dataSourceModel;
+  private readonly models;
   private readonly translator;
   private readonly dataElementsMetadataPuller;
 
-  public constructor(
-    dataSourceModel: DataElementModel,
+  constructor(
+    models: DataBrokerModelRegistry,
     translator: DhisTranslator,
     dataElementsMetadataPuller: DataElementsMetadataPuller,
   ) {
-    this.dataSourceModel = dataSourceModel;
+    this.models = models;
     this.translator = translator;
     this.dataElementsMetadataPuller = dataElementsMetadataPuller;
   }
@@ -51,7 +50,7 @@ export class AnalyticsPuller {
   private groupDataSourcesByDhisDataType = (dataSources: DataElement[]) =>
     groupBy(
       dataSources,
-      d => d.config?.dhisDataType || this.dataSourceModel.getDhisDataTypes().DATA_ELEMENT,
+      d => d.config?.dhisDataType || this.models.dataElement.getDhisDataTypes().DATA_ELEMENT,
     );
 
   private groupIndicatorDataSourcesByPeriodType = (dataSources: DataElement[]) => {
@@ -59,7 +58,7 @@ export class AnalyticsPuller {
       dataSources.some(
         d =>
           d.config?.dhisDataType &&
-          d.config.dhisDataType !== this.dataSourceModel.getDhisDataTypes().INDICATOR,
+          d.config.dhisDataType !== this.models.dataElement.getDhisDataTypes().INDICATOR,
       )
     ) {
       throw new Error('All data sources have to be DHIS indicators');
@@ -121,7 +120,7 @@ export class AnalyticsPuller {
       };
     };
     const pullForApi = async (api: DhisApi) => {
-      if (dhisDataType === this.dataSourceModel.getDhisDataTypes().INDICATOR) {
+      if (dhisDataType === this.models.dataElement.getDhisDataTypes().INDICATOR) {
         // Multiple DHIS Indicators may have different period types,
         // so we have to group them by their period types and fetch them separately
         const groupedDataSourcesByPeriodType = this.groupIndicatorDataSourcesByPeriodType(
@@ -238,7 +237,11 @@ export class AnalyticsPuller {
       dataSources,
     );
 
-    return buildAnalyticsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
+    return buildAnalyticsFromDhisEventAnalytics(
+      this.models,
+      translatedEventAnalytics,
+      dataElementCodes,
+    );
   };
 
   private getPullAnalyticsForApiMethod = (
@@ -249,13 +252,13 @@ export class AnalyticsPuller {
   ) => {
     const {
       programCodes,
-      dhisDataType = this.dataSourceModel.getDhisDataTypes().DATA_ELEMENT,
+      dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT,
     } = options;
 
     if (programCodes) {
       return this.pullAnalyticsFromEventsForApi;
     }
-    return dhisDataType === this.dataSourceModel.getDhisDataTypes().INDICATOR
+    return dhisDataType === this.models.dataElement.getDhisDataTypes().INDICATOR
       ? this.pullAggregatedAnalyticsForApi
       : this.pullAnalyticsForApi;
   };

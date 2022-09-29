@@ -16,13 +16,18 @@ import {
   Container as MuiContainer,
   CircularProgress,
 } from '@material-ui/core';
-import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
-import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
+import {
+  DateRangePicker,
+  WhiteButton,
+  SplitButton,
+  useChartDataExport,
+} from '@tupaia/ui-components';
+
 import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
-import { useI18n, useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
+import { useI18n, useUrlParams, useUrlSearchParams, useExportToImage } from '../utils';
 import { DashboardReport } from './DashboardReport';
 
 // Transition component for modal animation
@@ -33,16 +38,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Wrapper = styled.div`
   position: relative;
   height: 100%;
-  background: ${props => (props.$isExporting ? 'none' : COLORS.GREY_F9)};
   min-height: 720px;
 `;
 
-const Container = styled(MuiContainer)`
+const FixedHeightContainer = styled(MuiContainer)`
   padding: 0 6.25rem 3rem;
   padding-bottom: 5vh;
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: ${props => (props.$isExporting ? 'none' : COLORS.GREY_F9)};
+`;
+
+const ScrollingContainer = styled(FixedHeightContainer)`
+  height: auto;
 `;
 
 const Header = styled(FlexSpaceBetween)`
@@ -147,7 +156,7 @@ export const DashboardReportModal = () => {
 
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
-  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(
+  const { isExporting, isExportLoading, exportRef, exportToImg } = useExportToImage(
     pngExportFilename,
   );
 
@@ -161,7 +170,7 @@ export const DashboardReportModal = () => {
     if (exportId === 'xlsx') {
       await doExport();
     } else {
-      await exportToPNG();
+      await exportToImg();
     }
   };
 
@@ -200,6 +209,8 @@ export const DashboardReportModal = () => {
   const exportWithLabels = exportFormatId === 'pngWithLabels';
   const exportWithTable = exportFormatId === 'pngWithTable';
 
+  const VisualContainer = config?.type === 'list' ? ScrollingContainer : FixedHeightContainer;
+
   return (
     <MuiDialog
       scroll="paper"
@@ -217,7 +228,7 @@ export const DashboardReportModal = () => {
         </Box>
       </ExportLoader>
       <Wrapper ref={exportRef} $isExporting={isExporting}>
-        <Container maxWidth="xl">
+        <VisualContainer maxWidth="xl" $isExporting={isExporting}>
           <Header>
             <Box maxWidth={580}>
               <Heading variant="h3">{dashboardTitle}</Heading>
@@ -261,7 +272,7 @@ export const DashboardReportModal = () => {
           {isExporting && (
             <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
           )}
-        </Container>
+        </VisualContainer>
       </Wrapper>
     </MuiDialog>
   );

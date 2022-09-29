@@ -17,22 +17,30 @@ import {
   EventResults,
 } from '../../types';
 import { Service } from '../Service';
+import type {
+  PullOptions as BasePullOptions,
+  DeleteOptions as BaseDeleteOptions,
+  PushOptions as BasePushOptions,
+  PullMetadataOptions as BasePullMetadataOptions,
+} from '../Service';
 import { translateOptionsForApi } from './translation';
 
-export type PullAnalyticsOptions = Partial<{
-  period: string;
-  startDate: string;
-  endDate: string;
-  includeOptions: boolean;
-}>;
+export type PullAnalyticsOptions = BasePullOptions &
+  Partial<{
+    period: string;
+    startDate: string;
+    endDate: string;
+    includeOptions: boolean;
+  }>;
 
-export type PullEventsOptions = Partial<{
-  period: string;
-  startDate: string;
-  endDate: string;
-}>;
+export type PullEventsOptions = BasePullOptions &
+  Partial<{
+    period: string;
+    startDate: string;
+    endDate: string;
+  }>;
 
-type PullMetadataOptions = {
+type PullMetadataOptions = BasePullMetadataOptions & {
   includeOptions?: boolean;
 };
 
@@ -82,11 +90,7 @@ export class TupaiaService extends Service {
     type: 'dataGroup',
     options?: PullEventsOptions,
   ): Promise<EventResults>;
-  public async pull(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: Record<string, unknown> = {},
-  ) {
+  public async pull(dataSources: DataSource[], type: DataSourceType, options: BasePullOptions) {
     const pullData = this.pullers[type];
     return pullData(dataSources as any, options);
   }
@@ -131,7 +135,7 @@ export class TupaiaService extends Service {
   public async pullMetadata(
     dataSources: DataSource[],
     type: DataSourceType,
-    options: PullMetadataOptions = {},
+    options: PullMetadataOptions,
   ) {
     const pullMetadata = this.metadataPullers[type];
     return pullMetadata(dataSources as any, options);

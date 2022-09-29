@@ -30,6 +30,7 @@ type RowLookup = {
  * '@current.BCD1 + sum(@allPrevious.BCD1)' => 21
  */
 type Lookups = {
+  params: Record<string, unknown>;
   current: Row;
   previous: Row;
   next: Row;
@@ -53,6 +54,7 @@ export class TransformParser extends ExpressionParser {
 
     this.rows = rows;
     this.lookups = {
+      params: context?.query || {},
       current: {},
       previous: {},
       next: {},

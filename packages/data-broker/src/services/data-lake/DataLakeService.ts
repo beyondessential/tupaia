@@ -13,26 +13,32 @@ import {
   DataSourceType,
   EventResults,
 } from '../../types';
+import type {
+  PullMetadataOptions as BasePullMetadataOptions,
+  PullOptions as BasePullOptions,
+} from '../Service';
 import { Service } from '../Service';
 import { translateOptionsForApi } from './translation';
 
-type PullAnalyticsOptions = Partial<{
-  organisationUnitCodes: string[];
-  period: string;
-  startDate: string;
-  endDate: string;
-  dataElementCodes: string[];
-  dataGroupCode: string;
-  eventId: string;
-}>;
+type PullAnalyticsOptions = BasePullOptions &
+  Partial<{
+    organisationUnitCodes: string[];
+    period: string;
+    startDate: string;
+    endDate: string;
+    dataElementCodes: string[];
+    dataGroupCode: string;
+    eventId: string;
+  }>;
 
-type PullEventsOptions = Partial<{
-  organisationUnitCodes: string[];
-  period: string;
-  startDate: string;
-  endDate: string;
-  dataElementCodes: string[];
-}>;
+type PullEventsOptions = BasePullOptions &
+  Partial<{
+    organisationUnitCodes: string[];
+    period: string;
+    startDate: string;
+    endDate: string;
+    dataElementCodes: string[];
+  }>;
 
 type Puller =
   | ((dataSources: DataElement[], options: PullAnalyticsOptions) => Promise<AnalyticResults>)
@@ -64,14 +70,14 @@ export class DataLakeService extends Service {
   public async pull(
     dataSources: DataElement[],
     type: 'dataElement',
-    options?: PullAnalyticsOptions,
+    options: PullAnalyticsOptions,
   ): Promise<AnalyticResults>;
   public async pull(
     dataSources: DataGroup[],
     type: 'dataGroup',
-    options?: PullEventsOptions,
+    options: PullEventsOptions,
   ): Promise<EventResults>;
-  public async pull(dataSources: DataSource[], type: DataSourceType, options = {}) {
+  public async pull(dataSources: DataSource[], type: DataSourceType, options: BasePullOptions) {
     const pullData = this.pullers[type];
     return pullData(dataSources as any, options);
   }
@@ -100,7 +106,11 @@ export class DataLakeService extends Service {
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }
 
-  public async pullMetadata(dataSources: DataSource[]) {
+  public async pullMetadata(
+    dataSources: DataSource[],
+    type: DataSourceType,
+    options: BasePullMetadataOptions,
+  ) {
     return dataSources.map(dataSource => ({ code: dataSource.code, name: undefined }));
   }
 }

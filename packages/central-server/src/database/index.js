@@ -3,7 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-export { SyncQueue } from './SyncQueue';
-export { createMeditrakSyncQueue } from './createMeditrakSyncQueue';
+export { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from './meditrakSyncQueue';
 export * from './utilities';
 export * from './constants';

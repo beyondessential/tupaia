@@ -3,7 +3,6 @@ import '@babel/polyfill';
 import http from 'http';
 import express from 'express';
 import compression from 'compression';
-import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -12,10 +11,8 @@ import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
-import { handleError } from './utils';
-
+import { handleError, logApiRequest } from './utils';
 import './log';
-import winston from 'winston';
 
 export async function createApp() {
   const app = express();
@@ -59,6 +56,9 @@ export async function createApp() {
 
   // Initialise sessions
   bindUserSessions(app);
+
+  // Log api requests
+  app.use(logApiRequest(modelRegistry, 'tupaia', 1));
 
   // API router
   app.use('/api/v1', getRoutesForApiV1());

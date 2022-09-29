@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { formatDateForApi, roundStartEndDates } from '@tupaia/ui-components/lib/chart';
+import { formatDateForApi, roundStartEndDates } from '@tupaia/ui-components';
 import { MIN_DATA_YEAR, SINGLE_YEAR_GRANULARITY } from '../../constants';
 
 /**
@@ -21,11 +21,13 @@ export const yearToApiDates = year => {
 
 export const combineQueries = queryObject => {
   const queries = Object.values(queryObject);
+  const error = queries.find(q => q.error)?.error ?? null;
 
   return {
     isLoading: !!queries.find(q => q.isLoading),
     isFetching: !!queries.find(q => q.isFetching),
-    error: queries.find(q => q.error)?.error ?? null,
+    error,
+    isError: !!error,
     data: Object.fromEntries(Object.entries(queryObject).map(([key, q]) => [key, q.data])),
   };
 };

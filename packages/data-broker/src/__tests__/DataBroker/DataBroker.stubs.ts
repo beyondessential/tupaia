@@ -3,10 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { reduceToDictionary } from '@tupaia/utils';
-import { DataSourceSpec } from '../../DataBroker';
+import { createJestMockInstance } from '@tupaia/utils';
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
 import { Service } from '../../services/Service';
+import {
+  DATA_ELEMENT_DATA_SERVICES,
+  DATA_ELEMENTS,
+  DATA_GROUPS,
+  ENTITIES,
+} from './DataBroker.fixtures';
 import {
   Analytic,
   DataBrokerModelRegistry,
@@ -82,13 +88,29 @@ export const createServiceStub = (
   return new MockService(models);
 };
 
-export const createModelsStub = (dataElements: DataElement[], dataGroups: DataGroup[]) =>
-  (({
+export const createModelsStub = () => {
+  return baseCreateModelsStub({
     dataElement: {
-      find: (spec: DataSourceSpec) => dataElements.filter(({ code }) => spec.code.includes(code)),
+      records: Object.values(DATA_ELEMENTS),
+      extraMethods: {
+        getTypes: () => ({
+          DATA_ELEMENT: 'dataElement',
+          DATA_GROUP: 'dataGroup',
+          SYNC_GROUP: 'syncGroup',
+        }),
+      },
     },
     dataGroup: {
-      find: (spec: DataSourceSpec) => dataGroups.filter(({ code }) => spec.code.includes(code)),
-      getDataElementsInDataGroup: () => [],
+      records: Object.values(DATA_GROUPS),
+      extraMethods: {
+        getDataElementsInDataGroup: () => [],
+      },
     },
-  } as unknown) as DataBrokerModelRegistry);
+    entity: {
+      records: Object.values(ENTITIES),
+    },
+    dataElementDataService: {
+      records: DATA_ELEMENT_DATA_SERVICES,
+    },
+  });
+};

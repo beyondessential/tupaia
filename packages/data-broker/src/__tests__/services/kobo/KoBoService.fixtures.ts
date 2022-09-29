@@ -3,39 +3,45 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { SyncGroup } from '../../../services/kobo/types';
-
 export type MockDataServiceEntity = {
   id: string;
   entity_code: string;
-  'config->>kobo_id': string;
+  config: any;
 };
 
 const MOCK_DATA_SERVICE_ENTITY: MockDataServiceEntity[] = [
   {
     id: 'AAAAAAAAAAAAAAAAAAAAAAAA',
     entity_code: 'TupaiaEntityA',
-    'config->>kobo_id': 'KoBoA',
+    config: {
+      kobo_id: 'KoBoA',
+    },
   },
   {
     id: 'BBBBBBBBBBBBBBBBBBBBBBBB',
     entity_code: 'TupaiaEntityB',
-    'config->>kobo_id': 'KoBoB',
+    config: {
+      kobo_id: 'KoBoB',
+    },
   },
   {
     id: 'CCCCCCCCCCCCCCCCCCCCCCCC',
     entity_code: 'TupaiaEntityC',
-    'config->>kobo_id': 'KoBoC',
+    config: {
+      kobo_id: 'KoBoC',
+    },
   },
 ];
 
 const MOCK_ENTITY = [
   {
+    id: 'aaaaaaaaaaaaaaaaaaaaaaaa',
     code: 'TupaiaEntityA',
     name: 'Tupaia Entity A',
     config: {},
   },
   {
+    id: 'bbbbbbbbbbbbbbbbbbbbbbbb',
     code: 'TupaiaEntityB',
     name: 'Tupaia Entity B',
     config: {},
@@ -81,12 +87,11 @@ export const MOCK_QUESTION_ANSWER_MAP = {
   reason: { koboQuestionCode: 'why', answerMap: MOCK_ANSWER_MAP },
 };
 
-export const MOCK_DATA_SOURCE: SyncGroup = {
-  code: 'TEST_SYNC_GROUP',
+export const MOCK_DATA_SOURCE = {
+  data_group_code: 'xyz',
   service_type: 'kobo',
   config: {
     koboSurveyCode: 'abc',
-    internalSurveyCode: 'xyz',
     entityQuestionCode: 'entity',
     questionMapping: MOCK_QUESTION_ANSWER_MAP,
   },

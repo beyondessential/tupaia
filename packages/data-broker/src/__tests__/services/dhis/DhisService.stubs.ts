@@ -3,18 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { DhisApi } from '@tupaia/dhis-api';
-import { createJestMockInstance } from '@tupaia/utils';
-import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
+import * as GetDhisApi from '../../../services/dhis/getDhisApi';
 import { DhisAnalytics, DhisEventAnalytics } from '../../../services/dhis/types';
 import { Analytic, DataBrokerModelRegistry, Event } from '../../../types';
 import {
   DATA_ELEMENTS_BY_GROUP,
-  DATA_ELEMENT_METADATA,
-  DATA_ELEMENTS,
+  DHIS_RESPONSE_DATA_ELEMENTS,
+  DATA_SOURCES,
   DATA_GROUPS,
+  ENTITIES,
   SERVER_NAME,
+  ENTITY_HIERARCHIES,
 } from './DhisService.fixtures';
+import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
 type DhisApiStubResponses = Partial<{
   getAnalyticsResponse: DhisAnalytics;
@@ -28,60 +30,78 @@ const defaultAnalytics: DhisAnalytics = {
   rows: [],
 };
 
-export const stubDhisApi = ({
-  getAnalyticsResponse = defaultAnalytics,
-  getEventsResponse = [],
-  getEventAnalyticsResponse = defaultAnalytics,
-}: DhisApiStubResponses = {}) => {
-  const dhisApi: DhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
+export const createMockDhisApi = ({
+                                    getAnalyticsResponse = defaultAnalytics,
+                                    getEventsResponse = [],
+                                    getEventAnalyticsStub,
+                                    getEventAnalyticsResponse = defaultAnalytics,
+                                    serverName = SERVER_NAME,
+                                  } = {}) => {
+  return createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
     getAnalytics: jest.fn().mockResolvedValue(getAnalyticsResponse),
     getEvents: jest.fn().mockResolvedValue(getEventsResponse),
-    getEventAnalytics: jest.fn().mockResolvedValue(getEventAnalyticsResponse),
+    getEventAnalytics: getEventAnalyticsStub
+      ? jest.fn(getEventAnalyticsStub)
+      : jest.fn().mockResolvedValue(getEventAnalyticsResponse),
     fetchDataElements: jest
       .fn()
-      .mockImplementation(async (codes: (keyof typeof DATA_ELEMENT_METADATA)[]) =>
-        codes.map(code => ({ code, id: DATA_ELEMENT_METADATA[code].uid, valueType: 'NUMBER' }), {}),
+      .mockImplementation(async codes =>
+        codes.map(
+          code => ({ code, id: DHIS_RESPONSE_DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }),
+          {},
+        ),
       ),
-    getServerName: jest.fn().mockReturnValue(SERVER_NAME),
     getResourceTypes: jest.fn().mockReturnValue({ DATA_ELEMENT: 'dataElement' }),
+    serverName,
   });
-  jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance').mockReturnValue(dhisApi);
-
-  return dhisApi;
 };
 
-export const createModelsStub = () =>
-  (({
+export const stubGetDhisApi = mockDhisApi => {
+  // Mock return value of all getDhisApi functions to return this mock api
+  jest.spyOn(GetDhisApi, 'getApiForDataSource').mockReturnValue(mockDhisApi);
+  jest.spyOn(GetDhisApi, 'getApisForDataSources').mockReturnValue([mockDhisApi]);
+  jest.spyOn(GetDhisApi, 'getApiFromServerName').mockReturnValue(mockDhisApi);
+};
+
+export const createModelsStub = () => {
+  return baseCreateModelsStub({
     dataElement: {
-      find: async (dbConditions: { code: string[] }) =>
-        Object.values(DATA_ELEMENTS).filter(({ code }) => dbConditions.code.includes(code)),
-      getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
+      records: Object.values(DATA_SOURCES),
+      extraMethods: {
+        getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+        getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
+      },
     },
     dataGroup: {
-      find: async (dbConditions: { code: string[] }) =>
-        Object.values(DATA_GROUPS).filter(({ code }) => dbConditions.code.includes(code)),
-      getDataElementsInDataGroup: async (groupCode: string) =>
-        DATA_ELEMENTS_BY_GROUP[groupCode as keyof typeof DATA_ELEMENTS_BY_GROUP],
+      records: Object.values(DATA_GROUPS),
+      extraMethods: {
+        getDataElementsInDataGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
+      },
     },
-  } as unknown) as DataBrokerModelRegistry);
+    entity: {
+      records: Object.values(ENTITIES),
+    },
+    entityHierarchy: {
+      records: Object.values(ENTITY_HIERARCHIES),
+    },
+  });
+};
 
 /**
  * Reverse engineers the DHIS2 aggregate data response given the expected analytics
  */
-export const buildDhisAnalyticsResponse = (analytics: Analytic[]): DhisAnalytics => {
+export const buildDhisAnalyticsResponse = analytics => {
   const rows = analytics.map(({ dataElement, organisationUnit, period, value }) => [
     dataElement,
     organisationUnit,
     period,
-    value.toString(),
+    value,
   ]);
-  const dataElementsInAnalytics = analytics.map(
-    ({ dataElement }) => dataElement as keyof typeof DATA_ELEMENTS,
-  );
+  const dataElementsInAnalytics = analytics.map(({ dataElement }) => dataElement);
   const items = dataElementsInAnalytics
     .map(dataElement => {
-      const { dataElementCode: dhisCode } = DATA_ELEMENTS[dataElement];
-      return DATA_ELEMENT_METADATA[dhisCode as keyof typeof DATA_ELEMENT_METADATA];
+      const { dataElementCode: dhisCode } = DATA_SOURCES[dataElement];
+      return DHIS_RESPONSE_DATA_ELEMENTS[dhisCode];
     })
     .reduce((itemAgg, { uid, code, name }) => {
       const newItem = { uid, code, name, dimensionItemType: 'DATA_ELEMENT' };
@@ -91,10 +111,10 @@ export const buildDhisAnalyticsResponse = (analytics: Analytic[]): DhisAnalytics
 
   return {
     headers: [
-      { name: 'dx', column: 'Data', valueType: 'TEXT' },
-      { name: 'ou', column: 'Organisation unit', valueType: 'TEXT' },
-      { name: 'pe', column: 'Period', valueType: 'TEXT' },
-      { name: 'value', column: 'Value', valueType: 'NUMBER' },
+      { name: 'dx', valueType: 'TEXT' },
+      { name: 'ou', valueType: 'TEXT' },
+      { name: 'pe', valueType: 'TEXT' },
+      { name: 'value', valueType: 'NUMBER' },
     ],
     rows,
     metaData: { items, dimensions },

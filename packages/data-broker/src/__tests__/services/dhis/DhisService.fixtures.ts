@@ -2,54 +2,105 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import { DhisEventAnalytics } from '../../../services/dhis/types';
 import { DataElement, DataGroup } from '../../../types';
 
 export const SERVER_NAME = 'test server name';
 
-const dataElement = ({
-  code,
-  dataElementCode,
-}: {
-  code: string;
-  dataElementCode: string;
-}): DataElement => ({
-  code,
-  dataElementCode,
-  service_type: 'dhis',
-  config: {},
-  permission_groups: ['*'],
-});
+const createDataSource = fields => ({ service_type: 'dhis', config: {}, ...fields });
 
-export const DATA_ELEMENTS = {
-  POP01: dataElement({ code: 'POP01', dataElementCode: 'POP01' }),
-  POP02: dataElement({ code: 'POP02', dataElementCode: 'POP02' }),
-  DIF01: dataElement({ code: 'DIF01', dataElementCode: 'DIF01_DHIS' }),
+export const DATA_SOURCES = {
+  POP01: createDataSource({ code: 'POP01', dataElementCode: 'POP01' }),
+  POP02: createDataSource({ code: 'POP02', dataElementCode: 'POP02' }),
+  DIF01: createDataSource({
+    code: 'DIF01',
+    dataElementCode: 'DIF01_DHIS',
+  }),
 };
 
-export const DATA_GROUPS: Record<string, DataGroup> = {
-  // code is intentionally the same as `POP01` data element, as their type should differentiate them
-  POP01_GROUP: { service_type: 'dhis', code: 'POP01', config: {} },
-  DIFF_GROUP: { service_type: 'dhis', code: 'DIFF_GROUP', config: {} },
+export const DATA_GROUPS = {
+  POP01_GROUP: createDataSource({
+    code: 'POP01', // intentionally the same as `POP01` data element, as their type should differentiate them
+  }),
+  DIFF_GROUP: createDataSource({
+    code: 'DIFF_GROUP',
+  }),
+};
+
+const DL_FACILITY_A = {
+  code: 'DL_FACILITY_A',
+  name: 'DL FACILITY A',
+  type: 'facility',
+  metadata: {},
+  isTrackedEntity: () => false,
+};
+
+export const ENTITIES = {
+  DL_FACILITY_A,
+  DL_HOUSEHOLD_1: {
+    code: 'DL_HOUSEHOLD_1',
+    name: 'DL HOUSEHOLD 1',
+    type: 'household',
+    metadata: {
+      dhis: { trackedEntityId: 'tracked_entity_id_dl_household_1' },
+    },
+    isTrackedEntity: () => true,
+    getParent: async () => DL_FACILITY_A,
+  },
+  DL_HOUSEHOLD_2: {
+    code: 'DL_HOUSEHOLD_2',
+    name: 'DL HOUSEHOLD 2',
+    type: 'household',
+    metadata: {
+      dhis: { trackedEntityId: 'tracked_entity_id_dl_household_2' },
+    },
+    isTrackedEntity: () => true,
+    getParent: async () => DL_FACILITY_A,
+  },
+};
+
+export const ENTITY_HIERARCHIES = {
+  explore: {
+    name: 'explore',
+    id: '1234',
+  },
 };
 
 export const DATA_VALUES = {
-  POP01: { code: 'POP01', value: '1', orgUnit: 'TO', period: '20210101' },
-  POP02: { code: 'POP02', value: '2', orgUnit: 'TO', period: '20210101' },
-  DIF01: { code: 'DIF01', value: '3', orgUnit: 'TO', period: '20210101' },
+  POP01: { code: 'POP01', value: '1' },
+  POP02: { code: 'POP02', value: '2' },
+  DIF01: { code: 'DIF01', value: '3' },
 };
 
-export const DATA_ELEMENT_METADATA = {
+export const DHIS_RESPONSE_DATA_ELEMENTS = {
   POP01: { code: 'POP01', uid: 'id000POP01', name: 'Population 1' },
   POP02: { code: 'POP02', uid: 'id000POP02', name: 'Population 2' },
   DIF01_DHIS: { code: 'DIF01_DHIS', uid: 'id000DIF01_DHIS', name: 'Different 1' },
 };
 
 export const DATA_ELEMENTS_BY_GROUP = {
-  POP01: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
-  DIFF_GROUP: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.DIF01],
+  POP01: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
+  DIFF_GROUP: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
 };
+
+// A simple mapping with no country-specific overrides
+export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
+  [
+    Object.values(DATA_SOURCES).map(de => ({
+      dataSource: de,
+      service_type: de.service_type,
+      config: de.config,
+    })),
+  ],
+  [
+    Object.values(DATA_GROUPS).map(dg => ({
+      dataSource: dg,
+      service_type: dg.service_type,
+      config: dg.config,
+    })),
+  ],
+);
 
 export const DHIS_REFERENCE = 'XXXYYY';
 

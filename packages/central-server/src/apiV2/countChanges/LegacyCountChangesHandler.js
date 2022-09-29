@@ -5,7 +5,7 @@
 
 import { getKeysSortedByValues, respond, UnauthenticatedError } from '@tupaia/utils';
 import { getUniversalTypes } from '../../database/utilities';
-import { fetchRequestingMeditrakDevice, getChangesFilter } from '../utilities';
+import { fetchRequestingMeditrakDevice, buildMeditrakSyncQuery } from '../utilities';
 
 const MAX_FAILS_BEFORE_LOG_OUT = 2;
 const MAX_FAILS_BEFORE_TYPE_EXCLUSION = 5;
@@ -135,11 +135,16 @@ export class LegacyCountChangesHandler {
     const { models, query } = this.req;
 
     const universalTypes = getUniversalTypes(models);
-    const filter = await getChangesFilter({
-      ...this.req,
-      query: { ...query, recordTypes: universalTypes.join(',') },
-    });
-    const changesCount = await models.meditrakSyncQueue.count(filter);
+
+    const { query: dbQuery } = await buildMeditrakSyncQuery(
+      {
+        ...this.req,
+        query: { ...query, recordTypes: universalTypes.join(',') },
+      },
+      { select: 'count(*)' },
+    );
+    const result = await dbQuery.executeOnDatabase(models.database);
+    const changesCount = parseInt(result[0].count);
 
     return changesCount > 0;
   }
@@ -163,8 +168,9 @@ export class LegacyCountChangesHandler {
 
   async handle() {
     await this.handleSetUp();
-    const filter = await getChangesFilter(this.req);
-    const changeCount = await this.req.models.meditrakSyncQueue.count(filter);
+    const { query } = await buildMeditrakSyncQuery(this.req, { select: 'count(*)' });
+    const queryResult = await query.executeOnDatabase(this.req.models.database);
+    const changeCount = parseInt(queryResult[0].count);
     respond(this.res, { changeCount });
   }
 }

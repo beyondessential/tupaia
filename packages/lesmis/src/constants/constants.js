@@ -15,20 +15,67 @@ export const LESMIS_PERMISSION_GROUPS = {
   ADMIN: 'LESMIS Admin',
 };
 
+// Dashboard Tab View Names
+export const DASHBOARD_REPORT_TAB_VIEW = 'DashboardReportTabView';
+export const FAVOURITE_DASHBOARD_TAB_VIEW = 'FavouriteDashboardTabView';
+export const TAB_TEMPLATE = 'TabTemplate';
+
+export const PROFILE_DASHBOARD_CODE = 'profile';
+export const FAVOURITES_DASHBOARD_CODE = 'favourites';
+
 // Dashboard Constants
-export const SUB_DASHBOARD_OPTIONS = [
+export const DROPDOWN_OPTIONS = [
   {
-    code: 'ESSDP_EarlyChildhood',
-    label: 'dashboards.essdpEarlyChildhoodEducationSubSector',
+    value: PROFILE_DASHBOARD_CODE,
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    useYearSelector: true,
+    exportToPDF: true,
   },
-  { code: 'ESSDP_Primary', label: 'dashboards.essdpPrimarySubSector' },
-  { code: 'ESSDP_LowerSecondary', label: 'dashboards.essdpLowerSecondarySubSector' },
-  { code: 'ESSDP_UpperSecondary', label: 'dashboards.essdpUpperSecondarySubSector' },
   {
-    code: 'EmergencyInEducation',
-    label: 'dashboards.emergencyInEducation',
+    value: FAVOURITES_DASHBOARD_CODE,
+    tabViewType: FAVOURITE_DASHBOARD_TAB_VIEW,
+    labelCode: 'dashboards.favourites',
+    exportToPDF: true,
   },
-  { code: 'International_SDGs', label: 'dashboards.internationalReportingOnSdGs' },
+  {
+    value: 'ESSDP_Plan',
+    tabViewType: TAB_TEMPLATE,
+    labelCode: 'dashboards.essdpPlan202125M&eFramework',
+    componentPropConfig: {
+      body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
+    },
+  },
+  {
+    value: 'ESSDP_EarlyChildhood',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpEarlyChildhoodEducationSubSector',
+  },
+  {
+    value: 'ESSDP_Primary',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpPrimarySubSector',
+  },
+  {
+    value: 'ESSDP_LowerSecondary',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpLowerSecondarySubSector',
+  },
+  {
+    value: 'ESSDP_UpperSecondary',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpUpperSecondarySubSector',
+  },
+  {
+    value: 'EmergencyInEducation',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.emergencyInEducation',
+  },
+  {
+    value: 'International_SDGs',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.internationalReportingOnSdGs',
+    exportToPDF: true,
+  },
 ];
 
 // Date Constants
@@ -37,7 +84,11 @@ export const MIN_DATA_DATE = '20150101';
 export const MIN_DATA_YEAR = '2015';
 // TODO: Put this back when requested
 // export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
-export const DEFAULT_DATA_YEAR = '2021';
+export const DEFAULT_DATA_YEAR = '2022';
+
+// Contact Constants
+export const PHONE_CONTACT = '+856 20 55617710';
+export const WEBSITE_CONTACT = 'www.moes.edu.la';
 
 // Layout Constants
 export const NAVBAR_HEIGHT_INT = 70;

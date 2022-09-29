@@ -4,348 +4,338 @@
  */
 
 import { DhisApi } from '@tupaia/dhis-api';
-import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApi from '../../../services/dhis/getDhisApi';
 import {
-  DATA_ELEMENTS,
+  DATA_SOURCES,
   DATA_VALUES,
   DATA_GROUPS,
   DHIS_REFERENCE,
   SERVER_NAME,
+  DEFAULT_DATA_SERVICE_MAPPING,
 } from './DhisService.fixtures';
 import { DhisService } from '../../../services/dhis';
-import { createModelsStub, stubDhisApi } from './DhisService.stubs';
-
-const mockPullAnalytics = jest.fn();
-const mockPullEvents = jest.fn();
-const mockPullDeprecatedEvents = jest.fn();
-
-jest.mock('../../../services/dhis/pullers', () => ({
-  AnalyticsPuller: jest.fn().mockImplementation(() => ({
-    pull: mockPullAnalytics,
-  })),
-  DataElementsMetadataPuller: jest.fn().mockImplementation(() => ({
-    pull: jest.fn(),
-  })),
-  DeprecatedEventsPuller: jest.fn().mockImplementation(() => ({
-    pull: mockPullDeprecatedEvents,
-  })),
-  EventsPuller: jest.fn().mockImplementation(() => ({
-    pull: mockPullEvents,
-  })),
-}));
+import { createMockDhisApi, createModelsStub, stubGetDhisApi } from './DhisService.stubs';
 
 describe('DhisService', () => {
-  const models = createModelsStub();
-  const dhisService = new DhisService(models);
+  let dhisService;
+
+  beforeEach(() => {
+    dhisService = new DhisService(createModelsStub());
+    dhisService.analyticsPuller = {
+      pull: jest.fn(),
+    };
+    dhisService.eventsPuller = {
+      pull: jest.fn(),
+    };
+    dhisService.deprecatedEventsPuller = {
+      pull: jest.fn(),
+    };
+    dhisService.pullers.dataElement = dhisService.analyticsPuller.pull;
+    dhisService.pullers.dataGroup = dhisService.eventsPuller.pull;
+    dhisService.pullers.dataGroup_deprecated = dhisService.deprecatedEventsPuller.pull;
+  });
 
   describe('push()', () => {
-    let dhisApi: DhisApi;
+    describe('push functionality', () => {
+      let dhisApi: DhisApi;
 
-    beforeEach(() => {
-      // recreate stub so spy calls are reset
-      dhisApi = stubDhisApi();
+      beforeEach(() => {
+        // recreate stub so spy calls are reset
+        dhisApi = createMockDhisApi();
+        stubGetDhisApi(dhisApi);
+      });
+
+      describe('data element', () => {
+        it('basic aggregate data element', async () => {
+          await dhisService.push([DATA_SOURCES.POP01], DATA_VALUES.POP01, {
+            type: 'dataElement',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
+            { dataElement: 'POP01', value: '1' },
+          ]);
+        });
+
+        it('aggregate data element with a different dhis code', async () => {
+          await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.DIF01, {
+            type: 'dataElement',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
+            { dataElement: 'DIF01_DHIS', value: '3' },
+          ]);
+        });
+      });
+
+      describe('data group', () => {
+        it('event data group', async () => {
+          const event = {
+            event: 'eventId',
+            eventDate: '2020-02-06T10:18:00.000',
+            orgUnit: 'TO',
+            orgUnitName: 'Tonga',
+            otherField: 'otherValue',
+            dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
+          };
+
+          await dhisService.push([DATA_GROUPS.POP01_GROUP], event, {
+            type: 'dataGroup',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
+            {
+              ...event,
+              dataValues: [
+                { dataElement: 'id000POP01', value: '1' },
+                { dataElement: 'id000POP02', value: '2' },
+              ],
+            },
+          ]);
+        });
+
+        it('event data group with a different dhis code', async () => {
+          const event = {
+            event: 'eventId',
+            eventDate: '2020-02-06T10:18:00.000',
+            orgUnit: 'TO',
+            orgUnitName: 'Tonga',
+            otherField: 'otherValue',
+            dataValues: [DATA_VALUES.POP01, DATA_VALUES.DIF01],
+          };
+
+          await dhisService.push([DATA_GROUPS.POP01_GROUP], event, {
+            type: 'dataGroup',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
+            {
+              ...event,
+              dataValues: [
+                {
+                  dataElement: 'id000POP01',
+                  value: '1',
+                },
+                {
+                  dataElement: 'id000DIF01_DHIS',
+                  value: '3',
+                },
+              ],
+            },
+          ]);
+        });
+      });
     });
 
-    describe('data element', () => {
-      it('basic aggregate data element', async () => {
-        await dhisService.push([DATA_ELEMENTS.POP01], DATA_VALUES.POP01, { type: 'dataElement' });
-        expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
-          { dataElement: 'POP01', value: '1', orgUnit: 'TO', period: '20210101' },
-        ]);
+    describe('push api resolution', () => {
+      let getApiForDataSourceSpy;
+
+      beforeEach(() => {
+        getApiForDataSourceSpy = jest.spyOn(GetDhisApi, 'getApiForDataSource');
       });
 
-      it('aggregate data element with a different dhis code', async () => {
-        await dhisService.push([DATA_ELEMENTS.DIF01], DATA_VALUES.DIF01, { type: 'dataElement' });
-        expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
-          { dataElement: 'DIF01_DHIS', value: '3', orgUnit: 'TO', period: '20210101' },
-        ]);
-      });
-    });
+      it('throws if data sources use different dhis instances', async () => {
+        getApiForDataSourceSpy
+          .mockReturnValueOnce(createMockDhisApi({ serverName: 'myDhisApi1' }))
+          .mockReturnValueOnce(createMockDhisApi({ serverName: 'myDhisApi2' }));
 
-    describe('data group', () => {
-      it('event data group', async () => {
-        const event = {
-          event: 'eventId',
-          eventDate: '2020-02-06T10:18:00.000',
-          orgUnit: 'TO',
-          orgUnitName: 'Tonga',
-          otherField: 'otherValue',
-          dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
-        };
+        const run = async () =>
+          await dhisService.push(
+            [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
+            [DATA_VALUES.POP01, DATA_VALUES.POP02],
+            { type: 'dataElement', dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING },
+          );
 
-        await dhisService.push([DATA_GROUPS.POP01_GROUP], event, { type: 'dataGroup' });
-        expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
-          {
-            ...event,
-            dataValues: [
-              { dataElement: 'id000POP01', value: '1' },
-              { dataElement: 'id000POP02', value: '2' },
-            ],
-          },
-        ]);
+        return expect(run()).toBeRejectedWith(
+          'All data being pushed must be for the same DHIS2 instance',
+        );
       });
 
-      it('event data group with a different dhis code', async () => {
-        const event = {
-          event: 'eventId',
-          eventDate: '2020-02-06T10:18:00.000',
-          orgUnit: 'TO',
-          orgUnitName: 'Tonga',
-          otherField: 'otherValue',
-          dataValues: [DATA_VALUES.POP01, DATA_VALUES.DIF01],
-        };
+      it('looks up the api from the given data source', async () => {
+        getApiForDataSourceSpy.mockReturnValue(createMockDhisApi());
 
-        await dhisService.push([DATA_GROUPS.POP01_GROUP], event, { type: 'dataGroup' });
-        expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
-          {
-            ...event,
-            dataValues: [
-              {
-                dataElement: 'id000POP01',
-                value: '1',
-              },
-              {
-                dataElement: 'id000DIF01_DHIS',
-                value: '3',
-              },
-            ],
-          },
-        ]);
+        await dhisService.push([DATA_SOURCES.POP01], [DATA_VALUES.POP01], {
+          type: 'dataElement',
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        });
+
+        // implementation calls getApiForDataSource multiple times, we don't test each one as args should be the same every time
+        expect(getApiForDataSourceSpy).toHaveBeenLastCalledWith(
+          expect.anything(),
+          DATA_SOURCES.POP01,
+          DEFAULT_DATA_SERVICE_MAPPING,
+        );
       });
     });
   });
 
   describe('delete()', () => {
-    let dhisApi: DhisApi;
+    describe('delete functionality', () => {
+      let dhisApi: DhisApi;
 
-    beforeEach(() => {
-      // recreate stub so spy calls are reset
-      dhisApi = stubDhisApi();
-    });
+      beforeEach(() => {
+        // recreate stub so spy calls are reset
+        dhisApi = createMockDhisApi();
+        stubGetDhisApi(dhisApi);
+      });
 
-    describe('data element', () => {
-      it('deletes a basic aggregate data element', async () => {
-        await dhisService.delete(DATA_ELEMENTS.POP01, DATA_VALUES.POP01, {
-          serverName: SERVER_NAME,
-          type: 'dataElement',
+      describe('data element', () => {
+        it('deletes a basic aggregate data element', async () => {
+          await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
+            serverName: SERVER_NAME,
+            type: 'dataElement',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
+            dataElement: 'POP01',
+            value: '1',
+            orgUnit: 'TO',
+            period: '20210101',
+          });
         });
-        expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
-          dataElement: 'POP01',
-          value: '1',
-          orgUnit: 'TO',
-          period: '20210101',
+
+        it('deletes an aggregate data element with a different dhis code', async () => {
+          await dhisService.delete(DATA_SOURCES.DIF01, DATA_VALUES.DIF01, {
+            serverName: SERVER_NAME,
+            type: 'dataElement',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
+            dataElement: 'DIF01_DHIS',
+            value: '3',
+            orgUnit: 'TO',
+            period: '20210101',
+          });
         });
       });
 
-      it('deletes an aggregate data element with a different dhis code', async () => {
-        await dhisService.delete(DATA_ELEMENTS.DIF01, DATA_VALUES.DIF01, {
-          serverName: SERVER_NAME,
-          type: 'dataElement',
-        });
-        expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
-          dataElement: 'DIF01_DHIS',
-          value: '3',
-          orgUnit: 'TO',
-          period: '20210101',
+      describe('data group', () => {
+        it('deletes an event', async () => {
+          const eventData = {
+            dhisReference: DHIS_REFERENCE,
+          };
+
+          await dhisService.delete(DATA_GROUPS.POP01_GROUP, eventData, {
+            serverName: SERVER_NAME,
+            type: 'dataGroup',
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          });
+          expect(dhisApi.deleteEvent).toHaveBeenCalledOnceWith(DHIS_REFERENCE);
         });
       });
     });
 
-    describe('data group', () => {
-      it('deletes an event', async () => {
-        const eventData = {
-          dhisReference: DHIS_REFERENCE,
-        };
+    describe('delete api resolution', () => {
+      let getApiForDataSourceSpy;
+      let getApiFromServerNameSpy;
 
-        await dhisService.delete(DATA_GROUPS.POP01_GROUP, eventData, {
-          serverName: SERVER_NAME,
-          type: 'dataGroup',
+      beforeEach(() => {
+        getApiForDataSourceSpy = jest.spyOn(GetDhisApi, 'getApiForDataSource');
+        getApiFromServerNameSpy = jest.spyOn(GetDhisApi, 'getApiFromServerName');
+      });
+
+      it('allows specifying serverName', async () => {
+        getApiFromServerNameSpy.mockReturnValue(createMockDhisApi());
+
+        await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
+          serverName: 'some server name',
+          type: 'dataElement',
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
         });
-        expect(dhisApi.deleteEvent).toHaveBeenCalledOnceWith(DHIS_REFERENCE);
+
+        expect(getApiFromServerNameSpy).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          'some server name',
+        );
+      });
+
+      it('looks up the api from the given data source', async () => {
+        getApiForDataSourceSpy.mockReturnValue(createMockDhisApi());
+
+        await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
+          type: 'dataElement',
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        });
+
+        expect(getApiForDataSourceSpy).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          DATA_SOURCES.POP01,
+          DEFAULT_DATA_SERVICE_MAPPING,
+        );
       });
     });
   });
 
   describe('pull()', () => {
-    describe('puller resolution', () => {
-      const dhisApi = stubDhisApi();
-      const eventOptions = {
-        organisationUnitCodes: ['TO'],
-        dataServices: [{ isDataRegional: true }],
-      };
-
-      beforeEach(() => {
-        jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance').mockReturnValueOnce(dhisApi);
-      });
-
+    describe('pull functionality', () => {
       it('uses AnalyticsPuller for dataElements', async () => {
-        await dhisService.pull([DATA_ELEMENTS.POP01], 'dataElement', {});
-        expect(mockPullAnalytics).toHaveBeenCalledOnceWith([dhisApi], [DATA_ELEMENTS.POP01], {});
+        await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        });
+        expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          [DATA_SOURCES.POP01],
+          expect.anything(),
+        );
       });
 
       it('uses EventsPuller for dataGroups', async () => {
-        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', eventOptions);
-        expect(mockPullEvents).toHaveBeenCalledOnceWith(
-          [dhisApi],
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        });
+        expect(dhisService.eventsPuller.pull).toHaveBeenCalledOnceWith(
+          expect.anything(),
           [DATA_GROUPS.POP01_GROUP],
-          eventOptions,
+          expect.anything(),
         );
       });
 
       it('uses the modern EventsPuller by default', async () => {
-        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', eventOptions);
-        expect(mockPullEvents).toHaveBeenCalledTimes(1);
-        expect(mockPullDeprecatedEvents).not.toHaveBeenCalled();
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', expect.anything());
+        expect(dhisService.eventsPuller.pull).toHaveBeenCalledTimes(1);
+        expect(dhisService.deprecatedEventsPuller.pull).not.toHaveBeenCalled();
       });
 
       it('uses the deprecated EventsPuller if flag passed', async () => {
-        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {
-          ...eventOptions,
-          useDeprecatedApi: true,
-        });
-        expect(mockPullEvents).not.toHaveBeenCalled();
-        expect(mockPullDeprecatedEvents).toHaveBeenCalledTimes(1);
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { useDeprecatedApi: true });
+        expect(dhisService.eventsPuller.pull).not.toHaveBeenCalled();
+        expect(dhisService.deprecatedEventsPuller.pull).toHaveBeenCalledTimes(1);
       });
     });
 
-    describe('api resolution', () => {
-      let getDhisApiInstanceSpy: jest.SpyInstance;
-      const dhisApiA = stubDhisApi();
-      const dhisApiB = stubDhisApi();
+    describe('pull api resolution', () => {
+      let getApisForDataSourcesSpy: jest.SpyInstance;
 
       beforeEach(() => {
-        getDhisApiInstanceSpy = jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance');
+        getApisForDataSourcesSpy = jest.spyOn(GetDhisApi, 'getApisForDataSources');
       });
 
-      it('has a default data service', async () => {
-        const dataSources = [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02];
-        const options = {
-          organisationUnitCodes: ['TO'],
-        };
-
-        getDhisApiInstanceSpy.mockReturnValue(dhisApiA);
-
-        await dhisService.pull(dataSources, 'dataElement', options);
-
-        // expect DhisService to ask for the api for the default data service
-        const expectedDefaultConfig = { isDataRegional: true };
-        expect(getDhisApiInstanceSpy).toHaveBeenCalledOnceWith(
-          { entityCodes: ['TO'], ...expectedDefaultConfig },
-          expect.anything(),
-        );
-
-        // expect those apis to be passed to pull
-        expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
-          [dhisApiA],
-          expect.anything(),
-          expect.anything(),
-        );
-      });
-
-      it('allows data services to be explicitly specified', async () => {
-        const dataSources = [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02];
-        const options = {
-          organisationUnitCodes: ['TO'],
-          dataServices: [{ isDataRegional: true }, { isDataRegional: false }],
-        };
-
-        getDhisApiInstanceSpy.mockReturnValueOnce(dhisApiA).mockReturnValueOnce(dhisApiB);
-
-        await dhisService.pull(dataSources, 'dataElement', options);
-
-        // expect DhisService to ask for the apis for the given data services
-        expect(getDhisApiInstanceSpy).toHaveBeenCalledTimes(2);
-        expect(getDhisApiInstanceSpy).toHaveBeenNthCalledWith(
-          1,
-          { entityCodes: ['TO'], isDataRegional: true },
-          expect.anything(),
-        );
-        expect(getDhisApiInstanceSpy).toHaveBeenNthCalledWith(
-          2,
-          { entityCodes: ['TO'], isDataRegional: false },
-          expect.anything(),
-        );
-
-        // expect those apis to be passed to pull
-        expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
-          [dhisApiA, dhisApiB],
-          expect.anything(),
-          expect.anything(),
-        );
-      });
-
-      it('allows flag detectDataServices', async () => {
+      it('looks up the api from the given data source', async () => {
         const dataSources = [
           {
-            ...DATA_ELEMENTS.POP01,
-            config: { isDataRegional: false },
-          },
-          {
-            ...DATA_ELEMENTS.POP02,
-            config: { isDataRegional: true },
+            ...DATA_SOURCES.POP01,
+            config: { dhisInstanceCode: 'test_dhis_instance_1' },
           },
         ];
         const options = {
           organisationUnitCodes: ['TO'],
-          detectDataServices: true,
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
         };
 
-        getDhisApiInstanceSpy.mockReturnValueOnce(dhisApiA).mockReturnValueOnce(dhisApiB);
+        const mockedDhisApi1 = createMockDhisApi({ serverName: 'myDhisApi1' });
+        getApisForDataSourcesSpy.mockReturnValue([mockedDhisApi1]);
 
         await dhisService.pull(dataSources, 'dataElement', options);
 
-        expect(getDhisApiInstanceSpy).toHaveBeenCalledTimes(2);
-        expect(getDhisApiInstanceSpy).toHaveBeenNthCalledWith(
-          1,
-          { entityCodes: ['TO'], isDataRegional: false },
+        // expect DhisService to ask for the apis for the given data sources
+        expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
           expect.anything(),
-        );
-        expect(getDhisApiInstanceSpy).toHaveBeenNthCalledWith(
-          2,
-          { entityCodes: ['TO'], isDataRegional: true },
-          expect.anything(),
+          dataSources,
+          DEFAULT_DATA_SERVICE_MAPPING,
         );
 
         // expect those apis to be passed to pull
-        expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
-          [dhisApiA, dhisApiB],
-          expect.anything(),
-          expect.anything(),
-        );
-      });
-
-      it('only passes unique apis it gets to pull', async () => {
-        // (See RN-104)
-        const dataSources = [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02];
-        const options = {
-          organisationUnitCodes: ['TO'],
-          dataServices: [{ isDataRegional: true }, { isDataRegional: false }],
-        };
-
-        // Note: this assumes getDhisApiInstance returns the same object for the same api
-        // Covered by test in web-config-server:
-        //   - getDhisApiInstance()
-        //     - should return the same api object for the same api
-        const myDhisApi = dhisApiA;
-        getDhisApiInstanceSpy.mockReturnValue(myDhisApi);
-
-        await dhisService.pull(dataSources, 'dataElement', options);
-
-        // expect DhisService to ask for the apis for the given data services
-        expect(getDhisApiInstanceSpy).toHaveBeenNthCalledWith(
-          1,
-          { entityCodes: ['TO'], isDataRegional: true },
-          expect.anything(),
-        );
-        expect(getDhisApiInstanceSpy).toHaveBeenNthCalledWith(
-          2,
-          { entityCodes: ['TO'], isDataRegional: false },
-          expect.anything(),
-        );
-
-        // expect those apis to be passed to pull
-        expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
-          [dhisApiA],
+        expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
+          [mockedDhisApi1],
           expect.anything(),
           expect.anything(),
         );

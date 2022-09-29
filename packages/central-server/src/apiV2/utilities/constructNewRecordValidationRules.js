@@ -186,6 +186,85 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         name: [hasContent],
       };
+    case TYPES.DATA_SERVICE_SYNC_GROUP:
+      return {
+        data_group_code: [constructRecordExistsWithField(models.survey, 'code')],
+        service_type: [constructIsOneOf(Object.values(models.dataServiceSyncGroup.SERVICE_TYPES))],
+        config: [hasContent],
+      };
+    case TYPES.PROJECT:
+      return {
+        code: [
+          constructRecordNotExistsWithField(models.project, 'code'),
+          isAString,
+          async code => {
+            if (code.trim() === '') {
+              throw new Error('The code should contain words');
+            }
+            return true;
+          },
+        ],
+        name: [
+          isAString,
+          async name => {
+            if (name.trim() === '') {
+              throw new Error('The name should contain words');
+            }
+            const entityWithName = await models.entity.findOne({
+              type: 'project',
+              name,
+            });
+            if (entityWithName) {
+              throw new Error('A project already exists with this name.');
+            }
+            return true;
+          },
+        ],
+        countries: [
+          async countries => {
+            const countryEntities = await models.country.find({
+              id: countries,
+            });
+            if (countryEntities.length !== countries.length) {
+              throw new Error('One or more provided countries do not exist');
+            }
+            return true;
+          },
+        ],
+        permission_groups: [
+          hasContent,
+          async permissionGroupNames => {
+            const permissionGroups = await models.permissionGroup.find({
+              name: permissionGroupNames,
+            });
+            if (permissionGroupNames.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
+        description: [isAString],
+        sort_order: [constructIsEmptyOr(isNumber)],
+        image_url: [isAString],
+        logo_url: [isAString],
+        entityTypes: [
+          async selectedEntityTypes => {
+            if (!selectedEntityTypes) {
+              return true;
+            }
+            const entityDataTypes = await models.entity.types;
+            const filteredEntityTypes = Object.values(entityDataTypes).filter(type =>
+              selectedEntityTypes.includes(type),
+            );
+            if (selectedEntityTypes.length !== filteredEntityTypes.length) {
+              throw new Error('Some provided entity types do not exist');
+            }
+            return true;
+          },
+        ],
+        dashboard_group_name: [isAString],
+        default_measure: [constructRecordExistsWithField(models.mapOverlay, 'id')],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

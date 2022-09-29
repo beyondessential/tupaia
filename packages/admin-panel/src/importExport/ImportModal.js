@@ -19,6 +19,7 @@ import {
 import { ModalContentProvider, InputField } from '../widgets';
 import { useApi } from '../utilities/ApiProvider';
 import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
+import { checkVisibilityCriteriaAreMet } from '../utilities';
 
 const STATUS = {
   IDLE: 'idle',
@@ -118,15 +119,6 @@ export const ImportModalComponent = React.memo(
       errorMessage === 'Network request timed out'
         ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
         : errorMessage;
-
-    const checkVisibilityCriteriaAreMet = visibilityCriteria => {
-      if (!visibilityCriteria) {
-        return true; // no visibility criteria to meet, fine to display
-      }
-      return Object.entries(visibilityCriteria).every(
-        ([parameterKey, requiredValue]) => values[parameterKey] === requiredValue,
-      );
-    };
 
     const renderButtons = useCallback(() => {
       switch (status) {

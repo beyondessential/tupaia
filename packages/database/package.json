@@ -13,24 +13,25 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored",
-    "build:types": "tsc",
+    "build:src": "npm run --prefix ../../ package:build:js",
+    "build:types": "npm run --prefix ../../ package:build:types",
+    "build-dev": "npm run build",
     "dump-database": "./scripts/dumpDatabase.sh",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
-    "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && read -p \"Enter the scope of this migration ('schema' or 'data'): \" MIGRATION_SCOPE && babel-node ./src/migrate.js create ${MIGRATION_NAME}-modifies-${MIGRATION_SCOPE} --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
+    "migrate-create": "scripts/migrateCreate.sh",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "refresh-database": "node ./scripts/refreshDatabase.js",
-    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
-    "test:debug": "mocha --inspect-brk",
-    "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/tests/testData/testDataDump.sql'",
+    "test": "yarn package:test:withdb  --runInBand",
+    "test:coverage": "yarn test --coverage",
+    "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/__tests__/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/__tests__/testData/testDataDump.sql'",
     "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh",
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh"
   },
   "dependencies": {
     "@tupaia/auth": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
@@ -49,7 +50,10 @@
     "winston": "3.3.3"
   },
   "devDependencies": {
-    "deep-equal-in-any-order": "^1.0.27",
+    "@babel/node": "^7.10.5",
+    "cross-env": "^7.0.2",
+    "npm-run-all": "^4.1.5",
+    "nyc": "^15.1.0",
     "pluralize": "^8.0.0"
   }
 }

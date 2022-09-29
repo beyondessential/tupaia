@@ -12,14 +12,17 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
-    "test": "jest --passWithNoTests",
+    "test": "yarn package:test --passWithNoTests",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",
+    "cookie": "^0.5.0",
+    "puppeteer": "^15.4.0",
     "yup": "^0.32.9"
   }
 }

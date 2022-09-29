@@ -12,16 +12,18 @@ import {
   SyncGroupResults,
 } from '../../types';
 import { Service } from '../Service';
+import type { PullOptions as BasePullOptions } from '../Service';
 import { KoBoTranslator } from './KoBoTranslator';
-import { KoboSubmission, SyncGroup } from './types';
+import { KoboSubmission, DataServiceSyncGroup } from './types';
 
-type PullSyncGroupsOptions = Partial<{
-  startSubmissionTime: string;
-}>;
+type PullOptions = BasePullOptions &
+  Partial<{
+    startSubmissionTime: string;
+  }>;
 
 type Puller = (
-  dataSources: SyncGroup[],
-  options: PullSyncGroupsOptions,
+  dataSources: DataServiceSyncGroup[],
+  options: PullOptions,
 ) => Promise<Record<string, Event[]>>;
 
 export class KoBoService extends Service {
@@ -50,15 +52,11 @@ export class KoBoService extends Service {
   }
 
   public async pull(
-    dataSources: SyncGroup[],
+    dataSources: DataServiceSyncGroup[],
     type: DataSourceType,
-    options: PullSyncGroupsOptions,
+    options: PullOptions,
   ): Promise<SyncGroupResults>;
-  public async pull(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: Record<string, unknown>,
-  ) {
+  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
     const puller = this.pullers[type];
     return puller(dataSources as any, options);
   }
@@ -72,25 +70,35 @@ export class KoBoService extends Service {
   };
 
   private pullSyncGroups = async (
-    dataSources: SyncGroup[],
-    options: PullSyncGroupsOptions,
+    dataSources: DataServiceSyncGroup[],
+    options: PullOptions,
   ): Promise<SyncGroupResults> => {
-    const resultsByInternalCode: Record<string, Event[]> = {};
+    const resultsByDataGroupCode: Record<string, Event[]> = {};
+
     for (const source of dataSources) {
-      const results: KoboSubmission[] = await this.api.fetchKoBoSubmissions(
-        source.config?.koboSurveyCode,
-        options,
-      );
-      resultsByInternalCode[
-        source.config?.internalSurveyCode
-      ] = await this.translator.translateKoBoResults(
+      const { koboSurveyCode, questionMapping, entityQuestionCode } = source.config;
+      if (!koboSurveyCode) {
+        throw new Error(`Missing 'koboSurveyCode' in sync group config`);
+      }
+
+      if (!entityQuestionCode) {
+        throw new Error(`Missing 'entityQuestionCode' in sync group config`);
+      }
+
+      if (!questionMapping) {
+        throw new Error(`Missing 'questionMapping' in sync group config`);
+      }
+
+      const results = await this.api.fetchKoBoSubmissions(koboSurveyCode, options);
+
+      resultsByDataGroupCode[source.data_group_code] = await this.translator.translateKoBoResults(
         results,
-        source.config?.questionMapping,
-        source.config?.entityQuestionCode,
+        questionMapping,
+        entityQuestionCode,
       );
     }
 
-    return resultsByInternalCode;
+    return resultsByDataGroupCode;
   };
 
   public async pullMetadata(): Promise<never> {

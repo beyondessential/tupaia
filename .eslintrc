@@ -38,6 +38,7 @@
         "packages/data-api/**",
         "packages/data-broker/**",
         "packages/data-lake-api/**",
+        "packages/data-table-server/**",
         "packages/entity-server/**",
         "packages/indicators/**",
         "packages/lesmis-server/**",
@@ -45,6 +46,7 @@
         "packages/psss-server/**",
         "packages/report-server/**",
         "packages/server-boilerplate/**",
+        "packages/supserset-api/**",
         "packages/tsutils/**"
       ],
       "extends": "@beyondessential/ts",

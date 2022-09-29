@@ -16,10 +16,14 @@ export {
   getAdminPanelAllowedCountryCodes,
 } from './getAdminPanelAllowedEntityIds';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
-export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
+export {
+  buildMeditrakSyncQuery,
+  buildPermissionsBasedMeditrakSyncQuery,
+  supportsPermissionsBasedSync,
+} from './meditrakSync';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
@@ -40,3 +44,4 @@ export {
   translateUserEmailToIdAndAssessorName,
 } from './translateSurveyResponseFields';
 export { translateObjectFields } from './translateObjectFields';
+export { getUserInfoInString } from './getUserInfoInString';

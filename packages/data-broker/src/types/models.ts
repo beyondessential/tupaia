@@ -14,6 +14,7 @@ import type {
   EntityType as BaseEntityType,
   ModelRegistry,
 } from '@tupaia/database';
+import { TYPES } from '@tupaia/database';
 import { Join, Override, Values } from './utils';
 
 type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };
@@ -54,22 +55,36 @@ type DatabaseModel<
 
 export type DataSourceType = 'dataElement' | 'dataGroup' | 'syncGroup';
 
-export type ServiceType = 'data-lake' | 'dhis' | 'indicator' | 'kobo' | 'tupaia' | 'weather';
+export type ServiceType =
+  | 'data-lake'
+  | 'dhis'
+  | 'indicator'
+  | 'kobo'
+  | 'tupaia'
+  | 'weather'
+  | 'superset';
 
 export type DataSource = {
   code: string;
   service_type: ServiceType;
   config: Record<string, DbValue>;
+  databaseType:
+    | typeof TYPES.DATA_ELEMENT
+    | typeof TYPES.DATA_GROUP
+    | typeof TYPES.DATA_SERVICE_SYNC_GROUP;
 };
 
 export type DataElement = DataSource & {
   permission_groups: string[];
   dataElementCode: string;
+  databaseType: typeof TYPES.DATA_ELEMENT;
 };
 
-export type DataGroup = DataSource;
+export type DataGroup = DataSource & {
+  databaseType: typeof TYPES.DATA_GROUP;
+};
 
-export type SyncGroup = DataSource;
+export type SYNC_STATUS = 'IDLE' | 'SYNCING' | 'ERROR';
 
 export type DataServiceEntity = {
   config: {
@@ -82,16 +97,45 @@ export type DataServiceEntity = {
 export type DataServiceSyncGroup = {
   code: string;
   service_type: ServiceType;
-  config: Record<string, DbValue>;
+  config: Record<string, any>;
+  data_group_code: string;
+  sync_cursor: string;
+  sync_status: SYNC_STATUS;
+  databaseType: typeof TYPES.DATA_SERVICE_SYNC_GROUP;
 };
 
 export type Entity = {
   code: string;
   name: string;
-  point: string;
+  point?: string;
   config: {
     kobo_id?: string;
   };
+  country_code?: string;
+  type: string;
+};
+
+export type DataElementDataService = {
+  data_element_code: string;
+  country_code: string;
+  service_type: ServiceType;
+  service_config: Record<string, any>;
+};
+
+export type SupersetInstance = {
+  code: string;
+  config: Record<string, any>;
+};
+
+export type DhisInstance = {
+  code: string;
+  readonly: boolean;
+  config: Record<string, any>;
+};
+
+export type EntityHierarchy = {
+  name: string;
+  canonical_types: string[];
 };
 
 type DataElementInstance = DatabaseType<DataElement, BaseDataElementType>;
@@ -107,7 +151,7 @@ export type DataElementModel = DatabaseModel<
     }
   >
 >;
-type DataGroupModel = DatabaseModel<
+export type DataGroupModel = DatabaseModel<
   DataGroup,
   BaseDataGroupType,
   Override<
@@ -120,11 +164,19 @@ type DataGroupModel = DatabaseModel<
 type DataServiceEntityModel = DatabaseModel<DataServiceEntity>;
 type DataServiceSyncGroupModel = DatabaseModel<DataServiceSyncGroup>;
 type EntityModel = DatabaseModel<Entity, EntityInstance, BaseEntityModel>;
+type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
+type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
+type DhisInstanceModel = DatabaseModel<DhisInstance>;
+type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
 
 export interface DataBrokerModelRegistry extends ModelRegistry {
+  dataElementDataService: DataElementDataServiceModel;
+  supersetInstance: SupersetInstanceModel;
   dataElement: DataElementModel;
   dataGroup: DataGroupModel;
   dataServiceEntity: DataServiceEntityModel;
   dataServiceSyncGroup: DataServiceSyncGroupModel;
   entity: EntityModel;
+  dhisInstance: DhisInstanceModel;
+  entityHierarchy: EntityHierarchyModel;
 }

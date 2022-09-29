@@ -8,12 +8,18 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart as ChartComponent, Table, getIsChartData } from '@tupaia/ui-components/lib/chart';
+import {
+  Chart as ChartComponent,
+  ChartTable as BaseChartTable,
+  getIsChartData,
+} from '@tupaia/ui-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
+import { FavouriteButton } from '../FavouriteButton';
+import { YearLabel } from '../YearLabel';
 
 const Wrapper = styled.div`
   flex: 1;
@@ -99,7 +105,7 @@ const ChartTable = ({
         />
         {exportOptions?.exportWithTable && (
           <FlexStart my={5}>
-            <Table viewContent={viewContent} />
+            <BaseChartTable viewContent={viewContent} />
           </FlexStart>
         )}
       </ExportContainer>
@@ -118,7 +124,7 @@ const ChartTable = ({
         </ChartWrapper>
       ) : (
         <Wrapper>
-          <Table viewContent={viewContent} />
+          <BaseChartTable viewContent={viewContent} />
         </Wrapper>
       )}
     </FetchLoader>
@@ -135,6 +141,9 @@ export const Chart = ({
   error,
   isEnlarged,
   isExporting,
+  isFavourite,
+  handleFavouriteStatusChange,
+  useYearSelector,
 }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
 
@@ -169,7 +178,12 @@ export const Chart = ({
   ) : (
     <>
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
+        <YearLabel useYearSelector={useYearSelector} />
         <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+        <FavouriteButton
+          isFavourite={isFavourite}
+          handleFavouriteStatusChange={handleFavouriteStatusChange}
+        />
       </VisualHeader>
       <Body>
         <ChartTable
@@ -193,6 +207,7 @@ Chart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   isError: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
   error: PropTypes.string,
   name: PropTypes.string,
 };
@@ -205,6 +220,7 @@ Chart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   isError: false,
+  useYearSelector: false,
   error: null,
   name: null,
 };

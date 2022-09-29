@@ -13,6 +13,25 @@ import {
   SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES } from '../utils';
+import { DataServiceMapping } from './DataServiceMapping';
+
+export type PushOptions = {
+  type: DataSourceType;
+  dataServiceMapping: DataServiceMapping;
+};
+
+export type DeleteOptions = {
+  type: DataSourceType;
+  dataServiceMapping: DataServiceMapping;
+};
+
+export type PullOptions = {
+  dataServiceMapping: DataServiceMapping;
+};
+
+export type PullMetadataOptions = {
+  dataServiceMapping: DataServiceMapping;
+};
 
 export abstract class Service {
   protected readonly models: DataBrokerModelRegistry;
@@ -32,24 +51,24 @@ export abstract class Service {
   public abstract push(
     dataSources: DataSource[],
     data: unknown,
-    options: { type: DataSourceType },
+    options: PushOptions,
   ): Promise<{ diagnostics: Diagnostics }>;
 
   public abstract delete(
     dataSource: DataSource,
     data: unknown,
-    options?: Record<string, unknown>,
+    options: DeleteOptions,
   ): Promise<Diagnostics>;
 
   public abstract pull(
     dataSources: DataSource[],
     type: DataSourceType,
-    options?: Record<string, unknown>,
+    options: PullOptions,
   ): Promise<AnalyticResults | EventResults | SyncGroupResults> | never;
 
   public abstract pullMetadata(
     dataSources: DataSource[],
     type: DataSourceType,
-    options?: Record<string, unknown>,
+    options: PullMetadataOptions,
   ): Promise<unknown>;
 }

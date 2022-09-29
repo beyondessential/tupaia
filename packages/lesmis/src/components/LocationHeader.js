@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -13,9 +14,16 @@ import MuiContainer from '@material-ui/core/Container';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
+import { Tooltip } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData, useMapOverlayReportData } from '../api';
-import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
+import {
+  I18n,
+  useUrlParams,
+  makeEntityLink,
+  useUrlSearchParam,
+  useDashboardDropdownOptions,
+} from '../utils';
 import { MapTableModal } from './MapTableModal';
 import { DEFAULT_DATA_YEAR } from '../constants';
 
@@ -100,7 +108,7 @@ const getExportTitle = (entityData, currentMapOverlay) => {
   return `${name}${overlayName}`;
 };
 
-export const LocationHeader = () => {
+export const LocationHeader = ({ setIsOpen }) => {
   const { entityCode, view } = useUrlParams();
   const { search } = useLocation();
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
@@ -111,6 +119,8 @@ export const LocationHeader = () => {
 
   const { data: entityData } = useEntityData(entityCode);
   const exportTitle = getExportTitle(entityData, selectedOverlayName);
+  const { selectedOption } = useDashboardDropdownOptions();
+  const isExportable = selectedOption.exportToPDF;
 
   return (
     <Wrapper>
@@ -143,9 +153,17 @@ export const LocationHeader = () => {
                 )}
               />
             ) : (
-              <IconButton startIcon={<GetApp />}>
-                <I18n t="dashboards.export" />
-              </IconButton>
+              <Tooltip title={isExportable ? '' : <I18n t="dashboards.notExportable" />}>
+                <span>
+                  <IconButton
+                    disabled={!isExportable}
+                    onClick={() => setIsOpen(true)}
+                    startIcon={<GetApp />}
+                  >
+                    <I18n t="dashboards.export" />
+                  </IconButton>
+                </span>
+              </Tooltip>
             )}
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493 */}
             {/* <IconButton startIcon={<StarBorder />}>Add</IconButton> */}
@@ -172,4 +190,8 @@ export const LocationHeader = () => {
       </Container>
     </Wrapper>
   );
+};
+
+LocationHeader.propTypes = {
+  setIsOpen: PropTypes.func.isRequired,
 };

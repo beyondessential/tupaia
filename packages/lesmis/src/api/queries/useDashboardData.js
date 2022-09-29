@@ -25,7 +25,7 @@ const getDrillDownCodes = dashboardItems =>
       return codes;
     }, []);
 
-export const useDashboardData = ({ entityCode, includeDrillDowns = true }) => {
+export const useDashboardData = ({ entityCode, includeDrillDowns = true, isFavouriteOnly }) => {
   const query = useQuery(
     ['dashboard', entityCode],
     () => get(`dashboard/${entityCode}`),
@@ -35,7 +35,9 @@ export const useDashboardData = ({ entityCode, includeDrillDowns = true }) => {
   const data = query.data?.map(dashboard => {
     const drillDownItemCodes = getDrillDownCodes(dashboard.items);
 
-    let dashboardItems = dashboard.items.filter(({ type }) => type === 'chart' || type === 'list'); // Only show supported chart types
+    let dashboardItems = dashboard.items
+      .filter(({ type }) => type === 'chart' || type === 'list') // Only show supported chart types
+      .filter(({ isFavourite }) => (isFavouriteOnly ? isFavourite : true));
 
     if (!includeDrillDowns) {
       // Remove the drill downs from the main dashboard items list

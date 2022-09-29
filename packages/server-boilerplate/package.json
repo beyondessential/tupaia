@@ -15,13 +15,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig-build.json",
-    "lint": "eslint . --ext .ts",
-    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "yarn package:test",
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
@@ -34,10 +34,17 @@
     "client-sessions": "^0.8.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "i18n": "^0.13.3",
     "express": "^4.16.2",
     "http-proxy-middleware": "^2.0.1",
+    "i18n": "^0.13.3",
     "morgan": "^1.9.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/api-error-handler": "^1.0.32",
+    "@types/client-sessions": "^0.8.0",
+    "@types/cors": "^2.8.8",
+    "@types/express": "^4.17.8",
+    "@types/supertest": "^2.0.11"
   }
 }

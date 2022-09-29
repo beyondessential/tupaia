@@ -54,7 +54,6 @@ export const TabsLoader = () => (
 
 export const Tabs = styled(MuiTabs)`
   .MuiTabs-indicator {
-    height: 5px;
     background-color: ${props => props.theme.palette.primary.main};
   }
 `;

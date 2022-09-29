@@ -104,6 +104,7 @@ const COLUMNS = [
     type: 'edit',
     width: 150,
     actionConfig: {
+      title: 'Edit User',
       editEndpoint: 'users',
       fields: EDIT_FIELDS,
     },
@@ -122,10 +123,6 @@ const EXPANSION_CONFIG = [
     columns: PERMISSIONS_COLUMNS,
   },
 ];
-
-const EDIT_CONFIG = {
-  title: 'Edit User',
-};
 
 const IMPORT_CONFIG = {
   title: 'Import Users',
@@ -159,7 +156,6 @@ export const UsersPage = ({ getHeaderEl, ...props }) => (
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
     {...props}

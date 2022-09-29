@@ -34,6 +34,8 @@ export interface Event {
   orgUnit: string;
   orgUnitName: string;
   dataValues: Record<string, string | number>;
+  trackedEntityId?: string;
+  trackedEntityCode?: string;
 }
 
 export interface OutboundEvent {

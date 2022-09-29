@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { SyncGroup as BaseSyncGroup } from '../../types';
+import { DataServiceSyncGroup as BaseSyncGroup } from '../../types';
 
 export type QuestionMapping = Record<
   string,
@@ -19,7 +19,7 @@ export interface KoboSyncGroupConfig {
   entityQuestionCode: string;
 }
 
-export type SyncGroup = BaseSyncGroup & { config: KoboSyncGroupConfig };
+export type DataServiceSyncGroup = BaseSyncGroup & { config: KoboSyncGroupConfig };
 
 export interface KoboSubmission {
   [key: string]: string;

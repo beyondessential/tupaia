@@ -31,6 +31,7 @@ const EXPANSION_CONFIG = [
 const CREATE_CONFIG = {
   title: 'New Country',
   actionConfig: {
+    title: 'Create New Country',
     editEndpoint: 'countries',
     fields: FIELDS,
   },
@@ -42,7 +43,6 @@ export const CountriesPage = ({ getHeaderEl }) => (
     endpoint="countries"
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}
-    editConfig={{ title: 'Create New Country' }}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
   />

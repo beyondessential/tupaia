@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { lighten } from '@material-ui/core/styles';
-import { Tooltip } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import { Tooltip } from '../Tooltip';
 
 const CircleCell = styled.div`
   display: flex;

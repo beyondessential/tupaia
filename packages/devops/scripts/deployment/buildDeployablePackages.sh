@@ -12,7 +12,12 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Install external dependencies and build internal dependencies
 cd ${TUPAIA_DIR}
-yarn install --non-interactive --frozen-lockfile
+yarn install --frozen-lockfile
+
+# "postinstall" hook may only fire if the dependency tree changes. This may not happen on feature branches based off dev,
+# because our AMI performs a yarn install already. In this case we can end up in a situation where "internal-depenednecies"
+# packages' dists are not rebuilt. This will be fixed by changing to a single yarn:build command in a future PR.
+yarn build:internal-dependencies
 
 # Inject environment variables from LastPass
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)

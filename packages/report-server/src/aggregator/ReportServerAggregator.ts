@@ -42,7 +42,6 @@ export class ReportServerAggregator {
         period,
         startDate,
         endDate,
-        detectDataServices: true,
       },
       { aggregations },
     );
@@ -67,6 +66,7 @@ export class ReportServerAggregator {
     const { period, startDate, endDate } = periodParams;
 
     const noCodesInConfig = !dataElementCodesInConfig || dataElementCodesInConfig.length === 0;
+
     const dataElementCodes =
       (noCodesInConfig && (await this.getDateElementCodes(programCode))) ||
       dataElementCodesInConfig;
@@ -83,7 +83,6 @@ export class ReportServerAggregator {
         period,
         startDate,
         endDate,
-        detectDataServices: true,
       },
       { aggregations },
     );

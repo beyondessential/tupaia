@@ -9,10 +9,9 @@ import { DataElement, DataGroup } from '../../types';
 import { DATA_SOURCE_TYPES } from '../../utils';
 import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, createServiceStub } from './DataBroker.stubs';
+import { DataServiceMapping } from '../../services/DataServiceMapping';
 
-const mockDataElements = Object.values(DATA_ELEMENTS);
-const mockDataGroups = Object.values(DATA_GROUPS);
-const mockModels = createModelsStub(mockDataElements, mockDataGroups);
+const mockModels = createModelsStub();
 
 jest.mock('@tupaia/database', () => ({
   modelClasses: {
@@ -20,6 +19,8 @@ jest.mock('@tupaia/database', () => ({
   },
   TupaiaDatabase: jest.fn().mockImplementation(() => {}),
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
+  createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
+  TYPES: jest.requireActual('@tupaia/database').TYPES, // don't mock needed type
 }));
 
 jest.mock('@tupaia/server-boilerplate', () => ({
@@ -32,10 +33,190 @@ describe('DataBroker', () => {
     tupaia: createServiceStub(mockModels, DATA_BY_SERVICE.tupaia),
   };
   const createServiceMock = stubCreateService(SERVICES);
-  const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
+  const options = { organisationUnitCode: 'TO' };
 
   it('getDataSourceTypes()', () => {
     expect(new DataBroker().getDataSourceTypes()).toStrictEqual(DATA_SOURCE_TYPES);
+  });
+
+  describe('Data service resolution', () => {
+    const TO_OPTIONS = { organisationUnitCode: 'TO_FACILITY_01' };
+    const FJ_OPTIONS = { organisationUnitCode: 'FJ_FACILITY_01' };
+
+    describe('default', () => {
+      const testData = [
+        ['push', 1, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }]], 'test'],
+        ['push', 2, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }]], 'test'],
+        ['push', 3, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS], 'test'],
+        ['push', 4, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }], TO_OPTIONS], 'test'],
+        ['delete', 1, [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS], 'test'],
+        ['delete', 2, [{ code: 'TEST_01', type: 'dataGroup' }, TO_OPTIONS], 'test'],
+        ['pull', 1, [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS], 'test'],
+        ['pull', 2, [{ code: 'TEST_01', type: 'dataGroup' }, TO_OPTIONS], 'test'],
+        ['pullMetadata', 1, [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS], 'test'],
+        ['pullMetadata', 2, [{ code: 'TEST_01', type: 'dataGroup' }, TO_OPTIONS], 'test'],
+      ];
+
+      testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
+        it(`resolves the default service: ${methodUnderTest}-${testNum}`, async () => {
+          // The default service being the one specified on the de/dg rather than the country mapping tables
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceNameUsed,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
+    describe('no org unit', () => {
+      const NO_OU_OPT = {};
+
+      const testData = [
+        ['push', 1, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }]], 'test'],
+        ['push', 2, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }]], 'test'],
+        ['push', 3, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], NO_OU_OPT], 'test'],
+        ['push', 4, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }], NO_OU_OPT], 'test'],
+        ['delete', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['delete', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+        ['pull', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['pull', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+        ['pullMetadata', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['pullMetadata', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+      ];
+
+      testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
+        it(`resolves the default service: ${methodUnderTest}-${testNum}`, async () => {
+          // The default service being the one specified on the de/dg rather than the country mapping tables
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceNameUsed,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
+    describe('mapped by country', () => {
+      // Only DataElements currently support mapping by country
+      const testData = [
+        ['push', [{ code: 'MAPPED_01', type: 'dataElement' }, [{ value: 2 }], FJ_OPTIONS], 'other'],
+        ['delete', [{ code: 'MAPPED_01', type: 'dataElement' }, { value: 2 }, FJ_OPTIONS], 'other'],
+        ['pull', [{ code: 'MAPPED_01', type: 'dataElement' }, FJ_OPTIONS], 'other'],
+        ['pullMetadata', [{ code: 'MAPPED_01', type: 'dataElement' }, FJ_OPTIONS], 'other'],
+      ];
+
+      testData.forEach(([methodUnderTest, inputArgs, expectedServiceType]) =>
+        it(`resolves the data service based on mapping: ${methodUnderTest}`, async () => {
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceType,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
+    describe('passes mapping to service', () => {
+      let dataBroker;
+      const FAKE_MAPPING = new DataServiceMapping([
+        {
+          dataSource: DATA_ELEMENTS.TEST_01,
+          service_type: DATA_ELEMENTS.TEST_01.service_type,
+          config: DATA_ELEMENTS.TEST_01.config,
+        },
+      ]);
+
+      const testData = [
+        ['push', [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS]],
+        ['delete', [{ code: 'TEST_01', type: 'dataElement' }, { value: 2 }, TO_OPTIONS]],
+        ['pull', [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS]],
+        ['pullMetadata', [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS]],
+      ];
+
+      beforeAll(() => {
+        dataBroker = new DataBroker();
+        dataBroker.dataServiceResolver = {
+          getMappingByOrgUnitCode: jest.fn().mockReturnValue(FAKE_MAPPING),
+          getMappingByCountryCode: jest.fn().mockReturnValue(FAKE_MAPPING),
+        };
+      });
+
+      testData.forEach(([methodUnderTest, inputArgs]) =>
+        it(`passes mapping to service: ${methodUnderTest}`, async () => {
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(SERVICES.dhis[methodUnderTest]).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expect.anything(),
+            expect.objectContaining({
+              dataServiceMapping: FAKE_MAPPING,
+            }),
+          );
+        }),
+      );
+    });
+
+    describe('multiple org units pull', () => {
+      // When pulling we can specify multiple org units and this triggers some special logic.
+      //
+      // For each data element, a different data service can be defined per country, see
+      // "mapped by country" above. If the org units are in different countries, then a data
+      // element could resolve to multiple services. E.g. Data Element Patient_Age could be
+      // in DHIS-tonga for Tonga, and in Superset-Fiji for Fiji. This logic then
+      // attempts to minimise the number of calls to any one service type, in the example
+      // above there should only be one call to DHIS and one to Superset.
+      //
+      // Note: all resulting pull calls to a data service are given ALL org unit codes and
+      // ALL data element codes. Some data services are ok with this, and some will throw
+      // an error if the org unit / data element does not exist there.
+
+      const assertServicePulledDataElementsOnce = (service, dataElements, options) =>
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataElements,
+          'dataElement',
+          expect.objectContaining(options),
+        );
+
+      it('pulls from different data services for the same data element', async () => {
+        const dataBroker = new DataBroker();
+        const multipleCountryOptions = {
+          organisationUnitCodes: ['FJ_FACILITY_01', 'TO_FACILITY_01'],
+        };
+        await dataBroker.pull(
+          { code: ['MAPPED_01', 'MAPPED_02'], type: 'dataElement' },
+          multipleCountryOptions,
+        );
+
+        expect(createServiceMock).toHaveBeenCalledTimes(2);
+        expect(createServiceMock).toHaveBeenCalledWith(
+          expect.anything(),
+          'test',
+          expect.anything(),
+        );
+        expect(createServiceMock).toHaveBeenCalledWith(
+          expect.anything(),
+          'other',
+          expect.anything(),
+        );
+
+        assertServicePulledDataElementsOnce(
+          SERVICES.dhis,
+          [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
+          multipleCountryOptions, // all org units
+        );
+        assertServicePulledDataElementsOnce(
+          SERVICES.other,
+          [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
+          multipleCountryOptions, // all org units
+        );
+      });
+    });
   });
 
   describe('push()', () => {
@@ -43,41 +224,49 @@ describe('DataBroker', () => {
       const data = [{ value: 1 }, { value: 2 }];
       const dataBroker = new DataBroker();
       return expect(
-        dataBroker.push({ code: ['DHIS_01', 'TUPAIA_01'], type: 'dataElement' }, data),
-      ).toBeRejectedWith('Cannot push data belonging to different services');
+        dataBroker.push({ code: ['TEST_01', 'OTHER_01'], type: 'dataElement' }, data),
+      ).toBeRejectedWith('Multiple data service types found, only a single service type expected');
     });
 
     it('single code', async () => {
       const data = [{ value: 2 }];
       const dataBroker = new DataBroker();
-      await dataBroker.push({ code: 'DHIS_01', type: 'dataElement' }, data);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.push).toHaveBeenCalledOnceWith([DATA_ELEMENTS.DHIS_01], data, {
-        type: 'dataElement',
-      });
+      await dataBroker.push({ code: 'TEST_01', type: 'dataElement' }, data);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+      expect(SERVICES.dhis.push).toHaveBeenCalledOnceWith(
+        [DATA_ELEMENTS.TEST_01],
+        data,
+        expect.objectContaining({ type: 'dataElement' }),
+      );
     });
 
     it('multiple codes', async () => {
       const data = [{ value: 1 }, { value: 2 }];
       const dataBroker = new DataBroker();
-      await dataBroker.push({ code: ['DHIS_01', 'DHIS_02'], type: 'dataElement' }, data);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
+      await dataBroker.push({ code: ['TEST_01', 'TEST_02'], type: 'dataElement' }, data);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
       expect(SERVICES.dhis.push).toHaveBeenCalledOnceWith(
-        [DATA_ELEMENTS.DHIS_01, DATA_ELEMENTS.DHIS_02],
+        [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
         data,
-        { type: 'dataElement' },
+        expect.objectContaining({ type: 'dataElement' }),
       );
     });
   });
 
-  it('delete()', async () => {
-    const data = { value: 2 };
-    const dataBroker = new DataBroker();
-    await dataBroker.delete({ code: 'DHIS_01', type: 'dataElement' }, data, options);
-    expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-    expect(SERVICES.dhis.delete).toHaveBeenCalledOnceWith(DATA_ELEMENTS.DHIS_01, data, {
-      type: 'dataElement',
-      ...options,
+  describe('delete()', () => {
+    it('single code', async () => {
+      const data = { value: 2 };
+      const dataBroker = new DataBroker();
+      await dataBroker.delete({ code: 'TEST_01', type: 'dataElement' }, data, options);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+      expect(SERVICES.dhis.delete).toHaveBeenCalledOnceWith(
+        DATA_ELEMENTS.TEST_01,
+        data,
+        expect.objectContaining({
+          type: 'dataElement',
+          ...options,
+        }),
+      );
     });
   });
 
@@ -121,33 +310,40 @@ describe('DataBroker', () => {
         expect(new DataBroker().pull(dataSourceSpec as any, {})).toBeRejectedWith(expectedError),
       );
 
+      it('does not throw if options omitted', async () =>
+        expect(new DataBroker().pull({ code: ['TEST_01'], type: 'dataElement' })).toResolve());
+
       it('does not throw if at least one code exists', async () =>
         expect(
-          new DataBroker().pull({ code: ['DHIS_01', 'NON_EXISTING'], type: 'dataElement' }, {}),
+          new DataBroker().pull({ code: ['TEST_01', 'NON_EXISTING'], type: 'dataElement' }),
         ).toResolve());
     });
 
     describe('analytics', () => {
       const assertServicePulledDataElementsOnce = (service: Service, dataElements: DataElement[]) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataElements,
+          'dataElement',
+          expect.objectContaining(options),
+        );
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
-        const data = await dataBroker.pull({ code: 'DHIS_01', type: 'dataElement' }, options);
+        const data = await dataBroker.pull({ code: 'TEST_01', type: 'dataElement' }, options);
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-        assertServicePulledDataElementsOnce(SERVICES.dhis, [DATA_ELEMENTS.DHIS_01]);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+        assertServicePulledDataElementsOnce(SERVICES.dhis, [DATA_ELEMENTS.TEST_01]);
         expect(data).toStrictEqual({
           results: [
             {
               analytics: [
-                { dataElement: 'DHIS_01', organisationUnit: 'TO', period: '20210101', value: 1 },
+                { dataElement: 'TEST_01', organisationUnit: 'TO', period: '20210101', value: 1 },
               ],
               numAggregationsProcessed: 0,
             },
           ],
           metadata: {
-            dataElementCodeToName: { DHIS_01: 'DHIS element 1' },
+            dataElementCodeToName: { TEST_01: 'DHIS element 1' },
           },
         });
       });
@@ -155,27 +351,27 @@ describe('DataBroker', () => {
       it('multiple codes', async () => {
         const dataBroker = new DataBroker();
         const data = await dataBroker.pull(
-          { code: ['DHIS_01', 'DHIS_02'], type: 'dataElement' },
+          { code: ['TEST_01', 'TEST_02'], type: 'dataElement' },
           options,
         );
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.dhis, [
-          DATA_ELEMENTS.DHIS_01,
-          DATA_ELEMENTS.DHIS_02,
+          DATA_ELEMENTS.TEST_01,
+          DATA_ELEMENTS.TEST_02,
         ]);
         expect(data).toStrictEqual({
           results: [
             {
               analytics: [
-                { dataElement: 'DHIS_01', organisationUnit: 'TO', period: '20210101', value: 1 },
-                { dataElement: 'DHIS_02', organisationUnit: 'TO', period: '20210101', value: 2 },
+                { dataElement: 'TEST_01', organisationUnit: 'TO', period: '20210101', value: 1 },
+                { dataElement: 'TEST_02', organisationUnit: 'TO', period: '20210101', value: 2 },
               ],
               numAggregationsProcessed: 0,
             },
           ],
           metadata: {
-            dataElementCodeToName: { DHIS_01: 'DHIS element 1', DHIS_02: 'DHIS element 2' },
+            dataElementCodeToName: { TEST_01: 'DHIS element 1', TEST_02: 'DHIS element 2' },
           },
         });
       });
@@ -183,34 +379,34 @@ describe('DataBroker', () => {
       it('multiple services', async () => {
         const dataBroker = new DataBroker();
         const data = await dataBroker.pull(
-          { code: ['DHIS_01', 'TUPAIA_01', 'DHIS_02'], type: 'dataElement' },
+          { code: ['TEST_01', 'OTHER_01', 'TEST_02'], type: 'dataElement' },
           options,
         );
 
         expect(createServiceMock).toHaveBeenCalledTimes(2);
-        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
-        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.dhis, [
-          DATA_ELEMENTS.DHIS_01,
-          DATA_ELEMENTS.DHIS_02,
+          DATA_ELEMENTS.TEST_01,
+          DATA_ELEMENTS.TEST_02,
         ]);
-        assertServicePulledDataElementsOnce(SERVICES.tupaia, [DATA_ELEMENTS.TUPAIA_01]);
+        assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01]);
         expect(data).toStrictEqual({
           results: [
             {
               analytics: [
-                { dataElement: 'DHIS_01', organisationUnit: 'TO', period: '20210101', value: 1 },
-                { dataElement: 'DHIS_02', organisationUnit: 'TO', period: '20210101', value: 2 },
-                { dataElement: 'TUPAIA_01', organisationUnit: 'TO', period: '20210101', value: 3 },
+                { dataElement: 'TEST_01', organisationUnit: 'TO', period: '20210101', value: 1 },
+                { dataElement: 'TEST_02', organisationUnit: 'TO', period: '20210101', value: 2 },
+                { dataElement: 'OTHER_01', organisationUnit: 'TO', period: '20210101', value: 3 },
               ],
               numAggregationsProcessed: 0,
             },
           ],
           metadata: {
             dataElementCodeToName: {
-              DHIS_01: 'DHIS element 1',
-              DHIS_02: 'DHIS element 2',
-              TUPAIA_01: 'Tupaia element 1',
+              TEST_01: 'DHIS element 1',
+              TEST_02: 'DHIS element 2',
+              OTHER_01: 'Tupaia element 1',
             },
           },
         });
@@ -219,54 +415,52 @@ describe('DataBroker', () => {
 
     describe('dataGroups', () => {
       const assertServicePulledEventsOnce = (service: Service, dataGroups: DataGroup[]) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataGroups, 'dataGroup', options);
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataGroups,
+          'dataGroup',
+          expect.objectContaining(options),
+        );
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
-        const data = await dataBroker.pull({ code: 'DHIS_PROGRAM_01', type: 'dataGroup' }, options);
+        const data = await dataBroker.pull({ code: 'TEST_01', type: 'dataGroup' }, options);
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-        assertServicePulledEventsOnce(SERVICES.dhis, [DATA_GROUPS.DHIS_PROGRAM_01]);
-        expect(data).toStrictEqual(DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_01);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+        assertServicePulledEventsOnce(SERVICES.dhis, [DATA_GROUPS.TEST_01]);
+        expect(data).toStrictEqual([{ dataValues: { TEST_01: 10 } }]);
       });
 
       it('multiple codes', async () => {
         const dataBroker = new DataBroker();
         const data = await dataBroker.pull(
-          { code: ['DHIS_PROGRAM_01', 'DHIS_PROGRAM_02'], type: 'dataGroup' },
+          { code: ['TEST_01', 'TEST_02'], type: 'dataGroup' },
           options,
         );
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-        assertServicePulledEventsOnce(SERVICES.dhis, [
-          DATA_GROUPS.DHIS_PROGRAM_01,
-          DATA_GROUPS.DHIS_PROGRAM_02,
-        ]);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+        assertServicePulledEventsOnce(SERVICES.dhis, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
         expect(data).toStrictEqual([
-          ...DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_01,
-          ...DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_02,
+          { dataValues: { TEST_01: 10 } },
+          { dataValues: { TEST_02: 20 } },
         ]);
       });
 
       it('multiple services', async () => {
         const dataBroker = new DataBroker();
         const data = await dataBroker.pull(
-          { code: ['DHIS_PROGRAM_01', 'TUPAIA_PROGRAM_01', 'DHIS_PROGRAM_02'], type: 'dataGroup' },
+          { code: ['TEST_01', 'OTHER_01', 'TEST_02'], type: 'dataGroup' },
           options,
         );
 
         expect(createServiceMock).toHaveBeenCalledTimes(2);
-        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
-        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
-        assertServicePulledEventsOnce(SERVICES.dhis, [
-          DATA_GROUPS.DHIS_PROGRAM_01,
-          DATA_GROUPS.DHIS_PROGRAM_02,
-        ]);
-        assertServicePulledEventsOnce(SERVICES.tupaia, [DATA_GROUPS.TUPAIA_PROGRAM_01]);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
+        assertServicePulledEventsOnce(SERVICES.dhis, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
+        assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01]);
         expect(data).toStrictEqual([
-          ...DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_01,
-          ...DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_02,
-          ...DATA_BY_SERVICE.tupaia.eventsByProgram.TUPAIA_PROGRAM_01,
+          { dataValues: { TEST_01: 10 } },
+          { dataValues: { TEST_02: 20 } },
+          { dataValues: { OTHER_01: 30 } },
         ]);
       });
     });
@@ -277,29 +471,53 @@ describe('DataBroker', () => {
       service: Service,
       dataElements: DataElement[],
     ) =>
-      expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
+      expect(service.pullMetadata).toHaveBeenCalledOnceWith(
+        dataElements,
+        'dataElement',
+        expect.objectContaining(options),
+      );
+
+    const assertServicePulledDataGroupMetadataOnce = (
+      service: Service,
+      dataElements: DataElement[],
+    ) =>
+      expect(service.pullMetadata).toHaveBeenCalledOnceWith(
+        dataElements,
+        'dataGroup',
+        expect.objectContaining(options),
+      );
 
     it('throws if the data sources belong to multiple services', async () => {
       const dataBroker = new DataBroker();
       return expect(
-        dataBroker.pullMetadata({ code: ['DHIS_01', 'TUPAIA_01'], type: 'dataElement' }, options),
-      ).toBeRejectedWith('Cannot pull metadata for data sources belonging to different services');
+        dataBroker.pullMetadata({ code: ['TEST_01', 'OTHER_01'], type: 'dataElement' }, options),
+      ).toBeRejectedWith('Multiple data service types found, only a single service type expected');
     });
 
     it('single code', async () => {
       const dataBroker = new DataBroker();
-      await dataBroker.pullMetadata({ code: 'DHIS_01', type: 'dataElement' }, options);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      assertServicePulledDataElementMetadataOnce(SERVICES.dhis, [DATA_ELEMENTS.DHIS_01]);
+      await dataBroker.pullMetadata({ code: 'TEST_01', type: 'dataElement' }, options);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+      assertServicePulledDataElementMetadataOnce(SERVICES.dhis, [DATA_ELEMENTS.TEST_01]);
     });
 
     it('multiple codes', async () => {
       const dataBroker = new DataBroker();
-      await dataBroker.pullMetadata({ code: ['DHIS_01', 'DHIS_02'], type: 'dataElement' }, options);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
+      await dataBroker.pullMetadata({ code: ['TEST_01', 'TEST_02'], type: 'dataElement' }, options);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
       assertServicePulledDataElementMetadataOnce(SERVICES.dhis, [
-        DATA_ELEMENTS.DHIS_01,
-        DATA_ELEMENTS.DHIS_02,
+        DATA_ELEMENTS.TEST_01,
+        DATA_ELEMENTS.TEST_02,
+      ]);
+    });
+
+    it('sends data services when data source type is data group', async () => {
+      const dataBroker = new DataBroker();
+      await dataBroker.pullMetadata({ code: ['TEST_01', 'TEST_02'], type: 'dataGroup' }, options);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+      assertServicePulledDataGroupMetadataOnce(SERVICES.dhis, [
+        DATA_GROUPS.TEST_01,
+        DATA_GROUPS.TEST_02,
       ]);
     });
   });

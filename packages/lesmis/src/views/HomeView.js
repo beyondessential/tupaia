@@ -16,7 +16,7 @@ import {
   LocaleMenu,
   FooterLogos,
 } from '../components';
-import { NAVBAR_HEIGHT, YELLOW } from '../constants';
+import { NAVBAR_HEIGHT, YELLOW, PHONE_CONTACT, WEBSITE_CONTACT } from '../constants';
 import { useProjectEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
@@ -167,10 +167,10 @@ export const HomeView = () => {
               <I18n t="home.contactUs" />
             </InfoHeading>
             <InfoText>
-              <I18n t="home.ph" />: +856 20 54 015 004
+              <I18n t="home.ph" />: {PHONE_CONTACT}
             </InfoText>
             <InfoText>
-              <I18n t="home.website" />: www.moes.edu.la
+              <I18n t="home.website" />: {WEBSITE_CONTACT}
             </InfoText>
           </InfoSection>
         </Info>
