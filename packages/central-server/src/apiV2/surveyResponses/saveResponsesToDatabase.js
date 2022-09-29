@@ -1,5 +1,6 @@
-import { getTimezoneNameFromTimestamp, stripTimezoneFromDate } from '@tupaia/utils';
-import * as keyBy from 'lodash.keyby';
+import { getTimezoneNameFromTimestamp, stripTimezoneFromDate, yup } from '@tupaia/utils';
+import keyBy from 'lodash.keyby';
+import { upsertAnswers } from '../../dataAccessors';
 
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
@@ -18,16 +19,37 @@ async function getQuestionsByCode(models, responses) {
   return getRecordsByCode(models.question, questionCodes);
 }
 
-function buildAnswerRecords(answers, surveyResponseId, questionsByCode) {
-  return Object.entries(answers).map(([code, value]) => {
-    const question = questionsByCode[code];
-    return {
-      type: question.type,
-      survey_response_id: surveyResponseId,
-      question_id: question.id,
-      text: value,
-    };
-  });
+const UpsertAnswersSchema = yup.array().of(
+  yup.object({
+    id: yup.string().required,
+    type: yup.string().required,
+    question_id: yup.string().required,
+  }),
+);
+
+async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId, questionsByCode) {
+  let answers;
+  /** The format of answers between upserting and creating are different.
+   *  create answer records: [ { [questionCode]: [answerValue] } ]
+   *  upsert answer records: [ UpsertAnswersSchema ]
+   */
+  const isToUpsertAnswerRecords = UpsertAnswersSchema.isValidSync(rawAnswerRecords);
+  if (isToUpsertAnswerRecords) {
+    answers = await upsertAnswers(models, rawAnswerRecords, surveyResponseId);
+  } else {
+    const answerRecords = Object.entries(rawAnswerRecords).map(([code, value]) => {
+      const question = questionsByCode[code];
+      return {
+        type: question.type,
+        question_id: question.id,
+        survey_response_id: surveyResponseId,
+        text: value,
+      };
+    });
+    answers = await models.answer.createMany(answerRecords);
+  }
+
+  return answers;
 }
 
 function buildResponseRecord(user, entitiesByCode, body) {
@@ -82,6 +104,7 @@ async function saveSurveyResponses(models, responseRecords) {
 }
 
 export async function saveResponsesToDatabase(models, userId, responses) {
+  console.log(responses);
   // pre-fetch some data that will be used by multiple responses/answers
   const questionsByCode = await getQuestionsByCode(models, responses);
   const entitiesByCode = await getEntitiesByCode(models, responses);
@@ -100,13 +123,12 @@ export async function saveResponsesToDatabase(models, userId, responses) {
   // overwhelm postgres)
   for (let i = 0; i < responses.length; i++) {
     const response = responses[i];
-
-    const answerRecords = buildAnswerRecords(
+    const answers = await saveAnswerRecords(
+      models,
       response.answers,
       surveyResponses[i].id,
       questionsByCode,
     );
-    const answers = await models.answer.createMany(answerRecords);
     idsCreated[i].answerIds = answers.map(a => a.id);
   }
 
