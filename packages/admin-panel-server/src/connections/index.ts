@@ -5,4 +5,3 @@
 
 export { ReportConnection } from './ReportConnection';
 export { EntityConnection } from './EntityConnection';
-export { CentralConnection } from './CentralConnection';
