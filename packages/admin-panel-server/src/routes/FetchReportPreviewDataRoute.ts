@@ -4,11 +4,10 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { ReportConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
@@ -31,14 +30,6 @@ export type FetchReportPreviewDataRequest = Request<
 >;
 
 export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
-  private readonly reportConnection: ReportConnection;
-
-  public constructor(req: FetchReportPreviewDataRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.reportConnection = new ReportConnection(req.session);
-  }
-
   public async buildResponse() {
     this.validate();
 
@@ -47,7 +38,7 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
 
     const reportConfig = this.getReportConfig();
 
-    return this.reportConnection.testReport(
+    return this.req.ctx.services.report.testReport(
       {
         organisationUnitCodes: entityCode as string,
         hierarchy: hierarchy as string,

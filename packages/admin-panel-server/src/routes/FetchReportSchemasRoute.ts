@@ -4,11 +4,9 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
-
-import { ReportConnection } from '../connections';
 
 export type FetchTransformSchemasRequest = Request<
   Record<string, never>,
@@ -17,15 +15,7 @@ export type FetchTransformSchemasRequest = Request<
 >;
 
 export class FetchTransformSchemasRoute extends Route<FetchTransformSchemasRequest> {
-  private readonly reportConnection: ReportConnection;
-
-  public constructor(req: FetchTransformSchemasRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.reportConnection = new ReportConnection(req.session);
-  }
-
   public async buildResponse() {
-    return this.reportConnection.fetchTransformSchemas();
+    return this.req.ctx.services.report.fetchTransformSchemas();
   }
 }
