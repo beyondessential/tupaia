@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import * as cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash.clonedeep';
 import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
 import { UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
@@ -46,7 +46,8 @@ const constructSurveyResponseTranslators = (models: MeditrakAppServerModelRegist
   user_email: (userEmail: string) => translateUserEmailToIdAndAssessorName(models.user, userEmail),
   entity_code: (entityCode: string) => translateEntityCodeToId(models.entity, entityCode),
   survey_code: (surveyCode: string) => translateSurveyCodeToId(models.survey, surveyCode),
-  answers: (answers: { body: string }[]) => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
+  answers: (answers: { body: string }[]): Promise<SurveyResponseObject> =>
+    new Promise(() => ({ answers: answers.filter(a => a.body !== '') })), // remove any empty answers
 });
 
 const constructAnswerTranslators = (models: MeditrakAppServerModelRegistry) => ({
@@ -54,7 +55,7 @@ const constructAnswerTranslators = (models: MeditrakAppServerModelRegistry) => (
 });
 
 type Translator<T> = {
-  [key in keyof T]?: (fieldValue: string) => Promise<SurveyResponseObject>;
+  [key in keyof T]?: (fieldValue: any) => Promise<SurveyResponseObject>;
 };
 
 const translateObjectFields = async <T extends SurveyResponseObject>(
@@ -65,7 +66,7 @@ const translateObjectFields = async <T extends SurveyResponseObject>(
     Object.entries(object).map(async ([field, value]) => {
       const translator = objectTranslators[field];
       if (translator) {
-        const newFields = await translator(value as string);
+        const newFields = await translator(value);
         // eslint-disable-next-line no-param-reassign
         delete object[field];
         Object.entries(newFields).forEach(([newField, newValue]) => {

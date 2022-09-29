@@ -101,7 +101,7 @@ export class S3Client {
   /**
    * @public
    * @param {*} base64EncodedImage
-   * @param {*} fileId
+   * @param {*} [fileId]
    */
   async uploadImage(base64EncodedImage, fileId) {
     const buffer = Buffer.from(

@@ -6,14 +6,20 @@
 import { BaseApi } from './BaseApi';
 
 export type SurveyResponse = {
-  surveyId: string;
-  entityCode: string;
-  timestamp: string;
-  answers: Answers;
+  id?: string;
+  survey_id: string;
+  entity_id?: string;
+  entity_code?: string;
+  timestamp?: string;
+  data_time?: string;
+  start_time?: string;
+  end_time?: string;
+  approval_status?: string;
+  answers: Answers | Answers[];
 };
 
 export type Answers = {
-  [key: string]: string; // question_code -> value
+  [key: string]: string;
 };
 
 export class CentralApi extends BaseApi {
@@ -29,7 +35,7 @@ export class CentralApi extends BaseApi {
     return this.connection.post('me/changePassword', null, passwordChangeFields);
   }
 
-  public async createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
+  public async upsertSurveyResponses(responses: SurveyResponse[]): Promise<void> {
     const BATCH_SIZE = 500;
     for (let i = 0; i < responses.length; i += BATCH_SIZE) {
       const chunk = responses.slice(i, i + BATCH_SIZE);

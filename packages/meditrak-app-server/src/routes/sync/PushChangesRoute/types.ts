@@ -1,1 +1,1 @@
-export type SurveyResponseObject = Record<string, unknown>;
+export type SurveyResponseObject = Record<string, any>;

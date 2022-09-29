@@ -26,14 +26,14 @@ export type SurveyResponseModelFields = Readonly<{
 
 export interface SurveyResponseModelType
   extends SurveyResponseModelFields,
-    Omit<BaseSurveyResponseType, 'id'> {
+    Omit<BaseSurveyResponseType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+
+export interface SurveyResponseModel
+  extends Model<BaseSurveyResponseModel, SurveyResponseModelFields, SurveyResponseModelType> {
   approvalStatusTypes: {
     NOT_REQUIRED: string;
     PENDING: string;
     REJECTED: string;
     APPROVED: string;
   };
-} // Omit base `id: any` type as we explicity define as a string here
-
-export interface SurveyResponseModel
-  extends Model<BaseSurveyResponseModel, SurveyResponseModelFields, SurveyResponseModelType> {}
+}

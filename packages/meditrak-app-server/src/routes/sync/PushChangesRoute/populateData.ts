@@ -62,6 +62,7 @@ export const populateData = async (
     id: surveyResponseId,
     clinic_id: clinicId,
     survey_id: surveyId,
+    assessor_name: assessorName,
     ...surveyResponseProperties
   } = surveyResponse;
   try {

@@ -20,9 +20,9 @@ const clinicOrEntityIdExist = (surveyResponse: Record<string, unknown>) =>
 
 export const constructEntityValidator = (models: MeditrakAppServerModelRegistry) =>
   yup.object().shape({
-    id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+    id: yup.string().test(yupUtils.yupTest(takesIdForm)).required(),
     code: yup.string().required(),
-    parent_id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+    parent_id: yup.string().test(yupUtils.yupTest(takesIdForm)).required(),
     name: yup.string().required(),
     type: yup.mixed<string>().oneOf(Object.values(models.entity.types)).required(),
     country_code: yup.string().required(),
@@ -45,12 +45,14 @@ export const constructSurveyResponseValidator = (models: MeditrakAppServerModelR
       id: yup.string().test(yupUtils.yupTest(takesIdForm)),
       assessor_name: yup.string().required(),
       clinic_id: yup.string().test(yupUtils.yupTest(constructIsEmptyOr(takesIdForm))),
+      data_time: yup.string().test(yupUtils.yupTest(constructIsEmptyOr(takesDateForm))),
       entity_id: yup.string().test(yupUtils.yupTest(constructIsEmptyOr(takesIdForm))),
       start_time: yup.string().test(yupUtils.yupTest(takesDateForm)),
       end_time: yup.string().test(yupUtils.yupTest(takesDateForm)),
-      survey_id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+      survey_id: yup.string().test(yupUtils.yupTest(takesIdForm)).required(),
       user_id: yup.string().test(yupUtils.yupTest(takesIdForm)),
-      answers: yup.array().required(),
+      approval_status: yup.string(),
+      answers: yup.array().of(constructAnswerValidator(models)).required(),
       entities_created: yup.array().of(constructEntityValidator(models)),
       options_created: yup.array().of(constructOptionsValidator(models)),
     })
@@ -63,6 +65,14 @@ const constructAnswerValidator = (models: MeditrakAppServerModelRegistry) =>
     question_id: yup.string().test(yupUtils.yupTest(constructRecordExistsWithId(models.question))),
     body: yup.string().required(),
   });
+
+export type ValidatedEntitiesObject = yup.InferType<ReturnType<typeof constructEntityValidator>>;
+
+export type ValidatedOptionsObject = yup.InferType<ReturnType<typeof constructOptionsValidator>>;
+
+export type ValidatedSurveyResponseObject = NonNullable<
+  yup.InferType<ReturnType<typeof constructSurveyResponseValidator>>
+>;
 
 export const validateSurveyResponseObject = async (
   models: MeditrakAppServerModelRegistry,

@@ -11,6 +11,8 @@ import {
   QuestionModel,
   SurveyModel,
   UserModel,
+  OptionModel,
+  FacilityModel,
 } from '@tupaia/database';
 import { FeedItemModel, MeditrakSyncQueueModel, SurveyResponseModel } from './models';
 
@@ -20,8 +22,10 @@ export type RequestContext = {
 
 export interface MeditrakAppServerModelRegistry extends ModelRegistry {
   readonly entity: EntityModel;
+  readonly facility: FacilityModel;
   readonly feedItem: FeedItemModel;
   readonly meditrakSyncQueue: MeditrakSyncQueueModel;
+  readonly option: OptionModel;
   readonly optionSet: OptionSetModel;
   readonly question: QuestionModel;
   readonly survey: SurveyModel;

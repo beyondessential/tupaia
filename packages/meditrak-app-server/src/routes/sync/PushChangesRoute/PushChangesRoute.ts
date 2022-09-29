@@ -5,6 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { AnalyticsRefresher } from '@tupaia/database';
 import { ValidationError, yup } from '@tupaia/utils';
 import { addSurveyImage } from './addSurveyImage';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
@@ -12,7 +13,11 @@ import { translateSurveyResponseObject } from './translateInboundSurveyResponse'
 import { populateData } from './populateData';
 import { upsertCreatedData } from './upsertCreatedData';
 
-const VALID_ACTIONS = ['SubmitSurveyResponse', 'AddSurveyImage'];
+// Action constants
+const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
+const ADD_SURVEY_IMAGE = 'AddSurveyImage';
+
+const VALID_ACTIONS = [SUBMIT_SURVEY_RESPONSE, ADD_SURVEY_IMAGE];
 
 const addSurveyImageValidator = yup.object().shape({
   id: yup.string().required(),
@@ -22,6 +27,7 @@ const addSurveyImageValidator = yup.object().shape({
 type ChangeRecord = {
   action: typeof VALID_ACTIONS[number];
   payload: Record<string, unknown>;
+  waitForAnalyticsRebuild?: boolean;
 };
 
 export type PushChangesRequest = Request<
@@ -37,24 +43,26 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
 
     const surveyResponses = [];
     const surveyImages: { id: string; data: string }[] = [];
+    let waitForAnalyticsRebuild = false;
 
-    for (const { action, payload } of changes) {
+    for (const { action, payload, ...rest } of changes) {
       if (!VALID_ACTIONS.includes(action)) {
         throw new ValidationError(`${action} is not a supported change action`);
       }
 
-      if (action === 'SubmitSurveyResponse') {
+      if (action === SUBMIT_SURVEY_RESPONSE) {
         const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
         const validatedSurveyResponse = await validateSurveyResponseObject(
           this.req.models,
-          translatedPayload,
+          translatedPayload.survey_response || translatedPayload, // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
         );
         await upsertCreatedData(this.req.models, validatedSurveyResponse);
         const surveyResponseWithPopulatedData = await populateData(
           this.req.models,
           validatedSurveyResponse,
         );
-        surveyResponses.push({ ...surveyResponseWithPopulatedData, ...rest });
+        surveyResponses.push(surveyResponseWithPopulatedData);
+        waitForAnalyticsRebuild = rest.waitForAnalyticsRebuild || waitForAnalyticsRebuild;
       } else {
         const validatedPayload = addSurveyImageValidator.validateSync(payload);
         surveyImages.push(validatedPayload);
@@ -62,7 +70,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
     }
 
     // Submit survey responses
-    await this.req.ctx.services.central.createSurveyResponses(surveyResponses);
+    await this.req.ctx.services.central.upsertSurveyResponses(surveyResponses);
+    if (waitForAnalyticsRebuild) {
+      const { database } = this.req.models;
+      await AnalyticsRefresher.refreshAnalytics(database);
+    }
 
     // Add survey images
     for (const surveyImage of surveyImages) {
