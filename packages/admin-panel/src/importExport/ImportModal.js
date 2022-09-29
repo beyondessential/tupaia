@@ -169,7 +169,7 @@ export const ImportModalComponent = React.memo(
                   <p>{subtitle}</p>
                   {queryParameters
                     .filter(({ visibilityCriteria }) =>
-                      checkVisibilityCriteriaAreMet(visibilityCriteria),
+                      checkVisibilityCriteriaAreMet(visibilityCriteria, values),
                     )
                     .map(queryParameter => {
                       const { parameterKey, label, secondaryLabel } = queryParameter;
