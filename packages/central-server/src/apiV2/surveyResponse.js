@@ -73,26 +73,31 @@ async function validateResponse(models, userId, body) {
 function buildResponseRecord(user, entitiesByCode, body) {
   // assumes validateResponse has succeeded
   const {
+    id,
     entity_id: entityId,
     entity_code: entityCode,
     timestamp,
     survey_id: surveyId,
+    data_time: dataTime,
     start_time: inputStartTime,
     end_time: inputEndTime,
+    approval_status: approvalStatus,
   } = body;
 
   const timezoneName = getTimezoneNameFromTimestamp(timestamp);
   const time = new Date(timestamp).toISOString();
 
   return {
-    survey_id: surveyId,
-    user_id: user.id,
+    id,
     entity_id: entityId || entitiesByCode[entityCode].id,
-    data_time: stripTimezoneFromDate(time),
+    survey_id: surveyId,
+    data_time: dataTime || stripTimezoneFromDate(time),
     start_time: inputStartTime ? new Date(inputStartTime).toISOString() : time,
     end_time: inputEndTime ? new Date(inputEndTime).toISOString() : time,
-    timezone: timezoneName,
+    approval_status: approvalStatus,
+    user_id: user.id,
     assessor_name: user.fullName,
+    timezone: timezoneName,
   };
 }
 
@@ -125,6 +130,26 @@ async function getEntitiesByCode(models, responses) {
   return getRecordsByCode(models.entity, entityCodes);
 }
 
+async function saveSurveyResponses(models, responseRecords) {
+  const updatedResponseRecords = responseRecords.filter(({ id }) => !!id);
+  const newResponseRecords = responseRecords.filter(({ id }) => !id);
+
+  const updatedSurveyResponses = await Promise.all(
+    updatedResponseRecords.map(async record => {
+      return models.surveyResponse.updateOrCreate(
+        {
+          id: record.id,
+        },
+        record,
+      );
+    }),
+  );
+
+  const newSurveyResponses = await models.surveyResponse.createMany(newResponseRecords);
+
+  return [...updatedSurveyResponses, ...newSurveyResponses];
+}
+
 async function saveResponsesToDatabase(models, userId, responses) {
   // pre-fetch some data that will be used by multiple responses/answers
   const questionsByCode = await getQuestionsByCode(models, responses);
@@ -133,7 +158,7 @@ async function saveResponsesToDatabase(models, userId, responses) {
 
   // build the response records then persist them to the database
   const responseRecords = responses.map(r => buildResponseRecord(user, entitiesByCode, r));
-  const surveyResponses = await models.surveyResponse.createMany(responseRecords);
+  const surveyResponses = await saveSurveyResponses(models, responseRecords);
   const idsCreated = surveyResponses.map(r => ({ surveyResponseId: r.id }));
 
   // build the answer records then persist them to the database
