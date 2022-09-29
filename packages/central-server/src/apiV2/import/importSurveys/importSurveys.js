@@ -64,12 +64,12 @@ const validateQuestionExistence = rows => {
   return true;
 };
 
-const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
+const updateOrCreateDataGroup = async (models, { surveyCode, serviceType, dhisInstanceCode }) => {
   const dataGroup = await models.dataGroup.findOrCreate(
     {
       code: surveyCode,
     },
-    { service_type: serviceType },
+    { service_type: serviceType, config: { dhisInstanceCode } },
   );
 
   dataGroup.sanitizeConfig();
@@ -93,8 +93,8 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
     dataElement = await models.dataElement.create({
       code: dataElementCode,
       service_type: serviceType,
+      config,
     });
-    dataElement.config = config;
     dataElement.sanitizeConfig();
     await dataElement.save();
 
@@ -159,7 +159,7 @@ export async function importSurveys(req, res) {
         const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
         const surveyCode = await findOrCreateSurveyCode(transactingModels, surveyName);
 
-        const { serviceType = DEFAULT_SERVICE_TYPE } = req.query;
+        const { serviceType = DEFAULT_SERVICE_TYPE, dhisInstanceCode = '' } = req.query;
 
         await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
 
@@ -168,6 +168,7 @@ export async function importSurveys(req, res) {
             code: surveyCode,
             serviceType,
             periodGranularity: req.query.periodGranularity,
+            dhisInstanceCode,
           });
         } catch (error) {
           throw new ImportValidationError(error.message);
@@ -176,6 +177,7 @@ export async function importSurveys(req, res) {
         const dataGroup = await updateOrCreateDataGroup(transactingModels, {
           surveyCode,
           serviceType,
+          dhisInstanceCode,
         });
 
         // Clear all existing data element/data group associations

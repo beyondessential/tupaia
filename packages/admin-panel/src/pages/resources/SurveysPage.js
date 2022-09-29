@@ -429,10 +429,18 @@ const IMPORT_CONFIG = {
       type: 'boolean',
     },
     {
-      label: 'Data service',
+      label: 'Data Service',
       secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
       parameterKey: 'serviceType',
       options: SERVICE_TYPES,
+    },
+    {
+      label: 'DHIS Server',
+      parameterKey: 'dhisInstanceCode',
+      optionsEndpoint: 'dhisInstances',
+      optionLabelKey: 'dhisInstances.code',
+      optionValueKey: 'dhisInstances.code',
+      visibilityCriteria: { serviceType: 'dhis' },
     },
   ],
 };
