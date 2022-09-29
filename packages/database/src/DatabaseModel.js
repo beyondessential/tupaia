@@ -6,6 +6,8 @@ import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
+  modelRegistry = {};
+
   otherModels = {};
 
   constructor(database) {

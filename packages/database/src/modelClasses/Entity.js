@@ -3,12 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
+import pgFormat from 'pg-format';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { generateId } from '../utilities';
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
@@ -63,6 +65,9 @@ const ENTITY_TYPES = {
   NURSING_ZONE,
   FETP_GRADUATE,
 };
+
+const ENTITY_TYPE_TYPE = 'entity_type';
+const DELETED_ENTITY_TYPE_PREFIX = 'DELETED_';
 
 export const ORG_UNIT_ENTITY_TYPES = {
   WORLD,
@@ -495,5 +500,63 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     }
 
     return level;
+  }
+
+  async getEntityTypes() {
+    const entityTypes = await this.database.executeSql(
+      `SELECT UNNEST(enum_range(null::${ENTITY_TYPE_TYPE})) as type;`,
+    );
+    return entityTypes
+      .map(({ type }) => type)
+      .filter(type => !type.startsWith(DELETED_ENTITY_TYPE_PREFIX));
+  }
+
+  async addEntityType(name) {
+    // Have to manually format SQL here, as postgres doesn't support parameters on enum types
+    // Using pg-format to avoid SQL injection
+    const formattedSql = pgFormat(`ALTER TYPE ${ENTITY_TYPE_TYPE} ADD VALUE %L`, name);
+    return this.database.executeSql(formattedSql);
+  }
+
+  async renameEntityType(oldName, newName) {
+    // Have to manually format SQL here, as postgres doesn't support parameters on enum types
+    // Using pg-format to avoid SQL injection
+    const formattedSql = pgFormat(
+      `ALTER TYPE ${ENTITY_TYPE_TYPE} RENAME VALUE %L TO %L`,
+      oldName,
+      newName,
+    );
+
+    return this.database.executeSql(formattedSql);
+  }
+
+  async removeEntityType(name) {
+    // First ensure that the entity_type value is not being used anywhere
+    const usagesOfType = await this.database.executeSql(
+      `
+      SELECT c.table_name, c.column_name from INFORMATION_SCHEMA.columns c
+      INNER JOIN INFORMATION_SCHEMA.tables t ON t.table_name = c.table_name
+      WHERE udt_name = ?`,
+      [ENTITY_TYPE_TYPE],
+    );
+    for (let i = 0; i < usagesOfType.length; i++) {
+      const { table_name: table, column_name: column } = usagesOfType[i];
+      const usagesOfTypeValue = await this.modelRegistry
+        .getModelForDatabaseType(table)
+        .count({ [column]: name });
+      if (usagesOfTypeValue > 0) {
+        throw new Error(
+          `Cannot remove ${ENTITY_TYPE_TYPE} value: ${name}. It's still in use in table: ${table}, column: ${column}, by ${usagesOfTypeValue} rows`,
+        );
+      }
+    }
+
+    // Deleting enum type values is very difficult in postgres. You have to rename the existing type,
+    // then create a new type without the value you wish to delete and migrate all references to that
+    // type over to the new type
+    //
+    // Instead chose to go with a special string to indicate a deleted type. getEntityTypes() filters out
+    // those types so from a caller's perspective it's like they don't exist at all.
+    await this.renameEntityType(name, `${DELETED_ENTITY_TYPE_PREFIX}${generateId()}`);
   }
 }
