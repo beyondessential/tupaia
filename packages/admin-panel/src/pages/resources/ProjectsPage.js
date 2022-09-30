@@ -107,9 +107,9 @@ const NEW_PROJECT_COLUMNS = [
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'entityTypes',
-      optionLabelKey: 'entityType',
-      optionValueKey: 'entityType',
-      sourceKey: 'entityTypes',
+      optionLabelKey: 'type',
+      optionValueKey: 'type',
+      pageSize: 1000, // entityTypes endpoint doesn't support filtering, so fetch all values
       allowMultipleValues: true,
     },
   },
