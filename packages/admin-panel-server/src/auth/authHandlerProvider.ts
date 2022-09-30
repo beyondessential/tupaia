@@ -7,11 +7,14 @@ import { UnauthenticatedError } from '@tupaia/utils';
 import { Request } from 'express';
 
 export const authHandlerProvider = (req: Request) => {
-  const { session } = req;
+  return {
+    getAuthHeader: () => {
+      const { session } = req;
 
-  if (!session) {
-    throw new UnauthenticatedError('Session is not attached');
-  }
-
-  return session;
+      if (!session) {
+        throw new UnauthenticatedError('Session is not attached');
+      }
+      return session.getAuthHeader();
+    },
+  };
 };
