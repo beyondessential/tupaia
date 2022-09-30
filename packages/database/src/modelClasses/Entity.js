@@ -12,6 +12,10 @@ import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { generateId } from '../utilities';
 
+// NOTE: These hard coded entity types are now a legacy pattern
+// Users can now create their own entity types
+// The up-to-date list of entity types can be found by calling
+// entityModel.getEntityTypes()
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
@@ -519,6 +523,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async renameEntityType(oldName, newName) {
+    // Check if it's not a hard coded entity type first, renaming these could break a lot of code
+    if (Object.values(ENTITY_TYPES).includes(oldName)) {
+      throw new Error(
+        `Cannot rename ${ENTITY_TYPE_TYPE}: ${oldName} as it has hard coded references`,
+      );
+    }
+
     // Have to manually format SQL here, as postgres doesn't support parameters on enum types
     // Using pg-format to avoid SQL injection
     const formattedSql = pgFormat(
