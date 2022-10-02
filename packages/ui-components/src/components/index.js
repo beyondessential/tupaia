@@ -45,3 +45,4 @@ export * from './Toolbar';
 export * from './Tooltip';
 export * from './PDFExportComponent';
 export * from './CheckboxList';
+export * from './FavouriteButton';

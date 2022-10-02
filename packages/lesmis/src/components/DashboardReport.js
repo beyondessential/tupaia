@@ -3,17 +3,21 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import debounce from 'lodash.debounce';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
-import { I18n, useUrlParams } from '../utils';
+import { I18n, useIsFavouriteDashboardSelected, useUrlParams, useUrlSearchParam } from '../utils';
+import { useUpdateFavouriteDashboardItem } from '../api';
+import { DEFAULT_DATA_YEAR } from '../constants';
+import { yearToApiDates } from '../api/queries/utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -34,9 +38,17 @@ const Footer = styled(FlexEnd)`
 `;
 
 export const DashboardReport = React.memo(
-  ({ name, exportOptions, reportCode, startDate, endDate, isEnlarged, isExporting }) => {
+  ({ name, exportOptions, reportCode, isEnlarged, isExporting, useYearSelector }) => {
     const { search } = useLocation();
     const { locale, entityCode } = useUrlParams();
+    // TODO: will be removed when implementing year selector for favourite dashboard, currently use default year.
+    const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
+    const [selectedYear] = isFavouriteDashboardSelected
+      ? [DEFAULT_DATA_YEAR]
+      : useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+    const { startDate, endDate } = useYearSelector
+      ? yearToApiDates(selectedYear)
+      : yearToApiDates();
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
@@ -49,6 +61,32 @@ export const DashboardReport = React.memo(
     const Visual = config?.type === 'list' ? ListVisual : Chart;
     const Wrapper = isEnlarged ? React.Fragment : Container;
     const drillDownPathname = `/${locale}/${entityCode}/dashboard`;
+
+    const [isFavourite, setIsFavourite] = useState(config.isFavourite);
+    useEffect(() => {
+      setIsFavourite(config.isFavourite);
+    }, [config.isFavourite]);
+
+    const updateFavouriteDashboardItem = useUpdateFavouriteDashboardItem();
+    /**
+     * Enable lodash.debounce in onChange function.
+     * Every time the component is re-evaluated, the local variables gets initialized again, including the timer in debounce().
+     * Use useRef() hook as value returned by useRef() does not get re-evaluated every time the functional component is executed.
+     * https://stackoverflow.com/a/64856090
+     */
+    const updateFavouriteDashboardItemDebounced = useRef(
+      debounce(updateFavouriteDashboardItem, 1000),
+    );
+
+    const handleFavouriteStatusChange = () => {
+      const newFavouriteStatus = !isFavourite;
+      updateFavouriteDashboardItemDebounced.current({
+        newFavouriteStatus,
+        dashboardItemCode: config.code,
+        entityCode,
+      });
+      setIsFavourite(newFavouriteStatus);
+    };
 
     return (
       <Wrapper>
@@ -64,6 +102,9 @@ export const DashboardReport = React.memo(
           drilldownPathname={drillDownPathname}
           reportCodes={reportCodes}
           isEnlarged={isEnlarged}
+          isFavourite={isFavourite}
+          handleFavouriteStatusChange={handleFavouriteStatusChange}
+          useYearSelector={useYearSelector}
         />
         {!isEnlarged && (
           <Footer>
@@ -87,20 +128,18 @@ export const DashboardReport = React.memo(
 
 DashboardReport.propTypes = {
   exportOptions: PropTypes.object,
-  startDate: PropTypes.string,
-  endDate: PropTypes.string,
   name: PropTypes.string,
   reportCode: PropTypes.string,
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
 };
 
 DashboardReport.defaultProps = {
   exportOptions: null,
-  startDate: null,
-  endDate: null,
   reportCode: null,
   name: null,
   isEnlarged: false,
   isExporting: false,
+  useYearSelector: false,
 };

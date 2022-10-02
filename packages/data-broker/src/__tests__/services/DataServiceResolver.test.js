@@ -9,6 +9,7 @@ import {
   DATA_ELEMENTS,
   DATA_GROUPS,
   ENTITIES,
+  SYNC_GROUPS,
 } from './DataServiceResolver.stubs';
 
 describe('DataServiceResolver', () => {
@@ -38,6 +39,7 @@ describe('DataServiceResolver', () => {
           },
         ],
         dataGroupMapping: [],
+        syncGroupMapping: [],
       }));
 
     it('resolves to default data service if no entity specified', () =>
@@ -50,6 +52,7 @@ describe('DataServiceResolver', () => {
           },
         ],
         dataGroupMapping: [],
+        syncGroupMapping: [],
       }));
 
     it('resolves to country data service if country mapping set', () =>
@@ -64,6 +67,7 @@ describe('DataServiceResolver', () => {
           },
         ],
         dataGroupMapping: [],
+        syncGroupMapping: [],
       }));
 
     it('resolves to default data service if entity above country level specified', () =>
@@ -77,6 +81,7 @@ describe('DataServiceResolver', () => {
             },
           ],
           dataGroupMapping: [],
+          syncGroupMapping: [],
         },
       ));
   });
@@ -90,6 +95,22 @@ describe('DataServiceResolver', () => {
             dataSource: DATA_GROUPS.DG_1,
             service_type: DATA_GROUPS.DG_1.service_type,
             config: DATA_GROUPS.DG_1.config,
+          },
+        ],
+        syncGroupMapping: [],
+      }));
+  });
+
+  describe('sync groups', () => {
+    it('resolves to default data service', () =>
+      expect(resolver.getMapping([SYNC_GROUPS.SG_1], ENTITIES.FJ_Facility_1)).resolves.toEqual({
+        dataElementMapping: [],
+        dataGroupMapping: [],
+        syncGroupMapping: [
+          {
+            dataSource: SYNC_GROUPS.SG_1,
+            service_type: SYNC_GROUPS.SG_1.service_type,
+            config: SYNC_GROUPS.SG_1.config,
           },
         ],
       }));
