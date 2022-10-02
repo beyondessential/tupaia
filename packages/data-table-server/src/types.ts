@@ -4,8 +4,9 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { DataTableModel } from './models';
+import { DataTableModel, ExternalDatabaseConnectionModel } from './models';
 
 export interface DataTableServerModelRegistry extends ModelRegistry {
   readonly dataTable: DataTableModel;
+  readonly externalDatabaseConnection: ExternalDatabaseConnectionModel;
 }
