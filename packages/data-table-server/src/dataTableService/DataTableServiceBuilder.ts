@@ -11,6 +11,7 @@ import {
   EntityRelationsDataTableService,
   EventsDataTableService,
 } from './internal';
+import { SqlDataTableService } from './userDefined';
 
 /**
  * Generic builder class that allows us to configure the context for a specific DataTableService
@@ -51,7 +52,9 @@ const internalDataTableServiceBuilders = {
   entity_relations: () => new DataTableServiceBuilderForType(EntityRelationsDataTableService),
 };
 
-const userDefinedDataTableServiceBuilders = {};
+const userDefinedDataTableServiceBuilders = {
+  sql: () => new DataTableServiceBuilderForType(SqlDataTableService),
+};
 
 const dataTablesServiceBuilders = {
   ...internalDataTableServiceBuilders,

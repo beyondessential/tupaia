@@ -4,3 +4,7 @@
  */
 
 export { DataTableModel, DataTableType } from './DataTable';
+export {
+  ExternalDatabaseConnectionModel,
+  ExternalDatabaseConnectionType,
+} from './ExternalDatabaseConnection';

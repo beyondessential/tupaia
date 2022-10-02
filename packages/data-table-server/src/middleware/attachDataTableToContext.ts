@@ -25,14 +25,19 @@ export const attachDataTableToContext = async (
 
     const permissionGroups = dataTable.permission_groups;
 
-    if (!(permissionGroups.includes('*') || permissionGroups.some(accessPolicy.allowsAnywhere))) {
+    if (
+      !(
+        permissionGroups.includes('*') ||
+        permissionGroups.some(permissionGroup => accessPolicy.allowsAnywhere(permissionGroup))
+      )
+    ) {
       throw new Error(`User does not have permission to access data table ${dataTable.code}`);
     }
 
     const serviceType = getDataTableServiceType(dataTable);
     const dataTableService = new DataTableServiceBuilder()
       .setServiceType(serviceType)
-      .setContext({ apiClient: ctx.services, accessPolicy })
+      .setContext({ apiClient: ctx.services, accessPolicy, models })
       .setConfig(dataTable.config)
       .build();
 
