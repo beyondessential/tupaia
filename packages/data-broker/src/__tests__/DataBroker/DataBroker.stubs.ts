@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createJestMockInstance } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
 import { Service } from '../../services/Service';

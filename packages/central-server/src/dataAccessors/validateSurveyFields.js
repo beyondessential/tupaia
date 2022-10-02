@@ -19,7 +19,7 @@ const findSurveyServiceType = async (models, code) => {
 };
 
 export const validateSurveyFields = async (models, surveyFields) => {
-  const { code, periodGranularity } = surveyFields;
+  const { code, periodGranularity, serviceType, dhisInstanceCode } = surveyFields;
 
   if (periodGranularity) {
     const serviceType = surveyFields.serviceType || (await findSurveyServiceType(models, code));
@@ -34,5 +34,9 @@ export const validateSurveyFields = async (models, surveyFields) => {
         `Cannot change the reporting period for "${survey.name}" while there are still records in the survey_response table`,
       );
     }
+  }
+
+  if (serviceType === 'dhis' && !dhisInstanceCode) {
+    throw new Error('Must specify Dhis Server');
   }
 };

@@ -5,6 +5,7 @@
 
 import { DataElement, DataElementDataService, DataGroup, Entity, ServiceType } from '../../types';
 import { ServiceResults } from './DataBroker.stubs';
+import { TYPES } from '@tupaia/database';
 
 const dataElement = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
   code,
@@ -12,6 +13,14 @@ const dataElement = ({ code, service_type }: { code: string; service_type: Servi
   dataElementCode: code,
   config: {},
   permission_groups: ['*'],
+  databaseType: TYPES.DATA_ELEMENT,
+});
+
+const dataGroup = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
+  code,
+  service_type,
+  config: {},
+  databaseType: TYPES.DATA_GROUP,
 });
 
 // Data elements and groups share the same codes on purpose, to assert that
@@ -22,17 +31,17 @@ export const DATA_ELEMENTS: Record<string, DataElement> = {
   TUPAIA_01: dataElement({ code: 'TUPAIA_01', service_type: 'tupaia' }),
   MAPPED_01: dataElement({
     code: 'MAPPED_01',
-    service_type: 'test',
+    service_type: 'dhis',
   }),
   MAPPED_02: dataElement({
     code: 'MAPPED_02',
-    service_type: 'test',
+    service_type: 'dhis',
   }),
 };
 export const DATA_GROUPS: Record<string, DataGroup> = {
-  DHIS_PROGRAM_01: { code: 'DHIS_PROGRAM_01', service_type: 'dhis', config: {} },
-  DHIS_PROGRAM_02: { code: 'DHIS_PROGRAM_02', service_type: 'dhis', config: {} },
-  TUPAIA_PROGRAM_01: { code: 'TUPAIA_PROGRAM_01', service_type: 'tupaia', config: {} },
+  DHIS_PROGRAM_01: dataGroup({ code: 'DHIS_PROGRAM_01', service_type: 'dhis' }),
+  DHIS_PROGRAM_02: dataGroup({ code: 'DHIS_PROGRAM_02', service_type: 'dhis' }),
+  TUPAIA_PROGRAM_01: dataGroup({ code: 'TUPAIA_PROGRAM_01', service_type: 'tupaia' }),
 };
 
 export const DATA_BY_SERVICE: Record<string, ServiceResults> = {
@@ -106,13 +115,13 @@ export const DATA_ELEMENT_DATA_SERVICES: DataElementDataService[] = [
   {
     data_element_code: 'MAPPED_01',
     country_code: 'FJ',
-    service_type: 'other',
+    service_type: 'tupaia',
     service_config: { cow: 'moo' },
   },
   {
     data_element_code: 'MAPPED_02',
     country_code: 'FJ',
-    service_type: 'other',
+    service_type: 'tupaia',
     service_config: { sheep: 'baaaa' },
   },
 ];

@@ -4,6 +4,7 @@
  */
 
 import { DataElement, DataGroup, ServiceType } from '../../../types';
+import { TYPES } from '@tupaia/database';
 
 const dataElement = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
   code,
@@ -11,6 +12,14 @@ const dataElement = ({ code, service_type }: { code: string; service_type: Servi
   dataElementCode: code,
   config: {},
   permission_groups: ['*'],
+  databaseType: TYPES.DATA_ELEMENT,
+});
+
+const dataGroup = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
+  code,
+  service_type,
+  config: {},
+  databaseType: TYPES.DATA_GROUP,
 });
 
 export const DATA_ELEMENTS: Record<string, DataElement> = {
@@ -21,8 +30,8 @@ export const DATA_ELEMENTS: Record<string, DataElement> = {
 export const DATA_GROUPS: Record<string, DataGroup> = {
   // intentionally sharing a code with the `POP01` data element,
   // since their type should differentiate them
-  POP01_GROUP: { code: 'POP01', service_type: 'tupaia', config: {} },
-  POP02_GROUP: { code: 'POP02', service_type: 'tupaia', config: {} },
+  POP01_GROUP: dataGroup({ code: 'POP01', service_type: 'tupaia' }),
+  POP02_GROUP: dataGroup({ code: 'POP02', service_type: 'tupaia' }),
 };
 
 export const DATA_ELEMENT_METADATA = {

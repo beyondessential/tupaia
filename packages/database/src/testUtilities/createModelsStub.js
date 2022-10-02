@@ -20,7 +20,7 @@
  * @typedef MockModelSpec
  * @type {Object}
  * @property {Object[]} records
- * @property [Object.<string, any>] extraMethods
+ * @property {Object.<string, any>} [extraMethods]
  */
 
 const mockFind = (array, criteria = {}) =>

@@ -17,7 +17,11 @@ export class DataServiceMapping {
   dataGroupMapping: DataServiceMappingEntry[];
   syncGroupMapping: DataServiceMappingEntry[];
 
-  constructor(dataElementMapping = [], dataGroupMapping = [], syncGroupMapping = []) {
+  constructor(
+    dataElementMapping: DataServiceMappingEntry[] = [],
+    dataGroupMapping: DataServiceMappingEntry[] = [],
+    syncGroupMapping: DataServiceMappingEntry[] = [],
+  ) {
     this.dataElementMapping = dataElementMapping;
     this.dataGroupMapping = dataGroupMapping;
     this.syncGroupMapping = syncGroupMapping;

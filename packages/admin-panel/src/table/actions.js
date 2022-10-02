@@ -5,6 +5,7 @@
 
 import parseLinkHeader from 'parse-link-header';
 import generateId from 'uuid/v1';
+import debounce from 'lodash.debounce';
 
 import {
   ACTION_CANCEL,
@@ -71,64 +72,71 @@ export const changeSorting = (reduxId, sorting) => ({
   reduxId,
 });
 
+const refreshDataWithDebounce = debounce(
+  async (reduxId, endpoint, columns, baseFilter, tableState, dispatch, api) => {
+    const { pageIndex, pageSize, filters, sorting } = tableState;
+
+    // Set up filter
+    const filterObject = { ...baseFilter };
+    filters.forEach(({ id, value }) => {
+      filterObject[id] = value;
+    });
+    const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
+
+    // Set up sort
+    const sortObjects = sorting.map(({ id, desc }) => {
+      return `${id}${desc ? ' DESC' : ' ASC'}`;
+    });
+    const sortString = JSON.stringify(sortObjects);
+
+    // Set up columns
+    const columnSources = columns.map(column => column.source);
+    const columnsString = JSON.stringify(columnSources);
+
+    // Prepare for request
+    const fetchId = generateId();
+    dispatch({
+      type: DATA_FETCH_REQUEST,
+      reduxId,
+      fetchId,
+    });
+
+    try {
+      const queryParameters = {
+        page: pageIndex,
+        pageSize,
+        columns: columnsString.length > 0 ? columnsString : undefined,
+        filter: filterString.length > 0 ? filterString : undefined,
+        sort: sortString.length > 0 ? sortString : undefined,
+      };
+      const response = await api.get(endpoint, queryParameters);
+      const linkHeader = parseLinkHeader(response.headers.get('Link'));
+      const lastPageNumber = parseInt(linkHeader.last.page, 10);
+      dispatch({
+        type: DATA_FETCH_SUCCESS,
+        reduxId,
+        data: response.body,
+        numberOfPages: lastPageNumber,
+        fetchId,
+      });
+    } catch (error) {
+      dispatch({
+        type: DATA_FETCH_ERROR,
+        reduxId,
+        errorMessage: error.message,
+        fetchId,
+      });
+    }
+  },
+  200,
+);
+
 export const refreshData = (reduxId, endpoint, columns, baseFilter, tableState) => async (
   dispatch,
   getState,
   { api },
 ) => {
-  const { pageIndex, pageSize, filters, sorting } = tableState;
-
-  // Set up filter
-  const filterObject = { ...baseFilter };
-  filters.forEach(({ id, value }) => {
-    filterObject[id] = value;
-  });
-  const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
-
-  // Set up sort
-  const sortObjects = sorting.map(({ id, desc }) => {
-    return `${id}${desc ? ' DESC' : ' ASC'}`;
-  });
-  const sortString = JSON.stringify(sortObjects);
-
-  // Set up columns
-  const columnSources = columns.map(column => column.source);
-  const columnsString = JSON.stringify(columnSources);
-
-  // Prepare for request
-  const fetchId = generateId();
-  dispatch({
-    type: DATA_FETCH_REQUEST,
-    reduxId,
-    fetchId,
-  });
-
-  try {
-    const queryParameters = {
-      page: pageIndex,
-      pageSize,
-      columns: columnsString.length > 0 ? columnsString : undefined,
-      filter: filterString.length > 0 ? filterString : undefined,
-      sort: sortString.length > 0 ? sortString : undefined,
-    };
-    const response = await api.get(endpoint, queryParameters);
-    const linkHeader = parseLinkHeader(response.headers.get('Link'));
-    const lastPageNumber = parseInt(linkHeader.last.page, 10);
-    dispatch({
-      type: DATA_FETCH_SUCCESS,
-      reduxId,
-      data: response.body,
-      numberOfPages: lastPageNumber,
-      fetchId,
-    });
-  } catch (error) {
-    dispatch({
-      type: DATA_FETCH_ERROR,
-      reduxId,
-      errorMessage: error.message,
-      fetchId,
-    });
-  }
+  return refreshDataWithDebounce(reduxId, endpoint, columns, baseFilter, tableState, dispatch, api);
 };
 
 export const cancelAction = reduxId => ({

@@ -61,4 +61,28 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       },
     ]);
   });
+
+  it('maps tracked entity ids to entity codes', () =>
+    expect(
+      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withTrackedEntityIds, ['BCD1']),
+    ).resolves.toStrictEqual([
+      {
+        event: 'event1_dhisId',
+        orgUnit: 'TO_Nukuhc',
+        orgUnitName: 'Nukunuku',
+        eventDate: '2020-02-06T10:18:00.000',
+        dataValues: {},
+        trackedEntityId: 'tracked_entity_id_dl_household_1',
+        trackedEntityCode: 'DL_HOUSEHOLD_1',
+      },
+      {
+        event: 'event2_dhisId',
+        orgUnit: 'TO_HvlMCH',
+        orgUnitName: 'Haveluloto',
+        eventDate: '2020-02-07T14:33:00.000',
+        dataValues: {},
+        trackedEntityId: 'tracked_entity_id_dl_household_3',
+        trackedEntityCode: '', // returns empty string if it cant map
+      },
+    ]));
 });

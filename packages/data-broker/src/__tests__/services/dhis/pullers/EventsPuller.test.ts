@@ -14,7 +14,6 @@ import { DhisEventAnalytics } from '../../../../services/dhis/types';
 describe('EventsPuller', () => {
   const basicOptions = {
     organisationUnitCodes: ['TO'],
-    dataServices: [{ isDataRegional: true }],
   };
 
   let eventsPuller: EventsPuller;
