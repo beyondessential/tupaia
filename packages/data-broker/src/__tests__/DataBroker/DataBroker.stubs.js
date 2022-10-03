@@ -4,7 +4,14 @@
  */
 
 import { createJestMockInstance } from '@tupaia/utils';
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
+import {
+  DATA_ELEMENT_DATA_SERVICES,
+  DATA_ELEMENTS,
+  DATA_GROUPS,
+  ENTITIES,
+} from './DataBroker.fixtures';
 
 export const stubCreateService = services =>
   jest.spyOn(CreateService, 'createService').mockImplementation((_, type) => {
@@ -42,17 +49,29 @@ export const createServiceStub = serviceData => {
   return createJestMockInstance('@tupaia/data-broker/src/services/Service', 'Service', { pull });
 };
 
-export const createModelsStub = (dataElements, dataGroups) => ({
-  dataElement: {
-    find: spec => dataElements.filter(({ code }) => spec.code.includes(code)),
-    getTypes: () => ({
-      DATA_ELEMENT: 'dataElement',
-      DATA_GROUP: 'dataGroup',
-      SYNC_GROUP: 'syncGroup',
-    }),
-  },
-  dataGroup: {
-    find: spec => dataGroups.filter(({ code }) => spec.code.includes(code)),
-    getDataElementsInDataGroup: () => [],
-  },
-});
+export const createModelsStub = () => {
+  return baseCreateModelsStub({
+    dataElement: {
+      records: Object.values(DATA_ELEMENTS),
+      extraMethods: {
+        getTypes: () => ({
+          DATA_ELEMENT: 'dataElement',
+          DATA_GROUP: 'dataGroup',
+          SYNC_GROUP: 'syncGroup',
+        }),
+      },
+    },
+    dataGroup: {
+      records: Object.values(DATA_GROUPS),
+      extraMethods: {
+        getDataElementsInDataGroup: () => [],
+      },
+    },
+    entity: {
+      records: Object.values(ENTITIES),
+    },
+    dataElementDataService: {
+      records: DATA_ELEMENT_DATA_SERVICES,
+    },
+  });
+};

@@ -135,7 +135,9 @@ export const isValidPassword = password => {
 
 export const constructIsOneOf = options => value => {
   if (!options.includes(value)) {
-    throw new ValidationError(`${value} is not an accepted value`);
+    throw new ValidationError(
+      `${value} is not an accepted value. Accepted values: "${options.join('", "')}"`,
+    );
   }
 };
 

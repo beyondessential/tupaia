@@ -29,6 +29,7 @@ export const MARKER_TYPES = {
 };
 
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
+export const TUPAIA_DARK_LOGO_SRC = '/images/tupaia-logo-dark.svg';
 
 export const LOGIN_TYPES = {
   AUTO: 'auto',

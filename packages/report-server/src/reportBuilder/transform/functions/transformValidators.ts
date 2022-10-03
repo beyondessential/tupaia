@@ -23,6 +23,24 @@ export const starSingleOrMultipleColumnsValidator = yupTsUtils.describableLazy(
   [yup.string(), yup.array().of(yup.string().required())],
 );
 
+export const gatherColumnsValidator = yupTsUtils.describableLazy(
+  (value: unknown) => {
+    if (typeof value === 'string') {
+      return yup.string().required().notOneOf(['value', 'columnName']);
+    }
+
+    if (Array.isArray(value) || value === undefined) {
+      return yup.array().of(yup.string().required());
+    }
+
+    throw new yup.ValidationError('Input must be empty, a single column, or an array of columns');
+  },
+  [
+    yup.string().required().notOneOf(['value', 'columnName']),
+    yup.array().of(yup.string().required()),
+  ],
+);
+
 export const mapStringToStringValidator = yupTsUtils.describableLazy(
   (value: unknown) => {
     if ((typeof value === 'object' && value !== null) || value === undefined) {

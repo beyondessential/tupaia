@@ -179,6 +179,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       type: 'edit',
       source: 'id',
       actionConfig: {
+        title: 'Edit Map Overlay',
         editEndpoint: MAP_OVERLAYS_ENDPOINT,
         fields: [...FIELDS, ...extraEditFields],
       },
@@ -201,9 +202,6 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       importConfig={IMPORT_CONFIG}
       LinksComponent={renderNewMapOverlayVizButton}
       getHeaderEl={getHeaderEl}
-      editConfig={{
-        title: 'Edit Map Overlay',
-      }}
       {...props}
     />
   );

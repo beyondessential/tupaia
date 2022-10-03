@@ -1,0 +1,39 @@
+{
+  "name": "@tupaia/data-table-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Microservice for querying Tupaia Data Tables",
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
+    "lint:fix": "yarn lint --fix",
+    "start": "node dist",
+    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
+    "start-verbose": "LOG_LEVEL=debug yarn start-dev",
+    "test": "yarn package:test"
+  },
+  "dependencies": {
+    "@tupaia/access-policy": "3.0.0",
+    "@tupaia/aggregator": "1.0.0",
+    "@tupaia/api-client": "3.1.0",
+    "@tupaia/data-broker": "1.0.0",
+    "@tupaia/database": "1.0.0",
+    "@tupaia/server-boilerplate": "1.0.0",
+    "@tupaia/utils": "1.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.2",
+    "winston": "^3.2.1"
+  }
+}

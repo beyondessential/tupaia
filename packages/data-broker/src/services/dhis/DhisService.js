@@ -2,18 +2,17 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
+import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import { Service } from '../Service';
-import { getDhisApiInstance } from './getDhisApiInstance';
-import { DhisTranslator } from './DhisTranslator';
+import { DhisTranslator } from './translators';
 import {
   AnalyticsPuller,
   EventsPuller,
   DataElementsMetadataPuller,
+  DataGroupMetadataPuller,
   DeprecatedEventsPuller,
 } from './pullers';
-
-const DEFAULT_DATA_SERVICE = { isDataRegional: true };
-const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
 
 export class DhisService extends Service {
   constructor(models) {
@@ -24,12 +23,16 @@ export class DhisService extends Service {
       this.models.dataElement,
       this.translator,
     );
+    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(
+      this.models.dataGroup,
+      this.translator,
+    );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataElement,
+      this.models,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
+    this.eventsPuller = new EventsPuller(this.models, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(
       this.models.dataElement,
       this.translator,
@@ -38,6 +41,7 @@ export class DhisService extends Service {
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
+    this.metadataMergers = this.getMetadataMergers();
   }
 
   getPushers() {
@@ -67,31 +71,41 @@ export class DhisService extends Service {
   getMetadataPullers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.dataGroupMetadataPuller.pull.bind(this),
     };
   }
 
-  getApiForValue = (dataSource, dataValue) => {
-    const { isDataRegional } = dataSource.config;
-    const { orgUnit: entityCode } = dataValue;
-    return getDhisApiInstance({ entityCode, isDataRegional }, this.models);
-  };
+  getMetadataMergers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: results =>
+        results.reduce((existingResults, result) => existingResults.concat(result)),
+      [this.dataSourceTypes.DATA_GROUP]: results => results[0],
+    };
+  }
 
-  validatePushData(dataSources, dataValues) {
-    const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
-    if (
-      dataSources.some(
-        (dataSource, i) => this.getApiForValue(dataSource, dataValues[i]).serverName !== serverName,
-      )
-    ) {
-      throw new Error('All data being pushed must be for the same DHIS2 instance');
+  async validatePushData(dataSources, dataValues, dataServiceMapping) {
+    const { serverName } = await getApiForDataSource(
+      this.models,
+      dataSources[0],
+      dataServiceMapping,
+    );
+    for (let i = 0; i < dataSources.length; i++) {
+      const { serverName: otherServerName } = await getApiForDataSource(
+        this.models,
+        dataSources[i],
+        dataServiceMapping,
+      );
+      if (otherServerName !== serverName) {
+        throw new Error(`All data being pushed must be for the same DHIS2 instance`);
+      }
     }
   }
 
-  async push(dataSources, data, { type }) {
+  async push(dataSources, data, { type, dataServiceMapping }) {
     const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
-    this.validatePushData(dataSources, dataValues);
-    const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
+    await this.validatePushData(dataSources, dataValues, dataServiceMapping);
+    const api = await getApiForDataSource(this.models, dataSources[0], dataServiceMapping); // all are for the same instance
     const diagnostics = await pushData(api, dataValues, dataSources);
     return { diagnostics, serverName: api.getServerName() };
   }
@@ -112,10 +126,13 @@ export class DhisService extends Service {
     return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName, type } = {}) {
-    const api = serverName
-      ? getDhisApiInstance({ serverName }, this.models)
-      : this.getApiForValue(dataSource, data);
+  async delete(dataSource, data, { serverName, type, dataServiceMapping } = {}) {
+    let api;
+    if (serverName) {
+      api = await getApiFromServerName(this.models, serverName);
+    } else {
+      api = await getApiForDataSource(this.models, dataSource, dataServiceMapping);
+    }
     const deleteData = this.deleters[type];
     return deleteData(api, data, dataSource);
   }
@@ -132,51 +149,27 @@ export class DhisService extends Service {
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(dataSources, type, options = {}) {
-    const {
-      organisationUnitCode,
-      organisationUnitCodes,
-      dataServices: inputDataServices = DEFAULT_DATA_SERVICES,
-      detectDataServices = false,
-    } = options;
-    let dataServices = inputDataServices;
-    // TODO remove the `detectDataServices` flag after
-    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
-    if (detectDataServices) {
-      dataServices = dataSources.map(ds => {
-        const { isDataRegional = true } = ds.config;
-        return { isDataRegional };
-      });
-    }
-
-    const entityCodes = organisationUnitCodes || [organisationUnitCode];
-
-    const { useDeprecatedApi = false } = options;
+    const { dataServiceMapping, useDeprecatedApi = false } = options;
+    const apis = await getApisForDataSources(this.models, dataSources, dataServiceMapping);
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
     const pullData = this.pullers[pullerKey];
-
-    const apis = new Set();
-    dataServices.forEach(({ isDataRegional }) => {
-      apis.add(getDhisApiInstance({ entityCodes, isDataRegional }, this.models));
-    });
-
-    return pullData(Array.from(apis), dataSources, options);
+    return pullData(apis, dataSources, options);
   }
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
-    const pullMetadata = this.metadataPullers[type];
-    const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }, this.models),
-    );
+    const { dataServiceMapping } = options;
+    const apis = await getApisForDataSources(this.models, dataSources, dataServiceMapping);
+    const puller = this.metadataPullers[type];
 
     const results = [];
     const pullForApi = async api => {
-      const newResults = await pullMetadata(api, dataSources, options);
-      results.push(...newResults);
+      const newResults = await puller(api, dataSources, options);
+      results.push(newResults);
     };
     await Promise.all(apis.map(pullForApi));
 
-    return results;
+    const mergeMetadata = this.metadataMergers[type];
+    return mergeMetadata(results);
   }
 }

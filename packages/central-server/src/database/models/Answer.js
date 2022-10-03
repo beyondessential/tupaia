@@ -114,6 +114,7 @@ class AnswerType extends DatabaseType {
           answer: this,
           models: this.otherModels,
           surveyResponse,
+          hookName: hookId,
         }),
       `${hookId}:${this.id}`,
     );

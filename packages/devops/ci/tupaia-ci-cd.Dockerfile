@@ -49,6 +49,8 @@ RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/package.json ./packages/data-broker
 RUN mkdir -p ./packages/data-lake-api
 COPY packages/data-lake-api/package.json ./packages/data-lake-api
+RUN mkdir -p ./packages/data-table-server
+COPY packages/data-table-server/package.json ./packages/data-table-server
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
 RUN mkdir -p ./packages/devops
@@ -59,14 +61,14 @@ RUN mkdir -p ./packages/e2e
 COPY packages/e2e/package.json ./packages/e2e
 RUN mkdir -p ./packages/entity-server
 COPY packages/entity-server/package.json ./packages/entity-server
-RUN mkdir -p ./packages/pdf-export-server
-COPY packages/pdf-export-server/package.json ./packages/pdf-export-server
 RUN mkdir -p ./packages/expression-parser
 COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/kobo-api
 COPY packages/kobo-api/package.json ./packages/kobo-api
+RUN mkdir -p ./packages/superset-api
+COPY packages/superset-api/package.json ./packages/superset-api
 RUN mkdir -p ./packages/lesmis
 COPY packages/lesmis/package.json ./packages/lesmis
 RUN mkdir -p ./packages/lesmis-server
@@ -119,6 +121,7 @@ COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
+COPY packages/superset-api/. ./packages/superset-api
 COPY ./tsconfig* ./
 
 ## build internal dependencies

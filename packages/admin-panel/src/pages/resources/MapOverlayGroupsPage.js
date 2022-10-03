@@ -39,6 +39,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Map Overlay Group',
       editEndpoint: 'mapOverlayGroups',
       fields: EDIT_FIELDS,
     },

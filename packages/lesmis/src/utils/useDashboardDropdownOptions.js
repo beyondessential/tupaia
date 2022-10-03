@@ -1,29 +1,13 @@
-import React from 'react';
-import MuiBox from '@material-ui/core/Box';
-import PropTypes from 'prop-types';
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
+
 import { useEntityData } from '../api';
-import { TabBar } from '../components';
-import { SUB_DASHBOARD_OPTIONS } from '../constants';
-import { DashboardReportTabView } from '../views/DashboardReportTabView';
+import { DROPDOWN_OPTIONS, FAVOURITES_DASHBOARD_CODE, PROFILE_DASHBOARD_CODE } from '../constants';
 import { useI18n } from './I18n';
 import { useUrlParams } from './useUrlParams';
 import { useUrlSearchParams } from './useUrlSearchParams';
-
-const TabTemplate = ({ TabBarLeftSection, Body }) => (
-  <>
-    <TabBar>
-      <TabBarLeftSection />
-    </TabBar>
-    <MuiBox p={5} minHeight={600}>
-      {Body}
-    </MuiBox>
-  </>
-);
-
-TabTemplate.propTypes = {
-  TabBarLeftSection: PropTypes.func.isRequired,
-  Body: PropTypes.string.isRequired,
-};
 
 export const useDashboardDropdownOptions = () => {
   const { entityCode } = useUrlParams();
@@ -32,57 +16,49 @@ export const useDashboardDropdownOptions = () => {
   const [params] = useUrlSearchParams();
   const selectedDashboard = params.dashboard;
 
-  const dropdownOptions = [
-    {
-      value: 'profile',
-      label: getProfileLabel(entityData?.type),
-      TabComponent: DashboardReportTabView,
-      useYearSelector: true,
-      exportToPDF: true,
-      componentProps: {
+  const getFilter = value => {
+    switch (value) {
+      case FAVOURITES_DASHBOARD_CODE:
+        return ({ items }) => items.some(item => item.isFavourite);
+      case PROFILE_DASHBOARD_CODE:
         // those not included anywhere else
-        filterSubDashboards: ({ dashboardCode }) =>
-          !Object.values(SUB_DASHBOARD_OPTIONS).some(({ code }) =>
-            dashboardCode.startsWith(`LESMIS_${code}`),
-          ),
-      },
-    },
-    {
-      value: 'indicators',
-      label: translate('dashboards.freeIndicatorSelection'),
-      TabComponent: TabTemplate,
-      exportToPDF: true,
+        return ({ dashboardCode }) =>
+          !DROPDOWN_OPTIONS.some(({ value: code }) => dashboardCode.startsWith(`LESMIS_${code}`));
+      default:
+        return ({ dashboardCode }) => dashboardCode.startsWith(`LESMIS_${value}`);
+    }
+  };
+
+  const dropdownOptions = DROPDOWN_OPTIONS.map(config => {
+    const { value, labelCode, componentPropConfig, ...restOfConfigs } = config;
+    const label =
+      value === PROFILE_DASHBOARD_CODE ? getProfileLabel(entityData?.type) : translate(labelCode);
+    const filterSubDashboards = getFilter(value);
+    const options = {
+      value,
+      label,
       componentProps: {
-        Body: 'Free Indicator Selection',
-        filterSubDashboards: () => false,
+        filterSubDashboards,
+        body: componentPropConfig?.body,
       },
-    },
-    {
-      value: 'ESSDP_Plan',
-      label: translate('dashboards.essdpPlan202125M&eFramework'),
-      TabComponent: TabTemplate,
-      componentProps: {
-        Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
-        filterSubDashboards: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Plan'),
-      },
-    },
-    ...SUB_DASHBOARD_OPTIONS.map(dashboard => ({
-      value: dashboard.code,
-      label: translate(dashboard.label),
-      exportToPDF: dashboard.exportToPDF,
-      TabComponent: DashboardReportTabView,
-      componentProps: {
-        filterSubDashboards: ({ dashboardCode }) =>
-          dashboardCode.startsWith(`LESMIS_${dashboard.code}`),
-      },
-    })),
-  ];
+      ...restOfConfigs,
+    };
+    return options;
+  });
 
   const selectedOption =
     selectedDashboard && dropdownOptions.find(option => option.value === selectedDashboard);
 
+  const [defaultProfileOption] = dropdownOptions;
+
   return {
     dropdownOptions,
-    selectedOption: selectedOption || dropdownOptions[0],
+    favouriteDropdownOption: dropdownOptions.find(
+      ({ value }) => value === FAVOURITES_DASHBOARD_CODE,
+    ),
+    otherDropdownOptions: dropdownOptions.filter(
+      ({ value }) => value !== FAVOURITES_DASHBOARD_CODE,
+    ),
+    selectedOption: selectedOption || defaultProfileOption,
   };
 };

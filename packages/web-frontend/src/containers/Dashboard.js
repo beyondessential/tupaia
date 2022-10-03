@@ -15,21 +15,45 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
+import MuiIconButton from '@material-ui/core/Button';
+import DownloadIcon from '@material-ui/icons/GetApp';
+import styled from 'styled-components';
+import { FlexSpaceBetween } from '@tupaia/ui-components';
 import StaticMap from '../components/StaticMap';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
-import { setDashboardGroup, closeDropdownOverlays } from '../actions';
+import { setDashboardGroup, closeDropdownOverlays, setOrgUnit } from '../actions';
 import { DashboardGroup } from './DashboardGroup';
 import { getOrgUnitPhotoUrl } from '../utils';
 import { DropDownMenu } from '../components/DropDownMenu';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectCurrentOrgUnitBounds,
   selectCurrentProject,
+  selectCurrentBreadcrumbs,
 } from '../selectors';
 import { DEFAULT_BOUNDS } from '../defaults';
+import DashboardExportModal from './DashboardExportModal';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
+
+const MuiButton = styled(MuiIconButton)`
+  font-size: 10px;
+  margin: 5px 10px 0px 10px;
+  background-color: transparent;
+  color: white;
+`;
+
+const BreadcrumbBackground = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 80px;
+  background: linear-gradient(180deg, #2b2d38 0%, rgba(43, 45, 56, 0) 94.27%);
+  padding: 5px 10px;
+`;
 
 export class Dashboard extends Component {
   constructor(props) {
@@ -39,6 +63,7 @@ export class Dashboard extends Component {
     this.state = {
       showFloatingHeader: false,
       isPhotoEnlarged: false,
+      isOpen: false,
     };
 
     this.collapsibleGroupRefs = {};
@@ -130,9 +155,26 @@ export class Dashboard extends Component {
     );
   }
 
+  renderBreadcrumbs() {
+    const { breadcrumbs, onChangeOrgUnit, isLoading } = this.props;
+
+    if (breadcrumbs.length < 2) {
+      return null;
+    }
+
+    return (
+      <BreadcrumbBackground>
+        <Breadcrumbs
+          breadcrumbs={breadcrumbs}
+          onChangeOrgUnit={onChangeOrgUnit}
+          isLoading={isLoading}
+        />
+      </BreadcrumbBackground>
+    );
+  }
+
   renderMetaMedia() {
     const { currentOrganisationUnit, contractedWidth } = this.props;
-
     // Important: Overhead of inserting a leaflet map into the DOM is high, therefore
     // css display properties are used to show and hide the map when needed and the
     // map is only inserted once.
@@ -141,6 +183,7 @@ export class Dashboard extends Component {
 
     return (
       <div style={{ ...DASHBOARD_STYLES.metaImageHolder, height: mediaWidth * IMAGE_HEIGHT_RATIO }}>
+        {this.renderBreadcrumbs()}
         {this.renderMiniMap(showMap)}
         {this.renderPhoto(!showMap)}
       </div>
@@ -199,31 +242,58 @@ export class Dashboard extends Component {
     return (
       <div style={DASHBOARD_STYLES.meta}>
         {this.renderMetaMedia()}
-        <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
+        <FlexSpaceBetween>
+          <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
+          <MuiButton
+            startIcon={<DownloadIcon style={{ fontSize: 16 }} />}
+            variant="outlined"
+            onClick={() => this.setState({ isOpen: true })}
+            disableElevation
+          >
+            export
+          </MuiButton>
+        </FlexSpaceBetween>
       </div>
     );
   }
 
   render() {
-    const { onDashboardClicked, isLoading, currentGroupDashboard } = this.props;
+    const {
+      onDashboardClicked,
+      isLoading,
+      currentGroupDashboard,
+      currentOrganisationUnit,
+      currentProjectName,
+    } = this.props;
+    const exportFileName =
+      currentGroupDashboard &&
+      `${currentProjectName}-${currentOrganisationUnit.name}-${currentGroupDashboard.dashboardName}-dashboard-export`;
 
     return (
-      <div
-        style={{ ...DASHBOARD_STYLES.container, ...(isLoading ? DASHBOARD_STYLES.loading : {}) }}
-        onClick={onDashboardClicked}
-        onScroll={this.onScroll}
-        ref={element => {
-          this.contentScroller = element;
-        }}
-      >
-        {this.renderHeader()}
-        <div style={DASHBOARD_STYLES.content}>
-          {this.renderGroupsDropdown()}
-          {this.renderGroup(currentGroupDashboard)}
+      <>
+        <div
+          style={{ ...DASHBOARD_STYLES.container, ...(isLoading ? DASHBOARD_STYLES.loading : {}) }}
+          onClick={onDashboardClicked}
+          onScroll={this.onScroll}
+          ref={element => {
+            this.contentScroller = element;
+          }}
+        >
+          {this.renderHeader()}
+          <div style={DASHBOARD_STYLES.content}>
+            {this.renderGroupsDropdown()}
+            {this.renderGroup(currentGroupDashboard)}
+          </div>
+          {this.renderFloatingHeader()}
+          {this.renderEnlargePopup()}
         </div>
-        {this.renderFloatingHeader()}
-        {this.renderEnlargePopup()}
-      </div>
+        <DashboardExportModal
+          exportFileName={exportFileName}
+          isOpen={this.state.isOpen}
+          setIsOpen={bool => this.setState({ isOpen: bool })}
+          currentGroupDashboard={currentGroupDashboard}
+        />
+      </>
     );
   }
 }
@@ -231,7 +301,9 @@ export class Dashboard extends Component {
 Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
   currentDashboardName: PropTypes.string,
+  currentProjectName: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
+  currentGroupDashboard: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   dashboardNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   onDashboardClicked: PropTypes.func.isRequired,
@@ -239,11 +311,20 @@ Dashboard.propTypes = {
   isSidePanelExpanded: PropTypes.bool.isRequired,
   contractedWidth: PropTypes.number,
   isLoading: PropTypes.bool,
+  breadcrumbs: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      code: PropTypes.string,
+    }),
+  ).isRequired,
+  onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {
   currentDashboardName: '',
+  currentProjectName: undefined,
   currentOrganisationUnit: {},
+  currentGroupDashboard: null,
   currentOrganisationUnitBounds: [],
   mapIsAnimating: false,
   contractedWidth: 0,
@@ -258,6 +339,7 @@ const mapStateToProps = state => {
   const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
   const currentDashboardName = selectCurrentDashboardName(state);
   const currentProject = selectCurrentProject(state);
+  const breadcrumbs = selectCurrentBreadcrumbs(state);
 
   const dashboardNames = [];
   // sort group names based on current project
@@ -279,9 +361,11 @@ const mapStateToProps = state => {
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
+    currentProjectName: currentProject.name,
     dashboardNames,
     currentGroupDashboard,
     currentDashboardName,
+    breadcrumbs,
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
@@ -293,6 +377,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onSetDashboardGroup: name => dispatch(setDashboardGroup(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
+    onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+      dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    },
   };
 };
 

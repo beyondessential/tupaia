@@ -20,7 +20,7 @@ const getIgnore = api => {
     // When building @tupaia/database, babel-cli compiles in advance, so we only want it to bother
     // with the last 90 days of migrations, otherwise it takes too long
     return [
-      'src/tests/**',
+      'src/__tests__/**',
       function (filepath) {
         const filepathComponents = filepath.split('/');
         const filename = filepathComponents.pop();

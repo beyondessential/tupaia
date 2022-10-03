@@ -85,6 +85,7 @@ const FIELDS = [
     source: 'id',
     type: 'edit',
     actionConfig: {
+      title: 'Edit Dashboard Relation',
       editEndpoint: DASHBOARD_RELATION_ENDPOINT,
       fields: DASHBOARD_RELATION_COLUMNS,
     },
@@ -99,10 +100,6 @@ const FIELDS = [
   },
 ];
 
-const EDIT_CONFIG = {
-  title: 'Edit Dashboard Relation',
-};
-
 const CREATE_CONFIG = {
   title: 'Create a new relation between Dashboard and DashboardItem',
   actionConfig: {
@@ -116,7 +113,6 @@ export const DashboardRelationsPage = ({ getHeaderEl }) => (
     title="Dashboard Relations"
     endpoint={DASHBOARD_RELATION_ENDPOINT}
     columns={FIELDS}
-    editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
   />

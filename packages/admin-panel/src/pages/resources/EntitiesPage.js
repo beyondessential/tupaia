@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
+const ENTITY_ENDPOINT = 'entities';
+
 export const ENTITIES_COLUMNS = [
   { source: 'id', show: false },
   {
@@ -25,11 +27,26 @@ export const ENTITIES_COLUMNS = [
   },
 ];
 
-const COLUMNS = [
+const FIELDS = [
   ...ENTITIES_COLUMNS,
   {
     Header: 'Country',
     source: 'country_code',
+  },
+  {
+    Header: 'Edit',
+    source: 'id',
+    type: 'edit',
+    actionConfig: {
+      editEndpoint: ENTITY_ENDPOINT,
+      title: 'Edit Entity',
+      fields: [
+        {
+          Header: 'Name',
+          source: 'name',
+        },
+      ],
+    },
   },
 ];
 
@@ -75,16 +92,11 @@ const IMPORT_CONFIG = {
   ],
 };
 
-const EDIT_CONFIG = {
-  title: 'Edit Answer',
-};
-
 export const EntitiesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entities"
-    endpoint="entities"
-    columns={COLUMNS}
-    editConfig={EDIT_CONFIG}
+    endpoint={ENTITY_ENDPOINT}
+    columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}

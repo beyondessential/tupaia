@@ -8,6 +8,7 @@ import { types as pgTypes } from 'pg';
 import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
+import { hashStringToInt } from '@tupaia/tsutils';
 
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
@@ -50,6 +51,11 @@ const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 const WHERE_SUBQUERY_CLAUSES = {
   EXISTS: 'exists',
   NOT_EXISTS: 'notExists',
+};
+
+const COMPARATORS = {
+  LIKE: 'like',
+  ILIKE: 'ilike',
 };
 
 // no math here, just hand-tuned to be as low as possible while
@@ -189,6 +195,17 @@ export class TupaiaDatabase {
    */
   async getTimezone() {
     return (await this.executeSql('show timezone'))[0];
+  }
+
+  /**
+   * Acquires an advisory lock for the current transaction
+   * Lock will be immediately released once the transaction ends
+   * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
+   * @param {string} lockKey unique identifier key for the lock
+   */
+  async acquireAdvisoryLockForTransaction(lockKey) {
+    const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
+    return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
   }
 
   /**
@@ -534,13 +551,26 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     query.returning('*');
   }
 
-  if (process.env.DB_VERBOSE === 'true') {
+  if (process.env.DB_VERBOSE === 'true' || process.env.DB_VERBOSE === '1') {
     winston.info(query.toString());
   }
 
   // Now constructed, the query can either be 'awaited' (in which case it will execute and return
   // the result), or passed back in to this.query as part of a nested query.
   return query;
+}
+
+function sanitizeComparisonValue(comparator, comparisonValue) {
+  switch (comparator) {
+    case COMPARATORS.LIKE:
+    case COMPARATORS.ILIKE: {
+      // escape underscores, as they are treated as wildcards in postgres which we generally don't want
+      return comparisonValue.replaceAll('_', '\\_');
+    }
+    default: {
+      return comparisonValue;
+    }
+  }
 }
 
 function addWhereClause(connection, baseQuery, where) {
@@ -593,11 +623,10 @@ function addWhereClause(connection, baseQuery, where) {
       throw new Error(`Cannot compare using ${comparisonType}`);
     }
 
-    // TODO: Replace with knex json where functions, eg. whereJsonPath
-    const columnKey = key.includes('->>') ? connection.raw(`??->>?`, key.split('->>')) : key;
+    const columnKey = getColSelector(connection, key);
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 
-    const { args = [comparator, comparisonValue] } = value;
+    const { args = [comparator, sanitizeComparisonValue(comparator, comparisonValue)] } = value;
     return querySoFar[comparisonType](columnSelector, ...args);
   }, baseQuery);
 }
@@ -623,4 +652,26 @@ function addJoin(baseQuery, recordType, joinOptions) {
       joining.andOn(...joinConditions[joinConditionIndex]);
     }
   });
+}
+
+function getColSelector(connection, inputColStr) {
+  if (inputColStr.includes('->>')) {
+    // Shorthand way of querying json property
+    // TODO: Replace with knex json where functions, eg. whereJsonPath
+    const [first, ...rest] = inputColStr.split(/->>?/);
+    if (rest.length === 1) {
+      // e.g. 'config->>colour' is converted to config->>'colour'
+      return connection.raw(`??->>?`, [first, ...rest]);
+    }
+    // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
+    const last = rest.slice(-1);
+    const middle = rest.slice(0, rest.length - 1);
+    return connection.raw(`??->${middle.map(i => '?').join('->')}->>?`, [
+      first,
+      ...middle,
+      ...last,
+    ]);
+  }
+
+  return inputColStr;
 }

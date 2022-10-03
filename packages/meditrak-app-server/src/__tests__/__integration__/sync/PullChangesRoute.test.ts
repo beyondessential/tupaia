@@ -177,6 +177,10 @@ describe('changes (GET)', () => {
 
     // Add some more questions
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeSecondUpdate = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToAddInSecondUpdate = 4;
@@ -188,6 +192,10 @@ describe('changes (GET)', () => {
 
     // Delete some of the questions added in the first update
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeFirstDelete = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToDeleteFromFirstUpdate = randomIntBetween(
@@ -208,6 +216,10 @@ describe('changes (GET)', () => {
 
     // Delete some of the questions added in the second update
     await oneSecondSleep();
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+
     const timestampBeforeSecondDelete = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToDeleteFromSecondUpdate = randomIntBetween(

@@ -9,7 +9,7 @@ const SYNC_GROUP = 'syncGroup';
 export const DATA_SOURCE_TYPES = {
   DATA_ELEMENT,
   DATA_GROUP,
-  SYNC_GROUP,
+  SYNC_GROUP, // A SYNC_GROUP is an extension to a DATA_GROUP, where a copy of the data is stored in one place e.g. tupaia but is synced from somewhere else
 };
 
 /**

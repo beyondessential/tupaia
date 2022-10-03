@@ -6,7 +6,7 @@
 import { QueryParameters } from '@tupaia/server-boilerplate';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 
-const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
+const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
 type ReportObject = {
   results: Record<string, unknown>[];

@@ -45,6 +45,10 @@
       "path": "packages/data-lake-api"
     },
     {
+      "name": "data-table-server",
+      "path": "packages/data-table-server"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },
@@ -59,10 +63,6 @@
     {
       "name": "entity-server",
       "path": "packages/entity-server"
-    },
-    {
-      "name": "pdf-export-server",
-      "path": "packages/pdf-export-server"
     },
     {
       "name": "expression-parser",
@@ -107,6 +107,10 @@
     {
       "name": "server-boilerplate",
       "path": "packages/server-boilerplate"
+    },
+    {
+      "name": "superset-api",
+      "path": "packages/superset-api"
     },
     {
       "name": "ui-components",

@@ -7,6 +7,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
+import MockDate from 'mockdate';
 import { render } from '../testableRender';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import {
@@ -17,7 +18,7 @@ import {
   GRANULARITIES,
 } from '../../utils/periodGranularities';
 
-const MAX_MOMENT_DATE = moment();
+const CURRENT_DATE_STUB = '2020-01-31T00:00:00Z';
 
 const START_DATE = '2016-09-23';
 const END_DATE = '2018-03-20';
@@ -62,6 +63,14 @@ const TEST_END_DATE_STRINGS = {
 };
 
 describe('dateRangePicker', () => {
+  beforeAll(() => {
+    MockDate.set(CURRENT_DATE_STUB);
+  });
+
+  afterAll(() => {
+    MockDate.reset();
+  });
+
   it('Has a DEFAULT_MIN_DATE consistent with tests', () => {
     expect(DEFAULT_MIN_DATE).toBe('20150101');
   });
@@ -72,7 +81,7 @@ describe('dateRangePicker', () => {
 
       const labelText = screen.getByLabelText('active-date');
       const startDate = MIN_MOMENT_STRINGS[key];
-      const endDate = momentToDateString(MAX_MOMENT_DATE, key, value.rangeFormat);
+      const endDate = momentToDateString(moment(), key, value.rangeFormat);
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);

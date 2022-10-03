@@ -93,10 +93,11 @@ export const buildContext = async (
   transform: unknown,
   reqContext: ReqContext,
   data: FetchResponse,
+  query?: Record<string, unknown>,
 ): Promise<Context> => {
   const dependencies = detectDependencies(transform);
 
-  const context: Context = {};
+  const context: Context = query ? { query } : {};
 
   for (const key of dependencies) {
     validateDependency(key);

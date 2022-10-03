@@ -27,6 +27,7 @@ const fetchEvents = async (
   const { dataGroupCodes, dataElementCodes, aggregations } = params;
   const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
   // TODO: Eventually we want Aggregator to handle fetching multiple dataGroups
+
   const results = await Promise.all(
     dataGroupCodes.map(async dataGroupCode => {
       const response = await aggregator.fetchEvents(
