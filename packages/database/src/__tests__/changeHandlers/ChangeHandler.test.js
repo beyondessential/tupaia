@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
 import winston from 'winston';
 
 import { sleep } from '@tupaia/utils';
@@ -28,22 +26,22 @@ describe('ChangeHandler', () => {
     };
 
     handleChanges() {
-      sinon.stub().resolves();
+      jest.fn().mockResolvedValue();
     }
 
     resetMocks = () => {
       this.changeTranslators = {
-        project: sinon.stub().callsFake(changeDetails => [changeDetails.new_record?.id]),
-        user: sinon.stub().callsFake(changeDetails => [changeDetails.new_record?.id]),
+        project: jest.fn(changeDetails => [changeDetails.new_record?.id]),
+        user: jest.fn(changeDetails => [changeDetails.new_record?.id]),
       };
-      this.handleChanges = sinon.stub().resolves();
+      this.handleChanges = jest.fn().mockResolvedValue();
     };
   }
 
   const changeHandler = new TestChangeHandler(models);
   changeHandler.setDebounceTime(DEBOUNCE_TIME);
 
-  before(async () => {
+  beforeAll(async () => {
     changeHandler.listenForChanges();
   });
 
@@ -51,7 +49,7 @@ describe('ChangeHandler', () => {
     changeHandler.resetMocks();
   });
 
-  after(() => {
+  afterAll(() => {
     changeHandler.stopListeningForChanges();
   });
 
@@ -59,25 +57,23 @@ describe('ChangeHandler', () => {
     await upsertDummyRecord(models.indicator);
     await models.database.waitForAllChangeHandlers();
 
-    expect(changeHandler.handleChanges).to.have.callCount(0);
+    expect(changeHandler.handleChanges).toHaveBeenCalledTimes(0);
   });
 
   it('is triggered if a record type with a translator is mutated', async () => {
     await upsertDummyRecord(models.project);
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.callCount(1);
+    expect(changeHandler.handleChanges).toHaveBeenCalledTimes(1);
 
     await upsertDummyRecord(models.user);
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.callCount(2);
+    expect(changeHandler.handleChanges).toHaveBeenCalledTimes(2);
   });
 
   it('translates changes before handling them', async () => {
     const record = await upsertDummyRecord(models.project);
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(sinon.match.object, [
-      record.id,
-    ]);
+    expect(changeHandler.handleChanges).toHaveBeenCalledOnceWith(expect.any(Object), [record.id]);
   });
 
   it('handles multiple changes in batches', async () => {
@@ -101,7 +97,7 @@ describe('ChangeHandler', () => {
     await sleep(sleepTime);
 
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.callCount(1);
+    expect(changeHandler.handleChanges).toHaveBeenCalledTimes(1);
   });
 
   it('uses FIFO order', async () => {
@@ -116,18 +112,12 @@ describe('ChangeHandler', () => {
 
     const projectIds1 = await submitProjectBatch();
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(
-      sinon.match.object,
-      projectIds1,
-    );
+    expect(changeHandler.handleChanges).toHaveBeenCalledOnceWith(expect.any(Object), projectIds1);
     changeHandler.resetMocks();
 
     const projectIds2 = await submitProjectBatch();
     await models.database.waitForAllChangeHandlers();
-    expect(changeHandler.handleChanges).to.have.been.calledOnceWith(
-      sinon.match.object,
-      projectIds2,
-    );
+    expect(changeHandler.handleChanges).toHaveBeenCalledOnceWith(expect.any(Object), projectIds2);
   });
 
   it('only runs one queue handler at a time', async () => {
@@ -135,11 +125,11 @@ describe('ChangeHandler', () => {
     let isQueueHandlerRunning = false;
     let queueHandlingCount = 0;
 
-    changeHandler.handleChanges = sinon.stub().callsFake(async () => {
+    changeHandler.handleChanges = jest.fn(async () => {
       if (resolveOnQueueHandlerStart) {
         resolveOnQueueHandlerStart();
       }
-      expect(isQueueHandlerRunning).to.equal(false); // assert against concurrent handlers
+      expect(isQueueHandlerRunning).toBe(false); // assert against concurrent handlers
       isQueueHandlerRunning = true;
       queueHandlingCount++;
       // sleep for longer than the debounce time so that we're still handling when the next one
@@ -156,8 +146,8 @@ describe('ChangeHandler', () => {
 
     // after queue handler one has started but not yet completed, schedule another queue handler
     await handlerOneStarted;
-    expect(isQueueHandlerRunning).to.equal(true);
-    expect(queueHandlingCount).to.equal(1);
+    expect(isQueueHandlerRunning).toBe(true);
+    expect(queueHandlingCount).toBe(1);
     changeHandler.scheduleChangeQueueHandler();
     const handlerTwoStarted = new Promise(resolve => {
       resolveOnQueueHandlerStart = resolve;
@@ -166,14 +156,14 @@ describe('ChangeHandler', () => {
     // wait for longer than the debounce time, so the just scheduled queue handler would want
     // to start, but should still be processing the first handler
     await sleep(DEBOUNCE_TIME + 10);
-    expect(isQueueHandlerRunning).to.equal(true);
-    expect(queueHandlingCount).to.equal(1);
+    expect(isQueueHandlerRunning).toBe(true);
+    expect(queueHandlingCount).toBe(1);
 
     // after handler two has started but not yet completed, schedule another few queue handlers
     // these should debounce and result in one more handler
     await handlerTwoStarted;
-    expect(isQueueHandlerRunning).to.equal(true);
-    expect(queueHandlingCount).to.equal(2);
+    expect(isQueueHandlerRunning).toBe(true);
+    expect(queueHandlingCount).toBe(2);
     changeHandler.scheduleChangeQueueHandler();
     changeHandler.scheduleChangeQueueHandler();
     changeHandler.scheduleChangeQueueHandler();
@@ -182,14 +172,14 @@ describe('ChangeHandler', () => {
     // wait for longer than the debounce time, so the just scheduled handler would want to start,
     // but should still be running the second handler
     await sleep(DEBOUNCE_TIME + 10);
-    expect(isQueueHandlerRunning).to.equal(true);
-    expect(queueHandlingCount).to.equal(2);
+    expect(isQueueHandlerRunning).toBe(true);
+    expect(queueHandlingCount).toBe(2);
 
     // wait for final handler to complete, then check a total of three were called
     await finalHandlerPromise;
-    expect(isQueueHandlerRunning).to.equal(false);
-    expect(queueHandlingCount).to.equal(3);
-    expect(changeHandler.handleChanges).to.have.been.calledThrice;
+    expect(isQueueHandlerRunning).toBe(false);
+    expect(queueHandlingCount).toBe(3);
+    expect(changeHandler.handleChanges).toHaveBeenCalledTimes(3);
   });
 
   describe('failure handling', () => {
@@ -197,35 +187,35 @@ describe('ChangeHandler', () => {
     const acceptedId = generateTestId();
     let processedIds = [];
 
-    before(() => {
-      sinon.stub(winston, 'error');
+    beforeAll(() => {
+      jest.spyOn(winston, 'error').mockClear().mockImplementation();
     });
 
     beforeEach(() => {
       processedIds = [];
-      changeHandler.handleChanges = sinon.stub().callsFake((transactingModels, changeIds) => {
+      changeHandler.handleChanges = jest.fn((transactingModels, changeIds) => {
         if (changeIds.includes(rejectedId)) {
           throw new Error(`Rejected id found: ${rejectedId}`);
         }
         processedIds.push(...changeIds);
       });
-      winston.error.resetHistory();
+      winston.error.mockReset();
     });
 
-    after(() => {
-      winston.error.restore();
+    afterAll(() => {
+      winston.error.mockRestore();
     });
 
     it('retries to handle a batch up to 3 times, then stops trying and logs an error', async () => {
       await upsertDummyRecord(models.project, { id: rejectedId });
       await models.database.waitForAllChangeHandlers();
 
-      expect(changeHandler.handleChanges).to.have.callCount(3);
-      expect(changeHandler.changeQueue).to.have.length(0);
-      expect(winston.error).to.have.been.calledOnceWith(
-        sinon.match(new RegExp(`Failed ids: ${rejectedId}`)),
+      expect(changeHandler.handleChanges).toHaveBeenCalledTimes(3);
+      expect(changeHandler.changeQueue).toHaveLength(0);
+      expect(winston.error).toHaveBeenCalledOnceWith(
+        expect.objectContaining(new RegExp(`Failed ids: ${rejectedId}`)),
       );
-      expect(processedIds).to.deep.equal([]);
+      expect(processedIds).toStrictEqual([]);
     });
 
     it('the whole batch fails if an error occurs', async () => {
@@ -233,12 +223,12 @@ describe('ChangeHandler', () => {
       await upsertDummyRecord(models.project, { id: acceptedId });
       await models.database.waitForAllChangeHandlers();
 
-      expect(changeHandler.handleChanges).to.have.callCount(3); // 3 retry attempts
-      expect(changeHandler.changeQueue).to.have.length(0);
-      expect(winston.error).to.have.been.calledOnceWith(
-        sinon.match(new RegExp(`Failed ids: ${[rejectedId, acceptedId]}`)),
+      expect(changeHandler.handleChanges).toHaveBeenCalledTimes(3); // 3 retry attempts
+      expect(changeHandler.changeQueue).toHaveLength(0);
+      expect(winston.error).toHaveBeenCalledOnceWith(
+        expect.objectContaining(new RegExp(`Failed ids: ${[rejectedId, acceptedId]}`)),
       );
-      expect(processedIds).to.deep.equal([]);
+      expect(processedIds).toStrictEqual([]);
     });
 
     it('valid future changes can still be queued and handled successfully', async () => {
@@ -248,12 +238,12 @@ describe('ChangeHandler', () => {
       await models.database.waitForAllChangeHandlers();
 
       // 3 failed attempts for the rejected project + 1 successful for the accepted project
-      expect(changeHandler.handleChanges).to.have.callCount(4);
-      expect(changeHandler.changeQueue).to.have.length(0);
-      expect(winston.error).to.have.been.calledOnceWith(
-        sinon.match(new RegExp(`Failed ids: ${rejectedId}`)),
+      expect(changeHandler.handleChanges).toHaveBeenCalledTimes(4);
+      expect(changeHandler.changeQueue).toHaveLength(0);
+      expect(winston.error).toHaveBeenCalledOnceWith(
+        expect.objectContaining(new RegExp(`Failed ids: ${rejectedId}`)),
       );
-      expect(processedIds).to.deep.equal([acceptedId]);
+      expect(processedIds).toStrictEqual([acceptedId]);
     });
   });
 });

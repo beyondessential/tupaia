@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { DataElementModel, DataElementType } from '../../modelClasses/DataElement';
 
 describe('DataElement', () => {
@@ -22,20 +20,20 @@ describe('DataElement', () => {
     const assertConfigIsSanitized = ({ serviceType }, config, expectedConfig) => {
       const dataElement = createDataElement({ serviceType, config });
       dataElement.sanitizeConfig();
-      expect(dataElement.config).to.deep.equal(expectedConfig);
+      expect(dataElement.config).toStrictEqual(expectedConfig);
     };
 
     it('empty config', () => {
       [undefined, null, {}].forEach(emptyConfig => {
         const dataElement = createDataElement({ config: emptyConfig });
         dataElement.sanitizeConfig();
-        expect(dataElement.config).be.an('object');
+        expect(dataElement.config).toBeInstanceOf(Object);
       });
     });
 
     it('unknown service', () => {
       const dataElement = createDataElement({ serviceType: 'random', config: {} });
-      expect(() => dataElement.sanitizeConfig()).to.throw(/config schema .*service/);
+      expect(() => dataElement.sanitizeConfig()).toThrowError(/config schema .*service/);
     });
 
     it('should remove valid fields when empty', () => {
@@ -92,18 +90,6 @@ describe('DataElement', () => {
 
     describe('tupaia service', () => {
       it('data element', () => {
-        assertConfigIsSanitized(
-          {
-            serviceType: 'tupaia',
-          },
-          { dhisInstanceCode: 'bob', other: 'random' },
-          {},
-        );
-      });
-    });
-
-    it('should remove valid fields when empty', () => {
-      ['', undefined, null].forEach(emptyValue => {
         assertConfigIsSanitized(
           {
             serviceType: 'tupaia',
