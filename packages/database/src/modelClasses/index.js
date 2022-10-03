@@ -29,6 +29,7 @@ import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LegacyReportModel } from './LegacyReport';
+import { UserFavouriteDashboardItemModel } from './UserFavouriteDashboardItem';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 import { MapOverlayModel } from './MapOverlay';
@@ -54,6 +55,7 @@ import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
 import { DataServiceEntityModel } from './DataServiceEntity';
 import { DhisInstanceModel } from './DhisInstance';
+import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
 
 // export all models to be used in constructing a ModelRegistry
@@ -70,6 +72,7 @@ export const modelClasses = {
   DashboardItem: DashboardItemModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
+  DataElementDataService: DataElementDataServiceModel,
   DataElement: DataElementModel,
   DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
@@ -109,6 +112,7 @@ export const modelClasses = {
   SyncGroupLog: SyncGroupLogModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
+  UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
 };
 
@@ -122,6 +126,7 @@ export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
+export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
 export { DataTableModel, DataTableType } from './DataTable';

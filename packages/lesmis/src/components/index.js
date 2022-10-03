@@ -5,6 +5,7 @@
 
 export * from './ApproveButton';
 export * from './Breadcrumbs';
+export * from './DashboardSearch';
 export * from './DashboardReport';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';
@@ -17,13 +18,17 @@ export * from './FullPageLoader';
 export * from './Layout';
 export * from './LocaleMenu';
 export * from './LocationHeader';
+export * from './LoginLink';
 export * from '../utils/I18n';
 export * from './MapOverlaysPanel';
 export * from './MiniMap';
 export * from './NavBar';
 export * from './PageHeader';
+export * from './PanelComponent';
 export * from './RejectButton';
 export * from './SearchBar';
+export * from './ScrollToTopButton';
+export * from './SignUpLink';
 export * from './Tabs';
 export * from './ThemeTest';
 export * from './VitalsLoader';

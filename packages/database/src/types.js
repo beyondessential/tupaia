@@ -16,6 +16,7 @@ export const TYPES = {
   DASHBOARD_ITEM: 'dashboard_item',
   DASHBOARD_RELATION: 'dashboard_relation',
   DATA_ELEMENT_DATA_GROUP: 'data_element_data_group',
+  DATA_ELEMENT_DATA_SERVICE: 'data_element_data_service',
   DATA_ELEMENT: 'data_element',
   DATA_GROUP: 'data_group',
   DATA_SERVICE_ENTITY: 'data_service_entity',
@@ -61,5 +62,6 @@ export const TYPES = {
   SYNC_GROUP_LOG: 'sync_group_log',
   USER_ACCOUNT: 'user_account',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
+  USER_FAVOURITE_DASHBOARD_ITEM: 'user_favourite_dashboard_item',
   USER_SESSION: 'userSession',
 };

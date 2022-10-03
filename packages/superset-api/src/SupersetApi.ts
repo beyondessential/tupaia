@@ -59,7 +59,7 @@ export class SupersetApi {
     if (result.status !== 200) {
       const bodyText = await result.text();
 
-      if (result.status === 422) {
+      if (result.status === 422 || result.status === 401) {
         winston.info(`Superset Auth error, response: ${bodyText}`);
         await this.refreshAccessToken();
         return this.fetch(url, numRetries + 1);

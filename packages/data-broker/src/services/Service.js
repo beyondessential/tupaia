@@ -21,13 +21,19 @@ export class Service {
 
   /**
    * @abstract
+   * @param {any} dataSources
+   * @param {any} data
+   * @param {{ dataServiceMapping: DataServiceMapping, type: 'dataElement'|'dataGroup'}} options
    */
-  async push(dataSources, data) {
+  async push(dataSources, data, options) {
     throw new Error('Any subclass of Service must implement the "push" method');
   }
 
   /**
    * @abstract
+   * @param {any} dataSources
+   * @param {any} data
+   * @param {{ dataServiceMapping: DataServiceMapping, type: 'dataElement'|'dataGroup', serverName?: string}} options
    */
   async delete(dataSource, data, options) {
     throw new Error('Any subclass of Service must implement the "delete" method');
@@ -37,7 +43,7 @@ export class Service {
    * @abstract
    * @param {any} dataSources
    * @param {string} type - one of DataSource.DATA_SOURCE_TYPES
-   * @param {any} options
+   * @param {{ dataServiceMapping: DataServiceMapping, organisationUnitCode?: string, organisationUnitCodes?: string[], dataServices?: any, detectDataServices?: boolean }} options
    */
   async pull(dataSources, type, options) {
     throw new Error('Any subclass of Service must implement the "pull" method');
@@ -47,7 +53,7 @@ export class Service {
    * @abstract
    * @param {any[]} dataSources
    * @param {string} type - one of DataSource.DATA_SOURCE_TYPES
-   * @param {{}} options
+   * @param {{ dataServiceMapping: DataServiceMapping, organisationUnitCode?: string, organisationUnitCodes?: string[], dataServices?: any, detectDataServices?: boolean }} options
    * @returns Promise<{Object.<name: string, id: string, code: string>}>
    */
   async pullMetadata(dataSources, type, options) {

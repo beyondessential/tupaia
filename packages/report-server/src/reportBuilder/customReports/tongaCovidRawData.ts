@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import { format, differenceInYears, addDays, isDate } from 'date-fns';
+import keyBy from 'lodash.keyby';
 import { createAggregator } from '@tupaia/aggregator';
 import { ReportServerAggregator } from '../../aggregator';
 import { FetchReportQuery, Event } from '../../types';
@@ -11,51 +12,28 @@ import SURVEYS from './data/tongaCovidRawData.json';
 
 interface RelationshipsOptions {
   hierarchy: string;
-  individualsByCode: string[];
-  groupBy: 'ancestor' | 'descendant';
+  entityCodes: string[];
   queryOptions?: any;
   ancestorOptions?: any;
   descendantOptions?: any;
 }
 
-interface Options {
-  programCode: string;
-  dataElementCodes: string[];
-}
-
-interface AncestorData {
-  villageByIndividual: Record<string, Record<string, string>>;
-  islandByIndividual: Record<string, string>;
-}
-
 const getRelationships = (reqContext: ReqContext, options: RelationshipsOptions) => {
-  const {
-    hierarchy,
-    individualsByCode,
-    groupBy,
-    queryOptions,
-    ancestorOptions,
-    descendantOptions,
-  } = options;
+  const { hierarchy, entityCodes, queryOptions, ancestorOptions, descendantOptions } = options;
   return reqContext.services.entity.getRelationshipsOfEntities(
     hierarchy,
-    individualsByCode,
-    groupBy,
+    entityCodes,
+    'descendant',
     queryOptions,
     ancestorOptions,
     descendantOptions,
-  );
+  ) as Promise<Record<string, string>>;
 };
 
-const useAncestorData = async (
-  reqContext: ReqContext,
-  hierarchy: string,
-  individualsByCode: string[],
-) => {
+const fetchEntities = async (reqContext: ReqContext, hierarchy: string, entityCodes: string[]) => {
   const villageOptions: RelationshipsOptions = {
     hierarchy,
-    individualsByCode,
-    groupBy: 'descendant',
+    entityCodes,
     queryOptions: {},
     ancestorOptions: { filter: { type: 'village' } },
     descendantOptions: { filter: { type: 'individual' } },
@@ -63,43 +41,46 @@ const useAncestorData = async (
 
   const islandOptions: RelationshipsOptions = {
     hierarchy,
-    individualsByCode,
-    groupBy: 'descendant',
-    queryOptions: { field: 'name' },
-    ancestorOptions: { filter: { type: 'district' } },
+    entityCodes,
+    queryOptions: {},
+    ancestorOptions: { field: 'name', filter: { type: 'district' } },
     descendantOptions: { filter: { type: 'individual' } },
   };
-  const villageCodeByIndividualCodes: Record<string, string> = await getRelationships(
-    reqContext,
-    villageOptions,
+  const [villageCodeByIndividualCodes, islandNameByIndividualCodes] = await Promise.all(
+    [villageOptions, islandOptions].map(options => getRelationships(reqContext, options)),
   );
+
+  const individualCodes = Object.keys(villageCodeByIndividualCodes);
   const villageCodes = new Set<string>();
   Object.values(villageCodeByIndividualCodes).forEach((code: string) => {
     villageCodes.add(code);
   });
   const includedVillageCodes = [...villageCodes];
-  const villageCodesAndNames = await reqContext.services.entity.getEntities(
+  const villageCodesAndNames = (await reqContext.services.entity.getEntities(
     hierarchy,
     includedVillageCodes,
     {
       fields: ['code', 'name'],
     },
-  );
-  const individualCodeByVillageNameAndCode: Record<string, Record<string, string>> = {};
+  )) as { code: string; name: string }[];
+  const individualCodeByVillageNameAndCode: Record<string, { code: string; name: string }> = {};
   Object.keys(villageCodeByIndividualCodes).forEach(individualCode => {
     const villageCode = villageCodeByIndividualCodes[individualCode];
-    const { name } = villageCodesAndNames.find(
-      (village: Record<string, string>) => village.code === villageCode,
-    );
+    const villageWithCode = villageCodesAndNames.find(village => village.code === villageCode);
+
+    if (!villageWithCode) {
+      throw new Error(`Could not find village with code: ${villageCode}`);
+    }
+
+    const { name } = villageWithCode;
     individualCodeByVillageNameAndCode[individualCode] = {
       code: villageCode,
       name,
     };
   });
 
-  const islandNameByIndividualCodes = await getRelationships(reqContext, islandOptions);
-
   return {
+    individualCodes,
     villageByIndividual: individualCodeByVillageNameAndCode,
     islandByIndividual: islandNameByIndividualCodes,
   };
@@ -107,70 +88,60 @@ const useAncestorData = async (
 
 const fetchEvents = async (
   reqContext: ReqContext,
-  individualsByCode: string[],
+  entityCodes: string[],
   hierarchy: string,
   startDate?: string,
   endDate?: string,
   period?: string,
 ) => {
-  const registrationOptions = {
-    programCode: 'C19T_Registration',
-    dataElementCodes: SURVEYS.C19T_Registration.dataElementCodes,
-  };
-  const resultsOptions = {
-    programCode: 'C19T_Results',
-    dataElementCodes: SURVEYS.C19T_Results.dataElementCodes,
-  };
-
   const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
-  const fetch = async (options: Options) => {
-    const { programCode, dataElementCodes } = options;
-    return aggregator.fetchEvents(
-      programCode,
-      undefined,
-      individualsByCode,
-      hierarchy,
-      { startDate, endDate, period },
-      dataElementCodes,
-    );
-  };
-
-  const [registrationEvents, resultsEvents] = await Promise.all(
-    [registrationOptions, resultsOptions].map(fetch),
+  const resultEventsPromise = aggregator.fetchEvents(
+    'C19T_Results',
+    undefined,
+    entityCodes,
+    hierarchy,
+    { startDate, endDate, period },
+    SURVEYS.C19T_Results.dataElementCodes,
   );
+  const registrationEventsPromise = aggregator.fetchEvents(
+    'C19T_Registration',
+    undefined,
+    entityCodes,
+    hierarchy,
+    {},
+    SURVEYS.C19T_Registration.dataElementCodes,
+  );
+
+  const [registrationEvents, resultsEvents] = await Promise.all([
+    registrationEventsPromise,
+    resultEventsPromise,
+  ]);
 
   return { registrationEvents, resultsEvents };
 };
 
-const combineAndFlatten = (
-  registrationEvents: Event[],
-  resultEvents: Event[],
-  ancestorData: AncestorData,
-) => {
-  const matchedData: Record<string, any>[] = resultEvents.map(resultEvent => {
-    const { dataValues: resultDataValues, orgUnit: resultOrgUnit, eventDate } = resultEvent;
-    const matchingRegistration = registrationEvents.find(
-      registrationEvent => registrationEvent.orgUnit === resultEvent.orgUnit,
-    );
-    if (!matchingRegistration) {
-      return {
-        orgUnit: resultOrgUnit,
-        eventDate,
-        ...resultDataValues,
-      };
-    }
-    const { dataValues: registrationDataValues, orgUnit } = matchingRegistration;
+const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) => {
+  const registrationEventsByOrgUnit = keyBy(registrationEvents, 'orgUnit');
+  const combinedEvents: Record<string, any>[] = [];
+  resultEvents.forEach(resultEvent => {
+    const { dataValues: resultDataValues, orgUnit, eventDate } = resultEvent;
+    const matchingRegistration = registrationEventsByOrgUnit[orgUnit];
 
-    return {
+    if (!matchingRegistration) {
+      return;
+    }
+
+    const { dataValues: registrationDataValues } = matchingRegistration;
+
+    combinedEvents.push({
       orgUnit,
       eventDate,
       ...registrationDataValues,
       ...resultDataValues,
-    };
+    });
   });
-  const { villageByIndividual, islandByIndividual } = ancestorData;
   const now = new Date();
-  const dataWithUpdatesAndAddOns = matchedData.map(event => {
+  const dataWithUpdatesAndAddOns = combinedEvents.map(event => {
     const {
       orgUnit,
       C19T033: result,
@@ -178,17 +149,10 @@ const combineAndFlatten = (
       C19T004: dob,
       eventDate: dateSpecimenCollected,
     } = event;
-    const { code: villageCode, name: villageName } = villageByIndividual[
-      orgUnit as keyof typeof Event
-    ];
-    const islandName: string = islandByIndividual[orgUnit];
 
     const age = getAge(dob, now);
     return {
       'Test ID': orgUnit,
-      'Island Group': islandName,
-      'Village Code': villageCode,
-      Address: villageName,
       'Estimated Recovery Date': getEstimatedRecoveryDate(result, dateSpecimenCollected, onsetDate),
       dateSpecimenCollected,
       Age: age,
@@ -227,9 +191,17 @@ const getEstimatedRecoveryDate = (
   return isDate(recoveryDate) && format(recoveryDate, 'yyyy-mm-dd');
 };
 
+const binaryToYesNo = (value: unknown) => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  return value === 1 ? 'Yes' : 'No';
+};
+
 const parseRowData = (rowData: Record<string, any>) => {
   const formattedRow: Record<string, any> = {};
-  const { codesToNames } = SURVEYS;
+  const { codesToNames, binaryAndCheckboxQuestions } = SURVEYS;
   Object.keys(rowData).forEach(fieldKey => {
     switch (fieldKey) {
       case 'dateSpecimenCollected': {
@@ -246,67 +218,70 @@ const parseRowData = (rowData: Record<string, any>) => {
         break;
       }
       case 'Test ID':
-      case 'Island Group':
-      case 'Village Code':
-      case 'Address':
       case 'Age':
       case 'Estimated Recovery Date':
         formattedRow[fieldKey] = rowData[fieldKey];
         break;
       default: {
-        const name = codesToNames[fieldKey as keyof typeof codesToNames];
-        if (!name) {
-          formattedRow[fieldKey] = rowData[fieldKey];
-        } else {
-          formattedRow[name] = rowData[fieldKey];
-        }
+        const name = codesToNames[fieldKey as keyof typeof codesToNames] || fieldKey;
+        const value = binaryAndCheckboxQuestions.includes(fieldKey)
+          ? binaryToYesNo(rowData[fieldKey])
+          : rowData[fieldKey];
+        formattedRow[name] = value;
       }
     }
   });
   return formattedRow;
 };
 
+const addVillageAndIsland = (
+  rows: Record<string, any>[],
+  villageByIndividual: Record<string, { code: string; name: string }>,
+  islandByIndividual: Record<string, string>,
+) => {
+  return rows.map(row => {
+    const { orgUnit } = row;
+    const { code: villageCode, name: villageName } = villageByIndividual[orgUnit];
+    const islandName = islandByIndividual[orgUnit];
+    return {
+      ...row,
+      'Village Code': villageCode,
+      Address: villageName,
+      'Island Group': islandName,
+    };
+  });
+};
+
 export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchReportQuery) => {
   const { organisationUnitCodes: entityCodes, hierarchy, startDate, endDate, period } = query;
-  const individuals = await reqContext.services.entity.getDescendantsOfEntities(
-    hierarchy,
-    entityCodes,
-    { filter: { type: 'individual' } },
-  );
-  const individualsByCode = individuals.map((ind: Record<string, unknown>) => ind.code);
 
-  const ancestorData: AncestorData = await useAncestorData(
+  const { individualCodes, villageByIndividual, islandByIndividual } = await fetchEntities(
     reqContext,
     hierarchy,
-    individualsByCode,
+    entityCodes,
   );
 
   const { registrationEvents, resultsEvents } = await fetchEvents(
     reqContext,
-    individualsByCode,
+    individualCodes,
     hierarchy,
     startDate,
     endDate,
     period,
   );
 
-  const builtEvents: Record<string, any>[] = combineAndFlatten(
-    registrationEvents,
-    resultsEvents,
-    ancestorData,
+  const builtEvents: Record<string, any>[] = combineAndFlatten(registrationEvents, resultsEvents);
+  const rows = builtEvents.map(rowData => parseRowData(rowData));
+
+  const rowsWithVillageAndIsland = addVillageAndIsland(
+    rows,
+    villageByIndividual,
+    islandByIndividual,
   );
-  const rows = builtEvents
-    .map(rowData => parseRowData(rowData))
-    .sort((row, nextRow) => {
-      if (row['Test ID'] === nextRow['Test ID']) {
-        return 0;
-      }
-      return 1;
-    });
 
   const columns: Record<string, string>[] = SURVEYS.columns.map(key => {
     return { title: key, key };
   });
 
-  return { columns, rows: rows.filter((row, index) => index < 20) };
+  return { columns, rows: rowsWithVillageAndIsland };
 };

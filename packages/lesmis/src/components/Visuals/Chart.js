@@ -18,6 +18,8 @@ import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
+import { FavouriteButton } from '../FavouriteButton';
+import { YearLabel } from '../YearLabel';
 
 const Wrapper = styled.div`
   flex: 1;
@@ -139,6 +141,9 @@ export const Chart = ({
   error,
   isEnlarged,
   isExporting,
+  isFavourite,
+  handleFavouriteStatusChange,
+  useYearSelector,
 }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
 
@@ -173,7 +178,12 @@ export const Chart = ({
   ) : (
     <>
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
+        <YearLabel useYearSelector={useYearSelector} />
         <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+        <FavouriteButton
+          isFavourite={isFavourite}
+          handleFavouriteStatusChange={handleFavouriteStatusChange}
+        />
       </VisualHeader>
       <Body>
         <ChartTable
@@ -197,6 +207,7 @@ Chart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   isError: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
   error: PropTypes.string,
   name: PropTypes.string,
 };
@@ -209,6 +220,7 @@ Chart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   isError: false,
+  useYearSelector: false,
   error: null,
   name: null,
 };
