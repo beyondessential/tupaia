@@ -52,7 +52,7 @@ describe('calculateOperationForAnalytics', () => {
     );
   });
 
-  // TODO skipping test cases until the tested functionality is fixed
+  // TODO RN-676: skipping test cases until the tested functionality is fixed
   describe.skip('CHECK_CONDITION', () => {
     it('throws an error when passed too many analytics', async () => {
       await expect(
@@ -154,7 +154,7 @@ describe('calculateOperationForAnalytics', () => {
     });
   });
 
-  // TODO skipping test cases until the tested functionality is fixed
+  // TODO RN-676: skipping test cases until the tested functionality is fixed
   describe.skip('FORMAT', () => {
     it('throws an error when passed too many analytics', async () => {
       await expect(
@@ -253,7 +253,7 @@ describe('calculateOperationForAnalytics', () => {
     });
   });
 
-  // TODO skipping test cases until the tested functionality is fixed
+  // TODO RN-676: skipping test cases until the tested functionality is fixed
   describe.skip('GROUP', () => {
     it('throws an error when passed too many analytics', async () => {
       await expect(
