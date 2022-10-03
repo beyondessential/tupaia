@@ -13,7 +13,6 @@ aws-access-keys.js
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -33,7 +32,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-
 ### https://raw.github.com/github/gitignore/49d13cdba39774f7fa224ef13f4a1153200e2710/Node.gitignore
 
 # Logs
@@ -52,9 +50,6 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-
-# nyc test coverage
-.nyc_output
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
@@ -83,6 +78,3 @@ jspm_packages
 
 # Yarn Integrity file
 .yarn-integrity
-
-
-

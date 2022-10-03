@@ -5148,6 +5148,7 @@ __metadata:
     react-native-uuid: ^1.4.9
     s3urls: ^1.5.2
     semver-compare: ^1.0.0
+    sinon-chai: ^3.3.0
     sinon-test: ^3.0.0
     string-similarity: ^1.2.2
     supertest: ^3.1.0
@@ -5242,7 +5243,6 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
-    cross-env: ^7.0.2
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     dotenv: ^8.2.0
@@ -5253,7 +5253,6 @@ __metadata:
     lodash.orderby: ^4.6.0
     moment: ^2.24.0
     npm-run-all: ^4.1.5
-    nyc: ^15.1.0
     os: 0.1.1
     pg: 8.5.1
     pg-pubsub: 0.6.1
@@ -5721,13 +5720,10 @@ __metadata:
     babel-plugin-module-resolver: ^4.0.0
     body-parser: ^1.18.2
     case: ^1.5.5
-    chai: ^4.1.2
-    chai-like: ^1.1.1
     client-sessions: ^0.8.0
     compression: ^1.7.2
     cookie-parser: ^1.4.3
     cors: ^2.8.4
-    cross-env: ^7.0.2
     csvtojson: ^1.1.5
     dotenv: ^8.2.0
     express: ^4.16.2
@@ -5749,15 +5745,12 @@ __metadata:
     lodash.sumby: ^4.6.0
     lodash.tail: ^4.1.1
     lodash.zipobject: ^4.1.3
-    mocha: ^8.1.3
     moment: ^2.22.2
     morgan: ^1.9.0
     nodemailer: ^4.6.7
-    nyc: ^15.1.0
     promise: ^7.3.1
     react-autobind: ^1.0.6
     request: ^2.81.0
-    sinon-chai: ^3.3.0
     urlencode: ^1.1.0
     winston: ^3.3.3
     xlsx: ^0.17.0
@@ -10443,15 +10436,6 @@ __metadata:
   peerDependencies:
     chai: ">= 2.1.2 < 5"
   checksum: 7262868a5b51a12af4e432838ddf97a893109266a505808e1868ba63a12de7ee1166e9d43b5c501a190c377c1b11ecb9ff8e093c89f097ad96c397e8ec0f8d6a
-  languageName: node
-  linkType: hard
-
-"chai-like@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "chai-like@npm:1.1.1"
-  peerDependencies:
-    chai: 2 - 4
-  checksum: c0b1162568b7a0188a099309a501c37b883ca29ea85a44ec01a1f5225665d811e15ef986f6641b001356aa30d8d051604a483a2fc1a17c4f9cc9a55d5b01e1c9
   languageName: node
   linkType: hard
 
@@ -31480,12 +31464,12 @@ __metadata:
   linkType: hard
 
 "sinon-chai@npm:^3.3.0":
-  version: 3.4.0
-  resolution: "sinon-chai@npm:3.4.0"
+  version: 3.7.0
+  resolution: "sinon-chai@npm:3.7.0"
   peerDependencies:
     chai: ^4.0.0
-    sinon: ">=4.0.0 <9.0.0"
-  checksum: cf27947adb16c1b98ba1f4ba3e271358dd2286a3535b4cdbc0e7e6a454cb9e41a0f88385d976281708d4c8e8f1ed26b27bcb624573548f4cb3c9e2fefa393ed0
+    sinon: ">=4.0.0"
+  checksum: 49a353d8eb66cc6db35ac452f6965c72778aa090d1f036dd1e54ba88594b1c3f314b1a403eaff22a4e314f94dc92d9c7d03cbb88c21d89e814293bf5b299964d
   languageName: node
   linkType: hard
 
