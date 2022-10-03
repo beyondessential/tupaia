@@ -1,6 +1,7 @@
 {
   "C19T_Registration": {
-    "dataElementCodes": ["C19T002", "C19T003", "C19T004", "C19T005", "C19T006"]
+    "dataElementCodes": ["C19T002", "C19T003", "C19T004", "C19T005", "C19T006"],
+    "binaryAndCheckboxQuestions": []
   },
   "C19T_Results": {
     "dataElementCodes": [
