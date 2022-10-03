@@ -16,12 +16,18 @@ const paramsSchema = yup.object().shape({
   startDate: yup
     .string()
     .test(
-      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'startDate should be in ISO 8601 format'),
+      yupUtils.yupTestAnySync(
+        [hasNoContent, takesDateForm],
+        'startDate should be in ISO 8601 format',
+      ),
     ),
   endDate: yup
     .string()
     .test(
-      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'endDate should be in ISO 8601 format'),
+      yupUtils.yupTestAnySync(
+        [hasNoContent, takesDateForm],
+        'endDate should be in ISO 8601 format',
+      ),
     ),
   aggregations: yup.array().of(
     yup.object().shape({
