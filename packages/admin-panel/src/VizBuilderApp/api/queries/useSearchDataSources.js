@@ -14,7 +14,7 @@ export const useSearchDataSources = ({ search, type = 'dataElement', maxResults 
       const endpoint = stringifyQuery(undefined, `${type}s`, {
         columns: JSON.stringify(['code']),
         filter: JSON.stringify({
-          code: { comparator: 'ilike', comparisonValue: `${search}%`, castAs: 'text' },
+          code: { comparator: 'ilike', comparisonValue: `%${search}%`, castAs: 'text' },
         }),
         pageSize: maxResults,
       });

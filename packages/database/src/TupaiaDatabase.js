@@ -53,6 +53,11 @@ const WHERE_SUBQUERY_CLAUSES = {
   NOT_EXISTS: 'notExists',
 };
 
+const COMPARATORS = {
+  LIKE: 'like',
+  ILIKE: 'ilike',
+};
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -555,6 +560,19 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   return query;
 }
 
+function sanitizeComparisonValue(comparator, comparisonValue) {
+  switch (comparator) {
+    case COMPARATORS.LIKE:
+    case COMPARATORS.ILIKE: {
+      // escape underscores, as they are treated as wildcards in postgres which we generally don't want
+      return comparisonValue.replaceAll('_', '\\_');
+    }
+    default: {
+      return comparisonValue;
+    }
+  }
+}
+
 function addWhereClause(connection, baseQuery, where) {
   if (!where) {
     return baseQuery;
@@ -608,7 +626,7 @@ function addWhereClause(connection, baseQuery, where) {
     const columnKey = getColSelector(connection, key);
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 
-    const { args = [comparator, comparisonValue] } = value;
+    const { args = [comparator, sanitizeComparisonValue(comparator, comparisonValue)] } = value;
     return querySoFar[comparisonType](columnSelector, ...args);
   }, baseQuery);
 }
