@@ -17,17 +17,17 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+CREATE SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
@@ -3849,11 +3849,459 @@ GRANT ALL ON SCHEMA public TO tupaia;
 
 
 --
--- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+-- Name: TABLE access_request; Type: ACL; Schema: public; Owner: -
 --
 
-CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
-   EXECUTE FUNCTION public.schema_change_notification();
+GRANT SELECT ON TABLE public.access_request TO tupaia_read;
+
+
+--
+-- Name: TABLE admin_panel_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.admin_panel_session TO tupaia_read;
+
+
+--
+-- Name: TABLE ancestor_descendant_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ancestor_descendant_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE answer; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.answer TO tupaia_read;
+
+
+--
+-- Name: TABLE api_client; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_client TO tupaia_read;
+
+
+--
+-- Name: TABLE api_request_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_request_log TO tupaia_read;
+
+
+--
+-- Name: TABLE clinic; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.clinic TO tupaia_read;
+
+
+--
+-- Name: TABLE comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.comment TO tupaia_read;
+
+
+--
+-- Name: TABLE country; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.country TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_item TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element_data_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element_data_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element_data_service; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element_data_service TO tupaia_read;
+
+
+--
+-- Name: TABLE data_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_service_entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_service_entity TO tupaia_read;
+
+
+--
+-- Name: TABLE data_service_sync_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_service_sync_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_table; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_table TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_instance; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_instance TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE disaster; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.disaster TO tupaia_read;
+
+
+--
+-- Name: TABLE "disasterEvent"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."disasterEvent" TO tupaia_read;
+
+
+--
+-- Name: TABLE entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_hierarchy; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_hierarchy TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE error_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.error_log TO tupaia_read;
+
+
+--
+-- Name: TABLE feed_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.feed_item TO tupaia_read;
+
+
+--
+-- Name: TABLE geographical_area; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geographical_area TO tupaia_read;
+
+
+--
+-- Name: TABLE indicator; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.indicator TO tupaia_read;
+
+
+--
+-- Name: TABLE legacy_report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.legacy_report TO tupaia_read;
+
+
+--
+-- Name: TABLE lesmis_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.lesmis_session TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_device; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_device TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.migrations TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE one_time_login; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.one_time_login TO tupaia_read;
+
+
+--
+-- Name: TABLE option; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option TO tupaia_read;
+
+
+--
+-- Name: TABLE option_set; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option_set TO tupaia_read;
+
+
+--
+-- Name: TABLE permission_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.permission_group TO tupaia_read;
+
+
+--
+-- Name: TABLE project; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.project TO tupaia_read;
+
+
+--
+-- Name: TABLE psss_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.psss_session TO tupaia_read;
+
+
+--
+-- Name: TABLE question; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.question TO tupaia_read;
+
+
+--
+-- Name: TABLE refresh_token; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.refresh_token TO tupaia_read;
+
+
+--
+-- Name: TABLE report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.report TO tupaia_read;
+
+
+--
+-- Name: TABLE setting; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.setting TO tupaia_read;
+
+
+--
+-- Name: TABLE superset_instance; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.superset_instance TO tupaia_read;
+
+
+--
+-- Name: TABLE survey; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_group TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response_comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response_comment TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen_component; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen_component TO tupaia_read;
+
+
+--
+-- Name: TABLE sync_group_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.sync_group_log TO tupaia_read;
+
+
+--
+-- Name: TABLE "userSession"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."userSession" TO tupaia_read;
+
+
+--
+-- Name: TABLE user_account; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_account TO tupaia_read;
+
+
+--
+-- Name: TABLE user_entity_permission; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_entity_permission TO tupaia_read;
+
+
+--
+-- Name: TABLE user_favourite_dashboard_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_favourite_dashboard_item TO tupaia_read;
+
+
+--
+-- Name: TABLE permissions_based_meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.permissions_based_meditrak_sync_queue TO tupaia_read;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public REVOKE ALL ON TABLES  FROM tupaia;
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES  TO tupaia_read;
 
 
 --
@@ -5473,6 +5921,13 @@ ALTER TABLE ONLY public.migrations
     ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
 
 
+
+
+--
+-- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.migrations TO tupaia_read;
 
 
 --
