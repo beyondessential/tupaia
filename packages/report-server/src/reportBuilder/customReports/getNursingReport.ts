@@ -6,7 +6,7 @@
 import { DhisApi } from '@tupaia/dhis-api';
 import { FetchReportQuery } from '../../types';
 import { ReqContext } from '../context';
-import SURVEYS from './data/palauNursingSurveyMetadata.json';
+import { readNursingMetadataFile } from './readNursingMetadataFile';
 
 interface Surveys {
   [dataSetCode: string]: SurveyMetadata;
@@ -16,8 +16,6 @@ interface SurveyMetadata {
   codesToName: Record<string, string>;
   codesUsingCategories: string[];
 }
-
-const surveys: Surveys = SURVEYS;
 
 const getCodesAndIds = async (dhisApi: DhisApi, ids: string[], type: string) => {
   const results = await dhisApi.getRecords({
@@ -56,7 +54,12 @@ const getDictionary = async (dhisApi: DhisApi, data: Record<string, string>[]) =
   };
 };
 
-const getDataElementName = (code: string, category: string, dataSetCode: string) => {
+const getDataElementName = (
+  code: string,
+  category: string,
+  dataSetCode: string,
+  surveys: Surveys,
+) => {
   const { codesToName } = surveys[dataSetCode as keyof typeof surveys];
 
   const { codesUsingCategories: rawJson } = surveys[dataSetCode as keyof typeof surveys];
@@ -109,7 +112,7 @@ export const getNursingReport = async (
     aggregationType,
     aggregationConfig,
   );
-
+  const surveys: Surveys = await readNursingMetadataFile();
   const dictionary = await getDictionary(dhisApi, dataValues);
 
   const initialValue: Record<string, string>[] = [];
@@ -125,7 +128,15 @@ export const getNursingReport = async (
 
     const dataElementCode = dictionary.dataElements[dataElementId];
     const dataElementCategory = dictionary.categories[categoryId];
-    const dataElement = getDataElementName(dataElementCode, dataElementCategory, dataSetCode);
+    const dataElement = getDataElementName(
+      dataElementCode,
+      dataElementCategory,
+      dataSetCode,
+      surveys,
+    );
+    if (!dataElement) {
+      return updatedResults;
+    }
     const organisationUnitCode = dictionary.orgUnits[organisationUnitId];
     const organisationUnitName = getFacilityName(organisationUnitCode, facilities);
 
@@ -153,6 +164,6 @@ export const getNursingReport = async (
   const columns = Object.values(codesToName).map(value => {
     return { key: value, title: value };
   });
-  console.log(rows);
+
   return { columns, rows };
 };

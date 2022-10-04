@@ -21,11 +21,11 @@ const mockDataValues = [
   {
     organisationUnit: 'ORG1',
     dataElement: 'DE1',
-    period: '20220131',
+    period: '20220611',
     orgUnit: 'ORG1',
     categoryOptionCombo: 'CAT1',
     attributeOptionCombo: 'HllvX50cXC0',
-    value: '5',
+    value: '2022-01-31',
     storedBy: 'Superman',
     created: '2022-06-11T04:57:49.000+0000',
     lastUpdated: '2022-06-11T04:57:49.000+0000',
@@ -34,11 +34,11 @@ const mockDataValues = [
   {
     organisationUnit: 'ORG1',
     dataElement: 'DE2',
-    period: '20220131',
+    period: '20220611',
     orgUnit: 'ORG1',
     categoryOptionCombo: 'CAT1',
     attributeOptionCombo: 'HllvX50cXC0',
-    value: '2022-01-31',
+    value: '5',
     storedBy: 'Superman',
     created: '2022-06-11T04:57:49.000+0000',
     lastUpdated: '2022-06-11T04:57:49.000+0000',
@@ -77,6 +77,20 @@ jest.mock('@tupaia/dhis-api', () => {
           return recordsWithRequestedFields;
         }),
       };
+    }),
+  };
+});
+
+jest.mock('../../../reportBuilder/customReports/readNursingMetadataFile.ts', () => {
+  return {
+    readNursingMetadataFile: jest.fn().mockReturnValue({
+      PW_SW01: {
+        codesUsingCategories: ['TEST_CAT'],
+        codesToName: {
+          PW_SW01SurveyDate: 'Date of report',
+          PW_SW01_5_PW_SW01_6: 'Regular admissions',
+        },
+      },
     }),
   };
 });
@@ -128,12 +142,37 @@ describe('palauNursingSurgicalWardReport', () => {
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
   };
 
-  it('does something', async () => {
+  it('returns rows and columns', async () => {
     const results = await palauNursingSurgicalWardReport(reqContext, {
       organisationUnitCodes: ['PW'],
       hierarchy: 'test_hierarchy',
     });
 
     expect(Object.keys(results)).toEqual(expect.arrayContaining(['columns', 'rows']));
+  });
+
+  it('returns data', async () => {
+    const expectedResults = {
+      columns: [
+        { key: 'Date of report', title: 'Date of report' },
+        { key: 'Regular admissions', title: 'Regular admissions' },
+      ],
+      rows: [
+        {
+          'Date of report': '2022-01-31',
+          'Facility code': 'PW_Facility',
+          'Facility name': 'Palau Facility 1',
+          period: '20220611',
+          'Regular admissions': '5',
+        },
+      ],
+    };
+
+    const results = await palauNursingSurgicalWardReport(reqContext, {
+      organisationUnitCodes: ['PW'],
+      hierarchy: 'test_hierarchy',
+    });
+
+    expect(results).toMatchObject(expectedResults);
   });
 });

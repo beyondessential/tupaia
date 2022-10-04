@@ -11,6 +11,6 @@ export const palauNursingSurgicalWardReport = async (
   reqContext: ReqContext,
   query: FetchReportQuery,
 ) => {
-  const dataSetCode = 'SW01';
+  const dataSetCode = 'PW_SW01';
   return getNursingReport(reqContext, query, dataSetCode);
 };
