@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
--- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
+-- Dumped from database version 13.1
+-- Dumped by pg_dump version 13.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,17 +17,17 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+CREATE SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
@@ -49,6 +49,15 @@ CREATE TYPE public.approval_status AS ENUM (
 CREATE TYPE public.data_source_type AS ENUM (
     'dataElement',
     'dataGroup'
+);
+
+
+--
+-- Name: data_table_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.data_table_type AS ENUM (
+    'internal'
 );
 
 
@@ -100,7 +109,11 @@ CREATE TYPE public.entity_type AS ENUM (
     'sub_facility',
     'postcode',
     'household',
-    'larval_habitat'
+    'larval_habitat',
+    'local_government',
+    'medical_area',
+    'nursing_zone',
+    'fetp_graduate'
 );
 
 
@@ -137,7 +150,19 @@ CREATE TYPE public.service_type AS ENUM (
     'indicator',
     'weather',
     'kobo',
-    'data-lake'
+    'data-lake',
+    'superset'
+);
+
+
+--
+-- Name: sync_group_sync_status; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.sync_group_sync_status AS ENUM (
+    'IDLE',
+    'SYNCING',
+    'ERROR'
 );
 
 
@@ -169,104 +194,108 @@ CREATE TYPE public.verified_email AS ENUM (
 CREATE FUNCTION public.build_analytics_table(force boolean DEFAULT false) RETURNS void
     LANGUAGE plpgsql
     AS $_X$
-    declare
-      tStartTime TIMESTAMP;
-      source_table TEXT;
-      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
-      pSqlStatement TEXT := '
-        SELECT
-          entity.code as entity_code,
-          entity.name as entity_name,
-          question.code as data_element_code,
-          survey.code as data_group_code,
-          survey_response.id as event_id,
-          CASE
-            WHEN question.type = ''Binary'' OR question.type = ''Checkbox''
-            THEN CASE
-              WHEN answer.text = ''Yes'' THEN ''1''
-              ELSE ''0''
-            END
-            ELSE answer.text
-          END as value,
-          question.type as type,
-          to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
-          concat(
-            extract (isoyear from survey_response.data_time),
-            ''W'',
-            to_char(extract (week from survey_response.data_time), ''FM09''))
-          as "week_period",
-          to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
-          to_char(survey_response.data_time, ''YYYY'') as "year_period",
-          survey_response.data_time as "date"
-        FROM
-          survey_response
-        INNER JOIN
-          answer ON answer.survey_response_id = survey_response.id
-        INNER JOIN
-          entity ON entity.id = survey_response.entity_id
-        INNER JOIN
-          survey ON survey.id = survey_response.survey_id
-        INNER JOIN
-          question ON question.id = answer.question_id
-        INNER JOIN
-          data_source ON data_source.id = question.data_source_id
-        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
+declare
+  tStartTime TIMESTAMP;
+  source_table TEXT;
+  source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
+  pSqlStatement TEXT := '
+    SELECT
+      entity.code as entity_code,
+      entity.name as entity_name,
+      question.code as data_element_code,
+      survey.code as data_group_code,
+      survey_response.id as event_id,
+      CASE
+        WHEN question.type = ''Binary'' OR question.type = ''Checkbox''
+        THEN CASE
+          WHEN answer.text = ''Yes'' THEN ''1''
+          ELSE ''0''
+        END
+        WHEN question.type = ''Entity''
+        THEN answer_entity.name
+        ELSE answer.text
+      END as value,
+      question.type as type,
+      to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
+      concat(
+        extract (isoyear from survey_response.data_time),
+        ''W'',
+        to_char(extract (week from survey_response.data_time), ''FM09''))
+      as "week_period",
+      to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
+      to_char(survey_response.data_time, ''YYYY'') as "year_period",
+      survey_response.data_time as "date"
+    FROM
+      survey_response
+    INNER JOIN
+      answer ON answer.survey_response_id = survey_response.id
+    INNER JOIN
+      entity ON entity.id = survey_response.entity_id
+    LEFT JOIN
+      entity answer_entity ON answer_entity.id = answer.text
+    INNER JOIN
+      survey ON survey.id = survey_response.survey_id
+    INNER JOIN
+      question ON question.id = answer.question_id
+    INNER JOIN
+      data_element ON data_element.id = question.data_element_id
+    WHERE data_element.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
 
-    begin
-      RAISE NOTICE 'Creating Materialized View Logs...';
+begin
+  RAISE NOTICE 'Creating Materialized View Logs...';
 
-      FOREACH source_table IN ARRAY source_tables_array LOOP
-        IF (SELECT NOT EXISTS (
-          SELECT FROM pg_tables
-          WHERE schemaname = 'public'
-          AND tablename   = 'log$_' || source_table
-        ))
-        THEN
-          EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
-          tStartTime := clock_timestamp();
-          PERFORM mv$createMaterializedViewlog(source_table, 'public');
-          RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-          EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
-        ELSE
-          RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
-        END IF;
-      END LOOP;
+  FOREACH source_table IN ARRAY source_tables_array LOOP
+    IF (SELECT NOT EXISTS (
+      SELECT FROM pg_tables
+      WHERE schemaname = 'public'
+      AND tablename   = 'log$_' || source_table
+    ))
+    THEN
+      EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+      tStartTime := clock_timestamp();
+      PERFORM mv$createMaterializedViewLog(source_table, 'public');
+      RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+      EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+    ELSE
+      RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
+    END IF;
+  END LOOP;
 
 
-      RAISE NOTICE 'Creating analytics materialized view...';
-      IF (SELECT NOT EXISTS (
-        SELECT FROM pg_tables
-        WHERE schemaname = 'public'
-        AND tablename   = 'analytics'
-      ))
-      THEN
-        tStartTime := clock_timestamp();
-        PERFORM mv$createMaterializedView(
-            pViewName           => 'analytics',
-            pSelectStatement    =>  pSqlStatement,
-            pOwner              => 'public',
-            pFastRefresh        =>  TRUE
-        );
-        RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
-      ELSE
-        IF (force)
-        THEN
-        RAISE NOTICE 'Force rebuilding analytics table';
-          tStartTime := clock_timestamp();
-          PERFORM mv$createMaterializedView(
-              pViewName           => 'analytics_tmp',
-              pSelectStatement    =>  pSqlStatement,
-              pOwner              => 'public',
-              pFastRefresh        =>  TRUE
-          );
-          RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
-          PERFORM mv$removeMaterializedView('analytics', 'public');
-          PERFORM mv$renameMaterializedView('analytics_tmp', 'analytics', 'public');
-        ELSE
-          RAISE NOTICE 'Analytics Materialized View already exists, skipping';
-        END IF;
-      END IF;
-    end $_X$;
+  RAISE NOTICE 'Creating analytics materialized view...';
+  IF (SELECT NOT EXISTS (
+    SELECT FROM pg_tables
+    WHERE schemaname = 'public'
+    AND tablename   = 'analytics'
+  ))
+  THEN
+    tStartTime := clock_timestamp();
+    PERFORM mv$createMaterializedView(
+        pViewName           => 'analytics',
+        pSelectStatement    =>  pSqlStatement,
+        pOwner              => 'public',
+        pFastRefresh        =>  TRUE
+    );
+    RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+  ELSE
+    IF (force)
+    THEN
+    RAISE NOTICE 'Force rebuilding analytics table';
+      tStartTime := clock_timestamp();
+      PERFORM mv$createMaterializedView(
+          pViewName           => 'analytics_tmp',
+          pSelectStatement    =>  pSqlStatement,
+          pOwner              => 'public',
+          pFastRefresh        =>  TRUE
+      );
+      RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+      PERFORM mv$removeMaterializedView('analytics', 'public');
+      PERFORM mv$renameMaterializedView('analytics_tmp', 'analytics', 'public');
+    ELSE
+      RAISE NOTICE 'Analytics Materialized View already exists, skipping';
+    END IF;
+  END IF;
+end $_X$;
 
 
 --
@@ -391,39 +420,39 @@ $_X$;
 CREATE FUNCTION public.drop_analytics_log_tables() RETURNS void
     LANGUAGE plpgsql
     AS $_X$
-    declare
-      tStartTime TIMESTAMP;
-      source_table TEXT;
-      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
-    
-    begin
-      IF (SELECT EXISTS (
-        SELECT FROM pg_tables
-        WHERE schemaname = 'public'
-        AND tablename   = 'analytics'
-      ))
-      THEN
-        RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
-      ELSE
-        RAISE NOTICE 'Dropping Materialized View Logs...';
-        FOREACH source_table IN ARRAY source_tables_array LOOP
-          IF (SELECT EXISTS (
-            SELECT FROM pg_tables
-            WHERE schemaname = 'public'
-            AND tablename   = 'log$_' || source_table
-          ))
-          THEN
-            EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
-            tStartTime := clock_timestamp();
-            PERFORM mv$removeMaterializedViewLog(source_table, 'public');
-            RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-            EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
-          ELSE
-            RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
-          END IF;
-        END LOOP;
-      END IF;
-    end $_X$;
+  declare
+    tStartTime TIMESTAMP;
+    source_table TEXT;
+    source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
+  
+  begin
+    IF (SELECT EXISTS (
+      SELECT FROM pg_tables
+      WHERE schemaname = 'public'
+      AND tablename   = 'analytics'
+    ))
+    THEN
+      RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
+    ELSE
+      RAISE NOTICE 'Dropping Materialized View Logs...';
+      FOREACH source_table IN ARRAY source_tables_array LOOP
+        IF (SELECT EXISTS (
+          SELECT FROM pg_tables
+          WHERE schemaname = 'public'
+          AND tablename   = 'log$_' || source_table
+        ))
+        THEN
+          EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+          tStartTime := clock_timestamp();
+          PERFORM mv$removeMaterializedViewLog(source_table, 'public');
+          RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+          EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+        ELSE
+          RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
+        END IF;
+      END LOOP;
+    END IF;
+  end $_X$;
 
 
 --
@@ -690,6 +719,16 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 
 
 --
+-- Name: array_concat_agg(anyarray); Type: AGGREGATE; Schema: public; Owner: -
+--
+
+CREATE AGGREGATE public.array_concat_agg(anyarray) (
+    SFUNC = array_cat,
+    STYPE = anyarray
+);
+
+
+--
 -- Name: most_recent(text, timestamp without time zone); Type: AGGREGATE; Schema: public; Owner: -
 --
 
@@ -788,7 +827,9 @@ CREATE TABLE public.api_request_log (
     request_time timestamp without time zone DEFAULT now(),
     query jsonb,
     metadata jsonb DEFAULT '{}'::jsonb,
-    refresh_token text
+    refresh_token text,
+    api text NOT NULL,
+    method text
 );
 
 
@@ -890,6 +931,20 @@ CREATE TABLE public.dashboard_relation (
 
 
 --
+-- Name: data_element; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_element (
+    id text NOT NULL,
+    code text NOT NULL,
+    service_type public.service_type NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    permission_groups text[] DEFAULT '{}'::text[] NOT NULL,
+    CONSTRAINT valid_data_service_config CHECK (((service_type <> 'dhis'::public.service_type) OR ((config ->> 'dhisInstanceCode'::text) IS NOT NULL)))
+);
+
+
+--
 -- Name: data_element_data_group; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -897,6 +952,33 @@ CREATE TABLE public.data_element_data_group (
     id text NOT NULL,
     data_element_id text NOT NULL,
     data_group_id text NOT NULL
+);
+
+
+--
+-- Name: data_element_data_service; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_element_data_service (
+    id text NOT NULL,
+    data_element_code text NOT NULL,
+    country_code text NOT NULL,
+    service_type public.service_type NOT NULL,
+    service_config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT valid_data_service_config CHECK (((service_type <> 'dhis'::public.service_type) OR ((service_config ->> 'dhisInstanceCode'::text) IS NOT NULL)))
+);
+
+
+--
+-- Name: data_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_group (
+    id text NOT NULL,
+    code text NOT NULL,
+    service_type public.service_type NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT valid_data_service_config CHECK (((service_type <> 'dhis'::public.service_type) OR ((config ->> 'dhisInstanceCode'::text) IS NOT NULL)))
 );
 
 
@@ -919,20 +1001,36 @@ CREATE TABLE public.data_service_sync_group (
     id text NOT NULL,
     code text NOT NULL,
     service_type public.service_type NOT NULL,
-    config jsonb NOT NULL
+    config jsonb NOT NULL,
+    data_group_code text NOT NULL,
+    sync_cursor text DEFAULT '1970-01-01T00:00:00.000Z'::text,
+    sync_status public.sync_group_sync_status DEFAULT 'IDLE'::public.sync_group_sync_status
 );
 
 
 --
--- Name: data_source; Type: TABLE; Schema: public; Owner: -
+-- Name: data_table; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.data_source (
+CREATE TABLE public.data_table (
     id text NOT NULL,
     code text NOT NULL,
-    type public.data_source_type NOT NULL,
-    service_type public.service_type NOT NULL,
-    config jsonb DEFAULT '{}'::jsonb NOT NULL
+    description text,
+    type public.data_table_type NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    permission_groups text[] DEFAULT '{}'::text[] NOT NULL
+);
+
+
+--
+-- Name: dhis_instance; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dhis_instance (
+    id text NOT NULL,
+    code text NOT NULL,
+    readonly boolean NOT NULL,
+    config jsonb NOT NULL
 );
 
 
@@ -1373,8 +1471,8 @@ CREATE TABLE public.question (
     detail text,
     option_set_id character varying,
     hook text,
-    data_source_id text,
-    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['DateOfData'::text, 'Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
+    data_element_id text,
+    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['DateOfData'::text, 'Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_element_id IS NOT NULL)))
 );
 
 
@@ -1416,21 +1514,32 @@ CREATE TABLE public.setting (
 
 
 --
+-- Name: superset_instance; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.superset_instance (
+    id text NOT NULL,
+    code text NOT NULL,
+    config jsonb NOT NULL
+);
+
+
+--
 -- Name: survey; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.survey (
     id text NOT NULL,
     name text NOT NULL,
-    code text NOT NULL,
+    code character varying(30) NOT NULL,
     permission_group_id text,
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
     survey_group_id text,
     integration_metadata jsonb DEFAULT '{}'::jsonb,
-    data_source_id text NOT NULL,
     period_granularity public.period_granularity,
-    requires_approval boolean DEFAULT false
+    requires_approval boolean DEFAULT false,
+    data_group_id text
 );
 
 
@@ -1506,25 +1615,12 @@ CREATE TABLE public.survey_screen_component (
 
 
 --
--- Name: sync_service; Type: TABLE; Schema: public; Owner: -
+-- Name: sync_group_log; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.sync_service (
+CREATE TABLE public.sync_group_log (
     id text NOT NULL,
-    code text NOT NULL,
-    service_type public.service_type NOT NULL,
-    sync_cursor text NOT NULL,
-    config jsonb NOT NULL
-);
-
-
---
--- Name: sync_service_log; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.sync_service_log (
-    id text NOT NULL,
-    service_code text NOT NULL,
+    sync_group_code text NOT NULL,
     service_type public.service_type NOT NULL,
     log_message text NOT NULL,
     "timestamp" timestamp without time zone DEFAULT timezone('UTC'::text, now())
@@ -1580,10 +1676,83 @@ CREATE TABLE public.user_entity_permission (
 
 
 --
+-- Name: user_favourite_dashboard_item; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_favourite_dashboard_item (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    dashboard_item_id text NOT NULL
+);
+
+
+--
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: meditrak_sync_queue meditrak_sync_queue_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.meditrak_sync_queue
+    ADD CONSTRAINT meditrak_sync_queue_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: permissions_based_meditrak_sync_queue; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW public.permissions_based_meditrak_sync_queue AS
+ SELECT msq.id,
+    msq.type,
+    msq.record_type,
+    msq.record_id,
+    msq.change_time,
+    max(e.type) AS entity_type,
+    COALESCE(NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(co.id)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(e_co.id)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(c.country_id)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(ga.country_id)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(s.country_ids)) AS unnest), '{}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(sg_s.country_ids)) AS unnest), '{}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(ss_s.country_ids)) AS unnest), '{}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(ssc_ss_s.country_ids)) AS unnest), '{}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(q_ssc_ss_s.country_ids)) AS unnest), '{}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(os_q_ssc_ss_s.country_ids)) AS unnest), '{}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(public.array_concat_agg(o_os_q_ssc_ss_s.country_ids)) AS unnest), '{}'::text[])) AS country_ids,
+    COALESCE(NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(s_pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(sg_s_pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(ss_s_pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(ssc_ss_s_pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(q_ssc_ss_s_pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(os_q_ssc_ss_s_pg.name)) AS unnest), '{NULL}'::text[]), NULLIF(ARRAY( SELECT DISTINCT unnest(array_agg(o_os_q_ssc_ss_s_pg.name)) AS unnest), '{NULL}'::text[])) AS permission_groups
+   FROM ((((((((((((((((((((((((((((((((((((public.meditrak_sync_queue msq
+     LEFT JOIN public.country co ON ((msq.record_id = co.id)))
+     LEFT JOIN public.entity e ON ((msq.record_id = (e.id)::text)))
+     LEFT JOIN public.country e_co ON ((e_co.code = (e.country_code)::text)))
+     LEFT JOIN public.clinic c ON ((msq.record_id = c.id)))
+     LEFT JOIN public.geographical_area ga ON ((msq.record_id = ga.id)))
+     LEFT JOIN public.permission_group pg ON ((msq.record_id = pg.id)))
+     LEFT JOIN public.survey s ON ((msq.record_id = s.id)))
+     LEFT JOIN public.permission_group s_pg ON ((s.permission_group_id = s_pg.id)))
+     LEFT JOIN public.survey_group sg ON ((msq.record_id = sg.id)))
+     LEFT JOIN public.survey sg_s ON ((sg_s.survey_group_id = sg.id)))
+     LEFT JOIN public.permission_group sg_s_pg ON ((sg_s.permission_group_id = sg_s_pg.id)))
+     LEFT JOIN public.survey_screen ss ON ((msq.record_id = ss.id)))
+     LEFT JOIN public.survey ss_s ON ((ss.survey_id = ss_s.id)))
+     LEFT JOIN public.permission_group ss_s_pg ON ((ss_s.permission_group_id = ss_s_pg.id)))
+     LEFT JOIN public.survey_screen_component ssc ON ((msq.record_id = ssc.id)))
+     LEFT JOIN public.survey_screen ssc_ss ON ((ssc.screen_id = ssc_ss.id)))
+     LEFT JOIN public.survey ssc_ss_s ON ((ssc_ss.survey_id = ssc_ss_s.id)))
+     LEFT JOIN public.permission_group ssc_ss_s_pg ON ((ssc_ss_s.permission_group_id = ssc_ss_s_pg.id)))
+     LEFT JOIN public.question q ON ((msq.record_id = q.id)))
+     LEFT JOIN public.survey_screen_component q_ssc ON ((q_ssc.question_id = q.id)))
+     LEFT JOIN public.survey_screen q_ssc_ss ON ((q_ssc.screen_id = q_ssc_ss.id)))
+     LEFT JOIN public.survey q_ssc_ss_s ON ((q_ssc_ss.survey_id = q_ssc_ss_s.id)))
+     LEFT JOIN public.permission_group q_ssc_ss_s_pg ON ((q_ssc_ss_s.permission_group_id = q_ssc_ss_s_pg.id)))
+     LEFT JOIN public.option_set os ON ((msq.record_id = os.id)))
+     LEFT JOIN public.question os_q ON (((os_q.option_set_id)::text = os.id)))
+     LEFT JOIN public.survey_screen_component os_q_ssc ON ((os_q_ssc.question_id = os_q.id)))
+     LEFT JOIN public.survey_screen os_q_ssc_ss ON ((os_q_ssc.screen_id = os_q_ssc_ss.id)))
+     LEFT JOIN public.survey os_q_ssc_ss_s ON ((os_q_ssc_ss.survey_id = os_q_ssc_ss_s.id)))
+     LEFT JOIN public.permission_group os_q_ssc_ss_s_pg ON ((os_q_ssc_ss_s.permission_group_id = os_q_ssc_ss_s_pg.id)))
+     LEFT JOIN public.option o ON ((msq.record_id = o.id)))
+     LEFT JOIN public.option_set o_os ON ((o.option_set_id = o_os.id)))
+     LEFT JOIN public.question o_os_q ON (((o_os_q.option_set_id)::text = o_os.id)))
+     LEFT JOIN public.survey_screen_component o_os_q_ssc ON ((o_os_q_ssc.question_id = o_os_q.id)))
+     LEFT JOIN public.survey_screen o_os_q_ssc_ss ON ((o_os_q_ssc.screen_id = o_os_q_ssc_ss.id)))
+     LEFT JOIN public.survey o_os_q_ssc_ss_s ON ((o_os_q_ssc_ss.survey_id = o_os_q_ssc_ss_s.id)))
+     LEFT JOIN public.permission_group o_os_q_ssc_ss_s_pg ON ((o_os_q_ssc_ss_s.permission_group_id = o_os_q_ssc_ss_s_pg.id)))
+  GROUP BY msq.id
+  WITH NO DATA;
 
 
 --
@@ -1755,6 +1924,22 @@ ALTER TABLE ONLY public.data_element_data_group
 
 
 --
+-- Name: data_element_data_service data_element_data_service_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_service
+    ADD CONSTRAINT data_element_data_service_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_group data_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_group
+    ADD CONSTRAINT data_group_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: data_service_entity data_service_entity_entity_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1787,19 +1972,43 @@ ALTER TABLE ONLY public.data_service_sync_group
 
 
 --
--- Name: data_source data_source_code_type_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: data_element data_source_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.data_source
-    ADD CONSTRAINT data_source_code_type_key UNIQUE (code, type);
-
-
---
--- Name: data_source data_source_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_source
+ALTER TABLE ONLY public.data_element
     ADD CONSTRAINT data_source_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_table data_table_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_table
+    ADD CONSTRAINT data_table_code_key UNIQUE (code);
+
+
+--
+-- Name: data_table data_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_table
+    ADD CONSTRAINT data_table_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dhis_instance dhis_instance_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dhis_instance
+    ADD CONSTRAINT dhis_instance_code_key UNIQUE (code);
+
+
+--
+-- Name: dhis_instance dhis_instance_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dhis_instance
+    ADD CONSTRAINT dhis_instance_pkey PRIMARY KEY (id);
 
 
 --
@@ -2027,14 +2236,6 @@ ALTER TABLE ONLY public.meditrak_sync_queue
 
 
 --
--- Name: meditrak_sync_queue meditrak_sync_queue_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.meditrak_sync_queue
-    ADD CONSTRAINT meditrak_sync_queue_pkey PRIMARY KEY (id);
-
-
---
 -- Name: meditrak_sync_queue meditrak_sync_queue_record_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2219,6 +2420,22 @@ ALTER TABLE ONLY public.setting
 
 
 --
+-- Name: superset_instance superset_instance_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.superset_instance
+    ADD CONSTRAINT superset_instance_code_key UNIQUE (code);
+
+
+--
+-- Name: superset_instance superset_instance_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.superset_instance
+    ADD CONSTRAINT superset_instance_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: survey survey_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2291,27 +2508,11 @@ ALTER TABLE ONLY public.survey_screen
 
 
 --
--- Name: sync_service sync_service_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sync_group_log sync_service_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.sync_service
-    ADD CONSTRAINT sync_service_code_key UNIQUE (code);
-
-
---
--- Name: sync_service_log sync_service_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sync_service_log
+ALTER TABLE ONLY public.sync_group_log
     ADD CONSTRAINT sync_service_log_pkey PRIMARY KEY (id);
-
-
---
--- Name: sync_service sync_service_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sync_service
-    ADD CONSTRAINT sync_service_pkey PRIMARY KEY (id);
 
 
 --
@@ -2352,6 +2553,22 @@ ALTER TABLE ONLY public.user_account
 
 ALTER TABLE ONLY public.user_entity_permission
     ADD CONSTRAINT user_entity_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_favourite_dashboard_item user_favourite_dashboard_item_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_favourite_dashboard_item
+    ADD CONSTRAINT user_favourite_dashboard_item_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_favourite_dashboard_item user_favourite_dashboard_item_user_id_dashboard_item_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_favourite_dashboard_item
+    ADD CONSTRAINT user_favourite_dashboard_item_user_id_dashboard_item_id_key UNIQUE (user_id, dashboard_item_id);
 
 
 --
@@ -2502,6 +2719,13 @@ CREATE INDEX permission_group_parent_id_idx ON public.permission_group USING btr
 
 
 --
+-- Name: permissions_based_meditrak_sync_queue_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX permissions_based_meditrak_sync_queue_id_idx ON public.permissions_based_meditrak_sync_queue USING btree (id);
+
+
+--
 -- Name: question_code_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2565,10 +2789,31 @@ CREATE INDEX survey_permission_group_id_idx ON public.survey USING btree (permis
 
 
 --
+-- Name: survey_response_data_time_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX survey_response_data_time_idx ON public.survey_response USING btree (data_time DESC);
+
+
+--
 -- Name: survey_response_end_time_idx; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX survey_response_end_time_idx ON public.survey_response USING btree (end_time);
+
+
+--
+-- Name: survey_response_entity_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX survey_response_entity_id_idx ON public.survey_response USING btree (entity_id);
+
+
+--
+-- Name: survey_response_outdated_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX survey_response_outdated_id_idx ON public.survey_response USING btree (outdated);
 
 
 --
@@ -2684,6 +2929,13 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
+-- Name: user_favourite_dashboard_item_user_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX user_favourite_dashboard_item_user_id_idx ON public.user_favourite_dashboard_item USING btree (user_id);
+
+
+--
 -- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2761,6 +3013,27 @@ CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE 
 
 
 --
+-- Name: data_element_data_service data_element_data_service_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_element_data_service_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_service FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: data_element data_element_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_element_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: data_group data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_group FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
 -- Name: data_service_entity data_service_entity_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2768,17 +3041,17 @@ CREATE TRIGGER data_service_entity_trigger AFTER INSERT OR DELETE OR UPDATE ON p
 
 
 --
--- Name: data_service_sync_group data_service_sync_group_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: data_table data_table_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_service_sync_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_sync_group FOR EACH ROW EXECUTE FUNCTION public.notification();
+CREATE TRIGGER data_table_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_table FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
--- Name: data_source data_source_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: dhis_instance dhis_instance_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE FUNCTION public.notification();
+CREATE TRIGGER dhis_instance_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dhis_instance FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -2950,17 +3223,17 @@ CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.
 
 
 --
--- Name: report report_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER report_trigger AFTER INSERT OR DELETE OR UPDATE ON public.report FOR EACH ROW EXECUTE FUNCTION public.notification();
-
-
---
 -- Name: setting setting_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: superset_instance superset_instance_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER superset_instance_trigger AFTER INSERT OR DELETE OR UPDATE ON public.superset_instance FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3006,17 +3279,17 @@ CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey 
 
 
 --
--- Name: sync_service_log sync_service_log_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: sync_group_log sync_group_log_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER sync_service_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service_log FOR EACH ROW EXECUTE FUNCTION public.notification();
+CREATE TRIGGER sync_group_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_group_log FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
--- Name: sync_service sync_service_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: sync_group_log sync_service_log_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER sync_service_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service FOR EACH ROW EXECUTE FUNCTION public.notification();
+CREATE TRIGGER sync_service_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_group_log FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3031,6 +3304,13 @@ CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.u
 --
 
 CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: user_favourite_dashboard_item user_favourite_dashboard_item_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER user_favourite_dashboard_item_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_favourite_dashboard_item FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3182,15 +3462,15 @@ ALTER TABLE ONLY public.dashboard
 --
 
 ALTER TABLE ONLY public.data_element_data_group
-    ADD CONSTRAINT data_element_data_group_data_element_id_fk FOREIGN KEY (data_element_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT data_element_data_group_data_element_id_fk FOREIGN KEY (data_element_id) REFERENCES public.data_element(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: data_element_data_group data_element_data_group_data_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: data_element_data_group data_element_data_group_data_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.data_element_data_group
-    ADD CONSTRAINT data_element_data_group_data_group_id_fk FOREIGN KEY (data_group_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT data_element_data_group_data_group_id_fkey FOREIGN KEY (data_group_id) REFERENCES public.data_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -3342,7 +3622,7 @@ ALTER TABLE ONLY public.project
 --
 
 ALTER TABLE ONLY public.question
-    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_element(id);
 
 
 --
@@ -3378,11 +3658,11 @@ ALTER TABLE ONLY public.report
 
 
 --
--- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: survey survey_data_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.survey
-    ADD CONSTRAINT survey_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+    ADD CONSTRAINT survey_data_group_id_fkey FOREIGN KEY (data_group_id) REFERENCES public.data_group(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
@@ -3490,20 +3770,484 @@ ALTER TABLE ONLY public.user_entity_permission
 
 
 --
+-- Name: user_favourite_dashboard_item user_favourite_dashboard_item_dashboard_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_favourite_dashboard_item
+    ADD CONSTRAINT user_favourite_dashboard_item_dashboard_item_id_fkey FOREIGN KEY (dashboard_item_id) REFERENCES public.dashboard_item(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_favourite_dashboard_item user_favourite_dashboard_item_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_favourite_dashboard_item
+    ADD CONSTRAINT user_favourite_dashboard_item_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO tupaia;
-GRANT ALL ON SCHEMA public TO mvrefresh;
+GRANT USAGE ON SCHEMA public TO tupaia_read;
 
 
 --
--- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+-- Name: TABLE access_request; Type: ACL; Schema: public; Owner: -
 --
 
-CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
-   EXECUTE FUNCTION public.schema_change_notification();
+GRANT SELECT ON TABLE public.access_request TO tupaia_read;
+
+
+--
+-- Name: TABLE admin_panel_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.admin_panel_session TO tupaia_read;
+
+
+--
+-- Name: TABLE ancestor_descendant_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ancestor_descendant_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE answer; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.answer TO tupaia_read;
+
+
+--
+-- Name: TABLE api_client; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_client TO tupaia_read;
+
+
+--
+-- Name: TABLE api_request_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_request_log TO tupaia_read;
+
+
+--
+-- Name: TABLE clinic; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.clinic TO tupaia_read;
+
+
+--
+-- Name: TABLE comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.comment TO tupaia_read;
+
+
+--
+-- Name: TABLE country; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.country TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_item TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element_data_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element_data_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element_data_service; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element_data_service TO tupaia_read;
+
+
+--
+-- Name: TABLE data_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_service_entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_service_entity TO tupaia_read;
+
+
+--
+-- Name: TABLE data_service_sync_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_service_sync_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_table; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_table TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_instance; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_instance TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE disaster; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.disaster TO tupaia_read;
+
+
+--
+-- Name: TABLE "disasterEvent"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."disasterEvent" TO tupaia_read;
+
+
+--
+-- Name: TABLE entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_hierarchy; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_hierarchy TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE error_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.error_log TO tupaia_read;
+
+
+--
+-- Name: TABLE feed_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.feed_item TO tupaia_read;
+
+
+--
+-- Name: TABLE geographical_area; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geographical_area TO tupaia_read;
+
+
+--
+-- Name: TABLE indicator; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.indicator TO tupaia_read;
+
+
+--
+-- Name: TABLE legacy_report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.legacy_report TO tupaia_read;
+
+
+--
+-- Name: TABLE lesmis_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.lesmis_session TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_device; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_device TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.migrations TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE one_time_login; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.one_time_login TO tupaia_read;
+
+
+--
+-- Name: TABLE option; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option TO tupaia_read;
+
+
+--
+-- Name: TABLE option_set; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option_set TO tupaia_read;
+
+
+--
+-- Name: TABLE permission_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.permission_group TO tupaia_read;
+
+
+--
+-- Name: TABLE project; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.project TO tupaia_read;
+
+
+--
+-- Name: TABLE psss_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.psss_session TO tupaia_read;
+
+
+--
+-- Name: TABLE question; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.question TO tupaia_read;
+
+
+--
+-- Name: TABLE refresh_token; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.refresh_token TO tupaia_read;
+
+
+--
+-- Name: TABLE report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.report TO tupaia_read;
+
+
+--
+-- Name: TABLE setting; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.setting TO tupaia_read;
+
+
+--
+-- Name: TABLE superset_instance; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.superset_instance TO tupaia_read;
+
+
+--
+-- Name: TABLE survey; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_group TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response_comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response_comment TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen_component; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen_component TO tupaia_read;
+
+
+--
+-- Name: TABLE sync_group_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.sync_group_log TO tupaia_read;
+
+
+--
+-- Name: TABLE "userSession"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."userSession" TO tupaia_read;
+
+
+--
+-- Name: TABLE user_account; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_account TO tupaia_read;
+
+
+--
+-- Name: TABLE user_entity_permission; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_entity_permission TO tupaia_read;
+
+
+--
+-- Name: TABLE user_favourite_dashboard_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_favourite_dashboard_item TO tupaia_read;
+
+
+--
+-- Name: TABLE permissions_based_meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.permissions_based_meditrak_sync_queue TO tupaia_read;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public REVOKE ALL ON TABLES  FROM tupaia;
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES  TO tupaia_read;
 
 
 --
@@ -3514,8 +4258,8 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
--- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
+-- Dumped from database version 13.1
+-- Dumped by pg_dump version 13.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -4994,7 +5738,17 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1417	/20211123223023-DeleteAccidentalTestCountry-modifies-data	2021-11-29 21:50:09.257
 1418	/20211124053026-AddMapOverlayGroupForNcd-modifies-data	2021-11-29 21:50:09.325
 1475	/20220119005332-UpdateTongaCovidPermissions-modifies-data	2022-01-24 22:49:16.616
+1476	/20211121221500-AddApprovalColumns-modifies-schema	2022-02-01 22:42:00.939
+1477	/20211125004704-UpdateAnalyticsTableForApprovalStatus-modifies-schema	2022-02-01 23:21:28.055
+1478	/20220122223251-PenFaaSamoaAddVillageSchoolEntityRelations	2022-02-07 23:31:49.31
+1479	/20220201052718-DeleteDuplicateSamoaSchoolEntities-modifies-data	2022-02-07 23:31:50.897
+1480	/20220203064851-AddDataLakeServiceType-modifies-schema	2022-02-14 21:17:19.809
+1481	/20220208004345-RemoveApostropheFromAustralianEntityCode-modifies-data	2022-02-14 21:17:20.992
 1426	/20211125021151-ChangePermissionForPenFaa-modifies-data	2021-12-02 07:56:58.451
+1482	/20220210214956-UpdateCovid19SamoaVisualisationPermissions-modifies-data	2022-02-21 21:35:16.153
+1483	/20220210235957-UnfpaMarshallIslandsAddFacilities-modifies-data	2022-02-21 21:35:16.361
+1484	/20220218050602-AddCovidKiribatiProject-modifies-data	2022-02-21 21:35:16.438
+1485	/20220221232146-AddDataElementFromDataLakeToTupaia-modifies-data	2022-02-22 02:40:11.274
 1446	/20211126004049-AddPrimaryPlatformToUsersTable-modifies-schema	2021-12-06 21:03:19.715
 1447	/20211130040028-UpdateFacilityNamesSolomonIslands-modifies-data	2021-12-06 21:03:20.95
 1448	/20211201030947-SamoaDeleteDuplicateSchool-modifies-data	2021-12-06 21:03:22.821
@@ -5008,10 +5762,63 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1472	/20220107050226-AddFlutrackingPostcodeMapOverlayGroup-modifies-data	2022-01-20 01:09:45.154
 1473	/20220107061813-SetMapOverlayGroupCodeAsUniqueKey-modifies-schema	2022-01-20 01:09:45.35
 1474	/20220117011411-CovidSamoaDeleteOutdatedResponses-modifies-data	2022-01-20 04:20:56.496
-1476	/20211121221500-AddApprovalColumns-modifies-schema	2022-02-03 17:24:21.927
-1477	/20211125004704-UpdateAnalyticsTableForApprovalStatus-modifies-schema	2022-02-03 17:57:18.406
-1479	/20220203064851-AddDataLakeServiceType-modifies-schema	2022-02-04 11:44:29.918
-1480	/20220122223251-PenFaaSamoaAddVillageSchoolEntityRelations	2022-03-31 12:32:41.54
+1486	/20220222043511-UnfpaMarshallIslandsAddMissingFacility-modifies-data	2022-02-24 02:37:26.283
+1487	/20220223024636-AddVillageToCovidKiribatiProjectHeirarchy-modifies-data	2022-02-24 02:37:26.36
+1488	/20220223052221-DeleteInvalidKiribatiEntities-modifies-data	2022-02-25 00:06:04.303
+1489	/20220218015022-AddDataLakeDataElementsIntoTupaiaDataSource-modifies-data	2022-02-28 23:26:28.042
+1490	/20220303051055-AddPalauToPacmossiProject-modifies-data	2022-03-08 05:36:46.918
+1491	/20220309231120-AddCovidDataLakeDataElementsIntoTupaiaDataSource-modifies-data	2022-03-11 02:38:02.596
+1492	/20220211015354-AddConstraintSurveyCodeLength-modifies-schema	2022-04-05 00:53:00.916
+1493	/20220405032953-UpdateAnalyticsTableToHandleEntityTypeAnswer-modifies-schema	2022-04-20 01:39:22.307
+1494	/20220513032539-ReinstateMissingEntityAnswersC19TestRegistration-modifies-data	2022-05-15 23:25:48.911
+1495	/20220407063942-AddPngEntitiesAndUpdateRelationsForStrive-modifies-data	2022-05-17 06:29:13.096
+1496	/20220515045038-AddEntityTypeLocalGov-modifies-schema	2022-05-17 06:29:13.196
+1497	/20220516000532-AddProjectImpactHealth-modifies-data	2022-05-17 06:29:15.319
+1498	/20220518002531-AddFacilityEntitiesForImpactHealth-modifies-data	2022-05-18 08:16:07.198
+1499	/20220520063938-ExcludeBetioFromCovidKiribatiProject-modifies-data	2022-05-31 00:26:48.994
+1500	/20220523020255-AddEntityTypesMedicalAreaAndNursingZone-modifies-schema	2022-05-31 00:26:49.485
+1501	/20220523032848-AddProjectMassDrugAdministration-modifies-data	2022-05-31 00:26:50.943
+1502	/20220524011100-AddProjectCovidSolomonIslands-modifies-data	2022-05-31 00:26:51.768
+1503	/20220531030730-RerunMigrationToReinstateMissingEntityAnswersC19TestRegistration-modifies-data	2022-05-31 06:35:49.385
+1504	/20220520141500-SplitDataSourceTable-modifies-schema	2022-06-21 09:25:20.818
+1505	/20220520141600-AddPermissionGroupsToDataSources-modifies-schema	2022-06-21 09:25:32.591
+1506	/20220520141700-UpdateDataElementPermissionsFromVisuals-modifies-data	2022-06-21 09:50:16.716
+1507	/20220623233124-AddHouseholdsToEntityHierarchyCanonicalTypes-modifies-data	2022-06-24 04:20:10.871
+1508	/20220614225441-AddLoggingForAllServicesApiRequestLog-modifies-schema	2022-06-28 02:12:13.906
+1509	/20220615053401-AddSamoaToPacMossiProject-modifies-data	2022-06-28 02:12:14.954
+1510	/20220615070630-UpdateEntityRelationsForSamatauVillageSamoa-modifies-data	2022-06-28 02:12:15.098
+1511	/20220616025825-DeleteCovidMinisterViewDashboard-modifies-data	2022-06-28 02:12:15.401
+1512	/20220706235939-Maui4CleanupFijiFacilities-modifies-data	2022-07-12 02:20:22.644
+1513	/20220710234424-UpgradeFrontendExcludedTypesConfig-modifies-data	2022-07-13 04:52:02.235
+1514	/20220714065133-AddEntityImageHookToHouseholdQuestion-modifies-data	2022-07-15 05:04:53.185
+1515	/20220707245124-SetNiueParentToWorld-modifies-data	2022-07-26 00:50:03.693
+1516	/20220512232924-CreateDhisInstanceTable-modifies-schema	2022-08-09 02:38:49.574
+1517	/20220513014400-AddDhisInstances-modifies-data	2022-08-09 02:39:56.425
+1518	/20220718043838-UnfpaAddMHFacilityRelations-modifies-data	2022-08-09 02:40:01.644
+1519	/20220802000352-ChangeCovidSamoaProjectName-modifies-data	2022-08-09 02:40:03.279
+1520	/20220804020223-DeletePalauEnviroHealthEntities-modifies-data	2022-08-09 02:42:10.357
+1521	/20220622064208-AddArrayConcatAggregationFunction-modifies-schema	2022-08-24 02:09:49.684
+1522	/20220810013153-UpdateAllNonRegionalDhisInstanceConfigDataElementsAndGroups-modifies-data	2022-08-24 02:10:55.565
+1523	/20220630013151-LinkSyncServiceToSurvey-modifies-schema	2022-09-06 04:53:40.71
+1524	/20220811014552-CreateSupersetInstanceTable-modifies-schema	2022-09-06 04:53:43.076
+1525	/20220812055419-MoveSyncServiceToDataServiceSyncGroup-modifies-schema	2022-09-06 04:53:47.024
+1526	/20220819002505-AddEntityAttributeHookHouseholdHeadToQuestion-modifies-data	2022-09-06 04:53:51.026
+1527	/20220819055530-DeletePgFacilities-modifies-data	2022-09-06 04:56:17.807
+1528	/20220822035354-AddSyncStatusToSyncGroup-modifies-schema	2022-09-06 04:56:17.831
+1529	/20220901060328-AddProjectTuvaluEhealth-modifies-data	2022-09-06 04:56:21.444
+1530	/20220822025509-AddDataElementDataServiceTable-modifies-schema	2022-09-20 03:39:40.664
+1531	/20220823234713-AddUserFavouriteDashboardTable-modifies-schema	2022-09-20 03:39:41.726
+1532	/20220829032330-AddConstraintDataServiceConfig-modifies-schema	2022-09-20 03:39:44.744
+1533	/20220905010529-AddEntityTypeFETPGraduate-modifies-schema	2022-09-20 03:39:59.512
+1534	/20220905020318-UpdateIndividualEntityTypeToFetpGraduateForFETPProject-modifies-data	2022-09-20 03:40:29.937
+1535	/20220908010028-AddDataTableModel-modifies-schema	2022-09-20 03:40:31.698
+1536	/20220908043740-AddConstraintDataElementDataServiceTable-modifies-schema	2022-09-20 03:40:33.615
+1537	/20220908093833-DeletePermissionGroupDEehVectorSurveillance-modifies-data	2022-09-20 03:40:34.715
+1538	/20220909021244-AddAnalyticsDataTable-modifies-data	2022-09-20 03:40:35.997
+1539	/20220915060402-AddEventsDataTable-modifies-schema	2022-09-20 03:40:36.441
+1540	/20220920051046-RestoreEntityNameInAnalytics-modifies-schema	2022-10-03 22:05:15.3
+1541	/20220920062403-AddEntityIdIndexOnSurveyResponseTable-modifies-schema	2022-10-03 22:06:17.846
+1542	/20221004053241-UpdateDropAnalyticstableFn-modifies-schema	2022-10-04 17:17:05.075
 \.
 
 
@@ -5019,7 +5826,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1480, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1542, true);
 
 
 --
@@ -5028,6 +5835,13 @@ SELECT pg_catalog.setval('public.migrations_id_seq', 1480, true);
 
 ALTER TABLE ONLY public.migrations
     ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.migrations TO tupaia_read;
 
 
 --
