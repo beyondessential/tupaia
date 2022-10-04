@@ -25,7 +25,7 @@
     "refresh-database": "node ./scripts/refreshDatabase.js",
     "test": "yarn package:test:withdb  --runInBand",
     "test:coverage": "yarn test --coverage",
-    "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/__tests__/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/__tests__/testData/testDataDump.sql'",
+    "update-test-data": "./scripts/updateTestData.sh",
     "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh",
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh"
   },
