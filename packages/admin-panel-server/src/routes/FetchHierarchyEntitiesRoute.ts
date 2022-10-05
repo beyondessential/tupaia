@@ -20,12 +20,20 @@ export class FetchHierarchyEntitiesRoute extends Route<FetchHierarchyEntitiesReq
     const { entity: entityApi } = this.req.ctx.services;
     const { hierarchyName, entityCode } = this.req.params;
     const { fields, search } = this.req.query;
-    const queryParams: Record<string, string> = {};
+    const queryParams: {
+      fields?: string[];
+      filter?: Record<string, { comparator: string; comparisonValue: unknown }>;
+    } = {};
     if (fields) {
-      queryParams.fields = fields;
+      queryParams.fields = fields.split(',');
     }
     if (search) {
-      queryParams.filter = `name=@${search}`;
+      queryParams.filter = {
+        name: {
+          comparator: 'ilike',
+          comparisonValue: search,
+        },
+      };
     }
     const projectEntity = await entityApi.getEntities(hierarchyName, [entityCode], queryParams);
     const descendants = await entityApi.getDescendantsOfEntity(
