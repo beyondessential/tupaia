@@ -17,11 +17,6 @@ GET {{baseUrl}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarch
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch AggregationOptions schemas
-GET {{baseUrl}}/fetchAggregationOptions HTTP/1.1
-content-type: {{contentType}}
-Authorization: {{authorization}}
-
 ### Fetch transform schemas
 GET {{baseUrl}}/fetchTransformSchemas HTTP/1.1
 content-type: {{contentType}}

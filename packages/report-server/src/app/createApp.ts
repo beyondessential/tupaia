@@ -9,8 +9,6 @@ import { ForwardingAuthHandler } from '@tupaia/api-client';
 import {
   FetchReportRequest,
   FetchReportRoute,
-  FetchAggregationOptionsRequest,
-  FetchAggregationOptionsRoute,
   FetchTransformSchemaRoute,
   TestReportRequest,
   TestReportRoute,
@@ -25,10 +23,6 @@ export function createApp() {
     .useBasicBearerAuth()
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
-    .get<FetchAggregationOptionsRequest>(
-      'fetchAggregationOptions',
-      handleWith(FetchAggregationOptionsRoute),
-    )
     .get<FetchTransformSchemaRequest>(
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemaRoute),

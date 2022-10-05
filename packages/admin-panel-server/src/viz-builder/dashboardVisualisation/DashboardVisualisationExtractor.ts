@@ -89,21 +89,11 @@ export class DashboardVisualisationExtractor<
       };
     }
 
-    const { fetch: vizFetch, aggregate, transform } = validatedData;
-
-    const fetch = omitBy(
-      {
-        ...vizFetch,
-        aggregations: aggregate,
-      },
-      isNil,
-    );
+    const { transform } = validatedData;
 
     const output = getVizOutputConfig(previewMode, presentation);
-
     const config = omitBy(
       {
-        fetch,
         transform,
         output,
       },

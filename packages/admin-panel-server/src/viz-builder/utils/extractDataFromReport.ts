@@ -12,7 +12,6 @@ export const extractDataFromReport = (report: Report) => {
     return { customReport: config.customReport };
   }
 
-  const { fetch, transform } = config;
-  const { aggregations, ...restOfFetch } = fetch;
-  return { fetch: restOfFetch, aggregate: aggregations, transform };
+  const { transform } = config;
+  return { transform };
 };
