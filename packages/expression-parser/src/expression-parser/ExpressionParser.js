@@ -29,6 +29,9 @@ import { customNamespaces } from './customNamespaces';
  */
 
 const ADDITIONAL_ALPHA_CHARS = ['@'];
+const CUSTOM_CONFIG = {
+  matrix: 'Array', // Have mathjs treat array-like objects as plain arrays rather than mathjs Matrix
+};
 
 export class ExpressionParser {
   /**
@@ -36,7 +39,7 @@ export class ExpressionParser {
    * @param {Scope} customScope
    */
   constructor(customScope = new Map()) {
-    this.math = create(all);
+    this.math = create(all, CUSTOM_CONFIG);
 
     // Add additional alpha chars, to allow for usage in variable names
     const isAlphaOriginal = this.math.parse.isAlpha;
