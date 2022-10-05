@@ -4,12 +4,13 @@
  */
 
 import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
 
 describe('insertRows', () => {
   // SAME AS INSERT COLUMNS FUNCTIONALITY
-  it('can insert row with basic values', () => {
-    const transform = buildTransform([
+  it('can insert row with basic values', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -19,13 +20,13 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { number: 1, string: 'Hi', boolean: false }]),
     );
   });
 
-  it('can insert row with values from previous row', () => {
-    const transform = buildTransform([
+  it('can insert row with values from previous row', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -33,13 +34,13 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { dataElementValue: 4 }]),
     );
   });
 
-  it('can select a value from the row as a field name', () => {
-    const transform = buildTransform([
+  it('can select a value from the row as a field name', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -47,13 +48,13 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { BCD1: 4 }]),
     );
   });
 
-  it('can execute functions', () => {
-    const transform = buildTransform([
+  it('can execute functions', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -61,14 +62,14 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { period: '1st Jan 2020' }]),
     );
   });
 
   // SPECIFIC TO INSERT
-  it('can insert a single row at start', () => {
-    const transform = buildTransform([
+  it('can insert a single row at start', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         position: 'before',
@@ -80,7 +81,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { number: 1, string: 'Hi', boolean: false },
@@ -93,8 +94,8 @@ describe('insertRows', () => {
     );
   });
 
-  it('can insert a single row at end', () => {
-    const transform = buildTransform([
+  it('can insert a single row at end', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         where: '=eq(@index, length(@table))',
@@ -105,7 +106,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
@@ -115,8 +116,8 @@ describe('insertRows', () => {
     );
   });
 
-  it('can insert multiple rows', () => {
-    const transform = buildTransform([
+  it('can insert multiple rows', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -124,7 +125,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { dataElementValue: 4 },
@@ -136,8 +137,8 @@ describe('insertRows', () => {
     );
   });
 
-  it('can insert new rows before the relative row', () => {
-    const transform = buildTransform([
+  it('can insert new rows before the relative row', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -146,7 +147,7 @@ describe('insertRows', () => {
         position: 'before',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { dataElementValue: 4 },
@@ -161,8 +162,8 @@ describe('insertRows', () => {
     );
   });
 
-  it('can insert new rows at the beginning of the list', () => {
-    const transform = buildTransform([
+  it('can insert new rows at the beginning of the list', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -171,7 +172,7 @@ describe('insertRows', () => {
         position: 'start',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { dataElementValue: 4 },
@@ -186,8 +187,8 @@ describe('insertRows', () => {
     );
   });
 
-  it('can insert specific new rows using a where clause', () => {
-    const transform = buildTransform([
+  it('can insert specific new rows using a where clause', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         columns: {
@@ -197,7 +198,7 @@ describe('insertRows', () => {
         where: "=not(eq($period, '20200101'))",
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
@@ -209,8 +210,8 @@ describe('insertRows', () => {
   });
 
   // USE CASES
-  it('can sum all values into a new totals row', () => {
-    const transform = buildTransform([
+  it('can sum all values into a new totals row', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         where: '=eq(@index, length(@table))',
@@ -219,7 +220,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
@@ -229,8 +230,8 @@ describe('insertRows', () => {
     );
   });
 
-  it('compare adjacent rows to insert between', () => {
-    const transform = buildTransform([
+  it('compare adjacent rows to insert between', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertRows',
         where: '=not(eq($organisationUnit, @next.organisationUnit))',
@@ -242,7 +243,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 2 },

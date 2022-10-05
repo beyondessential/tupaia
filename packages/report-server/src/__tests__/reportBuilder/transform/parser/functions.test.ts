@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Context } from '../../../../reportBuilder/context';
 import { TransformParser } from '../../../../reportBuilder/transform/parser';
 
 describe('functions', () => {
@@ -85,12 +86,12 @@ describe('functions', () => {
       };
 
       it('converts given org unit id to code', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, context as Context);
         expect(parser.evaluate("=orgUnitIdToCode('1234')")).toBe('FJ');
       });
 
       it('returns undefined if the org unit id is not found', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, context as Context);
         expect(parser.evaluate("=orgUnitIdToCode('abcd')")).toBe(undefined);
       });
     });
@@ -104,12 +105,12 @@ describe('functions', () => {
       };
 
       it('converts given org unit code to name', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, context as Context);
         expect(parser.evaluate("=orgUnitCodeToName('TO')")).toBe('Tonga');
       });
 
       it('returns undefined if the org unit code is not found', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, context as Context);
         expect(parser.evaluate("=orgUnitCodeToName('WS')")).toBe(undefined);
       });
     });
@@ -123,14 +124,14 @@ describe('functions', () => {
       };
 
       it('converts given data element code to name', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, (context as unknown) as Context);
         expect(parser.evaluate("=dataElementCodeToName('FijiBCSC93')")).toBe(
           'Haloperidol Tablets 5mg',
         );
       });
 
       it('returns undefined if the data element code is not found', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, (context as unknown) as Context);
         expect(parser.evaluate("=dataElementCodeToName('BCD1')")).toBe(undefined);
       });
     });
@@ -144,12 +145,12 @@ describe('functions', () => {
       };
 
       it('gets attribute of org unit', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, (context as unknown) as Context);
         expect(parser.evaluate("=orgUnitAttribute('FJ', 'x')")).toBe(1);
       });
 
       it('returns undefined if the attribute is not set', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, (context as unknown) as Context);
         expect(parser.evaluate("=orgUnitAttribute('TO', 'x')")).toBe(undefined);
       });
     });

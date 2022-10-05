@@ -33,33 +33,9 @@ describe('DashboardVisualisationExtractor', () => {
     });
 
     describe('getReport() - draftReport', () => {
-      it('throws error if viz does not have data.fetch', () => {
-        const extractor = new DashboardVisualisationExtractor(
-          { code: 'viz', data: { transform: [] }, presentation: {} },
-          yup.object(),
-          draftReportValidator,
-        );
-
-        const getReport = () => extractor.getReport();
-
-        expect(getReport).toThrow('fetch is a required field');
-      });
-
-      it('throws error if viz does not have data.fetch.dataElements or data.fetch.dataGroups', () => {
-        const extractor = new DashboardVisualisationExtractor(
-          { code: 'viz', data: { fetch: {}, transform: [] }, presentation: {} },
-          yup.object(),
-          draftReportValidator,
-        );
-
-        const getReport = () => extractor.getReport();
-
-        expect(getReport).toThrow('Requires "dataGroups" or "dataElements"');
-      });
-
       it('throws error if viz does not have data.transform', () => {
         const extractor = new DashboardVisualisationExtractor(
-          { code: 'viz', data: { fetch: { dataElements: ['BCD1'] } }, presentation: {} },
+          { code: 'viz', data: {}, presentation: {} },
           yup.object(),
           draftReportValidator,
         );
@@ -72,7 +48,7 @@ describe('DashboardVisualisationExtractor', () => {
       it('throws error if viz does not have code', () => {
         const extractor = new DashboardVisualisationExtractor(
           {
-            data: { fetch: { dataElements: ['BCD1'] }, transform: [] },
+            data: { transform: [] },
             presentation: {},
           },
           yup.object(),
@@ -88,7 +64,7 @@ describe('DashboardVisualisationExtractor', () => {
         const extractor = new DashboardVisualisationExtractor(
           {
             code: 'viz',
-            data: { fetch: { dataElements: ['BCD1'] }, transform: [] },
+            data: { transform: [] },
             presentation: {},
           },
           yup.object(),
@@ -100,9 +76,6 @@ describe('DashboardVisualisationExtractor', () => {
         expect(report).toEqual({
           code: 'viz',
           config: {
-            fetch: {
-              dataElements: ['BCD1'],
-            },
             transform: [],
           },
         });
@@ -296,11 +269,6 @@ describe('DashboardVisualisationExtractor', () => {
           code: 'viz',
           name: 'My Viz',
           data: {
-            fetch: {
-              dataElements: ['BCD1', 'BCD2'],
-              organisationUnits: ['$requested', 'TO'],
-              startDate: '20210101',
-            },
             aggregate: ['SUM_EACH_WEEK'],
             transform: ['keyValueByDataElementName'],
           },
@@ -324,12 +292,6 @@ describe('DashboardVisualisationExtractor', () => {
       expect(report).toEqual({
         code: 'viz',
         config: {
-          fetch: {
-            dataElements: ['BCD1', 'BCD2'],
-            organisationUnits: ['$requested', 'TO'],
-            startDate: '20210101',
-            aggregations: ['SUM_EACH_WEEK'],
-          },
           transform: ['keyValueByDataElementName'],
           output: {
             type: 'bar',
@@ -347,9 +309,6 @@ describe('DashboardVisualisationExtractor', () => {
           code: 'viz',
           name: 'My Viz',
           data: {
-            fetch: {
-              dataElements: ['BCD1', 'BCD2'],
-            },
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
@@ -372,9 +331,6 @@ describe('DashboardVisualisationExtractor', () => {
       expect(report).toEqual({
         code: 'viz',
         config: {
-          fetch: {
-            dataElements: ['BCD1', 'BCD2'],
-          },
           transform: ['keyValueByDataElementName'],
           output: {
             type: 'bar',
@@ -437,9 +393,6 @@ describe('DashboardVisualisationExtractor', () => {
           code: 'viz',
           name: 'My Viz',
           data: {
-            fetch: {
-              dataElements: ['BCD1', 'BCD2'],
-            },
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
@@ -477,9 +430,6 @@ describe('DashboardVisualisationExtractor', () => {
           code: 'viz',
           name: 'My Viz',
           data: {
-            fetch: {
-              dataElements: ['BCD1', 'BCD2'],
-            },
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
@@ -501,9 +451,6 @@ describe('DashboardVisualisationExtractor', () => {
         report: {
           code: 'viz',
           config: {
-            fetch: {
-              dataElements: ['BCD1', 'BCD2'],
-            },
             transform: ['keyValueByDataElementName'],
             output: {
               type: 'bar',
