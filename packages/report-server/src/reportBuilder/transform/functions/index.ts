@@ -25,15 +25,17 @@ import {
   buildGatherColumns,
   paramsValidator as gatherColumnsParamsValidator,
 } from './gatherColumns';
+import { buildFetchData, paramsValidator as fetchDataParamsValidator } from './fetchData';
 import { buildOrderColumns, orderColumnsSchema } from './orderColumns';
 import { TransformTable } from '../table';
 
 type TransformBuilder = (
   params: unknown,
   context: Context,
-) => (table: TransformTable) => TransformTable;
+) => (table: TransformTable) => TransformTable | Promise<TransformTable>;
 
 export const transformBuilders: Record<string, TransformBuilder> = {
+  fetchData: buildFetchData,
   insertColumns: buildInsertColumns,
   excludeColumns: buildExcludeColumns,
   updateColumns: buildUpdateColumns,
@@ -52,6 +54,7 @@ export const transformSchemas: Record<
     fields: Record<string, unknown>;
   }
 > = {
+  fetchData: fetchDataParamsValidator.describe(),
   insertColumns: insertColumnsParamsValidator.describe(),
   excludeColumns: excludeColumnsParamsValidator.describe(),
   updateColumns: updateColumnsParamsValidator.describe(),

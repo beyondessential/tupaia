@@ -3,17 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Report } from '@tupaia/types';
-import { ReportServerAggregator } from '../aggregator';
-import { FetchReportQuery, StandardOrCustomReportConfig } from '../types';
+import { StandardOrCustomReportConfig } from '../types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
-import { buildFetch, FetchResponse } from './fetch';
 import { buildTransform, TransformTable } from './transform';
 import { buildOutput } from './output';
 import { Row } from './types';
 import { OutputType } from './output/functions/outputBuilders';
-import { QueryBuilder } from './query';
 import { CustomReportOutputType, customReports } from './customReports';
 
 export interface BuiltReport {
@@ -39,23 +35,7 @@ export class ReportBuilder {
     return this;
   };
 
-  public fetch = async (
-    aggregator: ReportServerAggregator,
-    query: FetchReportQuery,
-    config: Report['config'],
-  ) => {
-    if (this.testData) {
-      return { results: this.testData } as FetchResponse;
-    }
-    const builtQuery = await new QueryBuilder(this.reqContext, config, query).build();
-    const fetchFromStandardQuery = buildFetch(config.fetch);
-    return fetchFromStandardQuery(aggregator, builtQuery);
-  };
-
-  public build = async (
-    aggregator: ReportServerAggregator,
-    query: FetchReportQuery,
-  ): Promise<BuiltReport> => {
+  public build = async (): Promise<BuiltReport> => {
     if (!this.config) {
       throw new Error('Report requires a config be set');
     }
@@ -66,18 +46,21 @@ export class ReportBuilder {
         throw new Error(`Custom report ${this.config.customReport} does not exist`);
       }
 
-      const customReportData = await customReportBuilder(this.reqContext, query);
+      const customReportData = await customReportBuilder(this.reqContext);
       return { results: customReportData };
     }
 
-    const data = await this.fetch(aggregator, query, this.config);
+    const data = this.testData || [];
 
-    const context = await buildContext(this.config.transform, this.reqContext, data, query);
+    const context = await buildContext(this.config.transform, this.reqContext);
     const transform = buildTransform(this.config.transform, context);
-    const transformedData = transform(TransformTable.fromRows(data.results));
+    const transformedData = await transform(TransformTable.fromRows(data));
 
-    const outputContext = { ...this.config.fetch };
-    const output = buildOutput(this.config.output, outputContext, aggregator);
+    const output = buildOutput(
+      this.config.output,
+      context.outputContext,
+      this.reqContext.aggregator,
+    );
     const outputData = await output(transformedData);
 
     return { results: outputData };

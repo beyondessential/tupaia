@@ -4,4 +4,3 @@
  */
 
 export { QueryBuilder } from './QueryBuilder';
-export { DateSpecs } from './types';
