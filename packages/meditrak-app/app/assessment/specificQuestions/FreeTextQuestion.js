@@ -50,7 +50,7 @@ export class FreeTextQuestion extends Component {
       <View style={[localStyles.wrapper, isFocused ? localStyles.wrapperFocussed : {}]}>
         <TextInput
           placeholder="Type your answer here"
-          style={[localStyles.textInput, Platform.OS === 'ios' && localStyles.textInputFixedHeight]}
+          style={[localStyles.textInput]}
           value={answer}
           selectTextOnFocus
           onFocus={() => this.onFocus()}
@@ -58,6 +58,7 @@ export class FreeTextQuestion extends Component {
           onSubmitEditing={onSubmitEditing}
           onChangeText={onChangeAnswer}
           placeholderTextColor={getThemeColorOneFaded(0.7)}
+          multiline={true}
           {...restOfTextInputProps}
         />
         <Icon name="pencil" size={14} style={localStyles.icon} pointerEvents="none" />
@@ -82,7 +83,7 @@ FreeTextQuestion.defaultProps = {
 const localStyles = StyleSheet.create({
   wrapper: {
     position: 'relative',
-    marginVertical: 10,
+    marginVertical: 20,
     borderBottomWidth: 1,
     borderBottomColor: getThemeColorOneFaded(0.2),
   },
@@ -93,10 +94,9 @@ const localStyles = StyleSheet.create({
     color: THEME_TEXT_COLOR_ONE,
     fontFamily: THEME_FONT_FAMILY,
     fontSize: THEME_FONT_SIZE_ONE,
+    lineHeight: 25,
     paddingVertical: 10,
-  },
-  textInputFixedHeight: {
-    height: 40,
+    paddingEnd: 28,
   },
   icon: {
     position: 'absolute',
