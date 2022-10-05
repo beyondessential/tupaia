@@ -43,6 +43,9 @@ export class DeleteEntity extends BESAdminDeleteHandler {
       );
     }
 
+    // Delete any entity_relations where this entity is the leaf node, as they prevent deleting the entity otherwise
+    await this.models.entityRelation.delete({ child_id: this.recordId });
+
     await super.deleteRecord();
   }
 }
