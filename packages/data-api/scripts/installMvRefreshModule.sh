@@ -23,4 +23,4 @@ else
 fi
 
 export PGPASSWORD=$DB_PG_PASSWORD
-psql -p $DB_PORT --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" -h $DB_URL -d $DB_NAME -U $DB_PG_USER -f scripts/grantMvRefreshPermissions.sql
+psql -p $DB_PORT --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" --set=db_name="$DB_NAME" -h $DB_URL -d $DB_NAME -U $DB_PG_USER -f scripts/grantMvRefreshPermissions.sql
