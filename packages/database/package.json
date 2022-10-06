@@ -27,7 +27,8 @@
     "test:coverage": "yarn test --coverage",
     "update-test-data": "./scripts/updateTestData.sh",
     "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh",
-    "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh"
+    "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh",
+    "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
   "dependencies": {
     "@tupaia/auth": "1.0.0",
