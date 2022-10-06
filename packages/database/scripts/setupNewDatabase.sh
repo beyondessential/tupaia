@@ -37,6 +37,7 @@ echo "Installing Analytics table"
 yarn workspace @tupaia/data-api build-analytics-table
 
 echo "Deleting migrations that target data modifications, as there is no data to migrate in the new database"
+cd ../
 rm -rf ./src/migrations-backup
 mkdir  ./src/migrations-backup
 cp -r ./src/migrations/* ./src/migrations-backup/
