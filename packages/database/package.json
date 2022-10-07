@@ -26,8 +26,8 @@
     "setup-test": "yarn setup-test-database",
     "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage",
-    "update-test-data": "bash -c 'source .env && pg_dump -s -h $DB_URL -U $DB_USER -O $DB_NAME > src/__tests__/testData/testDataDump.sql && pg_dump -t migrations -c -h $DB_URL -U $DB_USER -O $DB_NAME >> src/__tests__/testData/testDataDump.sql'",
-    "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh",
+    "update-schema": "./scripts/updateSchema.sh",
+    "setup-test-database": "DB_NAME=tupaia_test ./scripts/setupNewDatabase.sh OK",
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh",
     "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
