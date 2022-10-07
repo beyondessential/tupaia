@@ -13,7 +13,7 @@ describe('gatherColumns', () => {
         transform: 'gatherColumns',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([
         { value: '20200101', columnName: 'period' },
         { value: 'TO', columnName: 'organisationUnit' },
@@ -30,7 +30,7 @@ describe('gatherColumns', () => {
         keep: 'organisationUnit',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([
         { organisationUnit: 'TO', value: '20200101', columnName: 'period' },
         { organisationUnit: 'TO', value: 'BCD1', columnName: 'dataElement' },
@@ -46,7 +46,7 @@ describe('gatherColumns', () => {
         keep: ['organisationUnit', 'period'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', value: 'BCD1', columnName: 'dataElement' },
         { period: '20200101', organisationUnit: 'TO', value: 4, columnName: 'value' },
@@ -61,7 +61,7 @@ describe('gatherColumns', () => {
         keep: ['period'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', value: 'TO', columnName: 'organisationUnit' },
         { period: '20200101', value: 'BCD1', columnName: 'dataElement' },

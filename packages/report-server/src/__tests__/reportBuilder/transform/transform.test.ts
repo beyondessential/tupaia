@@ -42,7 +42,7 @@ describe('transform', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([{ Total: 11 }]),
     );
   });
@@ -74,7 +74,7 @@ describe('transform', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([{ Total: 11 }]),
     );
   });

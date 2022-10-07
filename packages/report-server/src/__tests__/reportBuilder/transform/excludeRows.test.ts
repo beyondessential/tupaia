@@ -14,7 +14,7 @@ describe('excludeRows', () => {
         where: '=$BCD1 < 6',
       },
     ]);
-    expect(transform(TransformTable.fromRows(EXCLUDEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(EXCLUDEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
         { period: '20200102', organisationUnit: 'PG', BCD1: 8 },

@@ -13,7 +13,7 @@ describe('updateColumns', () => {
         transform: 'updateColumns',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0] }]),
     );
   });
@@ -29,7 +29,7 @@ describe('updateColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], number: 1, string: 'Hi', boolean: false }]),
     );
   });
@@ -43,7 +43,7 @@ describe('updateColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], dataElementValue: 4 }]),
     );
   });
@@ -57,7 +57,7 @@ describe('updateColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], BCD1: 4 }]),
     );
   });
@@ -71,7 +71,7 @@ describe('updateColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], period: '1st Jan 2020' }]),
     );
   });
@@ -86,7 +86,7 @@ describe('updateColumns', () => {
         include: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([
         { period: '1st Jan 2020', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
       ]),
@@ -103,7 +103,7 @@ describe('updateColumns', () => {
         include: ['organisationUnit', 'value'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ organisationUnit: 'TO', value: 4, period: '1st Jan 2020' }]),
     );
   });
@@ -118,7 +118,7 @@ describe('updateColumns', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ period: '1st Jan 2020' }]),
     );
   });
@@ -133,7 +133,7 @@ describe('updateColumns', () => {
         exclude: ['organisationUnit', 'value'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ period: '1st Jan 2020', dataElement: 'BCD1' }]),
     );
   });
@@ -149,7 +149,7 @@ describe('updateColumns', () => {
         include: ['organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { organisationUnit: 'TO', period: '1st Jan 2020', BCD1: 4 },
         { organisationUnit: 'TO', period: '2nd Jan 2020', BCD1: 2 },
@@ -169,7 +169,7 @@ describe('updateColumns', () => {
         include: ['period', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', newVal: 8 },
         { period: '20200102', organisationUnit: 'TO', newVal: 4 },

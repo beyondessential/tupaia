@@ -25,7 +25,7 @@ describe('sortRows', () => {
         by: 'period',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
         { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
@@ -51,7 +51,7 @@ describe('sortRows', () => {
         direction: 'desc',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
         { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
@@ -76,7 +76,7 @@ describe('sortRows', () => {
         by: ['period', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
         { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
@@ -102,7 +102,7 @@ describe('sortRows', () => {
         direction: ['asc', 'desc'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
         { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
@@ -127,7 +127,7 @@ describe('sortRows', () => {
         by: '=$BCD1 * $BCD1',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 1 },

@@ -30,7 +30,7 @@ describe('mergeRows', () => {
         groupBy: 'period',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([{ period: '20200101', BCD1: 4, BCD2: 4, BCD3: 4 }]),
     );
   });
@@ -40,15 +40,15 @@ describe('mergeRows', () => {
       {
         transform: 'mergeRows',
         using: {
-          organisationUnit: 'exclude',
-          period: 'exclude',
+          organisationUnit: 'first',
+          period: 'first',
           '*': 'sum',
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
-        { period: undefined, organisationUnit: undefined, BCD1: 28, BCD2: 123 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 28, BCD2: 123 },
       ]),
     );
   });
@@ -61,7 +61,7 @@ describe('mergeRows', () => {
         using: 'last',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 5, BCD2: 0 },
         { period: '20200103', organisationUnit: 'PG', BCD1: 2, BCD2: -1 },
@@ -77,7 +77,7 @@ describe('mergeRows', () => {
         using: 'sum',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4, BCD2: 11 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 2, BCD2: 1 },
@@ -101,7 +101,7 @@ describe('mergeRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 11, BCD2: 0 },
         { period: '20200103', organisationUnit: 'PG', BCD1: 17, BCD2: -1 },
@@ -116,15 +116,15 @@ describe('mergeRows', () => {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
           using: {
-            period: 'exclude',
+            period: 'first',
             '*': 'sum',
           },
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
-          { period: undefined, organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
-          { period: undefined, organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
+          { period: '20200101', organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
+          { period: '20200101', organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
         ]),
       );
     });
@@ -135,7 +135,7 @@ describe('mergeRows', () => {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
           using: {
-            period: 'exclude',
+            period: 'first',
             '*': 'sum',
           },
         },
@@ -147,10 +147,10 @@ describe('mergeRows', () => {
             ...MERGEABLE_ANALYTICS_WITH_NULL_VALUES,
           ]),
         ),
-      ).toEqual(
+      ).toStrictEqual(
         TransformTable.fromRows([
-          { period: undefined, organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
-          { period: undefined, organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
+          { period: '20200101', organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
+          { period: '20200101', organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
         ]),
       );
     });
@@ -161,15 +161,15 @@ describe('mergeRows', () => {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
           using: {
-            period: 'exclude',
+            period: 'first',
             '*': 'average',
           },
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
-          { period: undefined, organisationUnit: 'TO', BCD1: 3.6666666666666665, BCD2: 4 },
-          { period: undefined, organisationUnit: 'PG', BCD1: 5.666666666666667, BCD2: 37 },
+          { period: '20200101', organisationUnit: 'TO', BCD1: 3.6666666666666665, BCD2: 4 },
+          { period: '20200101', organisationUnit: 'PG', BCD1: 5.666666666666667, BCD2: 37 },
         ]),
       );
     });
@@ -182,7 +182,7 @@ describe('mergeRows', () => {
           using: 'count',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 4, BCD1: 2, BCD2: 2 },
           { period: '20200102', organisationUnit: 4, BCD1: 2, BCD2: 2 },
@@ -199,7 +199,7 @@ describe('mergeRows', () => {
           using: 'max',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200103', organisationUnit: 'TO', BCD1: 5, BCD2: 11 },
           { period: '20200103', organisationUnit: 'PG', BCD1: 8, BCD2: 99 },
@@ -215,7 +215,7 @@ describe('mergeRows', () => {
           using: 'min',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'PG', BCD1: 4, BCD2: 11 },
           { period: '20200102', organisationUnit: 'PG', BCD1: 2, BCD2: 1 },
@@ -239,7 +239,7 @@ describe('mergeRows', () => {
             ...MERGEABLE_ANALYTICS_WITH_NULL_VALUES,
           ]),
         ),
-      ).toEqual(
+      ).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'PG', BCD1: null, BCD2: null },
           { period: '20200102', organisationUnit: 'PG', BCD1: 2, BCD2: 1 },
@@ -256,7 +256,7 @@ describe('mergeRows', () => {
           using: 'unique',
         },
       ]);
-      expect(transform(TransformTable.fromRows(UNIQUE_MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(UNIQUE_MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           {
             period: 'NO_UNIQUE_VALUE',
@@ -282,12 +282,11 @@ describe('mergeRows', () => {
           using: 'exclude',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
-        TransformTable.fromRows([
-          { period: '20200101', organisationUnit: undefined, BCD1: undefined, BCD2: undefined },
-          { period: '20200102', organisationUnit: undefined, BCD1: undefined, BCD2: undefined },
-          { period: '20200103', organisationUnit: undefined, BCD1: undefined, BCD2: undefined },
-        ]),
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+        TransformTable.fromRows(
+          [{ period: '20200101' }, { period: '20200102' }, { period: '20200103' }],
+          ['period', 'organisationUnit', 'BCD1', 'BCD2'], // excludes values, but keeps columns
+        ),
       );
     });
 
@@ -299,7 +298,7 @@ describe('mergeRows', () => {
           using: 'first',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'TO', BCD1: 4, BCD2: 11 },
           { period: '20200101', organisationUnit: 'PG', BCD1: 7, BCD2: 13 },
@@ -315,7 +314,7 @@ describe('mergeRows', () => {
           using: 'last',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'PG', BCD1: 7, BCD2: 13 },
           { period: '20200102', organisationUnit: 'PG', BCD1: 8, BCD2: 99 },
@@ -344,7 +343,7 @@ describe('mergeRows', () => {
             using: 'single',
           },
         ]);
-        expect(transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toEqual(
+        expect(transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toStrictEqual(
           TransformTable.fromRows([{ period: '20200101', BCD1: 4, BCD2: 4, BCD3: 4 }]),
         );
       });

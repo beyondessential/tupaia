@@ -18,7 +18,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], number: 1, string: 'Hi', boolean: false }]),
     );
   });
@@ -32,7 +32,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], dataElementValue: 4 }]),
     );
   });
@@ -46,7 +46,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], BCD1: 4 }]),
     );
   });
@@ -60,7 +60,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], period: '1st Jan 2020' }]),
     );
   });
@@ -75,7 +75,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { ...MULTIPLE_ANALYTICS[0], period: '1st Jan 2020', BCD1: 4 },
         { ...MULTIPLE_ANALYTICS[1], period: '2nd Jan 2020', BCD1: 2 },
@@ -94,7 +94,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { ...MERGEABLE_ANALYTICS[0], newVal: 8 },

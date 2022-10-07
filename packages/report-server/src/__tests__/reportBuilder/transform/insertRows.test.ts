@@ -19,7 +19,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { number: 1, string: 'Hi', boolean: false }]),
     );
   });
@@ -33,7 +33,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { dataElementValue: 4 }]),
     );
   });
@@ -47,7 +47,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { BCD1: 4 }]),
     );
   });
@@ -61,7 +61,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([...SINGLE_ANALYTIC, { period: '1st Jan 2020' }]),
     );
   });
@@ -80,7 +80,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { number: 1, string: 'Hi', boolean: false },
@@ -105,7 +105,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
@@ -124,7 +124,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { dataElementValue: 4 },
@@ -146,7 +146,7 @@ describe('insertRows', () => {
         position: 'before',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { dataElementValue: 4 },
@@ -171,7 +171,7 @@ describe('insertRows', () => {
         position: 'start',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { dataElementValue: 4 },
@@ -197,7 +197,7 @@ describe('insertRows', () => {
         where: "=not(eq($period, '20200101'))",
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
@@ -219,7 +219,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
         { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
@@ -242,7 +242,7 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 2 },

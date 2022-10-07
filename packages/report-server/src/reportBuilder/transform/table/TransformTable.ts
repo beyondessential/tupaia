@@ -147,7 +147,12 @@ export class TransformTable {
     }
 
     values.forEach((value, index) => {
-      this.rows[index][columnName] = value;
+      if (isExistingColumn) {
+        delete this.rows[index][columnName];
+      }
+      if (value !== undefined) {
+        this.rows[index][columnName] = value;
+      }
     });
   }
 

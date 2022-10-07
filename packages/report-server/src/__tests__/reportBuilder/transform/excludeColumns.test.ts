@@ -14,7 +14,7 @@ describe('excludeColumns', () => {
         columns: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{}]),
     );
   });
@@ -26,7 +26,7 @@ describe('excludeColumns', () => {
         columns: ['organisationUnit', 'value'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toEqual(
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', dataElement: 'BCD1' },
         { period: '20200102', dataElement: 'BCD1' },

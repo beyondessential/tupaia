@@ -107,7 +107,9 @@ const mergeGroups = (groups: Group[], params: MergeRowsParams) => {
     Object.entries(group).forEach(([columnName, groupValues]) => {
       const mergeStrategy = params.getMergeStrategy(columnName);
       const mergedValue = mergeStrategies[mergeStrategy](groupValues);
-      mergedRow[columnName] = mergedValue;
+      if (mergedValue !== undefined) {
+        mergedRow[columnName] = mergedValue;
+      }
     });
     return mergedRow;
   });
