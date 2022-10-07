@@ -25,8 +25,8 @@
     "refresh-database": "node ./scripts/refreshDatabase.js",
     "test": "yarn package:test:withdb  --runInBand",
     "test:coverage": "yarn test --coverage",
-    "update-test-data": "./scripts/updateTestData.sh",
-    "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh",
+    "update-schema": "./scripts/updateSchema.sh",
+    "setup-test-database": "DB_NAME=tupaia_test ./scripts/setupNewDatabase.sh OK",
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh",
     "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
