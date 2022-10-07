@@ -4,33 +4,25 @@
  */
 
 import { TransformTable } from '../table';
-import { FieldValue } from '../../types';
 
 const keyValueByField = (table: TransformTable, field: string) => {
-  const fieldValues = table.getColumnValues(field) as string[];
-  const valueValues = table.getColumnValues('value');
-  const newColumnNames = Array.from(new Set(fieldValues));
-  const newColumns: Record<string, FieldValue[]> = Object.fromEntries(
-    newColumnNames.map(columnName => [
-      columnName,
-      // Flag all values as skip char to avoid overwriting data
-      table.hasColumn(columnName)
-        ? table.getColumnValues(columnName)
-        : new Array(valueValues.length).fill(undefined),
-    ]),
-  );
-  valueValues.forEach((value, index) => {
-    const dataElement = fieldValues[index];
-    const column = newColumns[dataElement];
-    column.splice(index, 1, value);
-  });
+  const newColumns = new Set<string>(
+    table.getColumns().filter(columnName => columnName !== field && columnName !== 'value'),
+  ); // Do this to preserve the existing column order
 
-  const columnUpserts = Object.entries(newColumns).map(([columnName, values]) => ({
-    columnName,
-    values,
-  }));
+  const newRows = table
+    .getRows()
+    .map(({ [field]: valueOfField, value: valueOfValueColumn, ...restOfRow }) => {
+      const newRow = restOfRow;
+      if (valueOfField !== undefined && valueOfValueColumn !== undefined) {
+        const columnName = `${valueOfField}`;
+        newRow[columnName] = valueOfValueColumn;
+        newColumns.add(columnName);
+      }
+      return newRow;
+    });
 
-  return table.dropColumns([field, 'value']).upsertColumns(columnUpserts);
+  return new TransformTable(Array.from(newColumns), newRows);
 };
 
 /**
