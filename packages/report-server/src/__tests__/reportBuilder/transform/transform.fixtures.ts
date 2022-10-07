@@ -129,3 +129,23 @@ export const PARSABLE_ANALYTICS = [
   { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
   { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
 ];
+
+export const DATE_COLUMNS = [
+  {
+    organisationUnit: 'Tonga',
+    '2nd Aug 2022': 1,
+    '13th Jan 2022': 2,
+    'Sep 2022': 3,
+    'Q1 2021': 4,
+  },
+];
+
+export const PERIOD_COLUMNS = [
+  {
+    organisationUnit: 'Tonga',
+    '20220802': 1,
+    '2022W03': 2,
+    '202209': 3,
+    '2021Q1': 4,
+  },
+];
