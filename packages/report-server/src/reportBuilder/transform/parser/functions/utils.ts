@@ -15,7 +15,7 @@ export const convertToPeriod = (period: string, targetType: string): string => {
   return baseConvertToPeriod(period, targetType);
 };
 
-export const periodToTimestamp = (period: string): string => {
+export const periodToTimestamp = (period: string): number => {
   return basePeriodToTimestamp(period);
 };
 

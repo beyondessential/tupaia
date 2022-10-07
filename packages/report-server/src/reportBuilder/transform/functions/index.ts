@@ -25,6 +25,7 @@ import {
   buildGatherColumns,
   paramsValidator as gatherColumnsParamsValidator,
 } from './gatherColumns';
+import { buildOrderColumns, orderColumnsSchema } from './orderColumns';
 import { TransformTable } from '../table';
 
 type TransformBuilder = (
@@ -41,6 +42,7 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   excludeRows: buildExcludeRows,
   insertRows: buildInsertRows,
   gatherColumns: buildGatherColumns,
+  orderColumns: buildOrderColumns,
 };
 
 export const transformSchemas: Record<
@@ -58,4 +60,5 @@ export const transformSchemas: Record<
   excludeRows: excludeRowsParamsValidator.describe(),
   insertRows: insertRowsParamsValidator.describe(),
   gatherColumns: gatherColumnsParamsValidator.describe(),
+  orderColumns: orderColumnsSchema,
 };
