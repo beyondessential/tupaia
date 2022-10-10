@@ -24,6 +24,7 @@ import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
+import { ExternalDatabaseConnectionModel } from './ExternalDatabaseConnection';
 import { FacilityModel } from './Facility';
 import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
@@ -84,6 +85,7 @@ export const modelClasses = {
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
+  ExternalDatabaseConnection: ExternalDatabaseConnectionModel,
   Facility: FacilityModel,
   FeedItem: FeedItemModel,
   GeographicalArea: GeographicalAreaModel,
