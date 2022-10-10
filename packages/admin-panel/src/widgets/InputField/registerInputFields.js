@@ -198,4 +198,14 @@ export const registerInputFields = () => {
       type={props.type}
     />
   ));
+  registerInputField('password', props => (
+    <TextField
+      label={props.label}
+      value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value
+      onChange={event => props.onChange(props.inputKey, event.target.value)}
+      disabled={props.disabled}
+      helperText={props.secondaryLabel}
+      type="password"
+    />
+  ));
 };
