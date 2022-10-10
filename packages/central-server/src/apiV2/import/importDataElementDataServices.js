@@ -36,7 +36,7 @@ async function create(transactingModels, items) {
 
   for (const item of items) {
     excelRowNumber++;
-    validator.validate(item, constructImportValidationError);
+    await validator.validate(item, constructImportValidationError);
 
     const { data_element_code, country_code } = item;
 
