@@ -20,6 +20,7 @@
     "directory": "packages/api-client"
   },
   "dependencies": {
+    "lodash.pick": "^4.4.0",
     "node-fetch": "^1.7.3",
     "qs": "^6.10.1"
   }

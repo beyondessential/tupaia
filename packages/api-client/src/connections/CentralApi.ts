@@ -6,6 +6,7 @@
 import { QueryParameters } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
+import { PublicInterface } from './types';
 
 export type SurveyResponse = {
   surveyId: string;
@@ -97,3 +98,5 @@ export class CentralApi extends BaseApi {
     return resource;
   }
 }
+
+export interface CentralApiInterface extends PublicInterface<CentralApi> {}
