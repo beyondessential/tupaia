@@ -5,45 +5,106 @@
  */
 
 import pick from 'lodash.pick';
+import { isDefined } from '@tupaia/tsutils';
 import { EntityApiInterface } from '../../connections';
 
 export class MockEntityApi implements EntityApiInterface {
   private readonly entities: Record<string, Record<string, any>[]>;
   private readonly relations: Record<string, { parent: string; child: string }[]>;
 
+  private getEntitiesStub(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions: { field?: string; fields?: string[]; filter?: Record<string, unknown> } = {},
+  ) {
+    const entitiesInHierarchy = this.entities[hierarchyName] || [];
+    const foundEntities = entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
+    const { field, fields, filter } = queryOptions;
+
+    let filteredEntities = foundEntities;
+    if (filter) {
+      filteredEntities = filteredEntities.filter(e =>
+        Object.entries(filter).every(([key, value]) => e[key] === value),
+      );
+    }
+
+    if (field) {
+      return filteredEntities.map(e => e[field]);
+    }
+
+    if (fields) {
+      return filteredEntities.map(e => pick(e, fields));
+    }
+
+    return filteredEntities;
+  }
+
   private getDescendants(
     hierarchyName: string,
     entityCodes: string[],
-    queryOptions: { fields?: string[]; filter?: { type: string } } = {},
+    queryOptions: { fields?: string[]; filter?: { type?: string } } = {},
   ) {
     const entitiesInHierarchy = this.entities[hierarchyName] || [];
     const relationsInHierarchy = this.relations[hierarchyName] || [];
     const ancestorEntities = entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
     const ancestorEntityQueue = [...ancestorEntities];
-    const descendantEntities = [];
+    const descendantEntityCodes = [];
     while (ancestorEntityQueue.length > 0) {
       const parent = ancestorEntityQueue.shift();
       if (parent === undefined) {
         continue;
       }
 
-      const isDefined = <T>(val: T): val is Exclude<T, undefined> => val !== undefined;
       const children = relationsInHierarchy
         .filter(({ parent: parentCode }) => parent.code === parentCode)
         .map(({ child }) => entitiesInHierarchy.find(entity => entity.code === child))
         .filter(isDefined);
 
-      descendantEntities.push(...children);
+      descendantEntityCodes.push(...children.map(e => e.code));
       ancestorEntityQueue.push(...children);
     }
 
-    const { fields, filter } = queryOptions;
+    return this.getEntitiesStub(hierarchyName, descendantEntityCodes, queryOptions);
+  }
 
-    const filteredDescendants = filter
-      ? descendantEntities.filter(entity => entity.type === filter.type)
-      : descendantEntities;
+  private getAncestors(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions: { fields?: string[]; filter?: { type?: string } } = {},
+  ) {
+    const entitiesInHierarchy = this.entities[hierarchyName] || [];
+    const relationsInHierarchy = this.relations[hierarchyName] || [];
+    const descendantEntities = entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
+    const descendantEntityQueue = [...descendantEntities];
+    const ancestorCodes = [];
+    while (descendantEntityQueue.length > 0) {
+      const child = descendantEntityQueue.shift();
+      if (child === undefined) {
+        continue;
+      }
 
-    return fields ? filteredDescendants.map(e => pick(e, fields)) : filteredDescendants;
+      const parents = relationsInHierarchy
+        .filter(({ child: childCode }) => child.code === childCode)
+        .map(({ parent }) => entitiesInHierarchy.find(entity => entity.code === parent))
+        .filter(isDefined);
+
+      ancestorCodes.push(...parents.map(e => e.code));
+      descendantEntityQueue.push(...parents);
+    }
+
+    return this.getEntitiesStub(hierarchyName, ancestorCodes, queryOptions);
+  }
+
+  private getRelationsOfEntities(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions: { fields?: string[]; filter?: { type?: string } } = {},
+  ) {
+    return [
+      ...this.getAncestors(hierarchyName, entityCodes, queryOptions),
+      ...this.getEntitiesStub(hierarchyName, entityCodes, queryOptions),
+      ...this.getDescendants(hierarchyName, entityCodes, queryOptions),
+    ];
   }
 
   public constructor(
@@ -61,17 +122,15 @@ export class MockEntityApi implements EntityApiInterface {
       | { field?: string | undefined; fields?: string[] | undefined; filter?: any }
       | undefined,
   ) {
-    return this.getEntities(hierarchyName, [entityCode], queryOptions);
+    return this.getEntitiesStub(hierarchyName, [entityCode], queryOptions);
   }
 
   public async getEntities(
     hierarchyName: string,
     entityCodes: string[],
-    queryOptions: { fields?: string[] } = {},
+    queryOptions: { field?: string; fields?: string[]; filter?: Record<string, unknown> } = {},
   ) {
-    const foundEntities = this.entities[hierarchyName]?.filter(e => entityCodes.includes(e.code));
-    const { fields } = queryOptions;
-    return fields ? foundEntities.map(e => pick(e, fields)) : foundEntities;
+    return this.getEntitiesStub(hierarchyName, entityCodes, queryOptions);
   }
 
   public getDescendantsOfEntity(
@@ -133,21 +192,55 @@ export class MockEntityApi implements EntityApiInterface {
     hierarchyName: string,
     entityCodes: string[],
     groupBy: 'ancestor' | 'descendant',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    queryOptions: { fields?: string[]; filter?: { type: string } } = {},
-    ancestorQueryOptions: { filter?: { type: string } } = {},
-    descendantQueryOptions: { filter?: { type: string } } = {},
+    queryOptions: { field?: string } = {},
+    ancestorQueryOptions: { field?: string; filter?: { type: string } } = {},
+    descendantQueryOptions: { field?: string; filter?: { type: string } } = {},
   ) {
-    const entitiesInHierarchy = this.entities[hierarchyName] || [];
-    const ancestorEntities = ancestorQueryOptions.filter?.type
-      ? this.getDescendants(hierarchyName, entityCodes, ancestorQueryOptions)
-      : entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
+    const { field: queryField, ...restOfQueryOptions } = queryOptions;
+    const {
+      field: ancestorField = queryField || 'code',
+      ...restOfAncestorQueryOptions
+    } = ancestorQueryOptions;
+    const ancestorOptions = {
+      ...restOfQueryOptions,
+      ...restOfAncestorQueryOptions,
+      fields: [ancestorField, 'code'],
+    };
+    const descendantOptions = {
+      field: 'code',
+      ...queryOptions,
+      ...descendantQueryOptions,
+    };
+    const ancestorEntities = ancestorOptions.filter?.type
+      ? this.getRelationsOfEntities(hierarchyName, entityCodes, ancestorOptions)
+      : this.getEntitiesStub(hierarchyName, entityCodes, ancestorOptions);
+    const descendantsGroupedByAncestor: Record<string, any[]> = ancestorEntities.reduce(
+      (obj, ancestor) => {
+        return {
+          ...obj,
+          [ancestor[ancestorField]]: this.getDescendants(
+            hierarchyName,
+            [ancestor.code],
+            descendantOptions,
+          ),
+        };
+      },
+      {} as Record<string, any[]>,
+    );
 
-    const ancestorEntityCodes = ancestorEntities.map(e => e.code);
-    return ancestorEntityCodes.reduce((obj: Record<string, any[]>, ancestor) => {
-      // eslint-disable-next-line no-param-reassign
-      obj[ancestor] = this.getDescendants(hierarchyName, [ancestor], descendantQueryOptions);
-      return obj;
-    }, {});
+    if (groupBy === 'ancestor') {
+      return descendantsGroupedByAncestor;
+    }
+    const ancestorsGroupedByDescendant = Object.entries(descendantsGroupedByAncestor).reduce(
+      (obj, [ancestor, descendants]) => {
+        descendants.forEach(descendant => {
+          // eslint-disable-next-line no-param-reassign
+          obj[descendant] = ancestor;
+        });
+        return obj;
+      },
+      {} as Record<string, any>,
+    );
+    return ancestorsGroupedByDescendant;
   }
 }
