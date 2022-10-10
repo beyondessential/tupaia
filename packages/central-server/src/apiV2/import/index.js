@@ -18,6 +18,7 @@ import { importDisaster } from './importDisaster';
 import { getTempDirectory } from '../../utilities';
 import { importDataElements } from './importDataElements';
 import { importDataElementDataServices } from './importDataElementDataServices';
+import { importUserPermissions } from './importUserPermissions';
 
 // create upload handler
 const upload = multer({
@@ -56,6 +57,11 @@ importRoutes.post(
   '/dataElementDataServices',
   upload.single('dataElementDataServices'),
   catchAsyncErrors(importDataElementDataServices),
+);
+importRoutes.post(
+  '/userPermissions',
+  upload.single('userPermissions'),
+  catchAsyncErrors(importUserPermissions),
 );
 
 export { importRoutes };
