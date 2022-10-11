@@ -4,13 +4,14 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { yupTsUtils } from '@tupaia/tsutils';
+import { isDefined, yupTsUtils } from '@tupaia/tsutils';
 
 import { Row } from '../../types';
 import { Context } from '../../context';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { mapStringToStringValidator } from './transformValidators';
+import { TransformTable } from '../table';
 
 type InsertParams = {
   columns: { [key: string]: string };
@@ -37,31 +38,33 @@ export const paramsValidator = yup.object().shape({
   }, [positionValidator]),
 });
 
-const insertRows = (rows: Row[], params: InsertParams, context: Context): Row[] => {
-  const returnArray = [...rows];
-  const parser = new TransformParser(rows, context);
-  const rowsToInsert = returnArray.map(() => {
-    const shouldInsertNewRow = params.where(parser);
-    if (!shouldInsertNewRow) {
-      parser.next();
-      return undefined;
-    }
-    const newRow: Row = {};
-    Object.entries(params.columns).forEach(([key, expression]) => {
-      newRow[parser.evaluate(key)] = parser.evaluate(expression);
-    });
-
-    parser.next();
-    return newRow;
-  });
+const insertRows = (table: TransformTable, params: InsertParams, context: Context) => {
+  const parser = new TransformParser(table, context);
   let insertCount = 0;
-  rowsToInsert.forEach((newRow, index) => {
-    if (newRow !== undefined) {
-      returnArray.splice(params.positioner(index, insertCount), 0, newRow);
-      insertCount++;
-    }
-  });
-  return returnArray;
+  const rowInserts = table
+    .getRows()
+    .map((_, index) => {
+      const shouldInsertNewRow = params.where(parser);
+      if (!shouldInsertNewRow) {
+        parser.next();
+        return undefined;
+      }
+      const newRow: Row = {};
+      Object.entries(params.columns).forEach(([key, expression]) => {
+        const columnName = parser.evaluate(key);
+        const value = parser.evaluate(expression);
+        newRow[columnName] = value;
+      });
+
+      parser.next();
+      return {
+        row: newRow,
+        index: params.positioner(index, insertCount++),
+      };
+    })
+    .filter(isDefined);
+
+  return table.insertRows(rowInserts);
 };
 
 const buildParams = (params: unknown): InsertParams => {
@@ -82,5 +85,5 @@ const buildParams = (params: unknown): InsertParams => {
 
 export const buildInsertRows = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => insertRows(rows, builtParams, context);
+  return (table: TransformTable) => insertRows(table, builtParams, context);
 };

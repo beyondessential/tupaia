@@ -5,6 +5,7 @@
 
 import { ReportServerAggregator } from '../../../aggregator';
 import { buildOutput } from '../../../reportBuilder/output';
+import { TransformTable } from '../../../reportBuilder/transform';
 import {
   MULTIPLE_TRANSFORMED_DATA,
   MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES,
@@ -28,7 +29,7 @@ describe('matrix', () => {
       );
 
       const outputFn = async () => {
-        await output([]);
+        await output(new TransformTable());
       };
 
       await expect(outputFn()).rejects.toThrow("columns must be either '*' or an array");
@@ -88,7 +89,9 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+      const result = await output(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES),
+      );
       expect(result).toEqual(expectedData);
     });
 
@@ -147,7 +150,9 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+      const result = await output(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES),
+      );
       expect(result).toEqual(expectedData);
     });
 
@@ -185,7 +190,9 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS);
+      const result = await output(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
+      );
       expect(result).toEqual(expectedData);
     });
 
@@ -239,7 +246,9 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS);
+      const result = await output(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
+      );
       expect(result).toEqual(expectedData);
     });
   });
@@ -257,7 +266,7 @@ describe('matrix', () => {
         reportServerAggregator,
       );
       await expect(async () => {
-        await output([]);
+        await output(new TransformTable());
       }).rejects.toThrow(
         'categoryField cannot be one of: [InfrastructureType,Laos,Tonga] they are already specified as columns',
       );
@@ -274,7 +283,7 @@ describe('matrix', () => {
         reportServerAggregator,
       );
       await expect(async () => {
-        await output([]);
+        await output(new TransformTable());
       }).rejects.toThrow(
         'rowField cannot be: FacilityType, it is already specified as categoryField',
       );
@@ -323,7 +332,7 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA);
+      const result = await output(TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA));
       expect(result).toEqual(expectedData);
     });
 
@@ -382,7 +391,9 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+      const result = await output(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES),
+      );
       expect(result).toEqual(expectedData);
     });
   });
@@ -400,7 +411,7 @@ describe('matrix', () => {
         reportServerAggregator,
       );
       await expect(async () => {
-        await output([]);
+        await output(new TransformTable());
       }).rejects.toThrow(
         'rowField cannot be one of: [FacilityType,Laos,Tonga] they are already specified as columns',
       );
@@ -417,7 +428,7 @@ describe('matrix', () => {
         reportServerAggregator,
       );
       await expect(async () => {
-        await output([]);
+        await output(new TransformTable());
       }).rejects.toThrow(
         'rowField cannot be: FacilityType, it is already specified as categoryField',
       );
@@ -433,7 +444,7 @@ describe('matrix', () => {
         reportServerAggregator,
       );
       await expect(async () => {
-        await output([]);
+        await output(new TransformTable());
       }).rejects.toThrow('rowField is a required field');
     });
 
@@ -488,7 +499,9 @@ describe('matrix', () => {
         {},
         reportServerAggregator,
       );
-      const result = await output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+      const result = await output(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES),
+      );
       expect(result).toEqual(expectedData);
     });
   });

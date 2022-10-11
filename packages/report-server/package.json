@@ -45,6 +45,7 @@
     "lodash.keyby": "^4.6.0",
     "lodash.pick": "^4.4.0",
     "mathjs": "^9.4.0",
+    "moment": "^2.24.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {

@@ -5164,6 +5164,7 @@ __metadata:
   resolution: "@tupaia/data-api@workspace:packages/data-api"
   dependencies:
     "@tupaia/database": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/lodash.groupby": ^4.6.0
     db-migrate: ^0.11.5
@@ -5586,6 +5587,7 @@ __metadata:
     lodash.keyby: ^4.6.0
     lodash.pick: ^4.4.0
     mathjs: ^9.4.0
+    moment: ^2.24.0
     winston: ^3.2.1
   languageName: unknown
   linkType: soft

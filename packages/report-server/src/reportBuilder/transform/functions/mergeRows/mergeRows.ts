@@ -10,10 +10,11 @@ import { Context } from '../../../context';
 import { TransformParser } from '../../parser';
 import { mergeStrategies } from './mergeStrategies';
 import { buildWhere } from '../where';
-import { Row, FieldValue } from '../../../types';
+import { FieldValue, Row } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
 import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
+import { TransformTable } from '../../table';
 
 type MergeRowsParams = {
   createGroupKey: (row: Row) => string;
@@ -61,15 +62,15 @@ export const paramsValidator = yup.object().shape({
  * [{orgUnit: TO, BCD1: 4 }, {orgUnit: TO, BCD1: 7 }], groupBy orgUnit => group: { BCD1: [4, 7] }
  */
 type Group = {
-  [fieldKey: string]: FieldValue[];
+  [columnName: string]: FieldValue[];
 };
 
-const groupRows = (rows: Row[], params: MergeRowsParams, context: Context) => {
+const groupRows = (table: TransformTable, params: MergeRowsParams, context: Context) => {
   const groupsByKey: Record<string, Group> = {};
-  const parser = new TransformParser(rows, context);
+  const parser = new TransformParser(table, context);
   const ungroupedRows: Row[] = []; // Rows that don't match the 'where' clause are left ungrouped
 
-  rows.forEach((row: Row) => {
+  table.getRows().forEach((row: Row) => {
     if (!params.where(parser)) {
       ungroupedRows.push(row);
       parser.next();
@@ -91,33 +92,34 @@ const addRowToGroup = (groupsByKey: Record<string, Group>, groupKey: string, row
 
   const group = groupsByKey[groupKey];
 
-  Object.keys(row).forEach((field: string) => {
-    if (!group[field]) {
+  Object.entries(row).forEach(([columnName, value]) => {
+    if (!group[columnName]) {
       // eslint-disable-next-line no-param-reassign
-      group[field] = [];
+      group[columnName] = [];
     }
-    group[field].push(row[field]);
+    group[columnName].push(value);
   });
 };
 
-const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
+const mergeGroups = (groups: Group[], params: MergeRowsParams) => {
   return groups.map(group => {
     const mergedRow: Row = {};
-    Object.entries(group).forEach(([fieldKey, fieldValue]) => {
-      const mergeStrategy = params.getMergeStrategy(fieldKey);
-      const mergedValue = mergeStrategies[mergeStrategy](fieldValue);
+    Object.entries(group).forEach(([columnName, groupValues]) => {
+      const mergeStrategy = params.getMergeStrategy(columnName);
+      const mergedValue = mergeStrategies[mergeStrategy](groupValues);
       if (mergedValue !== undefined) {
-        mergedRow[fieldKey] = mergedValue;
+        mergedRow[columnName] = mergedValue;
       }
     });
     return mergedRow;
   });
 };
 
-const mergeRows = (rows: Row[], params: MergeRowsParams, context: Context): Row[] => {
-  const { groups, ungroupedRows } = groupRows(rows, params, context);
+const mergeRows = (table: TransformTable, params: MergeRowsParams, context: Context) => {
+  const { groups, ungroupedRows } = groupRows(table, params, context);
   const mergedRows = mergeGroups(groups, params);
-  return mergedRows.concat(ungroupedRows);
+  const newRowData = mergedRows.concat(ungroupedRows);
+  return new TransformTable(table.getColumns(), newRowData);
 };
 
 const buildParams = (params: unknown): MergeRowsParams => {
@@ -134,5 +136,5 @@ const buildParams = (params: unknown): MergeRowsParams => {
 
 export const buildMergeRows = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => mergeRows(rows, builtParams, context);
+  return (table: TransformTable) => mergeRows(table, builtParams, context);
 };
