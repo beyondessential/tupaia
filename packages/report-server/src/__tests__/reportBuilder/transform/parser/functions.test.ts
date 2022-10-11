@@ -19,6 +19,14 @@ describe('functions', () => {
         expect(new TransformParser().evaluate('=value(true)')).toBe(true));
     });
 
+    describe('first', () => {
+      it('returns the final value of an array', () =>
+        expect(new TransformParser().evaluate("=first(['first', 'last'])")).toBe('first'));
+
+      it('throws an error when not passed an array', () =>
+        expect(() => new TransformParser().evaluate('=first(1)')).toThrowError());
+    });
+
     describe('last', () => {
       it('returns the final value of an array', () =>
         expect(new TransformParser().evaluate("=last(['first', 'last'])")).toBe('last'));
@@ -294,6 +302,28 @@ describe('functions', () => {
 
       it('throws an error if there is one string as an argument', () =>
         expect(() => new TransformParser().evaluate("=mean(3,6,'cat')")).toThrow());
+    });
+
+    describe('min', () => {
+      it('finds the smallest value of multiple arguments', () =>
+        expect(new TransformParser().evaluate('=min(4,2,6)')).toBe(2));
+
+      it('finds the smallest value of an array argument', () =>
+        expect(new TransformParser().evaluate('=min([4,2,6])')).toBe(2));
+
+      it('supports string arguments', () =>
+        expect(new TransformParser().evaluate("=min(['dog','cat','fish'])")).toBe('cat'));
+    });
+
+    describe('max', () => {
+      it('finds the largest value of multiple arguments', () =>
+        expect(new TransformParser().evaluate('=max(4,6,2)')).toBe(6));
+
+      it('finds the largest value of an array argument', () =>
+        expect(new TransformParser().evaluate('=max([4,6,2])')).toBe(6));
+
+      it('supports string arguments', () =>
+        expect(new TransformParser().evaluate("=max(['cat','fish','dog'])")).toBe('fish'));
     });
   });
 });

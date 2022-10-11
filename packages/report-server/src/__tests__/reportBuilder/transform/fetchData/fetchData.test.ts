@@ -174,6 +174,35 @@ describe('fetchData', () => {
       );
     });
 
+    it('can use start and endDate in table using @all', async () => {
+      const dataElements = ['BCD1'];
+      const organisationUnits = ['TO'];
+      const startDate = '= min(@all.date)';
+      const endDate = '= max(@all.date)';
+      const rows = [{ date: '2018-01-01' }, { date: '2020-02-03' }];
+      const transform = buildTestTransform(
+        [
+          {
+            transform: 'fetchData',
+            parameters: {
+              dataElements,
+              organisationUnits,
+              startDate,
+              endDate,
+            },
+          },
+        ],
+        getContext(),
+      );
+      const received = await transform(TransformTable.fromRows(rows));
+      expect(received).toStrictEqual(
+        TransformTable.fromRows([
+          ...rows,
+          ...getFetchAnalyticsResults(dataElements, organisationUnits, '2018-01-01', '2020-02-03'),
+        ]),
+      );
+    });
+
     describe('date specs', () => {
       it('can apply modifiers to dates', async () => {
         const dataElements = ['BCD1'];
@@ -435,6 +464,31 @@ describe('fetchData', () => {
         TransformTable.fromRows(
           getFetchAnalyticsResults(dataElements, ['TO', 'PG'], defaultStartDate, defaultEndDate),
         ),
+      );
+    });
+
+    it('can use organisationUnits in table using @all', async () => {
+      const dataElements = ['BCD1'];
+      const organisationUnits = '= @all.organisationUnits';
+      const rows = [{ organisationUnits: 'TO' }, { organisationUnits: 'PG' }];
+      const transform = buildTestTransform(
+        [
+          {
+            transform: 'fetchData',
+            parameters: {
+              dataElements,
+              organisationUnits,
+            },
+          },
+        ],
+        getContext(),
+      );
+      const received = await transform(TransformTable.fromRows(rows));
+      expect(received).toStrictEqual(
+        TransformTable.fromRows([
+          ...rows,
+          ...getFetchAnalyticsResults(dataElements, ['TO', 'PG'], defaultStartDate, defaultEndDate),
+        ]),
       );
     });
 

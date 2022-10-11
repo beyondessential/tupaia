@@ -9,6 +9,18 @@ export const value = (valueGiven: FieldValue): FieldValue => {
   return valueGiven;
 };
 
+export const first = (values: FieldValue[]): FieldValue => {
+  if (!Array.isArray(values)) {
+    throw new Error(`Function 'first' expected an array, but got: ${values}`);
+  }
+
+  if (values.length < 1) {
+    return undefined;
+  }
+
+  return values[0];
+};
+
 export const last = (values: FieldValue[]): FieldValue => {
   if (!Array.isArray(values)) {
     throw new Error(`Function 'last' expected an array, but got: ${values}`);
