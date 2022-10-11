@@ -19,44 +19,12 @@ export const ENTITY_TYPES_COLUMNS = [
   },
 ];
 
-const FIELDS = [
-  ...ENTITY_TYPES_COLUMNS,
-  {
-    Header: 'Edit',
-    source: 'id',
-    type: 'edit',
-    actionConfig: {
-      title: 'Edit Entity Type',
-      editEndpoint: ENTITY_TYPES_ENDPOINT,
-      fields: ENTITY_TYPES_COLUMNS,
-    },
-  },
-  {
-    Header: 'Delete',
-    source: 'id',
-    type: 'delete',
-    actionConfig: {
-      endpoint: ENTITY_TYPES_ENDPOINT,
-    },
-  },
-];
-
-const CREATE_CONFIG = {
-  title: 'New Entity Type',
-  actionConfig: {
-    title: 'Create New Entity Type',
-    editEndpoint: ENTITY_TYPES_ENDPOINT,
-    fields: ENTITY_TYPES_COLUMNS,
-  },
-};
-
 export const EntityTypesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entity Types"
     endpoint={ENTITY_TYPES_ENDPOINT}
-    columns={FIELDS}
+    columns={ENTITY_TYPES_COLUMNS}
     getHeaderEl={getHeaderEl}
-    createConfig={CREATE_CONFIG}
   />
 );
 
