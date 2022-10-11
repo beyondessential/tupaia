@@ -31,7 +31,6 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETDataTables } from './dataTables';
-import { GETEntities } from './GETEntities';
 import { GETEntityTypes } from './GETEntityTypes';
 import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
@@ -90,7 +89,7 @@ import {
   EditUserEntityPermissions,
   GETUserEntityPermissions,
 } from './userEntityPermissions';
-import { EditEntity } from './entities';
+import { EditEntity, GETEntities, DeleteEntity } from './entities';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
@@ -309,6 +308,7 @@ apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandl
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
 apiV2.delete('/optionSets/:recordId', useRouteHandler(DeleteOptionSets));

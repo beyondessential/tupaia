@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
-const ENTITY_ENDPOINT = 'entities';
+const ENTITIES_ENDPOINT = 'entities';
 
 export const ENTITIES_COLUMNS = [
   { source: 'id', show: false },
@@ -38,7 +38,7 @@ const FIELDS = [
     source: 'id',
     type: 'edit',
     actionConfig: {
-      editEndpoint: ENTITY_ENDPOINT,
+      editEndpoint: ENTITIES_ENDPOINT,
       title: 'Edit Entity',
       fields: [
         {
@@ -46,6 +46,14 @@ const FIELDS = [
           source: 'name',
         },
       ],
+    },
+  },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: ENTITIES_ENDPOINT,
     },
   },
 ];
@@ -95,7 +103,7 @@ const IMPORT_CONFIG = {
 export const EntitiesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entities"
-    endpoint={ENTITY_ENDPOINT}
+    endpoint={ENTITIES_ENDPOINT}
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
