@@ -6,15 +6,7 @@
 import { BaseApi } from './BaseApi';
 
 export type SurveyResponse = {
-  id?: string;
   survey_id: string;
-  entity_id?: string;
-  entity_code?: string;
-  timestamp?: string;
-  data_time?: string;
-  start_time?: string;
-  end_time?: string;
-  approval_status?: string;
   answers: Answers | Answers[];
 };
 
