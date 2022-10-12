@@ -51,7 +51,7 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
         const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
         const validatedSurveyResponse = await validateSurveyResponseObject(
           this.req.models,
-          translatedPayload.survey_response || translatedPayload, // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
+          translatedPayload,
         );
         await upsertCreatedData(this.req.models, validatedSurveyResponse);
         const surveyResponseWithPopulatedData = await populateData(
