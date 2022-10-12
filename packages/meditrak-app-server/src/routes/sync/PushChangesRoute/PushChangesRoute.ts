@@ -5,7 +5,6 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { AnalyticsRefresher } from '@tupaia/database';
 import { ValidationError, yup } from '@tupaia/utils';
 import { addSurveyImage } from './addSurveyImage';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
@@ -27,7 +26,6 @@ const addSurveyImageValidator = yup.object().shape({
 type ChangeRecord = {
   action: typeof VALID_ACTIONS[number];
   payload: Record<string, unknown>;
-  waitForAnalyticsRebuild?: boolean;
 };
 
 export type PushChangesRequest = Request<
@@ -43,9 +41,8 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
 
     const surveyResponses = [];
     const surveyImages: { id: string; data: string }[] = [];
-    let waitForAnalyticsRebuild = false;
 
-    for (const { action, payload, ...rest } of changes) {
+    for (const { action, payload } of changes) {
       if (!VALID_ACTIONS.includes(action)) {
         throw new ValidationError(`${action} is not a supported change action`);
       }
@@ -62,7 +59,6 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           validatedSurveyResponse,
         );
         surveyResponses.push(surveyResponseWithPopulatedData);
-        waitForAnalyticsRebuild = rest.waitForAnalyticsRebuild || waitForAnalyticsRebuild;
       } else {
         const validatedPayload = addSurveyImageValidator.validateSync(payload);
         surveyImages.push(validatedPayload);
@@ -71,10 +67,6 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
 
     // Submit survey responses
     await this.req.ctx.services.central.upsertSurveyResponses(surveyResponses);
-    if (waitForAnalyticsRebuild) {
-      const { database } = this.req.models;
-      await AnalyticsRefresher.refreshAnalytics(database);
-    }
 
     // Add survey images
     for (const surveyImage of surveyImages) {
