@@ -64,12 +64,9 @@ function buildResponseRecord(user, entitiesByCode, body) {
     start_time: inputStartTime,
     end_time: inputEndTime,
     approval_status: approvalStatus,
+    timezone,
   } = body;
 
-  const additionalConfigs = {};
-  if (timestamp) {
-    additionalConfigs.timezone = getTimezoneNameFromTimestamp(timestamp);
-  }
   const time = new Date(timestamp).toISOString();
 
   return {
@@ -82,7 +79,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
     approval_status: approvalStatus,
     user_id: user.id,
     assessor_name: user.fullName,
-    ...additionalConfigs,
+    timezone: timestamp && !timezone ? getTimezoneNameFromTimestamp(timestamp) : timezone,
   };
 }
 
