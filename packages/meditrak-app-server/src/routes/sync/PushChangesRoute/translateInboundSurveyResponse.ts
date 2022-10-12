@@ -46,8 +46,7 @@ const constructSurveyResponseTranslators = (models: MeditrakAppServerModelRegist
   user_email: (userEmail: string) => translateUserEmailToIdAndAssessorName(models.user, userEmail),
   entity_code: (entityCode: string) => translateEntityCodeToId(models.entity, entityCode),
   survey_code: (surveyCode: string) => translateSurveyCodeToId(models.survey, surveyCode),
-  answers: (answers: { body: string }[]): Promise<SurveyResponseObject> =>
-    new Promise(() => ({ answers: answers.filter(a => a.body !== '') })), // remove any empty answers
+  answers: async (answers: { body: string }[]) => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
 });
 
 const constructAnswerTranslators = (models: MeditrakAppServerModelRegistry) => ({
