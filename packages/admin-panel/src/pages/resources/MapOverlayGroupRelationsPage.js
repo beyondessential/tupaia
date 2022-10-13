@@ -25,35 +25,31 @@ const FIELDS = [
     Header: 'Child Id',
     source: 'child_id',
     type: 'tooltip',
+    editable: false,
     editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'mapOverlay.id',
-      optionValueKey: 'mapOverlay.id',
-      canCreateNewOptions: true,
-      sourceKey: 'child_id',
+      hideForEdit: true,
     },
   },
   {
     Header: 'Child Code',
     source: 'childCode',
     type: 'tooltip',
+    editConfig: {
+      optionsEndpoint: 'mapOverlayGroupRelationChildren',
+      optionLabelKey: 'childCode',
+      optionValueKey: 'childId',
+      optionGroupKey: 'childType',
+      sourceKey: 'child_id',
+    },
   },
   {
     Header: 'Child Type',
     width: 160,
     source: 'child_type',
     type: 'tooltip',
+    editable: false,
     editConfig: {
-      options: [
-        {
-          label: 'Map Overlay',
-          value: 'mapOverlay',
-        },
-        {
-          label: 'Map Overlay Group',
-          value: 'mapOverlayGroup',
-        },
-      ],
+      hideForEdit: true,
     },
   },
   {

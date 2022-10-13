@@ -43,6 +43,7 @@ const AutocompleteComponent = React.memo(
     label,
     onClearState,
     optionLabelKey,
+    optionGroupKey,
     allowMultipleValues,
     canCreateNewOptions,
     searchTerm,
@@ -68,6 +69,7 @@ const AutocompleteComponent = React.memo(
       <AutocompleteBase
         value={value}
         label={label}
+        optionGroupKey={optionGroupKey}
         options={results}
         getOptionSelected={(option, selected) =>
           option[optionLabelKey] === selected[optionLabelKey]
@@ -116,6 +118,7 @@ AutocompleteComponent.propTypes = {
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string.isRequired,
+  optionGroupKey: PropTypes.string.isRequired,
   results: PropTypes.arrayOf(PropTypes.object),
   searchTerm: PropTypes.string,
   placeholder: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),

@@ -26,6 +26,12 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
   let nationalMapOverlayGroupRelation1;
   let nationalMapOverlayGroupRelation2;
   let projectLevelMapOverlayGroupRelation1;
+  let nationalMapOverlay1;
+  let nationalMapOverlay2;
+  let projectLevelMapOverlay1;
+  let nationalMapOverlayGroup1;
+  let nationalMapOverlayGroup2;
+  let projectLevelMapOverlayGroup1;
   let filterString;
 
   before(async () => {
@@ -45,6 +51,12 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
       nationalMapOverlayGroupRelation1,
       nationalMapOverlayGroupRelation2,
       projectLevelMapOverlayGroupRelation1,
+      nationalMapOverlay1,
+      nationalMapOverlay2,
+      projectLevelMapOverlay1,
+      nationalMapOverlayGroup1,
+      nationalMapOverlayGroup2,
+      projectLevelMapOverlayGroup1,
     } = await setupMapOverlayTestData(models));
   });
 
@@ -134,6 +146,23 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
         nationalMapOverlayGroupRelation1.id,
         nationalMapOverlayGroupRelation2.id,
         projectLevelMapOverlayGroupRelation1.id,
+      ]);
+    });
+
+    it('Should return all map overlay relation child codes', async () => {
+      app.grantAccess(BES_ADMIN_POLICY);
+      const { body: results } = await app.get(
+        `mapOverlayGroupRelations?page=0&pageSize=20&columns=%5B%22map_overlay_group.code%22%2C%22child_id%22%2C%22childCode%22%2C%22child_type%22%2C%22sort_order%22%2C%22id%22%2C%22id%22%5D&filter=%7B%7D&sort=%5B%5D`,
+      );
+
+      expect(results).to.have.length(6);
+      expect(results.map(r => r.childCode)).to.include.members([
+        nationalMapOverlay1.code,
+        nationalMapOverlay2.code,
+        projectLevelMapOverlay1.code,
+        nationalMapOverlayGroup1.code,
+        nationalMapOverlayGroup2.code,
+        projectLevelMapOverlayGroup1.code,
       ]);
     });
 

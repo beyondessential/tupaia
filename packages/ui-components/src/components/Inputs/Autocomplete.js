@@ -60,6 +60,7 @@ export const Autocomplete = ({
   inputRef,
   name,
   defaultValue,
+  optionGroupKey,
 }) => (
   <StyledAutocomplete
     id={id}
@@ -68,6 +69,7 @@ export const Autocomplete = ({
     value={value}
     disabled={disabled}
     onChange={onChange}
+    groupBy={option => option[optionGroupKey]}
     loading={loading}
     defaultValue={defaultValue}
     disableClearable={loading}
@@ -123,6 +125,7 @@ Autocomplete.propTypes = {
   inputRef: PropTypes.func,
   name: PropTypes.string,
   defaultValue: PropTypes.any,
+  optionGroupKey: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
@@ -145,4 +148,5 @@ Autocomplete.defaultProps = {
   inputRef: null,
   name: null,
   defaultValue: null,
+  optionGroupKey: null,
 };

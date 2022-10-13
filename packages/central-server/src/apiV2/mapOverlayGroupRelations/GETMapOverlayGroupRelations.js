@@ -4,7 +4,6 @@
  */
 
 import { TYPES } from '@tupaia/database';
-import { snake } from 'case';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -15,7 +14,7 @@ import {
 } from './assertMapOverlayGroupRelationsPermissions';
 import { assertMapOverlayGroupsGetPermissions } from '../mapOverlayGroups';
 import { assertMapOverlaysGetPermissions } from '../mapOverlays';
-import { generateLinkHeader } from '../GETHandler/helpers';
+import { generateLinkHeader, processColumnSelectorKeys } from '../GETHandler/helpers';
 
 /**
  * Handles endpoints:
@@ -108,13 +107,15 @@ export class GETMapOverlayGroupRelations extends GETHandler {
 
   async buildResponse() {
     let options = await this.getDbQueryOptions();
-    options.columns = options.columns.filter(column => !Object.keys(column).includes('childCode'));
+    const requestIncludesChildCode = options.columns.find(column =>
+      Object.keys(column).includes('childCode'),
+    );
+
     // handle request for a single record
     const { recordId } = this;
     if (recordId) {
-      const record = await this.findSingleRecord(recordId, options);
-      const [recordWithChildCode] = await this.addChildCodes([record]);
-      return { body: recordWithChildCode };
+      const record = await this.findRecordWithChildCode(recordId, options);
+      return { body: record };
     }
 
     // handle request for multiple records, including pagination headers
@@ -126,8 +127,10 @@ export class GETMapOverlayGroupRelations extends GETHandler {
         options,
       ));
     }
-    const pageOfRecords = await this.findRecords(criteria, options);
-    const pageOfRecordsWithChildCode = await this.addChildCodes(pageOfRecords);
+
+    const pageOfRecords = requestIncludesChildCode
+      ? await this.findRecordsWithChildCode(criteria, options)
+      : await this.findRecords(criteria, options);
 
     const totalNumberOfRecords = await this.countRecords(criteria, options);
     const { limit, page } = this.getPaginationParameters();
@@ -138,11 +141,26 @@ export class GETMapOverlayGroupRelations extends GETHandler {
         Link: linkHeader,
         'Access-Control-Expose-Headers': 'Link', // To get around CORS
       },
-      body: pageOfRecordsWithChildCode,
+      body: pageOfRecords,
     };
   }
 
-  async addChildCodes(records) {
+  getDbQueryCriteria() {
+    const { filter: filterString } = this.req.query;
+    const filter = filterString ? JSON.parse(filterString) : {};
+    delete filter.childCode;
+    return processColumnSelectorKeys(this.models, filter, this.recordType);
+  }
+
+  async findRecordsWithChildCode(criteria, options) {
+    const optionsWithoutChildCodeOrId = { ...options };
+
+    optionsWithoutChildCodeOrId.columns = optionsWithoutChildCodeOrId.columns.filter(
+      column => !Object.keys(column).includes('childCode'),
+    );
+
+    const records = await this.findRecords(criteria, optionsWithoutChildCodeOrId);
+
     const recordsWithChildCode = await Promise.all(
       records.map(async record => {
         const updatedRecord = { ...record };
@@ -152,6 +170,22 @@ export class GETMapOverlayGroupRelations extends GETHandler {
         return updatedRecord;
       }),
     );
+
     return recordsWithChildCode;
+  }
+
+  async findRecordWithChildCode(recordId, options) {
+    const optionsWithoutChildCodeOrId = { ...options };
+
+    optionsWithoutChildCodeOrId.columns = optionsWithoutChildCodeOrId.columns.filter(
+      column => !Object.keys(column).includes('childCode'),
+    );
+
+    const record = await this.findSingleRecord(recordId, optionsWithoutChildCodeOrId);
+    const resource = record.child_type;
+    const childRecord = await this.models[resource].findOne({ id: record.child_id });
+    record.childCode = childRecord.code;
+
+    return record;
   }
 }

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { ObjectValidator } from '@tupaia/utils';
 import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
@@ -11,6 +12,8 @@ import {
 } from '../../permissions';
 import { assertMapOverlaysEditPermissions } from '../mapOverlays';
 import { assertMapOverlayGroupsEditPermissions } from '../mapOverlayGroups';
+import { getChildType } from './getChildType';
+import { constructNewRecordValidationRules } from '../utilities';
 
 /**
  * Handles POST endpoints:
@@ -52,5 +55,24 @@ export class CreateMapOverlayGroupRelation extends CreateHandler {
     );
 
     return this.insertRecord();
+  }
+
+  async validateNewRecord() {
+    // Validate that the record matches required format
+    const dataToValidate =
+      this.parentRecordType !== '' && this.parentRecordId
+        ? { [`${this.parentRecordType}_id`]: this.parentRecordId, ...this.newRecordData }
+        : this.newRecordData;
+
+    if (!dataToValidate.child_type) {
+      const childType = await getChildType(this.models, dataToValidate.child_id);
+      dataToValidate.child_type = childType;
+    }
+
+    const validator = new ObjectValidator(
+      constructNewRecordValidationRules(this.models, this.recordType, this.parentRecordType),
+    );
+
+    return validator.validate(dataToValidate); // Will throw an error if not valid
   }
 }

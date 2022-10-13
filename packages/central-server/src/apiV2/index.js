@@ -43,6 +43,7 @@ import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
+import { GETMapOverlayGroupRelationChildren } from './GETMapOverlayGroupRelationChildren';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import { CreateProject } from './projects';
@@ -187,6 +188,7 @@ apiV2.get(
   useRouteHandler(GETMapOverlayGroupRelations),
 );
 apiV2.get('/mapOverlayGroupRelations/:recordId?', useRouteHandler(GETMapOverlayGroupRelations));
+apiV2.get('/mapOverlayGroupRelationChildren', useRouteHandler(GETMapOverlayGroupRelationChildren));
 apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/entities', useRouteHandler(GETEntities));

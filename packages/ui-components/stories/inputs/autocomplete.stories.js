@@ -19,18 +19,18 @@ const Container = styled.div`
 `;
 
 const options = [
-  { id: 1, name: 'Sentinel Site One' },
-  { id: 2, name: 'Sentinel Site Two' },
-  { id: 3, name: 'Sentinel Site Three' },
-  { id: 4, name: 'Sentinel Site Four' },
-  { id: 5, name: 'Sentinel Site Five' },
-  { id: 6, name: 'Sentinel Site Six' },
-  { id: 7, name: 'Sentinel Site Seven' },
-  { id: 8, name: 'Sentinel Site Eight' },
-  { id: 9, name: 'Sentinel Site Nine' },
-  { id: 10, name: 'Sentinel Site Ten' },
-  { id: 11, name: 'Sentinel Site Eleven' },
-  { id: 12, name: 'Sentinel Site Twelve' },
+  { id: 1, name: 'Sentinel Site One', group: 'Group 1' },
+  { id: 2, name: 'Sentinel Site Two', group: 'Group 1' },
+  { id: 3, name: 'Sentinel Site Three', group: 'Group 1' },
+  { id: 4, name: 'Sentinel Site Four', group: 'Group 1' },
+  { id: 5, name: 'Sentinel Site Five', group: 'Group 1' },
+  { id: 6, name: 'Sentinel Site Six', group: 'Group 2' },
+  { id: 7, name: 'Sentinel Site Seven', group: 'Group 2' },
+  { id: 8, name: 'Sentinel Site Eight', group: 'Group 2' },
+  { id: 9, name: 'Sentinel Site Nine', group: 'Group 2' },
+  { id: 10, name: 'Sentinel Site Ten', group: 'Group 3' },
+  { id: 11, name: 'Sentinel Site Eleven', group: 'Group 3' },
+  { id: 12, name: 'Sentinel Site Twelve', group: 'Group 3' },
 ];
 
 export const Simple = () => (
@@ -131,6 +131,36 @@ export const CustomKeys = () => {
       <Autocomplete
         label="Controlled Auto Complete"
         options={options}
+        getOptionSelected={(option, selected) => option[valueKey] === selected[valueKey]}
+        getOptionLabel={option => (option ? option[labelKey] : '')}
+        onChange={handleChange}
+        value={value}
+        placeholder="Search..."
+      />
+      <Typography>Selected Value: {value ? JSON.stringify(value) : 'none'}</Typography>
+    </Container>
+  );
+};
+
+export const Grouped = () => {
+  const [value, setValue] = useState(null);
+
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
+
+  const valueKey = 'id';
+  const labelKey = 'name';
+
+  return (
+    <Container>
+      <Autocomplete
+        label="Controlled Auto Complete"
+        options={options}
+        optionGroupKey="group"
         getOptionSelected={(option, selected) => option[valueKey] === selected[valueKey]}
         getOptionLabel={option => (option ? option[labelKey] : '')}
         onChange={handleChange}

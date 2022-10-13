@@ -35,9 +35,9 @@ export const Editor = ({ fields, recordData, onEditField }) => {
     <div>
       {fields
         .filter(({ show = true, editConfig = {} }) => {
-          const { visibilityCriteria } = editConfig;
+          const { visibilityCriteria, hideForEdit } = editConfig;
 
-          if (!show) {
+          if (!show || hideForEdit) {
             return false;
           }
 
