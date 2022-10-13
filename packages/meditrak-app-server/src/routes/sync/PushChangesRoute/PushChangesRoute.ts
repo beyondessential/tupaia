@@ -9,8 +9,14 @@ import { ValidationError, yup } from '@tupaia/utils';
 import { addSurveyImage } from './addSurveyImage';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
 import { translateSurveyResponseObject } from './translateInboundSurveyResponse';
+import { populateData } from './populateData';
+import { upsertCreatedData } from './upsertCreatedData';
 
-const VALID_ACTIONS = ['SubmitSurveyResponse', 'AddSurveyImage'];
+// Action constants
+const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
+const ADD_SURVEY_IMAGE = 'AddSurveyImage';
+
+const VALID_ACTIONS = [SUBMIT_SURVEY_RESPONSE, ADD_SURVEY_IMAGE];
 
 const addSurveyImageValidator = yup.object().shape({
   id: yup.string().required(),
@@ -41,13 +47,18 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
         throw new ValidationError(`${action} is not a supported change action`);
       }
 
-      if (action === 'SubmitSurveyResponse') {
+      if (action === SUBMIT_SURVEY_RESPONSE) {
         const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
         const validatedSurveyResponse = await validateSurveyResponseObject(
           this.req.models,
           translatedPayload,
         );
-        surveyResponses.push(validatedSurveyResponse);
+        await upsertCreatedData(this.req.models, validatedSurveyResponse);
+        const surveyResponseWithPopulatedData = await populateData(
+          this.req.models,
+          validatedSurveyResponse,
+        );
+        surveyResponses.push(surveyResponseWithPopulatedData);
       } else {
         const validatedPayload = addSurveyImageValidator.validateSync(payload);
         surveyImages.push(validatedPayload);
@@ -55,7 +66,7 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
     }
 
     // Submit survey responses
-    await this.req.ctx.services.central.createSurveyResponses(surveyResponses);
+    await this.req.ctx.services.central.upsertSurveyResponses(surveyResponses);
 
     // Add survey images
     for (const surveyImage of surveyImages) {

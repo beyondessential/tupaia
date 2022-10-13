@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
-import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
 import {
   ValidationError,
   MultiValidationError,
@@ -13,12 +11,12 @@ import {
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
   constructIsEmptyOr,
-  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
 import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
+import { saveResponsesToDatabase } from './surveyResponses';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -68,92 +66,6 @@ async function validateResponse(models, userId, body) {
   });
 
   await Promise.all(answerValidations);
-}
-
-function buildResponseRecord(user, entitiesByCode, body) {
-  // assumes validateResponse has succeeded
-  const {
-    entity_id: entityId,
-    entity_code: entityCode,
-    timestamp,
-    survey_id: surveyId,
-    start_time: inputStartTime,
-    end_time: inputEndTime,
-  } = body;
-
-  const timezoneName = getTimezoneNameFromTimestamp(timestamp);
-  const time = new Date(timestamp).toISOString();
-
-  return {
-    survey_id: surveyId,
-    user_id: user.id,
-    entity_id: entityId || entitiesByCode[entityCode].id,
-    data_time: stripTimezoneFromDate(time),
-    start_time: inputStartTime ? new Date(inputStartTime).toISOString() : time,
-    end_time: inputEndTime ? new Date(inputEndTime).toISOString() : time,
-    timezone: timezoneName,
-    assessor_name: user.fullName,
-  };
-}
-
-async function getRecordsByCode(model, codes) {
-  const records = await model.find({ code: Array.from(codes) });
-  return keyBy(records, 'code');
-}
-
-function buildAnswerRecords(answers, surveyResponseId, questionsByCode) {
-  return Object.entries(answers).map(([code, value]) => {
-    const question = questionsByCode[code];
-    return {
-      type: question.type,
-      survey_response_id: surveyResponseId,
-      question_id: question.id,
-      text: value,
-    };
-  });
-}
-
-async function getQuestionsByCode(models, responses) {
-  const questionCodes = new Set();
-  responses.forEach(r => Object.keys(r.answers).forEach(code => questionCodes.add(code)));
-  return getRecordsByCode(models.question, questionCodes);
-}
-
-async function getEntitiesByCode(models, responses) {
-  const entityCodes = new Set();
-  responses.forEach(({ entity_code: entityCode }) => entityCode && entityCodes.add(entityCode));
-  return getRecordsByCode(models.entity, entityCodes);
-}
-
-async function saveResponsesToDatabase(models, userId, responses) {
-  // pre-fetch some data that will be used by multiple responses/answers
-  const questionsByCode = await getQuestionsByCode(models, responses);
-  const entitiesByCode = await getEntitiesByCode(models, responses);
-  const user = await models.user.findById(userId);
-
-  // build the response records then persist them to the database
-  const responseRecords = responses.map(r => buildResponseRecord(user, entitiesByCode, r));
-  const surveyResponses = await models.surveyResponse.createMany(responseRecords);
-  const idsCreated = surveyResponses.map(r => ({ surveyResponseId: r.id }));
-
-  // build the answer records then persist them to the database
-  // note that we could build all of the answers for all responses at once, and persist them in one
-  // big batch, but that approach resulted in occasional id clashes for POSTs of around 10k answers,
-  // (unexpectedly, doing them in series and smaller batches is also 5x faster on a macbook pro,
-  // though this is probably very dependent on the hardware - parallel should be faster if it didn't
-  // overwhelm postgres)
-  for (let i = 0; i < responses.length; i++) {
-    const response = responses[i];
-    const answerRecords = buildAnswerRecords(
-      response.answers,
-      surveyResponses[i].id,
-      questionsByCode,
-    );
-    const answers = await models.answer.createMany(answerRecords);
-    idsCreated[i].answerIds = answers.map(a => a.id);
-  }
-
-  return idsCreated;
 }
 
 export const validateAllResponses = async (models, userId, responses) => {

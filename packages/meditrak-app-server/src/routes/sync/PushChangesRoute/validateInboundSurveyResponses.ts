@@ -12,16 +12,17 @@ import {
   yup,
   yupUtils,
 } from '@tupaia/utils';
-import { MeditrakAppServerModelRegistry } from '../../types';
+import { MeditrakAppServerModelRegistry } from '../../../types';
+import { SurveyResponseObject } from './types';
 
 const clinicOrEntityIdExist = (surveyResponse: Record<string, unknown>) =>
   !(surveyResponse.clinic_id || surveyResponse.entity_id);
 
 export const constructEntityValidator = (models: MeditrakAppServerModelRegistry) =>
   yup.object().shape({
-    id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
     code: yup.string().required(),
-    parent_id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+    parent_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
     name: yup.string().required(),
     type: yup.mixed<string>().oneOf(Object.values(models.entity.types)).required(),
     country_code: yup.string().required(),
@@ -29,7 +30,7 @@ export const constructEntityValidator = (models: MeditrakAppServerModelRegistry)
 
 export const constructOptionsValidator = (models: MeditrakAppServerModelRegistry) =>
   yup.object().shape({
-    id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
     value: yup.number().required(),
     option_set_id: yup
       .string()
@@ -41,15 +42,17 @@ export const constructSurveyResponseValidator = (models: MeditrakAppServerModelR
   yup
     .object()
     .shape({
-      id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+      id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
       assessor_name: yup.string().required(),
-      clinic_id: yup.string().test(yupUtils.yupTest(constructIsEmptyOr(takesIdForm))),
-      entity_id: yup.string().test(yupUtils.yupTest(constructIsEmptyOr(takesIdForm))),
-      start_time: yup.string().test(yupUtils.yupTest(takesDateForm)),
-      end_time: yup.string().test(yupUtils.yupTest(takesDateForm)),
-      survey_id: yup.string().test(yupUtils.yupTest(takesIdForm)),
-      user_id: yup.string().test(yupUtils.yupTest(takesIdForm)),
-      answers: yup.array().required(),
+      clinic_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
+      data_time: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesDateForm))),
+      entity_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
+      start_time: yup.string().test(yupUtils.yupTestSync(takesDateForm)),
+      end_time: yup.string().test(yupUtils.yupTestSync(takesDateForm)),
+      survey_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
+      user_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
+      approval_status: yup.string(),
+      answers: yup.array().of(constructAnswerValidator(models)).required(),
       entities_created: yup.array().of(constructEntityValidator(models)),
       options_created: yup.array().of(constructOptionsValidator(models)),
     })
@@ -57,15 +60,23 @@ export const constructSurveyResponseValidator = (models: MeditrakAppServerModelR
 
 const constructAnswerValidator = (models: MeditrakAppServerModelRegistry) =>
   yup.object().shape({
-    id: yup.string().test(yupUtils.yupTest(takesIdForm)),
+    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
     type: yup.string().required(),
     question_id: yup.string().test(yupUtils.yupTest(constructRecordExistsWithId(models.question))),
     body: yup.string().required(),
   });
 
+export type ValidatedEntitiesObject = yup.InferType<ReturnType<typeof constructEntityValidator>>;
+
+export type ValidatedOptionsObject = yup.InferType<ReturnType<typeof constructOptionsValidator>>;
+
+export type ValidatedSurveyResponseObject = NonNullable<
+  yup.InferType<ReturnType<typeof constructSurveyResponseValidator>>
+>;
+
 export const validateSurveyResponseObject = async (
   models: MeditrakAppServerModelRegistry,
-  surveyResponseObject: Record<string, unknown>,
+  surveyResponseObject: SurveyResponseObject,
 ) => {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');

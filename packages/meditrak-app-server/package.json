@@ -35,10 +35,12 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "lodash.clonedeep": "^4.5.0",
+    "moment-timezone": "^0.5.27",
     "semver-compare": "^1.0.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.0",
     "@types/semver-compare": "^1.0.1"
   }
 }

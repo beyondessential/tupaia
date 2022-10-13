@@ -132,6 +132,22 @@ const testSync = (schema, createError) =>
  * @param {string} [message]
  * @returns
  */
+const yupTestSync = (testFunction, message) => (...args) => {
+  try {
+    testFunction(...args);
+  } catch (error) {
+    return new yup.ValidationError(message || error.message);
+  }
+
+  return true;
+};
+
+/**
+ * Wrap an asynchronised test function that throws an error upon failure for using in yup
+ * @param {(...args: any[]) => any} testFunction
+ * @param {string} [message]
+ * @returns
+ */
 const yupTest = (testFunction, message) => async (...args) => {
   try {
     await testFunction(...args);
@@ -144,6 +160,28 @@ const yupTest = (testFunction, message) => async (...args) => {
 
 /**
  * Wrap a list of test functions that throws an error upon failure for using in yup
+ * If any pass, the test passes
+ * @param {((...args: any[]) => any)[]} testFunctions
+ * @param {string} [message]
+ * @returns
+ */
+const yupTestAnySync = (testFunctions, message) => (...args) => {
+  const testFailures = [];
+  for (let i = 0; i < testFunctions.length; i++) {
+    const testFunction = testFunctions[i];
+    const testResult = yupTestSync(testFunction)(...args);
+    if (testResult === true) {
+      return true;
+    }
+
+    testFailures.push(testResult.message);
+  }
+
+  return new yup.ValidationError(message || testFailures.join(' or '));
+};
+
+/**
+ * Wrap a list of asynchronised test functions that throws an error upon failure for using in yup
  * If any pass, the test passes
  * @param {((...args: any[]) => any)[]} testFunctions
  * @param {string} [message]
@@ -170,7 +208,9 @@ export const yupUtils = {
   polymorphic,
   testSync,
   yupTest,
+  yupTestSync,
   yupTestAny,
+  yupTestAnySync,
 };
 
 export * as yup from 'yup';

@@ -3,53 +3,15 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import AWS from 'aws-sdk';
 import momentTimezone from 'moment-timezone';
 import {
   DatabaseError,
-  UploadError,
   stripTimezoneFromDate,
   reformatDateStringWithoutTz,
-  S3Client,
-  S3_BUCKET_PATH,
-  getS3ImageFilePath,
   ValidationError,
 } from '@tupaia/utils';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
-
-async function saveAnswer(models, answer, surveyResponseId) {
-  const answerDocument = {
-    id: answer.id,
-    type: answer.type,
-    question_id: answer.question_id,
-    survey_response_id: surveyResponseId,
-  };
-  if (answer.type === 'Photo') {
-    const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
-    if (validFileIdRegex.test(answer.body)) {
-      // if this is passed a valid id in the answer body
-      answerDocument.text = `${S3_BUCKET_PATH}${getS3ImageFilePath()}${answer.body}.png`;
-    } else {
-      // included for backwards compatibility passing base64 strings for images
-      try {
-        const s3Client = new S3Client(new AWS.S3());
-        answerDocument.text = await s3Client.uploadImage(answer.body);
-      } catch (error) {
-        throw new UploadError(error);
-      }
-    }
-  } else {
-    answerDocument.text = answer.body;
-  }
-  try {
-    await models.answer.updateOrCreate(
-      { survey_response_id: surveyResponseId, question_id: answer.question_id },
-      answerDocument,
-    );
-  } catch (error) {
-    throw new DatabaseError('saving answer', error);
-  }
-}
+import { upsertAnswers } from './upsertAnswers';
 
 /**
  * Creates or updates survey responses from passed changes
@@ -97,7 +59,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with id ${surveyResponseId}`, error);
   }
-  await Promise.all(answers.map(answer => saveAnswer(models, answer, surveyResponse.id)));
+  await upsertAnswers(models, answers, surveyResponse.id);
 }
 
 const createOptions = async (models, optionsCreated) => {
