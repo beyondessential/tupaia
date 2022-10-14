@@ -20,13 +20,13 @@ const Container = styled.main`
 `;
 
 export const App = ({ Navbar, Footer }) => {
-  const { data, isLoading: isUserLoading, isBESAdmin } = useUser();
-
+  const { data, isLoading: isUserLoading, isVizBuilderUser } = useUser();
+  console.log('isVizBuilderUser in App.js: ', isVizBuilderUser);
   if (isUserLoading) {
     return <FullPageLoader />;
   }
 
-  if (!isBESAdmin) {
+  if (!isVizBuilderUser) {
     return <Redirect to="/" />;
   }
 
@@ -35,7 +35,7 @@ export const App = ({ Navbar, Footer }) => {
   return (
     <StateProvider>
       <Container>
-        {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
+        {Navbar && <Navbar user={user} />}
         <Switch>
           <Route path="/viz-builder/:vizType/new" exact>
             <CreateNew />

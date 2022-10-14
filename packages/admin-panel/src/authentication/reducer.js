@@ -7,6 +7,7 @@ import { createTransform } from 'redux-persist';
 import { createReducer } from '../utilities';
 import {
   BES_ADMIN_PERMISSION_GROUP,
+  VIZ_BUILDER_USER_PERMISSION_GROUP,
   EMAIL_ADDRESS_CHANGE,
   PASSWORD_CHANGE,
   LOGIN_MODAL_TOGGLE,
@@ -46,6 +47,10 @@ const isBESAdmin = policy => {
   return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 };
 
+const isVizBuilderUser = policy => {
+  return new AccessPolicy(policy).allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
+};
+
 const stateChanges = {
   [LOGIN_MODAL_TOGGLE]: payload => payload,
   [EMAIL_ADDRESS_CHANGE]: payload => payload,
@@ -59,6 +64,7 @@ const stateChanges = {
       emailAddress: currentState.emailAddress,
       password: currentState.password,
       isBESAdmin: isBESAdmin(payload.user.accessPolicy),
+      isVizBuilderUser: isVizBuilderUser(payload.user.accessPolicy),
     };
   },
   [LOGIN_REQUEST]: () => ({ isLoading: true }),

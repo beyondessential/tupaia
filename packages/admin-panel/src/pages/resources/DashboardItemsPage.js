@@ -69,13 +69,7 @@ const IMPORT_CONFIG = {
   ),
 };
 
-const renderNewDashboardVizButton = () => (
-  <StyledLink to="/viz-builder/dashboard-item/new">
-    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
-  </StyledLink>
-);
-
-export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
+export const DashboardItemsPage = ({ getHeaderEl, isVizBuilderUser, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -86,7 +80,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
+      show: isVizBuilderUser,
       editConfig: {
         type: 'link',
         linkOptions: {
@@ -131,6 +125,14 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
     },
   ];
 
+  const renderNewDashboardVizButton = () => (
+    <StyledLink to={isVizBuilderUser ? '/viz-builder/dashboard-item/new' : '#'}>
+      <LightOutlinedButton disabled={!isVizBuilderUser} startIcon={<AddCircleIcon />}>
+        New
+      </LightOutlinedButton>
+    </StyledLink>
+  );
+
   return (
     <ResourcePage
       title="Dashboard Items"
@@ -146,9 +148,9 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.bool,
+  isVizBuilderUser: PropTypes.bool,
 };
 
 DashboardItemsPage.defaultProps = {
-  isBESAdmin: false,
+  isVizBuilderUser: false,
 };

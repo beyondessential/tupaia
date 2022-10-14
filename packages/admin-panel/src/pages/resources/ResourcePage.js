@@ -33,6 +33,7 @@ export const ResourcePage = ({
   defaultSorting,
   displayUsedBy,
 }) => {
+  console.log('LinksComponent', LinksComponent);
   const HeaderPortal = usePortalWithCallback(
     <Header
       title={title}

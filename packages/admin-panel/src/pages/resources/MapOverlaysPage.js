@@ -138,7 +138,7 @@ const renderNewMapOverlayVizButton = () => (
   </StyledLink>
 );
 
-export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
+export const MapOverlaysPage = ({ getHeaderEl, isVizBuilderUser, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -149,7 +149,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
+      show: isVizBuilderUser,
       editConfig: {
         type: 'link',
         linkOptions: {
@@ -209,9 +209,9 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
 
 MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.bool,
+  isVizBuilderUser: PropTypes.bool,
 };
 
 MapOverlaysPage.defaultProps = {
-  isBESAdmin: false,
+  isVizBuilderUser: false,
 };

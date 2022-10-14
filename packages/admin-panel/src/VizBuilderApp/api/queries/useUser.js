@@ -14,6 +14,7 @@ export const useUser = () => {
   const user = query.data;
   const isLoggedIn = user && Object.keys(user).length > 0;
   const isBESAdmin = user && user.isBESAdmin;
+  const isVizBuilderUser = user && user.isVizBuilderUser;
 
-  return { ...query, isLoggedIn, isBESAdmin };
+  return { ...query, isLoggedIn, isBESAdmin, isVizBuilderUser };
 };

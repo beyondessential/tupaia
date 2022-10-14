@@ -2,7 +2,9 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-const getAuthenticationState = ({ authentication = {} }) => authentication;
+const getAuthenticationState = ({ authentication = {} }) => {
+  return authentication;
+};
 
 // Login modal details
 export const getEmailAddress = state => getAuthenticationState(state).emailAddress;
@@ -19,3 +21,4 @@ export const getUser = state => getAuthenticationState(state).user || {}; // If 
 
 // BES Admin
 export const getIsBESAdmin = state => getAuthenticationState(state).isBESAdmin;
+export const getIsVizBuilderUser = state => getAuthenticationState(state).isVizBuilderUser;
