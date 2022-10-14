@@ -20,7 +20,6 @@ import {
 
 const defaultState = {
   emailAddress: '',
-  password: '',
   user: null,
   isLoading: false,
   rememberMe: false,
@@ -57,7 +56,6 @@ const stateChanges = {
       ...payload,
       rememberMe: currentState.rememberMe,
       emailAddress: currentState.emailAddress,
-      password: currentState.password,
       isBESAdmin: isBESAdmin(payload.user.accessPolicy),
     };
   },
