@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { DataTableType as DataTableTypeClass } from '@tupaia/database';
-import { createDataTableService } from '../../../dataTableService';
-import { DataTableType } from '../../../models';
+import { DataTableServiceBuilder } from '../../../dataTableService';
 
 const TEST_ANALYTICS = [
   { period: '2020-01-01', organisationUnit: 'TO', dataElement: 'PSSS_AFR_Cases', value: 7 },
@@ -46,10 +45,8 @@ jest.mock('@tupaia/data-broker', () => ({
   DataBroker: jest.fn().mockImplementation(() => ({})),
 }));
 
-const analyticsDataTable = new DataTableTypeClass(
-  {},
-  { type: 'internal', code: 'analytics' },
-) as DataTableType;
+const accessPolicy = new AccessPolicy({ DL: ['Public'] });
+const apiClient = {} as TupaiaApiClient;
 
 describe('AnalyticsDataTableService', () => {
   describe('parameter validation', () => {
@@ -111,20 +108,20 @@ describe('AnalyticsDataTableService', () => {
     ];
 
     it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      const analyticsDataTableService = createDataTableService(
-        analyticsDataTable,
-        {} as TupaiaApiClient,
-      );
+      const analyticsDataTableService = new DataTableServiceBuilder()
+        .setServiceType('analytics')
+        .setContext({ apiClient, accessPolicy })
+        .build();
 
       expect(() => analyticsDataTableService.fetchData(parameters)).toThrow(expectedError);
     });
   });
 
   it('can fetch data from Aggregator.fetchAnalytics()', async () => {
-    const analyticsDataTableService = createDataTableService(
-      analyticsDataTable,
-      {} as TupaiaApiClient,
-    );
+    const analyticsDataTableService = new DataTableServiceBuilder()
+      .setServiceType('analytics')
+      .setContext({ apiClient, accessPolicy })
+      .build();
 
     const dataElementCodes = ['PSSS_AFR_Cases'];
     const organisationUnitCodes = ['TO'];
@@ -143,10 +140,10 @@ describe('AnalyticsDataTableService', () => {
   });
 
   it('passes all parameters to Aggregator.fetchAnalytics()', async () => {
-    const analyticsDataTableService = createDataTableService(
-      analyticsDataTable,
-      {} as TupaiaApiClient,
-    );
+    const analyticsDataTableService = new DataTableServiceBuilder()
+      .setServiceType('analytics')
+      .setContext({ apiClient, accessPolicy })
+      .build();
 
     const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
     const organisationUnitCodes = ['PG'];

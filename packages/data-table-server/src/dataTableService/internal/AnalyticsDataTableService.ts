@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator } from '@tupaia/aggregator';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { yup, yupUtils, hasNoContent, takesDateForm } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
@@ -33,18 +34,20 @@ const paramsSchema = yup.object().shape({
 
 const configSchema = yup.object();
 
+type AnalyticsDataTableServiceContext = { apiClient: TupaiaApiClient; accessPolicy: AccessPolicy };
 type Analytic = { period: string; organisationUnit: string; dataElement: string; value: unknown };
 
 /**
  * DataTableService for pulling data from data-broker's fetchAnalytics() endpoint
  */
 export class AnalyticsDataTableService extends DataTableService<
+  AnalyticsDataTableServiceContext,
   typeof paramsSchema,
   typeof configSchema,
   Analytic
 > {
-  public constructor(apiClient: TupaiaApiClient, config: unknown) {
-    super(paramsSchema, configSchema, apiClient, config);
+  public constructor(context: AnalyticsDataTableServiceContext, config: unknown) {
+    super(context, paramsSchema, configSchema, config);
   }
 
   protected async pullData(params: {
@@ -64,7 +67,12 @@ export class AnalyticsDataTableService extends DataTableService<
       aggregations,
     } = params;
 
-    const aggregator = new Aggregator(new DataBroker({ services: this.apiClient }));
+    const aggregator = new Aggregator(
+      new DataBroker({
+        services: this.ctx.apiClient,
+        accessPolicy: this.ctx.accessPolicy,
+      }),
+    );
 
     const { results } = await aggregator.fetchAnalytics(
       dataElementCodes,
@@ -81,3 +89,8 @@ export class AnalyticsDataTableService extends DataTableService<
     return results as Analytic[];
   }
 }
+
+export const createAnalyticsDataTableService = (
+  context: AnalyticsDataTableServiceContext,
+  config: unknown,
+) => new AnalyticsDataTableService(context, config);

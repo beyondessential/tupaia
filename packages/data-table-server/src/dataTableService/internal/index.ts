@@ -3,15 +3,5 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaApiClient } from '@tupaia/api-client';
-import { DataTableService } from '../DataTableService';
-import { AnalyticsDataTableService } from './AnalyticsDataTableService';
-import { EventsDataTableService } from './EventsDataTableService';
-
-export const internalDataTableServices: Record<
-  string,
-  new (apiClient: TupaiaApiClient, config: unknown) => DataTableService
-> = {
-  analytics: AnalyticsDataTableService,
-  events: EventsDataTableService,
-};
+export { AnalyticsDataTableService } from './AnalyticsDataTableService';
+export { EventsDataTableService } from './EventsDataTableService';

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { Aggregator } from '@tupaia/aggregator';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataBroker } from '@tupaia/data-broker';
@@ -34,6 +35,11 @@ const paramsSchema = yup.object().shape({
 
 const configSchema = yup.object();
 
+type EventsDataTableServiceContext = {
+  apiClient: TupaiaApiClient;
+  accessPolicy: AccessPolicy;
+};
+
 type EventFields = {
   event: string;
   eventDate: string;
@@ -50,12 +56,13 @@ type Event = EventFields & Record<string, unknown>;
  * DataTableService for pulling data from data-broker's fetchEvents() endpoint
  */
 export class EventsDataTableService extends DataTableService<
+  EventsDataTableServiceContext,
   typeof paramsSchema,
   typeof configSchema,
   Event
 > {
-  public constructor(apiClient: TupaiaApiClient, config: unknown) {
-    super(paramsSchema, configSchema, apiClient, config);
+  public constructor(context: EventsDataTableServiceContext, config: unknown) {
+    super(context, paramsSchema, configSchema, config);
   }
 
   protected async pullData(params: {
@@ -77,7 +84,12 @@ export class EventsDataTableService extends DataTableService<
       aggregations,
     } = params;
 
-    const aggregator = new Aggregator(new DataBroker({ services: this.apiClient }));
+    const aggregator = new Aggregator(
+      new DataBroker({
+        services: this.ctx.apiClient,
+        accessPolicy: this.ctx.accessPolicy,
+      }),
+    );
 
     const response = (await aggregator.fetchEvents(
       dataGroupCode,
@@ -96,3 +108,8 @@ export class EventsDataTableService extends DataTableService<
     });
   }
 }
+
+export const createEventsDataTableService = (
+  context: EventsDataTableServiceContext,
+  config: unknown,
+) => new EventsDataTableService(context, config);

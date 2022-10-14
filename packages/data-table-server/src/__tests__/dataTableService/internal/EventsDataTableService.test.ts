@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { DataTableType as DataTableTypeClass } from '@tupaia/database';
-import { createDataTableService } from '../../../dataTableService';
-import { DataTableType } from '../../../models';
+import { DataTableServiceBuilder } from '../../../dataTableService';
 
 type Event = { eventDate: string; orgUnit: string; dataValues: Record<string, unknown> };
 
@@ -93,10 +92,8 @@ jest.mock('@tupaia/data-broker', () => ({
   DataBroker: jest.fn().mockImplementation(() => ({})),
 }));
 
-const eventsDataTable = new DataTableTypeClass(
-  {},
-  { type: 'internal', code: 'events' },
-) as DataTableType;
+const accessPolicy = new AccessPolicy({ DL: ['Public'] });
+const apiClient = {} as TupaiaApiClient;
 
 describe('EventsDataTableService', () => {
   describe('parameter validation', () => {
@@ -158,14 +155,20 @@ describe('EventsDataTableService', () => {
     ];
 
     it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      const eventsDataTableService = createDataTableService(eventsDataTable, {} as TupaiaApiClient);
+      const eventsDataTableService = new DataTableServiceBuilder()
+        .setServiceType('events')
+        .setContext({ apiClient, accessPolicy })
+        .build();
 
       expect(() => eventsDataTableService.fetchData(parameters)).toThrow(expectedError);
     });
   });
 
   it('can fetch data from Aggregator.fetchEvents()', async () => {
-    const eventsDataTableService = createDataTableService(eventsDataTable, {} as TupaiaApiClient);
+    const eventsDataTableService = new DataTableServiceBuilder()
+      .setServiceType('events')
+      .setContext({ apiClient, accessPolicy })
+      .build();
 
     const dataGroupCode = 'PSSS_WNR';
     const dataElementCodes = ['PSSS_AFR_Cases'];
@@ -187,7 +190,10 @@ describe('EventsDataTableService', () => {
   });
 
   it('passes all parameters to Aggregator.fetchEvents()', async () => {
-    const eventsDataTableService = createDataTableService(eventsDataTable, {} as TupaiaApiClient);
+    const eventsDataTableService = new DataTableServiceBuilder()
+      .setServiceType('events')
+      .setContext({ apiClient, accessPolicy })
+      .build();
 
     const dataGroupCode = 'PSSS_Confirmed_WNR';
     const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
