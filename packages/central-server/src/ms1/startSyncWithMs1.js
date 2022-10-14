@@ -19,6 +19,12 @@ const INVALID_HTTP_CODES = [400, 500];
 const ENDPOINT_NOT_FOUND = 'Endpoint not found to send data to MS1';
 
 export async function startSyncWithMs1(models) {
+  if (process.env.MS1_SYNC_DISABLE === 'true') {
+    // eslint-disable-next-line no-console
+    console.log('MS1 sync is disabled');
+    return;
+  }
+
   const subscriptions = [models.surveyResponse.databaseType];
   const validator = new Ms1ChangeValidator(models);
   const detailGenerator = new Ms1ChangeDetailGenerator(models);
