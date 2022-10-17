@@ -209,7 +209,7 @@ export const ROUTES = [
   },
   {
     label: 'External Data',
-    to: '/externalDatabaseConnections',
+    to: '/external-database-connections',
     icon: <Language />,
     tabs: [
       {
