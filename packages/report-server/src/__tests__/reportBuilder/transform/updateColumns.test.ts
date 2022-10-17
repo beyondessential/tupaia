@@ -188,8 +188,8 @@ describe('updateColumns', () => {
     );
   });
 
-  it('can upsert a column dynamically', () => {
-    const transform = buildTransform([
+  it('can upsert a column dynamically', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'updateColumns',
         insert: {
@@ -199,7 +199,7 @@ describe('updateColumns', () => {
       },
     ]);
     expect(
-      transform(
+      await transform(
         TransformTable.fromRows([
           { name: 'value', value: 7 },
           { name: 'total', value: 10 },

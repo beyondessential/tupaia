@@ -348,9 +348,6 @@ describe('DashboardVisualisationExtractor', () => {
           code: 'viz',
           name: 'My Viz',
           data: {
-            fetch: {
-              dataElements: ['BCD1', 'BCD2'],
-            },
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
@@ -373,9 +370,6 @@ describe('DashboardVisualisationExtractor', () => {
       expect(report).toEqual({
         code: 'viz',
         config: {
-          fetch: {
-            dataElements: ['BCD1', 'BCD2'],
-          },
           transform: ['keyValueByDataElementName'],
           output: {
             type: 'rowsAndColumns',
