@@ -176,7 +176,7 @@ export const MainMenu = () => {
         <StyledList component="nav">
           <ListItem>
             <TupaiaText>
-              <I18n t="home.poweredBy" /> <Link href="https://www.info.tupaia.org">Tupaia</Link>
+              <I18n t="home.poweredBy" /> <Link href="https://info.tupaia.org">Tupaia</Link>
             </TupaiaText>
           </ListItem>
         </StyledList>
