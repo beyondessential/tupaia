@@ -31,7 +31,6 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETDataTables } from './dataTables';
-import { GETEntities } from './GETEntities';
 import { GETEntityTypes } from './GETEntityTypes';
 import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
@@ -90,7 +89,7 @@ import {
   EditUserEntityPermissions,
   GETUserEntityPermissions,
 } from './userEntityPermissions';
-import { EditEntity } from './entities';
+import { EditEntity, GETEntities, DeleteEntity } from './entities';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
@@ -119,7 +118,7 @@ import {
   GETSyncGroupLogsCount,
   ManuallySyncSyncGroup,
 } from './syncGroups';
-
+import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -229,6 +228,7 @@ apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
+apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes
@@ -259,9 +259,11 @@ apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
+apiV2.post('/userFavouriteDashboardItems', useRouteHandler(POSTUpdateUserFavouriteDashboardItem));
 apiV2.post('/projects', useRouteHandler(CreateProject));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
+apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 
 /**
  * PUT routes
@@ -295,6 +297,7 @@ apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
 apiV2.put('/me', catchAsyncErrors(editUser));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
+apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 
 /**
  * DELETE routes
@@ -308,6 +311,7 @@ apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandl
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
 apiV2.delete('/optionSets/:recordId', useRouteHandler(DeleteOptionSets));
@@ -324,6 +328,7 @@ apiV2.delete(
 );
 apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
+apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 

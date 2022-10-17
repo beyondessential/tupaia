@@ -4,11 +4,10 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { CentralConnection } from '../../connections';
 import {
   MapOverlayVisualisationExtractor,
   draftMapOverlayValidator,
@@ -23,17 +22,10 @@ export type SaveMapOverlayVisualisationRequest = Request<
 >;
 
 export class SaveMapOverlayVisualisationRoute extends Route<SaveMapOverlayVisualisationRequest> {
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: SaveMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.centralConnection = new CentralConnection(req.session);
-  }
-
   public async buildResponse() {
     const { visualisation } = this.req.body;
     const { mapOverlayVisualisationId } = this.req.params;
+    const { central: centralApi } = this.req.ctx.services;
 
     if (!visualisation) {
       throw new Error('Visualisation cannot be empty.');
@@ -50,13 +42,13 @@ export class SaveMapOverlayVisualisationRoute extends Route<SaveMapOverlayVisual
 
     // Update visualisation if id exists
     if (mapOverlayVisualisationId) {
-      result = await this.centralConnection.updateResource(
+      result = await centralApi.updateResource(
         `mapOverlayVisualisations/${mapOverlayVisualisationId}`,
         {},
         body,
       );
     } else {
-      result = await this.centralConnection.createResource('mapOverlayVisualisations', {}, body);
+      result = await centralApi.createResource('mapOverlayVisualisations', {}, body);
     }
 
     return {

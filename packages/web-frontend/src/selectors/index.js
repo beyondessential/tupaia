@@ -30,6 +30,7 @@ export {
   selectOrgUnitSiblings,
   selectCurrentOrgUnitBounds,
   selectCodeFromOrgUnit,
+  selectActiveProjectCountries,
 } from './orgUnitSelectors';
 
 export {
@@ -54,6 +55,7 @@ export {
   selectShouldUseDashboardData,
   selectCurrentExpandedDates,
   selectViewConfig,
+  selectCurrentBreadcrumbs,
 } from './dashboardSelectors';
 
 export {

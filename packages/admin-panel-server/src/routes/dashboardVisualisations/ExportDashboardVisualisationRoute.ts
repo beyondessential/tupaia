@@ -4,12 +4,11 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { keyBy } from 'lodash';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
-import { CentralConnection } from '../../connections';
 import { combineDashboardVisualisation } from '../../viz-builder';
 import type {
   Dashboard,
@@ -30,14 +29,6 @@ export type ExportDashboardVisualisationRequest = Request<
 
 export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisualisationRequest> {
   protected readonly type = 'download';
-
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: ExportDashboardVisualisationRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.centralConnection = new CentralConnection(req.session);
-  }
 
   public async buildResponse() {
     this.validate();
@@ -84,9 +75,10 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
 
   private findExistingDashboardItem = async (): Promise<DashboardItemRecord> => {
     const { dashboardVisualisationId } = this.req.params;
+    const { central: centralApi } = this.req.ctx.services;
 
     if (dashboardVisualisationId) {
-      const dashboardItem = await this.centralConnection.fetchResources(
+      const dashboardItem = await centralApi.fetchResources(
         `dashboardItems/${dashboardVisualisationId}`,
       );
       if (!dashboardItem) {
@@ -97,7 +89,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     }
 
     const { code } = this.req.body.visualisation;
-    const [dashboardItem] = await this.centralConnection.fetchResources('dashboardItems', {
+    const [dashboardItem] = await centralApi.fetchResources('dashboardItems', {
       filter: {
         code,
       },
@@ -106,7 +98,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
   };
 
   private buildDashboardItemVisualisation = async (dashboardItem: DashboardItemRecord) => {
-    const vizResource: DashboardVizResource = await this.centralConnection.fetchResources(
+    const vizResource: DashboardVizResource = await this.req.ctx.services.central.fetchResources(
       `dashboardVisualisations/${dashboardItem.id}`,
     );
     return combineDashboardVisualisation(vizResource);
@@ -116,19 +108,17 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     if (!dashboardItem) {
       return { dashboards: [], dashboardRelations: [] };
     }
+    const { central: centralApi } = this.req.ctx.services;
 
-    const relationRecords: DashboardRelationRecord[] = await this.centralConnection.fetchResources(
+    const relationRecords: DashboardRelationRecord[] = await centralApi.fetchResources(
       `dashboardItems/${dashboardItem.id}/dashboardRelations`,
     );
     const dashboardIds = relationRecords.map(dr => dr.dashboard_id);
-    const dashboardRecords: DashboardRecord[] = await this.centralConnection.fetchResources(
-      'dashboards',
-      {
-        filter: {
-          id: dashboardIds,
-        },
+    const dashboardRecords: DashboardRecord[] = await centralApi.fetchResources('dashboards', {
+      filter: {
+        id: dashboardIds,
       },
-    );
+    });
     const dashboardsById = keyBy(dashboardRecords, 'id');
 
     const dashboards = dashboardRecords.map(({ id, ...dashboard }) => camelKeys(dashboard));

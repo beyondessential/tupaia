@@ -4991,6 +4991,7 @@ __metadata:
   resolution: "@tupaia/admin-panel-server@workspace:packages/admin-panel-server"
   dependencies:
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/api-client": 3.1.0
     "@tupaia/database": 1.0.0
     "@tupaia/report-server": 0.0.0
     "@tupaia/server-boilerplate": 1.0.0
@@ -5148,6 +5149,7 @@ __metadata:
     react-native-uuid: ^1.4.9
     s3urls: ^1.5.2
     semver-compare: ^1.0.0
+    sinon-chai: ^3.3.0
     sinon-test: ^3.0.0
     string-similarity: ^1.2.2
     supertest: ^3.1.0
@@ -5162,6 +5164,7 @@ __metadata:
   resolution: "@tupaia/data-api@workspace:packages/data-api"
   dependencies:
     "@tupaia/database": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/lodash.groupby": ^4.6.0
     db-migrate: ^0.11.5
@@ -5190,6 +5193,7 @@ __metadata:
     case: ^1.5.5
     lodash.flatten: ^4.4.0
     lodash.groupby: ^4.6.0
+    lodash.isequal: ^4.5.0
     lodash.keyby: ^4.6.0
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
@@ -5241,20 +5245,16 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
-    cross-env: ^7.0.2
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
-    deep-equal-in-any-order: ^1.0.27
     dotenv: ^8.2.0
     knex: 0.14.6
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     lodash.orderby: ^4.6.0
-    mocha: ^8.1.3
     moment: ^2.24.0
     npm-run-all: ^4.1.5
-    nyc: ^15.1.0
     os: 0.1.1
     pg: 8.5.1
     pg-pubsub: 0.6.1
@@ -5398,6 +5398,7 @@ __metadata:
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
+    lodash.debounce: ^4.0.8
     lodash.keyby: ^4.6.0
     npm-run-all: ^4.1.5
     prop-types: ^15.7.2
@@ -5587,6 +5588,7 @@ __metadata:
     lodash.keyby: ^4.6.0
     lodash.pick: ^4.4.0
     mathjs: ^9.4.0
+    moment: ^2.24.0
     winston: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -5623,6 +5625,9 @@ __metadata:
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
   dependencies:
     "@tupaia/utils": 1.0.0
+    "@types/needle": ^2.5.3
+    https-proxy-agent: ^5.0.1
+    needle: ^3.1.0
     winston: ^3.3.3
   languageName: unknown
   linkType: soft
@@ -5722,13 +5727,10 @@ __metadata:
     babel-plugin-module-resolver: ^4.0.0
     body-parser: ^1.18.2
     case: ^1.5.5
-    chai: ^4.1.2
-    chai-like: ^1.1.1
     client-sessions: ^0.8.0
     compression: ^1.7.2
     cookie-parser: ^1.4.3
     cors: ^2.8.4
-    cross-env: ^7.0.2
     csvtojson: ^1.1.5
     dotenv: ^8.2.0
     express: ^4.16.2
@@ -5750,15 +5752,12 @@ __metadata:
     lodash.sumby: ^4.6.0
     lodash.tail: ^4.1.1
     lodash.zipobject: ^4.1.3
-    mocha: ^8.1.3
     moment: ^2.22.2
     morgan: ^1.9.0
     nodemailer: ^4.6.7
-    nyc: ^15.1.0
     promise: ^7.3.1
     react-autobind: ^1.0.6
     request: ^2.81.0
-    sinon-chai: ^3.3.0
     urlencode: ^1.1.0
     winston: ^3.3.3
     xlsx: ^0.17.0
@@ -6362,6 +6361,15 @@ __metadata:
   dependencies:
     "@types/express": "*"
   checksum: 680cb0710aa25264d20cdcdaf34c212b636b55ea141310f06c25354ab1401193c7aa6839f9d22abf64a223fab1f2b8287f2512b0bef7e1628c4e9ffe54b4aeb2
+  languageName: node
+  linkType: hard
+
+"@types/needle@npm:^2.5.3":
+  version: 2.5.3
+  resolution: "@types/needle@npm:2.5.3"
+  dependencies:
+    "@types/node": "*"
+  checksum: d3bf1d456be52f974ed204e06a9fa98c82480f1fa715e8c5944000277d64d5fd16fad9634272ce6c666846bc6892f5839084f923bde58cb2243e4fbab35cb276
   languageName: node
   linkType: hard
 
@@ -10447,15 +10455,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai-like@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "chai-like@npm:1.1.1"
-  peerDependencies:
-    chai: 2 - 4
-  checksum: c0b1162568b7a0188a099309a501c37b883ca29ea85a44ec01a1f5225665d811e15ef986f6641b001356aa30d8d051604a483a2fc1a17c4f9cc9a55d5b01e1c9
-  languageName: node
-  linkType: hard
-
 "chai-subset@npm:^1.6.0":
   version: 1.6.0
   resolution: "chai-subset@npm:1.6.0"
@@ -14364,6 +14363,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-import-resolver-babel-module@npm:^5.3.1":
+  version: 5.3.1
+  resolution: "eslint-import-resolver-babel-module@npm:5.3.1"
+  dependencies:
+    pkg-up: ^3.1.0
+    resolve: ^1.20.0
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+    babel-plugin-module-resolver: ^3.0.0 || ^4.0.0
+  checksum: cd26740e9b9b7bb12667aabcc5c3e0e39a401b32b2890dfc4fd2444a00910f7e23fdb65cbb6084b026ade43899f824a2c762ce6078f5eb977762b8dda31aca1a
+  languageName: node
+  linkType: hard
+
 "eslint-import-resolver-node@npm:^0.3.3":
   version: 0.3.4
   resolution: "eslint-import-resolver-node@npm:0.3.4"
@@ -14576,6 +14588,13 @@ __metadata:
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7
   checksum: 4f2814eb3e9811cbacd6694e64c504f2cebefaf7d1751bb858e7aceb09efecbce3e41389b64b4c6760ca072027050d397dd005eabaf6f4fa7391b8e086fc8d66
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-module-resolver@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "eslint-plugin-module-resolver@npm:1.5.0"
+  checksum: b9d2211df499d755417c41ecb75fe092ec036d4788fcc81cffe4c509919f7a2480e543681ab3ca8eaf1339fc4d72efeaf5dd33d5d2d943455e15292a7630f3fb
   languageName: node
   linkType: hard
 
@@ -17871,7 +17890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:5.0.1":
+"https-proxy-agent@npm:5.0.1, https-proxy-agent@npm:^5.0.1":
   version: 5.0.1
   resolution: "https-proxy-agent@npm:5.0.1"
   dependencies:
@@ -17961,7 +17980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:^0.6.2":
+"iconv-lite@npm:^0.6.2, iconv-lite@npm:^0.6.3":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
   dependencies:
@@ -24391,6 +24410,19 @@ __metadata:
   bin:
     needle: ./bin/needle
   checksum: 746ae3a3782f0a057ff304a98843cc6f2009f978a0fad0c3e641a9d46d0b5702bb3e197ba08aecd48678067874a991c4f5fc320c7e51a4c041d9dd3441146cf0
+  languageName: node
+  linkType: hard
+
+"needle@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "needle@npm:3.1.0"
+  dependencies:
+    debug: ^3.2.6
+    iconv-lite: ^0.6.3
+    sax: ^1.2.4
+  bin:
+    needle: bin/needle
+  checksum: 662c8a019d0b2b30137f43e1641aa03d96f9da7ce0d3951af8d6d23c1526c123a992d82fcf9f4e68cba6a52e361a7decfb2c71a56cc0e60230248e5a3520f6ad
   languageName: node
   linkType: hard
 
@@ -31461,12 +31493,12 @@ __metadata:
   linkType: hard
 
 "sinon-chai@npm:^3.3.0":
-  version: 3.4.0
-  resolution: "sinon-chai@npm:3.4.0"
+  version: 3.7.0
+  resolution: "sinon-chai@npm:3.7.0"
   peerDependencies:
     chai: ^4.0.0
-    sinon: ">=4.0.0 <9.0.0"
-  checksum: cf27947adb16c1b98ba1f4ba3e271358dd2286a3535b4cdbc0e7e6a454cb9e41a0f88385d976281708d4c8e8f1ed26b27bcb624573548f4cb3c9e2fefa393ed0
+    sinon: ">=4.0.0"
+  checksum: 49a353d8eb66cc6db35ac452f6965c72778aa090d1f036dd1e54ba88594b1c3f314b1a403eaff22a4e314f94dc92d9c7d03cbb88c21d89e814293bf5b299964d
   languageName: node
   linkType: hard
 
@@ -33775,7 +33807,9 @@ __metadata:
     concurrently: ^5.2.0
     cypress-dotenv: ^1.2.2
     eslint: ^7.9.0
+    eslint-import-resolver-babel-module: ^5.3.1
     eslint-plugin-cypress: ^2.11.1
+    eslint-plugin-module-resolver: ^1.5.0
     jest: ^27.0.6
     jest-extended: ^0.11.5
     jest-when: ^2.7.2

@@ -8,7 +8,7 @@ import { FetchReportQuery, StandardOrCustomReportConfig } from '../types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildFetch, FetchResponse } from './fetch';
-import { buildTransform } from './transform';
+import { buildTransform, TransformTable } from './transform';
 import { buildOutput } from './output';
 import { Row } from './types';
 import { OutputType } from './output/functions/outputBuilders';
@@ -64,7 +64,7 @@ export class ReportBuilder {
 
     const context = await buildContext(this.config.transform, this.reqContext, data, query);
     const transform = buildTransform(this.config.transform, context);
-    const transformedData = transform(data.results);
+    const transformedData = transform(TransformTable.fromRows(data.results));
 
     const outputContext = { ...this.config.fetch };
     const output = buildOutput(this.config.output, outputContext, aggregator);

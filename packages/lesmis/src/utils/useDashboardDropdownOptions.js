@@ -4,7 +4,7 @@
  */
 
 import { useEntityData } from '../api';
-import { SUB_DASHBOARD_OPTIONS } from '../constants';
+import { DROPDOWN_OPTIONS, FAVOURITES_DASHBOARD_CODE, PROFILE_DASHBOARD_CODE } from '../constants';
 import { useI18n } from './I18n';
 import { useUrlParams } from './useUrlParams';
 import { useUrlSearchParams } from './useUrlSearchParams';
@@ -18,39 +18,30 @@ export const useDashboardDropdownOptions = () => {
 
   const getFilter = value => {
     switch (value) {
-      case 'indicators':
-        return () => false;
-      case 'profile':
+      case FAVOURITES_DASHBOARD_CODE:
+        return ({ items }) => items.some(item => item.isFavourite);
+      case PROFILE_DASHBOARD_CODE:
+        // those not included anywhere else
         return ({ dashboardCode }) =>
-          !Object.values(SUB_DASHBOARD_OPTIONS).some(({ code }) =>
-            dashboardCode.startsWith(`LESMIS_${code}`),
-          );
+          !DROPDOWN_OPTIONS.some(({ value: code }) => dashboardCode.startsWith(`LESMIS_${code}`));
       default:
         return ({ dashboardCode }) => dashboardCode.startsWith(`LESMIS_${value}`);
     }
   };
 
-  const dropdownOptions = SUB_DASHBOARD_OPTIONS.map(config => {
-    const {
-      code: value,
-      useTabTemplate,
-      useYearSelector,
-      exportToPDF,
-      componentPropConfig,
-    } = config;
-    const label = value === 'profile' ? getProfileLabel(entityData?.type) : translate(config.label);
+  const dropdownOptions = DROPDOWN_OPTIONS.map(config => {
+    const { value, labelCode, componentPropConfig, ...restOfConfigs } = config;
+    const label =
+      value === PROFILE_DASHBOARD_CODE ? getProfileLabel(entityData?.type) : translate(labelCode);
     const filterSubDashboards = getFilter(value);
-
     const options = {
       value,
       label,
-      useTabTemplate,
-      exportToPDF,
-      useYearSelector,
       componentProps: {
         filterSubDashboards,
         body: componentPropConfig?.body,
       },
+      ...restOfConfigs,
     };
     return options;
   });
@@ -62,6 +53,12 @@ export const useDashboardDropdownOptions = () => {
 
   return {
     dropdownOptions,
+    favouriteDropdownOption: dropdownOptions.find(
+      ({ value }) => value === FAVOURITES_DASHBOARD_CODE,
+    ),
+    otherDropdownOptions: dropdownOptions.filter(
+      ({ value }) => value !== FAVOURITES_DASHBOARD_CODE,
+    ),
     selectedOption: selectedOption || defaultProfileOption,
   };
 };

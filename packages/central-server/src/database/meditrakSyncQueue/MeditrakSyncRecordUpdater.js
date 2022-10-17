@@ -15,7 +15,10 @@ export class MeditrakSyncRecordUpdater {
    * @public
    */
   async updateSyncRecords(changes) {
-    return Promise.all(changes.map(change => this.processChange(change)));
+    for (let i = 0; i < changes.length; i++) {
+      const change = changes[i];
+      await this.processChange(change);
+    }
   }
 
   /**

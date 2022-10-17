@@ -6,10 +6,9 @@
 import { DataBroker } from '../../DataBroker';
 import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, createServiceStub } from './DataBroker.stubs';
+import { DataServiceMapping } from '../../services/DataServiceMapping';
 
-const dataElements = Object.values(DATA_ELEMENTS);
-const dataGroups = Object.values(DATA_GROUPS);
-const mockModels = createModelsStub(dataElements, dataGroups);
+const mockModels = createModelsStub();
 
 jest.mock('@tupaia/database', () => ({
   modelClasses: {
@@ -18,6 +17,7 @@ jest.mock('@tupaia/database', () => ({
   TupaiaDatabase: () => {},
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
   createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
+  TYPES: jest.requireActual('@tupaia/database').TYPES, // don't mock needed type
 }));
 
 jest.mock('@tupaia/server-boilerplate', () => ({
@@ -30,10 +30,190 @@ describe('DataBroker', () => {
     other: createServiceStub(DATA_BY_SERVICE.other),
   };
   const createServiceMock = stubCreateService(SERVICES);
-  const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
+  const options = { organisationUnitCode: 'TO' };
 
   it('getDataSourceTypes()', () => {
     expect(new DataBroker().getDataSourceTypes()).toStrictEqual(mockModels.dataElement.getTypes());
+  });
+
+  describe('Data service resolution', () => {
+    const TO_OPTIONS = { organisationUnitCode: 'TO_FACILITY_01' };
+    const FJ_OPTIONS = { organisationUnitCode: 'FJ_FACILITY_01' };
+
+    describe('default', () => {
+      const testData = [
+        ['push', 1, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }]], 'test'],
+        ['push', 2, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }]], 'test'],
+        ['push', 3, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS], 'test'],
+        ['push', 4, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }], TO_OPTIONS], 'test'],
+        ['delete', 1, [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS], 'test'],
+        ['delete', 2, [{ code: 'TEST_01', type: 'dataGroup' }, TO_OPTIONS], 'test'],
+        ['pull', 1, [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS], 'test'],
+        ['pull', 2, [{ code: 'TEST_01', type: 'dataGroup' }, TO_OPTIONS], 'test'],
+        ['pullMetadata', 1, [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS], 'test'],
+        ['pullMetadata', 2, [{ code: 'TEST_01', type: 'dataGroup' }, TO_OPTIONS], 'test'],
+      ];
+
+      testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
+        it(`resolves the default service: ${methodUnderTest}-${testNum}`, async () => {
+          // The default service being the one specified on the de/dg rather than the country mapping tables
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceNameUsed,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
+    describe('no org unit', () => {
+      const NO_OU_OPT = {};
+
+      const testData = [
+        ['push', 1, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }]], 'test'],
+        ['push', 2, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }]], 'test'],
+        ['push', 3, [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], NO_OU_OPT], 'test'],
+        ['push', 4, [{ code: 'TEST_01', type: 'dataGroup' }, [{ value: 2 }], NO_OU_OPT], 'test'],
+        ['delete', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['delete', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+        ['pull', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['pull', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+        ['pullMetadata', 1, [{ code: 'TEST_01', type: 'dataElement' }, NO_OU_OPT], 'test'],
+        ['pullMetadata', 2, [{ code: 'TEST_01', type: 'dataGroup' }, NO_OU_OPT], 'test'],
+      ];
+
+      testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
+        it(`resolves the default service: ${methodUnderTest}-${testNum}`, async () => {
+          // The default service being the one specified on the de/dg rather than the country mapping tables
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceNameUsed,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
+    describe('mapped by country', () => {
+      // Only DataElements currently support mapping by country
+      const testData = [
+        ['push', [{ code: 'MAPPED_01', type: 'dataElement' }, [{ value: 2 }], FJ_OPTIONS], 'other'],
+        ['delete', [{ code: 'MAPPED_01', type: 'dataElement' }, { value: 2 }, FJ_OPTIONS], 'other'],
+        ['pull', [{ code: 'MAPPED_01', type: 'dataElement' }, FJ_OPTIONS], 'other'],
+        ['pullMetadata', [{ code: 'MAPPED_01', type: 'dataElement' }, FJ_OPTIONS], 'other'],
+      ];
+
+      testData.forEach(([methodUnderTest, inputArgs, expectedServiceType]) =>
+        it(`resolves the data service based on mapping: ${methodUnderTest}`, async () => {
+          const dataBroker = new DataBroker();
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(createServiceMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expectedServiceType,
+            expect.anything(),
+          );
+        }),
+      );
+    });
+
+    describe('passes mapping to service', () => {
+      let dataBroker;
+      const FAKE_MAPPING = new DataServiceMapping([
+        {
+          dataSource: DATA_ELEMENTS.TEST_01,
+          service_type: DATA_ELEMENTS.TEST_01.service_type,
+          config: DATA_ELEMENTS.TEST_01.config,
+        },
+      ]);
+
+      const testData = [
+        ['push', [{ code: 'TEST_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS]],
+        ['delete', [{ code: 'TEST_01', type: 'dataElement' }, { value: 2 }, TO_OPTIONS]],
+        ['pull', [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS]],
+        ['pullMetadata', [{ code: 'TEST_01', type: 'dataElement' }, TO_OPTIONS]],
+      ];
+
+      beforeAll(() => {
+        dataBroker = new DataBroker();
+        dataBroker.dataServiceResolver = {
+          getMappingByOrgUnitCode: jest.fn().mockReturnValue(FAKE_MAPPING),
+          getMappingByCountryCode: jest.fn().mockReturnValue(FAKE_MAPPING),
+        };
+      });
+
+      testData.forEach(([methodUnderTest, inputArgs]) =>
+        it(`passes mapping to service: ${methodUnderTest}`, async () => {
+          await dataBroker[methodUnderTest].apply(dataBroker, inputArgs);
+          expect(SERVICES.test[methodUnderTest]).toHaveBeenCalledOnceWith(
+            expect.anything(),
+            expect.anything(),
+            expect.objectContaining({
+              dataServiceMapping: FAKE_MAPPING,
+            }),
+          );
+        }),
+      );
+    });
+
+    describe('multiple org units pull', () => {
+      // When pulling we can specify multiple org units and this triggers some special logic.
+      //
+      // For each data element, a different data service can be defined per country, see
+      // "mapped by country" above. If the org units are in different countries, then a data
+      // element could resolve to multiple services. E.g. Data Element Patient_Age could be
+      // in DHIS-tonga for Tonga, and in Superset-Fiji for Fiji. This logic then
+      // attempts to minimise the number of calls to any one service type, in the example
+      // above there should only be one call to DHIS and one to Superset.
+      //
+      // Note: all resulting pull calls to a data service are given ALL org unit codes and
+      // ALL data element codes. Some data services are ok with this, and some will throw
+      // an error if the org unit / data element does not exist there.
+
+      const assertServicePulledDataElementsOnce = (service, dataElements, options) =>
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataElements,
+          'dataElement',
+          expect.objectContaining(options),
+        );
+
+      it('pulls from different data services for the same data element', async () => {
+        const dataBroker = new DataBroker();
+        const multipleCountryOptions = {
+          organisationUnitCodes: ['FJ_FACILITY_01', 'TO_FACILITY_01'],
+        };
+        await dataBroker.pull(
+          { code: ['MAPPED_01', 'MAPPED_02'], type: 'dataElement' },
+          multipleCountryOptions,
+        );
+
+        expect(createServiceMock).toHaveBeenCalledTimes(2);
+        expect(createServiceMock).toHaveBeenCalledWith(
+          expect.anything(),
+          'test',
+          expect.anything(),
+        );
+        expect(createServiceMock).toHaveBeenCalledWith(
+          expect.anything(),
+          'other',
+          expect.anything(),
+        );
+
+        assertServicePulledDataElementsOnce(
+          SERVICES.test,
+          [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
+          multipleCountryOptions, // all org units
+        );
+        assertServicePulledDataElementsOnce(
+          SERVICES.other,
+          [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
+          multipleCountryOptions, // all org units
+        );
+      });
+    });
   });
 
   describe('push()', () => {
@@ -42,7 +222,7 @@ describe('DataBroker', () => {
       const dataBroker = new DataBroker();
       return expect(
         dataBroker.push({ code: ['TEST_01', 'OTHER_01'], type: 'dataElement' }, data),
-      ).toBeRejectedWith('Cannot push data belonging to different services');
+      ).toBeRejectedWith('Multiple data service types found, only a single service type expected');
     });
 
     it('single code', async () => {
@@ -50,9 +230,11 @@ describe('DataBroker', () => {
       const dataBroker = new DataBroker();
       await dataBroker.push({ code: 'TEST_01', type: 'dataElement' }, data);
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
-      expect(SERVICES.test.push).toHaveBeenCalledOnceWith([DATA_ELEMENTS.TEST_01], data, {
-        type: 'dataElement',
-      });
+      expect(SERVICES.test.push).toHaveBeenCalledOnceWith(
+        [DATA_ELEMENTS.TEST_01],
+        data,
+        expect.objectContaining({ type: 'dataElement' }),
+      );
     });
 
     it('multiple codes', async () => {
@@ -63,19 +245,25 @@ describe('DataBroker', () => {
       expect(SERVICES.test.push).toHaveBeenCalledOnceWith(
         [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
         data,
-        { type: 'dataElement' },
+        expect.objectContaining({ type: 'dataElement' }),
       );
     });
   });
 
-  it('delete()', async () => {
-    const data = { value: 2 };
-    const dataBroker = new DataBroker();
-    await dataBroker.delete({ code: 'TEST_01', type: 'dataElement' }, data, options);
-    expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
-    expect(SERVICES.test.delete).toHaveBeenCalledOnceWith(DATA_ELEMENTS.TEST_01, data, {
-      type: 'dataElement',
-      ...options,
+  describe('delete()', () => {
+    it('single code', async () => {
+      const data = { value: 2 };
+      const dataBroker = new DataBroker();
+      await dataBroker.delete({ code: 'TEST_01', type: 'dataElement' }, data, options);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+      expect(SERVICES.test.delete).toHaveBeenCalledOnceWith(
+        DATA_ELEMENTS.TEST_01,
+        data,
+        expect.objectContaining({
+          type: 'dataElement',
+          ...options,
+        }),
+      );
     });
   });
 
@@ -119,6 +307,9 @@ describe('DataBroker', () => {
         expect(new DataBroker().pull(dataSourceSpec)).toBeRejectedWith(expectedError),
       );
 
+      it('does not throw if options omitted', async () =>
+        expect(new DataBroker().pull({ code: ['TEST_01'], type: 'dataElement' })).toResolve());
+
       it('does not throw if at least one code exists', async () =>
         expect(
           new DataBroker().pull({ code: ['TEST_01', 'NON_EXISTING'], type: 'dataElement' }),
@@ -127,7 +318,11 @@ describe('DataBroker', () => {
 
     describe('analytics', () => {
       const assertServicePulledDataElementsOnce = (service, dataElements) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataElements,
+          'dataElement',
+          expect.objectContaining(options),
+        );
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
@@ -193,7 +388,11 @@ describe('DataBroker', () => {
 
     describe('dataGroups', () => {
       const assertServicePulledEventsOnce = (service, dataElements) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataGroup', options);
+        expect(service.pull).toHaveBeenCalledOnceWith(
+          dataElements,
+          'dataGroup',
+          expect.objectContaining(options),
+        );
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
@@ -242,16 +441,24 @@ describe('DataBroker', () => {
 
   describe('pullMetadata()', () => {
     const assertServicePulledDataElementMetadataOnce = (service, dataSources) =>
-      expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataSources, 'dataElement', options);
+      expect(service.pullMetadata).toHaveBeenCalledOnceWith(
+        dataSources,
+        'dataElement',
+        expect.objectContaining(options),
+      );
 
     const assertServicePulledDataGroupMetadataOnce = (service, dataSources) =>
-      expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataSources, 'dataGroup', options);
+      expect(service.pullMetadata).toHaveBeenCalledOnceWith(
+        dataSources,
+        'dataGroup',
+        expect.objectContaining(options),
+      );
 
     it('throws if the data sources belong to multiple services', async () => {
       const dataBroker = new DataBroker();
       return expect(
         dataBroker.pullMetadata({ code: ['TEST_01', 'OTHER_01'], type: 'dataElement' }, options),
-      ).toBeRejectedWith('Cannot pull metadata for data sources belonging to different services');
+      ).toBeRejectedWith('Multiple data service types found, only a single service type expected');
     });
 
     it('single code', async () => {

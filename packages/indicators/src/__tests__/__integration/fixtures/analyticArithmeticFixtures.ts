@@ -15,6 +15,7 @@ const ENTITIES = [
   { code: 'GR', name: 'Greece', type: 'country' },
   { code: 'IT', name: 'Italy', type: 'country' },
   { code: 'ES', name: 'Spain', type: 'country' },
+  { code: 'TO', name: 'Tonga', type: 'country' },
 ];
 
 const SURVEYS = [

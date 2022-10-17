@@ -4,7 +4,7 @@
  */
 
 import { SORTABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform } from '../../../reportBuilder/transform';
+import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
 
 describe('sortRows', () => {
   it('throws an error if by is not specified', () => {
@@ -25,20 +25,22 @@ describe('sortRows', () => {
         by: 'period',
       },
     ]);
-    expect(transform(SORTABLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
-    ]);
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
+      ]),
+    );
   });
 
   it('can reverse sort by a column', () => {
@@ -49,20 +51,22 @@ describe('sortRows', () => {
         direction: 'desc',
       },
     ]);
-    expect(transform(SORTABLE_ANALYTICS)).toEqual([
-      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
-    ]);
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
+      ]),
+    );
   });
 
   it('can sort by multiple columns', () => {
@@ -72,20 +76,22 @@ describe('sortRows', () => {
         by: ['period', 'organisationUnit'],
       },
     ]);
-    expect(transform(SORTABLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
-    ]);
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
+      ]),
+    );
   });
 
   it('can sort by different directions per column', () => {
@@ -96,20 +102,22 @@ describe('sortRows', () => {
         direction: ['asc', 'desc'],
       },
     ]);
-    expect(transform(SORTABLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
-    ]);
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
+      ]),
+    );
   });
 
   it('can sort by expressions', () => {
@@ -119,19 +127,21 @@ describe('sortRows', () => {
         by: '=$BCD1 * $BCD1',
       },
     ]);
-    expect(transform(SORTABLE_ANALYTICS)).toEqual([
-      { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-      { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
-    ]);
+    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 1 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: -1 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+        { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 99 },
+      ]),
+    );
   });
 });

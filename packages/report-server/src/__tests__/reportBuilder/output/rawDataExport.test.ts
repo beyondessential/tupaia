@@ -6,6 +6,7 @@
 import { Aggregator } from '@tupaia/aggregator';
 import { ReportServerAggregator } from '../../../aggregator';
 import { buildOutput } from '../../../reportBuilder/output';
+import { TransformTable } from '../../../reportBuilder/transform';
 import { MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT } from './output.fixtures';
 
 describe('rawDataExport', () => {
@@ -80,7 +81,9 @@ describe('rawDataExport', () => {
     const reportServerAggregator = new ReportServerAggregator(aggregator);
     const output = buildOutput(config, context, reportServerAggregator);
 
-    const results = await output(MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT);
+    const results = await output(
+      TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT),
+    );
     expect(results).toEqual(expectedData);
   });
 });

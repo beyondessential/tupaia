@@ -15,53 +15,65 @@ export const LESMIS_PERMISSION_GROUPS = {
   ADMIN: 'LESMIS Admin',
 };
 
+// Dashboard Tab View Names
+export const DASHBOARD_REPORT_TAB_VIEW = 'DashboardReportTabView';
+export const FAVOURITE_DASHBOARD_TAB_VIEW = 'FavouriteDashboardTabView';
+export const TAB_TEMPLATE = 'TabTemplate';
+
+export const PROFILE_DASHBOARD_CODE = 'profile';
+export const FAVOURITES_DASHBOARD_CODE = 'favourites';
+
 // Dashboard Constants
-export const SUB_DASHBOARD_OPTIONS = [
+export const DROPDOWN_OPTIONS = [
   {
-    code: 'profile',
+    value: PROFILE_DASHBOARD_CODE,
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
     useYearSelector: true,
     exportToPDF: true,
   },
   {
-    code: 'indicators',
-    label: 'dashboards.freeIndicatorSelection',
+    value: FAVOURITES_DASHBOARD_CODE,
+    tabViewType: FAVOURITE_DASHBOARD_TAB_VIEW,
+    labelCode: 'dashboards.favourites',
     exportToPDF: true,
-    useTabTemplate: true,
-    componentPropConfig: {
-      body: 'Free Indicator Selection',
-    },
   },
   {
-    code: 'ESSDP_Plan',
-    label: 'dashboards.essdpPlan202125M&eFramework',
-    useTabTemplate: true,
+    value: 'ESSDP_Plan',
+    tabViewType: TAB_TEMPLATE,
+    labelCode: 'dashboards.essdpPlan202125M&eFramework',
     componentPropConfig: {
       body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
     },
   },
   {
-    code: 'ESSDP_EarlyChildhood',
-    label: 'dashboards.essdpEarlyChildhoodEducationSubSector',
+    value: 'ESSDP_EarlyChildhood',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpEarlyChildhoodEducationSubSector',
   },
   {
-    code: 'ESSDP_Primary',
-    label: 'dashboards.essdpPrimarySubSector',
+    value: 'ESSDP_Primary',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpPrimarySubSector',
   },
   {
-    code: 'ESSDP_LowerSecondary',
-    label: 'dashboards.essdpLowerSecondarySubSector',
+    value: 'ESSDP_LowerSecondary',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpLowerSecondarySubSector',
   },
   {
-    code: 'ESSDP_UpperSecondary',
-    label: 'dashboards.essdpUpperSecondarySubSector',
+    value: 'ESSDP_UpperSecondary',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.essdpUpperSecondarySubSector',
   },
   {
-    code: 'EmergencyInEducation',
-    label: 'dashboards.emergencyInEducation',
+    value: 'EmergencyInEducation',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.emergencyInEducation',
   },
   {
-    code: 'International_SDGs',
-    label: 'dashboards.internationalReportingOnSdGs',
+    value: 'International_SDGs',
+    tabViewType: DASHBOARD_REPORT_TAB_VIEW,
+    labelCode: 'dashboards.internationalReportingOnSdGs',
     exportToPDF: true,
   },
 ];

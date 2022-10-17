@@ -5,12 +5,11 @@
  */
 
 import assert from 'assert';
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
-import { CentralConnection } from '../../connections';
 import {
   dashboardValidator,
   dashboardRelationObjectValidator,
@@ -51,14 +50,6 @@ type ImportFileContent = {
 } & Record<string, unknown>;
 
 export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisualisationRequest> {
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: ImportDashboardVisualisationRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.centralConnection = new CentralConnection(req.session);
-  }
-
   public async buildResponse() {
     const { files } = this.req;
     if (!files || !Array.isArray(files)) {
@@ -118,7 +109,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;
 
-    const [viz] = await this.centralConnection.fetchResources('dashboardVisualisations', {
+    const [viz] = await this.req.ctx.services.central.fetchResources('dashboardVisualisations', {
       filter: {
         id: id ?? undefined,
         code,
@@ -128,8 +119,9 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   };
 
   private createVisualisation = async (visualisation: DashboardVizResource) => {
-    await this.centralConnection.createResource('dashboardVisualisations', {}, visualisation);
-    const [viz]: DashboardVizResource[] = await this.centralConnection.fetchResources(
+    const { central: centralApi } = this.req.ctx.services;
+    await centralApi.createResource('dashboardVisualisations', {}, visualisation);
+    const [viz]: DashboardVizResource[] = await centralApi.fetchResources(
       'dashboardVisualisations',
       {
         filter: {
@@ -145,7 +137,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   };
 
   private updateVisualisation = async (vizId: string, visualisation: Record<string, unknown>) => {
-    await this.centralConnection.updateResource(
+    await this.req.ctx.services.central.updateResource(
       `dashboardVisualisations/${vizId}`,
       {},
       visualisation,
@@ -159,7 +151,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     dashboardRelations: UpsertDashboardRelation[],
   ) => {
     await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
-    const dashboardRecords = await this.centralConnection.fetchResources('dashboards', {
+    const dashboardRecords = await this.req.ctx.services.central.fetchResources('dashboards', {
       filter: {
         code: dashboardRelations.map(dr => dr.dashboardCode),
       },
@@ -181,7 +173,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private upsertDashboards = async (dashboards: DashboardRecord[]) =>
     Promise.all(
       dashboards.map(dashboard =>
-        this.centralConnection.upsertResource(
+        this.req.ctx.services.central.upsertResource(
           'dashboards',
           {
             filter: {
@@ -196,7 +188,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private upsertDashboardRelations = async (dashboardRelations: DashboardRelationRecord[]) =>
     Promise.all(
       dashboardRelations.map(relation =>
-        this.centralConnection.upsertResource(
+        this.req.ctx.services.central.upsertResource(
           'dashboardRelations',
           {
             filter: {

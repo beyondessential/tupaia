@@ -4,12 +4,11 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { keyBy } from 'lodash';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
-import { CentralConnection } from '../../connections';
 import { combineMapOverlayVisualisation } from '../../viz-builder';
 import type {
   MapOverlayRecord,
@@ -30,14 +29,6 @@ export type ExportMapOverlayVisualisationRequest = Request<
 
 export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVisualisationRequest> {
   protected readonly type = 'download';
-
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: ExportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.centralConnection = new CentralConnection(req.session);
-  }
 
   public async buildResponse() {
     this.validate();
@@ -84,9 +75,10 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
 
   private findExistingMapOverlay = async (): Promise<MapOverlayRecord> => {
     const { mapOverlayVisualisationId } = this.req.params;
+    const { central: centralApi } = this.req.ctx.services;
 
     if (mapOverlayVisualisationId) {
-      const mapOverlay = await this.centralConnection.fetchResources(
+      const mapOverlay = await centralApi.fetchResources(
         `mapOverlays/${mapOverlayVisualisationId}`,
       );
       if (!mapOverlay) {
@@ -97,7 +89,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
     }
 
     const { code } = this.req.body.visualisation;
-    const [mapOverlay] = await this.centralConnection.fetchResources('mapOverlays', {
+    const [mapOverlay] = await centralApi.fetchResources('mapOverlays', {
       filter: {
         code,
       },
@@ -106,7 +98,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
   };
 
   private buildMapOverlayVisualisation = async (mapOverlay: MapOverlayRecord) => {
-    const vizResource: MapOverlayVizResource = await this.centralConnection.fetchResources(
+    const vizResource: MapOverlayVizResource = await this.req.ctx.services.central.fetchResources(
       `mapOverlayVisualisations/${mapOverlay.id}`,
     );
     return combineMapOverlayVisualisation(vizResource);
@@ -116,12 +108,13 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
     if (!mapOverlay) {
       return { mapOverlays: [], mapOverlayGroupRelations: [] };
     }
+    const { central: centralApi } = this.req.ctx.services;
 
-    const relationRecords: MapOverlayGroupRelationRecord[] = await this.centralConnection.fetchResources(
+    const relationRecords: MapOverlayGroupRelationRecord[] = await centralApi.fetchResources(
       `mapOverlays/${mapOverlay.id}/mapOverlayGroupRelations`,
     );
     const mapOverlayGroupIds = relationRecords.map(mogr => mogr.map_overlay_group_id);
-    const mapOverlayGroupRecords: MapOverlayGroupRecord[] = await this.centralConnection.fetchResources(
+    const mapOverlayGroupRecords: MapOverlayGroupRecord[] = await centralApi.fetchResources(
       'mapOverlayGroups',
       {
         filter: {

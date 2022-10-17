@@ -5,6 +5,8 @@
 
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { createJestMockInstance } from '@tupaia/utils';
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
+import * as GetSupersetApi from '../../../services/superset/getSupersetApi';
 
 export const DATA_ELEMENTS = {
   ITEM_1: {
@@ -77,6 +79,16 @@ export const SUPERSET_CHART_DATA_RESPONSE = {
   ],
 };
 
+// A simple mapping with no country-specific overrides
+export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
+  Object.values(DATA_ELEMENTS).map(de => ({
+    dataSource: de,
+    service_type: de.service_type,
+    config: de.config,
+  })),
+  [],
+);
+
 export const createModelsStub = () => {
   return baseCreateModelsStub({
     dataElement: {
@@ -90,6 +102,10 @@ export const createModelsStub = () => {
 
 export const createApiStub = () => {
   return createJestMockInstance('@tupaia/superset-api', 'SupersetApi', {
-    chartData: () => SUPERSET_API_RESPONSE,
+    chartData: () => SUPERSET_CHART_DATA_RESPONSE,
   });
+};
+
+export const stubGetSupersetApi = mockSupersetApi => {
+  jest.spyOn(GetSupersetApi, 'getSupersetApiInstance').mockReturnValue(mockSupersetApi);
 };

@@ -4,7 +4,7 @@
  */
 
 import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform } from '../../../reportBuilder/transform';
+import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
 
 describe('insertRows', () => {
   // SAME AS INSERT COLUMNS FUNCTIONALITY
@@ -19,10 +19,9 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([
-      ...SINGLE_ANALYTIC,
-      { number: 1, string: 'Hi', boolean: false },
-    ]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([...SINGLE_ANALYTIC, { number: 1, string: 'Hi', boolean: false }]),
+    );
   });
 
   it('can insert row with values from previous row', () => {
@@ -34,7 +33,9 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { dataElementValue: 4 }]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([...SINGLE_ANALYTIC, { dataElementValue: 4 }]),
+    );
   });
 
   it('can select a value from the row as a field name', () => {
@@ -46,7 +47,9 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { BCD1: 4 }]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([...SINGLE_ANALYTIC, { BCD1: 4 }]),
+    );
   });
 
   it('can execute functions', () => {
@@ -58,7 +61,9 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { period: '1st Jan 2020' }]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([...SINGLE_ANALYTIC, { period: '1st Jan 2020' }]),
+    );
   });
 
   // SPECIFIC TO INSERT
@@ -75,12 +80,17 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { number: 1, string: 'Hi', boolean: false },
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows(
+        [
+          { number: 1, string: 'Hi', boolean: false },
+          { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+          { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+          { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        ],
+        ['period', 'organisationUnit', 'dataElement', 'value', 'number', 'string', 'boolean'],
+      ),
+    );
   });
 
   it('can insert a single row at end', () => {
@@ -95,12 +105,14 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-      { number: 1, string: 'Hi', boolean: false },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+        { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+        { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        { number: 1, string: 'Hi', boolean: false },
+      ]),
+    );
   });
 
   it('can insert multiple rows', () => {
@@ -112,14 +124,16 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { dataElementValue: 4 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { dataElementValue: 2 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-      { dataElementValue: 5 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+        { dataElementValue: 4 },
+        { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+        { dataElementValue: 2 },
+        { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        { dataElementValue: 5 },
+      ]),
+    );
   });
 
   it('can insert new rows before the relative row', () => {
@@ -132,14 +146,19 @@ describe('insertRows', () => {
         position: 'before',
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { dataElementValue: 4 },
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { dataElementValue: 2 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { dataElementValue: 5 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows(
+        [
+          { dataElementValue: 4 },
+          { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+          { dataElementValue: 2 },
+          { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+          { dataElementValue: 5 },
+          { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        ],
+        ['period', 'organisationUnit', 'dataElement', 'value', 'dataElementValue'],
+      ),
+    );
   });
 
   it('can insert new rows at the beginning of the list', () => {
@@ -152,14 +171,19 @@ describe('insertRows', () => {
         position: 'start',
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { dataElementValue: 4 },
-      { dataElementValue: 2 },
-      { dataElementValue: 5 },
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows(
+        [
+          { dataElementValue: 4 },
+          { dataElementValue: 2 },
+          { dataElementValue: 5 },
+          { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+          { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+          { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        ],
+        ['period', 'organisationUnit', 'dataElement', 'value', 'dataElementValue'],
+      ),
+    );
   });
 
   it('can insert specific new rows using a where clause', () => {
@@ -173,13 +197,15 @@ describe('insertRows', () => {
         where: "=not(eq($period, '20200101'))",
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { dataElementValue: 2 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-      { dataElementValue: 5 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+        { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+        { dataElementValue: 2 },
+        { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        { dataElementValue: 5 },
+      ]),
+    );
   });
 
   // USE CASES
@@ -193,12 +219,14 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
-      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
-      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-      { Total: 11 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+        { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+        { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+        { Total: 11 },
+      ]),
+    );
   });
 
   it('compare adjacent rows to insert between', () => {
@@ -214,24 +242,26 @@ describe('insertRows', () => {
         },
       },
     ]);
-    expect(transform(MERGEABLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
-      { period: '20200101', organisationUnit: 'TO', BCD2: 11 },
-      { period: '20200102', organisationUnit: 'TO', BCD2: 1 },
-      { period: '20200103', organisationUnit: 'TO', BCD2: 0 },
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+        { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+        { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+        { period: '20200101', organisationUnit: 'TO', BCD2: 11 },
+        { period: '20200102', organisationUnit: 'TO', BCD2: 1 },
+        { period: '20200103', organisationUnit: 'TO', BCD2: 0 },
 
-      { Total_BCD1: 11, Total_BCD2: 12 },
+        { Total_BCD1: 11, Total_BCD2: 12 },
 
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-      { period: '20200101', organisationUnit: 'PG', BCD2: 13 },
-      { period: '20200102', organisationUnit: 'PG', BCD2: 99 },
-      { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+        { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+        { period: '20200101', organisationUnit: 'PG', BCD2: 13 },
+        { period: '20200102', organisationUnit: 'PG', BCD2: 99 },
+        { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
 
-      { Total_BCD1: 17, Total_BCD2: 111 },
-    ]);
+        { Total_BCD1: 17, Total_BCD2: 111 },
+      ]),
+    );
   });
 });

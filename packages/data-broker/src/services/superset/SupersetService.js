@@ -42,9 +42,10 @@ export class SupersetService extends Service {
    * @private
    */
   async pullAnalytics(dataSources, options) {
+    const { dataServiceMapping, startDate, endDate } = options;
     let mergedResults = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
-      this.groupBySupersetInstanceCode(dataSources),
+      this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
     )) {
       const supersetInstance = await this.models.supersetInstance.findOne({
         code: supersetInstanceCode,
@@ -53,9 +54,15 @@ export class SupersetService extends Service {
         throw new Error(`No superset instance found with code "${supersetInstanceCode}"`);
       const api = await getSupersetApiInstance(this.models, supersetInstance);
       for (const [chartId, chartDataSources] of Object.entries(
-        this.groupByChartId(instanceDataSources),
+        this.groupByChartId(instanceDataSources, dataServiceMapping),
       )) {
-        const results = await this.pullForApiForChart(api, chartId, chartDataSources);
+        const results = await this.pullForApiForChart(
+          api,
+          chartId,
+          chartDataSources,
+          dataServiceMapping,
+          { startDate, endDate },
+        );
         mergedResults = mergedResults.concat(results);
       }
     }
@@ -71,10 +78,17 @@ export class SupersetService extends Service {
    * @param {SupersetApi} api
    * @param {string} chartId
    * @param {DataElement[]} dataElements
+   * @param {DataServiceMapping} dataServiceMapping
+   * @param {{ startDate?: string; endDate?: string }} options
    * @return {Promise<Object[]>} analytic results
    * @private
    */
-  async pullForApiForChart(api, chartId, dataElements) {
+  async pullForApiForChart(api, chartId, dataElements, dataServiceMapping, options) {
+    const { startDate, endDate } = options;
+
+    const startDateMoment = startDate ? moment(startDate).startOf('day') : undefined;
+    const endDateMoment = endDate ? moment(endDate).endOf('day') : undefined;
+
     const response = await api.chartData(chartId);
     const { data } = response.result[0];
 
@@ -82,15 +96,27 @@ export class SupersetService extends Service {
     for (const datum of data) {
       const { item_code: itemCode, store_code: storeCode, value, date } = datum;
 
-      const dataElement = dataElements.find(
-        de => de.code === itemCode || de.config.supersetItemCode === itemCode,
-      );
+      let dataElement = dataElements.find(de => de.code === itemCode);
+      if (!dataElement) {
+        // Check by supersetItemCode
+        const mappingMatchingSupersetItemCode = dataElements
+          .map(de => dataServiceMapping.mappingForDataSource(de))
+          .find(mapping => mapping.config.supersetItemCode === itemCode);
+        if (mappingMatchingSupersetItemCode) {
+          dataElement = mappingMatchingSupersetItemCode.dataSource;
+        }
+      }
+
       if (!dataElement) continue; // unneeded data
+
+      const dataDateMoment = moment(date);
+      if (startDateMoment && dataDateMoment.isBefore(startDateMoment)) continue; // before date range
+      if (endDateMoment && dataDateMoment.isAfter(endDateMoment)) continue; // after date range
 
       results.push({
         dataElement: dataElement.code,
         organisationUnit: storeCode,
-        period: moment(date).format('YYYYMMDD'),
+        period: dataDateMoment.format('YYYYMMDD'),
         value,
       });
     }
@@ -99,12 +125,14 @@ export class SupersetService extends Service {
 
   /**
    * @param {DataElement[]} dataSources
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Object}
    */
-  groupBySupersetInstanceCode(dataSources) {
+  groupBySupersetInstanceCode(dataSources, dataServiceMapping) {
     const dataSourcesBySupersetInstanceCode = {};
     for (const dataSource of dataSources) {
-      const { config } = dataSource;
+      const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+      const { config } = mapping;
       const { supersetInstanceCode } = config;
       if (!supersetInstanceCode) {
         throw new Error(`Data Element ${dataSource.code} missing supersetInstanceCode`);
@@ -119,12 +147,14 @@ export class SupersetService extends Service {
 
   /**
    * @param {DataElement[]} dataSources
+   * @param {DataServiceMapping} dataServiceMapping
    * @return {Object}
    */
-  groupByChartId(dataSources) {
+  groupByChartId(dataSources, dataServiceMapping) {
     const dataSourcesByChartId = {};
     for (const dataSource of dataSources) {
-      const { config } = dataSource;
+      const mapping = dataServiceMapping.mappingForDataSource(dataSource);
+      const { config } = mapping;
       const { supersetChartId } = config;
       if (!supersetChartId) {
         throw new Error(`Data Element ${dataSource.code} missing supersetChartId`);

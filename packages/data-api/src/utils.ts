@@ -33,7 +33,3 @@ export const sanitizeAnalyticsTableValue = (value: string, type: string) => {
       return value;
   }
 };
-
-// TODO: Move to ts-utils package
-export const isDefined = <T>(val: T): val is Exclude<T, undefined | null> =>
-  val !== undefined && val !== null;

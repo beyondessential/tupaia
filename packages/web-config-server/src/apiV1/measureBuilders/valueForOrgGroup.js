@@ -55,10 +55,18 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       organisationUnitCode: this.entity.code,
     });
 
-    const analytics = results.map(result => ({
+    let analytics = results.map(result => ({
       ...result,
       value: result.value === undefined ? '' : result.value.toString(),
     }));
+
+    // Temp solution for RN-523
+    if (this.config.swapFwToFj) {
+      analytics = analytics.map(analytic => ({
+        ...analytic,
+        organisationUnit: analytic.organisationUnit === 'FPBS' ? 'FJ' : analytic.organisationUnit,
+      }));
+    }
 
     // If we group multiple data element codes, dataElementCode is usually 'value'
     const customDataKey = this.config.dataElementCodes ? dataElementCode : null;
