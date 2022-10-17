@@ -43,7 +43,7 @@ db:
 # script that redeploys tupaia
 deployment:
   build:
-    dockerfile: ./packages/devops/ci/deployment.Dockerfile
-  encrypted_env_file: ./packages/devops/ci/deployment.env.encrypted
+    dockerfile: ./packages/devops/ci/deployment-aws.Dockerfile
+  encrypted_env_file: ./packages/devops/ci/deployment-aws.env.encrypted
   environment:
     - AWS_DEFAULT_REGION=ap-southeast-2
