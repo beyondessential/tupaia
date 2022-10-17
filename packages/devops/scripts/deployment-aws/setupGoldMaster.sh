@@ -94,4 +94,4 @@ npm install --global pm2
 pm2 install pm2-logrotate
 
 # build all packages once using dev to speed up future branch-specific builds
-sudo -Hu ubuntu /home/ubuntu/tupaia/packages/devops/scripts/deployment/buildDeployablePackages.sh gold-master-image-builder
+sudo -Hu ubuntu /home/ubuntu/tupaia/packages/devops/scripts/deployment-aws/buildDeployablePackages.sh gold-master-image-builder
