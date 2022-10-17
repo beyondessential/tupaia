@@ -4,7 +4,7 @@
  */
 
 import { EXCLUDEABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform } from '../../../reportBuilder/transform';
+import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
 
 describe('excludeRows', () => {
   it('can exclude by boolean expression on row', () => {
@@ -14,9 +14,11 @@ describe('excludeRows', () => {
         where: '=$BCD1 < 6',
       },
     ]);
-    expect(transform(EXCLUDEABLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-    ]);
+    expect(transform(TransformTable.fromRows(EXCLUDEABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+        { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+      ]),
+    );
   });
 });

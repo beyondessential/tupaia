@@ -197,6 +197,7 @@
       "Tupaia",
       "updaters",
       "upsert",
+      "Upserts",
       "vars"
     ],
     "eslint.validate": ["typescript", "typescriptreact"],

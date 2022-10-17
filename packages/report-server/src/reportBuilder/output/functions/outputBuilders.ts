@@ -4,7 +4,8 @@
  */
 
 import { Resolved } from '@tupaia/tsutils';
-import { buildDefault } from './default';
+import { buildRows } from './rows';
+import { buildRowsAndColumns } from './rowsAndColumns';
 import { buildMatrix } from './matrix';
 import { buildRawDataExport } from './rawDataExport';
 
@@ -15,5 +16,7 @@ export type OutputType = Resolved<
 export const outputBuilders = {
   matrix: buildMatrix,
   rawDataExport: buildRawDataExport,
-  default: buildDefault,
+  rowsAndColumns: buildRowsAndColumns,
+  rows: buildRows,
+  default: buildRows,
 };

@@ -1,4 +1,5 @@
 import pick from 'lodash.pick';
+import { TransformTable } from '../../../transform';
 
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
@@ -11,12 +12,12 @@ const CATEGORY_FIELD_KEY = 'categoryId';
 const NON_COLUMNS_KEYS = [CATEGORY_FIELD_KEY, ROW_FIELD_KEY];
 
 export class MatrixBuilder {
-  private rows: Row[];
+  private table: TransformTable;
   private matrixData: Matrix;
   private params: MatrixParams;
 
-  public constructor(rows: Row[], params: MatrixParams) {
-    this.rows = rows;
+  public constructor(table: TransformTable, params: MatrixParams) {
+    this.table = table;
     this.params = params;
     this.matrixData = { columns: [], rows: [] };
   }
@@ -40,15 +41,11 @@ export class MatrixBuilder {
     };
 
     const getRemainingFieldsFromRows = (includeFields: string[], excludeFields: string[]) => {
-      const columns = new Set<string>();
-      this.rows.forEach(row => {
-        Object.keys(row).forEach(key => {
-          if (!excludeFields.includes(key) && !includeFields.includes(key)) {
-            columns.add(key);
-          }
-        });
-      });
-      return Array.from(columns);
+      return this.table
+        .getColumns()
+        .filter(
+          columnName => !excludeFields.includes(columnName) && !includeFields.includes(columnName),
+        );
     };
 
     const { includeFields, excludeFields } = this.params.columns;
@@ -66,7 +63,7 @@ export class MatrixBuilder {
     const rows: Row[] = [];
     const { rowField, categoryField } = this.params.rows;
 
-    this.rows.forEach(row => {
+    this.table.getRows().forEach(row => {
       let newRows: Row;
       if (categoryField) {
         const { [rowField]: rowFieldData, [categoryField]: categoryId, ...restOfRow } = row;

@@ -100,6 +100,13 @@ const CREATE_CONFIG = {
   },
 };
 
+const IMPORT_CONFIG = {
+  title: 'Import User Permissions',
+  actionConfig: {
+    importEndpoint: 'userPermissions',
+  },
+};
+
 // When creating, return an array of records for bulk editing on the server
 // When editing, just process a single record as normal
 const processDataForSave = (fieldsToSave, recordData) => {
@@ -140,6 +147,7 @@ export const PermissionsPage = ({ getHeaderEl, ...props }) => (
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}
+    importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
     {...props}
     onProcessDataForSave={processDataForSave}
