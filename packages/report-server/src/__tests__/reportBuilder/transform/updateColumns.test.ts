@@ -186,4 +186,24 @@ describe('updateColumns', () => {
       ]),
     );
   });
+
+  it('can upsert a column dynamically', () => {
+    const transform = buildTransform([
+      {
+        transform: 'updateColumns',
+        insert: {
+          '=$name': '=$value',
+        },
+        exclude: '*',
+      },
+    ]);
+    expect(
+      transform(
+        TransformTable.fromRows([
+          { name: 'value', value: 7 },
+          { name: 'total', value: 10 },
+        ]),
+      ),
+    ).toStrictEqual(TransformTable.fromRows([{ value: 7 }, { total: 10 }]));
+  });
 });
