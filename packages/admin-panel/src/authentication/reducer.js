@@ -8,7 +8,6 @@ import { createReducer } from '../utilities';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   EMAIL_ADDRESS_CHANGE,
-  PASSWORD_CHANGE,
   LOGIN_MODAL_TOGGLE,
   REMEMBER_ME_CHANGE,
   LOGIN_REQUEST,
@@ -48,7 +47,6 @@ const isBESAdmin = policy => {
 const stateChanges = {
   [LOGIN_MODAL_TOGGLE]: payload => payload,
   [EMAIL_ADDRESS_CHANGE]: payload => payload,
-  [PASSWORD_CHANGE]: payload => payload,
   [REMEMBER_ME_CHANGE]: payload => payload,
   [LOGIN_SUCCESS]: (payload, currentState) => {
     return {
