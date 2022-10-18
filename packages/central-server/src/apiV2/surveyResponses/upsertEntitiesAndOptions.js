@@ -1,16 +1,11 @@
-import { DatabaseError } from '@tupaia/utils';
-import { MeditrakAppServerModelRegistry } from '../../../types';
-import {
-  ValidatedSurveyResponseObject,
-  ValidatedEntitiesObject,
-  ValidatedOptionsObject,
-} from './validateInboundSurveyResponses';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ */
 
-const createEntities = async (
-  models: MeditrakAppServerModelRegistry,
-  entitiesCreated: ValidatedEntitiesObject[],
-  surveyId: string,
-) => {
+import { DatabaseError } from '@tupaia/utils';
+
+const createEntities = async (models, entitiesCreated, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
 
@@ -30,10 +25,7 @@ const createEntities = async (
   );
 };
 
-const createOptions = async (
-  models: MeditrakAppServerModelRegistry,
-  optionsCreated: ValidatedOptionsObject[],
-) => {
+const createOptions = async (models, optionsCreated) => {
   const options = [];
 
   for (const optionObject of optionsCreated) {
@@ -53,11 +45,8 @@ const createOptions = async (
   return options;
 };
 
-// Upsert data that were created in user's local database
-export const upsertCreatedData = async (
-  models: MeditrakAppServerModelRegistry,
-  surveyResponse: ValidatedSurveyResponseObject,
-) => {
+// Upsert entities and options that were created in user's local database
+export const upsertEntitiesAndOptions = async (models, surveyResponse) => {
   const entitiesCreated = surveyResponse.entities_created || [];
   const optionsCreated = surveyResponse.options_created || [];
   try {

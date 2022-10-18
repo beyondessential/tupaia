@@ -10,7 +10,6 @@ import { addSurveyImage } from './addSurveyImage';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
 import { translateSurveyResponseObject } from './translateInboundSurveyResponse';
 import { populateData } from './populateData';
-import { upsertCreatedData } from './upsertCreatedData';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -53,7 +52,6 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           this.req.models,
           translatedPayload,
         );
-        await upsertCreatedData(this.req.models, validatedSurveyResponse);
         const surveyResponseWithPopulatedData = await populateData(
           this.req.models,
           validatedSurveyResponse,

@@ -1,6 +1,7 @@
 import { getTimezoneNameFromTimestamp, stripTimezoneFromDate, yup } from '@tupaia/tsutils';
 import keyBy from 'lodash.keyby';
 import { upsertAnswers } from '../../dataAccessors';
+import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
@@ -104,7 +105,6 @@ async function saveSurveyResponses(models, responseRecords) {
 }
 
 export async function saveResponsesToDatabase(models, userId, responses) {
-  console.log(responses);
   // pre-fetch some data that will be used by multiple responses/answers
   const questionsByCode = await getQuestionsByCode(models, responses);
   const entitiesByCode = await getEntitiesByCode(models, responses);
@@ -115,14 +115,16 @@ export async function saveResponsesToDatabase(models, userId, responses) {
   const surveyResponses = await saveSurveyResponses(models, responseRecords);
   const idsCreated = surveyResponses.map(r => ({ surveyResponseId: r.id }));
 
-  // build the answer records then persist them to the database
-  // note that we could build all of the answers for all responses at once, and persist them in one
-  // big batch, but that approach resulted in occasional id clashes for POSTs of around 10k answers,
-  // (unexpectedly, doing them in series and smaller batches is also 5x faster on a macbook pro,
-  // though this is probably very dependent on the hardware - parallel should be faster if it didn't
-  // overwhelm postgres)
   for (let i = 0; i < responses.length; i++) {
     const response = responses[i];
+
+    await upsertEntitiesAndOptions(models, response);
+    // build the answer records then persist them to the database
+    // note that we could build all of the answers for all responses at once, and persist them in one
+    // big batch, but that approach resulted in occasional id clashes for POSTs of around 10k answers,
+    // (unexpectedly, doing them in series and smaller batches is also 5x faster on a macbook pro,
+    // though this is probably very dependent on the hardware - parallel should be faster if it didn't
+    // overwhelm postgres)
     const answers = await saveAnswerRecords(
       models,
       response.answers,
