@@ -3,8 +3,9 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
-import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Switch, Redirect, Route, useLocation, useRouteMatch } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { TabsToolbar } from '@tupaia/ui-components';
 import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
 import {
@@ -17,11 +18,10 @@ import {
   MapOverlayGroupsPage,
   MapOverlaysPage,
   UsersPage,
-  AdminPanelDataProviders,
+  LogoutPage,
+  PrivateRoute,
 } from '@tupaia/admin-panel';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
-import { useUser } from '../api/queries';
-import { getApiUrl } from '../utils/getApiUrl';
 import { PermissionsView } from '../views/AdminPanel/PermissionsView';
 import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
 import {
@@ -30,6 +30,8 @@ import {
   RejectedSurveyResponsesView,
   NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
+import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
+import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
@@ -37,10 +39,10 @@ const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform:
 // Hide the new button until there is a viz builder in lesmis
 const MapOverlaysView = props => <MapOverlaysPage {...props} LinksComponent={null} />;
 
-export const ROUTES = [
+const getRoutes = adminUrl => [
   {
     label: 'Survey Data',
-    to: '/survey-responses',
+    to: `${adminUrl}/survey-responses`,
     icon: <Assignment />,
     tabs: [
       {
@@ -67,7 +69,7 @@ export const ROUTES = [
   },
   {
     label: 'Surveys',
-    to: '/surveys',
+    to: `${adminUrl}/surveys`,
     icon: <Assignment />,
     tabs: [
       {
@@ -89,7 +91,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: '/visualisations',
+    to: `${adminUrl}/visualisations`,
     icon: <InsertChart />,
     tabs: [
       {
@@ -126,7 +128,7 @@ export const ROUTES = [
   },
   {
     label: 'Users & Permissions',
-    to: '/users',
+    to: `${adminUrl}/users`,
     icon: <PeopleAlt />,
     tabs: [
       {
@@ -143,46 +145,75 @@ export const ROUTES = [
   },
 ];
 
-const config = { apiUrl: `${getApiUrl()}/admin` };
+const getAdminUrl = pathname => {
+  const adminMatcher = 'admin';
+  const indexOfEndOfAdmin = pathname.indexOf(adminMatcher) + adminMatcher.length;
+  return pathname.substring(0, indexOfEndOfAdmin);
+};
 
-const HeaderContainer = styled.div`
-  background: ${props => props.theme.palette.primary.main};
-  border-top: 1px solid rgba(0, 0, 0, 0.2); ;
-`;
-
-const AdminPanelRoutes = () => {
+const AdminPanelApp = ({ user, isBESAdmin }) => {
   const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
-  const { isLesmisAdmin } = useUser();
+  const { pathname } = useLocation();
 
   const getHeaderEl = () => {
     return headerEl;
   };
 
+  const adminUrl = getAdminUrl(pathname);
+  const routes = getRoutes(adminUrl);
+
   return (
-    <AdminPanelDataProviders config={config}>
-      <div>
-        <HeaderContainer ref={headerEl} />
+    <Switch>
+      <Route path={`${path}/login`} exact>
+        <AdminPanelLoginPage redirectTo={`${adminUrl}/survey-responses`} />
+      </Route>
+      <Route path={`${path}/logout`} exact>
+        <LogoutPage />
+      </Route>
+      <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
+        <AdminPanelNavbar user={user} links={routes} />
+        <div ref={headerEl} />
         <Switch>
-          {[...ROUTES].map(route => (
-            <LesmisAdminRoute key={route.to} path={`${path}${route.to}`}>
+          {[...routes].map(route => (
+            <LesmisAdminRoute key={route.to} path={`${route.to}`} isBESAdmin={isBESAdmin}>
               <TabsToolbar links={route.tabs} maxWidth="xl" />
               <Switch>
                 {route.tabs.map(tab => (
-                  <Route key={`${route.to}-${tab.to}`} path={`${path}${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} isBESAdmin={isLesmisAdmin} />
+                  <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
+                    <tab.component getHeaderEl={getHeaderEl} />
                   </Route>
                 ))}
-                <Redirect to={`${path}${route.to}`} />
+                <Redirect to={`${route.to}`} />
               </Switch>
             </LesmisAdminRoute>
           ))}
           <Redirect to={`${path}/survey-responses`} />
         </Switch>
-      </div>
-    </AdminPanelDataProviders>
+      </PrivateRoute>
+      <Redirect to={`${path}/login`} />
+    </Switch>
   );
 };
 
-// Must be a default export as React.lazy currently only supports default exports.
-export default AdminPanelRoutes;
+AdminPanelApp.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    firstName: PropTypes.string,
+    profileImage: PropTypes.string,
+  }).isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+AdminPanelApp.defaultProps = {
+  isBESAdmin: false,
+};
+
+export default connect(
+  state => ({
+    user: state?.authentication?.user || {},
+    isBESAdmin: state?.authentication?.isBESAdmin || false,
+  }),
+  null,
+)(AdminPanelApp);
