@@ -49,7 +49,6 @@ export class ModelRegistry {
     Object.keys(this.modelClasses).forEach(modelName => {
       const modelKey = getModelKey(modelName);
       Object.keys(this.modelClasses).forEach(otherModelName => {
-        this[modelKey].modelRegistry = this; // Add a reference to the registry
         const otherModelKey = getModelKey(otherModelName);
         this[modelKey].otherModels[otherModelKey] = this[otherModelKey];
       });
