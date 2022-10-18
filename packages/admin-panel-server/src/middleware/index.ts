@@ -4,4 +4,4 @@
  */
 
 export { upload } from './upload';
-export { verifyBESAdminAccess } from './verifyBESAdminAccess';
+export { verifyVizBuilderUserAccess } from './verifyVizBuilderUserAccess';

@@ -11,7 +11,7 @@ import {
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
-import { upload, verifyBESAdminAccess } from '../middleware';
+import { upload, verifyVizBuilderUserAccess } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
@@ -56,90 +56,90 @@ export function createApp() {
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(FetchHierarchyEntitiesRoute),
     )
     .post<FetchReportPreviewDataRequest>(
       'fetchReportPreviewData',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(FetchReportPreviewDataRoute),
     )
     .post<SaveDashboardVisualisationRequest>(
       'dashboardVisualisation',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
     .put<SaveDashboardVisualisationRequest>(
       'dashboardVisualisation/:dashboardVisualisationId',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
     .post<SaveMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(SaveMapOverlayVisualisationRoute),
     )
     .put<SaveMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation/:mapOverlayVisualisationId',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(SaveMapOverlayVisualisationRoute),
     )
     .get<FetchDashboardVisualisationRequest>(
       'dashboardVisualisation/:dashboardVisualisationId',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(FetchDashboardVisualisationRoute),
     )
     .get(
       'export/dashboardVisualisation/:dashboardVisualisationId',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
     .post<ExportMapOverlayVisualisationRequest>(
       'export/mapOverlayVisualisation',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ImportDashboardVisualisationRequest>(
       'import/dashboardVisualisations',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       'import/mapOverlayVisualisations',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       upload.array('mapOverlayVisualisations'),
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
       'uploadTestData',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       upload.single('testData'),
       handleWith(UploadTestDataRoute),
     )
     .get<FetchMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation/:mapOverlayVisualisationId',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(FetchMapOverlayVisualisationRoute),
     )
     .get<FetchAggregationOptionsRequest>(
       'fetchAggregationOptions',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(FetchAggregationOptionsRoute),
     )
     .get<FetchTransformSchemasRequest>(
       'fetchTransformSchemas',
-      verifyBESAdminAccess,
+      verifyVizBuilderUserAccess,
       handleWith(FetchTransformSchemasRoute),
     )
     .build();

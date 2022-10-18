@@ -7,9 +7,13 @@ import { Request, Response, NextFunction } from 'express';
 
 import { UnauthenticatedError } from '@tupaia/utils';
 
-import { hasBESAdminAccess } from '../utils';
+import { hasVizBuilderUserAccess } from '../utils';
 
-export const verifyBESAdminAccess = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyVizBuilderUserAccess = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { session } = req;
 
@@ -17,7 +21,7 @@ export const verifyBESAdminAccess = async (req: Request, res: Response, next: Ne
       throw new UnauthenticatedError('Session is not attached');
     }
 
-    hasBESAdminAccess(session.accessPolicy);
+    hasVizBuilderUserAccess(session.accessPolicy);
 
     next();
   } catch (error) {
