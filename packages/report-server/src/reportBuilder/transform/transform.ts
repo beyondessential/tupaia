@@ -5,15 +5,15 @@
 
 import { yup } from '@tupaia/utils';
 
-import { Row } from '../types';
 import { Context } from '../context';
 import { transformBuilders } from './functions';
 import { aliases } from './aliases';
+import { TransformTable } from './table';
 
 type BuiltTransformParams = {
   title?: string;
   name: string;
-  apply: (rows: Row[]) => Row[];
+  apply: (table: TransformTable) => TransformTable;
 };
 
 const transformParamsValidator = yup.lazy((value: unknown) => {
@@ -36,18 +36,18 @@ const transformParamsValidator = yup.lazy((value: unknown) => {
 
 const paramsValidator = yup.array().required();
 
-const transform = (rows: Row[], transformSteps: BuiltTransformParams[]): Row[] => {
-  let transformedRows: Row[] = rows;
+const transform = (table: TransformTable, transformSteps: BuiltTransformParams[]) => {
+  let transformedTable: TransformTable = table;
   transformSteps.forEach((transformStep: BuiltTransformParams, index: number) => {
     try {
-      transformedRows = transformStep.apply(transformedRows);
+      transformedTable = transformStep.apply(transformedTable);
     } catch (e) {
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
       const errorMessagePrefix = `Error in transform[${index + 1}]${titlePart}: `;
       throw new Error(`${errorMessagePrefix}${(e as Error).message}`);
     }
   });
-  return transformedRows;
+  return transformedTable;
 };
 
 const buildParams = (params: unknown, context: Context): BuiltTransformParams => {
@@ -77,5 +77,5 @@ export const buildTransform = (params: unknown, context: Context = {}) => {
   const validatedParams = paramsValidator.validateSync(params);
 
   const builtParams = validatedParams.map(param => buildParams(param, context));
-  return (rows: Row[]) => transform(rows, builtParams);
+  return (table: TransformTable) => transform(table, builtParams);
 };

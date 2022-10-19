@@ -4,11 +4,9 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 
-import { QueryParameters, Route } from '@tupaia/server-boilerplate';
-
-import { EntityConnection } from '../connections';
+import { Route } from '@tupaia/server-boilerplate';
 
 export type FetchHierarchyEntitiesRequest = Request<
   { hierarchyName: string; entityCode: string },
@@ -18,24 +16,31 @@ export type FetchHierarchyEntitiesRequest = Request<
 >;
 
 export class FetchHierarchyEntitiesRoute extends Route<FetchHierarchyEntitiesRequest> {
-  private readonly entityConnection: EntityConnection;
-
-  public constructor(req: FetchHierarchyEntitiesRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.entityConnection = new EntityConnection(req.session);
-  }
-
   public async buildResponse() {
+    const { entity: entityApi } = this.req.ctx.services;
     const { hierarchyName, entityCode } = this.req.params;
     const { fields, search } = this.req.query;
-    const queryParams: QueryParameters = {};
+    const queryParams: {
+      fields?: string[];
+      filter?: Record<string, { comparator: string; comparisonValue: unknown }>;
+    } = {};
     if (fields) {
-      queryParams.fields = fields;
+      queryParams.fields = fields.split(',');
     }
     if (search) {
-      queryParams.filter = `name=@${search}`;
+      queryParams.filter = {
+        name: {
+          comparator: 'ilike',
+          comparisonValue: search,
+        },
+      };
     }
-    return this.entityConnection.getEntities(hierarchyName, entityCode, queryParams);
+    const projectEntity = await entityApi.getEntities(hierarchyName, [entityCode], queryParams);
+    const descendants = await entityApi.getDescendantsOfEntity(
+      hierarchyName,
+      entityCode,
+      queryParams,
+    );
+    return projectEntity.concat(descendants);
   }
 }

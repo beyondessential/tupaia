@@ -8,9 +8,10 @@ import groupBy from 'lodash.groupby';
 import moment from 'moment';
 import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
+import { isNotNullish } from '@tupaia/tsutils';
 import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery, EventAnswer } from './EventsFetchQuery';
-import { sanitizeMetadataValue, sanitizeAnalyticsTableValue, isDefined } from './utils';
+import { sanitizeMetadataValue, sanitizeAnalyticsTableValue } from './utils';
 import { eventOptionsValidator, analyticsOptionsValidator } from './validators';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
@@ -175,7 +176,7 @@ export class TupaiaDataApi {
     if (includeOptions) {
       // Get all possible option_set_ids from questions
       const optionSetIds = [
-        ...new Set(dataElementsMetadata.map(d => d.option_set_id).filter(isDefined)),
+        ...new Set(dataElementsMetadata.map(d => d.option_set_id).filter(isNotNullish)),
       ];
       // Get all the options from the option sets and grouped by set ids.
       const optionsGroupedBySetId = await this.getOptionsGroupedBySetId(optionSetIds);

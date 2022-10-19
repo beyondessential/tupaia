@@ -3,15 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { isDefined, isNotNullish } from '@tupaia/tsutils';
 import { FieldValue } from '../../../types';
-
-const isNotUndefined = <T>(value: T): value is Exclude<T, undefined> => {
-  return value !== undefined;
-};
-
-const isNotNullOrUndefined = <T>(value: T): value is NonNullable<T> => {
-  return value !== undefined && value !== null;
-};
 
 // checkIsNum([1, 2, 3, null, undefined]) = 1, 2, 3]
 const checkIsNum = (values: FieldValue[]): number[] => {
@@ -21,7 +14,7 @@ const checkIsNum = (values: FieldValue[]): number[] => {
     }
     return true;
   };
-  const filteredUndefinedAndNullValues = values.filter(isNotNullOrUndefined);
+  const filteredUndefinedAndNullValues = values.filter(isNotNullish);
   return filteredUndefinedAndNullValues.filter(assertIsNumber);
 };
 
@@ -42,19 +35,19 @@ const average = (values: FieldValue[]): number | undefined => {
   const checkedValues = checkIsNum(values);
   const numerator = sum(checkedValues);
   const denominator = count(checkedValues);
-  if (isNotUndefined(numerator) && denominator !== 0) {
+  if (isDefined(numerator) && denominator !== 0) {
     return numerator / denominator;
   }
   return undefined;
 };
 
 const count = (values: FieldValue[]): number => {
-  return values.length;
+  return values.filter(isDefined).length;
 };
 
 // helper of max() and min(), e.g.: customSort([1, 2, 3, null]) = [null, 1, 2, 3]
 const customSort = (values: FieldValue[]): FieldValue[] => {
-  const filteredUndefinedValues = values.filter(isNotUndefined);
+  const filteredUndefinedValues = values.filter(isDefined);
   return filteredUndefinedValues.sort((a, b) => {
     if (a === null) {
       return -1;
@@ -79,7 +72,7 @@ const min = (values: FieldValue[]): FieldValue => {
 };
 
 const unique = (values: FieldValue[]): FieldValue => {
-  const distinctValues = [...new Set(values.filter(isNotUndefined))];
+  const distinctValues = [...new Set(values.filter(isDefined))];
   return distinctValues.length === 1 ? distinctValues[0] : 'NO_UNIQUE_VALUE';
 };
 
@@ -90,15 +83,15 @@ const exclude = (values: FieldValue[]): FieldValue => {
 };
 
 const first = (values: FieldValue[]): FieldValue => {
-  return values.find(isNotUndefined);
+  return values.find(isDefined);
 };
 
 const last = (values: FieldValue[]): FieldValue => {
-  return values.slice().reverse().find(isNotUndefined);
+  return values.slice().reverse().find(isDefined);
 };
 
 const single = (values: FieldValue[]): FieldValue => {
-  const definedValues = values.filter(isNotUndefined);
+  const definedValues = values.filter(isDefined);
   if (definedValues.length === 0) {
     return undefined;
   }

@@ -6,9 +6,10 @@
 import { yup, orderBy } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
 
-import { TransformParser } from '../parser';
 import { Row } from '../../types';
 import { starSingleOrMultipleColumnsValidator } from './transformValidators';
+import { TransformTable } from '../table';
+import { TransformParser } from '../parser';
 
 type SortParams = {
   by: string | string[];
@@ -76,16 +77,20 @@ const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc')
   };
 };
 
-const sortRows = (rows: Row[], params: SortParams): Row[] => {
+const sortRows = (table: TransformTable, params: SortParams) => {
   const { by, direction } = params;
+
   if (typeof by === 'string' && TransformParser.isExpression(by)) {
     const firstDirection = Array.isArray(direction) ? direction[0] : direction;
-    return rows.sort(getCustomRowSortFunction(by, firstDirection));
+    const sortedRows = table.getRows().sort(getCustomRowSortFunction(by, firstDirection));
+    return new TransformTable(table.getColumns(), sortedRows);
   }
 
   const arrayBy = typeof by === 'string' ? [by] : by;
   const arrayDirection = typeof direction === 'string' ? [direction] : direction;
-  return orderBy(rows, arrayBy, arrayDirection);
+  const sortedRows = orderBy(table.getRows(), arrayBy, arrayDirection);
+
+  return new TransformTable(table.getColumns(), sortedRows);
 };
 
 const buildParams = (params: unknown): SortParams => {
@@ -105,5 +110,5 @@ const buildParams = (params: unknown): SortParams => {
 
 export const buildSortRows = (params: unknown) => {
   const builtSortParams = buildParams(params);
-  return (rows: Row[]) => sortRows(rows, builtSortParams);
+  return (table: TransformTable) => sortRows(table, builtSortParams);
 };

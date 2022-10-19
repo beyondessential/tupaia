@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@tupaia/database": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "@types/lodash.groupby": "^4.6.0",
     "db-migrate": "^0.11.5",

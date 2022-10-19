@@ -17,6 +17,8 @@ import { importSurveyResponses, constructImportEmail } from './importSurveyRespo
 import { importDisaster } from './importDisaster';
 import { getTempDirectory } from '../../utilities';
 import { importDataElements } from './importDataElements';
+import { importDataElementDataServices } from './importDataElementDataServices';
+import { importUserPermissions } from './importUserPermissions';
 
 // create upload handler
 const upload = multer({
@@ -51,5 +53,15 @@ importRoutes.post(
 importRoutes.post('/disasters', upload.single('disasters'), catchAsyncErrors(importDisaster));
 importRoutes.post('/users', upload.single('users'), catchAsyncErrors(importUsers));
 importRoutes.post('/optionSets', upload.single('optionSets'), catchAsyncErrors(importOptionSets));
+importRoutes.post(
+  '/dataElementDataServices',
+  upload.single('dataElementDataServices'),
+  catchAsyncErrors(importDataElementDataServices),
+);
+importRoutes.post(
+  '/userPermissions',
+  upload.single('userPermissions'),
+  catchAsyncErrors(importUserPermissions),
+);
 
 export { importRoutes };

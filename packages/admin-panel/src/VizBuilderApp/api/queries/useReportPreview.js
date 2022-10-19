@@ -14,6 +14,7 @@ export const useReportPreview = ({
   enabled,
   onSettled,
   vizType,
+  previewMode,
 }) =>
   useQuery(
     ['fetchReportPreviewData', visualisation],
@@ -23,6 +24,7 @@ export const useReportPreview = ({
           entityCode: location,
           hierarchy: project,
           vizType,
+          previewMode,
         },
         data: {
           testData,

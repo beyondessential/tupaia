@@ -8,7 +8,7 @@ import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
 import { QueryParameters, AuthHandler } from '../types';
 
-type RequestBody = Record<string, unknown> | Record<string, unknown>[];
+export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 type FetchHeaders = HeadersInit & {
   Authorization: string;
