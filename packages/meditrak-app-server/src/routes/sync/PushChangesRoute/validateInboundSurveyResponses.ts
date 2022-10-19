@@ -39,24 +39,21 @@ export const constructOptionsValidator = (models: MeditrakAppServerModelRegistry
   });
 
 export const constructSurveyResponseValidator = (models: MeditrakAppServerModelRegistry) =>
-  yup
-    .object()
-    .shape({
-      id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
-      assessor_name: yup.string().required(),
-      clinic_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
-      data_time: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesDateForm))),
-      entity_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
-      start_time: yup.string().test(yupUtils.yupTestSync(takesDateForm)),
-      end_time: yup.string().test(yupUtils.yupTestSync(takesDateForm)),
-      survey_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
-      user_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
-      approval_status: yup.string(),
-      answers: yup.array().of(constructAnswerValidator(models)).required(),
-      entities_created: yup.array().of(constructEntityValidator(models)),
-      options_created: yup.array().of(constructOptionsValidator(models)),
-    })
-    .test({ test: clinicOrEntityIdExist, message: 'Either clinic_id or entity_id are required.' });
+  yup.object().shape({
+    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
+    assessor_name: yup.string().required(),
+    clinic_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
+    data_time: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesDateForm))),
+    entity_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
+    start_time: yup.string().test(yupUtils.yupTestSync(takesDateForm)),
+    end_time: yup.string().test(yupUtils.yupTestSync(takesDateForm)),
+    survey_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
+    user_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
+    approval_status: yup.string(),
+    answers: yup.array().of(constructAnswerValidator(models)).required(),
+    entities_created: yup.array().of(constructEntityValidator(models)),
+    options_created: yup.array().of(constructOptionsValidator(models)),
+  });
 
 const constructAnswerValidator = (models: MeditrakAppServerModelRegistry) =>
   yup.object().shape({

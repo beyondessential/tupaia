@@ -11,6 +11,13 @@ import { ValidatedSurveyResponseObject } from './validateInboundSurveyResponses'
 
 const DEFAULT_DATABASE_TIMEZONE = 'Pacific/Auckland';
 
+const approvalStatusTypes = {
+  NOT_REQUIRED: 'not_required',
+  PENDING: 'pending',
+  REJECTED: 'rejected',
+  APPROVED: 'approved',
+};
+
 /**
  * @param surveyResponse
  * @return {string}
@@ -78,9 +85,9 @@ export const populateData = async (
     surveyResponseProperties.data_time = getDataTime(surveyResponse);
 
     // If the response is for a survey where approval is required, set approval to pending
-    let approvalStatus = models.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
+    let approvalStatus = approvalStatusTypes.NOT_REQUIRED;
     if (survey.requires_approval) {
-      approvalStatus = models.surveyResponse.approvalStatusTypes.PENDING;
+      approvalStatus = approvalStatusTypes.PENDING;
     }
     surveyResponseProperties.approval_status = approvalStatus;
 

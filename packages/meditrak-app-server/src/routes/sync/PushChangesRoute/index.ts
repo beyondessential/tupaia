@@ -1,1 +1,1 @@
-export { PushChangesRoute } from './PushChangesRoute';
+export { PushChangesRoute, PushChangesRequest } from './PushChangesRoute';
