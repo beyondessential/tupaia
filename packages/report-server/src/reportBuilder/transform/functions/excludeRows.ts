@@ -7,7 +7,7 @@ import { yup } from '@tupaia/utils';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { Context } from '../../context';
-import { Row } from '../../types';
+import { TransformTable } from '../table';
 
 type ExcludeRowsParams = {
   where: (parser: TransformParser) => boolean;
@@ -17,13 +17,18 @@ export const paramsValidator = yup.object().shape({
   where: yup.string(),
 });
 
-const excludeRows = (rows: Row[], params: ExcludeRowsParams, context: Context): Row[] => {
-  const parser = new TransformParser(rows, context);
-  return rows.filter(() => {
-    const filterResult = !params.where(parser);
+const excludeRows = (table: TransformTable, params: ExcludeRowsParams, context: Context) => {
+  const parser = new TransformParser(table, context);
+  const rowsToDelete: number[] = [];
+  table.getRows().forEach((_, index) => {
+    const shouldDeleteRow = params.where(parser);
     parser.next();
-    return filterResult;
+    if (shouldDeleteRow) {
+      rowsToDelete.push(index);
+    }
   });
+
+  return table.dropRows(rowsToDelete);
 };
 
 const buildParams = (params: unknown): ExcludeRowsParams => {
@@ -33,5 +38,5 @@ const buildParams = (params: unknown): ExcludeRowsParams => {
 
 export const buildExcludeRows = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => excludeRows(rows, builtParams, context);
+  return (table: TransformTable) => excludeRows(table, builtParams, context);
 };

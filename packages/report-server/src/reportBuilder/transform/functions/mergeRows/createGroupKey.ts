@@ -15,6 +15,6 @@ export const buildCreateGroupKey = (groupBy: undefined | string | string[]) => {
       return `${row[groupBy]}`;
     }
 
-    return groupBy.map(field => row[field]).join('___');
+    return groupBy.map(columnName => row[columnName]).join('___');
   };
 };

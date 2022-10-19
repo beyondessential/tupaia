@@ -33,6 +33,7 @@ import {
   SyncGroupsPage,
   DataTablesPage,
 } from './pages/resources';
+import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
 export const ROUTES = [
   {
@@ -74,6 +75,11 @@ export const ROUTES = [
         label: 'Sync Groups',
         to: '/sync-groups',
         component: SyncGroupsPage,
+      },
+      {
+        label: 'Data Mapping',
+        to: '/data-mapping',
+        component: DataElementDataServicesPage,
       },
     ],
   },

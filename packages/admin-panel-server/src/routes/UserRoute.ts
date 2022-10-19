@@ -3,19 +3,18 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { Request, Response, NextFunction } from 'express';
+import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { CentralConnection } from '../connections';
+import { AccessPolicy } from '@tupaia/access-policy';
+import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
+
+const isBESAdmin = (policy: Record<string, string[]>) => {
+  return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
+};
 
 export class UserRoute extends Route {
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: Request, res: Response, next: NextFunction) {
-    super(req, res, next);
-    this.centralConnection = new CentralConnection(req.session);
-  }
-
   public async buildResponse() {
-    return this.centralConnection.getUser();
+    const user = await this.req.ctx.services.central.getUser();
+    return { ...camelcaseKeys(user), isBESAdmin: isBESAdmin(user.accessPolicy) };
   }
 }

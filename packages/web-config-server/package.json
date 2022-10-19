@@ -17,8 +17,8 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9997",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha"
+    "test": "yarn package:test:withdb --runInBand",
+    "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
@@ -69,12 +69,6 @@
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^4.0.0",
-    "chai": "^4.1.2",
-    "chai-like": "^1.1.1",
-    "cross-env": "^7.0.2",
-    "csvtojson": "^1.1.5",
-    "mocha": "^8.1.3",
-    "nyc": "^15.1.0",
-    "sinon-chai": "^3.3.0"
+    "csvtojson": "^1.1.5"
   }
 }

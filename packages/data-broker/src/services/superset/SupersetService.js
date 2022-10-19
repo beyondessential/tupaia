@@ -42,7 +42,7 @@ export class SupersetService extends Service {
    * @private
    */
   async pullAnalytics(dataSources, options) {
-    const { dataServiceMapping } = options;
+    const { dataServiceMapping, startDate, endDate } = options;
     let mergedResults = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
       this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
@@ -61,6 +61,7 @@ export class SupersetService extends Service {
           chartId,
           chartDataSources,
           dataServiceMapping,
+          { startDate, endDate },
         );
         mergedResults = mergedResults.concat(results);
       }
@@ -78,10 +79,16 @@ export class SupersetService extends Service {
    * @param {string} chartId
    * @param {DataElement[]} dataElements
    * @param {DataServiceMapping} dataServiceMapping
+   * @param {{ startDate?: string; endDate?: string }} options
    * @return {Promise<Object[]>} analytic results
    * @private
    */
-  async pullForApiForChart(api, chartId, dataElements, dataServiceMapping) {
+  async pullForApiForChart(api, chartId, dataElements, dataServiceMapping, options) {
+    const { startDate, endDate } = options;
+
+    const startDateMoment = startDate ? moment(startDate).startOf('day') : undefined;
+    const endDateMoment = endDate ? moment(endDate).endOf('day') : undefined;
+
     const response = await api.chartData(chartId);
     const { data } = response.result[0];
 
@@ -99,12 +106,17 @@ export class SupersetService extends Service {
           dataElement = mappingMatchingSupersetItemCode.dataSource;
         }
       }
+
       if (!dataElement) continue; // unneeded data
+
+      const dataDateMoment = moment(date);
+      if (startDateMoment && dataDateMoment.isBefore(startDateMoment)) continue; // before date range
+      if (endDateMoment && dataDateMoment.isAfter(endDateMoment)) continue; // after date range
 
       results.push({
         dataElement: dataElement.code,
         organisationUnit: storeCode,
-        period: moment(date).format('YYYYMMDD'),
+        period: dataDateMoment.format('YYYYMMDD'),
         value,
       });
     }

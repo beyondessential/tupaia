@@ -4,7 +4,7 @@
  */
 
 import { Context } from '../../context';
-import { Row } from '../../types';
+import { TransformTable } from '../table';
 
 /**
  * [
@@ -18,7 +18,7 @@ import { Row } from '../../types';
  * ]
  */
 export const insertNumberOfFacilitiesColumn = {
-  transform: (context: Context) => (rows: Row[]) => {
+  transform: (context: Context) => (table: TransformTable) => {
     const { facilityCountByOrgUnit } = context;
 
     if (facilityCountByOrgUnit === undefined) {
@@ -27,21 +27,27 @@ export const insertNumberOfFacilitiesColumn = {
       );
     }
 
-    return rows.map(row => {
-      const { organisationUnit, ...restOfRow } = row;
+    if (table.length() === 0) {
+      return table; // Skip if the table is empty
+    }
 
+    const organisationUnitValues = table.getColumnValues('organisationUnit');
+    const numberOfFacilitiesColumnValues = organisationUnitValues.map(organisationUnit => {
       if (typeof organisationUnit !== 'string') {
         throw new Error(
           `'organisationUnit' type must be string, but got: ${typeof organisationUnit}`,
         );
       }
 
-      return {
-        numberOfFacilities: facilityCountByOrgUnit[organisationUnit],
-        organisationUnit,
-        ...restOfRow,
-      };
+      return facilityCountByOrgUnit[organisationUnit];
     });
+
+    return table.upsertColumns([
+      {
+        columnName: 'numberOfFacilities',
+        values: numberOfFacilitiesColumnValues,
+      },
+    ]);
   },
   dependencies: ['facilityCountByOrgUnit'],
 };

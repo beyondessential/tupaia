@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { TransformTable } from '../table';
 import { Row } from '../../types';
 
 /**
@@ -14,17 +15,19 @@ import { Row } from '../../types';
  * { facilityNameA: '100%', facilityNameB: '50%', facilityNameC: '0%', facilityNameD: '100%'  }]
  */
 
-const detectColumnsToSummarise = (rows: Row[]) => {
-  const { columnsWithOnlyYorN: columnsToSummarise } = rows.reduce(
+const detectColumnsToSummarise = (table: TransformTable) => {
+  const { columnsWithOnlyYorN: columnsToSummarise } = table.getRows().reduce(
     ({ columnsWithOnlyYorN, columnsWithOtherValues }, row) => {
-      Object.entries(row).forEach(([column, value]) => {
-        if (columnsWithOtherValues.has(column)) {
+      Object.entries(row).forEach(([columnName, value]) => {
+        if (columnsWithOtherValues.has(columnName)) {
           /* do nothing */
         } else if (value === 'Y' || value === 'N') {
-          columnsWithOnlyYorN.add(column);
+          columnsWithOnlyYorN.add(columnName);
+        } else if (value === undefined) {
+          /* do nothing */
         } else {
-          columnsWithOnlyYorN.delete(column);
-          columnsWithOtherValues.add(column);
+          columnsWithOnlyYorN.delete(columnName);
+          columnsWithOtherValues.add(columnName);
         }
       });
       return { columnsWithOnlyYorN, columnsWithOtherValues };
@@ -39,41 +42,44 @@ const addPercentage = (numerator: number, denominator: number) => {
   return `${((numerator / denominator) * 100).toFixed(1)}%`;
 };
 
-const addSummaryColumn = (row: Row, columnsToSummarise: string[]) => {
-  const numerator = Object.entries(row).filter(
-    ([key, value]) => columnsToSummarise.includes(key) && value === 'N',
-  ).length;
-  const denominator = Object.entries(row).filter(
-    ([column, value]) => columnsToSummarise.includes(column) && (value === 'N' || value === 'Y'),
-  ).length;
-  const summaryColumn = addPercentage(numerator, denominator);
-  const updatedRow = row;
-  updatedRow.summaryColumn = summaryColumn;
-  return updatedRow;
-};
-
-const getSummaryRow = (rows: Row[], columnsToSummarise: string[]) => {
-  const arrayOfColumns = columnsToSummarise.map((column: string) => {
-    const { numerator, denominator } = rows.reduce(
-      (accumulator: Record<string, number>, row: Row) => {
-        if (row[column] === 'N') {
-          accumulator.numerator += 1;
-          accumulator.denominator += 1;
-        } else if (row[column] === 'Y') {
-          accumulator.denominator += 1;
-        }
-        return accumulator;
-      },
-      { numerator: 0, denominator: 0 },
-    );
-    return [column, addPercentage(numerator, denominator)];
+const getSummaryColumn = (table: TransformTable, columnsToSummarise: string[]) => {
+  return table.getRows().map(row => {
+    const numerator = Object.entries(row).filter(
+      ([columnName, value]) => columnsToSummarise.includes(columnName) && value === 'N',
+    ).length;
+    const denominator = Object.entries(row).filter(
+      ([columnName, value]) =>
+        columnsToSummarise.includes(columnName) && (value === 'N' || value === 'Y'),
+    ).length;
+    return addPercentage(numerator, denominator);
   });
-  return Object.fromEntries(arrayOfColumns);
 };
 
-export const insertSummaryRowAndColumn = () => (rows: Row[]) => {
-  const columnsToSummarise = detectColumnsToSummarise(rows);
-  const rowsWithSummaryColumn = rows.map(row => addSummaryColumn(row, columnsToSummarise));
-  const summaryRow = getSummaryRow(rows, columnsToSummarise);
-  return [...rowsWithSummaryColumn, summaryRow];
+const getSummaryRow = (table: TransformTable, columnsToSummarise: string[]) => {
+  return Object.fromEntries(
+    columnsToSummarise.map((columnName: string) => {
+      const { numerator, denominator } = table.getRows().reduce(
+        (accumulator: Record<string, number>, row: Row) => {
+          if (row[columnName] === 'N') {
+            accumulator.numerator += 1;
+            accumulator.denominator += 1;
+          } else if (row[columnName] === 'Y') {
+            accumulator.denominator += 1;
+          }
+          return accumulator;
+        },
+        { numerator: 0, denominator: 0 },
+      );
+      return [columnName, addPercentage(numerator, denominator)];
+    }),
+  );
+};
+
+export const insertSummaryRowAndColumn = () => (table: TransformTable) => {
+  const columnsToSummarise = detectColumnsToSummarise(table);
+  const summaryColumn = getSummaryColumn(table, columnsToSummarise);
+  const summaryRow = getSummaryRow(table, columnsToSummarise);
+  return table
+    .upsertColumns([{ columnName: 'summaryColumn', values: summaryColumn }])
+    .insertRows([{ row: summaryRow }]);
 };

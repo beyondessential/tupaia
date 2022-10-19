@@ -6,10 +6,11 @@
 import { yup } from '@tupaia/utils';
 
 import { Context } from '../../context';
-import { Row } from '../../types';
+import { FieldValue, Row } from '../../types';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { mapStringToStringValidator } from './transformValidators';
+import { TransformTable } from '../table';
 
 type InsertColumnsParams = {
   columns: { [key: string]: string };
@@ -21,22 +22,43 @@ export const paramsValidator = yup.object().shape({
   where: yup.string(),
 });
 
-const insertColumns = (rows: Row[], params: InsertColumnsParams, context: Context): Row[] => {
-  const parser = new TransformParser(rows, context);
-  return rows.map(row => {
-    const returnNewRow = params.where(parser);
-    if (!returnNewRow) {
+const insertColumns = (table: TransformTable, params: InsertColumnsParams, context: Context) => {
+  const parser = new TransformParser(table, context);
+  const newColumns: Record<string, FieldValue[]> = {};
+  const skippedRows: Record<number, Row> = {};
+  table.getRows().forEach((row, rowIndex) => {
+    const shouldEditThisRow = params.where(parser);
+    if (!shouldEditThisRow) {
+      skippedRows[rowIndex] = row;
       parser.next();
-      return row;
+      return;
     }
-    const newRow: Row = { ...row };
+
     Object.entries(params.columns).forEach(([key, expression]) => {
-      newRow[parser.evaluate(key)] = parser.evaluate(expression);
+      const columnName = parser.evaluate(key);
+      const columnValue = parser.evaluate(expression);
+      if (!newColumns[columnName]) {
+        newColumns[columnName] = new Array(table.length()).fill(undefined);
+      }
+      newColumns[columnName].splice(rowIndex, 1, columnValue);
     });
 
     parser.next();
-    return newRow;
   });
+
+  const columnUpserts = Object.entries(newColumns).map(([columnName, values]) => ({
+    columnName,
+    values,
+  }));
+
+  // Drop, then re-insert the original skipped rows
+  const rowsToDrop = Object.keys(skippedRows).map(rowIndexString => parseInt(rowIndexString));
+  const rowReinserts = Object.entries(skippedRows).map(([rowIndexString, row]) => ({
+    row,
+    index: parseInt(rowIndexString),
+  }));
+
+  return table.upsertColumns(columnUpserts).dropRows(rowsToDrop).insertRows(rowReinserts);
 };
 
 const buildParams = (params: unknown): InsertColumnsParams => {
@@ -56,5 +78,5 @@ const buildParams = (params: unknown): InsertColumnsParams => {
 
 export const buildInsertColumns = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => insertColumns(rows, builtParams, context);
+  return (table: TransformTable) => insertColumns(table, builtParams, context);
 };

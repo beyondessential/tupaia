@@ -4,7 +4,8 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { Row, FieldValue } from '../../types';
+import { TransformTable } from '../table';
+import { Row } from '../../types';
 import { getColumnMatcher } from './helpers';
 import { gatherColumnsValidator } from './transformValidators';
 
@@ -16,25 +17,30 @@ export const paramsValidator = yup.object().shape({
   keep: gatherColumnsValidator,
 });
 
-const gatherColumns = (rows: Row[], params: GatherColumnsParams): Row[] => {
+const gatherColumns = (table: TransformTable, params: GatherColumnsParams) => {
   const { shouldKeepColumn } = params;
 
-  return rows
+  const columnNames = table.getColumns();
+  const columnsToKeep = columnNames.filter(columnName => shouldKeepColumn(columnName));
+  const columnsToGather = columnNames.filter(columnName => !shouldKeepColumn(columnName));
+  const newColumnNames = [...columnsToKeep, 'value', 'columnName'];
+
+  const newRowData = table
+    .getRows()
     .map(row => {
-      const keptFields: Record<string, FieldValue> = {};
-      const gatherFields: string[] = [];
+      const keptData: Row = Object.fromEntries(
+        columnsToKeep.map(columnName => [columnName, row[columnName]]),
+      );
 
-      Object.entries(row).forEach(([key, value]) => {
-        if (shouldKeepColumn(key)) {
-          keptFields[key] = value;
-        } else {
-          gatherFields.push(key);
-        }
-      });
-
-      return gatherFields.map(key => ({ ...keptFields, value: row[key], columnName: key }));
+      return columnsToGather.map(columnName => ({
+        ...keptData,
+        value: row[columnName],
+        columnName,
+      }));
     })
     .flat();
+
+  return new TransformTable(newColumnNames, newRowData);
 };
 
 const buildParams = (params: unknown): GatherColumnsParams => {
@@ -53,5 +59,5 @@ const buildParams = (params: unknown): GatherColumnsParams => {
 
 export const buildGatherColumns = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => gatherColumns(rows, builtParams);
+  return (table: TransformTable) => gatherColumns(table, builtParams);
 };

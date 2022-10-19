@@ -8,7 +8,13 @@ import {
   URL_COMPONENTS,
 } from '../historyNavigation';
 import { getDefaultDates } from '../utils/periodGranularities';
-import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
+import {
+  selectCurrentOrgUnitCode,
+  selectCountryHierarchy,
+  selectAncestors,
+  selectCurrentOrgUnit,
+} from './orgUnitSelectors';
+import { selectCurrentProject } from './projectSelectors';
 import { selectLocation } from './utils';
 
 export const selectCurrentDashboardNameFromLocation = createSelector([selectLocation], location => {
@@ -106,5 +112,45 @@ export const selectShouldUseDashboardData = createSelector(
     if (!moment(candidateEndDate).isSame(moment(endDate), 'day')) return false;
 
     return true;
+  },
+);
+
+export const selectCurrentBreadcrumbs = createSelector(
+  [state => state, state => selectCurrentOrgUnit(state), state => selectCurrentProject(state)],
+  (state, currentOrgUnit, currentProject) => {
+    if (currentOrgUnit.type === 'Project') {
+      return [];
+    }
+
+    const country = selectCountryHierarchy(state, currentOrgUnit.organisationUnitCode);
+    const isProjectRegional = currentProject.names?.length > 1;
+    const ancestors = selectAncestors(country, currentOrgUnit.organisationUnitCode, 'Country');
+    if (!ancestors) {
+      return [];
+    }
+
+    const ancestorsAscending = [];
+    Object.keys(ancestors).forEach(ancestor => {
+      const breadcrumbData = {
+        code: ancestors[ancestor].organisationUnitCode,
+        name: ancestors[ancestor].name,
+      };
+      ancestorsAscending.push(breadcrumbData);
+    });
+    if (isProjectRegional) {
+      const projectBreadcrumbData = {
+        code: currentProject.code,
+        name: currentProject.name,
+      };
+      ancestorsAscending.push(projectBreadcrumbData);
+    }
+
+    const isOnlyRootEntity = ancestorsAscending.length === 1;
+    if (isOnlyRootEntity) {
+      return [];
+    }
+
+    const ancestorsDescending = ancestorsAscending.reverse();
+    return ancestorsDescending;
   },
 );

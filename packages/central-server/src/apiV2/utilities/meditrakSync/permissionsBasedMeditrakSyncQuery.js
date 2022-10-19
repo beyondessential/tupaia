@@ -18,6 +18,8 @@ import {
 } from './supportsPermissionsBasedSync';
 
 const recordTypesToAlwaysSync = ['country', 'permission_group'];
+const entityTypesToAlwaysSync = ['world', 'country'];
+
 /**
  * Since all countries, permission_groups, and country entities regardless of permissions
  */
@@ -25,8 +27,8 @@ export const permissionsFreeChanges = since => {
   return {
     query: `change_time > ? AND (record_type IN ${SqlQuery.record(
       recordTypesToAlwaysSync,
-    )} OR entity_type = ?)`,
-    params: [since, ...recordTypesToAlwaysSync, 'country'],
+    )} OR entity_type IN ${SqlQuery.record(entityTypesToAlwaysSync)})`,
+    params: [since, ...recordTypesToAlwaysSync, ...entityTypesToAlwaysSync],
   };
 };
 

@@ -5,12 +5,11 @@
  */
 
 import assert from 'assert';
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { ValidationError, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
-import { CentralConnection } from '../../connections';
 import {
   MapOverlayVisualisationExtractor,
   draftReportValidator,
@@ -51,14 +50,6 @@ type ImportFileContent = {
 } & Record<string, unknown>;
 
 export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVisualisationRequest> {
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: ImportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.centralConnection = new CentralConnection(req.session);
-  }
-
   public async buildResponse() {
     const { files } = this.req;
     if (!files || !Array.isArray(files)) {
@@ -119,7 +110,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;
 
-    const [viz] = await this.centralConnection.fetchResources('mapOverlayVisualisations', {
+    const [viz] = await this.req.ctx.services.central.fetchResources('mapOverlayVisualisations', {
       filter: {
         id: id ?? undefined,
         code,
@@ -129,8 +120,9 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   };
 
   private createVisualisation = async (visualisation: MapOverlayVizResource) => {
-    await this.centralConnection.createResource('mapOverlayVisualisations', {}, visualisation);
-    const [viz]: MapOverlayVizResource[] = await this.centralConnection.fetchResources(
+    const { central: centralApi } = this.req.ctx.services;
+    await centralApi.createResource('mapOverlayVisualisations', {}, visualisation);
+    const [viz]: MapOverlayVizResource[] = await centralApi.fetchResources(
       'mapOverlayVisualisations',
       {
         filter: {
@@ -146,7 +138,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   };
 
   private updateVisualisation = async (vizId: string, visualisation: Record<string, unknown>) => {
-    await this.centralConnection.updateResource(
+    await this.req.ctx.services.central.updateResource(
       `mapOverlayVisualisations/${vizId}`,
       {},
       visualisation,
@@ -159,8 +151,9 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
     mapOverlayGroups: MapOverlayGroup[],
     mapOverlayGroupRelations: MapOverlayGroupRelation[],
   ) => {
+    const { central: centralApi } = this.req.ctx.services;
     await this.upsertMapOverlayGroups(mapOverlayGroups.map(mog => snakeKeys(mog)));
-    const mapOverlayGroupRecords = await this.centralConnection.fetchResources('mapOverlayGroups', {
+    const mapOverlayGroupRecords = await centralApi.fetchResources('mapOverlayGroups', {
       filter: {
         code: mapOverlayGroupRelations.map(mogr => mogr.mapOverlayGroupCode),
       },
@@ -187,7 +180,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   private upsertMapOverlayGroups = async (mapOverlayGroups: MapOverlayGroupRecord[]) =>
     Promise.all(
       mapOverlayGroups.map(mapOverlayGroup =>
-        this.centralConnection.upsertResource(
+        this.req.ctx.services.central.upsertResource(
           'mapOverlayGroups',
           {
             filter: {
@@ -204,7 +197,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   ) =>
     Promise.all(
       mapOverlayGroupRelations.map(relation =>
-        this.centralConnection.upsertResource(
+        this.req.ctx.services.central.upsertResource(
           'mapOverlayGroupRelations',
           {
             filter: {

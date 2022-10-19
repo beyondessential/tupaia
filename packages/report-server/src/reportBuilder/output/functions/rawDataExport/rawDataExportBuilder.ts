@@ -4,23 +4,23 @@
  */
 
 import { ReportServerAggregator } from '../../../../aggregator';
-import { Row } from '../../../types';
+import { TransformTable } from '../../../transform';
 import { RawDataExportContext, RawDataExport } from './types';
 
 export class RawDataExportBuilder {
-  private rows: Row[];
+  private table: TransformTable;
   private matrixData: RawDataExport;
   private params: unknown;
   private outputContext: RawDataExportContext;
   private aggregator: ReportServerAggregator;
 
   public constructor(
-    rows: Row[],
+    table: TransformTable,
     params: unknown,
     outputContext: RawDataExportContext,
     aggregator: ReportServerAggregator,
   ) {
-    this.rows = rows;
+    this.table = table;
     this.params = params;
     this.outputContext = outputContext;
     this.aggregator = aggregator;
@@ -29,21 +29,13 @@ export class RawDataExportBuilder {
 
   public async build() {
     this.matrixData.columns = this.buildColumns();
-    this.matrixData.rows = this.rows;
+    this.matrixData.rows = this.table.getRows();
     await this.attachAllDataElementsToColumns();
     return this.matrixData;
   }
 
   private buildColumns() {
-    const columns = new Set<string>();
-    this.rows.forEach(row => {
-      Object.keys(row).forEach(key => {
-        columns.add(key);
-      });
-    });
-    const allFields = Array.from(columns);
-
-    return allFields.map(c => ({ key: c, title: c }));
+    return this.table.getColumns().map(columnName => ({ key: columnName, title: columnName }));
   }
 
   private async attachAllDataElementsToColumns() {
