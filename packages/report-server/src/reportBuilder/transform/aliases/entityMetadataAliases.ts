@@ -27,6 +27,10 @@ export const insertNumberOfFacilitiesColumn = {
       );
     }
 
+    if (table.length() === 0) {
+      return table; // Skip if the table is empty
+    }
+
     const organisationUnitValues = table.getColumnValues('organisationUnit');
     const numberOfFacilitiesColumnValues = organisationUnitValues.map(organisationUnit => {
       if (typeof organisationUnit !== 'string') {
