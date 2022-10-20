@@ -21,7 +21,6 @@ const Container = styled.main`
 
 export const App = ({ Navbar, Footer }) => {
   const { data, isLoading: isUserLoading, isVizBuilderUser } = useUser();
-  console.log('isVizBuilderUser in App.js: ', isVizBuilderUser);
   if (isUserLoading) {
     return <FullPageLoader />;
   }
