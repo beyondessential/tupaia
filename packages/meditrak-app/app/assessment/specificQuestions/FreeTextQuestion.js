@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { Icon, TextInput } from '../../widgets';
+import { TextInput } from '../../widgets';
 
 import {
   THEME_FONT_FAMILY,
@@ -50,7 +50,7 @@ export class FreeTextQuestion extends Component {
       <View style={[localStyles.wrapper, isFocused ? localStyles.wrapperFocussed : {}]}>
         <TextInput
           placeholder="Type your answer here"
-          style={[localStyles.textInput]}
+          style={[localStyles.textInput, Platform.OS === 'ios' && localStyles.textInputFixedHeight]}
           value={answer}
           selectTextOnFocus
           onFocus={() => this.onFocus()}
@@ -61,7 +61,6 @@ export class FreeTextQuestion extends Component {
           multiline={true}
           {...restOfTextInputProps}
         />
-        <Icon name="pencil" size={14} style={localStyles.icon} pointerEvents="none" />
       </View>
     );
   }
@@ -98,9 +97,7 @@ const localStyles = StyleSheet.create({
     paddingVertical: 10,
     paddingEnd: 28,
   },
-  icon: {
-    position: 'absolute',
-    right: 12,
-    top: 12,
+  textInputFixedHeight: {
+    height: 'auto',
   },
 });
