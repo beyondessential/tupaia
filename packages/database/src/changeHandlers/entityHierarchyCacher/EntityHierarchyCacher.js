@@ -64,7 +64,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 
     // explicitly flag ancestor_descendant_relation as changed so that model level caches are cleared
-    transactingModels.database.markRecordsAsChanged(
+    await transactingModels.database.markRecordsAsChanged(
       TYPES.ANCESTOR_DESCENDANT_RELATION,
       rebuildJobs.map(({ hierarchyId, rootEntityId }) => ({
         id: generateId(),
