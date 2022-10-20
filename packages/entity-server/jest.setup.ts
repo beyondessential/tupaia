@@ -12,6 +12,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   const database = getTestDatabase();
+  await database.waitForAllChangeHandlers();
   await clearTestData(database);
   await database.closeConnections();
 });
