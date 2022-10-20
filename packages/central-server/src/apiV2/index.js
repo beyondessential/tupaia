@@ -228,6 +228,7 @@ apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
+apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes
@@ -262,6 +263,7 @@ apiV2.post('/userFavouriteDashboardItems', useRouteHandler(POSTUpdateUserFavouri
 apiV2.post('/projects', useRouteHandler(CreateProject));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
+apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 
 /**
  * PUT routes
@@ -295,6 +297,7 @@ apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
 apiV2.put('/me', catchAsyncErrors(editUser));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
+apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 
 /**
  * DELETE routes
@@ -325,6 +328,7 @@ apiV2.delete(
 );
 apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
+apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 
