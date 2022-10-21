@@ -9,9 +9,9 @@ import { AnalyticsDataTableService, EventsDataTableService } from './internal';
 import { ClassOfDataTableService, ServiceContext } from './types';
 
 /**
- * Generic builder class that allows us to configure the context for a DataTableService
+ * Generic builder class that allows us to configure the context for a specific DataTableService
  */
-class DataTableServiceBuilderForService<Service extends DataTableService> {
+class DataTableServiceBuilderForType<Service extends DataTableService> {
   private readonly ServiceClass: ClassOfDataTableService<Service>;
 
   private ctx: ServiceContext<Service> | null = null;
@@ -41,8 +41,8 @@ class DataTableServiceBuilderForService<Service extends DataTableService> {
 }
 
 const internalDataTableServiceBuilders = {
-  analytics: () => new DataTableServiceBuilderForService(AnalyticsDataTableService),
-  events: () => new DataTableServiceBuilderForService(EventsDataTableService),
+  analytics: () => new DataTableServiceBuilderForType(AnalyticsDataTableService),
+  events: () => new DataTableServiceBuilderForType(EventsDataTableService),
 };
 
 const userDefinedDataTableServiceBuilders = {};
@@ -72,7 +72,7 @@ export const getDataTableServiceType = (dataTable: DataTableType) => {
   if (!isValidServiceType(serviceType)) {
     throw new Error(
       `No data table service defined for: ${serviceType}, must be one of: ${Object.keys(
-        dataTablesServiceBuilders,
+        userDefinedDataTableServiceBuilders,
       )}`,
     );
   }
