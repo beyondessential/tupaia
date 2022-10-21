@@ -45,7 +45,7 @@ export abstract class DataTableService<
    */
   protected abstract pullData(params: yup.InferType<ParamsSchema>): Promise<RecordSchema[]>;
 
-  public fetchData(params: unknown) {
+  public fetchData(params: unknown = {}) {
     const validatedParams = this.validateParams(params);
     return this.pullData(validatedParams);
   }
