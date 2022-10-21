@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { AccessPolicy } from '..';
+import { AccessPolicy } from '../AccessPolicy';
 
 const policy = {
   DL: ['Public'],
