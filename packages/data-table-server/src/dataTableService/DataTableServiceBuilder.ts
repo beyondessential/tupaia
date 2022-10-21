@@ -4,9 +4,8 @@
  */
 
 import { DataTableType } from '../models';
-import { DataTableService } from './DataTableService';
+import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
 import { AnalyticsDataTableService, EventsDataTableService } from './internal';
-import { ClassOfDataTableService, ServiceContext } from './types';
 
 /**
  * Generic builder class that allows us to configure the context for a specific DataTableService

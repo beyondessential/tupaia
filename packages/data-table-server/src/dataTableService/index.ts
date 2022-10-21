@@ -4,3 +4,5 @@
  */
 
 export { DataTableServiceBuilder, getDataTableServiceType } from './DataTableServiceBuilder';
+export { DataTableService } from './DataTableService';
+export { DataTableParameter } from './types';

@@ -5,8 +5,9 @@
 import { ForwardingAuthHandler } from '@tupaia/api-client';
 import { TupaiaDatabase } from '@tupaia/database';
 import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
+import { attachDataTableToContext } from '../middleware';
 
-import { FetchDataRequest, FetchDataRoute } from '../routes';
+import { FetchDataRequest, FetchDataRoute, ParametersRequest, ParametersRoute } from '../routes';
 
 /**
  * Set up express server with middleware,
@@ -16,7 +17,16 @@ export function createApp(database = new TupaiaDatabase()) {
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .useBasicBearerAuth()
     // Use POST for this route as we often need to pass long query arguments
-    .post<FetchDataRequest>('dataTable/:dataTableCode/fetchData', handleWith(FetchDataRoute))
+    .post<FetchDataRequest>(
+      'dataTable/:dataTableCode/fetchData',
+      attachDataTableToContext,
+      handleWith(FetchDataRoute),
+    )
+    .get<ParametersRequest>(
+      'dataTable/:dataTableCode/parameters',
+      attachDataTableToContext,
+      handleWith(ParametersRoute),
+    )
     .build();
 
   return app;
