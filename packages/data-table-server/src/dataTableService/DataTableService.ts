@@ -4,11 +4,19 @@
  */
 
 import { yup } from '@tupaia/utils';
+import { DataTableParameter } from './types';
+
+export type ServiceContext<Type> = Type extends DataTableService<infer Context> ? Context : never;
+
+export type ClassOfDataTableService<Service extends DataTableService> = new (
+  context: ServiceContext<Service>,
+  config: unknown,
+) => Service;
 
 export abstract class DataTableService<
   Context extends Record<string, unknown> = Record<string, unknown>,
-  ParamsSchema extends yup.AnySchema = yup.AnySchema,
-  ConfigSchema extends yup.AnySchema = yup.AnySchema,
+  ParamsSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
+  ConfigSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
   RecordSchema = unknown
 > {
   protected readonly ctx: Context;
@@ -41,4 +49,6 @@ export abstract class DataTableService<
     const validatedParams = this.validateParams(params);
     return this.pullData(validatedParams);
   }
+
+  public abstract getParameters(): DataTableParameter[];
 }

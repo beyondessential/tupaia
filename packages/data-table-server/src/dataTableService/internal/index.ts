@@ -5,3 +5,5 @@
 
 export { AnalyticsDataTableService } from './AnalyticsDataTableService';
 export { EventsDataTableService } from './EventsDataTableService';
+export { EntityRelationsDataTableService } from './EntityRelationsDataTableService';
+export { EntitiesDataTableService } from './EntitiesDataTableService';

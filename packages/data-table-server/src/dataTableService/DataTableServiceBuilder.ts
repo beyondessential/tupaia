@@ -4,9 +4,13 @@
  */
 
 import { DataTableType } from '../models';
-import { DataTableService } from './DataTableService';
-import { AnalyticsDataTableService, EventsDataTableService } from './internal';
-import { ClassOfDataTableService, ServiceContext } from './types';
+import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
+import {
+  AnalyticsDataTableService,
+  EntitiesDataTableService,
+  EntityRelationsDataTableService,
+  EventsDataTableService,
+} from './internal';
 
 /**
  * Generic builder class that allows us to configure the context for a specific DataTableService
@@ -43,6 +47,8 @@ class DataTableServiceBuilderForType<Service extends DataTableService> {
 const internalDataTableServiceBuilders = {
   analytics: () => new DataTableServiceBuilderForType(AnalyticsDataTableService),
   events: () => new DataTableServiceBuilderForType(EventsDataTableService),
+  entities: () => new DataTableServiceBuilderForType(EntitiesDataTableService),
+  entity_relations: () => new DataTableServiceBuilderForType(EntityRelationsDataTableService),
 };
 
 const userDefinedDataTableServiceBuilders = {};

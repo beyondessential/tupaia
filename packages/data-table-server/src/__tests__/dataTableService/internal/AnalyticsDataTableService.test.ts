@@ -3,9 +3,12 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
+
+const CURRENT_DATE_STUB = '2020-12-31';
 
 const TEST_ANALYTICS = [
   { period: '2020-01-01', organisationUnit: 'TO', dataElement: 'PSSS_AFR_Cases', value: 7 },
@@ -21,7 +24,7 @@ const fetchFakeAnalytics = (
   {
     organisationUnitCodes,
     startDate = '2020-01-01',
-    endDate = '2020-12-31',
+    endDate = CURRENT_DATE_STUB,
   }: { organisationUnitCodes: string[]; startDate?: string; endDate?: string },
 ) => {
   return {
@@ -47,8 +50,20 @@ jest.mock('@tupaia/data-broker', () => ({
 
 const accessPolicy = new AccessPolicy({ DL: ['Public'] });
 const apiClient = {} as TupaiaApiClient;
+const analyticsDataTableService = new DataTableServiceBuilder()
+  .setServiceType('analytics')
+  .setContext({ apiClient, accessPolicy })
+  .build();
 
 describe('AnalyticsDataTableService', () => {
+  beforeEach(() => {
+    MockDate.set(CURRENT_DATE_STUB);
+  });
+
+  afterEach(() => {
+    MockDate.reset();
+  });
+
   describe('parameter validation', () => {
     const testData: [string, unknown, string][] = [
       [
@@ -58,14 +73,6 @@ describe('AnalyticsDataTableService', () => {
           dataElementCodes: ['PSSS_AFR_Cases'],
         },
         'organisationUnitCodes is a required field',
-      ],
-      [
-        'missing hierarchy',
-        {
-          organisationUnitCodes: ['TO'],
-          dataElementCodes: ['PSSS_AFR_Cases'],
-        },
-        'hierarchy is a required field',
       ],
       [
         'missing dataElementCodes',
@@ -83,7 +90,7 @@ describe('AnalyticsDataTableService', () => {
           dataElementCodes: ['PSSS_AFR_Cases'],
           startDate: 'cat',
         },
-        'startDate should be in ISO 8601 format',
+        'startDate must be a `date` type',
       ],
       [
         'endDate wrong format',
@@ -93,7 +100,7 @@ describe('AnalyticsDataTableService', () => {
           dataElementCodes: ['PSSS_AFR_Cases'],
           endDate: 'dog',
         },
-        'endDate should be in ISO 8601 format',
+        'endDate must be a `date` type',
       ],
       [
         'aggregations wrong format',
@@ -108,62 +115,66 @@ describe('AnalyticsDataTableService', () => {
     ];
 
     it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      const analyticsDataTableService = new DataTableServiceBuilder()
-        .setServiceType('analytics')
-        .setContext({ apiClient, accessPolicy })
-        .build();
-
       expect(() => analyticsDataTableService.fetchData(parameters)).toThrow(expectedError);
     });
   });
 
-  it('can fetch data from Aggregator.fetchAnalytics()', async () => {
-    const analyticsDataTableService = new DataTableServiceBuilder()
-      .setServiceType('analytics')
-      .setContext({ apiClient, accessPolicy })
-      .build();
-
-    const dataElementCodes = ['PSSS_AFR_Cases'];
-    const organisationUnitCodes = ['TO'];
-
-    const analytics = await analyticsDataTableService.fetchData({
-      hierarchy: 'psss',
-      organisationUnitCodes,
-      dataElementCodes,
-    });
-
-    const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
-      organisationUnitCodes,
-    });
-
-    expect(analytics).toEqual(expectedAnalytics);
+  it('getParameters', () => {
+    const parameters = analyticsDataTableService.getParameters();
+    expect(parameters).toEqual([
+      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      {
+        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        name: 'organisationUnitCodes',
+      },
+      {
+        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        name: 'dataElementCodes',
+      },
+      { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },
+      { config: { defaultValue: new Date(), type: 'date' }, name: 'endDate' },
+    ]);
   });
 
-  it('passes all parameters to Aggregator.fetchAnalytics()', async () => {
-    const analyticsDataTableService = new DataTableServiceBuilder()
-      .setServiceType('analytics')
-      .setContext({ apiClient, accessPolicy })
-      .build();
+  describe('fetchData', () => {
+    it('can fetch data from Aggregator.fetchAnalytics()', async () => {
+      const dataElementCodes = ['PSSS_AFR_Cases'];
+      const organisationUnitCodes = ['TO'];
 
-    const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
-    const organisationUnitCodes = ['PG'];
-    const startDate = '2020-01-05';
-    const endDate = '2020-01-10';
+      const analytics = await analyticsDataTableService.fetchData({
+        hierarchy: 'psss',
+        organisationUnitCodes,
+        dataElementCodes,
+      });
 
-    const analytics = await analyticsDataTableService.fetchData({
-      hierarchy: 'psss',
-      organisationUnitCodes,
-      dataElementCodes,
-      startDate,
-      endDate,
+      const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
+        organisationUnitCodes,
+      });
+
+      expect(analytics).toEqual(expectedAnalytics);
     });
 
-    const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
-      organisationUnitCodes,
-      startDate,
-      endDate,
-    });
+    it('passes all parameters to Aggregator.fetchAnalytics()', async () => {
+      const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
+      const organisationUnitCodes = ['PG'];
+      const startDate = '2020-01-05';
+      const endDate = '2020-01-10';
 
-    expect(analytics).toEqual(expectedAnalytics);
+      const analytics = await analyticsDataTableService.fetchData({
+        hierarchy: 'psss',
+        organisationUnitCodes,
+        dataElementCodes,
+        startDate,
+        endDate,
+      });
+
+      const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
+        organisationUnitCodes,
+        startDate,
+        endDate,
+      });
+
+      expect(analytics).toEqual(expectedAnalytics);
+    });
   });
 });

@@ -7,23 +7,16 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { yup, yupUtils, hasNoContent, takesDateForm } from '@tupaia/utils';
+import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
+import { yupSchemaToDataTableParams } from '../utils';
 
 const paramsSchema = yup.object().shape({
-  hierarchy: yup.string().required(),
-  dataElementCodes: yup.array().of(yup.string().required()).strict().required(),
-  organisationUnitCodes: yup.array().of(yup.string().required()).strict().required(),
-  startDate: yup
-    .string()
-    .test(
-      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'startDate should be in ISO 8601 format'),
-    ),
-  endDate: yup
-    .string()
-    .test(
-      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'endDate should be in ISO 8601 format'),
-    ),
+  hierarchy: yup.string().default('explore'),
+  dataElementCodes: yup.array().of(yup.string().required()).required(),
+  organisationUnitCodes: yup.array().of(yup.string().required()).required(),
+  startDate: yup.date().default(new Date(EARLIEST_DATA_DATE_STRING)),
+  endDate: yup.date().default(() => new Date()),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -54,8 +47,8 @@ export class AnalyticsDataTableService extends DataTableService<
     hierarchy: string;
     dataElementCodes: string[];
     organisationUnitCodes: string[];
-    startDate?: string;
-    endDate?: string;
+    startDate: Date;
+    endDate: Date;
     aggregations?: { type: string; config?: Record<string, unknown> }[];
   }) {
     const {
@@ -66,6 +59,9 @@ export class AnalyticsDataTableService extends DataTableService<
       endDate,
       aggregations,
     } = params;
+
+    const startDateString = startDate.toISOString();
+    const endDateString = endDate.toISOString();
 
     const aggregator = new Aggregator(
       new DataBroker({
@@ -79,14 +75,42 @@ export class AnalyticsDataTableService extends DataTableService<
       {
         organisationUnitCodes,
         hierarchy,
-        startDate,
-        endDate,
+        startDate: startDateString,
+        endDate: endDateString,
         detectDataServices: true,
       },
       { aggregations },
     );
 
     return results as Analytic[];
+  }
+
+  public getParameters() {
+    // Not including aggregations, as they are a hidden parameter
+    const {
+      hierarchy,
+      organisationUnitCodes,
+      dataElementCodes,
+      startDate,
+      endDate,
+    } = yupSchemaToDataTableParams(paramsSchema);
+
+    return [
+      { name: 'hierarchy', config: hierarchy },
+      {
+        name: 'organisationUnitCodes',
+        config: organisationUnitCodes,
+      },
+      { name: 'dataElementCodes', config: dataElementCodes },
+      {
+        name: 'startDate',
+        config: startDate,
+      },
+      {
+        name: 'endDate',
+        config: endDate,
+      },
+    ];
   }
 }
 
