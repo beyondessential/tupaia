@@ -6,7 +6,7 @@
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { createDataTableService } from '../dataTableService';
+import { DataTableServiceBuilder, getDataTableServiceType } from '../dataTableService';
 
 export type FetchDataRequest = Request<
   { dataTableCode: string },
@@ -37,7 +37,11 @@ export class FetchDataRoute extends Route<FetchDataRequest> {
       throw new Error(`User does not have permission to access data table ${dataTable.code}`);
     }
 
-    const dataTableService = createDataTableService(dataTable, ctx.services);
+    const serviceType = getDataTableServiceType(dataTable);
+    const dataTableService = new DataTableServiceBuilder()
+      .setServiceType(serviceType)
+      .setContext({ apiClient: ctx.services, accessPolicy })
+      .build();
 
     const requestParams = { ...body };
     const data = await dataTableService.fetchData(requestParams);

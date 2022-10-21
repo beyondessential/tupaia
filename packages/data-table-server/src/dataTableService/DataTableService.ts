@@ -3,28 +3,28 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 
 export abstract class DataTableService<
+  Context extends Record<string, unknown> = Record<string, unknown>,
   ParamsSchema extends yup.AnySchema = yup.AnySchema,
   ConfigSchema extends yup.AnySchema = yup.AnySchema,
   RecordSchema = unknown
 > {
+  protected readonly ctx: Context;
   protected readonly paramsSchema: ParamsSchema;
   protected readonly configSchema: ConfigSchema;
-  protected readonly apiClient: TupaiaApiClient;
   protected readonly config: yup.InferType<ConfigSchema>;
 
   protected constructor(
+    context: Context,
     paramsSchema: ParamsSchema,
     configSchema: ConfigSchema,
-    apiClient: TupaiaApiClient,
     config: unknown,
   ) {
+    this.ctx = context;
     this.paramsSchema = paramsSchema;
     this.configSchema = configSchema;
-    this.apiClient = apiClient;
     this.config = this.configSchema.validateSync(config);
   }
 
