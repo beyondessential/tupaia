@@ -184,11 +184,11 @@ const getEstimatedRecoveryDate = (
   if (onsetDate) {
     const recoveryDate = addDays(new Date(onsetDate), 13);
 
-    return isDate(recoveryDate) && format(recoveryDate, 'yyy-mm-dd');
+    return isDate(recoveryDate) && format(recoveryDate, 'yyyy-MM-dd');
   }
 
   const recoveryDate = addDays(new Date(collectionDate), 13);
-  return isDate(recoveryDate) && format(recoveryDate, 'yyyy-mm-dd');
+  return isDate(recoveryDate) && format(recoveryDate, 'yyyy-MM-dd');
 };
 
 const binaryToYesNo = (value: unknown) => {
@@ -213,7 +213,7 @@ const parseRowData = (rowData: Record<string, any>) => {
           formattedRow['Date of Birth'] = 'Unknown';
         }
         const rawDate = new Date(rowData[fieldKey]);
-        const dobValue = isDate(rawDate) && format(rawDate, 'yyyy-mm-dd');
+        const dobValue = isDate(rawDate) && format(rawDate, 'yyyy-MM-dd');
         formattedRow['Date of Birth'] = dobValue;
         break;
       }
