@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { DataBroker } from '../../DataBroker';
 import { Service } from '../../services/Service';
 import { DataElement, ServiceType } from '../../types';
@@ -327,6 +328,88 @@ describe('DataBroker', () => {
         expect(
           new DataBroker().pull({ code: ['DHIS_01', 'NON_EXISTING'], type: 'dataElement' }, {}),
         ).toResolve());
+    });
+
+    describe('permissions', () => {
+      it("throws an error if fetching for a data element the user doesn't have required permissions for", async () => {
+        await expect(
+          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Public'] }) }).pull(
+            {
+              code: ['RESTRICTED_01'],
+              type: 'dataElement',
+            },
+            {},
+          ),
+        ).toBeRejectedWith('Missing permissions to the following data elements: RESTRICTED_01');
+      });
+
+      it("throws an error if fetching for a data element in an entity the user doesn't have required permissions for", async () => {
+        await expect(
+          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Admin'] }) }).pull(
+            {
+              code: ['RESTRICTED_01'],
+              type: 'dataElement',
+            },
+            { organisationUnitCodes: ['TO'] },
+          ),
+        ).toBeRejectedWith(
+          'Missing permissions to the following data elements:\nTO: RESTRICTED_01',
+        );
+      });
+
+      it("throws an error if any of data elements in fetch the user doesn't have required permissions for", async () => {
+        await expect(
+          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Public'] }) }).pull(
+            {
+              code: ['TEST_01', 'RESTRICTED_01'],
+              type: 'dataElement',
+            },
+            { organisationUnitCodes: ['TO'] },
+          ),
+        ).toBeRejectedWith(
+          `Missing permissions to the following data elements:\nTO: RESTRICTED_01`,
+        );
+      });
+
+      it("throws an error if any of entities in fetch the user doesn't have required permissions for", async () => {
+        await expect(
+          new DataBroker({
+            accessPolicy: new AccessPolicy({ FJ: ['Public'], TO: ['Admin'] }),
+          }).pull(
+            {
+              code: ['RESTRICTED_01'],
+              type: 'dataElement',
+            },
+            { organisationUnitCodes: ['FJ', 'TO'] },
+          ),
+        ).toBeRejectedWith(
+          'Missing permissions to the following data elements:\nFJ: RESTRICTED_01',
+        );
+      });
+
+      it("doesn't throw if the user has access to the data element in the requested entity", async () => {
+        await expect(
+          new DataBroker({ accessPolicy: new AccessPolicy({ TO: ['Admin'] }) }).pull(
+            {
+              code: ['RESTRICTED_01'],
+              type: 'dataElement',
+            },
+            { organisationUnitCodes: ['TO'] },
+          ),
+        ).toResolve();
+      });
+
+      it("doesn't throw if the user has BES Admin access", async () => {
+        await expect(
+          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['BES Admin'] }) }).pull(
+            {
+              code: ['RESTRICTED_01'],
+              type: 'dataElement',
+            },
+            { organisationUnitCodes: ['TO'] },
+          ),
+        ).toResolve();
+      });
     });
 
     describe('analytics', () => {

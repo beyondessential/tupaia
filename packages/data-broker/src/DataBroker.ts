@@ -160,13 +160,6 @@ export class DataBroker {
     return countryCodes;
   };
 
-  private hasPermissionGroups = (
-    dataSource: DataSource,
-  ): dataSource is DataSource & { permission_groups: string[] } =>
-    'permission_groups' in dataSource &&
-    Array.isArray(dataSource.permission_groups) &&
-    dataSource.permission_groups.every(item => typeof item === 'string');
-
   private checkDataElementPermissions = async (
     dataElements: DataSource[],
     countryCodes: string[] | null,
@@ -176,10 +169,8 @@ export class DataBroker {
       return true;
     }
 
-    const validatedDataElements = dataElements.filter(this.hasPermissionGroups);
-
     const getDataElementsWithMissingPermissions = (permissions: string[]) =>
-      validatedDataElements
+      (dataElements as DataElement[])
         .filter(element => element.permission_groups.length > 0)
         .filter(element => !element.permission_groups.some(group => permissions.includes(group)))
         .map(element => element.code);
