@@ -18,7 +18,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core
 import { DataTableType } from '@tupaia/types';
 import { PreviewFilters } from './components/PreviewFilters';
 import { ReduxAutocomplete } from '../autocomplete';
-import { SqlDataTableConfigEditFields } from './config';
+import { GoogleSheetsDataTableConfigEditFields, SqlDataTableConfigEditFields } from './config';
 import { useParams } from './useParams';
 import { useDataTablePreview, useExternalDatabaseConnections } from './query';
 import { getColumns } from '../utilities';
@@ -52,6 +52,7 @@ const NoConfig = () => <>This Data Table type has no configuration options</>;
 const typeFieldsMap = {
   ...Object.fromEntries(Object.values(DataTableType).map(type => [type, NoConfig])),
   [DataTableType.sql]: SqlDataTableConfigEditFields,
+  [DataTableType.google_sheets]: GoogleSheetsDataTableConfigEditFields,
 };
 
 export const DataTableEditFields = React.memo(

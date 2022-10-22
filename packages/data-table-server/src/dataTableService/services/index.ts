@@ -10,3 +10,4 @@ export { EventsDataTableService } from './EventsDataTableService';
 export { EntityRelationsDataTableService } from './EntityRelationsDataTableService';
 export { EntitiesDataTableService } from './EntitiesDataTableService';
 export { SqlDataTableService } from './SqlDataTableService';
+export { GoogleSheetsDataTableService } from './googleSheets';

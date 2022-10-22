@@ -639,6 +639,7 @@ export enum DataTableType {
   'entity_relations' = 'entity_relations',
   'entities' = 'entities',
   'sql' = 'sql',
+  'google_sheets' = 'google_sheets',
   'data_group_metadata' = 'data_group_metadata',
   'data_element_metadata' = 'data_element_metadata',
 }
