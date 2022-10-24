@@ -7406,8 +7406,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-server@workspace:packages/datatrak-server"
   dependencies:
+    "@tupaia/api-client": 3.1.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/utils": 1.0.0
     client-sessions: ^0.8.0
     dotenv: ^8.2.0
     express: ^4.16.2

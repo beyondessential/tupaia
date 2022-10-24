@@ -4,6 +4,7 @@
  */
 import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder } from '@tupaia/server-boilerplate';
+import { authHandlerProvider } from '../auth';
 import { DatatrakSessionModel } from '../models';
 
 /**
@@ -12,6 +13,7 @@ import { DatatrakSessionModel } from '../models';
 export function createApp(database = new TupaiaDatabase()) {
   const app = new OrchestratorApiBuilder(database, 'datatrak')
     .useSessionModel(DatatrakSessionModel)
+    .attachApiClientToContext(authHandlerProvider)
     .build();
 
   return app;
