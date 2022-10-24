@@ -420,39 +420,40 @@ $_X$;
 CREATE FUNCTION public.drop_analytics_log_tables() RETURNS void
     LANGUAGE plpgsql
     AS $_X$
-  declare
-    tStartTime TIMESTAMP;
-    source_table TEXT;
-    source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
-  
-  begin
-    IF (SELECT EXISTS (
-      SELECT FROM pg_tables
-      WHERE schemaname = 'public'
-      AND tablename   = 'analytics'
-    ))
-    THEN
-      RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
-    ELSE
-      RAISE NOTICE 'Dropping Materialized View Logs...';
-      FOREACH source_table IN ARRAY source_tables_array LOOP
-        IF (SELECT EXISTS (
-          SELECT FROM pg_tables
-          WHERE schemaname = 'public'
-          AND tablename   = 'log$_' || source_table
-        ))
-        THEN
-          EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
-          tStartTime := clock_timestamp();
-          PERFORM mv$removeMaterializedViewLog(source_table, 'public');
-          RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-          EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
-        ELSE
-          RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
-        END IF;
-      END LOOP;
-    END IF;
-  end $_X$;
+declare
+      tStartTime TIMESTAMP;
+      source_table TEXT;
+      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
+    
+    begin
+      IF (SELECT EXISTS (
+        SELECT FROM pg_tables
+        WHERE schemaname = 'public'
+        AND tablename   = 'analytics'
+      ))
+      THEN
+        RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
+      ELSE
+        RAISE NOTICE 'Dropping Materialized View Logs...';
+        FOREACH source_table IN ARRAY source_tables_array LOOP
+          IF (SELECT EXISTS (
+            SELECT FROM pg_tables
+            WHERE schemaname = 'public'
+            AND tablename   = 'log$_' || source_table
+          ))
+          THEN
+            EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+            tStartTime := clock_timestamp();
+            PERFORM mv$removeMaterializedViewLog(source_table, 'public');
+            RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+            EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+          ELSE
+            RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
+          END IF;
+        END LOOP;
+      END IF;
+    end
+$_X$;
 
 
 --
@@ -5816,9 +5817,10 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1537	/20220908093833-DeletePermissionGroupDEehVectorSurveillance-modifies-data	2022-09-20 03:40:34.715
 1538	/20220909021244-AddAnalyticsDataTable-modifies-data	2022-09-20 03:40:35.997
 1539	/20220915060402-AddEventsDataTable-modifies-schema	2022-09-20 03:40:36.441
-1540	/20220920051046-RestoreEntityNameInAnalytics-modifies-schema	2022-10-03 22:05:15.3
-1541	/20220920062403-AddEntityIdIndexOnSurveyResponseTable-modifies-schema	2022-10-03 22:06:17.846
-1542	/20221004053241-UpdateDropAnalyticstableFn-modifies-schema	2022-10-04 17:17:05.075
+1540	/20220920051046-RestoreEntityNameInAnalytics-modifies-schema	2022-10-04 01:34:35.375
+1541	/20220920062403-AddEntityIdIndexOnSurveyResponseTable-modifies-schema	2022-10-04 01:35:41.726
+1542	/20220916024924-AddUnfpaFacilities-modifies-data	2022-10-17 23:48:26.256
+1543	/20220925225155-AddSupersetMappings-modifies-data	2022-10-17 23:48:26.371
 \.
 
 
@@ -5826,7 +5828,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1542, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1543, true);
 
 
 --
