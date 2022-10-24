@@ -53,6 +53,8 @@ RUN mkdir -p ./packages/data-table-server
 COPY packages/data-table-server/package.json ./packages/data-table-server
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
+RUN mkdir -p ./packages/datatrak
+COPY packages/datatrak/package.json ./packages/datatrak
 RUN mkdir -p ./packages/datatrak-server
 COPY packages/datatrak-server/package.json ./packages/datatrak-server
 RUN mkdir -p ./packages/devops
