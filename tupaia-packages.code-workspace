@@ -49,6 +49,10 @@
       "path": "packages/data-table-server"
     },
     {
+      "name": "datatrak",
+      "path": "packages/datatrak"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },

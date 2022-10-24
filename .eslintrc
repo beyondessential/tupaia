@@ -73,6 +73,7 @@
       "files": [
         "packages/admin-panel/**",
         "packages/lesmis/**",
+        "packages/datatrak/**",
         "packages/psss/**",
         "packages/ui-components/**",
         "packages/web-frontend/**"
