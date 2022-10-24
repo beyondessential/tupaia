@@ -35,6 +35,8 @@ import {
 } from '../selectors';
 import { DEFAULT_BOUNDS } from '../defaults';
 import DashboardExportModal from './DashboardExportModal';
+import { DashboardEditButton } from '../components/DashboardEditButton';
+import { EditDashboardModal } from '../components/EditDashboardModal';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -64,6 +66,7 @@ export class Dashboard extends Component {
       showFloatingHeader: false,
       isPhotoEnlarged: false,
       isOpen: false,
+      setEditingDashboard: false,
     };
 
     this.collapsibleGroupRefs = {};
@@ -91,6 +94,14 @@ export class Dashboard extends Component {
     } else if (scrollTop >= floatingHeaderScroll && !this.state.showFloatingHeader) {
       this.setState({ showFloatingHeader: true });
     }
+  }
+
+  onSaveDashboard(newDashboardSpec) {
+    // TODO: implement
+  }
+
+  setIsEditingDashboard(isEditing) {
+    this.setState({ isEditingDashboard: isEditing });
   }
 
   renderMiniMap(visible) {
@@ -284,6 +295,7 @@ export class Dashboard extends Component {
             {this.renderGroupsDropdown()}
             {this.renderGroup(currentGroupDashboard)}
           </div>
+          <DashboardEditButton onEdit={() => this.setIsEditingDashboard(true)} />
           {this.renderFloatingHeader()}
           {this.renderEnlargePopup()}
         </div>
@@ -292,6 +304,12 @@ export class Dashboard extends Component {
           isOpen={this.state.isOpen}
           setIsOpen={bool => this.setState({ isOpen: bool })}
           currentGroupDashboard={currentGroupDashboard}
+        />
+        <EditDashboardModal
+          isOpen={this.state.isEditingDashboard}
+          onClose={() => this.setState({ isEditingDashboard: false })}
+          onSave={() => this.onSaveDashboard}
+          dashboardSpec={{}}
         />
       </>
     );
