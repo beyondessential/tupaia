@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { EditButton, BulkEditButton } from '../../editor';
 import { DeleteButton } from './DeleteButton';
 import { ExportButton } from '../../importExport';
@@ -23,6 +24,21 @@ const BUTTON_COLUMN_OPTIONS = {
   sortable: false,
 };
 
+const ViewLink = ({ actionConfig, row }) => {
+  console.log('ignore me', actionConfig.hi); // eslint thing
+  return (
+    <a
+      href={`https://hackathon-viz-workflow.tupaia.org/ehealth_nauru/NR/COVID-19%20Cases?overlay=covid_nr_d_case_numbers&overlayPeriod=DEFAULT_PERIOD&report=${row.code}`}
+    >
+      View
+    </a>
+  );
+};
+ViewLink.propTypes = {
+  actionConfig: PropTypes.object.isRequired,
+  row: PropTypes.object.isRequired,
+};
+
 const CUSTOM_CELL_COMPONENTS = {
   bulkEdit: BulkEditButton,
   edit: EditButton,
@@ -33,9 +49,10 @@ const CUSTOM_CELL_COMPONENTS = {
   jsonTooltip: JSONTooltip,
   logs: LogsButton,
   sync: SyncStatus,
+  view: ViewLink,
 };
 
-const BUTTON_COLUMN_TYPES = ['edit', 'export', 'delete', 'logs'];
+const BUTTON_COLUMN_TYPES = ['edit', 'export', 'delete', 'logs', 'view'];
 
 export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
   const CustomCellComponent = CUSTOM_CELL_COMPONENTS[type];

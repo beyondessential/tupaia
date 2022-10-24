@@ -129,6 +129,12 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
         endpoint: DASHBOARD_ITEMS_ENDPOINT,
       },
     },
+    {
+      Header: 'View',
+      source: 'code',
+      type: 'view',
+      actionConfig: {},
+    },
   ];
 
   return (
