@@ -18,6 +18,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [admin-panel-server](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel-server/README.md)
 - [central-server](https://github.com/beyondessential/tupaia/blob/dev/packages/central-server/README.md)
+- [datatrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/datatrak-server/README.md)
 - [lesmis](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
@@ -72,7 +73,7 @@ We use codeship for the CI/CD
 
 ## Tests
 
-Most of the packages support the following scripts for testing: 
+Most of the packages support the following scripts for testing:
 
 ```
 

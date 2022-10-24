@@ -23,6 +23,8 @@
               command: './packages/devops/scripts/ci/testBackend.sh central-server'
             - name: Test data-table-server
               command: './packages/devops/scripts/ci/testBackend.sh data-table-server'
+            - name: Test datatrak-server
+              command: './packages/devops/scripts/ci/testBackend.sh datatrak-server'
             - name: Test entity-server
               command: './packages/devops/scripts/ci/testBackend.sh entity-server'
             - name: Test lesmis-server
