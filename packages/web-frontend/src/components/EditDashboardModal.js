@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import { Autocomplete } from './Autocomplete';
 
 const EditButton = ({ dashboardItemCode }) => (
   // Big ol' hack for the hackathon!
@@ -62,7 +63,13 @@ const EditRowActions = styled.div`
 
 const dialogTitle = 'Edit Dashboard';
 
-export const EditDashboardModal = ({ dashboardSpec, isOpen, onClose, onSave }) => {
+export const EditDashboardModal = ({
+  dashboardSpec,
+  isOpen,
+  onClose,
+  onSave,
+  dashboardItemEditOptions,
+}) => {
   const clonedDashboardSpec = cloneDeep(dashboardSpec);
   const [newDashboardSpec, setNewDashboardSpec] = useState(clonedDashboardSpec);
 
@@ -88,6 +95,12 @@ export const EditDashboardModal = ({ dashboardSpec, isOpen, onClose, onSave }) =
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitleWrapper titleText={dialogTitle} />
+      <Autocomplete
+        options={dashboardItemEditOptions}
+        optionLabelKey="code"
+        optionValueKey="id"
+        placeholder="Search for a dashboard item"
+      />
       <div>
         {newDashboardSpec &&
           newDashboardSpec.items.map(item => (
@@ -113,4 +126,5 @@ EditDashboardModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  dashboardItemEditOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

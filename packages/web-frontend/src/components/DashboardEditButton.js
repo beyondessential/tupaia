@@ -8,17 +8,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import MuiIconButton from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
 
-import EditIcon from 'material-ui/svg-icons/action/info';
-
-const EditButton = styled.div`
-  outline: 1px solid yellow;
+const EditButton = styled(MuiIconButton)`
+  font-size: 10px;
+  margin: 5px 5px 0px 10px;
+  background-color: transparent;
+  color: white;
 `;
 
-export const DashboardEditButton = ({ onEdit }) => (
-  <EditButton onClick={onEdit} role="button" tabIndex={0}>
-    edit dashboard
-    <EditIcon />
+export const DashboardEditButton = ({ onClick }) => (
+  <EditButton
+    startIcon={<EditIcon style={{ fontSize: 16 }} />}
+    variant="outlined"
+    disableElevation
+    onClick={onClick}
+    tabIndex={0}
+  >
+    Edit
   </EditButton>
 );
 

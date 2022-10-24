@@ -19,6 +19,7 @@ import { combineReducers } from 'redux';
 import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
+import { autocomplete } from './autocomplete';
 import orgUnits from './reducers/orgUnitReducers';
 import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
@@ -74,6 +75,7 @@ import {
   FINISH_USER_SESSION,
   FIND_USER_LOGGEDIN,
   FIND_USER_LOGIN_FAILED,
+  FETCH_ALL_MEASURE_DATA_SUCCESS,
   GO_HOME,
   CLOSE_DROPDOWN_OVERLAYS,
   SHOW_SERVER_UNREACHABLE_ERROR,
@@ -98,6 +100,8 @@ import {
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_OVERLAY_CONFIGS,
+  FETCH_DASHBOARD_ITEM_EDIT_OPTIONS,
+  FETCH_DASHBOARD__ITEM_EDIT_OPTIONS_SUCCESS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import { updateOverlayConfigs } from './utils/mapOverlays';
@@ -629,6 +633,7 @@ function global(
     dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
+    editOptions: { dashboardItems: [] },
   },
   action,
 ) {
@@ -671,6 +676,10 @@ function global(
       return { ...state, overlay: action.component };
     case SET_PROJECT:
       return { ...state, dashboards: [], viewConfigs: {} };
+    case FETCH_DASHBOARD_ITEM_EDIT_OPTIONS:
+      return state;
+    case FETCH_DASHBOARD__ITEM_EDIT_OPTIONS_SUCCESS:
+      return { ...state, editOptions: { dashboardItems: action.dashboardItemEditOptionsData } };
     default:
       return state;
   }
@@ -802,4 +811,5 @@ export default combineReducers({
   project,
   orgUnits,
   routing,
+  autocomplete,
 });

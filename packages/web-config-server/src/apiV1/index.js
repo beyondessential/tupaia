@@ -27,6 +27,7 @@ import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
 import DashboardsHandler from './dashboards';
+import DashboardItemsHandler from './dashboardItems';
 import { ReportHandler } from './report';
 import { disasters } from './disasters';
 
@@ -61,6 +62,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
   api.get('/report/:reportCode', handleWith(ReportHandler));
   api.post('/pdf', catchAsyncErrors(PDFExportHandler));
+  api.get('/dashboardItems', handleWith(DashboardItemsHandler));
 
   return api;
 };

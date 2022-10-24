@@ -36,3 +36,6 @@ export {
 } from './getUniqueViewId';
 export { sleep } from './sleep';
 export { getLayeredOpacity } from './opacity';
+export { convertSearchTermToFilter } from './convertSearchTermToFilter';
+export { makeSubstitutionsInString } from './makeSubstitutionsInString';
+export { createNestedReducer } from './createNestedReducer';
