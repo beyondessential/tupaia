@@ -23,7 +23,7 @@ const { REACT_APP_API_URL } = process.env;
  */
 const request = async (endpoint, options) => {
   try {
-    const response = await axios(`${baseUrl}/v1/${endpoint}`, options);
+    const response = await axios(`${baseUrl}/${endpoint}`, options);
     return response.data;
   } catch (error) {
     // normalise errors using fetch error class
