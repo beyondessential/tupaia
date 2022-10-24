@@ -8,6 +8,16 @@ import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 
+const EditButton = ({ dashboardItemCode }) => (
+  // Big ol' hack for the hackathon!
+  <a
+    href={`https://hackathon-viz-workflow-admin.tupaia.org/dashboard-items?filters=[{"id":"code","value":"${dashboardItemCode}"}]`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <EditIcon />
+  </a>
+);
 const DialogTitleWrapper = ({ titleText }) => {
   const styles = {
     titleText: {
@@ -85,7 +95,7 @@ export const EditDashboardModal = ({ dashboardSpec, isOpen, onClose, onSave }) =
               <EditRowTitle>{item.name}</EditRowTitle>
               <EditRowActions>
                 <CloseIcon onClick={() => rmDashboard(item.code)} />
-                <EditIcon />
+                <EditButton dashboardItemCode={item.code} />
               </EditRowActions>
             </EditRow>
           ))}
