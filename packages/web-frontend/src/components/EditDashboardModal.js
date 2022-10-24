@@ -9,6 +9,16 @@ import EditIcon from 'material-ui/svg-icons/action/info';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import { Autocomplete } from './Autocomplete';
 
+const EditButton = ({ dashboardItemCode }) => (
+  // Big ol' hack for the hackathon!
+  <a
+    href={`https://hackathon-viz-workflow-admin.tupaia.org/dashboard-items?filters=[{"id":"code","value":"${dashboardItemCode}"}]`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <EditIcon />
+  </a>
+);
 const DialogTitleWrapper = ({ titleText }) => {
   const styles = {
     titleText: {
@@ -60,7 +70,27 @@ export const EditDashboardModal = ({
   onSave,
   dashboardItemEditOptions,
 }) => {
-  const [newDashboardSpec, setNewDashboardSpec] = useState(cloneDeep(dashboardSpec));
+  const clonedDashboardSpec = cloneDeep(dashboardSpec);
+  const [newDashboardSpec, setNewDashboardSpec] = useState(clonedDashboardSpec);
+
+  console.log('clonedDashboardSpec', clonedDashboardSpec);
+  console.log('newDashboardSpec', newDashboardSpec);
+
+  const closeMeself = () => {
+    // reset state
+    setNewDashboardSpec(clonedDashboardSpec);
+    // close modal
+    onClose();
+  };
+
+  const rmDashboard = itemToRmCode => {
+    console.log('itemToRmCode', itemToRmCode);
+    const newItems = newDashboardSpec.items.filter(i => i.code !== itemToRmCode);
+    setNewDashboardSpec({
+      ...newDashboardSpec,
+      items: newItems,
+    });
+  };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
@@ -72,20 +102,20 @@ export const EditDashboardModal = ({
         placeholder="Search for a dashboard item"
       />
       <div>
-        {dashboardSpec &&
-          dashboardSpec.items.map(item => (
+        {newDashboardSpec &&
+          newDashboardSpec.items.map(item => (
             <EditRow>
               <EditRowTitle>{item.name}</EditRowTitle>
               <EditRowActions>
-                <CloseIcon />
-                <EditIcon />
+                <CloseIcon onClick={() => rmDashboard(item.code)} />
+                <EditButton dashboardItemCode={item.code} />
               </EditRowActions>
             </EditRow>
           ))}
       </div>
       <BottomBar>
         <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
-        <MuiButton onClick={onClose}>Cancel</MuiButton>
+        <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
       </BottomBar>
     </Dialog>
   );
