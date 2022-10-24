@@ -6,7 +6,12 @@ import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { authHandlerProvider } from '../auth';
 import { DatatrakSessionModel } from '../models';
-import { FetchProjectsRequest, FetchProjectsRoute } from '../routes';
+import {
+  FetchEntitiesRequest,
+  FetchEntitiesRoute,
+  FetchProjectsRequest,
+  FetchProjectsRoute,
+} from '../routes';
 
 /**
  * Set up express server with middleware,
@@ -15,6 +20,7 @@ export function createApp(database = new TupaiaDatabase()) {
   const app = new OrchestratorApiBuilder(database, 'datatrak')
     .useSessionModel(DatatrakSessionModel)
     .attachApiClientToContext(authHandlerProvider)
+    .get<FetchEntitiesRequest>('entities/:hierarchy', handleWith(FetchEntitiesRoute))
     .get<FetchProjectsRequest>('projects', handleWith(FetchProjectsRoute))
     .build();
 
