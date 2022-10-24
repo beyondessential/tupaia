@@ -309,7 +309,7 @@ export class Dashboard extends Component {
           isOpen={this.state.isEditingDashboard}
           onClose={() => this.setState({ isEditingDashboard: false })}
           onSave={() => this.onSaveDashboard}
-          dashboardSpec={{}}
+          dashboardSpec={this.props.currentGroupDashboard}
         />
       </>
     );
