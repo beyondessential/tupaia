@@ -25,3 +25,7 @@ content-type: {{contentType}}
 POST http://{{host}}/{{version}}/logout HTTP/1.1
 content-type: {{contentType}}
 
+
+### Fetch projects
+GET http://{{host}}/{{version}}/projects HTTP/1.1
+content-type: {{contentType}}
