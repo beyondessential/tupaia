@@ -8,3 +8,4 @@ export * from './fetchSearchData';
 export * from './fetchViewData';
 export * from './fetchMeasureInfo';
 export * from './fetchCurrentMeasureInfo';
+export * from './fetchDashboardItemEditOptions';

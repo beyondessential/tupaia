@@ -132,6 +132,15 @@ export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS = 'SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS';
 export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 export const SET_MAX_SELECTED_OVERLAYS = 'SET_MAX_SELECTED_OVERLAYS';
+export const FETCH_DASHBOARD_ITEM_EDIT_OPTIONS = 'FETCH_DASHBOARD_ITEM_EDIT_OPTIONS';
+export const FETCH_DASHBOARD__ITEM_EDIT_OPTIONS_SUCCESS =
+  'FETCH_DASHBOARD_ITEM_EDIT_OPTIONS_SUCCESS';
+export const AUTOCOMPLETE_INPUT_CHANGE = 'AUTOCOMPLETE_INPUT_CHANGE';
+export const AUTOCOMPLETE_RESULTS_CHANGE = 'AUTOCOMPLETE_RESULTS_CHANGE';
+export const AUTOCOMPLETE_SEARCH_FAILURE = 'AUTOCOMPLETE_SEARCH_FAILURE';
+export const AUTOCOMPLETE_SELECTION_CHANGE = 'AUTOCOMPLETE_SELECTION_CHANGE';
+export const AUTOCOMPLETE_RESET = 'AUTOCOMPLETE_RESET';
+export const MAX_AUTOCOMPLETE_RESULTS = 'MAX_AUTOCOMPLETE_RESULTS';
 
 /**
  * Attempt password change using old password, new password and new password
@@ -487,6 +496,23 @@ export function fetchOrgUnit(organisationUnitCode) {
   return {
     type: FETCH_ORG_UNIT,
     organisationUnitCode,
+  };
+}
+
+/**
+ * Fetches all dashboard item codes and ids for adding a new dashboard relation.
+ *
+ */
+export function fetchDashboardItemEditOptions() {
+  return {
+    type: FETCH_DASHBOARD_ITEM_EDIT_OPTIONS,
+  };
+}
+
+export function fetchDashboardItemEditOptionsSuccess(dashboardItemEditOptionsData) {
+  return {
+    type: FETCH_DASHBOARD__ITEM_EDIT_OPTIONS_SUCCESS,
+    dashboardItemEditOptionsData,
   };
 }
 

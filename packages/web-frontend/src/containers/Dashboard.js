@@ -21,7 +21,12 @@ import styled from 'styled-components';
 import { FlexSpaceBetween } from '@tupaia/ui-components';
 import StaticMap from '../components/StaticMap';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
-import { setDashboardGroup, closeDropdownOverlays, setOrgUnit } from '../actions';
+import {
+  setDashboardGroup,
+  closeDropdownOverlays,
+  setOrgUnit,
+  fetchDashboardItemEditOptions,
+} from '../actions';
 import { DashboardGroup } from './DashboardGroup';
 import { getOrgUnitPhotoUrl } from '../utils';
 import { DropDownMenu } from '../components/DropDownMenu';
@@ -42,7 +47,7 @@ const IMAGE_HEIGHT_RATIO = 0.5;
 
 const MuiButton = styled(MuiIconButton)`
   font-size: 10px;
-  margin: 5px 10px 0px 10px;
+  margin: 5px 10px 0px 5px;
   background-color: transparent;
   color: white;
 `;
@@ -255,14 +260,17 @@ export class Dashboard extends Component {
         {this.renderMetaMedia()}
         <FlexSpaceBetween>
           <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
-          <MuiButton
-            startIcon={<DownloadIcon style={{ fontSize: 16 }} />}
-            variant="outlined"
-            onClick={() => this.setState({ isOpen: true })}
-            disableElevation
-          >
-            export
-          </MuiButton>
+          <div>
+            <DashboardEditButton onClick={() => this.setIsEditingDashboard(true)} />
+            <MuiButton
+              startIcon={<DownloadIcon style={{ fontSize: 16 }} />}
+              variant="outlined"
+              onClick={() => this.setState({ isOpen: true })}
+              disableElevation
+            >
+              export
+            </MuiButton>
+          </div>
         </FlexSpaceBetween>
       </div>
     );
@@ -275,11 +283,12 @@ export class Dashboard extends Component {
       currentGroupDashboard,
       currentOrganisationUnit,
       currentProjectName,
+      dashboardItemEditOptions,
     } = this.props;
     const exportFileName =
       currentGroupDashboard &&
       `${currentProjectName}-${currentOrganisationUnit.name}-${currentGroupDashboard.dashboardName}-dashboard-export`;
-
+    console.log('dashboardItemEditOptions', dashboardItemEditOptions);
     return (
       <>
         <div
@@ -295,7 +304,6 @@ export class Dashboard extends Component {
             {this.renderGroupsDropdown()}
             {this.renderGroup(currentGroupDashboard)}
           </div>
-          <DashboardEditButton onEdit={() => this.setIsEditingDashboard(true)} />
           {this.renderFloatingHeader()}
           {this.renderEnlargePopup()}
         </div>
@@ -310,6 +318,7 @@ export class Dashboard extends Component {
           onClose={() => this.setState({ isEditingDashboard: false })}
           onSave={() => this.onSaveDashboard}
           dashboardSpec={this.props.currentGroupDashboard}
+          dashboardItemEditOptions={dashboardItemEditOptions}
         />
       </>
     );
@@ -336,6 +345,7 @@ Dashboard.propTypes = {
     }),
   ).isRequired,
   onChangeOrgUnit: PropTypes.func.isRequired,
+  dashboardItemEditOptions: PropTypes.array.isRequired,
 };
 
 Dashboard.defaultProps = {
@@ -358,7 +368,7 @@ const mapStateToProps = state => {
   const currentDashboardName = selectCurrentDashboardName(state);
   const currentProject = selectCurrentProject(state);
   const breadcrumbs = selectCurrentBreadcrumbs(state);
-
+  const dashboardItemEditOptions = state.global.editOptions.dashboardItems;
   const dashboardNames = [];
   // sort group names based on current project
   dashboards.forEach(({ dashboardName, project: dashboardProject }) => {
@@ -388,6 +398,7 @@ const mapStateToProps = state => {
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
     contractedWidth,
+    dashboardItemEditOptions,
   };
 };
 
@@ -398,6 +409,7 @@ const mapDispatchToProps = dispatch => {
     onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
       dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
     },
+    fetchDashboardItemEditOptions: () => dispatch(fetchDashboardItemEditOptions()),
   };
 };
 

@@ -45,6 +45,7 @@
     "history": "^4.7.2",
     "is-mobile": "^0.2.2",
     "lodash": "^4.17.4",
+    "lodash.throttle": "^4.1.1",
     "markdown-to-jsx": "^6.4.1",
     "material-ui": "^0.18.3",
     "material-ui-datetimepicker": "^1.0.7",
@@ -71,6 +72,7 @@
     "sanitize-filename": "^1.6.3",
     "shallowequal": "^1.0.2",
     "styled-components": "^5.1.0",
+    "uuid": "^9.0.0",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {

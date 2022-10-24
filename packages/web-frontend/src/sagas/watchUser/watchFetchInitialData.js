@@ -5,7 +5,7 @@ import { getInitialLocation } from '../../historyNavigation';
 import { clearLocation } from '../../historyNavigation/historyNavigation';
 import { fetchProjectData } from '../../projects/sagas';
 import request from '../../utils/request';
-import { handleLocationChange } from '../handlers';
+import { handleLocationChange, fetchDashboardItemEditOptionsData } from '../handlers';
 
 export function* watchFetchInitialData() {
   yield take(FETCH_INITIAL_DATA);
@@ -13,6 +13,8 @@ export function* watchFetchInitialData() {
   // Login must happen first so that projects return the correct access flags
   yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
   yield call(fetchProjectData);
+  yield call(fetchDashboardItemEditOptionsData);
+  console.log('about to call handleLocationChange');
   yield call(handleLocationChange, {
     location: getInitialLocation(),
     previousLocation: clearLocation(),

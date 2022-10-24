@@ -56,6 +56,7 @@ export {
   selectCurrentExpandedDates,
   selectViewConfig,
   selectCurrentBreadcrumbs,
+  selectDashboardItemEditOptions,
 } from './dashboardSelectors';
 
 export {
@@ -77,5 +78,7 @@ export {
   selectMapOverlayEmptyMessage,
   selectPeriodGranularityByCode,
 } from './mapOverlaySelectors';
+
+export { getAutocompleteState, getFetchId } from './autocompleteSelectors';
 
 export { selectMobileTab } from './navigationSelectors';

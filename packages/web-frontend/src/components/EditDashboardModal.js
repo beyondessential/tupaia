@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import { Autocomplete } from './Autocomplete';
 
 const DialogTitleWrapper = ({ titleText }) => {
   const styles = {
@@ -52,14 +53,24 @@ const EditRowActions = styled.div`
 
 const dialogTitle = 'Edit Dashboard';
 
-export const EditDashboardModal = ({ dashboardSpec, isOpen, onClose, onSave }) => {
+export const EditDashboardModal = ({
+  dashboardSpec,
+  isOpen,
+  onClose,
+  onSave,
+  dashboardItemEditOptions,
+}) => {
   const [newDashboardSpec, setNewDashboardSpec] = useState(cloneDeep(dashboardSpec));
-
-  console.log('dashboardSpec', dashboardSpec);
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitleWrapper titleText={dialogTitle} />
+      <Autocomplete
+        options={dashboardItemEditOptions}
+        optionLabelKey="code"
+        optionValueKey="id"
+        placeholder="Search for a dashboard item"
+      />
       <div>
         {dashboardSpec &&
           dashboardSpec.items.map(item => (
@@ -85,4 +96,5 @@ EditDashboardModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  dashboardItemEditOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

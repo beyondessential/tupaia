@@ -39,6 +39,7 @@ export const selectCurrentExpandedDates = createSelector([selectLocation], locat
 export const selectCurrentDashboardName = createSelector(
   [state => state.global.dashboards, selectCurrentDashboardNameFromLocation],
   (dashboards, currentDashboardName) => {
+    console.log('dashboards in selector', dashboards);
     if (dashboards.find(d => d.dashboardName === currentDashboardName)) {
       return currentDashboardName;
     }
@@ -77,6 +78,13 @@ export const selectCurrentExpandedViewContent = createSelector(
   [selectCurrentInfoViewKey, state => state.dashboard.viewResponses],
   (infoViewKey, viewResponses) => {
     return viewResponses[infoViewKey];
+  },
+);
+
+export const selectDashboardItemEditOptions = createSelector(
+  [state => state.editOptions],
+  editOptions => {
+    return editOptions.dashboardItems;
   },
 );
 
