@@ -9,9 +9,8 @@ import { App } from './App';
 import { AppProviders } from './AppProviders';
 
 const root = createRoot(document.getElementById('root'));
-// root.render(
-//   <AppProviders>
-//     <App />,
-//   </AppProviders>,
-// );
-root.render(<div>DataTrak</div>);
+root.render(
+  <AppProviders>
+    <App />,
+  </AppProviders>,
+);
