@@ -3,21 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/styles": "^4.11.5",
-    "@mui/material": "^5.10.10",
-    "@mui/styled-engine-sc": "^5.10.6",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/styles": "^4.9.10",
+    "@tupaia/ui-components": "1.0.0",
     "axios": "^1.1.3",
-    "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hook-form": "^6.15.1",
     "react-query": "^3.39.2",
-    "react-router-dom": "^6.4.2",
-    "react-scripts": "5.0.1",
-    "styled-components": "^5.3.6",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.1.0",
     "web-vitals": "^2.1.4"
   },
   "eslintConfig": {
@@ -27,7 +25,7 @@
     ]
   },
   "scripts": {
-    "start-dev": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "start-dev": "DISABLE_ESLINT_PLUGIN=true yarn package:start:react-scripts",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

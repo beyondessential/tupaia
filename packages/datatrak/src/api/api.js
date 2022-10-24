@@ -10,19 +10,8 @@ axios.defaults.withCredentials = true;
 
 const timeout = 45 * 1000; // 45 seconds
 
-const baseUrl = 'http://localhost:3000';
-
-const getRequestOptions = options => {
-  const locale = window.location.pathname.split('/')[1];
-  return {
-    ...options,
-    timeout,
-    params: {
-      ...options.params,
-      locale,
-    },
-  };
-};
+const baseUrl = 'http://localhost:7090/v1';
+const { REACT_APP_API_URL } = process.env;
 
 /**
  * Abstraction for making api requests
@@ -33,10 +22,8 @@ const getRequestOptions = options => {
  * @returns {AxiosPromise}
  */
 const request = async (endpoint, options) => {
-  const requestOptions = getRequestOptions(options);
-
   try {
-    const response = await axios(`${baseUrl}/v1/${endpoint}`, requestOptions);
+    const response = await axios(`${baseUrl}/v1/${endpoint}`, options);
     return response.data;
   } catch (error) {
     // normalise errors using fetch error class

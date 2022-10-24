@@ -3,19 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import * as COLORS from '../constants/colors';
 
 const themeName = 'DATATRAK';
 
 export const palette = {
   primary: {
-    main: COLORS.RED,
-    light: COLORS.LIGHT_RED,
-  },
-  secondary: {
-    main: COLORS.DARK_RED,
-    light: COLORS.LIGHT_RED,
+    main: COLORS.BLUE,
   },
   error: {
     main: COLORS.RED,
@@ -47,42 +42,36 @@ export const palette = {
 export const typography = {
   fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
   h1: {
-    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
     fontSize: '2rem',
     fontWeight: 500,
     lineHeight: 1.4,
     letterSpacing: 0,
   },
   h2: {
-    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
     fontSize: '1.75rem',
     fontWeight: 600,
     lineHeight: 1.5,
     letterSpacing: 0,
   },
   h3: {
-    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
     fontSize: '1.5rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h4: {
-    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
     fontSize: '1.3rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h5: {
-    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
     fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h6: {
-    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'Noto Sans Lao', 'sans-serif'].join(','),
     fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
@@ -138,7 +127,7 @@ export const breakpoints = {
   },
 };
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   palette,
   themeName,
   typography,

@@ -5,3 +5,4 @@
 
 export * from './Flexbox';
 export * from './LoginForm';
+export * from './Header';

@@ -4,6 +4,7 @@
  */
 
 // Primary & Secondary colors
+export const BLUE = '#004167';
 export const RED = '#D13333';
 export const DARK_RED = '#B22B2B';
 export const LIGHT_RED = '#FEE2E2';

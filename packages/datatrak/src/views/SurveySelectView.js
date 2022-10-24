@@ -3,15 +3,14 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Link, useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { FlexColumn } from '../components';
 
 const Container = styled(FlexColumn)`
-  padding-top: 3rem;
-  min-height: 100vh;
-  background: lightblue;
+  padding: 1rem;
+  background: white;
 `;
 
 const Title = styled(Typography)`
@@ -20,17 +19,13 @@ const Title = styled(Typography)`
   font-size: 2rem;
   line-height: 3rem;
   margin-bottom: 1.8rem;
-  color: white;
 `;
 
-export const BaseView = ({ title }) => {
+export const SurveySelectView = () => {
   return (
     <Container>
-      <Title>{title}</Title>
+      <Title>Survey Select View</Title>
+      <Link to="/explore/utopia/covid-19/entities">Next</Link>
     </Container>
   );
-};
-
-BaseView.propTypes = {
-  title: PropTypes.string.isRequired,
 };

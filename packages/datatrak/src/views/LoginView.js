@@ -31,7 +31,6 @@ const StyledImg = styled.img`
 
 export const LoginView = () => (
   <Container>
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
     <StyledCard>
       <LoginForm />
     </StyledCard>

@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 import { useValidatedQuery } from './useValidatedQuery';
 
-export const useEntityData = entityCode => {
+export const useSurvey = entityCode => {
   return useValidatedQuery(
     useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
       staleTime: 1000 * 60 * 60 * 1,
