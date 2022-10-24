@@ -29,3 +29,7 @@ content-type: {{contentType}}
 ### Fetch projects
 GET http://{{host}}/{{version}}/projects HTTP/1.1
 content-type: {{contentType}}
+
+### Fetch entities
+GET http://{{host}}/{{version}}/entities/explore?type=country HTTP/1.1
+content-type: {{contentType}}
