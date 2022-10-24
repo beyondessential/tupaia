@@ -53,20 +53,38 @@ const EditRowActions = styled.div`
 const dialogTitle = 'Edit Dashboard';
 
 export const EditDashboardModal = ({ dashboardSpec, isOpen, onClose, onSave }) => {
-  const [newDashboardSpec, setNewDashboardSpec] = useState(cloneDeep(dashboardSpec));
+  const clonedDashboardSpec = cloneDeep(dashboardSpec);
+  const [newDashboardSpec, setNewDashboardSpec] = useState(clonedDashboardSpec);
 
-  console.log('dashboardSpec', dashboardSpec);
+  console.log('clonedDashboardSpec', clonedDashboardSpec);
+  console.log('newDashboardSpec', newDashboardSpec);
+
+  const closeMeself = () => {
+    // reset state
+    setNewDashboardSpec(clonedDashboardSpec);
+    // close modal
+    onClose();
+  };
+
+  const rmDashboard = itemToRmCode => {
+    console.log('itemToRmCode', itemToRmCode);
+    const newItems = newDashboardSpec.items.filter(i => i.code !== itemToRmCode);
+    setNewDashboardSpec({
+      ...newDashboardSpec,
+      items: newItems,
+    });
+  };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitleWrapper titleText={dialogTitle} />
       <div>
-        {dashboardSpec &&
-          dashboardSpec.items.map(item => (
+        {newDashboardSpec &&
+          newDashboardSpec.items.map(item => (
             <EditRow>
               <EditRowTitle>{item.name}</EditRowTitle>
               <EditRowActions>
-                <CloseIcon />
+                <CloseIcon onClick={() => rmDashboard(item.code)} />
                 <EditIcon />
               </EditRowActions>
             </EditRow>
@@ -74,7 +92,7 @@ export const EditDashboardModal = ({ dashboardSpec, isOpen, onClose, onSave }) =
       </div>
       <BottomBar>
         <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
-        <MuiButton onClick={onClose}>Cancel</MuiButton>
+        <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
       </BottomBar>
     </Dialog>
   );

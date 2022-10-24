@@ -98,6 +98,7 @@ export class Dashboard extends Component {
 
   onSaveDashboard(newDashboardSpec) {
     // TODO: implement
+    console.log('onSaveDashboard', newDashboardSpec);
   }
 
   setIsEditingDashboard(isEditing) {
@@ -293,9 +294,9 @@ export class Dashboard extends Component {
           {this.renderHeader()}
           <div style={DASHBOARD_STYLES.content}>
             {this.renderGroupsDropdown()}
+            <DashboardEditButton onEdit={() => this.setIsEditingDashboard(true)} />
             {this.renderGroup(currentGroupDashboard)}
           </div>
-          <DashboardEditButton onEdit={() => this.setIsEditingDashboard(true)} />
           {this.renderFloatingHeader()}
           {this.renderEnlargePopup()}
         </div>
@@ -306,9 +307,10 @@ export class Dashboard extends Component {
           currentGroupDashboard={currentGroupDashboard}
         />
         <EditDashboardModal
+          key={JSON.stringify(this.props.currentGroupDashboard)}
           isOpen={this.state.isEditingDashboard}
           onClose={() => this.setState({ isEditingDashboard: false })}
-          onSave={() => this.onSaveDashboard}
+          onSave={this.onSaveDashboard}
           dashboardSpec={this.props.currentGroupDashboard}
         />
       </>
