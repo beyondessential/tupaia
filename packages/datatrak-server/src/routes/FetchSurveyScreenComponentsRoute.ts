@@ -35,6 +35,11 @@ export class FetchSurveyScreenComponentsRoute extends Route<FetchSurveyScreenCom
       'detail_label',
       'config',
       'question.name',
+      'question.code',
+      'question.text',
+      'question.name',
+      'question.type',
+      'question.options',
       'survey_screen.screen_number',
     ]);
     const surveyScreenComponents = await centralApi.fetchResources(endpoint, { columns });
