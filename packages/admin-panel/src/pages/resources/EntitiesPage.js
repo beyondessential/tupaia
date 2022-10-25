@@ -14,23 +14,30 @@ import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 const ENTITIES_ENDPOINT = 'entities';
 
-const QRCodeModal = React.memo(({ isOpen, onCancel, value }) => (
-  <Dialog onClose={onCancel} open={isOpen}>
-    <DialogHeader onClose={onCancel} title="Entity QR Code" color="primary" />
-    <DialogContent>
-      <QRCode size={256} value={value} viewBox="0 0 256 256" />
-    </DialogContent>
-    <DialogFooter>
-      <Button>Share</Button>
-    </DialogFooter>
-  </Dialog>
-));
+const QRCodeModal = React.memo(({ isOpen, onCancel, data }) => {
+  return (
+    <Dialog onClose={onCancel} open={isOpen}>
+      <DialogHeader onClose={onCancel} title="Share QR Code" color="primary" />
+      <DialogContent>
+        <h4>Share QR Code</h4>
+        <br />
+        <h3>{data.code}</h3>
+        <br />
+        <br />
+        <QRCode size={256} value={data.id} viewBox="0 0 256 256" />
+      </DialogContent>
+      <DialogFooter>
+        <Button>Download</Button>
+      </DialogFooter>
+    </Dialog>
+  );
+});
 
-const QRCodeButton = ({ value }) => {
+const QRCodeButton = ({ row }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   return (
     <>
-      <QRCodeModal isOpen={isModalOpen} value={value} onCancel={() => setModalOpen(false)} />
+      <QRCodeModal isOpen={isModalOpen} data={row} onCancel={() => setModalOpen(false)} />
       <IconButton onClick={() => setModalOpen(true)}>
         <CropFreeIcon />
       </IconButton>
@@ -152,9 +159,9 @@ EntitiesPage.propTypes = {
 QRCodeModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired,
 };
 
 QRCodeButton.propTypes = {
-  value: PropTypes.string.isRequired,
+  row: PropTypes.object.isRequired,
 };
