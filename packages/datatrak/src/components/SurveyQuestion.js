@@ -10,7 +10,7 @@ const Text = styled.div`
   margin-bottom: 10px;
 `;
 
-const Placeholder = ({ name, type, ...props }) => {
+const Placeholder = ({ name, type }) => {
   return (
     <Text>
       `${name} - ${type}`
@@ -22,8 +22,24 @@ const Instruction = ({ text }) => {
   return <Text>{text}</Text>;
 };
 
+const BinaryQuestion = ({ options = [], ...props }) => (
+  <RadioGroup
+    options={[
+      {
+        label: 'Yes',
+        value: true,
+      },
+      {
+        label: 'No',
+        value: false,
+      },
+    ]}
+    {...props}
+  />
+);
+
 const QUESTION_TYPES = {
-  Binary: Placeholder,
+  Binary: BinaryQuestion,
   Checkbox: Placeholder,
   Date: Placeholder,
   DateTime: Placeholder,
@@ -51,11 +67,10 @@ const getComponentForQuestionType = type => {
 };
 
 export const SurveyQuestion = props => {
-  if (props.config) {
-    console.log('config', props.config);
-  }
+  // if (props.config) {
+  //   console.log('config', props.config);
+  // }
 
-  // const options = mapOptionsToValues(componentOptions || defaultOptions);
   const FieldComponent = getComponentForQuestionType(props.type);
 
   if (!FieldComponent) return <Text>{props.name}</Text>;

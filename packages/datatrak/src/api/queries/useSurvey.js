@@ -2,17 +2,12 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import data from './data.json';
+import { useQuery } from 'react-query';
 
-export const useSurvey = () => {
-  console.log('data', data);
-  return data;
+export const useSurvey = surveyId => {
+  return useQuery(['survey', surveyId], () => get(`survey/${surveyId}`), {
+    staleTime: 1000 * 60 * 60 * 1,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
 };
-
-// export const useSurvey = entityCode => {
-//   return useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
-//     staleTime: 1000 * 60 * 60 * 1,
-//     refetchOnWindowFocus: false,
-//     retry: 2,
-//   });
-// };
