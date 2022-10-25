@@ -75,6 +75,26 @@ const EditRowActions = styled.div`
 
 const dialogTitle = 'Edit Dashboard';
 
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles to make the items look a bit nicer
+  userSelect: 'none',
+  padding: '0',
+  margin: `0 0 20px 0`,
+  outline: '1px solid red',
+
+  // change background colour if dragging
+  background: isDragging ? 'lightgreen' : 'none',
+
+  // styles we need to apply on draggables
+  ...draggableStyle,
+});
+
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? 'lightblue' : 'none',
+  padding: 12,
+  width: 450,
+});
+
 export const EditDashboardModal = ({
   dashboardSpec,
   isOpen,
@@ -177,12 +197,20 @@ export const EditDashboardModal = ({
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="dashboard-edit-list-dnd">
             {(provided, snapshot) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={getListStyle(snapshot.isDraggingOver)}
+              >
                 {newDashboardSpec &&
                   newDashboardSpec.items.map((item, index) => (
                     <Draggable draggableId={item.code} index={index} key={`draggable-${index}`}>
                       {(provided, snapshot) => (
-                        <div {...provided.draggableProps} ref={provided.innerRef}>
+                        <div
+                          {...provided.draggableProps}
+                          ref={provided.innerRef}
+                          style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                        >
                           <EditRow>
                             <DragHandle {...provided.dragHandleProps}>
                               <DragIndicatorIcon color="action" />
