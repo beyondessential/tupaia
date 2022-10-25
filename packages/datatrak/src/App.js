@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import styled from 'styled-components';
 import { Route, Switch, BrowserRouter as Router, Redirect } from 'react-router-dom';
 import { LoginView } from './views/LoginView';
 import { ProjectsView } from './views/ProjectsView';
 import { SurveySelectView } from './views/SurveySelectView';
 import { EntitiesView } from './views/EntitiesView';
 import { SurveyView } from './views/SurveyView';
-import { CountriesView } from './views/CountriesView';
-import styled from 'styled-components';
 import { FlexColumn, Header } from './components';
 
 const Wrapper = styled.div`
@@ -35,9 +34,6 @@ export const App = () => {
             </Route>
             <Route exact path="/">
               <ProjectsView />
-            </Route>
-            <Route exact path="/:projectId/countries">
-              <CountriesView />
             </Route>
             <Route exact path="/:projectId/:countryId/surveys">
               <SurveySelectView />
