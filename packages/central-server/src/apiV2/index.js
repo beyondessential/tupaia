@@ -120,6 +120,7 @@ import {
 } from './syncGroups';
 import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
 import { TestExternalDatabaseConnection } from './externalDatabaseConnections';
+import { editDashboard } from './editDashboard';
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -271,6 +272,7 @@ apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dashboard', catchAsyncErrors(editDashboard));
 
 /**
  * PUT routes

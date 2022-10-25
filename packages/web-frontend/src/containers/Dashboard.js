@@ -42,6 +42,7 @@ import { DEFAULT_BOUNDS } from '../defaults';
 import DashboardExportModal from './DashboardExportModal';
 import { DashboardEditButton } from '../components/DashboardEditButton';
 import { EditDashboardModal } from '../components/EditDashboardModal';
+import request from '../utils/request';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -102,8 +103,33 @@ export class Dashboard extends Component {
   }
 
   onSaveDashboard(newDashboardSpec) {
-    // TODO: implement
     console.log('onSaveDashboard', newDashboardSpec);
+
+    const justTheFunStuff = {
+      dashboardId: newDashboardSpec.dashboardId,
+      items: newDashboardSpec.items.map(item => ({
+        code: item.code,
+      })),
+    };
+
+    const errorFn = () => console.log('err');
+    request(
+      'dashboard',
+      errorFn,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(justTheFunStuff),
+      },
+      {},
+      false,
+    ).then(() => {
+      console.log('save complete');
+      window.location.reload();
+    });
+    // new endpoint for edit dashboard in one go
   }
 
   setIsEditingDashboard(isEditing) {

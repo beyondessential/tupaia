@@ -32,6 +32,7 @@ import { ReportHandler } from './report';
 import { disasters } from './disasters';
 
 import { getProjects } from './projects';
+import { editDashboard } from "./editDashboard";
 
 const handleWith = Handler =>
   catchAsyncErrors((...params) => new Handler(...params).handleRequest());
@@ -63,6 +64,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/report/:reportCode', handleWith(ReportHandler));
   api.post('/pdf', catchAsyncErrors(PDFExportHandler));
   api.get('/dashboardItems', handleWith(DashboardItemsHandler));
+  api.post('/dashboard', catchAsyncErrors(editDashboard));
 
   return api;
 };

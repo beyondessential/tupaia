@@ -11,7 +11,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { Autocomplete } from './Autocomplete';
 
 const DashboardItems = styled.div`
-  min-height: 600px;
+  min-height: 400px;
 `;
 
 const DragHandle = styled.div`
