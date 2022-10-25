@@ -303,7 +303,6 @@ export class Dashboard extends Component {
           {this.renderHeader()}
           <div style={DASHBOARD_STYLES.content}>
             {this.renderGroupsDropdown()}
-            <DashboardEditButton onEdit={() => this.setIsEditingDashboard(true)} />
             {this.renderGroup(currentGroupDashboard)}
           </div>
           {this.renderFloatingHeader()}
