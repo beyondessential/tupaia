@@ -147,16 +147,6 @@ export const EditDashboardModal = ({
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 {newDashboardSpec &&
                   newDashboardSpec.items.map((item, index) => (
-                    // <EditRow>
-                    //   <EditRowTitle>
-                    //     [{index}] {item.name}
-                    //   </EditRowTitle>
-                    //   <EditRowActions>
-                    //     <CloseIcon onClick={() => rmDashboardItem(item.code)} />
-                    //     <EditButton dashboardItemCode={item.code} />
-                    //   </EditRowActions>
-                    // </EditRow>
-
                     <Draggable draggableId={item.code} index={index} key={`draggable-${index}`}>
                       {(provided, snapshot) => (
                         <div {...provided.draggableProps} ref={provided.innerRef}>
