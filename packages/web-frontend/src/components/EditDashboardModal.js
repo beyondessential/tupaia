@@ -1,4 +1,5 @@
-import Dialog from '@material-ui/core/Dialog';
+// import Dialog from '@material-ui/core/Dialog';
+import { Dialog } from '@tupaia/ui-components';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -6,20 +7,35 @@ import MuiButton from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import IconButton from 'material-ui/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import { Autocomplete } from './Autocomplete';
 import { DIALOG_Z_INDEX } from '../styles';
+
+const Heading = styled(Typography)`
+  font-size: 20px;
+  font-weight: 700;
+`;
+
+const SubHeading = styled(Typography)`
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  padding-top: 10px;
+`;
 
 const DashboardItems = styled.div`
   min-height: 400px;
 `;
 
 const DragHandle = styled.div`
-  width: 20px;
+  width: 30px;
+  display: flex;
+  align-items: center;
 `;
 
 const EditButton = ({ dashboardItemCode }) => (
@@ -44,33 +60,39 @@ const DialogTitleWrapper = ({ titleText }) => {
       gap: '3px',
     },
     dialogTitle: {
-      textAlign: 'center',
-      paddingBottom: 0,
+      textAlign: 'left',
+      paddingBottom: 5,
+      borderBottom: '1px solid white',
+      paddingLeft: 0,
+      marginBottom: 20,
+      paddingBottom: 10,
     },
   };
 
   return (
     <DialogTitle style={styles.dialogTitle}>
-      <span style={styles.titleText}>{titleText}</span>
+      <Heading>{titleText}</Heading>
     </DialogTitle>
   );
 };
 
-const BottomBar = styled.div``;
+const Toolbar = styled.div`
+  padding-top: 10px;
+`;
 
 const EditRow = styled.div`
-  padding: 20px;
   display: flex;
 `;
 
 const EditRowTitle = styled.div`
   border: 1px solid white;
-  padding: 5px;
+  padding: 10px;
   flex: 1;
 `;
 const EditRowActions = styled.div`
   flex: 0;
-  display: block;
+  display: flex;
+  align-items: center;
 `;
 
 const dialogTitle = 'Edit Dashboard';
@@ -79,20 +101,18 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
   padding: '0',
-  margin: `0 0 20px 0`,
-  outline: '1px solid red',
+  margin: `0 0 10px 0`,
 
   // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'none',
+  background: isDragging ? 'rgba(0, 0, 0, 0.5)' : 'none',
 
   // styles we need to apply on draggables
   ...draggableStyle,
 });
 
 const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'none',
-  padding: 12,
-  width: 450,
+  // background: isDraggingOver ? 'lightblue' : 'none',
+  padding: 5,
 });
 
 export const EditDashboardModal = ({
@@ -151,9 +171,8 @@ export const EditDashboardModal = ({
     toolbar: {
       position: 'absolute',
       top: 5,
-      right: 5,
+      right: 10,
       borderRadius: 5,
-      backgroundColor: 'rgba(255,255,255,0.2)',
       zIndex: DIALOG_Z_INDEX,
     },
     toolbarButton: {
@@ -161,91 +180,95 @@ export const EditDashboardModal = ({
       width: 28,
       height: 28,
       borderWidth: 0,
+      backgroundColor: 'rgba(255,255,255,0.2)',
       padding: 5,
     },
     toolbarButtonIcon: {
       width: 18,
       height: 18,
     },
+    box: {
+      padding: '50px 60px 15px 60px',
+      width: 800,
+    },
+    autocomplete: {
+      paddingRight: 0,
+    },
   };
 
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="md">
-      <div style={{ ...styles.toolbar }}>
-        <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
-        <IconButton
-          style={styles.toolbarButton}
-          iconStyle={styles.toolbarButtonIcon}
-          onClick={() => closeMeself()}
-        >
-          <CloseIcon />
-        </IconButton>
-      </div>
-      <DialogTitleWrapper titleText={dialogTitle} />
-      <h6>Add Dashboard Item</h6>
-      <Autocomplete
-        options={dashboardItemEditOptions}
-        optionLabelKey="name"
-        placeholder="Search for a dashboard item"
-        setIsNewDashboardSelected={setIsNewDashboardSelected}
-        setSelectedNewDashboardOption={setSelectedNewDashboardOption}
-        setNewDashboardSpec={setNewDashboardSpec}
-        newDashboardSpec={newDashboardSpec}
-      />
-      <h6>Dashboard Items</h6>
-      <DashboardItems>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="dashboard-edit-list-dnd">
-            {(provided, snapshot) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-              >
-                {newDashboardSpec &&
-                  newDashboardSpec.items.map((item, index) => (
-                    <Draggable draggableId={item.code} index={index} key={`draggable-${index}`}>
-                      {(provided, snapshot) => (
-                        <div
-                          {...provided.draggableProps}
-                          ref={provided.innerRef}
-                          style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                        >
-                          <EditRow>
-                            <DragHandle {...provided.dragHandleProps}>
-                              <DragIndicatorIcon color="action" />
-                            </DragHandle>
-                            <EditRowTitle>
-                              [{index}] {item.name}
-                            </EditRowTitle>
-                            <EditRowActions>
-                              <IconButton
-                                style={styles.toolbarButton}
-                                iconStyle={styles.toolbarButtonIcon}
-                                onClick={() => rmDashboardItem(item.code)}
-                              >
-                                <DeleteOutlineIcon
-                                  color="primary"
-                                  fontSize="large"
-                                  variant="outline"
-                                />
-                              </IconButton>
-                            </EditRowActions>
-                          </EditRow>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </DashboardItems>
-      <BottomBar>
-        <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
-        <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
-      </BottomBar>
+      <Box style={{ ...styles.box }}>
+        <div style={{ ...styles.toolbar }}>
+          <Toolbar>
+            <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
+            <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
+          </Toolbar>
+        </div>
+        <DialogTitleWrapper titleText={dialogTitle} />
+        <SubHeading>Add Dashboard Item</SubHeading>
+        <Autocomplete
+          options={dashboardItemEditOptions}
+          optionLabelKey="name"
+          placeholder="Search"
+          setIsNewDashboardSelected={setIsNewDashboardSelected}
+          setSelectedNewDashboardOption={setSelectedNewDashboardOption}
+          setNewDashboardSpec={setNewDashboardSpec}
+          newDashboardSpec={newDashboardSpec}
+          style={{ ...styles.autocomplete }}
+        />
+        <SubHeading>Dashboard Items</SubHeading>
+        <DashboardItems>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="dashboard-edit-list-dnd">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {newDashboardSpec &&
+                    newDashboardSpec.items.map((item, index) => (
+                      <Draggable
+                        draggableId={item.code}
+                        index={index}
+                        key={`draggable-${item.code}`}
+                      >
+                        {(draggableProvided, draggableSnapshot) => (
+                          <div
+                            {...draggableProvided.draggableProps}
+                            ref={draggableProvided.innerRef}
+                            style={getItemStyle(
+                              draggableSnapshot.isDragging,
+                              draggableProvided.draggableProps.style,
+                            )}
+                          >
+                            <EditRow>
+                              <DragHandle {...draggableProvided.dragHandleProps}>
+                                <DragIndicatorIcon color="action" />
+                              </DragHandle>
+                              <EditRowTitle>{item.name}</EditRowTitle>
+                              <EditRowActions>
+                                <IconButton onClick={() => rmDashboardItem(item.code)}>
+                                  <DeleteOutlineIcon color="primary" fontSize="medium" />
+                                </IconButton>
+                              </EditRowActions>
+                            </EditRow>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </DashboardItems>
+        <Toolbar>
+          <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
+          <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
+        </Toolbar>
+      </Box>
     </Dialog>
   );
 };
