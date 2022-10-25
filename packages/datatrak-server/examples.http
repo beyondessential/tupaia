@@ -33,3 +33,13 @@ content-type: {{contentType}}
 ### Fetch entities
 GET http://{{host}}/{{version}}/entities/explore?type=country HTTP/1.1
 content-type: {{contentType}}
+
+
+### Fetch surveys
+GET http://{{host}}/{{version}}/surveys HTTP/1.1
+content-type: {{contentType}}
+
+
+### Fetch survey screen components
+GET http://{{host}}/{{version}}/surveys/59085fb6cc42a44705c02d18/surveyScreenComponents HTTP/1.1
+content-type: {{contentType}}
