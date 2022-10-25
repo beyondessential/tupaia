@@ -3,12 +3,13 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { useMutation, useQueryClient } from 'react-query';
-// import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { post } from '../api';
 
 export const useLogin = () => {
-  // const { push, location } = useHistory();
+  const { push, location } = useHistory();
   const queryClient = useQueryClient();
+  const navigateToHomeUrl = () => push('/');
 
   const loginQuery = useMutation(
     ({ email, password }) =>
@@ -24,12 +25,12 @@ export const useLogin = () => {
         queryClient.clear();
 
         // Send the user back to the previous page if there is one saved in referer
-        // if (location?.state?.referer) {
-        //   push(location.state.referer);
-        // } else {
-        //   // Otherwise send them to the homepage
-        //   navigateToHomeUrl();
-        // }
+        if (location?.state?.referer) {
+          push(location.state.referer);
+        } else {
+          // Otherwise send them to the homepage
+          navigateToHomeUrl();
+        }
       },
     },
   );
