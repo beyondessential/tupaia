@@ -12,8 +12,6 @@ export async function editDashboard(req, res) {
   const payload = req.body;
   const { models } = req;
 
-  console.log('yo', payload);
-
   models.wrapInTransaction(async transactingModels => {
     // first get ids, as we only have codes, and we will delete these records
     for (const item of payload.items) {
@@ -21,7 +19,6 @@ export async function editDashboard(req, res) {
       const record = await transactingModels.dashboardItem.findOne({ code });
       item.id = record.id;
     }
-    console.log('yoo', payload);
 
     // delete existing
     await transactingModels.dashboardRelation.delete({ dashboard_id: payload.dashboardId });
