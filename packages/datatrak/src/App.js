@@ -8,7 +8,6 @@ import { Route, Switch, BrowserRouter as Router, Redirect } from 'react-router-d
 import { LoginView } from './views/LoginView';
 import { ProjectsView } from './views/ProjectsView';
 import { SurveySelectView } from './views/SurveySelectView';
-import { EntitiesView } from './views/EntitiesView';
 import { SurveyView } from './views/SurveyView';
 import { FlexColumn, Header } from './components';
 
@@ -38,10 +37,7 @@ export const App = () => {
             <Route exact path="/:projectId/:countryId/surveys">
               <SurveySelectView />
             </Route>
-            <Route exact path="/:projectId/:countryId/:surveyId/entities">
-              <EntitiesView />
-            </Route>
-            <Route exact path="/:projectId/:countryId/:surveyId/:entityId">
+            <Route exact path="/:projectId/:countryId/:surveyId/survey">
               <SurveyView />
             </Route>
             <Redirect to="/" />

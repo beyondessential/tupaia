@@ -4,6 +4,6 @@
  */
 
 export * from './useSurveyScreenComponents';
-export * from './useSurvey';
+export * from './useSurveys';
 export * from './useProjects';
 export * from './useEntities';

@@ -24,7 +24,7 @@ const Title = styled(Typography)`
 `;
 
 export const SurveyView = () => {
-  let { projectId, countryId, surveyId, entityId } = useParams();
+  const { projectId, countryId, surveyId } = useParams();
   const surveyScreenComponents = useSurveyScreenComponents();
 
   return (
@@ -33,7 +33,6 @@ export const SurveyView = () => {
       <div>Project: {projectId}</div>
       <div>Country: {countryId}</div>
       <div>Survey: {surveyId}</div>
-      <div>Entity: {entityId}</div>
       <SurveyForm surveyScreenComponents={surveyScreenComponents} />
     </Container>
   );
