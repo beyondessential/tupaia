@@ -7,8 +7,12 @@ import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import IconButton from 'material-ui/IconButton';
 import { Autocomplete } from './Autocomplete';
+import { DIALOG_Z_INDEX } from '../styles';
 
 const DashboardItems = styled.div`
   min-height: 400px;
@@ -16,7 +20,6 @@ const DashboardItems = styled.div`
 
 const DragHandle = styled.div`
   width: 20px;
-  outline: 3px solid purple;
 `;
 
 const EditButton = ({ dashboardItemCode }) => (
@@ -53,17 +56,16 @@ const DialogTitleWrapper = ({ titleText }) => {
   );
 };
 
-const BottomBar = styled.div`
-  outline: 1px solid purple;
-`;
+const BottomBar = styled.div``;
 
 const EditRow = styled.div`
-  outline: 1px solid green;
   padding: 20px;
   display: flex;
 `;
 
 const EditRowTitle = styled.div`
+  border: 1px solid white;
+  padding: 5px;
   flex: 1;
 `;
 const EditRowActions = styled.div`
@@ -82,19 +84,20 @@ export const EditDashboardModal = ({
 }) => {
   const clonedDashboardSpec = cloneDeep(dashboardSpec);
   const [newDashboardSpec, setNewDashboardSpec] = useState(clonedDashboardSpec);
-
-  console.log('clonedDashboardSpec', clonedDashboardSpec);
+  const [isNewDashboardSelected, setIsNewDashboardSelected] = useState(false);
+  const [selectedNewDashboardOption, setSelectedNewDashboardOption] = useState({});
   console.log('newDashboardSpec', newDashboardSpec);
 
   const closeMeself = () => {
     // reset state
     setNewDashboardSpec(clonedDashboardSpec);
+    setSelectedNewDashboardOption({});
+    setIsNewDashboardSelected(false);
     // close modal
     onClose();
   };
 
   const rmDashboardItem = itemToRmCode => {
-    console.log('itemToRmCode', itemToRmCode);
     const newItems = newDashboardSpec.items.filter(i => i.code !== itemToRmCode);
     setNewDashboardSpec({
       ...newDashboardSpec,
@@ -116,12 +119,7 @@ export const EditDashboardModal = ({
     if (!result.destination) {
       return;
     }
-
-    console.log('items before', newDashboardSpec.items);
-
     const items = reorder(newDashboardSpec.items, result.source.index, result.destination.index);
-
-    console.log('items after', items);
 
     setNewDashboardSpec({
       ...newDashboardSpec,
@@ -129,15 +127,50 @@ export const EditDashboardModal = ({
     });
   };
 
+  const styles = {
+    toolbar: {
+      position: 'absolute',
+      top: 5,
+      right: 5,
+      borderRadius: 5,
+      backgroundColor: 'rgba(255,255,255,0.2)',
+      zIndex: DIALOG_Z_INDEX,
+    },
+    toolbarButton: {
+      verticalAlign: 'top',
+      width: 28,
+      height: 28,
+      borderWidth: 0,
+      padding: 5,
+    },
+    toolbarButtonIcon: {
+      width: 18,
+      height: 18,
+    },
+  };
+
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} maxWidth="md">
+      <div style={{ ...styles.toolbar }}>
+        <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
+        <IconButton
+          style={styles.toolbarButton}
+          iconStyle={styles.toolbarButtonIcon}
+          onClick={() => closeMeself()}
+        >
+          <CloseIcon />
+        </IconButton>
+      </div>
       <DialogTitleWrapper titleText={dialogTitle} />
       <h6>Add Dashboard Item</h6>
       <Autocomplete
         options={dashboardItemEditOptions}
-        optionLabelKey="code"
-        optionValueKey="id"
+        optionLabelKey="name"
         placeholder="Search for a dashboard item"
+        setIsNewDashboardSelected={setIsNewDashboardSelected}
+        setSelectedNewDashboardOption={setSelectedNewDashboardOption}
+        setNewDashboardSpec={setNewDashboardSpec}
+        newDashboardSpec={newDashboardSpec}
       />
       <h6>Dashboard Items</h6>
       <DashboardItems>
@@ -152,25 +185,23 @@ export const EditDashboardModal = ({
                         <div {...provided.draggableProps} ref={provided.innerRef}>
                           <EditRow>
                             <DragHandle {...provided.dragHandleProps}>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                width="24"
-                              >
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                  fill="white"
-                                  d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-                                />
-                              </svg>
+                              <DragIndicatorIcon color="action" />
                             </DragHandle>
                             <EditRowTitle>
                               [{index}] {item.name}
                             </EditRowTitle>
                             <EditRowActions>
-                              <CloseIcon onClick={() => rmDashboardItem(item.code)} />
-                              <EditButton dashboardItemCode={item.code} />
+                              <IconButton
+                                style={styles.toolbarButton}
+                                iconStyle={styles.toolbarButtonIcon}
+                                onClick={() => rmDashboardItem(item.code)}
+                              >
+                                <DeleteOutlineIcon
+                                  color="primary"
+                                  fontSize="large"
+                                  variant="outline"
+                                />
+                              </IconButton>
                             </EditRowActions>
                           </EditRow>
                         </div>

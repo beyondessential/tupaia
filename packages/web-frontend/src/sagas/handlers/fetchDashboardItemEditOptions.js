@@ -10,15 +10,12 @@ import { request } from '../../utils';
  */
 export function* fetchDashboardItemEditOptionsData() {
   try {
-    console.log('starting the try for fetching dashboard item info');
     yield put(fetchDashboardItemEditOptions());
     // Build the request url
     const requestResourceUrl = 'dashboardItems';
     const dashboardItemData = yield call(request, requestResourceUrl);
-    console.log('dashboardItemdata', dashboardItemData);
     // TODO: add fetch success action and reducer
     yield put(fetchDashboardItemEditOptionsSuccess(dashboardItemData));
-    console.log('about to return dashboardItemData');
     return;
   } catch (error) {
     if (error.errorFunction) {

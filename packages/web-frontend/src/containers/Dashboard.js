@@ -103,8 +103,6 @@ export class Dashboard extends Component {
   }
 
   onSaveDashboard(newDashboardSpec) {
-    console.log('onSaveDashboard', newDashboardSpec);
-
     const justTheFunStuff = {
       dashboardId: newDashboardSpec.dashboardId,
       items: newDashboardSpec.items.map(item => ({
@@ -315,7 +313,6 @@ export class Dashboard extends Component {
     const exportFileName =
       currentGroupDashboard &&
       `${currentProjectName}-${currentOrganisationUnit.name}-${currentGroupDashboard.dashboardName}-dashboard-export`;
-    console.log('dashboardItemEditOptions', dashboardItemEditOptions);
     return (
       <>
         <div

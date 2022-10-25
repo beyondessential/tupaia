@@ -33,7 +33,8 @@ export function autocomplete(state = DEFAULT_AUTOCOMPLETE_STATE, action) {
       return {
         ...state,
         searchTerm: '',
-        [action.reduxId]: action.selection,
+        [action.reduxId]: action.reduxId,
+        selection: action.selection,
       };
     case AUTOCOMPLETE_SEARCH_FAILURE: {
       const currentFetchId = getFetchId(state);

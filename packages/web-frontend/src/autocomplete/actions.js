@@ -8,9 +8,9 @@
 // import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utils';
 import { AUTOCOMPLETE_SELECTION_CHANGE, AUTOCOMPLETE_RESET } from '../actions';
 
-export const changeSelection = (reduxId, selection) => ({
+export const changeSelection = (reduxId, newSelection) => ({
   type: AUTOCOMPLETE_SELECTION_CHANGE,
-  selection,
+  newSelection,
   reduxId,
 });
 
