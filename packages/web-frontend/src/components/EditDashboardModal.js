@@ -7,7 +7,17 @@ import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { Autocomplete } from './Autocomplete';
+
+const DashboardItems = styled.div`
+  min-height: 600px;
+`;
+
+const DragHandle = styled.div`
+  width: 20px;
+  outline: 3px solid purple;
+`;
 
 const EditButton = ({ dashboardItemCode }) => (
   // Big ol' hack for the hackathon!
@@ -83,7 +93,7 @@ export const EditDashboardModal = ({
     onClose();
   };
 
-  const rmDashboard = itemToRmCode => {
+  const rmDashboardItem = itemToRmCode => {
     console.log('itemToRmCode', itemToRmCode);
     const newItems = newDashboardSpec.items.filter(i => i.code !== itemToRmCode);
     setNewDashboardSpec({
@@ -92,27 +102,97 @@ export const EditDashboardModal = ({
     });
   };
 
+  // a little function to help us with reordering the result
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  const onDragEnd = result => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    console.log('items before', newDashboardSpec.items);
+
+    const items = reorder(newDashboardSpec.items, result.source.index, result.destination.index);
+
+    console.log('items after', items);
+
+    setNewDashboardSpec({
+      ...newDashboardSpec,
+      items,
+    });
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitleWrapper titleText={dialogTitle} />
+      <h6>Add Dashboard Item</h6>
       <Autocomplete
         options={dashboardItemEditOptions}
         optionLabelKey="code"
         optionValueKey="id"
         placeholder="Search for a dashboard item"
       />
-      <div>
-        {newDashboardSpec &&
-          newDashboardSpec.items.map(item => (
-            <EditRow>
-              <EditRowTitle>{item.name}</EditRowTitle>
-              <EditRowActions>
-                <CloseIcon onClick={() => rmDashboard(item.code)} />
-                <EditButton dashboardItemCode={item.code} />
-              </EditRowActions>
-            </EditRow>
-          ))}
-      </div>
+      <h6>Dashboard Items</h6>
+      <DashboardItems>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="dashboard-edit-list-dnd">
+            {(provided, snapshot) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {newDashboardSpec &&
+                  newDashboardSpec.items.map((item, index) => (
+                    // <EditRow>
+                    //   <EditRowTitle>
+                    //     [{index}] {item.name}
+                    //   </EditRowTitle>
+                    //   <EditRowActions>
+                    //     <CloseIcon onClick={() => rmDashboardItem(item.code)} />
+                    //     <EditButton dashboardItemCode={item.code} />
+                    //   </EditRowActions>
+                    // </EditRow>
+
+                    <Draggable draggableId={item.code} index={index} key={`draggable-${index}`}>
+                      {(provided, snapshot) => (
+                        <div {...provided.draggableProps} ref={provided.innerRef}>
+                          <EditRow>
+                            <DragHandle {...provided.dragHandleProps}>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                width="24"
+                              >
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path
+                                  fill="white"
+                                  d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                                />
+                              </svg>
+                            </DragHandle>
+                            <EditRowTitle>
+                              [{index}] {item.name}
+                            </EditRowTitle>
+                            <EditRowActions>
+                              <CloseIcon onClick={() => rmDashboardItem(item.code)} />
+                              <EditButton dashboardItemCode={item.code} />
+                            </EditRowActions>
+                          </EditRow>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </DashboardItems>
       <BottomBar>
         <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
         <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>

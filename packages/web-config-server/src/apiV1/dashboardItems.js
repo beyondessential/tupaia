@@ -12,8 +12,9 @@ export default class extends RouteHandler {
   buildResponse = async () => {
     const dashboardItems = await this.models.dashboardItem.all();
 
-    const dashboardItemOptions = dashboardItems.map(({ id, code }) => {
-      return { id, code };
+    const dashboardItemOptions = dashboardItems.map(({ id, code, config }) => {
+      const { name } = config;
+      return { id, code, name };
     });
 
     return dashboardItemOptions;

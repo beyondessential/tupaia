@@ -59,6 +59,7 @@
     "re-reselect": "^3.4.0",
     "react": "^16.13.1",
     "react-animations": "^1.0.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.0.0",
     "react-router-dom": "^6.3.0",
