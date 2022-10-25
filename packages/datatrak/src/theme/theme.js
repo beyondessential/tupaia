@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createTheme } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from '../constants/colors';
 
 const themeName = 'DATATRAK';
@@ -127,7 +127,7 @@ export const breakpoints = {
   },
 };
 
-export const theme = createTheme({
+export const theme = createMuiTheme({
   palette,
   themeName,
   typography,
