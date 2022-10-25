@@ -25,7 +25,7 @@ const Title = styled(Typography)`
 
 export const SurveyView = () => {
   const { projectId, countryId, surveyId } = useParams();
-  const surveyScreenComponents = useSurveyScreenComponents();
+  const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyId);
 
   return (
     <Container>

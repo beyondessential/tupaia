@@ -9,19 +9,28 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
 export type FetchSurveyScreenComponentsRequest = Request<
-  { surveyId: string },
+  { surveyCode: string },
   Record<string, unknown>[],
   Record<string, never>
 >;
 
+const surveysEndpoint = 'surveys';
 const getSurveyScreenComponentsEndpoint = (surveyId: string) =>
   `surveys/${surveyId}/surveyScreenComponents`;
 
 export class FetchSurveyScreenComponentsRoute extends Route<FetchSurveyScreenComponentsRequest> {
   public async buildResponse() {
     const { central: centralApi } = this.req.ctx.services;
-    const { surveyId } = this.req.params;
-    const endpoint = getSurveyScreenComponentsEndpoint(surveyId);
+    const { surveyCode } = this.req.params;
+    const [survey] = await centralApi.fetchResources(surveysEndpoint, {
+      filter: { code: surveyCode },
+    });
+
+    if (!survey) {
+      throw new Error(`Could not find survey with code: ${surveyCode}`);
+    }
+
+    const endpoint = getSurveyScreenComponentsEndpoint(survey.id);
     const columns = JSON.stringify([
       'id',
       'question_id',

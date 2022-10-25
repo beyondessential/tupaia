@@ -28,7 +28,7 @@ export function createApp(database = new TupaiaDatabase()) {
     .get<FetchProjectsRequest>('projects', handleWith(FetchProjectsRoute))
     .get<FetchSurveysRequest>('surveys', handleWith(FetchSurveysRoute))
     .get<FetchSurveyScreenComponentsRequest>(
-      'surveys/:surveyId/surveyScreenComponents',
+      'surveys/:surveyCode/surveyScreenComponents',
       handleWith(FetchSurveyScreenComponentsRoute),
     )
     .build();
