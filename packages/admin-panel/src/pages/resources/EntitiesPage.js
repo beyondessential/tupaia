@@ -3,12 +3,40 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import QRCode from 'react-qr-code';
 import PropTypes from 'prop-types';
+import { Dialog, DialogFooter, DialogHeader, DialogContent, Button } from '@tupaia/ui-components';
+import CropFreeIcon from '@material-ui/icons/CropFree';
+import { IconButton } from '../../widgets';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 const ENTITIES_ENDPOINT = 'entities';
+
+const QRCodeModal = React.memo(({ isOpen, onCancel, value }) => (
+  <Dialog onClose={onCancel} open={isOpen}>
+    <DialogHeader onClose={onCancel} title="Entity QR Code" color="primary" />
+    <DialogContent>
+      <QRCode size={256} value={value} viewBox="0 0 256 256" />
+    </DialogContent>
+    <DialogFooter>
+      <Button>Share</Button>
+    </DialogFooter>
+  </Dialog>
+));
+
+const QRCodeButton = ({ value }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  return (
+    <>
+      <QRCodeModal isOpen={isModalOpen} value={value} onCancel={() => setModalOpen(false)} />
+      <IconButton onClick={() => setModalOpen(true)}>
+        <CropFreeIcon />
+      </IconButton>
+    </>
+  );
+};
 
 export const ENTITIES_COLUMNS = [
   { source: 'id', show: false },
@@ -55,6 +83,12 @@ const FIELDS = [
     actionConfig: {
       endpoint: ENTITIES_ENDPOINT,
     },
+  },
+  {
+    Header: 'QR Code',
+    source: 'id',
+    type: 'logs',
+    Cell: QRCodeButton,
   },
 ];
 
@@ -113,4 +147,14 @@ export const EntitiesPage = ({ getHeaderEl }) => (
 
 EntitiesPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+};
+
+QRCodeModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
+};
+
+QRCodeButton.propTypes = {
+  value: PropTypes.string.isRequired,
 };
