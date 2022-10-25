@@ -37,7 +37,7 @@ export const App = () => {
             <Route exact path="/:projectId/:countryId/surveys">
               <SurveySelectView />
             </Route>
-            <Route exact path="/:projectId/:countryId/:surveyId/survey">
+            <Route exact path="/:projectId/:countryId/:surveyId/screen/:screenNumber">
               <SurveyView />
             </Route>
             <Redirect to="/" />

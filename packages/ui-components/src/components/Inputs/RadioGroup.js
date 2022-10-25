@@ -75,13 +75,14 @@ export const RadioGroup = ({
   className,
   labelKey,
   valueKey,
+  inputRef,
 }) => (
   <FormControl component="fieldset" className={className} color="primary">
     <FormLabel component="legend">{label}</FormLabel>
     <StyledRadioGroup aria-label={name} name={name} value={value} onChange={onChange}>
       {options.map(option => (
         <FormControlLabel
-          control={<Radio />}
+          control={<Radio inputRef={inputRef} />}
           key={option[valueKey].toString()}
           value={option[valueKey]}
           label={option[labelKey]}

@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { TextField, RadioGroup, DatePicker, DateTimePicker, Select } from '@tupaia/ui-components';
 
@@ -22,21 +22,23 @@ const Instruction = ({ text }) => {
   return <Text>{text}</Text>;
 };
 
-const BinaryQuestion = ({ options = [], ...props }) => (
-  <RadioGroup
-    options={[
-      {
-        label: 'Yes',
-        value: true,
-      },
-      {
-        label: 'No',
-        value: false,
-      },
-    ]}
-    {...props}
-  />
-);
+const BinaryQuestion = ({ options = [], ...props }) => {
+  return (
+    <RadioGroup
+      options={[
+        {
+          label: 'Yes',
+          value: 'true',
+        },
+        {
+          label: 'No',
+          value: 'false',
+        },
+      ]}
+      {...props}
+    />
+  );
+};
 
 const QUESTION_TYPES = {
   Binary: BinaryQuestion,
@@ -66,7 +68,7 @@ const getComponentForQuestionType = type => {
   return QUESTION_TYPES[type];
 };
 
-export const SurveyQuestion = props => {
+export const SurveyQuestion = ({ register, ...props }) => {
   // if (props.config) {
   //   console.log('config', props.config);
   // }
@@ -75,5 +77,5 @@ export const SurveyQuestion = props => {
 
   if (!FieldComponent) return <Text>{props.name}</Text>;
 
-  return <FieldComponent {...props} />;
+  return <FieldComponent inputRef={register()} {...props} />;
 };
