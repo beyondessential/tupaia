@@ -18,15 +18,9 @@
     "styled-components": "^5.1.0",
     "web-vitals": "^2.1.4"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "scripts": {
-    "start-dev": "yarn package:start:react-scripts",
-    "build": "npm run --prefix ../../ package:build:react-scripts",
+    "start-dev": "DISABLE_ESLINT_PLUGIN=true yarn package:start:react-scripts",
+    "build": "DISABLE_ESLINT_PLUGIN=true npm run --prefix ../../ package:build:react-scripts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
