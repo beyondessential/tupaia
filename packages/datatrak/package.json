@@ -25,8 +25,8 @@
     ]
   },
   "scripts": {
-    "start-dev": "DISABLE_ESLINT_PLUGIN=true yarn package:start:react-scripts",
-    "build": "react-scripts build",
+    "start-dev": "yarn package:start:react-scripts",
+    "build": "npm run --prefix ../../ package:build:react-scripts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -11,6 +11,10 @@ import {
   FetchEntitiesRoute,
   FetchProjectsRequest,
   FetchProjectsRoute,
+  FetchSurveyScreenComponentsRequest,
+  FetchSurveyScreenComponentsRoute,
+  FetchSurveysRequest,
+  FetchSurveysRoute,
 } from '../routes';
 
 /**
@@ -22,6 +26,11 @@ export function createApp(database = new TupaiaDatabase()) {
     .attachApiClientToContext(authHandlerProvider)
     .get<FetchEntitiesRequest>('entities/:hierarchy', handleWith(FetchEntitiesRoute))
     .get<FetchProjectsRequest>('projects', handleWith(FetchProjectsRoute))
+    .get<FetchSurveysRequest>('surveys', handleWith(FetchSurveysRoute))
+    .get<FetchSurveyScreenComponentsRequest>(
+      'surveys/:surveyId/surveyScreenComponents',
+      handleWith(FetchSurveyScreenComponentsRoute),
+    )
     .build();
 
   return app;

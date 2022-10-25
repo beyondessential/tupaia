@@ -5,3 +5,8 @@
 
 export { FetchEntitiesRequest, FetchEntitiesRoute } from './FetchEntitiesRoute';
 export { FetchProjectsRequest, FetchProjectsRoute } from './FetchProjectsRoute';
+export {
+  FetchSurveyScreenComponentsRequest,
+  FetchSurveyScreenComponentsRoute,
+} from './FetchSurveyScreenComponentsRoute';
+export { FetchSurveysRequest, FetchSurveysRoute } from './FetchSurveysRoute';
