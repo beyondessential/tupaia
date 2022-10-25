@@ -11,22 +11,26 @@ import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from '../SurveyFormContext';
 
 const Container = styled.div`
-  margin-top: 2rem;
+  // nothing?
 `;
 
-export const SurveyScreen = ({ surveyScreen }) => {
+export const SurveyScreen = ({ surveyScreen, isLast }) => {
   const { register, handleSubmit } = useForm();
   const { setFormData, formData } = useSurveyForm();
   const { push } = useHistory();
-  let { projectId, countryId, surveyId, screenNumber } = useParams();
+  let params = useParams();
 
   const onSubmitStep = screenData => {
-    const path = generatePath('/:projectId/:countryId/:surveyId/screen/:screenNumber', {
-      projectId,
-      countryId,
-      surveyId,
-      screenNumber: parseInt(screenNumber, 10) + 1,
-    });
+    let path;
+    if (isLast) {
+      path = generatePath('/:projectId/:countryId/:surveyId/submit', params);
+    } else {
+      path = generatePath('/:projectId/:countryId/:surveyId/screen/:screenNumber', {
+        ...params,
+        screenNumber: parseInt(params.screenNumber, 10) + 1,
+      });
+    }
+
     console.log('submit survey data', { ...formData, ...screenData });
     setFormData({ ...formData, ...screenData });
     push(path);
@@ -36,7 +40,6 @@ export const SurveyScreen = ({ surveyScreen }) => {
 
   return (
     <Container>
-      <p>Screen {screenNumber}</p>
       <form onSubmit={handleSubmit(onSubmitStep)} noValidate>
         {surveyScreen.map(question => {
           return (

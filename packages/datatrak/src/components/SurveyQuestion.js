@@ -23,6 +23,7 @@ const Instruction = ({ text }) => {
 };
 
 const BinaryQuestion = ({ options = [], ...props }) => {
+  // Todo: check how booleans should be formatted
   return (
     <RadioGroup
       options={[
@@ -40,6 +41,27 @@ const BinaryQuestion = ({ options = [], ...props }) => {
   );
 };
 
+const getFormattedOptions = options => {
+  return options.map(x => {
+    try {
+      // Most of the options data is an array of strings but some of the data is in json
+      const optionConfig = JSON.parse(x);
+      if (optionConfig && optionConfig.label && optionConfig.value) {
+        return optionConfig;
+      }
+    } catch (e) {
+      //
+    }
+
+    return { label: x, value: x };
+  });
+};
+
+const RadioQuestion = ({ options, ...props }) => {
+  const formattedOptions = getFormattedOptions(options);
+  return <RadioGroup {...props} options={formattedOptions} />;
+};
+
 const QUESTION_TYPES = {
   Binary: BinaryQuestion,
   Checkbox: Placeholder,
@@ -51,7 +73,7 @@ const QUESTION_TYPES = {
   Instruction: Instruction,
   Number: TextField,
   Photo: Placeholder,
-  Radio: Select, // or Radio Group
+  Radio: RadioQuestion,
   DaysSince: Placeholder,
   MonthsSince: Placeholder,
   YearsSince: Placeholder,
@@ -69,10 +91,6 @@ const getComponentForQuestionType = type => {
 };
 
 export const SurveyQuestion = ({ register, ...props }) => {
-  // if (props.config) {
-  //   console.log('config', props.config);
-  // }
-
   const FieldComponent = getComponentForQuestionType(props.type);
 
   if (!FieldComponent) return <Text>{props.name}</Text>;

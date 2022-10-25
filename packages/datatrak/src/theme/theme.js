@@ -12,6 +12,9 @@ export const palette = {
   primary: {
     main: COLORS.BLUE,
   },
+  secondary: {
+    main: COLORS.BLUE,
+  },
   error: {
     main: COLORS.RED,
     light: COLORS.LIGHT_RED,

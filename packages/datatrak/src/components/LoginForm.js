@@ -7,7 +7,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { TextField, Button } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
-// import { Typography, TextField, Button } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../constants';
 import { useLogin } from '../api/mutations';

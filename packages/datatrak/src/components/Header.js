@@ -4,10 +4,13 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { MainMenu } from './MainMenu';
 
 export const Container = styled.div`
+  // Use position relative to ensure header menu is above page components
+  position: relative;
+  z-index: 1;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,9 +27,7 @@ export const Header = () => {
   return (
     <Container>
       <StyledImg src="/tupaia-logo-black.svg" alt="tupaia-logo" />
-      <IconButton>
-        <MenuIcon />
-      </IconButton>
+      <MainMenu />
     </Container>
   );
 };
