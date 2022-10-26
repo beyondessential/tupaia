@@ -3629,6 +3629,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/async-storage@npm:^1.6.1":
+  version: 1.12.1
+  resolution: "@react-native-community/async-storage@npm:1.12.1"
+  dependencies:
+    deep-assign: ^3.0.0
+  peerDependencies:
+    react: ^16.8
+    react-native: ">=0.59"
+  checksum: 68b519eb9fc50899257878440fd49a500d4b35c3899311c56c672e779df6516f0760204f6c8edcb3e83398c61a775822996aac6974be4b55a04ad30448d8662d
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-debugger-ui@npm:^4.13.1":
   version: 4.13.1
   resolution: "@react-native-community/cli-debugger-ui@npm:4.13.1"
@@ -5464,6 +5476,7 @@ __metadata:
     prop-types: ^15.7.2
     react: 16.13.1
     react-native: ^0.63.4
+    react-native-camera: ^4.2.1
     react-native-database: ^0.1.7
     react-native-device-info: ^7.2.1
     react-native-dotenv: ^0.2.0
@@ -5476,6 +5489,8 @@ __metadata:
     react-native-menu: ^0.23.0
     react-native-modal-datetime-picker: ^9.1.0
     react-native-modalbox: ^2.0.0
+    react-native-permissions: ^3.6.1
+    react-native-qrcode-scanner: ^1.5.5
     react-native-reanimated: ~1.13.0
     react-native-safe-area-context: 3.1.4
     react-native-screens: ~2.10.1
@@ -28709,6 +28724,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-camera@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "react-native-camera@npm:4.2.1"
+  dependencies:
+    prop-types: ^15.6.2
+  checksum: 0e84ce657774694d1cc49395c43a8f2caabc03df36aa77aacfb5c797ad8cfe0368f4807deccc54e82ff2b193e8c2d1ce7ad504eedf7a9fc4719b38e39958a804
+  languageName: node
+  linkType: hard
+
 "react-native-database@npm:^0.1.7":
   version: 0.1.7
   resolution: "react-native-database@npm:0.1.7"
@@ -28852,6 +28876,43 @@ __metadata:
   dependencies:
     prop-types: ^15.5.10
   checksum: cd1d367c74b67f7aa4efe945cccea5f211d49acd56c054cc151b5741553b479d013a9f2f80d8f8fb3972799af14f1f56668ee7781972b2e26e4af91db0fc191b
+  languageName: node
+  linkType: hard
+
+"react-native-permissions@npm:^2.0.2":
+  version: 2.2.2
+  resolution: "react-native-permissions@npm:2.2.2"
+  peerDependencies:
+    react: ">=16.8.6"
+    react-native: ">=0.60.0"
+  checksum: cfc2b9d9c1e70a965faea108f546b34909cff36bc453e854ea6f129d3fa41c67d0db2fedd13d6041417276f9fd30c03b1aa44e0e20ffb883be3135a28fc94993
+  languageName: node
+  linkType: hard
+
+"react-native-permissions@npm:^3.6.1":
+  version: 3.6.1
+  resolution: "react-native-permissions@npm:3.6.1"
+  peerDependencies:
+    react: ">=16.13.1"
+    react-native: ">=0.63.3"
+    react-native-windows: ">=0.62.0"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 41920565e1a850c5bdcda94ee2415be0277ab64ea86ea4daf9f0b90eb7857e3a7a336d159495785d14d3de89dd09bb198f4d1afef6811773b5c2b0148f99d583
+  languageName: node
+  linkType: hard
+
+"react-native-qrcode-scanner@npm:^1.5.5":
+  version: 1.6.0
+  resolution: "react-native-qrcode-scanner@npm:1.6.0"
+  dependencies:
+    "@react-native-community/async-storage": ^1.6.1
+    prop-types: ^15.5.10
+    react-native-permissions: ^2.0.2
+  peerDependencies:
+    react-native-camera: ">=1.0.2"
+  checksum: 89fdd8132fa0944949f54d902c7245da96cd488536eae0b2f9923d518a822a4dec606f22001871344b6438149f446639b952fe2be281965d1be91b9af1a47bed
   languageName: node
   linkType: hard
 
