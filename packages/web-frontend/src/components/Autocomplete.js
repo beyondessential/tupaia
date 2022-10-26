@@ -26,8 +26,6 @@ export const Autocomplete = ({
   placeholder,
   setIsNewDashboardSelected,
   setSelectedNewDashboardOption,
-  setNewDashboardSpec,
-  newDashboardSpec,
 }) => {
   const handleChange = (event, value) => {
     if (value === null) {
@@ -35,11 +33,6 @@ export const Autocomplete = ({
     }
     setIsNewDashboardSelected(true);
     setSelectedNewDashboardOption(value);
-    const newItems = [value].concat(newDashboardSpec.items);
-    setNewDashboardSpec({
-      ...newDashboardSpec,
-      items: newItems,
-    });
   };
 
   return (

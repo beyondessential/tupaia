@@ -14,6 +14,9 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import MuiTextField from '@material-ui/core/TextField';
 import { Autocomplete } from './Autocomplete';
 import { DIALOG_Z_INDEX } from '../styles';
 
@@ -34,9 +37,15 @@ const DashboardItems = styled.div`
 `;
 
 const DragHandle = styled.div`
-  width: 30px;
   display: flex;
   align-items: center;
+  justify-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const AddButton = styled(Link)`
+  padding-top: 15px;
 `;
 
 const EditButton = ({ dashboardItemCode }) => (
@@ -62,11 +71,10 @@ const DialogTitleWrapper = ({ titleText }) => {
     },
     dialogTitle: {
       textAlign: 'left',
-      paddingBottom: 5,
+      paddingBottom: 10,
       borderBottom: '1px solid white',
       paddingLeft: 0,
       marginBottom: 20,
-      paddingBottom: 10,
     },
   };
 
@@ -169,6 +177,25 @@ export const EditDashboardModal = ({
     });
   };
 
+  const addItem = () => {
+    if (!isNewDashboardSelected) {
+      return;
+    }
+    const newItems = [selectedNewDashboardOption].concat(newDashboardSpec.items);
+    setNewDashboardSpec({
+      ...newDashboardSpec,
+      items: newItems,
+    });
+  };
+
+  const handleChangeItemName = (newValue, itemIndex) => {
+    const specWithUpdatedName = { ...newDashboardSpec };
+    specWithUpdatedName.items[itemIndex].name = newValue;
+    setNewDashboardSpec({
+      ...specWithUpdatedName,
+    });
+  };
+
   const styles = {
     toolbar: {
       position: 'absolute',
@@ -190,14 +217,14 @@ export const EditDashboardModal = ({
       height: 18,
     },
     box: {
-      padding: '50px 45px 15px 60px',
+      padding: '50px 45px 40px 60px',
       minHeight: 400,
-    },
-    autocomplete: {
-      paddingRight: 0,
     },
     save: {
       marginLeft: 10,
+    },
+    textField: {
+      width: '100%',
     },
   };
 
@@ -215,16 +242,25 @@ export const EditDashboardModal = ({
         </div>
         <DialogTitleWrapper titleText={dialogTitle} />
         <SubHeading>Add Dashboard Item</SubHeading>
-        <Autocomplete
-          options={dashboardItemEditOptions}
-          optionLabelKey="name"
-          placeholder="Search"
-          setIsNewDashboardSelected={setIsNewDashboardSelected}
-          setSelectedNewDashboardOption={setSelectedNewDashboardOption}
-          setNewDashboardSpec={setNewDashboardSpec}
-          newDashboardSpec={newDashboardSpec}
-          style={{ ...styles.autocomplete }}
-        />
+        <Grid container spacing={2}>
+          <Grid item xs={10}>
+            <Autocomplete
+              options={dashboardItemEditOptions}
+              optionLabelKey="name"
+              placeholder="Search"
+              setIsNewDashboardSelected={setIsNewDashboardSelected}
+              setSelectedNewDashboardOption={setSelectedNewDashboardOption}
+              setNewDashboardSpec={setNewDashboardSpec}
+              newDashboardSpec={newDashboardSpec}
+              style={{ ...styles.autocomplete }}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <AddButton component="button" variant="h6" onClick={() => addItem()}>
+              + Add
+            </AddButton>
+          </Grid>
+        </Grid>
         <SubHeading>Dashboard Items</SubHeading>
         <DashboardItems>
           <DragDropContext onDragEnd={onDragEnd}>
@@ -251,18 +287,32 @@ export const EditDashboardModal = ({
                               draggableProvided.draggableProps.style,
                             )}
                           >
-                            <EditRow>
-                              <DragHandle {...draggableProvided.dragHandleProps}>
-                                <DragIndicatorIcon color="action" />
-                              </DragHandle>
-                              <EditRowTitle>{item.name}</EditRowTitle>
-                              <EditRowActions>
-                                <IconButton onClick={() => rmDashboardItem(item.code)}>
-                                  <DeleteOutlineIcon color="primary" fontSize="medium" />
-                                </IconButton>
-                                <EditButton dashboardItemCode={item.code} />
-                              </EditRowActions>
-                            </EditRow>
+                            <Grid container spacing={2}>
+                              <Grid item xs={1}>
+                                <DragHandle {...draggableProvided.dragHandleProps}>
+                                  <DragIndicatorIcon color="action" />
+                                </DragHandle>
+                              </Grid>
+                              <Grid item xs={9}>
+                                <MuiTextField
+                                  variant="outlined"
+                                  value={item.name}
+                                  style={{ ...styles.textField }}
+                                  onChange={event =>
+                                    handleChangeItemName(event.target.value, index)
+                                  }
+                                />
+                              </Grid>
+                              <Grid item xs={2}>
+                                <EditRowActions>
+                                  <IconButton onClick={() => rmDashboardItem(item.code)}>
+                                    <DeleteOutlineIcon color="primary" fontSize="medium" />
+                                  </IconButton>
+                                  <EditButton dashboardItemCode={item.code} />
+                                </EditRowActions>
+                              </Grid>
+                            </Grid>
+                            <EditRow />
                           </div>
                         )}
                       </Draggable>
