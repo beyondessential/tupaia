@@ -5,6 +5,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { post } from '../api';
+import { useUser } from '../queries';
 
 export const useLogin = () => {
   const { push, location } = useHistory();
@@ -41,11 +42,11 @@ export const useLogin = () => {
    * not fully logged in until we have fetched a valid user and ensures any errors related to the
    * getting a valid user are displayed at login.
    */
-  // const userQuery = useUser({ enabled: loginQuery.isSuccess });
+  const userQuery = useUser({ enabled: loginQuery.isSuccess });
 
-  // if (loginQuery.isSuccess) {
-  //   return { ...loginQuery, ...userQuery };
-  // }
+  if (loginQuery.isSuccess) {
+    return { ...loginQuery, ...userQuery };
+  }
 
   /**
    * If the login was not successful simply return the errors and fetching state related

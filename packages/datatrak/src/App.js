@@ -13,6 +13,7 @@ import { Header } from './components';
 import { SubmitView } from './views/SubmitView';
 import { SuccessView } from './views/SuccessView';
 import { AdminRoute } from './components';
+import { useUser } from './api/queries';
 
 const Wrapper = styled.div`
   background: #f5f8fb;
@@ -36,10 +37,12 @@ const Container = styled.div`
 `;
 
 export const App = () => {
+  const { data: user } = useUser();
+
   return (
     <Router>
       <Wrapper>
-        <Header />
+        <Header user={user} />
         <Background>
           <Container>
             <Switch>

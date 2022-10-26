@@ -4,11 +4,8 @@
  */
 import { useQuery } from 'react-query';
 import { get } from '../api';
+import { REACT_QUERY_DEFAULTS } from '../constants';
 
 export const useProjects = () => {
-  return useQuery(['projects'], () => get(`projects`), {
-    staleTime: 1000 * 60 * 60 * 1,
-    refetchOnWindowFocus: false,
-    retry: 2,
-  });
+  return useQuery(['projects'], () => get(`projects`), REACT_QUERY_DEFAULTS);
 };

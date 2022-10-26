@@ -4,27 +4,38 @@
  */
 
 import React from 'react';
-import { useUser } from '../api/queries';
+import { useLogout } from '../api/mutations';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
+import { useHistory } from 'react-router-dom';
 
-export const MainMenu = () => {
-  const { data, isSuccess } = useUser();
+export const MainMenu = ({ user }) => {
+  const { mutate: logout } = useLogout();
+  const { push } = useHistory();
+
+  console.log('user', user);
+
+  const onClickLogout = async () => {
+    console.log('logout');
+    await logout();
+    push('/');
+  };
 
   const ProfileLinks = () => (
     <>
       <ProfileButtonItem to="/">Change Project</ProfileButtonItem>
       <ProfileButtonItem to="/">Account info</ProfileButtonItem>
       <ProfileButtonItem to="/">Help Centre</ProfileButtonItem>
-      <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
+      <ProfileButtonItem onClick={onClickLogout}>Logout</ProfileButtonItem>
     </>
   );
-  return isSuccess ? (
+
+  return user ? (
     <BaseProfileButton
       user={{
-        name: `${data.firstName} ${data.lastName}`,
-        email: data.email,
-        firstName: data.firstName,
-        profileImage: data.profileImage,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        firstName: user.firstName,
+        profileImage: user.profileImage,
       }}
       MenuOptions={ProfileLinks}
     />
