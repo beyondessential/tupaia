@@ -17,8 +17,18 @@ import {
 
 function mapStateToProps(state) {
   const { assessment } = state;
-  const { assessorId, isSubmitting, screens, questions, startTime, surveyId } = assessment;
+  const {
+    assessorId,
+    isSubmitting,
+    isGeneratingQRCode,
+    qrCodeEntity,
+    screens,
+    questions,
+    startTime,
+    surveyId,
+  } = assessment;
   const screenIndex = getSurveyScreenIndex(state);
+
   return {
     assessorId,
     canRepeat: getCanSurveyRepeat(state),
@@ -30,6 +40,8 @@ function mapStateToProps(state) {
     startTime,
     surveyId,
     surveyName: getSurveyName(state),
+    isGeneratingQRCode,
+    qrCodeEntity,
   };
 }
 
