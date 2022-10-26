@@ -12,8 +12,6 @@ export const MainMenu = ({ user }) => {
   const { mutate: logout } = useLogout();
   const { push } = useHistory();
 
-  console.log('user', user);
-
   const onClickLogout = async () => {
     console.log('logout');
     await logout();

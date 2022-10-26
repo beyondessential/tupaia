@@ -3,9 +3,22 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
-import { Autocomplete } from '@tupaia/ui-components';
+import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { ButtonLink } from '../components';
 import { useEntities, useProjects } from '../api/queries';
+import styled from 'styled-components';
+
+const Autocomplete = styled(BaseAutocomplete)`
+  margin-bottom: 30px;
+
+  .MuiFormLabel-root {
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 24px;
+    line-height: 28px;
+    color: #4e3838;
+  }
+`;
 
 export const ProjectsView = () => {
   const [project, setProject] = useState(null);
