@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MuiButton from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
-import EditIcon from 'material-ui/svg-icons/action/info';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import CloseButton from '@material-ui/icons/Close';
@@ -41,13 +41,13 @@ const DragHandle = styled.div`
 
 const EditButton = ({ dashboardItemCode }) => (
   // Big ol' hack for the hackathon!
-  <a
+  <IconButton
     href={`https://hackathon-viz-workflow-admin.tupaia.org/dashboard-items?filters=[{"id":"code","value":"${dashboardItemCode}"}]`}
     target="_blank"
     rel="noopener noreferrer"
   >
-    <EditIcon />
-  </a>
+    <EditIcon fontSize="md" />
+  </IconButton>
 );
 const DialogTitleWrapper = ({ titleText }) => {
   const styles = {
@@ -260,6 +260,7 @@ export const EditDashboardModal = ({
                                 <IconButton onClick={() => rmDashboardItem(item.code)}>
                                   <DeleteOutlineIcon color="primary" fontSize="medium" />
                                 </IconButton>
+                                <EditButton dashboardItemCode={item.code} />
                               </EditRowActions>
                             </EditRow>
                           </div>
