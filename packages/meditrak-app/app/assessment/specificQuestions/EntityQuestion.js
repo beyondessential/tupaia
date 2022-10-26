@@ -35,7 +35,7 @@ const DumbEntityQuestion = props => {
     const entityName = getEntityNameFromQRCode(qrCodeValue);
     return (
       <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-        <Text style={{ fontSize: 20 }}>ID: {entityName}</Text>
+        <Text style={{ fontSize: 20 }}>Result: {entityName}</Text>
       </View>
     );
   }

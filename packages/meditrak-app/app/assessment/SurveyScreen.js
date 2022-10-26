@@ -17,7 +17,17 @@ import {
 
 function mapStateToProps(state) {
   const { assessment } = state;
-  const { assessorId, isSubmitting, screens, questions, startTime, surveyId } = assessment;
+  const {
+    assessorId,
+    isSubmitting,
+    isGeneratingQRCode,
+    qrCodeEntity,
+    screens,
+    questions,
+    startTime,
+    surveyId,
+  } = assessment;
+  console.log(state);
   const screenIndex = getSurveyScreenIndex(state);
   return {
     assessorId,
@@ -30,6 +40,8 @@ function mapStateToProps(state) {
     startTime,
     surveyId,
     surveyName: getSurveyName(state),
+    isGeneratingQRCode,
+    qrCodeEntity,
   };
 }
 
