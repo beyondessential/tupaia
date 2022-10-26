@@ -9,9 +9,9 @@ import FetchError from './fetchError';
 axios.defaults.withCredentials = true;
 
 const timeout = 45 * 1000; // 45 seconds
-
-const baseUrl = 'http://localhost:7090/v1';
 const { REACT_APP_API_URL } = process.env;
+
+const baseUrl = REACT_APP_API_URL || 'http://localhost:7090/v1';
 
 /**
  * Abstraction for making api requests
