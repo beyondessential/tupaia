@@ -10,18 +10,18 @@ import { get } from '../api';
 import data from './data.json';
 
 export const useSurveyScreenComponents = survey => {
-  const mappedData = groupBy(data.map(camelcaseKeys), 'surveyScreenScreenNumber');
-  return { data: mappedData };
-  // const {
-  //   isSuccess,
-  //   data = [],
-  //   ...restOfQuery
-  // } = useQuery(['surveys', survey], () => get(`surveys/${survey}/surveyScreenComponents`), {
-  //   staleTime: 1000 * 60 * 60 * 1,
-  //   refetchOnWindowFocus: false,
-  //   retry: 2,
-  // });
-  //
   // const mappedData = groupBy(data.map(camelcaseKeys), 'surveyScreenScreenNumber');
-  // return { ...restOfQuery, isSuccess, data: mappedData };
+  // return { data: mappedData };
+  const { isSuccess, data = [], ...restOfQuery } = useQuery(
+    ['surveys', survey],
+    () => get(`surveys/${survey}/surveyScreenComponents`),
+    {
+      staleTime: 1000 * 60 * 60 * 1,
+      refetchOnWindowFocus: false,
+      retry: 2,
+    },
+  );
+
+  const mappedData = groupBy(data.map(camelcaseKeys), 'surveyScreenScreenNumber');
+  return { ...restOfQuery, isSuccess, data: mappedData };
 };

@@ -5,6 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MainMenu } from './MainMenu';
+import { Link as RouterLink } from 'react-router-dom';
+import MuiLink from '@material-ui/core/Link';
 
 export const Container = styled.div`
   // Use position relative to ensure header menu is above page components
@@ -23,10 +25,14 @@ const StyledImg = styled.img`
   width: auto;
 `;
 
+const Link = props => <MuiLink color="inherit" {...props} component={RouterLink} />;
+
 export const Header = () => {
   return (
     <Container>
-      <StyledImg src="/tupaia-logo-black.svg" alt="tupaia-logo" />
+      <Link to="">
+        <StyledImg src="/tupaia-logo-black.svg" alt="tupaia-logo" />
+      </Link>
       <MainMenu />
     </Container>
   );

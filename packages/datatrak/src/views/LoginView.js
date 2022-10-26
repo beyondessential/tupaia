@@ -7,9 +7,11 @@ import React from 'react';
 import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
 import { LoginForm, FlexColumn } from '../components';
+import Typography from '@material-ui/core/Typography';
 
-const Container = styled(FlexColumn)`
-  padding-top: 3rem;
+const Container = styled.div`
+  text-align: center;
+  padding-top: 20px;
   min-height: 70vh;
 `;
 
@@ -23,14 +25,17 @@ const StyledCard = styled(MuiCard)`
   }
 `;
 
-const StyledImg = styled.img`
-  height: 6.5rem;
-  width: auto;
-  margin-bottom: 2rem;
+const Title = styled(Typography)`
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 38px;
+  margin-bottom: 40px;
+  color: #004167;
 `;
 
 export const LoginView = () => (
   <Container>
+    <Title>Login</Title>
     <StyledCard>
       <LoginForm />
     </StyledCard>

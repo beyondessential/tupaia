@@ -8,3 +8,4 @@ export * from './LoginForm';
 export * from './Header';
 export * from './SurveyQuestion';
 export * from './ButtonLink';
+export * from './AdminRoute';

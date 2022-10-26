@@ -10,3 +10,4 @@ export {
   FetchSurveyScreenComponentsRoute,
 } from './FetchSurveyScreenComponentsRoute';
 export { FetchSurveysRequest, FetchSurveysRoute } from './FetchSurveysRoute';
+export { FetchUserRequest, FetchUserRoute } from './FetchUserRoute';

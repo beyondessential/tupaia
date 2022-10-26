@@ -9,9 +9,10 @@ import { LoginView } from './views/LoginView';
 import { ProjectsView } from './views/ProjectsView';
 import { SurveySelectView } from './views/SurveySelectView';
 import { SurveyView } from './views/SurveyView';
-import { FlexColumn, Header } from './components';
+import { Header } from './components';
 import { SubmitView } from './views/SubmitView';
 import { SuccessView } from './views/SuccessView';
+import { AdminRoute } from './components';
 
 const Wrapper = styled.div`
   background: #f5f8fb;
@@ -31,7 +32,7 @@ const Background = styled.div`
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  padding-top: 50px;
+  padding: 50px 30px 15px;
 `;
 
 export const App = () => {
@@ -45,21 +46,21 @@ export const App = () => {
               <Route exact path="/login">
                 <LoginView />
               </Route>
-              <Route exact path="/">
+              <AdminRoute exact path="/">
                 <ProjectsView />
-              </Route>
-              <Route exact path="/:projectId/:countryId/surveys">
+              </AdminRoute>
+              <AdminRoute exact path="/:projectId/:countryId/surveys">
                 <SurveySelectView />
-              </Route>
-              <Route exact path="/:projectId/:countryId/:surveyId/submit">
+              </AdminRoute>
+              <AdminRoute exact path="/:projectId/:countryId/:surveyId/submit">
                 <SubmitView />
-              </Route>
-              <Route exact path="/:projectId/:countryId/:surveyId/success">
+              </AdminRoute>
+              <AdminRoute exact path="/:projectId/:countryId/:surveyId/success">
                 <SuccessView />
-              </Route>
-              <Route exact path="/:projectId/:countryId/:surveyId/screen/:screenNumber">
+              </AdminRoute>
+              <AdminRoute exact path="/:projectId/:countryId/:surveyId/screen/:screenNumber">
                 <SurveyView />
-              </Route>
+              </AdminRoute>
               <Redirect to="/" />
             </Switch>
           </Container>

@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
+import { useUser } from '../api/queries';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
 
 export const MainMenu = () => {
-  // Todo: fetch user
-  const user = { name: 'Rohan Smith', email: 'rohansmith@gmail.com', firstName: 'Rohan' };
+  const { data, isSuccess } = useUser();
+
   const ProfileLinks = () => (
     <>
       <ProfileButtonItem to="/">Change Project</ProfileButtonItem>
@@ -17,5 +18,15 @@ export const MainMenu = () => {
       <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
     </>
   );
-  return <BaseProfileButton user={user} MenuOptions={ProfileLinks} />;
+  return isSuccess ? (
+    <BaseProfileButton
+      user={{
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        firstName: data.firstName,
+        profileImage: data.profileImage,
+      }}
+      MenuOptions={ProfileLinks}
+    />
+  ) : null;
 };

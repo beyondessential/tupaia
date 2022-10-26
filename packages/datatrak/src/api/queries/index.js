@@ -7,3 +7,4 @@ export * from './useSurveyScreenComponents';
 export * from './useSurveys';
 export * from './useProjects';
 export * from './useEntities';
+export * from './useUser';

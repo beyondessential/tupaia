@@ -42,6 +42,9 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
     <Container>
       <form onSubmit={handleSubmit(onSubmitStep)} noValidate>
         {surveyScreen.map(question => {
+          if (question?.validationCriteria?.mandatory === true) {
+            console.log('mandatory question', question);
+          }
           return (
             <SurveyQuestion
               key={question.questionId}

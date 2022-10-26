@@ -26,7 +26,7 @@ export const SurveySelectView = () => {
         getOptionLabel={option => option.label}
         onChange={(e, { value }) => setSurvey(value)}
       />
-      <ButtonLink to={`/${projectId}/${countryId}/${survey}/survey`}>Next</ButtonLink>
+      <ButtonLink to={`/${projectId}/${countryId}/${survey}/screen/1`}>Next</ButtonLink>
     </div>
   );
 };
