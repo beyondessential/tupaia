@@ -27,8 +27,8 @@ function mapStateToProps(state) {
     startTime,
     surveyId,
   } = assessment;
-  console.log(state);
   const screenIndex = getSurveyScreenIndex(state);
+
   return {
     assessorId,
     canRepeat: getCanSurveyRepeat(state),

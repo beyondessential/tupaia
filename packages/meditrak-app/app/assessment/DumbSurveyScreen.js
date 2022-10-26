@@ -140,9 +140,7 @@ export class DumbSurveyScreen extends React.Component {
     } = this.props;
     const { isTableOfContentsVisible } = this.state;
     const FinalScreen = () => {
-      console.log(qrCodeEntity);
       if (isGeneratingQRCode) {
-        console.log('qrCodeEntity', qrCodeEntity);
         return <QRCodeScreen data={qrCodeEntity} />;
       }
       return <SubmitScreen />;
