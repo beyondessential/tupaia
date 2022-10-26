@@ -5,13 +5,10 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 import camelcaseKeys from 'camelcase-keys';
+import { REACT_QUERY_DEFAULTS } from '../constants';
 
 export const useUser = () => {
-  const query = useQuery(['user'], () => get(`user`), {
-    staleTime: 1000 * 60 * 60 * 1,
-    refetchOnWindowFocus: false,
-    retry: 2,
-  });
+  const query = useQuery(['user'], () => get(`user`), { ...REACT_QUERY_DEFAULTS, retry: 0 });
 
   const data = camelcaseKeys(query.data);
 

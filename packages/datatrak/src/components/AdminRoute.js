@@ -10,7 +10,7 @@ import { useUser } from '../api/queries';
 export const AdminRoute = props => {
   const { isLoading, isSuccess } = useUser();
   if (isLoading) {
-    return 'Loading';
+    return 'Loading...';
   }
 
   if (!isSuccess) {

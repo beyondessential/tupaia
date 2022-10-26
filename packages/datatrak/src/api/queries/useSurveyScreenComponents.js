@@ -3,11 +3,10 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import camelcaseKeys from 'camelcase-keys';
 import { groupBy } from 'lodash';
 import { get } from '../api';
-import data from './data.json';
+import { REACT_QUERY_DEFAULTS } from '../constants';
 
 export const useSurveyScreenComponents = survey => {
   // const mappedData = groupBy(data.map(camelcaseKeys), 'surveyScreenScreenNumber');
@@ -15,11 +14,7 @@ export const useSurveyScreenComponents = survey => {
   const { isSuccess, data = [], ...restOfQuery } = useQuery(
     ['surveys', survey],
     () => get(`surveys/${survey}/surveyScreenComponents`),
-    {
-      staleTime: 1000 * 60 * 60 * 1,
-      refetchOnWindowFocus: false,
-      retry: 2,
-    },
+    REACT_QUERY_DEFAULTS,
   );
 
   const mappedData = groupBy(data.map(camelcaseKeys), 'surveyScreenScreenNumber');

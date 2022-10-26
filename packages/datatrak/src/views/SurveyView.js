@@ -21,7 +21,7 @@ export const SurveyView = () => {
   const isLast = parseInt(screenNumber, 10) === numberOfScreens;
 
   if (isLoading) {
-    return 'loading...';
+    return 'Loading...';
   }
 
   if (isError && error) {

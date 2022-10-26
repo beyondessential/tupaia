@@ -4,6 +4,7 @@
  */
 import { useQuery } from 'react-query';
 import { get } from '../api';
+import { REACT_QUERY_DEFAULTS } from '../constants';
 
 export const useEntities = (hierarchy, type) => {
   return useQuery(
@@ -15,9 +16,7 @@ export const useEntities = (hierarchy, type) => {
         },
       }),
     {
-      staleTime: 1000 * 60 * 60 * 1,
-      refetchOnWindowFocus: false,
-      retry: 2,
+      ...REACT_QUERY_DEFAULTS,
       enabled: hierarchy !== null,
     },
   );
