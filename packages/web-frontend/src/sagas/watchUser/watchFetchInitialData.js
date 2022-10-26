@@ -14,7 +14,6 @@ export function* watchFetchInitialData() {
   yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
   yield call(fetchProjectData);
   yield call(fetchDashboardItemEditOptionsData);
-  console.log('about to call handleLocationChange');
   yield call(handleLocationChange, {
     location: getInitialLocation(),
     previousLocation: clearLocation(),

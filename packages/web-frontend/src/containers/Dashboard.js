@@ -40,7 +40,6 @@ import {
 } from '../selectors';
 import { DEFAULT_BOUNDS } from '../defaults';
 import DashboardExportModal from './DashboardExportModal';
-import { DashboardEditButton } from '../components/DashboardEditButton';
 import { EditDashboardModal } from '../components/EditDashboardModal';
 import request from '../utils/request';
 
@@ -72,7 +71,7 @@ export class Dashboard extends Component {
       showFloatingHeader: false,
       isPhotoEnlarged: false,
       isOpen: false,
-      setEditingDashboard: false,
+      isEditingDashboard: false,
     };
 
     this.collapsibleGroupRefs = {};
@@ -107,6 +106,7 @@ export class Dashboard extends Component {
       dashboardId: newDashboardSpec.dashboardId,
       items: newDashboardSpec.items.map(item => ({
         code: item.code,
+        name: item.name,
       })),
     };
 
@@ -124,7 +124,6 @@ export class Dashboard extends Component {
       {},
       false,
     ).then(() => {
-      console.log('save complete');
       window.location.reload();
     });
     // new endpoint for edit dashboard in one go
@@ -263,7 +262,6 @@ export class Dashboard extends Component {
     if (dashboardNames.length === 0) {
       return null;
     }
-
     const currentDashboardIndex = dashboardNames.findIndex(name => name === currentDashboardName);
 
     return (
@@ -273,6 +271,8 @@ export class Dashboard extends Component {
         onChange={onChangeDashboardGroup}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         menuListStyle={DASHBOARD_STYLES.groupsDropDownMenu}
+        setIsEditingDashboard={bool => this.setIsEditingDashboard(bool)}
+        isEditingDashboard={this.state.isEditingDashboard}
       />
     );
   }
@@ -286,7 +286,6 @@ export class Dashboard extends Component {
         <FlexSpaceBetween>
           <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
           <div>
-            <DashboardEditButton onClick={() => this.setIsEditingDashboard(true)} />
             <MuiButton
               startIcon={<DownloadIcon style={{ fontSize: 16 }} />}
               variant="outlined"

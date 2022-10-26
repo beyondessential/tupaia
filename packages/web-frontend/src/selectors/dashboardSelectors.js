@@ -39,7 +39,6 @@ export const selectCurrentExpandedDates = createSelector([selectLocation], locat
 export const selectCurrentDashboardName = createSelector(
   [state => state.global.dashboards, selectCurrentDashboardNameFromLocation],
   (dashboards, currentDashboardName) => {
-    console.log('dashboards in selector', dashboards);
     if (dashboards.find(d => d.dashboardName === currentDashboardName)) {
       return currentDashboardName;
     }
