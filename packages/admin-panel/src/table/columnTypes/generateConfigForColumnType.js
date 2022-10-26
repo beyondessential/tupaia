@@ -5,6 +5,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import LaunchIcon from '@material-ui/icons/Launch';
+import { IconButton } from '../../widgets';
 import { EditButton, BulkEditButton } from '../../editor';
 import { DeleteButton } from './DeleteButton';
 import { ExportButton } from '../../importExport';
@@ -27,11 +29,13 @@ const BUTTON_COLUMN_OPTIONS = {
 const ViewLink = ({ actionConfig, row }) => {
   console.log('ignore me', actionConfig.hi); // eslint thing
   return (
-    <a
+    <IconButton
       href={`https://hackathon-viz-workflow.tupaia.org/ehealth_nauru/NR/COVID-19%20Cases?overlay=covid_nr_d_case_numbers&overlayPeriod=DEFAULT_PERIOD&report=${row.code}`}
+      target="_blank"
+      rel="noopener noreferrer"
     >
-      View
-    </a>
+      <LaunchIcon />
+    </IconButton>
   );
 };
 ViewLink.propTypes = {
