@@ -14,12 +14,9 @@ export type FetchUserRequest = Request<
   Record<string, never>
 >;
 
-const userEndpoint = 'me';
-
 export class FetchUserRoute extends Route<FetchUserRequest> {
   public async buildResponse() {
-    const { central: centralApi } = this.req.ctx.services;
-    const user = await centralApi.fetchResources(userEndpoint);
+    const user = await this.req.ctx.services.central.getUser();
     return user;
   }
 }
