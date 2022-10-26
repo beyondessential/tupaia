@@ -17,6 +17,8 @@ import {
   FetchSurveysRoute,
   FetchUserRequest,
   FetchUserRoute,
+  SubmitSurveyResponseRequest,
+  SubmitSurveyResponseRoute,
 } from '../routes';
 
 /**
@@ -34,6 +36,7 @@ export function createApp(database = new TupaiaDatabase()) {
       'surveys/:surveyCode/surveyScreenComponents',
       handleWith(FetchSurveyScreenComponentsRoute),
     )
+    .post<SubmitSurveyResponseRequest>('surveyResponse', handleWith(SubmitSurveyResponseRoute))
     .build();
 
   return app;

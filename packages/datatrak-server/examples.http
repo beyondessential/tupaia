@@ -41,5 +41,19 @@ content-type: {{contentType}}
 
 
 ### Fetch survey screen components
-GET http://{{host}}/{{version}}/surveys/59085fb6cc42a44705c02d18/surveyScreenComponents HTTP/1.1
+GET http://{{host}}/{{version}}/surveys/BCD/surveyScreenComponents HTTP/1.1
 content-type: {{contentType}}
+
+
+### Submit survey response
+POST http://{{host}}/{{version}}/surveyResponse HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "entity": "TO",
+    "survey": "BCD",
+    "timestamp": "2020-01-01",
+    "answers": {
+        "Q1": "1"
+    }
+}
