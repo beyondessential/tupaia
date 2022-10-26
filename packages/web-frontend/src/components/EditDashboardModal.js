@@ -55,7 +55,7 @@ const EditButton = ({ dashboardItemCode }) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <EditIcon fontSize="md" />
+    <EditIcon fontSize="medium" />
   </IconButton>
 );
 const DialogTitleWrapper = ({ titleText }) => {
@@ -136,7 +136,6 @@ export const EditDashboardModal = ({
   const [newDashboardSpec, setNewDashboardSpec] = useState(clonedDashboardSpec);
   const [isNewDashboardSelected, setIsNewDashboardSelected] = useState(false);
   const [selectedNewDashboardOption, setSelectedNewDashboardOption] = useState({});
-  console.log('newDashboardSpec', newDashboardSpec);
 
   const closeMeself = () => {
     // reset state

@@ -4,7 +4,7 @@
  */
 
 import { respond } from '@tupaia/utils';
-import { generateId } from '@tupaia/database';
+import { generateId, TYPES } from '@tupaia/database';
 
 export async function editDashboard(req, res) {
   req.flagPermissionsChecked();
@@ -16,7 +16,15 @@ export async function editDashboard(req, res) {
     // first get ids, as we only have codes, and we will delete these records
     for (const item of payload.items) {
       const { code } = item;
-      const record = await transactingModels.dashboardItem.findOne({ code });
+      const [record] = await transactingModels.database.find(
+        TYPES.DASHBOARD_ITEM,
+        { [`${TYPES.DASHBOARD_ITEM}.code`]: code },
+        {
+          columns: [`${TYPES.DASHBOARD_ITEM}.id`, `${TYPES.DASHBOARD_ITEM}.config`],
+        },
+      );
+      item.config = record.config;
+      item.config.name = item.name;
       item.id = record.id;
     }
 
@@ -26,6 +34,10 @@ export async function editDashboard(req, res) {
     let i = 0;
     for (const item of payload.items) {
       i++;
+      // update name
+      await transactingModels.dashboardItem.updateById(item.id, { config: item.config });
+
+      // rebuild dashboard relations
       await transactingModels.dashboardRelation.create({
         id: generateId(),
         dashboard_id: payload.dashboardId,
@@ -35,9 +47,7 @@ export async function editDashboard(req, res) {
         permission_groups: ['COVID-19 Nauru'],
         sort_order: i,
       });
-      // console.log('dashboardItem', code, id);
     }
   });
-
   respond(res, { message: 'Success' }, 200);
 }
