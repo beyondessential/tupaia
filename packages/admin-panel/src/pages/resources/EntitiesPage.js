@@ -60,6 +60,12 @@ export const ENTITIES_COLUMNS = [
     Header: 'Type',
     source: 'type',
   },
+  {
+    Header: 'Attributes',
+    source: 'attributes',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+  },
 ];
 
 const FIELDS = [
