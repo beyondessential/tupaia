@@ -9,8 +9,9 @@ import { cloneDeep } from 'lodash';
 import EditIcon from 'material-ui/svg-icons/action/info';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import CloseButton from '@material-ui/icons/Close';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import IconButton from 'material-ui/IconButton';
+import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { Autocomplete } from './Autocomplete';
@@ -29,7 +30,7 @@ const SubHeading = styled(Typography)`
 `;
 
 const DashboardItems = styled.div`
-  min-height: 400px;
+  margin-bottom: 15px;
 `;
 
 const DragHandle = styled.div`
@@ -78,6 +79,7 @@ const DialogTitleWrapper = ({ titleText }) => {
 
 const Toolbar = styled.div`
   padding-top: 10px;
+  text-align: right;
 `;
 
 const EditRow = styled.div`
@@ -188,21 +190,27 @@ export const EditDashboardModal = ({
       height: 18,
     },
     box: {
-      padding: '50px 60px 15px 60px',
-      width: 800,
+      padding: '50px 45px 15px 60px',
+      minHeight: 400,
     },
     autocomplete: {
       paddingRight: 0,
     },
+    save: {
+      marginLeft: 10,
+    },
   };
+
+  // TODO: need to get rid of mysterious margin on right of Box component
 
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="md">
       <Box style={{ ...styles.box }}>
         <div style={{ ...styles.toolbar }}>
           <Toolbar>
-            <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
-            <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
+            <IconButton onClick={() => closeMeself()}>
+              <CloseButton />
+            </IconButton>
           </Toolbar>
         </div>
         <DialogTitleWrapper titleText={dialogTitle} />
@@ -265,8 +273,17 @@ export const EditDashboardModal = ({
           </DragDropContext>
         </DashboardItems>
         <Toolbar>
-          <MuiButton onClick={() => onSave(newDashboardSpec)}>Save</MuiButton>
-          <MuiButton onClick={() => closeMeself()}>Cancel</MuiButton>
+          <MuiButton variant="outlined" onClick={() => closeMeself()}>
+            Cancel
+          </MuiButton>
+          <MuiButton
+            style={{ ...styles.save }}
+            variant="contained"
+            color="primary"
+            onClick={() => onSave(newDashboardSpec)}
+          >
+            Save
+          </MuiButton>
         </Toolbar>
       </Box>
     </Dialog>
