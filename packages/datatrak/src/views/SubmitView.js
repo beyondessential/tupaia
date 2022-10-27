@@ -8,6 +8,7 @@ import { generatePath, useHistory, useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { useSurveyForm } from '../SurveyFormContext';
+import { useSubmitSurvey } from '../api/mutations';
 
 const Container = styled.div`
   padding: 1rem;
@@ -37,15 +38,17 @@ const Text = styled(Typography)`
 `;
 
 export const SubmitView = () => {
-  const params = useParams();
+  const { mutate: submitSurvey, isError, isLoading, isSuccess, error } = useSubmitSurvey();
   const { push } = useHistory();
   const { formData } = useSurveyForm();
 
-  const onSubmitForm = () => {
-    console.log('formData', formData);
+  const onSubmitForm = async () => {
+    // Todo: Get the entity id from the survey
+
+    await submitSurvey(formData);
     // alert(JSON.stringify(formData));
-    const path = generatePath('/:projectId/:countryId/:surveyId/success', params);
-    push(path);
+    // const path = generatePath('/:projectId/:countryId/:surveyId/success', params);
+    // push(path);
   };
 
   return (

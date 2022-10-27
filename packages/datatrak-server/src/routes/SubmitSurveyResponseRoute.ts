@@ -5,7 +5,6 @@
  */
 
 import { Request } from 'express';
-
 import { Route } from '@tupaia/server-boilerplate';
 
 export type SubmitSurveyResponseRequest = Request<

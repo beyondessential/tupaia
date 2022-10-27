@@ -35,6 +35,13 @@ export const ProjectsView = () => {
     label: c.name,
   }));
 
+  const [entity, setEntity] = useState(null);
+  const { data: entities = [] } = useEntities(project, 'facility');
+  const entityOptions = entities.map(c => ({
+    value: c.code,
+    label: c.name,
+  }));
+
   return (
     <div>
       <Autocomplete
@@ -51,7 +58,15 @@ export const ProjectsView = () => {
           onChange={(e, { value }) => setCountry(value)}
         />
       ) : null}
-      <ButtonLink to={`/${project}/${country}/surveys`}>Next</ButtonLink>
+      {country !== null ? (
+        <Autocomplete
+          label="Select a facility"
+          options={entityOptions}
+          getOptionLabel={option => option.label}
+          onChange={(e, { value }) => setEntity(value)}
+        />
+      ) : null}
+      <ButtonLink to={`/${project}/${country}/${entity}/surveys`}>Next</ButtonLink>
     </div>
   );
 };

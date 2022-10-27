@@ -23,19 +23,16 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
   const onSubmitStep = screenData => {
     let path;
     if (isLast) {
-      path = generatePath('/:projectId/:countryId/:surveyId/submit', params);
+      path = generatePath('/:projectId/:countryId/:entityId/:surveyId/submit', params);
     } else {
-      path = generatePath('/:projectId/:countryId/:surveyId/screen/:screenNumber', {
+      path = generatePath('/:projectId/:countryId/:entityId/:surveyId/screen/:screenNumber', {
         ...params,
         screenNumber: parseInt(params.screenNumber, 10) + 1,
       });
     }
 
-    console.log('submit survey data', { ...formData, ...screenData });
     setFormData({ ...formData, ...screenData });
     push(path);
-
-    // alert(JSON.stringify(data));
   };
 
   return (
@@ -51,7 +48,7 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
               register={register}
               id={question.questionId}
               code={question.questionCode}
-              name={question.questionName}
+              name={question.questionCode}
               type={question.questionType}
               text={question.questionText}
               options={question.questionOptions}

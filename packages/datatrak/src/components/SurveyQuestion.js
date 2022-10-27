@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   TextField,
@@ -70,27 +70,6 @@ const RadioQuestion = ({ options, ...props }) => {
   return <RadioGroup {...props} options={formattedOptions} />;
 };
 
-export const EntityQuestion = ({ options, ...props }) => {
-  const formattedOptions = getFormattedOptions(options);
-  console.log(formattedOptions);
-  const [entity, setEntity] = useState(null);
-  const { data: countries = [] } = useEntities('explore', 'country');
-  const entityOptions = countries.map(c => ({
-    value: c.code,
-    label: c.name,
-  }));
-  console.log(entity);
-
-  return (
-    <Autocomplete
-      {...props}
-      options={entityOptions}
-      getOptionLabel={option => option.label}
-      onChange={(e, { value }) => setEntity(value)}
-    />
-  );
-};
-
 const QUESTION_TYPES = {
   Binary: BinaryQuestion,
   Checkbox: Placeholder,
@@ -108,8 +87,8 @@ const QUESTION_TYPES = {
   YearsSince: Placeholder,
   SubmissionDate: Placeholder,
   DateOfData: Placeholder,
-  Entity: EntityQuestion,
-  PrimaryEntity: EntityQuestion,
+  Entity: Placeholder,
+  PrimaryEntity: Placeholder,
   CodeGenerator: Placeholder,
   Arithmetic: Placeholder,
   Condition: Placeholder,

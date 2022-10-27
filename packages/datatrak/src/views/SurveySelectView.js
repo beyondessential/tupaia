@@ -21,7 +21,7 @@ const Autocomplete = styled(BaseAutocomplete)`
   }
 `;
 export const SurveySelectView = () => {
-  const { projectId, countryId } = useParams();
+  const { projectId, countryId, entityId } = useParams();
 
   const [survey, setSurvey] = useState(null);
   const { data: surveys = [] } = useSurveys();
@@ -38,7 +38,7 @@ export const SurveySelectView = () => {
         getOptionLabel={option => option.label}
         onChange={(e, { value }) => setSurvey(value)}
       />
-      <ButtonLink to={`/${projectId}/${countryId}/${survey}/screen/1`}>Next</ButtonLink>
+      <ButtonLink to={`/${projectId}/${countryId}/${entityId}/${survey}/screen/1`}>Next</ButtonLink>
     </div>
   );
 };

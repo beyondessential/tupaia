@@ -52,16 +52,19 @@ export const App = () => {
               <AdminRoute exact path="/">
                 <ProjectsView />
               </AdminRoute>
-              <AdminRoute exact path="/:projectId/:countryId/surveys">
+              <AdminRoute exact path="/:projectId/:countryId/:entityId/surveys">
                 <SurveySelectView />
               </AdminRoute>
-              <AdminRoute exact path="/:projectId/:countryId/:surveyId/submit">
+              <AdminRoute exact path="/:projectId/:countryId/:entityId/:surveyId/submit">
                 <SubmitView />
               </AdminRoute>
-              <AdminRoute exact path="/:projectId/:countryId/:surveyId/success">
+              <AdminRoute exact path="/:projectId/:countryId/:entityId/:surveyId/success">
                 <SuccessView />
               </AdminRoute>
-              <AdminRoute exact path="/:projectId/:countryId/:surveyId/screen/:screenNumber">
+              <AdminRoute
+                exact
+                path="/:projectId/:countryId/:entityId/:surveyId/screen/:screenNumber"
+              >
                 <SurveyView />
               </AdminRoute>
               <Redirect to="/" />
