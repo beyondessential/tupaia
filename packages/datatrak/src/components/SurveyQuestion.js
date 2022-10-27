@@ -31,17 +31,16 @@ const Instruction = ({ text }) => {
 };
 
 const BinaryQuestion = ({ options = [], ...props }) => {
-  // Todo: check how booleans should be formatted
   return (
     <RadioGroup
       options={[
         {
           label: 'Yes',
-          value: 'true',
+          value: 'Yes',
         },
         {
           label: 'No',
-          value: 'false',
+          value: 'No',
         },
       ]}
       {...props}

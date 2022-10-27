@@ -186,6 +186,8 @@ export const submitResponses = async (models, userId, responses) => {
 export async function surveyResponse(req, res) {
   const { userId, body, models } = req;
 
+  console.log('this.req.body', userId, body);
+
   let results;
   const responses = Array.isArray(body) ? body : [body];
   await models.wrapInTransaction(async transactingModels => {

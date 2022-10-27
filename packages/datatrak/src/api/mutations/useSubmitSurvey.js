@@ -15,13 +15,13 @@ export const useSubmitSurvey = () => {
   return useMutation(
     formData => {
       const surveyResponse = {
-        entityCode: entityId,
-        surveyId,
+        entity: entityId,
+        survey: surveyId,
         timestamp: new Date(),
         answers: formData,
       };
       console.log('submit form', surveyResponse);
-      return post('surveyResponse', { body: surveyResponse });
+      return post('surveyResponse', { data: surveyResponse });
     },
     {
       onSuccess: () => {

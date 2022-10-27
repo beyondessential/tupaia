@@ -18,18 +18,22 @@ const surveysEndpoint = 'surveys';
 export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest> {
   public async buildResponse() {
     const { central: centralApi } = this.req.ctx.services;
+
     const { entity, survey: surveyCode, timestamp, answers } = this.req.body;
 
     const [survey] = await centralApi.fetchResources(surveysEndpoint, {
       filter: { code: surveyCode },
     });
 
+    console.log('surveyCode', surveyCode);
+    console.log('survey', survey);
+
     if (!survey) {
       throw new Error(`Could not find survey with code: ${surveyCode}`);
     }
 
     return centralApi.createSurveyResponses([
-      { entityCode: entity, surveyId: survey.id, timestamp, answers },
+      { entity_code: entity, survey_id: survey.id, timestamp, answers },
     ]);
   }
 }

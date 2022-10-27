@@ -19,7 +19,9 @@ const surveysEndpoint = 'surveys';
 export class FetchSurveysRoute extends Route<FetchSurveysRequest> {
   public async buildResponse() {
     const { central: centralApi } = this.req.ctx.services;
-    const surveyScreenComponents = await centralApi.fetchResources(surveysEndpoint);
+    const surveyScreenComponents = await centralApi.fetchResources(surveysEndpoint, {
+      filter: { code: 'BCDS2' },
+    });
     return surveyScreenComponents;
   }
 }

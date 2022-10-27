@@ -8,8 +8,8 @@ import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
 
 export type SurveyResponse = {
-  surveyId: string;
-  entityCode: string;
+  survey_id: string;
+  entity_code: string;
   timestamp: string;
   answers: Answers;
 };
