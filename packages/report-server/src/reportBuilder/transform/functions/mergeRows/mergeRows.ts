@@ -90,10 +90,17 @@ const addRowToGroup = (groupsByKey: Record<string, Group>, groupKey: string, row
 };
 
 const mergeGroups = (groups: Group[], params: MergeRowsParams) => {
-  return groups.map(group => {
+  const excludedColumns = new Set<string>();
+  const mergedRows = groups.map(group => {
     const mergedRow: Row = {};
     Object.entries(group).forEach(([columnName, groupValues]) => {
       const mergeStrategy = params.getMergeStrategy(columnName);
+
+      // We track the excluded columns so that we can remove them from the TransformTable later
+      if (mergeStrategy === 'exclude') {
+        excludedColumns.add(columnName);
+      }
+
       const mergedValue = mergeStrategies[mergeStrategy](groupValues);
       if (mergedValue !== undefined) {
         mergedRow[columnName] = mergedValue;
@@ -101,12 +108,14 @@ const mergeGroups = (groups: Group[], params: MergeRowsParams) => {
     });
     return mergedRow;
   });
+  return { mergedRows, excludedColumns: Array.from(excludedColumns) };
 };
 
 const mergeRows = (table: TransformTable, params: MergeRowsParams) => {
   const groups = groupRows(table, params);
-  const mergedRows = mergeGroups(groups, params);
-  return new TransformTable(table.getColumns(), mergedRows);
+  const { mergedRows, excludedColumns } = mergeGroups(groups, params);
+  const columns = table.getColumns().filter(columnName => !excludedColumns.includes(columnName));
+  return new TransformTable(columns, mergedRows);
 };
 
 const buildParams = (params: unknown): MergeRowsParams => {
