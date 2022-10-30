@@ -13,8 +13,8 @@ export const DATA_ELEMENTS = dataElements({
 export const DATA_GROUPS = dataGroups({
   // intentionally sharing a code with the `POP01` data element,
   // since their type should differentiate them
-  POP01_GROUP: { code: 'POP01', service_type: 'tupaia', config: {} },
-  POP02_GROUP: { code: 'POP02', service_type: 'tupaia', config: {} },
+  POP01_GROUP: { code: 'POP01', service_type: 'tupaia' },
+  POP02_GROUP: { code: 'POP02', service_type: 'tupaia' },
 });
 
 export const DATA_ELEMENT_METADATA = {

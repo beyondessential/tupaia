@@ -4,7 +4,7 @@
  */
 
 import { Analytic, DataElementDataService, DataElementMetadata, Event } from '../../types';
-import { dataElementTypes, dataGroupTypes } from '../testUtils';
+import { dataElementTypes, dataGroupTypes, entities } from '../testUtils';
 
 // Data elements and groups share the same codes on purpose, to assert that
 // `DataBroker` can still distinguish them using their type
@@ -18,11 +18,7 @@ export const DATA_ELEMENTS = dataElementTypes({
 export const DATA_GROUPS = dataGroupTypes({
   DHIS_PROGRAM_01: { code: 'DHIS_PROGRAM_01', service_type: 'dhis' },
   DHIS_PROGRAM_02: { code: 'DHIS_PROGRAM_02', service_type: 'dhis' },
-  TUPAIA_PROGRAM_01: {
-    code: 'TUPAIA_PROGRAM_01',
-    service_type: 'tupaia',
-    config: {},
-  },
+  TUPAIA_PROGRAM_01: { code: 'TUPAIA_PROGRAM_01', service_type: 'tupaia' },
 });
 
 export interface MockServiceData {
@@ -79,40 +75,32 @@ export const DATA_BY_SERVICE = {
   },
 };
 
-export const ENTITIES = {
+export const ENTITIES = entities({
   TO_FACILITY_01: {
     code: 'TO_FACILITY_01',
     name: 'Tonga facility 1',
     country_code: 'TO',
     type: 'facility',
-    config: {},
-    metadata: {},
   },
   FJ_FACILITY_01: {
     code: 'FJ_FACILITY_01',
     name: 'Fiji facility 1',
     country_code: 'FJ',
     type: 'facility',
-    config: {},
-    metadata: {},
   },
   TO: {
     code: 'TO',
     name: 'Tonga',
     country_code: 'TO',
     type: 'country',
-    config: {},
-    metadata: {},
   },
   FJ: {
     code: 'FJ',
     name: 'Fiji',
     country_code: 'FJ',
     type: 'country',
-    config: {},
-    metadata: {},
   },
-};
+});
 
 export const DATA_ELEMENT_DATA_SERVICES: DataElementDataService[] = [
   {

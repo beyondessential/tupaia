@@ -24,7 +24,6 @@ const DL_FACILITY_A = entityType({
   code: 'DL_FACILITY_A',
   name: 'DL FACILITY A',
   type: 'facility',
-  config: {},
   metadata: {},
   isTrackedEntity: () => false,
 });
