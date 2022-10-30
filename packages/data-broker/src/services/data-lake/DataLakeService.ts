@@ -13,10 +13,7 @@ import {
   DataSourceType,
   EventResults,
 } from '../../types';
-import type {
-  PullMetadataOptions as BasePullMetadataOptions,
-  PullOptions as BasePullOptions,
-} from '../Service';
+import type { PullOptions as BasePullOptions } from '../Service';
 import { Service } from '../Service';
 import { translateOptionsForApi } from './translation';
 
@@ -106,11 +103,7 @@ export class DataLakeService extends Service {
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }
 
-  public async pullMetadata(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: BasePullMetadataOptions,
-  ) {
+  public async pullMetadata(dataSources: DataSource[]) {
     return dataSources.map(dataSource => ({ code: dataSource.code, name: undefined }));
   }
 }

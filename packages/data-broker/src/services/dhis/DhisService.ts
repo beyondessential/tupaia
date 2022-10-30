@@ -3,12 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import type { DhisApi } from '@tupaia/dhis-api';
+import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import {
   AnalyticResults,
   DataBrokerModelRegistry,
   DataElementMetadata,
+  DataGroupMetadata,
   DataSourceType,
   DataValue,
   Diagnostics,
@@ -30,9 +31,11 @@ import {
   DeprecatedEventsPuller,
   EventsPuller,
   PullAnalyticsOptions,
+  PullDataElementsOptions,
+  PullDataGroupsOptions,
   PullEventsOptions,
 } from './pullers';
-import { DataElement, DataGroup, DataServiceConfig, DataSource } from './types';
+import { DataElement, DataGroup, DataSource } from './types';
 import { DataServiceMapping } from '../DataServiceMapping';
 
 type DataElementPushOptions = BasePushOptions & {
@@ -46,7 +49,6 @@ type PullOptions = BasePullOptions &
   Partial<{
     organisationUnitCode: string;
     organisationUnitCodes: string[];
-    dataServices: DataServiceConfig[];
     detectDataServices: boolean;
     useDeprecatedApi: boolean;
   }>;
@@ -58,7 +60,6 @@ type DeleteOptions = BaseDeleteOptions & {
 export type PullMetadataOptions = BasePullMetadataOptions &
   Partial<{
     organisationUnitCode: string;
-    dataServices: DataServiceConfig[];
     additionalFields: string[];
     includeOptions: boolean;
   }>;
@@ -92,13 +93,21 @@ type Puller =
       options: PullEventsOptions,
     ) => Promise<EventResults>);
 
-type MetadataPuller = (
-  api: DhisApi,
-  dataSources: DataElement[],
-  options: any,
-) => Promise<DataElementMetadata[]>;
+type MetadataPuller =
+  | ((
+      api: DhisApi,
+      dataSources: DataElement[],
+      options: PullDataElementsOptions,
+    ) => Promise<DataElementMetadata[]>)
+  | ((
+      api: DhisApi,
+      dataSources: DataGroup[],
+      options: PullDataGroupsOptions,
+    ) => Promise<DataGroupMetadata[]>);
 
-type MetadataMerger = any;
+type MetadataMerger =
+  | ((results: DataElementMetadata[]) => DataElementMetadata[])
+  | ((results: DataGroupMetadata[]) => DataGroupMetadata);
 
 export class DhisService extends Service {
   private readonly translator: DhisTranslator;
@@ -173,9 +182,12 @@ export class DhisService extends Service {
 
   private getMetadataMergers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: (results: any) =>
-        results.reduce((existingResults: any, result: any) => existingResults.concat(result)),
-      [this.dataSourceTypes.DATA_GROUP]: (results: any) => results[0],
+      [this.dataSourceTypes.DATA_ELEMENT]: (results: DataElementMetadata[]) =>
+        results.reduce(
+          (existingResults, result) => existingResults.concat(result),
+          [] as DataElementMetadata[],
+        ),
+      [this.dataSourceTypes.DATA_GROUP]: (results: DataGroupMetadata[]) => results[0],
     };
   }
 
@@ -277,7 +289,7 @@ export class DhisService extends Service {
       [dataValue],
       [dataSource],
     );
-    return api.deleteDataValue(translatedDataValue as any);
+    return api.deleteDataValue(translatedDataValue);
   }
 
   private deleteEvent = async (api: DhisApi, data: DeleteEventData) =>
@@ -305,8 +317,13 @@ export class DhisService extends Service {
   public async pullMetadata(
     dataSources: DataElement[],
     type: 'dataElement',
-    options: PullMetadataOptions,
+    options: PullDataElementsOptions,
   ): Promise<DataElementMetadata[]>;
+  public async pullMetadata(
+    dataSources: DataGroup[],
+    type: 'dataGroup',
+    options: PullDataGroupsOptions,
+  ): Promise<DataGroupMetadata>;
   public async pullMetadata(
     dataSources: DataSource[],
     type: DataSourceType,
@@ -320,7 +337,7 @@ export class DhisService extends Service {
     );
     const puller = this.metadataPullers[type];
 
-    const results: DataElementMetadata[] = [];
+    const results: DataElementMetadata[] | DataGroupMetadata[] = [];
     const pullForApi = async (api: DhisApi) => {
       const newResults = await puller(api, dataSources as any, options as any);
       results.push(...newResults);

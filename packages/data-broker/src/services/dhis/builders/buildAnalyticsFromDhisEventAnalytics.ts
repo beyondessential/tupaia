@@ -7,9 +7,8 @@ import flatten from 'lodash.flatten';
 
 import { dateStringToPeriod } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from './buildEventsFromDhisEventAnalytics';
-import { DataBrokerModelRegistry } from '../../../types';
+import { AnalyticResults, DataBrokerModelRegistry, Event } from '../../../types';
 import { DhisEventAnalytics } from '../types';
-import { AnalyticResults, Event } from '../../../types';
 
 export const buildAnalyticsFromDhisEventAnalytics = async (
   models: DataBrokerModelRegistry,
@@ -19,7 +18,7 @@ export const buildAnalyticsFromDhisEventAnalytics = async (
   const events = await buildEventsFromDhisEventAnalytics(
     models,
     dhisEventAnalytics,
-    (dataElementCodes = []),
+    dataElementCodes,
   );
 
   return {

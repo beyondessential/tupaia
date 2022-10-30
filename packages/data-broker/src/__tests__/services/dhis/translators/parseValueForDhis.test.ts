@@ -14,20 +14,20 @@ describe('parseValueForDhis()', () => {
     'INTEGER_POSITIVE',
     'INTEGER_NEGATIVE',
     'INTEGER_ZERO_OR_POSITIVE',
-  ];
+  ] as const;
 
-  const booleans = ['BOOLEAN', 'TRUE_ONLY'];
+  const booleans = ['BOOLEAN', 'TRUE_ONLY'] as const;
 
-  const plainText = ['TEXT', 'LONG_TEXT', 'PHONE_NUMBER', 'EMAIL'];
+  const plainText = ['TEXT', 'LONG_TEXT', 'PHONE_NUMBER', 'EMAIL'] as const;
 
-  const unsupported = ['FILE_RESOURCE', 'LETTER', 'COORDINATE'];
+  const unsupported = ['FILE_RESOURCE', 'LETTER', 'COORDINATE'] as const;
 
   numbers.forEach(type =>
     it(type, () => {
       expect(parseValueForDhis('Yes', type)).toEqual('1');
       expect(parseValueForDhis('No', type)).toEqual('0');
-      expect(parseValueForDhis(5, type)).toEqual('5');
-      expect(parseValueForDhis(1.1, type)).toEqual('1.1');
+      expect(parseValueForDhis('5', type)).toEqual('5');
+      expect(parseValueForDhis('1.1', type)).toEqual('1.1');
     }),
   );
 
@@ -35,7 +35,7 @@ describe('parseValueForDhis()', () => {
     it(type, () => {
       expect(parseValueForDhis('Yes', type)).toEqual('1');
       expect(parseValueForDhis('No', type)).toEqual('0');
-      expect(() => parseValueForDhis(5, type)).toThrow('Unsupported boolean value');
+      expect(() => parseValueForDhis('5', type)).toThrow('Unsupported boolean value');
     }),
   );
 

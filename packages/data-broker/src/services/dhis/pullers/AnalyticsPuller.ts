@@ -7,15 +7,9 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { AnalyticResults, DataBrokerModelRegistry, DataElementModel } from '../../../types';
+import { AnalyticResults, DataBrokerModelRegistry } from '../../../types';
 import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
-import {
-  DataElement,
-  DataServiceConfig,
-  DataType,
-  DhisAnalytics,
-  DhisEventAnalytics,
-} from '../types';
+import { DataElement, DataType, DhisAnalytics, DhisEventAnalytics } from '../types';
 import { DataElementsMetadataPuller } from './DataElementsMetadataPuller';
 import { PullOptions } from '../../Service';
 import { DhisTranslator } from '../translators';
@@ -25,7 +19,6 @@ export type PullAnalyticsOptions = PullOptions &
     programCodes?: string[];
     organisationUnitCode: string;
     organisationUnitCodes: string[];
-    dataServices: DataServiceConfig[];
     period: string;
     startDate: string;
     endDate: string;
@@ -37,7 +30,7 @@ export class AnalyticsPuller {
   private readonly translator;
   private readonly dataElementsMetadataPuller;
 
-  constructor(
+  public constructor(
     models: DataBrokerModelRegistry,
     translator: DhisTranslator,
     dataElementsMetadataPuller: DataElementsMetadataPuller,

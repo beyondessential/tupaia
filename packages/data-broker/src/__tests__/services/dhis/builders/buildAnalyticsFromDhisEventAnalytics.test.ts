@@ -9,9 +9,9 @@ import { createModelsStub } from '../DhisService.stubs';
 import { DhisEventAnalytics } from '../../../../services/dhis/types';
 import { Analytic } from '../../../../types';
 
-const models = createModelsStub();
-
 describe('buildAnalyticsFromDhisEventAnalytics', () => {
+  const models = createModelsStub();
+
   it('allows empty data element codes', () => {
     expect(
       buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues),
@@ -66,31 +66,31 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
       ['empty rows', [EVENT_ANALYTICS.noDataValues, ['BCD1', 'BCD2']], []],
     ];
 
-    it.each(testData)('%s', (_, [eventAnalytics, dataElementCodes], value) => {
-      expect(
+    it.each(testData)('%s', async (_, [eventAnalytics, dataElementCodes], value) => {
+      await expect(
         buildAnalyticsFromDhisEventAnalytics(models, eventAnalytics, dataElementCodes),
       ).resolves.toHaveProperty('results', value);
     });
   });
 
   describe('`metadata`', () => {
-    it('empty data element codes', () => {
-      expect(
+    it('empty data element codes', async () => {
+      await expect(
         buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues),
       ).resolves.toHaveProperty('metadata', { dataElementCodeToName: {} });
     });
 
-    it('non empty data element codes', () => {
+    it('non empty data element codes', async () => {
       const dataElementCodes = ['BCD1', 'BCD2'];
       const dataElementCodeToName = {
         BCD1: 'Population',
         BCD2: 'Comment',
       };
 
-      expect(
+      await expect(
         buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.emptyRows, dataElementCodes),
       ).resolves.toHaveProperty('metadata', { dataElementCodeToName });
-      expect(
+      await expect(
         buildAnalyticsFromDhisEventAnalytics(
           models,
           EVENT_ANALYTICS.withDataValues,

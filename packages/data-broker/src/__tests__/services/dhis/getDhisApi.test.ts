@@ -10,6 +10,7 @@ import {
   getApisForDataSources,
 } from '../../../services/dhis/getDhisApi';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
+import { DataSource } from '../../../types';
 
 const TEST_DHIS_INSTANCE = {
   code: 'test_dhis_instance',
@@ -20,17 +21,17 @@ const TEST_DHIS_INSTANCE = {
 
 const TEST_DHIS_INSTANCES = [TEST_DHIS_INSTANCE];
 
-const TEST_DATA_SOURCE_1 = {
+const TEST_DATA_SOURCE_1: DataSource = {
   code: 'TEST_DATA_SOURCE_1',
-  serviceType: 'dhis',
+  service_type: 'dhis',
   config: {
     dhisInstanceCode: 'test_dhis_instance',
   },
 };
 
-const TEST_DATA_SOURCE_2 = {
+const TEST_DATA_SOURCE_2: DataSource = {
   code: 'TEST_DATA_SOURCE_2',
-  serviceType: 'dhis',
+  service_type: 'dhis',
   config: {
     dhisInstanceCode: 'test_dhis_instance',
   },
@@ -38,7 +39,7 @@ const TEST_DATA_SOURCE_2 = {
 
 const DATA_SOURCES = [TEST_DATA_SOURCE_1, TEST_DATA_SOURCE_2];
 
-export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
+const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
   Object.values(DATA_SOURCES).map(de => ({
     dataSource: de,
     service_type: de.service_type,

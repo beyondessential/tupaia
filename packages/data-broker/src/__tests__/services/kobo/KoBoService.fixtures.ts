@@ -3,10 +3,14 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { DataServiceSyncGroup } from '../../../services/kobo/types';
+
 export type MockDataServiceEntity = {
   id: string;
   entity_code: string;
-  config: any;
+  config: {
+    kobo_id: string;
+  };
 };
 
 const MOCK_DATA_SERVICE_ENTITY: MockDataServiceEntity[] = [
@@ -35,13 +39,11 @@ const MOCK_DATA_SERVICE_ENTITY: MockDataServiceEntity[] = [
 
 const MOCK_ENTITY = [
   {
-    id: 'aaaaaaaaaaaaaaaaaaaaaaaa',
     code: 'TupaiaEntityA',
     name: 'Tupaia Entity A',
     config: {},
   },
   {
-    id: 'bbbbbbbbbbbbbbbbbbbbbbbb',
     code: 'TupaiaEntityB',
     name: 'Tupaia Entity B',
     config: {},
@@ -87,7 +89,8 @@ export const MOCK_QUESTION_ANSWER_MAP = {
   reason: { koboQuestionCode: 'why', answerMap: MOCK_ANSWER_MAP },
 };
 
-export const MOCK_DATA_SOURCE = {
+export const MOCK_DATA_SOURCE: DataServiceSyncGroup = {
+  code: 'abc',
   data_group_code: 'xyz',
   service_type: 'kobo',
   config: {
@@ -95,6 +98,8 @@ export const MOCK_DATA_SOURCE = {
     entityQuestionCode: 'entity',
     questionMapping: MOCK_QUESTION_ANSWER_MAP,
   },
+  sync_cursor: 'testCursor',
+  sync_status: 'IDLE',
 };
 
 export const TRANSLATED_DATA = {

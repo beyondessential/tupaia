@@ -13,26 +13,25 @@ export type DataType = 'DataElement' | 'Indicator' | 'ProgramIndicator';
 
 type PeriodType = 'DAY' | 'WEEK' | 'MONTH' | 'QUARTER' | ' YEAR';
 
-type DataSourceConfig = Partial<{
-  dhisId: string;
-  isDataRegional: boolean;
-}>;
-
-type DataElementConfig = DataSourceConfig &
-  Partial<{
+export type DataSource = BaseDataSource & {
+  config: {
+    dhisId?: string;
+  };
+};
+export type DataElement = BaseDataElement & {
+  config: Partial<{
+    dhisId: string;
     categoryOptionCombo: string;
     dhisDataType: DataType;
     indicator: {
       dataPeriodType: PeriodType;
     };
   }>;
-
-export type DataSource = BaseDataSource & { config: DataSourceConfig };
-export type DataElement = BaseDataElement & { config: DataElementConfig };
-export type DataGroup = BaseDataGroup & { config: DataSourceConfig };
-
-export type DataServiceConfig = {
-  isDataRegional: boolean;
+};
+export type DataGroup = BaseDataGroup & {
+  config: {
+    dhisId?: string;
+  };
 };
 
 export type AnalyticDimension = 'dx' | 'ou' | 'pe' | 'value';

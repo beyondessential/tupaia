@@ -187,7 +187,7 @@ export class DhisCodeToIdTranslator {
       if (!dataElement.config.dhisId) {
         throw new Error('Data element does not have dhisId');
       }
-      dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
+      dataElementIdToCode[dataElement.config.dhisId as string] = dataElement.code;
     }
 
     return dataElementIdToCode;
@@ -315,7 +315,7 @@ export class DhisCodeToIdTranslator {
         );
       }
 
-      modifiedQuery.dataElementIds.push(dataElement.config.dhisId);
+      modifiedQuery.dataElementIds.push(dataElement.config.dhisId as string);
     }
 
     delete modifiedQuery.dataElementCodes;
@@ -332,7 +332,7 @@ export class DhisCodeToIdTranslator {
 
     for (const dataElement of dataElements) {
       if (dataElement.config.dhisId) {
-        dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
+        dataElementIdToCode[dataElement.config.dhisId as string] = dataElement.code;
       }
     }
 
@@ -436,7 +436,7 @@ export class DhisCodeToIdTranslator {
         );
       }
 
-      programIds.push(dataGroup.config.dhisId);
+      programIds.push(dataGroup.config.dhisId as string);
     }
 
     modifiedQuery.programIds = programIds;

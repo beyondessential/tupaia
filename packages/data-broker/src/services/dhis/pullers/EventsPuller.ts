@@ -6,16 +6,14 @@
 import type { DhisApi } from '@tupaia/dhis-api';
 import { getSortByKey } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from '../builders';
-import { DataBrokerModelRegistry } from '../../../types';
+import { DataBrokerModelRegistry, Event } from '../../../types';
 import { DhisTranslator } from '../translators';
-import { DataGroup, DataServiceConfig } from '../types';
+import { DataGroup } from '../types';
 import type { PullOptions as BasePullOptions } from '../../Service';
-import { Event } from '../../../types';
 
 export type PullEventsOptions = BasePullOptions & {
   dataElementCodes?: string[];
   organisationUnitCodes: string[];
-  dataServices: DataServiceConfig[];
   period?: string;
   startDate?: string;
   endDate?: string;
@@ -25,17 +23,17 @@ export type PullEventsOptions = BasePullOptions & {
 
 export class EventsPuller {
   private readonly models: DataBrokerModelRegistry;
-  protected readonly translator: DhisTranslator;
+  private readonly translator: DhisTranslator;
 
-  constructor(models: DataBrokerModelRegistry, translator: DhisTranslator) {
+  public constructor(models: DataBrokerModelRegistry, translator: DhisTranslator) {
     this.models = models;
     this.translator = translator;
   }
 
-  protected pullEventsForOrganisationUnits = async (
+  private pullEventsForOrganisationUnits = async (
     api: DhisApi,
     programCode: string,
-    options: any,
+    options: PullEventsOptions,
   ) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
@@ -61,7 +59,7 @@ export class EventsPuller {
     return buildEventsFromDhisEventAnalytics(this.models, orgUnitEventAnalytics, dataElementCodes);
   };
 
-  protected pullEventsForApi = async (
+  private pullEventsForApi = async (
     api: DhisApi,
     programCode: string,
     options: PullEventsOptions,
@@ -102,7 +100,7 @@ export class EventsPuller {
       });
       const trackedEntityCodes = trackedEntities.map(trackedEntity => trackedEntity.code);
       trackedEntityEvents = parentEvents.filter(event =>
-        trackedEntityCodes.includes(event.trackedEntityCode),
+        trackedEntityCodes.includes(event.trackedEntityCode as string),
       );
     }
 

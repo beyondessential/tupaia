@@ -111,7 +111,7 @@ const EVENT_ANALYTICS_EMPTY_ROWS: DhisEventAnalytics = {
   rows: [],
 };
 
-const EVENT_ANALYTICS_TRACKED_ENTITY_ID = {
+const EVENT_ANALYTICS_TRACKED_ENTITY_ID: DhisEventAnalytics = {
   headers: [
     { name: 'psi', column: 'Event', valueType: 'TEXT' },
     { name: 'eventdate', column: 'Event date', valueType: 'DATE' },

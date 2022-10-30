@@ -3,21 +3,25 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
+import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildEventsFromDhisEventAnalytics';
 import { EVENT_ANALYTICS } from './buildAnalytics.fixtures';
+import { createModelsStub } from '../DhisService.stubs';
 
 describe('buildEventsFromDhisEventAnalytics()', () => {
-  it('allows empty data element codes', () => {
-    expect(() =>
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues),
-    ).not.toThrowError();
-    expect(() =>
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, []),
-    ).not.toThrowError();
+  const models = createModelsStub();
+
+  it('allows empty data element codes', async () => {
+    await expect(
+      buildEventsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues),
+    ).toResolve();
+    await expect(
+      buildEventsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues, []),
+    ).toResolve();
   });
 
-  it('builds events containing no data values', () => {
-    expect(buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues)).toStrictEqual([
+  it('builds events containing no data values', async () => {
+    const events = await buildEventsFromDhisEventAnalytics(models, EVENT_ANALYTICS.noDataValues);
+    expect(events).toStrictEqual([
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',
@@ -35,10 +39,12 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
     ]);
   });
 
-  it('builds events from DHIS2 event analytics and sorts them by period', () => {
-    expect(
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']),
-    ).toStrictEqual([
+  it('builds events from DHIS2 event analytics and sorts them by period', async () => {
+    const events = await buildEventsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues, [
+      'BCD1',
+      'BCD2',
+    ]);
+    expect(events).toStrictEqual([
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',
@@ -62,10 +68,13 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
     ]);
   });
 
-  it('maps tracked entity ids to entity codes', () =>
-    expect(
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withTrackedEntityIds, ['BCD1']),
-    ).resolves.toStrictEqual([
+  it('maps tracked entity ids to entity codes', async () => {
+    const events = await buildEventsFromDhisEventAnalytics(
+      models,
+      EVENT_ANALYTICS.withTrackedEntityIds,
+      ['BCD1'],
+    );
+    expect(events).toStrictEqual([
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',
@@ -84,5 +93,6 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
         trackedEntityId: 'tracked_entity_id_dl_household_3',
         trackedEntityCode: '', // returns empty string if it cant map
       },
-    ]));
+    ]);
+  });
 });

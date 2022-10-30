@@ -89,7 +89,10 @@ export class KoBoService extends Service {
         throw new Error(`Missing 'questionMapping' in sync group config`);
       }
 
-      const results = await this.api.fetchKoBoSubmissions(koboSurveyCode, options);
+      const results: KoboSubmission[] = await this.api.fetchKoBoSubmissions(
+        koboSurveyCode,
+        options,
+      );
 
       resultsByDataGroupCode[source.data_group_code] = await this.translator.translateKoBoResults(
         results,

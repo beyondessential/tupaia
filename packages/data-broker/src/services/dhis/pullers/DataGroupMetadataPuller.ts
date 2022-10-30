@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { DhisApi } from '@tupaia/dhis-api';
 import { DataGroupModel } from '../../../types';
 import { DhisTranslator } from '../translators';
 import { DataGroup } from '../types';
-import { DhisApi } from '@tupaia/dhis-api';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
 
-type PullOptions = BasePullMetadataOptions & {
+export type PullDataGroupsOptions = BasePullMetadataOptions & {
   includeOptions: boolean;
 };
 
@@ -17,12 +17,12 @@ export class DataGroupMetadataPuller {
   private readonly dataSourceModel: DataGroupModel;
   private readonly translator: DhisTranslator;
 
-  constructor(dataGroupModel: DataGroupModel, translator: DhisTranslator) {
+  public constructor(dataGroupModel: DataGroupModel, translator: DhisTranslator) {
     this.dataSourceModel = dataGroupModel;
     this.translator = translator;
   }
 
-  public pull = async (api: DhisApi, dataSources: DataGroup[], options: PullOptions) => {
+  public pull = async (api: DhisApi, dataSources: DataGroup[], options: PullDataGroupsOptions) => {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull metadata from multiple programs at the same time');
     }

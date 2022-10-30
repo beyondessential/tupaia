@@ -15,14 +15,6 @@ export const createModelsStub = () => {
     entity: {
       records: MOCK_DB_DATA.entity,
     },
-    dataSource: {
-      records: [],
-      getTypes: () => ({
-        DATA_ELEMENT: 'dataElement',
-        DATA_GROUP: 'dataGroup',
-        SYNC_GROUP: 'syncGroup',
-      }),
-    },
   });
 };
 

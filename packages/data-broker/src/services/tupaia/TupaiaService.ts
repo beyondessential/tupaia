@@ -19,8 +19,6 @@ import {
 import { Service } from '../Service';
 import type {
   PullOptions as BasePullOptions,
-  DeleteOptions as BaseDeleteOptions,
-  PushOptions as BasePushOptions,
   PullMetadataOptions as BasePullMetadataOptions,
 } from '../Service';
 import { translateOptionsForApi } from './translation';
@@ -83,12 +81,12 @@ export class TupaiaService extends Service {
   public async pull(
     dataSources: DataElement[],
     type: 'dataElement',
-    options?: PullAnalyticsOptions,
+    options: PullAnalyticsOptions,
   ): Promise<AnalyticResults>;
   public async pull(
     dataSources: DataGroup[],
     type: 'dataGroup',
-    options?: PullEventsOptions,
+    options: PullEventsOptions,
   ): Promise<EventResults>;
   public async pull(dataSources: DataSource[], type: DataSourceType, options: BasePullOptions) {
     const pullData = this.pullers[type];
@@ -125,12 +123,12 @@ export class TupaiaService extends Service {
   public async pullMetadata(
     dataSources: DataElement[],
     type: 'dataElement',
-    options?: PullMetadataOptions,
+    options: PullMetadataOptions,
   ): Promise<DataElementMetadata[]>;
   public async pullMetadata(
     dataSources: DataGroup[],
     type: 'dataGroup',
-    options?: PullMetadataOptions,
+    options: PullMetadataOptions,
   ): Promise<DataGroupMetadata>;
   public async pullMetadata(
     dataSources: DataSource[],

@@ -6,7 +6,7 @@ import {
   DataGroup,
   DataSource,
   DataSourceType,
-  EntityInstance,
+  EntityType,
   EventResults,
 } from '../../types';
 import { EMPTY_ANALYTICS_RESULTS } from '../../utils';
@@ -116,6 +116,7 @@ export class WeatherService extends Service {
     for (const dataElement of dataElements) {
       metadata.push({
         code: dataElement.code,
+        // @ts-ignore
         name: dataElement.name,
       });
     }
@@ -181,7 +182,7 @@ export class WeatherService extends Service {
    * Fetch API data and return in format of events/analytics
    */
   private async getForecastWeather(
-    entities: EntityInstance[],
+    entities: EntityType[],
     startDate: string,
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
@@ -202,7 +203,7 @@ export class WeatherService extends Service {
     };
 
     // Run requests in parallel for performance
-    const getDataForEntity = async (entity: EntityInstance) => {
+    const getDataForEntity = async (entity: EntityType) => {
       const { lat, lon } = entity.pointLatLon();
 
       // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
@@ -234,7 +235,7 @@ export class WeatherService extends Service {
    * Fetch API data and return in format of events/analytics
    */
   private async getHistoricWeather(
-    entities: EntityInstance[],
+    entities: EntityType[],
     startDate: string,
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
@@ -245,7 +246,7 @@ export class WeatherService extends Service {
     } = this.dateSanitiser.sanitiseHistoricDateRange(startDate, endDate);
 
     // Run requests in parallel for performance
-    const getDataForEntity = async (entity: EntityInstance) => {
+    const getDataForEntity = async (entity: EntityType) => {
       const { lat, lon } = entity.pointLatLon();
 
       if (sanitisedStartDate === null || sanitisedEndDate === null) {

@@ -51,7 +51,7 @@ export const getApiFromServerName = async (
 
 const getDhisInstanceByCode = async (
   models: DataBrokerModelRegistry,
-  dhisInstanceCode: string,
+  dhisInstanceCode?: string,
 ): Promise<DhisInstance> => {
   if (!dhisInstanceCode) {
     throw new Error(`No DHIS instance code specified`);

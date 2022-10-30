@@ -8,11 +8,6 @@ import { DataBrokerModelRegistry, SupersetInstance } from '../../types';
 
 const instances: Record<string, SupersetApi> = {};
 
-/**
- * @param {} models
- * @param {SupersetInstance} supersetInstance
- * @return {Promise<SupersetApi>}
- */
 export const getSupersetApiInstance = async (
   models: DataBrokerModelRegistry,
   supersetInstance: SupersetInstance,

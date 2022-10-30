@@ -2,7 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+
 import moment from 'moment';
+
+import { SupersetApi } from '@tupaia/superset-api';
 import { Service } from '../Service';
 import type { PullOptions as BasePullOptions } from '../Service';
 import { getSupersetApiInstance } from './getSupersetApi';
@@ -11,24 +14,17 @@ import {
   AnalyticResults,
   DataBrokerModelRegistry,
   DataElement,
-  DataElementDataService,
-  DataServiceEntity,
   DataSource,
   DataSourceType,
-  Diagnostics,
   EventResults,
   SyncGroupResults,
 } from '../../types';
-import { SupersetApi } from '@tupaia/superset-api';
 import { DataServiceMapping, DataServiceMappingEntry } from '../DataServiceMapping';
 
 export class SupersetService extends Service {
   private readonly pullers: Record<string, any>;
 
-  /**
-   * @param {ModelRegistry} models
-   */
-  constructor(models: DataBrokerModelRegistry) {
+  public constructor(models: DataBrokerModelRegistry) {
     super(models);
     this.pullers = {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
@@ -78,7 +74,7 @@ export class SupersetService extends Service {
       )) {
         const results = await this.pullForApiForChart(
           api,
-          chartId as any,
+          chartId,
           chartDataSources,
           dataServiceMapping,
         );
@@ -93,12 +89,9 @@ export class SupersetService extends Service {
     };
   }
 
-  /**
-   * @return {Promise<Object[]>} analytic results
-   */
   private async pullForApiForChart(
     api: SupersetApi,
-    chartId: number,
+    chartId: string,
     dataElements: DataElement[],
     dataServiceMapping: DataServiceMapping,
   ): Promise<Analytic[]> {

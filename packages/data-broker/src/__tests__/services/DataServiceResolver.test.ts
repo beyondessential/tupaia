@@ -13,7 +13,7 @@ import {
 } from './DataServiceResolver.stubs';
 
 describe('DataServiceResolver', () => {
-  let resolver;
+  let resolver: DataServiceResolver;
 
   beforeEach(() => {
     resolver = new DataServiceResolver(createModelsStub());

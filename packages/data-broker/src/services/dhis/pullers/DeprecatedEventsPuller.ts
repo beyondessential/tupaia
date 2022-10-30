@@ -9,7 +9,7 @@ import { DataGroup } from '../types';
 import { DataBrokerModelRegistry, Event } from '../../../types';
 import { DhisTranslator } from '../translators';
 
-type PullOptions = BasePullOptions &
+export type DeprecatedPullEventsOptions = BasePullOptions &
   Partial<{
     organisationUnitCodes: string[];
     orgUnitIdScheme: 'uid' | 'code';
@@ -29,14 +29,18 @@ type PullOptions = BasePullOptions &
  */
 export class DeprecatedEventsPuller {
   private readonly models: DataBrokerModelRegistry;
-  protected readonly translator: DhisTranslator;
+  private readonly translator: DhisTranslator;
 
-  constructor(models: DataBrokerModelRegistry, translator: DhisTranslator) {
+  public constructor(models: DataBrokerModelRegistry, translator: DhisTranslator) {
     this.models = models;
     this.translator = translator;
   }
 
-  protected pullEventsForApi = async (api: DhisApi, programCode: string, options: PullOptions) => {
+  private pullEventsForApi = async (
+    api: DhisApi,
+    programCode: string,
+    options: DeprecatedPullEventsOptions,
+  ) => {
     const {
       organisationUnitCodes = [],
       orgUnitIdScheme,
@@ -61,7 +65,11 @@ export class DeprecatedEventsPuller {
     return this.translator.translateInboundEvents(events, programCode);
   };
 
-  public pull = async (apis: DhisApi[], dataSources: DataGroup[], options: PullOptions) => {
+  public pull = async (
+    apis: DhisApi[],
+    dataSources: DataGroup[],
+    options: DeprecatedPullEventsOptions,
+  ) => {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }

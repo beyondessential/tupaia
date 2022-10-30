@@ -1,11 +1,10 @@
 import { ApiResultTranslator } from '../../../services/weather/ApiResultTranslator';
-import { WeatherResult } from '../../../services/weather/types';
-import { EntityInstance } from '../../../types';
+import { EntityType } from '../../../types';
 
 describe('ApiResultTranslator', () => {
-  const entity = { code: 'MELB', name: 'Melbourne' } as EntityInstance;
+  const entity = { code: 'MELB', name: 'Melbourne' } as EntityType;
 
-  const mockApiResponse = (): Record<string, WeatherResult | null> => {
+  const mockApiResponse = () => {
     return {
       MELB: {
         data: [

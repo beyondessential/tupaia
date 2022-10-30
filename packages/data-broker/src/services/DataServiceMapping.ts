@@ -9,15 +9,20 @@ import { DataSource, ServiceType } from '../types';
 export type DataServiceMappingEntry = {
   dataSource: DataSource;
   service_type: ServiceType;
-  config: Record<string, any>;
+  config: Partial<{
+    dhisInstanceCode: string;
+    supersetChartId: number;
+    supersetInstanceCode: string;
+    supersetItemCode: string;
+  }>;
 };
 
 export class DataServiceMapping {
-  dataElementMapping: DataServiceMappingEntry[];
-  dataGroupMapping: DataServiceMappingEntry[];
-  syncGroupMapping: DataServiceMappingEntry[];
+  public dataElementMapping: DataServiceMappingEntry[];
+  public dataGroupMapping: DataServiceMappingEntry[];
+  public syncGroupMapping: DataServiceMappingEntry[];
 
-  constructor(
+  public constructor(
     dataElementMapping: DataServiceMappingEntry[] = [],
     dataGroupMapping: DataServiceMappingEntry[] = [],
     syncGroupMapping: DataServiceMappingEntry[] = [],
@@ -42,24 +47,20 @@ export class DataServiceMapping {
   }
 
   public dataSourcesByServiceType(): Record<ServiceType, DataSource[]> {
-    const map = {};
+    const map = {} as Record<ServiceType, DataSource[]>;
     for (const serviceType of this.uniqueServiceTypes()) {
-      // @ts-ignore
       map[serviceType] = [];
     }
     for (const deMapping of this.dataElementMapping) {
-      // @ts-ignore
       map[deMapping.service_type].push(deMapping.dataSource);
     }
     for (const dgMapping of this.dataGroupMapping) {
-      // @ts-ignore
       map[dgMapping.service_type].push(dgMapping.dataSource);
     }
     for (const sgMapping of this.syncGroupMapping) {
-      // @ts-ignore
       map[sgMapping.service_type].push(sgMapping.dataSource);
     }
-    return map as Record<ServiceType, DataSource[]>;
+    return map;
   }
 
   public allMappings(): DataServiceMappingEntry[] {

@@ -4,15 +4,8 @@
  */
 
 import { TYPES } from '@tupaia/database';
+import { DataBrokerModelRegistry, DataGroup, DataSourceTypeInstance, Entity } from '../types';
 import { DataServiceMapping, DataServiceMappingEntry } from './DataServiceMapping';
-import {
-  DataBrokerModelRegistry,
-  DataElement,
-  DataGroup,
-  DataServiceSyncGroup,
-  DataSource,
-  Entity,
-} from '../types';
 
 /**
  * A data service e.g. tupaia or a specific instance of DHIS can be configured for each
@@ -25,23 +18,18 @@ import {
  */
 export class DataServiceResolver {
   private models: DataBrokerModelRegistry;
-  constructor(models: DataBrokerModelRegistry) {
+
+  public constructor(models: DataBrokerModelRegistry) {
     this.models = models;
   }
 
   public async getMapping(
-    dataSources: DataSource[],
+    dataSources: DataSourceTypeInstance[],
     orgUnit?: Entity,
   ): Promise<DataServiceMapping> {
-    const dataElements = dataSources.filter(
-      ds => ds.databaseType === TYPES.DATA_ELEMENT,
-    ) as DataElement[];
-    const dataGroups = dataSources.filter(
-      ds => ds.databaseType === TYPES.DATA_GROUP,
-    ) as DataGroup[];
-    const syncGroups = dataSources.filter(
-      ds => ds.databaseType === TYPES.DATA_SERVICE_SYNC_GROUP,
-    ) as DataServiceSyncGroup[];
+    const dataElements = dataSources.filter(ds => ds.databaseType === TYPES.DATA_ELEMENT);
+    const dataGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_GROUP);
+    const syncGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_SERVICE_SYNC_GROUP);
 
     const mapping = new DataServiceMapping();
     mapping.dataElementMapping = await this.resolveDataElements(dataElements, orgUnit);
@@ -51,7 +39,7 @@ export class DataServiceResolver {
   }
 
   public async getMappingByOrgUnitCode(
-    dataSources: DataSource[],
+    dataSources: DataSourceTypeInstance[],
     orgUnitCode?: string,
   ): Promise<DataServiceMapping> {
     const orgUnit = orgUnitCode
@@ -61,7 +49,7 @@ export class DataServiceResolver {
   }
 
   public async getMappingByCountryCode(
-    dataSources: DataSource[],
+    dataSources: DataSourceTypeInstance[],
     countryCode: string,
   ): Promise<DataServiceMapping> {
     const orgUnit = await this.models.entity.findOne({ code: countryCode, type: 'country' });
@@ -69,7 +57,7 @@ export class DataServiceResolver {
   }
 
   private async resolveDataElements(
-    dataElements: DataElement[],
+    dataElements: DataSourceTypeInstance[],
     orgUnit?: Entity,
   ): Promise<DataServiceMappingEntry[]> {
     const countryCode = orgUnit ? orgUnit.country_code : null;
@@ -132,7 +120,7 @@ export class DataServiceResolver {
    * Convenience method. Only Data Elements are supported, Sync Groups use their default mapping.
    */
   private async resolveSyncGroups(
-    syncGroups: DataServiceSyncGroup[],
+    syncGroups: DataSourceTypeInstance[],
   ): Promise<DataServiceMappingEntry[]> {
     const resolved = [];
     for (const syncGroup of syncGroups) {

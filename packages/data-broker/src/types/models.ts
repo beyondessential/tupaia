@@ -10,16 +10,18 @@ import type {
   DataElementType as BaseDataElementType,
   DataGroupModel as BaseDataGroupModel,
   DataGroupType as BaseDataGroupType,
+  DataServiceSyncGroupModel as BaseDataServiceSyncGroupModel,
+  DataServiceSyncGroupType as BaseDataServiceSyncGroupType,
   EntityModel as BaseEntityModel,
   EntityType as BaseEntityType,
   ModelRegistry,
+  TYPES,
 } from '@tupaia/database';
-import { TYPES } from '@tupaia/database';
 import { Join, Override, Values } from './utils';
 
 type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };
 
-export type DbRecord = Record<string, DbValue>;
+type DbRecord = Record<string, DbValue>;
 
 // Conditions for flat i.e. non array/json fields
 type FlatFieldConditions<T> = {
@@ -40,15 +42,13 @@ type JsonFieldConditions<T> = Values<
 
 export type DbConditions<R> = Partial<FlatFieldConditions<R> & JsonFieldConditions<R>>;
 
-export type DatabaseType<R extends DbRecord, T extends BaseDatabaseType = BaseDatabaseType> = T &
-  T &
-  R;
+export type DatabaseType<R extends DbRecord, T extends BaseDatabaseType = BaseDatabaseType> = T & R;
 
 type DatabaseModel<
   R extends DbRecord,
   T extends BaseDatabaseType = BaseDatabaseType,
   M extends BaseDatabaseModel = BaseDatabaseModel
-> = M & {
+> = Omit<M, 'find' | 'findOne'> & {
   find: (dbConditions: DbConditions<R>) => Promise<DatabaseType<R, T>[]>;
   findOne: (dbConditions: DbConditions<R>) => Promise<DatabaseType<R, T>>;
 };
@@ -68,23 +68,22 @@ export type DataSource = {
   code: string;
   service_type: ServiceType;
   config: Record<string, DbValue>;
-  databaseType:
-    | typeof TYPES.DATA_ELEMENT
-    | typeof TYPES.DATA_GROUP
-    | typeof TYPES.DATA_SERVICE_SYNC_GROUP;
 };
 
 export type DataElement = DataSource & {
   permission_groups: string[];
   dataElementCode: string;
-  databaseType: typeof TYPES.DATA_ELEMENT;
 };
 
-export type DataGroup = DataSource & {
-  databaseType: typeof TYPES.DATA_GROUP;
+export type DataGroup = DataSource;
+
+export type DataServiceSyncGroup = DataSource & {
+  data_group_code: string;
+  sync_cursor: string;
+  sync_status: SyncStatus;
 };
 
-export type SYNC_STATUS = 'IDLE' | 'SYNCING' | 'ERROR';
+type SyncStatus = 'IDLE' | 'SYNCING' | 'ERROR';
 
 export type DataServiceEntity = {
   config: {
@@ -94,43 +93,47 @@ export type DataServiceEntity = {
   entity_code: string;
 };
 
-export type DataServiceSyncGroup = {
-  code: string;
-  service_type: ServiceType;
-  config: Record<string, any>;
-  data_group_code: string;
-  sync_cursor: string;
-  sync_status: SYNC_STATUS;
-  databaseType: typeof TYPES.DATA_SERVICE_SYNC_GROUP;
-};
-
 export type Entity = {
   code: string;
   name: string;
+  type: string;
   point?: string;
   config: {
     kobo_id?: string;
   };
-  country_code?: string;
-  type: string;
+  metadata: {
+    dhis?: {
+      trackedEntityId: string;
+    };
+  };
+  country_code?: string | null;
 };
 
 export type DataElementDataService = {
   data_element_code: string;
   country_code: string;
   service_type: ServiceType;
-  service_config: Record<string, any>;
+  service_config: {
+    dhisInstanceCode: string;
+  };
 };
 
 export type SupersetInstance = {
   code: string;
-  config: Record<string, any>;
+  config: {
+    serverName: string;
+    baseUrl: string;
+    insecure?: boolean;
+  };
 };
 
 export type DhisInstance = {
   code: string;
   readonly: boolean;
-  config: Record<string, any>;
+  config: {
+    productionUrl: string;
+    devUrl: string;
+  };
 };
 
 export type EntityHierarchy = {
@@ -138,8 +141,17 @@ export type EntityHierarchy = {
   canonical_types: string[];
 };
 
-type DataElementInstance = DatabaseType<DataElement, BaseDataElementType>;
-export type EntityInstance = DatabaseType<Entity, BaseEntityType>;
+export type DataSourceTypeInstance = {
+  code: string;
+  service_type: ServiceType;
+  config: Record<string, DbValue>;
+  databaseType:
+    | typeof TYPES.DATA_ELEMENT
+    | typeof TYPES.DATA_GROUP
+    | typeof TYPES.DATA_SERVICE_SYNC_GROUP;
+};
+type DataElementType = DatabaseType<DataElement, BaseDataElementType>;
+export type EntityType = DatabaseType<Entity, BaseEntityType>;
 
 export type DataElementModel = DatabaseModel<
   DataElement,
@@ -157,13 +169,17 @@ export type DataGroupModel = DatabaseModel<
   Override<
     BaseDataGroupModel,
     {
-      getDataElementsInDataGroup: (dataGroupCode: string) => Promise<DataElementInstance[]>;
+      getDataElementsInDataGroup: (dataGroupCode: string) => Promise<DataElementType[]>;
     }
   >
 >;
+export type DataServiceSyncGroupModel = DatabaseModel<
+  DataServiceSyncGroup,
+  BaseDataServiceSyncGroupType,
+  BaseDataServiceSyncGroupModel
+>;
 type DataServiceEntityModel = DatabaseModel<DataServiceEntity>;
-type DataServiceSyncGroupModel = DatabaseModel<DataServiceSyncGroup>;
-type EntityModel = DatabaseModel<Entity, EntityInstance, BaseEntityModel>;
+type EntityModel = DatabaseModel<Entity, EntityType, BaseEntityModel>;
 type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;

@@ -4,6 +4,8 @@
  */
 
 import { lower } from 'case';
+
+import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { toArray } from '@tupaia/utils';
 import { createService } from './services';
@@ -14,13 +16,13 @@ import {
   DataBrokerModelRegistry,
   DataElement,
   DataSource,
+  DataSourceTypeInstance,
   DataSourceType,
   EventResults,
   ServiceType,
   SyncGroupResults,
 } from './types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from './utils';
-import type { AccessPolicy } from '@tupaia/access-policy';
 import { DataServiceMapping } from './services/DataServiceMapping';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -53,7 +55,7 @@ type ResultMerger =
   | Merger<EventResults>
   | Merger<SyncGroupResults>;
 
-type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSource[]>;
+type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
 type PermissionChecker = ((dataSources: DataSource[]) => Promise<boolean>) | (() => boolean);
 
@@ -85,7 +87,7 @@ export class DataBroker {
   private readonly permissionCheckers: Record<DataSourceType, PermissionChecker>;
   private userPermissions: string[] | undefined;
 
-  constructor(context = {}) {
+  public constructor(context = {}) {
     this.context = context;
     this.models = getModelRegistry();
     this.dataServiceResolver = new DataServiceResolver(this.models);
@@ -97,6 +99,7 @@ export class DataBroker {
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
+      // @ts-ignore
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
     // Run permission checks in data broker so we only expose data the user is allowed to see
@@ -135,9 +138,7 @@ export class DataBroker {
     return this.models.dataGroup.find(dataSourceSpec);
   };
 
-  private fetchFromSyncGroupTable = async (
-    dataSourceSpec: FetchConditions,
-  ): Promise<DataSource[]> => {
+  private fetchFromSyncGroupTable = async (dataSourceSpec: FetchConditions) => {
     // Add 'type' field to output to keep object layout consistent between tables
     const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
@@ -213,7 +214,11 @@ export class DataBroker {
     return createService(this.models, serviceType, this);
   }
 
-  public async push(dataSourceSpec: DataSourceSpec, data: unknown, options: any = {}) {
+  public async push(
+    dataSourceSpec: DataSourceSpec,
+    data: unknown,
+    options: { organisationUnitCode?: string } = {},
+  ) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const { type: dataSourceType } = dataSourceSpec;
     const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
@@ -225,7 +230,11 @@ export class DataBroker {
     return service.push(dataSources, data, { type: dataSourceType, dataServiceMapping });
   }
 
-  async delete(dataSourceSpec: DataSourceSpec, data: unknown, options: Record<string, unknown>) {
+  public async delete(
+    dataSourceSpec: DataSourceSpec,
+    data: unknown,
+    options: Record<string, unknown>,
+  ) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const [dataSource] = dataSources;
     const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
@@ -282,7 +291,7 @@ export class DataBroker {
     );
   }
 
-  pullForServiceAndType = async (
+  private pullForServiceAndType = async (
     dataSources: DataSource[],
     options: Record<string, unknown>,
     type: DataSourceType,
@@ -296,7 +305,7 @@ export class DataBroker {
     return service.pull(dataSources, type, { ...options, dataServiceMapping });
   };
 
-  mergeAnalytics = (
+  private mergeAnalytics = (
     target: AnalyticResults = EMPTY_ANALYTICS_RESULTS,
     source: RawAnalyticResults,
   ) => {
@@ -363,8 +372,8 @@ export class DataBroker {
    * Given some DataSources, returns a single serviceType or throws an error if multiple found
    */
   private async getSingleServiceAndMapping(
-    dataSources: DataSource[],
-    options: Record<string, any> = {},
+    dataSources: DataSourceTypeInstance[],
+    options: { organisationUnitCode?: string } = {},
   ): Promise<{ serviceType: ServiceType; dataServiceMapping: DataServiceMapping }> {
     const { organisationUnitCode } = options;
 
@@ -382,8 +391,9 @@ export class DataBroker {
       dataServiceMapping,
     };
   }
+
   private async getPulls(
-    dataSources: DataSource[],
+    dataSources: DataSourceTypeInstance[],
     orgUnitCodes: string[] | null,
   ): Promise<
     {
@@ -417,7 +427,7 @@ export class DataBroker {
     // exact same mapping we simply combine them
     const orgUnitCountryCodes = orgUnits
       .map(orgUnit => orgUnit.country_code)
-      .filter(countryCode => countryCode !== null && countryCode !== undefined);
+      .filter(countryCode => countryCode !== null && countryCode !== undefined) as string[];
     const countryCodes = [...new Set(orgUnitCountryCodes)];
 
     if (countryCodes.length === 1) {

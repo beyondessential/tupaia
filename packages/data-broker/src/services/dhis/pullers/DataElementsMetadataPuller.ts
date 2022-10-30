@@ -11,7 +11,7 @@ import { DataElement } from '../types';
 import { DhisTranslator } from '../translators';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
 
-type PullOptions = BasePullMetadataOptions &
+export type PullDataElementsOptions = BasePullMetadataOptions &
   Partial<{
     additionalFields: string[];
     includeOptions: boolean;
@@ -32,7 +32,11 @@ export class DataElementsMetadataPuller {
       d => d.config?.dhisDataType || this.dataSourceModel.getDhisDataTypes().DATA_ELEMENT,
     );
 
-  public pull = async (api: DhisApi, dataSources: DataElement[], options: PullOptions) => {
+  public pull = async (
+    api: DhisApi,
+    dataSources: DataElement[],
+    options: PullDataElementsOptions,
+  ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
     const metadata = [];
 

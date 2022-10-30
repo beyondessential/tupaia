@@ -9,7 +9,7 @@ import { KoboSubmission, QuestionMapping } from './types';
 export class KoBoTranslator {
   private readonly models: DataBrokerModelRegistry;
 
-  constructor(models: DataBrokerModelRegistry) {
+  public constructor(models: DataBrokerModelRegistry) {
     this.models = models;
   }
 

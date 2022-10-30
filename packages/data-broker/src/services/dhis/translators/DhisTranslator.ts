@@ -11,8 +11,7 @@ import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 import { DATA_SOURCE_TYPES } from '../../../utils';
 import { DataElement, DataSource, DhisAnalytics, DhisEventAnalytics, ValueType } from '../types';
-import { DataBrokerModelRegistry, DataElementMetadata, OutboundEvent } from '../../../types';
-import { Event } from '../../../types';
+import { DataBrokerModelRegistry, DataElementMetadata, Event, OutboundEvent } from '../../../types';
 
 interface DhisMetadataObject {
   id: string;
@@ -22,7 +21,7 @@ interface DhisMetadataObject {
 
 interface OutboundDataValue {
   code: string;
-  value: string;
+  value?: string;
   categoryOptionCombo?: string;
 }
 
@@ -34,7 +33,7 @@ interface DhisDataValue {
   categoryOptionCombo?: string;
 }
 
-interface DataElementDescriptor {
+export interface DataElementDescriptor {
   id: string;
   code: string;
   valueType: ValueType;
@@ -56,7 +55,7 @@ export class DhisTranslator {
     return DATA_SOURCE_TYPES;
   }
 
-  private getOutboundValue = (dataElement: DataElementDescriptor, value?: string) => {
+  public getOutboundValue = (dataElement: DataElementDescriptor, value?: string) => {
     if (value === undefined) return value; // "delete" pushes don't include a value
     const { options, code: dataElementCode, valueType } = dataElement;
     if (options) {

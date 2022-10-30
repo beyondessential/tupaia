@@ -4,10 +4,13 @@
  */
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
+import { DhisEventAnalytics } from '../../../../services/dhis/types';
 import { createApiProxyStub, createApiStub } from './DhisCodeToIdTranslator.stubs';
 
 jest.mock('@tupaia/dhis-api');
-translateElementKeysInEventAnalytics.mockImplementation(a => a);
+
+const mockTranslateElementKeysInEventAnalytics = translateElementKeysInEventAnalytics as jest.Mock;
+mockTranslateElementKeysInEventAnalytics.mockImplementation((a: DhisEventAnalytics) => a);
 
 const api = createApiStub();
 const proxy = createApiProxyStub(api);
@@ -19,7 +22,7 @@ describe('DhisCodeToIdTranslator', () => {
         dataElementCodes: ['EL1', 'EL2'],
         organisationUnitCodes: ['ORG1'],
       });
-      return expect(api.getAnalytics).toHaveBeenCalledOnceWith({
+      expect(api.getAnalytics).toHaveBeenCalledOnceWith({
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitIds: ['dhisId_ou1'],
         inputIdScheme: 'uid',
@@ -32,7 +35,7 @@ describe('DhisCodeToIdTranslator', () => {
         dataElementCodes: ['EL1', 'EL2'],
         organisationUnitCodes: ['ORG1', 'ORG2'], // org2 not present in mapping table, so doesn't have dhis id
       });
-      return expect(api.getAnalytics).toHaveBeenCalledOnceWith({
+      expect(api.getAnalytics).toHaveBeenCalledOnceWith({
         dataElementCodes: ['EL1', 'EL2'],
         organisationUnitCodes: ['ORG1', 'ORG2'],
       });
@@ -43,7 +46,7 @@ describe('DhisCodeToIdTranslator', () => {
         dataElementCodes: ['EL1', 'EL3'], // EL3 does not have dhis id
         organisationUnitCodes: ['ORG1'],
       });
-      return expect(api.getAnalytics).toHaveBeenCalledOnceWith({
+      expect(api.getAnalytics).toHaveBeenCalledOnceWith({
         dataElementCodes: ['EL1', 'EL3'],
         organisationUnitCodes: ['ORG1'],
       });
@@ -57,7 +60,7 @@ describe('DhisCodeToIdTranslator', () => {
         organisationUnitCodes: ['ORG1'],
         programCode: 'G1',
       });
-      return expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
+      expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
         dataElementIdScheme: 'id',
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitIds: ['dhisId_ou1'],
@@ -72,7 +75,7 @@ describe('DhisCodeToIdTranslator', () => {
         organisationUnitCodes: ['ORG1', 'ORG2'], // org2 not present in mapping table, so doesn't have dhis id
         programCode: 'G1',
       });
-      return expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
+      expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
         dataElementIdScheme: 'id',
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitCodes: ['ORG1', 'ORG2'],
@@ -86,9 +89,10 @@ describe('DhisCodeToIdTranslator', () => {
         organisationUnitCodes: ['ORG1'],
         programCode: 'G1',
       });
-      return expect(
-        translateElementKeysInEventAnalytics,
-      ).toHaveBeenCalledOnceWith(api.getEventAnalytics(), { dhisId_el1: 'EL1', dhisId_el2: 'EL2' });
+      expect(translateElementKeysInEventAnalytics).toHaveBeenCalledOnceWith(
+        api.getEventAnalytics({}),
+        { dhisId_el1: 'EL1', dhisId_el2: 'EL2' },
+      );
     });
 
     it('should process the response and swap orgUnit ids back to codes', async () => {
@@ -97,7 +101,7 @@ describe('DhisCodeToIdTranslator', () => {
         organisationUnitCodes: ['ORG1'],
         programCode: 'G1',
       });
-      await expect(response).toMatchObject({
+      expect(response).toMatchObject({
         rows: [['ORG1', 'dhisId_ou1', '7.1']],
       });
     });
@@ -108,13 +112,13 @@ describe('DhisCodeToIdTranslator', () => {
         organisationUnitCodes: ['SOME_PARENT_ORG_UNIT'],
         programCode: 'G1',
       });
-      await expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
+      expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
         dataElementIdScheme: 'id',
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitCodes: ['SOME_PARENT_ORG_UNIT'],
         programIds: ['dhisId_g1'],
       });
-      await expect(response).toMatchObject({
+      expect(response).toMatchObject({
         rows: [['ORG1', 'dhisId_ou1', '7.1']],
       });
     });

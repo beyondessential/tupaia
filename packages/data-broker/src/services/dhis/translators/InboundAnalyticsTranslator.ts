@@ -37,7 +37,7 @@ export class InboundAnalyticsTranslator {
 
   private getDimensionItems = (dimension: DhisAnalyticDimension) => {
     const { items, dimensions } = this.metadata!;
-    return pickBy(items, (_: any, id: string) => dimensions[dimension].includes(id));
+    return pickBy(items, (_, id: string) => dimensions[dimension].includes(id));
   };
 
   private createCheckIsDimensionItem = (dimension: DhisAnalyticDimension) => (item: MetadataItem) =>

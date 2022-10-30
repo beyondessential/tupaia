@@ -24,7 +24,7 @@ jest.mock('@tupaia/superset-api', () => ({
 }));
 
 describe('SupersetService', () => {
-  let supersetService;
+  let supersetService: SupersetService;
 
   beforeEach(() => {
     supersetService = new SupersetService(models);
@@ -77,7 +77,7 @@ describe('SupersetService', () => {
           ]),
         });
 
-        return expect(getSupersetApiInstance).toHaveBeenCalledWith(
+        expect(getSupersetApiInstance).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
             code: 'SUPERSET_INSTANCE_B',
@@ -118,12 +118,16 @@ describe('SupersetService', () => {
 
     describe('pullEvents()', () => {
       it('throws an error', () =>
-        expect(supersetService.pull({}, 'dataGroup')).toBeRejectedWith('not supported'));
+        expect(
+          supersetService.pull([], 'dataGroup', { dataServiceMapping: new DataServiceMapping() }),
+        ).toBeRejectedWith('not supported'));
     });
 
     describe('pullSyncGroups()', () => {
       it('throws an error', () =>
-        expect(supersetService.pull({}, 'syncGroup')).toBeRejectedWith('not supported'));
+        expect(
+          supersetService.pull([], 'dataGroup', { dataServiceMapping: new DataServiceMapping() }),
+        ).toBeRejectedWith('not supported'));
     });
   });
 

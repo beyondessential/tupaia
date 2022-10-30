@@ -4,11 +4,13 @@
  */
 
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
+import { SupersetApi } from '@tupaia/superset-api';
 import { createJestMockInstance } from '@tupaia/utils';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import * as GetSupersetApi from '../../../services/superset/getSupersetApi';
+import { dataElements } from '../../testUtils';
 
-export const DATA_ELEMENTS = {
+export const DATA_ELEMENTS = dataElements({
   ITEM_1: {
     code: 'ITEM_1',
     service_type: 'superset',
@@ -33,7 +35,7 @@ export const DATA_ELEMENTS = {
       supersetInstanceCode: 'SUPERSET_INSTANCE_A',
     },
   },
-};
+});
 
 const SUPERSET_INSTANCES = [
   {
@@ -106,6 +108,6 @@ export const createApiStub = () => {
   });
 };
 
-export const stubGetSupersetApi = mockSupersetApi => {
-  jest.spyOn(GetSupersetApi, 'getSupersetApiInstance').mockReturnValue(mockSupersetApi);
+export const stubGetSupersetApi = (mockSupersetApi: SupersetApi) => {
+  jest.spyOn(GetSupersetApi, 'getSupersetApiInstance').mockResolvedValue(mockSupersetApi);
 };

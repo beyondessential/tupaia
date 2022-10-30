@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import type { DhisApi } from '@tupaia/dhis-api';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { DhisCodeToIdTranslator } from '../../../../services/dhis/translators/DhisCodeToIdTranslator';
-import { DataBrokerModelRegistry } from "../../../../types";
-import type { DhisApi } from '@tupaia/dhis-api';
+import { DataBrokerModelRegistry } from '../../../../types';
 
 const DATA_ELEMENTS = [
   { code: 'EL1', config: { dhisId: 'dhisId_el1' } },
@@ -32,11 +32,11 @@ const createModelsStub = () => {
     dataGroup: {
       records: DATA_GROUPS,
     },
-  }) as DataBrokerModelRegistry);
+  }) as DataBrokerModelRegistry;
 };
 
 export const createApiStub = () => {
-  return {
+  return ({
     getAnalytics: jest.fn().mockReturnValue({ SOME_ANALYTICS_RESPONSE: 1 }),
     getEventAnalytics: jest.fn().mockImplementation(() => ({
       headers: [
@@ -72,7 +72,7 @@ export const createApiStub = () => {
       height: 1,
       headerWidth: 3,
     })),
-  };
+  } as unknown) as DhisApi;
 };
 
 export const createApiProxyStub = (api: DhisApi) => {

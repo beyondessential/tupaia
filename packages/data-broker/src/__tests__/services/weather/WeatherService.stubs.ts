@@ -1,5 +1,6 @@
 import { EntityModel } from '@tupaia/database';
 import { createJestMockInstance } from '@tupaia/utils';
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import { DataElement, WeatherResult } from '../../../services/weather/types';
 import { PullOptions } from '../../../services/weather/WeatherService';
 import { DataBrokerModelRegistry, DataGroup, Entity } from '../../../types';
@@ -141,8 +142,11 @@ export const getMockDataSourcesArg = (overrides?: Partial<DataElement>): DataEle
   ];
 };
 
-export const getMockOptionsArg = (overrides?: PullOptions) => {
+const dataServiceMapping = new DataServiceMapping();
+
+export const getMockOptionsArg = (overrides?: Partial<PullOptions>) => {
   return {
+    dataServiceMapping,
     organisationUnitCodes: ['MELB'],
     startDate: undefined,
     endDate: undefined,

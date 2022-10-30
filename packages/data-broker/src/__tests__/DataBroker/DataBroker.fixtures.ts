@@ -3,48 +3,35 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataElement, DataElementDataService, DataGroup, Entity, ServiceType } from '../../types';
-import { ServiceResults } from './DataBroker.stubs';
-import { TYPES } from '@tupaia/database';
-
-const dataElement = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
-  code,
-  service_type,
-  dataElementCode: code,
-  config: {},
-  permission_groups: ['*'],
-  databaseType: TYPES.DATA_ELEMENT,
-});
-
-const dataGroup = ({ code, service_type }: { code: string; service_type: ServiceType }) => ({
-  code,
-  service_type,
-  config: {},
-  databaseType: TYPES.DATA_GROUP,
-});
+import { Analytic, DataElementDataService, DataElementMetadata, Event } from '../../types';
+import { dataElementTypes, dataGroupTypes } from '../testUtils';
 
 // Data elements and groups share the same codes on purpose, to assert that
 // `DataBroker` can still distinguish them using their type
-export const DATA_ELEMENTS: Record<string, DataElement> = {
-  DHIS_01: dataElement({ code: 'DHIS_01', service_type: 'dhis' }),
-  DHIS_02: dataElement({ code: 'DHIS_02', service_type: 'dhis' }),
-  TUPAIA_01: dataElement({ code: 'TUPAIA_01', service_type: 'tupaia' }),
-  MAPPED_01: dataElement({
-    code: 'MAPPED_01',
-    service_type: 'dhis',
-  }),
-  MAPPED_02: dataElement({
-    code: 'MAPPED_02',
-    service_type: 'dhis',
-  }),
-};
-export const DATA_GROUPS: Record<string, DataGroup> = {
-  DHIS_PROGRAM_01: dataGroup({ code: 'DHIS_PROGRAM_01', service_type: 'dhis' }),
-  DHIS_PROGRAM_02: dataGroup({ code: 'DHIS_PROGRAM_02', service_type: 'dhis' }),
-  TUPAIA_PROGRAM_01: dataGroup({ code: 'TUPAIA_PROGRAM_01', service_type: 'tupaia' }),
-};
+export const DATA_ELEMENTS = dataElementTypes({
+  DHIS_01: { code: 'DHIS_01', service_type: 'dhis' },
+  DHIS_02: { code: 'DHIS_02', service_type: 'dhis' },
+  TUPAIA_01: { code: 'TUPAIA_01', service_type: 'tupaia' },
+  MAPPED_01: { code: 'MAPPED_01', service_type: 'dhis' },
+  MAPPED_02: { code: 'MAPPED_02', service_type: 'dhis' },
+});
+export const DATA_GROUPS = dataGroupTypes({
+  DHIS_PROGRAM_01: { code: 'DHIS_PROGRAM_01', service_type: 'dhis' },
+  DHIS_PROGRAM_02: { code: 'DHIS_PROGRAM_02', service_type: 'dhis' },
+  TUPAIA_PROGRAM_01: {
+    code: 'TUPAIA_PROGRAM_01',
+    service_type: 'tupaia',
+    config: {},
+  },
+});
 
-export const DATA_BY_SERVICE: Record<string, ServiceResults> = {
+export interface MockServiceData {
+  analytics: Analytic[];
+  eventsByProgram: Record<string, Event[]>;
+  dataElements: DataElementMetadata[];
+}
+
+export const DATA_BY_SERVICE = {
   dhis: {
     analytics: [
       { dataElement: 'DHIS_01', organisationUnit: 'TO', period: '20210101', value: 1 },
@@ -92,13 +79,14 @@ export const DATA_BY_SERVICE: Record<string, ServiceResults> = {
   },
 };
 
-export const ENTITIES: Record<string, Entity> = {
+export const ENTITIES = {
   TO_FACILITY_01: {
     code: 'TO_FACILITY_01',
     name: 'Tonga facility 1',
     country_code: 'TO',
     type: 'facility',
     config: {},
+    metadata: {},
   },
   FJ_FACILITY_01: {
     code: 'FJ_FACILITY_01',
@@ -106,9 +94,24 @@ export const ENTITIES: Record<string, Entity> = {
     country_code: 'FJ',
     type: 'facility',
     config: {},
+    metadata: {},
   },
-  TO: { code: 'TO', name: 'Tonga', country_code: 'TO', type: 'country', config: {} },
-  FJ: { code: 'FJ', name: 'Fiji', country_code: 'FJ', type: 'country', config: {} },
+  TO: {
+    code: 'TO',
+    name: 'Tonga',
+    country_code: 'TO',
+    type: 'country',
+    config: {},
+    metadata: {},
+  },
+  FJ: {
+    code: 'FJ',
+    name: 'Fiji',
+    country_code: 'FJ',
+    type: 'country',
+    config: {},
+    metadata: {},
+  },
 };
 
 export const DATA_ELEMENT_DATA_SERVICES: DataElementDataService[] = [
@@ -116,12 +119,16 @@ export const DATA_ELEMENT_DATA_SERVICES: DataElementDataService[] = [
     data_element_code: 'MAPPED_01',
     country_code: 'FJ',
     service_type: 'tupaia',
-    service_config: { cow: 'moo' },
+    service_config: {
+      dhisInstanceCode: 'dhis_instance_1',
+    },
   },
   {
     data_element_code: 'MAPPED_02',
     country_code: 'FJ',
     service_type: 'tupaia',
-    service_config: { sheep: 'baaaa' },
+    service_config: {
+      dhisInstanceCode: 'dhis_instance_2',
+    },
   },
 ];

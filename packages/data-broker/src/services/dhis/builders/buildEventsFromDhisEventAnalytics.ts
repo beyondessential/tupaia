@@ -95,6 +95,7 @@ const addTrackedEntityCodes = async (models: DataBrokerModelRegistry, events: Ev
     return events;
   }
   const entities = await models.entity.find({
+    // @ts-ignore
     'metadata->dhis->>trackedEntityId': allTrackedEntityIds,
   });
   return events.map(event => ({

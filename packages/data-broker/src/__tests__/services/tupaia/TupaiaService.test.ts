@@ -13,6 +13,7 @@ import {
   DATA_GROUPS,
 } from './TupaiaService.fixtures';
 import { DataBrokerModelRegistry } from '../../../types';
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 const models = {} as DataBrokerModelRegistry;
 const tupaiaDataApi = createTupaiaDataApiStub({
@@ -20,6 +21,7 @@ const tupaiaDataApi = createTupaiaDataApiStub({
   fetchEventsResponse: EVENTS,
 });
 const tupaiaService = new TupaiaService(models, tupaiaDataApi);
+const dataServiceMapping = new DataServiceMapping();
 
 describe('TupaiaService', () => {
   describe('push()', () => {
@@ -34,14 +36,16 @@ describe('TupaiaService', () => {
     describe('data element', () => {
       describe('Tupaia data API invocation', () => {
         it('single data element', async () => {
-          await tupaiaService.pull([DATA_ELEMENTS.POP01], 'dataElement');
+          await tupaiaService.pull([DATA_ELEMENTS.POP01], 'dataElement', { dataServiceMapping });
           expect(tupaiaDataApi.fetchAnalytics).toHaveBeenCalledOnceWith(
             expect.objectContaining({ dataElementCodes: ['POP01'] }),
           );
         });
 
         it('multiple data elements', async () => {
-          await tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement');
+          await tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement', {
+            dataServiceMapping,
+          });
           expect(tupaiaDataApi.fetchAnalytics).toHaveBeenCalledOnceWith(
             expect.objectContaining({ dataElementCodes: ['POP01', 'POP02'] }),
           );
@@ -49,6 +53,7 @@ describe('TupaiaService', () => {
 
         it('converts period to start and end dates', async () => {
           await tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement', {
+            dataServiceMapping,
             period: '20200822',
           });
           expect(tupaiaDataApi.fetchAnalytics).toHaveBeenCalledOnceWith(
@@ -58,6 +63,7 @@ describe('TupaiaService', () => {
 
         it('supports various API options', async () => {
           const options = {
+            dataServiceMapping,
             organisationUnitCodes: ['TO', 'PG'],
             startDate: '20200731',
             endDate: '20200904',
@@ -75,6 +81,7 @@ describe('TupaiaService', () => {
           const response = await tupaiaService.pull(
             [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
             'dataElement',
+            { dataServiceMapping },
           );
           expect(response).toHaveProperty('results');
           expect(response).toHaveProperty('metadata');
@@ -83,12 +90,16 @@ describe('TupaiaService', () => {
 
         it('returns the analytics API response in the `results` field', () =>
           expect(
-            tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement'),
+            tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement', {
+              dataServiceMapping,
+            }),
           ).resolves.toHaveProperty('results', ANALYTICS.analytics));
 
         it('correctly builds the `metadata` field', () =>
           expect(
-            tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement'),
+            tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement', {
+              dataServiceMapping,
+            }),
           ).resolves.toHaveProperty('metadata', {
             dataElementCodeToName: {
               POP01: 'Population 1',
@@ -98,7 +109,9 @@ describe('TupaiaService', () => {
 
         it('returns the analytics API aggregations processed in the `numAggregationsProcessed` field', () =>
           expect(
-            tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement'),
+            tupaiaService.pull([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement', {
+              dataServiceMapping,
+            }),
           ).resolves.toHaveProperty(
             'numAggregationsProcessed',
             ANALYTICS.numAggregationsProcessed,
@@ -109,18 +122,23 @@ describe('TupaiaService', () => {
     describe('data group', () => {
       it('throws an error if multiple data groups are provided', () =>
         expect(
-          tupaiaService.pull([DATA_GROUPS.POP01_GROUP, DATA_GROUPS.POP02_GROUP], 'dataGroup', {}),
+          tupaiaService.pull([DATA_GROUPS.POP01_GROUP, DATA_GROUPS.POP02_GROUP], 'dataGroup', {
+            dataServiceMapping,
+          }),
         ).toBeRejectedWith(/Cannot .*multiple programs/));
 
       it('uses the data group code as `dataGroupCode`', async () => {
-        await tupaiaService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup');
+        await tupaiaService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { dataServiceMapping });
         expect(tupaiaDataApi.fetchEvents).toHaveBeenCalledOnceWith(
           expect.objectContaining({ dataGroupCode: 'POP01' }),
         );
       });
 
       it('converts period to start and end dates', async () => {
-        await tupaiaService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { period: '20200822' });
+        await tupaiaService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {
+          dataServiceMapping,
+          period: '20200822',
+        });
         expect(tupaiaDataApi.fetchEvents).toHaveBeenCalledOnceWith(
           expect.objectContaining({ startDate: '2020-08-22', endDate: '2020-08-22' }),
         );
@@ -128,6 +146,7 @@ describe('TupaiaService', () => {
 
       it('supports various API options', async () => {
         const options = {
+          dataServiceMapping,
           dataElementCodes: ['POP01', 'POP02'],
           organisationUnitCodes: ['TO', 'PG'],
           startDate: '20200731',
@@ -141,9 +160,9 @@ describe('TupaiaService', () => {
       });
 
       it('directly returns the event API response', () =>
-        expect(tupaiaService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup')).resolves.toStrictEqual(
-          EVENTS,
-        ));
+        expect(
+          tupaiaService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { dataServiceMapping }),
+        ).resolves.toStrictEqual(EVENTS));
     });
   });
 
@@ -151,12 +170,14 @@ describe('TupaiaService', () => {
     describe('data element', () => {
       it('single code', () =>
         expect(
-          tupaiaService.pullMetadata([DATA_ELEMENTS.POP01], 'dataElement'),
+          tupaiaService.pullMetadata([DATA_ELEMENTS.POP01], 'dataElement', { dataServiceMapping }),
         ).resolves.toStrictEqual([DATA_ELEMENT_METADATA.POP01]));
 
       it('multiple codes', () =>
         expect(
-          tupaiaService.pullMetadata([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement'),
+          tupaiaService.pullMetadata([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], 'dataElement', {
+            dataServiceMapping,
+          }),
         ).resolves.toStrictEqual([DATA_ELEMENT_METADATA.POP01, DATA_ELEMENT_METADATA.POP02]));
     });
   });

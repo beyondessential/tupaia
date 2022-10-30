@@ -3,43 +3,38 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createJestMockInstance } from '@tupaia/utils';
 import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
-import { createModelsStub } from './DhisTranslator.stubs';
-import { DATA_ELEMENTS, DATA_SOURCES } from './DhisTranslator.fixtures';
-import { parseValueForDhis } from '../../../../services/dhis/translators/parseValueForDhis';
-
-jest.mock('../../../../services/dhis/translators/parseValueForDhis');
+import { DATA_ELEMENT_DESCRIPTORS } from './DhisTranslator.fixtures';
+import * as ParseValueFromDhis from '../../../../services/dhis/translators/parseValueForDhis';
 
 describe('DhisTranslator', () => {
-  const mockModels = createModelsStub();
+  const mockModels = createJestMockInstance('@tupaia/database', 'ModelRegistry');
+  const translator = new DhisTranslator(mockModels);
 
   describe('getOutboundValue', () => {
-    const translator = new DhisTranslator(mockModels);
+    const parseValueForDhisSpy = jest.spyOn(ParseValueFromDhis, 'parseValueForDhis');
 
     it('returns undefined if value is undefined', () =>
-      expect(translator.getOutboundValue(DATA_SOURCES.DS_1, undefined)).toEqual(undefined));
+      expect(translator.getOutboundValue(DATA_ELEMENT_DESCRIPTORS.DE_1, undefined)).toEqual(
+        undefined,
+      ));
 
     it('uses option value if defined', () =>
-      expect(translator.getOutboundValue(DATA_SOURCES.DS_2, 'X')).toEqual('X-ray'));
+      expect(translator.getOutboundValue(DATA_ELEMENT_DESCRIPTORS.DE_2, 'X')).toEqual('X-ray'));
 
     it('throws if option not found', () =>
-      expect(() => translator.getOutboundValue(DATA_SOURCES.DS_2, 'z')).toThrow(
+      expect(() => translator.getOutboundValue(DATA_ELEMENT_DESCRIPTORS.DE_2, 'z')).toThrow(
         'No option matching',
       ));
 
     it('formats value for dhis', () => {
-      parseValueForDhis.mockReturnValue('Formatted_Value');
-      expect(translator.getOutboundValue(DATA_SOURCES.DS_1, 'Unformatted_Value')).toEqual(
-        'Formatted_Value',
-      );
+      parseValueForDhisSpy.mockReturnValue('Formatted_Value');
+      expect(
+        translator.getOutboundValue(DATA_ELEMENT_DESCRIPTORS.DE_1, 'Unformatted_Value'),
+      ).toEqual('Formatted_Value');
     });
   });
-
-  describe('fetchOutboundDataElementsByCode', () => {});
-
-  describe('translateOutboundDataValue', () => {});
-
-  describe('translateOutboundDataValues', () => {});
 
   describe('translateOutboundEventDataValues', () => {});
 
