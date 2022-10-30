@@ -11,6 +11,7 @@ import type { DashboardVisualisationResource } from './types';
 import type { LegacyReport, Report, ExpandType } from '../types';
 import { PreviewMode } from '../types';
 import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
+import { getVizOutputConfig } from '../utils';
 
 export class DashboardVisualisationExtractor<
   DashboardItemValidator extends yup.AnyObjectSchema,
@@ -72,7 +73,9 @@ export class DashboardVisualisationExtractor<
     return this.dashboardItemValidator.validateSync(this.vizToDashboardItem());
   }
 
-  private vizToReport(previewMode?: PreviewMode): Record<keyof Report, unknown> {
+  private vizToReport(
+    previewMode: PreviewMode = PreviewMode.PRESENTATION,
+  ): Record<keyof Report, unknown> {
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
@@ -95,11 +98,14 @@ export class DashboardVisualisationExtractor<
       },
       isNil,
     );
+
+    const output = getVizOutputConfig(previewMode, presentation);
+
     const config = omitBy(
       {
         fetch,
         transform,
-        output: previewMode === PreviewMode.PRESENTATION ? presentation?.output : null,
+        output,
       },
       isNil,
     );

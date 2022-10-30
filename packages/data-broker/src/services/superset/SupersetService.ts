@@ -21,6 +21,11 @@ import {
 } from '../../types';
 import { DataServiceMapping, DataServiceMappingEntry } from '../DataServiceMapping';
 
+type PullOptions = BasePullOptions & {
+  startDate?: string;
+  endDate?: string;
+};
+
 export class SupersetService extends Service {
   private readonly pullers: Record<string, any>;
 
@@ -56,9 +61,9 @@ export class SupersetService extends Service {
 
   private async pullAnalytics(
     dataSources: DataElement[],
-    options: BasePullOptions,
+    options: PullOptions,
   ): Promise<AnalyticResults> {
-    const { dataServiceMapping } = options;
+    const { dataServiceMapping, startDate, endDate } = options;
     let mergedResults: Analytic[] = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
       this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
@@ -77,6 +82,7 @@ export class SupersetService extends Service {
           chartId,
           chartDataSources,
           dataServiceMapping,
+          { startDate, endDate },
         );
         mergedResults = mergedResults.concat(results);
       }
@@ -94,7 +100,13 @@ export class SupersetService extends Service {
     chartId: string,
     dataElements: DataElement[],
     dataServiceMapping: DataServiceMapping,
+    options: { startDate?: string; endDate?: string },
   ): Promise<Analytic[]> {
+    const { startDate, endDate } = options;
+
+    const startDateMoment = startDate ? moment(startDate).startOf('day') : undefined;
+    const endDateMoment = endDate ? moment(endDate).endOf('day') : undefined;
+
     const response = await api.chartData(chartId);
     const { data } = response.result[0];
 
@@ -112,12 +124,17 @@ export class SupersetService extends Service {
           dataElement = mappingMatchingSupersetItemCode.dataSource as DataElement;
         }
       }
+
       if (!dataElement) continue; // unneeded data
+
+      const dataDateMoment = moment(date);
+      if (startDateMoment && dataDateMoment.isBefore(startDateMoment)) continue; // before date range
+      if (endDateMoment && dataDateMoment.isAfter(endDateMoment)) continue; // after date range
 
       results.push({
         dataElement: dataElement.code,
         organisationUnit: storeCode,
-        period: moment(date).format('YYYYMMDD'),
+        period: dataDateMoment.format('YYYYMMDD'),
         value,
       });
     }

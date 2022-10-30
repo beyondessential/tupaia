@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { isDefined } from '@tupaia/tsutils';
 import pick from 'lodash.pick';
 
 export const entityApiMock = (
@@ -25,7 +26,6 @@ export const entityApiMock = (
         continue;
       }
 
-      const isDefined = <T>(val: T): val is Exclude<T, undefined> => val !== undefined;
       const children = relationsInHierarchy
         .filter(({ parent: parentCode }) => parent.code === parentCode)
         .map(({ child }) => entitiesInHierarchy.find(entity => entity.code === child))

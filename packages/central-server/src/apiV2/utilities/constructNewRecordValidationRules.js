@@ -19,6 +19,7 @@ import {
   isValidPassword,
   isNumber,
   ValidationError,
+  constructRecordExistsWithCode,
 } from '@tupaia/utils';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
@@ -93,6 +94,11 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
+      };
+    case TYPES.EXTERNAL_DATABASE_CONNECTION:
+      return {
+        code: [hasContent],
+        name: [hasContent],
       };
     case TYPES.INDICATOR:
       return {
@@ -264,6 +270,13 @@ export const constructForSingle = (models, recordType) => {
         ],
         dashboard_group_name: [isAString],
         default_measure: [constructRecordExistsWithField(models.mapOverlay, 'id')],
+      };
+    case TYPES.DATA_ELEMENT_DATA_SERVICE:
+      return {
+        data_element_code: [constructRecordExistsWithCode(models.dataElement)],
+        country_code: [hasContent],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
+        service_config: [hasContent],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

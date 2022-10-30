@@ -4,7 +4,7 @@
  */
 
 import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform } from '../../../reportBuilder/transform';
+import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
 
 describe('insertColumns', () => {
   it('can insert basic values', () => {
@@ -18,9 +18,9 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([
-      { ...SINGLE_ANALYTIC[0], number: 1, string: 'Hi', boolean: false },
-    ]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], number: 1, string: 'Hi', boolean: false }]),
+    );
   });
 
   it('can insert using a value from the row', () => {
@@ -32,7 +32,9 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], dataElementValue: 4 }]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], dataElementValue: 4 }]),
+    );
   });
 
   it('can use a value from the row as a column name', () => {
@@ -44,7 +46,9 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], BCD1: 4 }]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], BCD1: 4 }]),
+    );
   });
 
   it('can execute functions', () => {
@@ -56,7 +60,9 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], period: '1st Jan 2020' }]);
+    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+      TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], period: '1st Jan 2020' }]),
+    );
   });
 
   it('can perform the insert on all rows', () => {
@@ -69,11 +75,13 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-      { ...MULTIPLE_ANALYTICS[0], period: '1st Jan 2020', BCD1: 4 },
-      { ...MULTIPLE_ANALYTICS[1], period: '2nd Jan 2020', BCD1: 2 },
-      { ...MULTIPLE_ANALYTICS[2], period: '3rd Jan 2020', BCD1: 5 },
-    ]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([
+        { ...MULTIPLE_ANALYTICS[0], period: '1st Jan 2020', BCD1: 4 },
+        { ...MULTIPLE_ANALYTICS[1], period: '2nd Jan 2020', BCD1: 2 },
+        { ...MULTIPLE_ANALYTICS[2], period: '3rd Jan 2020', BCD1: 5 },
+      ]),
+    );
   });
 
   it('where is processed before remaining fields', () => {
@@ -86,19 +94,24 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(MERGEABLE_ANALYTICS)).toEqual([
-      { ...MERGEABLE_ANALYTICS[0], newVal: 8 },
-      { ...MERGEABLE_ANALYTICS[1], newVal: 4 },
-      { ...MERGEABLE_ANALYTICS[2], newVal: 10 },
-      { ...MERGEABLE_ANALYTICS[3] },
-      { ...MERGEABLE_ANALYTICS[4] },
-      { ...MERGEABLE_ANALYTICS[5] },
-      { ...MERGEABLE_ANALYTICS[6], newVal: 14 },
-      { ...MERGEABLE_ANALYTICS[7], newVal: 16 },
-      { ...MERGEABLE_ANALYTICS[8], newVal: 4 },
-      { ...MERGEABLE_ANALYTICS[9] },
-      { ...MERGEABLE_ANALYTICS[10] },
-      { ...MERGEABLE_ANALYTICS[11] },
-    ]);
+    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows(
+        [
+          { ...MERGEABLE_ANALYTICS[0], newVal: 8 },
+          { ...MERGEABLE_ANALYTICS[1], newVal: 4 },
+          { ...MERGEABLE_ANALYTICS[2], newVal: 10 },
+          { ...MERGEABLE_ANALYTICS[3] },
+          { ...MERGEABLE_ANALYTICS[4] },
+          { ...MERGEABLE_ANALYTICS[5] },
+          { ...MERGEABLE_ANALYTICS[6], newVal: 14 },
+          { ...MERGEABLE_ANALYTICS[7], newVal: 16 },
+          { ...MERGEABLE_ANALYTICS[8], newVal: 4 },
+          { ...MERGEABLE_ANALYTICS[9] },
+          { ...MERGEABLE_ANALYTICS[10] },
+          { ...MERGEABLE_ANALYTICS[11] },
+        ],
+        ['period', 'organisationUnit', 'BCD1', 'BCD2', 'newVal'],
+      ),
+    );
   });
 });

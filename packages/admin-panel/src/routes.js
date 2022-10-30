@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Assignment, InsertChart, PeopleAlt, Flag, Storage } from '@material-ui/icons';
+import { Assignment, InsertChart, PeopleAlt, Flag, Storage, Language } from '@material-ui/icons';
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
@@ -32,7 +32,9 @@ import {
   ProjectsPage,
   SyncGroupsPage,
   DataTablesPage,
+  ExternalDatabaseConnectionsPage,
 } from './pages/resources';
+import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
 export const ROUTES = [
   {
@@ -74,6 +76,11 @@ export const ROUTES = [
         label: 'Sync Groups',
         to: '/sync-groups',
         component: SyncGroupsPage,
+      },
+      {
+        label: 'Data Mapping',
+        to: '/data-mapping',
+        component: DataElementDataServicesPage,
       },
     ],
   },
@@ -197,6 +204,18 @@ export const ROUTES = [
         label: 'Disaster',
         to: '/disaster',
         component: DisasterResponsePage,
+      },
+    ],
+  },
+  {
+    label: 'External Data',
+    to: '/external-database-connections',
+    icon: <Language />,
+    tabs: [
+      {
+        label: 'External Database Connections',
+        to: '',
+        component: ExternalDatabaseConnectionsPage,
       },
     ],
   },

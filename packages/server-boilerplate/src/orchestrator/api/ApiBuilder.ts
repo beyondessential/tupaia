@@ -161,7 +161,7 @@ export class ApiBuilder {
   }
 
   public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
-    return this.use('*', (req, res, next) => {
+    this.app.use((req, res, next) => {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
@@ -173,6 +173,8 @@ export class ApiBuilder {
         next(err);
       }
     });
+
+    return this;
   }
 
   public use<T extends ExpressRequest<T> = Request>(

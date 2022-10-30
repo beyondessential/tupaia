@@ -1,10 +1,3 @@
-const getPlugins = api => {
-  if (api.env(['development', 'test'])) {
-    return ['istanbul'];
-  }
-  return [];
-};
-
 const includedDateOffset = 90 * 24 * 60 * 60 * 1000; // include migrations up to 90 days old
 const includedMigrationsDate = new Date().setTime(Date.now() - includedDateOffset);
 const checkMigrationOutdated = function (migrationName) {
@@ -46,7 +39,6 @@ const getIgnore = api => {
 };
 
 module.exports = function (api) {
-  const plugins = getPlugins(api);
   const ignore = getIgnore(api);
-  return { plugins, ignore };
+  return { ignore };
 };

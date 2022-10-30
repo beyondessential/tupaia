@@ -91,6 +91,21 @@ const EditorContainer = styled.div`
   }
 `;
 
+const TABS = {
+  DATA: {
+    index: 0,
+    label: 'Data Preview',
+    previewMode: 'data',
+  },
+  CHART: {
+    index: 1,
+    label: 'Chart Preview',
+    previewMode: 'presentation',
+  },
+};
+
+const getTab = index => Object.values(TABS).find(tab => tab.index === index);
+
 const convertValueToPrimitive = val => {
   if (val === null) return val;
   switch (typeof val) {
@@ -103,8 +118,7 @@ const convertValueToPrimitive = val => {
   }
 };
 
-const getColumns = data => {
-  const columnKeys = [...new Set(data.map(d => Object.keys(d)).flat())];
+const getColumns = ({ columns: columnKeys = [] }) => {
   const indexColumn = {
     Header: '#',
     id: 'index',
@@ -121,6 +135,8 @@ const getColumns = data => {
 };
 
 export const PreviewSection = () => {
+  const [tab, setTab] = useState(0);
+
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
@@ -131,7 +147,13 @@ export const PreviewSection = () => {
 
   const { vizType } = useParams();
 
-  const { data: reportData = [], isLoading, isFetching, isError, error } = useReportPreview({
+  const {
+    data: reportData = { columns: [], rows: [] },
+    isLoading,
+    isFetching,
+    isError,
+    error,
+  } = useReportPreview({
     visualisation,
     project,
     location,
@@ -141,11 +163,12 @@ export const PreviewSection = () => {
       setFetchEnabled(false);
     },
     vizType,
+    previewMode: getTab(tab).previewMode,
   });
-  const [tab, setTab] = useState(0);
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
+    setFetchEnabled(true);
   };
 
   const handleInvalidPresentationChange = errMsg => {
@@ -157,7 +180,8 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
-  const columns = useMemo(() => getColumns(reportData), [reportData]);
+  const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
+  const rows = useMemo(() => (tab === 0 ? reportData.rows || [] : []), [reportData]);
   const data = useMemo(() => reportData, [reportData]);
 
   // only update Chart Preview when play button is clicked
@@ -175,27 +199,27 @@ export const PreviewSection = () => {
         textColor="primary"
         onChange={handleChange}
       >
-        <PreviewTab label="Data Preview" disabled={hasPresentationError} />
-        <PreviewTab label="Chart Preview" />
+        <PreviewTab label={TABS.DATA.label} disabled={hasPresentationError} />
+        <PreviewTab label={TABS.CHART.label} />
       </PreviewTabs>
-      <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
+      <TabPanel isSelected={getTab(tab) === TABS.DATA} Panel={PanelTabPanel}>
         <TableContainer>
           {showData ? (
             <FetchLoader
               isLoading={isLoading || isFetching}
               isError={isError}
               error={error}
-              isNoData={!reportData.length}
+              isNoData={!rows.length}
               noDataMessage="No Data Found"
             >
-              <StyledTable columns={columns} data={data} rowLimit={100} />
+              <StyledTable columns={columns} data={rows} rowLimit={100} />
             </FetchLoader>
           ) : (
             <IdleMessage />
           )}
         </TableContainer>
       </TabPanel>
-      <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
+      <TabPanel isSelected={getTab(tab) === TABS.CHART} Panel={PanelTabPanel}>
         <Container>
           <ChartContainer>
             {showData ? (

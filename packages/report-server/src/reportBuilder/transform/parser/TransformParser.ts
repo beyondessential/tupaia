@@ -6,6 +6,7 @@
 import { ExpressionParser } from '@tupaia/expression-parser';
 
 import { Context } from '../../context';
+import { TransformTable } from '../table';
 import { Row, FieldValue } from '../../types';
 import {
   customFunctions,
@@ -49,10 +50,10 @@ export class TransformParser extends ExpressionParser {
   // eslint-disable-next-line react/static-property-placement
   private context?: Context;
 
-  public constructor(rows: Row[] = [], context?: Context) {
+  public constructor(table: TransformTable = new TransformTable(), context?: Context) {
     super(new TransformScope());
 
-    this.rows = rows;
+    this.rows = table.getRows();
     this.lookups = {
       params: context?.query || {},
       current: {},
@@ -64,7 +65,7 @@ export class TransformParser extends ExpressionParser {
       table: this.rows,
     };
 
-    if (rows.length > 0) {
+    if (this.rows.length > 0) {
       this.lookups.current = this.rows[this.currentRow];
       this.lookups.next = this.rows[this.currentRow + 1] || {};
       this.rows.forEach(row => addRowToLookup(row, this.lookups.all));
