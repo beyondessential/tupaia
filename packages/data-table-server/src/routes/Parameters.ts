@@ -6,20 +6,17 @@
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
+import { DataTableParameter } from '../dataTableService';
 
-export type FetchDataRequest = Request<
+export type ParametersRequest = Request<
   { dataTableCode: string },
-  { data: unknown[] },
+  { parameters: DataTableParameter[] },
   Record<string, unknown>,
   Record<string, unknown>
 >;
 
-export class FetchDataRoute extends Route<FetchDataRequest> {
+export class ParametersRoute extends Route<ParametersRequest> {
   public async buildResponse() {
-    const { body, ctx } = this.req;
-
-    const requestParams = { ...body };
-    const data = await ctx.dataTableService.fetchData(requestParams);
-    return { data };
+    return { parameters: this.req.ctx.dataTableService.getParameters() };
   }
 }

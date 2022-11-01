@@ -35,5 +35,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "mockdate": "^3.0.5"
   }
 }
