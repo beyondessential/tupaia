@@ -24,6 +24,7 @@ export const ExportButton = ({ actionConfig, row }) => {
 
   return (
     <IconButton
+      className="export-button"
       onClick={async () => {
         const {
           exportEndpoint,

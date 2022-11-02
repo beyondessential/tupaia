@@ -65,8 +65,8 @@ export const TabsToolbar = ({ links: linkInput, maxWidth }) => {
     <BaseToolbar maxWidth={maxWidth}>
       {value && (
         <LightTabs value={value}>
-          {links.map(({ label, to, target, icon }) => (
-            <ToolbarTab key={to} to={target} value={target} component={RouterLink}>
+          {links.map(({ label, to, target, icon, id }) => (
+            <ToolbarTab key={to} to={target} value={target} component={RouterLink} id={id ?? null}>
               {icon}
               {label}
             </ToolbarTab>
