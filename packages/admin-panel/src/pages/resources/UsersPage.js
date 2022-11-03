@@ -77,6 +77,9 @@ const EDIT_FIELDS = [
     Header: 'Password',
     source: 'password',
     hideValue: true,
+    editConfig: {
+      type: 'password',
+    },
   },
 ];
 
