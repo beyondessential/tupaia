@@ -14,6 +14,7 @@ export const PUBLIC_COUNTRY_CODES = [
   'DL',
   'FJ',
   'KI',
+  'NG',
   'NU',
   'PG',
   'PW',
