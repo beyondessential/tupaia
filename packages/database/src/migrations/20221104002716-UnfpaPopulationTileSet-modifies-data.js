@@ -25,6 +25,7 @@ const newConfig = {
   tileSets: 'unfpaPopulation',
   includeDefaultTileSets: true,
   permanentRegionLabels: true,
+  projectDashboardHeader: 'Regional',
 };
 
 exports.up = async function (db) {
