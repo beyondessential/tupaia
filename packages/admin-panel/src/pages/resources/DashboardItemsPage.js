@@ -6,9 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { LightOutlinedButton } from '@tupaia/ui-components';
+import { connect } from 'react-redux';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { getIsVizBuilderUser } from '../../authentication';
 import { ResourcePage } from './ResourcePage';
 
 const StyledLink = styled(Link)`
@@ -69,7 +71,7 @@ const IMPORT_CONFIG = {
   ),
 };
 
-export const DashboardItemsPage = ({ getHeaderEl, isVizBuilderUser, ...props }) => {
+const DashboardItemsPageComponent = ({ getHeaderEl, isVizBuilderUser, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -146,11 +148,17 @@ export const DashboardItemsPage = ({ getHeaderEl, isVizBuilderUser, ...props }) 
   );
 };
 
-DashboardItemsPage.propTypes = {
+DashboardItemsPageComponent.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   isVizBuilderUser: PropTypes.bool,
 };
 
-DashboardItemsPage.defaultProps = {
+DashboardItemsPageComponent.defaultProps = {
   isVizBuilderUser: false,
 };
+
+const mapStateToProps = state => ({
+  isVizBuilderUser: getIsVizBuilderUser(state),
+});
+
+export const DashboardItemsPage = connect(mapStateToProps)(DashboardItemsPageComponent);

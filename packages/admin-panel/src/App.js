@@ -10,11 +10,11 @@ import { TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { getUser, getIsBESAdmin, PrivateRoute, getIsVizBuilderUser } from './authentication';
+import { getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 
-export const App = ({ user, isBESAdmin, isVizBuilderUser }) => {
+export const App = ({ user }) => {
   const headerEl = React.useRef(null);
 
   const getHeaderEl = () => {
@@ -39,11 +39,7 @@ export const App = ({ user, isBESAdmin, isVizBuilderUser }) => {
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component
-                      getHeaderEl={getHeaderEl}
-                      isBESAdmin={isBESAdmin}
-                      isVizBuilderUser={isVizBuilderUser}
-                    />
+                    <tab.component getHeaderEl={getHeaderEl} />
                   </Route>
                 ))}
                 <Redirect to={route.to} />
@@ -66,20 +62,11 @@ App.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
-  isBESAdmin: PropTypes.bool,
-  isVizBuilderUser: PropTypes.bool,
-};
-
-App.defaultProps = {
-  isBESAdmin: false,
-  isVizBuilderUser: false,
 };
 
 export default connect(
   state => ({
     user: getUser(state),
-    isBESAdmin: getIsBESAdmin(state),
-    isVizBuilderUser: getIsVizBuilderUser(state),
   }),
   null,
 )(App);

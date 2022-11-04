@@ -6,7 +6,6 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { createTransform } from 'redux-persist';
 import { createReducer } from '../utilities';
 import {
-  BES_ADMIN_PERMISSION_GROUP,
   VIZ_BUILDER_USER_PERMISSION_GROUP,
   EMAIL_ADDRESS_CHANGE,
   PASSWORD_CHANGE,
@@ -43,11 +42,7 @@ const logoutStateUpdater = (payload, currentState) => ({
   emailAddress: currentState.emailAddress, // But, remember user's email address
 });
 
-const isBESAdmin = policy => {
-  return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
-};
-
-const isVizBuilderUser = policy => {
+export const reduceIsVizBuilderUser = policy => {
   return new AccessPolicy(policy).allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
 };
 
@@ -63,8 +58,7 @@ const stateChanges = {
       rememberMe: currentState.rememberMe,
       emailAddress: currentState.emailAddress,
       password: currentState.password,
-      isBESAdmin: isBESAdmin(payload.user.accessPolicy),
-      isVizBuilderUser: isVizBuilderUser(payload.user.accessPolicy),
+      isVizBuilderUser: reduceIsVizBuilderUser(payload.user.accessPolicy),
     };
   },
   [LOGIN_REQUEST]: () => ({ isLoading: true }),
