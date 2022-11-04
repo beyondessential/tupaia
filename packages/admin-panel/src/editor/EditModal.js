@@ -67,10 +67,14 @@ export const EditModalComponent = ({
         </>
       </ModalContentProvider>
       <DialogFooter>
-        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
+        <Button id="form-button-cancel" variant="outlined" onClick={onDismiss} disabled={isLoading}>
           {errorMessage ? 'Dismiss' : 'Cancel'}
         </Button>
-        <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
+        <Button
+          id="form-button-save"
+          onClick={onSave}
+          disabled={!!errorMessage || isLoading || isUnchanged}
+        >
           Save
         </Button>
       </DialogFooter>
