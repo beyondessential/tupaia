@@ -12,7 +12,7 @@ import { openEditModal } from './actions';
 import { fetchUsedBy } from '../usedBy';
 
 export const EditButtonComponent = ({ onEdit }) => (
-  <IconButton onClick={onEdit}>
+  <IconButton className="edit-button" onClick={onEdit}>
     <EditIcon />
   </IconButton>
 );
