@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -11,6 +11,7 @@ import { Button, FlexEnd } from '@tupaia/ui-components';
 import { DashboardMetadataForm } from '../components';
 import { VIZ_TYPE_PARAM } from '../constants';
 import { MapOverlayMetadataForm } from '../components/MapOverlay';
+import { getVizBuilderBasePath } from '../utils';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -58,9 +59,11 @@ export const CreateNew = () => {
   const { vizType } = useParams();
 
   const history = useHistory();
+  const { pathname } = useLocation();
+  const basePath = getVizBuilderBasePath(pathname);
 
   const handleCreate = () => {
-    history.push(`/viz-builder/${vizType}/`);
+    history.push(`${basePath}/viz-builder/${vizType}/`);
   };
 
   const MetadataFormComponent = getMetadataFormComponent(vizType);

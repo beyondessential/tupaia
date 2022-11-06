@@ -10,3 +10,5 @@ export * from './pages/resources';
 export { IconButton } from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
 export { DataChangeAction } from './editor';
+export { App as VizBuilderApp } from './VizBuilderApp/App';
+export { VizBuilderProviders } from './utilities/VizBuilderProviders';

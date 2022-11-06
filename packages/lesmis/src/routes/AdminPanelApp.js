@@ -4,15 +4,17 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Redirect, Route, useLocation, useRouteMatch } from 'react-router-dom';
+import styled from 'styled-components';
+import { Switch, Redirect, Route, Link, useLocation, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { TabsToolbar } from '@tupaia/ui-components';
-import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
+import { Assignment, InsertChart, PeopleAlt, AddCircle } from '@material-ui/icons';
+import { TabsToolbar, LightOutlinedButton } from '@tupaia/ui-components';
 import {
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
   DataElementsPage,
+  DashboardItemsPage,
   DashboardRelationsPage,
   MapOverlayGroupRelationsPage,
   MapOverlayGroupsPage,
@@ -20,10 +22,11 @@ import {
   UsersPage,
   LogoutPage,
   PrivateRoute,
+  VizBuilderProviders,
+  VizBuilderApp,
 } from '@tupaia/admin-panel';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { PermissionsView } from '../views/AdminPanel/PermissionsView';
-import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
 import {
   ApprovedSurveyResponsesView,
   DraftSurveyResponsesView,
@@ -36,8 +39,36 @@ import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
 
-// Hide the new button until there is a viz builder in lesmis
-const MapOverlaysView = props => <MapOverlaysPage {...props} LinksComponent={null} />;
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+`;
+
+const renderNewVizButton = to => () => (
+  <StyledLink to={to}>
+    <LightOutlinedButton startIcon={<AddCircle />}>New</LightOutlinedButton>
+  </StyledLink>
+);
+
+const createDashboardItemsView = adminUrl => props => (
+  <DashboardItemsPage
+    {...props}
+    LinksComponent={renderNewVizButton(`${adminUrl}/viz-builder/dashboard-item/new`)}
+  />
+);
+
+const createMapOverlaysView = adminUrl => props => (
+  <MapOverlaysPage
+    {...props}
+    LinksComponent={renderNewVizButton(`${adminUrl}/viz-builder/map-overlay/new`)}
+  />
+);
 
 const getRoutes = adminUrl => [
   {
@@ -97,7 +128,7 @@ const getRoutes = adminUrl => [
       {
         label: 'Dashboard Items',
         to: '',
-        component: DashboardItemsView,
+        component: createDashboardItemsView(adminUrl),
       },
       {
         label: 'Dashboards',
@@ -112,7 +143,7 @@ const getRoutes = adminUrl => [
       {
         label: 'Map Overlays',
         to: '/map-overlays',
-        component: MapOverlaysView,
+        component: createMapOverlaysView(adminUrl),
       },
       {
         label: 'Map Overlay Groups',
@@ -171,6 +202,14 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
       <Route path={`${path}/logout`} exact>
         <LogoutPage />
       </Route>
+      <LesmisAdminRoute key={`${adminUrl}/viz-builder`} path={`${adminUrl}/viz-builder`} isBESAdmin>
+        <VizBuilderProviders>
+          <VizBuilderApp
+            basePath={adminUrl}
+            Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
+          />
+        </VizBuilderProviders>
+      </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
         <AdminPanelNavbar user={user} links={routes} />
         <div ref={headerEl} />

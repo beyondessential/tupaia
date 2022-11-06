@@ -5,12 +5,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
+import { getVizBuilderBasePath } from './utils';
 
 const Container = styled.main`
   display: flex;
@@ -22,12 +23,15 @@ const Container = styled.main`
 export const App = ({ Navbar, Footer }) => {
   const { data, isLoading: isUserLoading, isBESAdmin } = useUser();
 
+  const { pathname } = useLocation();
+  const basePath = getVizBuilderBasePath(pathname);
+
   if (isUserLoading) {
     return <FullPageLoader />;
   }
 
   if (!isBESAdmin) {
-    return <Redirect to="/" />;
+    return <Redirect to={basePath} />;
   }
 
   const user = { ...data, name: `${data.firstName} ${data.lastName}` };
@@ -37,10 +41,10 @@ export const App = ({ Navbar, Footer }) => {
       <Container>
         {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
         <Switch>
-          <Route path="/viz-builder/:vizType/new" exact>
+          <Route path={`${basePath}/viz-builder/:vizType/new`} exact>
             <CreateNew />
           </Route>
-          <Route path="/viz-builder/:vizType/:visualisationId?">
+          <Route path={`${basePath}/viz-builder/:vizType/:visualisationId?`}>
             <Main />
           </Route>
         </Switch>
