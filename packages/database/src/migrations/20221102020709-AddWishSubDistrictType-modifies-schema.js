@@ -1,6 +1,7 @@
 'use strict';
 
 import { TupaiaDatabase } from '../TupaiaDatabase';
+import { replaceEnum } from '../utilities';
 
 var dbm;
 var type;
@@ -16,6 +17,33 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const currentEntityTypes = [
+  'world',
+  'project',
+  'country',
+  'district',
+  'sub_district',
+  'facility',
+  'village',
+  'case',
+  'case_contact',
+  'disaster',
+  'school',
+  'catchment',
+  'sub_catchment',
+  'field_station',
+  'city',
+  'individual',
+  'sub_facility',
+  'postcode',
+  'household',
+  'larval_habitat',
+  'local_government',
+  'medical_area',
+  'nursing_zone',
+  'fetp_graduate',
+];
+
 exports.up = async function () {
   const db = new TupaiaDatabase();
   await db.executeSql(`
@@ -24,17 +52,10 @@ exports.up = async function () {
   return db.closeConnections();
 };
 
-exports.down = function (db) {
-  // In case we need to remove 'case' entity_type:
-  //
-  // To remove value for ALTER TYPE in psql:
-  //    alter table 'entity' alter 'type' type text;
-  //    drop type entity_type;
-  //    create type entity_type as enum('world', 'project', 'country',...);
-  //    alter table 'entity' alter 'type' type entity_type using type::entity_type;
-  //
-  // https://stackoverflow.com/a/56777227
-  return null;
+exports.down = async function () {
+  const db = new TupaiaDatabase();
+  await replaceEnum(db, 'entity_type', currentEntityTypes);
+  db.closeConnections();
 };
 
 exports._meta = {
