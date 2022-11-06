@@ -5145,6 +5145,7 @@ __metadata:
     nodemailer: ^4.7.0
     npm-run-all: ^4.1.5
     nyc: ^15.1.0
+    promptly: ^3.2.0
     public-ip: ^2.5.0
     react-autobind: ^1.0.6
     react-native-uuid: ^1.4.9
@@ -27859,6 +27860,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"promptly@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "promptly@npm:3.2.0"
+  dependencies:
+    read: ^1.0.4
+  checksum: 8bf4f346726c36ac96fbc0f52d810172b53dc61607ed884fa78bb7b57164070900a72e6525a480721d339001615450c37656caba37e4e7f1f9ec9b2c0bda7e19
+  languageName: node
+  linkType: hard
+
 "prompts@npm:2.4.0":
   version: 2.4.0
   resolution: "prompts@npm:2.4.0"
@@ -29725,7 +29735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"read@npm:1.0.x":
+"read@npm:1.0.x, read@npm:^1.0.4":
   version: 1.0.7
   resolution: "read@npm:1.0.7"
   dependencies:
