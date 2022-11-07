@@ -151,7 +151,7 @@ export const SyncStatus = props => {
   if (errorMessage) {
     return (
       <SyncStatusContainer>
-        <IconButton onClick={performManualSync}>
+        <IconButton className="sync-button" onClick={performManualSync}>
           <SyncIcon />
         </IconButton>
         <Tooltip title={errorMessage}>

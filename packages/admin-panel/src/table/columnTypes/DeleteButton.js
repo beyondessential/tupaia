@@ -11,7 +11,10 @@ import { IconButton } from '../../widgets';
 import { requestDeleteRecord } from '../actions';
 
 const DeleteButtonComponent = ({ dispatch, value, actionConfig, reduxId }) => (
-  <IconButton onClick={() => dispatch(requestDeleteRecord(reduxId, actionConfig.endpoint, value))}>
+  <IconButton
+    className="delete-button"
+    onClick={() => dispatch(requestDeleteRecord(reduxId, actionConfig.endpoint, value))}
+  >
     <DeleteIcon />
   </IconButton>
 );

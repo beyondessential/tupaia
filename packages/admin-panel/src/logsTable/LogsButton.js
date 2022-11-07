@@ -13,7 +13,7 @@ import { openLogsModal } from './actions';
 export const LogsButtonComponent = props => {
   const { openModal } = props;
   return (
-    <IconButton onClick={openModal}>
+    <IconButton className="logs-button" onClick={openModal}>
       <DescriptionIcon />
     </IconButton>
   );
