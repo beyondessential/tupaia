@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { HomeButton, NavBar } from '@tupaia/ui-components';
 import { AdminPanelProfileButton } from './AdminPanelProfileButton';
+import { useAdminPanelUrl } from '../../utils';
 
 const isTabActive = (match, location) => {
   if (!match) {
@@ -20,15 +21,19 @@ const StyledHomeButton = styled(HomeButton)`
   margin-bottom: 14px;
 `;
 
-export const AdminPanelNavbar = ({ links, user }) => (
-  <NavBar
-    HomeButton={<StyledHomeButton source="/lesmis-logo-white.svg" />}
-    links={links}
-    Profile={() => <AdminPanelProfileButton user={user} />}
-    isTabActive={isTabActive}
-    maxWidth="xl"
-  />
-);
+export const AdminPanelNavbar = ({ links, user }) => {
+  const adminUrl = useAdminPanelUrl();
+
+  return (
+    <NavBar
+      HomeButton={<StyledHomeButton source="/lesmis-logo-white.svg" homeUrl={adminUrl} />}
+      links={links}
+      Profile={() => <AdminPanelProfileButton user={user} />}
+      isTabActive={isTabActive}
+      maxWidth="xl"
+    />
+  );
+};
 
 AdminPanelNavbar.propTypes = {
   links: PropTypes.arrayOf(PropTypes.shape({})),

@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Switch, Redirect, Route, Link, useLocation, useRouteMatch } from 'react-router-dom';
+import { Switch, Redirect, Route, Link, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Assignment, InsertChart, PeopleAlt, AddCircle } from '@material-ui/icons';
 import { TabsToolbar, LightOutlinedButton } from '@tupaia/ui-components';
@@ -35,6 +35,7 @@ import {
 } from '../views/AdminPanel/SurveyResponsesView';
 import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
+import { useAdminPanelUrl } from '../utils';
 
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
@@ -176,31 +177,24 @@ const getRoutes = adminUrl => [
   },
 ];
 
-const getAdminUrl = pathname => {
-  const adminMatcher = 'admin';
-  const indexOfEndOfAdmin = pathname.indexOf(adminMatcher) + adminMatcher.length;
-  return pathname.substring(0, indexOfEndOfAdmin);
-};
-
 const AdminPanelApp = ({ user, isBESAdmin }) => {
   const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
-  const { pathname } = useLocation();
+  const adminUrl = useAdminPanelUrl();
 
   const getHeaderEl = () => {
     return headerEl;
   };
 
-  const adminUrl = getAdminUrl(pathname);
   const routes = getRoutes(adminUrl);
 
   return (
     <Switch>
       <Route path={`${path}/login`} exact>
-        <AdminPanelLoginPage redirectTo={`${adminUrl}/survey-responses`} />
+        <AdminPanelLoginPage />
       </Route>
       <Route path={`${path}/logout`} exact>
-        <LogoutPage />
+        <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
       <LesmisAdminRoute key={`${adminUrl}/viz-builder`} path={`${adminUrl}/viz-builder`} isBESAdmin>
         <VizBuilderProviders>

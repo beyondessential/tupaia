@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { LoginPage } from '@tupaia/admin-panel';
+import { useAdminPanelUrl } from '../../utils';
 
 const StyledImg = styled.img`
   height: 6rem;
@@ -16,10 +16,7 @@ const StyledImg = styled.img`
 
 const LoginPageLogo = () => <StyledImg src="/lesmis-logo.svg" alt="lesmis-logo" />;
 
-export const AdminPanelLoginPage = ({ redirectTo }) => (
-  <LoginPage redirectTo={redirectTo} LogoComponent={LoginPageLogo} />
-);
-
-AdminPanelLoginPage.propTypes = {
-  redirectTo: PropTypes.string.isRequired,
+export const AdminPanelLoginPage = () => {
+  const adminUrl = useAdminPanelUrl();
+  return <LoginPage redirectTo={`${adminUrl}/survey-responses`} LogoComponent={LoginPageLogo} />;
 };

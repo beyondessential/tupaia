@@ -5,11 +5,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
+import { useAdminPanelUrl } from '../../utils';
 
 export const AdminPanelProfileButton = ({ user }) => {
+  const adminUrl = useAdminPanelUrl();
   const ProfileLinks = () => (
     <>
-      <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
+      <ProfileButtonItem to={`${adminUrl}/logout`}>Logout</ProfileButtonItem>
     </>
   );
   return <ProfileButton user={user} MenuOptions={ProfileLinks} />;
