@@ -126,7 +126,7 @@ export const constructForSingle = (models, recordType) => {
         entity_types: [
           async entityTypes => {
             const entityTypeValidator = constructIsValidEntityType(models.entity);
-            await Promise.all(entityTypes).map(entityTypeValidator);
+            await Promise.all(entityTypes.map(entityTypeValidator));
           },
         ],
         permission_groups: [
@@ -255,6 +255,7 @@ export const constructForSingle = (models, recordType) => {
         logo_url: [isAString],
         entityTypes: [
           async selectedEntityTypes => {
+            console.log(selectedEntityTypes);
             if (!selectedEntityTypes) {
               return true;
             }

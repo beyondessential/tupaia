@@ -102,7 +102,7 @@ const NEW_PROJECT_COLUMNS = [
   },
   {
     Header: 'Canonical Types (leave blank for default)',
-    source: 'entityType',
+    source: 'entityTypes',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
