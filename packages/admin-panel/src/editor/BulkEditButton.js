@@ -12,7 +12,10 @@ import { openBulkEditModal } from './actions';
 
 export const BulkEditButtonComponent = ({ dispatch, value: recordId, actionConfig, row }) => {
   return (
-    <IconButton onClick={() => dispatch(openBulkEditModal(actionConfig, recordId, row))}>
+    <IconButton
+      id="page-button-bulk-edit"
+      onClick={() => dispatch(openBulkEditModal(actionConfig, recordId, row))}
+    >
       <EditIcon />
     </IconButton>
   );
