@@ -4,11 +4,10 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Switch, Redirect, Route, Link, useRouteMatch } from 'react-router-dom';
+import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Assignment, InsertChart, PeopleAlt, AddCircle } from '@material-ui/icons';
-import { TabsToolbar, LightOutlinedButton } from '@tupaia/ui-components';
+import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
+import { TabsToolbar } from '@tupaia/ui-components';
 import {
   DashboardsPage,
   QuestionsPage,
@@ -39,37 +38,6 @@ import { useAdminPanelUrl } from '../utils';
 
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  &:focus,
-  &:hover,
-  &:visited,
-  &:link,
-  &:active {
-    text-decoration: none;
-  }
-`;
-
-const renderNewVizButton = to => () => (
-  <StyledLink to={to}>
-    <LightOutlinedButton startIcon={<AddCircle />}>New</LightOutlinedButton>
-  </StyledLink>
-);
-
-const createDashboardItemsView = adminUrl => props => (
-  <DashboardItemsPage
-    {...props}
-    LinksComponent={renderNewVizButton(`${adminUrl}/viz-builder/dashboard-item/new`)}
-  />
-);
-
-const createMapOverlaysView = adminUrl => props => (
-  <MapOverlaysPage
-    {...props}
-    LinksComponent={renderNewVizButton(`${adminUrl}/viz-builder/map-overlay/new`)}
-  />
-);
 
 const getRoutes = adminUrl => [
   {
@@ -129,7 +97,7 @@ const getRoutes = adminUrl => [
       {
         label: 'Dashboard Items',
         to: '',
-        component: createDashboardItemsView(adminUrl),
+        component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
       },
       {
         label: 'Dashboards',
@@ -144,7 +112,7 @@ const getRoutes = adminUrl => [
       {
         label: 'Map Overlays',
         to: '/map-overlays',
-        component: createMapOverlaysView(adminUrl),
+        component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
       },
       {
         label: 'Map Overlay Groups',
