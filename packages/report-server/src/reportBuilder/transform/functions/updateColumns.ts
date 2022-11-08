@@ -46,9 +46,7 @@ const updateColumns = (table: TransformTable, params: UpdateColumnsParams, conte
       const columnName = parser.evaluate(key);
       const columnValue = parser.evaluate(expression);
       if (!newColumns[columnName]) {
-        newColumns[columnName] = table.hasColumn(columnName)
-          ? table.getColumnValues(columnName) // Upserting a column, so fill with current column values
-          : new Array(table.length()).fill(undefined); // Creating a new column, so fill with undefined
+        newColumns[columnName] = new Array(table.length()).fill(undefined);
       }
       newColumns[columnName].splice(rowIndex, 1, columnValue);
     });

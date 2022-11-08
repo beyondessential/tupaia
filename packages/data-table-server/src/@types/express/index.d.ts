@@ -5,6 +5,8 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { DataTableService } from '../../dataTableService';
+import { DataTableType } from '../../models';
 import { DataTableServerModelRegistry } from '../../types';
 
 declare global {
@@ -12,7 +14,11 @@ declare global {
     export interface Request {
       accessPolicy: AccessPolicy;
       models: DataTableServerModelRegistry;
-      ctx: { services: TupaiaApiClient };
+      ctx: {
+        services: TupaiaApiClient;
+        dataTable: DataTableType;
+        dataTableService: DataTableService;
+      };
     }
   }
 }

@@ -130,9 +130,11 @@ class DataFetchingTableComponent extends React.Component {
         freezeWhenExpanded
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
-        ExpanderComponent={({ isExpanded }) =>
-          isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />
-        }
+        ExpanderComponent={({ isExpanded }) => (
+          <div className="expander">
+            {isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />}
+          </div>
+        )}
         getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&

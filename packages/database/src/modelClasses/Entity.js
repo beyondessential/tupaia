@@ -305,12 +305,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return EntityType;
   }
 
-  // Some cached functions within Entity need to be invalidated if an entity relation is changed,
-  // and therefore the hierarchy cache has been rebuilt.
-  // Note: we don't use ancestor_descendant_relation as the dependency, as adding change triggers
-  // to that table slows down the rebuilds considerably (40s -> 200s for full initial build)
+  // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
   get cacheDependencies() {
-    return [TYPES.ENTITY_RELATION, TYPES.ENTITY_HIERARCHY];
+    return [TYPES.ANCESTOR_DESCENDANT_RELATION];
   }
 
   customColumnSelectors = {
