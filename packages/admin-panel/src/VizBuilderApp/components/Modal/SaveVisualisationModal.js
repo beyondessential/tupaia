@@ -6,7 +6,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link as RouterLink, useParams, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 
@@ -23,7 +23,7 @@ import {
 import { MODAL_STATUS, VIZ_TYPE_PARAM } from '../../constants';
 import { useVizConfig, useVisualisation } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
-import { getVizBuilderBasePath } from '../../utils';
+import { useVizBuilderBasePath } from '../../utils';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
@@ -42,8 +42,7 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [_, { setVisualisationValue }] = useVizConfig();
   const { visualisation } = useVisualisation();
 
-  const { pathname } = useLocation();
-  const basePath = getVizBuilderBasePath(pathname);
+  const basePath = useVizBuilderBasePath();
   const { vizType } = useParams();
 
   const useSaveViz = () => {
