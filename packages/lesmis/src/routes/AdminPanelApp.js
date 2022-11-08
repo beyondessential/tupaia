@@ -164,7 +164,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
       <Route path={`${path}/logout`} exact>
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
-      <LesmisAdminRoute key={`${adminUrl}/viz-builder`} path={`${adminUrl}/viz-builder`} isBESAdmin>
+      <LesmisAdminRoute key={`${adminUrl}/viz-builder`} path={`${path}/viz-builder`} isBESAdmin>
         <VizBuilderProviders>
           <VizBuilderApp
             basePath={adminUrl}
