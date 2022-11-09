@@ -6,6 +6,6 @@
 export * from './actions';
 export { LOGOUT, VIZ_BUILDER_USER_PERMISSION_GROUP } from './constants';
 export * from './selectors';
-export { reducer, reduceIsVizBuilderUser } from './reducer';
+export { reducer } from './reducer';
 export { ProfileButton } from './ProfileButton';
 export { PrivateRoute } from './PrivateRoute';
