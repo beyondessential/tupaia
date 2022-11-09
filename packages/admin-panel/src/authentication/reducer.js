@@ -2,11 +2,9 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { AccessPolicy } from '@tupaia/access-policy';
 import { createTransform } from 'redux-persist';
 import { createReducer } from '../utilities';
 import {
-  VIZ_BUILDER_USER_PERMISSION_GROUP,
   EMAIL_ADDRESS_CHANGE,
   PASSWORD_CHANGE,
   LOGIN_MODAL_TOGGLE,
@@ -42,10 +40,6 @@ const logoutStateUpdater = (payload, currentState) => ({
   emailAddress: currentState.emailAddress, // But, remember user's email address
 });
 
-export const reduceIsVizBuilderUser = policy => {
-  return new AccessPolicy(policy).allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
-};
-
 const stateChanges = {
   [LOGIN_MODAL_TOGGLE]: payload => payload,
   [EMAIL_ADDRESS_CHANGE]: payload => payload,
@@ -58,7 +52,6 @@ const stateChanges = {
       rememberMe: currentState.rememberMe,
       emailAddress: currentState.emailAddress,
       password: currentState.password,
-      isVizBuilderUser: reduceIsVizBuilderUser(payload.user.accessPolicy),
     };
   },
   [LOGIN_REQUEST]: () => ({ isLoading: true }),

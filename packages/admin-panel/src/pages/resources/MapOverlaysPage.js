@@ -7,10 +7,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { LightOutlinedButton } from '@tupaia/ui-components';
-import { connect } from 'react-redux';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
-import { getIsVizBuilderUser } from '../../authentication';
+import { useUser } from '../../VizBuilderApp/api';
 import { prettyArray } from '../../utilities';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -140,7 +139,8 @@ const renderNewMapOverlayVizButton = () => (
   </StyledLink>
 );
 
-const MapOverlaysPageComponent = ({ getHeaderEl, isVizBuilderUser, ...props }) => {
+export const MapOverlaysPage = ({ getHeaderEl, ...props }) => {
+  const { isVizBuilderUser } = useUser();
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -209,17 +209,6 @@ const MapOverlaysPageComponent = ({ getHeaderEl, isVizBuilderUser, ...props }) =
   );
 };
 
-MapOverlaysPageComponent.propTypes = {
+MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isVizBuilderUser: PropTypes.bool,
 };
-
-MapOverlaysPageComponent.defaultProps = {
-  isVizBuilderUser: false,
-};
-
-const mapStateToProps = state => ({
-  isVizBuilderUser: getIsVizBuilderUser(state),
-});
-
-export const MapOverlaysPage = connect(mapStateToProps)(MapOverlaysPageComponent);

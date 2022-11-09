@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import thunk from 'redux-thunk';
 import localforage from 'localforage';
 import { persistReducer, persistStore } from 'redux-persist';
@@ -39,6 +40,7 @@ export const StoreProvider = React.memo(({ children, api, persist }) => {
   const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
   const store = createStore(persistedRootReducer, initialState, composedEnhancers);
   const persistor = persistStore(store);
+  const queryClient = new QueryClient();
 
   api.injectReduxStore(store);
 
@@ -49,7 +51,7 @@ export const StoreProvider = React.memo(({ children, api, persist }) => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
-        {children}
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </PersistGate>
     </Provider>
   );
