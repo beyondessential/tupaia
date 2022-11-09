@@ -49,6 +49,8 @@ const SERVICES = {
   },
 };
 
+const DOMAIN = process.env.DOMAIN ?? 'tupaia.org';
+
 const getLocalUrl = (service: ServiceName): string =>
   `http://localhost:${SERVICES[service].localPort}/${SERVICES[service].version}`;
 export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
@@ -61,7 +63,7 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
 const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
   const { subdomain, version } = SERVICES[service];
   const fullSubdomain = subdomainPrefix ? `${subdomainPrefix}-${subdomain}` : subdomain;
-  return `https://${fullSubdomain}.tupaia.org/${version}`;
+  return `https://${fullSubdomain}.${DOMAIN}/${version}`;
 };
 
 export const DEV_BASE_URLS: ServiceBaseUrlSet = {
@@ -103,7 +105,7 @@ const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
 
   // production uses standard base urls
   const [subdomain] = hostname.split('.');
-  if (hostname === 'tupaia.org' || productionSubdomainSet.has(subdomain)) {
+  if (hostname === DOMAIN || productionSubdomainSet.has(subdomain)) {
     return PRODUCTION_BASE_URLS;
   }
 
