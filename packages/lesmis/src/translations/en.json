@@ -114,7 +114,9 @@
     "loginToYourAccount": "Login to your account",
     "password": "Password",
     "dontHaveAccess": "Don't have access?",
-    "registerHere": "Register here"
+    "requestAnAccount": "ສະເໜີຂໍສ້າງບັນຊີ",
+    "registerHere": "Register here",
+    "rememberMe": "Remember me"
   },
   "register": {
     "forAnAccount": "Register for an account",

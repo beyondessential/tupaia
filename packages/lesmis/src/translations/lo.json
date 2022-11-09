@@ -110,7 +110,9 @@
     "loginToYourAccount": "ເຂົ້າສູ່ບັນຊີຂອງທ່ານ",
     "password": "ລະຫັດຜ່ານ",
     "dontHaveAccess": "ບໍ່ມີບັນຊີເຂົ້າ?",
-    "registerHere": "ສະໝັກສະມາຊິກ"
+    "requestAnAccount": "ສະເໜີຂໍສ້າງບັນຊີ",
+    "registerHere": "ສະໝັກສະມາຊິກ",
+    "rememberMe": "Remember me"
   },
   "register": {
     "forAnAccount": "ສະໝັກບັນຊີ",

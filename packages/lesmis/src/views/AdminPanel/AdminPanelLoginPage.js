@@ -5,8 +5,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { LoginPage } from '@tupaia/admin-panel';
 import { useAdminPanelUrl } from '../../utils';
+import { LoginPage } from './pages/LoginPage';
 
 const StyledImg = styled.img`
   height: 6rem;
