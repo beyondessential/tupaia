@@ -131,5 +131,26 @@
     "agreeToTerms": "I agree to the terms and conditions",
     "password": "Password *",
     "confirmPassword": "Confirm Password *"
+  },
+  "admin": {
+    "surveyResponsesForReview": "Survey Responses For Review",
+    "approvalNotRequiredSurveyResponses": "Approval Not Required Survey Responses",
+    "rejectedSurveyResponses": "Rejected Survey Responses",
+    "approvedSurveyResponses": "Approved Survey Responses",
+    "review": "Review",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "approvalNotRequired": "Approval Not Required",
+    "entity": "Entity",
+    "survey": "Survey",
+    "assessor": "Assessor",
+    "dateOfSurvey": "Date of Survey",
+    "dateOfData": "Date of Data",
+    "export": "Export",
+    "edit": "Edit",
+    "approve": "Approve",
+    "reject": "Reject",
+    "delete": "Delete",
+    "approvalStatus": "Approval Status"
   }
 }

@@ -127,5 +127,26 @@
     "agreeToTerms": "ຂ້ອຍເຫັນດີ ກັບ ຂໍ້ກຳນົດ ແລະ ເງື່ອນໄຂ",
     "password": "ລະຫັດຜ່ານ *",
     "confirmPassword": "ຢືນຢັນລະຫັດຜ່ານ *"
+  },
+  "admin": {
+    "surveyResponsesForReview": "ຄໍາຕອບບົດສຳຫຼວດ ເພື່ອກວດຄືນ",
+    "approvalNotRequiredSurveyResponses": "Approval Not Required Survey Responses",
+    "rejectedSurveyResponses": "Rejected Survey Responses",
+    "approvedSurveyResponses": "Approved Survey Responses",
+    "review": "ກວດຄືນ",
+    "approved": "ອະນຸມັດ",
+    "rejected": "ປະຕິເສດ",
+    "approvalNotRequired": "ການອະນຸມັດ ບໍ່ຈໍາເປັນ",
+    "entity": "ນິຕິບຸກຄົນ",
+    "survey": "ການສໍາຫຼວດ",
+    "assessor": "ຜູ້ປະເມີນ",
+    "dateOfSurvey": "ວັນທີຂອງການສໍາຫຼວດ",
+    "dateOfData": "ວັນທີຂອງຂໍ້ມູນ",
+    "export": "ແອັກສ໌ປອດ ຂໍ້ມູນ",
+    "edit": "ແກ້ໄຂ",
+    "approve": "ອະນຸມັດ",
+    "reject": "ປະຕິເສດ",
+    "delete": "ລຶບ",
+    "approvalStatus": "Approval Status"
   }
 }
