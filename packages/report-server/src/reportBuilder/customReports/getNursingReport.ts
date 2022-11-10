@@ -87,7 +87,10 @@ export const getNursingReport = async (
   dataSetCode: string,
 ) => {
   const serverName = 'palau';
-  const { PALAU_DHIS_API_URL: serverUrl } = process.env;
+  const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
+  const serverUrl = isProduction
+    ? 'https://dhis2.palauhealth.org'
+    : 'https://dev-dhis2.palauhealth.org';
   const serverReadOnly = false;
   const dhisApi = new DhisApi(serverName, serverUrl, serverReadOnly);
   const { organisationUnitCodes: entityCodes, hierarchy } = query;
