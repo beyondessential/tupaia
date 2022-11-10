@@ -10,6 +10,10 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
+// NOTE: These hard coded entity types are now a legacy pattern
+// Users can now create their own entity types
+// The up-to-date list of entity types can be found by calling
+// entityModel.getEntityTypes()
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
@@ -492,5 +496,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     }
 
     return level;
+  }
+
+  async getEntityTypes() {
+    const entityTypes = await this.database.executeSql(
+      `SELECT UNNEST(enum_range(null::entity_type)) as type;`,
+    );
+    return entityTypes.map(({ type }) => type);
   }
 }
