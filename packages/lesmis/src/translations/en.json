@@ -151,6 +151,12 @@
     "approve": "Approve",
     "reject": "Reject",
     "delete": "Delete",
-    "approvalStatus": "Approval Status"
+    "approvalStatus": "Approval Status",
+    "surveyData": "Survey Data",
+    "importSurveyResponses": "Import Survey Responses",
+    "import": "Import",
+    "surveys": "Surveys",
+    "questions": "Questions",
+    "cancel": "Cancel"
   }
 }

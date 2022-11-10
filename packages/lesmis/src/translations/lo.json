@@ -147,6 +147,12 @@
     "approve": "ອະນຸມັດ",
     "reject": "ປະຕິເສດ",
     "delete": "ລຶບ",
-    "approvalStatus": "Approval Status"
+    "approvalStatus": "Approval Status",
+    "surveyData": "Survey Data",
+    "importSurveyResponses": "Import Survey Responses",
+    "import": "ນໍາເຂົ້າ",
+    "surveys": "ການສໍາຫຼວດ",
+    "questions": "ຄຳຖາມ",
+    "cancel": "ຍົກເລີກ"
   }
 }

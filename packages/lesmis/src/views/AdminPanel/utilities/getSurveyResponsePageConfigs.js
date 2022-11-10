@@ -4,6 +4,8 @@
  */
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
+import { getImportModalText } from './getImportModalText';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
@@ -53,7 +55,7 @@ const entityName = {
   },
 };
 
-export const getSurveyResponsePageColumns = translate => {
+export const getSurveyResponsePageConfigs = (translate, translateFromEn) => {
   const SURVEY_RESPONSE_COLUMNS = [
     surveyName,
     assessorName,
@@ -91,22 +93,52 @@ export const getSurveyResponsePageColumns = translate => {
     ].map(field => ({ ...field, Header: translate(field.Header) })),
   };
 
-  return [
-    entityName,
-    ...SURVEY_RESPONSE_COLUMNS,
-    {
-      Header: 'admin.edit',
-      type: 'edit',
-      source: 'id',
-      actionConfig,
-    },
-    {
-      Header: 'admin.delete',
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: 'surveyResponses',
+  const importModalText = getImportModalText(translate);
+  const importConfig = {
+    title: translate('admin.importSurveyResponses'),
+    actionConfig: {
+      importEndpoint: 'surveyResponses',
+      extraQueryParameters: {
+        timeZone: getBrowserTimeZone(),
+        respondWithEmailTimeout: 10 * 1000, // if an import doesn't finish in 10 seconds, email results
       },
     },
-  ];
+    queryParameters: [
+      {
+        label: translate('admin.survey'),
+        secondaryLabel:
+          'Please enter the surveys for the responses to be imported against. Each tab in the file should be a matching survey code. Leave blank to import all tabs.',
+        parameterKey: 'surveyCodes',
+        optionsEndpoint: 'surveys',
+        optionValueKey: 'code',
+        allowMultipleValues: true,
+      },
+    ],
+    ...importModalText,
+  };
+
+  const exportConfig = {};
+
+  return {
+    columns: [
+      entityName,
+      ...SURVEY_RESPONSE_COLUMNS,
+      {
+        Header: 'admin.edit',
+        type: 'edit',
+        source: 'id',
+        actionConfig,
+      },
+      {
+        Header: 'admin.delete',
+        source: 'id',
+        type: 'delete',
+        actionConfig: {
+          endpoint: 'surveyResponses',
+        },
+      },
+    ],
+    importConfig,
+    // exportConfig,
+  };
 };
