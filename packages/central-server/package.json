@@ -24,7 +24,8 @@
     "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test NODE_ENV=test mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "create-meditrak-sync-view": "node dist/createMeditrakSyncView.js",
-    "change-api-client-secret": "node dist/changeApiClientSecret.js"
+    "change-api-client-secret": "node dist/changeApiClientSecret.js",
+    "rebuild-ancestor-descendant-relation": "node dist/rebuildAncestorDescendantRelation.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
