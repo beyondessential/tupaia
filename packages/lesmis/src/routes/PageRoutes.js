@@ -21,7 +21,7 @@ import { ExportView, PDF_DOWNLOAD_VIEW } from '../views/ExportView';
 import { getAdminApiUrl } from '../utils/getAdminApiUrl';
 
 const AdminPanel = lazy(() => import('./AdminPanelApp'));
-const adminPanelConfig = { apiUrl: `${getAdminApiUrl()}/v1` };
+const adminPanelConfig = { apiUrl: `${getAdminApiUrl()}` };
 
 /**
  * Main Page Routes
