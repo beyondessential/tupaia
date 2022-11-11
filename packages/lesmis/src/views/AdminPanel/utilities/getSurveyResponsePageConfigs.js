@@ -4,8 +4,8 @@
  */
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getImportModalText } from './getImportModalText';
+import { getSurveyResponsesExportModal } from '../components/getSurveyResponsesExportModal';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
@@ -55,7 +55,7 @@ const entityName = {
   },
 };
 
-export const getSurveyResponsePageConfigs = (translate, translateFromEn) => {
+export const getSurveyResponsePageConfigs = translate => {
   const SURVEY_RESPONSE_COLUMNS = [
     surveyName,
     assessorName,
@@ -117,7 +117,12 @@ export const getSurveyResponsePageConfigs = (translate, translateFromEn) => {
     ...importModalText,
   };
 
-  const exportConfig = {};
+  const exportConfig = {
+    exportButtonText: translate('admin.export'),
+    cancelButtonText: translate('admin.cancel'),
+    isExportingMessage:
+      'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
+  };
 
   return {
     columns: [
@@ -139,6 +144,7 @@ export const getSurveyResponsePageConfigs = (translate, translateFromEn) => {
       },
     ],
     importConfig,
-    // exportConfig,
+    exportConfig,
+    ExportModalComponent: getSurveyResponsesExportModal(translate),
   };
 };

@@ -7,10 +7,15 @@ import { PropTypes } from 'prop-types';
 
 import { SurveyResponsesPage } from '@tupaia/admin-panel';
 import { ApproveButton, RejectButton } from '../../components';
-import { getSurveyResponsePageConfigs } from './utilities/getSurveyResponsePageConfigs';
+import { getSurveyResponsePageConfigs } from './pages/helpers/getSurveyResponsePageConfigs';
 
 export const ApprovedSurveyResponsesView = props => {
-  const { columns: COLUMNS, importConfig } = getSurveyResponsePageConfigs(props.translate);
+  const {
+    columns: COLUMNS,
+    importConfig,
+    exportConfig,
+    ExportModalComponent,
+  } = getSurveyResponsePageConfigs(props);
 
   return (
     <SurveyResponsesPage
@@ -21,13 +26,20 @@ export const ApprovedSurveyResponsesView = props => {
         Header: props.translate(column.Header),
       }))}
       importConfig={importConfig}
+      exportConfig={exportConfig}
+      ExportModalComponent={ExportModalComponent}
       {...props}
     />
   );
 };
 
 export const RejectedSurveyResponsesView = props => {
-  const { columns: COLUMNS, importConfig } = getSurveyResponsePageConfigs(props.translate);
+  const {
+    columns: COLUMNS,
+    importConfig,
+    exportConfig,
+    ExportModalComponent,
+  } = getSurveyResponsePageConfigs(props);
 
   return (
     <SurveyResponsesPage
@@ -38,13 +50,20 @@ export const RejectedSurveyResponsesView = props => {
         Header: props.translate(column.Header),
       }))}
       importConfig={importConfig}
+      exportConfig={exportConfig}
+      ExportModalComponent={ExportModalComponent}
       {...props}
     />
   );
 };
 
 export const DraftSurveyResponsesView = props => {
-  const { columns: COLUMNS, importConfig } = getSurveyResponsePageConfigs(props.translate);
+  const {
+    columns: COLUMNS,
+    importConfig,
+    exportConfig,
+    ExportModalComponent,
+  } = getSurveyResponsePageConfigs(props);
 
   const DRAFT_COLUMNS = [
     ...COLUMNS.filter(column => column.type !== 'delete'),
@@ -77,12 +96,19 @@ export const DraftSurveyResponsesView = props => {
         Header: props.translate(column.Header),
       }))}
       importConfig={importConfig}
+      exportConfig={exportConfig}
+      ExportModalComponent={ExportModalComponent}
     />
   );
 };
 
 export const NonApprovalSurveyResponsesView = props => {
-  const { columns: COLUMNS, importConfig } = getSurveyResponsePageConfigs(props.translate);
+  const {
+    columns: COLUMNS,
+    importConfig,
+    exportConfig,
+    ExportModalComponent,
+  } = getSurveyResponsePageConfigs(props);
 
   // Don't include the approval column for the non-approval survey responses
   const EDIT_CONFIG = COLUMNS.find(column => column.type === 'edit');
@@ -104,6 +130,8 @@ export const NonApprovalSurveyResponsesView = props => {
         Header: props.translate(column.Header),
       }))}
       importConfig={importConfig}
+      exportConfig={exportConfig}
+      ExportModalComponent={ExportModalComponent}
     />
   );
 };
