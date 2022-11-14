@@ -22,16 +22,14 @@ const MAX_RETRIES = 1;
 export class SupersetApi {
   protected serverName: string;
   protected baseUrl: string;
-  protected insecure: boolean;
   protected accessToken: string | null = null;
   protected proxyAgent?: HttpsProxyAgent;
 
-  public constructor(serverName: string, baseUrl: string, insecure: boolean = false) {
+  public constructor(serverName: string, baseUrl: string) {
     if (!serverName) throw new Error('Argument serverName required');
     if (!baseUrl) throw new Error('Argument baseUrl required');
     this.serverName = serverName;
     this.baseUrl = baseUrl;
-    this.insecure = insecure;
     const proxyUrl = this.getServerVariable('SUPERSET_API_PROXY_URL');
     if (proxyUrl) {
       winston.info(`Superset using proxy`);
@@ -117,22 +115,14 @@ export class SupersetApi {
     reqBody: NeedleBodyData = {},
     options: NeedleOptions = {},
   ): Promise<NeedleResponse> {
-    // We use the `needle` package instead of the built-in `node-fetch` package
-    // because the fetch package does not let us set rejectUnauthorized=false
-    // to avoid SSL issues. It only lets us set agent, but we need to be able
-    // to set a proxy as the agent instead. So we have to use something that lets
-    // us do this, and needle is one such package.
+    // We used the `needle` package because it let us fetch against invalid certificates, this is no longer
+    // needed, can switch to standard fetch now
     const opts: any = {
       ...options,
     };
-    if (this.insecure) opts.rejectUnauthorized = false;
     if (this.proxyAgent) opts.agent = this.proxyAgent;
     winston.info(`Superset request ${method} ${url}`);
 
-    // TODO: opts.rejectUnauthorized not working, bad workaround for now
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-    const x = await needle(method, url, reqBody, opts);
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = undefined;
-    return x;
+    return needle(method, url, reqBody, opts);
   }
 }
