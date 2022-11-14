@@ -9,13 +9,7 @@ import {
 } from './types';
 import winston from 'winston';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import needle from 'needle';
-import type {
-  NeedleHttpVerbs,
-  BodyData as NeedleBodyData,
-  NeedleOptions,
-  NeedleResponse,
-} from 'needle';
+import fetch, { RequestInit, Response } from 'node-fetch';
 
 const MAX_RETRIES = 1;
 
@@ -51,27 +45,33 @@ export class SupersetApi {
       return this.fetch(url, numRetries + 1);
     }
 
-    const fetchConfig: any = {
+    const options: RequestInit = {
+      method: 'get',
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         'Content-Type': 'application/json',
       },
     };
-    const result = await this.apiRequest('get', url, undefined, fetchConfig);
+    const result = await this.apiRequest(url, options);
 
-    if (result.statusCode !== 200) {
-      if (result.statusCode === 422 || result.statusCode === 401) {
+    if (result.status !== 200) {
+      if (result.status === 422 || result.status === 401) {
         winston.info(`Superset Auth error, response: ${result.body}`);
         await this.refreshAccessToken();
         return this.fetch(url, numRetries + 1);
       }
 
       throw new Error(
-        `Error response from Superset API. Status: ${result.statusCode}, body: ${result.body}`,
+        `Error response from Superset API. Status: ${result.status}, body: ${result.body}`,
       );
     }
 
-    return result.body as T;
+    try {
+      const json = await result.json();
+      return json as T;
+    } catch (e) {
+      throw new Error(`Invalid response ${e}`);
+    }
   }
 
   protected getServerVariable(variableName: string) {
@@ -94,35 +94,31 @@ export class SupersetApi {
     };
 
     const url = `${this.baseUrl}/api/v1/security/login`;
-    const fetchConfig: any = {
+    const options: RequestInit = {
+      method: 'post',
+      body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     };
-    const result = await this.apiRequest('post', url, body, fetchConfig);
+    const result = await this.apiRequest(url, options);
 
-    if (result.statusCode !== 200) {
+    if (result.status !== 200) {
       throw new Error(
-        `Superset failed to refresh access token. Status: ${result.statusCode}, body: ${result.body}`,
+        `Superset failed to refresh access token. Status: ${result.status}, body: ${result.body}`,
       );
     }
 
-    const { access_token } = result.body as SecurityLoginResponseBodySchema;
-    this.accessToken = access_token;
+    try {
+      const json = await result.json();
+      const { access_token } = json as SecurityLoginResponseBodySchema;
+      this.accessToken = access_token;
+    } catch (e) {
+      throw new Error(`Invalid response ${e}`);
+    }
   }
 
-  protected async apiRequest(
-    method: NeedleHttpVerbs,
-    url: string,
-    reqBody: NeedleBodyData = {},
-    options: NeedleOptions = {},
-  ): Promise<NeedleResponse> {
-    // We used the `needle` package because it let us fetch against invalid certificates, this is no longer
-    // needed, can switch to standard fetch now
-    const opts: any = {
-      ...options,
-    };
-    if (this.proxyAgent) opts.agent = this.proxyAgent;
-    winston.info(`Superset request ${method} ${url}`);
-
-    return needle(method, url, reqBody, opts);
+  protected async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
+    if (this.proxyAgent) options.agent = this.proxyAgent;
+    winston.info(`Superset request ${options.method} ${url}`);
+    return fetch(url, options);
   }
 }
