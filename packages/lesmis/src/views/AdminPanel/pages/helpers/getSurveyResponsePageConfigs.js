@@ -5,7 +5,7 @@
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { getImportModalText } from './getImportModalText';
-import { getSurveyResponsesExportModal } from '../components/getSurveyResponsesExportModal';
+import { getSurveyResponsesExportModal } from '../../components/getSurveyResponsesExportModal';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
