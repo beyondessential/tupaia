@@ -6,13 +6,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
+import { SmallAlert, ConfirmDeleteModal, TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
 import queryString from 'query-string';
 import { Tabs } from '../widgets';
 import { TableHeadCell } from './TableHeadCell';
-import { ColumnFilter } from './ColumnFilter';
 import {
   cancelAction,
   changeExpansions,
@@ -28,7 +27,7 @@ import {
 import { getTableState, getIsFetchingData } from './selectors';
 import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
-import { makeSubstitutionsInString } from '../utilities';
+import { labelToId, makeSubstitutionsInString } from '../utilities';
 import { customPagination } from './customPagination';
 import { ExpansionContainer } from './ExpansionContainer';
 import { StyledReactTable } from './StyledReactTable';
@@ -105,6 +104,7 @@ class DataFetchingTableComponent extends React.Component {
       expansionTabStates,
       onExpandedTabChange,
       nestingLevel,
+      translate,
     } = this.props;
 
     return (
@@ -128,7 +128,15 @@ class DataFetchingTableComponent extends React.Component {
         loading={isFetchingData || isChangingDataOnServer}
         filterable
         freezeWhenExpanded
-        FilterComponent={ColumnFilter}
+        FilterComponent={({ column, filter, onChange }) => (
+          <TextField
+            type="text"
+            placeholder={translate('Type to filter')}
+            value={filter ? filter.value : ''}
+            onChange={event => onChange(event.target.value)}
+            id={`dataTableColumnFilter-${labelToId(column?.id)}`}
+          />
+        )}
         ThComponent={TableHeadCell}
         ExpanderComponent={({ isExpanded }) => (
           <div className="expander">
@@ -221,6 +229,7 @@ DataFetchingTableComponent.propTypes = {
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
+  translate: PropTypes.func,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -230,6 +239,7 @@ DataFetchingTableComponent.defaultProps = {
   errorMessage: '',
   numberOfPages: 0,
   nestingLevel: 0,
+  translate: text => text,
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({

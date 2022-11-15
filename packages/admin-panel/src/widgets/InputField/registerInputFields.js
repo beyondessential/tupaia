@@ -75,6 +75,7 @@ export const registerInputFields = () => {
     <Select
       id={props.id}
       label={props.label}
+      placeholder={props.placeholder}
       helperText={props.secondaryLabel}
       value={props.value || ''}
       options={props.options}
