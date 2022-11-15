@@ -6,6 +6,7 @@ import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { getImportModalText } from './getImportModalText';
 import { getSurveyResponsesExportModal } from '../../components/getSurveyResponsesExportModal';
+import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
@@ -13,56 +14,60 @@ const APPROVAL_STATUS_TYPES = [
   { label: 'Approved', value: 'approved' },
 ];
 
-const surveyName = {
-  Header: 'admin.survey',
-  source: 'survey.name',
-  editable: false,
-  type: 'tooltip',
-};
+//       Filter: getColumnFilter(translate),
 
-const assessorName = {
-  Header: 'admin.assessor',
-  source: 'assessor_name',
-  editable: false,
-};
+export const getSurveyResponsePageConfigs = ({ translate }) => {
+  const surveyName = {
+    Header: translate('admin.survey'),
+    source: 'survey.name',
+    editable: false,
+    Filter: getColumnFilter(translate),
+  };
 
-const date = {
-  Header: 'admin.dateOfSurvey',
-  source: 'end_time',
-  type: 'tooltip',
-  accessor: row => moment(row.end_time).local().format('ddd, MMM Do YYYY, HH:mm:ss ZZ'),
-  filterable: false,
-  editable: false,
-};
+  const assessorName = {
+    Header: translate('admin.assessor'),
+    source: 'assessor_name',
+    editable: false,
+    Filter: getColumnFilter(translate),
+  };
 
-const dateOfData = {
-  Header: 'admin.dateOfData',
-  source: 'data_time',
-  type: 'tooltip',
-  accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
-  filterable: false,
-  editConfig: {
-    type: 'datetime-utc',
-    accessor: record => moment.parseZone(record.data_time).toString(),
-  },
-};
+  const date = {
+    Header: translate('admin.dateOfSurvey'),
+    source: 'end_time',
+    type: 'tooltip',
+    accessor: row => moment(row.end_time).local().format('ddd, MMM Do YYYY, HH:mm:ss ZZ'),
+    filterable: false,
+    editable: false,
+  };
 
-const entityName = {
-  Header: 'admin.entity',
-  source: 'entity.name',
-  editConfig: {
-    optionsEndpoint: 'entities',
-  },
-};
+  const dateOfData = {
+    Header: translate('admin.dateOfData'),
+    source: 'data_time',
+    type: 'tooltip',
+    accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
+    filterable: false,
+    editConfig: {
+      type: 'datetime-utc',
+      accessor: record => moment.parseZone(record.data_time).toString(),
+    },
+  };
 
-export const getSurveyResponsePageConfigs = translate => {
+  const entityName = {
+    Header: translate('admin.entity'),
+    source: 'entity.name',
+    editConfig: {
+      optionsEndpoint: 'entities',
+    },
+    Filter: getColumnFilter(translate),
+  };
+
   const SURVEY_RESPONSE_COLUMNS = [
     surveyName,
     assessorName,
     date,
     dateOfData,
     {
-      Header: 'admin.export',
+      Header: translate('admin.export'),
       source: 'id',
       type: 'export',
       actionConfig: {
@@ -84,7 +89,7 @@ export const getSurveyResponsePageConfigs = translate => {
       date,
       dateOfData,
       {
-        Header: 'admin.approvalStatus',
+        Header: translate('admin.approvalStatus'),
         source: 'approval_status',
         editConfig: {
           options: APPROVAL_STATUS_TYPES,
@@ -129,13 +134,13 @@ export const getSurveyResponsePageConfigs = translate => {
       entityName,
       ...SURVEY_RESPONSE_COLUMNS,
       {
-        Header: 'admin.edit',
+        Header: translate('admin.edit'),
         type: 'edit',
         source: 'id',
         actionConfig,
       },
       {
-        Header: 'admin.delete',
+        Header: translate('admin.delete'),
         source: 'id',
         type: 'delete',
         actionConfig: {

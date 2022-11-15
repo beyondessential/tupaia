@@ -6,7 +6,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 
 import { SurveyResponsesPage } from '@tupaia/admin-panel';
-import { ApproveButton, RejectButton } from '../../components';
+import { ApproveButton, getRejectButton } from '../../components';
 import { getSurveyResponsePageConfigs } from './pages/helpers/getSurveyResponsePageConfigs';
 
 export const ApprovedSurveyResponsesView = props => {
@@ -21,10 +21,7 @@ export const ApprovedSurveyResponsesView = props => {
     <SurveyResponsesPage
       title={props.translate('admin.approvedSurveyResponses')}
       baseFilter={{ approval_status: { comparisonValue: 'approved' } }}
-      columns={[...COLUMNS.filter(column => column.type !== 'delete')].map(column => ({
-        ...column,
-        Header: props.translate(column.Header),
-      }))}
+      columns={COLUMNS.filter(column => column.type !== 'delete')}
       importConfig={importConfig}
       exportConfig={exportConfig}
       ExportModalComponent={ExportModalComponent}
@@ -45,10 +42,7 @@ export const RejectedSurveyResponsesView = props => {
     <SurveyResponsesPage
       title={props.translate('admin.rejectedSurveyResponses')}
       baseFilter={{ approval_status: { comparisonValue: 'rejected' } }}
-      columns={[...COLUMNS.filter(column => column.type !== 'delete')].map(column => ({
-        ...column,
-        Header: props.translate(column.Header),
-      }))}
+      columns={COLUMNS.filter(column => column.type !== 'delete')}
       importConfig={importConfig}
       exportConfig={exportConfig}
       ExportModalComponent={ExportModalComponent}
@@ -68,7 +62,7 @@ export const DraftSurveyResponsesView = props => {
   const DRAFT_COLUMNS = [
     ...COLUMNS.filter(column => column.type !== 'delete'),
     {
-      Header: 'admin.approve',
+      Header: props.translate('admin.approve'),
       source: 'id',
       Cell: ApproveButton,
       filterable: false,
@@ -76,9 +70,9 @@ export const DraftSurveyResponsesView = props => {
       width: 75,
     },
     {
-      Header: 'admin.reject',
+      Header: props.translate('admin.reject'),
       source: 'id',
-      Cell: RejectButton,
+      Cell: getRejectButton(props.translate),
       type: 'delete',
       actionConfig: {
         endpoint: 'surveyResponses',
@@ -91,10 +85,7 @@ export const DraftSurveyResponsesView = props => {
       {...props}
       title={props.translate('admin.surveyResponsesForReview')}
       baseFilter={{ approval_status: { comparisonValue: 'pending' } }}
-      columns={DRAFT_COLUMNS.map(column => ({
-        ...column,
-        Header: props.translate(column.Header),
-      }))}
+      columns={DRAFT_COLUMNS}
       importConfig={importConfig}
       exportConfig={exportConfig}
       ExportModalComponent={ExportModalComponent}
@@ -125,10 +116,7 @@ export const NonApprovalSurveyResponsesView = props => {
       {...props}
       title={props.translate('admin.approvalNotRequiredSurveyResponses')}
       baseFilter={{ approval_status: { comparisonValue: 'not_required' } }}
-      columns={NON_APPROVAL_COLUMNS.map(column => ({
-        ...column,
-        Header: props.translate(column.Header),
-      }))}
+      columns={NON_APPROVAL_COLUMNS}
       importConfig={importConfig}
       exportConfig={exportConfig}
       ExportModalComponent={ExportModalComponent}
