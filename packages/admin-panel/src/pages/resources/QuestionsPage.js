@@ -99,7 +99,7 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-export const QuestionsPage = ({ getHeaderEl }) => (
+export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Questions"
     endpoint="questions"
@@ -107,6 +107,7 @@ export const QuestionsPage = ({ getHeaderEl }) => (
     expansionTabs={EXPANSION_CONFIG}
     getHeaderEl={getHeaderEl}
     displayUsedBy
+    {...restOfProps}
   />
 );
 
