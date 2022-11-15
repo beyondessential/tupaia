@@ -5462,7 +5462,7 @@ __metadata:
     npm-bump: ^0.0.23
     prop-types: ^15.7.2
     react: 16.13.1
-    react-native: ^0.63.4
+    react-native: ^0.63.5
     react-native-database: ^0.1.7
     react-native-device-info: ^7.2.1
     react-native-dotenv: ^0.2.0
@@ -28944,9 +28944,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:^0.63.4":
-  version: 0.63.4
-  resolution: "react-native@npm:0.63.4"
+"react-native@npm:^0.63.5":
+  version: 0.63.5
+  resolution: "react-native@npm:0.63.5"
   dependencies:
     "@babel/runtime": ^7.0.0
     "@react-native-community/cli": ^4.10.0
@@ -28979,7 +28979,7 @@ __metadata:
     react: 16.13.1
   bin:
     react-native: ./cli.js
-  checksum: 6a603230dda3ce5a3bf093420727148dc157629e05f577f317382fa0384c59dfee796031736a653bc9743b8bb79e014613614ee27f9fa05b3733baffbade3958
+  checksum: 9d59867c9b59b84317d3522d4c947fcb6a452b0e535811874e75d8d32ebcd8655ac15cdeb8e792b132aee84b763b09f80a4be08f1d88a726157b13b7fcb841dd
   languageName: node
   linkType: hard
 
