@@ -109,6 +109,107 @@ describe('fetchData', () => {
     );
   });
 
+  describe('join', () => {
+    it('can join new data to the existing table', async () => {
+      const dataElements = ['BCD1'];
+      const organisationUnits = ['TO'];
+      const startDate = '2017-01-01';
+      const endDate = '2022-01-02';
+      const transform = buildTestTransform(
+        [
+          {
+            transform: 'fetchData',
+            parameters: {
+              dataElements,
+              organisationUnits,
+              startDate,
+              endDate,
+            },
+            join: [
+              {
+                tableColumn: 'entity',
+                newDataColumn: 'organisationUnit',
+              },
+            ],
+          },
+        ],
+        getContext(),
+      );
+
+      const fetchedAnalytics = getFetchAnalyticsResults(
+        dataElements,
+        organisationUnits,
+        startDate,
+        endDate,
+      );
+
+      const existingTable = [
+        {
+          entity: 'TO',
+        },
+      ];
+
+      const resultTable = fetchedAnalytics.map(analytic => ({ ...existingTable[0], ...analytic }));
+
+      const received = await transform(TransformTable.fromRows(existingTable));
+      expect(received).toStrictEqual(TransformTable.fromRows(resultTable));
+    });
+
+    it('can join on multiple fields', async () => {
+      const dataElements = ['BCD1'];
+      const organisationUnits = ['TO'];
+      const startDate = '2017-01-01';
+      const endDate = '2022-01-02';
+      const transform = buildTestTransform(
+        [
+          {
+            transform: 'fetchData',
+            parameters: {
+              dataElements,
+              organisationUnits,
+              startDate,
+              endDate,
+            },
+            join: [
+              {
+                tableColumn: 'entity',
+                newDataColumn: 'organisationUnit',
+              },
+              {
+                tableColumn: 'date',
+                newDataColumn: 'period',
+              },
+            ],
+          },
+        ],
+        getContext(),
+      );
+
+      const fetchedAnalytics = getFetchAnalyticsResults(
+        dataElements,
+        organisationUnits,
+        startDate,
+        endDate,
+      );
+
+      const existingTable = [
+        {
+          date: '20200101',
+          entity: 'TO',
+        },
+        {
+          date: '20200101',
+          entity: 'PG',
+        },
+      ];
+
+      const resultTable = fetchedAnalytics.map(analytic => ({ ...existingTable[0], ...analytic }));
+
+      const received = await transform(TransformTable.fromRows(existingTable));
+      expect(received).toStrictEqual(TransformTable.fromRows(resultTable));
+    });
+  });
+
   describe('start and end date', () => {
     it('has default start and end dates', async () => {
       const dataElements = ['BCD1'];

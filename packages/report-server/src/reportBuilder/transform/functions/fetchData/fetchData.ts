@@ -106,13 +106,14 @@ export const paramsValidator = yup.object().shape({
     },
     [['dataElements', 'dataGroups']],
   ),
-  join: yup
-    .object({
-      tableColumn: yup.string().required(),
-      newDataColumn: yup.string().required(),
-    })
-    .notRequired()
-    .default(undefined),
+  join: yup.array(
+    yup
+      .object({
+        tableColumn: yup.string().required(),
+        newDataColumn: yup.string().required(),
+      })
+      .required(),
+  ),
 });
 
 const fetchData = async (table: TransformTable, params: FetchParams, context: Context) => {

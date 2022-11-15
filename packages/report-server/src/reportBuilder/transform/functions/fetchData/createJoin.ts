@@ -6,7 +6,10 @@
 import groupBy from 'lodash.groupby';
 import { Row } from '../../../types';
 
-export const createJoin = (joinConfig?: { tableColumn: string; newDataColumn: string }) => (
+const createKey = (keyFields: string[]) => (object: Record<string, unknown>) =>
+  keyFields.map(field => object[field]).join('||');
+
+export const createJoin = (joinConfig?: { tableColumn: string; newDataColumn: string }[]) => (
   tableRows: Row[],
   newDataRows: Row[],
 ) => {
@@ -14,9 +17,10 @@ export const createJoin = (joinConfig?: { tableColumn: string; newDataColumn: st
     return tableRows.concat(newDataRows);
   }
 
-  const { tableColumn, newDataColumn } = joinConfig;
-  const tableRowsByJoinColumn = groupBy(tableRows, tableColumn);
-  const newDataRowsByJoinColumn = groupBy(newDataRows, newDataColumn);
+  const tableColumns = joinConfig.map(({ tableColumn }) => tableColumn);
+  const newDataColumns = joinConfig.map(({ newDataColumn }) => newDataColumn);
+  const tableRowsByJoinColumn = groupBy(tableRows, createKey(tableColumns));
+  const newDataRowsByJoinColumn = groupBy(newDataRows, createKey(newDataColumns));
   const jointRows = Object.entries(tableRowsByJoinColumn)
     .map(([joinColumnValue, tableRowsForValue]) => {
       const newDataRowsForValue = newDataRowsByJoinColumn[joinColumnValue];
