@@ -429,9 +429,17 @@ export const getSurveysPageConfigs = translate => {
     ...importModalText,
   };
 
+  const DELETE_CONFIG = {
+    title: translate('admin.deleteRecord'),
+    description: translate('admin.onceDeletedThisCantBeUndone'),
+    cancelButtonText: translate('admin.cancel'),
+    confirmButtonText: translate('admin.delete'),
+  };
+
   return {
     SURVEY_COLUMNS,
     EXPANSION_CONFIG,
     IMPORT_CONFIG,
+    DELETE_CONFIG,
   };
 };

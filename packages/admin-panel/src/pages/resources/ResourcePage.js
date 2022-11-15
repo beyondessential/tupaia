@@ -33,6 +33,7 @@ export const ResourcePage = ({
   defaultFilters,
   defaultSorting,
   displayUsedBy,
+  deleteConfig,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -57,6 +58,7 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
+          deleteConfig={deleteConfig}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
@@ -82,6 +84,7 @@ ResourcePage.propTypes = {
   ),
   importConfig: PropTypes.object,
   exportConfig: PropTypes.object,
+  deleteConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
@@ -96,6 +99,7 @@ ResourcePage.defaultProps = {
   expansionTabs: null,
   importConfig: null,
   exportConfig: {},
+  deleteConfig: {},
   ExportModalComponent: null,
   LinksComponent: null,
   onProcessDataForSave: null,

@@ -445,7 +445,7 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const SurveysPage = ({ getHeaderEl }) => (
+export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Surveys"
     endpoint="surveys"
@@ -453,6 +453,7 @@ export const SurveysPage = ({ getHeaderEl }) => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...restOfProps}
   />
 );
 
