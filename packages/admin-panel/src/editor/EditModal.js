@@ -40,9 +40,7 @@ export const EditModalComponent = ({
   fields,
   isUnchanged,
   displayUsedBy,
-  usedBy,
-  usedByIsLoading,
-  usedByErrorMessage,
+  usedByConfig,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
 
@@ -61,9 +59,7 @@ export const EditModalComponent = ({
               }}
             />
           )}
-          {displayUsedBy && (
-            <UsedBy usedBy={usedBy} isLoading={usedByIsLoading} errorMessage={usedByErrorMessage} />
-          )}
+          {displayUsedBy && <UsedBy {...usedByConfig} />}
         </>
       </ModalContentProvider>
       <DialogFooter>
@@ -93,9 +89,7 @@ EditModalComponent.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
   displayUsedBy: PropTypes.bool,
-  usedBy: PropTypes.array,
-  usedByIsLoading: PropTypes.bool,
-  usedByErrorMessage: PropTypes.string,
+  usedByConfig: PropTypes.object,
 };
 
 EditModalComponent.defaultProps = {
@@ -105,17 +99,17 @@ EditModalComponent.defaultProps = {
   fields: null,
   isUnchanged: false,
   displayUsedBy: false,
-  usedBy: null,
-  usedByIsLoading: null,
-  usedByErrorMessage: null,
+  usedByConfig: {},
 };
 
 const mapStateToProps = state => ({
   ...getEditorState(state),
   isUnchanged: getIsUnchanged(state),
-  usedBy: state.usedBy.byRecordId[state.editor.recordId] ?? [],
-  usedByIsLoading: state.usedBy.isLoading,
-  usedByErrorMessage: state.usedBy.errorMessage,
+  usedByConfig: {
+    usedBy: state.usedBy.byRecordId[state.editor.recordId] ?? [],
+    usedByIsLoading: state.usedBy.isLoading,
+    usedByErrorMessage: state.usedBy.errorMessage,
+  },
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -137,10 +131,12 @@ const processRecordData = (recordData, fields) => {
 };
 
 const mergeProps = (
-  { endpoint, editedFields, recordData, ...stateProps },
+  { endpoint, editedFields, recordData, usedByConfig: usedByConfigInMapStateProps, ...stateProps },
   { dispatch, ...dispatchProps },
-  { onProcessDataForSave, ...ownProps },
+  { onProcessDataForSave, usedByConfig: usedByConfigInOwnProps, ...ownProps },
 ) => {
+  const usedByConfig = { ...usedByConfigInOwnProps, ...usedByConfigInMapStateProps };
+
   return {
     ...ownProps,
     ...stateProps,
@@ -157,6 +153,7 @@ const mergeProps = (
       dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
     },
     endpoint,
+    usedByConfig,
   };
 };
 

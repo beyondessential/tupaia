@@ -95,5 +95,21 @@ export const getQuestionPageConfigs = translate => {
     },
   ];
 
-  return { QUESTION_COLUMNS, EXPANSION_CONFIG };
+  const EDITOR_CONFIG = {
+    displayUsedBy: true,
+    usedByConfig: {
+      header: 'Used by',
+      typeHeadings: {
+        question: translate('admin.questions'),
+        indicator: 'Indicators',
+        dashboardItem: translate('admin.dashboardItems'),
+        mapOverlay: translate('admin.mapOverlays'),
+        legacyReport: 'Legacy Reports',
+        dataGroup: translate('admin.dataGroups'),
+        survey: translate('admin.surveys'),
+      },
+    },
+  };
+
+  return { QUESTION_COLUMNS, EXPANSION_CONFIG, EDITOR_CONFIG };
 };

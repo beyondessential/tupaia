@@ -88,6 +88,10 @@ const DATA_GROUP_FIELDS = [
   },
 ];
 
+const EDITOR_CONFIG = {
+  displayUsedBy: true,
+};
+
 export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Groups"
@@ -110,7 +114,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
       },
     }}
     getHeaderEl={getHeaderEl}
-    displayUsedBy
+    editorConfig={EDITOR_CONFIG}
   />
 );
 
@@ -141,7 +145,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
       },
     }}
     getHeaderEl={getHeaderEl}
-    displayUsedBy
+    editorConfig={EDITOR_CONFIG}
   />
 );
 

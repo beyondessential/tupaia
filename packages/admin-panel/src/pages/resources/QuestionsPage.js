@@ -99,6 +99,10 @@ const EXPANSION_CONFIG = [
   },
 ];
 
+const EDITOR_CONFIG = {
+  displayUsedBy: true,
+};
+
 export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Questions"
@@ -106,7 +110,7 @@ export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     getHeaderEl={getHeaderEl}
-    displayUsedBy
+    editorConfig={EDITOR_CONFIG}
     {...restOfProps}
   />
 );

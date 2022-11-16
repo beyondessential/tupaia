@@ -32,8 +32,8 @@ export const ResourcePage = ({
   getHeaderEl,
   defaultFilters,
   defaultSorting,
-  displayUsedBy,
   deleteConfig,
+  editorConfig,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -61,7 +61,7 @@ export const ResourcePage = ({
           deleteConfig={deleteConfig}
         />
       </Container>
-      <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
+      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
       <LogsModal />
     </>
   );
@@ -91,7 +91,7 @@ ResourcePage.propTypes = {
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
-  displayUsedBy: PropTypes.bool,
+  editorConfig: PropTypes.object,
 };
 
 ResourcePage.defaultProps = {
@@ -107,5 +107,5 @@ ResourcePage.defaultProps = {
   defaultSorting: [],
   defaultFilters: [],
   reduxId: null,
-  displayUsedBy: false,
+  editorConfig: {},
 };
