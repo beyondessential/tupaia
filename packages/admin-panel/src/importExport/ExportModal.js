@@ -69,19 +69,34 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
   const renderButtons = useCallback(() => {
     switch (status) {
       case STATUS.TIMEOUT:
-        return <Button onClick={handleClose}>Done</Button>;
+        return (
+          <Button id="form-button-done" onClick={handleClose}>
+            Done
+          </Button>
+        );
       case STATUS.ERROR:
         return (
           <>
-            <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
-            <Button disabled>Export</Button>
+            <OutlinedButton id="form-button-dismiss" onClick={handleDismiss}>
+              Dismiss
+            </OutlinedButton>
+            <Button id="form-button-export" disabled>
+              Export
+            </Button>
           </>
         );
       default:
         return (
           <>
-            <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
-            <Button type="submit" isLoading={status === STATUS.LOADING} onClick={handleSubmit}>
+            <OutlinedButton id="form-button-cancel" onClick={handleClose}>
+              Cancel
+            </OutlinedButton>
+            <Button
+              id="form-button-export"
+              type="submit"
+              isLoading={status === STATUS.LOADING}
+              onClick={handleSubmit}
+            >
               Export
             </Button>
           </>
@@ -112,6 +127,7 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
         </form>
       </Dialog>
       <LightOutlinedButton
+        id="page-export-button"
         startIcon={<ExportIcon />}
         onClick={handleOpen}
         isLoading={STATUS === STATUS.LOADING}

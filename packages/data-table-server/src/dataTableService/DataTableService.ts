@@ -3,28 +3,36 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
+import { DataTableParameter } from './types';
+
+export type ServiceContext<Type> = Type extends DataTableService<infer Context> ? Context : never;
+
+export type ClassOfDataTableService<Service extends DataTableService> = new (
+  context: ServiceContext<Service>,
+  config: unknown,
+) => Service;
 
 export abstract class DataTableService<
-  ParamsSchema extends yup.AnySchema = yup.AnySchema,
-  ConfigSchema extends yup.AnySchema = yup.AnySchema,
+  Context extends Record<string, unknown> = Record<string, unknown>,
+  ParamsSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
+  ConfigSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
   RecordSchema = unknown
 > {
+  protected readonly ctx: Context;
   protected readonly paramsSchema: ParamsSchema;
   protected readonly configSchema: ConfigSchema;
-  protected readonly apiClient: TupaiaApiClient;
   protected readonly config: yup.InferType<ConfigSchema>;
 
   protected constructor(
+    context: Context,
     paramsSchema: ParamsSchema,
     configSchema: ConfigSchema,
-    apiClient: TupaiaApiClient,
     config: unknown,
   ) {
+    this.ctx = context;
     this.paramsSchema = paramsSchema;
     this.configSchema = configSchema;
-    this.apiClient = apiClient;
     this.config = this.configSchema.validateSync(config);
   }
 
@@ -41,4 +49,6 @@ export abstract class DataTableService<
     const validatedParams = this.validateParams(params);
     return this.pullData(validatedParams);
   }
+
+  public abstract getParameters(): DataTableParameter[];
 }

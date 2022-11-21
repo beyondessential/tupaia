@@ -19,7 +19,7 @@ import {
 import { ModalContentProvider, InputField } from '../widgets';
 import { useApi } from '../utilities/ApiProvider';
 import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
-import { checkVisibilityCriteriaAreMet } from '../utilities';
+import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 
 const STATUS = {
   IDLE: 'idle',
@@ -135,8 +135,11 @@ export const ImportModalComponent = React.memo(
         default:
           return (
             <>
-              <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
+              <OutlinedButton id="form-button-cancel" onClick={handleClose}>
+                Cancel
+              </OutlinedButton>
               <Button
+                id="form-button-import"
                 type="submit"
                 disabled={files.length === 0}
                 isLoading={status === STATUS.LOADING}
@@ -182,6 +185,7 @@ export const ImportModalComponent = React.memo(
                           onChange={handleValueChange}
                           label={label}
                           secondaryLabel={secondaryLabel}
+                          id={`field-${labelToId(parameterKey)}`}
                         />
                       );
                     })}
@@ -200,7 +204,11 @@ export const ImportModalComponent = React.memo(
             <DialogFooter>{renderButtons()}</DialogFooter>
           </form>
         </Dialog>
-        <LightOutlinedButton startIcon={<ImportIcon />} onClick={handleOpen}>
+        <LightOutlinedButton
+          id="page-import-button"
+          startIcon={<ImportIcon />}
+          onClick={handleOpen}
+        >
           Import
         </LightOutlinedButton>
       </>

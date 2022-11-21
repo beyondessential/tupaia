@@ -5,6 +5,7 @@
 
 export { CountriesPage } from './CountriesPage';
 export { EntitiesPage } from './EntitiesPage';
+export { EntityTypesPage } from './EntityTypesPage';
 export { PermissionsPage } from './PermissionsPage';
 export { PermissionGroupsPage } from './PermissionGroupsPage';
 export {
@@ -32,3 +33,4 @@ export { DashboardRelationsPage } from './DashboardRelationsPage';
 export { LegacyReportsPage } from './LegacyReportsPage';
 export { ProjectsPage } from './ProjectsPage';
 export { SyncGroupsPage } from './SyncGroupsPage';
+export { ExternalDatabaseConnectionsPage } from './ExternalDatabaseConnectionsPage';
