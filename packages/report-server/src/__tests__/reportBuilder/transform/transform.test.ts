@@ -4,7 +4,7 @@
  */
 
 import { MULTIPLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform } from '../../../reportBuilder/transform';
+import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
 
 describe('transform', () => {
   it('throws an error for an unknown transform', () => {
@@ -42,7 +42,9 @@ describe('transform', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([{ Total: 11 }]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([{ Total: 11 }]),
+    );
   });
 
   it('supports title and description in transforms', () => {
@@ -72,6 +74,8 @@ describe('transform', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(MULTIPLE_ANALYTICS)).toEqual([{ Total: 11 }]);
+    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+      TransformTable.fromRows([{ Total: 11 }]),
+    );
   });
 });

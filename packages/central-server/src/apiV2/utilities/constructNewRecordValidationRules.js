@@ -15,10 +15,11 @@ import {
   isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
-  constructIsSubSetOf,
   isValidPassword,
   isNumber,
   ValidationError,
+  constructRecordExistsWithCode,
+  constructIsValidEntityType,
 } from '@tupaia/utils';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
@@ -94,6 +95,11 @@ export const constructForSingle = (models, recordType) => {
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
+    case TYPES.EXTERNAL_DATABASE_CONNECTION:
+      return {
+        code: [hasContent],
+        name: [hasContent],
+      };
     case TYPES.INDICATOR:
       return {
         code: [hasContent],
@@ -122,7 +128,12 @@ export const constructForSingle = (models, recordType) => {
       return {
         dashboard_id: [constructRecordExistsWithId(models.dashboard)],
         child_id: [constructRecordExistsWithId(models.dashboardItem)],
-        entity_types: [constructIsSubSetOf(Object.values(models.entity.types))],
+        entity_types: [
+          async entityTypes => {
+            const entityTypeValidator = constructIsValidEntityType(models.entity);
+            await Promise.all(entityTypes.map(entityTypeValidator));
+          },
+        ],
         permission_groups: [
           async permissionGroupNames => {
             const permissionGroups = await models.permissionGroup.find({
@@ -249,11 +260,12 @@ export const constructForSingle = (models, recordType) => {
         logo_url: [isAString],
         entityTypes: [
           async selectedEntityTypes => {
+            console.log(selectedEntityTypes);
             if (!selectedEntityTypes) {
               return true;
             }
-            const entityDataTypes = await models.entity.types;
-            const filteredEntityTypes = Object.values(entityDataTypes).filter(type =>
+            const entityTypes = await models.entity.getEntityTypes();
+            const filteredEntityTypes = entityTypes.filter(type =>
               selectedEntityTypes.includes(type),
             );
             if (selectedEntityTypes.length !== filteredEntityTypes.length) {
@@ -264,6 +276,13 @@ export const constructForSingle = (models, recordType) => {
         ],
         dashboard_group_name: [isAString],
         default_measure: [constructRecordExistsWithField(models.mapOverlay, 'id')],
+      };
+    case TYPES.DATA_ELEMENT_DATA_SERVICE:
+      return {
+        data_element_code: [constructRecordExistsWithCode(models.dataElement)],
+        country_code: [hasContent],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
+        service_config: [hasContent],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

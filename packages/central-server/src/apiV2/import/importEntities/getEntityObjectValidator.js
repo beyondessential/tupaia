@@ -9,6 +9,7 @@ import {
   constructIsEmptyOr,
   constructIsOneOf,
   isPlainObject,
+  constructIsValidEntityType,
 } from '@tupaia/utils';
 
 const constructEntityFieldValidators = models => ({
@@ -17,13 +18,7 @@ const constructEntityFieldValidators = models => ({
   sub_district: [],
   code: [hasContent],
   name: [hasContent],
-  entity_type: [
-    hasContent,
-    cellValue => {
-      const checkIsOneOf = constructIsOneOf(Object.values(models.entity.types));
-      checkIsOneOf(cellValue);
-    },
-  ],
+  entity_type: [hasContent, constructIsValidEntityType(models.entity)],
   attributes: [constructIsEmptyOr(isPlainObject)],
   data_service_entity: [constructIsEmptyOr(isPlainObject)],
 });

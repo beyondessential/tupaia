@@ -9,7 +9,7 @@ import {
   createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
-import { assertEntityPermissions } from '../GETEntities';
+import { assertEntityPermissions } from '../entities';
 import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 
 /**

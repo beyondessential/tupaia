@@ -331,6 +331,11 @@ describe('DashboardVisualisationExtractor', () => {
             aggregations: ['SUM_EACH_WEEK'],
           },
           transform: ['keyValueByDataElementName'],
+          output: {
+            type: 'bar',
+            x: 'period',
+            y: 'BCD1',
+          },
         },
         permissionGroup: 'Admin',
       });
@@ -375,6 +380,49 @@ describe('DashboardVisualisationExtractor', () => {
             type: 'bar',
             x: 'period',
             y: 'BCD1',
+          },
+        },
+        permissionGroup: 'Admin',
+      });
+    });
+
+    it('includes rowsAndColumns output if previewMode is data', () => {
+      const extractor = new DashboardVisualisationExtractor(
+        {
+          code: 'viz',
+          name: 'My Viz',
+          data: {
+            fetch: {
+              dataElements: ['BCD1', 'BCD2'],
+            },
+            transform: ['keyValueByDataElementName'],
+          },
+          presentation: {
+            type: 'chart',
+            chartType: 'bar',
+            output: {
+              type: 'bar',
+              x: 'period',
+              y: 'BCD1',
+            },
+          },
+          permissionGroup: 'Admin',
+        },
+        draftDashboardItemValidator,
+        draftReportValidator,
+      );
+
+      const report = extractor.getReport(PreviewMode.DATA);
+
+      expect(report).toEqual({
+        code: 'viz',
+        config: {
+          fetch: {
+            dataElements: ['BCD1', 'BCD2'],
+          },
+          transform: ['keyValueByDataElementName'],
+          output: {
+            type: 'rowsAndColumns',
           },
         },
         permissionGroup: 'Admin',

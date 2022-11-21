@@ -2,32 +2,33 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { fetchWithTimeout } from '@tupaia/utils';
 import {
   ChartDataResponseSchema,
   SecurityLoginRequestBodySchema,
   SecurityLoginResponseBodySchema,
 } from './types';
-import { Agent as HttpsAgent } from 'https';
 import winston from 'winston';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import fetch, { RequestInit, Response } from 'node-fetch';
 
 const MAX_RETRIES = 1;
-const MAX_FETCH_WAIT_TIME = 45 * 1000; // 45 seconds
 
 export class SupersetApi {
   protected serverName: string;
   protected baseUrl: string;
-  protected insecure: boolean;
-  protected insecureAgent: HttpsAgent;
   protected accessToken: string | null = null;
+  protected proxyAgent?: HttpsProxyAgent;
 
-  public constructor(serverName: string, baseUrl: string, insecure: boolean = false) {
+  public constructor(serverName: string, baseUrl: string) {
     if (!serverName) throw new Error('Argument serverName required');
     if (!baseUrl) throw new Error('Argument baseUrl required');
     this.serverName = serverName;
     this.baseUrl = baseUrl;
-    this.insecure = insecure;
-    this.insecureAgent = new HttpsAgent({ rejectUnauthorized: false });
+    const proxyUrl = this.getServerVariable('SUPERSET_API_PROXY_URL');
+    if (proxyUrl) {
+      winston.info(`Superset using proxy`);
+      this.proxyAgent = new HttpsProxyAgent(proxyUrl);
+    }
   }
 
   public async chartData(chartId: number): Promise<ChartDataResponseSchema> {
@@ -44,43 +45,46 @@ export class SupersetApi {
       return this.fetch(url, numRetries + 1);
     }
 
-    const fetchConfig: any = {
-      method: 'GET',
+    const options: RequestInit = {
+      method: 'get',
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         'Content-Type': 'application/json',
       },
     };
-    if (this.insecure) fetchConfig.agent = this.insecureAgent;
-    winston.info(`Superset fetch ${this.insecure ? '(insecure) ' : ' '}${url}`);
-
-    const result = await fetchWithTimeout(url, fetchConfig, MAX_FETCH_WAIT_TIME);
+    const result = await this.apiRequest(url, options);
 
     if (result.status !== 200) {
-      const bodyText = await result.text();
-
       if (result.status === 422 || result.status === 401) {
-        winston.info(`Superset Auth error, response: ${bodyText}`);
+        winston.info(`Superset Auth error, response: ${result.body}`);
         await this.refreshAccessToken();
         return this.fetch(url, numRetries + 1);
       }
 
       throw new Error(
-        `Error response from Superset API. Status: ${result.status}, body: ${bodyText}`,
+        `Error response from Superset API. Status: ${result.status}, body: ${result.body}`,
       );
     }
 
-    return await result.json();
+    try {
+      const json = await result.json();
+      return json as T;
+    } catch (e) {
+      throw new Error(`Invalid response ${e}`);
+    }
+  }
+
+  protected getServerVariable(variableName: string) {
+    return (
+      process.env[`${this.serverName.toUpperCase()}_${variableName}`] ||
+      process.env[variableName] ||
+      ''
+    );
   }
 
   protected async refreshAccessToken() {
-    const getServerVariable = (variableName: string) =>
-      process.env[`${this.serverName.toUpperCase()}_${variableName}`] ||
-      process.env[variableName] ||
-      '';
-
-    const username = getServerVariable('SUPERSET_API_USERNAME');
-    const password = getServerVariable('SUPERSET_API_PASSWORD');
+    const username = this.getServerVariable('SUPERSET_API_USERNAME');
+    const password = this.getServerVariable('SUPERSET_API_PASSWORD');
 
     const body: SecurityLoginRequestBodySchema = {
       username,
@@ -90,25 +94,31 @@ export class SupersetApi {
     };
 
     const url = `${this.baseUrl}/api/v1/security/login`;
-    const fetchConfig: any = {
-      method: 'POST',
+    const options: RequestInit = {
+      method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     };
-    if (this.insecure) fetchConfig.agent = this.insecureAgent;
-
-    winston.info(`Superset refresh access token ${this.insecure ? '(insecure) ' : ' '}${url}`);
-    const result = await fetchWithTimeout(url, fetchConfig, MAX_FETCH_WAIT_TIME);
+    const result = await this.apiRequest(url, options);
 
     if (result.status !== 200) {
-      const bodyText = await result.text();
       throw new Error(
-        `Superset failed to refresh access token. Status: ${result.status}, body: ${bodyText}`,
+        `Superset failed to refresh access token. Status: ${result.status}, body: ${result.body}`,
       );
     }
 
-    const resultBody: SecurityLoginResponseBodySchema = await result.json();
+    try {
+      const json = await result.json();
+      const { access_token } = json as SecurityLoginResponseBodySchema;
+      this.accessToken = access_token;
+    } catch (e) {
+      throw new Error(`Invalid response ${e}`);
+    }
+  }
 
-    this.accessToken = resultBody.access_token;
+  protected async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
+    if (this.proxyAgent) options.agent = this.proxyAgent;
+    winston.info(`Superset request ${options.method} ${url}`);
+    return fetch(url, options);
   }
 }

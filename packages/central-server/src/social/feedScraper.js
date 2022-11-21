@@ -10,6 +10,13 @@ const POLL_TIME = 5 * 60 * 1000; // Run every 5 minutes.
 let isRunning = false;
 
 export const startFeedScraper = models => {
+  // Start recursive sync loop (enabled by default)
+  if (process.env.FEED_SCRAPER_DISABLE === 'true') {
+    // eslint-disable-next-line no-console
+    console.log('Feed scraper is disabled');
+    return;
+  }
+
   setInterval(async () => {
     try {
       if (!isRunning) {

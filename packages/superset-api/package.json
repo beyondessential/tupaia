@@ -19,6 +19,11 @@
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",
+    "https-proxy-agent": "^5.0.1",
+    "node-fetch": "^1.7.3",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/needle": "^2.5.3"
   }
 }

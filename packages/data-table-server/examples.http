@@ -42,3 +42,8 @@ Authorization: {{authorization}}
     "startDate": "2020-01-01",
     "endDate" : "2020-12-31"
 }
+
+### Get parameters for analytics data-table
+GET http://{{host}}/{{version}}/dataTable/analytics/parameters HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}

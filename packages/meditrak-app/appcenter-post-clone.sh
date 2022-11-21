@@ -21,7 +21,7 @@ nvm use
 cd ../..
 
 # install root dependencies
-SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
 
 # move to meditrak folder
 cd packages/meditrak-app

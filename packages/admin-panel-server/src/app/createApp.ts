@@ -41,6 +41,7 @@ import {
   FetchTransformSchemasRequest,
   FetchTransformSchemasRoute,
 } from '../routes';
+import { authHandlerProvider } from '../auth';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -49,6 +50,7 @@ const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
  */
 export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
+    .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('user', handleWith(UserRoute))

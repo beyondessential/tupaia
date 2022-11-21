@@ -4,6 +4,8 @@
  */
 
 import get from 'lodash.get';
+// eslint-disable-next-line no-unused-vars
+import { Moment } from 'moment'; // Used in jsdoc
 
 import { utcMoment } from '../datetime';
 import { reduceToDictionary } from '../object';
@@ -154,10 +156,22 @@ export const parsePeriodType = periodTypeString => {
   return periodType;
 };
 
+/**
+ * Parse period into a moment object
+ * @param {string} period
+ * @returns {Moment} moment object
+ */
 export const periodToMoment = period => {
   const periodType = periodToType(period);
   return utcMoment(period, periodTypeToFormat(periodType));
 };
+
+/**
+ * Checks if moment is invalid
+ * @param {Moment} moment
+ * @returns
+ */
+export const isInvalidMoment = moment => moment.format().toUpperCase() === 'INVALID DATE';
 
 export const periodToDateString = (period, isEndPeriod) => {
   const mutatingMoment = periodToMoment(period);
@@ -191,6 +205,32 @@ export const getCurrentPeriod = periodType => utcMoment().format(periodTypeToFor
 export const periodToDisplayString = (period, targetType) => {
   const formattedPeriodType = targetType || periodToType(period);
   return periodToMoment(period).format(periodTypeToDisplayFormat(formattedPeriodType));
+};
+
+/**
+ * Parse display string into a moment object
+ * @param {string} displayString
+ * @param {string} [targetType]
+ * @returns {Moment} moment object
+ */
+export const displayStringToMoment = (displayString, targetType) => {
+  const validatedTargetType = targetType ? parsePeriodType(targetType) : null;
+  if (validatedTargetType) {
+    return utcMoment(displayString, PERIOD_TYPES[validatedTargetType].displayFormat, true);
+  }
+
+  const allDisplayFormats = Object.values(PERIOD_TYPE_CONFIG).map(
+    ({ displayFormat }) => displayFormat,
+  );
+
+  for (let i = 0; i < allDisplayFormats.length; i++) {
+    const moment = utcMoment(displayString, allDisplayFormats[i], true);
+    if (!isInvalidMoment(moment)) {
+      return moment;
+    }
+  }
+
+  return utcMoment(displayString);
 };
 
 /**

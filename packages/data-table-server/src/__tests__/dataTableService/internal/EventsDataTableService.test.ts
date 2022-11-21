@@ -3,10 +3,12 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import MockDate from 'mockdate';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { DataTableType as DataTableTypeClass } from '@tupaia/database';
-import { createDataTableService } from '../../../dataTableService';
-import { DataTableType } from '../../../models';
+import { DataTableServiceBuilder } from '../../../dataTableService';
+
+const CURRENT_DATE_STUB = '2020-12-31';
 
 type Event = { eventDate: string; orgUnit: string; dataValues: Record<string, unknown> };
 
@@ -53,7 +55,7 @@ const fetchFakeEvents = (
     dataElementCodes,
     organisationUnitCodes,
     startDate = '2020-01-01',
-    endDate = '2020-12-31',
+    endDate = CURRENT_DATE_STUB,
   }: {
     dataElementCodes: string[];
     organisationUnitCodes: string[];
@@ -93,12 +95,22 @@ jest.mock('@tupaia/data-broker', () => ({
   DataBroker: jest.fn().mockImplementation(() => ({})),
 }));
 
-const eventsDataTable = new DataTableTypeClass(
-  {},
-  { type: 'internal', code: 'events' },
-) as DataTableType;
+const accessPolicy = new AccessPolicy({ DL: ['Public'] });
+const apiClient = {} as TupaiaApiClient;
+const eventsDataTableService = new DataTableServiceBuilder()
+  .setServiceType('events')
+  .setContext({ apiClient, accessPolicy })
+  .build();
 
 describe('EventsDataTableService', () => {
+  beforeEach(() => {
+    MockDate.set(CURRENT_DATE_STUB);
+  });
+
+  afterEach(() => {
+    MockDate.reset();
+  });
+
   describe('parameter validation', () => {
     const testData: [string, unknown, string][] = [
       [
@@ -118,14 +130,6 @@ describe('EventsDataTableService', () => {
         'organisationUnitCodes is a required field',
       ],
       [
-        'missing hierarchy',
-        {
-          organisationUnitCodes: ['TO'],
-          dataGroupCode: 'PSSS_WNR',
-        },
-        'hierarchy is a required field',
-      ],
-      [
         'startDate wrong format',
         {
           organisationUnitCodes: ['TO'],
@@ -133,7 +137,7 @@ describe('EventsDataTableService', () => {
           dataGroupCode: 'PSSS_WNR',
           startDate: 'cat',
         },
-        'startDate should be in ISO 8601 format',
+        'startDate must be a `date` type',
       ],
       [
         'endDate wrong format',
@@ -143,7 +147,7 @@ describe('EventsDataTableService', () => {
           dataGroupCode: 'PSSS_WNR',
           endDate: 'dog',
         },
-        'endDate should be in ISO 8601 format',
+        'endDate must be a `date` type',
       ],
       [
         'aggregations wrong format',
@@ -158,59 +162,76 @@ describe('EventsDataTableService', () => {
     ];
 
     it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      const eventsDataTableService = createDataTableService(eventsDataTable, {} as TupaiaApiClient);
-
       expect(() => eventsDataTableService.fetchData(parameters)).toThrow(expectedError);
     });
   });
 
-  it('can fetch data from Aggregator.fetchEvents()', async () => {
-    const eventsDataTableService = createDataTableService(eventsDataTable, {} as TupaiaApiClient);
-
-    const dataGroupCode = 'PSSS_WNR';
-    const dataElementCodes = ['PSSS_AFR_Cases'];
-    const organisationUnitCodes = ['TO'];
-
-    const events = await eventsDataTableService.fetchData({
-      hierarchy: 'psss',
-      dataGroupCode,
-      organisationUnitCodes,
-      dataElementCodes,
-    });
-
-    const expectedEvents = fetchFakeEvents(dataGroupCode, {
-      dataElementCodes,
-      organisationUnitCodes,
-    }).map(flattenEvent);
-
-    expect(events).toEqual(expectedEvents);
+  it('getParameters', () => {
+    const parameters = eventsDataTableService.getParameters();
+    expect(parameters).toEqual([
+      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      {
+        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        name: 'organisationUnitCodes',
+      },
+      {
+        config: { required: true, type: 'string' },
+        name: 'dataGroupCode',
+      },
+      {
+        config: { innerType: { required: true, type: 'string' }, type: 'array' },
+        name: 'dataElementCodes',
+      },
+      { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },
+      { config: { defaultValue: new Date(), type: 'date' }, name: 'endDate' },
+    ]);
   });
 
-  it('passes all parameters to Aggregator.fetchEvents()', async () => {
-    const eventsDataTableService = createDataTableService(eventsDataTable, {} as TupaiaApiClient);
+  describe('fetchData', () => {
+    it('can fetch data from Aggregator.fetchEvents()', async () => {
+      const dataGroupCode = 'PSSS_WNR';
+      const dataElementCodes = ['PSSS_AFR_Cases'];
+      const organisationUnitCodes = ['TO'];
 
-    const dataGroupCode = 'PSSS_Confirmed_WNR';
-    const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
-    const organisationUnitCodes = ['PG'];
-    const startDate = '2020-01-05';
-    const endDate = '2020-01-10';
+      const events = await eventsDataTableService.fetchData({
+        hierarchy: 'psss',
+        dataGroupCode,
+        organisationUnitCodes,
+        dataElementCodes,
+      });
 
-    const events = await eventsDataTableService.fetchData({
-      hierarchy: 'psss',
-      organisationUnitCodes,
-      dataGroupCode,
-      dataElementCodes,
-      startDate,
-      endDate,
+      const expectedEvents = fetchFakeEvents(dataGroupCode, {
+        dataElementCodes,
+        organisationUnitCodes,
+      }).map(flattenEvent);
+
+      expect(events).toEqual(expectedEvents);
     });
 
-    const expectedEvents = fetchFakeEvents(dataGroupCode, {
-      dataElementCodes,
-      organisationUnitCodes,
-      startDate,
-      endDate,
-    }).map(flattenEvent);
+    it('passes all parameters to Aggregator.fetchEvents()', async () => {
+      const dataGroupCode = 'PSSS_Confirmed_WNR';
+      const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
+      const organisationUnitCodes = ['PG'];
+      const startDate = '2020-01-05';
+      const endDate = '2020-01-10';
 
-    expect(events).toEqual(expectedEvents);
+      const events = await eventsDataTableService.fetchData({
+        hierarchy: 'psss',
+        organisationUnitCodes,
+        dataGroupCode,
+        dataElementCodes,
+        startDate,
+        endDate,
+      });
+
+      const expectedEvents = fetchFakeEvents(dataGroupCode, {
+        dataElementCodes,
+        organisationUnitCodes,
+        startDate,
+        endDate,
+      }).map(flattenEvent);
+
+      expect(events).toEqual(expectedEvents);
+    });
   });
 });

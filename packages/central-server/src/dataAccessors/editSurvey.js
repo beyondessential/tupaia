@@ -111,6 +111,9 @@ class SurveyEditor {
         serviceType:
           this.updatedFieldsByResource[RESOURCE_TYPES.DATA_GROUP].service_type ||
           this.dataGroup.service_type,
+        dhisInstanceCode:
+          this.updatedFieldsByResource[RESOURCE_TYPES.DATA_GROUP]?.config?.dhisInstanceCode ||
+          this.dataGroup.config?.dhisInstanceCode,
       });
     }
 

@@ -14,10 +14,10 @@ const instances = {};
  */
 export const getSupersetApiInstance = async (models, supersetInstance) => {
   const { code: serverName, config } = supersetInstance;
-  const { baseUrl, insecure } = config;
+  const { baseUrl } = config;
 
   if (!instances[serverName]) {
-    instances[serverName] = new SupersetApi(serverName, baseUrl, insecure);
+    instances[serverName] = new SupersetApi(serverName, baseUrl);
   }
 
   return instances[serverName];
