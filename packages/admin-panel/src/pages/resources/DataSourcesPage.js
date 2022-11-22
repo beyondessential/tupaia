@@ -129,7 +129,7 @@ DataGroupsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
 };
 
-export const DataElementsPage = ({ getHeaderEl }) => (
+export const DataElementsPage = ({ getHeaderEl, ...restOfConfigs }) => (
   <ResourcePage
     title="Data Elements"
     endpoint="dataElements"
@@ -146,6 +146,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     }}
     getHeaderEl={getHeaderEl}
     editorConfig={EDITOR_CONFIG}
+    {...restOfConfigs}
   />
 );
 

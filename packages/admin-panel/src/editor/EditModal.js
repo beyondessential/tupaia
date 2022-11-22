@@ -41,6 +41,9 @@ export const EditModalComponent = ({
   isUnchanged,
   displayUsedBy,
   usedByConfig,
+  dismissButtonText,
+  cancelButtonText,
+  saveButtonText,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
 
@@ -64,14 +67,14 @@ export const EditModalComponent = ({
       </ModalContentProvider>
       <DialogFooter>
         <Button id="form-button-cancel" variant="outlined" onClick={onDismiss} disabled={isLoading}>
-          {errorMessage ? 'Dismiss' : 'Cancel'}
+          {errorMessage ? dismissButtonText : cancelButtonText}
         </Button>
         <Button
           id="form-button-save"
           onClick={onSave}
           disabled={!!errorMessage || isLoading || isUnchanged}
         >
-          Save
+          {saveButtonText}
         </Button>
       </DialogFooter>
     </Dialog>
@@ -90,6 +93,9 @@ EditModalComponent.propTypes = {
   isUnchanged: PropTypes.bool,
   displayUsedBy: PropTypes.bool,
   usedByConfig: PropTypes.object,
+  dismissButtonText: PropTypes.string,
+  cancelButtonText: PropTypes.string,
+  saveButtonText: PropTypes.string,
 };
 
 EditModalComponent.defaultProps = {
@@ -100,6 +106,9 @@ EditModalComponent.defaultProps = {
   isUnchanged: false,
   displayUsedBy: false,
   usedByConfig: {},
+  dismissButtonText: 'Dismiss',
+  cancelButtonText: 'Cancel',
+  saveButtonText: 'Save',
 };
 
 const mapStateToProps = state => ({

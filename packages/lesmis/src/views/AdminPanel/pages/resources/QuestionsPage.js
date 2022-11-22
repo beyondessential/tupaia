@@ -9,7 +9,7 @@ import { QuestionsPage as BaseQuestionsPage } from '@tupaia/admin-panel';
 import { getQuestionPageConfigs } from '../helpers/getQuestionPageConfigs';
 
 export const QuestionsPage = ({ getHeaderEl, translate }) => {
-  const { QUESTION_COLUMNS, EXPANSION_CONFIG } = getQuestionPageConfigs(translate);
+  const { QUESTION_COLUMNS, EXPANSION_CONFIG, EDITOR_CONFIG } = getQuestionPageConfigs(translate);
 
   return (
     <BaseQuestionsPage
@@ -18,7 +18,7 @@ export const QuestionsPage = ({ getHeaderEl, translate }) => {
       columns={QUESTION_COLUMNS}
       expansionTabs={EXPANSION_CONFIG}
       getHeaderEl={getHeaderEl}
-      displayUsedBy
+      editorConfig={EDITOR_CONFIG}
     />
   );
 };
