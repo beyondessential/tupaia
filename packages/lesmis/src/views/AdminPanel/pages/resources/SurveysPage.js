@@ -9,9 +9,13 @@ import { SurveysPage as BaseSurveysPage } from '@tupaia/admin-panel';
 import { getSurveysPageConfigs } from '../helpers/getSurveysPageConfigs';
 
 export const SurveysPage = ({ getHeaderEl, translate }) => {
-  const { SURVEY_COLUMNS, EXPANSION_CONFIG, IMPORT_CONFIG, DELETE_CONFIG } = getSurveysPageConfigs(
-    translate,
-  );
+  const {
+    SURVEY_COLUMNS,
+    EXPANSION_CONFIG,
+    IMPORT_CONFIG,
+    DELETE_CONFIG,
+    EDITOR_CONFIG,
+  } = getSurveysPageConfigs(translate);
 
   return (
     <BaseSurveysPage
@@ -21,6 +25,7 @@ export const SurveysPage = ({ getHeaderEl, translate }) => {
       importConfig={IMPORT_CONFIG}
       getHeaderEl={getHeaderEl}
       deleteConfig={DELETE_CONFIG}
+      editorConfig={EDITOR_CONFIG}
     />
   );
 };

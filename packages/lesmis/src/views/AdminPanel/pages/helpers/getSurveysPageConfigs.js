@@ -6,6 +6,7 @@
 import { getBooleanSelectFilter } from '../../table/columnTypes/getBooleanSelectFilter';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
+import { getBaseEditorConfigs } from './getEditorConfigs';
 import { getImportModalText } from './getImportModalText';
 
 export const getSurveysPageConfigs = translate => {
@@ -83,7 +84,7 @@ export const getSurveysPageConfigs = translate => {
       type: 'edit',
       source: 'id',
       actionConfig: {
-        title: translate('admin.editSurvey'),
+        title: translate('admin.edit'),
         editEndpoint: 'surveys',
         fields: [
           ...SURVEY_FIELDS,
@@ -183,7 +184,7 @@ export const getSurveysPageConfigs = translate => {
       type: 'edit',
       source: 'id',
       actionConfig: {
-        title: translate('editQuestion'),
+        title: translate('edit'),
         editEndpoint: 'surveyScreenComponents',
         fields: [
           ...QUESTION_FIELDS,
@@ -349,7 +350,7 @@ export const getSurveysPageConfigs = translate => {
 
   const importModalText = getImportModalText(translate);
   const IMPORT_CONFIG = {
-    title: translate('admin.importSurveys'),
+    title: translate('admin.import'),
     actionConfig: {
       importEndpoint: 'surveys',
     },
@@ -435,5 +436,6 @@ export const getSurveysPageConfigs = translate => {
     EXPANSION_CONFIG,
     IMPORT_CONFIG,
     DELETE_CONFIG,
+    EDITOR_CONFIG: getBaseEditorConfigs(translate),
   };
 };

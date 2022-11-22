@@ -51,7 +51,7 @@ export const getQuestionPageConfigs = translate => {
       type: 'edit',
       source: 'id',
       actionConfig: {
-        title: translate('admin.editQuestion'),
+        title: translate('admin.edit'),
         editEndpoint: 'questions',
         fields: QUESTION_FIELDS,
         displayUsedBy: true,
