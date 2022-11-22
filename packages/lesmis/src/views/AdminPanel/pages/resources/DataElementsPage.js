@@ -14,6 +14,7 @@ import {
 import { getEditorConfigs } from '../helpers/getEditorConfigs';
 import { getImportModalText } from '../helpers/getImportModalText';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const getButtonsConfig = (fields, recordType, translate) => [
   {
@@ -21,20 +22,14 @@ const getButtonsConfig = (fields, recordType, translate) => [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: translate('admin.edit'),
       editEndpoint: `${recordType}s`,
       fields,
       displayUsedBy: true,
       recordType,
     },
   },
-  {
-    Header: translate('admin.delete'),
-    source: 'id',
-    type: 'delete',
-    actionConfig: {
-      endpoint: `${recordType}s`,
-    },
-  },
+  getDeleteColumnConfigs(`${recordType}s`, translate),
 ];
 
 const getDataElementFields = translate => {

@@ -7,6 +7,7 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { getImportModalText } from './getImportModalText';
 import { getSurveyResponsesExportModal } from '../../components/getSurveyResponsesExportModal';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
+import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
@@ -139,14 +140,7 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
         source: 'id',
         actionConfig,
       },
-      {
-        Header: translate('admin.delete'),
-        source: 'id',
-        type: 'delete',
-        actionConfig: {
-          endpoint: 'surveyResponses',
-        },
-      },
+      getDeleteColumnConfigs('surveyResponses', translate),
     ],
     importConfig,
     exportConfig,

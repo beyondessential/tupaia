@@ -5,6 +5,7 @@
 
 import { getBooleanSelectFilter } from '../../table/columnTypes/getBooleanSelectFilter';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
+import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
 import { getImportModalText } from './getImportModalText';
 
 export const getSurveysPageConfigs = translate => {
@@ -130,14 +131,7 @@ export const getSurveysPageConfigs = translate => {
         ],
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: 'surveys',
-      },
-    },
+    getDeleteColumnConfigs('surveys', translate),
   ];
 
   const QUESTION_FIELDS = [
