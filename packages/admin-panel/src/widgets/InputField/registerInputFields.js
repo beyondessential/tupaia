@@ -55,6 +55,7 @@ export const registerInputFields = () => {
       allowMultipleValues={props.allowMultipleValues}
       parentRecord={props.parentRecord}
       baseFilter={props.baseFilter}
+      pageSize={props.pageSize}
     />
   ));
   registerInputField('json', props => (
