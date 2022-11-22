@@ -14,6 +14,7 @@ export const ApprovedSurveyResponsesView = props => {
     columns: COLUMNS,
     importConfig,
     exportConfig,
+    editorConfig,
     ExportModalComponent,
   } = getSurveyResponsePageConfigs(props);
 
@@ -24,6 +25,7 @@ export const ApprovedSurveyResponsesView = props => {
       columns={COLUMNS.filter(column => column.type !== 'delete')}
       importConfig={importConfig}
       exportConfig={exportConfig}
+      editorConfig={editorConfig}
       ExportModalComponent={ExportModalComponent}
       {...props}
     />
@@ -35,6 +37,7 @@ export const RejectedSurveyResponsesView = props => {
     columns: COLUMNS,
     importConfig,
     exportConfig,
+    editorConfig,
     ExportModalComponent,
   } = getSurveyResponsePageConfigs(props);
 
@@ -45,6 +48,7 @@ export const RejectedSurveyResponsesView = props => {
       columns={COLUMNS.filter(column => column.type !== 'delete')}
       importConfig={importConfig}
       exportConfig={exportConfig}
+      editorConfig={editorConfig}
       ExportModalComponent={ExportModalComponent}
       {...props}
     />
@@ -56,6 +60,7 @@ export const DraftSurveyResponsesView = props => {
     columns: COLUMNS,
     importConfig,
     exportConfig,
+    editorConfig,
     ExportModalComponent,
   } = getSurveyResponsePageConfigs(props);
 
@@ -88,6 +93,7 @@ export const DraftSurveyResponsesView = props => {
       columns={DRAFT_COLUMNS}
       importConfig={importConfig}
       exportConfig={exportConfig}
+      editorConfig={editorConfig}
       ExportModalComponent={ExportModalComponent}
     />
   );
@@ -98,6 +104,7 @@ export const NonApprovalSurveyResponsesView = props => {
     columns: COLUMNS,
     importConfig,
     exportConfig,
+    editorConfig,
     ExportModalComponent,
   } = getSurveyResponsePageConfigs(props);
 
@@ -119,6 +126,7 @@ export const NonApprovalSurveyResponsesView = props => {
       columns={NON_APPROVAL_COLUMNS}
       importConfig={importConfig}
       exportConfig={exportConfig}
+      editorConfig={editorConfig}
       ExportModalComponent={ExportModalComponent}
     />
   );

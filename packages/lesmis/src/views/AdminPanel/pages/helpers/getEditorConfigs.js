@@ -3,6 +3,12 @@
  * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
  */
 
+export const getBaseEditorConfigs = translate => ({
+  dismissButtonText: translate('admin.dismiss'),
+  cancelButtonText: translate('admin.cancel'),
+  saveButtonText: translate('admin.save'),
+});
+
 export const getEditorConfigs = translate => {
   return {
     displayUsedBy: true,
@@ -18,8 +24,6 @@ export const getEditorConfigs = translate => {
         survey: translate('admin.surveys'),
       },
     },
-    dismissButtonText: translate('admin.dismiss'),
-    cancelButtonText: translate('admin.cancel'),
-    saveButtonText: translate('admin.save'),
+    ...getBaseEditorConfigs(translate),
   };
 };

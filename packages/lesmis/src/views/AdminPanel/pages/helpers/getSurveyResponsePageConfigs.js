@@ -8,6 +8,7 @@ import { getImportModalText } from './getImportModalText';
 import { getSurveyResponsesExportModal } from '../../components/getSurveyResponsesExportModal';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
+import { getBaseEditorConfigs } from './getEditorConfigs';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
@@ -80,25 +81,6 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     },
   ];
 
-  const actionConfig = {
-    title: 'Edit Survey Response',
-    editEndpoint: 'surveyResponses',
-    fields: [
-      entityName,
-      surveyName,
-      assessorName,
-      date,
-      dateOfData,
-      {
-        Header: translate('admin.approvalStatus'),
-        source: 'approval_status',
-        editConfig: {
-          options: APPROVAL_STATUS_TYPES,
-        },
-      },
-    ].map(field => ({ ...field, Header: translate(field.Header) })),
-  };
-
   const importModalText = getImportModalText(translate);
   const importConfig = {
     title: translate('admin.importSurveyResponses'),
@@ -138,12 +120,30 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
         Header: translate('admin.edit'),
         type: 'edit',
         source: 'id',
-        actionConfig,
+        actionConfig: {
+          title: translate('admin.edit'),
+          editEndpoint: 'surveyResponses',
+          fields: [
+            entityName,
+            surveyName,
+            assessorName,
+            date,
+            dateOfData,
+            {
+              Header: translate('admin.approvalStatus'),
+              source: 'approval_status',
+              editConfig: {
+                options: APPROVAL_STATUS_TYPES,
+              },
+            },
+          ].map(field => ({ ...field, Header: translate(field.Header) })),
+        },
       },
       getDeleteColumnConfigs('surveyResponses', translate),
     ],
     importConfig,
     exportConfig,
+    editorConfig: getBaseEditorConfigs(translate),
     ExportModalComponent: getSurveyResponsesExportModal(translate),
   };
 };
