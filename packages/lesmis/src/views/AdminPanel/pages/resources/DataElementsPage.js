@@ -12,6 +12,7 @@ import {
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
 import { getEditorConfigs } from '../helpers/getEditorConfigs';
+import { getDeleteConfigs } from '../helpers/getDeleteConfigs';
 import { getImportModalText } from '../helpers/getImportModalText';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
@@ -98,6 +99,7 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
       }}
       getHeaderEl={getHeaderEl}
       editorConfig={EDITOR_CONFIG}
+      deleteConfig={getDeleteConfigs(translate)}
     />
   );
 };

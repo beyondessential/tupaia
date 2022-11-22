@@ -6,6 +6,7 @@
 import { getBooleanSelectFilter } from '../../table/columnTypes/getBooleanSelectFilter';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
+import { getDeleteConfigs } from './getDeleteConfigs';
 import { getBaseEditorConfigs } from './getEditorConfigs';
 import { getImportModalText } from './getImportModalText';
 
@@ -424,18 +425,11 @@ export const getSurveysPageConfigs = translate => {
     ...importModalText,
   };
 
-  const DELETE_CONFIG = {
-    title: translate('admin.deleteRecord'),
-    description: translate('admin.onceDeletedThisCantBeUndone'),
-    cancelButtonText: translate('admin.cancel'),
-    confirmButtonText: translate('admin.delete'),
-  };
-
   return {
     SURVEY_COLUMNS,
     EXPANSION_CONFIG,
     IMPORT_CONFIG,
-    DELETE_CONFIG,
+    DELETE_CONFIG: getDeleteConfigs(translate),
     EDITOR_CONFIG: getBaseEditorConfigs(translate),
   };
 };
