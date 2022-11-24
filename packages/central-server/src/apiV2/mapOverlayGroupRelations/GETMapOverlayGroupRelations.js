@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -12,7 +13,6 @@ import {
   createRelationsViaParentOverlayGroupDBFilter,
 } from './assertMapOverlayGroupRelationsPermissions';
 import { assertMapOverlayGroupsGetPermissions } from '../mapOverlayGroups';
-import { TYPES } from '@tupaia/database';
 import { assertMapOverlaysGetPermissions } from '../mapOverlays';
 
 /**
@@ -102,5 +102,19 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     );
 
     return { dbConditions, dbOptions: options };
+  }
+
+  async findRecords(criteria, options) {
+    const queryResults = await this.models.mapOverlayGroupRelation.find(criteria, options);
+    return queryResults.map(
+      ({ id, child_id, map_overlay_group_id, child_type, sort_order, childCode }) => ({
+        id,
+        child_id,
+        map_overlay_group_id,
+        child_type,
+        sort_order,
+        childCode,
+      }),
+    );
   }
 }
