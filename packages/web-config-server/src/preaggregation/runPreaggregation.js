@@ -3,10 +3,14 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { createAggregator } from '@tupaia/aggregator';
+import { AccessPolicy } from '@tupaia/access-policy';
+import { Aggregator } from '@tupaia/aggregator';
+import { DataBroker } from '@tupaia/data-broker';
 import { getDhisApiInstance } from '/dhis';
 import winston from 'winston';
 import * as preaggregators from './preaggregators';
+
+export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
 const getPreaggregators = preaggregationName =>
   preaggregationName.toLowerCase() === 'all'
@@ -14,7 +18,13 @@ const getPreaggregators = preaggregationName =>
     : { [preaggregationName]: preaggregators[preaggregationName] };
 
 const runPreaggregators = async preaggregatorsToRun => {
-  const aggregator = createAggregator();
+  const aggregator = new Aggregator(
+    new DataBroker({
+      accessPolicy: new AccessPolicy({
+        DL: [BES_ADMIN_PERMISSION_GROUP],
+      }),
+    }),
+  );
   const regionalDhisApiInstance = getDhisApiInstance();
   await regionalDhisApiInstance.updateAnalyticsTables();
   const preaggregatorEntries = Object.entries(preaggregatorsToRun);
