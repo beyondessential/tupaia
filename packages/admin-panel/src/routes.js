@@ -87,7 +87,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: '/dashboard-items',
+    to: '/visualisations',
     icon: <InsertChart />,
     tabs: [
       {
