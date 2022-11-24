@@ -140,7 +140,7 @@ const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) =
       ...resultDataValues,
     });
   });
-  const now = new Date();
+
   const dataWithUpdatesAndAddOns = combinedEvents.map(event => {
     const {
       orgUnit,
@@ -149,8 +149,8 @@ const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) =
       C19T004: dob,
       eventDate: dateSpecimenCollected,
     } = event;
-
-    const age = getAge(dob, now);
+    const testDate = new Date(dateSpecimenCollected);
+    const age = getAge(dob, testDate);
     return {
       'Test ID': orgUnit,
       'Estimated Recovery Date': getEstimatedRecoveryDate(result, dateSpecimenCollected, onsetDate),
