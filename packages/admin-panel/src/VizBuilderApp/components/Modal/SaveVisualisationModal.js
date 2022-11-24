@@ -23,6 +23,7 @@ import {
 import { MODAL_STATUS, VIZ_TYPE_PARAM } from '../../constants';
 import { useVizConfig, useVisualisation } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
+import { useVizBuilderBasePath } from '../../utils';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
@@ -41,6 +42,7 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [_, { setVisualisationValue }] = useVizConfig();
   const { visualisation } = useVisualisation();
 
+  const basePath = useVizBuilderBasePath();
   const { vizType } = useParams();
 
   const useSaveViz = () => {
@@ -71,11 +73,11 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
     onClose();
   });
 
-  let backLink = '/';
+  let backLink = basePath;
   if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
-    backLink = '/dashboard-items';
+    backLink = backLink.concat('/visualisations');
   } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
-    backLink = '/dashboard-items/map-overlays';
+    backLink = backLink.concat('/visualisations/map-overlays');
   }
 
   if (status === MODAL_STATUS.SUCCESS) {

@@ -50,27 +50,7 @@ const FIELDS = [
   },
 ];
 
-const IMPORT_CONFIG = {
-  title: 'Import Dashboard Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
-  actionConfig: {
-    importEndpoint: 'dashboardVisualisations',
-    multiple: true,
-  },
-  getFinishedMessage: response => (
-    <>
-      <span>{response.message}</span>
-      {response.importedVizes.map(({ code, id }) => (
-        <p>
-          <span>{`${code}: `}</span>
-          <Link to={`/viz-builder/dashboard-item/${id}`}>View in Visualisation Builder</Link>
-        </p>
-      ))}
-    </>
-  ),
-};
-
-export const DashboardItemsPage = ({ getHeaderEl, ...props }) => {
+export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
   const { isVizBuilderUser } = useUser();
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
@@ -86,7 +66,7 @@ export const DashboardItemsPage = ({ getHeaderEl, ...props }) => {
       editConfig: {
         type: 'link',
         linkOptions: {
-          path: '/viz-builder/dashboard-item/:id',
+          path: `${vizBuilderBaseUrl}/viz-builder/dashboard-item/:id`,
           parameters: { id: 'id' },
         },
         visibilityCriteria: {
@@ -128,19 +108,41 @@ export const DashboardItemsPage = ({ getHeaderEl, ...props }) => {
   ];
 
   const renderNewDashboardVizButton = () => (
-    <StyledLink to={isVizBuilderUser ? '/viz-builder/dashboard-item/new' : '#'}>
+    <StyledLink to={isVizBuilderUser ? `${vizBuilderBaseUrl}/viz-builder/dashboard-item/new` : '#'}>
       <LightOutlinedButton disabled={!isVizBuilderUser} startIcon={<AddCircleIcon />}>
         New
       </LightOutlinedButton>
     </StyledLink>
   );
 
+  const importConfig = {
+    title: 'Import Dashboard Visualisation',
+    subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+    actionConfig: {
+      importEndpoint: 'dashboardVisualisations',
+      multiple: true,
+    },
+    getFinishedMessage: response => (
+      <>
+        <span>{response.message}</span>
+        {response.importedVizes.map(({ code, id }) => (
+          <p>
+            <span>{`${code}: `}</span>
+            <Link to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/${id}`}>
+              View in Visualisation Builder
+            </Link>
+          </p>
+        ))}
+      </>
+    ),
+  };
+
   return (
     <ResourcePage
       title="Dashboard Items"
       endpoint={DASHBOARD_ITEMS_ENDPOINT}
       columns={columns}
-      importConfig={IMPORT_CONFIG}
+      importConfig={importConfig}
       LinksComponent={renderNewDashboardVizButton}
       getHeaderEl={getHeaderEl}
       {...props}
@@ -150,4 +152,9 @@ export const DashboardItemsPage = ({ getHeaderEl, ...props }) => {
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  vizBuilderBaseUrl: PropTypes.string,
+};
+
+DashboardItemsPage.defaultProps = {
+  vizBuilderBaseUrl: '',
 };

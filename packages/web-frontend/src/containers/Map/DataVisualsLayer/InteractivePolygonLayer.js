@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { omitBy } from 'lodash';
 import PropTypes from 'prop-types';
 
 import { InteractivePolygon } from '@tupaia/ui-components';
@@ -19,6 +20,7 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
 } from '../../../selectors';
+import { selectCountryHierarchy } from '../../../selectors/orgUnitSelectors';
 
 const InteractivePolygonLayerComponent = props => {
   const {
@@ -101,6 +103,8 @@ const mapStateToProps = (state, ownProps) => {
   const currentChildren =
     selectOrgUnitChildren(state, currentOrganisationUnit.organisationUnitCode) || [];
   const permanentLabels = selectAreRegionLabelsPermanent(state);
+  const country = selectCountryHierarchy(state, currentOrganisationUnit.organisationUnitCode);
+
   // orginal data
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
@@ -110,14 +114,38 @@ const mapStateToProps = (state, ownProps) => {
   if (selectHasPolygonMeasure(state)) {
     measureOrgUnits = selectMeasuresWithDisplayInfo(state, displayedMapOverlayCodes);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
-    const grandchildren = currentChildren
-      .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
-      .reduce((acc, val) => acc.concat(val), []); // equivelent to .flat(), for IE
 
-    const hasShadedGrandchildren =
-      grandchildren &&
-      grandchildren.some(child => measureOrgUnitCodes.includes(child.organisationUnitCode));
-    if (hasShadedGrandchildren) displayedChildren = grandchildren;
+    const getDisplayedDescendants = (parents, restOfOrgUnits = {}) => {
+      if (!Array.isArray(parents) || parents.length === 0) return parents;
+      const parentCodes = parents.map(area => area.organisationUnitCode);
+      const children = Object.values(restOfOrgUnits).filter(orgUnit =>
+        parentCodes.includes(orgUnit.parent),
+      );
+
+      if (children.length === 0) return null;
+
+      // if this is the measure layer return it
+      const hasShadedPolygonChildren =
+        children &&
+        children.some(
+          child =>
+            organisationUnitIsArea(child) &&
+            measureOrgUnitCodes.includes(child.organisationUnitCode),
+        );
+      if (hasShadedPolygonChildren) return children;
+
+      // otherwise look deeper
+      return getDisplayedDescendants(
+        children,
+        omitBy(restOfOrgUnits, orgUnit => orgUnit.type === parents[0].type),
+      );
+    };
+
+    const displayedDescendants = getDisplayedDescendants(
+      currentChildren,
+      omitBy(country, orgUnit => orgUnit.type === currentOrganisationUnit.type),
+    );
+    if (displayedDescendants) displayedChildren = displayedDescendants;
   }
 
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);

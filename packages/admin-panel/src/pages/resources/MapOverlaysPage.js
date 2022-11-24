@@ -113,33 +113,7 @@ const FIELDS = [
   },
 ];
 
-const IMPORT_CONFIG = {
-  title: 'Import Map Overlay Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
-  actionConfig: {
-    importEndpoint: 'mapOverlayVisualisations',
-    multiple: true,
-  },
-  getFinishedMessage: response => (
-    <>
-      <span>{response.message}</span>
-      {response.importedVizes.map(({ code, id }) => (
-        <p>
-          <span>{`${code}: `}</span>
-          <Link to={`/viz-builder/dashboard-item/${id}`}>View in Visualisation Builder</Link>
-        </p>
-      ))}
-    </>
-  ),
-};
-
-const renderNewMapOverlayVizButton = () => (
-  <StyledLink to="/viz-builder/map-overlay/new">
-    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
-  </StyledLink>
-);
-
-export const MapOverlaysPage = ({ getHeaderEl, ...props }) => {
+export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
   const { isVizBuilderUser } = useUser();
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
@@ -155,7 +129,7 @@ export const MapOverlaysPage = ({ getHeaderEl, ...props }) => {
       editConfig: {
         type: 'link',
         linkOptions: {
-          path: '/viz-builder/map-overlay/:id',
+          path: `${vizBuilderBaseUrl}/viz-builder/map-overlay/:id`,
           parameters: { id: 'id' },
         },
         visibilityCriteria: {
@@ -196,12 +170,40 @@ export const MapOverlaysPage = ({ getHeaderEl, ...props }) => {
     },
   ];
 
+  const importConfig = {
+    title: 'Import Map Overlay Visualisation',
+    subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+    actionConfig: {
+      importEndpoint: 'mapOverlayVisualisations',
+      multiple: true,
+    },
+    getFinishedMessage: response => (
+      <>
+        <span>{response.message}</span>
+        {response.importedVizes.map(({ code, id }) => (
+          <p>
+            <span>{`${code}: `}</span>
+            <Link to={`${vizBuilderBaseUrl}/viz-builder/map-overlay/${id}`}>
+              View in Visualisation Builder
+            </Link>
+          </p>
+        ))}
+      </>
+    ),
+  };
+
+  const renderNewMapOverlayVizButton = () => (
+    <StyledLink to={`${vizBuilderBaseUrl}/viz-builder/map-overlay/new`}>
+      <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+    </StyledLink>
+  );
+
   return (
     <ResourcePage
       title="Map Overlays"
       endpoint="mapOverlays"
       columns={COLUMNS}
-      importConfig={IMPORT_CONFIG}
+      importConfig={importConfig}
       LinksComponent={renderNewMapOverlayVizButton}
       getHeaderEl={getHeaderEl}
       {...props}
@@ -211,4 +213,9 @@ export const MapOverlaysPage = ({ getHeaderEl, ...props }) => {
 
 MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  vizBuilderBaseUrl: PropTypes.string,
+};
+
+MapOverlaysPage.defaultProps = {
+  vizBuilderBaseUrl: '',
 };
