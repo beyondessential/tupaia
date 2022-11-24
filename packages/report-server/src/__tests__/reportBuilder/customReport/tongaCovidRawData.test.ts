@@ -146,7 +146,7 @@ describe('tongaCovidRawData', () => {
         },
         {
           Address: 'Tonga Village 3',
-          Age: 30,
+          Age: 29,
           'CT Value': 4,
           'Clinic Type': 'Circular',
           'Community Testing': 'No',
