@@ -32,6 +32,9 @@ git reset --hard origin/${GIT_BRANCH}
 # Yarn install
 yarn install --frozen-lockfile
 
+# TODO: 1. Wrong password in lastpass to login lesmis@tupaia.org
+#       2. It will pull wrong key for REACT_APP_LESMIS_API_URL in lesmis .env
+#       3. change all service api urls to localhost as they interact locally
 # Fetch env vars
 echo "Note: if lastpass fails, check email account $LASTPASS_EMAIL for a verification check"
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
