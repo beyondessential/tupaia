@@ -4,4 +4,5 @@
  */
 
 export { getCreateConfigs } from './getCreateConfigs';
+export { getDeleteConfigs } from './getDeleteConfigs';
 export * from './getEditorConfigs';

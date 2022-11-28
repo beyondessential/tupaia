@@ -78,6 +78,7 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
     ...importModalText,
   };
   const EDITOR_CONFIG = getEditorConfigs(translate);
+  const DELETE_CONFIG = getDeleteConfigs(translate);
   const CREATE_CONFIG = getCreateConfigs(translate, {
     editEndpoint: 'dataElements',
     fields: DATA_ELEMENT_FIELDS,
@@ -96,7 +97,7 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
       createConfig={CREATE_CONFIG}
       getHeaderEl={getHeaderEl}
       editorConfig={EDITOR_CONFIG}
-      deleteConfig={getDeleteConfigs(translate)}
+      deleteConfig={DELETE_CONFIG}
     />
   );
 };
