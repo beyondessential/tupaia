@@ -12,7 +12,7 @@ import {
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
 import { getDeleteConfigs } from '../helpers/getDeleteConfigs';
-import { getImportModalText } from '../helpers/getImportModalText';
+import { getImportConfigs } from '../helpers/getImportConfigs';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 import { getEditorConfigs, getCreateConfigs } from '../helpers';
@@ -69,14 +69,13 @@ const getDataElementFields = translate => {
 
 export const DataElementsPage = ({ getHeaderEl, translate }) => {
   const DATA_ELEMENT_FIELDS = getDataElementFields(translate);
-  const importModalText = getImportModalText(translate);
-  const IMPORT_CONFIG = {
+  const IMPORT_CONFIG = getImportConfigs(translate, {
     title: translate('admin.import'),
     actionConfig: {
       importEndpoint: 'dataElements',
     },
-    ...importModalText,
-  };
+  });
+
   const EDITOR_CONFIG = getEditorConfigs(translate);
   const DELETE_CONFIG = getDeleteConfigs(translate);
   const CREATE_CONFIG = getCreateConfigs(translate, {

@@ -10,7 +10,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { DashboardItemsPage as BaseDashboardItemsPage } from '@tupaia/admin-panel';
-import { getImportModalText } from '../helpers/getImportModalText';
+import { getImportConfigs } from '../helpers/getImportConfigs';
 import { getDeleteConfigs, getEditorConfigs } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
 
@@ -112,8 +112,7 @@ export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, .
     },
   ];
 
-  const importModalText = getImportModalText(translate);
-  const importConfig = {
+  const importConfig = getImportConfigs(translate, {
     title: translate('admin.import'),
     subtitle: 'Please upload one or more .json files with visualisations to be imported:',
     actionConfig: {
@@ -133,8 +132,7 @@ export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, .
         ))}
       </>
     ),
-    ...importModalText,
-  };
+  });
 
   const renderNewDashboardVizButton = () => (
     <StyledLink to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/new`}>

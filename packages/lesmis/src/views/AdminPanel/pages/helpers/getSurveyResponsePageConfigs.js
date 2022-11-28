@@ -4,7 +4,7 @@
  */
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { getImportModalText } from './getImportModalText';
+import { getImportConfigs } from './getImportConfigs';
 import { getSurveyResponsesExportModal } from '../../components/getSurveyResponsesExportModal';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
@@ -81,8 +81,7 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     },
   ];
 
-  const importModalText = getImportModalText(translate);
-  const importConfig = {
+  const importConfig = getImportConfigs(translate, {
     title: translate('admin.importSurveyResponses'),
     actionConfig: {
       importEndpoint: 'surveyResponses',
@@ -102,8 +101,7 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
         allowMultipleValues: true,
       },
     ],
-    ...importModalText,
-  };
+  });
 
   const exportConfig = {
     exportButtonText: translate('admin.export'),

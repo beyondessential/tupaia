@@ -64,4 +64,6 @@ export const getArrayFilter = translate => {
   ArrayFilter.propTypes = {
     onChange: PropTypes.func.isRequired,
   };
+
+  return ArrayFilter;
 };

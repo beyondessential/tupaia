@@ -8,7 +8,7 @@ import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
 import { getDeleteConfigs } from './getDeleteConfigs';
 import { getBaseEditorConfigs } from './getEditorConfigs';
-import { getImportModalText } from './getImportModalText';
+import { getImportConfigs } from './getImportConfigs';
 
 export const getSurveysPageConfigs = translate => {
   const PERIOD_GRANULARITIES = [
@@ -349,8 +349,7 @@ export const getSurveysPageConfigs = translate => {
     },
   ];
 
-  const importModalText = getImportModalText(translate);
-  const IMPORT_CONFIG = {
+  const IMPORT_CONFIG = getImportConfigs(translate, {
     title: translate('admin.import'),
     actionConfig: {
       importEndpoint: 'surveys',
@@ -422,8 +421,7 @@ export const getSurveysPageConfigs = translate => {
         visibilityCriteria: { serviceType: 'dhis' },
       },
     ],
-    ...importModalText,
-  };
+  });
 
   return {
     SURVEY_COLUMNS,
