@@ -108,13 +108,14 @@ const CREATE_CONFIG = {
   },
 };
 
-export const DashboardRelationsPage = ({ getHeaderEl }) => (
+export const DashboardRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Dashboard Relations"
     endpoint={DASHBOARD_RELATION_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...restOfProps}
   />
 );
 
