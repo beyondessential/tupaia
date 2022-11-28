@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { DashboardItemsPage as BaseDashboardItemsPage } from '@tupaia/admin-panel';
 import { getImportModalText } from '../helpers/getImportModalText';
 import { getDeleteConfigs, getEditorConfigs } from '../helpers';
+import { getColumnFilter } from '../../table/columnTypes';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -27,21 +28,26 @@ const StyledLink = styled(Link)`
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
 export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, ...props }) => {
+  const ColumnFilter = getColumnFilter(translate);
+
   const FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'code',
       type: 'tooltip',
+      Fitler: ColumnFilter,
     },
     {
       Header: translate('admin.reportCode'),
       source: 'report_code',
       type: 'tooltip',
+      Fitler: ColumnFilter,
     },
     {
       Header: translate('admin.config'),
       source: 'config',
       type: 'jsonTooltip',
+      Fitler: ColumnFilter,
       editConfig: { type: 'jsonEditor' },
     },
     {
