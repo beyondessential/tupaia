@@ -91,8 +91,8 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
     },
   ];
 
-  const EDITOR_CONFIG = getBaseEditorConfigs(translate);
-  const CREATE_CONFIG = getCreateConfigs(translate, {
+  const editorConfig = getBaseEditorConfigs(translate);
+  const createConfig = getCreateConfigs(translate, {
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   });
@@ -102,8 +102,8 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
       title={translate('admin.syncGroups')}
       endpoint="dataServiceSyncGroups"
       columns={COLUMNS}
-      editorConfig={EDITOR_CONFIG}
-      createConfig={CREATE_CONFIG}
+      editorConfig={editorConfig}
+      createConfig={createConfig}
       getHeaderEl={getHeaderEl}
     />
   );
