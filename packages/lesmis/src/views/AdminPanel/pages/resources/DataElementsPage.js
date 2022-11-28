@@ -11,11 +11,11 @@ import {
   getDataElementFieldEditConfig,
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
-import { getEditorConfigs } from '../helpers/getEditorConfigs';
 import { getDeleteConfigs } from '../helpers/getDeleteConfigs';
 import { getImportModalText } from '../helpers/getImportModalText';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
+import { getEditorConfigs, getCreateConfigs } from '../helpers';
 
 const getButtonsConfig = (fields, recordType, translate) => [
   {
@@ -78,6 +78,10 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
     ...importModalText,
   };
   const EDITOR_CONFIG = getEditorConfigs(translate);
+  const CREATE_CONFIG = getCreateConfigs(translate, {
+    editEndpoint: 'dataElements',
+    fields: DATA_ELEMENT_FIELDS,
+  });
 
   return (
     <BaseDataElementsPage
@@ -89,14 +93,7 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
         ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement', translate),
       ]}
       importConfig={IMPORT_CONFIG}
-      createConfig={{
-        label: translate('admin.new'),
-        actionConfig: {
-          title: translate('admin.createNew'),
-          editEndpoint: 'dataElements',
-          fields: [...DATA_ELEMENT_FIELDS],
-        },
-      }}
+      createConfig={CREATE_CONFIG}
       getHeaderEl={getHeaderEl}
       editorConfig={EDITOR_CONFIG}
       deleteConfig={getDeleteConfigs(translate)}

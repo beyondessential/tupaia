@@ -13,3 +13,4 @@ export { DashboardsPage } from './DashboardsPage';
 export { DashboardItemsPage } from './DashboardItemsPage';
 export { DashboardRelationsPage } from './DashboardRelationsPage';
 export { DataElementsPage } from './DataElementsPage';
+export { SyncGroupsPage } from './SyncGroupsPage';
