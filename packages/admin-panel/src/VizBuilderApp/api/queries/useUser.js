@@ -4,9 +4,10 @@
  */
 
 import { useQuery } from 'react-query';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
-import { reduceIsVizBuilderUser } from '../../../authentication';
+import { VIZ_BUILDER_USER_PERMISSION_GROUP } from '../../../authentication';
 
 export const useUser = () => {
   const query = useQuery('user', () => get('user'), {
@@ -14,7 +15,9 @@ export const useUser = () => {
   });
   const user = query.data;
   const isLoggedIn = user && Object.keys(user).length > 0;
-  const isVizBuilderUser = user && reduceIsVizBuilderUser(user.accessPolicy);
+  const isVizBuilderUser =
+    user &&
+    new AccessPolicy(user.accessPolicy).allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
 
   return { ...query, isLoggedIn, isVizBuilderUser };
 };
