@@ -93,8 +93,10 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
 
   const editorConfig = getBaseEditorConfigs(translate);
   const createConfig = getCreateConfigs(translate, {
-    editEndpoint: 'dataServiceSyncGroups',
-    fields: FIELDS,
+    actionConfig: {
+      editEndpoint: 'dataServiceSyncGroups',
+      fields: FIELDS,
+    },
   });
 
   return (

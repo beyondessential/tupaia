@@ -3,11 +3,11 @@
  * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
  */
 
-export const getCreateConfigs = (translate, { editEndpoint, fields }) => ({
+export const getCreateConfigs = (translate, { actionConfig, ...restOfConfigs }) => ({
   label: translate('admin.new'),
+  ...restOfConfigs,
   actionConfig: {
     title: translate('admin.createNew'),
-    editEndpoint,
-    fields,
+    ...actionConfig,
   },
 });

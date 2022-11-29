@@ -106,7 +106,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
     },
   ];
 
-  const EXPANSION_CONFIG = [
+  const expansionConfig = [
     {
       title: translate('admin.mapOverlayGroupRelations'),
       columns: RELATION_COLUMNS,
@@ -116,8 +116,10 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
 
   const editorConfig = getBaseEditorConfigs(translate);
   const createConfig = getCreateConfigs(translate, {
-    editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
-    fields: EDIT_FIELDS,
+    actionConfig: {
+      editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
+      fields: EDIT_FIELDS,
+    },
   });
 
   return (
@@ -125,7 +127,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
       title={translate('admin.mapOverlayGroups')}
       endpoint={MAP_OVERLAY_GROUPS_ENDPOINT}
       columns={COLUMNS}
-      expansionTabs={EXPANSION_CONFIG}
+      expansionTabs={expansionConfig}
       getHeaderEl={getHeaderEl}
       createConfig={createConfig}
       editorConfig={editorConfig}

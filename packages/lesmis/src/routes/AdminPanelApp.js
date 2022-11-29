@@ -9,6 +9,13 @@ import { connect } from 'react-redux';
 import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
 import {
+  LogoutPage,
+  EntitiesPage,
+  PrivateRoute,
+  VizBuilderProviders,
+  VizBuilderApp,
+} from '@tupaia/admin-panel';
+import {
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
@@ -16,18 +23,13 @@ import {
   DataElementsPage,
   DashboardItemsPage,
   DashboardRelationsPage,
-  MapOverlayGroupRelationsPage,
-  MapOverlayGroupsPage,
   MapOverlaysPage,
+  MapOverlayGroupsPage,
+  MapOverlayGroupRelationsPage,
   UsersPage,
-  LogoutPage,
-  EntitiesPage,
-  PrivateRoute,
-  VizBuilderProviders,
-  VizBuilderApp,
-} from '@tupaia/admin-panel';
+  PermissionsPage,
+} from '../views/AdminPanel/pages/resources';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
-import { PermissionsView } from '../views/AdminPanel/PermissionsView';
 import {
   ApprovedSurveyResponsesView,
   DraftSurveyResponsesView,
@@ -36,135 +38,138 @@ import {
 } from '../views/AdminPanel/SurveyResponsesView';
 import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl } from '../utils';
+import { useAdminPanelUrl, useI18n } from '../utils';
 
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
 
-const getRoutes = adminUrl => [
-  {
-    label: 'Survey Data',
-    to: `${adminUrl}/survey-responses`,
-    icon: <Assignment />,
-    tabs: [
-      {
-        label: 'Review',
-        to: '',
-        component: DraftSurveyResponsesView,
-      },
-      {
-        label: 'Approved',
-        to: '/approved',
-        component: ApprovedSurveyResponsesView,
-      },
-      {
-        label: 'Rejected',
-        to: '/rejected',
-        component: RejectedSurveyResponsesView,
-      },
-      {
-        label: 'Approval Not Required',
-        to: '/non-approval',
-        component: NonApprovalSurveyResponsesView,
-      },
-    ],
-  },
-  {
-    label: 'Surveys',
-    to: `${adminUrl}/surveys`,
-    icon: <Assignment />,
-    tabs: [
-      {
-        label: 'Surveys',
-        to: '',
-        component: SurveysPage,
-      },
-      {
-        label: 'Questions',
-        to: '/questions',
-        component: QuestionsPage,
-      },
-      {
-        label: 'Data Elements',
-        to: '/data-elements',
-        component: DataElementsPage,
-      },
-      {
-        label: 'Sync Groups',
-        to: '/sync-groups',
-        component: SyncGroupsPage,
-      },
-    ],
-  },
-  {
-    label: 'Visualisations',
-    to: `${adminUrl}/visualisations`,
-    icon: <InsertChart />,
-    tabs: [
-      {
-        label: 'Dashboard Items',
-        to: '',
-        component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
-      },
-      {
-        label: 'Dashboards',
-        to: '/dashboards',
-        component: DashboardsPage,
-      },
-      {
-        label: 'Dashboard Relations',
-        to: '/dashboard-relations',
-        component: DashboardRelationsPage,
-      },
-      {
-        label: 'Map Overlays',
-        to: '/map-overlays',
-        component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
-      },
-      {
-        label: 'Map Overlay Groups',
-        to: '/map-overlay-groups',
-        component: MapOverlayGroupsPage,
-      },
-      {
-        label: 'Map Overlay Group Relations',
-        to: '/map-overlay-group-relations',
-        component: MapOverlayGroupRelationsPage,
-      },
-    ],
-  },
-  {
-    label: 'Users & Permissions',
-    to: `${adminUrl}/users`,
-    icon: <PeopleAlt />,
-    tabs: [
-      {
-        label: 'Users',
-        to: '',
-        component: UsersView,
-      },
-      {
-        label: 'Permissions',
-        to: '/permissions',
-        component: PermissionsView,
-      },
-    ],
-  },
-  {
-    label: 'Entities',
-    to: `${adminUrl}/entities`,
-    icon: <Storage />,
-    tabs: [
-      {
-        label: 'Entities',
-        to: '',
-        component: EntitiesPage,
-      },
-    ],
-  },
-];
+const getRoutes = (adminUrl, translate) => {
+  return [
+    {
+      label: translate('admin.surveyData'),
+      to: `${adminUrl}/survey-responses`,
+      icon: <Assignment />,
+      tabs: [
+        {
+          label: translate('admin.review'),
+          to: '',
+          component: DraftSurveyResponsesView,
+        },
+        {
+          label: translate('admin.approved'),
+          to: '/approved',
+          component: ApprovedSurveyResponsesView,
+        },
+        {
+          label: translate('admin.rejected'),
+          to: '/rejected',
+          component: RejectedSurveyResponsesView,
+        },
+        {
+          label: translate('admin.approvalNotRequired'),
+          to: '/non-approval',
+          component: NonApprovalSurveyResponsesView,
+        },
+      ],
+    },
+    {
+      label: translate('admin.surveys'),
+      to: `${adminUrl}/surveys`,
+      icon: <Assignment />,
+      tabs: [
+        {
+          label: translate('admin.surveys'),
+          to: '',
+          component: SurveysPage,
+        },
+        {
+          label: translate('admin.questions'),
+          to: '/questions',
+          component: QuestionsPage,
+        },
+        {
+          label: translate('admin.dataElements'),
+          to: '/data-elements',
+          component: DataElementsPage,
+        },
+        {
+          label: translate('admin.syncGroups'),
+          to: '/sync-groups',
+          component: SyncGroupsPage,
+        },
+      ],
+    },
+    {
+      label: translate('admin.visualisations'),
+      to: `${adminUrl}/visualisations`,
+      icon: <InsertChart />,
+      tabs: [
+        {
+          label: translate('admin.dashboardItems'),
+          to: '',
+          component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
+        },
+        {
+          label: translate('admin.dashboards'),
+          to: '/dashboards',
+          component: DashboardsPage,
+        },
+        {
+          label: translate('admin.dashboardRelations'),
+          to: '/dashboard-relations',
+          component: DashboardRelationsPage,
+        },
+        {
+          label: translate('admin.mapOverlays'),
+          to: '/map-overlays',
+          component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
+        },
+        {
+          label: translate('admin.mapOverlayGroups'),
+          to: '/map-overlay-groups',
+          component: MapOverlayGroupsPage,
+        },
+        {
+          label: translate('admin.mapOverlayGroupRelations'),
+          to: '/map-overlay-group-relations',
+          component: MapOverlayGroupRelationsPage,
+        },
+      ],
+    },
+    {
+      label: `${translate('admin.users')} & ${translate('admin.permissions')}`,
+      to: `${adminUrl}/users`,
+      icon: <PeopleAlt />,
+      tabs: [
+        {
+          label: translate('admin.users'),
+          to: '',
+          component: UsersView,
+        },
+        {
+          label: translate('admin.permissions'),
+          to: '/permissions',
+          component: PermissionsPage,
+        },
+      ],
+    },
+    {
+      label: 'Entities',
+      to: `${adminUrl}/entities`,
+      icon: <Storage />,
+      tabs: [
+        {
+          label: 'Entities',
+          to: '',
+          component: EntitiesPage,
+        },
+      ],
+    },
+  ];
+};
 
 const AdminPanelApp = ({ user, isBESAdmin }) => {
+  const { translate } = useI18n();
   const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
   const adminUrl = useAdminPanelUrl();
@@ -173,7 +178,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
     return headerEl;
   };
 
-  const routes = getRoutes(adminUrl);
+  const routes = getRoutes(adminUrl, translate);
 
   return (
     <Switch>
@@ -201,7 +206,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} />
+                    <tab.component getHeaderEl={getHeaderEl} translate={translate} />
                   </Route>
                 ))}
                 <Redirect to={`${route.to}`} />

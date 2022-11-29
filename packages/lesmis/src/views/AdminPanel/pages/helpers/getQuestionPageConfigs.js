@@ -42,6 +42,11 @@ export const getQuestionPageConfigs = translate => {
       source: 'detail',
       Filter: getColumnFilter(translate),
     },
+    {
+      Header: 'Option Set Id',
+      source: 'option_set_id',
+      show: false,
+    },
   ];
 
   const QUESTION_COLUMNS = [

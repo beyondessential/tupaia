@@ -69,18 +69,20 @@ const getDataElementFields = translate => {
 
 export const DataElementsPage = ({ getHeaderEl, translate }) => {
   const DATA_ELEMENT_FIELDS = getDataElementFields(translate);
-  const IMPORT_CONFIG = getImportConfigs(translate, {
+  const importConfig = getImportConfigs(translate, {
     title: translate('admin.import'),
     actionConfig: {
       importEndpoint: 'dataElements',
     },
   });
 
-  const EDITOR_CONFIG = getEditorConfigs(translate);
-  const DELETE_CONFIG = getDeleteConfigs(translate);
-  const CREATE_CONFIG = getCreateConfigs(translate, {
-    editEndpoint: 'dataElements',
-    fields: DATA_ELEMENT_FIELDS,
+  const editorConfig = getEditorConfigs(translate);
+  const deleteConfig = getDeleteConfigs(translate);
+  const createConfig = getCreateConfigs(translate, {
+    actionConfig: {
+      editEndpoint: 'dataElements',
+      fields: DATA_ELEMENT_FIELDS,
+    },
   });
 
   return (
@@ -92,11 +94,11 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
         ...DATA_ELEMENT_FIELDS,
         ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement', translate),
       ]}
-      importConfig={IMPORT_CONFIG}
-      createConfig={CREATE_CONFIG}
+      importConfig={importConfig}
+      createConfig={createConfig}
       getHeaderEl={getHeaderEl}
-      editorConfig={EDITOR_CONFIG}
-      deleteConfig={DELETE_CONFIG}
+      editorConfig={editorConfig}
+      deleteConfig={deleteConfig}
     />
   );
 };

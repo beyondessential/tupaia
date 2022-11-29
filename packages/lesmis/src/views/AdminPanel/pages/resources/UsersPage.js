@@ -160,23 +160,25 @@ export const UsersPage = ({ getHeaderEl, translate }) => {
     },
   });
   const createConfig = getCreateConfigs(translate, {
-    editEndpoint: 'users',
-    fields: [
-      ...EDIT_FIELDS,
-      {
-        Header: 'Api Client (Not required for most users, see Readme of admin-panel for usage)',
-        source: 'is_api_client',
-        type: 'boolean',
-        editConfig: {
+    actionConfig: {
+      editEndpoint: 'users',
+      fields: [
+        ...EDIT_FIELDS,
+        {
+          Header: 'Api Client (Not required for most users, see Readme of admin-panel for usage)',
+          source: 'is_api_client',
           type: 'boolean',
+          editConfig: {
+            type: 'boolean',
+          },
         },
-      },
-    ],
+      ],
+    },
   });
 
   return (
     <BaseUsersPage
-      title="Users"
+      title={translate('admin.users')}
       endpoint="users"
       columns={COLUMNS}
       expansionTabs={expansionConfig}

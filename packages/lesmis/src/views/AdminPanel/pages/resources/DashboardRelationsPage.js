@@ -110,8 +110,10 @@ export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
   ];
 
   const createConfig = getCreateConfigs(translate, {
-    editEndpoint: DASHBOARD_RELATION_ENDPOINT,
-    fields: DASHBOARD_RELATION_COLUMNS,
+    actionConfig: {
+      editEndpoint: DASHBOARD_RELATION_ENDPOINT,
+      fields: DASHBOARD_RELATION_COLUMNS,
+    },
   });
   const editorConfig = getBaseEditorConfigs(translate);
   const deleteConfig = getDeleteConfigs(translate);

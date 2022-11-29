@@ -126,7 +126,7 @@ export const DashboardsPage = ({ getHeaderEl, translate }) => {
     },
   ];
 
-  const EXPANSION_CONFIG = [
+  const expansionConfig = [
     {
       title: translate('admin.dashboardRelations'),
       columns: RELATION_COLUMNS,
@@ -134,21 +134,23 @@ export const DashboardsPage = ({ getHeaderEl, translate }) => {
     },
   ];
 
-  const CREATE_CONFIG = getCreateConfigs(translate, {
-    editEndpoint: DASHBOARDS_ENDPOINT,
-    fields: FIELDS,
+  const createConfig = getCreateConfigs(translate, {
+    actionConfig: {
+      editEndpoint: DASHBOARDS_ENDPOINT,
+      fields: FIELDS,
+    },
   });
-  const EDITOR_CONFIG = getEditorConfigs(translate);
-  const DELETE_CONFIG = getDeleteConfigs(translate);
+  const editorConfig = getEditorConfigs(translate);
+  const deleteConfig = getDeleteConfigs(translate);
 
   return (
     <BaseDashboardsPage
       title={translate('admin.dashboards')}
       columns={COLUMNS}
-      expansionTabs={EXPANSION_CONFIG}
-      createConfig={CREATE_CONFIG}
-      editorConfig={EDITOR_CONFIG}
-      deleteConfig={DELETE_CONFIG}
+      expansionTabs={expansionConfig}
+      createConfig={createConfig}
+      editorConfig={editorConfig}
+      deleteConfig={deleteConfig}
       getHeaderEl={getHeaderEl}
     />
   );

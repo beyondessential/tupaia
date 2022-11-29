@@ -91,8 +91,10 @@ export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
 
   const editorConfig = getBaseEditorConfigs(translate);
   const createConfig = getCreateConfigs(translate, {
-    editEndpoint: RELATION_ENDPOINT,
-    fields: FIELDS,
+    actionConfig: {
+      editEndpoint: RELATION_ENDPOINT,
+      fields: FIELDS,
+    },
   });
   const deleteConfig = getDeleteConfigs(translate);
 
