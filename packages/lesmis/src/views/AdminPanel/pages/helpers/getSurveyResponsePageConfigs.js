@@ -23,6 +23,7 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     Header: translate('admin.survey'),
     source: 'survey.name',
     editable: false,
+    type: 'tooltip',
     Filter: getColumnFilter(translate),
   };
 
