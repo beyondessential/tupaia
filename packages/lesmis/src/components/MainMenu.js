@@ -18,7 +18,15 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
-import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@material-ui/icons';
+import {
+  Home,
+  ImportContacts,
+  ContactMail,
+  Close,
+  Menu,
+  Assignment,
+  Build,
+} from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
 import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
@@ -85,35 +93,13 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
-/* eslint-disable */
-const AdminPanelLinks = () => (
-  <>
-    <Subheader component="div">Admin</Subheader>
-    <LocaleListItemLink to="/admin/survey-responses">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Survey Responses" />
-    </LocaleListItemLink>
-    <LocaleListItemLink to="/admin/surveys">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Surveys" />
-    </LocaleListItemLink>
-    <LocaleListItemLink to="/admin/visualisations">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Visualisations" />
-    </LocaleListItemLink>
-    <LocaleListItemLink to="/admin/users">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Users" />
-    </LocaleListItemLink>
-  </>
+const AdminPanelLink = () => (
+  <LocaleListItemLink to="/admin" target="_blank">
+    <ListItemIcon>
+      <Build />
+    </ListItemIcon>
+    <ListItemText primary="Admin" />
+  </LocaleListItemLink>
 );
 
 export const MainMenu = () => {
@@ -161,7 +147,7 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary={<I18n t="home.contactUs" />} />
           </LocaleListItemLink>
-          {isLesmisAdmin && <AdminPanelLinks />}
+          {isLesmisAdmin && <AdminPanelLink />}
           <Subheader component="div">
             <I18n t="home.onlineQuestionnaires" />
           </Subheader>

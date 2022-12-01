@@ -64,8 +64,6 @@ const SpinningSyncIcon = styled(SyncIcon)`
 const SyncingIconButton = styled(IconButton)`
   display: flex;
 
-  background-color: ${props => props.theme.palette.blue[100]};
-
   &.Mui-disabled {
     background-color: ${props => props.theme.palette.primary.main};
     color: white;

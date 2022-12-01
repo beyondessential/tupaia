@@ -4,8 +4,8 @@
  */
 
 import keyBy from 'lodash.keyby';
+import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
 import {
-  getTimezoneNameFromTimestamp,
   ValidationError,
   MultiValidationError,
   ObjectValidator,
