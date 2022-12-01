@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import LeftArrow from '@material-ui/icons/KeyboardBackspace';
-import { FluTrackingAustralia } from './ProjectContents';
+import { FluTrackingAustralia, ArmedIncidentManagement } from './ProjectContents';
 import { LoadingIndicator } from '../../../Form/common';
 
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../../../constants';
@@ -113,6 +113,7 @@ export const ProjectLandingPage = ({
   if (!project.code) return <LoadingIndicator />;
 
   const components = {
+    aim_demo: () => <ArmedIncidentManagement />,
     covidau: () => <FluTrackingAustralia />,
   };
   const ProjectContent = components[project.code];
