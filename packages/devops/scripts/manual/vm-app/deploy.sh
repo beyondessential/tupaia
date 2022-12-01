@@ -7,8 +7,6 @@ APP_SERVER_HOST=${1?Argument 1 - APP_SERVER_HOST required.}
 APP_SERVER_SSH_KEY=${2?Argument 2 - APP_SERVER_SSH_KEY required.}
 APP_SERVER_PORT=${3?Argument 3 - APP_SERVER_PORT required.}
 
-# TODO: manually add ssh key or change to use password
-
 # Upload files
 ./upload.sh $APP_SERVER_HOST $APP_SERVER_SSH_KEY $APP_SERVER_PORT
 

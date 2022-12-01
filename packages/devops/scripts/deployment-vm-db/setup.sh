@@ -6,18 +6,12 @@ SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$SCRIPT_DIR"
 
 # install postgres 13
-# do not trigger if no psql
-if ! command -v psql &> /dev/null
-then
-  sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-  sudo apt-get update
-  sudo apt-get -y install postgresql-13
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install postgresql-13
 
-  sudo apt-get -y install postgis postgresql-13-postgis-3
-else
-  echo "postgresql already installed, skipping"
-fi
+sudo apt-get -y install postgis postgresql-13-postgis-3
 
 # Allow remote connection
 sudo -u postgres sed -i "$ a\listen_addresses = '*'" /etc/postgresql/13/main/postgresql.conf
