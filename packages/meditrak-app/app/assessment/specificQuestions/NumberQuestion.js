@@ -18,6 +18,7 @@ export const NumberQuestion = props => {
         placeholder: 'Enter a number',
         keyboardType: 'numeric',
       }}
+      multiline={false}
       {...otherProps}
     />
   );

@@ -40,7 +40,7 @@ export class FreeTextQuestion extends Component {
   }
 
   render() {
-    const { answer, onChangeAnswer, textInputProps } = this.props;
+    const { answer, onChangeAnswer, textInputProps, multiline } = this.props;
 
     const { onSubmitEditing, ...restOfTextInputProps } = textInputProps;
 
@@ -58,7 +58,7 @@ export class FreeTextQuestion extends Component {
           onSubmitEditing={onSubmitEditing}
           onChangeText={onChangeAnswer}
           placeholderTextColor={getThemeColorOneFaded(0.7)}
-          multiline={true}
+          multiline={multiline}
           {...restOfTextInputProps}
         />
       </View>
@@ -71,12 +71,14 @@ FreeTextQuestion.propTypes = {
   onChangeAnswer: PropTypes.func.isRequired,
   textInputProps: PropTypes.object,
   onFocus: PropTypes.func,
+  multiline: PropTypes.bool.isRequired
 };
 
 FreeTextQuestion.defaultProps = {
   answer: '',
   textInputProps: {},
   onFocus: () => {},
+  multiline: true
 };
 
 const localStyles = StyleSheet.create({
@@ -95,7 +97,7 @@ const localStyles = StyleSheet.create({
     fontSize: THEME_FONT_SIZE_ONE,
     lineHeight: 25,
     paddingVertical: 10,
-    paddingEnd: 28,
+    paddingEnd: 5,
   },
   textInputFixedHeight: {
     height: 'auto',
