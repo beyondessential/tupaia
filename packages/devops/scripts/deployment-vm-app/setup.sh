@@ -11,9 +11,9 @@ cd "$SCRIPT_DIR"
 ./checkRequiredEnvVars.sh
 
 # create ubuntu root users
-  sudo useradd -m ubuntu
-  sudo passwd ubuntu
-  sudo adduser ubuntu sudo 
+sudo useradd -m ubuntu
+sudo passwd ubuntu
+sudo adduser ubuntu sudo 
 
 # install nginx and add h5bp config
 if ! command -v nginx &> /dev/null
