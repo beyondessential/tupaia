@@ -14,7 +14,11 @@ const MULTIPLE_VALUES_DELIMITER = ',';
 const comparatorToOperator = {
   '=': '==' as const, // Exact match
   '!=': '!=' as const, // Does not match
-  ilike: '=@' as const, // Contains sub string
+  ilike: '=@' as const, // Contains sub string,
+  '<': '<' as const, // Less than
+  '<=': '<=' as const, // Less than or equal
+  '>': '>' as const, // Greater than
+  '>=': '>=' as const, // Greater than or equal
 };
 
 type ValueOf<T> = T extends Record<string, any> ? T[keyof T] : never;

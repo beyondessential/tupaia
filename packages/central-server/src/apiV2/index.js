@@ -55,6 +55,7 @@ import {
   CreateDashboardVisualisation,
   EditDashboardVisualisation,
 } from './dashboardVisualisations';
+import { GETEntityRelations } from './entityRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import {
@@ -220,6 +221,7 @@ apiV2.get('/dataTables/:recordId?', useRouteHandler(GETDataTables));
 apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
+apiV2.get('/entityRelations/:recordId?', useRouteHandler(GETEntityRelations));
 apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
 apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));

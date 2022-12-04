@@ -19,6 +19,8 @@ import {
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
+  FetchEntityHierarchyTreeRequest,
+  FetchEntityHierarchyTreeRoute,
   FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
   FetchMapOverlayVisualisationRequest,
@@ -54,6 +56,16 @@ export function createApp() {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('user', handleWith(UserRoute))
+    .get<FetchEntityHierarchyTreeRequest>(
+      'entityHierarchyTree',
+      verifyBESAdminAccess,
+      handleWith(FetchEntityHierarchyTreeRoute),
+    )
+    .get<FetchEntityHierarchyTreeRequest>(
+      'entityHierarchyTree/:hierarchyName/:entityCode',
+      verifyBESAdminAccess,
+      handleWith(FetchEntityHierarchyTreeRoute),
+    )
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
       verifyBESAdminAccess,
