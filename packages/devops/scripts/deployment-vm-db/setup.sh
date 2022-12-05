@@ -23,6 +23,9 @@ sudo -u postgres sed -i "$ a\listen_addresses = '*'" /etc/postgresql/13/main/pos
 sudo -u postgres sed -i "$ a\host all all 0.0.0.0/0 md5" /etc/postgresql/13/main/pg_hba.conf
 sudo -u postgres sed -i "$ a\host all all ::/0 md5" /etc/postgresql/13/main/pg_hba.conf
 
+# Increase max connections
+sudo -u postgres sed -i "s/max_connections = 100/max_connections = 500/g" /etc/postgresql/13/main/postgresql.conf
+
 # start postgres
 sudo service postgresql restart
 
