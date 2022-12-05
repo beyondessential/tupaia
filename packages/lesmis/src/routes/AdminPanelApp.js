@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
+import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
 import {
   DashboardsPage,
@@ -21,6 +21,7 @@ import {
   MapOverlaysPage,
   UsersPage,
   LogoutPage,
+  EntitiesPage,
   PrivateRoute,
   VizBuilderProviders,
   VizBuilderApp,
@@ -146,6 +147,18 @@ const getRoutes = adminUrl => [
         label: 'Permissions',
         to: '/permissions',
         component: PermissionsView,
+      },
+    ],
+  },
+  {
+    label: 'Entities',
+    to: `${adminUrl}/entities`,
+    icon: <Storage />,
+    tabs: [
+      {
+        label: 'Entities',
+        to: '',
+        component: EntitiesPage,
       },
     ],
   },
