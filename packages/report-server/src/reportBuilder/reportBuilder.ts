@@ -4,7 +4,7 @@
  */
 
 import { ReportServerAggregator } from '../aggregator';
-import { FetchReportQuery, StandardOrCustomReportConfig } from '../types';
+import { FetchReportQuery, StandardOrCustomReportConfig, ReportConfig } from '../types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildFetch, FetchResponse } from './fetch';
@@ -38,6 +38,19 @@ export class ReportBuilder {
     return this;
   };
 
+  public fetch = async (
+    aggregator: ReportServerAggregator,
+    query: FetchReportQuery,
+    config: ReportConfig,
+  ) => {
+    if (this.testData) {
+      return { results: this.testData } as FetchResponse;
+    }
+    const builtQuery = await new QueryBuilder(this.reqContext, config, query).build();
+    const fetchFromStandardQuery = buildFetch(config.fetch);
+    return fetchFromStandardQuery(aggregator, builtQuery);
+  };
+
   public build = async (
     aggregator: ReportServerAggregator,
     query: FetchReportQuery,
@@ -56,11 +69,7 @@ export class ReportBuilder {
       return { results: customReportData };
     }
 
-    const fetch = this.testData
-      ? () => ({ results: this.testData } as FetchResponse)
-      : buildFetch(this.config?.fetch);
-    const builtQuery = await new QueryBuilder(this.reqContext, this.config, query).build();
-    const data = await fetch(aggregator, builtQuery);
+    const data = await this.fetch(aggregator, query, this.config);
 
     const context = await buildContext(this.config.transform, this.reqContext, data, query);
     const transform = buildTransform(this.config.transform, context);
