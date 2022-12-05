@@ -36,7 +36,7 @@ const request = async (endpoint, options) => {
   const requestOptions = getRequestOptions(options);
 
   try {
-    const response = await axios(`${getApiUrl()}/v1/${endpoint}`, requestOptions);
+    const response = await axios(`${getApiUrl()}/${endpoint}`, requestOptions);
     return response.data;
   } catch (error) {
     // normalise errors using fetch error class

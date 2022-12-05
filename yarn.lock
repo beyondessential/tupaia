@@ -5111,6 +5111,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/dhis-api": 1.0.0
     "@tupaia/expression-parser": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     adm-zip: ^0.5.5
     api-error-handler: ^1.0.0
@@ -5408,6 +5409,7 @@ __metadata:
     react-hook-form: ^6.15.1
     react-password-strength-bar: ^0.3.3
     react-query: ^3.9.6
+    react-redux: ^5.0.6
     react-router-dom: ^5.2.0
     styled-components: ^5.1.0
   languageName: unknown
@@ -5582,12 +5584,14 @@ __metadata:
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
     cors: ^2.8.5
+    date-fns: ^2.29.3
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.isplainobject: ^4.0.6
     lodash.keyby: ^4.6.0
     lodash.pick: ^4.4.0
     mathjs: ^9.4.0
+    mockdate: ^3.0.5
     moment: ^2.24.0
     winston: ^3.2.1
   languageName: unknown
@@ -5637,7 +5641,10 @@ __metadata:
   resolution: "@tupaia/tsutils@workspace:packages/tsutils"
   dependencies:
     "@tupaia/utils": 1.0.0
+    "@types/moment-timezone": 0.5.13
     cookie: ^0.5.0
+    moment: ^2.24.0
+    moment-timezone: ^0.5.25
     puppeteer: ^15.4.0
     yup: ^0.32.9
   languageName: unknown
@@ -6352,6 +6359,15 @@ __metadata:
   version: 1.2.0
   resolution: "@types/minimist@npm:1.2.0"
   checksum: 30cbd9acd7ddb60bc3729adcc43a9da4940c90180fa0f08228f1da95ec6c00db2e3fd3af5280fc5345e3fa2637253bb5cf6625f30d571ef9bc3820a531febb7e
+  languageName: node
+  linkType: hard
+
+"@types/moment-timezone@npm:0.5.13":
+  version: 0.5.13
+  resolution: "@types/moment-timezone@npm:0.5.13"
+  dependencies:
+    moment: ">=2.14.0"
+  checksum: 35bd6414b790663e4879e38b4a344526ebe87b3f795929f9bc38f91f7caa373c65dd19a0e836182319f929d0f7fcff9b629efc6dbcef23d386bf0c87597f5b49
   languageName: node
   linkType: hard
 
@@ -12638,6 +12654,13 @@ __metadata:
   version: 2.29.2
   resolution: "date-fns@npm:2.29.2"
   checksum: 08bebcceb0a5dbadae4c55e6592b9d5c07dbd7833433c7e9a1d4a424300db32589b8b48e5979b32863c9b00a48d9bab6663e580c2a4f9f203d46cbf9113b5664
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^2.29.3":
+  version: 2.29.3
+  resolution: "date-fns@npm:2.29.3"
+  checksum: e01cf5b62af04e05dfff921bb9c9933310ed0e1ae9a81eb8653452e64dc841acf7f6e01e1a5ae5644d0337e9a7f936175fd2cb6819dc122fdd9c5e86c56be484
   languageName: node
   linkType: hard
 
@@ -24120,6 +24143,13 @@ __metadata:
   version: 2.24.0
   resolution: "moment@npm:2.24.0"
   checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
+  languageName: node
+  linkType: hard
+
+"moment@npm:>=2.14.0":
+  version: 2.29.4
+  resolution: "moment@npm:2.29.4"
+  checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
   languageName: node
   linkType: hard
 
