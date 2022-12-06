@@ -8,7 +8,7 @@ import { saveAs } from 'file-saver';
 import FetchError from './fetchError';
 
 const baseUrl = process.env.REACT_APP_API_URL;
-const timeout = 45 * 1000; // 45 seconds
+const timeout = 120 * 1000; // 120 seconds
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;

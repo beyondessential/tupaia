@@ -10,7 +10,7 @@ import { getApiUrl } from '../utils/getApiUrl';
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
-const timeout = 45 * 1000; // 45 seconds
+const timeout = 120 * 1000; // 120 seconds
 
 const getRequestOptions = options => {
   const locale = window.location.pathname.split('/')[1];

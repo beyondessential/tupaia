@@ -10,7 +10,7 @@ import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
 import { logout } from '../authentication';
 
-const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
+const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
 
 const isJsonResponse = response => {
   const contentType = response.headers.get('content-type');

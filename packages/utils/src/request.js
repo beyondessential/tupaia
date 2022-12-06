@@ -6,7 +6,7 @@
 import nodeFetch from 'node-fetch';
 import { CustomError } from './errors';
 
-const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
+const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
 
 const buildParameterString = (key, value) => {
   return Array.isArray(value)
