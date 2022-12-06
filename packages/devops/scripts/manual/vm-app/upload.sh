@@ -22,4 +22,4 @@ scp -i $APP_SERVER_SSH_KEY ../../configs/vm-app/.bashrc ubuntu@$APP_SERVER_HOST:
 scp -i $APP_SERVER_SSH_KEY ../../configs/vm-app/.env ubuntu@$APP_SERVER_HOST:/home/ubuntu/.env
 
 scp -i $APP_SERVER_SSH_KEY ../../configs/nginx.conf ubuntu@$APP_SERVER_HOST:/home/ubuntu/configs/nginx.conf
-scp -i $APP_SERVER_SSH_KEY ../../configs/servers.template.conf ubuntu@$APP_SERVER_HOST:/home/ubuntu/configs/servers.template.conf
+scp -i $APP_SERVER_SSH_KEY ../../configs/vm-app/servers.template.conf ubuntu@$APP_SERVER_HOST:/home/ubuntu/configs/servers.template.conf
