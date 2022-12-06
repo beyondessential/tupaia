@@ -46,4 +46,11 @@ for PACKAGE in ${PACKAGES[@]}; do
     REACT_APP_DEPLOYMENT_NAME=${DEPLOYMENT_NAME} yarn workspace @tupaia/${PACKAGE} build
 done
 
+# Add certbot
+#  (following https://certbot.eff.org/instructions?ws=nginx&os=ubuntubionic)
+sudo snap install core
+sudo snap refresh core
+sudo snap install --classic certbot
+sudo snap set certbot trust-plugin-with-root=ok
+
 echo "Tupaia installed successfully"
