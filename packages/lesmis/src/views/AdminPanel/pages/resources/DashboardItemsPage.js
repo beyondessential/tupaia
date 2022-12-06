@@ -29,26 +29,24 @@ const StyledLink = styled(Link)`
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
 export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, ...props }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'code',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.reportCode'),
       source: 'report_code',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.config'),
       source: 'config',
       type: 'jsonTooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: { type: 'jsonEditor' },
     },
     {

@@ -30,23 +30,19 @@ const StyledLink = styled(Link)`
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
 export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-  const ArrayFilter = getArrayFilter(translate);
-  const BooleanSelectFilter = getBooleanSelectFilter(translate);
-
   const FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'code',
       type: 'tooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.name'),
       source: 'name',
       width: 140,
       type: 'tooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.permissionGroup'),
@@ -58,14 +54,14 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
         optionValueKey: 'name',
         sourceKey: 'permission_group',
       },
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: 'Linked Measures',
       source: 'linked_measures',
       width: 160,
       Cell: ({ value }) => prettyArray(value),
-      Filter: ArrayFilter,
+      Filter: getArrayFilter(translate),
       editConfig: {
         optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
         optionLabelKey: 'id',
@@ -77,7 +73,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
       Header: translate('admin.config'),
       source: 'config',
       type: 'jsonTooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
       width: 200,
       editConfig: { type: 'jsonEditor' },
     },
@@ -86,7 +82,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
       source: 'country_codes',
       width: 140,
       Cell: ({ value }) => prettyArray(value),
-      Filter: ArrayFilter,
+      Filter: getArrayFilter(translate),
       editConfig: {
         optionsEndpoint: 'entities',
         optionLabelKey: 'code',
@@ -100,7 +96,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
       source: 'project_codes',
       width: 140,
       Cell: ({ value }) => prettyArray(value),
-      Filter: ArrayFilter,
+      Filter: getArrayFilter(translate),
       editConfig: {
         optionsEndpoint: 'projects',
         optionLabelKey: 'code',
@@ -114,14 +110,14 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
       source: 'report_code',
       width: 140,
       type: 'tooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.legacy'),
       source: 'legacy',
       width: 140,
       type: 'boolean',
-      Filter: BooleanSelectFilter,
+      Filter: getBooleanSelectFilter(translate),
       editConfig: { type: 'boolean' },
     },
   ];

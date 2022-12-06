@@ -13,23 +13,21 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
 export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'code',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.surveyCode'),
       source: 'data_group_code',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.serviceType'),
       source: 'service_type',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         options: SERVICE_TYPES,
       },
@@ -37,7 +35,7 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
     {
       Header: translate('admin.config'),
       source: 'config',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       type: 'jsonTooltip',
       editConfig: {
         type: 'jsonEditor',

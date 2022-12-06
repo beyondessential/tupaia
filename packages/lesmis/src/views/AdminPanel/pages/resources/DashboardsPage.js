@@ -13,24 +13,22 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
 export const DashboardsPage = ({ getHeaderEl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'code',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.name'),
       source: 'name',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.organisationUnitCode'),
       source: 'root_entity_code',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
 
       editConfig: {
         optionsEndpoint: 'entities',
@@ -41,7 +39,7 @@ export const DashboardsPage = ({ getHeaderEl, translate }) => {
     },
     {
       Header: translate('admin.sortOrder'),
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       source: 'sort_order',
     },
   ];

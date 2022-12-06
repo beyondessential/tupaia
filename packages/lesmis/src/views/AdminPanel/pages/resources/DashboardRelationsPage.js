@@ -16,13 +16,12 @@ export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
 
 export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
   const ArrayFilter = getArrayFilter(translate);
-  const ColumnFilter = getColumnFilter(translate);
 
   const DASHBOARD_RELATION_COLUMNS = [
     {
       Header: translate('admin.code'),
       source: 'dashboard.code',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'dashboards',
         optionLabelKey: 'dashboard.code',
@@ -33,7 +32,7 @@ export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
     {
       Header: translate('admin.dashboardItemCode'),
       source: 'dashboard_item.code',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'dashboardItems',
         optionLabelKey: 'dashboard_item.code',
@@ -84,7 +83,7 @@ export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
     {
       Header: translate('admin.sortOrder'),
       source: 'sort_order',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 

@@ -12,21 +12,19 @@ import { getColumnFilter } from '../../table/columnTypes';
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
 export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const EDIT_FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'code',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.name'),
       source: 'name',
       width: 140,
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 
@@ -35,7 +33,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
       Header: 'ID',
       source: 'id',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     ...EDIT_FIELDS,
   ];
@@ -59,7 +57,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.childId'),
       source: 'child_id',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'mapOverlays',
         optionLabelKey: 'mapOverlay.id',
@@ -71,7 +69,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.childType'),
       source: 'child_type',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         options: [
           {
@@ -89,7 +87,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.sortOrder'),
       source: 'sort_order',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 

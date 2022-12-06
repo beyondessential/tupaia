@@ -108,7 +108,6 @@ class DataFetchingTableComponent extends React.Component {
       expansionTabStates,
       onExpandedTabChange,
       nestingLevel,
-      translate,
     } = this.props;
 
     return (
@@ -135,7 +134,7 @@ class DataFetchingTableComponent extends React.Component {
         FilterComponent={({ column, filter, onChange }) => (
           <TextField
             type="text"
-            placeholder={translate('Type to filter')}
+            placeholder="Type to filter"
             value={filter ? filter.value : ''}
             onChange={event => onChange(event.target.value)}
             id={`dataTableColumnFilter-${labelToId(column?.id)}`}
@@ -233,7 +232,6 @@ DataFetchingTableComponent.propTypes = {
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
-  translate: PropTypes.func,
   deleteConfig: PropTypes.object,
 };
 
@@ -244,7 +242,6 @@ DataFetchingTableComponent.defaultProps = {
   errorMessage: '',
   numberOfPages: 0,
   nestingLevel: 0,
-  translate: text => text,
   deleteConfig: {},
 };
 

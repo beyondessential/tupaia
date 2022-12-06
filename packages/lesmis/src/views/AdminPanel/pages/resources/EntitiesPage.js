@@ -14,7 +14,6 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 const ENTITIES_ENDPOINT = 'entities';
 
 export const EntitiesPage = ({ getHeaderEl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
   const { SURVEY_RESPONSE_COLUMNS } = getSurveyResponsePageConfigs({ translate });
   const ANSWER_FIELDS = [
     {
@@ -22,13 +21,13 @@ export const EntitiesPage = ({ getHeaderEl, translate }) => {
       source: 'question.text',
       editable: false,
       type: 'tooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.answer'),
       source: 'text',
       type: 'tooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 
@@ -51,18 +50,18 @@ export const EntitiesPage = ({ getHeaderEl, translate }) => {
     {
       Header: translate('admin.code'),
       source: 'code',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.name'),
       source: 'name',
       type: 'tooltip',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.type'),
       source: 'type',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 
@@ -71,7 +70,7 @@ export const EntitiesPage = ({ getHeaderEl, translate }) => {
     {
       Header: translate('admin.country'),
       source: 'country_code',
-      Filter: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.edit'),

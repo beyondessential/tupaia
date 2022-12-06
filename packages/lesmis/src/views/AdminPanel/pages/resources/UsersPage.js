@@ -12,9 +12,6 @@ import { getColumnFilter, getVerifiedFilter } from '../../table/columnTypes';
 import { getBaseEditorConfigs, getCreateConfigs, getImportConfigs } from '../helpers';
 
 export const UsersPage = ({ getHeaderEl, translate }) => {
-  const VerifiedFilter = getVerifiedFilter(translate);
-  const ColumnFilter = getColumnFilter(translate);
-
   // eslint-disable-next-line react/prop-types
   const VerifiedCell = ({ value }) => {
     if (value === 'verified') {
@@ -35,23 +32,23 @@ export const UsersPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.emailAddress'),
       source: 'email',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.phoneNumber'),
       source: 'mobile_number',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.position'),
       source: 'position',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.employer'),
       source: 'employer',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 
@@ -94,20 +91,20 @@ export const UsersPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.firstName'),
       source: 'first_name',
       width: 150,
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.lastName'),
       source: 'last_name',
       width: 150,
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     ...FIELDS,
     {
       Header: translate('admin.verified'),
       source: 'verified_email',
       Cell: VerifiedCell,
-      Filter: VerifiedFilter,
+      Filter: getVerifiedFilter(translate),
     },
     {
       Header: translate('admin.edit'),

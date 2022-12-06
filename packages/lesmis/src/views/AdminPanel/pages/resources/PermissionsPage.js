@@ -53,8 +53,6 @@ const processDataForSave = (fieldsToSave, recordData) => {
 };
 
 export const PermissionsPage = ({ getHeaderEl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const PERMISSIONS_COLUMNS = [
     {
       Header: translate('admin.entity'),
@@ -63,7 +61,7 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
         optionsEndpoint: 'entities',
         baseFilter: { type: 'country' },
       },
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.permissionGroup'),
@@ -71,7 +69,7 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
       editConfig: {
         optionsEndpoint: 'permissionGroups',
       },
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 
@@ -81,13 +79,13 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
       source: 'user.first_name',
       accessor: rowData => `${rowData['user.first_name']} ${rowData['user.last_name']}`,
       editable: false,
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.emailAddress'),
       source: 'user.email',
       editable: false,
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
     {
       source: 'user.last_name',

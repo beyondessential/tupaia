@@ -13,14 +13,12 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
 export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const FIELDS = [
     {
       Header: translate('admin.code'),
       source: 'map_overlay_group.code',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'mapOverlayGroups',
         optionLabelKey: 'map_overlay_group.code',
@@ -32,7 +30,7 @@ export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.childId'),
       source: 'child_id',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'mapOverlays',
         optionLabelKey: 'mapOverlay.id',
@@ -46,7 +44,7 @@ export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
       width: 160,
       source: 'child_type',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
       editConfig: {
         options: [
           {
@@ -64,7 +62,7 @@ export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
       Header: translate('admin.sortOrder'),
       source: 'sort_order',
       type: 'tooltip',
-      Fitler: ColumnFilter,
+      Filter: getColumnFilter(translate),
     },
   ];
 

@@ -17,21 +17,19 @@ const APPROVAL_STATUS_TYPES = [
 ];
 
 export const getSurveyResponsePageConfigs = ({ translate }) => {
-  const ColumnFilter = getColumnFilter(translate);
-
   const surveyName = {
     Header: translate('admin.survey'),
     source: 'survey.name',
     editable: false,
     type: 'tooltip',
-    Filter: ColumnFilter,
+    Filter: getColumnFilter(translate),
   };
 
   const assessorName = {
     Header: translate('admin.assessor'),
     source: 'assessor_name',
     editable: false,
-    Filter: ColumnFilter,
+    Filter: getColumnFilter(translate),
   };
 
   const date = {
@@ -61,7 +59,7 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     editConfig: {
       optionsEndpoint: 'entities',
     },
-    Filter: ColumnFilter,
+    Filter: getColumnFilter(translate),
   };
 
   const SURVEY_RESPONSE_COLUMNS = [
