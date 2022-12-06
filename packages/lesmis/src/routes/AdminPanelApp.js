@@ -8,13 +8,7 @@ import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
-import {
-  LogoutPage,
-  EntitiesPage,
-  PrivateRoute,
-  VizBuilderProviders,
-  VizBuilderApp,
-} from '@tupaia/admin-panel';
+import { LogoutPage, PrivateRoute, VizBuilderProviders, VizBuilderApp } from '@tupaia/admin-panel';
 import {
   DashboardsPage,
   QuestionsPage,
@@ -28,6 +22,7 @@ import {
   MapOverlayGroupRelationsPage,
   UsersPage,
   PermissionsPage,
+  EntitiesPage,
 } from '../views/AdminPanel/pages/resources';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import {
@@ -154,12 +149,12 @@ const getRoutes = (adminUrl, translate) => {
       ],
     },
     {
-      label: 'Entities',
+      label: translate('admin.entities'),
       to: `${adminUrl}/entities`,
       icon: <Storage />,
       tabs: [
         {
-          label: 'Entities',
+          label: translate('admin.entities'),
           to: '',
           component: EntitiesPage,
         },

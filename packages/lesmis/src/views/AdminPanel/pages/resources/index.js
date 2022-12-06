@@ -15,3 +15,4 @@ export { DashboardRelationsPage } from './DashboardRelationsPage';
 export { DataElementsPage } from './DataElementsPage';
 export { SyncGroupsPage } from './SyncGroupsPage';
 export { PermissionsPage } from './PermissionsPage';
+export { EntitiesPage } from './EntitiesPage';

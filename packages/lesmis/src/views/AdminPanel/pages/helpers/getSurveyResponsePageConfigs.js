@@ -16,22 +16,22 @@ const APPROVAL_STATUS_TYPES = [
   { label: 'Approved', value: 'approved' },
 ];
 
-//       Filter: getColumnFilter(translate),
-
 export const getSurveyResponsePageConfigs = ({ translate }) => {
+  const ColumnFilter = getColumnFilter(translate);
+
   const surveyName = {
     Header: translate('admin.survey'),
     source: 'survey.name',
     editable: false,
     type: 'tooltip',
-    Filter: getColumnFilter(translate),
+    Filter: ColumnFilter,
   };
 
   const assessorName = {
     Header: translate('admin.assessor'),
     source: 'assessor_name',
     editable: false,
-    Filter: getColumnFilter(translate),
+    Filter: ColumnFilter,
   };
 
   const date = {
@@ -61,7 +61,7 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     editConfig: {
       optionsEndpoint: 'entities',
     },
-    Filter: getColumnFilter(translate),
+    Filter: ColumnFilter,
   };
 
   const SURVEY_RESPONSE_COLUMNS = [
@@ -144,5 +144,6 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     exportConfig,
     editorConfig: getBaseEditorConfigs(translate),
     ExportModalComponent: getSurveyResponsesExportModal(translate),
+    SURVEY_RESPONSE_COLUMNS,
   };
 };
