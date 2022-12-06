@@ -13,6 +13,7 @@ import {
   getImportConfigs,
 } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 // export for use on users page
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
@@ -103,14 +104,7 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
         fields: PERMISSIONS_COLUMNS,
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: PERMISSIONS_ENDPOINT,
-      },
-    },
+    getDeleteColumnConfigs(PERMISSIONS_ENDPOINT, translate),
   ];
 
   const editorConfig = getBaseEditorConfigs(translate);

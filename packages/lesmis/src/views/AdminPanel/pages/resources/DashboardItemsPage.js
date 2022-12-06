@@ -13,6 +13,7 @@ import { DashboardItemsPage as BaseDashboardItemsPage } from '@tupaia/admin-pane
 import { getImportConfigs } from '../helpers/getImportConfigs';
 import { getDeleteConfigs, getEditorConfigs } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -102,14 +103,7 @@ export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, .
         fields: [...FIELDS, ...extraEditFields],
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: DASHBOARD_ITEMS_ENDPOINT,
-      },
-    },
+    getDeleteColumnConfigs(DASHBOARD_ITEMS_ENDPOINT, translate),
   ];
 
   const importConfig = getImportConfigs(translate, {

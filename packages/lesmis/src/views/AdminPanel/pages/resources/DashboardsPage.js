@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { DashboardsPage as BaseDashboardsPage } from '@tupaia/admin-panel';
 import { getCreateConfigs, getDeleteConfigs, getEditorConfigs } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
@@ -57,14 +58,7 @@ export const DashboardsPage = ({ getHeaderEl, translate }) => {
         fields: [...FIELDS],
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: DASHBOARDS_ENDPOINT,
-      },
-    },
+    getDeleteColumnConfigs(DASHBOARDS_ENDPOINT, translate),
   ];
 
   const RELATION_FIELDS = [

@@ -76,6 +76,7 @@ class DataFetchingTableComponent extends React.Component {
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
+        title={deleteConfig.title}
         description={deleteConfig.description}
         cancelButtonText={deleteConfig.cancelButtonText}
         confirmButtonText={deleteConfig.confirmButtonText}

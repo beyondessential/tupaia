@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { SyncGroupsPage as BaseSyncGroupsPage } from '@tupaia/admin-panel';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getCreateConfigs, getBaseEditorConfigs } from '../helpers';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
@@ -57,14 +58,7 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
         fields: [...FIELDS],
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: 'dataServiceSyncGroups',
-      },
-    },
+    getDeleteColumnConfigs('dataServiceSyncGroups', translate),
     {
       Header: translate('admin.logs'),
       type: 'logs',

@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { MapOverlayGroupRelationsPage as BaseMapOverlayGroupRelationsPage } from '@tupaia/admin-panel';
 import { getBaseEditorConfigs, getCreateConfigs, getDeleteConfigs } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
@@ -79,14 +80,7 @@ export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
         fields: [...FIELDS],
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: 'mapOverlayGroupRelations',
-      },
-    },
+    getDeleteColumnConfigs('mapOverlayGroupRelations', translate),
   ];
 
   const editorConfig = getBaseEditorConfigs(translate);

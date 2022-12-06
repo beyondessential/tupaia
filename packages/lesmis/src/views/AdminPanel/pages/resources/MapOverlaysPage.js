@@ -14,6 +14,7 @@ import { prettyArray } from '../../utilities';
 import { getArrayFilter, getBooleanSelectFilter, getColumnFilter } from '../../table/columnTypes';
 import { getImportConfigs } from '../helpers/getImportConfigs';
 import { getBaseEditorConfigs, getDeleteConfigs } from '../helpers';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -170,14 +171,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
         fields: [...FIELDS, ...extraEditFields],
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: MAP_OVERLAYS_ENDPOINT,
-      },
-    },
+    getDeleteColumnConfigs(MAP_OVERLAYS_ENDPOINT, translate),
   ];
 
   const importConfig = getImportConfigs(translate, {

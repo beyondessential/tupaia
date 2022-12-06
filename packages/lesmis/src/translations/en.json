@@ -142,6 +142,9 @@
     "rejected": "Rejected",
     "approvalNotRequired": "Approval Not Required",
     "entity": "Entity",
+    "answer": "Answer",
+    "entities": "Entities",
+    "country": "Country",
     "survey": "Survey",
     "assessor": "Assessor",
     "dateOfSurvey": "Date of Survey",
@@ -260,6 +263,7 @@
     "password": "Password",
     "permissions": "Permissions",
     "users": "Users",
-    "user": "User"
+    "user": "User",
+    "onceDeletedThisCantBeUndone": "Once deleted this can't be undone"
   }
 }

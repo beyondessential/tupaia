@@ -9,6 +9,7 @@ import { DashboardRelationsPage as BaseDashboardRelationsPage } from '@tupaia/ad
 import { prettyArray } from '../../utilities';
 import { getArrayFilter, getColumnFilter } from '../../table/columnTypes';
 import { getBaseEditorConfigs, getCreateConfigs, getDeleteConfigs } from '../helpers';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
@@ -99,14 +100,7 @@ export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
         fields: DASHBOARD_RELATION_COLUMNS,
       },
     },
-    {
-      Header: translate('admin.delete'),
-      source: 'id',
-      type: 'delete',
-      actionConfig: {
-        endpoint: DASHBOARD_RELATION_ENDPOINT,
-      },
-    },
+    getDeleteColumnConfigs(DASHBOARD_RELATION_ENDPOINT, translate),
   ];
 
   const createConfig = getCreateConfigs(translate, {
