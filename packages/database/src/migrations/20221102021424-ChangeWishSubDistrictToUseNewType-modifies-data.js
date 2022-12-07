@@ -36,15 +36,13 @@ const entityCodes = [
 
 exports.up = async function (db) {
   return db.runSql(
-    `UPDATE "entity" SET "type" = "wish_sub_district" where code in (${arrayToDbString(
-      entityCodes,
-    )});`,
+    `UPDATE entity SET type = 'wish_sub_district' where code in (${arrayToDbString(entityCodes)});`,
   );
 };
 
 exports.down = async function (db) {
   return db.runSql(
-    `UPDATE "entity" SET "type" = "sub_district" where code in (${arrayToDbString(entityCodes)});`,
+    `UPDATE entity SET type = 'sub_district' where code in (${arrayToDbString(entityCodes)});`,
   );
 };
 
