@@ -69,10 +69,12 @@ pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 export class TupaiaDatabase {
   /**
    * @param {TupaiaDatabase} [transactingConnection]
+   * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
-  constructor(transactingConnection) {
+  constructor(transactingConnection, transactingChangeChannel) {
     autobind(this);
     this.changeHandlers = {};
+    this.transactingChangeChannel = transactingChangeChannel;
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
     this.changeChannelPromise = null;
 
@@ -107,7 +109,7 @@ export class TupaiaDatabase {
 
   getOrCreateChangeChannel() {
     if (!this.changeChannel) {
-      this.changeChannel = new DatabaseChangeChannel();
+      this.changeChannel = this.transactingChangeChannel || new DatabaseChangeChannel();
       this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
       this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
@@ -181,7 +183,7 @@ export class TupaiaDatabase {
 
   wrapInTransaction(wrappedFunction) {
     return this.connection.transaction(transaction =>
-      wrappedFunction(new TupaiaDatabase(transaction)),
+      wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
     );
   }
 
@@ -415,8 +417,8 @@ export class TupaiaDatabase {
     return this.delete(recordType, { id });
   }
 
-  markRecordsAsChanged(recordType, records) {
-    this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
+  async markRecordsAsChanged(recordType, records) {
+    await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }
 
   /**
@@ -425,7 +427,7 @@ export class TupaiaDatabase {
    */
   async markAsChanged(recordType, where, options) {
     const records = await this.find(recordType, where, options);
-    this.markRecordsAsChanged(recordType, records);
+    await this.markRecordsAsChanged(recordType, records);
     return records;
   }
 

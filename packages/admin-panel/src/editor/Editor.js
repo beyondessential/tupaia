@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { InputField } from '../widgets';
-import { checkVisibilityCriteriaAreMet } from '../utilities';
+import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 
 export const Editor = ({ fields, recordData, onEditField }) => {
   const onInputChange = (inputKey, inputValue, editConfig = {}) => {
@@ -57,6 +57,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
             value={selectValue(editConfig, accessor, source)}
             disabled={!editable}
             recordData={recordData}
+            id={`inputField-${labelToId(source)}`}
             {...editConfig}
           />
         ))}
