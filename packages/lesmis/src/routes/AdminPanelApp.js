@@ -23,7 +23,6 @@ import {
   LogoutPage,
   EntitiesPage,
   PrivateRoute,
-  VizBuilderProviders,
   VizBuilderApp,
 } from '@tupaia/admin-panel';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -184,12 +183,10 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
       <LesmisAdminRoute path={`${path}/viz-builder`} isBESAdmin>
-        <VizBuilderProviders>
-          <VizBuilderApp
-            basePath={adminUrl}
-            Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
-          />
-        </VizBuilderProviders>
+        <VizBuilderApp
+          basePath={adminUrl}
+          Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
+        />
       </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
         <AdminPanelNavbar user={user} links={routes} />
