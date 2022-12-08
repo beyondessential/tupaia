@@ -19,6 +19,13 @@ sed -i "s/__DOMAIN_REGEX_ESCAPED__/$DOMAIN_REGEX_DOUBLE_ESCAPED/g" $HOME_DIR/con
 sudo cp $HOME_DIR/configs/nginx.conf /etc/nginx/nginx.conf
 sudo cp $HOME_DIR/configs/servers.conf /etc/nginx/conf.d/servers.conf
 
+# Add certbot
+#  (following https://certbot.eff.org/instructions?ws=nginx&os=ubuntubionic)
+sudo snap install core
+sudo snap refresh core
+sudo snap install --classic certbot
+sudo snap set certbot trust-plugin-with-root=ok
+
 # clone our repo
 mkdir -p $TUPAIA_DIR
 cd $TUPAIA_DIR
@@ -45,12 +52,5 @@ for PACKAGE in ${PACKAGES[@]}; do
     echo "Building ${PACKAGE}"
     REACT_APP_DEPLOYMENT_NAME=${DEPLOYMENT_NAME} yarn workspace @tupaia/${PACKAGE} build
 done
-
-# Add certbot
-#  (following https://certbot.eff.org/instructions?ws=nginx&os=ubuntubionic)
-sudo snap install core
-sudo snap refresh core
-sudo snap install --classic certbot
-sudo snap set certbot trust-plugin-with-root=ok
 
 echo "Tupaia installed successfully"
