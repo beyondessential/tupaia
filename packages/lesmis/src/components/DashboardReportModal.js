@@ -261,8 +261,6 @@ export const DashboardReportModal = () => {
             name={config?.name}
             reportCode={reportCode}
             isExporting={isExporting}
-            startDate={startDate}
-            endDate={endDate}
             exportOptions={{
               exportWithLabels,
               exportWithTable,
