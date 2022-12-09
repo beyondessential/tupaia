@@ -3,14 +3,28 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { LightOutlinedButton } from '@tupaia/ui-components';
+import {
+  LightOutlinedButton,
+  SmallAlert,
+  Button,
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  DialogContent,
+} from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ResourcePage } from './ResourcePage';
 import { useUser } from '../../VizBuilderApp/api';
+import { FEATURE_PERMISSION_MESSAGE } from './constants';
+
+const Content = styled(DialogContent)`
+  text-align: left;
+  min-height: 220px;
+`;
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -52,6 +66,7 @@ const FIELDS = [
 
 export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
   const { isVizBuilderUser } = useUser();
+
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -106,14 +121,31 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
       },
     },
   ];
+  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+  const handleClose = () => {
+    setIsPermissionDialogOpen(false);
+  };
 
-  const renderNewDashboardVizButton = () => (
-    <StyledLink to={isVizBuilderUser ? `${vizBuilderBaseUrl}/viz-builder/dashboard-item/new` : '#'}>
-      <LightOutlinedButton disabled={!isVizBuilderUser} startIcon={<AddCircleIcon />}>
+  const handleClick = () => {
+    console.log('Im handling the click');
+    setIsPermissionDialogOpen(true);
+    console.log('isPermissionDialogOpen', isPermissionDialogOpen);
+  };
+
+  const renderNewDashboardVizButton = () => {
+    if (isVizBuilderUser) {
+      return (
+        <StyledLink to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/new`}>
+          <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+        </StyledLink>
+      );
+    }
+    return (
+      <LightOutlinedButton onClick={handleClick} startIcon={<AddCircleIcon />}>
         New
       </LightOutlinedButton>
-    </StyledLink>
-  );
+    );
+  };
 
   const importConfig = {
     title: 'Import Dashboard Visualisation',
@@ -137,6 +169,20 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
     ),
   };
 
+  const PermissionDialogComponent = () => (
+    <Dialog onClose={handleClose} open={isPermissionDialogOpen} disableBackdropClick>
+      <DialogHeader title="Permissions Required" onClose={handleClose} />
+      <Content>
+        <SmallAlert severity="error" variant="standard">
+          {FEATURE_PERMISSION_MESSAGE}
+        </SmallAlert>
+      </Content>
+      <DialogFooter>
+        <Button onClick={handleClose}>Close</Button>
+      </DialogFooter>
+    </Dialog>
+  );
+
   return (
     <ResourcePage
       title="Dashboard Items"
@@ -145,6 +191,7 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
       importConfig={importConfig}
       LinksComponent={renderNewDashboardVizButton}
       getHeaderEl={getHeaderEl}
+      PermissionDialogComponent={PermissionDialogComponent}
       {...props}
     />
   );

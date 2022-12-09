@@ -32,6 +32,7 @@ export const ResourcePage = ({
   defaultFilters,
   defaultSorting,
   displayUsedBy,
+  PermissionDialogComponent,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -57,6 +58,7 @@ export const ResourcePage = ({
           defaultSorting={defaultSorting}
         />
       </Container>
+      {PermissionDialogComponent && <PermissionDialogComponent />}
       <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
       <LogsModal />
     </>
@@ -81,6 +83,7 @@ ResourcePage.propTypes = {
   importConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
+  PermissionDialogComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
@@ -94,6 +97,7 @@ ResourcePage.defaultProps = {
   importConfig: null,
   ExportModalComponent: null,
   LinksComponent: null,
+  PermissionDialogComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
   defaultSorting: [],
