@@ -88,6 +88,7 @@ const HeroImage = styled.div`
   height: 240px;
   background-image: ${({ src }) => `url(${src})`};
   position: relative;
+  background-size: cover;
 `;
 
 const LogoImage = styled.div`
