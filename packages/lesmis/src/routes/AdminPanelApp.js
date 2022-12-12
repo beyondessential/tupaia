@@ -35,9 +35,6 @@ import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n } from '../utils';
 
-// Only show users who signed up through lesmis
-const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
-
 const getRoutes = (adminUrl, translate) => {
   return [
     {
@@ -139,7 +136,7 @@ const getRoutes = (adminUrl, translate) => {
         {
           label: translate('admin.users'),
           to: '',
-          component: UsersView,
+          component: UsersPage,
         },
         {
           label: translate('admin.permissions'),

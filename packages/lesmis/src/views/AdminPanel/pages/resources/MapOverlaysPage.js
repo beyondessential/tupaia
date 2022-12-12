@@ -171,7 +171,6 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
   ];
 
   const importConfig = getImportConfigs(translate, {
-    title: translate('admin.import'),
     subtitle: 'Please upload one or more .json files with visualisations to be imported:',
     actionConfig: {
       importEndpoint: 'mapOverlayVisualisations',

@@ -70,7 +70,6 @@ const getDataElementFields = translate => {
 export const DataElementsPage = ({ getHeaderEl, translate }) => {
   const DATA_ELEMENT_FIELDS = getDataElementFields(translate);
   const importConfig = getImportConfigs(translate, {
-    title: translate('admin.import'),
     actionConfig: {
       importEndpoint: 'dataElements',
     },

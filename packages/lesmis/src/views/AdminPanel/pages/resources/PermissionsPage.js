@@ -6,12 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { PermissionsPage as BasePermissionsPage } from '@tupaia/admin-panel';
-import {
-  getBaseEditorConfigs,
-  getCreateConfigs,
-  getDeleteConfigs,
-  getImportConfigs,
-} from '../helpers';
+import { getBaseEditorConfigs, getCreateConfigs, getDeleteConfigs } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
 import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
@@ -141,11 +136,6 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
     },
   });
   const deleteConfig = getDeleteConfigs(translate);
-  const importConfig = getImportConfigs(translate, {
-    actionConfig: {
-      importEndpoint: 'userPermissions',
-    },
-  });
 
   return (
     <BasePermissionsPage
@@ -154,10 +144,11 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
       columns={FIELDS}
       createConfig={createConfig}
       editorConfig={editorConfig}
-      importConfig={importConfig}
       deleteConfig={deleteConfig}
       getHeaderEl={getHeaderEl}
       onProcessDataForSave={processDataForSave}
+      importConfig={null}
+      LinksComponent={null}
     />
   );
 };

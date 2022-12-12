@@ -350,7 +350,6 @@ export const getSurveysPageConfigs = translate => {
   ];
 
   const IMPORT_CONFIG = getImportConfigs(translate, {
-    title: translate('admin.import'),
     actionConfig: {
       importEndpoint: 'surveys',
     },

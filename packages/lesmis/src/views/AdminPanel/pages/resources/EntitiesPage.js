@@ -106,7 +106,6 @@ export const EntitiesPage = ({ getHeaderEl, translate }) => {
   ];
 
   const IMPORT_CONFIG = getImportConfigs(translate, {
-    title: translate('admin.import'),
     subtitle:
       'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
     actionConfig: {
