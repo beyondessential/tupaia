@@ -14,10 +14,8 @@ import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
-import { I18n, useIsFavouriteDashboardSelected, useUrlParams, useUrlSearchParams } from '../utils';
+import { I18n, useStartAndEndDates, useUrlParams } from '../utils';
 import { useUpdateFavouriteDashboardItem } from '../api';
-import { DEFAULT_DATA_YEAR } from '../constants';
-import { yearToApiDates } from '../api/queries/utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -42,25 +40,7 @@ export const DashboardReport = React.memo(
     const { search } = useLocation();
     const { locale, entityCode } = useUrlParams();
     // TODO: will be removed when implementing year selector for favourite dashboard, currently use default year.
-    const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
-
-    const getStartAndEndDates = () => {
-      if (isFavouriteDashboardSelected) {
-        return yearToApiDates(DEFAULT_DATA_YEAR);
-      }
-
-      const [{ startDate, endDate, year }] = useUrlSearchParams();
-      if (useYearSelector) {
-        const selectedYear = year || DEFAULT_DATA_YEAR;
-        return yearToApiDates(selectedYear);
-      }
-
-      if (startDate || endDate) {
-        return { startDate, endDate };
-      }
-      return yearToApiDates();
-    };
-    const { startDate, endDate } = getStartAndEndDates();
+    const { startDate, endDate } = useStartAndEndDates();
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,

@@ -27,7 +27,13 @@ import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
-import { useI18n, useUrlParams, useUrlSearchParams, useExportToImage } from '../utils';
+import {
+  useI18n,
+  useUrlParams,
+  useUrlSearchParams,
+  useExportToImage,
+  useStartAndEndDates,
+} from '../utils';
 import { DashboardReport } from './DashboardReport';
 
 // Transition component for modal animation
@@ -131,8 +137,9 @@ export const DashboardReportModal = () => {
   const [exportFormatId, setExportFormatId] = useState(exportFormats[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
-  const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
+  const [{ reportCode }, setParams] = useUrlSearchParams();
   const { data: entityData, isLoadingEntityData } = useEntityData(entityCode);
+  const { startDate, endDate } = useStartAndEndDates();
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
