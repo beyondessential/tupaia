@@ -6,12 +6,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { SmallAlert, ConfirmDeleteModal, TextField } from '@tupaia/ui-components';
+import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
 import queryString from 'query-string';
 import { Tabs } from '../widgets';
 import { TableHeadCell } from './TableHeadCell';
+import { ColumnFilter } from './ColumnFilter';
 import {
   cancelAction,
   changeExpansions,
@@ -27,7 +28,7 @@ import {
 import { getTableState, getIsFetchingData } from './selectors';
 import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
-import { labelToId, makeSubstitutionsInString } from '../utilities';
+import { makeSubstitutionsInString } from '../utilities';
 import { customPagination } from './customPagination';
 import { ExpansionContainer } from './ExpansionContainer';
 import { StyledReactTable } from './StyledReactTable';
@@ -131,15 +132,7 @@ class DataFetchingTableComponent extends React.Component {
         loading={isFetchingData || isChangingDataOnServer}
         filterable
         freezeWhenExpanded
-        FilterComponent={({ column, filter, onChange }) => (
-          <TextField
-            type="text"
-            placeholder="Type to filter"
-            value={filter ? filter.value : ''}
-            onChange={event => onChange(event.target.value)}
-            id={`dataTableColumnFilter-${labelToId(column?.id)}`}
-          />
-        )}
+        FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
         ExpanderComponent={({ isExpanded }) => (
           <div className="expander">
