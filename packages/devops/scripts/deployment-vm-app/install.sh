@@ -26,6 +26,7 @@ sudo snap refresh core
 sudo snap install --classic certbot
 sudo snap set certbot trust-plugin-with-root=ok
 sudo snap install --classic certbot-dns-route53
+sudo snap install --classic aws-cli
 
 # clone our repo
 mkdir -p $TUPAIA_DIR
