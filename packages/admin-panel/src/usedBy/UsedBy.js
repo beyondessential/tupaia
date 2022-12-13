@@ -13,16 +13,6 @@ import { Link } from 'react-router-dom';
 import { ExpandLess, ExpandMore, OpenInNew } from '@material-ui/icons';
 import styled from 'styled-components';
 
-const TYPE_HEADINGS = {
-  question: 'Questions',
-  indicator: 'Indicators',
-  dashboardItem: 'Dashboard Items',
-  mapOverlay: 'Map Overlays',
-  legacyReport: 'Legacy Reports',
-  dataGroup: 'Data Groups',
-  survey: 'Surveys',
-};
-
 const StyledHeader = styled(Typography)`
   display: flex;
   cursor: pointer;
@@ -53,7 +43,7 @@ const StyledLink = styled(Link)`
   }
 `;
 
-export const UsedBy = ({ usedBy, isLoading, errorMessage }) => {
+export const UsedBy = ({ usedBy, isLoading, errorMessage, typeHeadings, header }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const types = [...new Set(usedBy.map(item => item.type))];
@@ -62,7 +52,7 @@ export const UsedBy = ({ usedBy, isLoading, errorMessage }) => {
     <>
       <StyledHeader variant="h6" gutterBottom onClick={() => setIsOpen(!isOpen)}>
         <HeaderText>
-          Used by
+          {header}
           <NumResults>{!isLoading && !errorMessage && <>({usedBy.length})</>}</NumResults>
         </HeaderText>
         {!isOpen && <ExpandMore />}
@@ -78,7 +68,7 @@ export const UsedBy = ({ usedBy, isLoading, errorMessage }) => {
               {types.map(type => (
                 <List
                   key={type}
-                  subheader={<ListSubheader>{TYPE_HEADINGS[type] ?? type}</ListSubheader>}
+                  subheader={<ListSubheader>{typeHeadings[type] ?? type}</ListSubheader>}
                 >
                   {usedBy
                     .filter(item => item.type === type)
@@ -107,6 +97,16 @@ export const UsedBy = ({ usedBy, isLoading, errorMessage }) => {
 UsedBy.defaultProps = {
   isLoading: false,
   errorMessage: null,
+  header: 'Used by',
+  typeHeadings: {
+    question: 'Questions',
+    indicator: 'Indicators',
+    dashboardItem: 'Dashboard Items',
+    mapOverlay: 'Map Overlays',
+    legacyReport: 'Legacy Reports',
+    dataGroup: 'Data Groups',
+    survey: 'Surveys',
+  },
 };
 
 UsedBy.propTypes = {
@@ -118,4 +118,6 @@ UsedBy.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
+  header: PropTypes.string,
+  typeHeadings: PropTypes.object,
 };
