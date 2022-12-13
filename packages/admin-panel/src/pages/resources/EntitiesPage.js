@@ -100,7 +100,7 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const EntitiesPage = ({ getHeaderEl }) => (
+export const EntitiesPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Entities"
     endpoint={ENTITIES_ENDPOINT}
@@ -108,6 +108,7 @@ export const EntitiesPage = ({ getHeaderEl }) => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...restOfProps}
   />
 );
 

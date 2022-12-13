@@ -13,7 +13,11 @@ import { requestDeleteRecord } from '../actions';
 const DeleteButtonComponent = ({ dispatch, value, actionConfig, reduxId }) => (
   <IconButton
     className="delete-button"
-    onClick={() => dispatch(requestDeleteRecord(reduxId, actionConfig.endpoint, value))}
+    onClick={() =>
+      dispatch(
+        requestDeleteRecord(reduxId, actionConfig.endpoint, value, actionConfig.confirmMessage),
+      )
+    }
   >
     <DeleteIcon />
   </IconButton>
@@ -22,6 +26,7 @@ const DeleteButtonComponent = ({ dispatch, value, actionConfig, reduxId }) => (
 DeleteButtonComponent.propTypes = {
   actionConfig: PropTypes.PropTypes.shape({
     endpoint: PropTypes.string,
+    confirmMessage: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
