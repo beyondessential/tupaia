@@ -54,6 +54,7 @@ export const getSurveysPageConfigs = translate => {
     {
       Header: translate('admin.repeating'),
       source: 'can_repeat',
+      type: 'boolean',
       editConfig: {
         type: 'boolean',
       },
@@ -62,6 +63,7 @@ export const getSurveysPageConfigs = translate => {
     {
       Header: translate('admin.requiresApproval'),
       source: 'requires_approval',
+      type: 'boolean',
       editConfig: {
         type: 'boolean',
       },
