@@ -36,11 +36,20 @@ const Footer = styled(FlexEnd)`
 `;
 
 export const DashboardReport = React.memo(
-  ({ name, exportOptions, reportCode, isEnlarged, isExporting, useYearSelector }) => {
+  ({
+    name,
+    exportOptions,
+    reportCode,
+    isEnlarged,
+    isExporting,
+    useYearSelector,
+    periodGranularity,
+    modalDates,
+  }) => {
     const { search } = useLocation();
     const { locale, entityCode } = useUrlParams();
     // TODO: will be removed when implementing year selector for favourite dashboard, currently use default year.
-    const { startDate, endDate } = useStartAndEndDates();
+    const { startDate, endDate } = modalDates || useStartAndEndDates(periodGranularity);
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
@@ -125,6 +134,8 @@ DashboardReport.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   useYearSelector: PropTypes.bool,
+  periodGranularity: PropTypes.string,
+  modalDates: PropTypes.object,
 };
 
 DashboardReport.defaultProps = {
@@ -134,4 +145,6 @@ DashboardReport.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   useYearSelector: false,
+  periodGranularity: undefined,
+  modalDates: undefined,
 };

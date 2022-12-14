@@ -7,10 +7,10 @@
 import { yearToApiDates } from '../api/queries/utils';
 import { DEFAULT_DATA_YEAR } from '../constants';
 import { useUrlSearchParams } from './useUrlSearchParams';
-import { useDashboardDropdownOptions } from './useDashboardDropdownOptions';
 import { useIsFavouriteDashboardSelected } from './useIsFavouriteDashboardSelected';
+import { useDashboardDropdownOptions } from './useDashboardDropdownOptions';
 
-export const useStartAndEndDates = () => {
+export const useStartAndEndDates = periodGranularity => {
   const { selectedOption } = useDashboardDropdownOptions();
   const { useYearSelector } = selectedOption;
   const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
@@ -28,5 +28,10 @@ export const useStartAndEndDates = () => {
     return yearToApiDates(selectedYear);
   }
 
-  return yearToApiDates();
+  const startAndEndDates =
+    periodGranularity === 'one_year_at_a_time'
+      ? yearToApiDates(DEFAULT_DATA_YEAR)
+      : yearToApiDates();
+
+  return startAndEndDates;
 };

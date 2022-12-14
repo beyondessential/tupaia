@@ -33,6 +33,8 @@ import {
   useUrlSearchParams,
   useExportToImage,
   useStartAndEndDates,
+  useDashboardDropdownOptions,
+  getExportableSubDashboards,
 } from '../utils';
 import { DashboardReport } from './DashboardReport';
 
@@ -139,7 +141,20 @@ export const DashboardReportModal = () => {
   const { entityCode } = useUrlParams();
   const [{ reportCode }, setParams] = useUrlSearchParams();
   const { data: entityData, isLoadingEntityData } = useEntityData(entityCode);
-  const { startDate, endDate } = useStartAndEndDates();
+  const { selectedOption } = useDashboardDropdownOptions();
+  const { exportableSubDashboards } = getExportableSubDashboards(selectedOption);
+
+  let periodGranularity;
+  exportableSubDashboards.forEach(({ items }) => {
+    items.forEach(item => {
+      if (item.reportCode === reportCode) {
+        periodGranularity = item.periodGranularity;
+      }
+    });
+  });
+
+  const { startDate, endDate } = useStartAndEndDates(periodGranularity);
+
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -273,6 +288,7 @@ export const DashboardReportModal = () => {
               exportWithTable,
             }}
             isEnlarged
+            modalDates={{ startDate, endDate }}
           />
           {isExporting && (
             <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
