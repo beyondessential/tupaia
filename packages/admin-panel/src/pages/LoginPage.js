@@ -59,15 +59,17 @@ const StyledLink = styled(MuiLink)`
 
 const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
-const LoginPageComponent = ({ isLoggedIn }) => {
+const Logo = () => <StyledImg src="/admin-panel-logo.svg" alt="psss-logo" />;
+
+const LoginPageComponent = ({ isLoggedIn, redirectTo, LogoComponent }) => {
   if (isLoggedIn) {
-    return <Redirect to="/" />;
+    return <Redirect to={redirectTo} />;
   }
 
   return (
     <Main>
       <Container>
-        <StyledImg src="/admin-panel-logo.svg" alt="psss-logo" />
+        <LogoComponent />
         <StyledCard>
           <LoginForm />
         </StyledCard>
@@ -82,6 +84,13 @@ const LoginPageComponent = ({ isLoggedIn }) => {
 
 LoginPageComponent.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
+  redirectTo: PropTypes.string,
+  LogoComponent: PropTypes.element,
+};
+
+LoginPageComponent.defaultProps = {
+  redirectTo: '/',
+  LogoComponent: Logo,
 };
 
 const mapStateToProps = state => ({

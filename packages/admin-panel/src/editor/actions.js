@@ -130,6 +130,7 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
     dispatch({
       type: EDITOR_OPEN,
       fields,
+      title,
       recordData: {},
       endpoint: editEndpoint,
     });

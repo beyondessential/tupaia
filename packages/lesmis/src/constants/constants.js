@@ -8,13 +8,6 @@
 export const PROJECT_CODE = 'laos_schools';
 export const COUNTRY_CODE = 'LA';
 
-// Permissions
-export const LESMIS_PERMISSION_GROUPS = {
-  PUBLIC: 'LESMIS Public',
-  USER: 'LESMIS User',
-  ADMIN: 'LESMIS Admin',
-};
-
 // Dashboard Tab View Names
 export const DASHBOARD_REPORT_TAB_VIEW = 'DashboardReportTabView';
 export const FAVOURITE_DASHBOARD_TAB_VIEW = 'FavouriteDashboardTabView';

@@ -11,6 +11,7 @@ import { Button, FlexEnd } from '@tupaia/ui-components';
 import { DashboardMetadataForm } from '../components';
 import { VIZ_TYPE_PARAM } from '../constants';
 import { MapOverlayMetadataForm } from '../components/MapOverlay';
+import { useVizBuilderBasePath } from '../utils';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -58,9 +59,10 @@ export const CreateNew = () => {
   const { vizType } = useParams();
 
   const history = useHistory();
+  const basePath = useVizBuilderBasePath();
 
   const handleCreate = () => {
-    history.push(`/viz-builder/${vizType}/`);
+    history.push(`${basePath}/viz-builder/${vizType}/`);
   };
 
   const MetadataFormComponent = getMetadataFormComponent(vizType);

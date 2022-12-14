@@ -13,6 +13,7 @@ import { palauNursingMonthlyIssuesArisingReport } from './palauNursingMonthlyIss
 import { palauNursingMonthlyOrReport } from './palauNursingMonthlyOrReport';
 import { palauNursingMedicalWardReport1 } from './palauNursingMedicalWardReport1';
 import { palauNursingMedicalWardReport2 } from './palauNursingMedicalWardReport2';
+import { tongaCovidRawData } from './tongaCovidRawData';
 
 type CustomReportBuilder = (reqContext: ReqContext, query: FetchReportQuery) => Promise<unknown>;
 
@@ -24,6 +25,7 @@ export const customReports: Record<string, CustomReportBuilder> = {
   palauNursingMonthlyOrReport,
   palauNursingMedicalWardReport1,
   palauNursingMedicalWardReport2,
+  tongaCovidRawData,
 };
 
 export type CustomReportOutputType = Resolved<

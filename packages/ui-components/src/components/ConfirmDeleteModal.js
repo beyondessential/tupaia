@@ -25,22 +25,33 @@ const Heading = styled(Typography)`
   margin-bottom: 0.8rem;
 `;
 
-export const ConfirmDeleteModal = React.memo(({ isOpen, title, message, onConfirm, onCancel }) => (
-  <Dialog onClose={onCancel} open={isOpen}>
-    <DialogHeader onClose={onCancel} title={title} color="error" />
-    <DialogContent>
-      <Container>
-        <Icon />
-        <Heading variant="h6">{message}</Heading>
-        <Typography>Once deleted this can&apos;t be undone.</Typography>
-      </Container>
-    </DialogContent>
-    <DialogFooter>
-      <ErrorOutlinedButton onClick={onCancel}>Cancel</ErrorOutlinedButton>
-      <WarningButton onClick={onConfirm}>Yes, Delete</WarningButton>
-    </DialogFooter>
-  </Dialog>
-));
+export const ConfirmDeleteModal = React.memo(
+  ({
+    isOpen,
+    title,
+    message,
+    onConfirm,
+    onCancel,
+    description,
+    cancelButtonText,
+    confirmButtonText,
+  }) => (
+    <Dialog onClose={onCancel} open={isOpen}>
+      <DialogHeader onClose={onCancel} title={title} color="error" />
+      <DialogContent>
+        <Container>
+          <Icon />
+          <Heading variant="h6">{message}</Heading>
+          <Typography>{description}</Typography>
+        </Container>
+      </DialogContent>
+      <DialogFooter>
+        <ErrorOutlinedButton onClick={onCancel}>{cancelButtonText}</ErrorOutlinedButton>
+        <WarningButton onClick={onConfirm}>{confirmButtonText}</WarningButton>
+      </DialogFooter>
+    </Dialog>
+  ),
+);
 
 ConfirmDeleteModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
@@ -48,10 +59,16 @@ ConfirmDeleteModal.propTypes = {
   isOpen: PropTypes.bool,
   title: PropTypes.string,
   message: PropTypes.string,
+  description: PropTypes.string,
+  cancelButtonText: PropTypes.string,
+  confirmButtonText: PropTypes.string,
 };
 
 ConfirmDeleteModal.defaultProps = {
   isOpen: false,
   title: 'Delete Record',
   message: '',
+  description: `Once deleted this can't be undone.`,
+  cancelButtonText: 'Cancel',
+  confirmButtonText: 'Yes, Delete',
 };
