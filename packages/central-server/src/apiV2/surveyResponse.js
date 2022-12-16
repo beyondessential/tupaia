@@ -7,33 +7,68 @@ import {
   ValidationError,
   MultiValidationError,
   ObjectValidator,
-  hasContent,
+  yup,
+  yupUtils,
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
   constructIsEmptyOr,
+  takesDateForm,
+  hasContent,
+  takesIdForm,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
 import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 import { saveResponsesToDatabase } from './surveyResponses';
+import { upsertEntitiesAndOptions } from './surveyResponses/upsertEntitiesAndOptions';
+
+const customYupObjectError = (validateFunc, errorMessage) => async (value, ctx) => {
+  const validate = yupUtils.yupTest(validateFunc);
+  const response = await validate(value);
+  if (response instanceof yup.ValidationError) {
+    return ctx.createError({ message: `${errorMessage}, value: ${value}` });
+  }
+
+  return true;
+};
 
 const createSurveyResponseValidator = models =>
-  new ObjectValidator({
-    entity_id: [constructIsEmptyOr(constructRecordExistsWithId(models.entity))],
-    entity_code: [constructIsEmptyOr(constructRecordExistsWithCode(models.entity))],
-    timestamp: [hasContent],
-    survey_id: [hasContent, constructRecordExistsWithId(models.survey)],
-    answers: [hasContent],
+  yup.object().shape({
+    entity_id: yup
+      .string()
+      .test(
+        customYupObjectError(
+          constructIsEmptyOr(constructRecordExistsWithId(models.entity)),
+          'entity_id is not validated',
+        ),
+      ),
+    entity_code: yup
+      .string()
+      .test(yupUtils.yupTest(constructIsEmptyOr(constructRecordExistsWithCode(models.entity)))),
+    survey_id: yup
+      .string()
+      .test(yupUtils.yupTest(constructRecordExistsWithId(models.survey)))
+      .required(),
+    start_time: yup
+      .string()
+      .test(customYupObjectError(constructIsEmptyOr(takesDateForm), 'start_time is not validated')),
+    end_time: yup
+      .string()
+      .test(customYupObjectError(constructIsEmptyOr(takesDateForm), 'end_time is not validated')),
   });
 
-async function validateResponse(models, userId, body) {
+async function validateResponse(models, body) {
   if (!body) {
     throw new ValidationError('Survey responses must not be null');
   }
 
-  const surveyResponseValidator = createSurveyResponseValidator(models);
-  await surveyResponseValidator.validate(body);
+  try {
+    const surveyResponseValidator = createSurveyResponseValidator(models);
+    await surveyResponseValidator.validate(body);
+  } catch (e) {
+    throw new ValidationError(e.message);
+  }
 
   if (!body.entity_id && !body.entity_code) {
     throw new Error('Must provide one of entity_id or entity_code');
@@ -43,40 +78,51 @@ async function validateResponse(models, userId, body) {
 
   const { answers } = body;
 
-  const answerValidations = Object.entries(answers).map(async ([questionCode, value]) => {
-    if (value === null || value === undefined) {
-      throw new ValidationError(`Answer for ${questionCode} is missing value`);
-    }
-
-    const question = surveyQuestions.find(q => q.code === questionCode);
-    if (!question) {
-      throw new ValidationError(
-        `Could not find question with code ${questionCode} on survey ${body.survey_id}`,
+  // answers format: ReturnType<constructAnswerValidators>
+  if (Array.isArray(answers)) {
+    const answerObjectValidator = new ObjectValidator(constructAnswerValidators(models));
+    for (let i = 0; i < answers.length; i++) {
+      await answerObjectValidator.validate(
+        answers[i],
+        (message, field) =>
+          new ValidationError(
+            `Answer at index ${i} had invalid field "${field}" causing the message "${message}"`,
+          ),
       );
     }
+  } else {
+    // answers format: { [$questionCode]: [$answerValue] }
+    const answerValidations = Object.entries(answers).map(async ([questionCode, value]) => {
+      if (value === null || value === undefined) {
+        throw new ValidationError(`Answer for ${questionCode} is missing value`);
+      }
 
-    try {
-      const answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
-      await answerValidator.validate({ answer: value });
-    } catch (e) {
-      // validator will always complain of field "answer" but in this context it is not
-      // particularly useful
-      throw new Error(e.message.replace('field "answer"', `question code "${questionCode}"`));
-    }
-  });
+      const question = surveyQuestions.find(q => q.code === questionCode);
+      if (!question) {
+        throw new ValidationError(
+          `Could not find question with code ${questionCode} on survey ${body.survey_id}`,
+        );
+      }
 
-  await Promise.all(answerValidations);
+      try {
+        const answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
+        await answerValidator.validate({ answer: value });
+      } catch (e) {
+        // validator will always complain of field "answer" but in this context it is not
+        // particularly useful
+        throw new Error(e.message.replace('field "answer"', `question code "${questionCode}"`));
+      }
+    });
+
+    await Promise.all(answerValidations);
+  }
 }
 
-export const validateAllResponses = async (models, userId, responses) => {
+const validateAllResponses = async (models, responses) => {
   const validations = await Promise.all(
-    responses.map(async (r, i) => {
-      try {
-        await validateResponse(models, userId, r);
-        return null;
-      } catch (e) {
-        return { row: i, error: e.message };
-      }
+    responses.map(async r => {
+      await validateResponse(models, r);
+      return null;
     }),
   );
 
@@ -90,18 +136,23 @@ export const validateAllResponses = async (models, userId, responses) => {
 };
 
 export const submitResponses = async (models, userId, responses) => {
-  // allow responses to be submitted in bulk
-  await validateAllResponses(models, userId, responses);
+  // Upsert entities and options that were created in user's local database
+  await upsertEntitiesAndOptions(models, responses);
+  // Allow responses to be submitted in bulk
+  await validateAllResponses(models, responses);
   return saveResponsesToDatabase(models, userId, responses);
 };
 
 export async function surveyResponse(req, res) {
   const { userId, body, models } = req;
 
-  let results;
+  let results = [];
   const responses = Array.isArray(body) ? body : [body];
+  // Upsert entities and options that were created in user's local database
+  await upsertEntitiesAndOptions(models, responses);
+
   await models.wrapInTransaction(async transactingModels => {
-    await validateAllResponses(transactingModels, userId, responses);
+    await validateAllResponses(transactingModels, responses);
     // Check permissions
     const surveyResponsePermissionsChecker = async accessPolicy => {
       await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);
@@ -114,3 +165,10 @@ export async function surveyResponse(req, res) {
   });
   res.send({ count: responses.length, results });
 }
+
+const constructAnswerValidators = models => ({
+  id: [hasContent, takesIdForm],
+  type: [hasContent],
+  question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
+  body: [hasContent],
+});

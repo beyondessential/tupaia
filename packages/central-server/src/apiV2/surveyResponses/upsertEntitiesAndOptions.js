@@ -46,16 +46,24 @@ const createOptions = async (models, optionsCreated) => {
 };
 
 // Upsert entities and options that were created in user's local database
-export const upsertEntitiesAndOptions = async (models, surveyResponse) => {
-  const entitiesCreated = surveyResponse.entities_created || [];
-  const optionsCreated = surveyResponse.options_created || [];
-  try {
-    await createEntities(models, entitiesCreated, surveyResponse.survey_id);
-    await createOptions(models, optionsCreated);
-  } catch (error) {
-    throw new DatabaseError(
-      `creating/updating created data from survey response with id ${surveyResponse.survey_id}`,
-      error,
-    );
+export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
+  for (const surveyResponse of surveyResponses) {
+    const entitiesCreated = surveyResponse.entities_created || [];
+    const optionsCreated = surveyResponse.options_created || [];
+
+    try {
+      if (entitiesCreated.length > 0) {
+        await createEntities(models, entitiesCreated, surveyResponse.survey_id);
+      }
+
+      if (optionsCreated.length > 0) {
+        await createOptions(models, optionsCreated);
+      }
+    } catch (error) {
+      throw new DatabaseError(
+        `creating/updating created data from survey response with id ${surveyResponse.survey_id}`,
+        error,
+      );
+    }
   }
 };

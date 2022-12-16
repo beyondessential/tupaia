@@ -11,7 +11,6 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
   return Promise.all(
     answers.map(async answer => {
       const answerDocument = {
-        id: answer.id,
         type: answer.type,
         question_id: answer.question_id,
         survey_response_id: surveyResponseId,
@@ -33,6 +32,10 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
         }
       } else {
         answerDocument.text = answer.body;
+      }
+
+      if (answer.id) {
+        answerDocument.id = answer.id;
       }
 
       try {
