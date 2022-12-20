@@ -4,9 +4,10 @@
  */
 
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
+import { getSortByKey } from '@tupaia/utils';
 
-import { Writable, ObjectLikeKeys, Flatten } from '../../../types';
-import { EntityFilter, EntityFields } from '../../../models';
+import { Writable, NumericKeys, ObjectLikeKeys, Flatten } from '../../../types';
+import { EntityFilter, EntityQueryFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
@@ -14,17 +15,21 @@ const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
 type NestedFilterQueryFields = Flatten<
-  Pick<EntityFields, ObjectLikeKeys<EntityFields>>,
+  Pick<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>>,
   typeof NESTED_FIELD_DELIMITER
 >;
 
+type NumericFilterQueryFields = Pick<EntityQueryFields, NumericKeys<EntityQueryFields>>;
+
 type EntityFilterQuery = Partial<
-  Omit<EntityFields, ObjectLikeKeys<EntityFields>> & NestedFilterQueryFields
+  Omit<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>> & NestedFilterQueryFields
 >;
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
 type NotNullValues<T> = {
   [field in keyof T]: NotNull<T[field]>;
 };
+
+type ExtractArrays<T> = T extends unknown[] ? T : never;
 
 const filterableFields: (keyof EntityFilterQuery)[] = [
   'id',
@@ -34,6 +39,7 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
   'image_url',
   'type',
   'attributes_type',
+  'generational_distance',
 ];
 const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
   (filterableFields as string[]).includes(field);
@@ -41,6 +47,10 @@ const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
 const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes_type'];
 const isNestedField = (field: keyof EntityFilterQuery): field is keyof NestedFilterQueryFields =>
   (nestedFields as (keyof EntityFilterQuery)[]).includes(field);
+
+const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distance'];
+const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
+  (numericFields as (keyof EntityFilterQuery)[]).includes(field);
 
 type JsonBKey<
   T extends keyof NestedFilterQueryFields
@@ -58,12 +68,18 @@ const operatorToSqlComparator = {
   '==': '=' as const, // Exact match
   '!=': '!=' as const, // Does not match
   '=@': 'ilike' as const, // Contains sub string
+  '<': '<' as const, // Less than
+  '<=': '<=' as const, // Less than or equal
+  '>': '>' as const, // Greater than
+  '>=': '>=' as const, // Greater than or equal
 };
 type Operator = keyof typeof operatorToSqlComparator;
 
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
 
-const formatComparisonValue = (value: string | string[], operator: Operator) => {
+type Value = string | string[] | number | number[];
+
+const formatComparisonValue = (value: Value, operator: Operator) => {
   if (operator === '=@' && typeof value === 'string') {
     return `%${value}%`;
   }
@@ -71,22 +87,37 @@ const formatComparisonValue = (value: string | string[], operator: Operator) => 
   return value;
 };
 
-const convertValueToAdvancedCriteria = (operator: Operator, value: string | string[]) => {
+const formatValue = <T extends keyof EntityFilterQuery>(field: T, value: string) =>
+  isNumericField(field) ? parseFloat(value) : value;
+
+const convertValueToAdvancedCriteria = (
+  field: keyof EntityFilterQuery,
+  operator: Operator,
+  value: string,
+) => {
+  const formattedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
+    ? (value
+        .split(MULTIPLE_VALUES_DELIMITER)
+        .map(val => formatValue(field, val)) as ExtractArrays<Value>)
+    : formatValue(field, value);
+
   // For equal operator, we do not need to specify comparison object.
   if (operator === '==') {
-    return value;
+    return formattedValue;
   }
 
   const comparator = operatorToSqlComparator[operator];
 
   return {
     comparator,
-    comparisonValue: formatComparisonValue(value, operator),
+    comparisonValue: formatComparisonValue(formattedValue, operator),
   };
 };
 
 const toFilterClause = (queryClause: string) => {
-  const operator = filterOperators.find(o => queryClause.includes(o));
+  const [operator] = filterOperators
+    .filter(o => queryClause.includes(o))
+    .sort(getSortByKey('length', { ascending: false }));
 
   if (!operator) {
     throw new Error(
@@ -106,13 +137,7 @@ const toFilterClause = (queryClause: string) => {
     throw new Error(`Unknown filter key: ${field}, must be one of: ${filterableFields}`);
   }
 
-  const formattedField = isNestedField(field) ? toJsonBKey(field) : field;
-
-  return [formattedField, operator, value] as [
-    typeof formattedField,
-    typeof operator,
-    typeof value,
-  ];
+  return [field, operator, value] as [typeof field, typeof operator, typeof value];
 };
 
 export const extractFilterFromQuery = (
@@ -129,14 +154,11 @@ export const extractFilterFromQuery = (
   }
 
   const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
-  const filter: Writable<NotNullValues<EntityFilter>> = {};
+  const filter: Writable<NotNullValues<Record<string, unknown>>> = {};
 
   filterClauses.forEach(([field, operator, value]) => {
-    const parsedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
-      ? value.split(MULTIPLE_VALUES_DELIMITER)
-      : value;
-
-    filter[field] = convertValueToAdvancedCriteria(operator, parsedValue);
+    const formattedField = isNestedField(field) ? toJsonBKey(field) : field;
+    filter[formattedField] = convertValueToAdvancedCriteria(field, operator, value);
   });
 
   // To always force returning only entities in allowed countries, even if there is country_code filter in the query params.

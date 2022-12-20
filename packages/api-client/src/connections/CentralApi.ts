@@ -18,10 +18,20 @@ export type Answers = {
   [key: string]: string; // question_code -> value
 };
 
-const stringifyParams = (queryParameters?: Record<string, unknown>) => {
-  const translatedParams = queryParameters?.filter
-    ? { ...queryParameters, filter: JSON.stringify(queryParameters?.filter) }
-    : queryParameters;
+const stringifyParams = (queryParameters: Record<string, unknown> = {}) => {
+  const { filter, columns, sort, ...restOfParameters } = queryParameters;
+
+  const translatedParams = restOfParameters;
+  if (filter) {
+    translatedParams.filter = JSON.stringify(filter);
+  }
+  if (columns) {
+    translatedParams.columns = JSON.stringify(columns);
+  }
+  if (sort) {
+    translatedParams.sort = JSON.stringify(sort);
+  }
+
   return translatedParams as QueryParameters;
 };
 

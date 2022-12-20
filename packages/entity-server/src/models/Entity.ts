@@ -21,7 +21,11 @@ export type EntityFields = Readonly<{
   };
 }>;
 
-export type EntityFilter = DbFilter<EntityFields>;
+export type EntityQueryFields = EntityFields & {
+  generational_distance: number;
+};
+
+export type EntityFilter = DbFilter<EntityQueryFields>;
 
 export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;

@@ -198,6 +198,50 @@ describe('fieldsAndFilters', () => {
       expect(entities).toIncludeSameMembers(['PKMN_MANSION', 'PKMN_TOWER']);
     });
 
+    it('it can filter using <', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'generational_distance<2' },
+      });
+
+      expect(entities).toIncludeSameMembers(['KANTO']);
+    });
+
+    it('it can filter using <=', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'generational_distance<=2' },
+      });
+
+      expect(entities).toIncludeSameMembers([
+        'CELADON',
+        'CERULEAN',
+        'CINNABAR',
+        'FUCHSIA',
+        'KANTO',
+        'LAVENDER',
+        'PALLET',
+        'PEWTER',
+        'SAFFRON',
+        'VERMILLION',
+        'VIRIDIAN',
+      ]);
+    });
+
+    it('it can filter using >', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'name>Saffron City' },
+      });
+
+      expect(entities).toIncludeSameMembers(['BLUE', 'SILPH', 'VERMILLION', 'VIRIDIAN']);
+    });
+
+    it('it can filter using >=', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'name>=Saffron City' },
+      });
+
+      expect(entities).toIncludeSameMembers(['BLUE', 'SAFFRON', 'SILPH', 'VERMILLION', 'VIRIDIAN']);
+    });
+
     it('it can filter on deep properties of object properties', async () => {
       const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'attributes_type==gym' },
