@@ -45,6 +45,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@tupaia/types": "workspace:^",
     "@types/multer": "^1.4.7"
   }
 }
