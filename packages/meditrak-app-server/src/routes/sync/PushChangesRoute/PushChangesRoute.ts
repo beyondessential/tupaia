@@ -42,34 +42,35 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
     const surveyImages: { id: string; data: string }[] = [];
 
     for (const { action, payload } of changes) {
-      if (!VALID_ACTIONS.includes(action)) {
-        throw new ValidationError(`${action} is not a supported change action`);
+      switch (action) {
+        case SUBMIT_SURVEY_RESPONSE: {
+          const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
+          const validatedSurveyResponse = await validateSurveyResponseObject(
+            this.req.models,
+            translatedPayload,
+          );
+          const surveyResponseWithPopulatedData = await populateData(
+            this.req.models,
+            validatedSurveyResponse,
+          );
+          surveyResponses.push(surveyResponseWithPopulatedData);
+          // Submit survey responses
+          await this.req.ctx.services.central.upsertSurveyResponses(surveyResponses);
+          break;
+        }
+        case ADD_SURVEY_IMAGE: {
+          const validatedPayload = addSurveyImageValidator.validateSync(payload);
+          surveyImages.push(validatedPayload);
+          // Add survey images
+          for (const surveyImage of surveyImages) {
+            const { id, data } = surveyImage;
+            await addSurveyImage(id, data);
+          }
+          break;
+        }
+        default:
+          throw new ValidationError(`${action} is not a supported change action`);
       }
-
-      if (action === SUBMIT_SURVEY_RESPONSE) {
-        const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
-        const validatedSurveyResponse = await validateSurveyResponseObject(
-          this.req.models,
-          translatedPayload,
-        );
-        const surveyResponseWithPopulatedData = await populateData(
-          this.req.models,
-          validatedSurveyResponse,
-        );
-        surveyResponses.push(surveyResponseWithPopulatedData);
-      } else {
-        const validatedPayload = addSurveyImageValidator.validateSync(payload);
-        surveyImages.push(validatedPayload);
-      }
-    }
-
-    // Submit survey responses
-    await this.req.ctx.services.central.upsertSurveyResponses(surveyResponses);
-
-    // Add survey images
-    for (const surveyImage of surveyImages) {
-      const { id, data } = surveyImage;
-      await addSurveyImage(id, data);
     }
 
     return { message: 'Successfully integrated changes into server database' };
