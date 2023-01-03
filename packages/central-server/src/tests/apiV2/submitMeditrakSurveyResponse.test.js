@@ -93,7 +93,7 @@ function expectEqualStrings(a, b) {
   }
 }
 
-describe.only('POST /surveyResponse', async () => {
+describe('POST /surveyResponse', async () => {
   const app = new TestableApp();
   const { models } = app;
   const syncQueue = setupDummySyncQueue(models);
