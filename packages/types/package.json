@@ -1,0 +1,26 @@
+{
+  "name": "@tupaia/types",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tupaia types repository",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/types"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
+    "lint:fix": "yarn lint --fix",
+    "generate": "ts-node generate.ts && yarn build"
+  },
+  "devDependencies": {
+    "@rmp135/sql-ts": "^1.15.1",
+    "dotenv": "^16.0.3",
+    "knex": "^2.3.0",
+    "ts-node": "^10.9.1"
+  }
+}
