@@ -1,5 +1,6 @@
 import { generateId } from '@tupaia/database';
-import { getTimezoneNameFromTimestamp, stripTimezoneFromDate } from '@tupaia/tsutils';
+import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import keyBy from 'lodash.keyby';
 import { upsertAnswers } from '../../dataAccessors';
 
@@ -24,7 +25,7 @@ async function getQuestionsByCode(models, answers) {
  * to [ { type, question_id, body} ]
  */
 async function buildAnswerRecords(models, rawAnswerRecords) {
-  if (Array.isArray) {
+  if (Array.isArray(rawAnswerRecords)) {
     return rawAnswerRecords;
   }
 
@@ -62,35 +63,32 @@ function buildResponseRecord(user, entitiesByCode, body) {
     approval_status: approvalStatus,
     timezone,
   } = body;
+  let { timezone, data_time: dataTime } = body;
+  let startTime;
+  let endTime;
 
-  const overrideConfigs = {};
+  startTime = inputStartTime ? new Date(inputStartTime).toISOString() : new Date().toISOString();
+  endTime = inputEndTime ? new Date(inputEndTime).toISOString() : new Date().toISOString();
+
   if (timestamp) {
     const time = new Date(timestamp).toISOString();
-
-    overrideConfigs.timezone = getTimezoneNameFromTimestamp(timestamp);
-    overrideConfigs.start_time = getTimezoneNameFromTimestamp(timestamp);
-    overrideConfigs.end_time = getTimezoneNameFromTimestamp(timestamp);
-    overrideConfigs.data_time = stripTimezoneFromDate(time);
+    startTime = time;
+    endTime = time;
+    dataTime = stripTimezoneFromDate(time);
+    timezone = getTimezoneNameFromTimestamp(timestamp);
   }
 
-  const startTime = inputStartTime
-    ? new Date(inputStartTime).toISOString()
-    : new Date().toISOString();
-
-  const endTime = inputEndTime ? new Date(inputEndTime).toISOString() : new Date().toISOString();
-
   return {
-    id,
-    entity_id: entityId || entitiesByCode[entityCode].id,
+    id: id || generateId(),
     survey_id: surveyId,
+    user_id: user.id,
+    entity_id: entityId || entitiesByCode[entityCode].id,
     data_time: dataTime,
     start_time: startTime,
     end_time: endTime,
-    approval_status: approvalStatus,
-    user_id: user.id,
-    assessor_name: user.fullName,
     timezone,
-    ...overrideConfigs,
+    assessor_name: user.fullName,
+    approval_status: approvalStatus,
   };
 }
 
@@ -99,7 +97,7 @@ async function saveSurveyResponses(models, responseRecords) {
     responseRecords.map(async record => {
       return models.surveyResponse.updateOrCreate(
         {
-          id: record.id || generateId(),
+          id: record.id,
         },
         record,
       );
