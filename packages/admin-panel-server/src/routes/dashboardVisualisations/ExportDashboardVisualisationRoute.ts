@@ -76,11 +76,12 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
   private findExistingDashboardItem = async (): Promise<DashboardItemRecord> => {
     const { dashboardVisualisationId } = this.req.params;
     const { central: centralApi } = this.req.ctx.services;
-
+    console.log('dashboard viz id: ', dashboardVisualisationId);
     if (dashboardVisualisationId) {
       const dashboardItem = await centralApi.fetchResources(
         `dashboardItems/${dashboardVisualisationId}`,
       );
+      console.log('dashboardItem: ', dashboardItem);
       if (!dashboardItem) {
         // We assert that the record exists, since a specific id was provided
         throw new Error(`Could not find visualisation with id ${dashboardVisualisationId}`);

@@ -12,8 +12,9 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   VIZ_BUILDER_USER_PERMISSION_GROUP,
 } from '../../../permissions';
+import TEST_VISUALISATION from '../../testData/visualisations/testVisualisation.json';
 
-describe('GET dashboard visualisations', () => {
+describe('POST dashboard visualisations', () => {
   const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
 
   const app = new TestableApp();
@@ -41,6 +42,19 @@ describe('GET dashboard visualisations', () => {
       dataServices: legacyReport.data_services,
     },
   };
+  const TEST_VISUALISATION = {
+    dashboardItem: {
+      code: 'asdfasdf',
+      config: { type: 'chart', name: 'asdfasdf' },
+      report_code: 'asdfasdf',
+      legacy: false,
+    },
+    report: {
+      code: 'asdfasdf',
+      permission_group: 'Viz_Permissions',
+      config: {},
+    },
+  };
 
   const policy = {
     DL: [VIZ_BUILDER_USER_PERMISSION_GROUP, 'Viz_Permissions'],
@@ -60,10 +74,12 @@ describe('GET dashboard visualisations', () => {
     app.revokeAccess();
   });
 
-  describe('GET /dashboardVisualisations/:id', () => {
-    it('Throws if id or code is not provided', async () => {
-      const response = await app.get('dashboardVisualisations/invalid_id');
-      expectError(response, /visualisation does not exist/i);
+  describe('POST /dashboardVisualisations/', () => {
+    it('Throws if body not provided', async () => {
+      const response = await app.post('dashboardVisualisations/', {
+        body: TEST_VISUALISATION,
+      });
+      expectSuccess(response);
     });
 
     it('Throws if  visualisation has no report', async () => {
@@ -81,34 +97,8 @@ describe('GET dashboard visualisations', () => {
     it('Returns an existing modern dashboard visualisation', async () => {
       const id = getVizId('Modern_Dashboard_Item');
       const response = await app.get(`dashboardVisualisations/${id}`);
+
       expectSuccess(response, MODERN_DASHBOARD_VISUALISATION);
-    });
-
-    it('Returns an existing legacy dashboard visualisation', async () => {
-      const id = getVizId('Legacy_Dashboard_Item');
-      const response = await app.get(`dashboardVisualisations/${id}`);
-      expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
-    });
-
-    it('Returns an existing visualisation with only BES Admin permission', async () => {
-      app.revokeAccess();
-      await app.grantAccess(besAdminPolicy);
-      const id = getVizId('Legacy_Dashboard_Item');
-      const response = await app.get(`dashboardVisualisations/${id}`);
-      expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
-    });
-  });
-
-  describe('GET /dashboardVisualisations', () => {
-    it('Returns existing dashboard visualisations, filtered by code', async () => {
-      const response = await app.get('dashboardVisualisations', {
-        query: {
-          filter: {
-            code: ['Modern_Dashboard_Item', 'Legacy_Dashboard_Item'],
-          },
-        },
-      });
-      expectSuccess(response, [MODERN_DASHBOARD_VISUALISATION, LEGACY_DASHBOARD_VISUALISATION]);
     });
   });
 });

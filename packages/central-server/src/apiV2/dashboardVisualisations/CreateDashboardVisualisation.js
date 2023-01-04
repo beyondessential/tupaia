@@ -6,7 +6,12 @@
 import { ObjectValidator } from '@tupaia/utils';
 
 import { CreateHandler } from '../CreateHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertVizBuilderAccess,
+  assertPermissionGroupAccess,
+} from '../../permissions';
 import { constructNewRecordValidationRules } from '../utilities';
 
 /**
@@ -16,7 +21,12 @@ import { constructNewRecordValidationRules } from '../utilities';
 
 export class CreateDashboardVisualisation extends CreateHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create visualisations.',
+      ),
+    );
   }
 
   getDashboardItemRecord() {
@@ -35,12 +45,15 @@ export class CreateDashboardVisualisation extends CreateHandler {
 
   async createReport(transactingModels, reportRecord) {
     const { code, permission_group: permissionGroupName, config } = reportRecord;
+
     const permissionGroup = await transactingModels.permissionGroup.findOne({
       name: permissionGroupName,
     });
     if (!permissionGroup) {
       throw new Error(`Could not find permission group with name '${permissionGroupName}'`);
     }
+    await assertPermissionGroupAccess(this.accessPolicy, permissionGroupName);
+
     const report = {
       code,
       config,
@@ -51,7 +64,12 @@ export class CreateDashboardVisualisation extends CreateHandler {
   }
 
   async createRecord() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await assertAnyPermissions(
+      [assertBESAdminAccess, assertVizBuilderAccess],
+      'You require Viz Builder User or BES Admin permission to create new visualisations.',
+    );
+
+    console.log('request body', this.req.body);
 
     const dashboardItemRecord = this.getDashboardItemRecord();
     const reportRecord = this.getReportRecord();

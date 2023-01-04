@@ -7,7 +7,12 @@ import { TYPES } from '@tupaia/database';
 import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 
 import { EditHandler } from '../EditHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertVizBuilderAccess,
+  assertPermissionGroupAccess,
+} from '../../permissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -25,7 +30,12 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditDashboardVisualisation extends EditHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to edit visualisations.',
+      ),
+    );
   }
 
   getDashboardItemRecord() {
@@ -73,8 +83,8 @@ export class EditDashboardVisualisation extends EditHandler {
   }
 
   async editRecord() {
-    await this.assertPermissions(assertBESAdminAccess);
-
+    const { report } = this.req.body;
+    await assertPermissionGroupAccess(this.accessPolicy, report.permission_group);
     return this.models.wrapInTransaction(async transactingModels => {
       const dashboardItemRecord = this.getDashboardItemRecord();
       const reportRecord = this.getReportRecord();
