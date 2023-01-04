@@ -5048,7 +5048,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/report-server": 0.0.0
     "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/types": "workspace:^"
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/multer": ^1.4.7
     api-error-handler: ^1.0.0
@@ -5707,7 +5707,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/types@1.0.0, @tupaia/types@workspace:^, @tupaia/types@workspace:packages/types":
+"@tupaia/types@1.0.0, @tupaia/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@tupaia/types@workspace:packages/types"
   dependencies:
