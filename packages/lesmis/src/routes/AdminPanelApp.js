@@ -8,8 +8,10 @@ import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
-import { LogoutPage, PrivateRoute, VizBuilderProviders, VizBuilderApp } from '@tupaia/admin-panel';
 import {
+  LogoutPage,
+  PrivateRoute,
+  VizBuilderApp,
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
@@ -23,9 +25,8 @@ import {
   UsersPage,
   PermissionsPage,
   EntitiesPage,
-  PrivateRoute,
-  VizBuilderApp,
 } from '@tupaia/admin-panel';
+
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import {
   ApprovedSurveyResponsesView,
