@@ -24,6 +24,7 @@ export const ResourcePage = ({
   expansionTabs,
   importConfig,
   ExportModalComponent,
+  exportConfig,
   LinksComponent,
   onProcessDataForSave,
   baseFilter,
@@ -31,13 +32,15 @@ export const ResourcePage = ({
   getHeaderEl,
   defaultFilters,
   defaultSorting,
-  displayUsedBy,
+  deleteConfig,
+  editorConfig,
   PermissionDialogComponent,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
       title={title}
       importConfig={importConfig}
+      exportConfig={exportConfig}
       createConfig={createConfig}
       ExportModalComponent={ExportModalComponent}
       LinksComponent={LinksComponent}
@@ -56,10 +59,11 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
+          deleteConfig={deleteConfig}
         />
       </Container>
       {PermissionDialogComponent && <PermissionDialogComponent />}
-      <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
+      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
       <LogsModal />
     </>
   );
@@ -81,6 +85,8 @@ ResourcePage.propTypes = {
     }),
   ),
   importConfig: PropTypes.object,
+  exportConfig: PropTypes.object,
+  deleteConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
   PermissionDialogComponent: PropTypes.elementType,
@@ -88,13 +94,15 @@ ResourcePage.propTypes = {
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
-  displayUsedBy: PropTypes.bool,
+  editorConfig: PropTypes.object,
 };
 
 ResourcePage.defaultProps = {
   createConfig: null,
   expansionTabs: null,
   importConfig: null,
+  exportConfig: {},
+  deleteConfig: {},
   ExportModalComponent: null,
   LinksComponent: null,
   PermissionDialogComponent: null,
@@ -103,5 +111,5 @@ ResourcePage.defaultProps = {
   defaultSorting: [],
   defaultFilters: [],
   reduxId: null,
-  displayUsedBy: false,
+  editorConfig: {},
 };

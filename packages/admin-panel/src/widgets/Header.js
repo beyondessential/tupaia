@@ -34,6 +34,7 @@ export const Header = ({
   title,
   importConfig,
   createConfig,
+  exportConfig,
   ExportModalComponent,
   LinksComponent,
 }) => {
@@ -48,7 +49,7 @@ export const Header = ({
           <HeaderButtonContainer>
             {importConfig && <ImportModal {...importConfig} />}
             {createConfig && <CreateButton {...createConfig} />}
-            {ExportModalComponent && <ExportModalComponent />}
+            {ExportModalComponent && <ExportModalComponent {...exportConfig} />}
             {LinksComponent && <LinksComponent />}
           </HeaderButtonContainer>
         </HeaderInner>
@@ -61,6 +62,7 @@ Header.propTypes = {
   title: PropTypes.string.isRequired,
   importConfig: PropTypes.object,
   createConfig: PropTypes.object,
+  exportConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
 };
@@ -68,6 +70,7 @@ Header.propTypes = {
 Header.defaultProps = {
   importConfig: null,
   createConfig: null,
+  exportConfig: {},
   ExportModalComponent: null,
   LinksComponent: null,
 };

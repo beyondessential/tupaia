@@ -5402,8 +5402,10 @@ __metadata:
     downloadjs: ^1.4.7
     lodash.debounce: ^4.0.8
     lodash.keyby: ^4.6.0
+    moment: ^2.22.2
     npm-run-all: ^4.1.5
     prop-types: ^15.7.2
+    query-string: ^5.1.1
     react: ^16.13.1
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
