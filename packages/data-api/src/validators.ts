@@ -10,22 +10,16 @@ export const eventOptionsValidator = yup.object().shape({
   startDate: yup
     .string()
     .test(
-      yupUtils.yupTestAnySync(
-        [hasNoContent, takesDateForm],
-        'startDate should be in ISO 8601 format',
-      ),
+      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'startDate should be in ISO 8601 format'),
     ),
   endDate: yup
     .string()
     .test(
-      yupUtils.yupTestAnySync(
-        [hasNoContent, takesDateForm],
-        'endDate should be in ISO 8601 format',
-      ),
+      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'endDate should be in ISO 8601 format'),
     ),
   dataElementCodes: yup.array().of(yup.string().required()).strict(),
   dataGroupCode: yup.string().strict().required(),
-  eventId: yup.string().test(yupUtils.yupTestAnySync([hasNoContent, takesIdForm])),
+  eventId: yup.string().test(yupUtils.yupTestAny([hasNoContent, takesIdForm])),
 });
 
 const aggregationStringValidator = yup.string().strict().required();
@@ -39,18 +33,12 @@ export const analyticsOptionsValidator = yup.object().shape({
   startDate: yup
     .string()
     .test(
-      yupUtils.yupTestAnySync(
-        [hasNoContent, takesDateForm],
-        'startDate should be in ISO 8601 format',
-      ),
+      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'startDate should be in ISO 8601 format'),
     ),
   endDate: yup
     .string()
     .test(
-      yupUtils.yupTestAnySync(
-        [hasNoContent, takesDateForm],
-        'endDate should be in ISO 8601 format',
-      ),
+      yupUtils.yupTestAny([hasNoContent, takesDateForm], 'endDate should be in ISO 8601 format'),
     ),
   dataElementCodes: yup.array().of(yup.string().required()).strict().required(),
   aggregations: yup
