@@ -458,53 +458,6 @@ describe('POST /surveyResponse', async () => {
     });
 
     describe('Backwards compatibility for time fields', async () => {
-      it('data_time should override all others', async () => {
-        const surveyResponseObject = generateDummySurveyResponse({
-          data_time: new Date().toISOString(),
-          submission_time: new Date().toISOString(),
-        });
-
-        const response = await app.post('surveyResponse', {
-          body: [surveyResponseObject],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        const expectedDate = formatDateAsPSQLString(new Date(surveyResponseObject.data_time));
-
-        expect(surveyResponse.data_time).to.equal(expectedDate);
-      });
-
-      it('Use submission_time if data_time is missing', async () => {
-        const surveyResponseObject = generateDummySurveyResponse({
-          submission_time: new Date().toISOString(),
-        });
-
-        const response = await app.post('surveyResponse', {
-          body: [surveyResponseObject],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(surveyResponse.data_time).to.equal(
-          formatDateAsPSQLString(surveyResponseObject.submission_time),
-        );
-      });
-
-      it('Use end_time if data_time and submission_time are missing', async () => {
-        const surveyResponseObject = generateDummySurveyResponse();
-
-        const response = await app.post('surveyResponse', {
-          body: [surveyResponseObject],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(surveyResponse.data_time).to.equal(
-          formatDateAsPSQLString(surveyResponseObject.end_time),
-        );
-      });
-
       it('Auto fill in assessor_name when it is empty in the survey responses', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(generateDummyAnswer());

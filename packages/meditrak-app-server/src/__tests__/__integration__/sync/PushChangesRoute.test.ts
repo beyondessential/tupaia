@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import momentTimezone from 'moment-timezone';
 import { constructAccessToken } from '@tupaia/auth';
 import {
   clearTestData,
@@ -20,6 +21,7 @@ import {
   S3_BUCKET_NAME,
   getS3ImageFilePath,
   fetchWithTimeout,
+  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { TestModelRegistry } from '../../types';
 import { setupDummySyncQueue, setupTestApp, setupTestUser, CentralApiMock } from '../../utilities';
@@ -33,6 +35,7 @@ import {
   insertEntityAndFacility,
 } from '../../utilities/database';
 import { upsertSurveyResponsesMock } from '../../utilities/CentralApiMock';
+import { SurveyResponseObject } from '../../../routes/sync/PushChangesRoute';
 
 const clinicId = generateTestId();
 const entityId = generateTestId();
@@ -46,30 +49,32 @@ let userId = ''; // will be determined in 'before' phase
 
 const generateDummyAnswer = (questionNumber?: number) => ({
   id: generateTestId(),
-  type: generateValueOfType('text'),
-  body: generateValueOfType('text'),
+  type: generateValueOfType('text') as string,
+  body: generateValueOfType('text') as string,
   question_id: getQuestionId(questionNumber),
 });
 
 type Answer = Record<string, unknown>;
-type SurveyResponse = Record<string, unknown>;
 
-const generateDummySurveyResponse = (answers: Answer[] = [], extraFields = {}) => ({
-  id: generateTestId(),
-  assessor_name: generateValueOfType('text'),
-  start_time: generateValueOfType('date'),
-  end_time: generateValueOfType('date'),
-  entity_id: entityId,
-  survey_id: surveyId,
-  user_id: userId,
-  entities_created: [],
-  timezone: defaultTimezone,
-  answers,
-  ...extraFields,
-});
+const generateDummySurveyResponse = (extraFields = {}): SurveyResponseObject => {
+  const answers = generateDummyAnswer();
+
+  return {
+    id: generateTestId(),
+    start_time: new Date().toISOString(),
+    end_time: new Date().toISOString(),
+    entity_id: entityId,
+    survey_id: surveyId,
+    user_id: userId,
+    entities_created: [],
+    timezone: defaultTimezone,
+    answers: [answers],
+    ...extraFields,
+  };
+};
 
 const generateDummySurveyResponseAgainstFacility = () => {
-  const surveyResponse: SurveyResponse = generateDummySurveyResponse();
+  const surveyResponse = generateDummySurveyResponse();
   delete surveyResponse.entity_id;
   surveyResponse.clinic_id = clinicId;
 
@@ -127,11 +132,12 @@ describe('changes (POST)', () => {
       await upsertEntity(models, { id: entityId, code: 'TEST_ENTITY' });
     });
 
-    // these two failed
     describe('Translating survey responses', () => {
       it('correctly translates entity_code to entity_id', async () => {
         const answerObject = generateDummyAnswer();
-        const surveyResponseObject: SurveyResponse = generateDummySurveyResponse([answerObject]);
+        const surveyResponseObject = generateDummySurveyResponse({
+          answers: [answerObject],
+        });
         const entityCode = 'TEST_ENTITY';
         const surveyResponseEntityId = surveyResponseObject.entity_id;
         delete surveyResponseObject.entity_id;
@@ -158,7 +164,7 @@ describe('changes (POST)', () => {
         const questionCode = 'TEST_QUESTION_1';
         delete answerObject.question_id;
         answerObject.question_code = questionCode;
-        const surveyResponseObject = generateDummySurveyResponse([answerObject]);
+        const surveyResponseObject = generateDummySurveyResponse({ answers: [answerObject] });
 
         const action = {
           action: 'SubmitSurveyResponse',
@@ -232,6 +238,83 @@ describe('changes (POST)', () => {
         });
 
         expect(response).toHaveProperty('statusCode', 200);
+      });
+    });
+
+    describe('Backwards compatibility for time fields', () => {
+      const submitSurveyResponse = async (surveyResponseObject: SurveyResponseObject) => {
+        const action = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObject,
+        };
+        const response = await app.post('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          body: [action],
+        });
+        return response;
+      };
+
+      const stripTimezone = (date: string | undefined) => {
+        return stripTimezoneFromDate(momentTimezone(date).tz(defaultTimezone).format());
+      };
+
+      it('data_time should override all others', async () => {
+        const dataTime = new Date().toISOString();
+        const surveyResponseObject = generateDummySurveyResponse({
+          data_time: dataTime,
+          submission_time: generateValueOfType('date'),
+        });
+
+        const response = await submitSurveyResponse(surveyResponseObject);
+        expect(response).toHaveProperty('statusCode', 200);
+
+        const expectedDateTime = stripTimezone(dataTime);
+        expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
+          expect.arrayContaining([expect.objectContaining({ data_time: expectedDateTime })]),
+        );
+      });
+
+      it('Use submission_time if data_time is missing', async () => {
+        const submissionTime = new Date().toISOString();
+        const surveyResponseObject = generateDummySurveyResponse({
+          submission_time: submissionTime,
+        });
+
+        const response = await submitSurveyResponse(surveyResponseObject);
+        expect(response).toHaveProperty('statusCode', 200);
+
+        const expectedDateTime = stripTimezone(submissionTime);
+        expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
+          expect.arrayContaining([expect.objectContaining({ data_time: expectedDateTime })]),
+        );
+      });
+
+      it('Use end_time if data_time and submission_time are missing', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        const response = await submitSurveyResponse(surveyResponseObject);
+
+        expect(response).toHaveProperty('statusCode', 200);
+        const endTime = surveyResponseObject.end_time as string;
+        const expectedDateTime = stripTimezone(endTime);
+        expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
+          expect.arrayContaining([expect.objectContaining({ data_time: expectedDateTime })]),
+        );
+      });
+
+      it('Error if wrong format of start_time', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        surveyResponseObject.start_time = '123';
+        const response = await submitSurveyResponse(surveyResponseObject);
+        expect(response.statusCode).toEqual(400);
+      });
+
+      it('Error if wrong format of end_time', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        surveyResponseObject.end_time = '123';
+        const response = await submitSurveyResponse(surveyResponseObject);
+        expect(response.statusCode).toEqual(400);
       });
     });
   });
