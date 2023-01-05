@@ -7,7 +7,7 @@ import {
 import momentTimezone from 'moment-timezone';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { getEntityIdFromClinicId } from './getEntityIdFromClinicId';
-import { ValidatedSurveyResponseObject } from './validateInboundSurveyResponses';
+import { ValidatedSurveyResponseObject } from './types';
 
 const DEFAULT_DATABASE_TIMEZONE = 'Pacific/Auckland';
 

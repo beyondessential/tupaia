@@ -4,72 +4,71 @@
  */
 
 import {
+  hasContent,
+  constructIsValidEntityType,
+  isNumber,
+  isArray,
+  constructEveryItem,
+  ObjectValidator,
   ValidationError,
   constructRecordExistsWithId,
   constructIsEmptyOr,
   takesIdForm,
   takesDateForm,
-  yup,
-  yupUtils,
 } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
-import { SurveyResponseObject } from './types';
+import { SurveyResponseObject, ValidatedSurveyResponseObject } from './types';
 
-const clinicOrEntityIdExist = (surveyResponse: Record<string, unknown>) =>
-  !(surveyResponse.clinic_id || surveyResponse.entity_id);
+const clinicOrEntityIdExist = (id: string, obj: { clinic_id?: string; entity_id?: string }) => {
+  if (!(obj.clinic_id || obj.entity_id)) {
+    throw new Error('Either clinic_id or entity_id are required.');
+  }
+};
 
-export const constructEntityValidator = (models: MeditrakAppServerModelRegistry) =>
-  yup.object().shape({
-    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
-    code: yup.string().required(),
-    parent_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
-    name: yup.string().required(),
-    type: yup.mixed<string>().oneOf(Object.values(models.entity.types)).required(),
-    country_code: yup.string().required(),
-  });
+const constructAnswerValidators = (models: MeditrakAppServerModelRegistry) => ({
+  id: [hasContent, takesIdForm],
+  type: [hasContent],
+  question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
+  body: [hasContent],
+});
 
-export const constructOptionsValidator = (models: MeditrakAppServerModelRegistry) =>
-  yup.object().shape({
-    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
-    value: yup.number().required(),
-    option_set_id: yup
-      .string()
-      .test(yupUtils.yupTest(constructRecordExistsWithId(models.optionSet))),
-    sort_order: yup.number(),
-  });
+const constructEntityValidator = (models: MeditrakAppServerModelRegistry) => ({
+  id: [hasContent, takesIdForm],
+  code: [hasContent],
+  parent_id: [takesIdForm],
+  name: [hasContent],
+  type: [constructIsValidEntityType(models.entity)],
+  country_code: [hasContent],
+});
 
-export const constructSurveyResponseValidator = (models: MeditrakAppServerModelRegistry) =>
-  yup.object().shape({
-    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
-    assessor_name: yup.string().required(),
-    clinic_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
-    data_time: yup.date().test(yupUtils.yupTestSync(constructIsEmptyOr(takesDateForm))),
-    entity_id: yup.string().test(yupUtils.yupTestSync(constructIsEmptyOr(takesIdForm))),
-    start_time: yup.date().test(yupUtils.yupTestSync(takesDateForm)),
-    end_time: yup.date().test(yupUtils.yupTestSync(takesDateForm)),
-    survey_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)).required(),
-    user_id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
-    approval_status: yup.string(),
-    answers: yup.array().of(constructAnswerValidator(models)).required(),
-    entities_created: yup.array().of(constructEntityValidator(models)),
-    options_created: yup.array().of(constructOptionsValidator(models)),
-  });
+const constructIsValidEntity = (models: MeditrakAppServerModelRegistry) => async (
+  value: Record<string, any>,
+) => new ObjectValidator(constructEntityValidator(models)).validate(value);
 
-const constructAnswerValidator = (models: MeditrakAppServerModelRegistry) =>
-  yup.object().shape({
-    id: yup.string().test(yupUtils.yupTestSync(takesIdForm)),
-    type: yup.string().required(),
-    question_id: yup.string().test(yupUtils.yupTest(constructRecordExistsWithId(models.question))),
-    body: yup.string().required(),
-  });
+const constructOptionsCreatedValidators = (models: MeditrakAppServerModelRegistry) => ({
+  id: [hasContent, takesIdForm],
+  value: [hasContent],
+  option_set_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.optionSet)],
+  sort_order: [isNumber],
+});
 
-export type ValidatedEntitiesObject = yup.InferType<ReturnType<typeof constructEntityValidator>>;
+const constructIsValidOption = (models: MeditrakAppServerModelRegistry) => async (
+  value: Record<string, any>,
+) => new ObjectValidator(constructOptionsCreatedValidators(models)).validate(value);
 
-export type ValidatedOptionsObject = yup.InferType<ReturnType<typeof constructOptionsValidator>>;
-
-export type ValidatedSurveyResponseObject = NonNullable<
-  yup.InferType<ReturnType<typeof constructSurveyResponseValidator>>
->;
+export const constructSurveyResponseValidator = (models: MeditrakAppServerModelRegistry) => ({
+  id: [hasContent, takesIdForm],
+  clinic_id: [clinicOrEntityIdExist, constructIsEmptyOr(takesIdForm)],
+  entity_id: [clinicOrEntityIdExist, constructIsEmptyOr(takesIdForm)],
+  start_time: [constructIsEmptyOr(takesDateForm)],
+  end_time: [constructIsEmptyOr(takesDateForm)],
+  data_time: [constructIsEmptyOr(takesDateForm)],
+  survey_id: [hasContent, takesIdForm],
+  user_id: [hasContent, takesIdForm],
+  answers: [hasContent, isArray],
+  entities_created: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
+  options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption(models)))],
+});
 
 export const validateSurveyResponseObject = async (
   models: MeditrakAppServerModelRegistry,
@@ -78,11 +77,15 @@ export const validateSurveyResponseObject = async (
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
   }
-  const surveyResponseObjectValidator = constructSurveyResponseValidator(models);
-  const validatedSurveyResponseObject = await surveyResponseObjectValidator.validate(
-    surveyResponseObject,
+
+  const surveyResponseObjectValidator = new ObjectValidator(
+    constructSurveyResponseValidator(models),
   );
-  const answerObjectValidator = constructAnswerValidator(models);
+  const answerObjectValidator = new ObjectValidator(constructAnswerValidators(models));
+  await surveyResponseObjectValidator.validate(surveyResponseObject);
+
+  const validatedSurveyResponseObject = surveyResponseObject as ValidatedSurveyResponseObject;
+
   for (let i = 0; i < validatedSurveyResponseObject.answers.length; i++) {
     await answerObjectValidator.validate(validatedSurveyResponseObject.answers[i]);
   }
