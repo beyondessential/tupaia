@@ -15,6 +15,7 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
+    "test": "echo \"No tests specified\" && exit 0",
     "generate": "ts-node generate.ts && yarn build"
   },
   "devDependencies": {
