@@ -3,15 +3,16 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ReportConfig, StandardOrCustomReportConfig } from '@tupaia/report-server';
+import { StandardOrCustomReportConfig } from '@tupaia/report-server';
+import { Report as BaseReportType } from '@tupaia/types';
 
 export type VizData = {
-  dataElements: ReportConfig['fetch']['dataElements'];
-  dataGroups: ReportConfig['fetch']['dataGroups'];
-  startDate?: ReportConfig['fetch']['startDate'];
-  endDate?: ReportConfig['fetch']['endDate'];
-  aggregations: ReportConfig['fetch']['aggregations'];
-  transform: ReportConfig['transform'];
+  dataElements: BaseReportType['config']['fetch']['dataElements'];
+  dataGroups: BaseReportType['config']['fetch']['dataGroups'];
+  startDate?: BaseReportType['config']['fetch']['startDate'];
+  endDate?: BaseReportType['config']['fetch']['endDate'];
+  aggregations: BaseReportType['config']['fetch']['aggregations'];
+  transform: BaseReportType['config']['transform'];
 };
 
 export enum PreviewMode {
