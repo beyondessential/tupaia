@@ -7,7 +7,12 @@ import { TYPES } from '@tupaia/database';
 import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 
 import { EditHandler } from '../EditHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertBESAdminAccess,
+  assertAnyPermissions,
+  assertVizBuilderAccess,
+  assertPermissionGroupsAccess,
+} from '../../permissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -25,7 +30,12 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditMapOverlayVisualisation extends EditHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create visualisations.',
+      ),
+    );
   }
 
   getMapOverlayRecord() {
@@ -34,6 +44,10 @@ export class EditMapOverlayVisualisation extends EditHandler {
 
   getReportRecord() {
     const { report, mapOverlay } = this.updatedFields;
+
+    if (!mapOverlay || !report) {
+      throw new Error('No map overlay or report information was provided in the request.');
+    }
 
     if (mapOverlay.legacy) {
       const { config, ...otherReportFields } = report;
@@ -73,11 +87,21 @@ export class EditMapOverlayVisualisation extends EditHandler {
   }
 
   async editRecord() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create visualisations.',
+      ),
+    );
+
+    const mapOverlayRecord = this.getMapOverlayRecord();
+    const reportRecord = this.getReportRecord();
 
     return this.models.wrapInTransaction(async transactingModels => {
-      const mapOverlayRecord = this.getMapOverlayRecord();
-      const reportRecord = this.getReportRecord();
+      await assertPermissionGroupsAccess(this.accessPolicy, [
+        mapOverlayRecord.permission_group,
+        reportRecord.permission_group,
+      ]);
 
       if (mapOverlayRecord.id !== undefined && mapOverlayRecord.id !== this.recordId) {
         throw new Error(`mapOverlay.id is different from resource id: ${this.recordId}`);

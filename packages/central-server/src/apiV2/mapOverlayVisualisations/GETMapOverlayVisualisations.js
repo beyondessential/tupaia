@@ -9,7 +9,12 @@ import { TYPES } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
 import { GETHandler } from '../GETHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertBESAdminAccess,
+  assertAnyPermissions,
+  assertVizBuilderAccess,
+  assertPermissionGroupsAccess,
+} from '../../permissions';
 
 const buildReportObject = (report, legacy, permissionGroupsById) => {
   if (legacy) {
@@ -62,7 +67,12 @@ const parseCriteria = criteria => {
  */
 export class GETMapOverlayVisualisations extends GETHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to fetch visualisations.',
+      ),
+    );
   }
 
   async getDbQueryOptions() {
@@ -88,9 +98,7 @@ export class GETMapOverlayVisualisations extends GETHandler {
     const mapOverlays = await this.models.mapOverlay.find(criteria);
     const referencedRecords = await this.findReferencedRecords(mapOverlays);
 
-    return mapOverlays.map(mapOverlay =>
-      buildVisualisationObject(mapOverlay, referencedRecords),
-    );
+    return mapOverlays.map(mapOverlay => buildVisualisationObject(mapOverlay, referencedRecords));
   }
 
   async findReferencedRecords(mapOverlays) {
@@ -99,6 +107,8 @@ export class GETMapOverlayVisualisations extends GETHandler {
     const permissionGroups = await this.models.permissionGroup.find({
       id: reports.map(r => r.permission_group_id).filter(r => !!r),
     });
+    const permissionGroupNames = permissionGroups.map(permissionGroup => permissionGroup.name);
+    await assertPermissionGroupsAccess(this.accessPolicy, permissionGroupNames);
 
     return {
       reportsByCode: keyBy(reports, 'code'),

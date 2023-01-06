@@ -6,7 +6,12 @@
 import { ObjectValidator } from '@tupaia/utils';
 
 import { CreateHandler } from '../CreateHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertBESAdminAccess,
+  assertAnyPermissions,
+  assertVizBuilderAccess,
+  assertPermissionGroupsAccess,
+} from '../../permissions';
 import { constructNewRecordValidationRules } from '../utilities';
 
 /**
@@ -16,7 +21,12 @@ import { constructNewRecordValidationRules } from '../utilities';
 
 export class CreateMapOverlayVisualisation extends CreateHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create visualisations.',
+      ),
+    );
   }
 
   getMapOverlayRecord() {
@@ -41,6 +51,7 @@ export class CreateMapOverlayVisualisation extends CreateHandler {
     if (!permissionGroup) {
       throw new Error(`Could not find permission group with name '${permissionGroupName}'`);
     }
+    await assertPermissionGroupsAccess(this.accessPolicy, [permissionGroupName]);
     const report = {
       code,
       config,
@@ -51,8 +62,6 @@ export class CreateMapOverlayVisualisation extends CreateHandler {
   }
 
   async createRecord() {
-    await this.assertPermissions(assertBESAdminAccess);
-
     const mapOverlayRecord = this.getMapOverlayRecord();
     const reportRecord = this.getReportRecord();
 

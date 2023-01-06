@@ -4,53 +4,34 @@
  */
 
 import { setupTest } from '@tupaia/database';
-import { camelKeys } from '@tupaia/utils';
-
-import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
-import { findTestRecordByCode, TEST_SETUP } from './dashboardVisualisations.fixtures';
+import { expect } from 'chai';
+import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
+import { TEST_SETUP } from './dashboardVisualisations.fixtures';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   VIZ_BUILDER_USER_PERMISSION_GROUP,
 } from '../../../permissions';
-import TEST_VISUALISATION from '../../testData/visualisations/testVisualisation.json';
+
+const clearRecords = async models => {
+  await models.report.delete({ code: 'test_visualisation' });
+  await models.dashboardItem.delete({ code: 'test_visualisation' });
+};
 
 describe('POST dashboard visualisations', () => {
-  const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
+  // const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
 
   const app = new TestableApp();
   const { models } = app;
 
-  const modernDashboardItem = findTestRecordByCode('dashboardItem', 'Modern_Dashboard_Item');
-  const legacyDashboardItem = findTestRecordByCode('dashboardItem', 'Legacy_Dashboard_Item');
-  const modernReport = findTestRecordByCode('report', 'Modern_Report');
-  const legacyReport = findTestRecordByCode('legacyReport', 'Legacy_Report');
-
-  const MODERN_DASHBOARD_VISUALISATION = {
-    dashboardItem: camelKeys(modernDashboardItem),
-    report: {
-      code: modernReport.code,
-      config: modernReport.config,
-      permissionGroup: 'Viz_Permissions',
-    },
-  };
-  const LEGACY_DASHBOARD_VISUALISATION = {
-    dashboardItem: camelKeys(legacyDashboardItem),
-    report: {
-      code: legacyReport.code,
-      dataBuilder: legacyReport.data_builder,
-      config: legacyReport.data_builder_config,
-      dataServices: legacyReport.data_services,
-    },
-  };
   const TEST_VISUALISATION = {
     dashboardItem: {
-      code: 'asdfasdf',
-      config: { type: 'chart', name: 'asdfasdf' },
-      report_code: 'asdfasdf',
+      code: 'test_visualisation',
+      config: { type: 'chart', name: 'Test Visualisation' },
+      report_code: 'test_visualisation',
       legacy: false,
     },
     report: {
-      code: 'asdfasdf',
+      code: 'test_visualisation',
       permission_group: 'Viz_Permissions',
       config: {},
     },
@@ -64,41 +45,53 @@ describe('POST dashboard visualisations', () => {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  before(async () => {
+  beforeEach(async () => {
     await resetTestData();
     await app.grantAccess(policy);
     await setupTest(models, TEST_SETUP);
   });
 
-  after(() => {
+  afterEach(async () => {
+    await clearRecords(models);
     app.revokeAccess();
   });
 
   describe('POST /dashboardVisualisations/', () => {
     it('Throws if body not provided', async () => {
+      const response = await app.post('dashboardVisualisations/', {});
+      expectError(response, "Internal server error: Cannot read property 'legacy' of undefined");
+    });
+
+    it('Returns a successful response', async () => {
       const response = await app.post('dashboardVisualisations/', {
         body: TEST_VISUALISATION,
       });
       expectSuccess(response);
     });
 
-    it('Throws if  visualisation has no report', async () => {
-      const id = getVizId('Dashboard_Item_No_Report');
-      const response = await app.get(`dashboardVisualisations/${id}`);
-      expectError(response, 'Cannot find a report for visualisation');
+    it('Successfully creates a report', async () => {
+      await app.post('dashboardVisualisations/', {
+        body: TEST_VISUALISATION,
+      });
+      const report = await models.report.findOne({ code: 'test_visualisation' });
+      expect(report.id).to.not.be.undefined;
     });
 
-    it('Throws if dashboard visualisation has invalid report', async () => {
-      const id = getVizId('Dashboard_Item_Invalid_Report');
-      const response = await app.get(`dashboardVisualisations/${id}`);
-      expectError(response, 'Cannot find a report for visualisation');
+    it('Successfully creates a dashboard item record', async () => {
+      await app.post('dashboardVisualisations/', {
+        body: TEST_VISUALISATION,
+      });
+      const dashboardItem = await models.dashboardItem.findOne({ code: 'test_visualisation' });
+      expect(dashboardItem.id).to.not.be.undefined;
     });
 
-    it('Returns an existing modern dashboard visualisation', async () => {
-      const id = getVizId('Modern_Dashboard_Item');
-      const response = await app.get(`dashboardVisualisations/${id}`);
-
-      expectSuccess(response, MODERN_DASHBOARD_VISUALISATION);
+    it('Posts successfully with BES Permissions only', async () => {
+      app.revokeAccess();
+      app.grantAccess(besAdminPolicy);
+      const response = await app.post('dashboardVisualisations/', {
+        body: TEST_VISUALISATION,
+      });
+      expectSuccess(response);
     });
   });
 });

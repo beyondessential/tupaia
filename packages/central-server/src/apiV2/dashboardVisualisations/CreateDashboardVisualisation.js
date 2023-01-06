@@ -10,7 +10,7 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertVizBuilderAccess,
-  assertPermissionGroupAccess,
+  assertPermissionGroupsAccess,
 } from '../../permissions';
 import { constructNewRecordValidationRules } from '../utilities';
 
@@ -52,25 +52,17 @@ export class CreateDashboardVisualisation extends CreateHandler {
     if (!permissionGroup) {
       throw new Error(`Could not find permission group with name '${permissionGroupName}'`);
     }
-    await assertPermissionGroupAccess(this.accessPolicy, permissionGroupName);
+    await assertPermissionGroupsAccess(this.accessPolicy, [permissionGroupName]);
 
     const report = {
       code,
       config,
       permission_group_id: permissionGroup.id,
     };
-
     return transactingModels.report.create(report);
   }
 
   async createRecord() {
-    await assertAnyPermissions(
-      [assertBESAdminAccess, assertVizBuilderAccess],
-      'You require Viz Builder User or BES Admin permission to create new visualisations.',
-    );
-
-    console.log('request body', this.req.body);
-
     const dashboardItemRecord = this.getDashboardItemRecord();
     const reportRecord = this.getReportRecord();
 
