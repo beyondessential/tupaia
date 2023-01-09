@@ -7,7 +7,7 @@ import {
 import momentTimezone from 'moment-timezone';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { getEntityIdFromClinicId } from './getEntityIdFromClinicId';
-import { ValidatedSurveyResponseObject } from './types';
+import { ValidatedSurveyResponseObject } from './validateInboundSurveyResponses';
 
 const DEFAULT_DATABASE_TIMEZONE = 'Pacific/Auckland';
 
@@ -69,6 +69,7 @@ export const populateData = async (
     id: surveyResponseId,
     clinic_id: clinicId,
     survey_id: surveyId,
+    timestamp,
     assessor_name: assessorName,
     ...surveyResponseProperties
   } = surveyResponse;
@@ -91,7 +92,12 @@ export const populateData = async (
     }
     surveyResponseProperties.approval_status = approvalStatus;
 
-    return { id: surveyResponseId, survey_id: surveyId, ...surveyResponseProperties };
+    return {
+      id: surveyResponseId,
+      survey_id: surveyId,
+      timestamp: new Date(timestamp).toISOString(),
+      ...surveyResponseProperties,
+    };
   } catch (error) {
     throw new DatabaseError(`populate data for survey response with id ${surveyResponseId}`, error);
   }
