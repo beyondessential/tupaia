@@ -10,6 +10,7 @@ import { PublicInterface } from './types';
 
 export type SurveyResponse = {
   survey_id: string;
+  timestamp: string;
   answers: Answers | Answers[];
 };
 

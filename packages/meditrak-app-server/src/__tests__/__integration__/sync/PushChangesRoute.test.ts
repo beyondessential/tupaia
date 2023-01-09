@@ -63,6 +63,7 @@ const generateDummySurveyResponse = (extraFields = {}): SurveyResponseObject => 
     id: generateTestId(),
     start_time: new Date().toISOString(),
     end_time: new Date().toISOString(),
+    timestamp: new Date().toISOString(),
     entity_id: entityId,
     survey_id: surveyId,
     user_id: userId,

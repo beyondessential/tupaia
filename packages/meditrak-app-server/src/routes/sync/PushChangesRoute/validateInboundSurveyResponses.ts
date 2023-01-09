@@ -63,6 +63,7 @@ export const constructSurveyResponseValidator = (models: MeditrakAppServerModelR
   start_time: [constructIsEmptyOr(takesDateForm)],
   end_time: [constructIsEmptyOr(takesDateForm)],
   data_time: [constructIsEmptyOr(takesDateForm)],
+  timestamp: [hasContent, takesDateForm],
   survey_id: [hasContent, takesIdForm],
   user_id: [hasContent, takesIdForm],
   answers: [hasContent, isArray],
