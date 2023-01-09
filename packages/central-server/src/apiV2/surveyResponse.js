@@ -7,14 +7,12 @@ import {
   ValidationError,
   MultiValidationError,
   ObjectValidator,
-  yup,
-  yupUtils,
+  hasContent,
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
   constructIsEmptyOr,
-  takesDateForm,
-  hasContent,
   takesIdForm,
+  takesDateForm,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
@@ -23,39 +21,14 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 import { saveResponsesToDatabase } from './surveyResponses';
 import { upsertEntitiesAndOptions } from './surveyResponses/upsertEntitiesAndOptions';
 
-const customYupObjectError = (validateFunc, errorMessage) => async (value, ctx) => {
-  const validate = yupUtils.yupTest(validateFunc);
-  const response = await validate(value);
-  if (response instanceof yup.ValidationError) {
-    return ctx.createError({ message: `${errorMessage}, value: ${value}` });
-  }
-
-  return true;
-};
-
 const createSurveyResponseValidator = models =>
-  yup.object().shape({
-    entity_id: yup
-      .string()
-      .test(
-        customYupObjectError(
-          constructIsEmptyOr(constructRecordExistsWithId(models.entity)),
-          'entity_id is not validated',
-        ),
-      ),
-    entity_code: yup
-      .string()
-      .test(yupUtils.yupTest(constructIsEmptyOr(constructRecordExistsWithCode(models.entity)))),
-    survey_id: yup
-      .string()
-      .test(yupUtils.yupTest(constructRecordExistsWithId(models.survey)))
-      .required(),
-    start_time: yup
-      .string()
-      .test(customYupObjectError(constructIsEmptyOr(takesDateForm), 'start_time is not validated')),
-    end_time: yup
-      .string()
-      .test(customYupObjectError(constructIsEmptyOr(takesDateForm), 'end_time is not validated')),
+  new ObjectValidator({
+    entity_id: [constructIsEmptyOr(constructRecordExistsWithId(models.entity))],
+    entity_code: [constructIsEmptyOr(constructRecordExistsWithCode(models.entity))],
+    survey_id: [hasContent, constructRecordExistsWithId(models.survey)],
+    start_time: [constructIsEmptyOr(takesDateForm)],
+    end_time: [constructIsEmptyOr(takesDateForm)],
+    timestamp: [hasContent],
   });
 
 async function validateResponse(models, body) {
@@ -63,12 +36,8 @@ async function validateResponse(models, body) {
     throw new ValidationError('Survey responses must not be null');
   }
 
-  try {
-    const surveyResponseValidator = createSurveyResponseValidator(models);
-    await surveyResponseValidator.validate(body);
-  } catch (e) {
-    throw new ValidationError(e.message);
-  }
+  const surveyResponseValidator = createSurveyResponseValidator(models);
+  await surveyResponseValidator.validate(body);
 
   if (!body.entity_id && !body.entity_code) {
     throw new Error('Must provide one of entity_id or entity_code');
@@ -120,9 +89,13 @@ async function validateResponse(models, body) {
 
 const validateAllResponses = async (models, responses) => {
   const validations = await Promise.all(
-    responses.map(async r => {
-      await validateResponse(models, r);
-      return null;
+    responses.map(async (r, i) => {
+      try {
+        await validateResponse(models, r);
+        return null;
+      } catch (e) {
+        return { row: i, error: e.message };
+      }
     }),
   );
 

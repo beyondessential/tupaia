@@ -3,9 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
-import momentTimezone from 'moment-timezone';
-
 import { expect, assert } from 'chai';
 import {
   fetchWithTimeout,
@@ -13,7 +10,6 @@ import {
   randomIntBetween,
   getS3ImageFilePath,
   S3_BUCKET_NAME,
-  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import {
   generateId,
@@ -37,21 +33,19 @@ const getQuestionId = (questionNumber = 0) => {
 let userId = null; // will be determined in 'before' phase
 let defaultTimezone = 'Pacific/Auckland';
 
-const generateDummySurveyResponse = (overrideFields = {}, extraFields = {}) => {
-  const { submissionTime, startTime, endTime } = overrideFields;
-  const dataTime = submissionTime || endTime;
+const generateDummySurveyResponse = (extraFields = {}) => {
   return {
-    answers: [],
-    approval_status: 'not_required',
-    data_time: stripTimezoneFromDate(momentTimezone(dataTime).tz(defaultTimezone).format()),
-    start_time: startTime || new Date().toISOString(),
-    end_time: endTime || new Date().toISOString(),
-    entities_created: [],
-    entity_id: entityId,
     id: generateTestId(),
+    start_time: generateValueOfType('date'),
+    end_time: generateValueOfType('date'),
+    timestamp: generateValueOfType('date'),
+    entity_id: entityId,
     survey_id: surveyId,
     user_id: userId,
+    entities_created: [],
     timezone: defaultTimezone,
+    approval_status: 'not_required',
+    answers: [],
     ...extraFields,
   };
 };
@@ -74,11 +68,6 @@ const generateDummyEntityDetails = () => ({
 });
 
 const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
-
-const PSQL_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-const formatDateAsPSQLString = date => {
-  return moment(date).tz(defaultTimezone).format(PSQL_DATE_FORMAT);
-};
 
 function expectEqualStrings(a, b) {
   try {
@@ -150,10 +139,7 @@ describe('POST /surveyResponse', async () => {
 
       before(async () => {
         for (let i = 0; i < numberOfSurveyResponsesToAdd; i++) {
-          const surveyResponseObject = generateDummySurveyResponse({
-            startTime: new Date().toISOString(),
-            endTime: new Date().toISOString(),
-          });
+          const surveyResponseObject = generateDummySurveyResponse();
           for (let j = 0; j < numberOfAnswersInEachSurvey; j++) {
             surveyResponseObject.answers.push(generateDummyAnswer(j));
           }
@@ -192,9 +178,8 @@ describe('POST /surveyResponse', async () => {
         );
         expect(firstSurveyResponse).to.exist;
         Object.entries(firstSurveyResponseObject).forEach(([key, value]) => {
-          // Other than 'answers' and 'entities_created', all values in the original object
-          // should match the database
-          if (!['answers', 'entities_created'].includes(key)) {
+          // Other than 'answers' and 'entities_created', all values in the original object should match the database
+          if (!['answers', 'entities_created', 'timestamp'].includes(key)) {
             expectEqualStrings(firstSurveyResponse[key], value);
           }
         });
@@ -378,12 +363,9 @@ describe('POST /surveyResponse', async () => {
     describe('Survey responses creating entities', () => {
       it('adds created entities to the database', async () => {
         const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
-        const surveyResponseObject = generateDummySurveyResponse(
-          {},
-          {
-            entities_created: entitiesCreated,
-          },
-        );
+        const surveyResponseObject = generateDummySurveyResponse({
+          entities_created: entitiesCreated,
+        });
 
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
@@ -395,13 +377,10 @@ describe('POST /surveyResponse', async () => {
       it('can use a created entity as the primary entity of the same response', async () => {
         const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
         const primaryEntityId = entitiesCreated[0].id;
-        const surveyResponseObject = generateDummySurveyResponse(
-          {},
-          {
-            entities_created: entitiesCreated,
-            entity_id: primaryEntityId,
-          },
-        );
+        const surveyResponseObject = generateDummySurveyResponse({
+          entities_created: entitiesCreated,
+          entity_id: primaryEntityId,
+        });
 
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
@@ -413,18 +392,12 @@ describe('POST /surveyResponse', async () => {
       it('can use a created entity as the primary entity of a different response in the same batch', async () => {
         const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
         const primaryEntityId = entitiesCreated[0].id;
-        const surveyResponseObjectOne = generateDummySurveyResponse(
-          {},
-          {
-            entities_created: entitiesCreated,
-          },
-        );
-        const surveyResponseObjectTwo = generateDummySurveyResponse(
-          {},
-          {
-            entity_id: primaryEntityId,
-          },
-        );
+        const surveyResponseObjectOne = generateDummySurveyResponse({
+          entities_created: entitiesCreated,
+        });
+        const surveyResponseObjectTwo = generateDummySurveyResponse({
+          entity_id: primaryEntityId,
+        });
 
         const syncResponse = await app.post('surveyResponse', {
           body: [surveyResponseObjectOne, surveyResponseObjectTwo],

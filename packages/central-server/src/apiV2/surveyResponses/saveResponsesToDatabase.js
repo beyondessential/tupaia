@@ -44,9 +44,7 @@ async function buildAnswerRecords(models, rawAnswerRecords) {
 
 async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId) {
   const answerRecords = await buildAnswerRecords(models, rawAnswerRecords);
-  const answers = await upsertAnswers(models, answerRecords, surveyResponseId);
-
-  return answers;
+  return upsertAnswers(models, answerRecords, surveyResponseId);
 }
 
 function buildResponseRecord(user, entitiesByCode, body) {
@@ -57,26 +55,19 @@ function buildResponseRecord(user, entitiesByCode, body) {
     entity_code: entityCode,
     timestamp,
     survey_id: surveyId,
-    data_time: dataTime,
     start_time: inputStartTime,
     end_time: inputEndTime,
+    data_time: inputDataTime,
     approval_status: approvalStatus,
     timezone,
   } = body;
-  let { timezone, data_time: dataTime } = body;
-  let startTime;
-  let endTime;
 
-  startTime = inputStartTime ? new Date(inputStartTime).toISOString() : new Date().toISOString();
-  endTime = inputEndTime ? new Date(inputEndTime).toISOString() : new Date().toISOString();
-
-  if (timestamp) {
-    const time = new Date(timestamp).toISOString();
-    startTime = time;
-    endTime = time;
-    dataTime = stripTimezoneFromDate(time);
-    timezone = getTimezoneNameFromTimestamp(timestamp);
-  }
+  const time = new Date(timestamp).toISOString();
+  const startTime = inputStartTime ? new Date(inputStartTime).toISOString() : time;
+  const endTime = inputEndTime ? new Date(inputEndTime).toISOString() : time;
+  const dataTime = inputDataTime
+    ? stripTimezoneFromDate(new Date(inputDataTime).toISOString())
+    : stripTimezoneFromDate(time);
 
   return {
     id: id || generateId(),
@@ -86,7 +77,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
     data_time: dataTime,
     start_time: startTime,
     end_time: endTime,
-    timezone,
+    timezone: timezone || getTimezoneNameFromTimestamp(timestamp),
     assessor_name: user.fullName,
     approval_status: approvalStatus,
   };
