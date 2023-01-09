@@ -13,7 +13,7 @@ import {
   takesDateForm,
 } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
-import { SurveyResponseObject } from './types';
+import { RawSurveyResponseObject } from './types';
 
 export type ValidatedSurveyResponseObject = NonNullable<
   yup.InferType<ReturnType<typeof constructSurveyResponseValidator>>
@@ -65,7 +65,7 @@ export const constructSurveyResponseValidator = (models: MeditrakAppServerModelR
 
 export const validateSurveyResponseObject = async (
   models: MeditrakAppServerModelRegistry,
-  surveyResponseObject: SurveyResponseObject,
+  surveyResponseObject: RawSurveyResponseObject,
 ) => {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');

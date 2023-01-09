@@ -8,7 +8,7 @@ import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
 import { UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
-import { SurveyResponseObject } from './types';
+import { RawSurveyResponseObject } from './types';
 
 /**
  * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1" }
@@ -54,10 +54,10 @@ const constructAnswerTranslators = (models: MeditrakAppServerModelRegistry) => (
 });
 
 type Translator<T> = {
-  [key in keyof T]?: (fieldValue: any) => Promise<SurveyResponseObject>;
+  [key in keyof T]?: (fieldValue: any) => Promise<RawSurveyResponseObject>;
 };
 
-const translateObjectFields = async <T extends SurveyResponseObject>(
+const translateObjectFields = async <T extends RawSurveyResponseObject>(
   object: T,
   objectTranslators: Translator<T>,
 ) => {
@@ -78,7 +78,7 @@ const translateObjectFields = async <T extends SurveyResponseObject>(
 };
 
 const requiresSurveyResponseTranslation = (
-  surveyResponseObject: SurveyResponseObject,
+  surveyResponseObject: RawSurveyResponseObject,
   surveyResponseTranslators: ReturnType<typeof constructSurveyResponseTranslators>,
   answerTranslators: ReturnType<typeof constructAnswerTranslators>,
 ) => {
@@ -104,7 +104,7 @@ const requiresSurveyResponseTranslation = (
 
 export async function translateSurveyResponseObject(
   models: MeditrakAppServerModelRegistry,
-  surveyResponseObject?: SurveyResponseObject,
+  surveyResponseObject?: RawSurveyResponseObject,
 ) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');

@@ -35,7 +35,7 @@ import {
   insertEntityAndFacility,
 } from '../../utilities/database';
 import { upsertSurveyResponsesMock } from '../../utilities/CentralApiMock';
-import { SurveyResponseObject } from '../../../routes/sync/PushChangesRoute';
+import { RawSurveyResponseObject } from '../../../routes/sync/PushChangesRoute';
 
 const clinicId = generateTestId();
 const entityId = generateTestId();
@@ -56,7 +56,7 @@ const generateDummyAnswer = (questionNumber?: number) => ({
 
 type Answer = Record<string, unknown>;
 
-const generateDummySurveyResponse = (extraFields = {}): SurveyResponseObject => {
+const generateDummySurveyResponse = (extraFields = {}): RawSurveyResponseObject => {
   const answers = generateDummyAnswer();
 
   return {
@@ -243,7 +243,7 @@ describe('changes (POST)', () => {
     });
 
     describe('Backwards compatibility for time fields', () => {
-      const submitSurveyResponse = async (surveyResponseObject: SurveyResponseObject) => {
+      const submitSurveyResponse = async (surveyResponseObject: RawSurveyResponseObject) => {
         const action = {
           action: 'SubmitSurveyResponse',
           payload: surveyResponseObject,
