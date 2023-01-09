@@ -304,24 +304,6 @@ describe('POST /surveyResponse', async () => {
       });
     });
 
-    describe('Translating survey responses', () => {
-      it('correctly translates user_email to user_id and assessor_name', async () => {
-        const surveyResponseObject = generateDummySurveyResponse();
-        const existingUserId = surveyResponseObject.user_id;
-        delete surveyResponseObject.user_id;
-        delete surveyResponseObject.assessor_name;
-        const user = await models.user.findById(existingUserId);
-        surveyResponseObject.user_email = user.email;
-        surveyResponseObject.answers.push(generateDummyAnswer());
-
-        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
-        expect(response.statusCode).to.equal(200);
-        expect(newSurveyResponse.user_id).to.equal(user.id);
-        expect(newSurveyResponse.assessor_name).to.equal(user.fullName);
-      });
-    });
-
     describe('Survey responses with 0 answers', () => {
       it('correctly adds survey responses with no answers', async () => {
         const previousNumberOfSurveyResponses = await models.surveyResponse.count();

@@ -13,7 +13,6 @@ export type SurveyResponseModelFields = Readonly<{
   id: string;
   survey_id: string;
   user_id: string;
-  assessor_name: string;
   start_time: string;
   end_time: string;
   metadata: Record<string, any>;

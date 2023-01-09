@@ -11,11 +11,11 @@ import { MeditrakAppServerModelRegistry } from '../../../types';
 import { SurveyResponseObject } from './types';
 
 /**
- * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1", assessor_name: "User One" }
+ * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1" }
  */
-const translateUserEmailToIdAndAssessorName = async (userModel: UserModel, email: string) => {
+const translateUserEmailToId = async (userModel: UserModel, email: string) => {
   const user = await userModel.findOne({ email });
-  return { user_id: user.id, assessor_name: user.fullName };
+  return { user_id: user.id };
 };
 
 /**
@@ -43,7 +43,7 @@ export const translateQuestionCodeToId = async (questionModel: QuestionModel, co
 };
 
 const constructSurveyResponseTranslators = (models: MeditrakAppServerModelRegistry) => ({
-  user_email: (userEmail: string) => translateUserEmailToIdAndAssessorName(models.user, userEmail),
+  user_email: (userEmail: string) => translateUserEmailToId(models.user, userEmail),
   entity_code: (entityCode: string) => translateEntityCodeToId(models.entity, entityCode),
   survey_code: (surveyCode: string) => translateSurveyCodeToId(models.survey, surveyCode),
   answers: async (answers: { body: string }[]) => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
