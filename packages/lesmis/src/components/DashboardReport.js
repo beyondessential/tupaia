@@ -14,10 +14,8 @@ import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
-import { I18n, useIsFavouriteDashboardSelected, useUrlParams, useUrlSearchParam } from '../utils';
+import { I18n, useStartAndEndDates, useUrlParams } from '../utils';
 import { useUpdateFavouriteDashboardItem } from '../api';
-import { DEFAULT_DATA_YEAR } from '../constants';
-import { yearToApiDates } from '../api/queries/utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -38,17 +36,20 @@ const Footer = styled(FlexEnd)`
 `;
 
 export const DashboardReport = React.memo(
-  ({ name, exportOptions, reportCode, isEnlarged, isExporting, useYearSelector }) => {
+  ({
+    name,
+    exportOptions,
+    reportCode,
+    isEnlarged,
+    isExporting,
+    useYearSelector,
+    periodGranularity,
+    modalDates,
+  }) => {
     const { search } = useLocation();
     const { locale, entityCode } = useUrlParams();
     // TODO: will be removed when implementing year selector for favourite dashboard, currently use default year.
-    const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
-    const [selectedYear] = isFavouriteDashboardSelected
-      ? [DEFAULT_DATA_YEAR]
-      : useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-    const { startDate, endDate } = useYearSelector
-      ? yearToApiDates(selectedYear)
-      : yearToApiDates();
+    const { startDate, endDate } = modalDates || useStartAndEndDates(periodGranularity);
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
@@ -133,6 +134,8 @@ DashboardReport.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   useYearSelector: PropTypes.bool,
+  periodGranularity: PropTypes.string,
+  modalDates: PropTypes.object,
 };
 
 DashboardReport.defaultProps = {
@@ -142,4 +145,6 @@ DashboardReport.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   useYearSelector: false,
+  periodGranularity: undefined,
+  modalDates: undefined,
 };
