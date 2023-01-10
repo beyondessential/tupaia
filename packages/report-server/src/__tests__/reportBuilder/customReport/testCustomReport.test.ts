@@ -11,28 +11,26 @@ import { testCustomReport } from '../../../reportBuilder/customReports/testCusto
 
 describe('testCustomReport', () => {
   const HIERARCHY = 'test_hierarchy';
-  const ENTITIES = {
-    test_hierarchy: [
-      { code: 'FJ', name: 'Fiji', type: 'country' },
-      { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
-      { code: 'TO', name: 'Tonga', type: 'country' },
-      {
-        code: 'TO_District',
-        name: 'Tonga District',
-        type: 'district',
-      },
-      {
-        code: 'TO_Facility1',
-        name: 'Tonga Facility 1',
-        type: 'facility',
-      },
-      {
-        code: 'TO_Facility2',
-        name: 'Tonga Facility 2',
-        type: 'facility',
-      },
-    ],
-  };
+  const ENTITIES = [
+    { code: 'FJ', name: 'Fiji', type: 'country' },
+    { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
+    { code: 'TO', name: 'Tonga', type: 'country' },
+    {
+      code: 'TO_District',
+      name: 'Tonga District',
+      type: 'district',
+    },
+    {
+      code: 'TO_Facility1',
+      name: 'Tonga Facility 1',
+      type: 'facility',
+    },
+    {
+      code: 'TO_Facility2',
+      name: 'Tonga Facility 2',
+      type: 'facility',
+    },
+  ];
 
   const RELATIONS = {
     test_hierarchy: [

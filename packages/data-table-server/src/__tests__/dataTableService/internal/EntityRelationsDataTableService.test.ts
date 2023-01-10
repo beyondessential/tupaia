@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaApiClient } from '@tupaia/api-client';
+import { MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 
 const entityRelationsDataTableService = new DataTableServiceBuilder()
   .setServiceType('entity_relations')
-  .setContext({ apiClient: {} as TupaiaApiClient })
+  .setContext({ apiClient: new MockTupaiaApiClient() })
   .build();
 
 describe('EntityRelationsDataTableService', () => {
@@ -50,8 +50,11 @@ describe('EntityRelationsDataTableService', () => {
   });
 
   describe('fetchData', () => {
-    // TODO: Implement these tests when RN-685 is done
-    // it('can fetch entities', async () => {});
+    it('can fetch relations between entities', async () => {
+      const relations = await entityRelationsDataTableService.fetchData({});
+      expect(relations).toBeDefined();
+    });
+
     // it('can fetch entities and descendants', async () => {});
   });
 });

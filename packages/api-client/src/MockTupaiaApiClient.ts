@@ -23,7 +23,7 @@ export class MockTupaiaApiClient {
     central = new MockCentralApi(),
     entity = new MockEntityApi(),
     report = new MockReportApi(),
-  }) {
+  } = {}) {
     this.auth = auth;
     this.central = central;
     this.entity = entity;
