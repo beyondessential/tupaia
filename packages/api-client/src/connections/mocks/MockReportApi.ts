@@ -4,8 +4,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { ReportApiInterface } from '../../connections';
-import { RequestBody } from '../../connections/ApiConnection';
+import { ReportApiInterface } from '..';
+import { RequestBody } from '../ApiConnection';
 import { QueryParameters } from '../../types';
 
 export class MockReportApi implements ReportApiInterface {

@@ -4,7 +4,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { AuthApiInterface } from '../../connections';
+import { AuthApiInterface } from '..';
 import { AccessPolicyObject } from '../../types';
 
 export class MockAuthApi implements AuthApiInterface {

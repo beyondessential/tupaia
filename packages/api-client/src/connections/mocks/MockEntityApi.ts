@@ -6,7 +6,7 @@
 
 import pick from 'lodash.pick';
 import { isDefined } from '@tupaia/tsutils';
-import { EntityApiInterface } from '../../connections';
+import { EntityApiInterface } from '..';
 
 export class MockEntityApi implements EntityApiInterface {
   private readonly entities: Record<string, Record<string, any>[]>;

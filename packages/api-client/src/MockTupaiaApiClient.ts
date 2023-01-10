@@ -8,11 +8,9 @@ import {
   CentralApiInterface,
   EntityApiInterface,
   ReportApiInterface,
-} from '../../connections';
-import { MockAuthApi } from './MockAuthApi';
-import { MockCentralApi } from './MockCentralApi';
-import { MockEntityApi } from './MockEntityApi';
-import { MockReportApi } from './MockReportApi';
+} from './connections';
+
+import { MockAuthApi, MockCentralApi, MockEntityApi, MockReportApi } from './connections/mocks';
 
 export class MockTupaiaApiClient {
   public readonly entity: EntityApiInterface;

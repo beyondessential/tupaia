@@ -4,9 +4,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { CentralApiInterface } from '../../connections';
-import { RequestBody } from '../../connections/ApiConnection';
-import { SurveyResponse } from '../../connections/CentralApi';
+import { CentralApiInterface } from '..';
+import { RequestBody } from '../ApiConnection';
+import { SurveyResponse } from '../CentralApi';
 
 export class MockCentralApi implements CentralApiInterface {
   public getUser(): Promise<any> {

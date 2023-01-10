@@ -14,4 +14,6 @@ export * from './auth';
 
 export * from './constants';
 
-export * from './__tests__/mockConnections';
+export { MockTupaiaApiClient } from './MockTupaiaApiClient';
+
+export * from './connections/mocks';
