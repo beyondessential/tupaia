@@ -1,0 +1,1 @@
+export { MeditrakSurveyResponse } from './meditrakSurveyResponse';

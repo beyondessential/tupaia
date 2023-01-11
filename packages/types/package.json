@@ -16,12 +16,14 @@
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"No tests specified\" && exit 0",
-    "generate": "ts-node generate.ts && yarn build"
+    "build:schema": "ts-node generate-schema.ts",
+    "generate": "ts-node generate.ts && yarn build:schema && yarn build"
   },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
     "dotenv": "^16.0.3",
     "knex": "^2.3.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript-json-schema": "^0.55.0"
   }
 }
