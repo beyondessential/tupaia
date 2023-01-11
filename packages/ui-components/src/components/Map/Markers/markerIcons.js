@@ -14,14 +14,12 @@ import styled from 'styled-components';
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
-
+import { ICON_BASE_SIZE } from './constants';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import { Cyclone } from './disasterIcons/Cyclone';
-import { Earthquake } from './disasterIcons/Earthquake';
-import { Tsunami } from './disasterIcons/Tsunami';
-import { Volcano } from './disasterIcons/Volcano';
-import { Flood } from './disasterIcons/Flood';
+import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
+import { UpArrowIcon, DownArrowIcon, RightArrowIcon } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../constants';
+import { IconContainer } from './IconContainer';
 
 // allows passing a color to a material icon & scales it down a bit
 const wrapMaterialIcon = Base => ({ color }) => <Base htmlColor={color} viewBox="-3 -3 29 29" />;
@@ -38,30 +36,6 @@ const wrapSvgIcon = Base => ({ color }) => (
   </StyledSvgWrapper>
 );
 
-const ICON_BASE_SIZE = 20;
-
-const IconContainer = ({ children, scale, ...props }) => (
-  <svg
-    width={`${ICON_BASE_SIZE * scale}px`}
-    height={`${ICON_BASE_SIZE * scale}px`}
-    viewBox="0 0 1000 1000"
-    style={{ marginRight: '0.25rem' }}
-    {...props}
-  >
-    {children}
-  </svg>
-);
-
-IconContainer.propTypes = {
-  children: PropTypes.node,
-  scale: PropTypes.number,
-};
-
-IconContainer.defaultProps = {
-  children: null,
-  scale: 1,
-};
-
 const PinIcon = ({ color, scale }) => {
   return (
     <IconContainer fill={color} scale={scale} viewBox="0 0 27 39">
@@ -72,6 +46,16 @@ const PinIcon = ({ color, scale }) => {
       <circle cx="13.5" cy="14.1316" r="6" fill="white" fillOpacity="0.9" />
     </IconContainer>
   );
+};
+
+const ArrowIcon = ({ direction, scale }) => {
+  const arrowIconComponents = {
+    up: UpArrowIcon,
+    down: DownArrowIcon,
+    right: RightArrowIcon,
+  };
+
+  return arrowIconComponents[direction](scale);
 };
 
 const HealthPinIcon = ({ color, scale }) => (
@@ -243,6 +227,11 @@ const icons = {
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
+  arrow: {
+    Component: ArrowIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
   healthPin: {
     Component: HealthPinIcon,
     iconAnchor: [12, 24],
@@ -316,7 +305,7 @@ export const LEGEND_SHADING_ICON = 'square';
 export const LEGEND_RADIUS_ICON = 'radius';
 export const HIDDEN_ICON = 'hidden';
 
-function toLeaflet(icon, color, scale) {
+function toLeaflet(icon, color, scale, direction) {
   const {
     Component,
     iconAnchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], // default to center point
@@ -333,7 +322,9 @@ function toLeaflet(icon, color, scale) {
     popupAnchor: scaledPopupAnchor,
     className: 'tupaia-simple',
     ...params,
-    html: ReactDOMServer.renderToStaticMarkup(<Component color={color} scale={scale} />),
+    html: ReactDOMServer.renderToStaticMarkup(
+      <Component color={color} scale={scale} direction={direction} />,
+    ),
   });
 }
 
@@ -345,10 +336,10 @@ export function getMarkerForOption(iconKey, colorName, stroke) {
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(iconKey, colorName, scale = 1) {
+export function getMarkerForValue(iconKey, colorName, scale = 1, direction) {
   const icon = icons[iconKey] || icons.pin;
   const color = BREWER_PALETTE[colorName] || colorName;
-  return toLeaflet(icon, color, scale);
+  return toLeaflet(icon, color, scale, direction);
 }
 
 const iconPropTypes = {
@@ -361,6 +352,13 @@ const iconDefaultProps = {
 
 PinIcon.propTypes = iconPropTypes;
 PinIcon.defaultProps = iconDefaultProps;
+ArrowIcon.propTypes = {
+  scale: PropTypes.number,
+  direction: PropTypes.string.isRequired,
+};
+ArrowIcon.defaultProps = {
+  scale: 1,
+};
 HealthPinIcon.propTypes = iconPropTypes;
 HealthPinIcon.defaultProps = iconDefaultProps;
 CircleIcon.propTypes = iconPropTypes;
