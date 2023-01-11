@@ -19,6 +19,9 @@
     "build:schema": "ts-node generate-schema.ts",
     "generate": "ts-node generate.ts && yarn build:schema && yarn build"
   },
+  "dependencies": {
+    "@tupaia/tsutils": "1.0.0"
+  },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
     "dotenv": "^16.0.3",

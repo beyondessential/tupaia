@@ -1,1 +1,0 @@
-export { IdForm } from './IdForm';
