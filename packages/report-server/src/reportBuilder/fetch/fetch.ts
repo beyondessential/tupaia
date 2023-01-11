@@ -3,12 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { FetchReportQuery, ReportConfig } from '../../types';
+import { FetchReportQuery } from '../../types';
 import { ReportServerAggregator } from '../../aggregator';
 import { FetchResponse } from './types';
 import { fetchBuilders } from './functions';
+import { Report } from '@tupaia/types';
 
-type FetchConfig = ReportConfig['fetch'];
+type FetchConfig = Report['config']['fetch'];
 
 type FetchParams = {
   call: (aggregator: ReportServerAggregator, query: FetchReportQuery) => Promise<FetchResponse>;

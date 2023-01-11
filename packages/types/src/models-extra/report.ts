@@ -3,18 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ModelRegistry } from '@tupaia/database';
-import { TupaiaApiClient } from '@tupaia/api-client';
-import { ReportModel } from './models';
-import { Report } from '@tupaia/types';
+type PeriodType = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
-export type RequestContext = {
-  services: TupaiaApiClient;
+export type DateOffset = {
+  unit: PeriodType;
+  offset?: number;
+  modifier?: 'start_of' | 'end_of';
+  modifierUnit?: PeriodType;
+  from?: string;
 };
 
-export interface ReportServerModelRegistry extends ModelRegistry {
-  readonly report: ReportModel;
-}
+export type DateSpecs = string | DateOffset;
 
 export type PeriodParams = {
   period?: string;
@@ -40,7 +39,20 @@ type CustomReportConfig = {
   customReport: string;
 };
 
-export type StandardOrCustomReportConfig = Report['config'] | CustomReportConfig;
+export type ReportConfig = {
+  fetch: {
+    dataElements?: string[];
+    dataGroups?: string[];
+    aggregations?: Aggregation[];
+    startDate?: DateSpecs;
+    endDate?: DateSpecs;
+    organisationUnits?: string[];
+  };
+  transform: Transform[];
+  output?: Record<string, unknown>;
+};
+
+export type StandardOrCustomReportConfig = ReportConfig | CustomReportConfig;
 
 export interface Event {
   event: string;
@@ -48,17 +60,6 @@ export interface Event {
   orgUnitName: string;
   orgUnit: string;
   dataValues?: Record<string, string | number>;
-}
-
-export interface EventMetaData {
-  code: string;
-  name: string;
-  dataElements: { code: string; name: string; text: string }[];
-}
-
-export interface AggregationType {
-  code: string;
-  description: string;
 }
 
 export interface TransformSchema {
