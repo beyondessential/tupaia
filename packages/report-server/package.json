@@ -50,6 +50,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@tupaia/types": "1.0.0",
     "@types/lodash.isplainobject": "^4.0.6",
     "@types/lodash.keyby": "^4.6.6",
     "@types/lodash.pick": "^4.4.0",

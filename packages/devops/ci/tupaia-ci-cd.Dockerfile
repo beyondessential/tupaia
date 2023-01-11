@@ -87,6 +87,8 @@ RUN mkdir -p ./packages/server-boilerplate
 COPY packages/server-boilerplate/package.json ./packages/server-boilerplate
 RUN mkdir -p ./packages/tsutils
 COPY packages/tsutils/package.json ./packages/tsutils
+RUN mkdir -p ./packages/types
+COPY packages/types/package.json ./packages/types
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/utils
@@ -117,6 +119,7 @@ COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
 COPY packages/tsutils/. ./packages/tsutils
+COPY packages/types/. ./packages/types
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate

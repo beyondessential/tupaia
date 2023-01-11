@@ -11,11 +11,7 @@
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --runInBand",
-    "test:coverage": "yarn test --coverage",
-    "publish:run": "yarn publish --no-git-tag-version --access public",
-    "prepublish:strict": "yarn lint && yarn build",
-    "prepublish:loose": "yarn build; echo ok",
-    "prepublish": "printf \"\n\nNOTE: Running loose mode, change to strict when issues fixed\n\n\"; yarn prepublish:loose"
+    "test:coverage": "yarn test --coverage"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "repository": {

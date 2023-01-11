@@ -6,7 +6,8 @@
 import keyBy from 'lodash.keyby';
 
 import { ReqContext } from '../context';
-import { FetchReportQuery, ReportConfig } from '../../types';
+import { FetchReportQuery } from '../../types';
+import { Report } from '@tupaia/types';
 
 const REQUESTED_ORG_UNITS_PLACEHOLDER = '$requested';
 
@@ -58,7 +59,7 @@ const getCodesToFetch = (requestedCodes: string[], organisationUnitsSpec?: strin
 export const buildOrganisationUnitParams = async (
   ctx: ReqContext,
   query: FetchReportQuery,
-  config: ReportConfig,
+  config: Report['config'],
 ) => {
   const { hierarchy, accessPolicy, permissionGroup } = ctx;
   const { organisationUnitCodes: requestedCodes } = query;
