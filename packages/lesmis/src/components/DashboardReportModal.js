@@ -27,7 +27,15 @@ import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
-import { useI18n, useUrlParams, useUrlSearchParams, useExportToImage } from '../utils';
+import {
+  useI18n,
+  useUrlParams,
+  useUrlSearchParams,
+  useExportToImage,
+  useStartAndEndDates,
+  useDashboardDropdownOptions,
+  getExportableSubDashboards,
+} from '../utils';
 import { DashboardReport } from './DashboardReport';
 
 // Transition component for modal animation
@@ -131,8 +139,22 @@ export const DashboardReportModal = () => {
   const [exportFormatId, setExportFormatId] = useState(exportFormats[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
-  const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
+  const [{ reportCode }, setParams] = useUrlSearchParams();
   const { data: entityData, isLoadingEntityData } = useEntityData(entityCode);
+  const { selectedOption } = useDashboardDropdownOptions();
+  const { exportableSubDashboards } = getExportableSubDashboards(selectedOption);
+
+  let periodGranularity;
+  exportableSubDashboards.forEach(({ items }) => {
+    items.forEach(item => {
+      if (item.reportCode === reportCode) {
+        periodGranularity = item.periodGranularity;
+      }
+    });
+  });
+
+  const { startDate, endDate } = useStartAndEndDates(periodGranularity);
+
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -261,13 +283,12 @@ export const DashboardReportModal = () => {
             name={config?.name}
             reportCode={reportCode}
             isExporting={isExporting}
-            startDate={startDate}
-            endDate={endDate}
             exportOptions={{
               exportWithLabels,
               exportWithTable,
             }}
             isEnlarged
+            modalDates={{ startDate, endDate }}
           />
           {isExporting && (
             <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />

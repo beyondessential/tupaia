@@ -5,6 +5,7 @@
  */
 
 import { BaseApi } from './BaseApi';
+import { PublicInterface } from './types';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
@@ -254,3 +255,5 @@ export class EntityApi extends BaseApi {
     );
   }
 }
+
+export interface EntityApiInterface extends PublicInterface<EntityApi> {}

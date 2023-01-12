@@ -283,10 +283,11 @@ describe('mergeRows', () => {
         },
       ]);
       expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
-        TransformTable.fromRows(
-          [{ period: '20200101' }, { period: '20200102' }, { period: '20200103' }],
-          ['period', 'organisationUnit', 'BCD1', 'BCD2'], // excludes values, but keeps columns
-        ),
+        TransformTable.fromRows([
+          { period: '20200101' },
+          { period: '20200102' },
+          { period: '20200103' },
+        ]),
       );
     });
 
