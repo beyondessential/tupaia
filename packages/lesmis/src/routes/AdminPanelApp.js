@@ -36,7 +36,7 @@ import {
 } from '../views/AdminPanel/SurveyResponsesView';
 import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n } from '../utils';
+import { useAdminPanelUrl, useI18n, isLesmisAdmin } from '../utils';
 
 const getRoutes = (adminUrl, translate) => {
   return [
@@ -163,11 +163,12 @@ const getRoutes = (adminUrl, translate) => {
   ];
 };
 
-const AdminPanelApp = ({ user, isBESAdmin }) => {
+const AdminPanelApp = ({ user }) => {
   const { translate } = useI18n();
   const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
   const adminUrl = useAdminPanelUrl();
+  const userIsLesmisAdmin = isLesmisAdmin(user);
 
   const getHeaderEl = () => {
     return headerEl;
@@ -183,7 +184,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
       <Route path={`${path}/logout`} exact>
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
-      <LesmisAdminRoute path={`${path}/viz-builder`} isBESAdmin>
+      <LesmisAdminRoute path={`${path}/viz-builder`} isLESMISAdmin={userIsLesmisAdmin}>
         <VizBuilderApp
           basePath={adminUrl}
           Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
@@ -194,7 +195,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
         <div ref={headerEl} />
         <Switch>
           {[...routes].map(route => (
-            <LesmisAdminRoute key={route.to} path={`${route.to}`} isBESAdmin={isBESAdmin}>
+            <LesmisAdminRoute key={route.to} path={`${route.to}`} isLESMISAdmin={userIsLesmisAdmin}>
               <TabsToolbar links={route.tabs} maxWidth="xl" />
               <Switch>
                 {route.tabs.map(tab => (
@@ -221,17 +222,11 @@ AdminPanelApp.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
-  isBESAdmin: PropTypes.bool,
-};
-
-AdminPanelApp.defaultProps = {
-  isBESAdmin: false,
 };
 
 export default connect(
   state => ({
     user: state?.authentication?.user || {},
-    isBESAdmin: state?.authentication?.isBESAdmin || false,
   }),
   null,
 )(AdminPanelApp);

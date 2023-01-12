@@ -5468,6 +5468,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/styles": ^4.9.10
+    "@tupaia/access-policy": 3.0.0
     "@tupaia/admin-panel": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
