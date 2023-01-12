@@ -4,9 +4,9 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { ReqContext } from '../../../reportBuilder/context';
 import { palauNursingSurgicalWardReport } from '../../../reportBuilder/customReports/palauNursingSurgicalWardReport';
-import { entityApiMock } from '../testUtils';
 
 const mockDhisRecords = {
   organisationUnits: [{ id: 'ORG1', code: 'PW_Facility', name: 'Palau Facility 1' }],
@@ -131,14 +131,12 @@ describe('palauNursingSurgicalWardReport', () => {
     ],
   };
 
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
-
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Public',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({
+      entity: new MockEntityApi(ENTITIES, RELATIONS),
+    }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
   };
 
