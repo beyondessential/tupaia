@@ -37,6 +37,7 @@
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react-ace": "^10.1.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^16.13.1",
     "react-leaflet": "^3.2.1",
