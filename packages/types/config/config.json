@@ -1,0 +1,29 @@
+{
+  "filename": "src/models.ts",
+  "tableNameCasing": "pascal",
+  "interfaceNameFormat": "${table}",
+  "excludedTables": [
+    "public.geography_columns",
+    "public.geometry_columns",
+    "public.log$_answer",
+    "public.log$_data_element",
+    "public.log$_entity",
+    "public.log$_question",
+    "public.log$_survey",
+    "public.log$_survey_response",
+    "public.migrations",
+    "public.spatial_ref_sys"
+  ],
+  "schemas": ["public"],
+  "enumNameCasing": "pascal",
+  "columnNameCasing": "camel",
+  "typeOverrides": {
+    "public.report.config": "ReportConfig"
+  },
+  "template": "config/template.handlebars",
+  "custom": {
+    "imports": {
+      "ReportConfig": "./models-extra"
+    }
+  }
+}

@@ -4,16 +4,17 @@
  */
 
 import { ReqContext } from '../context';
-import { FetchReportQuery, ReportConfig } from '../../types';
+import { FetchReportQuery } from '../../types';
 import { buildPeriodParams } from './buildPeriodParams';
 import { buildOrganisationUnitParams } from './buildOrganisationUnitParams';
+import { Report } from '@tupaia/types';
 
 export class QueryBuilder {
   private readonly ctx: ReqContext;
-  private readonly config: ReportConfig;
+  private readonly config: Report['config'];
   private readonly query: FetchReportQuery;
 
-  public constructor(context: ReqContext, config: ReportConfig, query: FetchReportQuery) {
+  public constructor(context: ReqContext, config: Report['config'], query: FetchReportQuery) {
     this.ctx = context;
     this.config = config;
     this.query = query;

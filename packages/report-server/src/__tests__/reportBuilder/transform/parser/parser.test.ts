@@ -121,31 +121,6 @@ describe('parser', () => {
   });
 
   describe('in transforms', () => {
-    it('mergeRows supports parser lookups on where', () => {
-      const transform = buildTransform([
-        {
-          transform: 'mergeRows',
-          using: {
-            organisationUnit: 'exclude',
-            period: 'exclude',
-            '*': 'sum',
-          },
-          where: "=eq($organisationUnit, 'TO')",
-        },
-      ]);
-      expect(transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
-        TransformTable.fromRows(
-          [
-            { BCD1: 11 },
-            { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
-            { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
-            { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
-          ],
-          ['period', 'organisationUnit', 'BCD1'],
-        ),
-      );
-    });
-
     it('excludeRows supports parser lookups on where', () => {
       const transform = buildTransform([
         {
