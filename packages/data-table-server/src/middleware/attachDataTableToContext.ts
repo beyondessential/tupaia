@@ -5,6 +5,7 @@
 
 import { NextFunction, Request, Response } from 'express';
 import { DataTableServiceBuilder, getDataTableServiceType } from '../dataTableService';
+import { getDataTableService } from '../dataTableService/getDataTableService';
 
 /**
  * Finds the requested dataTable and attaches it to the context
@@ -35,14 +36,17 @@ export const attachDataTableToContext = async (
     }
 
     const serviceType = getDataTableServiceType(dataTable);
-    const dataTableService = new DataTableServiceBuilder()
-      .setServiceType(serviceType)
-      .setContext({ apiClient: ctx.services, accessPolicy, models })
-      .setConfig(dataTable.config)
-      .build();
+    // const dataTableService = new DataTableServiceBuilder()
+    //   .setServiceType(serviceType)
+    //   .setContext({ apiClient: ctx.services, accessPolicy, models })
+    //   .setConfig(dataTable.config)
+    //   .build();
 
     req.ctx.dataTable = dataTable;
-    req.ctx.dataTableService = dataTableService;
+    req.ctx.dataTableService = getDataTableService(
+      { apiClient: ctx.services, accessPolicy, models },
+      dataTable,
+    );
 
     next();
   } catch (error) {
