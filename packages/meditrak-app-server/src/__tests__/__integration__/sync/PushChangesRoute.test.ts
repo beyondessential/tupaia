@@ -318,5 +318,59 @@ describe('changes (POST)', () => {
         expect(response.statusCode).toEqual(400);
       });
     });
+
+    describe('Reject if invalid', () => {
+      it('rejects if answer provide non-exist question_id', async () => {
+        const answerObject = generateDummyAnswer(100);
+        const surveyResponseObject = generateDummySurveyResponse({
+          answers: [answerObject],
+        });
+
+        const action = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObject,
+        };
+        const response = await app.post('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          body: [action],
+        });
+
+        expect(response.statusCode).toBe(400);
+      });
+
+      it('rejects if entities_created provide non-exist entity type', async () => {
+        const { entity } = await findOrCreateDummyCountryEntity(models, {
+          code: 'DL',
+          name: 'Demo Land',
+        });
+        const surveyResponseObject = generateDummySurveyResponse({
+          entities_created: [
+            {
+              id: generateId(),
+              code: 'NEW_ENTITY',
+              parent_id: entity.id,
+              name: 'NEW_ENTITY',
+              type: 'WRONG_ENTITY_TYPE',
+              country_code: entity.code,
+            },
+          ],
+        });
+
+        const action = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObject,
+        };
+        const response = await app.post('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          body: [action],
+        });
+
+        expect(response.statusCode).toBe(400);
+      });
+    });
   });
 });

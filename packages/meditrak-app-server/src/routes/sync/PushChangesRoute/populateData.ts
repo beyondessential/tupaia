@@ -4,10 +4,10 @@ import {
   stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
+import type { MeditrakSurveyResponse } from '@tupaia/types';
 import momentTimezone from 'moment-timezone';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { getEntityIdFromClinicId } from './getEntityIdFromClinicId';
-import { ValidatedSurveyResponseObject } from './validateInboundSurveyResponses';
 
 const DEFAULT_DATABASE_TIMEZONE = 'Pacific/Auckland';
 
@@ -23,7 +23,7 @@ const approvalStatusTypes = {
  * @return {string}
  * @throws ValidationError
  */
-const getDataTime = (surveyResponse: ValidatedSurveyResponseObject) => {
+const getDataTime = (surveyResponse: MeditrakSurveyResponse) => {
   const {
     data_time: suppliedDataTime,
     submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
@@ -63,14 +63,13 @@ const getDataTime = (surveyResponse: ValidatedSurveyResponseObject) => {
 // Populate data to support legacy versions of Meditrak
 export const populateData = async (
   models: MeditrakAppServerModelRegistry,
-  surveyResponse: ValidatedSurveyResponseObject,
+  surveyResponse: MeditrakSurveyResponse,
 ) => {
   const {
     id: surveyResponseId,
     clinic_id: clinicId,
     survey_id: surveyId,
     timestamp,
-    assessor_name: assessorName,
     ...surveyResponseProperties
   } = surveyResponse;
   try {
