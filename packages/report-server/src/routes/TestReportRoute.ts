@@ -23,7 +23,7 @@ export type TestReportRequest = Request<
   ReportRouteQuery
 >;
 
-const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
+const VIZ_BUILDER_USER_PERMISSION_NAME = 'Viz Builder User';
 
 export class TestReportRoute extends Route<TestReportRequest> {
   public async buildResponse() {
@@ -33,10 +33,11 @@ export class TestReportRoute extends Route<TestReportRequest> {
 
     const reqContext = {
       hierarchy,
-      permissionGroup: BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
+      permissionGroup: VIZ_BUILDER_USER_PERMISSION_NAME,
       services: this.req.ctx.services,
       accessPolicy: this.req.accessPolicy,
     };
+
     const reportBuilder = new ReportBuilder(reqContext);
     reportBuilder.setConfig(body.testConfig);
 
@@ -52,6 +53,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
     };
 
     const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
+
     return reportBuilder.build(aggregator, reportQuery);
   }
 }
