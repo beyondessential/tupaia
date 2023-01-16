@@ -1,1 +1,1 @@
-{ "filename": "src/schemas.ts", "typesPath": "src/models-extra/schemas/index.ts" }
+{ "filename": "src/schemas.ts", "typesPath": "src/models-extra/type-to-schemas/index.ts" }

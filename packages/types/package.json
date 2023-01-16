@@ -9,6 +9,7 @@
     "directory": "packages/types"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
@@ -18,9 +19,6 @@
     "test": "echo \"No tests specified\" && exit 0",
     "build:schema": "ts-node generate-schema.ts",
     "generate": "ts-node generate.ts && yarn build:schema && yarn build"
-  },
-  "dependencies": {
-    "@tupaia/tsutils": "1.0.0"
   },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",

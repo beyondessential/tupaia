@@ -5,13 +5,8 @@
 
 import { takesIdForm } from '@tupaia/utils';
 
-/**
- * @format Id
- */
-export type Id = string;
-
 export const IdFormat = {
-  name: 'Id',
+  name: 'id',
   config: {
     validate: (data: string) => {
       try {

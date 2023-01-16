@@ -1,52 +1,3280 @@
-export const IdForm = {
-	"takesIdForm": {},
+export const PeriodTypeSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+	"enum": [
+		"day",
+		"month",
+		"quarter",
+		"week",
+		"year"
+	],
 	"type": "string"
 } 
 
-export const MeditrakSurveyResponse = {
+export const FetchReportQuerySchema = {
+	"allOf": [
+		{
+			"type": "object",
+			"properties": {
+				"period": {
+					"type": "string"
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				}
+			}
+		},
+		{
+			"type": "object",
+			"properties": {
+				"organisationUnitCodes": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"hierarchy": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"hierarchy",
+				"organisationUnitCodes"
+			]
+		}
+	]
+} 
+
+export const AggregationObjectSchema = {
+	"properties": {
+		"type": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object"
+		}
+	},
 	"type": "object",
+	"required": [
+		"type"
+	]
+} 
+
+export const AggregationSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				},
+				"config": {
+					"type": "object"
+				}
+			},
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "string"
+		}
+	]
+} 
+
+export const TransformSchema = {
+	"type": [
+		"string",
+		"object"
+	]
+} 
+
+export const CustomReportConfigSchema = {
+	"properties": {
+		"customReport": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"customReport"
+	]
+} 
+
+export const ReportConfigSchema = {
+	"properties": {
+		"fetch": {
+			"type": "object",
+			"properties": {
+				"dataElements": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"dataGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"aggregations": {
+					"type": "array",
+					"items": {
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"type": {
+										"type": "string"
+									},
+									"config": {
+										"type": "object"
+									}
+								},
+								"required": [
+									"type"
+								]
+							},
+							{
+								"type": "string"
+							}
+						]
+					}
+				},
+				"startDate": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"from": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"unit"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"endDate": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"from": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"unit"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"organisationUnits": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"transform": {
+			"type": "array",
+			"items": {
+				"type": [
+					"string",
+					"object"
+				]
+			}
+		},
+		"output": {
+			"type": "object"
+		}
+	},
+	"type": "object",
+	"required": [
+		"fetch",
+		"transform"
+	]
+} 
+
+export const StandardOrCustomReportConfigSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"customReport": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"customReport"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"fetch": {
+					"type": "object",
+					"properties": {
+						"dataElements": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"dataGroups": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"aggregations": {
+							"type": "array",
+							"items": {
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"type": {
+												"type": "string"
+											},
+											"config": {
+												"type": "object"
+											}
+										},
+										"required": [
+											"type"
+										]
+									},
+									{
+										"type": "string"
+									}
+								]
+							}
+						},
+						"startDate": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"from": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"endDate": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"from": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"organisationUnits": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"transform": {
+					"type": "array",
+					"items": {
+						"type": [
+							"string",
+							"object"
+						]
+					}
+				},
+				"output": {
+					"type": "object"
+				}
+			},
+			"required": [
+				"fetch",
+				"transform"
+			]
+		}
+	]
+} 
+
+export const TransformSchemaSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"alias": {
+			"type": "boolean"
+		},
+		"string": {
+			"type": "object"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code"
+	]
+} 
+
+export const DateOffsetSchema = {
+	"properties": {
+		"unit": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+			"enum": [
+				"day",
+				"month",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"offset": {
+			"type": "number"
+		},
+		"modifier": {
+			"enum": [
+				"end_of",
+				"start_of"
+			],
+			"type": "string"
+		},
+		"modifierUnit": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+			"enum": [
+				"day",
+				"month",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"from": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"unit"
+	]
+} 
+
+export const AdminPanelSessionSchema = {
+	"properties": {
+		"accessPolicy": {},
+		"accessToken": {
+			"type": "string"
+		},
+		"accessTokenExpiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refreshToken": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"accessPolicy",
+		"accessToken",
+		"accessTokenExpiry",
+		"email",
+		"id",
+		"refreshToken"
+	]
+} 
+
+export const AnalyticsSchema = {
+	"properties": {
+		"answerEntityMRow": {
+			"type": "string"
+		},
+		"answerMRow": {
+			"type": "string"
+		},
+		"dataElementCode": {
+			"type": "string"
+		},
+		"dataElementMRow": {
+			"type": "string"
+		},
+		"dataGroupCode": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"dayPeriod": {
+			"type": "string"
+		},
+		"entityCode": {
+			"type": "string"
+		},
+		"entityMRow": {
+			"type": "string"
+		},
+		"entityName": {
+			"type": "string"
+		},
+		"eventId": {
+			"type": "string"
+		},
+		"monthPeriod": {
+			"type": "string"
+		},
+		"questionMRow": {
+			"type": "string"
+		},
+		"surveyMRow": {
+			"type": "string"
+		},
+		"surveyResponseMRow": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"weekPeriod": {
+			"type": "string"
+		},
+		"yearPeriod": {
+			"type": "string"
+		}
+	},
+	"type": "object"
+} 
+
+export const ApiClientSchema = {
 	"properties": {
 		"id": {
-			"takesIdForm": {},
+			"type": "string"
+		},
+		"secretKeyHash": {
+			"type": "string"
+		},
+		"userAccountId": {
+			"type": "string"
+		},
+		"username": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"secretKeyHash",
+		"username"
+	]
+} 
+
+export const AccessRequestSchema = {
+	"properties": {
+		"approved": {
+			"type": "boolean"
+		},
+		"createdTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"note": {
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		},
+		"processedBy": {
+			"type": "string"
+		},
+		"processedDate": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"projectId": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id"
+	]
+} 
+
+export const DateSpecsSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				},
+				"modifier": {
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"from": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"unit"
+			]
+		},
+		{
+			"type": "string"
+		}
+	]
+} 
+
+export const PeriodParamsSchema = {
+	"properties": {
+		"period": {
+			"type": "string"
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		}
+	},
+	"type": "object"
+} 
+
+export const CountrySchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"name"
+	]
+} 
+
+export const DashboardSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"rootEntityCode": {
+			"type": "string"
+		},
+		"sortOrder": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"name",
+		"rootEntityCode"
+	]
+} 
+
+export const ApiRequestLogSchema = {
+	"properties": {
+		"api": {
+			"type": "string"
+		},
+		"endpoint": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"metadata": {},
+		"method": {
+			"type": "string"
+		},
+		"query": {},
+		"refreshToken": {
+			"type": "string"
+		},
+		"requestTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"userId": {
+			"type": "string"
+		},
+		"version": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"api",
+		"endpoint",
+		"id",
+		"version"
+	]
+} 
+
+export const DashboardRelationSchema = {
+	"properties": {
+		"childId": {
+			"type": "string"
+		},
+		"dashboardId": {
+			"type": "string"
+		},
+		"entityTypes": {},
+		"id": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"projectCodes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"childId",
+		"dashboardId",
+		"entityTypes",
+		"id",
+		"permissionGroups",
+		"projectCodes"
+	]
+} 
+
+export const DashboardItemSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"legacy": {
+			"type": "boolean"
+		},
+		"reportCode": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id"
+	]
+} 
+
+export const DataElementSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"mRow": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"serviceType": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"serviceType"
+	]
+} 
+
+export const ClinicSchema = {
+	"properties": {
+		"categoryCode": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		},
+		"geographicalAreaId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"typeName": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"countryId",
+		"geographicalAreaId",
+		"id",
+		"name"
+	]
+} 
+
+export const DataElementDataGroupSchema = {
+	"properties": {
+		"dataElementId": {
+			"type": "string"
+		},
+		"dataGroupId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"dataElementId",
+		"dataGroupId",
+		"id"
+	]
+} 
+
+export const DataElementDataServiceSchema = {
+	"properties": {
+		"countryCode": {
+			"type": "string"
+		},
+		"dataElementCode": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"serviceConfig": {},
+		"serviceType": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"countryCode",
+		"dataElementCode",
+		"id",
+		"serviceType"
+	]
+} 
+
+export const DataServiceEntitySchema = {
+	"properties": {
+		"config": {},
+		"entityCode": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"config",
+		"entityCode",
+		"id"
+	]
+} 
+
+export const AnswerSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"mRow": {
+			"type": "string"
+		},
+		"questionId": {
+			"type": "string"
+		},
+		"surveyResponseId": {
+			"type": "string"
+		},
+		"text": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"questionId",
+		"surveyResponseId",
+		"type"
+	]
+} 
+
+export const DhisInstanceSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"readonly": {
+			"type": "boolean"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"config",
+		"id",
+		"readonly"
+	]
+} 
+
+export const DataServiceSyncGroupSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"dataGroupCode": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"serviceType": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		},
+		"syncCursor": {
+			"type": "string"
+		},
+		"syncStatus": {
+			"enum": [
+				"ERROR",
+				"IDLE",
+				"SYNCING"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"config",
+		"dataGroupCode",
+		"id",
+		"serviceType"
+	]
+} 
+
+export const DhisSyncLogSchema = {
+	"properties": {
+		"data": {
+			"type": "string"
+		},
+		"deleted": {
+			"type": "number"
+		},
+		"dhisReference": {
+			"type": "string"
+		},
+		"errorList": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"ignored": {
+			"type": "number"
+		},
+		"imported": {
+			"type": "number"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"recordType": {
+			"type": "string"
+		},
+		"updated": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"recordId",
+		"recordType"
+	]
+} 
+
+export const DataTableSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"internal"
+			]
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"type"
+	]
+} 
+
+export const DhisSyncQueueSchema = {
+	"properties": {
+		"badRequestCount": {
+			"type": "number"
+		},
+		"changeTime": {
+			"type": "number"
+		},
+		"details": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"isDeadLetter": {
+			"type": "boolean"
+		},
+		"isDeleted": {
+			"type": "boolean"
+		},
+		"priority": {
+			"type": "number"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"recordType": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"recordId",
+		"recordType",
+		"type"
+	]
+} 
+
+export const DisasterSchema = {
+	"properties": {
+		"countryCode": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"cyclone",
+				"earthquake",
+				"eruption",
+				"flood",
+				"tsunami"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"countryCode",
+		"id",
+		"name",
+		"type"
+	]
+} 
+
+export const EntityHierarchySchema = {
+	"properties": {
+		"canonicalTypes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"name"
+	]
+} 
+
+export const EntitySchema = {
+	"properties": {
+		"attributes": {},
+		"bounds": {},
+		"code": {
+			"type": "string"
+		},
+		"countryCode": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"mRow": {
+			"type": "string"
+		},
+		"metadata": {},
+		"name": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		},
+		"point": {},
+		"region": {},
+		"type": {
+			"enum": [
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"fetp_graduate",
+				"field_station",
+				"household",
+				"individual",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"village",
+				"world"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"name"
+	]
+} 
+
+export const DisasterEventSchema = {
+	"properties": {
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"disasterId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"organisationUnitCode": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"end",
+				"resolve",
+				"start"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"date",
+		"disasterId",
+		"id",
+		"organisationUnitCode",
+		"type"
+	]
+} 
+
+export const ExternalDatabaseConnectionSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"name"
+	]
+} 
+
+export const EntityRelationSchema = {
+	"properties": {
+		"childId": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"childId",
+		"entityHierarchyId",
+		"id",
+		"parentId"
+	]
+} 
+
+export const ErrorLogSchema = {
+	"properties": {
+		"apiRequestLogId": {
+			"type": "string"
+		},
+		"errorTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id"
+	]
+} 
+
+export const FeedItemSchema = {
+	"properties": {
+		"countryId": {
+			"type": "string"
+		},
+		"creationDate": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"geographicalAreaId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"templateVariables": {
+			"type": "object",
+			"properties": {
+				"constructor": {
+					"$ref": "#/definitions/Function"
+				}
+			},
+			"required": [
+				"constructor"
+			]
+		},
+		"type": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id"
+	]
+} 
+
+export const GeographicalAreaSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"levelCode": {
+			"type": "string"
+		},
+		"levelName": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"countryId",
+		"id",
+		"levelCode",
+		"levelName",
+		"name"
+	]
+} 
+
+export const LesmisSessionSchema = {
+	"properties": {
+		"accessPolicy": {},
+		"accessToken": {
+			"type": "string"
+		},
+		"accessTokenExpiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refreshToken": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"accessPolicy",
+		"accessToken",
+		"accessTokenExpiry",
+		"email",
+		"id",
+		"refreshToken"
+	]
+} 
+
+export const DataGroupSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"serviceType": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"serviceType"
+	]
+} 
+
+export const MapOverlayGroupRelationSchema = {
+	"properties": {
+		"childId": {
+			"type": "string"
+		},
+		"childType": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"mapOverlayGroupId": {
+			"type": "string"
+		},
+		"sortOrder": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"childId",
+		"childType",
+		"id",
+		"mapOverlayGroupId"
+	]
+} 
+
+export const MeditrakSyncQueueSchema = {
+	"properties": {
+		"changeTime": {
+			"type": "number"
+		},
+		"id": {
+			"type": "string"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"recordType": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"recordId",
+		"recordType",
+		"type"
+	]
+} 
+
+export const AncestorDescendantRelationSchema = {
+	"properties": {
+		"ancestorId": {
+			"type": "string"
+		},
+		"descendantId": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"generationalDistance": {
+			"type": "number"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"ancestorId",
+		"descendantId",
+		"entityHierarchyId",
+		"generationalDistance",
+		"id"
+	]
+} 
+
+export const MapOverlaySchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"countryCodes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"dataServices": {},
+		"id": {
+			"type": "string"
+		},
+		"legacy": {
+			"type": "boolean"
+		},
+		"linkedMeasures": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"name": {
+			"type": "string"
+		},
+		"permissionGroup": {
+			"type": "string"
+		},
+		"projectCodes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"reportCode": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"name",
+		"permissionGroup"
+	]
+} 
+
+export const MeditrakDeviceSchema = {
+	"properties": {
+		"appVersion": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"installId": {
+			"type": "string"
+		},
+		"platform": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"installId",
+		"userId"
+	]
+} 
+
+export const MapOverlayGroupSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"name"
+	]
+} 
+
+export const OptionSetSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"name"
+	]
+} 
+
+export const IndicatorSchema = {
+	"properties": {
+		"builder": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"builder",
+		"code",
+		"id"
+	]
+} 
+
+export const Ms1SyncQueueSchema = {
+	"properties": {
+		"badRequestCount": {
+			"type": "number"
+		},
+		"changeTime": {
+			"type": "number"
+		},
+		"details": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"isDeadLetter": {
+			"type": "boolean"
+		},
+		"isDeleted": {
+			"type": "boolean"
+		},
+		"priority": {
+			"type": "number"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"recordType": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"recordId",
+		"recordType",
+		"type"
+	]
+} 
+
+export const OptionSchema = {
+	"properties": {
+		"attributes": {},
+		"id": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		},
+		"optionSetId": {
+			"type": "string"
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"optionSetId",
+		"value"
+	]
+} 
+
+export const PermissionGroupSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"name"
+	]
+} 
+
+export const QuestionSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"dataElementId": {
+			"type": "string"
+		},
+		"detail": {
+			"type": "string"
+		},
+		"hook": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"mRow": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"optionSetId": {
+			"type": "string"
+		},
+		"options": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"text": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"text",
+		"type"
+	]
+} 
+
+export const PermissionsBasedMeditrakSyncQueueSchema = {
+	"properties": {
+		"changeTime": {
+			"type": "number"
+		},
+		"countryIds": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"entityType": {
+			"enum": [
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"fetp_graduate",
+				"field_station",
+				"household",
+				"individual",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"village",
+				"world"
+			],
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"recordType": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"type": "object"
+} 
+
+export const RefreshTokenSchema = {
+	"properties": {
+		"device": {
+			"type": "string"
+		},
+		"expiry": {
+			"type": "number"
+		},
+		"id": {
+			"type": "string"
+		},
+		"meditrakDeviceId": {
+			"type": "string"
+		},
+		"token": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"token",
+		"userId"
+	]
+} 
+
+export const PsssSessionSchema = {
+	"properties": {
+		"accessPolicy": {},
+		"accessToken": {
+			"type": "string"
+		},
+		"accessTokenExpiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refreshToken": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"accessPolicy",
+		"accessToken",
+		"accessTokenExpiry",
+		"email",
+		"id",
+		"refreshToken"
+	]
+} 
+
+export const ProjectSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"dashboardGroupName": {
+			"type": "string"
+		},
+		"defaultMeasure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"logoUrl": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id"
+	]
+} 
+
+export const SettingSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"key"
+	]
+} 
+
+export const SurveySchema = {
+	"properties": {
+		"canRepeat": {
+			"type": "boolean"
+		},
+		"code": {
+			"type": "string"
+		},
+		"countryIds": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"dataGroupId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"integrationMetadata": {},
+		"mRow": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"periodGranularity": {
+			"enum": [
+				"daily",
+				"monthly",
+				"quarterly",
+				"weekly",
+				"yearly"
+			],
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		},
+		"requiresApproval": {
+			"type": "boolean"
+		},
+		"surveyGroupId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"name"
+	]
+} 
+
+export const ReportSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"properties": {
+				"fetch": {
+					"type": "object",
+					"properties": {
+						"dataElements": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"dataGroups": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"aggregations": {
+							"type": "array",
+							"items": {
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"type": {
+												"type": "string"
+											},
+											"config": {
+												"type": "object"
+											}
+										},
+										"required": [
+											"type"
+										]
+									},
+									{
+										"type": "string"
+									}
+								]
+							}
+						},
+						"startDate": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"from": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"endDate": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"from": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"organisationUnits": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"transform": {
+					"type": "array",
+					"items": {
+						"type": [
+							"string",
+							"object"
+						]
+					}
+				},
+				"output": {
+					"type": "object"
+				}
+			},
+			"required": [
+				"fetch",
+				"transform"
+			]
+		},
+		"id": {
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"config",
+		"id",
+		"permissionGroupId"
+	]
+} 
+
+export const SupersetInstanceSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"config",
+		"id"
+	]
+} 
+
+export const SurveyResponseSchema = {
+	"properties": {
+		"approvalStatus": {
+			"enum": [
+				"approved",
+				"not_required",
+				"pending",
+				"rejected"
+			],
+			"type": "string"
+		},
+		"assessorName": {
+			"type": "string"
+		},
+		"dataTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"endTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"mRow": {
+			"type": "string"
+		},
+		"metadata": {
+			"type": "string"
+		},
+		"outdated": {
+			"type": "boolean"
+		},
+		"startTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"surveyId": {
+			"type": "string"
+		},
+		"timezone": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"assessorName",
+		"endTime",
+		"entityId",
+		"id",
+		"startTime",
+		"surveyId",
+		"userId"
+	]
+} 
+
+export const SurveyGroupSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"name"
+	]
+} 
+
+export const Ms1SyncLogSchema = {
+	"properties": {
+		"count": {
+			"type": "number"
+		},
+		"data": {
+			"type": "string"
+		},
+		"endpoint": {
+			"type": "string"
+		},
+		"errorList": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"recordType": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"recordId",
+		"recordType"
+	]
+} 
+
+export const SurveyResponseCommentSchema = {
+	"properties": {
+		"commentId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"surveyResponseId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"commentId",
+		"id",
+		"surveyResponseId"
+	]
+} 
+
+export const SurveyScreenSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"screenNumber": {
+			"type": "number"
+		},
+		"surveyId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"screenNumber",
+		"surveyId"
+	]
+} 
+
+export const UserAccountSchema = {
+	"properties": {
+		"creationDate": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"email": {
+			"type": "string"
+		},
+		"employer": {
+			"type": "string"
+		},
+		"firstName": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"mobileNumber": {
+			"type": "string"
+		},
+		"passwordHash": {
+			"type": "string"
+		},
+		"passwordSalt": {
+			"type": "string"
+		},
+		"position": {
+			"type": "string"
+		},
+		"primaryPlatform": {
+			"enum": [
+				"lesmis",
+				"tupaia"
+			],
+			"type": "string"
+		},
+		"profileImage": {
+			"type": "string"
+		},
+		"verifiedEmail": {
+			"enum": [
+				"new_user",
+				"unverified",
+				"verified"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"email",
+		"id",
+		"passwordHash",
+		"passwordSalt"
+	]
+} 
+
+export const UserSessionSchema = {
+	"properties": {
+		"accessTokenExpiry": {
+			"type": "string"
+		},
+		"accessPolicy": {},
+		"accessToken": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refreshToken": {
+			"type": "string"
+		},
+		"userName": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"refreshToken",
+		"userName"
+	]
+} 
+
+export const SyncGroupLogSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"logMessage": {
+			"type": "string"
+		},
+		"serviceType": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		},
+		"syncGroupCode": {
 			"type": "string"
 		},
 		"timestamp": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"logMessage",
+		"serviceType",
+		"syncGroupCode"
+	]
+} 
+
+export const UserEntityPermissionSchema = {
+	"properties": {
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id"
+	]
+} 
+
+export const VerifiedEmailSchema = {
+	"enum": [
+		"new_user",
+		"unverified",
+		"verified"
+	],
+	"type": "string"
+} 
+
+export const OneTimeLoginSchema = {
+	"properties": {
+		"creationDate": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"token": {
+			"type": "string"
+		},
+		"useDate": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"token",
+		"userId"
+	]
+} 
+
+export const PrimaryPlatformSchema = {
+	"enum": [
+		"lesmis",
+		"tupaia"
+	],
+	"type": "string"
+} 
+
+export const SyncGroupSyncStatusSchema = {
+	"enum": [
+		"ERROR",
+		"IDLE",
+		"SYNCING"
+	],
+	"type": "string"
+} 
+
+export const ServiceTypeSchema = {
+	"enum": [
+		"data-lake",
+		"dhis",
+		"indicator",
+		"kobo",
+		"superset",
+		"tupaia",
+		"weather"
+	],
+	"type": "string"
+} 
+
+export const EntityTypeSchema = {
+	"enum": [
+		"case",
+		"case_contact",
+		"catchment",
+		"city",
+		"country",
+		"disaster",
+		"district",
+		"facility",
+		"fetp_graduate",
+		"field_station",
+		"household",
+		"individual",
+		"larval_habitat",
+		"local_government",
+		"medical_area",
+		"nursing_zone",
+		"postcode",
+		"project",
+		"school",
+		"sub_catchment",
+		"sub_district",
+		"sub_facility",
+		"village",
+		"world"
+	],
+	"type": "string"
+} 
+
+export const PeriodGranularitySchema = {
+	"enum": [
+		"daily",
+		"monthly",
+		"quarterly",
+		"weekly",
+		"yearly"
+	],
+	"type": "string"
+} 
+
+export const DisasterTypeSchema = {
+	"enum": [
+		"cyclone",
+		"earthquake",
+		"eruption",
+		"flood",
+		"tsunami"
+	],
+	"type": "string"
+} 
+
+export const DataTableTypeSchema = {
+	"type": "string",
+	"enum": [
+		"internal"
+	]
+} 
+
+export const DisasterEventTypeSchema = {
+	"enum": [
+		"end",
+		"resolve",
+		"start"
+	],
+	"type": "string"
+} 
+
+export const LegacyReportSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"dataBuilder": {
+			"type": "string"
+		},
+		"dataBuilderConfig": {},
+		"dataServices": {},
+		"id": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id"
+	]
+} 
+
+export const UserFavouriteDashboardItemSchema = {
+	"properties": {
+		"dashboardItemId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"dashboardItemId",
+		"id",
+		"userId"
+	]
+} 
+
+export const EntityCreatedSchema = {
+	"properties": {
+		"id": {
+			"format": "id",
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"parent_id": {
+			"format": "id",
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"fetp_graduate",
+				"field_station",
+				"household",
+				"individual",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"village",
+				"world"
+			],
+			"type": "string"
+		},
+		"country_code": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"country_code",
+		"id",
+		"name",
+		"parent_id",
+		"type"
+	]
+} 
+
+export const AnswerTypeSchema = {
+	"properties": {
+		"id": {
+			"format": "id",
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"body": {
+			"type": "string"
+		},
+		"question_id": {
+			"$async": true,
+			"checkIdExists": {
+				"table": "question"
+			},
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"body",
+		"id",
+		"question_id",
+		"type"
+	],
+	"$async": true
+} 
+
+export const DataSourceTypeSchema = {
+	"enum": [
+		"dataElement",
+		"dataGroup"
+	],
+	"type": "string"
+} 
+
+export const MeditrakSurveyResponseSchema = {
+	"properties": {
+		"id": {
+			"format": "id",
+			"type": "string"
+		},
+		"timestamp": {
+			"format": "iso-date-time",
 			"type": "string"
 		},
 		"survey_id": {
-			"takesIdForm": {},
+			"format": "id",
 			"type": "string"
 		},
 		"user_id": {
-			"takesIdForm": {},
+			"format": "id",
 			"type": "string"
 		},
+		"answers": {
+			"$async": true,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"format": "id",
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"body": {
+						"type": "string"
+					},
+					"question_id": {
+						"checkIdExists": {
+							"table": "question"
+						},
+						"type": "string"
+					}
+				},
+				"required": [
+					"body",
+					"id",
+					"question_id",
+					"type"
+				]
+			}
+		},
 		"clinic_id": {
-			"takesIdForm": {},
+			"format": "id",
 			"type": "string"
 		},
 		"entity_id": {
-			"takesIdForm": {},
+			"format": "id",
 			"type": "string"
 		},
 		"start_time": {
+			"format": "iso-date-time",
 			"type": "string"
 		},
 		"end_time": {
+			"format": "iso-date-time",
 			"type": "string"
 		},
 		"data_time": {
+			"format": "iso-date-time",
 			"type": "string"
 		},
 		"approval_status": {
 			"type": "string"
+		},
+		"entities_created": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"format": "id",
+						"type": "string"
+					},
+					"code": {
+						"type": "string"
+					},
+					"parent_id": {
+						"format": "id",
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"enum": [
+							"case",
+							"case_contact",
+							"catchment",
+							"city",
+							"country",
+							"disaster",
+							"district",
+							"facility",
+							"fetp_graduate",
+							"field_station",
+							"household",
+							"individual",
+							"larval_habitat",
+							"local_government",
+							"medical_area",
+							"nursing_zone",
+							"postcode",
+							"project",
+							"school",
+							"sub_catchment",
+							"sub_district",
+							"sub_facility",
+							"village",
+							"world"
+						],
+						"type": "string"
+					},
+					"country_code": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"country_code",
+					"id",
+					"name",
+					"parent_id",
+					"type"
+				]
+			}
+		},
+		"options_created": {
+			"$async": true,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"format": "id",
+						"type": "string"
+					},
+					"value": {
+						"type": "number"
+					},
+					"option_set_id": {
+						"checkIdExists": {
+							"table": "optionSet"
+						},
+						"type": "string"
+					},
+					"sort_order": {
+						"type": "number"
+					}
+				},
+				"required": [
+					"id",
+					"option_set_id",
+					"sort_order",
+					"value"
+				]
+			}
+		},
+		"submission_time": {
+			"description": "only used in meditrak-app-server, v1.7.87 to v1.9.110 (inclusive) uses submission_time",
+			"type": "string"
+		},
+		"timezone": {
+			"type": "string"
 		}
 	},
+	"type": "object",
 	"required": [
+		"answers",
 		"id",
 		"survey_id",
 		"timestamp",
 		"user_id"
+	],
+	"$async": true
+} 
+
+export const OptionCreatedSchema = {
+	"properties": {
+		"id": {
+			"format": "id",
+			"type": "string"
+		},
+		"value": {
+			"type": "number"
+		},
+		"option_set_id": {
+			"$async": true,
+			"checkIdExists": {
+				"table": "optionSet"
+			},
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"required": [
+		"id",
+		"option_set_id",
+		"sort_order",
+		"value"
+	],
+	"$async": true
+} 
+
+export const SurveyScreenComponentSchema = {
+	"properties": {
+		"answersEnablingFollowUp": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"componentNumber": {
+			"type": "number"
+		},
+		"config": {
+			"type": "string"
+		},
+		"detailLabel": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"isFollowUp": {
+			"type": "boolean"
+		},
+		"questionId": {
+			"type": "string"
+		},
+		"questionLabel": {
+			"type": "string"
+		},
+		"screenId": {
+			"type": "string"
+		},
+		"validationCriteria": {
+			"type": "string"
+		},
+		"visibilityCriteria": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"componentNumber",
+		"id",
+		"questionId",
+		"screenId"
 	]
+} 
+
+export const IdSchema = {
+	"format": "id",
+	"type": "string"
+} 
+
+export const ApprovalStatusSchema = {
+	"enum": [
+		"approved",
+		"not_required",
+		"pending",
+		"rejected"
+	],
+	"type": "string"
 } 
 
