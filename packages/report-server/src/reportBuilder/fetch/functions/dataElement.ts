@@ -6,10 +6,11 @@
 import { yup } from '@tupaia/utils';
 
 import { ReportServerAggregator } from '../../../aggregator';
-import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
+import { Aggregation, FetchReportQuery } from '../../../types';
 import { FetchResponse } from '../types';
+import { Report } from '@tupaia/types';
 
-type DataElementParams = Pick<ReportConfig['fetch'], 'dataElements' | 'aggregations'>;
+type DataElementParams = Pick<Report['config']['fetch'], 'dataElements' | 'aggregations'>;
 
 type DataElementFetchParams = {
   dataElementCodes: string[];

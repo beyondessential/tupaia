@@ -88,13 +88,14 @@ const CREATE_CONFIG = {
   },
 };
 
-export const MapOverlayGroupRelationsPage = ({ getHeaderEl }) => (
+export const MapOverlayGroupRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Map Overlay Group Relations"
     endpoint="mapOverlayGroupRelations"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...restOfProps}
   />
 );
 

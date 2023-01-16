@@ -30,7 +30,7 @@ import {
 import { LightIconButton } from '@tupaia/ui-components';
 import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
-import { I18n } from '../utils';
+import { I18n, useI18n } from '../utils';
 import { useUser } from '../api/queries';
 
 const StyledList = styled(List)`
@@ -93,14 +93,18 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
-const AdminPanelLink = () => (
-  <LocaleListItemLink to="/admin" target="_blank">
-    <ListItemIcon>
-      <Build />
-    </ListItemIcon>
-    <ListItemText primary="Admin" />
-  </LocaleListItemLink>
-);
+const AdminPanelLink = () => {
+  const { translate } = useI18n();
+
+  return (
+    <LocaleListItemLink to="/admin" target="_blank">
+      <ListItemIcon>
+        <Build />
+      </ListItemIcon>
+      <ListItemText primary={translate('home.admin')} />
+    </LocaleListItemLink>
+  );
+};
 
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);

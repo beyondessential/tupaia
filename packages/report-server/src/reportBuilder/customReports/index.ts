@@ -7,10 +7,14 @@ import { Resolved } from '@tupaia/tsutils';
 import { FetchReportQuery } from '../../types';
 import { ReqContext } from '../context';
 import { testCustomReport } from './testCustomReport';
+import { tongaCovidRawData } from './tongaCovidRawData';
 
 type CustomReportBuilder = (reqContext: ReqContext, query: FetchReportQuery) => Promise<unknown>;
 
-export const customReports: Record<string, CustomReportBuilder> = { testCustomReport };
+export const customReports: Record<string, CustomReportBuilder> = {
+  testCustomReport,
+  tongaCovidRawData,
+};
 
 export type CustomReportOutputType = Resolved<
   ReturnType<typeof customReports[keyof typeof customReports]>

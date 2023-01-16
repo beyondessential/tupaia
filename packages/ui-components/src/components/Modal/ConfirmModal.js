@@ -39,6 +39,7 @@ export const ConfirmModal = ({
   description,
   actionText,
   loadingText,
+  cancelText,
   handleAction,
 }) => {
   return (
@@ -60,7 +61,7 @@ export const ConfirmModal = ({
       </LoadingContainer>
       <DialogFooter>
         <OutlinedButton onClick={onClose} disabled={isLoading}>
-          Cancel
+          {cancelText}
         </OutlinedButton>
         <Button isLoading={isLoading} loadingText={loadingText} onClick={handleAction}>
           {actionText}
@@ -80,10 +81,12 @@ ConfirmModal.propTypes = {
   error: PropTypes.string,
   actionText: PropTypes.string.isRequired,
   loadingText: PropTypes.string.isRequired,
+  cancelText: PropTypes.string,
   handleAction: PropTypes.func.isRequired,
 };
 
 ConfirmModal.defaultProps = {
   description: null,
   error: null,
+  cancelText: 'Cancel',
 };

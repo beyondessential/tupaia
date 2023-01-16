@@ -70,13 +70,17 @@ class DataFetchingTableComponent extends React.Component {
   }
 
   renderConfirmModal() {
-    const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
+    const { confirmActionMessage, onConfirmAction, onCancelAction, deleteConfig } = this.props;
     return (
       <ConfirmDeleteModal
         isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
+        title={deleteConfig.title}
+        description={deleteConfig.description}
+        cancelButtonText={deleteConfig.cancelButtonText}
+        confirmButtonText={deleteConfig.confirmButtonText}
       />
     );
   }
@@ -221,6 +225,7 @@ DataFetchingTableComponent.propTypes = {
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
+  deleteConfig: PropTypes.object,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -230,6 +235,7 @@ DataFetchingTableComponent.defaultProps = {
   errorMessage: '',
   numberOfPages: 0,
   nestingLevel: 0,
+  deleteConfig: {},
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({
