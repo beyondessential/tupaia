@@ -134,8 +134,3 @@ export class EventsDataTableService extends DataTableService<
     ];
   }
 }
-
-export const createEventsDataTableService = (
-  context: EventsDataTableServiceContext,
-  config: unknown,
-) => new EventsDataTableService(context, config);

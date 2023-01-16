@@ -113,8 +113,3 @@ export class AnalyticsDataTableService extends DataTableService<
     ];
   }
 }
-
-export const createAnalyticsDataTableService = (
-  context: AnalyticsDataTableServiceContext,
-  config: unknown,
-) => new AnalyticsDataTableService(context, config);
