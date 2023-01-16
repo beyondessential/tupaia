@@ -1,6 +1,6 @@
 ## Type definitions for Tupaia objects
 
-Models are generated from the db schema, run `yarn generate` to update this after changes to the db schema.
+Models are generated from the db schema, run `yarn generate:models` to update this after changes to the db schema.
 
 ### Configuring
 

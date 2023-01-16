@@ -17,8 +17,9 @@
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"No tests specified\" && exit 0",
-    "build:schema": "ts-node generate-schema.ts",
-    "generate": "ts-node generate.ts && yarn build:schema && yarn build"
+    "generate": "yarn generate:models && yarn generate:schemas && yarn build",
+    "generate:models": "ts-node generate-models.ts",
+    "generate:schemas": "ts-node generate-schemas.ts"
   },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
