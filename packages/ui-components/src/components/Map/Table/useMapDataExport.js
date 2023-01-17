@@ -4,7 +4,7 @@
  */
 
 import { getMapTableData } from './getMapTableData';
-import { useDataTableExport } from '../../DataTable/useDataTableExport';
+import { useDataTableExport } from '../../DataPreviewTable/useDataTableExport';
 
 export const useMapDataExport = (serieses, measureData, title) => {
   const { columns, data } = getMapTableData(serieses, measureData);
