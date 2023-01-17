@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { Report } from '@tupaia/types';
 import { ReportServerAggregator } from '../aggregator';
-import { FetchReportQuery, StandardOrCustomReportConfig, ReportConfig } from '../types';
+import { FetchReportQuery, StandardOrCustomReportConfig } from '../types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildFetch, FetchResponse } from './fetch';
@@ -41,7 +42,7 @@ export class ReportBuilder {
   public fetch = async (
     aggregator: ReportServerAggregator,
     query: FetchReportQuery,
-    config: ReportConfig,
+    config: Report['config'],
   ) => {
     if (this.testData) {
       return { results: this.testData } as FetchResponse;

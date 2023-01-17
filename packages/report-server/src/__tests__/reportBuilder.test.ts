@@ -5,9 +5,9 @@
 
 import { Aggregator } from '@tupaia/aggregator';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 import { ReportBuilder } from '../reportBuilder';
 import { ReqContext } from '../reportBuilder/context/buildContext';
-import { entityApiMock } from './reportBuilder/testUtils';
 import { ReportServerAggregator } from '../aggregator';
 
 describe('ReportBuilder', () => {
@@ -45,13 +45,13 @@ describe('ReportBuilder', () => {
       { parent: 'FJ', child: 'FJ_Facility' },
     ],
   };
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
+
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Public',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({
+      entity: new MockEntityApi(ENTITIES, RELATIONS),
+    }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
   };
 
