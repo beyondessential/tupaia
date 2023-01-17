@@ -5133,6 +5133,7 @@ __metadata:
   resolution: "@tupaia/api-client@workspace:packages/api-client"
   dependencies:
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
     qs: ^6.10.1
@@ -5482,6 +5483,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/lodash.clonedeep": ^4.5.0
     "@types/semver-compare": ^1.0.1
