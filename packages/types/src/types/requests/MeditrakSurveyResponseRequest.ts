@@ -1,5 +1,15 @@
-import { EntityType } from '../../models';
-import { Id } from './customFormat';
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
+ */
+
+/**
+ * @format id
+ */
+import { EntityType } from '../models';
+
+type Id = string;
 
 type AnswerType = {
   id: Id;
@@ -30,7 +40,7 @@ type OptionCreated = {
   sort_order: number;
 };
 
-export interface MeditrakSurveyResponse {
+export interface MeditrakSurveyResponseRequest {
   id: Id;
   /**
    * @format iso-date-time
