@@ -9,7 +9,7 @@ import sqlts from '@rmp135/sql-ts';
 
 import Knex from 'knex';
 // @ts-ignore
-import config from './config/config.json';
+import config from './config/models/config.json';
 
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
