@@ -5,12 +5,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getMapTableData } from './getMapTableData';
-import { DataTable } from '../../DataTable';
+import { DataPreviewTable } from '../../DataPreviewTable';
 
 export const MapTable = ({ serieses, measureData, className }) => {
   const { columns, data } = getMapTableData(serieses, measureData);
 
-  return <DataTable className={className} columns={columns} data={data} />;
+  return <DataPreviewTable className={className} columns={columns} data={data} />;
 };
 
 MapTable.propTypes = {
