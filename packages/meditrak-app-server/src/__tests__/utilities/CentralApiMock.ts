@@ -6,7 +6,7 @@
 export const upsertSurveyResponsesMock = jest.fn();
 
 export class CentralApiMock {
-  public upsertSurveyResponses(surveyResponses: Record<string, unknown>[]) {
+  public createSurveyResponses(surveyResponses: Record<string, unknown>[]) {
     upsertSurveyResponsesMock(surveyResponses);
   }
 }

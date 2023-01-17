@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { MeditrakSurveyResponseSchema } from '@tupaia/types';
-import type { MeditrakSurveyResponse } from '@tupaia/types';
+import { MeditrakSurveyResponseRequestSchema } from '@tupaia/types';
+import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { getAjv } from '@tupaia/tsutils';
 import { ValidationError } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
@@ -20,10 +20,10 @@ export const validateSurveyResponseObject = async (
 
   try {
     const ajv = getAjv(models);
-    const surveyResponseValidate = ajv.compile(MeditrakSurveyResponseSchema);
+    const surveyResponseValidate = ajv.compile(MeditrakSurveyResponseRequestSchema);
     const validatedSurveyResponseObject = (await surveyResponseValidate(
       surveyResponseObject,
-    )) as MeditrakSurveyResponse;
+    )) as MeditrakSurveyResponseRequest;
 
     return validatedSurveyResponseObject;
   } catch (e: any) {

@@ -55,7 +55,7 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           );
           surveyResponses.push(surveyResponseWithPopulatedData);
           // Submit survey responses
-          await this.req.ctx.services.central.upsertSurveyResponses(surveyResponses);
+          await this.req.ctx.services.central.createSurveyResponses(surveyResponses);
           break;
         }
         case ADD_SURVEY_IMAGE: {
