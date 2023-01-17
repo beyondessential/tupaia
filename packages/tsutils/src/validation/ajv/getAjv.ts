@@ -22,7 +22,7 @@ export const getAjv = (models: DatabaseModels) => {
     async: true,
     validate: async (schema: { table: keyof DatabaseModels }, data: string) => {
       try {
-        const validateFunc = constructRecordExistsWithId(models[schema.table]);
+        const validateFunc = constructRecordExistsWithId(models[schema.table], schema.table);
         await validateFunc(data);
       } catch (e) {
         return false;
