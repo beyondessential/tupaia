@@ -31,33 +31,30 @@ export const SQLEditor = props => {
       }}
       setOptions={{ enableLiveAutocompletion: true, enableBasicAutocompletion: true }}
       onLoad={editor => {
-        // const { $keywordList: keywordList } = editor.session.$mode.$highlightRules;
-        // setOriginalHighlightList(keywordList);
-        const staticWordCompleter = {
-          getCompletions: (editor, session, pos, prefix, callback) => {
-            callback(
-              null,
-              customKeywords.map(word => {
-                return {
-                  caption: `:${word}`,
-                  value: `:${word}`,
-                  meta: 'static',
-                };
-              }),
-            );
+        const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
+        setOriginalHighlightList(sqlKeywordList);
+      }}
+      onFocus={editor => {
+        const customKeywordList = customKeywords.map(key => ({
+          caption: `:${key}`,
+          value: `:${key}`,
+          meta: 'custom-parameter',
+        }));
+        const sqlKeywordList = originalHighlightList.map(key => ({
+          caption: `${key}`,
+          value: `${key}`,
+          meta: 'keyword',
+        }));
+        const wordCompleter = {
+          identifierRegexps: [/[a-zA-Z_0-9:$\-\u00A2-\uFFFF]/],
+          getCompletions: (_editor, _session, _pos, _prefix, callback) => {
+            callback(null, [...sqlKeywordList, ...customKeywordList]);
           },
         };
 
-        editor.completers = [staticWordCompleter];
+        // eslint-disable-next-line no-param-reassign
+        editor.view.ace.edit(editorName).completers = [wordCompleter];
       }}
-      // onFocus={editor => {
-      //   const sqlEditor = editor.view.ace.edit(editorName);
-      //   const newKeyWordList = Array.from(
-      //     new Set([...originalHighlightList, ...customKeywords.map(key => `:${key}`)]),
-      //   );
-      //   sqlEditor.session.$mode.$highlightRules.$keywordList = newKeyWordList;
-      //   sqlEditor.session.$mode.$keywordList = newKeyWordList;
-      // }}
     />
   );
 };
