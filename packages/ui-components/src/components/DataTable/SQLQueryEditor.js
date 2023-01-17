@@ -12,7 +12,7 @@ import 'ace-builds/src-noconflict/mode-pgsql';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
-export const SQLEditor = props => {
+export const SQLQueryEditor = props => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
 
   const { customKeywords, mode, onChange, value } = props;
@@ -59,14 +59,14 @@ export const SQLEditor = props => {
   );
 };
 
-SQLEditor.propTypes = {
+SQLQueryEditor.propTypes = {
   customKeywords: PropTypes.array,
   mode: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string,
 };
 
-SQLEditor.defaultProps = {
+SQLQueryEditor.defaultProps = {
   customKeywords: [],
   mode: 'pgsql',
   value: '',
