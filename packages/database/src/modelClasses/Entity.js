@@ -38,7 +38,6 @@ const LOCAL_GOVERNMENT = 'local_government';
 const MEDICAL_AREA = 'medical_area';
 const NURSING_ZONE = 'nursing_zone';
 const FETP_GRADUATE = 'fetp_graduate';
-const TRAP = 'trap';
 
 // Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`, but data is to be stored against
 // it on DHIS2, a corresponding tracked entity type must be created in DHIS2
@@ -67,7 +66,6 @@ const ENTITY_TYPES = {
   MEDICAL_AREA,
   NURSING_ZONE,
   FETP_GRADUATE,
-  TRAP,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
