@@ -23,7 +23,7 @@ export type TestReportRequest = Request<
   ReportRouteQuery
 >;
 
-const VIZ_BUILDER_USER_PERMISSION_NAME = 'Viz Builder User';
+const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
 
 export class TestReportRoute extends Route<TestReportRequest> {
   public async buildResponse() {
@@ -33,7 +33,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
 
     const reqContext = {
       hierarchy,
-      permissionGroup: VIZ_BUILDER_USER_PERMISSION_NAME,
+      permissionGroup: BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
       services: this.req.ctx.services,
       accessPolicy: this.req.accessPolicy,
     };
