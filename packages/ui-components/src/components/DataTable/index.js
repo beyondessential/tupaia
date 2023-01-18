@@ -4,3 +4,4 @@
  */
 
 export { SQLQueryEditor } from './SQLQueryEditor';
+export { ParameterList } from './ParameterList';

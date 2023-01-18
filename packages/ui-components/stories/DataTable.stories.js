@@ -5,10 +5,13 @@
 
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { IndeterminateCheckBox } from '@material-ui/icons';
 
+import { Add as AddIcon, IndeterminateCheckBox } from '@material-ui/icons';
 import styled from 'styled-components';
-import { SQLQueryEditor as BaseSQLQueryEditor} from '../src/components/DataTable';
+import {
+  SQLQueryEditor as BaseSQLQueryEditor,
+  ParameterList as BaseParameterList,
+} from '../src/components/DataTable';
 import { Button, IconButton, TextField } from '../src';
 
 export default {
@@ -79,5 +82,47 @@ export const SQLQueryEditor = () => {
       </ul>
       <BaseSQLQueryEditor customKeywords={customKeywords} onChange={onChange} value={query} />
     </PanelTabPanel>
+  );
+};
+
+export const CustomParamaterList = () => {
+  const [parameters, setParameters] = useState([
+    {
+      id: 'parameter_0',
+      name: 'dataElementcode',
+      type: 'text',
+      required: true,
+      defaultValue: 'UFO_01',
+      hasDefaultValue: true,
+    },
+    {
+      id: `parameter_1`,
+      name: 'dataElementcode',
+      required: true,
+      defaultValue: 'UFO_02',
+      hasDefaultValue: true,
+    },
+  ]);
+
+  const addParameters = () => {
+    const defaultNewParameter = {
+      id: `parameter_${parameters.length}`,
+      name: 'dataElementcode',
+      required: true,
+      defaultValue: 'UFO_01',
+      hasDefaultValue: true,
+    };
+
+    setParameters([...parameters, defaultNewParameter]);
+  };
+
+  return (
+    <div>
+      <BaseParameterList parameters={parameters} setParameters={setParameters} />
+      <Button variant="outlined" startIcon={<AddIcon />} onClick={addParameters}>
+        Add
+      </Button>
+      <p>{JSON.stringify(parameters, null, 4)}</p>
+    </div>
   );
 };
