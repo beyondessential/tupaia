@@ -22,7 +22,12 @@
     "lint:fix": "yarn lint --fix",
     "start": "yarn package:start:react-scripts",
     "start-dev": "yarn start",
-    "test": "echo No tests"
+    "test": "echo No tests",
+    "start-fullstack": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-admin-panel-server start-dev",
+    "start-central-server": "yarn workspace @tupaia/central-server start-dev",
+    "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
+    "start-report-server": "yarn workspace @tupaia/report-server start-dev",
+    "start-admin-panel-server": "yarn workspace @tupaia/admin-panel-server start-dev"
   },
   "browserslist": [
     "defaults"
