@@ -95,23 +95,26 @@ export const CustomParamaterList = () => {
       required: true,
       defaultValue: 'UFO_01',
       hasDefaultValue: true,
+      hasError: false,
     },
     {
       id: `parameter_1`,
-      name: 'dataElementcode',
+      name: 'period',
       required: true,
       defaultValue: 'UFO_02',
       hasDefaultValue: true,
+      hasError: false,
     },
   ]);
 
   const addParameters = () => {
     const defaultNewParameter = {
       id: `parameter_${parameters.length}`,
-      name: 'dataElementcode',
+      name: 'orgUnitCode',
       required: true,
       defaultValue: 'UFO_01',
       hasDefaultValue: true,
+      hasError: false,
     };
 
     setParameters([...parameters, defaultNewParameter]);
