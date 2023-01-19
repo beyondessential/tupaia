@@ -45,70 +45,101 @@ export const ParameterList = ({ parameters, setParameters }) => {
   const onChange = (id, key, targetKey = 'value') => event => {
     const newParameters = [...parameters];
     const index = parameters.findIndex(p => p.id === id);
+
+    // validate name input
+    if (key === 'name') {
+      try {
+        const newValue = event.target[targetKey];
+
+        if (newValue === '') {
+          throw new Error('Cannot be empty');
+        }
+
+        if (parameters.findIndex(p => p.name === newValue) !== -1) {
+          throw new Error('Duplicated parameter name');
+        }
+
+        const regex = new RegExp('^[A-Za-z0-9_]+$');
+        if (!regex.test(newValue)) {
+          throw new Error('Contains space or special characters');
+        }
+
+        newParameters[index].hasError = false;
+        newParameters[index].error = '';
+      } catch (e) {
+        newParameters[index].hasError = true;
+        newParameters[index].error = e.message;
+      }
+    }
+
     newParameters[index][key] = event.target[targetKey];
     setParameters(newParameters);
   };
 
   return (
     <RootDiv>
-      {parameters.map(({ id, name = '', type, required, hasDefaultValue, defaultValue }, index) => (
-        <Grid container spacing={0} key={id}>
-          <Grid container spacing={2}>
-            <Grid item xs={5}>
-              <TextField
-                error={parameters.findIndex(p => p.name === name) !== index}
-                helperText="Duplicated parameter name"
-                value={name}
-                placeholder="Text"
-                label="Name"
-                onChange={onChange(id, 'name')}
-              />
+      {parameters.map(
+        ({ id, name = '', type, required, hasDefaultValue, defaultValue, hasError, error }) => {
+          return (
+            <Grid container spacing={0} key={id}>
+              <Grid container spacing={2}>
+                <Grid item xs={5}>
+                  <TextField
+                    error={hasError}
+                    helperText={hasError && error}
+                    value={name}
+                    placeholder="Text"
+                    label="Name"
+                    onChange={onChange(id, 'name')}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Select
+                    value={type}
+                    label="Type"
+                    options={typeOptions}
+                    onChange={onChange(id, 'type')}
+                  />
+                </Grid>
+                <Grid item xs={1}>
+                  <Button variant="text" onClick={() => onDelete(id)}>
+                    <DeleteOutlinedIcon />
+                  </Button>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <FlexStart>
+                  <Checkbox
+                    label="Required"
+                    color="primary"
+                    checked={required}
+                    onChange={onChange(id, 'required', 'checked')}
+                  />
+                  <Checkbox
+                    label="Add default value"
+                    color="primary"
+                    checked={hasDefaultValue}
+                    onChange={onChange(id, 'hasDefaultValue', 'checked')}
+                  />
+                </FlexStart>
+              </Grid>
+              {hasDefaultValue && (
+                <Grid item xs={5}>
+                  <TextField
+                    value={defaultValue}
+                    placeholder="Text"
+                    label="Default value"
+                    onChange={onChange(id, 'defaultValue')}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={10}>
+                <Divider />
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <Select
-                value={type}
-                label="Type"
-                options={typeOptions}
-                onChange={onChange(id, 'type')}
-              />
-            </Grid>
-            <Grid item xs={1}>
-              <Button variant="text" onClick={() => onDelete(id)}>
-                <DeleteOutlinedIcon />
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <FlexStart>
-              <Checkbox
-                label="Required"
-                color="primary"
-                checked={required}
-                onChange={onChange(id, 'required', 'checked')}
-              />
-              <Checkbox
-                label="Add default value"
-                color="primary"
-                checked={hasDefaultValue}
-                onChange={onChange(id, 'hasDefaultValue', 'checked')}
-              />
-            </FlexStart>
-          </Grid>
-          {hasDefaultValue && (
-            <Grid item xs={5}>
-              <TextField
-                value={defaultValue}
-                placeholder="Text"
-                label="Default value"
-                onChange={onChange(id, 'defaultValue')}
-              />
-            </Grid>
-          )}
-          <Grid item xs={10}>
-            <Divider />
-          </Grid>
-        </Grid>
-      ))}
+          );
+        },
+      )}
     </RootDiv>
   );
 };
