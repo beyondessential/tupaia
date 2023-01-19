@@ -12,6 +12,8 @@ import BaseDeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Checkbox, Select as BaseSelect, TextField as BaseTextField } from '../Inputs';
 import { IconButton as BaseButton } from '../IconButton';
 import { FlexStart } from '../Layout';
+import { ParametersType } from './types';
+import { typeOptions } from './constants';
 
 const RootDiv = styled.div`
   flexgrow: 1;
@@ -33,13 +35,6 @@ const Button = styled(BaseButton)`
 const DeleteOutlinedIcon = styled(BaseDeleteOutlinedIcon)`
   font-size: 35px;
 `;
-
-const options = [
-  { label: 'Text', value: 'text' },
-  { label: 'Date', value: 'date' },
-  { label: 'Boolean', value: 'boolean' },
-  { label: 'Number', value: 'number' },
-];
 
 export const ParameterList = ({ parameters, setParameters }) => {
   const onDelete = selectedParameterId => {
@@ -70,7 +65,12 @@ export const ParameterList = ({ parameters, setParameters }) => {
               />
             </Grid>
             <Grid item xs={4}>
-              <Select value={type} label="Type" options={options} onChange={onChange(id, 'type')} />
+              <Select
+                value={type}
+                label="Type"
+                options={typeOptions}
+                onChange={onChange(id, 'type')}
+              />
             </Grid>
             <Grid item xs={1}>
               <Button variant="text" onClick={() => onDelete(id)}>
@@ -115,15 +115,7 @@ export const ParameterList = ({ parameters, setParameters }) => {
 
 ParameterList.propTypes = {
   setParameters: PropTypes.func.isRequired,
-  parameters: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      type: PropTypes.string,
-      required: PropTypes.bool,
-      hasDefaultValue: PropTypes.bool,
-      defaultValue: PropTypes.string,
-    }),
-  ).isRequired,
+  parameters: ParametersType.isRequired,
 };
 
 ParameterList.defaultProps = {};

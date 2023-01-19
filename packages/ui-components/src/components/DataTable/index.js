@@ -5,3 +5,4 @@
 
 export { SQLQueryEditor } from './SQLQueryEditor';
 export { ParameterList } from './ParameterList';
+export { PreviewFilter } from './preview/PreviewFilter';
