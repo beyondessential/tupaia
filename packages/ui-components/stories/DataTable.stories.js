@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import {
   SQLQueryEditor as BaseSQLQueryEditor,
   ParameterList as BaseParameterList,
+  PreviewFilter as BasePreviewFilter,
 } from '../src/components/DataTable';
 import { Button, IconButton, TextField } from '../src';
 
@@ -120,7 +121,84 @@ export const CustomParamaterList = () => {
     <div>
       <BaseParameterList parameters={parameters} setParameters={setParameters} />
       <Button variant="outlined" startIcon={<AddIcon />} onClick={addParameters}>
-        Add
+        Add Random Parameter
+      </Button>
+      <p>{JSON.stringify(parameters, null, 4)}</p>
+    </div>
+  );
+};
+
+export const PreviewFilter = () => {
+  const [parameters, setParameters] = useState([
+    {
+      id: 'parameter_0',
+      name: 'dataElementCode',
+      type: 'text',
+      required: true,
+      defaultValue: 'UFO_01',
+      hasDefaultValue: true,
+      inputFilterValue: null,
+    },
+    {
+      id: 'parameter_1',
+      name: 'value',
+      type: 'number',
+      required: true,
+      defaultValue: 1,
+      hasDefaultValue: true,
+    },
+    {
+      id: `parameter_2`,
+      name: 'startDate',
+      type: 'date',
+      required: true,
+      defaultValue: new Date('2021-01-01'),
+      hasDefaultValue: true,
+      inputFilterValue: null,
+    },
+    {
+      id: `parameter_3`,
+      name: 'endDate',
+      type: 'date',
+      required: true,
+      hasDefaultValue: false,
+      inputFilterValue: new Date(),
+    },
+    {
+      id: `parameter_4`,
+      name: 'legacy',
+      type: 'boolean',
+      required: true,
+      hasDefaultValue: false,
+      inputFilterValue: false,
+    },
+  ]);
+
+  const addParameters = () => {
+    const defaultNewParameter = {
+      id: `parameter_${parameters.length}`,
+      name: 'dataElementcode',
+      type: 'text',
+      required: true,
+      defaultValue: 'UFO_01',
+      hasDefaultValue: true,
+      inputFilterValue: null,
+    };
+
+    setParameters([...parameters, defaultNewParameter]);
+  };
+
+  const modifyParameter = (index, key, newValue) => {
+    const newParameters = [...parameters];
+    newParameters[index][key] = newValue;
+    setParameters(newParameters);
+  };
+
+  return (
+    <div>
+      <BasePreviewFilter parameters={parameters} modifyParameter={modifyParameter} />
+      <Button variant="outlined" startIcon={<AddIcon />} onClick={addParameters}>
+        Add Random Parameter
       </Button>
       <p>{JSON.stringify(parameters, null, 4)}</p>
     </div>
