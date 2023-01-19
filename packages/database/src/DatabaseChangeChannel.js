@@ -27,17 +27,18 @@ export class DatabaseChangeChannel extends PGPubSub {
     this.addChannel('schema_change', handler);
   }
 
-  publishRecordUpdates(recordType, records, specificHandlerKey) {
-    records.forEach(record =>
-      this.publish('change', {
+  async publishRecordUpdates(recordType, records, specificHandlerKey) {
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+      await this.publish('change', {
         record_id: record.id,
         type: 'update',
         record_type: recordType,
         handler_key: specificHandlerKey,
         old_record: record,
         new_record: record,
-      }),
-    );
+      });
+    }
   }
 
   /**

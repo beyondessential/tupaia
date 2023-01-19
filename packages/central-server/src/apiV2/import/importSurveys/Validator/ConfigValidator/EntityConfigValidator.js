@@ -3,8 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { constructIsNotPresentOr, hasContent } from '@tupaia/utils';
-import { constructListItemsAreOneOf, validateIsYesOrNo } from '../../validatorFunctions';
+import { constructIsNotPresentOr, constructIsValidEntityType, hasContent } from '@tupaia/utils';
+import { validateIsYesOrNo } from '../../validatorFunctions';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 import { isEmpty, isYes } from '../../utilities';
 import { JsonFieldValidator } from '../JsonFieldValidator';
@@ -45,7 +45,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
     );
 
     return {
-      type: [hasContent, constructListItemsAreOneOf(Object.values(this.models.entity.types))],
+      type: [hasContent, constructIsValidEntityType(this.models.entity)],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
       code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],

@@ -16,8 +16,8 @@ import {
   constructEveryItem,
   takesIdForm,
   takesDateForm,
-  constructIsOneOf,
   isNumber,
+  constructIsValidEntityType,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
@@ -216,7 +216,7 @@ const constructEntitiesCreatedValidators = models => ({
   code: [hasContent],
   parent_id: [takesIdForm],
   name: [hasContent],
-  type: [constructIsOneOf(Object.values(models.entity.types))],
+  type: [constructIsValidEntityType(models.entity)],
   country_code: [hasContent],
 });
 

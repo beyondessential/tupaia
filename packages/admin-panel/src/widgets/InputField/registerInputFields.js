@@ -41,6 +41,7 @@ const StyledLink = styled(Link)`
 export const registerInputFields = () => {
   registerInputField('autocomplete', props => (
     <Autocomplete
+      id={props.id}
       placeholder={props.value}
       label={props.label}
       helperText={props.secondaryLabel}
@@ -54,10 +55,12 @@ export const registerInputFields = () => {
       allowMultipleValues={props.allowMultipleValues}
       parentRecord={props.parentRecord}
       baseFilter={props.baseFilter}
+      pageSize={props.pageSize}
     />
   ));
   registerInputField('json', props => (
     <JsonInputField
+      id={props.id}
       label={props.label}
       helperText={props.secondaryLabel}
       value={props.value}
@@ -70,7 +73,9 @@ export const registerInputFields = () => {
   ));
   registerInputField('enum', props => (
     <Select
+      id={props.id}
       label={props.label}
+      placeholder={props.placeholder}
       helperText={props.secondaryLabel}
       value={props.value || ''}
       options={props.options}
@@ -99,6 +104,7 @@ export const registerInputFields = () => {
   ));
   registerInputField('boolean', props => (
     <RadioGroup
+      id={props.id}
       label={props.label}
       onChange={event => props.onChange(props.inputKey, event.target.value === 'true')} // convert to boolean value
       options={[
@@ -118,6 +124,7 @@ export const registerInputFields = () => {
   ));
   registerInputField('date', props => (
     <DatePicker
+      id={props.id}
       label={props.label}
       helperText={props.secondaryLabel}
       value={props.moment(props.value).isValid() ? moment(props.value) : null}
@@ -127,6 +134,7 @@ export const registerInputFields = () => {
   ));
   registerInputField('datetime-local', props => (
     <DateTimePicker
+      id={props.id}
       label={props.label}
       helperText={props.secondaryLabel}
       format="yyyy-MM-dd HH:mm"
@@ -145,6 +153,7 @@ export const registerInputFields = () => {
   ));
   registerInputField('datetime-utc', props => (
     <DateTimePicker
+      id={props.id}
       label={props.label}
       helperText={props.secondaryLabel}
       format="yyyy-MM-dd HH:mm"
@@ -172,12 +181,15 @@ export const registerInputFields = () => {
     });
     return (
       <StyledLink to={link}>
-        <Button color="primary">{props.label}</Button>
+        <Button id={props.id} color="primary">
+          {props.label}
+        </Button>
       </StyledLink>
     );
   });
   registerInputField('textarea', props => (
     <TextField
+      id={props.id}
       label={props.label}
       value={props.value || ''}
       onChange={event => props.onChange(props.inputKey, event.target.value)}
@@ -190,6 +202,7 @@ export const registerInputFields = () => {
   ));
   registerInputField('text', props => (
     <TextField
+      id={props.id}
       label={props.label}
       value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value
       onChange={event => props.onChange(props.inputKey, event.target.value)}
@@ -200,6 +213,7 @@ export const registerInputFields = () => {
   ));
   registerInputField('password', props => (
     <TextField
+      id={props.id}
       label={props.label}
       value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value
       onChange={event => props.onChange(props.inputKey, event.target.value)}

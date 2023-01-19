@@ -9,29 +9,21 @@ import {
 } from './types';
 import winston from 'winston';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import needle from 'needle';
-import type {
-  NeedleHttpVerbs,
-  BodyData as NeedleBodyData,
-  NeedleOptions,
-  NeedleResponse,
-} from 'needle';
+import fetch, { RequestInit, Response } from 'node-fetch';
 
 const MAX_RETRIES = 1;
 
 export class SupersetApi {
   protected serverName: string;
   protected baseUrl: string;
-  protected insecure: boolean;
   protected accessToken: string | null = null;
   protected proxyAgent?: HttpsProxyAgent;
 
-  public constructor(serverName: string, baseUrl: string, insecure: boolean = false) {
+  public constructor(serverName: string, baseUrl: string) {
     if (!serverName) throw new Error('Argument serverName required');
     if (!baseUrl) throw new Error('Argument baseUrl required');
     this.serverName = serverName;
     this.baseUrl = baseUrl;
-    this.insecure = insecure;
     const proxyUrl = this.getServerVariable('SUPERSET_API_PROXY_URL');
     if (proxyUrl) {
       winston.info(`Superset using proxy`);
@@ -53,27 +45,33 @@ export class SupersetApi {
       return this.fetch(url, numRetries + 1);
     }
 
-    const fetchConfig: any = {
+    const options: RequestInit = {
+      method: 'get',
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         'Content-Type': 'application/json',
       },
     };
-    const result = await this.apiRequest('get', url, undefined, fetchConfig);
+    const result = await this.apiRequest(url, options);
 
-    if (result.statusCode !== 200) {
-      if (result.statusCode === 422 || result.statusCode === 401) {
+    if (result.status !== 200) {
+      if (result.status === 422 || result.status === 401) {
         winston.info(`Superset Auth error, response: ${result.body}`);
         await this.refreshAccessToken();
         return this.fetch(url, numRetries + 1);
       }
 
       throw new Error(
-        `Error response from Superset API. Status: ${result.statusCode}, body: ${result.body}`,
+        `Error response from Superset API. Status: ${result.status}, body: ${result.body}`,
       );
     }
 
-    return result.body as T;
+    try {
+      const json = await result.json();
+      return json as T;
+    } catch (e) {
+      throw new Error(`Invalid response ${e}`);
+    }
   }
 
   protected getServerVariable(variableName: string) {
@@ -96,43 +94,31 @@ export class SupersetApi {
     };
 
     const url = `${this.baseUrl}/api/v1/security/login`;
-    const fetchConfig: any = {
+    const options: RequestInit = {
+      method: 'post',
+      body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     };
-    const result = await this.apiRequest('post', url, body, fetchConfig);
+    const result = await this.apiRequest(url, options);
 
-    if (result.statusCode !== 200) {
+    if (result.status !== 200) {
       throw new Error(
-        `Superset failed to refresh access token. Status: ${result.statusCode}, body: ${result.body}`,
+        `Superset failed to refresh access token. Status: ${result.status}, body: ${result.body}`,
       );
     }
 
-    const { access_token } = result.body as SecurityLoginResponseBodySchema;
-    this.accessToken = access_token;
+    try {
+      const json = await result.json();
+      const { access_token } = json as SecurityLoginResponseBodySchema;
+      this.accessToken = access_token;
+    } catch (e) {
+      throw new Error(`Invalid response ${e}`);
+    }
   }
 
-  protected async apiRequest(
-    method: NeedleHttpVerbs,
-    url: string,
-    reqBody: NeedleBodyData = {},
-    options: NeedleOptions = {},
-  ): Promise<NeedleResponse> {
-    // We use the `needle` package instead of the built-in `node-fetch` package
-    // because the fetch package does not let us set rejectUnauthorized=false
-    // to avoid SSL issues. It only lets us set agent, but we need to be able
-    // to set a proxy as the agent instead. So we have to use something that lets
-    // us do this, and needle is one such package.
-    const opts: any = {
-      ...options,
-    };
-    if (this.insecure) opts.rejectUnauthorized = false;
-    if (this.proxyAgent) opts.agent = this.proxyAgent;
-    winston.info(`Superset request ${method} ${url}`);
-
-    // TODO: opts.rejectUnauthorized not working, bad workaround for now
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-    const x = await needle(method, url, reqBody, opts);
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = undefined;
-    return x;
+  protected async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
+    if (this.proxyAgent) options.agent = this.proxyAgent;
+    winston.info(`Superset request ${options.method} ${url}`);
+    return fetch(url, options);
   }
 }

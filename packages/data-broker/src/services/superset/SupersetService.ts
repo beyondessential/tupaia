@@ -21,10 +21,13 @@ import {
 } from '../../types';
 import { DataServiceMapping, DataServiceMappingEntry } from '../DataServiceMapping';
 
-type PullOptions = BasePullOptions & {
-  startDate?: string;
-  endDate?: string;
-};
+type PullOptions = BasePullOptions &
+  Partial<{
+    startDate: string;
+    endDate: string;
+    organisationUnitCode: string;
+    organisationUnitCodes: string[];
+  }>;
 
 export class SupersetService extends Service {
   private readonly pullers: Record<string, any>;
@@ -63,7 +66,17 @@ export class SupersetService extends Service {
     dataSources: DataElement[],
     options: PullOptions,
   ): Promise<AnalyticResults> {
-    const { dataServiceMapping, startDate, endDate } = options;
+    const {
+      dataServiceMapping,
+      startDate,
+      endDate,
+      organisationUnitCode,
+      organisationUnitCodes: inputOrganisationUnitCodes,
+    } = options;
+    const organisationUnitCodes = organisationUnitCode
+      ? [organisationUnitCode]
+      : inputOrganisationUnitCodes;
+
     let mergedResults: Analytic[] = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
       this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
@@ -82,7 +95,7 @@ export class SupersetService extends Service {
           chartId,
           chartDataSources,
           dataServiceMapping,
-          { startDate, endDate },
+          { startDate, endDate, organisationUnitCodes },
         );
         mergedResults = mergedResults.concat(results);
       }
@@ -100,9 +113,9 @@ export class SupersetService extends Service {
     chartId: string,
     dataElements: DataElement[],
     dataServiceMapping: DataServiceMapping,
-    options: { startDate?: string; endDate?: string },
+    options: { startDate?: string; endDate?: string; organisationUnitCodes?: string[] },
   ): Promise<Analytic[]> {
-    const { startDate, endDate } = options;
+    const { startDate, endDate, organisationUnitCodes } = options;
 
     const startDateMoment = startDate ? moment(startDate).startOf('day') : undefined;
     const endDateMoment = endDate ? moment(endDate).endOf('day') : undefined;
@@ -113,6 +126,10 @@ export class SupersetService extends Service {
     const results: Analytic[] = [];
     for (const datum of data) {
       const { item_code: itemCode, store_code: storeCode, value, date } = datum;
+
+      if (organisationUnitCodes && organisationUnitCodes.length > 0) {
+        if (!organisationUnitCodes.includes(storeCode)) continue; // unneeded data
+      }
 
       let dataElement = dataElements.find(de => de.code === itemCode);
       if (!dataElement) {

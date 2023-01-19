@@ -25,8 +25,9 @@ const FileName = styled.span`
   margin-left: 0.8rem;
 `;
 
-export const FileUploadField = ({ onChange, name, fileName, multiple }) => {
+export const FileUploadField = ({ onChange, name, fileName, multiple, textOnButton }) => {
   const inputEl = useRef(null);
+  const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
 
   const handleChange = event => {
     let newName;
@@ -53,7 +54,7 @@ export const FileUploadField = ({ onChange, name, fileName, multiple }) => {
         multiple={multiple}
       />
       <GreyButton component="span" startIcon={<SaveAlt />}>
-        Choose file{multiple ? 's' : ''}
+        {text}
       </GreyButton>
       {fileName && <FileName>{fileName}</FileName>}
     </FlexStart>
@@ -64,6 +65,7 @@ FileUploadField.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
   fileName: PropTypes.string,
+  textOnButton: PropTypes.string,
   multiple: PropTypes.bool,
 };
 
@@ -71,4 +73,5 @@ FileUploadField.defaultProps = {
   onChange: () => {},
   fileName: 'No File chosen',
   multiple: false,
+  textOnButton: null,
 };

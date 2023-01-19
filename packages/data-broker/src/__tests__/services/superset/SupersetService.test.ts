@@ -8,6 +8,8 @@ import {
   createModelsStub,
   DATA_ELEMENTS,
   DEFAULT_DATA_SERVICE_MAPPING,
+  DEFAULT_ORG_UNIT_CODES,
+  DEFAULT_PULL_OPTIONS,
   stubGetSupersetApi,
   SUPERSET_CHART_DATA_RESPONSE,
 } from './SupersetService.stubs';
@@ -43,9 +45,7 @@ describe('SupersetService', () => {
     describe('pullAnalytics()', () => {
       it('pulls', () =>
         expect(
-          supersetService.pull([DATA_ELEMENTS.ITEM_1], 'dataElement', {
-            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
-          }),
+          supersetService.pull([DATA_ELEMENTS.ITEM_1], 'dataElement', DEFAULT_PULL_OPTIONS),
         ).resolves.toEqual({
           metadata: {
             dataElementCodeToName: {},
@@ -75,6 +75,7 @@ describe('SupersetService', () => {
               config: { supersetInstanceCode: 'SUPERSET_INSTANCE_B', supersetChartId: 456 }, // different
             },
           ]),
+          organisationUnitCodes: DEFAULT_ORG_UNIT_CODES,
         });
 
         expect(getSupersetApiInstance).toHaveBeenCalledWith(
@@ -87,9 +88,11 @@ describe('SupersetService', () => {
 
       it('uses supersetItemCode as a fallback', () =>
         expect(
-          supersetService.pull([DATA_ELEMENTS.ITEM_2_CUSTOM_CODE], 'dataElement', {
-            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
-          }),
+          supersetService.pull(
+            [DATA_ELEMENTS.ITEM_2_CUSTOM_CODE],
+            'dataElement',
+            DEFAULT_PULL_OPTIONS,
+          ),
         ).resolves.toEqual({
           metadata: expect.anything(),
           results: [
@@ -110,10 +113,50 @@ describe('SupersetService', () => {
 
       it('throws if supersetChartId not set', () =>
         expect(
-          supersetService.pull([DATA_ELEMENTS.DE_NO_CHART_ID], 'dataElement', {
-            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
-          }),
+          supersetService.pull([DATA_ELEMENTS.DE_NO_CHART_ID], 'dataElement', DEFAULT_PULL_OPTIONS),
         ).toBeRejectedWith('Data Element DE_NO_CHART_ID missing supersetChartId'));
+
+      it('filters by the org units you specify', () =>
+        expect(
+          supersetService.pull([DATA_ELEMENTS.ITEM_1], 'dataElement', {
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+            organisationUnitCode: 'STORE_1',
+          }),
+        ).resolves.toEqual({
+          metadata: expect.anything(),
+          results: [
+            {
+              dataElement: 'ITEM_1',
+              organisationUnit: 'STORE_1',
+              period: '20200101',
+              value: 1,
+            },
+          ],
+        }));
+
+      it('returns data for all org units if no org units specified', () =>
+        expect(
+          supersetService.pull([DATA_ELEMENTS.ITEM_1], 'dataElement', {
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+            organisationUnitCodes: [],
+          }),
+        ).resolves.toEqual({
+          metadata: expect.anything(),
+          results: [
+            {
+              dataElement: 'ITEM_1',
+              organisationUnit: 'STORE_1',
+              period: '20200101',
+              value: 1,
+            },
+            {
+              dataElement: 'ITEM_1',
+              organisationUnit: 'STORE_2',
+              period: '20200101',
+              value: 2,
+            },
+          ],
+        }));
     });
 
     describe('pullEvents()', () => {

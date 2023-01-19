@@ -49,7 +49,7 @@ export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth }) =>
       <Inner>
         <NavLinks>
           {HomeButton}
-          {links.map(({ label, to, isActive, icon }) => (
+          {links.map(({ label, to, isActive, icon, id }) => (
             <StyledTab
               isActive={isActive || isTabActive}
               activeClassName="Mui-selected"
@@ -57,6 +57,7 @@ export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth }) =>
               key={to}
               to={to}
               value={to}
+              id={id ?? null}
             >
               {icon}
               {label}
@@ -77,6 +78,7 @@ NavBar.propTypes = {
       to: PropTypes.string,
       isActive: PropTypes.func,
       icon: PropTypes.node,
+      id: PropTypes.string,
     }),
   ).isRequired,
   Profile: PropTypes.elementType.isRequired,

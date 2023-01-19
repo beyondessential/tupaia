@@ -323,3 +323,8 @@ export const constructThisOrThatHasContent = otherFieldKey => (value, object) =>
   }
   return true;
 };
+
+export const constructIsValidEntityType = entityModel => async type => {
+  const isOneOfEntityTypesValidator = constructIsOneOf(await entityModel.getEntityTypes());
+  return isOneOfEntityTypesValidator(type);
+};

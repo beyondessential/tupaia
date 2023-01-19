@@ -4,11 +4,10 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 import { Row } from '../../../reportBuilder';
 
 import { buildContext, ReqContext } from '../../../reportBuilder/context/buildContext';
-
-import { entityApiMock } from '../testUtils';
 
 describe('buildContext', () => {
   const HIERARCHY = 'test_hierarchy';
@@ -44,14 +43,12 @@ describe('buildContext', () => {
     ],
   };
 
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
-
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Public',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({
+      entity: new MockEntityApi(ENTITIES, RELATIONS),
+    }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
   };
 

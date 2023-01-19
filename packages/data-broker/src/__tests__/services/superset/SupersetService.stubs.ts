@@ -91,6 +91,13 @@ export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
   [],
 );
 
+export const DEFAULT_ORG_UNIT_CODES = ['STORE_1', 'STORE_2'];
+
+export const DEFAULT_PULL_OPTIONS = {
+  dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+  organisationUnitCodes: DEFAULT_ORG_UNIT_CODES,
+};
+
 export const createModelsStub = () => {
   return baseCreateModelsStub({
     dataElement: {
