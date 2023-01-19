@@ -57,7 +57,7 @@ RecursiveColumn.propTypes = {
         }),
       ).isRequired,
     }),
-  ).isRequired,
+  ),
   isLoading: PropTypes.bool,
   error: PropTypes.shape({
     message: PropTypes.string.isRequired,
@@ -66,6 +66,7 @@ RecursiveColumn.propTypes = {
 };
 
 RecursiveColumn.defaultProps = {
+  data: undefined,
   isLoading: false,
   error: null,
 };

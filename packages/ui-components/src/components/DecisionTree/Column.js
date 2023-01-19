@@ -124,7 +124,7 @@ Column.propTypes = {
         }),
       ).isRequired,
     }),
-  ).isRequired,
+  ),
   isLoading: PropTypes.bool,
   error: PropTypes.shape({
     message: PropTypes.string.isRequired,
@@ -135,6 +135,7 @@ Column.propTypes = {
 };
 
 Column.defaultProps = {
+  data: undefined,
   isLoading: false,
   error: null,
   showExpandIcon: true,

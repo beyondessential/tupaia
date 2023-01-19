@@ -4,8 +4,6 @@
  */
 import faker from 'faker';
 
-import { getEntityDescendants } from './getEntityDescendants';
-
 export class FakeAPI {
   sleep(delay = 0) {
     return new Promise(resolve => {
@@ -56,10 +54,6 @@ export class FakeAPI {
       data,
       count: data.length,
     };
-  }
-
-  getEntityDescendants(parent) {
-    return getEntityDescendants(parent);
   }
 
   countryWeek() {
