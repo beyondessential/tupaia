@@ -103,6 +103,7 @@ const NEW_PROJECT_COLUMNS = [
   {
     Header: 'Canonical Types (leave blank for default)',
     source: 'entityTypes',
+    type: 'tooltip',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
@@ -115,8 +116,26 @@ const NEW_PROJECT_COLUMNS = [
   },
 ];
 
+const EDIT_ONLY_FIELDS = [
+  {
+    Header: 'Canonical Types',
+    source: 'entity_hierarchy.canonical_types',
+    width: 140,
+    Cell: ({ value }) => prettyArray(value),
+    Filter: ArrayFilter,
+    editConfig: {
+      optionsEndpoint: 'entityTypes',
+      optionLabelKey: 'type',
+      optionValueKey: 'type',
+      sourceKey: 'entity_hierarchy.canonical_types',
+      allowMultipleValues: true,
+    },
+  },
+];
+
 const COLUMNS = [
   ...FIELDS,
+  ...EDIT_ONLY_FIELDS,
   {
     Header: 'Edit',
     type: 'edit',
@@ -124,7 +143,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Project',
       editEndpoint: 'projects',
-      fields: FIELDS,
+      fields: [...FIELDS, ...EDIT_ONLY_FIELDS],
     },
   },
 ];

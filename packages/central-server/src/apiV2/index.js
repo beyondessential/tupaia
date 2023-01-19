@@ -43,7 +43,7 @@ import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
-import { CreateProject } from './projects';
+import { CreateProject, EditProject } from './projects';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
@@ -300,7 +300,7 @@ apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
 apiV2.put('/mapOverlayGroups/:recordId', useRouteHandler(EditMapOverlayGroups));
 apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayGroupRelations));
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
 apiV2.put('/me', catchAsyncErrors(editUser));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
