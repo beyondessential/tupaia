@@ -62,9 +62,23 @@ export class CreateDashboardVisualisation extends CreateHandler {
     return transactingModels.report.create(report);
   }
 
+  async attachPermissionGroupId(dashboardItemRecord, reportRecord) {
+    const dashboardItemRecordWithPermissionGroupId = { ...dashboardItemRecord };
+    const { permission_group: permissionGroupName } = reportRecord;
+    const permissionGroup = await this.models.permissionGroup.findOne({
+      name: permissionGroupName,
+    });
+    dashboardItemRecordWithPermissionGroupId.permission_group_ids = [permissionGroup.id];
+    return dashboardItemRecordWithPermissionGroupId;
+  }
+
   async createRecord() {
     const dashboardItemRecord = this.getDashboardItemRecord();
     const reportRecord = this.getReportRecord();
+    const dashboardItemRecordWithPermissionGroupId = await this.attachPermissionGroupId(
+      dashboardItemRecord,
+      reportRecord,
+    );
 
     return this.models.wrapInTransaction(async transactingModels => {
       if (dashboardItemRecord.legacy) {
@@ -72,7 +86,9 @@ export class CreateDashboardVisualisation extends CreateHandler {
       } else {
         await this.createReport(transactingModels, reportRecord);
       }
-      const dashboardItem = await transactingModels.dashboardItem.create(dashboardItemRecord);
+      const dashboardItem = await transactingModels.dashboardItem.create(
+        dashboardItemRecordWithPermissionGroupId,
+      );
 
       return {
         // The request/response schema differs slightly from the DB record schema
