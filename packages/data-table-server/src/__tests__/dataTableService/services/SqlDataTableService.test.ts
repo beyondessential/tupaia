@@ -69,7 +69,7 @@ describe('SqlDataTableService', () => {
         .setConfig({
           sql,
           externalDatabaseConnectionCode: externalDatabaseConnection.code,
-          parameters: [{ name: 'entityCode', config: { type: 'string' } }],
+          additionalParameters: [{ name: 'entityCode', config: { type: 'string' } }],
         })
         .build();
 

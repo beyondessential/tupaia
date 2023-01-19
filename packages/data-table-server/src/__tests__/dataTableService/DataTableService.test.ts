@@ -4,11 +4,13 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { UserDefinedDataTableService } from '../../../dataTableService/userDefined/UserDefinedDataTableService';
+import { DataTableService } from '../../dataTableService/DataTableService';
 
-class TestUserDefinedDataTableService extends UserDefinedDataTableService {
+class TestDataTableService extends DataTableService {
+  protected supportsAdditionalParams = true;
+
   public constructor(config: unknown) {
-    super({}, yup.object(), config);
+    super({}, yup.object(), yup.object(), config);
   }
 
   protected async pullData(params: Record<string, unknown>) {
@@ -16,20 +18,24 @@ class TestUserDefinedDataTableService extends UserDefinedDataTableService {
   }
 }
 
-describe('UserDefinedDataTableService', () => {
-  describe('parameters', () => {
+describe('DataTableService', () => {
+  describe('additionalParameters', () => {
     describe('parameter config validation', () => {
       const testData: [string, unknown, string][] = [
         [
           'missing name',
           [{ config: { type: 'string' } }],
-          'parameters[0].name is a required field',
+          'additionalParams[0].name is a required field',
         ],
-        ['missing config', [{ name: 'param' }], 'parameters[0].config.type is a required field'],
+        [
+          'missing config',
+          [{ name: 'param' }],
+          'additionalParams[0].config.type is a required field',
+        ],
         [
           'missing config type',
           [{ name: 'param', config: { required: true } }],
-          'parameters[0].config.type is a required field',
+          'additionalParams[0].config.type is a required field',
         ],
         [
           'unknown config type',
@@ -38,12 +44,14 @@ describe('UserDefinedDataTableService', () => {
         ],
       ];
 
-      it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-        expect(() => new TestUserDefinedDataTableService({ parameters })).toThrow(expectedError);
+      it.each(testData)('%s', (_, additionalParams: unknown, expectedError: string) => {
+        expect(() => new TestDataTableService({ additionalParams }).getParameters()).toThrow(
+          expectedError,
+        );
       });
     });
 
-    const parameters = [
+    const additionalParams = [
       { name: 'stringParam', config: { type: 'string' } },
       { name: 'dateParam', config: { type: 'date' } },
       { name: 'arrayParam', config: { type: 'array', innerType: { type: 'string' } } },
@@ -52,21 +60,23 @@ describe('UserDefinedDataTableService', () => {
       { name: 'oneOfParam', config: { type: 'string', oneOf: ['cat', 'dog'] } },
     ];
 
-    describe('user defined parameters in getParameters()', () => {
+    describe('additionalParameters in getParameters()', () => {
       it('returns empty parameters if none provided', () => {
-        const testService = new TestUserDefinedDataTableService({});
+        const testService = new TestDataTableService({});
         const result = testService.getParameters();
         expect(result).toEqual([]);
       });
 
       it('returns parameters that are provided in the config', () => {
-        const testService = new TestUserDefinedDataTableService({ parameters });
+        const testService = new TestDataTableService({
+          additionalParams,
+        });
         const result = testService.getParameters();
-        expect(result).toEqual(parameters);
+        expect(result).toEqual(additionalParams);
       });
     });
 
-    describe('user defined parameters in fetchData()', () => {
+    describe('additionalParameters in fetchData()', () => {
       const validParameterValues = {
         stringParam: 'test',
         dateParam: '2020-01-01T00:00:00.000Z',
@@ -76,7 +86,7 @@ describe('UserDefinedDataTableService', () => {
         oneOfParam: 'cat',
       };
 
-      describe('user defined parameter validation', () => {
+      describe('additionalParameter validation', () => {
         const testData: [string, Record<string, unknown>, string][] = [
           ['dateParam not a date', { dateParam: 'cat' }, 'dateParam must be a `date` type'],
           ['arrayParam not an array', { arrayParam: false }, 'arrayParam must be a `array` type'],
@@ -96,7 +106,7 @@ describe('UserDefinedDataTableService', () => {
           '%s',
           (_, parameterValues: Record<string, unknown>, expectedError: string) => {
             expect(() =>
-              new TestUserDefinedDataTableService({ parameters }).fetchData({
+              new TestDataTableService({ additionalParams }).fetchData({
                 ...validParameterValues,
                 ...parameterValues,
               }),
@@ -106,7 +116,9 @@ describe('UserDefinedDataTableService', () => {
       });
 
       it('parameters are passed in to fetchData()', async () => {
-        const testService = new TestUserDefinedDataTableService({ parameters });
+        const testService = new TestDataTableService({
+          additionalParams,
+        });
         const [results] = await testService.fetchData(validParameterValues);
         expect(results).toEqual({
           ...validParameterValues,

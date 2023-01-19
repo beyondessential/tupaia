@@ -6,9 +6,8 @@
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
-import { yupSchemaToDataTableParams } from '../utils';
 
-const paramsSchema = yup.object().shape({
+const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   entityCodes: yup.array().of(yup.string().required()).required(),
   filter: yup.object(),
@@ -26,12 +25,14 @@ type Entity = Record<string, unknown>;
  */
 export class EntitiesDataTableService extends DataTableService<
   EntitiesDataTableContext,
-  typeof paramsSchema,
+  typeof requiredParamsSchema,
   typeof configSchema,
   Entity
 > {
+  protected supportsAdditionalParams = false;
+
   public constructor(context: EntitiesDataTableContext, config: unknown) {
-    super(context, paramsSchema, configSchema, config);
+    super(context, requiredParamsSchema, configSchema, config);
   }
 
   protected async pullData(params: {
@@ -62,26 +63,5 @@ export class EntitiesDataTableService extends DataTableService<
     );
 
     return entities.concat(descendants);
-  }
-
-  public getParameters() {
-    const {
-      hierarchy,
-      entityCodes,
-      filter,
-      fields,
-      includeDescendants,
-    } = yupSchemaToDataTableParams(paramsSchema);
-
-    return [
-      { name: 'hierarchy', config: hierarchy },
-      {
-        name: 'entityCodes',
-        config: entityCodes,
-      },
-      { name: 'filter', config: filter },
-      { name: 'fields', config: fields },
-      { name: 'includeDescendants', config: includeDescendants },
-    ];
   }
 }

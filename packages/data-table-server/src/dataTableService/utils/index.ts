@@ -5,3 +5,4 @@
 
 export { dataTableParamsToYupSchema } from './dataTableParamsToYupSchema';
 export { yupSchemaToDataTableParams } from './yupSchemaToDataTableParams';
+export { orderParametersByName } from './orderParametersByName';

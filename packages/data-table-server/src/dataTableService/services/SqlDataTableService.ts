@@ -5,7 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 import { DataTableServerModelRegistry } from '../../types';
-import { UserDefinedDataTableService } from './UserDefinedDataTableService';
+import { DataTableService } from '../DataTableService';
 
 const configSchema = yup.object().shape({
   externalDatabaseConnectionCode: yup.string().required(),
@@ -16,13 +16,16 @@ type SqlDataTableContext = {
   models: DataTableServerModelRegistry;
 };
 
-export class SqlDataTableService extends UserDefinedDataTableService<
+export class SqlDataTableService extends DataTableService<
   SqlDataTableContext,
+  yup.AnyObjectSchema,
   typeof configSchema,
   Record<string, unknown>
 > {
+  protected supportsAdditionalParams = true;
+
   public constructor(context: SqlDataTableContext, config: unknown) {
-    super(context, configSchema, config);
+    super(context, yup.object(), configSchema, config);
   }
 
   protected async pullData(params: Record<string, unknown>) {
