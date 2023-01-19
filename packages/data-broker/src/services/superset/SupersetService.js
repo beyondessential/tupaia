@@ -42,7 +42,17 @@ export class SupersetService extends Service {
    * @private
    */
   async pullAnalytics(dataSources, options) {
-    const { dataServiceMapping, startDate, endDate } = options;
+    const {
+      dataServiceMapping,
+      startDate,
+      endDate,
+      organisationUnitCode,
+      organisationUnitCodes: inputOrganisationUnitCodes,
+    } = options;
+    const organisationUnitCodes = organisationUnitCode
+      ? [organisationUnitCode]
+      : inputOrganisationUnitCodes;
+
     let mergedResults = [];
     for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
       this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
@@ -61,7 +71,7 @@ export class SupersetService extends Service {
           chartId,
           chartDataSources,
           dataServiceMapping,
-          { startDate, endDate },
+          { startDate, endDate, organisationUnitCodes },
         );
         mergedResults = mergedResults.concat(results);
       }
@@ -79,12 +89,12 @@ export class SupersetService extends Service {
    * @param {string} chartId
    * @param {DataElement[]} dataElements
    * @param {DataServiceMapping} dataServiceMapping
-   * @param {{ startDate?: string; endDate?: string }} options
+   * @param {{ startDate?: string; endDate?: string, organisationUnitCodes?: string[] }} options
    * @return {Promise<Object[]>} analytic results
    * @private
    */
   async pullForApiForChart(api, chartId, dataElements, dataServiceMapping, options) {
-    const { startDate, endDate } = options;
+    const { startDate, endDate, organisationUnitCodes } = options;
 
     const startDateMoment = startDate ? moment(startDate).startOf('day') : undefined;
     const endDateMoment = endDate ? moment(endDate).endOf('day') : undefined;
@@ -95,6 +105,10 @@ export class SupersetService extends Service {
     const results = [];
     for (const datum of data) {
       const { item_code: itemCode, store_code: storeCode, value, date } = datum;
+
+      if (organisationUnitCodes && organisationUnitCodes.length > 0) {
+        if (!organisationUnitCodes.includes(storeCode)) continue; // unneeded data
+      }
 
       let dataElement = dataElements.find(de => de.code === itemCode);
       if (!dataElement) {

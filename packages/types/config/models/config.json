@@ -1,5 +1,5 @@
 {
-  "filename": "src/models.ts",
+  "filename": "src/types/models.ts",
   "tableNameCasing": "pascal",
   "interfaceNameFormat": "${table}",
   "excludedTables": [
@@ -20,7 +20,7 @@
   "typeOverrides": {
     "public.report.config": "ReportConfig"
   },
-  "template": "config/template.handlebars",
+  "template": "config/models/template.handlebars",
   "custom": {
     "imports": {
       "ReportConfig": "./models-extra"
