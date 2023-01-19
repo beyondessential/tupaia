@@ -52,7 +52,7 @@ export class SupersetService extends Service {
   public async pull(
     dataSources: DataSource[],
     type: DataSourceType,
-    options: BasePullOptions,
+    options: PullOptions,
   ): Promise<AnalyticResults | EventResults | SyncGroupResults> | never {
     const puller = this.pullers[type];
     return puller(dataSources, options);
