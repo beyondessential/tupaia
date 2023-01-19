@@ -1,6 +1,6 @@
 'use strict';
 
-import { updateValues } from '../utilities';
+import { deleteObject, updateValues } from '../utilities';
 
 var dbm;
 var type;
@@ -71,11 +71,15 @@ const PERMISSION_GROUPS = {
   ],
 };
 
+const DELETE_PERMISSION_GROUP_ID = '627b5c30052c6c2181002dcb';
+
+const TABLE_NAME = 'permission_group';
+
 exports.up = async function (db) {
   for (const permissionGroup of PERMISSION_GROUPS.nameAndParentChange) {
     await updateValues(
       db,
-      'permission_group',
+      TABLE_NAME,
       { name: permissionGroup.name, parent_id: permissionGroup.parent_id },
       { id: permissionGroup.id },
     );
@@ -84,11 +88,13 @@ exports.up = async function (db) {
   for (const permissionGroup of PERMISSION_GROUPS.parentChangeOnly) {
     await updateValues(
       db,
-      'permission_group',
+      TABLE_NAME,
       { parent_id: permissionGroup.parent_id },
       { id: permissionGroup.id },
     );
   }
+
+  return deleteObject(db, TABLE_NAME, { id: DELETE_PERMISSION_GROUP_ID });
 };
 
 exports.down = function (db) {
