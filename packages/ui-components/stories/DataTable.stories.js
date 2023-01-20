@@ -86,8 +86,65 @@ export const SQLQueryEditor = () => {
   );
 };
 
+const useParameters = defaultParameters => {
+  const [parameters, setParameters] = useState(defaultParameters);
+
+  const onAdd = () => {
+    const defaultNewParameter = {
+      id: `parameter_${parameters.length}`,
+      name: 'orgUnitCode',
+      type: 'text',
+      required: true,
+      defaultValue: 'UFO_01',
+      hasDefaultValue: true,
+      hasError: false,
+    };
+
+    setParameters([...parameters, defaultNewParameter]);
+  };
+
+  const onDelete = selectedParameterId => {
+    const newParameterList = parameters.filter(p => p.id !== selectedParameterId);
+    setParameters(newParameterList);
+  };
+
+  const onChange = (id, key, newValue) => {
+    const newParameters = [...parameters];
+    const index = parameters.findIndex(p => p.id === id);
+
+    // validate name input
+    if (key === 'name') {
+      try {
+        if (newValue === '') {
+          throw new Error('Cannot be empty');
+        }
+
+        if (parameters.findIndex(p => p.name === newValue) !== -1) {
+          throw new Error('Duplicated parameter name');
+        }
+
+        const regex = new RegExp('^[A-Za-z0-9_]+$');
+        if (!regex.test(newValue)) {
+          throw new Error('Contains space or special characters');
+        }
+
+        newParameters[index].hasError = false;
+        newParameters[index].error = '';
+      } catch (e) {
+        newParameters[index].hasError = true;
+        newParameters[index].error = e.message;
+      }
+    }
+
+    newParameters[index][key] = newValue;
+    setParameters(newParameters);
+  };
+
+  return { parameters, onAdd, onDelete, onChange };
+};
+
 export const CustomParamaterList = () => {
-  const [parameters, setParameters] = useState([
+  const { parameters, onAdd, onDelete, onChange } = useParameters([
     {
       id: 'parameter_0',
       name: 'dataElementcode',
@@ -107,32 +164,19 @@ export const CustomParamaterList = () => {
     },
   ]);
 
-  const addParameters = () => {
-    const defaultNewParameter = {
-      id: `parameter_${parameters.length}`,
-      name: 'orgUnitCode',
-      required: true,
-      defaultValue: 'UFO_01',
-      hasDefaultValue: true,
-      hasError: false,
-    };
-
-    setParameters([...parameters, defaultNewParameter]);
-  };
-
   return (
     <div>
-      <BaseParameterList parameters={parameters} setParameters={setParameters} />
-      <Button variant="outlined" startIcon={<AddIcon />} onClick={addParameters}>
+      <BaseParameterList parameters={parameters} onDelete={onDelete} onChange={onChange} />
+      <Button variant="outlined" startIcon={<AddIcon />} onClick={onAdd}>
         Add Random Parameter
       </Button>
-      <p>{JSON.stringify(parameters, null, 4)}</p>
+      <pre>{JSON.stringify(parameters, null, 4)}</pre>
     </div>
   );
 };
 
 export const PreviewFilter = () => {
-  const [parameters, setParameters] = useState([
+  const { parameters, onAdd, onChange } = useParameters([
     {
       id: 'parameter_0',
       name: 'dataElementCode',
@@ -177,33 +221,13 @@ export const PreviewFilter = () => {
     },
   ]);
 
-  const addParameters = () => {
-    const defaultNewParameter = {
-      id: `parameter_${parameters.length}`,
-      name: 'dataElementcode',
-      type: 'text',
-      required: true,
-      defaultValue: 'UFO_01',
-      hasDefaultValue: true,
-      inputFilterValue: null,
-    };
-
-    setParameters([...parameters, defaultNewParameter]);
-  };
-
-  const modifyParameter = (index, key, newValue) => {
-    const newParameters = [...parameters];
-    newParameters[index][key] = newValue;
-    setParameters(newParameters);
-  };
-
   return (
     <div>
-      <BasePreviewFilter parameters={parameters} modifyParameter={modifyParameter} />
-      <Button variant="outlined" startIcon={<AddIcon />} onClick={addParameters}>
+      <BasePreviewFilter parameters={parameters} onChange={onChange} />
+      <Button variant="outlined" startIcon={<AddIcon />} onClick={onAdd}>
         Add Random Parameter
       </Button>
-      <p>{JSON.stringify(parameters, null, 4)}</p>
+      <pre>{JSON.stringify(parameters, null, 4)}</pre>
     </div>
   );
 };

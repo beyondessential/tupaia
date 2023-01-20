@@ -10,10 +10,10 @@ import Grid from '@material-ui/core/Grid';
 import { ParametersType } from '../types';
 import { typeOptions } from '../constants';
 
-export const PreviewFilter = ({ parameters, modifyParameter }) => {
+export const PreviewFilter = ({ parameters, onChange }) => {
   return (
     <Grid container spacing={2}>
-      {parameters.map((p, index) => {
+      {parameters.map(p => {
         const option = typeOptions.find(t => t.value === p.type);
         const { FilterComponent } = option;
         if (FilterComponent) {
@@ -21,9 +21,8 @@ export const PreviewFilter = ({ parameters, modifyParameter }) => {
             <Grid item xs={Math.floor(12 / parameters.length)}>
               <FilterComponent
                 {...p}
-                index={index}
                 onChange={newValue => {
-                  modifyParameter(index, 'inputFilterValue', newValue);
+                  onChange(p.id, 'inputFilterValue', newValue);
                 }}
               />
             </Grid>
@@ -37,7 +36,7 @@ export const PreviewFilter = ({ parameters, modifyParameter }) => {
 
 PreviewFilter.propTypes = {
   parameters: ParametersType.isRequired,
-  modifyParameter: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 PreviewFilter.defaultProps = {};
