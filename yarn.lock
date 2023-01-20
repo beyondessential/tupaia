@@ -5743,6 +5743,7 @@ __metadata:
     date-fns: ^2.12.0
     faker: ^4.1.0
     fast-glob: ^3.2.5
+    js-sql-parser: ^1.4.1
     jsoneditor: ^9.0.0
     leaflet: ^1.7.1
     lodash.get: ^4.4.2
@@ -21072,6 +21073,13 @@ __metadata:
   version: 0.8.0
   resolution: "js-sha3@npm:0.8.0"
   checksum: 75df77c1fc266973f06cce8309ce010e9e9f07ec35ab12022ed29b7f0d9c8757f5a73e1b35aa24840dced0dea7059085aa143d817aea9e188e2a80d569d9adce
+  languageName: node
+  linkType: hard
+
+"js-sql-parser@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "js-sql-parser@npm:1.4.1"
+  checksum: 061e2b2bc63734013e25893e30a904a75d6eae8454d0e0b7383d2f2d31f49782f1575a735d6ce16a18a0bf4bc70a9ab8ea97eee638fef8c7eb0e1b7e3018fe10
   languageName: node
   linkType: hard
 
