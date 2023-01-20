@@ -15,9 +15,16 @@ import { mergeFilter } from '../utilities';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
+  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
 
   // To view a dashboard item, the user has to have access to the relation between the
   // dashboard item and ANY of the dashboards it is in
+  // OR user's access policy covers the dashboard item's permission_group_ids column
+
+  if (permittedDashboardItems.includes(dashboardItemId)) {
+    return true;
+  }
+
   for (const dashboard of dashboards) {
     if (
       await hasDashboardRelationGetPermissions(
@@ -38,10 +45,16 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
+  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
 
   // To edit a dashboard item, the user has to have access to the relation between the
   // dashboard item and ALL of the dashboards it is in
-  // scrap this and just check edit permission on the column
+  // OR user's access policy covers the dashboard item's permission_group_ids column
+
+  if (permittedDashboardItems.includes(dashboardItemId)) {
+    return true;
+  }
+
   for (const dashboard of dashboards) {
     if (
       !(await hasDashboardRelationEditPermissions(
@@ -99,6 +112,17 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
     d => d.id,
   );
 
+  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
+
+  dbConditions['dashboard_item.id'] = mergeFilter(
+    [...permittedDashboardItemsFromRelationsIds, ...permittedDashboardItems],
+    dbConditions['dashboard_item.id'],
+  );
+
+  return dbConditions;
+};
+
+const getPermittedDashboardItems = async (accessPolicy, models) => {
   const allDashboardItems = await models.dashboardItem.all();
   const allPermissionGroups = await models.permissionGroup.all();
   const permissionGroupIdToName = {};
@@ -120,10 +144,5 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
     })
     .map(item => item.id);
 
-  dbConditions['dashboard_item.id'] = mergeFilter(
-    [...permittedDashboardItemsFromRelationsIds, ...permittedItems],
-    dbConditions['dashboard_item.id'],
-  );
-
-  return dbConditions;
+  return permittedItems;
 };
