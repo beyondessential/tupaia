@@ -36,46 +36,7 @@ const DeleteOutlinedIcon = styled(BaseDeleteOutlinedIcon)`
   font-size: 35px;
 `;
 
-export const ParameterList = ({ parameters, setParameters }) => {
-  const onDelete = selectedParameterId => {
-    const newParameterList = parameters.filter(p => p.id !== selectedParameterId);
-    setParameters(newParameterList);
-  };
-
-  const onChange = (id, key, targetKey = 'value') => event => {
-    const newParameters = [...parameters];
-    const index = parameters.findIndex(p => p.id === id);
-
-    // validate name input
-    if (key === 'name') {
-      try {
-        const newValue = event.target[targetKey];
-
-        if (newValue === '') {
-          throw new Error('Cannot be empty');
-        }
-
-        if (parameters.findIndex(p => p.name === newValue) !== -1) {
-          throw new Error('Duplicated parameter name');
-        }
-
-        const regex = new RegExp('^[A-Za-z0-9_]+$');
-        if (!regex.test(newValue)) {
-          throw new Error('Contains space or special characters');
-        }
-
-        newParameters[index].hasError = false;
-        newParameters[index].error = '';
-      } catch (e) {
-        newParameters[index].hasError = true;
-        newParameters[index].error = e.message;
-      }
-    }
-
-    newParameters[index][key] = event.target[targetKey];
-    setParameters(newParameters);
-  };
-
+export const ParameterList = ({ parameters, onDelete, onChange }) => {
   return (
     <RootDiv>
       {parameters.map(
@@ -90,7 +51,9 @@ export const ParameterList = ({ parameters, setParameters }) => {
                     value={name}
                     placeholder="Text"
                     label="Name"
-                    onChange={onChange(id, 'name')}
+                    onChange={event => {
+                      onChange(id, 'name', event.target.value);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -98,7 +61,9 @@ export const ParameterList = ({ parameters, setParameters }) => {
                     value={type}
                     label="Type"
                     options={typeOptions}
-                    onChange={onChange(id, 'type')}
+                    onChange={event => {
+                      onChange(id, 'type', event.target.value);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={1}>
@@ -113,13 +78,17 @@ export const ParameterList = ({ parameters, setParameters }) => {
                     label="Required"
                     color="primary"
                     checked={required}
-                    onChange={onChange(id, 'required', 'checked')}
+                    onChange={event => {
+                      onChange(id, 'required', event.target.checked);
+                    }}
                   />
                   <Checkbox
                     label="Add default value"
                     color="primary"
                     checked={hasDefaultValue}
-                    onChange={onChange(id, 'hasDefaultValue', 'checked')}
+                    onChange={event => {
+                      onChange(id, 'hasDefaultValue', event.target.checked);
+                    }}
                   />
                 </FlexStart>
               </Grid>
@@ -129,7 +98,9 @@ export const ParameterList = ({ parameters, setParameters }) => {
                     value={defaultValue}
                     placeholder="Text"
                     label="Default value"
-                    onChange={onChange(id, 'defaultValue')}
+                    onChange={event => {
+                      onChange(id, 'defaultValue', event.target.value);
+                    }}
                   />
                 </Grid>
               )}
@@ -145,8 +116,7 @@ export const ParameterList = ({ parameters, setParameters }) => {
 };
 
 ParameterList.propTypes = {
-  setParameters: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   parameters: ParametersType.isRequired,
 };
-
-ParameterList.defaultProps = {};
