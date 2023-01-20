@@ -1,5 +1,7 @@
 'use strict';
 
+import { arrayToDbString } from '../utilities';
+
 var dbm;
 var type;
 var seed;
@@ -15,24 +17,34 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  // Copy sync_cursor over to data_service_sync_group
-  const internalDataTables = (await db.runSql("SELECT * FROM data_table WHERE type = 'internal'"))
-    .rows;
+  const internalDataTables = await db.executeSql(
+    "SELECT * FROM data_table WHERE type = 'internal'",
+  );
+
+  const newEnum = internalDataTables.map(dt => dt.code);
+  await db.executeSql(
+    `
+      ALTER TYPE data_table_type RENAME TO data_table_type_temp$;
+      CREATE TYPE data_table_type AS ENUM(${arrayToDbString(newEnum)});
+      ALTER TABLE data_table DROP COLUMN type;
+      ALTER TABLE data_table ADD COLUMN type data_table_type;
+      DROP TYPE data_table_type_temp$;
+    `,
+  );
+
   for (let i = 0; i < internalDataTables.length; i++) {
     const dataTable = internalDataTables[i];
-    await db.runSql(
-      `
-      ALTER TYPE data_table_type ADD VALUE ?;
-    `,
-      [dataTable.code],
-    );
-    await db.runSql(
-      `
-      UPDATE data_table SET type = ? WHERE code = ?;
-    `,
-      [dataTable.code, dataTable.code],
-    );
+    await db.executeSql(`UPDATE data_table SET type = ? WHERE code = ?;`, [
+      dataTable.code,
+      dataTable.code,
+    ]);
   }
+
+  await db.executeSql(
+    `
+    ALTER TYPE data_table_type ADD VALUE 'sql';
+    `,
+  );
 };
 
 exports.down = function (db) {
