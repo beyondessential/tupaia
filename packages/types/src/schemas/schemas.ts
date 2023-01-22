@@ -938,17 +938,20 @@ export const DataTableSchema = {
 			}
 		},
 		"type": {
-			"type": "string",
 			"enum": [
-				"internal"
-			]
+				"analytics",
+				"entities",
+				"entity_relations",
+				"events",
+				"sql"
+			],
+			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
 		"code",
-		"id",
-		"type"
+		"id"
 	]
 } 
 
@@ -2701,10 +2704,14 @@ export const DisasterEventTypeSchema = {
 } 
 
 export const DataTableTypeSchema = {
-	"type": "string",
 	"enum": [
-		"internal"
-	]
+		"analytics",
+		"entities",
+		"entity_relations",
+		"events",
+		"sql"
+	],
+	"type": "string"
 } 
 
 export const DataSourceTypeSchema = {

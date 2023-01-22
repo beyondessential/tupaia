@@ -175,7 +175,7 @@ export interface DataTable {
   'description'?: string | null;
   'id': string;
   'permissionGroups'?: string[];
-  'type': DataTableType;
+  'type'?: DataTableType | null;
 }
 export interface DhisInstance {
   'code': string;
@@ -627,7 +627,11 @@ export enum DisasterEventType {
   'resolve' = 'resolve',
 }
 export enum DataTableType {
-  'internal' = 'internal',
+  'analytics' = 'analytics',
+  'events' = 'events',
+  'entity_relations' = 'entity_relations',
+  'entities' = 'entities',
+  'sql' = 'sql',
 }
 export enum DataSourceType {
   'dataElement' = 'dataElement',
