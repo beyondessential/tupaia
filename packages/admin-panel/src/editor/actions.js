@@ -77,11 +77,10 @@ export const openBulkEditModal = (
   }
 };
 
-export const openEditModal = ({ editEndpoint, title, fields }, recordId) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
+export const openEditModal = (
+  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {} },
+  recordId,
+) => async (dispatch, getState, { api }) => {
   if (recordId) {
     const endpoint = `${editEndpoint}/${recordId}`;
     dispatch({
@@ -130,9 +129,11 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
     dispatch({
       type: EDITOR_OPEN,
       fields,
+      FieldsComponent,
       title,
       recordData: {},
       endpoint: editEndpoint,
+      extraDialogProps,
     });
   }
 };
