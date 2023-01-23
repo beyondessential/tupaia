@@ -283,7 +283,7 @@ describe('mergeRows', () => {
           using: 'exclude',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101' },
           { period: '20200102' },

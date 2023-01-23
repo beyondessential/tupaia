@@ -66,7 +66,7 @@ const generateFakeAnalytics = () => {
     organisationUnits.forEach(organisationUnit =>
       dataElements.forEach(dataElement => {
         // Only add each 234th analytic, to cut down on the record size to make error messages more helpful
-        if (count % 234 === 0) {
+        if (count % 233 === 0) {
           fakeAnalytics.push({ period, organisationUnit, dataElement, value: count });
         }
 

@@ -156,8 +156,8 @@ describe('fetchData', () => {
     });
 
     it('can join on multiple fields', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO'];
+      const dataElements = ['BCD1', 'BCD2'];
+      const organisationUnits = ['TO', 'PG'];
       const startDate = '2017-01-01';
       const endDate = '2022-01-02';
       const transform = buildTestTransform(
@@ -176,8 +176,8 @@ describe('fetchData', () => {
                 newDataColumn: 'organisationUnit',
               },
               {
-                tableColumn: 'date',
-                newDataColumn: 'period',
+                tableColumn: 'question_code',
+                newDataColumn: 'dataElement',
               },
             ],
           },
@@ -194,16 +194,30 @@ describe('fetchData', () => {
 
       const existingTable = [
         {
-          date: '20200101',
+          question_code: 'BCD1',
           entity: 'TO',
         },
         {
-          date: '20200101',
+          question_code: 'BCD2',
           entity: 'PG',
         },
       ];
 
-      const resultTable = fetchedAnalytics.map(analytic => ({ ...existingTable[0], ...analytic }));
+      const resultTable = existingTable
+        .map(row => {
+          const matchingAnalytics = fetchedAnalytics.filter(
+            analytic =>
+              analytic.dataElement === row.question_code &&
+              analytic.organisationUnit === row.entity,
+          );
+
+          if (!matchingAnalytics) {
+            return row;
+          }
+
+          return matchingAnalytics.map(analytic => ({ ...row, ...analytic }));
+        })
+        .flat();
 
       const received = await transform(TransformTable.fromRows(existingTable));
       expect(received).toStrictEqual(TransformTable.fromRows(resultTable));
