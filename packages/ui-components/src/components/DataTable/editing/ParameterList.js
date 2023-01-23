@@ -9,11 +9,11 @@ import styled from 'styled-components';
 import { Divider as BaseDivider } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import BaseDeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import { Checkbox, Select as BaseSelect, TextField as BaseTextField } from '../Inputs';
-import { IconButton as BaseButton } from '../IconButton';
-import { FlexStart } from '../Layout';
+import { Checkbox, Select as BaseSelect, TextField as BaseTextField } from '../../Inputs';
+import { IconButton as BaseButton } from '../../IconButton';
+import { FlexStart } from '../../Layout';
 import { ParametersType } from './types';
-import { typeOptions } from './constants';
+import { FilterTypeOptions } from '../PreviewFilters';
 
 const RootDiv = styled.div`
   flexgrow: 1;
@@ -60,7 +60,7 @@ export const ParameterList = ({ parameters, onDelete, onChange }) => {
                   <Select
                     value={type}
                     label="Type"
-                    options={typeOptions}
+                    options={FilterTypeOptions}
                     onChange={event => {
                       onChange(id, 'type', event.target.value);
                     }}

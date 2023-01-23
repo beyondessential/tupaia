@@ -4,7 +4,7 @@
  */
 
 import { getChartTableData } from './getChartTableData';
-import { useDataTableExport } from '../../DataPreviewTable/useDataTableExport';
+import { useDataTableExport } from '../../DataTable/useDataTableExport';
 
 export const useChartDataExport = (viewContent, title) => {
   const { columns, data } = getChartTableData(viewContent);

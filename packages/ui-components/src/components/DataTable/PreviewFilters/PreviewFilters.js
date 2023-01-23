@@ -7,14 +7,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 
-import { ParametersType } from '../types';
-import { typeOptions } from '../constants';
+import { ParametersType } from '../editing/types';
+import { FilterTypeOptions } from './filters';
 
-export const PreviewFilter = ({ parameters, onChange }) => {
+export const PreviewFilters = ({ parameters, onChange }) => {
   return (
     <Grid container spacing={2}>
       {parameters.map(p => {
-        const option = typeOptions.find(t => t.value === p.type);
+        const option = FilterTypeOptions.find(t => t.value === p.type);
         const { FilterComponent } = option;
         if (FilterComponent) {
           return (
@@ -34,9 +34,9 @@ export const PreviewFilter = ({ parameters, onChange }) => {
   );
 };
 
-PreviewFilter.propTypes = {
+PreviewFilters.propTypes = {
   parameters: ParametersType.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
-PreviewFilter.defaultProps = {};
+PreviewFilters.defaultProps = {};

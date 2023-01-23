@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
 import { Select } from '../../../Inputs';
-import { ParameterType } from '../../types';
+import { ParameterType } from '../../editing';
 
 export const BooleanField = ({
   id,

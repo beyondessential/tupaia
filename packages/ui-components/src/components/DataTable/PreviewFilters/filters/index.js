@@ -3,4 +3,4 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export { PreviewFilter } from './PreviewFilter';
+export { FilterTypeOptions } from './FilterTypeOptions';
