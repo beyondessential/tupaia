@@ -1,8 +1,9 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export { SQLQueryEditor } from './SQLQueryEditor';
-export { ParameterList } from './ParameterList';
-export { PreviewFilter } from './preview/PreviewFilter';
+export * from './DataTable';
+export * from './useDataTableExport';
+export { ParameterList } from './editing';
+export { PreviewFilters } from './PreviewFilters';

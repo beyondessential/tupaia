@@ -27,7 +27,7 @@ const getColumnId = ({ id, accessor, Header }) => {
   return Header;
 };
 
-export const DataPreviewTable = ({ columns, data, className, rowLimit }) => {
+export const DataTable = ({ columns, data, className, rowLimit }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -93,14 +93,14 @@ export const DataPreviewTable = ({ columns, data, className, rowLimit }) => {
   );
 };
 
-DataPreviewTable.propTypes = {
+DataTable.propTypes = {
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
   className: PropTypes.string,
   rowLimit: PropTypes.number,
 };
 
-DataPreviewTable.defaultProps = {
+DataTable.defaultProps = {
   className: null,
   rowLimit: null,
 };

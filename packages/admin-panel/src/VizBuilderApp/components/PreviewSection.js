@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { Chart, FlexSpaceBetween, FetchLoader, DataPreviewTable } from '@tupaia/ui-components';
+import { Chart, FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
@@ -41,7 +41,7 @@ const PanelTabPanel = styled.div`
   border-top: none;
 `;
 
-const StyledTable = styled(DataPreviewTable)`
+const StyledTable = styled(DataTable)`
   table {
     border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};

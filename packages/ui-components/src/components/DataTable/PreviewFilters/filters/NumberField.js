@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
 import { TextField as BaseTextField } from '../../../Inputs';
-import { ParameterType } from '../../types';
+import { ParameterType } from '../../editing';
 
 export const NumberField = ({
   id,

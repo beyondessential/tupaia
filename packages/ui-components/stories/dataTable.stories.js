@@ -9,11 +9,10 @@ import { useForm } from 'react-hook-form';
 import { Add as AddIcon, IndeterminateCheckBox } from '@material-ui/icons';
 import styled from 'styled-components';
 import {
-  SQLQueryEditor as BaseSQLQueryEditor,
   ParameterList as BaseParameterList,
-  PreviewFilter as BasePreviewFilter,
+  PreviewFilters as BasePreviewFilters,
 } from '../src/components/DataTable';
-import { Button, IconButton, TextField } from '../src';
+import { SQLQueryEditor as BaseSQLQueryEditor, Button, IconButton, TextField } from '../src';
 
 export default {
   title: 'Inputs/DataTable',
@@ -175,7 +174,7 @@ export const CustomParamaterList = () => {
   );
 };
 
-export const PreviewFilter = () => {
+export const PreviewFilters = () => {
   const { parameters, onAdd, onChange } = useParameters([
     {
       id: 'parameter_0',
@@ -223,7 +222,7 @@ export const PreviewFilter = () => {
 
   return (
     <div>
-      <BasePreviewFilter parameters={parameters} onChange={onChange} />
+      <BasePreviewFilters parameters={parameters} onChange={onChange} />
       <Button variant="outlined" startIcon={<AddIcon />} onClick={onAdd}>
         Add Random Parameter
       </Button>

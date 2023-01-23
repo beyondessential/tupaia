@@ -5,7 +5,7 @@
 
 export * from './Chart';
 export * from './DataLibrary';
-export * from './DataPreviewTable';
+export * from './DataTable';
 export * from './DateRangePicker';
 export * from './Icons';
 export * from './Inputs';
