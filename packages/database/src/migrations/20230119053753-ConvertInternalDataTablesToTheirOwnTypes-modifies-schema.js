@@ -17,12 +17,11 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  const internalDataTables = await db.executeSql(
-    "SELECT * FROM data_table WHERE type = 'internal'",
-  );
+  const internalDataTables = (await db.runSql("SELECT * FROM data_table WHERE type = 'internal'"))
+    .rows;
 
   const newEnum = internalDataTables.map(dt => dt.code);
-  await db.executeSql(
+  await db.runSql(
     `
       ALTER TYPE data_table_type RENAME TO data_table_type_temp$;
       CREATE TYPE data_table_type AS ENUM(${arrayToDbString(newEnum)});
@@ -34,13 +33,13 @@ exports.up = async function (db) {
 
   for (let i = 0; i < internalDataTables.length; i++) {
     const dataTable = internalDataTables[i];
-    await db.executeSql(`UPDATE data_table SET type = ? WHERE code = ?;`, [
+    await db.runSql(`UPDATE data_table SET type = ? WHERE code = ?;`, [
       dataTable.code,
       dataTable.code,
     ]);
   }
 
-  await db.executeSql(
+  await db.runSql(
     `
     ALTER TYPE data_table_type ADD VALUE 'sql';
     `,
