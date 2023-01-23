@@ -16,7 +16,6 @@
   ],
   "schemas": ["public"],
   "enumNameCasing": "pascal",
-  "columnNameCasing": "camel",
   "typeOverrides": {
     "public.report.config": "ReportConfig"
   },

@@ -333,11 +333,11 @@ export const AccessRequestSchema = {
 		"approved": {
 			"type": "boolean"
 		},
-		"createdTime": {
+		"created_time": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"entityId": {
+		"entity_id": {
 			"type": "string"
 		},
 		"id": {
@@ -349,20 +349,20 @@ export const AccessRequestSchema = {
 		"note": {
 			"type": "string"
 		},
-		"permissionGroupId": {
+		"permission_group_id": {
 			"type": "string"
 		},
-		"processedBy": {
+		"processed_by": {
 			"type": "string"
 		},
-		"processedDate": {
+		"processed_date": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"projectId": {
+		"project_id": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
@@ -374,11 +374,11 @@ export const AccessRequestSchema = {
 
 export const AdminPanelSessionSchema = {
 	"properties": {
-		"accessPolicy": {},
-		"accessToken": {
+		"access_policy": {},
+		"access_token": {
 			"type": "string"
 		},
-		"accessTokenExpiry": {
+		"access_token_expiry": {
 			"type": "string"
 		},
 		"email": {
@@ -387,67 +387,67 @@ export const AdminPanelSessionSchema = {
 		"id": {
 			"type": "string"
 		},
-		"refreshToken": {
+		"refresh_token": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"accessPolicy",
-		"accessToken",
-		"accessTokenExpiry",
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
 		"email",
 		"id",
-		"refreshToken"
+		"refresh_token"
 	]
 } 
 
 export const AnalyticsSchema = {
 	"properties": {
-		"answerEntityMRow": {
+		"answer_entity_m_row$": {
 			"type": "string"
 		},
-		"answerMRow": {
+		"answer_m_row$": {
 			"type": "string"
 		},
-		"dataElementCode": {
+		"data_element_code": {
 			"type": "string"
 		},
-		"dataElementMRow": {
+		"data_element_m_row$": {
 			"type": "string"
 		},
-		"dataGroupCode": {
+		"data_group_code": {
 			"type": "string"
 		},
 		"date": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"dayPeriod": {
+		"day_period": {
 			"type": "string"
 		},
-		"entityCode": {
+		"entity_code": {
 			"type": "string"
 		},
-		"entityMRow": {
+		"entity_m_row$": {
 			"type": "string"
 		},
-		"entityName": {
+		"entity_name": {
 			"type": "string"
 		},
-		"eventId": {
+		"event_id": {
 			"type": "string"
 		},
-		"monthPeriod": {
+		"month_period": {
 			"type": "string"
 		},
-		"questionMRow": {
+		"question_m_row$": {
 			"type": "string"
 		},
-		"surveyMRow": {
+		"survey_m_row$": {
 			"type": "string"
 		},
-		"surveyResponseMRow": {
+		"survey_response_m_row$": {
 			"type": "string"
 		},
 		"type": {
@@ -456,10 +456,10 @@ export const AnalyticsSchema = {
 		"value": {
 			"type": "string"
 		},
-		"weekPeriod": {
+		"week_period": {
 			"type": "string"
 		},
-		"yearPeriod": {
+		"year_period": {
 			"type": "string"
 		}
 	},
@@ -468,16 +468,16 @@ export const AnalyticsSchema = {
 
 export const AncestorDescendantRelationSchema = {
 	"properties": {
-		"ancestorId": {
+		"ancestor_id": {
 			"type": "string"
 		},
-		"descendantId": {
+		"descendant_id": {
 			"type": "string"
 		},
-		"entityHierarchyId": {
+		"entity_hierarchy_id": {
 			"type": "string"
 		},
-		"generationalDistance": {
+		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
@@ -486,10 +486,10 @@ export const AncestorDescendantRelationSchema = {
 	},
 	"type": "object",
 	"required": [
-		"ancestorId",
-		"descendantId",
-		"entityHierarchyId",
-		"generationalDistance",
+		"ancestor_id",
+		"descendant_id",
+		"entity_hierarchy_id",
+		"generational_distance",
 		"id"
 	]
 } 
@@ -499,13 +499,13 @@ export const AnswerSchema = {
 		"id": {
 			"type": "string"
 		},
-		"mRow": {
+		"m_row$": {
 			"type": "string"
 		},
-		"questionId": {
+		"question_id": {
 			"type": "string"
 		},
-		"surveyResponseId": {
+		"survey_response_id": {
 			"type": "string"
 		},
 		"text": {
@@ -518,8 +518,8 @@ export const AnswerSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"questionId",
-		"surveyResponseId",
+		"question_id",
+		"survey_response_id",
 		"type"
 	]
 } 
@@ -529,10 +529,10 @@ export const ApiClientSchema = {
 		"id": {
 			"type": "string"
 		},
-		"secretKeyHash": {
+		"secret_key_hash": {
 			"type": "string"
 		},
-		"userAccountId": {
+		"user_account_id": {
 			"type": "string"
 		},
 		"username": {
@@ -542,7 +542,7 @@ export const ApiClientSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"secretKeyHash",
+		"secret_key_hash",
 		"username"
 	]
 } 
@@ -563,14 +563,14 @@ export const ApiRequestLogSchema = {
 			"type": "string"
 		},
 		"query": {},
-		"refreshToken": {
+		"refresh_token": {
 			"type": "string"
 		},
-		"requestTime": {
+		"request_time": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		},
 		"version": {
@@ -588,16 +588,16 @@ export const ApiRequestLogSchema = {
 
 export const ClinicSchema = {
 	"properties": {
-		"categoryCode": {
+		"category_code": {
 			"type": "string"
 		},
 		"code": {
 			"type": "string"
 		},
-		"countryId": {
+		"country_id": {
 			"type": "string"
 		},
-		"geographicalAreaId": {
+		"geographical_area_id": {
 			"type": "string"
 		},
 		"id": {
@@ -609,15 +609,15 @@ export const ClinicSchema = {
 		"type": {
 			"type": "string"
 		},
-		"typeName": {
+		"type_name": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
 		"code",
-		"countryId",
-		"geographicalAreaId",
+		"country_id",
+		"geographical_area_id",
 		"id",
 		"name"
 	]
@@ -654,10 +654,10 @@ export const DashboardSchema = {
 		"name": {
 			"type": "string"
 		},
-		"rootEntityCode": {
+		"root_entity_code": {
 			"type": "string"
 		},
-		"sortOrder": {
+		"sort_order": {
 			"type": "number"
 		}
 	},
@@ -666,7 +666,7 @@ export const DashboardSchema = {
 		"code",
 		"id",
 		"name",
-		"rootEntityCode"
+		"root_entity_code"
 	]
 } 
 
@@ -682,7 +682,7 @@ export const DashboardItemSchema = {
 		"legacy": {
 			"type": "boolean"
 		},
-		"reportCode": {
+		"report_code": {
 			"type": "string"
 		}
 	},
@@ -695,40 +695,40 @@ export const DashboardItemSchema = {
 
 export const DashboardRelationSchema = {
 	"properties": {
-		"childId": {
+		"child_id": {
 			"type": "string"
 		},
-		"dashboardId": {
+		"dashboard_id": {
 			"type": "string"
 		},
-		"entityTypes": {},
+		"entity_types": {},
 		"id": {
 			"type": "string"
 		},
-		"permissionGroups": {
+		"permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"projectCodes": {
+		"project_codes": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"sortOrder": {
+		"sort_order": {
 			"type": "number"
 		}
 	},
 	"type": "object",
 	"required": [
-		"childId",
-		"dashboardId",
-		"entityTypes",
+		"child_id",
+		"dashboard_id",
+		"entity_types",
 		"id",
-		"permissionGroups",
-		"projectCodes"
+		"permission_groups",
+		"project_codes"
 	]
 } 
 
@@ -741,16 +741,16 @@ export const DataElementSchema = {
 		"id": {
 			"type": "string"
 		},
-		"mRow": {
+		"m_row$": {
 			"type": "string"
 		},
-		"permissionGroups": {
+		"permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"serviceType": {
+		"service_type": {
 			"enum": [
 				"data-lake",
 				"dhis",
@@ -767,16 +767,16 @@ export const DataElementSchema = {
 	"required": [
 		"code",
 		"id",
-		"serviceType"
+		"service_type"
 	]
 } 
 
 export const DataElementDataGroupSchema = {
 	"properties": {
-		"dataElementId": {
+		"data_element_id": {
 			"type": "string"
 		},
-		"dataGroupId": {
+		"data_group_id": {
 			"type": "string"
 		},
 		"id": {
@@ -785,25 +785,25 @@ export const DataElementDataGroupSchema = {
 	},
 	"type": "object",
 	"required": [
-		"dataElementId",
-		"dataGroupId",
+		"data_element_id",
+		"data_group_id",
 		"id"
 	]
 } 
 
 export const DataElementDataServiceSchema = {
 	"properties": {
-		"countryCode": {
+		"country_code": {
 			"type": "string"
 		},
-		"dataElementCode": {
+		"data_element_code": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"serviceConfig": {},
-		"serviceType": {
+		"service_config": {},
+		"service_type": {
 			"enum": [
 				"data-lake",
 				"dhis",
@@ -818,10 +818,10 @@ export const DataElementDataServiceSchema = {
 	},
 	"type": "object",
 	"required": [
-		"countryCode",
-		"dataElementCode",
+		"country_code",
+		"data_element_code",
 		"id",
-		"serviceType"
+		"service_type"
 	]
 } 
 
@@ -834,7 +834,7 @@ export const DataGroupSchema = {
 		"id": {
 			"type": "string"
 		},
-		"serviceType": {
+		"service_type": {
 			"enum": [
 				"data-lake",
 				"dhis",
@@ -851,14 +851,14 @@ export const DataGroupSchema = {
 	"required": [
 		"code",
 		"id",
-		"serviceType"
+		"service_type"
 	]
 } 
 
 export const DataServiceEntitySchema = {
 	"properties": {
 		"config": {},
-		"entityCode": {
+		"entity_code": {
 			"type": "string"
 		},
 		"id": {
@@ -868,7 +868,7 @@ export const DataServiceEntitySchema = {
 	"type": "object",
 	"required": [
 		"config",
-		"entityCode",
+		"entity_code",
 		"id"
 	]
 } 
@@ -879,13 +879,13 @@ export const DataServiceSyncGroupSchema = {
 			"type": "string"
 		},
 		"config": {},
-		"dataGroupCode": {
+		"data_group_code": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"serviceType": {
+		"service_type": {
 			"enum": [
 				"data-lake",
 				"dhis",
@@ -897,10 +897,10 @@ export const DataServiceSyncGroupSchema = {
 			],
 			"type": "string"
 		},
-		"syncCursor": {
+		"sync_cursor": {
 			"type": "string"
 		},
-		"syncStatus": {
+		"sync_status": {
 			"enum": [
 				"ERROR",
 				"IDLE",
@@ -913,9 +913,9 @@ export const DataServiceSyncGroupSchema = {
 	"required": [
 		"code",
 		"config",
-		"dataGroupCode",
+		"data_group_code",
 		"id",
-		"serviceType"
+		"service_type"
 	]
 } 
 
@@ -931,7 +931,7 @@ export const DataTableSchema = {
 		"id": {
 			"type": "string"
 		},
-		"permissionGroups": {
+		"permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -985,10 +985,10 @@ export const DhisSyncLogSchema = {
 		"deleted": {
 			"type": "number"
 		},
-		"dhisReference": {
+		"dhis_reference": {
 			"type": "string"
 		},
-		"errorList": {
+		"error_list": {
 			"type": "string"
 		},
 		"id": {
@@ -1000,10 +1000,10 @@ export const DhisSyncLogSchema = {
 		"imported": {
 			"type": "number"
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"recordType": {
+		"record_type": {
 			"type": "string"
 		},
 		"updated": {
@@ -1013,17 +1013,17 @@ export const DhisSyncLogSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"recordId",
-		"recordType"
+		"record_id",
+		"record_type"
 	]
 } 
 
 export const DhisSyncQueueSchema = {
 	"properties": {
-		"badRequestCount": {
+		"bad_request_count": {
 			"type": "number"
 		},
-		"changeTime": {
+		"change_time": {
 			"type": "number"
 		},
 		"details": {
@@ -1032,19 +1032,19 @@ export const DhisSyncQueueSchema = {
 		"id": {
 			"type": "string"
 		},
-		"isDeadLetter": {
+		"is_dead_letter": {
 			"type": "boolean"
 		},
-		"isDeleted": {
+		"is_deleted": {
 			"type": "boolean"
 		},
 		"priority": {
 			"type": "number"
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"recordType": {
+		"record_type": {
 			"type": "string"
 		},
 		"type": {
@@ -1054,8 +1054,8 @@ export const DhisSyncQueueSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"recordId",
-		"recordType",
+		"record_id",
+		"record_type",
 		"type"
 	]
 } 
@@ -1135,23 +1135,23 @@ export const EntitySchema = {
 		"code": {
 			"type": "string"
 		},
-		"countryCode": {
+		"country_code": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"imageUrl": {
+		"image_url": {
 			"type": "string"
 		},
-		"mRow": {
+		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {},
 		"name": {
 			"type": "string"
 		},
-		"parentId": {
+		"parent_id": {
 			"type": "string"
 		},
 		"point": {},
@@ -1200,7 +1200,7 @@ export const EntitySchema = {
 
 export const EntityHierarchySchema = {
 	"properties": {
-		"canonicalTypes": {
+		"canonical_types": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -1222,34 +1222,34 @@ export const EntityHierarchySchema = {
 
 export const EntityRelationSchema = {
 	"properties": {
-		"childId": {
+		"child_id": {
 			"type": "string"
 		},
-		"entityHierarchyId": {
+		"entity_hierarchy_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"parentId": {
+		"parent_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"childId",
-		"entityHierarchyId",
+		"child_id",
+		"entity_hierarchy_id",
 		"id",
-		"parentId"
+		"parent_id"
 	]
 } 
 
 export const ErrorLogSchema = {
 	"properties": {
-		"apiRequestLogId": {
+		"api_request_log_id": {
 			"type": "string"
 		},
-		"errorTime": {
+		"error_time": {
 			"type": "string",
 			"format": "date-time"
 		},
@@ -1283,7 +1283,7 @@ export const ExternalDatabaseConnectionSchema = {
 		"name": {
 			"type": "string"
 		},
-		"permissionGroups": {
+		"permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -1300,26 +1300,26 @@ export const ExternalDatabaseConnectionSchema = {
 
 export const FeedItemSchema = {
 	"properties": {
-		"countryId": {
+		"country_id": {
 			"type": "string"
 		},
-		"creationDate": {
+		"creation_date": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"geographicalAreaId": {
+		"geographical_area_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"permissionGroupId": {
+		"permission_group_id": {
 			"type": "string"
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"templateVariables": {
+		"template_variables": {
 			"type": "object",
 			"properties": {
 				"constructor": {
@@ -1333,7 +1333,7 @@ export const FeedItemSchema = {
 		"type": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
@@ -1348,31 +1348,31 @@ export const GeographicalAreaSchema = {
 		"code": {
 			"type": "string"
 		},
-		"countryId": {
+		"country_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"levelCode": {
+		"level_code": {
 			"type": "string"
 		},
-		"levelName": {
+		"level_name": {
 			"type": "string"
 		},
 		"name": {
 			"type": "string"
 		},
-		"parentId": {
+		"parent_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"countryId",
+		"country_id",
 		"id",
-		"levelCode",
-		"levelName",
+		"level_code",
+		"level_name",
 		"name"
 	]
 } 
@@ -1403,11 +1403,11 @@ export const LegacyReportSchema = {
 		"code": {
 			"type": "string"
 		},
-		"dataBuilder": {
+		"data_builder": {
 			"type": "string"
 		},
-		"dataBuilderConfig": {},
-		"dataServices": {},
+		"data_builder_config": {},
+		"data_services": {},
 		"id": {
 			"type": "string"
 		}
@@ -1421,11 +1421,11 @@ export const LegacyReportSchema = {
 
 export const LesmisSessionSchema = {
 	"properties": {
-		"accessPolicy": {},
-		"accessToken": {
+		"access_policy": {},
+		"access_token": {
 			"type": "string"
 		},
-		"accessTokenExpiry": {
+		"access_token_expiry": {
 			"type": "string"
 		},
 		"email": {
@@ -1434,18 +1434,18 @@ export const LesmisSessionSchema = {
 		"id": {
 			"type": "string"
 		},
-		"refreshToken": {
+		"refresh_token": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"accessPolicy",
-		"accessToken",
-		"accessTokenExpiry",
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
 		"email",
 		"id",
-		"refreshToken"
+		"refresh_token"
 	]
 } 
 
@@ -1455,20 +1455,20 @@ export const MapOverlaySchema = {
 			"type": "string"
 		},
 		"config": {},
-		"countryCodes": {
+		"country_codes": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"dataServices": {},
+		"data_services": {},
 		"id": {
 			"type": "string"
 		},
 		"legacy": {
 			"type": "boolean"
 		},
-		"linkedMeasures": {
+		"linked_measures": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -1477,16 +1477,16 @@ export const MapOverlaySchema = {
 		"name": {
 			"type": "string"
 		},
-		"permissionGroup": {
+		"permission_group": {
 			"type": "string"
 		},
-		"projectCodes": {
+		"project_codes": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"reportCode": {
+		"report_code": {
 			"type": "string"
 		}
 	},
@@ -1494,7 +1494,7 @@ export const MapOverlaySchema = {
 	"required": [
 		"code",
 		"name",
-		"permissionGroup"
+		"permission_group"
 	]
 } 
 
@@ -1520,70 +1520,70 @@ export const MapOverlayGroupSchema = {
 
 export const MapOverlayGroupRelationSchema = {
 	"properties": {
-		"childId": {
+		"child_id": {
 			"type": "string"
 		},
-		"childType": {
+		"child_type": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"mapOverlayGroupId": {
+		"map_overlay_group_id": {
 			"type": "string"
 		},
-		"sortOrder": {
+		"sort_order": {
 			"type": "number"
 		}
 	},
 	"type": "object",
 	"required": [
-		"childId",
-		"childType",
+		"child_id",
+		"child_type",
 		"id",
-		"mapOverlayGroupId"
+		"map_overlay_group_id"
 	]
 } 
 
 export const MeditrakDeviceSchema = {
 	"properties": {
-		"appVersion": {
+		"app_version": {
 			"type": "string"
 		},
 		"config": {},
 		"id": {
 			"type": "string"
 		},
-		"installId": {
+		"install_id": {
 			"type": "string"
 		},
 		"platform": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
 		"id",
-		"installId",
-		"userId"
+		"install_id",
+		"user_id"
 	]
 } 
 
 export const MeditrakSyncQueueSchema = {
 	"properties": {
-		"changeTime": {
+		"change_time": {
 			"type": "number"
 		},
 		"id": {
 			"type": "string"
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"recordType": {
+		"record_type": {
 			"type": "string"
 		},
 		"type": {
@@ -1593,8 +1593,8 @@ export const MeditrakSyncQueueSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"recordId",
-		"recordType",
+		"record_id",
+		"record_type",
 		"type"
 	]
 } 
@@ -1610,33 +1610,33 @@ export const Ms1SyncLogSchema = {
 		"endpoint": {
 			"type": "string"
 		},
-		"errorList": {
+		"error_list": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"recordType": {
+		"record_type": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
 		"id",
-		"recordId",
-		"recordType"
+		"record_id",
+		"record_type"
 	]
 } 
 
 export const Ms1SyncQueueSchema = {
 	"properties": {
-		"badRequestCount": {
+		"bad_request_count": {
 			"type": "number"
 		},
-		"changeTime": {
+		"change_time": {
 			"type": "number"
 		},
 		"details": {
@@ -1645,19 +1645,19 @@ export const Ms1SyncQueueSchema = {
 		"id": {
 			"type": "string"
 		},
-		"isDeadLetter": {
+		"is_dead_letter": {
 			"type": "boolean"
 		},
-		"isDeleted": {
+		"is_deleted": {
 			"type": "boolean"
 		},
 		"priority": {
 			"type": "number"
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"recordType": {
+		"record_type": {
 			"type": "string"
 		},
 		"type": {
@@ -1667,15 +1667,15 @@ export const Ms1SyncQueueSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"recordId",
-		"recordType",
+		"record_id",
+		"record_type",
 		"type"
 	]
 } 
 
 export const OneTimeLoginSchema = {
 	"properties": {
-		"creationDate": {
+		"creation_date": {
 			"type": "string",
 			"format": "date-time"
 		},
@@ -1685,11 +1685,11 @@ export const OneTimeLoginSchema = {
 		"token": {
 			"type": "string"
 		},
-		"useDate": {
+		"use_date": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
@@ -1697,7 +1697,7 @@ export const OneTimeLoginSchema = {
 	"required": [
 		"id",
 		"token",
-		"userId"
+		"user_id"
 	]
 } 
 
@@ -1710,10 +1710,10 @@ export const OptionSchema = {
 		"label": {
 			"type": "string"
 		},
-		"optionSetId": {
+		"option_set_id": {
 			"type": "string"
 		},
-		"sortOrder": {
+		"sort_order": {
 			"type": "number"
 		},
 		"value": {
@@ -1723,7 +1723,7 @@ export const OptionSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"optionSetId",
+		"option_set_id",
 		"value"
 	]
 } 
@@ -1752,7 +1752,7 @@ export const PermissionGroupSchema = {
 		"name": {
 			"type": "string"
 		},
-		"parentId": {
+		"parent_id": {
 			"type": "string"
 		}
 	},
@@ -1765,16 +1765,16 @@ export const PermissionGroupSchema = {
 
 export const PermissionsBasedMeditrakSyncQueueSchema = {
 	"properties": {
-		"changeTime": {
+		"change_time": {
 			"type": "number"
 		},
-		"countryIds": {
+		"country_ids": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"entityType": {
+		"entity_type": {
 			"enum": [
 				"case",
 				"case_contact",
@@ -1810,16 +1810,16 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 		"id": {
 			"type": "string"
 		},
-		"permissionGroups": {
+		"permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"recordId": {
+		"record_id": {
 			"type": "string"
 		},
-		"recordType": {
+		"record_type": {
 			"type": "string"
 		},
 		"type": {
@@ -1835,37 +1835,37 @@ export const ProjectSchema = {
 			"type": "string"
 		},
 		"config": {},
-		"dashboardGroupName": {
+		"dashboard_group_name": {
 			"type": "string"
 		},
-		"defaultMeasure": {
+		"default_measure": {
 			"type": "string"
 		},
 		"description": {
 			"type": "string"
 		},
-		"entityHierarchyId": {
+		"entity_hierarchy_id": {
 			"type": "string"
 		},
-		"entityId": {
+		"entity_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"imageUrl": {
+		"image_url": {
 			"type": "string"
 		},
-		"logoUrl": {
+		"logo_url": {
 			"type": "string"
 		},
-		"permissionGroups": {
+		"permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"sortOrder": {
+		"sort_order": {
 			"type": "number"
 		}
 	},
@@ -1878,11 +1878,11 @@ export const ProjectSchema = {
 
 export const PsssSessionSchema = {
 	"properties": {
-		"accessPolicy": {},
-		"accessToken": {
+		"access_policy": {},
+		"access_token": {
 			"type": "string"
 		},
-		"accessTokenExpiry": {
+		"access_token_expiry": {
 			"type": "string"
 		},
 		"email": {
@@ -1891,18 +1891,18 @@ export const PsssSessionSchema = {
 		"id": {
 			"type": "string"
 		},
-		"refreshToken": {
+		"refresh_token": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"accessPolicy",
-		"accessToken",
-		"accessTokenExpiry",
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
 		"email",
 		"id",
-		"refreshToken"
+		"refresh_token"
 	]
 } 
 
@@ -1911,7 +1911,7 @@ export const QuestionSchema = {
 		"code": {
 			"type": "string"
 		},
-		"dataElementId": {
+		"data_element_id": {
 			"type": "string"
 		},
 		"detail": {
@@ -1923,13 +1923,13 @@ export const QuestionSchema = {
 		"id": {
 			"type": "string"
 		},
-		"mRow": {
+		"m_row$": {
 			"type": "string"
 		},
 		"name": {
 			"type": "string"
 		},
-		"optionSetId": {
+		"option_set_id": {
 			"type": "string"
 		},
 		"options": {
@@ -1964,13 +1964,13 @@ export const RefreshTokenSchema = {
 		"id": {
 			"type": "string"
 		},
-		"meditrakDeviceId": {
+		"meditrak_device_id": {
 			"type": "string"
 		},
 		"token": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
@@ -1978,7 +1978,7 @@ export const RefreshTokenSchema = {
 	"required": [
 		"id",
 		"token",
-		"userId"
+		"user_id"
 	]
 } 
 
@@ -2158,7 +2158,7 @@ export const ReportSchema = {
 		"id": {
 			"type": "string"
 		},
-		"permissionGroupId": {
+		"permission_group_id": {
 			"type": "string"
 		}
 	},
@@ -2167,7 +2167,7 @@ export const ReportSchema = {
 		"code",
 		"config",
 		"id",
-		"permissionGroupId"
+		"permission_group_id"
 	]
 } 
 
@@ -2210,32 +2210,32 @@ export const SupersetInstanceSchema = {
 
 export const SurveySchema = {
 	"properties": {
-		"canRepeat": {
+		"can_repeat": {
 			"type": "boolean"
 		},
 		"code": {
 			"type": "string"
 		},
-		"countryIds": {
+		"country_ids": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"dataGroupId": {
+		"data_group_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"integrationMetadata": {},
-		"mRow": {
+		"integration_metadata": {},
+		"m_row$": {
 			"type": "string"
 		},
 		"name": {
 			"type": "string"
 		},
-		"periodGranularity": {
+		"period_granularity": {
 			"enum": [
 				"daily",
 				"monthly",
@@ -2245,13 +2245,13 @@ export const SurveySchema = {
 			],
 			"type": "string"
 		},
-		"permissionGroupId": {
+		"permission_group_id": {
 			"type": "string"
 		},
-		"requiresApproval": {
+		"requires_approval": {
 			"type": "boolean"
 		},
-		"surveyGroupId": {
+		"survey_group_id": {
 			"type": "string"
 		}
 	},
@@ -2281,7 +2281,7 @@ export const SurveyGroupSchema = {
 
 export const SurveyResponseSchema = {
 	"properties": {
-		"approvalStatus": {
+		"approval_status": {
 			"enum": [
 				"approved",
 				"not_required",
@@ -2290,24 +2290,24 @@ export const SurveyResponseSchema = {
 			],
 			"type": "string"
 		},
-		"assessorName": {
+		"assessor_name": {
 			"type": "string"
 		},
-		"dataTime": {
+		"data_time": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"endTime": {
+		"end_time": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"entityId": {
+		"entity_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"mRow": {
+		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {
@@ -2316,49 +2316,49 @@ export const SurveyResponseSchema = {
 		"outdated": {
 			"type": "boolean"
 		},
-		"startTime": {
+		"start_time": {
 			"type": "string",
 			"format": "date-time"
 		},
-		"surveyId": {
+		"survey_id": {
 			"type": "string"
 		},
 		"timezone": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"assessorName",
-		"endTime",
-		"entityId",
+		"assessor_name",
+		"end_time",
+		"entity_id",
 		"id",
-		"startTime",
-		"surveyId",
-		"userId"
+		"start_time",
+		"survey_id",
+		"user_id"
 	]
 } 
 
 export const SurveyResponseCommentSchema = {
 	"properties": {
-		"commentId": {
+		"comment_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"surveyResponseId": {
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"commentId",
+		"comment_id",
 		"id",
-		"surveyResponseId"
+		"survey_response_id"
 	]
 } 
 
@@ -2367,66 +2367,66 @@ export const SurveyScreenSchema = {
 		"id": {
 			"type": "string"
 		},
-		"screenNumber": {
+		"screen_number": {
 			"type": "number"
 		},
-		"surveyId": {
+		"survey_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
 		"id",
-		"screenNumber",
-		"surveyId"
+		"screen_number",
+		"survey_id"
 	]
 } 
 
 export const SurveyScreenComponentSchema = {
 	"properties": {
-		"answersEnablingFollowUp": {
+		"answers_enabling_follow_up": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"componentNumber": {
+		"component_number": {
 			"type": "number"
 		},
 		"config": {
 			"type": "string"
 		},
-		"detailLabel": {
+		"detail_label": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"isFollowUp": {
+		"is_follow_up": {
 			"type": "boolean"
 		},
-		"questionId": {
+		"question_id": {
 			"type": "string"
 		},
-		"questionLabel": {
+		"question_label": {
 			"type": "string"
 		},
-		"screenId": {
+		"screen_id": {
 			"type": "string"
 		},
-		"validationCriteria": {
+		"validation_criteria": {
 			"type": "string"
 		},
-		"visibilityCriteria": {
+		"visibility_criteria": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"componentNumber",
+		"component_number",
 		"id",
-		"questionId",
-		"screenId"
+		"question_id",
+		"screen_id"
 	]
 } 
 
@@ -2435,10 +2435,10 @@ export const SyncGroupLogSchema = {
 		"id": {
 			"type": "string"
 		},
-		"logMessage": {
+		"log_message": {
 			"type": "string"
 		},
-		"serviceType": {
+		"service_type": {
 			"enum": [
 				"data-lake",
 				"dhis",
@@ -2450,7 +2450,7 @@ export const SyncGroupLogSchema = {
 			],
 			"type": "string"
 		},
-		"syncGroupCode": {
+		"sync_group_code": {
 			"type": "string"
 		},
 		"timestamp": {
@@ -2461,15 +2461,15 @@ export const SyncGroupLogSchema = {
 	"type": "object",
 	"required": [
 		"id",
-		"logMessage",
-		"serviceType",
-		"syncGroupCode"
+		"log_message",
+		"service_type",
+		"sync_group_code"
 	]
 } 
 
 export const UserAccountSchema = {
 	"properties": {
-		"creationDate": {
+		"creation_date": {
 			"type": "string",
 			"format": "date-time"
 		},
@@ -2479,7 +2479,7 @@ export const UserAccountSchema = {
 		"employer": {
 			"type": "string"
 		},
-		"firstName": {
+		"first_name": {
 			"type": "string"
 		},
 		"gender": {
@@ -2488,32 +2488,32 @@ export const UserAccountSchema = {
 		"id": {
 			"type": "string"
 		},
-		"lastName": {
+		"last_name": {
 			"type": "string"
 		},
-		"mobileNumber": {
+		"mobile_number": {
 			"type": "string"
 		},
-		"passwordHash": {
+		"password_hash": {
 			"type": "string"
 		},
-		"passwordSalt": {
+		"password_salt": {
 			"type": "string"
 		},
 		"position": {
 			"type": "string"
 		},
-		"primaryPlatform": {
+		"primary_platform": {
 			"enum": [
 				"lesmis",
 				"tupaia"
 			],
 			"type": "string"
 		},
-		"profileImage": {
+		"profile_image": {
 			"type": "string"
 		},
-		"verifiedEmail": {
+		"verified_email": {
 			"enum": [
 				"new_user",
 				"unverified",
@@ -2526,23 +2526,23 @@ export const UserAccountSchema = {
 	"required": [
 		"email",
 		"id",
-		"passwordHash",
-		"passwordSalt"
+		"password_hash",
+		"password_salt"
 	]
 } 
 
 export const UserEntityPermissionSchema = {
 	"properties": {
-		"entityId": {
+		"entity_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"permissionGroupId": {
+		"permission_group_id": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
@@ -2554,27 +2554,27 @@ export const UserEntityPermissionSchema = {
 
 export const UserFavouriteDashboardItemSchema = {
 	"properties": {
-		"dashboardItemId": {
+		"dashboard_item_id": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"userId": {
+		"user_id": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"required": [
-		"dashboardItemId",
+		"dashboard_item_id",
 		"id",
-		"userId"
+		"user_id"
 	]
 } 
 
 export const UserSessionSchema = {
 	"properties": {
-		"accessTokenExpiry": {
+		"access_token_expiry": {
 			"type": "string"
 		},
 		"accessPolicy": {},

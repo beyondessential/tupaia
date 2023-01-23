@@ -11,65 +11,65 @@ import { ReportConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
-  'createdTime'?: Date;
-  'entityId'?: string | null;
+  'created_time'?: Date;
+  'entity_id'?: string | null;
   'id': string;
   'message'?: string | null;
   'note'?: string | null;
-  'permissionGroupId'?: string | null;
-  'processedBy'?: string | null;
-  'processedDate'?: Date | null;
-  'projectId'?: string | null;
-  'userId'?: string | null;
+  'permission_group_id'?: string | null;
+  'processed_by'?: string | null;
+  'processed_date'?: Date | null;
+  'project_id'?: string | null;
+  'user_id'?: string | null;
 }
 export interface AdminPanelSession {
-  'accessPolicy': any;
-  'accessToken': string;
-  'accessTokenExpiry': string;
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
   'email': string;
   'id': string;
-  'refreshToken': string;
+  'refresh_token': string;
 }
 export interface Analytics {
-  'answerEntityMRow'?: string | null;
-  'answerMRow'?: string | null;
-  'dataElementCode'?: string | null;
-  'dataElementMRow'?: string | null;
-  'dataGroupCode'?: string | null;
+  'answer_entity_m_row$'?: string | null;
+  'answer_m_row$'?: string | null;
+  'data_element_code'?: string | null;
+  'data_element_m_row$'?: string | null;
+  'data_group_code'?: string | null;
   'date'?: Date | null;
-  'dayPeriod'?: string | null;
-  'entityCode'?: string | null;
-  'entityMRow'?: string | null;
-  'entityName'?: string | null;
-  'eventId'?: string | null;
-  'monthPeriod'?: string | null;
-  'questionMRow'?: string | null;
-  'surveyMRow'?: string | null;
-  'surveyResponseMRow'?: string | null;
+  'day_period'?: string | null;
+  'entity_code'?: string | null;
+  'entity_m_row$'?: string | null;
+  'entity_name'?: string | null;
+  'event_id'?: string | null;
+  'month_period'?: string | null;
+  'question_m_row$'?: string | null;
+  'survey_m_row$'?: string | null;
+  'survey_response_m_row$'?: string | null;
   'type'?: string | null;
   'value'?: string | null;
-  'weekPeriod'?: string | null;
-  'yearPeriod'?: string | null;
+  'week_period'?: string | null;
+  'year_period'?: string | null;
 }
 export interface AncestorDescendantRelation {
-  'ancestorId': string;
-  'descendantId': string;
-  'entityHierarchyId': string;
-  'generationalDistance': number;
+  'ancestor_id': string;
+  'descendant_id': string;
+  'entity_hierarchy_id': string;
+  'generational_distance': number;
   'id': string;
 }
 export interface Answer {
   'id': string;
-  'mRow'?: string;
-  'questionId': string;
-  'surveyResponseId': string;
+  'm_row$'?: string;
+  'question_id': string;
+  'survey_response_id': string;
   'text'?: string | null;
   'type': string;
 }
 export interface ApiClient {
   'id': string;
-  'secretKeyHash': string;
-  'userAccountId'?: string | null;
+  'secret_key_hash': string;
+  'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiRequestLog {
@@ -79,27 +79,27 @@ export interface ApiRequestLog {
   'metadata'?: any | null;
   'method'?: string | null;
   'query'?: any | null;
-  'refreshToken'?: string | null;
-  'requestTime'?: Date | null;
-  'userId'?: string | null;
+  'refresh_token'?: string | null;
+  'request_time'?: Date | null;
+  'user_id'?: string | null;
   'version': number;
 }
 export interface Clinic {
-  'categoryCode'?: string | null;
+  'category_code'?: string | null;
   'code': string;
-  'countryId': string;
-  'geographicalAreaId': string;
+  'country_id': string;
+  'geographical_area_id': string;
   'id': string;
   'name': string;
   'type'?: string | null;
-  'typeName'?: string | null;
+  'type_name'?: string | null;
 }
 export interface Comment {
-  'createdTime'?: Date;
+  'created_time'?: Date;
   'id': string;
-  'lastModifiedTime'?: Date;
+  'last_modified_time'?: Date;
   'text': string;
-  'userId'?: string | null;
+  'user_id'?: string | null;
 }
 export interface Country {
   'code': string;
@@ -110,71 +110,71 @@ export interface Dashboard {
   'code': string;
   'id': string;
   'name': string;
-  'rootEntityCode': string;
-  'sortOrder'?: number | null;
+  'root_entity_code': string;
+  'sort_order'?: number | null;
 }
 export interface DashboardItem {
   'code': string;
   'config'?: any;
   'id': string;
   'legacy'?: boolean;
-  'reportCode'?: string | null;
+  'report_code'?: string | null;
 }
 export interface DashboardRelation {
-  'childId': string;
-  'dashboardId': string;
-  'entityTypes': any;
+  'child_id': string;
+  'dashboard_id': string;
+  'entity_types': any;
   'id': string;
-  'permissionGroups': string[];
-  'projectCodes': string[];
-  'sortOrder'?: number | null;
+  'permission_groups': string[];
+  'project_codes': string[];
+  'sort_order'?: number | null;
 }
 export interface DataElement {
   'code': string;
   'config'?: any;
   'id': string;
-  'mRow'?: string;
-  'permissionGroups'?: string[];
-  'serviceType': ServiceType;
+  'm_row$'?: string;
+  'permission_groups'?: string[];
+  'service_type': ServiceType;
 }
 export interface DataElementDataGroup {
-  'dataElementId': string;
-  'dataGroupId': string;
+  'data_element_id': string;
+  'data_group_id': string;
   'id': string;
 }
 export interface DataElementDataService {
-  'countryCode': string;
-  'dataElementCode': string;
+  'country_code': string;
+  'data_element_code': string;
   'id': string;
-  'serviceConfig'?: any;
-  'serviceType': ServiceType;
+  'service_config'?: any;
+  'service_type': ServiceType;
 }
 export interface DataGroup {
   'code': string;
   'config'?: any;
   'id': string;
-  'serviceType': ServiceType;
+  'service_type': ServiceType;
 }
 export interface DataServiceEntity {
   'config': any;
-  'entityCode': string;
+  'entity_code': string;
   'id': string;
 }
 export interface DataServiceSyncGroup {
   'code': string;
   'config': any;
-  'dataGroupCode': string;
+  'data_group_code': string;
   'id': string;
-  'serviceType': ServiceType;
-  'syncCursor'?: string | null;
-  'syncStatus'?: SyncGroupSyncStatus | null;
+  'service_type': ServiceType;
+  'sync_cursor'?: string | null;
+  'sync_status'?: SyncGroupSyncStatus | null;
 }
 export interface DataTable {
   'code': string;
   'config'?: any;
   'description'?: string | null;
   'id': string;
-  'permissionGroups'?: string[];
+  'permission_groups'?: string[];
   'type'?: DataTableType | null;
 }
 export interface DhisInstance {
@@ -186,25 +186,25 @@ export interface DhisInstance {
 export interface DhisSyncLog {
   'data'?: string | null;
   'deleted'?: number | null;
-  'dhisReference'?: string | null;
-  'errorList'?: string | null;
+  'dhis_reference'?: string | null;
+  'error_list'?: string | null;
   'id': string;
   'ignored'?: number | null;
   'imported'?: number | null;
-  'recordId': string;
-  'recordType': string;
+  'record_id': string;
+  'record_type': string;
   'updated'?: number | null;
 }
 export interface DhisSyncQueue {
-  'badRequestCount'?: number | null;
-  'changeTime'?: number | null;
+  'bad_request_count'?: number | null;
+  'change_time'?: number | null;
   'details'?: string | null;
   'id': string;
-  'isDeadLetter'?: boolean | null;
-  'isDeleted'?: boolean | null;
+  'is_dead_letter'?: boolean | null;
+  'is_deleted'?: boolean | null;
   'priority'?: number | null;
-  'recordId': string;
-  'recordType': string;
+  'record_id': string;
+  'record_type': string;
   'type': string;
 }
 export interface Disaster {
@@ -225,31 +225,31 @@ export interface Entity {
   'attributes'?: any | null;
   'bounds'?: any | null;
   'code': string;
-  'countryCode'?: string | null;
+  'country_code'?: string | null;
   'id': string;
-  'imageUrl'?: string | null;
-  'mRow'?: string;
+  'image_url'?: string | null;
+  'm_row$'?: string;
   'metadata'?: any | null;
   'name': string;
-  'parentId'?: string | null;
+  'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
   'type'?: EntityType | null;
 }
 export interface EntityHierarchy {
-  'canonicalTypes'?: string[] | null;
+  'canonical_types'?: string[] | null;
   'id': string;
   'name': string;
 }
 export interface EntityRelation {
-  'childId': string;
-  'entityHierarchyId': string;
+  'child_id': string;
+  'entity_hierarchy_id': string;
   'id': string;
-  'parentId': string;
+  'parent_id': string;
 }
 export interface ErrorLog {
-  'apiRequestLogId'?: string | null;
-  'errorTime'?: Date | null;
+  'api_request_log_id'?: string | null;
+  'error_time'?: Date | null;
   'id': string;
   'message'?: string | null;
   'type'?: string | null;
@@ -259,27 +259,27 @@ export interface ExternalDatabaseConnection {
   'description'?: string | null;
   'id': string;
   'name': string;
-  'permissionGroups'?: string[];
+  'permission_groups'?: string[];
 }
 export interface FeedItem {
-  'countryId'?: string | null;
-  'creationDate'?: Date | null;
-  'geographicalAreaId'?: string | null;
+  'country_id'?: string | null;
+  'creation_date'?: Date | null;
+  'geographical_area_id'?: string | null;
   'id': string;
-  'permissionGroupId'?: string | null;
-  'recordId'?: string | null;
-  'templateVariables'?: Object | null;
+  'permission_group_id'?: string | null;
+  'record_id'?: string | null;
+  'template_variables'?: Object | null;
   'type'?: string | null;
-  'userId'?: string | null;
+  'user_id'?: string | null;
 }
 export interface GeographicalArea {
   'code'?: string | null;
-  'countryId': string;
+  'country_id': string;
   'id': string;
-  'levelCode': string;
-  'levelName': string;
+  'level_code': string;
+  'level_name': string;
   'name': string;
-  'parentId'?: string | null;
+  'parent_id'?: string | null;
 }
 export interface Indicator {
   'builder': string;
@@ -289,31 +289,31 @@ export interface Indicator {
 }
 export interface LegacyReport {
   'code': string;
-  'dataBuilder'?: string | null;
-  'dataBuilderConfig'?: any | null;
-  'dataServices'?: any | null;
+  'data_builder'?: string | null;
+  'data_builder_config'?: any | null;
+  'data_services'?: any | null;
   'id': string;
 }
 export interface LesmisSession {
-  'accessPolicy': any;
-  'accessToken': string;
-  'accessTokenExpiry': string;
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
   'email': string;
   'id': string;
-  'refreshToken': string;
+  'refresh_token': string;
 }
 export interface MapOverlay {
   'code': string;
   'config'?: any;
-  'countryCodes'?: string[] | null;
-  'dataServices'?: any | null;
+  'country_codes'?: string[] | null;
+  'data_services'?: any | null;
   'id'?: string;
   'legacy'?: boolean;
-  'linkedMeasures'?: string[] | null;
+  'linked_measures'?: string[] | null;
   'name': string;
-  'permissionGroup': string;
-  'projectCodes'?: string[] | null;
-  'reportCode'?: string | null;
+  'permission_group': string;
+  'project_codes'?: string[] | null;
+  'report_code'?: string | null;
 }
 export interface MapOverlayGroup {
   'code': string;
@@ -321,61 +321,61 @@ export interface MapOverlayGroup {
   'name': string;
 }
 export interface MapOverlayGroupRelation {
-  'childId': string;
-  'childType': string;
+  'child_id': string;
+  'child_type': string;
   'id': string;
-  'mapOverlayGroupId': string;
-  'sortOrder'?: number | null;
+  'map_overlay_group_id': string;
+  'sort_order'?: number | null;
 }
 export interface MeditrakDevice {
-  'appVersion'?: string | null;
+  'app_version'?: string | null;
   'config'?: any | null;
   'id': string;
-  'installId': string;
+  'install_id': string;
   'platform'?: string | null;
-  'userId': string;
+  'user_id': string;
 }
 export interface MeditrakSyncQueue {
-  'changeTime'?: number | null;
+  'change_time'?: number | null;
   'id': string;
-  'recordId': string;
-  'recordType': string;
+  'record_id': string;
+  'record_type': string;
   'type': string;
 }
 export interface Ms1SyncLog {
   'count'?: number | null;
   'data'?: string | null;
   'endpoint'?: string | null;
-  'errorList'?: string | null;
+  'error_list'?: string | null;
   'id': string;
-  'recordId': string;
-  'recordType': string;
+  'record_id': string;
+  'record_type': string;
 }
 export interface Ms1SyncQueue {
-  'badRequestCount'?: number | null;
-  'changeTime'?: number | null;
+  'bad_request_count'?: number | null;
+  'change_time'?: number | null;
   'details'?: string | null;
   'id': string;
-  'isDeadLetter'?: boolean | null;
-  'isDeleted'?: boolean | null;
+  'is_dead_letter'?: boolean | null;
+  'is_deleted'?: boolean | null;
   'priority'?: number | null;
-  'recordId': string;
-  'recordType': string;
+  'record_id': string;
+  'record_type': string;
   'type': string;
 }
 export interface OneTimeLogin {
-  'creationDate'?: Date | null;
+  'creation_date'?: Date | null;
   'id': string;
   'token': string;
-  'useDate'?: Date | null;
-  'userId': string;
+  'use_date'?: Date | null;
+  'user_id': string;
 }
 export interface Option {
   'attributes'?: any | null;
   'id': string;
   'label'?: string | null;
-  'optionSetId': string;
-  'sortOrder'?: number | null;
+  'option_set_id': string;
+  'sort_order'?: number | null;
   'value': string;
 }
 export interface OptionSet {
@@ -385,49 +385,49 @@ export interface OptionSet {
 export interface PermissionGroup {
   'id': string;
   'name': string;
-  'parentId'?: string | null;
+  'parent_id'?: string | null;
 }
 export interface PermissionsBasedMeditrakSyncQueue {
-  'changeTime'?: number | null;
-  'countryIds'?: string[] | null;
-  'entityType'?: EntityType | null;
+  'change_time'?: number | null;
+  'country_ids'?: string[] | null;
+  'entity_type'?: EntityType | null;
   'id'?: string | null;
-  'permissionGroups'?: string[] | null;
-  'recordId'?: string | null;
-  'recordType'?: string | null;
+  'permission_groups'?: string[] | null;
+  'record_id'?: string | null;
+  'record_type'?: string | null;
   'type'?: string | null;
 }
 export interface Project {
   'code': string;
   'config'?: any | null;
-  'dashboardGroupName'?: string | null;
-  'defaultMeasure'?: string | null;
+  'dashboard_group_name'?: string | null;
+  'default_measure'?: string | null;
   'description'?: string | null;
-  'entityHierarchyId'?: string | null;
-  'entityId'?: string | null;
+  'entity_hierarchy_id'?: string | null;
+  'entity_id'?: string | null;
   'id': string;
-  'imageUrl'?: string | null;
-  'logoUrl'?: string | null;
-  'permissionGroups'?: string[] | null;
-  'sortOrder'?: number | null;
+  'image_url'?: string | null;
+  'logo_url'?: string | null;
+  'permission_groups'?: string[] | null;
+  'sort_order'?: number | null;
 }
 export interface PsssSession {
-  'accessPolicy': any;
-  'accessToken': string;
-  'accessTokenExpiry': string;
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
   'email': string;
   'id': string;
-  'refreshToken': string;
+  'refresh_token': string;
 }
 export interface Question {
   'code'?: string | null;
-  'dataElementId'?: string | null;
+  'data_element_id'?: string | null;
   'detail'?: string | null;
   'hook'?: string | null;
   'id': string;
-  'mRow'?: string;
+  'm_row$'?: string;
   'name'?: string | null;
-  'optionSetId'?: string | null;
+  'option_set_id'?: string | null;
   'options'?: string[] | null;
   'text': string;
   'type': string;
@@ -436,15 +436,15 @@ export interface RefreshToken {
   'device'?: string | null;
   'expiry'?: number | null;
   'id': string;
-  'meditrakDeviceId'?: string | null;
+  'meditrak_device_id'?: string | null;
   'token': string;
-  'userId': string;
+  'user_id': string;
 }
 export interface Report {
   'code': string;
   'config': ReportConfig;
   'id': string;
-  'permissionGroupId': string;
+  'permission_group_id': string;
 }
 export interface Setting {
   'id': string;
@@ -457,97 +457,97 @@ export interface SupersetInstance {
   'id': string;
 }
 export interface Survey {
-  'canRepeat'?: boolean | null;
+  'can_repeat'?: boolean | null;
   'code': string;
-  'countryIds'?: string[] | null;
-  'dataGroupId'?: string | null;
+  'country_ids'?: string[] | null;
+  'data_group_id'?: string | null;
   'id': string;
-  'integrationMetadata'?: any | null;
-  'mRow'?: string;
+  'integration_metadata'?: any | null;
+  'm_row$'?: string;
   'name': string;
-  'periodGranularity'?: PeriodGranularity | null;
-  'permissionGroupId'?: string | null;
-  'requiresApproval'?: boolean | null;
-  'surveyGroupId'?: string | null;
+  'period_granularity'?: PeriodGranularity | null;
+  'permission_group_id'?: string | null;
+  'requires_approval'?: boolean | null;
+  'survey_group_id'?: string | null;
 }
 export interface SurveyGroup {
   'id': string;
   'name': string;
 }
 export interface SurveyResponse {
-  'approvalStatus'?: ApprovalStatus | null;
-  'assessorName': string;
-  'dataTime'?: Date | null;
-  'endTime': Date;
-  'entityId': string;
+  'approval_status'?: ApprovalStatus | null;
+  'assessor_name': string;
+  'data_time'?: Date | null;
+  'end_time': Date;
+  'entity_id': string;
   'id': string;
-  'mRow'?: string;
+  'm_row$'?: string;
   'metadata'?: string | null;
   'outdated'?: boolean | null;
-  'startTime': Date;
-  'surveyId': string;
+  'start_time': Date;
+  'survey_id': string;
   'timezone'?: string | null;
-  'userId': string;
+  'user_id': string;
 }
 export interface SurveyResponseComment {
-  'commentId': string;
+  'comment_id': string;
   'id': string;
-  'surveyResponseId': string;
+  'survey_response_id': string;
 }
 export interface SurveyScreen {
   'id': string;
-  'screenNumber': number;
-  'surveyId': string;
+  'screen_number': number;
+  'survey_id': string;
 }
 export interface SurveyScreenComponent {
-  'answersEnablingFollowUp'?: string[] | null;
-  'componentNumber': number;
+  'answers_enabling_follow_up'?: string[] | null;
+  'component_number': number;
   'config'?: string | null;
-  'detailLabel'?: string | null;
+  'detail_label'?: string | null;
   'id': string;
-  'isFollowUp'?: boolean | null;
-  'questionId': string;
-  'questionLabel'?: string | null;
-  'screenId': string;
-  'validationCriteria'?: string | null;
-  'visibilityCriteria'?: string | null;
+  'is_follow_up'?: boolean | null;
+  'question_id': string;
+  'question_label'?: string | null;
+  'screen_id': string;
+  'validation_criteria'?: string | null;
+  'visibility_criteria'?: string | null;
 }
 export interface SyncGroupLog {
   'id': string;
-  'logMessage': string;
-  'serviceType': ServiceType;
-  'syncGroupCode': string;
+  'log_message': string;
+  'service_type': ServiceType;
+  'sync_group_code': string;
   'timestamp'?: Date | null;
 }
 export interface UserAccount {
-  'creationDate'?: Date | null;
+  'creation_date'?: Date | null;
   'email': string;
   'employer'?: string | null;
-  'firstName'?: string | null;
+  'first_name'?: string | null;
   'gender'?: string | null;
   'id': string;
-  'lastName'?: string | null;
-  'mobileNumber'?: string | null;
-  'passwordHash': string;
-  'passwordSalt': string;
+  'last_name'?: string | null;
+  'mobile_number'?: string | null;
+  'password_hash': string;
+  'password_salt': string;
   'position'?: string | null;
-  'primaryPlatform'?: PrimaryPlatform | null;
-  'profileImage'?: string | null;
-  'verifiedEmail'?: VerifiedEmail | null;
+  'primary_platform'?: PrimaryPlatform | null;
+  'profile_image'?: string | null;
+  'verified_email'?: VerifiedEmail | null;
 }
 export interface UserEntityPermission {
-  'entityId'?: string | null;
+  'entity_id'?: string | null;
   'id': string;
-  'permissionGroupId'?: string | null;
-  'userId'?: string | null;
+  'permission_group_id'?: string | null;
+  'user_id'?: string | null;
 }
 export interface UserFavouriteDashboardItem {
-  'dashboardItemId': string;
+  'dashboard_item_id': string;
   'id': string;
-  'userId': string;
+  'user_id': string;
 }
 export interface UserSession {
-  'accessTokenExpiry'?: string;
+  'access_token_expiry'?: string;
   'accessPolicy'?: any | null;
   'accessToken'?: string | null;
   'id': string;
