@@ -5,11 +5,11 @@
 
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { ReqContext } from '../../../reportBuilder/context';
+import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 
+import { ReqContext } from '../../../reportBuilder/context';
 import { tongaCovidRawData } from '../../../reportBuilder/customReports/tongaCovidRawData';
 
-import { entityApiMock } from '../testUtils';
 import { ENTITIES, EVENTS, HIERARCHY, RELATIONS } from './tongaCovidRawData.fixtures';
 
 const CURRENT_DATE_STUB = '2020-12-15T00:00:00Z';
@@ -40,14 +40,12 @@ jest.mock('@tupaia/aggregator', () => ({
 }));
 
 describe('tongaCovidRawData', () => {
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
-
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Public',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({
+      entity: new MockEntityApi(ENTITIES, RELATIONS),
+    }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
   };
 

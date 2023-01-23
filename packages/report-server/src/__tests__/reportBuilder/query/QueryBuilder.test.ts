@@ -8,12 +8,11 @@
 import MockDate from 'mockdate';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 
 import { QueryBuilder } from '../../../reportBuilder/query/QueryBuilder';
 import { FetchReportQuery } from '../../../types';
 import { ReqContext } from '../../../reportBuilder/context';
-
-import { entityApiMock } from '../testUtils';
 
 describe('QueryBuilder', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00Z';
@@ -48,14 +47,10 @@ describe('QueryBuilder', () => {
     underwater_world: [{ parent: 'underwater_world', child: 'AQUA_LAND' }],
   };
 
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
-
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Admin',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, RELATIONS) }),
     accessPolicy: new AccessPolicy({
       PG: ['Admin'],
       TO: ['Admin'],
