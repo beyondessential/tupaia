@@ -72,6 +72,8 @@ export const SQLQueryEditor = props => {
       placeholder="Example: SELECT * FROM tablename"
       mode={mode}
       theme="xcode"
+      showPrintMargin={false}
+      width="auto"
       value={value}
       onChange={newQuery => {
         validateQuery(newQuery);

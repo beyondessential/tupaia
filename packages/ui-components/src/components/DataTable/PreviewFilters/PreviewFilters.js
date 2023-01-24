@@ -15,8 +15,8 @@ export const PreviewFilters = ({ parameters, onChange }) => {
     <Grid container spacing={2}>
       {parameters.map(p => {
         const option = FilterTypeOptions.find(t => t.value === p.type);
-        const { FilterComponent } = option;
-        if (FilterComponent) {
+        if (option) {
+          const { FilterComponent } = option;
           return (
             <Grid item xs={Math.floor(12 / parameters.length)}>
               <FilterComponent
