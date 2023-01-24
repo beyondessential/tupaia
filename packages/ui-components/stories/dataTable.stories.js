@@ -165,10 +165,12 @@ export const CustomParamaterList = () => {
 
   return (
     <div>
-      <BaseParameterList parameters={parameters} onDelete={onDelete} onChange={onChange} />
-      <Button variant="outlined" startIcon={<AddIcon />} onClick={onAdd}>
-        Add Random Parameter
-      </Button>
+      <BaseParameterList
+        parameters={parameters}
+        onDelete={onDelete}
+        onChange={onChange}
+        onAdd={onAdd}
+      />
       <pre>{JSON.stringify(parameters, null, 4)}</pre>
     </div>
   );
