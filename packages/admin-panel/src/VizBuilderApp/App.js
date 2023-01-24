@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
@@ -21,16 +21,12 @@ const Container = styled.main`
 `;
 
 export const App = ({ Navbar, Footer }) => {
-  const { data, isLoading: isUserLoading, isVizBuilderUser } = useUser();
+  const { data, isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
 
   if (isUserLoading) {
     return <FullPageLoader />;
-  }
-
-  if (!isVizBuilderUser) {
-    return <Redirect to={basePath} />;
   }
 
   const user = { ...data, name: `${data.firstName} ${data.lastName}` };
