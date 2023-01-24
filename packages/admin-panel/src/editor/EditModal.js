@@ -31,6 +31,7 @@ const getFieldSourceToEdit = field => {
 
 export const EditModalComponent = ({
   errorMessage,
+  isOpen,
   isLoading,
   onDismiss,
   onEditField,
@@ -38,23 +39,34 @@ export const EditModalComponent = ({
   recordData,
   title,
   fields,
+  FieldsComponent,
   isUnchanged,
   displayUsedBy,
   usedByConfig,
   dismissButtonText,
   cancelButtonText,
   saveButtonText,
+  extraDialogProps,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
 
   return (
-    <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
+    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
       <DialogHeader onClose={onDismiss} title={title} />
-      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
+      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         <>
-          {fields && (
+          {!FieldsComponent && fields.length > 0 && (
             <Editor
               fields={fields}
+              recordData={recordData}
+              onEditField={(fieldSource, newValue) => {
+                const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+                return onEditField(fieldSourceToEdit, newValue);
+              }}
+            />
+          )}
+          {FieldsComponent && (
+            <FieldsComponent
               recordData={recordData}
               onEditField={(fieldSource, newValue) => {
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
@@ -83,32 +95,36 @@ export const EditModalComponent = ({
 
 EditModalComponent.propTypes = {
   errorMessage: PropTypes.string,
+  isOpen: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
   onEditField: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   recordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   title: PropTypes.string,
-  fields: PropTypes.arrayOf(PropTypes.shape({})),
+  fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  FieldsComponent: PropTypes.elementType,
   isUnchanged: PropTypes.bool,
   displayUsedBy: PropTypes.bool,
   usedByConfig: PropTypes.object,
   dismissButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
+  extraDialogProps: PropTypes.object,
 };
 
 EditModalComponent.defaultProps = {
   errorMessage: null,
   title: 'Edit',
   recordData: null,
-  fields: null,
+  FieldsComponent: null,
   isUnchanged: false,
   displayUsedBy: false,
   usedByConfig: {},
   dismissButtonText: 'Dismiss',
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
+  extraDialogProps: null,
 };
 
 const mapStateToProps = state => ({
@@ -128,7 +144,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const processRecordData = (recordData, fields) => {
-  if (Array.isArray(recordData)) {
+  if (Array.isArray(recordData) && Array.isArray(fields)) {
     const [firstRecord] = recordData;
     return fields.reduce((obj, field) => {
       const value = field.bulkAccessor ? field.bulkAccessor(recordData) : firstRecord[field.source];

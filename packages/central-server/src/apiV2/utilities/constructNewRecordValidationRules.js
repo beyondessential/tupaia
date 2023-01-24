@@ -21,6 +21,7 @@ import {
   constructRecordExistsWithCode,
   constructIsValidEntityType,
 } from '@tupaia/utils';
+import { DataTableType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
@@ -283,6 +284,25 @@ export const constructForSingle = (models, recordType) => {
         country_code: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         service_config: [hasContent],
+      };
+    case TYPES.DATA_TABLE:
+      return {
+        code: [isAString],
+        description: [isAString],
+        config: [hasContent],
+        type: [constructIsOneOf(Object.values(DataTableType))],
+        permission_groups: [
+          hasContent,
+          async permissionGroupIds => {
+            const permissionGroups = await models.permissionGroup.find({
+              id: permissionGroupIds,
+            });
+            if (permissionGroupIds.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

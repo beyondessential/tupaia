@@ -5074,6 +5074,7 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
     axios: ^0.21.1
@@ -5168,6 +5169,7 @@ __metadata:
     "@tupaia/dhis-api": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     adm-zip: ^0.5.5
     api-error-handler: ^1.0.0
