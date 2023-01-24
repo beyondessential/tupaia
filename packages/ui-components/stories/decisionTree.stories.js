@@ -34,7 +34,7 @@ const LOADING_TREE = [
 const ERROR_TREE = [
   {
     id: 'error_hierarchy',
-    name: 'Click me to see error',
+    name: 'Australia',
     children: [
       {
         id: 'error_child',
@@ -86,6 +86,7 @@ export const decisionTreeChildrenError = () => (
       data={ERROR_TREE}
       fetchData={async childNode => {
         if (childNode) {
+          await sleep(1500);
           throw new Error('Cannot get data for the selected entity');
         } else {
           return ERROR_TREE;
