@@ -18,7 +18,7 @@ export const PreviewFilters = ({ parameters, onChange }) => {
         if (option) {
           const { FilterComponent } = option;
           return (
-            <Grid item xs={Math.floor(12 / parameters.length)}>
+            <Grid key={p.id} item xs={Math.floor(12 / parameters.length)}>
               <FilterComponent
                 {...p}
                 onChange={newValue => {
@@ -28,7 +28,7 @@ export const PreviewFilters = ({ parameters, onChange }) => {
             </Grid>
           );
         }
-        return <div />;
+        return <div key={p.id} />;
       })}
     </Grid>
   );

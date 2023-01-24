@@ -102,7 +102,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               name="config.externalDatabaseConnectionCode"
               required
               inputProps={{ readOnly: true }}
-              value={recordData?.config?.externalDatabaseConnectionCode}
+              value={recordData?.config?.externalDatabaseConnectionCode || ''}
             />
           </FieldWrapper>
         </AccordionDetails>

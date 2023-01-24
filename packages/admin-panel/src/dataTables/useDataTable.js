@@ -51,10 +51,6 @@ const useParameters = ({ config, onEditField }) => {
     }
 
     newParameters[index][key] = newValue;
-    onEditField('config', { ...config, parameters: newParameters });
-  };
-
-
     onEditField('config', { ...config, additionalParameters: newParameters });
   };
 

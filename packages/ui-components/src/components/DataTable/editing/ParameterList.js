@@ -10,11 +10,7 @@ import { Divider as BaseDivider } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import Grid from '@material-ui/core/Grid';
 import BaseDeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import {
-  Checkbox as BaseCheckbox,
-  Select as BaseSelect,
-  TextField as BaseTextField,
-} from '../../Inputs';
+import { Checkbox as BaseCheckbox, Select, TextField } from '../../Inputs';
 import { IconButton as BaseIconButton } from '../../IconButton';
 import { FlexStart } from '../../Layout';
 import { ParametersType } from './types';
@@ -30,10 +26,6 @@ const ListDiv = styled.div`
 const Divider = styled(BaseDivider)`
   margin-bottom: 20px;
 `;
-
-const TextField = styled(BaseTextField)``;
-
-const Select = styled(BaseSelect)``;
 
 const Checkbox = styled(BaseCheckbox)`
   .MuiSvgIcon-root {
@@ -70,7 +62,16 @@ export const ParameterList = ({ parameters, onDelete, onChange, onAdd }) => {
     <div>
       <ListDiv>
         {parameters.map(
-          ({ id, name = '', type, required, hasDefaultValue, defaultValue, hasError, error }) => {
+          ({
+            id,
+            name = '',
+            type = '',
+            required = false,
+            hasDefaultValue = false,
+            defaultValue = '',
+            hasError = false,
+            error = '',
+          }) => {
             return (
               <Grid container spacing={0} key={id}>
                 <Grid container spacing={2}>
@@ -88,6 +89,7 @@ export const ParameterList = ({ parameters, onDelete, onChange, onAdd }) => {
                   </Grid>
                   <Grid item xs={4}>
                     <Select
+                      id={id}
                       value={type}
                       label="Type"
                       options={FilterTypeOptions}
