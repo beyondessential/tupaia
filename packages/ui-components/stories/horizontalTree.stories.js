@@ -6,11 +6,11 @@
 import { randomIntBetween, sleep } from '@tupaia/utils';
 import React from 'react';
 import styled from 'styled-components';
-import { DecisionTree } from '../src';
+import { HorizontalTree } from '../src';
 import { getEntityDescendants } from './story-utils/api';
 
 export default {
-  title: 'DecisionTree',
+  title: 'HorizontalTree',
 };
 
 const Container = styled.div`
@@ -44,9 +44,9 @@ const ERROR_TREE = [
   },
 ];
 
-export const decisionTree = () => (
+export const horizontalTree = () => (
   <Container>
-    <DecisionTree
+    <HorizontalTree
       data={getEntityDescendants()}
       fetchData={async (rootNode, node) => {
         await sleep(randomIntBetween(200, 1200));
@@ -56,9 +56,9 @@ export const decisionTree = () => (
   </Container>
 );
 
-export const decisionTreeRootError = () => (
+export const horizontalTreeRootError = () => (
   <Container>
-    <DecisionTree
+    <HorizontalTree
       data={ERROR_TREE}
       fetchData={async () => {
         await sleep(500);
@@ -68,9 +68,9 @@ export const decisionTreeRootError = () => (
   </Container>
 );
 
-export const decisionTreeRootLoading = () => (
+export const horizontalTreeRootLoading = () => (
   <Container>
-    <DecisionTree
+    <HorizontalTree
       data={LOADING_TREE}
       fetchData={async () => {
         await sleep(100000);
@@ -80,9 +80,9 @@ export const decisionTreeRootLoading = () => (
   </Container>
 );
 
-export const decisionTreeChildrenError = () => (
+export const horizontalTreeChildrenError = () => (
   <Container>
-    <DecisionTree
+    <HorizontalTree
       data={ERROR_TREE}
       fetchData={async childNode => {
         if (childNode) {
@@ -96,9 +96,9 @@ export const decisionTreeChildrenError = () => (
   </Container>
 );
 
-export const decisionTreeChildrenLoading = () => (
+export const horizontalTreeChildrenLoading = () => (
   <Container>
-    <DecisionTree
+    <HorizontalTree
       fetchData={async childNode => {
         if (childNode) {
           await sleep(100000);

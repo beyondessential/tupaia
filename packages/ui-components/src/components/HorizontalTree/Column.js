@@ -14,7 +14,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { ColumnFilter, useFilter } from './ColumnFilter';
 import { FetchLoader } from '../FetchLoader';
 
-const CLASS_NAME = 'TupaiaDecisionTreeColumn';
+const CLASS_NAME = 'TupaiaHorizontalTreeColumn';
 
 const Container = styled.div`
   display: flex;

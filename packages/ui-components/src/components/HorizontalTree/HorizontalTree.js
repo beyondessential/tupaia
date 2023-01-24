@@ -25,7 +25,7 @@ const RootContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-radius: 5px 5px 0px 0px;
 
-  .TupaiaDecisionTreeColumn-content {
+  .TupaiaHorizontalTreeColumn-content {
     border-right: none;
   }
 
@@ -47,7 +47,7 @@ const DescendantsContainer = styled.div`
   }
 `;
 
-export const DecisionTree = ({ fetchData }) => {
+export const HorizontalTree = ({ fetchData }) => {
   const [selectedRoot, setSelectedRoot] = useState(undefined);
   const { data, isLoading, error, fetchData: fetchRootData } = useData(fetchData);
   const {
@@ -97,6 +97,6 @@ export const DecisionTree = ({ fetchData }) => {
   );
 };
 
-DecisionTree.propTypes = {
+HorizontalTree.propTypes = {
   fetchData: PropTypes.func.isRequired,
 };
