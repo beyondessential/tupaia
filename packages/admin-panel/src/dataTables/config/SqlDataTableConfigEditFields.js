@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ParameterList, SQLQueryEditor, TextField } from '@tupaia/ui-components';
+import { ParameterList, SQLQueryEditor } from '@tupaia/ui-components';
 import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
@@ -12,7 +12,7 @@ import { useDataTable } from '../useDataTable';
 
 export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
   const {
-    parameters,
+    additionalParameters,
     onParametersAdd,
     onParametersDelete,
     onParametersChange,
@@ -36,14 +36,14 @@ export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
         <Grid container spacing={1}>
           <Grid item xs={8}>
             <SQLQueryEditor
-              customKeywords={parameters.map(p => p.name)}
+              customKeywords={additionalParameters.map(p => p.name)}
               onChange={setSql}
               value={sql}
             />
           </Grid>
           <Grid item xs={4}>
             <ParameterList
-              parameters={parameters}
+              parameters={additionalParameters}
               onDelete={onParametersDelete}
               onAdd={onParametersAdd}
               onChange={onParametersChange}
@@ -51,20 +51,6 @@ export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
           </Grid>
         </Grid>
       </AccordionDetails>
-      <TextField
-        label="Sql"
-        name="config.sql"
-        required
-        inputProps={{ readOnly: true }}
-        value={recordData?.config?.sql}
-      />
-      <TextField
-        label="Database Connection"
-        name="config.externalDatabaseConnectionCode"
-        required
-        inputProps={{ readOnly: true }}
-        value={recordData?.config?.externalDatabaseConnectionCode}
-      />
     </Accordion>
   );
 };

@@ -4,24 +4,27 @@
  */
 
 const useParameters = ({ config, onEditField }) => {
-  const { parameters = [] } = config;
+  const { additionalParameters = [] } = config;
 
   const onAdd = () => {
     const defaultNewParameter = {
-      id: `parameter_${parameters.length}`,
+      id: `parameter_${additionalParameters.length}`,
     };
 
-    onEditField('config', { ...config, parameters: [...parameters, defaultNewParameter] });
+    onEditField('config', {
+      ...config,
+      additionalParameters: [...additionalParameters, defaultNewParameter],
+    });
   };
 
   const onDelete = selectedParameterId => {
-    const newParameterList = parameters.filter(p => p.id !== selectedParameterId);
-    onEditField('config', { ...config, parameters: newParameterList });
+    const newParameterList = additionalParameters.filter(p => p.id !== selectedParameterId);
+    onEditField('config', { ...config, additionalParameters: newParameterList });
   };
 
   const onChange = (id, key, newValue) => {
-    const newParameters = [...parameters];
-    const index = parameters.findIndex(p => p.id === id);
+    const newParameters = [...additionalParameters];
+    const index = additionalParameters.findIndex(p => p.id === id);
 
     // validate name input
     if (key === 'name') {
@@ -30,7 +33,7 @@ const useParameters = ({ config, onEditField }) => {
           throw new Error('Cannot be empty');
         }
 
-        if (parameters.findIndex(p => p.name === newValue) !== -1) {
+        if (additionalParameters.findIndex(p => p.name === newValue) !== -1) {
           throw new Error('Duplicated parameter name');
         }
 
@@ -51,7 +54,11 @@ const useParameters = ({ config, onEditField }) => {
     onEditField('config', { ...config, parameters: newParameters });
   };
 
-  return { parameters, onAdd, onDelete, onChange };
+
+    onEditField('config', { ...config, additionalParameters: newParameters });
+  };
+
+  return { additionalParameters, onAdd, onDelete, onChange };
 };
 
 const useSqlEditor = ({ config, onEditField }) => {
@@ -65,7 +72,7 @@ const useSqlEditor = ({ config, onEditField }) => {
 export const useDataTable = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
   const {
-    parameters,
+    additionalParameters,
     onAdd: onParametersAdd,
     onDelete: onParametersDelete,
     onChange: onParametersChange,
@@ -73,7 +80,7 @@ export const useDataTable = ({ recordData, onEditField }) => {
   const { sql, setSql } = useSqlEditor({ config, onEditField });
 
   return {
-    parameters,
+    additionalParameters,
     onParametersAdd,
     onParametersDelete,
     onParametersChange,

@@ -33,7 +33,7 @@ const typeFieldsMap = {
 };
 
 export const DataTableEditFields = ({ onEditField, recordData }) => {
-  const { parameters, onParametersChange } = useDataTable({ onEditField, recordData });
+  const { additionalParameters, onParametersChange } = useDataTable({ onEditField, recordData });
 
   const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
@@ -96,6 +96,15 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               value={recordData.type}
             />
           </FieldWrapper>
+          <FieldWrapper>
+            <TextField
+              label="Database Connection"
+              name="config.externalDatabaseConnectionCode"
+              required
+              inputProps={{ readOnly: true }}
+              value={recordData?.config?.externalDatabaseConnectionCode}
+            />
+          </FieldWrapper>
         </AccordionDetails>
       </Accordion>
 
@@ -110,7 +119,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
       <Accordion defaultExpanded>
         <AccordionSummary>Preview</AccordionSummary>
         <AccordionDetails>
-          <PreviewFilters parameters={parameters} onChange={onParametersChange} />
+          <PreviewFilters parameters={additionalParameters} onChange={onParametersChange} />
         </AccordionDetails>
       </Accordion>
     </div>
