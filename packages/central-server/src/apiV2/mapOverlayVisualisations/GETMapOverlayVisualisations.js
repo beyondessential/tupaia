@@ -12,7 +12,7 @@ import { GETHandler } from '../GETHandler';
 import {
   assertBESAdminAccess,
   assertAnyPermissions,
-  assertVizBuilderAccess,
+  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
 } from '../../permissions';
 
@@ -69,8 +69,8 @@ export class GETMapOverlayVisualisations extends GETHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to fetch visualisations.',
+        [assertBESAdminAccess, assertAdminPanelAccess],
+        'You require Tupaia Admin Panel or BES Admin permission to fetch visualisations.',
       ),
     );
   }

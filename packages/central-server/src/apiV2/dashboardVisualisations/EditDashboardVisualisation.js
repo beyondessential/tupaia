@@ -10,7 +10,7 @@ import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertVizBuilderAccess,
+  assertAdminPanelAccess,
   assertPermissionGroupAccess,
 } from '../../permissions';
 
@@ -32,8 +32,8 @@ export class EditDashboardVisualisation extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to edit visualisations.',
+        [assertBESAdminAccess, assertAdminPanelAccess],
+        'You require Tupaia Admin Panel or BES Admin permission to edit visualisations.',
       ),
     );
   }

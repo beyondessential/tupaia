@@ -9,7 +9,7 @@ import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertVizBuilderAccess,
+  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
 } from '../../permissions';
 import { constructNewRecordValidationRules } from '../utilities';
@@ -23,8 +23,8 @@ export class CreateDashboardVisualisation extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
+        [assertBESAdminAccess, assertAdminPanelAccess],
+        'You require Tupaia Admin Panel or BES Admin permission to create visualisations.',
       ),
     );
   }

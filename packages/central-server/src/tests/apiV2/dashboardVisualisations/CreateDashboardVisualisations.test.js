@@ -9,7 +9,7 @@ import { expectSuccess, expectError, resetTestData, TestableApp } from '../../te
 import { TEST_SETUP } from './dashboardVisualisations.fixtures';
 import {
   BES_ADMIN_PERMISSION_GROUP,
-  VIZ_BUILDER_USER_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 
 const clearRecords = async models => {
@@ -38,7 +38,7 @@ describe('POST dashboard visualisations', () => {
   };
 
   const policy = {
-    DL: [VIZ_BUILDER_USER_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
   };
 
   const besAdminPolicy = {
