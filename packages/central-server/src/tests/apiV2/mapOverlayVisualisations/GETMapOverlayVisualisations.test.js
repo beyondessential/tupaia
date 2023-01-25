@@ -8,7 +8,7 @@ import { expect } from 'chai';
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './mapOverlayVisualisations.fixtures';
-import { VIZ_BUILDER_USER_PERMISSION_GROUP } from '../../../permissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 
 describe('GET map overlay visualisations', () => {
   const app = new TestableApp();
@@ -18,7 +18,7 @@ describe('GET map overlay visualisations', () => {
   const modernReport = findTestRecordByCode('report', 'Modern_Report');
 
   const policy = {
-    DL: [VIZ_BUILDER_USER_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
   };
 
   const publicPolicy = {
@@ -45,7 +45,7 @@ describe('GET map overlay visualisations', () => {
       await app.grantAccess(publicPolicy);
       const { body } = await app.get('mapOverlayVisualisations/invalid_id');
       expect(body.error).to.equal(
-        'You require Viz Builder User or BES Admin permission to fetch visualisations.',
+        'You require Tupaia Admin Panel or BES Admin permission to fetch visualisations.',
       );
     });
 

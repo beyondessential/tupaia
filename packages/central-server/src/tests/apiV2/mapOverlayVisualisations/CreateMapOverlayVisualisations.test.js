@@ -5,7 +5,7 @@
 
 import { setupTest, generateTestId } from '@tupaia/database';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
-import { VIZ_BUILDER_USER_PERMISSION_GROUP } from '../../../permissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { TEST_SETUP } from './mapOverlayVisualisations.fixtures';
 
 const clearRecords = async models => {
@@ -18,11 +18,11 @@ describe('POST map overlay visualisations', async () => {
   const { models } = app;
 
   const policy = {
-    DL: [VIZ_BUILDER_USER_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
   };
 
   const vizBuilderOnlyPermission = {
-    DL: [VIZ_BUILDER_USER_PERMISSION_GROUP],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
   };
 
   const permissionGroupId = generateTestId();
