@@ -3,12 +3,15 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaApiClient } from '@tupaia/api-client';
+import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
+import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
 const entitiesDataTableService = new DataTableServiceBuilder()
   .setServiceType('entities')
-  .setContext({ apiClient: {} as TupaiaApiClient })
+  .setContext({
+    apiClient: new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS) }),
+  })
   .build();
 
 describe('EntitiesDataTableService', () => {
@@ -47,8 +50,46 @@ describe('EntitiesDataTableService', () => {
   });
 
   describe('fetchData', () => {
-    // TODO: Implement these tests when RN-685 is done
-    // it('can fetch entities', async () => {});
-    // it('can fetch entities and descendants', async () => {});
+    it('can fetch entities', async () => {
+      const entities = await entitiesDataTableService.fetchData({
+        entityCodes: ['AU', 'AU_Facility1', 'FJ'],
+        fields: ['name', 'type'],
+      });
+
+      expect(entities).toEqual([
+        {
+          name: 'Australia',
+          type: 'country',
+        },
+        {
+          name: 'Australian Facility 1',
+          type: 'facility',
+        },
+        {
+          name: 'Fiji',
+          type: 'country',
+        },
+      ]);
+    });
+
+    it('can fetch entities and descendants', async () => {
+      const entities = await entitiesDataTableService.fetchData({
+        hierarchy: 'test',
+        entityCodes: ['PG'],
+        fields: ['name', 'type'],
+        includeDescendants: true,
+      });
+
+      expect(entities).toEqual([
+        {
+          name: 'PNG',
+          type: 'country',
+        },
+        {
+          name: 'PNG Facility',
+          type: 'facility',
+        },
+      ]);
+    });
   });
 });
