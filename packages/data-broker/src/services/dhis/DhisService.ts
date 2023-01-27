@@ -103,7 +103,7 @@ type MetadataPuller =
       api: DhisApi,
       dataSources: DataGroup[],
       options: PullDataGroupsOptions,
-    ) => Promise<DataGroupMetadata[]>);
+    ) => Promise<DataGroupMetadata>);
 
 type MetadataMerger =
   | ((results: DataElementMetadata[]) => DataElementMetadata[])
@@ -337,10 +337,10 @@ export class DhisService extends Service {
     );
     const puller = this.metadataPullers[type];
 
-    const results: DataElementMetadata[] | DataGroupMetadata[] = [];
+    const results: any[] = [];
     const pullForApi = async (api: DhisApi) => {
       const newResults = await puller(api, dataSources as any, options as any);
-      results.push(...newResults);
+      results.push(newResults);
     };
     await Promise.all(apis.map(pullForApi));
 
