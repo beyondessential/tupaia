@@ -5,8 +5,6 @@
 
 import PropTypes from 'prop-types';
 
-export const ParametersType = PropTypes.arrayOf(PropTypes.shape(ParameterType));
-
 export const ParameterType = {
   id: PropTypes.string,
   name: PropTypes.string,
@@ -16,3 +14,5 @@ export const ParameterType = {
   defaultValue: PropTypes.string,
   inputFilterValue: PropTypes.any,
 };
+
+export const ParametersType = PropTypes.arrayOf(PropTypes.shape(ParameterType));
