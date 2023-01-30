@@ -9,9 +9,9 @@ import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
-import { yupSchemaToDataTableParams } from '../utils';
+import { orderParametersByName } from '../utils';
 
-const paramsSchema = yup.object().shape({
+const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
@@ -35,12 +35,14 @@ type Analytic = { period: string; organisationUnit: string; dataElement: string;
  */
 export class AnalyticsDataTableService extends DataTableService<
   AnalyticsDataTableServiceContext,
-  typeof paramsSchema,
+  typeof requiredParamsSchema,
   typeof configSchema,
   Analytic
 > {
+  protected supportsAdditionalParams = false;
+
   public constructor(context: AnalyticsDataTableServiceContext, config: unknown) {
-    super(context, paramsSchema, configSchema, config);
+    super(context, requiredParamsSchema, configSchema, config);
   }
 
   protected async pullData(params: {
@@ -85,36 +87,17 @@ export class AnalyticsDataTableService extends DataTableService<
     return results as Analytic[];
   }
 
+  // TODO: Sort parameters
   public getParameters() {
+    const parameters = super.getParameters();
     // Not including aggregations, as they are a hidden parameter
-    const {
-      hierarchy,
-      organisationUnitCodes,
-      dataElementCodes,
-      startDate,
-      endDate,
-    } = yupSchemaToDataTableParams(paramsSchema);
-
-    return [
-      { name: 'hierarchy', config: hierarchy },
-      {
-        name: 'organisationUnitCodes',
-        config: organisationUnitCodes,
-      },
-      { name: 'dataElementCodes', config: dataElementCodes },
-      {
-        name: 'startDate',
-        config: startDate,
-      },
-      {
-        name: 'endDate',
-        config: endDate,
-      },
-    ];
+    const filteredParameters = parameters.filter(({ name }) => name !== 'aggregations');
+    return orderParametersByName(filteredParameters, [
+      'hierarchy',
+      'organisationUnitCodes',
+      'dataElementCodes',
+      'startDate',
+      'endDate',
+    ]);
   }
 }
-
-export const createAnalyticsDataTableService = (
-  context: AnalyticsDataTableServiceContext,
-  config: unknown,
-) => new AnalyticsDataTableService(context, config);
