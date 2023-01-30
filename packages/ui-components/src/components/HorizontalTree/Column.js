@@ -6,6 +6,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { darken, fade } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -24,17 +25,78 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
   flex: 1;
-  width: 248px;
+  width: 278px;
   padding: 12px;
-  overflow-y: auto;
+  overflow-y: overlay;
   border-right: 1px solid ${({ theme }) => theme.palette.grey['400']};
 
-  .MuiButtonBase-root {
+  .MuiListItem-root {
     border-radius: 10px;
+    width: 100%;
+    padding: 0;
+    background-color: transparent;
+    word-break: break-all;
+
+    &.Mui-selected {
+      color: ${({ isExpanded, showExpandIcon, theme }) =>
+        !showExpandIcon || !isExpanded ? theme.palette.primary.contrastText : undefined};
+
+      background-color: ${({ isExpanded, showExpandIcon, theme }) => {
+        if (!showExpandIcon) {
+          return theme.palette.primary.main;
+        }
+        if (isExpanded) {
+          return fade(theme.palette.primary.main, 0.1);
+        }
+        return 'transparent';
+      }};
+
+      .MuiListItemText-root:hover {
+        background-color: ${({ isExpanded, showExpandIcon, theme }) => {
+          if (!showExpandIcon || !isExpanded) {
+            return darken(theme.palette.primary.main, 0.1);
+          }
+          return undefined;
+        }};
+      }
+
+      .MuiListItemText-root {
+        background-color: ${({ isExpanded, theme }) => !isExpanded && theme.palette.primary.main};
+      }
+    }
+
+    .MuiIconButton-root {
+      width: 37px;
+      height: 37px;
+    }
+  }
+
+  .MuiListItemText-root {
+    width: ${({ showExpandIcon }) => (showExpandIcon ? '217px' : '100%')};
+    flex: none;
+    margin: 0px;
+    padding: 10px 16px;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.palette.grey['200']};
+    }
   }
 `;
 
-export const Column = ({ data, isLoading, error, showExpandIcon, onSelect, onExpand }) => {
+const NoData = styled.div`
+  margin: 16px 0 16px 16px;
+`;
+
+export const Column = ({
+  data,
+  isExpanded,
+  isLoading,
+  error,
+  showExpandIcon,
+  onSelect,
+  onExpand,
+}) => {
   const { updateFilter, applyFilter, checkMatchesFilter } = useFilter();
   const [selected, setSelected] = useState(undefined);
 
@@ -78,34 +140,37 @@ export const Column = ({ data, isLoading, error, showExpandIcon, onSelect, onExp
     <>
       <Container>
         <ColumnFilter onChange={updateFilter} disabled={isLoading || isError} />
-        <ContentContainer className={`${CLASS_NAME}-content`}>
+        <ContentContainer
+          className={`${CLASS_NAME}-content`}
+          isExpanded={isExpanded}
+          showExpandIcon={showExpandIcon}
+        >
           <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            <List>
-              {filteredData?.length === 0 && (
-                <ListItem>
-                  <ListItemText primary="No data found" color="primary" />
-                </ListItem>
-              )}
-              {filteredData?.map(node => {
-                const hasChildren = node.children.length > 0;
+            {filteredData?.length === 0 ? (
+              <NoData>No data found</NoData>
+            ) : (
+              <List>
+                {filteredData?.map(node => {
+                  const hasChildren = node.children.length > 0;
 
-                return (
-                  <ListItem
-                    key={node.id}
-                    button
-                    selected={selected?.id === node.id}
-                    onClick={() => handleClickItem(node)}
-                  >
-                    <ListItemText primary={node.name} color="primary" />
-                    {showExpandIcon && hasChildren && (
-                      <IconButton aria-label="Expand item" size="small">
-                        <ChevronRightIcon onClick={e => handleClickIcon(node, e)} />
-                      </IconButton>
-                    )}
-                  </ListItem>
-                );
-              })}
-            </List>
+                  return (
+                    <ListItem
+                      key={node.id}
+                      button
+                      selected={selected?.id === node.id}
+                      onClick={() => handleClickItem(node)}
+                    >
+                      <ListItemText primary={node.name} color="primary" />
+                      {showExpandIcon && hasChildren && (
+                        <IconButton aria-label="Expand item">
+                          <ChevronRightIcon onClick={e => handleClickIcon(node, e)} />
+                        </IconButton>
+                      )}
+                    </ListItem>
+                  );
+                })}
+              </List>
+            )}
           </FetchLoader>
         </ContentContainer>
       </Container>
@@ -125,6 +190,7 @@ Column.propTypes = {
       ).isRequired,
     }),
   ),
+  isExpanded: PropTypes.bool,
   isLoading: PropTypes.bool,
   error: PropTypes.shape({
     message: PropTypes.string.isRequired,
@@ -136,6 +202,7 @@ Column.propTypes = {
 
 Column.defaultProps = {
   data: undefined,
+  isExpanded: false,
   isLoading: false,
   error: null,
   showExpandIcon: true,

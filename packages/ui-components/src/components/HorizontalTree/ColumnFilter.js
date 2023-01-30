@@ -11,7 +11,7 @@ import styled from 'styled-components';
 export const ColumnFilterContainer = styled.div`
   height: 91px;
   padding: 20px 10px;
-  background: ${({ theme }) => theme.palette.grey['200']};
+  background-color: ${({ theme }) => theme.palette.grey['200']};
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
 
   .MuiFormControl-root {

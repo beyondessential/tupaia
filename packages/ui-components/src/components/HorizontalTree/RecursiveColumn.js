@@ -21,6 +21,8 @@ export const RecursiveColumn = ({ data, isLoading, error, fetchData }) => {
     clearChildren();
   }, [data]);
 
+  const isExpanded = !!(children || areChildrenLoading || childrenError);
+
   return (
     <>
       <Column
@@ -33,8 +35,9 @@ export const RecursiveColumn = ({ data, isLoading, error, fetchData }) => {
         onExpand={node => {
           fetchChildren(node);
         }}
+        isExpanded={isExpanded}
       />
-      {(children || areChildrenLoading || childrenError) && (
+      {isExpanded && (
         <RecursiveColumn
           data={children}
           isLoading={areChildrenLoading}

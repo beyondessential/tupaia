@@ -6,7 +6,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { fade } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { ColumnFilterContainer } from './ColumnFilter';
 import { RecursiveColumn } from './RecursiveColumn';
@@ -28,11 +27,6 @@ const RootContainer = styled.div`
   .TupaiaHorizontalTreeColumn-content {
     border-right: none;
   }
-
-  .MuiList-root .Mui-selected {
-    color: ${({ theme }) => theme.palette.primary.contrastText};
-    background-color: ${({ theme }) => theme.palette.primary.main};
-  }
 `;
 
 const DescendantsContainer = styled.div`
@@ -40,11 +34,6 @@ const DescendantsContainer = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-radius: 5px 5px 0px 0px;
-
-  .MuiList-root .Mui-selected {
-    color: ${({ theme }) => theme.palette.text.primary};
-    background-color: ${({ theme }) => fade(theme.palette.primary.main, 0.1)};
-  }
 `;
 
 export const HorizontalTree = ({ fetchData }) => {
