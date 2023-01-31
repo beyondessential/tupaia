@@ -10,6 +10,7 @@ export * from './Autocomplete';
 export * from './AsyncAutocomplete';
 export * from './Select';
 export * from './MultiSelect';
+export * from './GroupedSelect';
 export * from './DatePicker';
 export * from './RadioGroup';
 export * from './FileUploadField';
