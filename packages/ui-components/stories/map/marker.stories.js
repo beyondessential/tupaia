@@ -44,13 +44,8 @@ export const IconMarker = () => (
   <MeasureMarker displayPolygons coordinates={[-21.1399512, 184.7934707]} icon="pin" color="blue" />
 );
 
-export const ArrowIconMarker = () => (
-  <MeasureMarker
-    displayPolygons
-    coordinates={[-21.1399512, 184.7934707]}
-    icon="arrow"
-    direction="down"
-  />
+export const UpArrowIconMarker = () => (
+  <MeasureMarker displayPolygons coordinates={[-21.1399512, 184.7934707]} icon="upArrow" />
 );
 
 export const CircleMarker = () => (

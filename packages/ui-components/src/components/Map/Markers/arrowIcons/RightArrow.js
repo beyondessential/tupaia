@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconContainer } from '../IconContainer';
 
-export const RightArrowIcon = ({ scale }) => (
+export const RightArrow = ({ scale }) => (
   <IconContainer fill="#fff" scale={scale} viewBox="0 0 370.46 301.13">
     <path
       className="cls-1"
@@ -16,9 +16,9 @@ export const RightArrowIcon = ({ scale }) => (
   </IconContainer>
 );
 
-RightArrowIcon.propTypes = {
+RightArrow.propTypes = {
   scale: PropTypes.number,
 };
-RightArrowIcon.defaultProps = {
+RightArrow.defaultProps = {
   scale: 1,
 };

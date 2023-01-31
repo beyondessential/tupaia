@@ -17,7 +17,7 @@ import CheckBox from '@material-ui/icons/CheckBox';
 import { ICON_BASE_SIZE } from './constants';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
 import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
-import { UpArrowIcon, DownArrowIcon, RightArrowIcon } from './arrowIcons';
+import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../constants';
 import { IconContainer } from './IconContainer';
 
@@ -48,14 +48,16 @@ const PinIcon = ({ color, scale }) => {
   );
 };
 
-const ArrowIcon = ({ direction, scale }) => {
-  const arrowIconComponents = {
-    up: UpArrowIcon,
-    down: DownArrowIcon,
-    right: RightArrowIcon,
-  };
+const UpArrowIcon = ({ scale }) => {
+  return UpArrow(scale);
+};
 
-  return arrowIconComponents[direction](scale);
+const RightArrowIcon = ({ scale }) => {
+  return RightArrow(scale);
+};
+
+const DownArrowIcon = ({ scale }) => {
+  return DownArrow(scale);
 };
 
 const HealthPinIcon = ({ color, scale }) => (
@@ -227,8 +229,18 @@ const icons = {
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
-  arrow: {
-    Component: ArrowIcon,
+  upArrow: {
+    Component: UpArrowIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
+  rightArrow: {
+    Component: RightArrowIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
+  downArrow: {
+    Component: DownArrowIcon,
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
@@ -305,7 +317,7 @@ export const LEGEND_SHADING_ICON = 'square';
 export const LEGEND_RADIUS_ICON = 'radius';
 export const HIDDEN_ICON = 'hidden';
 
-function toLeaflet(icon, color, scale, direction) {
+function toLeaflet(icon, color, scale) {
   const {
     Component,
     iconAnchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], // default to center point
@@ -322,9 +334,7 @@ function toLeaflet(icon, color, scale, direction) {
     popupAnchor: scaledPopupAnchor,
     className: 'tupaia-simple',
     ...params,
-    html: ReactDOMServer.renderToStaticMarkup(
-      <Component color={color} scale={scale} direction={direction} />,
-    ),
+    html: ReactDOMServer.renderToStaticMarkup(<Component color={color} scale={scale} />),
   });
 }
 
@@ -336,10 +346,10 @@ export function getMarkerForOption(iconKey, colorName, stroke) {
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(iconKey, colorName, scale = 1, direction) {
+export function getMarkerForValue(iconKey, colorName, scale = 1) {
   const icon = icons[iconKey] || icons.pin;
   const color = BREWER_PALETTE[colorName] || colorName;
-  return toLeaflet(icon, color, scale, direction);
+  return toLeaflet(icon, color, scale);
 }
 
 const iconPropTypes = {
@@ -352,11 +362,10 @@ const iconDefaultProps = {
 
 PinIcon.propTypes = iconPropTypes;
 PinIcon.defaultProps = iconDefaultProps;
-ArrowIcon.propTypes = {
+UpArrowIcon.propTypes = {
   scale: PropTypes.number,
-  direction: PropTypes.string.isRequired,
 };
-ArrowIcon.defaultProps = {
+UpArrowIcon.defaultProps = {
   scale: 1,
 };
 HealthPinIcon.propTypes = iconPropTypes;
