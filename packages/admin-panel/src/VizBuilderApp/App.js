@@ -40,10 +40,10 @@ export const App = ({ Navbar, Footer }) => {
       <Container>
         {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
         <Switch>
-          <Route path={`${basePath}/viz-builder/:vizType/new`} exact>
+          <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
             <CreateNew />
           </Route>
-          <Route path={`${basePath}/viz-builder/:vizType/:visualisationId?`}>
+          <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId?`}>
             <Main />
           </Route>
         </Switch>

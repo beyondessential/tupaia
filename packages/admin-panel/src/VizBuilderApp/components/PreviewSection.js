@@ -145,7 +145,7 @@ export const PreviewSection = () => {
 
   const [viewContent, setViewContent] = useState(null);
 
-  const { vizType } = useParams();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const {
     data: reportData = { columns: [], rows: [] },
@@ -162,7 +162,7 @@ export const PreviewSection = () => {
     onSettled: () => {
       setFetchEnabled(false);
     },
-    vizType,
+    dashboardItemOrMapOverlay,
     previewMode: getTab(tab).previewMode,
   });
 
