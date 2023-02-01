@@ -12,11 +12,6 @@ export interface EntityServerModelRegistry extends ModelRegistry {
   readonly entityHierarchy: EntityHierarchyModel;
 }
 
-// Extracts keys that have object-like values from type T
-export type ObjectLikeKeys<T> = {
-  [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;
-}[keyof T];
-
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

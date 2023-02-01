@@ -24,3 +24,15 @@ export type NullableKeys<T> = { [K in keyof T]-?: null | T[K] extends T[K] ? K :
  */
 export type NullableKeysToOptional<T> = Pick<T, NonNullKeys<T>> &
   { [P in NullableKeys<T>]?: Exclude<T[P], null> };
+
+/**
+ * Extracts keys that have object-like values from type T
+ */
+export type ObjectLikeKeys<T> = {
+  [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;
+}[keyof T];
+
+// Extracts fields that have object-like values from type T
+export type ObjectLikeFields<T> = {
+  [K in keyof T]: T[K] extends Record<string, unknown> ? T[K] : never;
+};
