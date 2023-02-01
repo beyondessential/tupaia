@@ -25,7 +25,7 @@ export const useReportPreview = ({
           hierarchy: project,
           vizType,
           previewMode,
-          permissionGroup: visualisation.permissionGroup,
+          permissionGroup: visualisation.permissionGroup || visualisation.reportPermissionGroup,
         },
         data: {
           testData,
