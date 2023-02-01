@@ -11,32 +11,35 @@ import { buildContext, ReqContext } from '../../../reportBuilder/context/buildCo
 
 describe('buildContext', () => {
   const HIERARCHY = 'test_hierarchy';
-  const ENTITIES = {
-    test_hierarchy: [
-      { id: 'ouId1', code: 'AU', name: 'Australia', type: 'country', attributes: {} },
-      { id: 'ouId2', code: 'FJ', name: 'Fiji', type: 'country', attributes: {} },
-      { id: 'ouId3', code: 'KI', name: 'Kiribati', type: 'country', attributes: {} },
-      { id: 'ouId4', code: 'TO', name: 'Tonga', type: 'country', attributes: {} },
-      {
-        id: 'ouId5',
-        code: 'TO_Facility1',
-        name: 'Tonga Facility 1',
-        type: 'facility',
-        attributes: { x: 1 },
-      },
-      {
-        id: 'ouId6',
-        code: 'TO_Facility2',
-        name: 'Tonga Facility 2',
-        type: 'facility',
-        attributes: {},
-      },
-      { id: 'ouId7', code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility', attributes: {} },
-    ],
-  };
+  const ENTITIES = [
+    { code: 'test_hierarchy', name: 'Test Hierarchy', type: 'project' },
+    { id: 'ouId1', code: 'AU', name: 'Australia', type: 'country', attributes: {} },
+    { id: 'ouId2', code: 'FJ', name: 'Fiji', type: 'country', attributes: {} },
+    { id: 'ouId3', code: 'KI', name: 'Kiribati', type: 'country', attributes: {} },
+    { id: 'ouId4', code: 'TO', name: 'Tonga', type: 'country', attributes: {} },
+    {
+      id: 'ouId5',
+      code: 'TO_Facility1',
+      name: 'Tonga Facility 1',
+      type: 'facility',
+      attributes: { x: 1 },
+    },
+    {
+      id: 'ouId6',
+      code: 'TO_Facility2',
+      name: 'Tonga Facility 2',
+      type: 'facility',
+      attributes: {},
+    },
+    { id: 'ouId7', code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility', attributes: {} },
+  ];
 
   const RELATIONS = {
     test_hierarchy: [
+      { parent: 'test_hierarchy', child: 'AU' },
+      { parent: 'test_hierarchy', child: 'FJ' },
+      { parent: 'test_hierarchy', child: 'KI' },
+      { parent: 'test_hierarchy', child: 'TO' },
       { parent: 'TO', child: 'TO_Facility1' },
       { parent: 'TO', child: 'TO_Facility2' },
       { parent: 'FJ', child: 'FJ_Facility' },

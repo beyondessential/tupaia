@@ -9,9 +9,9 @@ import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataBroker } from '@tupaia/data-broker';
 import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
-import { yupSchemaToDataTableParams } from '../utils';
+import { orderParametersByName } from '../utils';
 
-const paramsSchema = yup.object().shape({
+const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataGroupCode: yup.string().required(),
   dataElementCodes: yup.array().of(yup.string().required()).strict(),
@@ -50,12 +50,14 @@ type Event = EventFields & Record<string, unknown>;
  */
 export class EventsDataTableService extends DataTableService<
   EventsDataTableServiceContext,
-  typeof paramsSchema,
+  typeof requiredParamsSchema,
   typeof configSchema,
   Event
 > {
+  protected supportsAdditionalParams = false;
+
   public constructor(context: EventsDataTableServiceContext, config: unknown) {
-    super(context, paramsSchema, configSchema, config);
+    super(context, requiredParamsSchema, configSchema, config);
   }
 
   protected async pullData(params: {
@@ -105,37 +107,16 @@ export class EventsDataTableService extends DataTableService<
   }
 
   public getParameters() {
+    const parameters = super.getParameters();
     // Not including aggregations, as they are a hidden parameter
-    const {
-      hierarchy,
-      organisationUnitCodes,
-      dataGroupCode,
-      dataElementCodes,
-      startDate,
-      endDate,
-    } = yupSchemaToDataTableParams(paramsSchema);
-
-    return [
-      { name: 'hierarchy', config: hierarchy },
-      {
-        name: 'organisationUnitCodes',
-        config: organisationUnitCodes,
-      },
-      { name: 'dataGroupCode', config: dataGroupCode },
-      { name: 'dataElementCodes', config: dataElementCodes },
-      {
-        name: 'startDate',
-        config: startDate,
-      },
-      {
-        name: 'endDate',
-        config: endDate,
-      },
-    ];
+    const filteredParameters = parameters.filter(({ name }) => name !== 'aggregations');
+    return orderParametersByName(filteredParameters, [
+      'hierarchy',
+      'organisationUnitCodes',
+      'dataGroupCode',
+      'dataElementCodes',
+      'startDate',
+      'endDate',
+    ]);
   }
 }
-
-export const createEventsDataTableService = (
-  context: EventsDataTableServiceContext,
-  config: unknown,
-) => new EventsDataTableService(context, config);

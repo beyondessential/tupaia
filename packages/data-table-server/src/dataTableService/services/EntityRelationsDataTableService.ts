@@ -6,9 +6,8 @@
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
-import { yupSchemaToDataTableParams } from '../utils';
 
-const paramsSchema = yup.object().shape({
+const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   entityCodes: yup.array().of(yup.string().required()).required(),
   ancestorType: yup.string().required(),
@@ -25,12 +24,14 @@ type EntityRelation = { ancestor: string; descendant: string };
  */
 export class EntityRelationsDataTableService extends DataTableService<
   EntityRelationsDataTableContext,
-  typeof paramsSchema,
+  typeof requiredParamsSchema,
   typeof configSchema,
   EntityRelation
 > {
+  protected supportsAdditionalParams = false;
+
   public constructor(context: EntityRelationsDataTableContext, config: unknown) {
-    super(context, paramsSchema, configSchema, config);
+    super(context, requiredParamsSchema, configSchema, config);
   }
 
   protected async pullData(params: {
@@ -53,24 +54,5 @@ export class EntityRelationsDataTableService extends DataTableService<
       ancestor,
       descendant,
     })) as EntityRelation[];
-  }
-
-  public getParameters() {
-    const { hierarchy, entityCodes, ancestorType, descendantType } = yupSchemaToDataTableParams(
-      paramsSchema,
-    );
-
-    return [
-      { name: 'hierarchy', config: hierarchy },
-      {
-        name: 'entityCodes',
-        config: entityCodes,
-      },
-      { name: 'ancestorType', config: ancestorType },
-      {
-        name: 'descendantType',
-        config: descendantType,
-      },
-    ];
   }
 }
