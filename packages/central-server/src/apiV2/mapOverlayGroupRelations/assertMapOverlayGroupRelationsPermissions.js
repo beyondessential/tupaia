@@ -4,7 +4,7 @@
  */
 
 import { hasBESAdminAccess } from '../../permissions';
-import { mergeFilter, mergeMultiJoin } from '../utilities';
+import { mergeFilter } from '../utilities';
 import { hasMapOverlayGetPermissions, hasMapOverlayEditPermissions } from '../mapOverlays';
 
 import {
@@ -12,8 +12,6 @@ import {
   hasMapOverlayGroupGetPermissions,
   hasMapOverlayGroupEditPermissions,
 } from '../mapOverlayGroups';
-import { TYPES } from '@tupaia/database';
-import { createDashboardRelationsDBFilter } from '../dashboardRelations';
 
 export const hasMapOverlayGroupRelationGetPermissions = async (
   accessPolicy,
