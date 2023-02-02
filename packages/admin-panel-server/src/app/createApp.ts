@@ -25,6 +25,8 @@ import {
   FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
+  FetchDataTablePreviewDataRequest,
+  FetchDataTablePreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
@@ -89,6 +91,11 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
     )
+    .post<FetchDataTablePreviewDataRequest>(
+      'fetchDataTablePreviewData',
+      verifyBESAdminAccess,
+      handleWith(FetchDataTablePreviewDataRoute),
+    )
     .get(
       'export/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
@@ -142,6 +149,7 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(FetchTransformSchemasRoute),
     )
+
     .build();
 
   useForwardUnhandledRequests(app, CENTRAL_API_URL);

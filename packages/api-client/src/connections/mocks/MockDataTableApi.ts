@@ -14,6 +14,12 @@ export class MockDataTableApi implements DataTableApiInterface {
     throw new Error('Method not implemented.');
   }
 
+  public async fetchPreviewData(
+    previewConfig: Record<string, unknown>,
+  ): Promise<{ data: Record<string, unknown>[] }> {
+    throw new Error('Method not implemented.');
+  }
+
   public getParameters(
     dataTableCode: string,
   ): Promise<{

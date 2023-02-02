@@ -5,9 +5,16 @@
 import { ForwardingAuthHandler } from '@tupaia/api-client';
 import { TupaiaDatabase } from '@tupaia/database';
 import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
-import { attachDataTableToContext } from '../middleware';
+import { attachDataTableToContext, attachDataTableFromPreviewToContext } from '../middleware';
 
-import { FetchDataRequest, FetchDataRoute, ParametersRequest, ParametersRoute } from '../routes';
+import {
+  FetchDataRequest,
+  FetchDataRoute,
+  ParametersRequest,
+  ParametersRoute,
+  FetchPreviewDataRequest,
+  FetchPreviewDataRoute,
+} from '../routes';
 
 /**
  * Set up express server with middleware,
@@ -21,6 +28,11 @@ export function createApp(database = new TupaiaDatabase()) {
       'dataTable/:dataTableCode/fetchData',
       attachDataTableToContext,
       handleWith(FetchDataRoute),
+    )
+    .post<FetchPreviewDataRequest>(
+      'dataTable/fetchPreviewData',
+      attachDataTableFromPreviewToContext,
+      handleWith(FetchPreviewDataRoute),
     )
     .get<ParametersRequest>(
       'dataTable/:dataTableCode/parameters',

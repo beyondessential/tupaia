@@ -1,0 +1,26 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *
+ */
+
+import { Request } from 'express';
+
+import { Route } from '@tupaia/server-boilerplate';
+
+export type FetchDataTablePreviewDataRequest = Request<
+  Record<string, never>,
+  Record<string, unknown>,
+  {
+    previewConfig: Record<string, unknown>;
+  },
+  Record<string, never>
+>;
+
+export class FetchDataTablePreviewDataRoute extends Route<FetchDataTablePreviewDataRequest> {
+  public async buildResponse() {
+    const { previewConfig } = this.req.body;
+
+    return this.req.ctx.services.dataTable.fetchPreviewData(previewConfig);
+  }
+}

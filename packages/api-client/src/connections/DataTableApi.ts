@@ -14,6 +14,12 @@ export class DataTableApi extends BaseApi {
     return this.connection.post(`dataTable/${dataTableCode}/fetchData`, null, parameters);
   }
 
+  public async fetchPreviewData(
+    previewConfig: Record<string, unknown>,
+  ): Promise<{ data: Record<string, unknown>[] }> {
+    return this.connection.post(`dataTable/fetchPreviewData`, null, previewConfig);
+  }
+
   public async getParameters(
     dataTableCode: string,
   ): Promise<{ parameters: { name: string; config: Record<string, unknown> }[] }> {
