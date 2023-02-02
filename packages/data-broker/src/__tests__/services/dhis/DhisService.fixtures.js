@@ -15,6 +15,7 @@ export const DATA_SOURCES = {
     code: 'DIF01',
     dataElementCode: 'DIF01_DHIS',
   }),
+  NON_DHIS_1: createDataSource({ code: 'NON_DHIS_1', service_type: 'superset' }),
 };
 
 export const DATA_GROUPS = {
@@ -24,6 +25,7 @@ export const DATA_GROUPS = {
   DIFF_GROUP: createDataSource({
     code: 'DIFF_GROUP',
   }),
+  NON_DHIS_2: createDataSource({ code: 'NON_DHIS_2', service_type: 'superset' }),
 };
 
 const DL_FACILITY_A = {
@@ -84,20 +86,17 @@ export const DATA_ELEMENTS_BY_GROUP = {
 
 // A simple mapping with no country-specific overrides
 export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
-  [
-    Object.values(DATA_SOURCES).map(de => ({
-      dataSource: de,
-      service_type: de.service_type,
-      config: de.config,
-    })),
-  ],
-  [
-    Object.values(DATA_GROUPS).map(dg => ({
-      dataSource: dg,
-      service_type: dg.service_type,
-      config: dg.config,
-    })),
-  ],
+  Object.values(DATA_SOURCES).map(de => ({
+    dataSource: de,
+    service_type: de.service_type,
+    config: de.config,
+  })),
+
+  Object.values(DATA_GROUPS).map(dg => ({
+    dataSource: dg,
+    service_type: dg.service_type,
+    config: dg.config,
+  })),
 );
 
 export const DHIS_REFERENCE = 'XXXYYY';
