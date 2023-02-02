@@ -422,6 +422,9 @@ export class DataBroker {
     // This will likely lead to problems in the future, for now this is ok because
     // our services happily ignore extra org units, and our vizes do not ask for
     // data elements that don't exist in dhis (dhis throws if it cant find it).
+    // Update 2023-01-19: At this time DHIS and superset will ignore data elements
+    // that are not relevant to them, but a proper cleanup should still be done
+    // to not even pass these services unrelated data elements in the first place.
 
     // First we get the mapping for each country, then if any two countries have the
     // exact same mapping we simply combine them

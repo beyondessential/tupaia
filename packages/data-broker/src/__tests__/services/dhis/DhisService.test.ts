@@ -41,7 +41,6 @@ jest.mock('../../../services/dhis/pullers', () => ({
 describe('DhisService', () => {
   const models = createModelsStub();
   const dhisService = new DhisService(models);
-  const dataServiceMapping = new DataServiceMapping();
   const dhisApi = createMockDhisApi();
   stubGetDhisApi(dhisApi);
 
@@ -253,14 +252,14 @@ describe('DhisService', () => {
   describe('pull()', () => {
     describe('pull functionality', () => {
       const basicEventOptions = {
-        dataServiceMapping,
+        dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
         organisationUnitCodes: ['TO'],
       };
 
       it('uses AnalyticsPuller for dataElements', async () => {
-        await dhisService.pull([DATA_ELEMENTS.POP01], 'dataElement', { dataServiceMapping });
+        await dhisService.pull([DATA_ELEMENTS.POP01], 'dataElement', { dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING });
         expect(mockPullAnalytics).toHaveBeenCalledOnceWith([dhisApi], [DATA_ELEMENTS.POP01], {
-          dataServiceMapping,
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
         });
       });
 
@@ -299,10 +298,7 @@ describe('DhisService', () => {
 
       it('looks up the api from the given data source', async () => {
         const dataSources = [
-          {
-            ...DATA_ELEMENTS.POP01,
-            config: { dhisInstanceCode: 'test_dhis_instance_1' },
-          },
+          DATA_ELEMENTS.POP01,
         ];
         const options = {
           organisationUnitCodes: ['TO'],
@@ -325,6 +321,33 @@ describe('DhisService', () => {
         expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
           [mockedDhisApi1],
           expect.anything(),
+          expect.anything(),
+        );
+      });
+
+      it('ignores non-dhis data elements', async () => {
+        const dataSources = [DATA_ELEMENTS.POP01, DATA_ELEMENTS.NON_DHIS_1];
+        const options = {
+          organisationUnitCodes: ['TO'],
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        };
+
+        const mockedDhisApi1 = createMockDhisApi({ serverName: 'myDhisApi1' });
+        getApisForDataSourcesSpy.mockResolvedValue([mockedDhisApi1]);
+
+        await dhisService.pull(dataSources, 'dataElement', options);
+
+        // expect DhisService to ask for the apis for the given data sources, except non-DHIS ones
+        expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          [DATA_ELEMENTS.POP01],
+          DEFAULT_DATA_SERVICE_MAPPING,
+        );
+
+        // expect pull to have been called with the given data sources, except non-DHIS ones
+        expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
+          [mockedDhisApi1],
+          [DATA_ELEMENTS.POP01],
           expect.anything(),
         );
       });

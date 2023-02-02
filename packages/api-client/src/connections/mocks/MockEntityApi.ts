@@ -9,7 +9,7 @@ import { isDefined } from '@tupaia/tsutils';
 import { EntityApiInterface } from '..';
 
 export class MockEntityApi implements EntityApiInterface {
-  private readonly entities: Record<string, Record<string, any>[]>;
+  private readonly entitiesByHierarchy: Record<string, Record<string, any>[]>;
   private readonly relations: Record<string, { parent: string; child: string }[]>;
 
   private getEntitiesStub(
@@ -17,7 +17,7 @@ export class MockEntityApi implements EntityApiInterface {
     entityCodes: string[],
     queryOptions: { field?: string; fields?: string[]; filter?: Record<string, unknown> } = {},
   ) {
-    const entitiesInHierarchy = this.entities[hierarchyName] || [];
+    const entitiesInHierarchy = this.entitiesByHierarchy[hierarchyName] || [];
     const foundEntities = entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
     const { field, fields, filter } = queryOptions;
 
@@ -44,7 +44,7 @@ export class MockEntityApi implements EntityApiInterface {
     entityCodes: string[],
     queryOptions: { fields?: string[]; filter?: { type?: string } } = {},
   ) {
-    const entitiesInHierarchy = this.entities[hierarchyName] || [];
+    const entitiesInHierarchy = this.entitiesByHierarchy[hierarchyName] || [];
     const relationsInHierarchy = this.relations[hierarchyName] || [];
     const ancestorEntities = entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
     const ancestorEntityQueue = [...ancestorEntities];
@@ -72,7 +72,7 @@ export class MockEntityApi implements EntityApiInterface {
     entityCodes: string[],
     queryOptions: { fields?: string[]; filter?: { type?: string } } = {},
   ) {
-    const entitiesInHierarchy = this.entities[hierarchyName] || [];
+    const entitiesInHierarchy = this.entitiesByHierarchy[hierarchyName] || [];
     const relationsInHierarchy = this.relations[hierarchyName] || [];
     const descendantEntities = entitiesInHierarchy.filter(e => entityCodes.includes(e.code));
     const descendantEntityQueue = [...descendantEntities];
@@ -108,11 +108,21 @@ export class MockEntityApi implements EntityApiInterface {
   }
 
   public constructor(
-    entities: Record<string, Record<string, any>[]> = {},
+    entities: Record<string, any>[] = [],
     relations: Record<string, { parent: string; child: string }[]> = {},
   ) {
-    this.entities = entities;
     this.relations = relations;
+    this.entitiesByHierarchy = {};
+    Object.entries(relations).forEach(([hierarchy, relationsInHierarchy]) => {
+      const entitiesInHierarchy = new Set<Record<string, any>>();
+      relationsInHierarchy.forEach(({ parent, child }) => {
+        const parentEntity = entities.find(e => e.code === parent);
+        const childEntity = entities.find(e => e.code === child);
+        if (parentEntity) entitiesInHierarchy.add(parentEntity);
+        if (childEntity) entitiesInHierarchy.add(childEntity);
+      });
+      this.entitiesByHierarchy[hierarchy] = Array.from(entitiesInHierarchy);
+    });
   }
 
   public async getEntity(

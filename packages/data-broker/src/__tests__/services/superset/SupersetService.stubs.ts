@@ -35,6 +35,11 @@ export const DATA_ELEMENTS = dataElements({
       supersetInstanceCode: 'SUPERSET_INSTANCE_A',
     },
   },
+  DE_NOT_SUPERSET: {
+    code: 'DE_NOT_SUPERSET',
+    service_type: 'dhis',
+    config: {},
+  },
 });
 
 const SUPERSET_INSTANCES = [

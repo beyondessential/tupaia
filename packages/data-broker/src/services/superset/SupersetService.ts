@@ -167,7 +167,8 @@ export class SupersetService extends Service {
       const mapping = dataServiceMapping.mappingForDataSource(
         dataSource,
       ) as DataServiceMappingEntry;
-      const { config } = mapping;
+      const { service_type, config } = mapping;
+      if (service_type !== 'superset') continue;
       const { supersetInstanceCode } = config;
       if (!supersetInstanceCode) {
         throw new Error(`Data Element ${dataSource.code} missing supersetInstanceCode`);

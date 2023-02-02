@@ -12,12 +12,14 @@ export const DATA_ELEMENTS = dataElements({
   POP01: { code: 'POP01', dataElementCode: 'POP01', service_type: 'dhis' },
   POP02: { code: 'POP02', dataElementCode: 'POP02', service_type: 'dhis' },
   DIF01: { code: 'DIF01', dataElementCode: 'DIF01_DHIS', service_type: 'dhis' },
+  NON_DHIS_1: { code: 'NON_DHIS_1', service_type: 'superset' }
 });
 
 export const DATA_GROUPS = dataGroups({
   // code is intentionally the same as `POP01` data element, as their type should differentiate them
   POP01_GROUP: { code: 'POP01', service_type: 'dhis' },
   DIFF_GROUP: { code: 'DIFF_GROUP', service_type: 'dhis' },
+  NON_DHIS_2: { code: 'NON_DHIS_2', service_type: 'superset' },
 });
 
 const DL_FACILITY_A = entityType({

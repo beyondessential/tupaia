@@ -13,7 +13,7 @@ export type DataTableFields = Readonly<{
   id: string;
   code: string;
   description: string | null;
-  type: 'internal';
+  type: 'analytics' | 'events' | 'entities' | 'entity_relations' | 'sql';
   config: Record<string, unknown>;
   permission_groups: string[];
 }>;

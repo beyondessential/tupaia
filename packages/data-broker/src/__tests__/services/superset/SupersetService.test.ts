@@ -157,6 +157,18 @@ describe('SupersetService', () => {
             },
           ],
         }));
+
+      it('ignores non-superset data elements', () =>
+        expect(
+          supersetService.pull([DATA_ELEMENTS.DE_NOT_SUPERSET], 'dataElement', {
+            dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          }),
+        ).resolves.toEqual({
+          metadata: {
+            dataElementCodeToName: {},
+          },
+          results: [],
+        }));
     });
 
     describe('pullEvents()', () => {

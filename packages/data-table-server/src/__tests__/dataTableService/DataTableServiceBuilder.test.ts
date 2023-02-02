@@ -7,7 +7,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataTableType as DataTableTypeClass } from '@tupaia/database';
 import { DataTableServiceBuilder, getDataTableServiceType } from '../../dataTableService';
-import { AnalyticsDataTableService } from '../../dataTableService/internal/AnalyticsDataTableService';
+import { AnalyticsDataTableService } from '../../dataTableService/services/AnalyticsDataTableService';
 import { DataTableType } from '../../models';
 
 describe('DataTableServiceBuilder', () => {
@@ -26,26 +26,12 @@ describe('DataTableServiceBuilder', () => {
           'No data table service defined for: unknown',
         );
       });
-
-      it('throws an error for an unknown internal data-table', () => {
-        const unknownInternalDataTable = new DataTableTypeClass(
-          {},
-          { type: 'internal', code: 'unknown' },
-        ) as DataTableType;
-
-        const createUnknownInternalDataTableService = () =>
-          getDataTableServiceType(unknownInternalDataTable);
-
-        expect(createUnknownInternalDataTableService).toThrow(
-          'No internal data-table defined for: unknown',
-        );
-      });
     });
 
-    it('can get the service type of an internal data-table', () => {
+    it('can get the service type of a data-table', () => {
       const analyticsDataTable = new DataTableTypeClass(
         {},
-        { type: 'internal', code: 'analytics' },
+        { type: 'analytics', code: 'analytics' },
       ) as DataTableType;
 
       expect(getDataTableServiceType(analyticsDataTable)).toEqual('analytics');
