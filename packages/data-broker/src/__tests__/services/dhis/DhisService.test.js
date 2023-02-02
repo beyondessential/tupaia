@@ -14,6 +14,7 @@ import {
 } from './DhisService.fixtures';
 import { DhisService } from '../../../services/dhis';
 import { createMockDhisApi, createModelsStub, stubGetDhisApi } from './DhisService.stubs';
+import { DATA_ELEMENTS } from '../superset/SupersetService.stubs';
 
 describe('DhisService', () => {
   let dhisService;
@@ -277,13 +278,18 @@ describe('DhisService', () => {
       });
 
       it('uses the modern EventsPuller by default', async () => {
-        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', expect.anything());
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        });
         expect(dhisService.eventsPuller.pull).toHaveBeenCalledTimes(1);
         expect(dhisService.deprecatedEventsPuller.pull).not.toHaveBeenCalled();
       });
 
       it('uses the deprecated EventsPuller if flag passed', async () => {
-        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { useDeprecatedApi: true });
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+          useDeprecatedApi: true,
+        });
         expect(dhisService.eventsPuller.pull).not.toHaveBeenCalled();
         expect(dhisService.deprecatedEventsPuller.pull).toHaveBeenCalledTimes(1);
       });
@@ -297,12 +303,7 @@ describe('DhisService', () => {
       });
 
       it('looks up the api from the given data source', async () => {
-        const dataSources = [
-          {
-            ...DATA_SOURCES.POP01,
-            config: { dhisInstanceCode: 'test_dhis_instance_1' },
-          },
-        ];
+        const dataSources = [DATA_SOURCES.POP01];
         const options = {
           organisationUnitCodes: ['TO'],
           dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
@@ -324,6 +325,33 @@ describe('DhisService', () => {
         expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
           [mockedDhisApi1],
           expect.anything(),
+          expect.anything(),
+        );
+      });
+
+      it('ignores non-dhis data elements', async () => {
+        const dataSources = [DATA_SOURCES.POP01, DATA_SOURCES.NON_DHIS_1];
+        const options = {
+          organisationUnitCodes: ['TO'],
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        };
+
+        const mockedDhisApi1 = createMockDhisApi({ serverName: 'myDhisApi1' });
+        getApisForDataSourcesSpy.mockReturnValue([mockedDhisApi1]);
+
+        await dhisService.pull(dataSources, 'dataElement', options);
+
+        // expect DhisService to ask for the apis for the given data sources, except non-DHIS ones
+        expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          [DATA_SOURCES.POP01],
+          DEFAULT_DATA_SERVICE_MAPPING,
+        );
+
+        // expect pull to have been called with the given data sources, except non-DHIS ones
+        expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
+          [mockedDhisApi1],
+          [DATA_SOURCES.POP01],
           expect.anything(),
         );
       });
