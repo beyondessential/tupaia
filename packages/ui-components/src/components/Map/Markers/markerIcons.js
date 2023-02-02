@@ -368,6 +368,18 @@ UpArrowIcon.propTypes = {
 UpArrowIcon.defaultProps = {
   scale: 1,
 };
+DownArrowIcon.propTypes = {
+  scale: PropTypes.number,
+};
+DownArrowIcon.defaultProps = {
+  scale: 1,
+};
+RightArrowIcon.propTypes = {
+  scale: PropTypes.number,
+};
+RightArrowIcon.defaultProps = {
+  scale: 1,
+};
 HealthPinIcon.propTypes = iconPropTypes;
 HealthPinIcon.defaultProps = iconDefaultProps;
 CircleIcon.propTypes = iconPropTypes;
