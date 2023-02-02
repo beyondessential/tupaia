@@ -150,11 +150,15 @@ export class DhisService extends Service {
 
   async pull(dataSources, type, options = {}) {
     const { dataServiceMapping, useDeprecatedApi = false } = options;
-    const apis = await getApisForDataSources(this.models, dataSources, dataServiceMapping);
+
+    const dhisDataSources = dataSources.filter(
+      ds => dataServiceMapping.mappingForDataSource(ds)?.service_type === 'dhis',
+    );
+    const apis = await getApisForDataSources(this.models, dhisDataSources, dataServiceMapping);
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
     const pullData = this.pullers[pullerKey];
-    return pullData(apis, dataSources, options);
+    return pullData(apis, dhisDataSources, options);
   }
 
   async pullMetadata(dataSources, type, options) {
