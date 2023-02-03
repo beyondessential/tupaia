@@ -99,28 +99,26 @@ describe('palauNursingSurgicalWardReport', () => {
   afterEach(jest.clearAllMocks);
 
   const HIERARCHY = 'test_hierarchy';
-  const ENTITIES = {
-    test_hierarchy: [
-      { code: 'PW', name: 'Palau', type: 'country' },
-      { code: 'PW_Facility', name: 'Palau Facility 1', type: 'facility' },
-      { code: 'TO', name: 'Tonga', type: 'country' },
-      {
-        code: 'TO_District',
-        name: 'Tonga District',
-        type: 'district',
-      },
-      {
-        code: 'TO_Facility1',
-        name: 'Tonga Facility 1',
-        type: 'facility',
-      },
-      {
-        code: 'TO_Facility2',
-        name: 'Tonga Facility 2',
-        type: 'facility',
-      },
-    ],
-  };
+  const ENTITIES = [
+    { code: 'PW', name: 'Palau', type: 'country' },
+    { code: 'PW_Facility', name: 'Palau Facility 1', type: 'facility' },
+    { code: 'TO', name: 'Tonga', type: 'country' },
+    {
+      code: 'TO_District',
+      name: 'Tonga District',
+      type: 'district',
+    },
+    {
+      code: 'TO_Facility1',
+      name: 'Tonga Facility 1',
+      type: 'facility',
+    },
+    {
+      code: 'TO_Facility2',
+      name: 'Tonga Facility 2',
+      type: 'facility',
+    },
+  ];
 
   const RELATIONS = {
     test_hierarchy: [
