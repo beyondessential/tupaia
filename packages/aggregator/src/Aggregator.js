@@ -144,6 +144,8 @@ export class Aggregator {
       code: dataValue.code,
       type: this.dataSourceTypes.DATA_ELEMENT,
     };
-    return this.dataBroker.delete(dataSourceSpec, dataValue);
+    return this.dataBroker.delete(dataSourceSpec, dataValue, {
+      type: this.dataSourceTypes.DATA_ELEMENT,
+    });
   }
 }

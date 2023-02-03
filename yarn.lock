@@ -5247,6 +5247,11 @@ __metadata:
     "@tupaia/superset-api": 1.0.0
     "@tupaia/utils": 1.0.0
     "@tupaia/weather-api": 1.0.0
+    "@types/lodash.flatten": ^4.4.0
+    "@types/lodash.groupby": ^4.6.0
+    "@types/lodash.isequal": ^4.5.0
+    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.pickby": ^4.6.0
     case: ^1.5.5
     lodash.flatten: ^4.4.0
     lodash.groupby: ^4.6.0
@@ -6339,6 +6344,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.flatten@npm:^4.4.0":
+  version: 4.4.7
+  resolution: "@types/lodash.flatten@npm:4.4.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 57256262754e9082c25ddcaa28c9e27b215a70716790f1d47550b0bab608b2ec5fd4786ba7d109161b8d4e6c8e0b4dbc2356111d3d8415e7934d8616ee64d286
+  languageName: node
+  linkType: hard
+
 "@types/lodash.groupby@npm:^4.6.0":
   version: 4.6.6
   resolution: "@types/lodash.groupby@npm:4.6.6"
@@ -6348,12 +6362,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.isequal@npm:^4.5.0":
+  version: 4.5.6
+  resolution: "@types/lodash.isequal@npm:4.5.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0f065989408a9e0584e6c27495be2cd4602e62650f55266aa195812582444463c0c8570c674ae84f947c11748f49ab43fd5b482fa120e08eeee4c23b162edc38
+  languageName: node
+  linkType: hard
+
 "@types/lodash.isplainobject@npm:^4.0.6":
   version: 4.0.6
   resolution: "@types/lodash.isplainobject@npm:4.0.6"
   dependencies:
     "@types/lodash": "*"
   checksum: 988d1ced75fc75efbb0aa93fc6c56287e2bcf63b3efad375dc1cb5373c8a05600dcb4fb047b078d532d176ccf180f581aead425e349e80e1fb43ad98b88b6cef
+  languageName: node
+  linkType: hard
+
+"@types/lodash.keyby@npm:^4.6.0":
+  version: 4.6.7
+  resolution: "@types/lodash.keyby@npm:4.6.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 599ecefd8d4a1eb06c277b5f3f14e82ef9e58a1b7d8fc75490f0d5ee5e43069bae08f0408cb54675e7c1005c9f280ee57a537eafe69a22da5271cd6b815e4e1f
   languageName: node
   linkType: hard
 
@@ -6372,6 +6404,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: c53b5efc8bf69583aecd823ecb23ee489d44cc741246f69b0add0756dde2a53f94c86139bf77a95222ccdc992eee63dfb1be41f4f03ab18266fbb085d7ba30de
+  languageName: node
+  linkType: hard
+
+"@types/lodash.pickby@npm:^4.6.0":
+  version: 4.6.7
+  resolution: "@types/lodash.pickby@npm:4.6.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 1a4d85dd4ce371352b65dead78e1c6d89c4d59c440bfd9b27023b1113c8610115f2dda17c056b94697f7bfbd947bd8abfe0afd5195b65e2675b404e0e1542fae
   languageName: node
   linkType: hard
 
