@@ -81,19 +81,19 @@ jest.mock('@tupaia/dhis-api', () => {
   };
 });
 
-jest.mock('../../../reportBuilder/customReports/readNursingMetadataFile.ts', () => {
-  return {
-    readNursingMetadataFile: jest.fn().mockReturnValue({
-      PW_SW01: {
-        codesUsingCategories: ['TEST_CAT'],
-        codesToName: {
-          PW_SW01SurveyDate: 'Date of report',
-          PW_SW01_5_PW_SW01_6: 'Regular admissions',
-        },
+jest.mock(
+  '../../../reportBuilder/customReports/data/palauNursingSurveyMetadata.json',
+  () => ({
+    PW_SW01: {
+      codesUsingCategories: ['TEST_CAT'],
+      codesToName: {
+        PW_SW01SurveyDate: 'Date of report',
+        PW_SW01_5_PW_SW01_6: 'Regular admissions',
       },
-    }),
-  };
-});
+    },
+  }),
+  { virtual: true },
+);
 
 describe('palauNursingSurgicalWardReport', () => {
   afterEach(jest.clearAllMocks);

@@ -6,7 +6,7 @@
 import { DhisApi } from '@tupaia/dhis-api';
 import { FetchReportQuery } from '../../types';
 import { ReqContext } from '../context';
-import { readNursingMetadataFile } from './readNursingMetadataFile';
+import SURVEYS from './data/palauNursingSurveyMetadata.json';
 
 interface Surveys {
   [dataSetCode: string]: SurveyMetadata;
@@ -115,7 +115,7 @@ export const getNursingReport = async (
     aggregationType,
     aggregationConfig,
   );
-  const surveys: Surveys = await readNursingMetadataFile();
+  const surveys: Surveys = SURVEYS;
   const dictionary = await getDictionary(dhisApi, dataValues);
 
   const initialValue: Record<string, string>[] = [];
