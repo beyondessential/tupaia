@@ -40,6 +40,7 @@ class RefreshDatabaseScript extends Script {
   refreshDatabase() {
     const dbName = requireEnv('DB_NAME');
     const dbUser = requireEnv('DB_USER');
+    const dbPgUser = requireEnv('DB_PG_USER');
 
     this.logInfo(`Refreshing the ${dbName} database (owner: ${dbUser})...`);
 
@@ -49,12 +50,12 @@ class RefreshDatabaseScript extends Script {
     }
 
     this.verifyPsql();
-    this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`);
-    this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER ${dbUser}`);
-    this.execDbCommand('CREATE EXTENSION postgis', { db: dbName });
-    this.execDbCommand(`ALTER USER ${dbUser} WITH SUPERUSER`);
+    this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`, { user: dbPgUser });
+    this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER ${dbUser}`, { user: dbPgUser });
+    this.execDbCommand('CREATE EXTENSION postgis', { db: dbName, user: dbPgUser });
+    this.execDbCommand(`ALTER USER ${dbUser} WITH SUPERUSER`, { user: dbPgUser });
     this.exec(`psql -U ${dbUser} -d ${dbName} -f "${dumpPath}"`);
-    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER`, { user: dbUser });
+    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER`, { user: dbPgUser });
   }
 
   resolvePath = relativePath =>

@@ -131,6 +131,7 @@ export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
+export { DataServiceSyncGroupModel, DataServiceSyncGroupType } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableType } from './DataTable';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';

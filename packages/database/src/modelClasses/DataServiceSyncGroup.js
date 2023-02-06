@@ -19,7 +19,7 @@ const syncStatuses = {
   error: 'ERROR',
 };
 
-class DataServiceSyncGroupType extends DatabaseType {
+export class DataServiceSyncGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
 
   async setSyncIdle() {

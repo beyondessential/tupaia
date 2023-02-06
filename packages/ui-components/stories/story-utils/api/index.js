@@ -4,4 +4,5 @@
  */
 
 export * from './FakeApi';
+export * from './getEntityDescendants';
 export * from './connectApi';
