@@ -3,18 +3,34 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Select, TextField, PreviewFilters } from '@tupaia/ui-components';
+import { Select, TextField, PreviewFilters, DataTable } from '@tupaia/ui-components';
+import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { DataTableType } from '@tupaia/types';
 import { Autocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
 import { useDataTable } from './useDataTable';
+import { useDataTablePreview } from './query';
+import { getColumns } from '../utilities';
+import { PlayButton } from './PlayButton';
 
 const FieldWrapper = styled.div`
   padding: 7.5px;
+`;
+
+const StyledTable = styled(DataTable)`
+  table {
+    border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
+    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
+    table-layout: auto;
+
+    thead {
+      text-transform: none;
+    }
+  }
 `;
 
 const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
@@ -33,7 +49,31 @@ const typeFieldsMap = {
 };
 
 export const DataTableEditFields = ({ onEditField, recordData }) => {
+  const [fetchDisabled, setFetchDisabled] = useState(false);
+
+  useEffect(() => {
+    if (recordData.config) {
+      const hasError = recordData.config.additionalParameters.some(p => p.hasError);
+      setFetchDisabled(hasError === undefined ? true : !!hasError);
+    }
+  }, [recordData]);
+
   const { additionalParameters, onParametersChange } = useDataTable({ onEditField, recordData });
+  const {
+    data: reportData = { columns: [], rows: [] },
+    refetch,
+    // isLoading,
+    // isFetching,
+    // isError,
+    // error,
+  } = useDataTablePreview({
+    previewConfig: recordData,
+    onSettled: () => {
+      setFetchDisabled(false);
+    },
+  });
+  const columns = useMemo(() => getColumns(reportData), [reportData]);
+  const rows = useMemo(() => reportData.rows, [reportData]);
 
   const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
@@ -42,11 +82,21 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
       onEditField('config', {
         sql: "SELECT * FROM analytics WHERE entity_code = 'DL';",
         externalDatabaseConnectionCode: 'analytics_demo_land',
+        additionalParameters: [],
       });
     } else {
       onEditField('config', {});
     }
     onEditField('type', newType);
+  };
+
+  const onSqlConfigChange = (field, newValue) => {
+    if (recordData.type === DataTableType.sql) {
+      onEditField('config', {
+        ...recordData?.config,
+        [field]: newValue,
+      });
+    }
   };
 
   return (
@@ -82,7 +132,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               reduxId="dataTableEditFields-permission_groups"
               endpoint="permissionGroups"
               optionLabelKey="name"
-              optionValueKey="id"
+              optionValueKey="name"
             />
           </FieldWrapper>
           <FieldWrapper>
@@ -102,7 +152,9 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
                 label="Database Connection"
                 name="config.externalDatabaseConnectionCode"
                 required
-                inputProps={{ readOnly: true }}
+                onChange={event =>
+                  onSqlConfigChange('externalDatabaseConnectionCode', event.target.value)
+                }
                 value={recordData?.config?.externalDatabaseConnectionCode || ''}
               />
             )}
@@ -121,7 +173,15 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
       <Accordion defaultExpanded>
         <AccordionSummary>Preview</AccordionSummary>
         <AccordionDetails>
-          <PreviewFilters parameters={additionalParameters} onChange={onParametersChange} />
+          <Grid container spacing={2}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <PreviewFilters parameters={additionalParameters} onChange={onParametersChange} />
+              <PlayButton disabled={fetchDisabled} refetch={refetch} />
+            </div>
+            <Grid item xs={12}>
+              <StyledTable columns={columns} data={rows} rowLimit={100} />
+            </Grid>
+          </Grid>
         </AccordionDetails>
       </Accordion>
     </div>
