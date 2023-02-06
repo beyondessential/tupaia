@@ -6359,7 +6359,7 @@ __metadata:
   checksum: 20d6a20970b3b54b3c10cf17ace1cea49c4905d7f7cae2575a98108466e8d4c9bea3b3449d11ccaac4da1fc9bab225f477f4c2dbea8ba877cc47f629455efb69
   languageName: node
   linkType: hard
-  
+
 "@types/lodash.flatten@npm:^4.4.0":
   version: 4.4.7
   resolution: "@types/lodash.flatten@npm:4.4.7"
