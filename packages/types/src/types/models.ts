@@ -174,8 +174,8 @@ export interface DataTable {
   'config'?: any;
   'description'?: string | null;
   'id': string;
-  'permission_groups'?: string[];
-  'type'?: DataTableType | null;
+  'permission_groups': string[];
+  'type': DataTableType;
 }
 export interface DhisInstance {
   'code': string;

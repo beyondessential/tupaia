@@ -951,7 +951,9 @@ export const DataTableSchema = {
 	"type": "object",
 	"required": [
 		"code",
-		"id"
+		"id",
+		"permission_groups",
+		"type"
 	]
 } 
 
