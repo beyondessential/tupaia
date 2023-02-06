@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Divider as BaseDivider } from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
 import Grid from '@material-ui/core/Grid';
 import BaseDeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { Checkbox as BaseCheckbox, Select, TextField } from '../../Inputs';
@@ -15,7 +14,18 @@ import { IconButton as BaseIconButton } from '../../IconButton';
 import { FlexStart } from '../../Layout';
 import { ParametersType } from './types';
 import { FilterTypeOptions } from '../PreviewFilters';
-import { Button } from '../../Button';
+import { TextButton as BaseTextButton } from '../../Button';
+
+const TextButton = styled(BaseTextButton)`
+  font-weight: 500;
+  line-height: 18px;
+  font-size: 14px;
+  text-underline-offset: 3px;
+  text-decoration: underline;
+  :hover {
+    text-decoration: underline;
+  }
+`;
 
 const Divider = styled(BaseDivider)`
   margin-bottom: 20px;
@@ -139,16 +149,15 @@ export const ParameterList = ({ parameters, onDelete, onChange, onAdd }) => {
         )}
         <div ref={parameterListRef} />
       </div>
-      <Button
-        variant="outlined"
-        startIcon={<AddIcon />}
+      <TextButton
+        color="primary"
         onClick={() => {
           onAdd();
           setScrollToTheBottom(scrollToTheBottom + 1);
         }}
       >
-        Add
-      </Button>
+        + Add
+      </TextButton>
     </div>
   );
 };
