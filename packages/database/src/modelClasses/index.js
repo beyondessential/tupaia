@@ -131,10 +131,15 @@ export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
+export { DataServiceSyncGroupModel, DataServiceSyncGroupType } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableType } from './DataTable';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
+export {
+  ExternalDatabaseConnectionModel,
+  ExternalDatabaseConnectionType,
+} from './ExternalDatabaseConnection';
 export { FacilityModel } from './Facility';
 export { FeedItemModel, FeedItemType } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
