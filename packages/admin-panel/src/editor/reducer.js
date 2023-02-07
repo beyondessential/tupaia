@@ -32,7 +32,6 @@ const defaultState = {
 const stateChanges = {
   [EDITOR_DATA_FETCH_BEGIN]: payload => ({
     isLoading: true,
-    isOpen: true,
     ...payload,
   }),
   [EDITOR_DATA_EDIT_BEGIN]: payload => ({
