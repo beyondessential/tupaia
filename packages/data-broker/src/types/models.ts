@@ -14,6 +14,10 @@ import type {
   DataServiceSyncGroupType as BaseDataServiceSyncGroupType,
   EntityModel as BaseEntityModel,
   EntityType as BaseEntityType,
+  QuestionModel,
+  OptionModel,
+  OptionSetModel,
+  SurveyModel,
   ModelRegistry,
   TYPES,
 } from '@tupaia/database';
@@ -195,4 +199,8 @@ export interface DataBrokerModelRegistry extends ModelRegistry {
   entity: EntityModel;
   dhisInstance: DhisInstanceModel;
   entityHierarchy: EntityHierarchyModel;
+  question: QuestionModel;
+  option: OptionModel;
+  optionSet: OptionSetModel;
+  survey: SurveyModel;
 }

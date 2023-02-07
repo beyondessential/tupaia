@@ -31,6 +31,7 @@ export type PullOptions = {
 
 export type PullMetadataOptions = {
   dataServiceMapping: DataServiceMapping;
+  includeOptions?: boolean;
 };
 
 export abstract class Service {
