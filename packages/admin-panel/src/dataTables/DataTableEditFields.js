@@ -58,6 +58,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
             <TextField
               label="Code"
               name="code"
+              value={recordData?.code}
               required
               onChange={event => onEditField('code', event.target.value)}
             />
@@ -66,6 +67,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
             <TextField
               label="Description"
               name="description"
+              value={recordData?.description}
               required
               onChange={event => onEditField('description', event.target.value)}
             />
@@ -77,12 +79,12 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               inputKey="permission_groups"
               label="Permission Groups"
               onChange={selectedValues => onEditField('permission_groups', selectedValues)}
-              value={recordData.permission_groups}
+              placeholder={recordData.permission_groups}
               id="inputField-permission_groups"
               reduxId="dataTableEditFields-permission_groups"
               endpoint="permissionGroups"
               optionLabelKey="name"
-              optionValueKey="id"
+              optionValueKey="name"
             />
           </FieldWrapper>
           <FieldWrapper>
@@ -93,7 +95,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               required
               options={dataTableTypeOptions}
               onChange={event => onChangeType(event.target.value)}
-              value={recordData.type}
+              value={recordData?.type}
             />
           </FieldWrapper>
           <FieldWrapper>

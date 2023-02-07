@@ -286,6 +286,7 @@ apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
+apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
