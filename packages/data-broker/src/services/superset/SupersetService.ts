@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import { SupersetApi } from '@tupaia/superset-api';
 import { Service } from '../Service';
-import type { PullOptions as BasePullOptions } from '../Service';
+import type { PullOptions as BasePullOptions, PullMetadataOptions } from '../Service';
 import { getSupersetApiInstance } from './getSupersetApi';
 import {
   Analytic,
@@ -20,6 +20,7 @@ import {
   SyncGroupResults,
 } from '../../types';
 import { DataServiceMapping, DataServiceMappingEntry } from '../DataServiceMapping';
+import { pullDataElementMetadataFromTupaiaSurveys } from '../utils';
 
 type PullOptions = BasePullOptions &
   Partial<{
@@ -31,6 +32,7 @@ type PullOptions = BasePullOptions &
 
 export class SupersetService extends Service {
   private readonly pullers: Record<string, any>;
+  private readonly metadataPullers: Record<string, any>;
 
   public constructor(models: DataBrokerModelRegistry) {
     super(models);
@@ -38,6 +40,11 @@ export class SupersetService extends Service {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
       [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroups.bind(this),
+    };
+    this.metadataPullers = {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pullDataGroupMetadata.bind(this),
+      [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroupMetadata.bind(this),
     };
   }
 
@@ -58,8 +65,25 @@ export class SupersetService extends Service {
     return puller(dataSources, options);
   }
 
-  public async pullMetadata(): Promise<never> {
-    throw new Error('pullMetadata is not supported in SupersetService');
+  public async pullMetadata(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
+    const puller = this.metadataPullers[type];
+    return puller(dataSources, options);
+  }
+
+  // code, name, options, option_set_id, type
+  private async pullDataElementMetadata(
+    dataSources: DataSource[],
+    pullOptions: PullMetadataOptions,
+  ) {
+    return pullDataElementMetadataFromTupaiaSurveys(this.models, dataSources, pullOptions);
+  }
+
+  private async pullDataGroupMetadata() {
+    throw new Error('pullDataGroupMetadata is not supported in SupersetService');
+  }
+
+  private async pullSyncGroupMetadata() {
+    throw new Error('pullSyncGroupMetadata is not supported in SupersetService');
   }
 
   private async pullAnalytics(

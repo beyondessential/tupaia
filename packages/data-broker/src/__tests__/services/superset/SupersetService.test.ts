@@ -181,13 +181,24 @@ describe('SupersetService', () => {
     describe('pullSyncGroups()', () => {
       it('throws an error', () =>
         expect(
-          supersetService.pull([], 'dataGroup', { dataServiceMapping: new DataServiceMapping() }),
+          supersetService.pull([], 'syncGroup', { dataServiceMapping: new DataServiceMapping() }),
         ).toBeRejectedWith('not supported'));
     });
   });
 
   describe('pullMetadata()', () => {
-    it('throws an error', () =>
-      expect(supersetService.pullMetadata()).toBeRejectedWith('not supported'));
+    it('throws an error when pulling data groups', () =>
+      expect(
+        supersetService.pullMetadata([], 'dataGroup', {
+          dataServiceMapping: new DataServiceMapping(),
+        }),
+      ).toBeRejectedWith('not supported'));
+
+    it('throws an error when pulling sync groups', () =>
+      expect(
+        supersetService.pullMetadata([], 'syncGroup', {
+          dataServiceMapping: new DataServiceMapping(),
+        }),
+      ).toBeRejectedWith('not supported'));
   });
 });
