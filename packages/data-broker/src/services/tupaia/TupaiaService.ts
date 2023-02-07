@@ -22,6 +22,10 @@ import type {
   PullMetadataOptions as BasePullMetadataOptions,
 } from '../Service';
 import { translateOptionsForApi } from './translation';
+import {
+  pullDataElementMetadataFromTupaiaSurveys,
+  pullDataGroupMetadataFromTupaiaSurveys,
+} from '../utils';
 
 export type PullAnalyticsOptions = BasePullOptions &
   Partial<{
@@ -140,22 +144,10 @@ export class TupaiaService extends Service {
   }
 
   private async pullDataElementMetadata(dataSources: DataElement[], options: PullMetadataOptions) {
-    const { includeOptions } = options;
-    const dataElementCodes = dataSources.map(({ code }) => code);
-    return this.api.fetchDataElements(dataElementCodes, { includeOptions });
+    return pullDataElementMetadataFromTupaiaSurveys(this.models, dataSources, options);
   }
 
   private async pullDataGroupMetadata(dataSources: DataGroup[], options: PullMetadataOptions) {
-    if (dataSources.length > 1) {
-      throw new Error('Cannot pull metadata from multiple programs at the same time');
-    }
-    const { includeOptions } = options;
-    const [dataSource] = dataSources;
-    const { code: dataGroupCode } = dataSource;
-    const dataElementDataSources = await this.models.dataGroup.getDataElementsInDataGroup(
-      dataGroupCode,
-    );
-    const dataElementCodes = dataElementDataSources.map(({ code }) => code);
-    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes, { includeOptions });
+    return pullDataGroupMetadataFromTupaiaSurveys(this.models, dataSources, options);
   }
 }

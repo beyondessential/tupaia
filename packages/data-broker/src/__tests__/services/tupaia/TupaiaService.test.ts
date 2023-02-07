@@ -9,10 +9,11 @@ import {
   ANALYTICS,
   EVENTS,
   DATA_ELEMENTS,
-  DATA_ELEMENT_METADATA,
   DATA_GROUPS,
+  DATA_ELEMENT_METADATA,
+  DATA_GROUP_METADATA,
 } from './TupaiaService.fixtures';
-import { DataBrokerModelRegistry } from '../../../types';
+import { DataBrokerModelRegistry, DataSource } from '../../../types';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 const models = {} as DataBrokerModelRegistry;
@@ -22,6 +23,25 @@ const tupaiaDataApi = createTupaiaDataApiStub({
 });
 const tupaiaService = new TupaiaService(models, tupaiaDataApi);
 const dataServiceMapping = new DataServiceMapping();
+
+jest.mock('../../../services/utils', () => ({
+  pullDataElementMetadataFromTupaiaSurveys: jest
+    .fn()
+    .mockImplementation(async (_, dataSources: DataSource[]) =>
+      dataSources
+        .map(({ code }) => code as keyof typeof DATA_ELEMENT_METADATA)
+        .map(code => DATA_ELEMENT_METADATA[code])
+        .filter(de => de),
+    ),
+  pullDataGroupMetadataFromTupaiaSurveys: jest
+    .fn()
+    .mockImplementation(
+      async (_, dataSources: DataSource[]) =>
+        dataSources
+          .map(({ code }) => code as keyof typeof DATA_GROUP_METADATA)
+          .map(code => DATA_GROUP_METADATA[code])[0],
+    ),
+}));
 
 describe('TupaiaService', () => {
   describe('push()', () => {
@@ -179,6 +199,15 @@ describe('TupaiaService', () => {
             dataServiceMapping,
           }),
         ).resolves.toStrictEqual([DATA_ELEMENT_METADATA.POP01, DATA_ELEMENT_METADATA.POP02]));
+    });
+
+    describe('data group', () => {
+      it('single code', () =>
+        expect(
+          tupaiaService.pullMetadata([DATA_GROUPS.POP01_GROUP], 'dataGroup', {
+            dataServiceMapping,
+          }),
+        ).resolves.toStrictEqual(DATA_GROUP_METADATA.POP01));
     });
   });
 });

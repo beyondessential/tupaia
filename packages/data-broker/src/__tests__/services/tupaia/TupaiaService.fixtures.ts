@@ -28,6 +28,19 @@ export const DATA_ELEMENT_METADATA = {
   },
 };
 
+export const DATA_GROUP_METADATA = {
+  POP01: {
+    code: 'POP01',
+    name: 'Population 1',
+    dataElements: DATA_ELEMENT_METADATA,
+  },
+  POP02: {
+    code: 'POP02',
+    name: 'Population 2',
+    dataElements: DATA_ELEMENT_METADATA,
+  },
+};
+
 export const ANALYTICS = {
   analytics: [
     {
