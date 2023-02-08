@@ -4,12 +4,7 @@
  */
 
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
-import { ObjectLikeKeys, ObjectLikeFields } from '@tupaia/tsutils';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
-  ? I
-  : never;
+import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/tsutils';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in';
 type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
@@ -55,19 +50,6 @@ type ConjunctionCriteria<T> = {
 };
 
 type DbFilterCriteria<T> = FilterCriteria<T> & ConjunctionCriteria<T>;
-
-// Flattens nested object to shallow object with keys joined by J
-// eg. Flatten<{ cat: { cute: true } }, '_is_'> => { cat_is_cute: true }
-export type Flatten<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends Record<string, Record<string, any>>,
-  J extends string = '.',
-  K extends keyof T & string = keyof T & string
-> = UnionToIntersection<
-  {
-    [V in K]: { [field in keyof T[V] & string as `${V}${J}${field}`]: T[V][field] };
-  }[K]
->;
 
 export type PartialOrArray<T> = {
   [field in keyof T]?: T[field] extends Record<string, unknown>
