@@ -28,7 +28,7 @@
     "db-migrate-pg": "^1.2.2",
     "deep-equal-in-any-order": "^1.0.27",
     "dotenv": "^8.2.0",
-    "knex": "2.3.0",
+    "knex": "0.14.6",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0",
     "pg": "8.5.1"
