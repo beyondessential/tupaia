@@ -127,9 +127,15 @@ export const createMapOverlayGroupRelationDBFilter = async (accessPolicy, models
   const mapOverlayGroupsFilter = await createMapOverlayGroupDBFilter(accessPolicy, models);
   const permittedMapOverlayGroups = await models.mapOverlayGroup.find(mapOverlayGroupsFilter);
 
+  // Ensure filter is not a string
+  const filterToMerge =
+    typeof dbConditions['map_overlay_group_relation.map_overlay_group_id'] === 'string'
+      ? [dbConditions['map_overlay_group_relation.map_overlay_group_id']]
+      : dbConditions['map_overlay_group_relation.map_overlay_group_id'];
+
   dbConditions['map_overlay_group_relation.map_overlay_group_id'] = mergeFilter(
     permittedMapOverlayGroups.map(mog => mog.id),
-    dbConditions['map_overlay_group_relation.map_overlay_group_id'],
+    filterToMerge,
   );
 
   return dbConditions;
