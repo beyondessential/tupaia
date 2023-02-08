@@ -10,9 +10,20 @@ export function mergeFilter(baseFilter, filterToMerge) {
 
   // Filters may be either arrays or objects depending on whether the query has been built
   const baseComparisonValues = Array.isArray(baseFilter) ? baseFilter : baseFilter.comparisonValue;
-  const mergeComparisonValues = Array.isArray(filterToMerge)
-    ? filterToMerge
-    : filterToMerge.comparisonValue;
+  const mergeComparisonValues = getMergeComparisonValues(filterToMerge);
 
   return baseComparisonValues.filter(i => mergeComparisonValues.includes(i));
 }
+
+const getMergeComparisonValues = filterToMerge => {
+  switch (typeof filterToMerge) {
+    case 'array':
+      return filterToMerge;
+    case 'object':
+      return filterToMerge.comparisonValue;
+    case 'string':
+      return [filterToMerge];
+    default:
+      return filterToMerge;
+  }
+};
