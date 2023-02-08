@@ -1,8 +1,7 @@
 {
-  "extends": "../../tsconfig-js.json",
+  "extends": "../../tsconfig-ts.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "noEmit": true
   },
-  "include": ["src/**/*.js"],
-  "exclude": ["src/__tests__", "src/__mocks__"]
+  "include": ["src/**/*", "jest.config.ts", "jest.setup.ts", "global.d.ts"]
 }

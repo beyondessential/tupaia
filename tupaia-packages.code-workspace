@@ -142,6 +142,7 @@
     }
   ],
   "settings": {
+    "cSpell.caseSensitive": false,
     "cSpell.language": "en-GB",
     "cSpell.words": [
       "analytics",
@@ -174,6 +175,7 @@
       "isequal",
       "jsonb",
       "keyby",
+      "Kobo",
       "Lesmis",
       "MediTrak",
       "Microservice",
