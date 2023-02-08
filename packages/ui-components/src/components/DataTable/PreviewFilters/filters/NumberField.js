@@ -16,6 +16,7 @@ export const NumberField = ({
   hasDefaultValue,
   inputFilterValue,
   onChange,
+  haveTriedToFetch,
 }) => {
   useEffect(() => {
     onChange(defaultValue);
@@ -29,6 +30,8 @@ export const NumberField = ({
       type="number"
       label={name}
       value={inputFilterValue}
+      error={haveTriedToFetch && inputFilterValue === undefined}
+      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
       onChange={event => {
         onChange(event.target.value);
       }}

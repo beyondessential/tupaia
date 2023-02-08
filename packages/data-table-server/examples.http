@@ -43,7 +43,7 @@ Authorization: {{authorization}}
     "endDate" : "2020-12-31"
 }
 
-### Fetch data from sql data-table, data_lake as an example
+### Fetch data from sql data-table, data_lake as an example 
 POST http://{{host}}/{{version}}/dataTable/fetchPreviewData HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
@@ -52,7 +52,7 @@ Authorization: {{authorization}}
   "code": "data_lake_db_test",
   "type": "sql",
   "config": {
-    "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode LIMIT 10",
+    "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode",
     "externalDatabaseConnectionCode": "DATA_LAKE_DB"
   },
   "additionalParameters": [

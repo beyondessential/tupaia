@@ -18,6 +18,7 @@ export type FetchPreviewDataRequest = Request<
 export class FetchPreviewDataRoute extends Route<FetchPreviewDataRequest> {
   public async buildResponse() {
     const { body, ctx } = this.req;
+    const LIMIT = 200;
 
     const requestParams = { ...body };
     const data = await ctx.dataTableService.fetchData(requestParams);
@@ -28,6 +29,11 @@ export class FetchPreviewDataRoute extends Route<FetchPreviewDataRequest> {
       }
     }
 
-    return { rows: data, columns: Array.from(columnArray) };
+    return {
+      rows: data.splice(0, LIMIT),
+      columns: Array.from(columnArray),
+      total: data.length,
+      limit: LIMIT,
+    };
   }
 }

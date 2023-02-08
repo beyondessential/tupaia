@@ -16,6 +16,7 @@ export const BooleanField = ({
   hasDefaultValue,
   inputFilterValue,
   onChange,
+  haveTriedToFetch,
 }) => {
   useEffect(() => {
     onChange(defaultValue);
@@ -31,6 +32,8 @@ export const BooleanField = ({
       name={name}
       label={name}
       value={inputFilterValue}
+      error={haveTriedToFetch && inputFilterValue === undefined}
+      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
       onChange={event => {
         onChange(event.target.value);
       }}

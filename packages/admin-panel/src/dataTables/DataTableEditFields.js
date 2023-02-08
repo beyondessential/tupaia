@@ -5,7 +5,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Select, TextField, PreviewFilters, DataTable } from '@tupaia/ui-components';
+import { Select, TextField, PreviewFilters, DataTable, FetchLoader } from '@tupaia/ui-components';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
@@ -22,6 +22,8 @@ const FieldWrapper = styled.div`
 `;
 
 const StyledTable = styled(DataTable)`
+  min-height: 200px;
+
   table {
     border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -50,28 +52,33 @@ const typeFieldsMap = {
 
 export const DataTableEditFields = ({ onEditField, recordData }) => {
   const [fetchDisabled, setFetchDisabled] = useState(false);
+  const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
 
   useEffect(() => {
-    if (recordData.config) {
-      const hasError = recordData.config.additionalParameters.some(p => p.hasError);
-      setFetchDisabled(hasError === undefined ? true : !!hasError);
-    }
+    const hasError = recordData?.config?.additionalParameters?.some(p => p.hasError);
+    setFetchDisabled(hasError === undefined ? false : !!hasError);
   }, [recordData]);
 
   const { additionalParameters, onParametersChange } = useDataTable({ onEditField, recordData });
   const {
-    data: reportData = { columns: [], rows: [] },
+    data: reportData = { columns: [], rows: [], limit: 0, total: 0 },
     refetch,
-    // isLoading,
-    // isFetching,
-    // isError,
-    // error,
+    isLoading,
+    isFetching,
+    isError,
+    error,
   } = useDataTablePreview({
     previewConfig: recordData,
     onSettled: () => {
       setFetchDisabled(false);
     },
   });
+
+  const fetchPreviewData = () => {
+    setHaveTriedToFetch(true);
+    refetch();
+  };
+
   const columns = useMemo(() => getColumns(reportData), [reportData]);
   const rows = useMemo(() => reportData.rows, [reportData]);
 
@@ -109,6 +116,8 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               label="Code"
               name="code"
               required
+              error={haveTriedToFetch && !recordData.code}
+              helperText={haveTriedToFetch && !recordData.code && 'should not be empty'}
               onChange={event => onEditField('code', event.target.value)}
             />
           </FieldWrapper>
@@ -117,6 +126,8 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               label="Description"
               name="description"
               required
+              error={haveTriedToFetch && !recordData.description}
+              helperText={haveTriedToFetch && !recordData.description && 'should not be empty'}
               onChange={event => onEditField('description', event.target.value)}
             />
           </FieldWrapper>
@@ -155,6 +166,12 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
                 onChange={event =>
                   onSqlConfigChange('externalDatabaseConnectionCode', event.target.value)
                 }
+                error={haveTriedToFetch && !recordData?.config?.externalDatabaseConnectionCode}
+                helperText={
+                  haveTriedToFetch &&
+                  !recordData?.config?.externalDatabaseConnectionCode &&
+                  'should not be empty'
+                }
                 value={recordData?.config?.externalDatabaseConnectionCode || ''}
               />
             )}
@@ -175,11 +192,28 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
         <AccordionDetails>
           <Grid container spacing={2}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <PreviewFilters parameters={additionalParameters} onChange={onParametersChange} />
-              <PlayButton disabled={fetchDisabled} refetch={refetch} />
+              <PreviewFilters
+                parameters={additionalParameters}
+                onChange={onParametersChange}
+                haveTriedToFetch={haveTriedToFetch}
+              />
+              <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
             </div>
             <Grid item xs={12}>
-              <StyledTable columns={columns} data={rows} rowLimit={100} />
+              <FetchLoader
+                isLoading={isLoading || isFetching}
+                isError={isError}
+                error={error}
+                isNoData={!rows.length}
+                noDataMessage="No Data Found"
+              >
+                <StyledTable
+                  columns={columns}
+                  data={rows}
+                  rowLimit={reportData.limit}
+                  total={reportData.total}
+                />
+              </FetchLoader>
             </Grid>
           </Grid>
         </AccordionDetails>

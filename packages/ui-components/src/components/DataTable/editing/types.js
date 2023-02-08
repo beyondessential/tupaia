@@ -13,6 +13,7 @@ export const ParameterType = {
   hasDefaultValue: PropTypes.bool,
   defaultValue: PropTypes.string,
   inputFilterValue: PropTypes.any,
+  haveTriedToFetch: PropTypes.bool,
 };
 
 export const ParametersType = PropTypes.arrayOf(PropTypes.shape(ParameterType));

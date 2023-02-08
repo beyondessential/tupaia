@@ -185,7 +185,7 @@ Authorization: {{authorization}}
     "code": "data_lake_db_test",
     "type": "sql",
     "config": {
-      "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode LIMIT 10",
+      "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode",
       "externalDatabaseConnectionCode": "DATA_LAKE_DB"
     },
     "additionalParameters": [

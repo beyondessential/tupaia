@@ -20,13 +20,9 @@ const IconButton = styled(MuiIconButton)`
   margin-left: 10px;
 `;
 
-export const PlayButton = ({ disabled, refetch }) => {
-  const handleClick = () => {
-    refetch();
-  };
-
+export const PlayButton = ({ disabled, fetchPreviewData }) => {
   return (
-    <IconButton disabled={disabled} $disabled={disabled} onClick={handleClick}>
+    <IconButton disabled={disabled} $disabled={disabled} onClick={fetchPreviewData}>
       <PlayIcon />
       Preview
     </IconButton>
@@ -35,5 +31,5 @@ export const PlayButton = ({ disabled, refetch }) => {
 
 PlayButton.propTypes = {
   disabled: PropTypes.bool.isRequired,
-  refetch: PropTypes.func.isRequired,
+  fetchPreviewData: PropTypes.func.isRequired,
 };

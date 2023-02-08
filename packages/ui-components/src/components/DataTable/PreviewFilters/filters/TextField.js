@@ -16,6 +16,7 @@ export const TextField = ({
   hasDefaultValue,
   inputFilterValue,
   onChange,
+  haveTriedToFetch,
 }) => {
   useEffect(() => {
     onChange(defaultValue);
@@ -32,6 +33,8 @@ export const TextField = ({
       onChange={event => {
         onChange(event.target.value);
       }}
+      error={haveTriedToFetch && inputFilterValue === undefined}
+      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
     />
   );
 };
