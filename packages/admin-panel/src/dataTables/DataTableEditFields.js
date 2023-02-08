@@ -5,12 +5,13 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Select, TextField } from '@tupaia/ui-components';
+import { Select, TextField, PreviewFilters } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { DataTableType } from '@tupaia/types';
 import { Autocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
+import { useDataTable } from './useDataTable';
 
 const FieldWrapper = styled.div`
   padding: 7.5px;
@@ -32,6 +33,8 @@ const typeFieldsMap = {
 };
 
 export const DataTableEditFields = ({ onEditField, recordData }) => {
+  const { additionalParameters, onParametersChange } = useDataTable({ onEditField, recordData });
+
   const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
   const onChangeType = newType => {
@@ -47,7 +50,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
   };
 
   return (
-    <>
+    <div>
       <Accordion defaultExpanded>
         <AccordionSummary>Data Table</AccordionSummary>
         <AccordionDetails>
@@ -93,15 +96,35 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
               value={recordData.type}
             />
           </FieldWrapper>
+          <FieldWrapper>
+            {recordData?.type === DataTableType.sql && (
+              <TextField
+                label="Database Connection"
+                name="config.externalDatabaseConnectionCode"
+                required
+                inputProps={{ readOnly: true }}
+                value={recordData?.config?.externalDatabaseConnectionCode || ''}
+              />
+            )}
+          </FieldWrapper>
         </AccordionDetails>
       </Accordion>
+
+      {ConfigComponent ? (
+        <ConfigComponent onEditField={onEditField} recordData={recordData} />
+      ) : (
+        <Accordion defaultExpanded>
+          <AccordionSummary>Config</AccordionSummary>
+        </Accordion>
+      )}
+
       <Accordion defaultExpanded>
-        <AccordionSummary>Config</AccordionSummary>
+        <AccordionSummary>Preview</AccordionSummary>
         <AccordionDetails>
-          {ConfigComponent && <ConfigComponent onEditField={onEditField} recordData={recordData} />}
+          <PreviewFilters parameters={additionalParameters} onChange={onParametersChange} />
         </AccordionDetails>
       </Accordion>
-    </>
+    </div>
   );
 };
 

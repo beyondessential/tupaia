@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
+import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 
 const DATA_TABLES_ENDPOINT = 'dataTables';
 
@@ -62,6 +63,7 @@ export const DataTablesPage = ({ getHeaderEl }) => (
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
+    onProcessDataForSave={onProcessDataForSave}
   />
 );
 

@@ -5743,6 +5743,7 @@ __metadata:
     date-fns: ^2.12.0
     faker: ^4.1.0
     fast-glob: ^3.2.5
+    js-sql-parser: ^1.4.1
     jsoneditor: ^9.0.0
     leaflet: ^1.7.1
     lodash.get: ^4.4.2
@@ -5750,6 +5751,7 @@ __metadata:
     moment: ^2.29.1
     prop-types: ^15.7.2
     react: ^16.13.1
+    react-ace: ^10.1.0
     react-beautiful-dnd: ^13.1.0
     react-dom: ^16.13.1
     react-hook-form: ^6.0.6
@@ -7524,6 +7526,13 @@ __metadata:
   version: 1.4.13
   resolution: "ace-builds@npm:1.4.13"
   checksum: 512cc19c367a21d86f6b7c78ac59b44b01304d7cf345ce0ae767db9b14fc65653aec2f9dabde27e7d9c459000f4cef74656804f54fb7cb7867b8b810ea66878d
+  languageName: node
+  linkType: hard
+
+"ace-builds@npm:^1.4.14":
+  version: 1.14.0
+  resolution: "ace-builds@npm:1.14.0"
+  checksum: 11d07e0875381ff8061beed336c52f2bc532fbf51fc4a410d97789b27e47d2094fbb779dffe00db00c6d781f3f72bdc83313b2ad6460e5b8e5fa8a343c5f3720
   languageName: node
   linkType: hard
 
@@ -13439,6 +13448,13 @@ __metadata:
     readable-stream: 1.1.x
     streamsearch: 0.1.2
   checksum: a6f0ce9ac5099c7ffeaec7398d711eea1dd803eb99036d0f05342e9ed46a4235a5ed0ea01ad5d6c785fdb0aae6d61d2722e6e64f9fabdfe39885f7f52eb635ee
+  languageName: node
+  linkType: hard
+
+"diff-match-patch@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "diff-match-patch@npm:1.0.5"
+  checksum: 841522d01b09cccbc4e4402cf61514a81b906349a7d97b67222390f2d35cf5df277cb23959eeed212d5e46afb5629cebab41b87918672c5a05c11c73688630e3
   languageName: node
   linkType: hard
 
@@ -21057,6 +21073,13 @@ __metadata:
   version: 0.8.0
   resolution: "js-sha3@npm:0.8.0"
   checksum: 75df77c1fc266973f06cce8309ce010e9e9f07ec35ab12022ed29b7f0d9c8757f5a73e1b35aa24840dced0dea7059085aa143d817aea9e188e2a80d569d9adce
+  languageName: node
+  linkType: hard
+
+"js-sql-parser@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "js-sql-parser@npm:1.4.1"
+  checksum: 061e2b2bc63734013e25893e30a904a75d6eae8454d0e0b7383d2f2d31f49782f1575a735d6ce16a18a0bf4bc70a9ab8ea97eee638fef8c7eb0e1b7e3018fe10
   languageName: node
   linkType: hard
 
@@ -28747,6 +28770,22 @@ __metadata:
   peerDependencies:
     reselect: ">1.0.0"
   checksum: ead25756ba1c607a100f9110fe501a6dbeb29deaf5b4a22ad678f7ca2a7b3492fcccf62cbd02316ca2aa622640e57c939b63077cfacbf67389eedceae6d73df3
+  languageName: node
+  linkType: hard
+
+"react-ace@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "react-ace@npm:10.1.0"
+  dependencies:
+    ace-builds: ^1.4.14
+    diff-match-patch: ^1.0.5
+    lodash.get: ^4.4.2
+    lodash.isequal: ^4.5.0
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ^0.13.0 || ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^0.13.0 || ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 8fc67e02f911dcc31cf474df97c06f2ba5b5f402d9ed425895e479e2daddf4894a2cd0e81744b37b7f2b07109cfe4470fc5ebeed305d648c596e3442142e4823
   languageName: node
   linkType: hard
 
