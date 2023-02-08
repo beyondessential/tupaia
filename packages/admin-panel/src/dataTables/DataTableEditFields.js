@@ -97,13 +97,15 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
             />
           </FieldWrapper>
           <FieldWrapper>
-            <TextField
-              label="Database Connection"
-              name="config.externalDatabaseConnectionCode"
-              required
-              inputProps={{ readOnly: true }}
-              value={recordData?.config?.externalDatabaseConnectionCode || ''}
-            />
+            {recordData?.type === DataTableType.sql && (
+              <TextField
+                label="Database Connection"
+                name="config.externalDatabaseConnectionCode"
+                required
+                inputProps={{ readOnly: true }}
+                value={recordData?.config?.externalDatabaseConnectionCode || ''}
+              />
+            )}
           </FieldWrapper>
         </AccordionDetails>
       </Accordion>

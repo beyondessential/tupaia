@@ -37,6 +37,7 @@ const useParameters = ({ config, onEditField }) => {
           throw new Error('Duplicated parameter name');
         }
 
+        // Parameter name cannot contain space or special characters so that they can be used in sql query
         const regex = new RegExp('^[A-Za-z0-9_]+$');
         if (!regex.test(newValue)) {
           throw new Error('Contains space or special characters');

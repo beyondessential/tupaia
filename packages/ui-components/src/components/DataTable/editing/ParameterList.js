@@ -17,12 +17,6 @@ import { ParametersType } from './types';
 import { FilterTypeOptions } from '../PreviewFilters';
 import { Button } from '../../Button';
 
-const ListDiv = styled.div`
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-height: 300px;
-`;
-
 const Divider = styled(BaseDivider)`
   margin-bottom: 20px;
 `;
@@ -60,7 +54,7 @@ export const ParameterList = ({ parameters, onDelete, onChange, onAdd }) => {
 
   return (
     <div>
-      <ListDiv>
+      <div>
         {parameters.map(
           ({
             id,
@@ -144,7 +138,7 @@ export const ParameterList = ({ parameters, onDelete, onChange, onAdd }) => {
           },
         )}
         <div ref={parameterListRef} />
-      </ListDiv>
+      </div>
       <Button
         variant="outlined"
         startIcon={<AddIcon />}
