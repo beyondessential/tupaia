@@ -13,7 +13,7 @@ import {
   stubGetSupersetApi,
   SUPERSET_CHART_DATA_RESPONSE,
 } from './SupersetService.stubs';
-import { SupersetService } from '../../../services/superset/SupersetService';
+import { SupersetService } from '../../../services/superset';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import { getSupersetApiInstance } from '../../../services/superset/getSupersetApi';
 
