@@ -26,14 +26,20 @@ export type FetchReportPreviewDataRequest = Request<
     previewConfig: Record<string, unknown>;
     testData?: unknown[];
   },
-  { entityCode: string; hierarchy: string; previewMode?: PreviewMode; vizType: VizType }
+  {
+    entityCode: string;
+    hierarchy: string;
+    permissionGroup?: string;
+    previewMode?: PreviewMode;
+    vizType: VizType;
+  }
 >;
 
 export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
   public async buildResponse() {
     this.validate();
 
-    const { entityCode, hierarchy } = this.req.query;
+    const { entityCode, hierarchy, permissionGroup } = this.req.query;
     const { testData = null } = this.req.body;
 
     const reportConfig = this.getReportConfig();
@@ -42,6 +48,7 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
       {
         organisationUnitCodes: entityCode as string,
         hierarchy: hierarchy as string,
+        permissionGroup: permissionGroup as string,
       },
       {
         testData,
