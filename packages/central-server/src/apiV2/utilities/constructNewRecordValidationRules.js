@@ -293,11 +293,11 @@ export const constructForSingle = (models, recordType) => {
         type: [constructIsOneOf(Object.values(DataTableType))],
         permission_groups: [
           hasContent,
-          async permissionGroupIds => {
+          async permissionGroupNames => {
             const permissionGroups = await models.permissionGroup.find({
-              id: permissionGroupIds,
+              name: permissionGroupNames,
             });
-            if (permissionGroupIds.length !== permissionGroups.length) {
+            if (permissionGroupNames.length !== permissionGroups.length) {
               throw new Error('Some provided permission groups do not exist');
             }
             return true;
