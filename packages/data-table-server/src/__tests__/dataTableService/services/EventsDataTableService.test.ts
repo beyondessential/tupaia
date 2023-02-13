@@ -5,8 +5,9 @@
 
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { TupaiaApiClient } from '@tupaia/api-client';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
+import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
 const CURRENT_DATE_STUB = '2020-12-31';
 
@@ -96,7 +97,9 @@ jest.mock('@tupaia/data-broker', () => ({
 }));
 
 const accessPolicy = new AccessPolicy({ DL: ['Public'] });
-const apiClient = {} as TupaiaApiClient;
+const apiClient = new MockTupaiaApiClient({
+  entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS),
+});
 const eventsDataTableService = new DataTableServiceBuilder()
   .setServiceType('events')
   .setContext({ apiClient, accessPolicy })
@@ -230,6 +233,31 @@ describe('EventsDataTableService', () => {
         startDate,
         endDate,
       }).map(flattenEvent);
+
+      expect(events).toEqual(expectedEvents);
+    });
+
+    it('maps project organisationUnits to child countries', async () => {
+      const dataGroupCode = 'PSSS_Confirmed_WNR';
+      const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
+      const startDate = '2020-01-05';
+      const endDate = '2020-01-10';
+
+      const events = await eventsDataTableService.fetchData({
+        hierarchy: 'test',
+        organisationUnitCodes: ['test'],
+        dataGroupCode,
+        dataElementCodes,
+        startDate,
+        endDate,
+      });
+
+      const expectedEvents = fetchFakeEvents(dataGroupCode, {
+        dataElementCodes,
+        organisationUnitCodes: ['AU', 'FJ'],
+        startDate,
+        endDate,
+      });
 
       expect(events).toEqual(expectedEvents);
     });
