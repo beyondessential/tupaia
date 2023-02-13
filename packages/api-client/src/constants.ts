@@ -5,7 +5,7 @@
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-type ServiceName = 'auth' | 'entity' | 'central' | 'report';
+type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
 const productionSubdomains = [
@@ -47,6 +47,11 @@ const SERVICES = {
     version: 'v1',
     localPort: '8030',
   },
+  dataTable: {
+    subdomain: 'data-table-api',
+    version: 'v1',
+    localPort: '8010',
+  },
 };
 
 const getLocalUrl = (service: ServiceName): string =>
@@ -56,6 +61,7 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   entity: getLocalUrl('entity'),
   central: getLocalUrl('central'),
   report: getLocalUrl('report'),
+  dataTable: getLocalUrl('dataTable'),
 };
 
 const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
@@ -69,6 +75,7 @@ export const DEV_BASE_URLS: ServiceBaseUrlSet = {
   entity: getServiceUrl('entity', 'dev'),
   central: getServiceUrl('central', 'dev'),
   report: getServiceUrl('report', 'dev'),
+  dataTable: getServiceUrl('dataTable', 'dev'),
 };
 
 export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
@@ -76,6 +83,7 @@ export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
   entity: getServiceUrl('entity'),
   central: getServiceUrl('central'),
   report: getServiceUrl('report'),
+  dataTable: getServiceUrl('dataTable'),
 };
 
 const getServiceUrlForSubdomain = (service: ServiceName, originalSubdomain: string): string => {
@@ -113,15 +121,17 @@ const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
     entity: getServiceUrlForSubdomain('entity', subdomain),
     central: getServiceUrlForSubdomain('central', subdomain),
     report: getServiceUrlForSubdomain('report', subdomain),
+    dataTable: getServiceUrlForSubdomain('dataTable', subdomain),
   };
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { auth, entity, central, report } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report, dataTable } = getDefaultBaseUrls(hostname);
   return {
     auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,
     central: process.env.CENTRAL_API_URL || central,
     report: process.env.REPORT_API_URL || report,
+    dataTable: process.env.DATA_TABLE_API_URL || dataTable,
   };
 };

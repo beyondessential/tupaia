@@ -8,8 +8,10 @@ import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
-import { LogoutPage, PrivateRoute, VizBuilderProviders, VizBuilderApp } from '@tupaia/admin-panel';
 import {
+  LogoutPage,
+  PrivateRoute,
+  VizBuilderApp,
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
@@ -23,7 +25,8 @@ import {
   UsersPage,
   PermissionsPage,
   EntitiesPage,
-} from '../views/AdminPanel/pages/resources';
+} from '@tupaia/admin-panel';
+
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import {
   ApprovedSurveyResponsesView,
@@ -181,12 +184,10 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
       <LesmisAdminRoute path={`${path}/viz-builder`} isBESAdmin>
-        <VizBuilderProviders>
-          <VizBuilderApp
-            basePath={adminUrl}
-            Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
-          />
-        </VizBuilderProviders>
+        <VizBuilderApp
+          basePath={adminUrl}
+          Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
+        />
       </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
         <AdminPanelNavbar user={user} links={routes} />
