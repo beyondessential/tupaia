@@ -15,7 +15,7 @@ import { mapProjectEntitiesToCountries } from './utils';
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataGroupCode: yup.string().required(),
-  dataElementCodes: yup.array().of(yup.string().required()).strict(),
+  dataElementCodes: yup.array().of(yup.string().required()).min(1),
   organisationUnitCodes: yup.array().of(yup.string().required()).strict().required(),
   startDate: yup.date().default(new Date(EARLIEST_DATA_DATE_STRING)),
   endDate: yup.date().default(() => new Date()),
@@ -45,6 +45,13 @@ type RawEvent = EventFields & {
   dataValues: Record<string, unknown>;
 };
 type Event = EventFields & Record<string, unknown>;
+
+const getAllDataElementsInGroup = async (aggregator: Aggregator, dataGroupCode: string) => {
+  const { dataElements } = (await aggregator.fetchDataGroup(dataGroupCode, {})) as {
+    dataElements: { code: string }[];
+  };
+  return dataElements.map(({ code }) => code);
+};
 
 /**
  * DataTableService for pulling data from data-broker's fetchEvents() endpoint
@@ -80,6 +87,13 @@ export class EventsDataTableService extends DataTableService<
       aggregations,
     } = params;
 
+    const aggregator = new Aggregator(
+      new DataBroker({
+        services: this.ctx.apiClient,
+        accessPolicy: this.ctx.accessPolicy,
+      }),
+    );
+
     const startDateString = startDate ? startDate.toISOString() : undefined;
     const endDateString = endDate ? endDate.toISOString() : undefined;
 
@@ -90,12 +104,8 @@ export class EventsDataTableService extends DataTableService<
       organisationUnitCodes,
     );
 
-    const aggregator = new Aggregator(
-      new DataBroker({
-        services: this.ctx.apiClient,
-        accessPolicy: this.ctx.accessPolicy,
-      }),
-    );
+    const dataElementCodesForFetch =
+      dataElementCodes || (await getAllDataElementsInGroup(aggregator, dataGroupCode));
 
     const response = (await aggregator.fetchEvents(
       dataGroupCode,
@@ -104,7 +114,7 @@ export class EventsDataTableService extends DataTableService<
         organisationUnitCodes: entityCodesForFetch,
         startDate: startDateString,
         endDate: endDateString,
-        dataElementCodes,
+        dataElementCodes: dataElementCodesForFetch,
       },
       aggregations,
     )) as RawEvent[];

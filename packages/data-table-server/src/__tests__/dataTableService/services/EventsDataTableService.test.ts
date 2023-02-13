@@ -84,11 +84,20 @@ const fetchFakeEvents = (
   return eventsWithRequestedDataElements;
 };
 
+const fetchFakeDataGroup = (dataGroupCode: string) => {
+  const eventsForDataGroup = TEST_EVENTS[dataGroupCode] || [];
+  const dataElements = Array.from(
+    new Set(eventsForDataGroup.map(({ dataValues }) => Object.keys(dataValues)).flat()),
+  ).map(dataElement => ({ code: dataElement, name: dataElement }));
+  return { code: dataGroupCode, name: dataGroupCode, dataElements };
+};
+
 const flattenEvent = ({ dataValues, ...restOfEvent }: Event) => ({ ...restOfEvent, ...dataValues });
 
 jest.mock('@tupaia/aggregator', () => ({
   Aggregator: jest.fn().mockImplementation(() => ({
     fetchEvents: fetchFakeEvents,
+    fetchDataGroup: fetchFakeDataGroup,
   })),
 }));
 
@@ -123,6 +132,16 @@ describe('EventsDataTableService', () => {
           organisationUnitCodes: ['TO'],
         },
         'dataGroupCode is a required field',
+      ],
+      [
+        'empty dataElementCodes',
+        {
+          hierarchy: 'psss',
+          dataGroupCode: 'PSSS_WNR',
+          dataElementCodes: [],
+          organisationUnitCodes: ['TO'],
+        },
+        'dataElementCodes field must have at least 1 items',
       ],
       [
         'missing organisationUnitCodes',
@@ -255,6 +274,30 @@ describe('EventsDataTableService', () => {
       const expectedEvents = fetchFakeEvents(dataGroupCode, {
         dataElementCodes,
         organisationUnitCodes: ['AU', 'FJ'],
+        startDate,
+        endDate,
+      });
+
+      expect(events).toEqual(expectedEvents);
+    });
+
+    it('fetches for all dataElements in the data group if dataElementCodes not supplied', async () => {
+      const dataGroupCode = 'PSSS_Confirmed_WNR';
+      const organisationUnitCodes = ['PG'];
+      const startDate = '2020-01-05';
+      const endDate = '2020-01-10';
+
+      const events = await eventsDataTableService.fetchData({
+        hierarchy: 'psss',
+        organisationUnitCodes,
+        dataGroupCode,
+        startDate,
+        endDate,
+      });
+
+      const expectedEvents = fetchFakeEvents(dataGroupCode, {
+        dataElementCodes: ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'],
+        organisationUnitCodes,
         startDate,
         endDate,
       });
