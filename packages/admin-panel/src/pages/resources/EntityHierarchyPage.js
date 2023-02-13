@@ -27,6 +27,7 @@ const FIELDS = [
       optionsEndpoint: 'entityTypes',
       optionLabelKey: 'type',
       optionValueKey: 'type',
+      pageSize: 1000, // entityTypes endpoint doesn't support filtering, so fetch all values
       allowMultipleValues: true,
     },
   },
