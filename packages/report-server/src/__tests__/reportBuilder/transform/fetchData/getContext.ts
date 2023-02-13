@@ -4,14 +4,14 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
+import { MockTupaiaApiClient, MockDataTableApi, MockEntityApi } from '@tupaia/api-client';
 import { ReportServerAggregator } from '../../../../aggregator';
 import { Context, ReqContext } from '../../../../reportBuilder/context';
 import { FetchReportQuery } from '../../../../types';
 import {
+  analyticsDataTable,
   ENTITIES,
-  fetchFakeAnalytics,
-  fetchFakeEvents,
+  eventsDataTable,
   HIERARCHY,
   RELATIONS,
 } from './fetchData.fixtures';
@@ -22,6 +22,7 @@ export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
     permissionGroup: 'Admin',
     services: new MockTupaiaApiClient({
       entity: new MockEntityApi(ENTITIES, RELATIONS),
+      dataTable: new MockDataTableApi({ analytics: analyticsDataTable, events: eventsDataTable }),
     }),
     accessPolicy: new AccessPolicy({
       PG: ['Admin'],
@@ -30,10 +31,7 @@ export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
       explore: ['Admin'],
       MY: ['Public'],
     }),
-    aggregator: ({
-      fetchAnalytics: fetchFakeAnalytics,
-      fetchEvents: fetchFakeEvents,
-    } as unknown) as ReportServerAggregator,
+    aggregator: ({} as unknown) as ReportServerAggregator,
     query: {
       hierarchy: HIERARCHY,
       organisationUnitCodes: [],

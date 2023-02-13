@@ -8,6 +8,7 @@ import {
   getPeriodsInRange,
   periodToMoment,
   utcMoment,
+  yup,
 } from '@tupaia/utils';
 
 export const HIERARCHY = 'explore';
@@ -81,79 +82,61 @@ const EVENTS: Record<
   ABC: [{ orgUnit: 'TO', eventDate: '2020-01-01', dataValues: { ABC1: 7, ABC2: 8 } }],
 };
 
-export const fetchFakeAnalytics = (
-  dataElementCodes: string[],
-  aggregationList: undefined,
-  organisationUnitCodes: string[],
-  hierarchy: undefined,
-  { startDate, endDate }: { startDate: string; endDate: string },
-) => {
-  return {
-    results: ANALYTICS.filter(
+const analyticsParamsValidator = yup.object({
+  dataElementCodes: yup.array(yup.string().required()).required(),
+  organisationUnitCodes: yup.array(yup.string().required()).required(),
+  startDate: yup.string().default(EARLIEST_DATA_DATE_STRING),
+  endDate: yup.string().default(CURRENT_DATE_STUB),
+});
+
+export const analyticsDataTable = {
+  fetchData: (parameters: Record<string, unknown>) => {
+    const validParameters = analyticsParamsValidator.validateSync(parameters);
+    const { dataElementCodes, organisationUnitCodes, startDate, endDate } = validParameters;
+    return ANALYTICS.filter(
       analytic =>
         dataElementCodes.includes(analytic.dataElement) &&
         organisationUnitCodes.includes(analytic.organisationUnit) &&
         periodToMoment(analytic.period) >= utcMoment(startDate) &&
         periodToMoment(analytic.period) <= utcMoment(endDate),
-    ),
-  };
+    );
+  },
 };
 
-export const getFetchAnalyticsResults = (
-  dataElementCodes: string[],
-  organisationUnitCodes: string[],
-  startDate: string,
-  endDate: string,
-) => {
-  return fetchFakeAnalytics(dataElementCodes, undefined, organisationUnitCodes, undefined, {
-    startDate,
-    endDate,
-  }).results;
-};
+const eventsParamsValidator = yup.object({
+  dataGroupCode: yup.string().required(),
+  dataElementCodes: yup.array(yup.string().required()).required(),
+  organisationUnitCodes: yup.array(yup.string().required()).required(),
+  startDate: yup.string().default(EARLIEST_DATA_DATE_STRING),
+  endDate: yup.string().default(CURRENT_DATE_STUB),
+});
 
-export const fetchFakeEvents = (
-  dataGroupCode: string,
-  aggregationList: undefined,
-  organisationUnitCodes: string[],
-  hierarchy: undefined,
-  { startDate, endDate }: { startDate: string; endDate: string },
-  dataElementCodes: string[],
-) => {
-  const eventsForDataGroup = EVENTS[dataGroupCode];
-  const eventsMatchingFilters = eventsForDataGroup.filter(
-    event =>
-      organisationUnitCodes.includes(event.orgUnit) &&
-      event.eventDate >= startDate &&
-      event.eventDate <= endDate,
-  );
-  const eventsWithRequestedDataElements = eventsMatchingFilters.map(
-    ({ dataValues, ...restOfEvent }) => ({
+export const eventsDataTable = {
+  fetchData: (parameters: Record<string, unknown>) => {
+    const validParameters = eventsParamsValidator.validateSync(parameters);
+    const {
+      dataGroupCode,
+      dataElementCodes,
+      organisationUnitCodes,
+      startDate,
+      endDate,
+    } = validParameters;
+    const eventsForDataGroup = EVENTS[dataGroupCode];
+    const eventsMatchingFilters = eventsForDataGroup.filter(
+      event =>
+        organisationUnitCodes.includes(event.orgUnit) &&
+        event.eventDate >= startDate &&
+        event.eventDate <= endDate,
+    );
+    const events = eventsMatchingFilters.map(({ dataValues, ...restOfEvent }) => ({
       ...restOfEvent,
       dataValues: Object.fromEntries(
         Object.entries(dataValues).filter(([dataElement]) =>
           dataElementCodes.includes(dataElement),
         ),
       ),
-    }),
-  );
-  return eventsWithRequestedDataElements;
-};
+    }));
 
-export const getFetchEventsResults = (
-  dataGroupCode: string,
-  dataElementCodes: string[],
-  organisationUnitCodes: string[],
-  startDate: string,
-  endDate: string,
-) => {
-  const events = fetchFakeEvents(
-    dataGroupCode,
-    undefined,
-    organisationUnitCodes,
-    undefined,
-    { startDate, endDate },
-    dataElementCodes,
-  );
-
-  return events.map(({ dataValues, ...restOfEvent }) => ({ ...dataValues, ...restOfEvent }));
+    return events.map(({ dataValues, ...restOfEvent }) => ({ ...dataValues, ...restOfEvent }));
+  },
 };
