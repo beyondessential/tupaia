@@ -85,6 +85,18 @@ export abstract class DataTableService<
     return this.pullData(validatedParams);
   }
 
+  protected async pullPreviewData(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    params: yup.InferType<RequiredParamsSchema>,
+  ): Promise<{ rows: RecordSchema[]; total: number; limit: number }> {
+    return { rows: [], total: 0, limit: 0 };
+  }
+
+  public fetchPreviewData(params: unknown = {}) {
+    const validatedParams = this.validateParams(params);
+    return this.pullPreviewData(validatedParams);
+  }
+
   public getParameters(): DataTableParameter[] {
     const requiredParams = yupSchemaToDataTableParams(this.requiredParamsSchema);
 

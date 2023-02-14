@@ -28,8 +28,7 @@ export class SqlDataTableService extends DataTableService<
     super(context, yup.object(), configSchema, config);
   }
 
-  protected async pullData(params: Record<string, unknown>) {
-    const { externalDatabaseConnectionCode, sql } = this.config;
+  private async getDatabaseConnection(externalDatabaseConnectionCode: string) {
     const databaseConnection = await this.ctx.models.externalDatabaseConnection.findOne({
       code: externalDatabaseConnectionCode,
     });
@@ -40,6 +39,26 @@ export class SqlDataTableService extends DataTableService<
       );
     }
 
+    return databaseConnection;
+  }
+
+  protected async pullData(params: Record<string, unknown>) {
+    const { externalDatabaseConnectionCode, sql } = this.config;
+    const databaseConnection = await this.getDatabaseConnection(externalDatabaseConnectionCode);
+
     return databaseConnection.executeSql(sql, params) as Promise<Record<string, unknown>[]>;
+  }
+
+  protected async pullPreviewData(params: Record<string, unknown>) {
+    const { externalDatabaseConnectionCode, sql } = this.config;
+    const databaseConnection = await this.getDatabaseConnection(externalDatabaseConnectionCode);
+    const LIMIT = 1000;
+    const wrappedResultQuery = `SELECT * FROM (${sql}) as preview_data LIMIT ${LIMIT}`;
+    const wrappedCountQuery = `SELECT count(*) FROM (${sql}) as preview_data`;
+
+    const results = await databaseConnection.executeSql(wrappedResultQuery, params);
+    const total = await databaseConnection.executeSql(wrappedCountQuery, params);
+
+    return { rows: results, total, limit: LIMIT };
   }
 }

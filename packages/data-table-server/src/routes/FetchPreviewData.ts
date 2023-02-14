@@ -18,22 +18,21 @@ export type FetchPreviewDataRequest = Request<
 export class FetchPreviewDataRoute extends Route<FetchPreviewDataRequest> {
   public async buildResponse() {
     const { body, ctx } = this.req;
-    const LIMIT = 200;
 
     const requestParams = { ...body };
-    const data = await ctx.dataTableService.fetchData(requestParams);
+    const { rows, total, limit } = await ctx.dataTableService.fetchPreviewData(requestParams);
     let columnArray = new Set();
-    for (const row of data) {
+    for (const row of rows) {
       if (typeof row === 'object' && row) {
         columnArray = new Set([...columnArray, ...Object.keys(row).map(key => key)]);
       }
     }
 
     return {
-      rows: data.splice(0, LIMIT),
+      rows,
       columns: Array.from(columnArray),
-      total: data.length,
-      limit: LIMIT,
+      total,
+      limit,
     };
   }
 }
