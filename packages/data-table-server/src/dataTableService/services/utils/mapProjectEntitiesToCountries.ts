@@ -11,18 +11,24 @@ export const mapProjectEntitiesToCountries = async (
   entityCodes: string[],
 ) => {
   const projects = (await apiClient.entity.getEntities(hierarchy, entityCodes, {
-    fields: ['code', 'type'],
+    fields: ['code'],
     filter: { type: 'project' },
-  })) as { code: string; type: string }[];
+  })) as { code: string }[];
+  const projectCodes = projects.map(({ code }) => code);
 
   const countriesInProjects = (await apiClient.entity.getDescendantsOfEntities(
     hierarchy,
-    projects.map(({ code }) => code),
+    projectCodes,
     {
       fields: ['code'],
       filter: { type: 'country' },
     },
   )) as { code: string }[];
 
-  return Array.from(new Set([...entityCodes, ...countriesInProjects.map(({ code }) => code)]));
+  return Array.from(
+    new Set([
+      ...entityCodes.filter(code => !projectCodes.includes(code)),
+      ...countriesInProjects.map(({ code }) => code),
+    ]),
+  );
 };

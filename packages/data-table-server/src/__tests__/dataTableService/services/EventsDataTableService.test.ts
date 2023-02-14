@@ -259,23 +259,17 @@ describe('EventsDataTableService', () => {
     it('maps project organisationUnits to child countries', async () => {
       const dataGroupCode = 'PSSS_Confirmed_WNR';
       const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
-      const startDate = '2020-01-01';
-      const endDate = '2020-01-16';
 
       const events = await eventsDataTableService.fetchData({
         hierarchy: 'test',
         organisationUnitCodes: ['test'],
         dataGroupCode,
         dataElementCodes,
-        startDate,
-        endDate,
       });
 
       const expectedEvents = fetchFakeEvents(dataGroupCode, {
         dataElementCodes,
         organisationUnitCodes: ['PG', 'FJ'], // PG and FJ are the countries in test
-        startDate,
-        endDate,
       }).map(flattenEvent);
 
       expect(events).toEqual(expectedEvents);
@@ -284,22 +278,16 @@ describe('EventsDataTableService', () => {
     it('fetches for all dataElements in the data group if dataElementCodes not supplied', async () => {
       const dataGroupCode = 'PSSS_Confirmed_WNR';
       const organisationUnitCodes = ['PG'];
-      const startDate = '2020-01-01';
-      const endDate = '2020-01-16';
 
       const events = await eventsDataTableService.fetchData({
         hierarchy: 'psss',
         organisationUnitCodes,
         dataGroupCode,
-        startDate,
-        endDate,
       });
 
       const expectedEvents = fetchFakeEvents(dataGroupCode, {
         dataElementCodes: ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'],
         organisationUnitCodes,
-        startDate,
-        endDate,
       }).map(flattenEvent);
 
       expect(events).toEqual(expectedEvents);
