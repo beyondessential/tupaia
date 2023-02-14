@@ -3037,3 +3037,45 @@ export const MeditrakSurveyResponseRequestSchema = {
 	"$async": true
 } 
 
+export const DataTablePreviewRequestSchema = {
+	"properties": {
+		"runtimeParameters": {
+			"type": "object"
+		},
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"type": {
+			"enum": [
+				"analytics",
+				"entities",
+				"entity_relations",
+				"events",
+				"sql"
+			],
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"required": [
+		"code",
+		"id",
+		"permission_groups",
+		"runtimeParameters",
+		"type"
+	]
+} 
+

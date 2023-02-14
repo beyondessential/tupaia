@@ -5,3 +5,4 @@
  */
 
 export { MeditrakSurveyResponseRequest } from './MeditrakSurveyResponseRequest';
+export { DataTablePreviewRequest } from './DataTablePreviewRequest';
