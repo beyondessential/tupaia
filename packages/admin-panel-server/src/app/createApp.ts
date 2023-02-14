@@ -93,7 +93,6 @@ export function createApp() {
     )
     .post<FetchDataTablePreviewDataRequest>(
       'fetchDataTablePreviewData',
-      verifyBESAdminAccess,
       handleWith(FetchDataTablePreviewDataRoute),
     )
     .get(
