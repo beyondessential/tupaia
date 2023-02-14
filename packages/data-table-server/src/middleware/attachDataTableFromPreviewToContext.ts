@@ -6,14 +6,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { getAjv } from '@tupaia/tsutils';
 import { generateId } from '@tupaia/database';
-import { DataTableSchema } from '@tupaia/types';
-import type { DataTable } from '@tupaia/types';
+import { DataTablePreviewRequestSchema } from '@tupaia/types';
+import type { DataTablePreviewRequest } from '@tupaia/types';
 
 import { DataTableServiceBuilder, getDataTableServiceType } from '../dataTableService';
 
-const validateDataTableFields = (dataTableFields: any): DataTable => {
+const validateDataTableFields = (dataTableFields: any): DataTablePreviewRequest => {
   const ajv = getAjv();
-  const dataTableValidator = ajv.compile(DataTableSchema);
+  const dataTableValidator = ajv.compile(DataTablePreviewRequestSchema);
   // Add random id to meet validation requirement
   const validate = dataTableValidator({ id: generateId(), ...dataTableFields });
   if (!validate && dataTableValidator.errors) {
