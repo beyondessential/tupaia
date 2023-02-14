@@ -9,7 +9,8 @@ import { generateId } from '@tupaia/database';
 import { DataTablePreviewRequestSchema } from '@tupaia/types';
 import type { DataTablePreviewRequest } from '@tupaia/types';
 
-import { DataTableServiceBuilder, getDataTableServiceType } from '../dataTableService';
+import { getDataTableService } from '../dataTableService';
+import { validatePermissions } from './helpers';
 
 const validateDataTableFields = (dataTableFields: any): DataTablePreviewRequest => {
   const ajv = getAjv();
@@ -33,29 +34,13 @@ export const attachDataTableFromPreviewToContext = async (
   next: NextFunction,
 ) => {
   try {
-    const { accessPolicy, models, ctx, body } = req;
+    const { models, body } = req;
     const dataTableFields = validateDataTableFields(body);
-
     const dataTable = await models.dataTable.generateInstance(dataTableFields);
-    const { code: dataTableCode } = dataTable;
-    const { permission_groups: permissionGroups } = dataTable;
-    if (
-      !(
-        permissionGroups.includes('*') ||
-        permissionGroups.some((permissionGroup: string) =>
-          accessPolicy.allowsAnywhere(permissionGroup),
-        )
-      )
-    ) {
-      throw new Error(`User does not have permission to access data table ${dataTableCode}`);
-    }
 
-    const serviceType = getDataTableServiceType(dataTable);
-    const dataTableService = new DataTableServiceBuilder()
-      .setServiceType(serviceType)
-      .setContext({ apiClient: ctx.services, accessPolicy, models })
-      .setConfig(dataTable.config)
-      .build();
+    validatePermissions(dataTable, req);
+
+    const dataTableService = getDataTableService(dataTable, req);
 
     req.ctx.dataTable = dataTable;
     req.ctx.dataTableService = dataTableService;
