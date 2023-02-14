@@ -4,4 +4,3 @@
  */
 
 export { buildFetchData, paramsValidator } from './fetchData';
-export { FetchResponse } from './types';

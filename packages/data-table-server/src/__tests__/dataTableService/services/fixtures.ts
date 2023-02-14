@@ -37,7 +37,7 @@ export const ENTITY_RELATIONS = {
   ],
   test: [
     { parent: 'test', child: 'PG' },
-    { parent: 'explore', child: 'FJ' },
+    { parent: 'test', child: 'FJ' },
     { parent: 'PG', child: 'PG_Facility' },
     { parent: 'FJ', child: 'FJ_Facility' },
   ],

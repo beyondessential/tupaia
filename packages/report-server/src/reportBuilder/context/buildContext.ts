@@ -4,27 +4,25 @@
  */
 
 import { getUniqueEntries } from '@tupaia/utils';
+import { Row } from '../types';
 
-import { FetchResponse } from '../transform/functions/fetchData';
 import { detectDependencies } from './detectDependencies';
 import { Context, ContextDependency, ReqContext } from './types';
 
 type ContextBuilder<K extends ContextDependency> = (
   reqContext: ReqContext,
-  data: FetchResponse,
+  data: Row[],
 ) => Promise<Context[K]>;
 
-const isEventResponse = (data: FetchResponse) => data.results.some(result => 'event' in result);
+const isEventResponse = (data: Row[]) => data.some(result => 'event' in result);
 
-const getOrgUnitCodesFromData = (data: FetchResponse) => {
+const getOrgUnitCodesFromData = (data: Row[]) => {
   return getUniqueEntries(
-    isEventResponse(data)
-      ? data.results.map(d => d.orgUnit)
-      : data.results.map(d => d.organisationUnit),
+    isEventResponse(data) ? data.map(d => d.orgUnit) : data.map(d => d.organisationUnit),
   );
 };
 
-const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
+const buildOrgUnits = async (reqContext: ReqContext, data: Row[]) => {
   const orgUnitCodes = getOrgUnitCodesFromData(data);
 
   return reqContext.services.entity.getEntities(reqContext.hierarchy, orgUnitCodes, {
@@ -32,11 +30,13 @@ const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   });
 };
 
-const buildDataElementCodeToName = async (reqContext: ReqContext, data: FetchResponse) => {
-  return data.metadata?.dataElementCodeToName || {};
+// TODO: This function no longer works as the analytics data-table doesn't return metadata (fix in RN-687)
+const buildDataElementCodeToName = async () => {
+  // return data.metadata?.dataElementCodeToName || {}; <-- old behaviour when pulling from data-broker
+  return {};
 };
 
-const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: FetchResponse) => {
+const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: Row[]) => {
   const orgUnitCodes = getOrgUnitCodesFromData(data);
 
   const facilitiesByOrgUnitCode = await reqContext.services.entity.getRelationshipsOfEntities(
@@ -80,7 +80,7 @@ const setContextValue = <Key extends ContextDependency>(
   context[key] = value;
 };
 
-export const updateContext = async (context: Context, data: FetchResponse): Promise<Context> => {
+export const updateContext = async (context: Context, data: Row[]): Promise<Context> => {
   for (const key of context.dependencies) {
     validateDependency(key);
     setContextValue(context, key, await contextBuilders[key](context.request, data));

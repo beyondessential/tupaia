@@ -7,6 +7,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { ReportServerAggregator } from '../../aggregator';
 import { FetchReportQuery, RequestContext } from '../../types';
 import { OutputContext } from '../output/types';
+import { Row } from '../types';
 
 export type ReqContext = {
   query: FetchReportQuery;
@@ -29,3 +30,7 @@ export type Context = {
   dependencies: ContextDependency[];
   outputContext: OutputContext;
 } & Dependencies;
+
+export interface FetchResponse {
+  results: Row[];
+}

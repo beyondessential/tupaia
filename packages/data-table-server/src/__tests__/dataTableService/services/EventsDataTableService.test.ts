@@ -17,12 +17,12 @@ const TEST_EVENTS: Record<string, Event[]> = {
   PSSS_WNR: [
     {
       eventDate: '2020-01-01',
-      orgUnit: 'TO',
+      orgUnit: 'AU',
       dataValues: { PSSS_AFR_Cases: 7, PSSS_ILI_Cases: 7 },
     },
     {
       eventDate: '2020-01-08',
-      orgUnit: 'TO',
+      orgUnit: 'PG',
       dataValues: { PSSS_AFR_Cases: 12, PSSS_ILI_Cases: 12 },
     },
     {
@@ -34,12 +34,12 @@ const TEST_EVENTS: Record<string, Event[]> = {
   PSSS_Confirmed_WNR: [
     {
       eventDate: '2020-01-01',
-      orgUnit: 'TO',
+      orgUnit: 'PG',
       dataValues: { PSSS_AFR_Cases: 3, PSSS_ILI_Cases: 6 },
     },
     {
       eventDate: '2020-01-08',
-      orgUnit: 'TO',
+      orgUnit: 'AU',
       dataValues: { PSSS_AFR_Cases: 4, PSSS_ILI_Cases: 22 },
     },
     {
@@ -259,8 +259,8 @@ describe('EventsDataTableService', () => {
     it('maps project organisationUnits to child countries', async () => {
       const dataGroupCode = 'PSSS_Confirmed_WNR';
       const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
-      const startDate = '2020-01-05';
-      const endDate = '2020-01-10';
+      const startDate = '2020-01-01';
+      const endDate = '2020-01-16';
 
       const events = await eventsDataTableService.fetchData({
         hierarchy: 'test',
@@ -273,10 +273,10 @@ describe('EventsDataTableService', () => {
 
       const expectedEvents = fetchFakeEvents(dataGroupCode, {
         dataElementCodes,
-        organisationUnitCodes: ['AU', 'FJ'],
+        organisationUnitCodes: ['PG', 'FJ'], // PG and FJ are the countries in test
         startDate,
         endDate,
-      });
+      }).map(flattenEvent);
 
       expect(events).toEqual(expectedEvents);
     });
@@ -284,8 +284,8 @@ describe('EventsDataTableService', () => {
     it('fetches for all dataElements in the data group if dataElementCodes not supplied', async () => {
       const dataGroupCode = 'PSSS_Confirmed_WNR';
       const organisationUnitCodes = ['PG'];
-      const startDate = '2020-01-05';
-      const endDate = '2020-01-10';
+      const startDate = '2020-01-01';
+      const endDate = '2020-01-16';
 
       const events = await eventsDataTableService.fetchData({
         hierarchy: 'psss',
@@ -300,7 +300,7 @@ describe('EventsDataTableService', () => {
         organisationUnitCodes,
         startDate,
         endDate,
-      });
+      }).map(flattenEvent);
 
       expect(events).toEqual(expectedEvents);
     });

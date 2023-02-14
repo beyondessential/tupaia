@@ -85,12 +85,11 @@ describe('buildContext', () => {
         { dataElement: 'BCD1', organisationUnit: 'TO', period: '20210101', value: 1 },
         { dataElement: 'BCD1', organisationUnit: 'FJ', period: '20210101', value: 2 },
       ];
-      const data = { results: analytics };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, analytics);
       const orgUnits = {
         orgUnits: [
           { id: 'ouId2', code: 'FJ', name: 'Fiji', attributes: {} },
@@ -113,12 +112,11 @@ describe('buildContext', () => {
         { event: 'evId1', eventDate: '2021-01-01T12:00:00', orgUnit: 'TO', orgUnitName: 'Tonga' },
         { event: 'evId2', eventDate: '2021-01-01T12:00:00', orgUnit: 'FJ', orgUnitName: 'Fiji' },
       ];
-      const data = { results: events };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, events);
       const orgUnits = {
         orgUnits: [
           { id: 'ouId2', code: 'FJ', name: 'Fiji', attributes: {} },
@@ -140,12 +138,11 @@ describe('buildContext', () => {
       const analytics = [
         { dataElement: 'BCD1', organisationUnit: 'TO_Facility1', period: '20210101', value: 1 },
       ];
-      const data = { results: analytics };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, analytics);
       const orgUnits = {
         orgUnits: [
           { id: 'ouId5', code: 'TO_Facility1', name: 'Tonga Facility 1', attributes: { x: 1 } },
@@ -166,71 +163,15 @@ describe('buildContext', () => {
       const analytics = [
         { dataElement: 'BCD1', organisationUnit: 'Unknown_entity', period: '20210101', value: 1 },
       ];
-      const data = { results: analytics };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, analytics);
       const orgUnits = {
         orgUnits: [],
       };
       expect(updatedContext).toEqual(expect.objectContaining(orgUnits));
-    });
-  });
-
-  describe('dataElementCodeToName', () => {
-    it('includes dataElementCodeToName from fetched data', async () => {
-      const transform = [
-        {
-          insert: {
-            name: '=dataElementCodeToName($dataElement)',
-          },
-          transform: 'updateColumns',
-        },
-      ];
-      const analytics = [
-        { dataElement: 'BCD1', organisationUnit: 'TO', period: '20210101', value: 1 },
-        { dataElement: 'BCD2', organisationUnit: 'FJ', period: '20210101', value: 2 },
-      ];
-      const data = {
-        results: analytics,
-        metadata: {
-          dataElementCodeToName: { BCD1: 'Facility Status', BCD2: 'Reason for closure' },
-        },
-      };
-
-      const context = await buildContext(transform, reqContext);
-      expect(context).toEqual(expect.objectContaining({ dependencies: ['dataElementCodeToName'] }));
-
-      const updatedContext = await updateContext(context, data);
-      const dataElementCodeToName = {
-        dataElementCodeToName: { BCD1: 'Facility Status', BCD2: 'Reason for closure' },
-      };
-      expect(updatedContext).toEqual(expect.objectContaining(dataElementCodeToName));
-    });
-
-    it('builds an empty object when using fetch events', async () => {
-      const transform = [
-        {
-          insert: {
-            name: '=dataElementCodeToName($dataElement)',
-          },
-          transform: 'updateColumns',
-        },
-      ];
-      const events = [
-        { event: 'evId1', eventDate: '2021-01-01T12:00:00', orgUnit: 'TO', orgUnitName: 'Tonga' },
-        { event: 'evId2', eventDate: '2021-01-01T12:00:00', orgUnit: 'FJ', orgUnitName: 'Fiji' },
-      ];
-      const data = { results: events };
-
-      const context = await buildContext(transform, reqContext);
-      expect(context).toEqual(expect.objectContaining({ dependencies: ['dataElementCodeToName'] }));
-
-      const updatedContext = await updateContext(context, data);
-      const dataElementCodeToName = { dataElementCodeToName: {} };
-      expect(updatedContext).toEqual(expect.objectContaining(dataElementCodeToName));
     });
   });
 
@@ -243,14 +184,13 @@ describe('buildContext', () => {
         { dataElement: 'BCD1', organisationUnit: 'FJ', period: '20210101', value: 2 },
         { dataElement: 'BCD1', organisationUnit: 'AU', period: '20210101', value: 2 },
       ];
-      const data = { results: analytics };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(
         expect.objectContaining({ dependencies: ['facilityCountByOrgUnit'] }),
       );
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, analytics);
       const facilityCountByOrgUnit = {
         facilityCountByOrgUnit: {
           TO: 2,
@@ -267,14 +207,13 @@ describe('buildContext', () => {
         { event: 'evId1', eventDate: '2021-01-01T12:00:00', orgUnit: 'TO', orgUnitName: 'Tonga' },
         { event: 'evId2', eventDate: '2021-01-01T12:00:00', orgUnit: 'FJ', orgUnitName: 'Fiji' },
       ];
-      const data = { results: events };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(
         expect.objectContaining({ dependencies: ['facilityCountByOrgUnit'] }),
       );
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, events);
       const facilityCountByOrgUnit = {
         facilityCountByOrgUnit: {
           TO: 2,
@@ -289,14 +228,13 @@ describe('buildContext', () => {
       const analytics = [
         { dataElement: 'BCD1', organisationUnit: 'Unknown_entity', period: '20210101', value: 1 },
       ];
-      const data = { results: analytics };
 
       const context = await buildContext(transform, reqContext);
       expect(context).toEqual(
         expect.objectContaining({ dependencies: ['facilityCountByOrgUnit'] }),
       );
 
-      const updatedContext = await updateContext(context, data);
+      const updatedContext = await updateContext(context, analytics);
       const facilityCountByOrgUnit = {
         facilityCountByOrgUnit: {},
       };

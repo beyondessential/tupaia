@@ -5,7 +5,6 @@
 
 import MockDate from 'mockdate';
 import { EARLIEST_DATA_DATE_STRING } from '@tupaia/utils';
-import { FetchReportQuery } from '../../../../types';
 
 import { buildTestTransform } from '../../testUtils';
 import { CURRENT_DATE_STUB, analyticsDataTable, eventsDataTable } from './fetchData.fixtures';

@@ -182,8 +182,8 @@ describe('AnalyticsDataTableService', () => {
 
     it('maps project organisationUnits to child countries', async () => {
       const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
-      const startDate = '2020-01-05';
-      const endDate = '2020-01-10';
+      const startDate = '2020-01-01';
+      const endDate = '2020-01-16';
 
       const analytics = await analyticsDataTableService.fetchData({
         hierarchy: 'explore',
@@ -194,7 +194,7 @@ describe('AnalyticsDataTableService', () => {
       });
 
       const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
-        organisationUnitCodes: ['AU', 'FJ'],
+        organisationUnitCodes: ['AU', 'FJ'], // AU and FJ are the countries in explore
         startDate,
         endDate,
       });

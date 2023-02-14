@@ -9,16 +9,12 @@ import { DataTableApiInterface } from '..';
 
 type Parameters = Record<string, unknown>;
 type DataTableRow = Record<string, unknown>;
+type MockDataTable = { fetchData: (parameters: Parameters) => DataTableRow[] };
 
 export class MockDataTableApi implements DataTableApiInterface {
-  private readonly mockDataTables: Record<
-    string,
-    { fetchData: (parameters: Parameters) => DataTableRow[] }
-  >;
+  private readonly mockDataTables: Record<string, MockDataTable>;
 
-  public constructor(
-    mockDataTables: Record<string, { fetchData: (parameters: Parameters) => DataTableRow[] }> = {},
-  ) {
+  public constructor(mockDataTables: Record<string, MockDataTable> = {}) {
     this.mockDataTables = mockDataTables;
   }
 
