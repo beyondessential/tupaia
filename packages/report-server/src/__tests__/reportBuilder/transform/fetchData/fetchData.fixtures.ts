@@ -12,22 +12,18 @@ import {
 
 export const HIERARCHY = 'explore';
 
-export const ENTITIES = {
-  explore: [
-    { code: 'explore', country_code: null, type: 'project' },
-    { code: 'TO', country_code: 'TO', type: 'country' },
-    { code: 'WS', country_code: 'WS', type: 'country' },
-    { code: 'KI', country_code: 'KI', type: 'country' },
-    { code: 'MY', country_code: 'MY', type: 'country' },
-    { code: 'PG', country_code: 'PG', type: 'country' },
-    { code: 'PG_District', country_code: 'PG', type: 'district' },
-    { code: 'PG_Facility', country_code: 'PG', type: 'facility' },
-  ],
-  underwater_world: [
-    { code: 'underwater_world', country_code: null, type: 'project' },
-    { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: 'country' },
-  ],
-};
+export const ENTITIES = [
+  { code: 'explore', country_code: null, type: 'project' },
+  { code: 'TO', country_code: 'TO', type: 'country' },
+  { code: 'WS', country_code: 'WS', type: 'country' },
+  { code: 'KI', country_code: 'KI', type: 'country' },
+  { code: 'MY', country_code: 'MY', type: 'country' },
+  { code: 'PG', country_code: 'PG', type: 'country' },
+  { code: 'PG_District', country_code: 'PG', type: 'district' },
+  { code: 'PG_Facility', country_code: 'PG', type: 'facility' },
+  { code: 'underwater_world', country_code: null, type: 'project' },
+  { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: 'country' },
+];
 
 export const RELATIONS = {
   explore: [
@@ -51,9 +47,7 @@ const SURVEY_QUESTIONS = {
 
 const generateFakeAnalytics = () => {
   const periods = getPeriodsInRange(EARLIEST_DATA_DATE_STRING, CURRENT_DATE_STUB, 'DAY');
-  const organisationUnits = Object.values(ENTITIES)
-    .flat()
-    .map(({ code }) => code);
+  const organisationUnits = ENTITIES.map(({ code }) => code);
   const dataElements = Object.values(SURVEY_QUESTIONS).flat();
   let count = 0;
   const fakeAnalytics: {
