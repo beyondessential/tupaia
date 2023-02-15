@@ -6,6 +6,7 @@
 import { yup } from '@tupaia/utils';
 import { DataTableServerModelRegistry } from '../../types';
 import { DataTableService } from '../DataTableService';
+import { removeSemicolon } from '../utils';
 
 const configSchema = yup.object().shape({
   externalDatabaseConnectionCode: yup.string().required(),
@@ -50,15 +51,16 @@ export class SqlDataTableService extends DataTableService<
   }
 
   protected async pullPreviewData(params: Record<string, unknown>) {
-    const { externalDatabaseConnectionCode, sql } = this.config;
+    const { externalDatabaseConnectionCode, sql: rawSql } = this.config;
+    const sql = removeSemicolon(rawSql);
     const databaseConnection = await this.getDatabaseConnection(externalDatabaseConnectionCode);
-    const LIMIT = 1000;
+    const LIMIT = 200;
     const wrappedResultQuery = `SELECT * FROM (${sql}) as preview_data LIMIT ${LIMIT}`;
     const wrappedCountQuery = `SELECT count(*) FROM (${sql}) as preview_data`;
 
     const results = await databaseConnection.executeSql(wrappedResultQuery, params);
     const total = await databaseConnection.executeSql(wrappedCountQuery, params);
 
-    return { rows: results, total, limit: LIMIT };
+    return { rows: results, total: total[0].count, limit: LIMIT };
   }
 }

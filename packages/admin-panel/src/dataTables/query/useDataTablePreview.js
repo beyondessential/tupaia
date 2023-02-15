@@ -15,11 +15,14 @@ import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
       "externalDatabaseConnectionCode": "db_code",
       "additionalParameters": [
         {
+          "id": "entityCode",
           "name": "entityCode",
           "config": {
             "type": "string"
           },
-          "inputFilterValue": "AU_SA%"
+          "inputFilterValue": "AU_SA%",
+          "hasError": false,
+          "errorMessage": ""
         }
       ]
     },
@@ -34,17 +37,19 @@ import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
     "type": "sql",
     "config": {
       "sql": "SELECT * FROM Table",
-      "externalDatabaseConnectionCode": "db_code"
-    },
-    "additionalParameters": [
-      {
-        "name": "entityCode",
-        "config": {
-          "type": "string"
+      "externalDatabaseConnectionCode": "db_code",
+      "additionalParameters": [
+        {
+          "name": "entityCode",
+          "config": {
+            "type": "string"
+          }
         }
-      }
-    ],
-    "entityCode": "AU_SA%",
+      ]
+    },
+    "runtimeParameters": {
+      "entityCode": "AU_SA%",
+    },
     "permission_groups": [
       "*"
     ]
@@ -52,7 +57,7 @@ import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 */
 const pullValidConfig = previewConfig => {
   const { code, type, config, permission_groups: permissionGroups } = previewConfig;
-  const { additionalParameters, ...restOfConfig } = config;
+  const { additionalParameters, ...restOfConfigs } = config;
   const filterInputValues = {};
   const newAdditionalParameters = [];
 
@@ -64,9 +69,9 @@ const pullValidConfig = previewConfig => {
   return {
     code,
     type,
-    config: restOfConfig,
+    config: { additionalParameters: newAdditionalParameters, ...restOfConfigs },
     permission_groups: permissionGroups,
-    ...filterInputValues,
+    runtimeParameters: { ...filterInputValues },
   };
 };
 
