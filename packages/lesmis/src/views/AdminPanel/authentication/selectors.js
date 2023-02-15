@@ -13,9 +13,3 @@ export const getIsLoading = state => getAuthenticationState(state).isLoading;
 
 // Authentication details
 export const getIsUserAuthenticated = state => !!getAuthenticationState(state).user;
-
-// User details
-export const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
-
-// BES Admin
-export const getIsBESAdmin = state => getAuthenticationState(state).isBESAdmin;

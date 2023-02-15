@@ -28,7 +28,7 @@ const StyledLink = styled(Link)`
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
-export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, ...props }) => {
+export const DashboardItemsPage = ({ isLesmisAdmin, vizBuilderBaseUrl, translate, ...props }) => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
@@ -66,7 +66,7 @@ export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, .
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
+      show: isLesmisAdmin,
       editConfig: {
         type: 'link',
         linkOptions: {
@@ -151,12 +151,12 @@ export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, .
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.bool,
+  isLesmisAdmin: PropTypes.bool,
   vizBuilderBaseUrl: PropTypes.string,
   translate: PropTypes.func.isRequired,
 };
 
 DashboardItemsPage.defaultProps = {
-  isBESAdmin: false,
+  isLesmisAdmin: false,
   vizBuilderBaseUrl: '',
 };

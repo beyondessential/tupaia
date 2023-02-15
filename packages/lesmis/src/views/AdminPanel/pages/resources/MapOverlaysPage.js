@@ -29,7 +29,7 @@ const StyledLink = styled(Link)`
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
-export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, translate }) => {
+export const MapOverlaysPage = ({ getHeaderEl, isLesmisAdmin, vizBuilderBaseUrl, translate }) => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
@@ -132,7 +132,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
+      show: isLesmisAdmin,
       editConfig: {
         type: 'link',
         linkOptions: {
@@ -218,11 +218,11 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
 MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.bool,
+  isLesmisAdmin: PropTypes.bool,
   vizBuilderBaseUrl: PropTypes.string,
 };
 
 MapOverlaysPage.defaultProps = {
-  isBESAdmin: false,
+  isLesmisAdmin: false,
   vizBuilderBaseUrl: '',
 };
