@@ -4,6 +4,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { DataTablePreviewRequest } from '@tupaia/types';
 import { DataTableApiInterface } from '..';
 
 export class MockDataTableApi implements DataTableApiInterface {
@@ -15,7 +16,7 @@ export class MockDataTableApi implements DataTableApiInterface {
   }
 
   public async fetchPreviewData(
-    previewConfig: Record<string, unknown>,
+    previewConfig: DataTablePreviewRequest,
   ): Promise<{ data: Record<string, unknown>[] }> {
     throw new Error('Method not implemented.');
   }

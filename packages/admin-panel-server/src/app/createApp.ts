@@ -148,7 +148,6 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(FetchTransformSchemasRoute),
     )
-
     .build();
 
   useForwardUnhandledRequests(app, CENTRAL_API_URL);

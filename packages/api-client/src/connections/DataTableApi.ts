@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { DataTablePreviewRequest } from '@tupaia/types';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
@@ -15,9 +16,9 @@ export class DataTableApi extends BaseApi {
   }
 
   public async fetchPreviewData(
-    previewConfig: Record<string, unknown>,
+    previewConfig: DataTablePreviewRequest,
   ): Promise<{ data: Record<string, unknown>[] }> {
-    return this.connection.post(`dataTable/fetchPreviewData`, null, previewConfig);
+    return this.connection.post(`dataTable/fetchPreviewData`, null, { ...previewConfig });
   }
 
   public async getParameters(

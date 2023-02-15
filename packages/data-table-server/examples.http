@@ -61,10 +61,10 @@ Authorization: {{authorization}}
           "type": "string"
         }
       }
-    ] 
+    ]
   },
   "runtimeParameters": {
-      "entityCode": "AU_SA%"
+    "entityCode": "AU_SA%"
   },
   "permission_groups": [
     "*"
