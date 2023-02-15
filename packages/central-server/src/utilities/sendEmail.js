@@ -10,7 +10,7 @@ const DEFAULT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
 export const sendEmail = async (to, subject, text, attachments, signOff = DEFAULT_SIGN_OFF) => {
   const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
 
-  if ([SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS].includes(undefined)) {
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD || !SITE_EMAIL_ADDRESS) {
     return {};
   }
 
