@@ -11,7 +11,6 @@ import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import 'react-table/react-table.css';
 import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
-import { VizBuilderProviders } from './utilities/VizBuilderProviders';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { StoreProvider } from './utilities/StoreProvider';
 import { Footer, Navbar } from './widgets';
@@ -34,9 +33,7 @@ renderReactApp(
               <CssBaseline />
               <Switch>
                 <Route path="/viz-builder">
-                  <VizBuilderProviders>
-                    <VizBuilder Navbar={Navbar} Footer={Footer} />
-                  </VizBuilderProviders>
+                  <VizBuilder Navbar={Navbar} Footer={Footer} />
                 </Route>
                 <Route path="/">
                   <AdminPanelProviders>

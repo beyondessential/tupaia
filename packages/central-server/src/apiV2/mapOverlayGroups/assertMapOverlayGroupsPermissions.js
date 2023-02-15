@@ -102,15 +102,16 @@ export const hasMapOverlayGroupEditPermissions = async (
       return result;
     }
   }
-
-  for (const mapOverlayGroupRelation of mapOverlayGroupRelations) {
-    const result = await hasMapOverlayGroupEditPermissions(
-      accessPolicy,
-      models,
-      mapOverlayGroupRelation.child_id,
-    );
-    if (!result.result) {
-      return result;
+  if (mapOverlayGroupRelations) {
+    for (const mapOverlayGroupRelation of mapOverlayGroupRelations) {
+      const result = await hasMapOverlayGroupEditPermissions(
+        accessPolicy,
+        models,
+        mapOverlayGroupRelation.child_id,
+      );
+      if (!result.result) {
+        return result;
+      }
     }
   }
 
