@@ -25,6 +25,8 @@ import {
   FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
+  FetchDataTablePreviewDataRequest,
+  FetchDataTablePreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
@@ -88,6 +90,10 @@ export function createApp() {
       'dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
+    )
+    .post<FetchDataTablePreviewDataRequest>(
+      'fetchDataTablePreviewData',
+      handleWith(FetchDataTablePreviewDataRoute),
     )
     .get(
       'export/dashboardVisualisation/:dashboardVisualisationId',

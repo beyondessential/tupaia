@@ -174,3 +174,33 @@ Authorization: {{authorization}}
         }
     }
 }
+
+### Fetch Data Table Preview Data
+POST {{baseUrl}}/fetchDataTablePreviewData
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+  "previewConfig": {
+    "code": "data_lake_db_test",
+    "type": "sql",
+    "config": {
+      "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode",
+      "externalDatabaseConnectionCode": "DATA_LAKE_DB",
+      "additionalParameters": [
+        {
+          "name": "entityCode",
+          "config": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "runtimeParameters": {
+      "entityCode": "AU_SA%"
+    },
+    "permission_groups": [
+      "*"
+    ]
+  }
+}

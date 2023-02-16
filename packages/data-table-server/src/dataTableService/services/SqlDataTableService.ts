@@ -6,6 +6,7 @@
 import { yup } from '@tupaia/utils';
 import { DataTableServerModelRegistry } from '../../types';
 import { DataTableService } from '../DataTableService';
+import { removeSemicolon } from '../utils';
 
 const configSchema = yup.object().shape({
   externalDatabaseConnectionCode: yup.string().required(),
@@ -28,8 +29,7 @@ export class SqlDataTableService extends DataTableService<
     super(context, yup.object(), configSchema, config);
   }
 
-  protected async pullData(params: Record<string, unknown>) {
-    const { externalDatabaseConnectionCode, sql } = this.config;
+  private async getDatabaseConnection(externalDatabaseConnectionCode: string) {
     const databaseConnection = await this.ctx.models.externalDatabaseConnection.findOne({
       code: externalDatabaseConnectionCode,
     });
@@ -40,6 +40,27 @@ export class SqlDataTableService extends DataTableService<
       );
     }
 
+    return databaseConnection;
+  }
+
+  protected async pullData(params: Record<string, unknown>) {
+    const { externalDatabaseConnectionCode, sql } = this.config;
+    const databaseConnection = await this.getDatabaseConnection(externalDatabaseConnectionCode);
+
     return databaseConnection.executeSql(sql, params) as Promise<Record<string, unknown>[]>;
+  }
+
+  protected async pullPreviewData(params: Record<string, unknown>) {
+    const { externalDatabaseConnectionCode, sql: rawSql } = this.config;
+    const sql = removeSemicolon(rawSql);
+    const databaseConnection = await this.getDatabaseConnection(externalDatabaseConnectionCode);
+    const LIMIT = 200;
+    const wrappedResultQuery = `SELECT * FROM (${sql}) as preview_data LIMIT ${LIMIT}`;
+    const wrappedCountQuery = `SELECT count(*) FROM (${sql}) as preview_data`;
+
+    const results = await databaseConnection.executeSql(wrappedResultQuery, params);
+    const total = await databaseConnection.executeSql(wrappedCountQuery, params);
+
+    return { rows: results, total: total[0].count, limit: LIMIT };
   }
 }

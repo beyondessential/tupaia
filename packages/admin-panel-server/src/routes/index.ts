@@ -10,5 +10,6 @@ export * from './FetchHierarchyEntitiesRoute';
 export * from './FetchReportPreviewDataRoute';
 export * from './FetchAggregationOptionsRoute';
 export * from './FetchReportSchemasRoute';
+export * from './FetchDataTablePreviewDataRoute';
 export * from './UploadTestDataRoute';
 export * from './UserRoute';
