@@ -7,11 +7,6 @@ import { StandardOrCustomReportConfig } from '@tupaia/report-server';
 import { Report as BaseReportType } from '@tupaia/types';
 
 export type VizData = {
-  dataElements: BaseReportType['config']['fetch']['dataElements'];
-  dataGroups: BaseReportType['config']['fetch']['dataGroups'];
-  startDate?: BaseReportType['config']['fetch']['startDate'];
-  endDate?: BaseReportType['config']['fetch']['endDate'];
-  aggregations: BaseReportType['config']['fetch']['aggregations'];
   transform: BaseReportType['config']['transform'];
 };
 

@@ -24,3 +24,11 @@ export type NullableKeys<T> = { [K in keyof T]-?: null | T[K] extends T[K] ? K :
  */
 export type NullableKeysToOptional<T> = Pick<T, NonNullKeys<T>> &
   { [P in NullableKeys<T>]?: Exclude<T[P], null> };
+
+/**
+ * Deeply partial object, eg.
+ * RecursivePartial<{ cat: { age: number } }> = { cat?: { age?: number } }
+ */
+export type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};

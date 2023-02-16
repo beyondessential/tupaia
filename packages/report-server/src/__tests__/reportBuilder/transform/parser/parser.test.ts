@@ -4,11 +4,12 @@
  */
 
 import { PARSABLE_ANALYTICS } from '../transform.fixtures';
-import { buildTransform, TransformTable } from '../../../../reportBuilder/transform';
+import { TransformTable } from '../../../../reportBuilder/transform';
+import { buildTestTransform } from '../../testUtils';
 
 describe('parser', () => {
-  it('can do lookups', () => {
-    const transform = buildTransform(
+  it('can do lookups', async () => {
+    const transform = buildTestTransform(
       [
         {
           transform: 'updateColumns',
@@ -23,14 +24,14 @@ describe('parser', () => {
             sumWhereMatchingOrgUnit:
               '=sum(where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
             tableLength: '=length(@table)',
-            requestParam: '= @params.animal',
+            requestParam: '= @params.hierarchy',
           },
           exclude: '*',
         },
       ],
-      { query: { animal: 'cat' } },
+      { request: { query: { hierarchy: 'cat' } } },
     );
-    expect(transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           {
@@ -121,15 +122,15 @@ describe('parser', () => {
   });
 
   describe('in transforms', () => {
-    it('excludeRows supports parser lookups on where', () => {
-      const transform = buildTransform([
+    it('excludeRows supports parser lookups on where', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'excludeRows',
           where:
             '=$BCD1 <= mean(where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
         },
       ]);
-      expect(transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
           { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
@@ -139,8 +140,8 @@ describe('parser', () => {
       );
     });
 
-    it('updateColumns supports parser lookups in column name and values', () => {
-      const transform = buildTransform([
+    it('updateColumns supports parser lookups in column name and values', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'updateColumns',
           insert: {
@@ -149,7 +150,7 @@ describe('parser', () => {
           exclude: ['organisationUnit', 'BCD1'],
         },
       ]);
-      expect(transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', TO: 4 },
           { period: '20200102', TO: 2 },
@@ -161,14 +162,14 @@ describe('parser', () => {
       );
     });
 
-    it('sortRows supports row parser lookups', () => {
-      const transform = buildTransform([
+    it('sortRows supports row parser lookups', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'sortRows',
           by: '=$BCD1',
         },
       ]);
-      expect(transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(PARSABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
           { period: '20200103', organisationUnit: 'PG', BCD1: 2 },

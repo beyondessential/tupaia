@@ -9,12 +9,13 @@ import {
   MERGEABLE_ANALYTICS_WITH_NULL_VALUES,
   SINGLE_MERGEABLE_ANALYTICS,
 } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
 
 describe('mergeRows', () => {
   it('throws error when mergeUsing contains an invalid merge strategy', () => {
     expect(() =>
-      buildTransform([
+      buildTestTransform([
         {
           transform: 'mergeRows',
           using: 'invalid_strategy',
@@ -23,20 +24,20 @@ describe('mergeRows', () => {
     ).toThrow();
   });
 
-  it('defaults to single when using is not specified', () => {
-    const transform = buildTransform([
+  it('defaults to single when using is not specified', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'mergeRows',
         groupBy: 'period',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([{ period: '20200101', BCD1: 4, BCD2: 4, BCD3: 4 }]),
     );
   });
 
-  it('when no groupBy is specified, group to a single row', () => {
-    const transform = buildTransform([
+  it('when no groupBy is specified, group to a single row', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'mergeRows',
         using: {
@@ -46,22 +47,22 @@ describe('mergeRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 28, BCD2: 123 },
       ]),
     );
   });
 
-  it('can group by a single field', () => {
-    const transform = buildTransform([
+  it('can group by a single field', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'mergeRows',
         groupBy: 'organisationUnit',
         using: 'last',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 5, BCD2: 0 },
         { period: '20200103', organisationUnit: 'PG', BCD1: 2, BCD2: -1 },
@@ -69,15 +70,15 @@ describe('mergeRows', () => {
     );
   });
 
-  it('can group by a multiple fields', () => {
-    const transform = buildTransform([
+  it('can group by a multiple fields', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'mergeRows',
         groupBy: ['organisationUnit', 'period'],
         using: 'sum',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4, BCD2: 11 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 2, BCD2: 1 },
@@ -89,8 +90,8 @@ describe('mergeRows', () => {
     );
   });
 
-  it('can perform different merge strategies on different fields', () => {
-    const transform = buildTransform([
+  it('can perform different merge strategies on different fields', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'mergeRows',
         groupBy: 'organisationUnit',
@@ -101,7 +102,7 @@ describe('mergeRows', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 11, BCD2: 0 },
         { period: '20200103', organisationUnit: 'PG', BCD1: 17, BCD2: -1 },
@@ -110,8 +111,8 @@ describe('mergeRows', () => {
   });
 
   describe('merge strategies', () => {
-    it('sum', () => {
-      const transform = buildTransform([
+    it('sum', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
@@ -121,7 +122,7 @@ describe('mergeRows', () => {
           },
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
           { period: '20200101', organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
@@ -129,8 +130,8 @@ describe('mergeRows', () => {
       );
     });
 
-    it('sum -> exclude null values', () => {
-      const transform = buildTransform([
+    it('sum -> exclude null values', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
@@ -141,7 +142,7 @@ describe('mergeRows', () => {
         },
       ]);
       expect(
-        transform(
+        await transform(
           TransformTable.fromRows([
             ...MERGEABLE_ANALYTICS,
             ...MERGEABLE_ANALYTICS_WITH_NULL_VALUES,
@@ -155,8 +156,8 @@ describe('mergeRows', () => {
       );
     });
 
-    it('average', () => {
-      const transform = buildTransform([
+    it('average', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
@@ -166,7 +167,7 @@ describe('mergeRows', () => {
           },
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'TO', BCD1: 3.6666666666666665, BCD2: 4 },
           { period: '20200101', organisationUnit: 'PG', BCD1: 5.666666666666667, BCD2: 37 },
@@ -174,15 +175,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('count', () => {
-      const transform = buildTransform([
+    it('count', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'period',
           using: 'count',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 4, BCD1: 2, BCD2: 2 },
           { period: '20200102', organisationUnit: 4, BCD1: 2, BCD2: 2 },
@@ -191,15 +192,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('max', () => {
-      const transform = buildTransform([
+    it('max', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
           using: 'max',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200103', organisationUnit: 'TO', BCD1: 5, BCD2: 11 },
           { period: '20200103', organisationUnit: 'PG', BCD1: 8, BCD2: 99 },
@@ -207,15 +208,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('min', () => {
-      const transform = buildTransform([
+    it('min', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'period',
           using: 'min',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'PG', BCD1: 4, BCD2: 11 },
           { period: '20200102', organisationUnit: 'PG', BCD1: 2, BCD2: 1 },
@@ -224,8 +225,8 @@ describe('mergeRows', () => {
       );
     });
 
-    it('min -> consider null as minimum', () => {
-      const transform = buildTransform([
+    it('min -> consider null as minimum', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'period',
@@ -233,7 +234,7 @@ describe('mergeRows', () => {
         },
       ]);
       expect(
-        transform(
+        await transform(
           TransformTable.fromRows([
             ...MERGEABLE_ANALYTICS,
             ...MERGEABLE_ANALYTICS_WITH_NULL_VALUES,
@@ -248,15 +249,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('unique', () => {
-      const transform = buildTransform([
+    it('unique', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
           using: 'unique',
         },
       ]);
-      expect(transform(TransformTable.fromRows(UNIQUE_MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(UNIQUE_MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           {
             period: 'NO_UNIQUE_VALUE',
@@ -274,15 +275,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('exclude', () => {
-      const transform = buildTransform([
+    it('exclude', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'period',
           using: 'exclude',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101' },
           { period: '20200102' },
@@ -291,15 +292,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('first', () => {
-      const transform = buildTransform([
+    it('first', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'organisationUnit',
           using: 'first',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'TO', BCD1: 4, BCD2: 11 },
           { period: '20200101', organisationUnit: 'PG', BCD1: 7, BCD2: 13 },
@@ -307,15 +308,15 @@ describe('mergeRows', () => {
       );
     });
 
-    it('last', () => {
-      const transform = buildTransform([
+    it('last', async () => {
+      const transform = buildTestTransform([
         {
           transform: 'mergeRows',
           groupBy: 'period',
           using: 'last',
         },
       ]);
-      expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+      expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
         TransformTable.fromRows([
           { period: '20200101', organisationUnit: 'PG', BCD1: 7, BCD2: 13 },
           { period: '20200102', organisationUnit: 'PG', BCD1: 8, BCD2: 99 },
@@ -325,26 +326,26 @@ describe('mergeRows', () => {
     });
 
     describe('single', () => {
-      it('throws error is multiple values exist per group', () => {
-        const transform = buildTransform([
+      it('throws error is multiple values exist per group', async () => {
+        const transform = buildTestTransform([
           {
             transform: 'mergeRows',
             groupBy: 'period',
             using: 'single',
           },
         ]);
-        expect(() => transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toThrow();
+        await expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).rejects.toThrow();
       });
 
-      it('returns the value if a single value exists per group', () => {
-        const transform = buildTransform([
+      it('returns the value if a single value exists per group', async () => {
+        const transform = buildTestTransform([
           {
             transform: 'mergeRows',
             groupBy: 'period',
             using: 'single',
           },
         ]);
-        expect(transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toStrictEqual(
+        expect(await transform(TransformTable.fromRows(SINGLE_MERGEABLE_ANALYTICS))).toStrictEqual(
           TransformTable.fromRows([{ period: '20200101', BCD1: 4, BCD2: 4, BCD3: 4 }]),
         );
       });

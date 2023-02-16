@@ -4,12 +4,13 @@
  */
 
 import { SORTABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
 
 describe('sortRows', () => {
   it('throws an error if by is not specified', () => {
     expect(() =>
-      buildTransform([
+      buildTestTransform([
         {
           transform: 'sortRows',
           direction: 'asc',
@@ -18,14 +19,14 @@ describe('sortRows', () => {
     ).toThrow();
   });
 
-  it('can sort by a column', () => {
-    const transform = buildTransform([
+  it('can sort by a column', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'sortRows',
         by: 'period',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
         { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
@@ -43,15 +44,15 @@ describe('sortRows', () => {
     );
   });
 
-  it('can reverse sort by a column', () => {
-    const transform = buildTransform([
+  it('can reverse sort by a column', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'sortRows',
         by: 'period',
         direction: 'desc',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
         { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
@@ -69,14 +70,14 @@ describe('sortRows', () => {
     );
   });
 
-  it('can sort by multiple columns', () => {
-    const transform = buildTransform([
+  it('can sort by multiple columns', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'sortRows',
         by: ['period', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
         { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
@@ -94,15 +95,15 @@ describe('sortRows', () => {
     );
   });
 
-  it('can sort by different directions per column', () => {
-    const transform = buildTransform([
+  it('can sort by different directions per column', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'sortRows',
         by: ['period', 'BCD1'],
         direction: ['asc', 'desc'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'PG', BCD1: 13 },
         { period: '20200101', organisationUnit: 'TO', BCD1: 11 },
@@ -120,14 +121,14 @@ describe('sortRows', () => {
     );
   });
 
-  it('can sort by expressions', () => {
-    const transform = buildTransform([
+  it('can sort by expressions', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'sortRows',
         by: '=$BCD1 * $BCD1',
       },
     ]);
-    expect(transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SORTABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 0 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 1 },

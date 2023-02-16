@@ -17,11 +17,6 @@ GET {{baseUrl}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarch
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch AggregationOptions schemas
-GET {{baseUrl}}/fetchAggregationOptions HTTP/1.1
-content-type: {{contentType}}
-Authorization: {{authorization}}
-
 ### Fetch transform schemas
 GET {{baseUrl}}/fetchTransformSchemas HTTP/1.1
 content-type: {{contentType}}
@@ -34,25 +29,26 @@ Authorization: {{authorization}}
 
 {
   "testConfig": {
-    "fetch": {
-      "dataElements": [
-        "BCD46",
-        "BCD47",
-        "BCD48",
-        "BCD48a",
-        "BCD48b",
-        "BCD49",
-        "BCD50",
-        "BCD50",
-        "BCD51",
-        "BCD52",
-        "BCD53",
-        "BCD54",
-        "BCD55"
-      ],
-      "aggregations": ["MOST_RECENT"]
-    },
     "transform": [
+      {
+        "transform": "fetchData",
+        "dataElements": [
+          "BCD46",
+          "BCD47",
+          "BCD48",
+          "BCD48a",
+          "BCD48b",
+          "BCD49",
+          "BCD50",
+          "BCD50",
+          "BCD51",
+          "BCD52",
+          "BCD53",
+          "BCD54",
+          "BCD55"
+        ],
+        "aggregations": ["MOST_RECENT"]
+      },
       "keyValueByDataElementName",
       {
           "title": "Calculate occupations from data elements",

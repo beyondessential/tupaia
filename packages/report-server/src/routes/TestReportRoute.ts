@@ -31,7 +31,22 @@ export class TestReportRoute extends Route<TestReportRequest> {
     const { testData, testConfig, ...restOfBody } = body;
     const { hierarchy = 'explore', organisationUnitCodes, ...restOfQuery } = query;
 
+    const reportQuery = {
+      hierarchy,
+      organisationUnitCodes: parseOrgUnitCodes(organisationUnitCodes),
+      ...restOfQuery,
+      ...restOfBody,
+    };
+    const aggregator = new ReportServerAggregator(
+      createAggregator(undefined, {
+        accessPolicy: this.req.accessPolicy,
+        services: this.req.ctx.services,
+      }),
+    );
+
     const reqContext = {
+      aggregator,
+      query: reportQuery,
       hierarchy,
       permissionGroup: BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
       services: this.req.ctx.services,
@@ -44,14 +59,6 @@ export class TestReportRoute extends Route<TestReportRequest> {
       reportBuilder.setTestData(testData);
     }
 
-    const reportQuery = {
-      hierarchy,
-      organisationUnitCodes: parseOrgUnitCodes(organisationUnitCodes),
-      ...restOfQuery,
-      ...restOfBody,
-    };
-
-    const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
-    return reportBuilder.build(aggregator, reportQuery);
+    return reportBuilder.build();
   }
 }

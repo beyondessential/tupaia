@@ -12,12 +12,13 @@ import {
   TRANSFORMED_SUMMARY_BINARY,
   TRANSFORMED_SUMMARY_VARIOUS,
 } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
+import { TransformTable } from '../../../reportBuilder/transform';
 
 describe('aliases', () => {
-  it('keyValueByDataElementName', () => {
-    const transform = buildTransform(['keyValueByDataElementName']);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+  it('keyValueByDataElementName', async () => {
+    const transform = buildTestTransform(['keyValueByDataElementName']);
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
@@ -26,9 +27,9 @@ describe('aliases', () => {
     );
   });
 
-  it('keyValueByOrgUnit', () => {
-    const transform = buildTransform(['keyValueByOrgUnit']);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+  it('keyValueByOrgUnit', async () => {
+    const transform = buildTestTransform(['keyValueByOrgUnit']);
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', dataElement: 'BCD1', TO: 4 },
         { period: '20200102', dataElement: 'BCD1', TO: 2 },
@@ -37,9 +38,9 @@ describe('aliases', () => {
     );
   });
 
-  it('keyValueByPeriod', () => {
-    const transform = buildTransform(['keyValueByPeriod']);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+  it('keyValueByPeriod', async () => {
+    const transform = buildTestTransform(['keyValueByPeriod']);
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { organisationUnit: 'TO', dataElement: 'BCD1', '20200101': 4 },
@@ -51,9 +52,9 @@ describe('aliases', () => {
     );
   });
 
-  it('mostRecentValuePerOrgUnit', () => {
-    const transform = buildTransform(['mostRecentValuePerOrgUnit']);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+  it('mostRecentValuePerOrgUnit', async () => {
+    const transform = buildTestTransform(['mostRecentValuePerOrgUnit']);
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200103', organisationUnit: 'TO', BCD1: 5, BCD2: 0 },
         { period: '20200103', organisationUnit: 'PG', BCD1: 2, BCD2: -1 },
@@ -61,9 +62,9 @@ describe('aliases', () => {
     );
   });
 
-  it('firstValuePerPeriodPerOrgUnit', () => {
-    const transform = buildTransform(['firstValuePerPeriodPerOrgUnit']);
-    expect(transform(TransformTable.fromRows(MULTIPLE_MERGEABLE_ANALYTICS))).toStrictEqual(
+  it('firstValuePerPeriodPerOrgUnit', async () => {
+    const transform = buildTestTransform(['firstValuePerPeriodPerOrgUnit']);
+    expect(await transform(TransformTable.fromRows(MULTIPLE_MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 4, BCD2: 11 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 2, BCD2: 1 },
@@ -75,9 +76,9 @@ describe('aliases', () => {
     );
   });
 
-  it('lastValuePerPeriodPerOrgUnit', () => {
-    const transform = buildTransform(['lastValuePerPeriodPerOrgUnit']);
-    expect(transform(TransformTable.fromRows(MULTIPLE_MERGEABLE_ANALYTICS))).toStrictEqual(
+  it('lastValuePerPeriodPerOrgUnit', async () => {
+    const transform = buildTestTransform(['lastValuePerPeriodPerOrgUnit']);
+    expect(await transform(TransformTable.fromRows(MULTIPLE_MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { period: '20200101', organisationUnit: 'TO', BCD1: 7, BCD2: 4 },
         { period: '20200102', organisationUnit: 'TO', BCD1: 12, BCD2: 18 },
@@ -89,34 +90,34 @@ describe('aliases', () => {
     );
   });
 
-  it('convertPeriodToWeek', () => {
-    const transform = buildTransform(['convertPeriodToWeek']);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+  it('convertPeriodToWeek', async () => {
+    const transform = buildTestTransform(['convertPeriodToWeek']);
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], period: '2020W01' }]),
     );
   });
 
-  it('convertEventDateToWeek', () => {
-    const transform = buildTransform(['convertEventDateToWeek']);
-    expect(transform(TransformTable.fromRows(SINGLE_EVENT))).toStrictEqual(
+  it('convertEventDateToWeek', async () => {
+    const transform = buildTestTransform(['convertEventDateToWeek']);
+    expect(await transform(TransformTable.fromRows(SINGLE_EVENT))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_EVENT[0], period: '2020W01' }]),
     );
   });
 
-  it('insertNumberOfFacilitiesColumn', () => {
-    const transform = buildTransform(['insertNumberOfFacilitiesColumn'], {
+  it('insertNumberOfFacilitiesColumn', async () => {
+    const transform = buildTestTransform(['insertNumberOfFacilitiesColumn'], {
       facilityCountByOrgUnit: { TO: 14 },
     });
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]),
     );
   });
 });
 
 describe('insertSummaryRowAndColumn', () => {
-  it('inserts a summary row and summary column', () => {
-    const transform = buildTransform(['insertSummaryRowAndColumn']);
-    expect(transform(TransformTable.fromRows(TRANSFORMED_SUMMARY_BINARY))).toStrictEqual(
+  it('inserts a summary row and summary column', async () => {
+    const transform = buildTestTransform(['insertSummaryRowAndColumn']);
+    expect(await transform(TransformTable.fromRows(TRANSFORMED_SUMMARY_BINARY))).toStrictEqual(
       TransformTable.fromRows([
         { dataElement: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N', summaryColumn: '75.0%' },
         {
@@ -138,9 +139,9 @@ describe('insertSummaryRowAndColumn', () => {
     );
   });
 
-  it('only summarises columns that have only Y | N | undefined values', () => {
-    const transform = buildTransform(['insertSummaryRowAndColumn']);
-    expect(transform(TransformTable.fromRows(TRANSFORMED_SUMMARY_VARIOUS))).toStrictEqual(
+  it('only summarises columns that have only Y | N | undefined values', async () => {
+    const transform = buildTestTransform(['insertSummaryRowAndColumn']);
+    expect(await transform(TransformTable.fromRows(TRANSFORMED_SUMMARY_VARIOUS))).toStrictEqual(
       TransformTable.fromRows([
         {
           dataElement: 'Male condoms',

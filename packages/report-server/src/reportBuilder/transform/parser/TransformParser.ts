@@ -55,7 +55,7 @@ export class TransformParser extends ExpressionParser {
 
     this.rows = table.getRows();
     this.lookups = {
-      params: context?.query || {},
+      params: {},
       current: {},
       previous: {},
       next: {},
@@ -64,6 +64,11 @@ export class TransformParser extends ExpressionParser {
       index: this.currentRow + 1,
       table: this.rows,
     };
+
+    if (context) {
+      this.lookups.params = context.request?.query || {};
+      this.set('@params', this.lookups.params);
+    }
 
     if (this.rows.length > 0) {
       this.lookups.current = this.rows[this.currentRow];

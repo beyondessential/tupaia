@@ -4,59 +4,60 @@
  */
 
 import { SINGLE_ANALYTIC, DATE_COLUMNS, PERIOD_COLUMNS } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
 
 describe('orderColumns', () => {
-  it('can re-order columns explicitly', () => {
-    const transform = buildTransform([
+  it('can re-order columns explicitly', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'orderColumns',
         order: ['dataElement', 'value', 'period', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
       TransformTable.fromRows([
         { dataElement: 'BCD1', value: 4, period: '20200101', organisationUnit: 'TO' },
       ]),
     );
   });
 
-  it('can re-order columns explicitly with a wildCard', () => {
-    const transform = buildTransform([
+  it('can re-order columns explicitly with a wildCard', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'orderColumns',
         order: ['dataElement', '*', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
       TransformTable.fromRows([
         { dataElement: 'BCD1', period: '20200101', value: 4, organisationUnit: 'TO' },
       ]),
     );
   });
 
-  it('ignores columns in the explicit order that do not exist in the table', () => {
-    const transform = buildTransform([
+  it('ignores columns in the explicit order that do not exist in the table', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'orderColumns',
         order: ['dataElement', 'BCD1', 'period', 'value', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
       TransformTable.fromRows([
         { dataElement: 'BCD1', period: '20200101', value: 4, organisationUnit: 'TO' },
       ]),
     );
   });
 
-  it('defaults to appending columns to the end if they are not listed in the order', () => {
-    const transform = buildTransform([
+  it('defaults to appending columns to the end if they are not listed in the order', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'orderColumns',
         order: ['dataElement', 'organisationUnit'],
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
       TransformTable.fromRows([
         { dataElement: 'BCD1', organisationUnit: 'TO', period: '20200101', value: 4 },
       ]),
@@ -66,7 +67,7 @@ describe('orderColumns', () => {
   describe('sortBy functions', () => {
     it('throws error for unknown sortBy function', () => {
       expect(() =>
-        buildTransform([
+        buildTestTransform([
           {
             transform: 'orderColumns',
             sortBy: 'not_a_real_sort_by_function',
@@ -76,14 +77,14 @@ describe('orderColumns', () => {
     });
 
     describe('alphabetic', () => {
-      it('can sort columns alphabetically', () => {
-        const transform = buildTransform([
+      it('can sort columns alphabetically', async () => {
+        const transform = buildTestTransform([
           {
             transform: 'orderColumns',
             sortBy: 'alphabetic',
           },
         ]);
-        expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+        expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
           TransformTable.fromRows([
             { dataElement: 'BCD1', organisationUnit: 'TO', period: '20200101', value: 4 },
           ]),
@@ -92,14 +93,14 @@ describe('orderColumns', () => {
     });
 
     describe('date', () => {
-      it('can sort columns by date', () => {
-        const transform = buildTransform([
+      it('can sort columns by date', async () => {
+        const transform = buildTestTransform([
           {
             transform: 'orderColumns',
             sortBy: 'date',
           },
         ]);
-        expect(transform(TransformTable.fromRows(DATE_COLUMNS))).toEqual(
+        expect(await transform(TransformTable.fromRows(DATE_COLUMNS))).toEqual(
           TransformTable.fromRows([
             {
               'Q1 2021': 4,
@@ -114,14 +115,14 @@ describe('orderColumns', () => {
     });
 
     describe('period', () => {
-      it('can sort columns by period', () => {
-        const transform = buildTransform([
+      it('can sort columns by period', async () => {
+        const transform = buildTestTransform([
           {
             transform: 'orderColumns',
             sortBy: 'period',
           },
         ]);
-        expect(transform(TransformTable.fromRows(PERIOD_COLUMNS))).toEqual(
+        expect(await transform(TransformTable.fromRows(PERIOD_COLUMNS))).toEqual(
           TransformTable.fromRows(
             [
               {

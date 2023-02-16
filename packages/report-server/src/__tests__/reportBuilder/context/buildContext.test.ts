@@ -5,9 +5,9 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
-import { Row } from '../../../reportBuilder';
+import { ReportServerAggregator } from '../../../aggregator';
 
-import { buildContext, ReqContext } from '../../../reportBuilder/context/buildContext';
+import { buildContext, ReqContext, updateContext } from '../../../reportBuilder/context';
 
 describe('buildContext', () => {
   const HIERARCHY = 'test_hierarchy';
@@ -53,21 +53,23 @@ describe('buildContext', () => {
       entity: new MockEntityApi(ENTITIES, RELATIONS),
     }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
+    aggregator: {} as ReportServerAggregator,
+    query: {
+      hierarchy: HIERARCHY,
+      organisationUnitCodes: ['TO'],
+    },
   };
 
   describe('orgUnits', () => {
     it('adds query to the context', async () => {
       const transform: unknown = [];
-      const analytics: Row[] = [];
-      const data = { results: analytics };
-      const query = { test: 'yes' };
 
-      const context = await buildContext(transform, reqContext, data, query);
+      const context = await buildContext(transform, reqContext);
 
-      const expectedContext = {
-        query,
+      const requestQuery = {
+        request: reqContext,
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(context).toEqual(expect.objectContaining(requestQuery));
     });
 
     it('builds orgUnits using fetched analytics', async () => {
@@ -85,14 +87,17 @@ describe('buildContext', () => {
       ];
       const data = { results: analytics };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
+
+      const updatedContext = await updateContext(context, data);
+      const orgUnits = {
         orgUnits: [
           { id: 'ouId2', code: 'FJ', name: 'Fiji', attributes: {} },
           { id: 'ouId4', code: 'TO', name: 'Tonga', attributes: {} },
         ],
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(orgUnits));
     });
 
     it('builds orgUnits using fetched events', async () => {
@@ -110,14 +115,17 @@ describe('buildContext', () => {
       ];
       const data = { results: events };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
+
+      const updatedContext = await updateContext(context, data);
+      const orgUnits = {
         orgUnits: [
           { id: 'ouId2', code: 'FJ', name: 'Fiji', attributes: {} },
           { id: 'ouId4', code: 'TO', name: 'Tonga', attributes: {} },
         ],
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(orgUnits));
     });
 
     it('org units include attributes', async () => {
@@ -134,13 +142,16 @@ describe('buildContext', () => {
       ];
       const data = { results: analytics };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
+
+      const updatedContext = await updateContext(context, data);
+      const orgUnits = {
         orgUnits: [
           { id: 'ouId5', code: 'TO_Facility1', name: 'Tonga Facility 1', attributes: { x: 1 } },
         ],
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(orgUnits));
     });
 
     it('ignores unknown entities', async () => {
@@ -157,11 +168,14 @@ describe('buildContext', () => {
       ];
       const data = { results: analytics };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(expect.objectContaining({ dependencies: ['orgUnits'] }));
+
+      const updatedContext = await updateContext(context, data);
+      const orgUnits = {
         orgUnits: [],
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(orgUnits));
     });
   });
 
@@ -186,11 +200,14 @@ describe('buildContext', () => {
         },
       };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(expect.objectContaining({ dependencies: ['dataElementCodeToName'] }));
+
+      const updatedContext = await updateContext(context, data);
+      const dataElementCodeToName = {
         dataElementCodeToName: { BCD1: 'Facility Status', BCD2: 'Reason for closure' },
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(dataElementCodeToName));
     });
 
     it('builds an empty object when using fetch events', async () => {
@@ -208,9 +225,12 @@ describe('buildContext', () => {
       ];
       const data = { results: events };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = { dataElementCodeToName: {} };
-      expect(context).toStrictEqual(expectedContext);
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(expect.objectContaining({ dependencies: ['dataElementCodeToName'] }));
+
+      const updatedContext = await updateContext(context, data);
+      const dataElementCodeToName = { dataElementCodeToName: {} };
+      expect(updatedContext).toEqual(expect.objectContaining(dataElementCodeToName));
     });
   });
 
@@ -225,15 +245,20 @@ describe('buildContext', () => {
       ];
       const data = { results: analytics };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(
+        expect.objectContaining({ dependencies: ['facilityCountByOrgUnit'] }),
+      );
+
+      const updatedContext = await updateContext(context, data);
+      const facilityCountByOrgUnit = {
         facilityCountByOrgUnit: {
           TO: 2,
           FJ: 1,
           AU: 0,
         },
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(facilityCountByOrgUnit));
     });
 
     it('builds facilityCountByOrgUnit using fetched events', async () => {
@@ -244,14 +269,19 @@ describe('buildContext', () => {
       ];
       const data = { results: events };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(
+        expect.objectContaining({ dependencies: ['facilityCountByOrgUnit'] }),
+      );
+
+      const updatedContext = await updateContext(context, data);
+      const facilityCountByOrgUnit = {
         facilityCountByOrgUnit: {
           TO: 2,
           FJ: 1,
         },
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(facilityCountByOrgUnit));
     });
 
     it('ignores unknown entities', async () => {
@@ -261,11 +291,16 @@ describe('buildContext', () => {
       ];
       const data = { results: analytics };
 
-      const context = await buildContext(transform, reqContext, data);
-      const expectedContext = {
+      const context = await buildContext(transform, reqContext);
+      expect(context).toEqual(
+        expect.objectContaining({ dependencies: ['facilityCountByOrgUnit'] }),
+      );
+
+      const updatedContext = await updateContext(context, data);
+      const facilityCountByOrgUnit = {
         facilityCountByOrgUnit: {},
       };
-      expect(context).toStrictEqual(expectedContext);
+      expect(updatedContext).toEqual(expect.objectContaining(facilityCountByOrgUnit));
     });
   });
 });

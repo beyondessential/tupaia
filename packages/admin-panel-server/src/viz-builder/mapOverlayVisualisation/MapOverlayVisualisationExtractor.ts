@@ -84,21 +84,11 @@ export class MapOverlayVisualisationExtractor<
     const { code, reportPermissionGroup: permissionGroup, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
-    const { fetch: vizFetch, aggregate, transform } = validatedData;
-
-    const fetch = omitBy(
-      {
-        ...vizFetch,
-        aggregations: aggregate,
-      },
-      isNil,
-    );
+    const { transform } = validatedData;
 
     const output = getVizOutputConfig(previewMode, presentation);
-
     const config = omitBy(
       {
-        fetch,
         transform,
         output,
       },

@@ -3,8 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
-import { orgUnitCodeToName, dataElementCodeToName, orgUnitIdToCode, orgUnitAttribute } from "./context";
+import { value, first, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
+import {
+  orgUnitCodeToName,
+  dataElementCodeToName,
+  orgUnitIdToCode,
+  orgUnitAttribute,
+} from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -12,13 +17,14 @@ import {
   periodToDisplayString,
   formatAsFractionAndPercentage,
 } from './utils';
-import { add, divide, sum, mean } from './math';
+import { add, divide, sum, mean, min, max } from './math';
 
 /**
  * Custom functions to be imported into mathjs
  */
 export const customFunctions = {
   value,
+  first,
   last,
   eq,
   notEq,
@@ -63,4 +69,6 @@ export const functionExtensions = {
 export const functionOverrides = {
   sum,
   mean,
+  min,
+  max,
 };

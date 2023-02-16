@@ -38,8 +38,6 @@ import {
   UserRoute,
   ImportMapOverlayVisualisationRequest,
   ImportMapOverlayVisualisationRoute,
-  FetchAggregationOptionsRequest,
-  FetchAggregationOptionsRoute,
   FetchTransformSchemasRequest,
   FetchTransformSchemasRoute,
 } from '../routes';
@@ -137,11 +135,6 @@ export function createApp() {
       'mapOverlayVisualisation/:mapOverlayVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchMapOverlayVisualisationRoute),
-    )
-    .get<FetchAggregationOptionsRequest>(
-      'fetchAggregationOptions',
-      verifyBESAdminAccess,
-      handleWith(FetchAggregationOptionsRoute),
     )
     .get<FetchTransformSchemasRequest>(
       'fetchTransformSchemas',

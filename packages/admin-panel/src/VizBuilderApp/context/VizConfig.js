@@ -19,11 +19,6 @@ const initialConfigState = {
     code: null,
     permissionGroup: null,
     data: {
-      fetch: {
-        dataElements: [],
-        dataGroups: [],
-      },
-      aggregate: [],
       transform: [],
     },
     presentation: {},
@@ -136,13 +131,7 @@ const VisualisationContext = createContext(initialConfigState.visualisation);
 
 const amendStepsToBaseConfig = visualisation => {
   const { data } = { ...visualisation };
-  const { aggregate, transform } = { ...data };
-  // Remove frontend config (isDisabled, id, schema) in aggregation steps.
-  const filteredAggregate = Array.isArray(aggregate)
-    ? aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
-        ...restOfConfig,
-      }))
-    : aggregate;
+  const { transform } = data;
 
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
   const filteredTransform = Array.isArray(transform)
@@ -156,7 +145,7 @@ const amendStepsToBaseConfig = visualisation => {
       })
     : transform;
 
-  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  const filteredData = { ...data, transform: filteredTransform };
   return { ...visualisation, data: filteredData };
 };
 
