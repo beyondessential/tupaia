@@ -187,7 +187,11 @@ describe('SupersetService', () => {
   });
 
   describe('pullMetadata()', () => {
-    it('throws an error', () =>
-      expect(supersetService.pullMetadata()).toBeRejectedWith('not supported'));
+    it('default implementation', () =>
+      expect(
+        supersetService.pullMetadata([], 'dataElement', {
+          dataServiceMapping: new DataServiceMapping(),
+        }),
+      ).resolves.toEqual([]));
   });
 });
