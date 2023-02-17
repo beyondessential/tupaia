@@ -23,52 +23,21 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch Report With Test Config
-POST {{baseUrl}}/testReport?organisationUnitCodes=TO&hierarchy=explore&period=2020 HTTP/1.1
+POST {{baseUrl}}/testReport?organisationUnitCodes=TO&hierarchy=psss HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
 {
   "testConfig": {
-    "transform": [
-      {
-        "transform": "fetchData",
-        "dataElements": [
-          "BCD46",
-          "BCD47",
-          "BCD48",
-          "BCD48a",
-          "BCD48b",
-          "BCD49",
-          "BCD50",
-          "BCD50",
-          "BCD51",
-          "BCD52",
-          "BCD53",
-          "BCD54",
-          "BCD55"
-        ],
-        "aggregations": ["MOST_RECENT"]
-      },
-      "keyValueByDataElementName",
-      {
-          "title": "Calculate occupations from data elements",
-          "description": "Sums the raw data elements values to their appropriate occupations",
-          "transform": "updateColumns",
-          "insert": {
-            "Doctors": "=$BCD46",
-            "Midwives": "=$BCD47",
-            "Nurses": "=$BCD48 + $BCD48a + $BCD48b",
-            "Aides": "=$BCD49",
-            "Others": "=$BCD50 + $BCD51 + $BCD52 + $BCD53 + $BCD54 + $BCD55"
-          },
-          "include": ["period", "organisationUnit"]
-      },
-      {
-        "transform": "mergeRows",
-        "groupBy": ["organisationUnit", "period"],
-        "using": "sum"
+    "transform": [{
+      "transform": "fetchData",
+      "dataTableCode": "analytics",
+      "parameters": {
+        "dataElementCodes": [
+          "PSSS_AFR_Cases"
+        ]
       }
-    ]
+    }]
   }
 }
 
