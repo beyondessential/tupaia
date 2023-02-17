@@ -99,7 +99,7 @@ export const GroupedSelect = ({
 
       {flatSetOfItems.map(item =>
         item.type === 'heading' ? (
-          <ListSubheader>{item.label}</ListSubheader>
+          <ListSubheader key={item.label}>{item.label}</ListSubheader>
         ) : (
           <MenuItem key={item.value} value={item.value}>
             {item.label}

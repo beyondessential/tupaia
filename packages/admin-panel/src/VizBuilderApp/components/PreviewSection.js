@@ -141,8 +141,10 @@ export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [{ project, location, testData }, { setPresentation }] = useVizConfig();
-  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
+  const [
+    { project, location, testData, visualisation },
+    { setPresentation, setVisualisationValue },
+  ] = useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
 
   const [viewContent, setViewContent] = useState(null);
@@ -263,7 +265,7 @@ export const PreviewSection = () => {
               <IdleMessage />
             )}
           </ChartContainer>
-          <VizTypeSelector value={vizType} onChange={newVizType => setVizType(newVizType)} />
+          <VizTypeSelector value={vizType} onChange={setVizType} />
           <EditorContainer>
             <JsonEditor
               key={vizType} /* re-init on viz type change */

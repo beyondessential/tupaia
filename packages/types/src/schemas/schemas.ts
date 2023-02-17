@@ -360,10 +360,6 @@ export const BaseConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -1132,10 +1128,6 @@ export const MatrixConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -1847,10 +1839,6 @@ export const ComponentConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -2213,10 +2201,6 @@ export const BaseChartConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -2610,10 +2594,6 @@ export const GaugeChartConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -3022,10 +3002,6 @@ export const ComposedChartConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -3553,10 +3529,6 @@ export const BarChartConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -4082,10 +4054,6 @@ export const PieChartConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -4507,10 +4475,6 @@ export const LineChartConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -5266,10 +5230,6 @@ export const BaseViewConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -5629,10 +5589,6 @@ export const ListViewConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -6047,10 +6003,6 @@ export const SingleValueViewConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -6430,10 +6382,6 @@ export const MultiPhotographViewConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -6807,10 +6755,6 @@ export const MultiSingleValueViewConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -7188,10 +7132,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -7565,10 +7505,6 @@ export const MultiValueRowViewConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -7946,10 +7882,6 @@ export const ColorListViewConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -8323,10 +8255,6 @@ export const DataDownloadViewConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -8704,10 +8632,6 @@ export const SingleDateViewConfigSchema = {
 			"description": "A short description that appears above a viz",
 			"type": "string"
 		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
-			"type": "string"
-		},
 		"placeholder": {
 			"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 			"type": "string"
@@ -9081,10 +9005,6 @@ export const MultiValueViewConfigSchema = {
 		},
 		"description": {
 			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"//": {
-			"description": "A comment on the viz that doesn't show up anywhere",
 			"type": "string"
 		},
 		"placeholder": {
@@ -9466,10 +9386,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -9955,10 +9871,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -10320,10 +10232,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -10731,10 +10639,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -11261,10 +11165,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -11789,10 +11689,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -12213,10 +12109,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -12742,10 +12634,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -13157,10 +13045,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -13539,10 +13423,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -13915,10 +13795,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -14295,10 +14171,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -14671,10 +14543,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -15051,10 +14919,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -15427,10 +15291,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -15807,10 +15667,6 @@ export const DashboardItemConfigSchema = {
 					"description": "A short description that appears above a viz",
 					"type": "string"
 				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
-					"type": "string"
-				},
 				"placeholder": {
 					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 					"type": "string"
@@ -16183,10 +16039,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"//": {
-					"description": "A comment on the viz that doesn't show up anywhere",
 					"type": "string"
 				},
 				"placeholder": {
@@ -16927,10 +16779,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -17414,10 +17262,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -17779,10 +17623,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {
@@ -18190,10 +18030,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {
@@ -18720,10 +18556,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -19248,10 +19080,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -19672,10 +19500,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {
@@ -20201,10 +20025,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -20616,10 +20436,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -20998,10 +20814,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -21374,10 +21186,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {
@@ -21754,10 +21562,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -22130,10 +21934,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {
@@ -22510,10 +22310,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -22886,10 +22682,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {
@@ -23266,10 +23058,6 @@ export const DashboardItemSchema = {
 							"description": "A short description that appears above a viz",
 							"type": "string"
 						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
-							"type": "string"
-						},
 						"placeholder": {
 							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 							"type": "string"
@@ -23642,10 +23430,6 @@ export const DashboardItemSchema = {
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"//": {
-							"description": "A comment on the viz that doesn't show up anywhere",
 							"type": "string"
 						},
 						"placeholder": {

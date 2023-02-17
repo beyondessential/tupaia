@@ -12,11 +12,6 @@ export type BaseConfig = {
   description?: string;
 
   /**
-   * @description A comment on the viz that doesn't show up anywhere
-   */
-  '//'?: string;
-
-  /**
    * @description A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.
    */
   placeholder?: string;

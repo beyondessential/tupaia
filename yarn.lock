@@ -5003,13 +5003,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trevoreyre/autocomplete-js@npm:^2.4.1":
-  version: 2.4.1
-  resolution: "@trevoreyre/autocomplete-js@npm:2.4.1"
-  checksum: 0562c3d59a0736cb98c26ecf1bb0ed58ed9601beb9af039ec6f5d54071691a68e4febd17a4f50072c6ee3a562c7872cffc06ac8296d71e0c1cfed7818132f037
-  languageName: node
-  linkType: hard
-
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.8
   resolution: "@tsconfig/node10@npm:1.0.8"
@@ -5743,7 +5736,6 @@ __metadata:
     "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@storybook/react": ^6.3.9
-    "@trevoreyre/autocomplete-js": ^2.4.1
     "@tupaia/utils": 1.0.0
     ace-builds: ^1.4.13
     date-fns: ^2.12.0
