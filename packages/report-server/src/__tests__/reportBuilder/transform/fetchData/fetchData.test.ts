@@ -5,14 +5,9 @@
 
 import MockDate from 'mockdate';
 import { EARLIEST_DATA_DATE_STRING } from '@tupaia/utils';
-import { FetchReportQuery } from '../../../../types';
 
 import { buildTestTransform } from '../../testUtils';
-import {
-  CURRENT_DATE_STUB,
-  getFetchAnalyticsResults,
-  getFetchEventsResults,
-} from './fetchData.fixtures';
+import { CURRENT_DATE_STUB, analyticsDataTable, eventsDataTable } from './fetchData.fixtures';
 import { getContext } from './getContext';
 import { TransformTable } from '../../../../reportBuilder/transform';
 
@@ -28,103 +23,93 @@ describe('fetchData', () => {
     MockDate.reset();
   });
 
-  it('can fetch analytics', async () => {
-    const dataElements = ['BCD1'];
-    const organisationUnits = ['TO'];
-    const startDate = '2020-01-01';
-    const endDate = '2020-01-02';
+  it('can fetch from the analytics data-table', async () => {
+    const parameters = {
+      dataElementCodes: ['BCD1'],
+      organisationUnitCodes: ['TO'],
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+    };
     const transform = buildTestTransform(
       [
         {
           transform: 'fetchData',
-          parameters: {
-            dataElements,
-            organisationUnits,
-            startDate,
-            endDate,
-          },
+          dataTableCode: 'analytics',
+          parameters,
         },
       ],
       getContext(),
     );
     const received = await transform(new TransformTable());
     expect(received).toStrictEqual(
-      TransformTable.fromRows(
-        getFetchAnalyticsResults(dataElements, organisationUnits, startDate, endDate),
-      ),
+      TransformTable.fromRows(analyticsDataTable.fetchData(parameters)),
     );
   });
 
-  it('can fetch events', async () => {
-    const dataGroup = 'BCD';
-    const dataElements = ['BCD1'];
-    const organisationUnits = ['TO'];
-    const startDate = '2020-01-01';
-    const endDate = '2020-01-02';
+  it('can fetch from the events data-table', async () => {
+    const parameters = {
+      dataGroupCode: 'BCD',
+      dataElementCodes: ['BCD1'],
+      organisationUnitCodes: ['TO'],
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+    };
     const transform = buildTestTransform(
       [
         {
           transform: 'fetchData',
-          parameters: {
-            dataGroups: [dataGroup],
-            dataElements,
-            organisationUnits,
-            startDate,
-            endDate,
-          },
+          dataTableCode: 'events',
+          parameters,
         },
       ],
       getContext(),
     );
     const received = await transform(new TransformTable());
-    expect(received).toStrictEqual(
-      TransformTable.fromRows(
-        getFetchEventsResults(dataGroup, dataElements, organisationUnits, startDate, endDate),
-      ),
-    );
+    expect(received).toStrictEqual(TransformTable.fromRows(eventsDataTable.fetchData(parameters)));
   });
 
   it('can use the query parameters from the original request', async () => {
-    const dataElements = ['BCD1'];
-    const organisationUnits = ['TO'];
-    const startDate = '2020-01-01';
-    const endDate = '2020-01-02';
+    const parameters = {
+      dataElementCodes: ['BCD1'],
+      organisationUnitCodes: ['TO'],
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+    };
 
     const transform = buildTestTransform(
       [
         {
           transform: 'fetchData',
-          parameters: {
-            dataElements,
-          },
+          dataTableCode: 'analytics',
+          parameters,
         },
       ],
-      getContext({ startDate, endDate, organisationUnitCodes: organisationUnits }),
+      getContext({
+        startDate: parameters.startDate,
+        endDate: parameters.endDate,
+        organisationUnitCodes: parameters.organisationUnitCodes,
+      }),
     );
     const received = await transform(new TransformTable());
     expect(received).toStrictEqual(
-      TransformTable.fromRows(
-        getFetchAnalyticsResults(dataElements, organisationUnits, startDate, endDate),
-      ),
+      TransformTable.fromRows(analyticsDataTable.fetchData(parameters)),
     );
   });
 
   describe('join', () => {
     it('can join new data to the existing table', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO'];
-      const startDate = '2017-01-01';
-      const endDate = '2022-01-02';
+      const parameters = {
+        dataElementCodes: ['BCD1'],
+        organisationUnitCodes: ['TO'],
+        startDate: '2017-01-01',
+        endDate: '2022-01-02',
+      };
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
-            parameters: {
-              dataElements,
-              organisationUnits,
-              startDate,
-              endDate,
-            },
+            dataTableCode: 'analytics',
+            parameters,
             join: [
               {
                 tableColumn: 'entity',
@@ -136,12 +121,7 @@ describe('fetchData', () => {
         getContext(),
       );
 
-      const fetchedAnalytics = getFetchAnalyticsResults(
-        dataElements,
-        organisationUnits,
-        startDate,
-        endDate,
-      );
+      const fetchedAnalytics = analyticsDataTable.fetchData(parameters);
 
       const existingTable = [
         {
@@ -156,20 +136,18 @@ describe('fetchData', () => {
     });
 
     it('can join on multiple fields', async () => {
-      const dataElements = ['BCD1', 'BCD2'];
-      const organisationUnits = ['TO', 'PG'];
-      const startDate = '2017-01-01';
-      const endDate = '2022-01-02';
+      const parameters = {
+        dataElementCodes: ['BCD1', 'BCD2'],
+        organisationUnitCodes: ['TO', 'PG'],
+        startDate: '2017-01-01',
+        endDate: '2022-01-02',
+      };
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
-            parameters: {
-              dataElements,
-              organisationUnits,
-              startDate,
-              endDate,
-            },
+            dataTableCode: 'analytics',
+            parameters,
             join: [
               {
                 tableColumn: 'entity',
@@ -185,12 +163,7 @@ describe('fetchData', () => {
         getContext(),
       );
 
-      const fetchedAnalytics = getFetchAnalyticsResults(
-        dataElements,
-        organisationUnits,
-        startDate,
-        endDate,
-      );
+      const fetchedAnalytics = analyticsDataTable.fetchData(parameters);
 
       const existingTable = [
         {
@@ -226,16 +199,17 @@ describe('fetchData', () => {
 
   describe('start and end date', () => {
     it('has default start and end dates', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO'];
+      const dataElementCodes = ['BCD1'];
+      const organisationUnitCodes = ['TO'];
 
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
+            dataTableCode: 'analytics',
             parameters: {
-              dataElements,
-              organisationUnits,
+              dataElementCodes,
+              organisationUnitCodes,
             },
           },
         ],
@@ -244,54 +218,45 @@ describe('fetchData', () => {
       const received = await transform(new TransformTable());
       expect(received).toStrictEqual(
         TransformTable.fromRows(
-          getFetchAnalyticsResults(
-            dataElements,
-            organisationUnits,
-            defaultStartDate,
-            defaultEndDate,
-          ),
+          analyticsDataTable.fetchData({
+            dataElementCodes,
+            organisationUnitCodes,
+            startDate: defaultStartDate,
+            endDate: defaultEndDate,
+          }),
         ),
       );
     });
 
     it('transform dates take precedence over query dates', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO'];
       const queryStartDate = EARLIEST_DATA_DATE_STRING;
       const queryEndDate = CURRENT_DATE_STUB;
-      const transformStartDate = '2020-01-01';
-      const transformEndDate = '2020-01-02';
+      const parameters = {
+        dataElementCodes: ['BCD1'],
+        organisationUnitCodes: ['TO'],
+        startDate: '2020-01-01', // transform result
+        endDate: '2020-01-02', // transform result
+      };
 
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
-            parameters: {
-              dataElements,
-              organisationUnits,
-              startDate: transformStartDate,
-              endDate: transformEndDate,
-            },
+            dataTableCode: 'analytics',
+            parameters,
           },
         ],
         getContext({ startDate: queryStartDate, endDate: queryEndDate }),
       );
       const received = await transform(new TransformTable());
       expect(received).toStrictEqual(
-        TransformTable.fromRows(
-          getFetchAnalyticsResults(
-            dataElements,
-            organisationUnits,
-            transformStartDate,
-            transformEndDate,
-          ),
-        ),
+        TransformTable.fromRows(analyticsDataTable.fetchData(parameters)),
       );
     });
 
     it('can use start and endDate in table using @all', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO'];
+      const dataElementCodes = ['BCD1'];
+      const organisationUnitCodes = ['TO'];
       const startDate = '= min(@all.date)';
       const endDate = '= max(@all.date)';
       const rows = [{ date: '2018-01-01' }, { date: '2020-02-03' }];
@@ -299,9 +264,10 @@ describe('fetchData', () => {
         [
           {
             transform: 'fetchData',
+            dataTableCode: 'analytics',
             parameters: {
-              dataElements,
-              organisationUnits,
+              dataElementCodes,
+              organisationUnitCodes,
               startDate,
               endDate,
             },
@@ -313,183 +279,29 @@ describe('fetchData', () => {
       expect(received).toStrictEqual(
         TransformTable.fromRows([
           ...rows,
-          ...getFetchAnalyticsResults(dataElements, organisationUnits, '2018-01-01', '2020-02-03'),
+          ...analyticsDataTable.fetchData({
+            dataElementCodes,
+            organisationUnitCodes,
+            startDate: '2018-01-01',
+            endDate: '2020-02-03',
+          }),
         ]),
       );
-    });
-
-    describe('date specs', () => {
-      it('can apply modifiers to dates', async () => {
-        const dataElements = ['BCD1'];
-        const organisationUnits = ['TO'];
-
-        const transform = buildTestTransform(
-          [
-            {
-              transform: 'fetchData',
-              parameters: {
-                dataElements,
-                organisationUnits,
-                startDate: { unit: 'year', offset: '-2' },
-                endDate: { unit: 'month', offset: '3' },
-              },
-            },
-          ],
-          getContext({ startDate: '2020-01-01', endDate: '2020-01-02' }),
-        );
-        const received = await transform(new TransformTable());
-        expect(received).toStrictEqual(
-          TransformTable.fromRows(
-            getFetchAnalyticsResults(dataElements, organisationUnits, '2018-01-01', '2020-04-02'),
-          ),
-        );
-      });
-
-      it('can apply complex modifiers to dates', async () => {
-        const dataElements = ['BCD1'];
-        const organisationUnits = ['TO'];
-
-        const transform = buildTestTransform(
-          [
-            {
-              transform: 'fetchData',
-              parameters: {
-                dataElements,
-                organisationUnits,
-                startDate: {
-                  unit: 'year',
-                  offset: '-2',
-                  modifier: 'start_of',
-                  modifierUnit: 'year',
-                },
-                endDate: {
-                  unit: 'year',
-                  offset: '-1',
-                  modifier: 'end_of',
-                  modifierUnit: 'year',
-                },
-              },
-            },
-          ],
-          getContext({ startDate: '2019-05-06', endDate: '2020-10-01' }),
-        );
-        const received = await transform(new TransformTable());
-        expect(received).toStrictEqual(
-          TransformTable.fromRows(
-            getFetchAnalyticsResults(dataElements, organisationUnits, '2017-01-01', '2019-12-31'),
-          ),
-        );
-      });
-
-      it('can adjust the date to modify from', async () => {
-        const dataElements = ['BCD1'];
-        const organisationUnits = ['TO'];
-
-        const transform = buildTestTransform(
-          [
-            {
-              transform: 'fetchData',
-              parameters: {
-                dataElements,
-                organisationUnits,
-                startDate: {
-                  from: 'today',
-                  unit: 'day',
-                  offset: '-1',
-                },
-                endDate: {
-                  unit: 'day',
-                  offset: '-1',
-                },
-              },
-            },
-          ],
-          getContext(),
-        );
-        const received = await transform(new TransformTable());
-        expect(received).toStrictEqual(
-          TransformTable.fromRows(
-            getFetchAnalyticsResults(dataElements, organisationUnits, '2020-12-14', '2020-12-14'),
-          ),
-        );
-      });
     });
   });
 
   describe('organisationUnits', () => {
-    describe('error cases', () => {
-      type TestParams = [
-        string,
-        { config?: Record<string, unknown>; query?: Partial<FetchReportQuery> },
-        string,
-      ];
-      const testData: TestParams[] = [
-        [
-          'throws error if no organisation units requested',
-          {
-            query: { organisationUnitCodes: [] },
-          },
-          "Must provide 'organisationUnitCodes' URL parameter, or 'organisationUnits' in fetch config",
-        ],
-        [
-          'throws error if no organisation units found with requested codes',
-          {
-            query: { organisationUnitCodes: ['fake_code'] },
-          },
-          'No entities found with codes: fake_code',
-        ],
-        [
-          'throws error if no organisation units found with config codes',
-          {
-            config: { organisationUnits: ['fake_code', 'faker_code'] },
-          },
-          'No entities found with codes: fake_code,faker_code',
-        ],
-        [
-          'throws error if no organisation units with permission for requested codes',
-          {
-            query: { organisationUnitCodes: ['KI'] },
-          },
-          "No 'Admin' access to any one of entities: KI",
-        ],
-        [
-          'throws error if user does not have access to a country within a project',
-          {
-            config: { hierarchy: 'underwater_world', organisationUnits: ['underwater_world'] },
-          },
-          "No 'Admin' access to any one of entities: underwater_world",
-        ],
-      ];
-
-      it.each(testData)('%s', async (_, { config, query }, expectedError) => {
-        const dataElements = ['BCD1'];
-
-        const transform = buildTestTransform(
-          [
-            {
-              transform: 'fetchData',
-              parameters: {
-                dataElements,
-                ...config,
-              },
-            },
-          ],
-          getContext(query),
-        );
-        await expect(transform(new TransformTable())).rejects.toThrow(expectedError);
-      });
-    });
-
     it('can fetch an array of organisationUnits', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO', 'PG'];
+      const dataElementCodes = ['BCD1'];
+      const organisationUnitCodes = ['TO', 'PG'];
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
+            dataTableCode: 'analytics',
             parameters: {
-              dataElements,
-              organisationUnits,
+              dataElementCodes,
+              organisationUnitCodes,
             },
           },
         ],
@@ -498,77 +310,27 @@ describe('fetchData', () => {
       const received = await transform(new TransformTable());
       expect(received).toStrictEqual(
         TransformTable.fromRows(
-          getFetchAnalyticsResults(
-            dataElements,
-            organisationUnits,
-            defaultStartDate,
-            defaultEndDate,
-          ),
-        ),
-      );
-    });
-
-    it('can filters out organisationUnits without access', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['TO', 'KI'];
-      const transform = buildTestTransform(
-        [
-          {
-            transform: 'fetchData',
-            parameters: {
-              dataElements,
-              organisationUnits,
-            },
-          },
-        ],
-        getContext(),
-      );
-      const received = await transform(new TransformTable());
-      expect(received).toStrictEqual(
-        TransformTable.fromRows(
-          getFetchAnalyticsResults(dataElements, ['TO'], defaultStartDate, defaultEndDate),
-        ),
-      );
-    });
-
-    it('fetches for countries the user can access if project is used', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = ['explore'];
-      const transform = buildTestTransform(
-        [
-          {
-            transform: 'fetchData',
-            parameters: {
-              dataElements,
-              organisationUnits,
-            },
-          },
-        ],
-        getContext(),
-      );
-      const received = await transform(new TransformTable());
-      expect(received).toStrictEqual(
-        TransformTable.fromRows(
-          getFetchAnalyticsResults(
-            dataElements,
-            ['TO', 'WS', 'PG'],
-            defaultStartDate,
-            defaultEndDate,
-          ),
+          analyticsDataTable.fetchData({
+            dataElementCodes,
+            organisationUnitCodes,
+            startDate: defaultStartDate,
+            endDate: defaultEndDate,
+          }),
         ),
       );
     });
 
     it('can combine with the requested organisationUnits using @params.organisationUnitsCodes', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = "= concat(@params.organisationUnitCodes, ['PG'])";
+      const dataElementCodes = ['BCD1'];
+      const organisationUnitCodes = "= concat(@params.organisationUnitCodes, ['PG'])";
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
+            dataTableCode: 'analytics',
             parameters: {
-              dataElements,
-              organisationUnits,
+              dataElementCodes,
+              organisationUnitCodes,
             },
           },
         ],
@@ -577,22 +339,28 @@ describe('fetchData', () => {
       const received = await transform(new TransformTable());
       expect(received).toStrictEqual(
         TransformTable.fromRows(
-          getFetchAnalyticsResults(dataElements, ['TO', 'PG'], defaultStartDate, defaultEndDate),
+          analyticsDataTable.fetchData({
+            dataElementCodes,
+            organisationUnitCodes: ['TO', 'PG'],
+            startDate: defaultStartDate,
+            endDate: defaultEndDate,
+          }),
         ),
       );
     });
 
     it('can use organisationUnits in table using @all', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = '= @all.organisationUnits';
+      const dataElementCodes = ['BCD1'];
+      const organisationUnitCodes = '= @all.organisationUnits';
       const rows = [{ organisationUnits: 'TO' }, { organisationUnits: 'PG' }];
       const transform = buildTestTransform(
         [
           {
             transform: 'fetchData',
+            dataTableCode: 'analytics',
             parameters: {
-              dataElements,
-              organisationUnits,
+              dataElementCodes,
+              organisationUnitCodes,
             },
           },
         ],
@@ -602,36 +370,13 @@ describe('fetchData', () => {
       expect(received).toStrictEqual(
         TransformTable.fromRows([
           ...rows,
-          ...getFetchAnalyticsResults(dataElements, ['TO', 'PG'], defaultStartDate, defaultEndDate),
+          ...analyticsDataTable.fetchData({
+            dataElementCodes,
+            organisationUnitCodes: ['TO', 'PG'],
+            startDate: defaultStartDate,
+            endDate: defaultEndDate,
+          }),
         ]),
-      );
-    });
-
-    it('fetches for countries the user can access if project is request organisation unit', async () => {
-      const dataElements = ['BCD1'];
-      const organisationUnits = "= concat(@params.organisationUnitCodes, ['PG_Facility'])";
-      const transform = buildTestTransform(
-        [
-          {
-            transform: 'fetchData',
-            parameters: {
-              dataElements,
-              organisationUnits,
-            },
-          },
-        ],
-        getContext({ organisationUnitCodes: ['explore'] }),
-      );
-      const received = await transform(new TransformTable());
-      expect(received).toStrictEqual(
-        TransformTable.fromRows(
-          getFetchAnalyticsResults(
-            dataElements,
-            ['TO', 'WS', 'PG', 'PG_Facility'],
-            defaultStartDate,
-            defaultEndDate,
-          ),
-        ),
       );
     });
   });

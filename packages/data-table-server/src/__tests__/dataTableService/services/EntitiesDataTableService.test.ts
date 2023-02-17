@@ -62,12 +62,12 @@ describe('EntitiesDataTableService', () => {
           type: 'country',
         },
         {
-          name: 'Australian Facility 1',
-          type: 'facility',
-        },
-        {
           name: 'Fiji',
           type: 'country',
+        },
+        {
+          name: 'Australian Facility 1',
+          type: 'facility',
         },
       ]);
     });

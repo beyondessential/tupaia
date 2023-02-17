@@ -5,8 +5,9 @@
 
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { TupaiaApiClient } from '@tupaia/api-client';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
+import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
 const CURRENT_DATE_STUB = '2020-12-31';
 
@@ -16,12 +17,12 @@ const TEST_EVENTS: Record<string, Event[]> = {
   PSSS_WNR: [
     {
       eventDate: '2020-01-01',
-      orgUnit: 'TO',
+      orgUnit: 'AU',
       dataValues: { PSSS_AFR_Cases: 7, PSSS_ILI_Cases: 7 },
     },
     {
       eventDate: '2020-01-08',
-      orgUnit: 'TO',
+      orgUnit: 'PG',
       dataValues: { PSSS_AFR_Cases: 12, PSSS_ILI_Cases: 12 },
     },
     {
@@ -33,12 +34,12 @@ const TEST_EVENTS: Record<string, Event[]> = {
   PSSS_Confirmed_WNR: [
     {
       eventDate: '2020-01-01',
-      orgUnit: 'TO',
+      orgUnit: 'PG',
       dataValues: { PSSS_AFR_Cases: 3, PSSS_ILI_Cases: 6 },
     },
     {
       eventDate: '2020-01-08',
-      orgUnit: 'TO',
+      orgUnit: 'AU',
       dataValues: { PSSS_AFR_Cases: 4, PSSS_ILI_Cases: 22 },
     },
     {
@@ -83,11 +84,20 @@ const fetchFakeEvents = (
   return eventsWithRequestedDataElements;
 };
 
+const fetchFakeDataGroup = (dataGroupCode: string) => {
+  const eventsForDataGroup = TEST_EVENTS[dataGroupCode] || [];
+  const dataElements = Array.from(
+    new Set(eventsForDataGroup.map(({ dataValues }) => Object.keys(dataValues)).flat()),
+  ).map(dataElement => ({ code: dataElement, name: dataElement }));
+  return { code: dataGroupCode, name: dataGroupCode, dataElements };
+};
+
 const flattenEvent = ({ dataValues, ...restOfEvent }: Event) => ({ ...restOfEvent, ...dataValues });
 
 jest.mock('@tupaia/aggregator', () => ({
   Aggregator: jest.fn().mockImplementation(() => ({
     fetchEvents: fetchFakeEvents,
+    fetchDataGroup: fetchFakeDataGroup,
   })),
 }));
 
@@ -96,7 +106,9 @@ jest.mock('@tupaia/data-broker', () => ({
 }));
 
 const accessPolicy = new AccessPolicy({ DL: ['Public'] });
-const apiClient = {} as TupaiaApiClient;
+const apiClient = new MockTupaiaApiClient({
+  entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS),
+});
 const eventsDataTableService = new DataTableServiceBuilder()
   .setServiceType('events')
   .setContext({ apiClient, accessPolicy })
@@ -120,6 +132,16 @@ describe('EventsDataTableService', () => {
           organisationUnitCodes: ['TO'],
         },
         'dataGroupCode is a required field',
+      ],
+      [
+        'empty dataElementCodes',
+        {
+          hierarchy: 'psss',
+          dataGroupCode: 'PSSS_WNR',
+          dataElementCodes: [],
+          organisationUnitCodes: ['TO'],
+        },
+        'dataElementCodes field must have at least 1 items',
       ],
       [
         'missing organisationUnitCodes',
@@ -229,6 +251,43 @@ describe('EventsDataTableService', () => {
         organisationUnitCodes,
         startDate,
         endDate,
+      }).map(flattenEvent);
+
+      expect(events).toEqual(expectedEvents);
+    });
+
+    it('maps project organisationUnits to child countries', async () => {
+      const dataGroupCode = 'PSSS_Confirmed_WNR';
+      const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
+
+      const events = await eventsDataTableService.fetchData({
+        hierarchy: 'test',
+        organisationUnitCodes: ['test'],
+        dataGroupCode,
+        dataElementCodes,
+      });
+
+      const expectedEvents = fetchFakeEvents(dataGroupCode, {
+        dataElementCodes,
+        organisationUnitCodes: ['PG', 'FJ'], // PG and FJ are the countries in test
+      }).map(flattenEvent);
+
+      expect(events).toEqual(expectedEvents);
+    });
+
+    it('fetches for all dataElements in the data group if dataElementCodes not supplied', async () => {
+      const dataGroupCode = 'PSSS_Confirmed_WNR';
+      const organisationUnitCodes = ['PG'];
+
+      const events = await eventsDataTableService.fetchData({
+        hierarchy: 'psss',
+        organisationUnitCodes,
+        dataGroupCode,
+      });
+
+      const expectedEvents = fetchFakeEvents(dataGroupCode, {
+        dataElementCodes: ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'],
+        organisationUnitCodes,
       }).map(flattenEvent);
 
       expect(events).toEqual(expectedEvents);
