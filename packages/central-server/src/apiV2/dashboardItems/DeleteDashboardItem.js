@@ -4,16 +4,11 @@
  */
 
 import { DeleteHandler } from '../DeleteHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertDashboardItemEditPermissions } from './assertDashboardItemsPermissions';
+import { assertBESAdminAccess } from '../../permissions';
 
 export class DeleteDashboardItem extends DeleteHandler {
   async assertUserHasAccess() {
-    const dashboardItemChecker = accessPolicy =>
-      assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
-    );
+    await this.assertPermissions(assertBESAdminAccess);
   }
 
   async deleteRecord() {
