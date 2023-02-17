@@ -48,7 +48,7 @@ GroupedSelectField.defaultProps = {
   SelectProps: null,
 };
 
-export const MenuItem = styled(MuiMenuItem)`
+const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;
