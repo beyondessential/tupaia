@@ -10,7 +10,7 @@ export const mapProjectEntitiesToCountries = async (
   hierarchy: string,
   entityCodes: string[],
 ) => {
-  // Assumes that there is only one project per hierarchy
+  // Currently in database, there is a 1:1 relationship between hierarchy and project, so we assume that the project code is the hierarchy name.
 
   const projectCode = hierarchy;
 
