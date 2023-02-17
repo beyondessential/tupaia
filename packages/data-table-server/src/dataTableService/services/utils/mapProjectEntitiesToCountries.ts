@@ -10,15 +10,16 @@ export const mapProjectEntitiesToCountries = async (
   hierarchy: string,
   entityCodes: string[],
 ) => {
-  const projects = (await apiClient.entity.getEntities(hierarchy, entityCodes, {
-    fields: ['code'],
-    filter: { type: 'project' },
-  })) as { code: string }[];
-  const projectCodes = projects.map(({ code }) => code);
+  // Currently in database, there is a 1:1 relationship between hierarchy and project, so we assume that the project code is the hierarchy name.
 
-  const countriesInProjects = (await apiClient.entity.getDescendantsOfEntities(
+  const projectCode = hierarchy;
+
+  if (!entityCodes.includes(projectCode)) {
+    return entityCodes;
+  }
+  const countriesInProject = (await apiClient.entity.getDescendantsOfEntity(
     hierarchy,
-    projectCodes,
+    projectCode,
     {
       fields: ['code'],
       filter: { type: 'country' },
@@ -27,8 +28,8 @@ export const mapProjectEntitiesToCountries = async (
 
   return Array.from(
     new Set([
-      ...entityCodes.filter(code => !projectCodes.includes(code)),
-      ...countriesInProjects.map(({ code }) => code),
+      ...entityCodes.filter(code => code !== projectCode),
+      ...countriesInProject.map(({ code }) => code),
     ]),
   );
 };
