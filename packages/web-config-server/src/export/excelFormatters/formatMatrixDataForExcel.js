@@ -40,6 +40,7 @@ export const formatMatrixDataForExcel = (
   let formattedData = [];
   const columnCategories = columns[0]?.columns && columns; // If columns are grouped into categories, store as a well named const
   const config = { ...DEFAULT_CONFIG, ...configIn };
+  const rowsWithDataElement = rows.filter(row => row.dataElement);
   // Returns populated array instead of object
   const formatRowData = row => {
     const rowData = columnCategories
@@ -55,6 +56,11 @@ export const formatMatrixDataForExcel = (
       : // This table has no column categories, just one set of columns
         columns.map(col => addValueOrEmpty(row[col.key], row.valueType));
 
+    // return data if there is no data element property in data set.
+    if (!rowsWithDataElement.length) {
+      return rowData;
+    }
+
     // prepend dataElementHeader
     rowData.unshift(row.dataElement);
 
@@ -69,6 +75,11 @@ export const formatMatrixDataForExcel = (
           return [columnCategoryTitle, ...columnsInCategory.map(col => col.title)];
         })
       : columns.map(col => col.title);
+
+    // return headers row data if there is no data element property in data set.
+    if (!rowsWithDataElement.length) {
+      return headersRowData;
+    }
 
     // prepend dataElementHeader
     headersRowData.unshift(config.dataElementHeader);
