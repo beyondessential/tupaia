@@ -12,7 +12,7 @@ const mockDhisRecords = {
   organisationUnits: [{ id: 'ORG1', code: 'PW_Facility', name: 'Palau Facility 1' }],
   categoryOptionCombos: [{ id: 'CAT1', code: 'TEST_CAT', name: 'Test Category Combo' }],
   dataElements: [
-    { id: 'DE1', code: 'PW_SW01SurveyDate', name: 'Date of report' },
+    { id: 'DE3', code: 'PW_SW01_3', name: 'Test Amount' },
     { id: 'DE2', code: 'PW_SW01_5_PW_SW01_6', name: 'Regular admissions' },
   ],
 };
@@ -20,12 +20,10 @@ const mockDhisRecords = {
 const mockDataValues = [
   {
     organisationUnit: 'ORG1',
-    dataElement: 'DE1',
+    dataElement: 'DE3',
     period: '20220611',
     orgUnit: 'ORG1',
-    categoryOptionCombo: 'CAT1',
-    attributeOptionCombo: 'HllvX50cXC0',
-    value: '2022-01-31',
+    value: '6',
     storedBy: 'Superman',
     created: '2022-06-11T04:57:49.000+0000',
     lastUpdated: '2022-06-11T04:57:49.000+0000',
@@ -87,8 +85,8 @@ jest.mock(
     PW_SW01: {
       codesUsingCategories: ['TEST_CAT'],
       codesToName: {
-        PW_SW01SurveyDate: 'Date of report',
         PW_SW01_5_PW_SW01_6: 'Regular admissions',
+        PW_SW01_3: 'Test Amount',
       },
     },
   }),
@@ -150,16 +148,17 @@ describe('palauNursingSurgicalWardReport', () => {
   it('returns data', async () => {
     const expectedResults = {
       columns: [
-        { key: 'Date of report', title: 'Date of report' },
+        { key: 'Date', title: 'Date' },
         { key: 'Regular admissions', title: 'Regular admissions' },
+        { key: 'Test Amount', title: 'Test Amount' },
       ],
       rows: [
         {
-          'Date of report': '2022-01-31',
+          Date: '20220611',
           'Facility code': 'PW_Facility',
           'Facility name': 'Palau Facility 1',
-          period: '20220611',
           'Regular admissions': '5',
+          'Test Amount': '6',
         },
       ],
     };
