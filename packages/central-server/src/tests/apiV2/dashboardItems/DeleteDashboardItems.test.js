@@ -158,47 +158,16 @@ describe('Permissions checker for DeleteDashboardItems', async () => {
 
   describe('DELETE /dashboardItems/:id', async () => {
     describe('Insufficient permissions', async () => {
-      it('Throw an exception if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
-        const policy = {
-          DL: ['Public'],
-        };
-        await app.grantAccess(policy);
+      it('Throw an exception if we do not have BES admin', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.delete(`dashboardItems/${dashboardItemDLPublic.id}`);
-
-        expect(result).to.have.keys('error');
-      });
-
-      it('Throw an exception if we do not have admin panel access to any of the root entities', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
-        const { body: result } = await app.delete(
-          `dashboardItems/${dashboardItemDLPublicLAAdmin.id}`,
-        );
-
-        expect(result).to.have.keys('error');
-      });
-
-      it('Throw an exception if we do not have sufficient access to any of the root entities', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
-        const { body: result } = await app.delete(
-          `dashboardItems/${dashboardItemDLPublicSBAdmin.id}`,
-        );
 
         expect(result).to.have.keys('error');
       });
     });
 
     describe('Sufficient permissions', async () => {
-      it('Allow deleting of dashboard items if we have admin panel access to all the countries the user we are editing has access to', async () => {
-        const preDelete = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
-        await app.grantAccess(DEFAULT_POLICY);
-        await app.delete(`dashboardItems/${dashboardItemKIAdmin.id}`);
-        const result = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
-
-        expect(preDelete).to.exist;
-        expect(result).to.not.exist;
-      });
-
-      it('Allow deleting of user information if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
+      it('Allow deleting of dashboard items if we have BES admin access in any country, regardless of country permissions', async () => {
         const preDelete = await models.dashboardItem.findById(dashboardItemDLPublicLAAdmin.id);
         await app.grantAccess(BES_ADMIN_POLICY);
         await app.delete(`dashboardItems/${dashboardItemDLPublicLAAdmin.id}`);

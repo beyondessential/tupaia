@@ -237,6 +237,7 @@ apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
 );
+apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes
@@ -308,6 +309,7 @@ apiV2.put('/me', catchAsyncErrors(editUser));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
 
 /**
  * DELETE routes

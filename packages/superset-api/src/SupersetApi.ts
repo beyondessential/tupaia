@@ -31,7 +31,7 @@ export class SupersetApi {
     }
   }
 
-  public async chartData(chartId: number): Promise<ChartDataResponseSchema> {
+  public async chartData(chartId: string): Promise<ChartDataResponseSchema> {
     return this.fetch<ChartDataResponseSchema>(`${this.baseUrl}/api/v1/chart/${chartId}/data/`);
   }
 
@@ -56,13 +56,13 @@ export class SupersetApi {
 
     if (result.status !== 200) {
       if (result.status === 422 || result.status === 401) {
-        winston.info(`Superset Auth error, response: ${result.body}`);
+        winston.info(`Superset Auth error, response: ${await result.text()}`);
         await this.refreshAccessToken();
         return this.fetch(url, numRetries + 1);
       }
 
       throw new Error(
-        `Error response from Superset API. Status: ${result.status}, body: ${result.body}`,
+        `Error response from Superset API. Status: ${result.status}, body: ${await result.text()}`,
       );
     }
 
@@ -103,7 +103,9 @@ export class SupersetApi {
 
     if (result.status !== 200) {
       throw new Error(
-        `Superset failed to refresh access token. Status: ${result.status}, body: ${result.body}`,
+        `Superset failed to refresh access token. Status: ${
+          result.status
+        }, body: ${await result.text()}`,
       );
     }
 

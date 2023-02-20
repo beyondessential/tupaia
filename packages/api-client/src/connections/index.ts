@@ -5,7 +5,8 @@
  */
 
 export { ApiConnection } from './ApiConnection';
-export { AuthApi } from './AuthApi';
-export { EntityApi } from './EntityApi';
-export { CentralApi } from './CentralApi';
-export { ReportApi } from './ReportApi';
+export { AuthApi, AuthApiInterface } from './AuthApi';
+export { DataTableApi, DataTableApiInterface } from './DataTableApi';
+export { EntityApi, EntityApiInterface } from './EntityApi';
+export { CentralApi, CentralApiInterface } from './CentralApi';
+export { ReportApi, ReportApiInterface } from './ReportApi';

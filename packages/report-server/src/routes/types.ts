@@ -9,6 +9,7 @@ export type ReportRouteQuery = {
   period?: string;
   startDate?: string;
   endDate?: string;
+  permissionGroup?: string;
 };
 
 export type ReportRouteBody = {

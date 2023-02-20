@@ -7,6 +7,7 @@ import { getChartTableData } from './getChartTableData';
 import { useDataTableExport } from '../../DataTable/useDataTableExport';
 
 export const useChartDataExport = (viewContent, title) => {
+  const { startDate, endDate } = viewContent ?? {};
   const { columns, data } = getChartTableData(viewContent);
-  return useDataTableExport(columns, data, title);
+  return useDataTableExport(columns, data, title, startDate, endDate);
 };

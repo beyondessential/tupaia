@@ -8,33 +8,29 @@
 import MockDate from 'mockdate';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 
 import { QueryBuilder } from '../../../reportBuilder/query/QueryBuilder';
 import { FetchReportQuery } from '../../../types';
 import { ReqContext } from '../../../reportBuilder/context';
 
-import { entityApiMock } from '../testUtils';
-
 describe('QueryBuilder', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00Z';
 
   const HIERARCHY = 'explore';
-  const ENTITIES = {
-    explore: [
-      { code: 'explore', country_code: null, type: 'project' },
-      { code: 'TO', country_code: 'TO', type: 'country' },
-      { code: 'WS', country_code: 'WS', type: 'country' },
-      { code: 'KI', country_code: 'KI', type: 'country' },
-      { code: 'MY', country_code: 'MY', type: 'country' },
-      { code: 'PG', country_code: 'PG', type: 'country' },
-      { code: 'PG_District', country_code: 'PG', type: 'district' },
-      { code: 'PG_Facility', country_code: 'PG', type: 'facility' },
-    ],
-    underwater_world: [
-      { code: 'underwater_world', country_code: null, type: 'project' },
-      { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: 'country' },
-    ],
-  };
+  const ENTITIES = [
+    { code: 'explore', country_code: null, type: 'project' },
+    { code: 'TO', country_code: 'TO', type: 'country' },
+    { code: 'WS', country_code: 'WS', type: 'country' },
+    { code: 'KI', country_code: 'KI', type: 'country' },
+    { code: 'MY', country_code: 'MY', type: 'country' },
+    { code: 'PG', country_code: 'PG', type: 'country' },
+    { code: 'PG_District', country_code: 'PG', type: 'district' },
+    { code: 'PG_Facility', country_code: 'PG', type: 'facility' },
+
+    { code: 'underwater_world', country_code: null, type: 'project' },
+    { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: 'country' },
+  ];
   const RELATIONS = {
     explore: [
       { parent: 'explore', child: 'TO' },
@@ -48,14 +44,10 @@ describe('QueryBuilder', () => {
     underwater_world: [{ parent: 'underwater_world', child: 'AQUA_LAND' }],
   };
 
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
-
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Admin',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, RELATIONS) }),
     accessPolicy: new AccessPolicy({
       PG: ['Admin'],
       TO: ['Admin'],
