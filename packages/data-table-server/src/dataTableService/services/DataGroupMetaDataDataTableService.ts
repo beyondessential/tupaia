@@ -7,7 +7,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { yup } from '@tupaia/utils';
+import { upperFirst, yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 
 const requiredParamsSchema = yup.object().shape({
@@ -26,6 +26,14 @@ type DataGroup = {
   dataElements: { code: string; name: string; text: string; options: Record<string, unknown>[] }[];
 };
 
+type DataGroupMetadata = {
+  dataGroupCode: string;
+  dataGroupName: string;
+  dataElementCode: string;
+  dataElementName: string;
+  [key: string]: unknown;
+};
+
 /**
  * DataTableService for pulling data from data-broker's fetchDataGroup() endpoint
  */
@@ -33,7 +41,7 @@ export class DataGroupMetaDataDataTableService extends DataTableService<
   DataGroupMetaDataDataTableServiceContext,
   typeof requiredParamsSchema,
   typeof configSchema,
-  DataGroup
+  DataGroupMetadata
 > {
   protected supportsAdditionalParams = false;
 
@@ -51,8 +59,26 @@ export class DataGroupMetaDataDataTableService extends DataTableService<
       }),
     );
 
-    const result = await aggregator.fetchDataGroup(dataGroupCode, {});
+    const results: DataGroup = await aggregator.fetchDataGroup(dataGroupCode, {});
+    const { code: newDataGroupCode, name: dataGroupName, dataElements } = results;
 
-    return [result] as DataGroup[];
+    return dataElements.map(
+      ({ code: dataElementCode, name: dataElementName, ...restOfConfigs }) => {
+        const restOfConfigsWithDataElementPrefix = Object.fromEntries(
+          Object.entries(restOfConfigs).map(([key, value]) => [
+            `dataElement${upperFirst(key)}`,
+            value,
+          ]),
+        );
+
+        return {
+          dataGroupCode: newDataGroupCode,
+          dataGroupName,
+          dataElementCode,
+          dataElementName,
+          ...restOfConfigsWithDataElementPrefix,
+        };
+      },
+    );
   }
 }

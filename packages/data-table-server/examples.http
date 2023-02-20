@@ -87,7 +87,7 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 {
-    "dataGroupCode": "SPF"
+    "dataGroupCode": "DR_PRE"
 }
 
 ### Get parameters for analytics data-table
