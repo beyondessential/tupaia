@@ -71,6 +71,25 @@ Authorization: {{authorization}}
   ]
 }
 
+### Fetch data from data_elements_metadata data-table
+POST http://{{host}}/{{version}}/dataTable/data_elements_metadata/fetchData HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "dataElementCodes": ["PSSS_AFR_Cases"]
+}
+
+
+### Fetch data from data_group_metadata data-table
+POST http://{{host}}/{{version}}/dataTable/data_group_metadata/fetchData HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "dataGroupCode": "SPF"
+}
+
 ### Get parameters for analytics data-table
 GET http://{{host}}/{{version}}/dataTable/analytics/parameters HTTP/1.1
 content-type: {{contentType}}
