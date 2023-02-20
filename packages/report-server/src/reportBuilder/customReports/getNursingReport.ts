@@ -93,7 +93,7 @@ export const getNursingReport = async (
     : 'https://dev-dhis2.palauhealth.org';
   const serverReadOnly = false;
   const dhisApi = new DhisApi(serverName, serverUrl, serverReadOnly);
-  const { organisationUnitCodes: entityCodes, hierarchy } = query;
+  const { organisationUnitCodes: entityCodes, hierarchy, startDate, endDate } = query;
 
   const facilities: Record<
     string,
@@ -105,6 +105,8 @@ export const getNursingReport = async (
   const config = {
     dataSetCode: [dataSetCode],
     organisationUnitCodes: facilities.map(f => f.code),
+    startDate,
+    endDate,
   };
 
   const aggregationType = 'RAW';
@@ -115,58 +117,83 @@ export const getNursingReport = async (
     aggregationType,
     aggregationConfig,
   );
+
   const surveys: Surveys = SURVEYS;
   const dictionary = await getDictionary(dhisApi, dataValues);
 
   const initialValue: Record<string, string>[] = [];
-  const rows = dataValues.reduce((previous, current) => {
-    const {
-      dataElement: dataElementId,
-      organisationUnit: organisationUnitId,
-      period,
-      categoryOptionCombo: categoryId,
-      value,
-    } = current;
-    const updatedResults = [...previous];
-
-    const dataElementCode = dictionary.dataElements[dataElementId];
-    const dataElementCategory = dictionary.categories[categoryId];
-    const dataElement = getDataElementName(
-      dataElementCode,
-      dataElementCategory,
-      dataSetCode,
-      surveys,
-    );
-    if (!dataElement) {
-      return updatedResults;
-    }
-    const organisationUnitCode = dictionary.orgUnits[organisationUnitId];
-    const organisationUnitName = getFacilityName(organisationUnitCode, facilities);
-
-    const orgUnitAndPeriodExists = (element: Record<string, string>) =>
-      element.period === period && element['Facility code'] === organisationUnitCode;
-
-    const index = previous.findIndex(orgUnitAndPeriodExists);
-
-    if (index < 0) {
-      updatedResults.push({
-        [dataElement]: value,
-        'Facility code': organisationUnitCode,
-        'Facility name': organisationUnitName,
+  const rows = dataValues
+    .reduce((previous, current) => {
+      const {
+        dataElement: dataElementId,
+        organisationUnit: organisationUnitId,
         period,
-      });
+        categoryOptionCombo: categoryId,
+        value,
+      } = current;
+
+      const updatedResults = [...previous];
+
+      const dataElementCode = dictionary.dataElements[dataElementId];
+      const dataElementCategory = dictionary.categories[categoryId];
+      const dataElement = getDataElementName(
+        dataElementCode,
+        dataElementCategory,
+        dataSetCode,
+        surveys,
+      );
+      if (!dataElement) {
+        return updatedResults;
+      }
+      const organisationUnitCode = dictionary.orgUnits[organisationUnitId];
+      const organisationUnitName = getFacilityName(organisationUnitCode, facilities);
+
+      const orgUnitAndPeriodExists = (element: Record<string, string>) =>
+        element.period === period && element['Facility code'] === organisationUnitCode;
+
+      const index = previous.findIndex(orgUnitAndPeriodExists);
+
+      if (index < 0) {
+        updatedResults.push({
+          [dataElement]: value,
+          'Facility code': organisationUnitCode,
+          'Facility name': organisationUnitName,
+          period,
+        });
+        return updatedResults;
+      }
+
+      updatedResults[index][dataElement] = value;
+
       return updatedResults;
-    }
+    }, initialValue)
+    .sort((leftRow, rightRow) => {
+      const leftPeriodAsNumber = Number(leftRow.period);
+      const rightPeriodAsNumber = Number(rightRow.period);
+      if (leftPeriodAsNumber < rightPeriodAsNumber) {
+        return -1;
+      }
+      if (leftPeriodAsNumber > rightPeriodAsNumber) {
+        return 1;
+      }
 
-    updatedResults[index][dataElement] = value;
+      return 0;
+    });
 
-    return updatedResults;
-  }, initialValue);
+  // convert 'period' to 'Date' column
+  const rowsWithDate = rows.map(row => {
+    const { period, ...restOfRow } = row;
+    return {
+      Date: period,
+      ...restOfRow,
+    };
+  });
 
   const { codesToName } = surveys[dataSetCode as keyof typeof surveys];
   const columns = Object.values(codesToName).map(value => {
     return { key: value, title: value };
   });
+  columns.unshift({ key: 'Date', title: 'Date' });
 
-  return { columns, rows };
+  return { columns, rows: rowsWithDate };
 };

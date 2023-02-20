@@ -15,7 +15,6 @@
          "PW_SW01_31_PW_SW01_32"
        ],
       "codesToName": {
-         "PW_SW01SurveyDate":"Date of report",
          "PW_SW01_5_PW_SW01_6":"Regular admissions",
          "PW_SW01_7_PW_SW01_8":"Transfer inpatients",
          "PW_SW01_9_PW_SW01_10":"FSC admission",
@@ -145,7 +144,6 @@
    "PW_ER01": {
       "codesUsingCategories": [],
       "codesToName": {
-         "PW_ER01SurveyDate": "Date of report",
          "PW_ER01_3": "Number of Patients",
          "PW_ER01_4": "Emergency",
          "PW_ER01_5": "Non-Emergency",
@@ -192,7 +190,6 @@
    "PW_ER02": {
       "codesUsingCategories": [],
       "codesToName": {
-         "PW_ER02SurveyDate": "Date of report",
          "PW_ER02_3": "Number of Extra Issues Arising? E.g. blood transfusions",
          "PW_ER02_4": "Name of new issue",
          "PW_ER02_5": "Number of new issue",
@@ -211,7 +208,6 @@
    "PW_OR01": {
       "codesUsingCategories": [],
       "codesToName": {
-         "PW_OR01SurveyDate": "Date of report",
          "PW_OR01_4": "Major Surgeries",
          "PW_OR01_5": "Minor Surgeries",
          "PW_OR01_6": "Emergency Surgeries (on call) ",
@@ -237,7 +233,6 @@
    "PW_MW01": {
       "codesUsingCategories": [],
       "codesToName": {
-         "PW_MW01SurveyDate": "Date of report",
          "PW_MW01_20": "DNR",
          "PW_MW01_21": "Coded",
          "PW_MW01_57": "Census",
