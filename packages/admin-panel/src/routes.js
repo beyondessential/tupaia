@@ -34,6 +34,7 @@ import {
   SyncGroupsPage,
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
+  EntityHierarchyPage,
 } from './pages/resources';
 import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
@@ -210,6 +211,11 @@ export const ROUTES = [
         label: 'Disaster',
         to: '/disaster',
         component: DisasterResponsePage,
+      },
+      {
+        label: 'Entity Hierarchy',
+        to: '/hierarchy',
+        component: EntityHierarchyPage,
       },
     ],
   },
