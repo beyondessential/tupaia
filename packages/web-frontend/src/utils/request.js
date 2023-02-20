@@ -164,7 +164,7 @@ export const download = async (resourceUrl, errorFunction, options, fileName) =>
   }
 };
 
-export const getAbsoluteApiRequestUri = (resourceUrl) => {
+export const getAbsoluteApiRequestUri = resourceUrl => {
   const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
   return baseUrl + resourceUrl;
-}
+};
