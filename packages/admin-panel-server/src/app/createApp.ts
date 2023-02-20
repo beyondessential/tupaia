@@ -11,7 +11,7 @@ import {
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
-import { upload } from '../middleware';
+import { upload, verifyBESAdminAccess } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
