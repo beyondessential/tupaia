@@ -9,16 +9,10 @@ import { Route } from '@tupaia/server-boilerplate';
 import { groupBy } from 'lodash';
 import { getSortByKey } from '@tupaia/utils';
 
-interface EntityNode {
-  code: string;
-  name: string;
-  hierarchyName: string;
-}
-
 export type FetchEntityHierarchyTreeRequest = Request<
   Record<string, never> | { hierarchyName: string; entityCode: string },
-  (EntityNode & {
-    children: EntityNode[];
+  ({ id: string; code: string; name: string } & {
+    children: { id: string }[];
   })[],
   Record<string, never>,
   Record<string, never>
@@ -44,19 +38,16 @@ export class FetchEntityHierarchyTreeRoute extends Route<FetchEntityHierarchyTre
 
     const childRelations = await centralApi.fetchResources('entityRelations', {
       filter: { parent_id: rootEntities.map(({ id }) => id) },
-      columns: ['parent_id', 'entity.code', 'entity.name'],
-      sort: ['entity.name'],
+      columns: ['parent_id', 'child_id'],
     });
     const childRelationsByParent = groupBy(childRelations, 'parent_id');
 
     return rootEntities.map(({ id, code, name }) => ({
+      id,
       code,
       name,
-      hierarchyName: code,
-      children: (childRelationsByParent[id] || []).map(child => ({
-        code: child['entity.code'],
-        name: child['entity.name'],
-        hierarchyName: code,
+      children: (childRelationsByParent[id] || []).map(childRelation => ({
+        id: childRelation.child_id,
       })),
     }));
   }
@@ -66,21 +57,19 @@ export class FetchEntityHierarchyTreeRoute extends Route<FetchEntityHierarchyTre
 
     const descendants = await entityApi.getDescendantsOfEntity(hierarchyName, entityCode, {
       filter: { generational_distance: { comparator: '<=', comparisonValue: 2 } },
-      fields: ['code', 'name', 'parent_code'],
+      fields: ['id', 'code', 'name', 'parent_code'],
     });
 
     descendants.sort(getSortByKey('name'));
     const descendantsByParent = groupBy(descendants, 'parent_code');
     const children = descendantsByParent[entityCode] || [];
 
-    return children.map(({ code, name }) => ({
+    return children.map(({ id, code, name }) => ({
+      id,
       code,
       name,
-      hierarchyName,
       children: (descendantsByParent[code] || []).map(descendant => ({
-        code: descendant.code,
-        name: descendant.name,
-        hierarchyName,
+        id: descendant.id,
       })),
     }));
   }
