@@ -7,7 +7,7 @@ import { DataTableType } from '../models';
 import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
 import {
   AnalyticsDataTableService,
-  DataElementMetadataDataTableService,
+  DataElementsMetadataDataTableService,
   DataGroupMetaDataDataTableService,
   EntitiesDataTableService,
   EntityRelationsDataTableService,
@@ -50,7 +50,7 @@ class DataTableServiceBuilderForType<Service extends DataTableService> {
 const dataTablesServiceBuilders = {
   analytics: () => new DataTableServiceBuilderForType(AnalyticsDataTableService),
   data_elements_metadata: () =>
-    new DataTableServiceBuilderForType(DataElementMetadataDataTableService),
+    new DataTableServiceBuilderForType(DataElementsMetadataDataTableService),
   data_group_metadata: () => new DataTableServiceBuilderForType(DataGroupMetaDataDataTableService),
   events: () => new DataTableServiceBuilderForType(EventsDataTableService),
   entities: () => new DataTableServiceBuilderForType(EntitiesDataTableService),

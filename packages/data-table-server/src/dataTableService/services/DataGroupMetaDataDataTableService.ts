@@ -4,7 +4,6 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { upperFirst, yup } from '@tupaia/utils';
@@ -17,7 +16,6 @@ const requiredParamsSchema = yup.object().shape({
 const configSchema = yup.object();
 
 type DataGroupMetaDataDataTableServiceContext = {
-  apiClient: TupaiaApiClient;
   accessPolicy: AccessPolicy;
 };
 type DataGroup = {
@@ -35,7 +33,7 @@ type DataGroupMetadata = {
 };
 
 /**
- * DataTableService for pulling data from data-broker's fetchDataGroup() endpoint
+ * DataTableService for pulling data from aggregator's fetchDataGroup() endpoint
  */
 export class DataGroupMetaDataDataTableService extends DataTableService<
   DataGroupMetaDataDataTableServiceContext,
@@ -54,12 +52,13 @@ export class DataGroupMetaDataDataTableService extends DataTableService<
 
     const aggregator = new Aggregator(
       new DataBroker({
-        services: this.ctx.apiClient,
         accessPolicy: this.ctx.accessPolicy,
       }),
     );
 
-    const results: DataGroup = await aggregator.fetchDataGroup(dataGroupCode, {});
+    const results: DataGroup = await aggregator.fetchDataGroup(dataGroupCode, {
+      includeOptions: true,
+    });
     const { code: newDataGroupCode, name: dataGroupName, dataElements } = results;
 
     return dataElements.map(

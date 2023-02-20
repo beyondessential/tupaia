@@ -4,7 +4,6 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { yup } from '@tupaia/utils';
@@ -16,24 +15,23 @@ const requiredParamsSchema = yup.object().shape({
 
 const configSchema = yup.object();
 
-type DataElementMetadataDataTableServiceContext = {
-  apiClient: TupaiaApiClient;
+type DataElementsMetadataDataTableServiceContext = {
   accessPolicy: AccessPolicy;
 };
 type DataElements = { code: string; name: string };
 
 /**
- * DataTableService for pulling data from data-broker's fetchDataElements() endpoint
+ * DataTableService for pulling data from aggregator's fetchDataElements() endpoint
  */
-export class DataElementMetadataDataTableService extends DataTableService<
-  DataElementMetadataDataTableServiceContext,
+export class DataElementsMetadataDataTableService extends DataTableService<
+  DataElementsMetadataDataTableServiceContext,
   typeof requiredParamsSchema,
   typeof configSchema,
   DataElements
 > {
   protected supportsAdditionalParams = false;
 
-  public constructor(context: DataElementMetadataDataTableServiceContext, config: unknown) {
+  public constructor(context: DataElementsMetadataDataTableServiceContext, config: unknown) {
     super(context, requiredParamsSchema, configSchema, config);
   }
 
@@ -42,7 +40,6 @@ export class DataElementMetadataDataTableService extends DataTableService<
 
     const aggregator = new Aggregator(
       new DataBroker({
-        services: this.ctx.apiClient,
         accessPolicy: this.ctx.accessPolicy,
       }),
     );
