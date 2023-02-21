@@ -13,7 +13,7 @@ export const useReportPreview = ({
   testData,
   enabled,
   onSettled,
-  vizType,
+  dashboardItemOrMapOverlay,
   previewMode,
 }) =>
   useQuery(
@@ -23,7 +23,7 @@ export const useReportPreview = ({
         params: {
           entityCode: location,
           hierarchy: project,
-          vizType,
+          dashboardItemOrMapOverlay,
           previewMode,
         },
         data: {

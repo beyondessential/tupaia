@@ -15,8 +15,7 @@ const { pickerFormat: FORMAT } = GRANULARITY_CONFIG[GRANULARITIES.WEEK];
 const useBoundaryWeekOrDefault = (currentDate, boundaryDate, defaultWeek) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;
 
-export const WeekPicker = props => {
-  const { momentDateValue, minMomentDate, maxMomentDate, onChange } = props;
+export const WeekPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onChange }) => {
   const date = momentDateValue.isoWeekday(1);
 
   const weeksInYear = date.isoWeeksInYear();

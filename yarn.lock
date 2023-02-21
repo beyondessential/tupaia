@@ -5074,6 +5074,7 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
     axios: ^0.21.1
@@ -5746,7 +5747,7 @@ __metadata:
     date-fns: ^2.12.0
     faker: ^4.1.0
     fast-glob: ^3.2.5
-    jsoneditor: ^9.0.0
+    jsoneditor: ^9.9.0
     leaflet: ^1.7.1
     lodash.get: ^4.4.2
     lodash.throttle: ^4.1.1
@@ -7552,10 +7553,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.4.12":
-  version: 1.4.12
-  resolution: "ace-builds@npm:1.4.12"
-  checksum: 009f999a2518abef33057b17f461d1a776ef6ad88baa3dde6d4437f19bcf5588f416349e526a9e3a29658c173bc4bad9df23d9d96e5e56fb569e12be27a09ef3
+"ace-builds@npm:^1.10.1":
+  version: 1.15.0
+  resolution: "ace-builds@npm:1.15.0"
+  checksum: fc67d8c4358a3029c1d4caab7fbc5a4b021bd082dbd16684e4a8ab7e77da2cf194e2fac577ac4a6e22e06af8bd306ebb9382ad34c7f028dbea8895081f4ee9ce
   languageName: node
   linkType: hard
 
@@ -21028,10 +21029,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jmespath@npm:0.15.0, jmespath@npm:^0.15.0":
+"jmespath@npm:0.15.0":
   version: 0.15.0
   resolution: "jmespath@npm:0.15.0"
   checksum: 353bb9e69cc4c1560be0a4df43cb4020abc246e1c60cb5b55dcc76d8c858383f1633faf22ccaf6a5e09568a2077d0f4f1e989e6fcfd496b5cef87964cc8cb9e7
+  languageName: node
+  linkType: hard
+
+"jmespath@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "jmespath@npm:0.16.0"
+  checksum: 2d602493a1e4addfd1350ac8c9d54b1b03ed09e305fd863bab84a4ee1f52868cf939dd1a08c5cdea29ce9ba8f86875ebb458b6ed45dab3e1c3f2694503fb2fd9
   languageName: node
   linkType: hard
 
@@ -21346,20 +21354,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsoneditor@npm:^9.0.0":
-  version: 9.5.6
-  resolution: "jsoneditor@npm:9.5.6"
+"jsoneditor@npm:^9.9.0":
+  version: 9.9.2
+  resolution: "jsoneditor@npm:9.9.2"
   dependencies:
-    ace-builds: ^1.4.12
+    ace-builds: ^1.10.1
     ajv: ^6.12.6
     javascript-natural-sort: ^0.7.1
-    jmespath: ^0.15.0
+    jmespath: ^0.16.0
     json-source-map: ^0.6.1
     jsonrepair: ^2.2.1
     mobius1-selectr: ^2.4.13
     picomodal: ^3.0.0
-    vanilla-picker: ^2.11.2
-  checksum: bf6997d1276596121d03f3ad9f21ae003b48471638548524b6827d4f81e81f69e55cb98863fb2810be8098e1fa9ea7c0ffc3d89996a61947f1238e33f999412d
+    vanilla-picker: ^2.12.1
+  checksum: 8f1d9403cddaf3bef94ec521da32a0892e12ae1630ef12e8bc38c7f6995bfe4563682505a9ce9e8e6c8511774289fc9f70a8ced158594fd330f892e5c8b5fd66
   languageName: node
   linkType: hard
 
@@ -35406,12 +35414,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-picker@npm:^2.11.2":
-  version: 2.11.2
-  resolution: "vanilla-picker@npm:2.11.2"
+"vanilla-picker@npm:^2.12.1":
+  version: 2.12.1
+  resolution: "vanilla-picker@npm:2.12.1"
   dependencies:
     "@sphinxxxx/color-conversion": ^2.2.2
-  checksum: fd338730964a7eeea2d45de34afc8fb438cb4405b73ff958a0bc4487a6763ffbadde9a9aca8c4f0dac9406524fe0ddcb869d033a2de51d984e23729f8423aaea
+  checksum: 92cedd11869a7b9b2e1c1476f07c64d942bd3de625063618ff4a3758fc51371c3b9ef7e175f22634b702416df5a5a02e7ab62395ab9b159b36be44c3c43895fc
   languageName: node
   linkType: hard
 
