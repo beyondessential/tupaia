@@ -14,12 +14,46 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const convertToNewKeys = fetchConfig => {
+  const convertedConfig = {};
+  const { dataElements, dataGroups, aggregations, ...restOfFetchConfig } = fetchConfig;
+  if (dataElements) convertedConfig.dataElementCodes = dataElements;
+  if (dataGroups) convertedConfig.dataGroupCode = dataGroups;
+  if (aggregations) {
+    aggregations.map(aggregation => {
+      if (typeof aggregation === 'string') {
+        return {
+          type: aggregation,
+        };
+      }
+      return aggregation;
+    });
+  }
+  convertedConfig.aggregations = aggregations;
+  return {
+    ...convertedConfig,
+    ...restOfFetchConfig,
+  };
+};
+
+const convertToOldKeys = fetchConfig => {
+  const convertedConfig = {};
+  const { dataElementCodes, dataGroupCode, ...restOfFetchConfig } = fetchConfig;
+  if (dataElementCodes) convertedConfig.dataElements = dataElementCodes;
+  if (dataGroupCode) convertedConfig.dataGroups = dataGroupCode;
+  return {
+    ...convertedConfig,
+    ...restOfFetchConfig,
+  };
+};
+
 const convertToNewConfig = config => {
   const { fetch, transform, ...restOfConfig } = config;
   if (!fetch) {
     return config;
   }
-  const fetchDataTransform = { transform: 'fetchData', parameters: fetch };
+  const fetchConfigWithNewKeys = convertToNewKeys(fetch);
+  const fetchDataTransform = { transform: 'fetchData', parameters: fetchConfigWithNewKeys };
   const newTransform = [fetchDataTransform, ...transform];
   return { transform: newTransform, ...restOfConfig };
 };
@@ -30,7 +64,8 @@ const convertToOldConfig = config => {
     return config;
   }
   const fetchDataTransform = transform.shift();
-  return { fetch: fetchDataTransform.parameters, transform, ...restOfConfig };
+  const parametersWithOldKeys = convertToOldKeys(fetchDataTransform.parameters);
+  return { fetch: parametersWithOldKeys, transform, ...restOfConfig };
 };
 
 const getReports = async db => (await db.runSql('SELECT * from report')).rows;
@@ -47,7 +82,7 @@ exports.up = async function (db) {
         UPDATE report
         SET config = '${newConfigString}'::jsonb
         WHERE code = '${code}';
-      `);
+    `);
   }
 
   return null;
