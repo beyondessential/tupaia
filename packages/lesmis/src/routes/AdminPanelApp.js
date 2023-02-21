@@ -186,7 +186,6 @@ const AdminPanelApp = ({ user }) => {
       </Route>
       <LesmisAdminRoute path={`${path}/viz-builder`} isLESMISAdmin={userIsLesmisAdmin}>
         <VizBuilderApp
-          basePath={adminUrl}
           Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
         />
       </LesmisAdminRoute>
