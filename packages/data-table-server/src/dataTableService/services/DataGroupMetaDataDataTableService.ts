@@ -24,7 +24,7 @@ type DataGroup = {
   dataElements: { code: string; name: string; text: string; options: Record<string, unknown>[] }[];
 };
 
-type DataGroupMetadata = {
+type DataElementMetadataWithDataGroupMetadata = {
   dataGroupCode: string;
   dataGroupName: string;
   dataElementCode: string;
@@ -39,7 +39,7 @@ export class DataGroupMetaDataDataTableService extends DataTableService<
   DataGroupMetaDataDataTableServiceContext,
   typeof requiredParamsSchema,
   typeof configSchema,
-  DataGroupMetadata
+  DataElementMetadataWithDataGroupMetadata
 > {
   protected supportsAdditionalParams = false;
 

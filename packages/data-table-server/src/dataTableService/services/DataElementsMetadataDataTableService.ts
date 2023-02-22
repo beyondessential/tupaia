@@ -18,7 +18,7 @@ const configSchema = yup.object();
 type DataElementsMetadataDataTableServiceContext = {
   accessPolicy: AccessPolicy;
 };
-type DataElements = { code: string; name: string };
+type DataElement = { code: string; name: string };
 
 /**
  * DataTableService for pulling data from aggregator's fetchDataElements() endpoint
@@ -27,7 +27,7 @@ export class DataElementsMetadataDataTableService extends DataTableService<
   DataElementsMetadataDataTableServiceContext,
   typeof requiredParamsSchema,
   typeof configSchema,
-  DataElements
+  DataElement
 > {
   protected supportsAdditionalParams = false;
 
@@ -48,6 +48,6 @@ export class DataElementsMetadataDataTableService extends DataTableService<
       includeOptions: true,
     });
 
-    return results as DataElements[];
+    return results as DataElement[];
   }
 }
