@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 const convertFetchDataTransformToUseDataTables = transform => {
   const { parameters } = transform;
   // If passing both data group as param, then fetching events
-  if (parameters.dataGroup) {
+  if (parameters.dataGroupCode) {
     return { ...transform, dataTableCode: 'events' };
   }
 
