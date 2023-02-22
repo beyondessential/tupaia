@@ -15,6 +15,10 @@ export interface DataElementMetadata {
   name: string;
 }
 
+export interface DhisMetadataObject extends DataElementMetadata {
+  id: string;
+}
+
 export interface DataGroupMetadata {
   code: string;
   name: string;
