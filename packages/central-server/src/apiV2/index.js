@@ -31,7 +31,6 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETDataTables } from './dataTables';
-import { GETEntityTypes } from './GETEntityTypes';
 import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -90,6 +89,7 @@ import {
   GETUserEntityPermissions,
 } from './userEntityPermissions';
 import { EditEntity, GETEntities, DeleteEntity } from './entities';
+import { GetEntityTypes } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
@@ -190,7 +190,7 @@ apiV2.get('/mapOverlayGroupRelations/:recordId?', useRouteHandler(GETMapOverlayG
 apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/entities', useRouteHandler(GETEntities));
-apiV2.get('/entityTypes', allowAnyone(GETEntityTypes));
+apiV2.get('/entityTypes/:recordId?', useRouteHandler(GetEntityTypes));
 apiV2.get('/surveyGroups/:recordId?', useRouteHandler(GETSurveyGroups));
 apiV2.get('/surveyResponses/:parentRecordId/answers', useRouteHandler(GETAnswers));
 apiV2.get('/surveyResponses/:recordId?', useRouteHandler(GETSurveyResponses));
@@ -235,6 +235,7 @@ apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
 );
+apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes
@@ -306,6 +307,7 @@ apiV2.put('/me', catchAsyncErrors(editUser));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
 
 /**
  * DELETE routes

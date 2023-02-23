@@ -2,11 +2,9 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { AccessPolicy } from '@tupaia/access-policy';
 import { createTransform } from 'redux-persist';
 import { createReducer } from '../utilities';
 import {
-  BES_ADMIN_PERMISSION_GROUP,
   EMAIL_ADDRESS_CHANGE,
   LOGIN_MODAL_TOGGLE,
   REMEMBER_ME_CHANGE,
@@ -40,10 +38,6 @@ const logoutStateUpdater = (payload, currentState) => ({
   emailAddress: currentState.emailAddress, // But, remember user's email address
 });
 
-const isBESAdmin = policy => {
-  return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
-};
-
 const stateChanges = {
   [LOGIN_MODAL_TOGGLE]: payload => payload,
   [EMAIL_ADDRESS_CHANGE]: payload => payload,
@@ -54,6 +48,7 @@ const stateChanges = {
       ...payload,
       rememberMe: currentState.rememberMe,
       emailAddress: currentState.emailAddress,
+      password: currentState.password,
       isBESAdmin: isBESAdmin(payload.user.accessPolicy),
     };
   },

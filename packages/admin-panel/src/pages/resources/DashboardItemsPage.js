@@ -49,33 +49,7 @@ const FIELDS = [
   },
 ];
 
-const IMPORT_CONFIG = {
-  title: 'Import Dashboard Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
-  actionConfig: {
-    importEndpoint: 'dashboardVisualisations',
-    multiple: true,
-  },
-  getFinishedMessage: response => (
-    <>
-      <span>{response.message}</span>
-      {response.importedVizes.map(({ code, id }) => (
-        <p>
-          <span>{`${code}: `}</span>
-          <Link to={`/viz-builder/dashboard-item/${id}`}>View in Visualisation Builder</Link>
-        </p>
-      ))}
-    </>
-  ),
-};
-
-const renderNewDashboardVizButton = () => (
-  <StyledLink to="/viz-builder/dashboard-item/new">
-    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
-  </StyledLink>
-);
-
-export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
+export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -86,11 +60,10 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
       editConfig: {
         type: 'link',
         linkOptions: {
-          path: '/viz-builder/dashboard-item/:id',
+          path: `${vizBuilderBaseUrl}/viz-builder/dashboard-item/:id`,
           parameters: { id: 'id' },
         },
         visibilityCriteria: {
@@ -131,12 +104,39 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
     },
   ];
 
+  const renderNewDashboardVizButton = () => (
+    <StyledLink to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/new`}>
+      <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+    </StyledLink>
+  );
+  const importConfig = {
+    title: 'Import Dashboard Visualisation',
+    subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+    actionConfig: {
+      importEndpoint: 'dashboardVisualisations',
+      multiple: true,
+    },
+    getFinishedMessage: response => (
+      <>
+        <span>{response.message}</span>
+        {response.importedVizes.map(({ code, id }) => (
+          <p>
+            <span>{`${code}: `}</span>
+            <Link to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/${id}`}>
+              View in Visualisation Builder
+            </Link>
+          </p>
+        ))}
+      </>
+    ),
+  };
+
   return (
     <ResourcePage
       title="Dashboard Items"
       endpoint={DASHBOARD_ITEMS_ENDPOINT}
       columns={columns}
-      importConfig={IMPORT_CONFIG}
+      importConfig={importConfig}
       LinksComponent={renderNewDashboardVizButton}
       getHeaderEl={getHeaderEl}
       {...props}
@@ -146,9 +146,9 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.bool,
+  vizBuilderBaseUrl: PropTypes.string,
 };
 
 DashboardItemsPage.defaultProps = {
-  isBESAdmin: false,
+  vizBuilderBaseUrl: '',
 };

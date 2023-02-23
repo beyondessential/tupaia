@@ -19,8 +19,12 @@ const syncStatuses = {
   error: 'ERROR',
 };
 
-class DataServiceSyncGroupType extends DatabaseType {
+export class DataServiceSyncGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
+
+  async setSyncIdle() {
+    return this.model.update({ id: this.id }, { sync_status: syncStatuses.idle });
+  }
 
   async setSyncStarted() {
     return this.model.update({ id: this.id }, { sync_status: syncStatuses.syncing });

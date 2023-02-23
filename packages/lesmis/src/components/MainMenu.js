@@ -18,11 +18,19 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
-import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@material-ui/icons';
+import {
+  Home,
+  ImportContacts,
+  ContactMail,
+  Close,
+  Menu,
+  Assignment,
+  Build,
+} from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
 import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
-import { I18n } from '../utils';
+import { I18n, useI18n } from '../utils';
 import { useUser } from '../api/queries';
 
 const StyledList = styled(List)`
@@ -85,36 +93,18 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
-/* eslint-disable */
-const AdminPanelLinks = () => (
-  <>
-    <Subheader component="div">Admin</Subheader>
-    <LocaleListItemLink to="/admin/survey-responses">
+const AdminPanelLink = () => {
+  const { translate } = useI18n();
+
+  return (
+    <LocaleListItemLink to="/admin" target="_blank">
       <ListItemIcon>
-        <Assignment />
+        <Build />
       </ListItemIcon>
-      <ListItemText primary="Survey Responses" />
+      <ListItemText primary={translate('home.admin')} />
     </LocaleListItemLink>
-    <LocaleListItemLink to="/admin/surveys">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Surveys" />
-    </LocaleListItemLink>
-    <LocaleListItemLink to="/admin/visualisations">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Visualisations" />
-    </LocaleListItemLink>
-    <LocaleListItemLink to="/admin/users">
-      <ListItemIcon>
-        <Assignment />
-      </ListItemIcon>
-      <ListItemText primary="Users" />
-    </LocaleListItemLink>
-  </>
-);
+  );
+};
 
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
@@ -161,7 +151,7 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary={<I18n t="home.contactUs" />} />
           </LocaleListItemLink>
-          {isLesmisAdmin && <AdminPanelLinks />}
+          {isLesmisAdmin && <AdminPanelLink />}
           <Subheader component="div">
             <I18n t="home.onlineQuestionnaires" />
           </Subheader>

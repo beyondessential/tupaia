@@ -10,6 +10,10 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
+// NOTE: These hard coded entity types are now a legacy pattern
+// Users can now create their own entity types
+// The up-to-date list of entity types can be found by calling
+// entityModel.getEntityTypes()
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
@@ -301,12 +305,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return EntityType;
   }
 
-  // Some cached functions within Entity need to be invalidated if an entity relation is changed,
-  // and therefore the hierarchy cache has been rebuilt.
-  // Note: we don't use ancestor_descendant_relation as the dependency, as adding change triggers
-  // to that table slows down the rebuilds considerably (40s -> 200s for full initial build)
+  // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
   get cacheDependencies() {
-    return [TYPES.ENTITY_RELATION, TYPES.ENTITY_HIERARCHY];
+    return [TYPES.ANCESTOR_DESCENDANT_RELATION];
   }
 
   customColumnSelectors = {
@@ -495,5 +496,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     }
 
     return level;
+  }
+
+  async getEntityTypes() {
+    const entityTypes = await this.database.executeSql(
+      `SELECT UNNEST(enum_range(null::entity_type)) as type;`,
+    );
+    return entityTypes.map(({ type }) => type);
   }
 }

@@ -70,13 +70,17 @@ class DataFetchingTableComponent extends React.Component {
   }
 
   renderConfirmModal() {
-    const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
+    const { confirmActionMessage, onConfirmAction, onCancelAction, deleteConfig } = this.props;
     return (
       <ConfirmDeleteModal
         isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
+        title={deleteConfig.title}
+        description={deleteConfig.description}
+        cancelButtonText={deleteConfig.cancelButtonText}
+        confirmButtonText={deleteConfig.confirmButtonText}
       />
     );
   }
@@ -130,9 +134,11 @@ class DataFetchingTableComponent extends React.Component {
         freezeWhenExpanded
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
-        ExpanderComponent={({ isExpanded }) =>
-          isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />
-        }
+        ExpanderComponent={({ isExpanded }) => (
+          <div className="expander">
+            {isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />}
+          </div>
+        )}
         getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&
@@ -219,6 +225,7 @@ DataFetchingTableComponent.propTypes = {
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
+  deleteConfig: PropTypes.object,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -228,6 +235,7 @@ DataFetchingTableComponent.defaultProps = {
   errorMessage: '',
   numberOfPages: 0,
   nestingLevel: 0,
+  deleteConfig: {},
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({

@@ -64,8 +64,6 @@ const SpinningSyncIcon = styled(SyncIcon)`
 const SyncingIconButton = styled(IconButton)`
   display: flex;
 
-  background-color: ${props => props.theme.palette.blue[100]};
-
   &.Mui-disabled {
     background-color: ${props => props.theme.palette.primary.main};
     color: white;
@@ -151,7 +149,7 @@ export const SyncStatus = props => {
   if (errorMessage) {
     return (
       <SyncStatusContainer>
-        <IconButton onClick={performManualSync}>
+        <IconButton className="sync-button" onClick={performManualSync}>
           <SyncIcon />
         </IconButton>
         <Tooltip title={errorMessage}>

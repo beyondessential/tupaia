@@ -215,7 +215,7 @@ export const constructRecordExistsWithCode = model => async value => {
  * Can either pass in the specific database model, or the entire database with the record type as
  * the second argument
  * @param {DatabaseModel or TupaiaDatabase} modelOrDatabase
- * @param {string}                          recordType        Provide when using database
+ * @param {string} [recordType] - Provide when using database
  */
 export const constructRecordExistsWithId = (modelOrDatabase, recordType) => async value => {
   hasContent(value);
@@ -322,4 +322,9 @@ export const constructThisOrThatHasContent = otherFieldKey => (value, object) =>
     throw new Error(`Either this field or ${otherFieldKey} must be defined`);
   }
   return true;
+};
+
+export const constructIsValidEntityType = entityModel => async type => {
+  const isOneOfEntityTypesValidator = constructIsOneOf(await entityModel.getEntityTypes());
+  return isOneOfEntityTypesValidator(type);
 };

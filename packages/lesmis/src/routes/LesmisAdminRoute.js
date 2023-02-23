@@ -5,17 +5,10 @@
  */
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { useUser } from '../api/queries';
-import { FullPageLoader } from '../components';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 
-export const LesmisAdminRoute = props => {
-  const { isLoading: isUserLoading, isLesmisAdmin } = useUser();
-  if (isUserLoading) {
-    return <FullPageLoader />;
-  }
-
-  if (!isLesmisAdmin) {
+export const LesmisAdminRoute = ({ isBESAdmin = false, ...props }) => {
+  if (!isBESAdmin) {
     return <NotAuthorisedView />;
   }
 

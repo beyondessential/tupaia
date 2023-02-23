@@ -10,11 +10,12 @@ import { TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { getUser, getIsBESAdmin, PrivateRoute } from './authentication';
+import { getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
+import { labelToId } from './utilities';
 
-export const App = ({ user, isBESAdmin }) => {
+export const App = ({ user }) => {
   const headerEl = React.useRef(null);
 
   const getHeaderEl = () => {
@@ -30,16 +31,25 @@ export const App = ({ user, isBESAdmin }) => {
         <LogoutPage />
       </Route>
       <PrivateRoute path="/">
-        <Navbar links={ROUTES} user={user} />
+        <Navbar
+          links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+          user={user}
+        />
         <div ref={headerEl} />
         <Switch>
           {[...ROUTES, ...PROFILE_ROUTES].map(route => (
             <Route key={route.to} path={route.to}>
-              <TabsToolbar links={route.tabs} maxWidth="xl" />
+              <TabsToolbar
+                links={route.tabs.map(tab => ({
+                  ...tab,
+                  id: `app-subTab-${labelToId(tab.label)}`,
+                }))}
+                maxWidth="xl"
+              />
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} isBESAdmin={isBESAdmin} />
+                    <tab.component getHeaderEl={getHeaderEl} />
                   </Route>
                 ))}
                 <Redirect to={route.to} />
@@ -62,17 +72,11 @@ App.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
-  isBESAdmin: PropTypes.bool,
-};
-
-App.defaultProps = {
-  isBESAdmin: false,
 };
 
 export default connect(
   state => ({
     user: getUser(state),
-    isBESAdmin: getIsBESAdmin(state),
   }),
   null,
 )(App);

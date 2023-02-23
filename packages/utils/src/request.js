@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import nodeFetch from 'node-fetch';
+// eslint-disable-next-line no-unused-vars
+import nodeFetch, { Response as NodeFetchResponse } from 'node-fetch';
 import { CustomError } from './errors';
 
 const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
@@ -47,7 +48,7 @@ const createTimeoutPromise = maxWaitTime => {
  * @param {string} url
  * @param {} [config]
  * @param {number} [maxWaitTime]
- * @return {Promise<Response>}
+ * @return {Promise<NodeFetchResponse>}
  */
 export const fetchWithTimeout = async (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) => {
   const { cleanup, promise: timeoutPromise } = createTimeoutPromise(maxWaitTime);

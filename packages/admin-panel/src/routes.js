@@ -9,6 +9,7 @@ import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
   EntitiesPage,
+  EntityTypesPage,
   OptionSetsPage,
   PermissionGroupsPage,
   PermissionsPage,
@@ -33,6 +34,7 @@ import {
   SyncGroupsPage,
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
+  EntityHierarchyPage,
 } from './pages/resources';
 import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
@@ -86,7 +88,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: '/dashboard-items',
+    to: '/visualisations',
     icon: <InsertChart />,
     tabs: [
       {
@@ -183,6 +185,11 @@ export const ROUTES = [
         to: '/countries',
         component: CountriesPage,
       },
+      {
+        label: 'Entity Types',
+        to: '/entityTypes',
+        component: EntityTypesPage,
+      },
     ],
   },
   {
@@ -204,6 +211,11 @@ export const ROUTES = [
         label: 'Disaster',
         to: '/disaster',
         component: DisasterResponsePage,
+      },
+      {
+        label: 'Entity Hierarchy',
+        to: '/hierarchy',
+        component: EntityHierarchyPage,
       },
     ],
   },

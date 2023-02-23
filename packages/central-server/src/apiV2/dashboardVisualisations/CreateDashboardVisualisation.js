@@ -6,7 +6,12 @@
 import { ObjectValidator } from '@tupaia/utils';
 
 import { CreateHandler } from '../CreateHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertAdminPanelAccess,
+  assertPermissionGroupsAccess,
+} from '../../permissions';
 import { constructNewRecordValidationRules } from '../utilities';
 
 /**
@@ -16,7 +21,12 @@ import { constructNewRecordValidationRules } from '../utilities';
 
 export class CreateDashboardVisualisation extends CreateHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertAdminPanelAccess],
+        'You require Tupaia Admin Panel or BES Admin permission to create visualisations.',
+      ),
+    );
   }
 
   getDashboardItemRecord() {
@@ -35,26 +45,40 @@ export class CreateDashboardVisualisation extends CreateHandler {
 
   async createReport(transactingModels, reportRecord) {
     const { code, permission_group: permissionGroupName, config } = reportRecord;
+
     const permissionGroup = await transactingModels.permissionGroup.findOne({
       name: permissionGroupName,
     });
     if (!permissionGroup) {
       throw new Error(`Could not find permission group with name '${permissionGroupName}'`);
     }
+    await assertPermissionGroupsAccess(this.accessPolicy, [permissionGroupName]);
+
     const report = {
       code,
       config,
       permission_group_id: permissionGroup.id,
     };
-
     return transactingModels.report.create(report);
   }
 
-  async createRecord() {
-    await this.assertPermissions(assertBESAdminAccess);
+  async attachPermissionGroupId(dashboardItemRecord, reportRecord) {
+    const dashboardItemRecordWithPermissionGroupId = { ...dashboardItemRecord };
+    const { permission_group: permissionGroupName } = reportRecord;
+    const permissionGroup = await this.models.permissionGroup.findOne({
+      name: permissionGroupName,
+    });
+    dashboardItemRecordWithPermissionGroupId.permission_group_ids = [permissionGroup.id];
+    return dashboardItemRecordWithPermissionGroupId;
+  }
 
+  async createRecord() {
     const dashboardItemRecord = this.getDashboardItemRecord();
     const reportRecord = this.getReportRecord();
+    const dashboardItemRecordWithPermissionGroupId = await this.attachPermissionGroupId(
+      dashboardItemRecord,
+      reportRecord,
+    );
 
     return this.models.wrapInTransaction(async transactingModels => {
       if (dashboardItemRecord.legacy) {
@@ -62,7 +86,9 @@ export class CreateDashboardVisualisation extends CreateHandler {
       } else {
         await this.createReport(transactingModels, reportRecord);
       }
-      const dashboardItem = await transactingModels.dashboardItem.create(dashboardItemRecord);
+      const dashboardItem = await transactingModels.dashboardItem.create(
+        dashboardItemRecordWithPermissionGroupId,
+      );
 
       return {
         // The request/response schema differs slightly from the DB record schema

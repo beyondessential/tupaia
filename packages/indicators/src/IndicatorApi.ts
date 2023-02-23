@@ -4,10 +4,9 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-import { DataBroker } from '@tupaia/data-broker';
 import { getSortByKey } from '@tupaia/utils';
 import { Builder, createBuilder } from './Builder';
-import { Analytic, FetchOptions, ModelRegistry } from './types';
+import { Analytic, DataBroker, FetchOptions, ModelRegistry } from './types';
 
 export class IndicatorApi {
   private readonly models: ModelRegistry;

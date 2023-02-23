@@ -3,17 +3,18 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Report } from '@tupaia/types';
 import { ReqContext } from '../context';
-import { FetchReportQuery, ReportConfig } from '../../types';
+import { FetchReportQuery } from '../../types';
 import { buildPeriodParams } from './buildPeriodParams';
 import { buildOrganisationUnitParams } from './buildOrganisationUnitParams';
 
 export class QueryBuilder {
   private readonly ctx: ReqContext;
-  private readonly config: ReportConfig;
+  private readonly config: Report['config'];
   private readonly query: FetchReportQuery;
 
-  public constructor(context: ReqContext, config: ReportConfig, query: FetchReportQuery) {
+  public constructor(context: ReqContext, config: Report['config'], query: FetchReportQuery) {
     this.ctx = context;
     this.config = config;
     this.query = query;
