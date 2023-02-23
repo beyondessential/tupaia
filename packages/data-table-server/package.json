@@ -34,7 +34,7 @@
     "@tupaia/types": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "dotenv": "^8.2.0",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "winston": "^3.2.1"
   },
   "devDependencies": {
