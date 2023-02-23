@@ -31,6 +31,7 @@ export const TYPES = {
   ENTITY_RELATION: 'entity_relation',
   ENTITY: 'entity',
   ERROR_LOG: 'error_log',
+  EXTERNAL_DATABASE_CONNECTION: 'external_database_connection',
   FACILITY: 'clinic',
   FEED_ITEM: 'feed_item',
   GEOGRAPHICAL_AREA: 'geographical_area',
