@@ -5148,7 +5148,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/utils": 1.0.0
-    jsonwebtoken: ^7.4.3
+    jsonwebtoken: ^9.0.0
     npm-run-all: ^4.1.5
     rand-token: ^1.0.1
     randomatic: ^3.1.1
@@ -5781,7 +5781,7 @@ __metadata:
     case: ^1.5.5
     countrynames: ^0.1.1
     fast-memoize: ^2.5.2
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: ^9.0.0
     lodash.get: ^4.4.2
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
@@ -17833,13 +17833,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoek@npm:2.x.x":
-  version: 2.16.3
-  resolution: "hoek@npm:2.16.3"
-  checksum: b38036f28f63fa44796a9ff2d495c04c609c1e4aa535a7017f870c8eba8e68db13b9be93f89ae14f22a6688a0f42cb048bf8971f3126350e1fbd980938aa8c9e
-  languageName: node
-  linkType: hard
-
 "hoek@npm:4.x.x":
   version: 4.2.1
   resolution: "hoek@npm:4.2.1"
@@ -19640,13 +19633,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isemail@npm:1.x.x":
-  version: 1.2.0
-  resolution: "isemail@npm:1.2.0"
-  checksum: 34c26861929e367c7240df8751c229c7ce9575c8eaa2b34b929ca40b808c438807b96fe2e47c527af407a7bb91206bc9d63db995de5b3881d0e929f9f5d07a80
-  languageName: node
-  linkType: hard
-
 "isemail@npm:3.x.x":
   version: 3.2.0
   resolution: "isemail@npm:3.2.0"
@@ -21063,18 +21049,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^6.10.1":
-  version: 6.10.1
-  resolution: "joi@npm:6.10.1"
-  dependencies:
-    hoek: 2.x.x
-    isemail: 1.x.x
-    moment: 2.x.x
-    topo: 1.x.x
-  checksum: 39b1e9a7e381b80d0fcaf230c46c096632620ae5e27e681dc10c57ca3b71b7c502eaecb0f2ed837cefd6aeca6de03ee3edb3295e0f2ff19e493d568be0143bd3
-  languageName: node
-  linkType: hard
-
 "js-beautify@npm:1.10.3":
   version: 1.10.3
   resolution: "js-beautify@npm:1.10.3"
@@ -21445,34 +21419,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^7.4.3":
-  version: 7.4.3
-  resolution: "jsonwebtoken@npm:7.4.3"
-  dependencies:
-    joi: ^6.10.1
-    jws: ^3.1.4
-    lodash.once: ^4.0.0
-    ms: ^2.0.0
-    xtend: ^4.0.1
-  checksum: 0e237b5af7056c00e0ac778f1d54576d936be473bd300cedcc5f746c4e953f12b83c1d12197698fa4b68df7eafb4e68090d3dda72b726bf368007daf55b57480
-  languageName: node
-  linkType: hard
-
-"jsonwebtoken@npm:^8.5.1":
-  version: 8.5.1
-  resolution: "jsonwebtoken@npm:8.5.1"
+"jsonwebtoken@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "jsonwebtoken@npm:9.0.0"
   dependencies:
     jws: ^3.2.2
-    lodash.includes: ^4.3.0
-    lodash.isboolean: ^3.0.3
-    lodash.isinteger: ^4.0.4
-    lodash.isnumber: ^3.0.3
-    lodash.isplainobject: ^4.0.6
-    lodash.isstring: ^4.0.1
-    lodash.once: ^4.0.0
+    lodash: ^4.17.21
     ms: ^2.1.1
-    semver: ^5.6.0
-  checksum: 93c9e3f23c59b758ac88ba15f4e4753b3749dfce7a6f7c40fb86663128a1e282db085eec852d4e0cbca4cefdcd3a8275ee255dbd08fcad0df26ad9f6e4cc853a
+    semver: ^7.3.8
+  checksum: b9181cecf9df99f1dc0253f91ba000a1aa4d91f5816d1608c0dba61a5623726a0bfe200b51df25de18c1a6000825d231ad7ce2788aa54fd48dcb760ad9eb9514
   languageName: node
   linkType: hard
 
@@ -21629,7 +21584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jws@npm:^3.1.4, jws@npm:^3.2.2":
+"jws@npm:^3.2.2":
   version: 3.2.2
   resolution: "jws@npm:3.2.2"
   dependencies:
@@ -22495,13 +22450,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.includes@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "lodash.includes@npm:4.3.0"
-  checksum: 71092c130515a67ab3bd928f57f6018434797c94def7f46aafa417771e455ce3a4834889f4267b17887d7f75297dfabd96231bf704fd2b8c5096dc4a913568b6
-  languageName: node
-  linkType: hard
-
 "lodash.invert@npm:^4.3.0":
   version: 4.3.0
   resolution: "lodash.invert@npm:4.3.0"
@@ -22515,13 +22463,6 @@ __metadata:
   dependencies:
     lodash._isnative: ~2.4.1
   checksum: 121106acd084893e14660f7948d84d93e20b9c7aeb07a7feae7e67952c8496f2c397d1fe9c86b080f188e21201c77c81e03f5087b897b310077b56952c3c9d96
-  languageName: node
-  linkType: hard
-
-"lodash.isboolean@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "lodash.isboolean@npm:3.0.3"
-  checksum: b70068b4a8b8837912b54052557b21fc4774174e3512ed3c5b94621e5aff5eb6c68089d0a386b7e801d679cd105d2e35417978a5e99071750aa2ed90bffd0250
   languageName: node
   linkType: hard
 
@@ -22550,20 +22491,6 @@ __metadata:
   version: 2.4.1
   resolution: "lodash.isfunction@npm:2.4.1"
   checksum: 7d9c9e55e55024723f629687027b00804779dcac7f1e8e0d0d004788d6d989b6fca05278050db6c8871b5c84f6917690348c5aab895ea2d812a514b3a69dd40b
-  languageName: node
-  linkType: hard
-
-"lodash.isinteger@npm:^4.0.4":
-  version: 4.0.4
-  resolution: "lodash.isinteger@npm:4.0.4"
-  checksum: 6034821b3fc61a2ffc34e7d5644bb50c5fd8f1c0121c554c21ac271911ee0c0502274852845005f8651d51e199ee2e0cfebfe40aaa49c7fe617f603a8a0b1691
-  languageName: node
-  linkType: hard
-
-"lodash.isnumber@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "lodash.isnumber@npm:3.0.3"
-  checksum: 913784275b565346255e6ae6a6e30b760a0da70abc29f3e1f409081585875105138cda4a429ff02577e1bc0a7ae2a90e0a3079a37f3a04c3d6c5aaa532f4cab2
   languageName: node
   linkType: hard
 
@@ -22664,7 +22591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.once@npm:^4.0.0, lodash.once@npm:^4.1.1":
+"lodash.once@npm:^4.1.1":
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1"
   checksum: d768fa9f9b4e1dc6453be99b753906f58990e0c45e7b2ca5a3b40a33111e5d17f6edf2f768786e2716af90a8e78f8f91431ab8435f761fef00f9b0c256f6d245
@@ -24583,7 +24510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:2.x.x, moment@npm:>= 2.9.0, moment@npm:^2.18.1, moment@npm:^2.21.0, moment@npm:^2.22.2, moment@npm:^2.24.0":
+"moment@npm:>= 2.9.0, moment@npm:^2.18.1, moment@npm:^2.21.0, moment@npm:^2.22.2, moment@npm:^2.24.0":
   version: 2.24.0
   resolution: "moment@npm:2.24.0"
   checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
@@ -31682,6 +31609,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.3.8":
+  version: 7.3.8
+  resolution: "semver@npm:7.3.8"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: ba9c7cbbf2b7884696523450a61fee1a09930d888b7a8d7579025ad93d459b2d1949ee5bbfeb188b2be5f4ac163544c5e98491ad6152df34154feebc2cc337c1
+  languageName: node
+  linkType: hard
+
 "send@npm:0.17.1":
   version: 0.17.1
   resolution: "send@npm:0.17.1"
@@ -33985,15 +33923,6 @@ __metadata:
   version: 1.0.0
   resolution: "toidentifier@npm:1.0.0"
   checksum: 199e6bfca1531d49b3506cff02353d53ec987c9ee10ee272ca6484ed97f1fc10fb77c6c009079ca16d5c5be4a10378178c3cacdb41ce9ec954c3297c74c6053e
-  languageName: node
-  linkType: hard
-
-"topo@npm:1.x.x":
-  version: 1.1.0
-  resolution: "topo@npm:1.1.0"
-  dependencies:
-    hoek: 2.x.x
-  checksum: 1d91224edc40842058dfc69e727f61da87a01199f8492810165b2d92b091f4598c6f92e7d72bd03b0b3e71e2d1e429d09b33970506dd5ad61eb9261dc8ade2d4
   languageName: node
   linkType: hard
 
