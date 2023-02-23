@@ -688,6 +688,18 @@ export const BaseConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		}
 	},
 	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
@@ -726,6 +738,17 @@ export const ValueTypeSchema = {
 		"percentage",
 		"text",
 		"view"
+	],
+	"type": "string"
+} 
+
+export const WeekDisplayFormatSchema = {
+	"enum": [
+		"ISO_WEEK_NUMBER",
+		"WEEK_COMMENCING",
+		"WEEK_COMMENCING_ABBR",
+		"WEEK_ENDING",
+		"WEEK_ENDING_ABBR"
 	],
 	"type": "string"
 } 
@@ -1457,6 +1480,18 @@ export const MatrixConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -2168,6 +2203,18 @@ export const ComponentConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -2531,6 +2578,18 @@ export const BaseChartConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"ticks": {},
 		"startDate": {
@@ -2924,6 +2983,18 @@ export const GaugeChartConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"ticks": {},
 		"startDate": {
@@ -3332,6 +3403,18 @@ export const ComposedChartConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"ticks": {},
 		"startDate": {
@@ -3858,6 +3941,18 @@ export const BarChartConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -4383,6 +4478,18 @@ export const PieChartConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -4805,6 +4912,18 @@ export const LineChartConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"ticks": {},
 		"startDate": {
@@ -5559,6 +5678,18 @@ export const BaseViewConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -5919,6 +6050,18 @@ export const ListViewConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"valueType": {
 			"enum": [
@@ -6332,6 +6475,18 @@ export const SingleValueViewConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -6711,6 +6866,18 @@ export const MultiPhotographViewConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -7085,6 +7252,18 @@ export const MultiSingleValueViewConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"valueType": {
 			"enum": [
@@ -7461,6 +7640,18 @@ export const SingleDownloadLinkViewConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -7835,6 +8026,18 @@ export const MultiValueRowViewConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"valueType": {
 			"enum": [
@@ -8211,6 +8414,18 @@ export const ColorListViewConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -8585,6 +8800,18 @@ export const DataDownloadViewConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"valueType": {
 			"enum": [
@@ -8961,6 +9188,18 @@ export const SingleDateViewConfigSchema = {
 				}
 			]
 		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -9335,6 +9574,18 @@ export const MultiValueViewConfigSchema = {
 					}
 				}
 			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
 		},
 		"valueType": {
 			"enum": [
@@ -9716,6 +9967,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"type": {
 					"type": "string",
@@ -10200,6 +10463,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -10562,6 +10837,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"ticks": {},
 				"startDate": {
@@ -10969,6 +11256,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"ticks": {},
 				"startDate": {
@@ -11494,6 +11793,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -12018,6 +12329,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -12439,6 +12762,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"ticks": {},
 				"startDate": {
@@ -12963,6 +13298,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -13374,6 +13721,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -13752,6 +14111,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -14125,6 +14496,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"valueType": {
 					"enum": [
@@ -14500,6 +14883,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -14873,6 +15268,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"valueType": {
 					"enum": [
@@ -15248,6 +15655,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -15621,6 +16040,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"valueType": {
 					"enum": [
@@ -15996,6 +16427,18 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -16369,6 +16812,18 @@ export const DashboardItemConfigSchema = {
 							}
 						}
 					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
 				},
 				"valueType": {
 					"enum": [
@@ -17108,6 +17563,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -17591,6 +18058,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -17953,6 +18432,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"ticks": {},
 						"startDate": {
@@ -18360,6 +18851,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"ticks": {},
 						"startDate": {
@@ -18885,6 +19388,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -19409,6 +19924,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -19830,6 +20357,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"ticks": {},
 						"startDate": {
@@ -20354,6 +20893,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -20765,6 +21316,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -21143,6 +21706,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -21516,6 +22091,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"valueType": {
 							"enum": [
@@ -21891,6 +22478,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -22264,6 +22863,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"valueType": {
 							"enum": [
@@ -22639,6 +23250,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -23012,6 +23635,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"valueType": {
 							"enum": [
@@ -23387,6 +24022,18 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -23760,6 +24407,18 @@ export const DashboardItemSchema = {
 									}
 								}
 							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
 						},
 						"valueType": {
 							"enum": [

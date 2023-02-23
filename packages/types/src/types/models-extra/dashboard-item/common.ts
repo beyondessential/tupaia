@@ -78,6 +78,12 @@ export type BaseConfig = {
    * @description If specified will only show this viz if the conditions are met against the current Entity.
    */
   displayOnEntityConditions?: DisplayOnEntityConditions;
+
+  /**
+   * @description Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'
+   * @default 'WEEK_COMMENCING_ABBR'
+   */
+  weekDisplayFormat?: WeekDisplayFormat;
 };
 
 export enum VizPeriodGranularity {
@@ -104,6 +110,14 @@ export type ValueType =
   | 'view'
   | 'oneDecimalPlace'
   | 'fraction';
+
+export enum WeekDisplayFormat {
+  WEEK_COMMENCING_ABBR = 'WEEK_COMMENCING_ABBR',
+  WEEK_COMMENCING = 'WEEK_COMMENCING',
+  WEEK_ENDING_ABBR = 'WEEK_ENDING_ABBR',
+  WEEK_ENDING = 'WEEK_ENDING',
+  ISO_WEEK_NUMBER = 'ISO_WEEK_NUMBER',
+}
 
 type PeriodUnit = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
