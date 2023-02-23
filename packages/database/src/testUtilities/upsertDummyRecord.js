@@ -72,6 +72,12 @@ const generateDummyRecord = async (model, overrides = {}) => {
   return dummyRecord;
 };
 
+/**
+ *
+ * @param {*} model
+ * @param {*?} data
+ * @returns
+ */
 export const upsertDummyRecord = async (model, data) => {
   const generatedData = await generateDummyRecord(model, data);
   return model.updateOrCreate({ id: generatedData.id }, generatedData);
