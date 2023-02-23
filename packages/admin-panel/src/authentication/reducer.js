@@ -48,8 +48,6 @@ const stateChanges = {
       ...payload,
       rememberMe: currentState.rememberMe,
       emailAddress: currentState.emailAddress,
-      password: currentState.password,
-      isBESAdmin: isBESAdmin(payload.user.accessPolicy),
     };
   },
   [LOGIN_REQUEST]: () => ({ isLoading: true }),
