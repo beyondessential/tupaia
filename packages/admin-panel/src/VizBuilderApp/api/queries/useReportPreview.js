@@ -25,6 +25,7 @@ export const useReportPreview = ({
           hierarchy: project,
           dashboardItemOrMapOverlay,
           previewMode,
+          permissionGroup: visualisation.permissionGroup || visualisation.reportPermissionGroup,
         },
         data: {
           testData,

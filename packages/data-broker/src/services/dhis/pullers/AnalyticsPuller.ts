@@ -104,7 +104,7 @@ export class AnalyticsPuller {
       pullOptions: PullAnalyticsOptions,
     ) => {
       const { results, metadata } = await pullAnalyticsForApi(api, dataSourceList, pullOptions);
-      response.results.push(...results);
+      response.results = [...response.results].concat(results);
       response.metadata = {
         dataElementCodeToName: {
           ...(response.metadata?.dataElementCodeToName || {}),
@@ -279,7 +279,7 @@ export class AnalyticsPuller {
         options,
         dhisDataType,
       );
-      response.results.push(...results);
+      response.results = [...response.results].concat(results);
       response.metadata = {
         dataElementCodeToName: {
           ...(response.metadata?.dataElementCodeToName || {}),

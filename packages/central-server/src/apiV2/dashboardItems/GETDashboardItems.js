@@ -36,6 +36,7 @@ export class GETDashboardItems extends GETHandler {
       this.models,
       criteria,
     );
+
     return { dbConditions, dbOptions: options };
   }
 }

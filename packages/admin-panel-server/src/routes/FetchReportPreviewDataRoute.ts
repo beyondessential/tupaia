@@ -29,6 +29,7 @@ export type FetchReportPreviewDataRequest = Request<
   {
     entityCode: string;
     hierarchy: string;
+    permissionGroup?: string;
     previewMode?: PreviewMode;
     dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam;
   }
@@ -38,7 +39,7 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
   public async buildResponse() {
     this.validate();
 
-    const { entityCode, hierarchy } = this.req.query;
+    const { entityCode, hierarchy, permissionGroup } = this.req.query;
     const { testData = null } = this.req.body;
 
     const reportConfig = this.getReportConfig();
@@ -47,6 +48,7 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
       {
         organisationUnitCodes: entityCode as string,
         hierarchy: hierarchy as string,
+        permissionGroup: permissionGroup as string,
       },
       {
         testData,

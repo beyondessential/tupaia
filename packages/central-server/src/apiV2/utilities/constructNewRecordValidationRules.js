@@ -260,7 +260,6 @@ export const constructForSingle = (models, recordType) => {
         logo_url: [isAString],
         entityTypes: [
           async selectedEntityTypes => {
-            console.log(selectedEntityTypes);
             if (!selectedEntityTypes) {
               return true;
             }
