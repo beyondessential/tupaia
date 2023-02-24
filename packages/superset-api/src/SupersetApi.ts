@@ -31,7 +31,7 @@ export class SupersetApi {
     }
   }
 
-  public async chartData(chartId: number): Promise<ChartDataResponseSchema> {
+  public async chartData(chartId: string): Promise<ChartDataResponseSchema> {
     return this.fetch<ChartDataResponseSchema>(`${this.baseUrl}/api/v1/chart/${chartId}/data/`);
   }
 

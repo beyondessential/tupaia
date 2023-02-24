@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
@@ -21,7 +21,7 @@ const Container = styled.main`
 `;
 
 export const App = ({ Navbar, Footer }) => {
-  const { data, isLoading: isUserLoading, isBESAdmin } = useUser();
+  const { data, isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
 
@@ -29,16 +29,12 @@ export const App = ({ Navbar, Footer }) => {
     return <FullPageLoader />;
   }
 
-  if (!isBESAdmin) {
-    return <Redirect to={basePath} />;
-  }
-
   const user = { ...data, name: `${data.firstName} ${data.lastName}` };
 
   return (
     <StateProvider>
       <Container>
-        {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
+        {Navbar && <Navbar user={user} />}
         <Switch>
           <Route path={`${basePath}/viz-builder/:vizType/new`} exact>
             <CreateNew />

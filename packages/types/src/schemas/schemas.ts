@@ -3027,6 +3027,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 		}
 	},
 	"type": "object",
+	"additionalProperties": {},
 	"required": [
 		"answers",
 		"id",

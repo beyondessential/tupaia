@@ -9,7 +9,7 @@ import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
 } from '../dashboardRelations';
-import { hasBESAdminAccess } from '../../permissions';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { hasTupaiaAdminAccessToEntityForVisualisation, mergeFilter } from '../utilities';
 
 export const assertDashboardGetPermissions = async (accessPolicy, models, dashboardId) => {
@@ -72,7 +72,7 @@ export const assertDashboardEditPermissions = async (accessPolicy, models, dashb
   return true;
 };
 
-export const createDashboardsDBFilter = async (accessPolicy, models, criteria) => {
+export const getDashboardsDBFilter = async (accessPolicy, models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
@@ -82,13 +82,30 @@ export const createDashboardsDBFilter = async (accessPolicy, models, criteria) =
   // Pull the list of dashboard relations we have access to,
   // then pull the corresponding dashboards
   const permissionRelationConditions = createDashboardRelationsDBFilter(accessPolicy, criteria);
-  const permittedDashboards = await models.dashboard.find(permissionRelationConditions, {
-    joinWith: TYPES.DASHBOARD_RELATION,
-    joinCondition: ['dashboard_relation.dashboard_id', 'dashboard.id'],
+  const permittedDashboardsFromRelations = await models.dashboard.find(
+    permissionRelationConditions,
+    {
+      joinWith: TYPES.DASHBOARD_RELATION,
+      joinCondition: ['dashboard_relation.dashboard_id', 'dashboard.id'],
+    },
+  );
+  const permittedDashboardIdsFromRelations = permittedDashboardsFromRelations.map(d => d.id);
+
+  // Pull the list of all dashboards with country code that use has Tupaia Admin Panel access to
+  const permittedCountryCodes = accessPolicy.getEntitiesAllowed(
+    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  );
+
+  const permittedDashboards = await models.dashboard.find({
+    root_entity_code: permittedCountryCodes,
   });
+
   const permittedDashboardIds = permittedDashboards.map(d => d.id);
 
-  dbConditions['dashboard.id'] = mergeFilter(permittedDashboardIds, dbConditions['dashboard.id']);
+  // Combine lists
+  const combinedPermittedIds = [...permittedDashboardIdsFromRelations, ...permittedDashboardIds];
+
+  dbConditions['dashboard.id'] = mergeFilter(combinedPermittedIds, dbConditions['dashboard.id']);
 
   return dbConditions;
 };

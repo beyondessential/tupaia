@@ -5198,7 +5198,7 @@ __metadata:
     lodash.pick: ^4.4.0
     mocha: ^8.1.3
     moment: ^2.24.0
-    moment-timezone: ^0.5.25
+    moment-timezone: ^0.5.27
     morgan: ^1.9.0
     multer: ^1.4.3
     nodemailer: ^4.7.0
@@ -5250,6 +5250,11 @@ __metadata:
     "@tupaia/superset-api": 1.0.0
     "@tupaia/utils": 1.0.0
     "@tupaia/weather-api": 1.0.0
+    "@types/lodash.flatten": ^4.4.0
+    "@types/lodash.groupby": ^4.6.0
+    "@types/lodash.isequal": ^4.5.0
+    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.pickby": ^4.6.0
     case: ^1.5.5
     lodash.flatten: ^4.4.0
     lodash.groupby: ^4.6.0
@@ -5487,10 +5492,16 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.clonedeep": ^4.5.0
     "@types/semver-compare": ^1.0.1
+    aws-sdk: ^2.451.0
     dotenv: ^8.2.0
     express: ^4.16.2
+    lodash.clonedeep: ^4.5.0
+    moment: ^2.24.0
+    moment-timezone: ^0.5.27
     semver-compare: ^1.0.0
     winston: ^3.2.1
   languageName: unknown
@@ -5670,6 +5681,7 @@ __metadata:
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/api-error-handler": ^1.0.32
     "@types/client-sessions": ^0.8.0
@@ -5779,7 +5791,7 @@ __metadata:
     lodash.get: ^4.4.2
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.25
+    moment-timezone: ^0.5.27
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
@@ -5887,7 +5899,7 @@ __metadata:
     material-ui-datetimepicker: ^1.0.7
     mockdate: ^3.0.5
     moment: ^2.21.0
-    moment-timezone: ^0.5.14
+    moment-timezone: ^0.5.27
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
     object-assign: 4.1.1
@@ -6346,6 +6358,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.clonedeep@npm:^4.5.0":
+  version: 4.5.7
+  resolution: "@types/lodash.clonedeep@npm:4.5.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 20d6a20970b3b54b3c10cf17ace1cea49c4905d7f7cae2575a98108466e8d4c9bea3b3449d11ccaac4da1fc9bab225f477f4c2dbea8ba877cc47f629455efb69
+  languageName: node
+  linkType: hard
+
+"@types/lodash.flatten@npm:^4.4.0":
+  version: 4.4.7
+  resolution: "@types/lodash.flatten@npm:4.4.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 57256262754e9082c25ddcaa28c9e27b215a70716790f1d47550b0bab608b2ec5fd4786ba7d109161b8d4e6c8e0b4dbc2356111d3d8415e7934d8616ee64d286
+  languageName: node
+  linkType: hard
+
 "@types/lodash.groupby@npm:^4.6.0":
   version: 4.6.6
   resolution: "@types/lodash.groupby@npm:4.6.6"
@@ -6355,12 +6385,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.isequal@npm:^4.5.0":
+  version: 4.5.6
+  resolution: "@types/lodash.isequal@npm:4.5.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0f065989408a9e0584e6c27495be2cd4602e62650f55266aa195812582444463c0c8570c674ae84f947c11748f49ab43fd5b482fa120e08eeee4c23b162edc38
+  languageName: node
+  linkType: hard
+
 "@types/lodash.isplainobject@npm:^4.0.6":
   version: 4.0.6
   resolution: "@types/lodash.isplainobject@npm:4.0.6"
   dependencies:
     "@types/lodash": "*"
   checksum: 988d1ced75fc75efbb0aa93fc6c56287e2bcf63b3efad375dc1cb5373c8a05600dcb4fb047b078d532d176ccf180f581aead425e349e80e1fb43ad98b88b6cef
+  languageName: node
+  linkType: hard
+
+"@types/lodash.keyby@npm:^4.6.0":
+  version: 4.6.7
+  resolution: "@types/lodash.keyby@npm:4.6.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 599ecefd8d4a1eb06c277b5f3f14e82ef9e58a1b7d8fc75490f0d5ee5e43069bae08f0408cb54675e7c1005c9f280ee57a537eafe69a22da5271cd6b815e4e1f
   languageName: node
   linkType: hard
 
@@ -6382,6 +6430,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.pickby@npm:^4.6.0":
+  version: 4.6.7
+  resolution: "@types/lodash.pickby@npm:4.6.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 1a4d85dd4ce371352b65dead78e1c6d89c4d59c440bfd9b27023b1113c8610115f2dda17c056b94697f7bfbd947bd8abfe0afd5195b65e2675b404e0e1542fae
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:*":
   version: 4.14.159
   resolution: "@types/lodash@npm:4.14.159"
@@ -6389,10 +6446,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.165":
-  version: 4.14.170
-  resolution: "@types/lodash@npm:4.14.170"
-  checksum: 238a440804e787b85461cc280a11926c80779f7502fec21a70b4424d5feba4cc34cdcbbbc1dca2ec5e75b06d5dc42e42add798be3b6651e8dce9f4b5318d6022
+"@types/lodash@npm:^4.14.175":
+  version: 4.14.191
+  resolution: "@types/lodash@npm:4.14.191"
+  checksum: ba0d5434e10690869f32d5ea49095250157cae502f10d57de0a723fd72229ce6c6a4979576f0f13e0aa9fbe3ce2457bfb9fa7d4ec3d6daba56730a51906d1491
   languageName: node
   linkType: hard
 
@@ -22162,7 +22219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.15, lodash-es@npm:^4.2.1":
+"lodash-es@npm:^4.17.21, lodash-es@npm:^4.2.1":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
@@ -24535,12 +24592,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.14, moment-timezone@npm:^0.5.25":
+"moment-timezone@npm:^0.5.14":
   version: 0.5.27
   resolution: "moment-timezone@npm:0.5.27"
   dependencies:
     moment: ">= 2.9.0"
   checksum: 814bc11cf1f62cd93852499b469baa362c969ba354ba44f14eafbba1662f7ab22c026219786d9454c8f2781f12046c07aa4723f3a30083ebef9151b8dcd84f32
+  languageName: node
+  linkType: hard
+
+"moment-timezone@npm:^0.5.25":
+  version: 0.5.39
+  resolution: "moment-timezone@npm:0.5.39"
+  dependencies:
+    moment: ">= 2.9.0"
+  checksum: 9f972d3a29b2726d4fd1464df27738b756441fe57575f087cda91b7716a5a31d2cfd274255e3edfb15eb60af3ccf33fd339527b456092cac1a2a4124e4369c8b
+  languageName: node
+  linkType: hard
+
+"moment-timezone@npm:^0.5.27":
+  version: 0.5.37
+  resolution: "moment-timezone@npm:0.5.37"
+  dependencies:
+    moment: ">= 2.9.0"
+  checksum: b3fc24848a396ee3801331a4b5511591df0e22241e59f55200a475603f23a8429f01887294c7a0c005dae25b8e4bef20472fbc875ff20080f26fded066559f1a
   languageName: node
   linkType: hard
 
@@ -36873,17 +36948,17 @@ __metadata:
   linkType: hard
 
 "yup@npm:^0.32.9":
-  version: 0.32.9
-  resolution: "yup@npm:0.32.9"
+  version: 0.32.11
+  resolution: "yup@npm:0.32.11"
   dependencies:
-    "@babel/runtime": ^7.10.5
-    "@types/lodash": ^4.14.165
-    lodash: ^4.17.20
-    lodash-es: ^4.17.15
+    "@babel/runtime": ^7.15.4
+    "@types/lodash": ^4.14.175
+    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     nanoclone: ^0.2.1
     property-expr: ^2.0.4
     toposort: ^2.0.2
-  checksum: 3f33850913a237fb7e59b0b5c71d2cc6bdb1d6b2b01fc24c53ec68b35ad2b95cd49f735532117136495cb57f0ec58f0a7e1f1c55fad685555c7114155170f1ea
+  checksum: 43a16786b47cc910fed4891cebdd89df6d6e31702e9462e8f969c73eac88551ce750732608012201ea6b93802c8847cb0aa27b5d57370640f4ecf30f9f97d4b0
   languageName: node
   linkType: hard
 

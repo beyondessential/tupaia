@@ -4,5 +4,7 @@
  */
 
 export { AuthApiMock } from './AuthApiMock';
+export { CentralApiMock } from './CentralApiMock';
 export { setupTestApp } from './setupTestApp';
 export { setupTestUser } from './setupTestUser';
+export { setupDummySyncQueue } from './database';
