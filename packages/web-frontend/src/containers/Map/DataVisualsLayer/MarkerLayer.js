@@ -29,7 +29,7 @@ export const MarkerLayerComponent = props => {
   const processedData = measureData.filter(
     ({ coordinates }) => coordinates && coordinates.length === 2,
   );
-
+  console.log('measureData', measureData);
   return (
     <UIMarkerLayer
       measureData={processedData}

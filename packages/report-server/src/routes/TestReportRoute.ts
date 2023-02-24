@@ -23,13 +23,18 @@ export type TestReportRequest = Request<
   ReportRouteQuery
 >;
 
-const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
+const BES_DATA_ADMIN_PERMISSION_GROUP = 'BES Data Admin';
 
 export class TestReportRoute extends Route<TestReportRequest> {
   public async buildResponse() {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
-    const { hierarchy = 'explore', organisationUnitCodes, ...restOfQuery } = query;
+    const {
+      hierarchy = 'explore',
+      organisationUnitCodes,
+      permissionGroup = BES_DATA_ADMIN_PERMISSION_GROUP,
+      ...restOfQuery
+    } = query;
 
     const reportQuery = {
       hierarchy,
@@ -48,10 +53,11 @@ export class TestReportRoute extends Route<TestReportRequest> {
       aggregator,
       query: reportQuery,
       hierarchy,
-      permissionGroup: BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
+      permissionGroup,
       services: this.req.ctx.services,
       accessPolicy: this.req.accessPolicy,
     };
+
     const reportBuilder = new ReportBuilder(reqContext);
     reportBuilder.setConfig(body.testConfig);
 

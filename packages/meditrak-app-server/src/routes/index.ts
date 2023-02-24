@@ -12,5 +12,7 @@ export {
   CountChangesRoute,
   PullChangesRequest,
   PullChangesRoute,
+  PushChangesRequest,
+  PushChangesRoute,
 } from './sync';
 export { UserRewardsRequest, UserRewardsRoute } from './UserRewardsRoute';
