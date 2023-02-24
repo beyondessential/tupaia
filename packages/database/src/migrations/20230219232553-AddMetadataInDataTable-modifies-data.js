@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const newTypes = ['data_group_metadata', 'data_elements_metadata'];
+const newTypes = ['data_group_metadata', 'data_element_metadata'];
 
 exports.up = async function (db) {
   const query = newTypes

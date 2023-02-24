@@ -4,7 +4,7 @@
  */
 
 export { AnalyticsDataTableService } from './AnalyticsDataTableService';
-export { DataElementsMetadataDataTableService } from './DataElementsMetadataDataTableService';
+export { DataElementMetadataDataTableService } from './DataElementMetadataDataTableService';
 export { DataGroupMetaDataDataTableService } from './DataGroupMetaDataDataTableService';
 export { EventsDataTableService } from './EventsDataTableService';
 export { EntityRelationsDataTableService } from './EntityRelationsDataTableService';

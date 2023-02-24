@@ -940,7 +940,7 @@ export const DataTableSchema = {
 		"type": {
 			"enum": [
 				"analytics",
-				"data_elements_metadata",
+				"data_element_metadata",
 				"data_group_metadata",
 				"entities",
 				"entity_relations",
@@ -2710,7 +2710,7 @@ export const DisasterEventTypeSchema = {
 export const DataTableTypeSchema = {
 	"enum": [
 		"analytics",
-		"data_elements_metadata",
+		"data_element_metadata",
 		"data_group_metadata",
 		"entities",
 		"entity_relations",
@@ -3065,7 +3065,7 @@ export const DataTablePreviewRequestSchema = {
 		"type": {
 			"enum": [
 				"analytics",
-				"data_elements_metadata",
+				"data_element_metadata",
 				"data_group_metadata",
 				"entities",
 				"entity_relations",

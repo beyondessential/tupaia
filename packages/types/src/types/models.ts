@@ -632,8 +632,8 @@ export enum DataTableType {
   'entity_relations' = 'entity_relations',
   'entities' = 'entities',
   'sql' = 'sql',
-  'data_elements_metadata' = 'data_elements_metadata',
   'data_group_metadata' = 'data_group_metadata',
+  'data_element_metadata' = 'data_element_metadata',
 }
 export enum DataSourceType {
   'dataElement' = 'dataElement',

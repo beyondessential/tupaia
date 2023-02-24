@@ -15,7 +15,7 @@ const requiredParamsSchema = yup.object().shape({
 
 const configSchema = yup.object();
 
-type DataElementsMetadataDataTableServiceContext = {
+type DataElementMetadataDataTableServiceContext = {
   accessPolicy: AccessPolicy;
 };
 type DataElement = { code: string; name: string };
@@ -23,15 +23,15 @@ type DataElement = { code: string; name: string };
 /**
  * DataTableService for pulling data from aggregator's fetchDataElements() endpoint
  */
-export class DataElementsMetadataDataTableService extends DataTableService<
-  DataElementsMetadataDataTableServiceContext,
+export class DataElementMetadataDataTableService extends DataTableService<
+  DataElementMetadataDataTableServiceContext,
   typeof requiredParamsSchema,
   typeof configSchema,
   DataElement
 > {
   protected supportsAdditionalParams = false;
 
-  public constructor(context: DataElementsMetadataDataTableServiceContext, config: unknown) {
+  public constructor(context: DataElementMetadataDataTableServiceContext, config: unknown) {
     super(context, requiredParamsSchema, configSchema, config);
   }
 

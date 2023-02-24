@@ -71,8 +71,8 @@ Authorization: {{authorization}}
   ]
 }
 
-### Fetch data from data_elements_metadata data-table
-POST http://{{host}}/{{version}}/dataTable/data_elements_metadata/fetchData HTTP/1.1
+### Fetch data from data_element_metadata data-table
+POST http://{{host}}/{{version}}/dataTable/data_element_metadata/fetchData HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 

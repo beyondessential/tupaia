@@ -5,7 +5,7 @@
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 
-const TEST_DATA_ELEMENTS_METADATA = [
+const TEST_DATA_ELEMENT_METADATA = [
   {
     code: 'PSSS_A',
     name: 'PSSS A cases count',
@@ -29,7 +29,7 @@ const TEST_DATA_ELEMENTS_METADATA = [
 ];
 
 const fetchFakeDataElements = (dataElementCodes: string[]) => {
-  return TEST_DATA_ELEMENTS_METADATA.filter(({ code }) => dataElementCodes.includes(code));
+  return TEST_DATA_ELEMENT_METADATA.filter(({ code }) => dataElementCodes.includes(code));
 };
 
 jest.mock('@tupaia/aggregator', () => ({
@@ -42,26 +42,26 @@ jest.mock('@tupaia/data-broker', () => ({
   DataBroker: jest.fn().mockImplementation(() => ({})),
 }));
 const accessPolicy = new AccessPolicy({ DL: ['Public'] });
-const dataElementsMetaDataDataTableService = new DataTableServiceBuilder()
-  .setServiceType('data_elements_metadata')
+const dataElementMetaDataDataTableService = new DataTableServiceBuilder()
+  .setServiceType('data_element_metadata')
   .setContext({ accessPolicy })
   .build();
 
-describe('DataElementsMetaDataDataTableService', () => {
+describe('DataElementMetaDataDataTableService', () => {
   describe('parameter validation', () => {
     const testData: [string, unknown, string][] = [
       ['missing dataElementCodes', {}, 'dataElementCodes is a required field'],
     ];
 
     it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      expect(() => dataElementsMetaDataDataTableService.fetchData(parameters)).toThrow(
+      expect(() => dataElementMetaDataDataTableService.fetchData(parameters)).toThrow(
         expectedError,
       );
     });
   });
 
   it('getParameters', () => {
-    const parameters = dataElementsMetaDataDataTableService.getParameters();
+    const parameters = dataElementMetaDataDataTableService.getParameters();
     expect(parameters).toEqual([
       {
         name: 'dataElementCodes',
@@ -79,7 +79,7 @@ describe('DataElementsMetaDataDataTableService', () => {
 
   describe('fetchData', () => {
     it('can fetch data elements metadata', async () => {
-      const dataElementMetaData = await dataElementsMetaDataDataTableService.fetchData({
+      const dataElementMetaData = await dataElementMetaDataDataTableService.fetchData({
         dataElementCodes: ['PSSS_A', 'PSSS_B'],
       });
 
