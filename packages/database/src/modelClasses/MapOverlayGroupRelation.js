@@ -6,6 +6,7 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
+import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
@@ -38,6 +39,41 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
       map_overlay_group_id: rootMapOverlayGroup.id,
       child_type: 'mapOverlayGroup',
     });
+  }
+
+  async findChildCodes(mapOverlayGroupRelationIds) {
+    const options = {};
+    options.multiJoin = [
+      {
+        joinWith: TYPES.MAP_OVERLAY,
+        joinCondition: [`${TYPES.MAP_OVERLAY}.id`, `${TYPES.MAP_OVERLAY_GROUP_RELATION}.child_id`],
+        joinType: JOIN_TYPES.LEFT_OUTER,
+      },
+      {
+        joinWith: TYPES.MAP_OVERLAY_GROUP,
+        joinCondition: [
+          `${TYPES.MAP_OVERLAY_GROUP}.id`,
+          `${TYPES.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+        ],
+        joinType: JOIN_TYPES.LEFT_OUTER,
+      },
+    ];
+
+    options.columns = [
+      'map_overlay_group_relation.id',
+      'map_overlay.code',
+      'map_overlay_group.code',
+    ];
+
+    return this.find(
+      {
+        [`${TYPES.MAP_OVERLAY_GROUP_RELATION}.id`]: {
+          comparator: 'IN',
+          comparisonValue: mapOverlayGroupRelationIds,
+        },
+      },
+      options,
+    );
   }
 
   async findGroupRelations(mapOverlayGroupIds) {
