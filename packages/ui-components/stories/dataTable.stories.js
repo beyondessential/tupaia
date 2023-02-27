@@ -13,6 +13,7 @@ import {
   PreviewFilters as BasePreviewFilters,
 } from '../src/components/DataTable';
 import { SQLQueryEditor as BaseSQLQueryEditor, Button, IconButton, TextField } from '../src';
+import { ParameterItem } from '../src/components/DataTable/editing';
 
 export default {
   title: 'Inputs/DataTable',
@@ -165,12 +166,11 @@ export const CustomParamaterList = () => {
 
   return (
     <div>
-      <BaseParameterList
-        parameters={parameters}
-        onDelete={onDelete}
-        onChange={onChange}
-        onAdd={onAdd}
-      />
+      <BaseParameterList onAdd={onAdd}>
+        {parameters.map(parameter => {
+          return <ParameterItem {...parameter} onDelete={onDelete} onChange={onChange} />;
+        })}
+      </BaseParameterList>
       <pre>{JSON.stringify(parameters, null, 4)}</pre>
     </div>
   );
