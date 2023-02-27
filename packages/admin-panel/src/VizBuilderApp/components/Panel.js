@@ -7,9 +7,8 @@ import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import MuiTabs from '@material-ui/core/Tabs';
-import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
+import { FlexColumn, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
-import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
 import { useTabPanel, useVizConfig, useVisualisation, useVizConfigError } from '../context';
@@ -121,6 +120,11 @@ export const Panel = () => {
     );
   }
 
+  const jsonEditorProps = {
+    mode: 'code',
+    mainMenuBar: false,
+  };
+
   return (
     <Container>
       <PanelNav>
@@ -144,6 +148,7 @@ export const Panel = () => {
             value={vizData.fetch}
             onChange={value => setTabValue('fetch', value)}
             onInvalidChange={handleInvalidChange}
+            {...jsonEditorProps}
           />
         ) : (
           <DataElementDataLibrary
@@ -160,6 +165,7 @@ export const Panel = () => {
             value={vizData.aggregate}
             onChange={value => setTabValue('aggregate', value)}
             onInvalidChange={handleInvalidChange}
+            {...jsonEditorProps}
           />
         ) : (
           <AggregationDataLibrary
@@ -177,6 +183,7 @@ export const Panel = () => {
             value={vizData.transform}
             onChange={value => setTabValue('transform', value)}
             onInvalidChange={handleInvalidChange}
+            {...jsonEditorProps}
           />
         ) : (
           <TransformDataLibrary
