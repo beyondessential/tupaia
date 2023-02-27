@@ -99,6 +99,14 @@ export class Aggregator {
     return aggregatedEvents;
   };
 
+  /**
+   *
+   * @param {string} code
+   * @param {*} fetchOptions
+   * @param {{ aggregations: {type: string, config?: Record<string, unknown>}[] | undefined} | undefined} aggregationOptions
+   *
+   * @returns
+   */
   async fetchEvents(code, fetchOptions, aggregationOptions = {}) {
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
     const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
