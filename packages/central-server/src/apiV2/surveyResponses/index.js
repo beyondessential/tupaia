@@ -7,3 +7,4 @@ export { DeleteSurveyResponses } from './DeleteSurveyResponses';
 export { EditSurveyResponses } from './EditSurveyResponses';
 export { GETSurveyResponses } from './GETSurveyResponses';
 export * from './assertSurveyResponsePermissions';
+export { saveResponsesToDatabase } from './saveResponsesToDatabase';

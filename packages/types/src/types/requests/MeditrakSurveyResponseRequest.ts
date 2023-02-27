@@ -71,4 +71,5 @@ export interface MeditrakSurveyResponseRequest {
    */
   submission_time?: string;
   timezone?: string;
+  [key: string]: any;
 }

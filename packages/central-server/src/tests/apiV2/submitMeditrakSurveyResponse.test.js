@@ -3,9 +3,14 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
 import { expect, assert } from 'chai';
-import { fetchWithTimeout, oneSecondSleep, randomIntBetween } from '@tupaia/utils';
+import {
+  fetchWithTimeout,
+  oneSecondSleep,
+  randomIntBetween,
+  getS3ImageFilePath,
+  S3_BUCKET_NAME,
+} from '@tupaia/utils';
 import {
   generateId,
   generateTestId,
@@ -17,50 +22,37 @@ import {
 } from '@tupaia/database';
 
 import { TEST_IMAGE_DATA } from '../testData';
-import {
-  insertEntityAndFacility,
-  setupDummySyncQueue,
-  TestableApp,
-  upsertEntity,
-  upsertQuestion,
-} from '../testUtilities';
-import { getImageFilePath, BUCKET_NAME } from '../../s3/constants';
+import { setupDummySyncQueue, TestableApp, upsertEntity, upsertQuestion } from '../testUtilities';
 
-const clinicId = generateTestId();
 const entityId = generateTestId();
 const surveyId = generateTestId();
 const getQuestionId = (questionNumber = 0) => {
   const id = `4705c02a7_question_${questionNumber}_test`;
   return id.substring(id.length - 24); // Cut off excess for questions > 9
 };
-const defaultTimezone = 'Pacific/Auckland';
 let userId = null; // will be determined in 'before' phase
+let defaultTimezone = 'Pacific/Auckland';
 
-const generateDummySurveyResponse = (extraFields = {}) => ({
-  id: generateTestId(),
-  assessor_name: generateValueOfType('text'),
-  start_time: generateValueOfType('date'),
-  end_time: generateValueOfType('date'),
-  answers: [],
-  entity_id: entityId,
-  survey_id: surveyId,
-  user_id: userId,
-  entities_created: [],
-  timezone: defaultTimezone,
-  ...extraFields,
-});
-
-const generateDummySurveyResponseAgainstFacility = () => {
-  const surveyResponse = generateDummySurveyResponse();
-  delete surveyResponse.entity_id;
-  surveyResponse.clinic_id = clinicId;
-
-  return surveyResponse;
+const generateDummySurveyResponse = (extraFields = {}) => {
+  return {
+    id: generateTestId(),
+    start_time: generateValueOfType('date'),
+    end_time: generateValueOfType('date'),
+    timestamp: generateValueOfType('date'),
+    entity_id: entityId,
+    survey_id: surveyId,
+    user_id: userId,
+    entities_created: [],
+    timezone: defaultTimezone,
+    approval_status: 'not_required',
+    answers: [],
+    ...extraFields,
+  };
 };
 
 const generateDummyAnswer = questionNumber => ({
   id: generateTestId(),
-  type: generateValueOfType('text'),
+  type: 'FreeText',
   body: generateValueOfType('text'),
   question_id: getQuestionId(questionNumber),
 });
@@ -77,11 +69,6 @@ const generateDummyEntityDetails = () => ({
 
 const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
-const PSQL_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-const formatDateAsPSQLString = date => {
-  return moment(date).tz(defaultTimezone).format(PSQL_DATE_FORMAT);
-};
-
 function expectEqualStrings(a, b) {
   try {
     return expect(a.toString()).to.equal(b.toString());
@@ -95,10 +82,14 @@ function expectEqualStrings(a, b) {
   }
 }
 
-describe('POST /changes', async () => {
+describe('POST /surveyResponse', async () => {
   const app = new TestableApp();
   const { models } = app;
   const syncQueue = setupDummySyncQueue(models);
+
+  before(async () => {
+    defaultTimezone = (await models.database.getTimezone()).TimeZone;
+  });
 
   describe('SubmitSurveyResponse', () => {
     before(async () => {
@@ -109,15 +100,22 @@ describe('POST /changes', async () => {
         name: 'Demo Land',
       });
 
+      const questions = [];
       for (let i = 0; i < 20; i++) {
-        await upsertQuestion({ id: getQuestionId(i), code: `TEST_QUESTION_${i}` });
+        const question = await upsertQuestion({ id: getQuestionId(i), code: `TEST_QUESTION_${i}` });
+        questions.push(question);
       }
 
       const permissionGroup = await upsertDummyRecord(models.permissionGroup, {
         name: 'TEST_PERMISSION_GROUP',
       });
       await buildAndInsertSurveys(models, [
-        { id: surveyId, code: 'TEST_SURVEY', permission_group_id: permissionGroup.id },
+        {
+          id: surveyId,
+          code: 'TEST_SURVEY',
+          permission_group_id: permissionGroup.id,
+          questions,
+        },
       ]);
       await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
@@ -137,7 +135,7 @@ describe('POST /changes', async () => {
       let previousNumberOfAnswers = 0;
       let response = {};
 
-      const changeActions = [];
+      const surveyResponseObjects = [];
 
       before(async () => {
         for (let i = 0; i < numberOfSurveyResponsesToAdd; i++) {
@@ -145,17 +143,13 @@ describe('POST /changes', async () => {
           for (let j = 0; j < numberOfAnswersInEachSurvey; j++) {
             surveyResponseObject.answers.push(generateDummyAnswer(j));
           }
-          const changeAction = {
-            action: 'SubmitSurveyResponse',
-            payload: surveyResponseObject,
-          };
-          changeActions.push(changeAction);
+          surveyResponseObjects.push(surveyResponseObject);
         }
 
         syncQueue.clear();
         previousNumberOfSurveyResponses = await models.surveyResponse.count();
         previousNumberOfAnswers = await models.answer.count();
-        response = await app.post('changes', { body: changeActions });
+        response = await app.post('surveyResponse', { body: surveyResponseObjects });
       });
 
       it('should respond with a successful http status', () => {
@@ -178,22 +172,21 @@ describe('POST /changes', async () => {
       });
 
       it('should now have the first survey response in the database', async () => {
-        const firstSurveyResponseObject = changeActions[0].payload;
+        const firstSurveyResponseObject = surveyResponseObjects[0];
         const firstSurveyResponse = await models.surveyResponse.findById(
           firstSurveyResponseObject.id,
         );
         expect(firstSurveyResponse).to.exist;
         Object.entries(firstSurveyResponseObject).forEach(([key, value]) => {
-          // Other than 'answers' and 'entities_created', all values in the original object
-          // should match the database
-          if (!['answers', 'entities_created'].includes(key)) {
+          // Other than 'answers' and 'entities_created', all values in the original object should match the database
+          if (!['answers', 'entities_created', 'timestamp'].includes(key)) {
             expectEqualStrings(firstSurveyResponse[key], value);
           }
         });
       });
 
       it('should now have the first answer in the first survey response in the models', async () => {
-        const firstSurveyResponseObject = changeActions[0].payload;
+        const firstSurveyResponseObject = surveyResponseObjects[0];
         const firstAnswerObject = firstSurveyResponseObject.answers[0];
         const firstAnswer = await models.answer.findById(firstAnswerObject.id);
         expect(firstAnswer).to.exist;
@@ -222,12 +215,9 @@ describe('POST /changes', async () => {
 
     describe('Badly formatted survey responses', () => {
       it('returns an error when fields are missing from the survey responses', async () => {
-        const badlyFormattedSurveyResponseAction = {
-          action: 'SubmitSurveyResponse',
-          payload: { id: generateTestId() },
-        };
-        const response = await app.post('changes', {
-          body: [badlyFormattedSurveyResponseAction],
+        const badlyFormattedSurveyResponse = { id: generateTestId() };
+        const response = await app.post('surveyResponse', {
+          body: [badlyFormattedSurveyResponse],
         });
         expect(response.statusCode).to.equal(400);
       });
@@ -235,23 +225,7 @@ describe('POST /changes', async () => {
       it('returns an error when fields are missing from the answer', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push({ id: generateTestId() });
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
-        expect(response.statusCode).to.equal(400);
-      });
-
-      it('returns an error when fields are empty in the survey responses', async () => {
-        const surveyResponseObject = generateDummySurveyResponse();
-        surveyResponseObject.answers.push(generateDummyAnswer());
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        surveyResponseObject.assessor_name = '';
-        const response = await app.post('changes', { body: [action] });
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(response.statusCode).to.equal(400);
       });
 
@@ -259,11 +233,8 @@ describe('POST /changes', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(generateDummyAnswer());
         surveyResponseObject.answers[0].type = '';
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
+
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(response.statusCode).to.equal(400);
       });
 
@@ -271,11 +242,8 @@ describe('POST /changes', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(generateDummyAnswer());
         surveyResponseObject.entity_id = 'wrongFormatId';
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
+
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(response.statusCode).to.equal(400);
       });
 
@@ -283,11 +251,8 @@ describe('POST /changes', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(generateDummyAnswer());
         surveyResponseObject.answers[0].question_id = 'wrongFormatId';
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
+
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(response.statusCode).to.equal(400);
       });
 
@@ -295,85 +260,32 @@ describe('POST /changes', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(generateDummyAnswer());
         surveyResponseObject.start_time = 'Wrong format for date';
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
+
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(response.statusCode).to.equal(400);
       });
-    });
 
-    describe('Translating survey responses', () => {
-      it('correctly translates user_email to user_id and assessor_name', async () => {
-        const surveyResponseObject = generateDummySurveyResponse();
-        const existingUserId = surveyResponseObject.user_id;
-        delete surveyResponseObject.user_id;
-        delete surveyResponseObject.assessor_name;
-        const user = await models.user.findById(existingUserId);
-        surveyResponseObject.user_email = user.email;
-        surveyResponseObject.answers.push(generateDummyAnswer());
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
-        const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
-        expect(response.statusCode).to.equal(200);
-        expect(newSurveyResponse.user_id).to.equal(user.id);
-        expect(newSurveyResponse.assessor_name).to.equal(user.fullName);
+      it('returns an error when question_id is empty', async () => {
+        const answerObject = generateDummyAnswer();
+        const questionCode = 'TEST_QUESTION_1';
+        delete answerObject.question_id;
+        answerObject.question_code = questionCode;
+        const surveyResponseObject = generateDummySurveyResponse([answerObject]);
+        const response = await app.post('changes', { body: [surveyResponseObject] });
+
+        expect(response.statusCode).to.equal(400);
       });
 
-      it('correctly translates entity_code to entity_id', async () => {
-        const surveyResponseObject = generateDummySurveyResponse();
-        const entityCode = 'TEST_ENTITY';
-        delete surveyResponseObject.entity_id;
-        surveyResponseObject.entity_code = entityCode;
-        surveyResponseObject.answers.push(generateDummyAnswer());
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
-        const entity = await models.entity.findOne({ code: entityCode });
-        const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
-        expect(response.statusCode).to.equal(200);
-        expect(newSurveyResponse.entity_id).to.equal(entity.id);
-      });
-
-      it('correctly translates survey_code to survey_id', async () => {
+      it('returns an error when survey_id is empty', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         const surveyCode = 'TEST_SURVEY';
         delete surveyResponseObject.survey_id;
         surveyResponseObject.survey_code = surveyCode;
         surveyResponseObject.answers.push(generateDummyAnswer());
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
-        const survey = await models.survey.findOne({ code: surveyCode });
-        const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
-        expect(response.statusCode).to.equal(200);
-        expect(newSurveyResponse.survey_id).to.equal(survey.id);
-      });
 
-      it('correctly translates question_code to question_id', async () => {
-        const surveyResponseObject = generateDummySurveyResponse();
-        const answerObject = generateDummyAnswer();
-        const questionCode = 'TEST_QUESTION_1';
-        delete answerObject.question_id;
-        answerObject.question_code = questionCode;
-        surveyResponseObject.answers.push(answerObject);
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
-        const question = await models.question.findOne({ code: questionCode });
-        const newAnswer = await models.answer.findById(answerObject.id);
-        expect(response.statusCode).to.equal(200);
-        expect(newAnswer.question_id).to.equal(question.id);
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
+
+        expect(response.statusCode).to.equal(400);
       });
     });
 
@@ -382,11 +294,8 @@ describe('POST /changes', async () => {
         const previousNumberOfSurveyResponses = await models.surveyResponse.count();
         const previousNumberOfAnswers = await models.answer.count();
         const surveyResponseObject = generateDummySurveyResponse();
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', { body: [action] });
+
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         const numberOfSurveyResponsesAdded =
           (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
         const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
@@ -398,23 +307,9 @@ describe('POST /changes', async () => {
 
     describe('Survey responses containing images', () => {
       const imageResponseObject = { id: generateId(), data: TEST_IMAGE_DATA };
-      const IMAGE_URL = `${BUCKET_URL}/${BUCKET_NAME}/${getImageFilePath()}${
+      const IMAGE_URL = `${BUCKET_URL}/${S3_BUCKET_NAME}/${getS3ImageFilePath()}${
         imageResponseObject.id
       }.png`;
-
-      it('correctly uploads an image', async () => {
-        const imageAction = {
-          action: 'AddSurveyImage',
-          payload: imageResponseObject,
-        };
-        const imagePostResponse = await app.post('changes', { body: [imageAction] });
-        expect(imagePostResponse.statusCode).to.equal(200);
-
-        const uploadedImage = await fetchWithTimeout(IMAGE_URL);
-        const imageBuffer = await uploadedImage.buffer();
-        const imageString = imageBuffer.toString('base64');
-        expect(imageString).to.equal(TEST_IMAGE_DATA);
-      });
 
       it('correctly adds survey responses containing imageURL', async () => {
         const previousNumberOfSurveyResponses = await models.surveyResponse.count();
@@ -424,12 +319,10 @@ describe('POST /changes', async () => {
         imageAnswerObject.body = imageResponseObject.id;
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(imageAnswerObject);
-        const surveyAction = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
 
-        const surveyPostResponse = await app.post('changes', { body: [surveyAction] });
+        const surveyPostResponse = await app.post('surveyResponse', {
+          body: [surveyResponseObject],
+        });
         const numberOfSurveyResponsesAdded =
           (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
         const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
@@ -448,12 +341,10 @@ describe('POST /changes', async () => {
         imageAnswerObject.body = TEST_IMAGE_DATA;
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(imageAnswerObject);
-        const surveyAction = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
 
-        const surveyPostResponse = await app.post('changes', { body: [surveyAction] });
+        const surveyPostResponse = await app.post('surveyResponse', {
+          body: [surveyResponseObject],
+        });
         const numberOfSurveyResponsesAdded =
           (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
         const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
@@ -475,11 +366,8 @@ describe('POST /changes', async () => {
         const surveyResponseObject = generateDummySurveyResponse({
           entities_created: entitiesCreated,
         });
-        const syncAction = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const syncResponse = await app.post('changes', { body: [syncAction] });
+
+        const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
 
         const entities = await models.entity.find({ id: entitiesCreated.map(e => e.id) });
@@ -493,11 +381,8 @@ describe('POST /changes', async () => {
           entities_created: entitiesCreated,
           entity_id: primaryEntityId,
         });
-        const syncAction = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const syncResponse = await app.post('changes', { body: [syncAction] });
+
+        const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
 
         const surveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
@@ -510,18 +395,13 @@ describe('POST /changes', async () => {
         const surveyResponseObjectOne = generateDummySurveyResponse({
           entities_created: entitiesCreated,
         });
-        const syncActionOne = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObjectOne,
-        };
         const surveyResponseObjectTwo = generateDummySurveyResponse({
           entity_id: primaryEntityId,
         });
-        const syncActionTwo = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObjectTwo,
-        };
-        const syncResponse = await app.post('changes', { body: [syncActionOne, syncActionTwo] });
+
+        const syncResponse = await app.post('surveyResponse', {
+          body: [surveyResponseObjectOne, surveyResponseObjectTwo],
+        });
         expect(syncResponse.statusCode).to.equal(200);
 
         const surveyResponseOne = await models.surveyResponse.findById(surveyResponseObjectOne.id);
@@ -532,116 +412,53 @@ describe('POST /changes', async () => {
       });
     });
 
-    describe('Backwards compatibility for clinic_id field', () => {
-      before(async () => {
-        await insertEntityAndFacility({ facility: { id: clinicId } });
-        syncQueue.clear();
-      });
-
-      it('should allow submission of a survey response with a valid clinic id', async () => {
-        const surveyResponseObject = generateDummySurveyResponseAgainstFacility();
-
-        const response = await app.post('changes', {
-          body: [
-            {
-              action: 'SubmitSurveyResponse',
-              payload: surveyResponseObject,
-            },
-          ],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-      });
-    });
-
     describe('Backwards compatibility for time fields', async () => {
-      it('data_time should override all others', async () => {
-        const surveyResponseObject = generateDummySurveyResponse({
-          data_time: generateValueOfType('date'),
-          submission_time: generateValueOfType('date'),
-        });
-
-        const response = await app.post('changes', {
-          body: [
-            {
-              action: 'SubmitSurveyResponse',
-              payload: surveyResponseObject,
-            },
-          ],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(surveyResponse.data_time).to.equal(
-          formatDateAsPSQLString(surveyResponseObject.data_time),
-        );
-      });
-
-      it('Use submission_time if data_time is missing', async () => {
-        const surveyResponseObject = generateDummySurveyResponse({
-          submission_time: generateValueOfType('date'),
-        });
-
-        const response = await app.post('changes', {
-          body: [
-            {
-              action: 'SubmitSurveyResponse',
-              payload: surveyResponseObject,
-            },
-          ],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(surveyResponse.data_time).to.equal(
-          formatDateAsPSQLString(surveyResponseObject.submission_time),
-        );
-      });
-
-      it('Use end_time if data_time and submission_time are missing', async () => {
+      it('Auto fill in assessor_name when it is empty in the survey responses', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
+        surveyResponseObject.answers.push(generateDummyAnswer());
 
-        const response = await app.post('changes', {
-          body: [
-            {
-              action: 'SubmitSurveyResponse',
-              payload: surveyResponseObject,
-            },
-          ],
-        });
-
-        expect(response).to.have.property('statusCode', 200);
-        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(surveyResponse.data_time).to.equal(
-          formatDateAsPSQLString(surveyResponseObject.end_time),
-        );
+        surveyResponseObject.assessor_name = '';
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
+        expect(response.statusCode).to.equal(200);
       });
 
-      it('Error if no time value is given', async () => {
+      it('Auto fill in start_time when it is empty in the survey responses', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        delete surveyResponseObject.start_time;
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
+        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
+        expect(response.statusCode).to.equal(200);
+        expect(surveyResponse.start_time).to.exist;
+      });
+
+      it('Auto fill in end_time when it is empty in the survey responses', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         delete surveyResponseObject.end_time;
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
+        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
+        expect(response.statusCode).to.equal(200);
+        expect(surveyResponse.end_time).to.exist;
+      });
 
-        const response = await app.post('changes', {
-          body: [
-            {
-              action: 'SubmitSurveyResponse',
-              payload: surveyResponseObject,
-            },
-          ],
-        });
+      it('Error if wrong format of start_time', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        surveyResponseObject.start_time = '123';
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
+        expect(response.statusCode).to.equal(400);
+      });
 
-        expect(response).to.have.property('statusCode', 400);
+      it('Error if wrong format of end_time', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        surveyResponseObject.end_time = '123';
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
+        expect(response.statusCode).to.equal(400);
       });
     });
   });
 
   describe('Unsupported change actions', function () {
     it('returns an error for unsupported change actions', async function () {
-      const unsupportedChangeAction = {
-        action: 'UnsupportedAction',
-        payload: { some: 'data' },
-      };
-      const response = await app.post('changes', { body: [unsupportedChangeAction] });
+      const response = await app.post('surveyResponse', { body: [{ some: 'data' }] });
       expect(response.statusCode).to.equal(400);
     });
   });
