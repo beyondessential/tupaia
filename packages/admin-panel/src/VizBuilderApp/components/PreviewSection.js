@@ -9,12 +9,10 @@ import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
 import { Chart, FlexSpaceBetween, FetchLoader, DataTable, JsonEditor } from '@tupaia/ui-components';
 
-import { getVizTypeName, VizTypeSchemaMap } from '@tupaia/types';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { IdleMessage } from './IdleMessage';
-import { VizTypeSelector } from './VizTypeSelector';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -141,16 +139,12 @@ export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [
-    { project, location, testData, visualisation },
-    { setPresentation, setVisualisationValue },
-  ] = useVizConfig();
+  const [{ project, location, testData, visualisation }, { setPresentation }] = useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
 
   const [viewContent, setViewContent] = useState(null);
 
   const { dashboardItemOrMapOverlay } = useParams();
-  const [vizType, setVizType] = useState(getVizTypeName(visualisation.presentation) ?? 'BarChart');
 
   const {
     data: reportData = { columns: [], rows: [] },
@@ -177,20 +171,11 @@ export const PreviewSection = () => {
   };
 
   const handleInvalidPresentationChange = errMsg => {
-    if (errMsg.startsWith('Parse error')) {
-      // A JSON structure error, fatal
-      setPresentationError(errMsg);
-    } else {
-      // A JSON schema validation error, should allow user to continue
-      setPresentationError(null);
-    }
+    setPresentationError(errMsg);
   };
 
   const setPresentationValue = value => {
-    const unwrapped = value.config ?? null;
-    const { name, ...unwrappedWithoutName } = unwrapped;
-    setPresentation(unwrappedWithoutName);
-    setVisualisationValue('name', name);
+    setPresentation(value);
     setPresentationError(null);
   };
 
@@ -203,27 +188,6 @@ export const PreviewSection = () => {
     const newViewContent = { data, ...visualisation.presentation };
     setViewContent(newViewContent);
   }, [fetchEnabled]);
-
-  const presentationSchema = VizTypeSchemaMap[vizType];
-
-  /**
-   * The JSON editor we are using has autocomplete, but doesn't work at root level
-   * See https://github.com/josdejong/jsoneditor/issues/968#issuecomment-1160823486
-   *
-   * As a workaround we wrap the json and schema under a property "config", which we also
-   * strip out before passing back up to the state.
-   *
-   * We also need to add a name property, because Viz Builder has it elsewhere.
-   */
-  const wrappedPresentationSchema = {
-    type: 'object',
-    properties: {
-      config: presentationSchema,
-    },
-  };
-  const wrappedPresentation = {
-    config: { name: visualisation.name, ...visualisation.presentation },
-  };
 
   return (
     <>
@@ -265,16 +229,13 @@ export const PreviewSection = () => {
               <IdleMessage />
             )}
           </ChartContainer>
-          <VizTypeSelector value={vizType} onChange={setVizType} />
           <EditorContainer>
             <JsonEditor
-              key={vizType} /* re-init on viz type change */
-              value={wrappedPresentation}
+              value={visualisation.presentation}
               onChange={setPresentationValue}
               onInvalidChange={handleInvalidPresentationChange}
-              schema={wrappedPresentationSchema}
               mode="code"
-              allowSchemaSuggestions
+              mainMenuBar={false}
             />
           </EditorContainer>
         </Container>
