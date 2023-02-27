@@ -221,7 +221,7 @@ export class EnlargedDialogContent extends PureComponent {
 
   renderPeriodSelector() {
     const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
-    const { periodGranularity, startDate, endDate } = viewContent;
+    const { periodGranularity, startDate, endDate, weekDisplayFormat } = viewContent;
 
     const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
 
@@ -236,6 +236,7 @@ export class EnlargedDialogContent extends PureComponent {
           min={datePickerLimits.startDate}
           max={datePickerLimits.endDate}
           isLoading={isLoading}
+          weekDisplayFormat={weekDisplayFormat}
         />
       </div>
     );

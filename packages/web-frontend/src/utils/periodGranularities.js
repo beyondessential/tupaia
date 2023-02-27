@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import { addMomentOffset } from '@tupaia/utils';
+import { WEEK_DISPLAY_CONFIG, WEEK_DISPLAY_FORMATS } from './weekDisplayFormats';
 
 export const DEFAULT_MIN_DATE = '20150101';
 
@@ -33,10 +34,7 @@ const CONFIG = {
     momentUnit: 'day',
   },
   [WEEK]: {
-    chartFormat: 'D MMM YYYY',
-    rangeFormat: '[W/C] D MMM YYYY',
-    pickerFormat: '[W/C] D MMM YYYY',
-    urlFormat: '[Week_Starting]_D_MMM_YYYY',
+    ...WEEK_DISPLAY_CONFIG[WEEK_DISPLAY_FORMATS.WEEK_COMMENCING_ABBR],
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
   },
@@ -131,10 +129,23 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
   };
 }
 
-export const momentToDateString = (date, granularity, format) =>
-  granularity === WEEK || granularity === SINGLE_WEEK
-    ? date.clone().startOf('W').format(format)
-    : date.clone().format(format);
+/**
+ * @param date
+ * @param granularity
+ * @param format
+ * @param {'startOfWeek' | 'endOfWeek' | undefined} modifier
+ * @return {*}
+ */
+export const momentToDateString = (date, granularity, format, modifier) => {
+  switch (modifier) {
+    case 'startOfWeek':
+      return date.clone().startOf('W').format(format);
+    case 'endOfWeek':
+      return date.clone().endOf('W').format(format);
+    default:
+      return date.clone().format(format);
+  }
+};
 
 /**
  * Get default dates for start and end period of single date period granularities,
@@ -339,12 +350,22 @@ export const constrainDate = (date, min, max) => {
   return d;
 };
 
-export const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
-  const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
-  const { rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
+const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
-  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat);
-  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat);
+export const getDatesAsString = (
+  isSingleDate,
+  granularity = DEFAULT_GRANULARITY,
+  startDate,
+  endDate,
+  weekDisplayFormat = null,
+) => {
+  const { rangeFormat, modifier } =
+    [GRANULARITIES.WEEK, GRANULARITIES.SINGLE_WEEK].includes(granularity) && weekDisplayFormat
+      ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+      : GRANULARITY_CONFIG[granularity];
+
+  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat, modifier);
+  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat, modifier);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };

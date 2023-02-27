@@ -4,15 +4,23 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { DatePicker } from './DatePicker';
-import { GRANULARITY_CONFIG, GRANULARITIES } from '../../utils/periodGranularities';
-
-const { pickerFormat: FORMAT } = GRANULARITY_CONFIG[GRANULARITIES.WEEK];
+import {
+  GRANULARITY_CONFIG,
+  GRANULARITIES,
+  momentToDateString,
+} from '../../utils/periodGranularities';
+import { WEEK_DISPLAY_CONFIG } from '../../utils/weekDisplayFormats';
 
 const useBoundaryWeekOrDefault = (currentDate, boundaryDate, defaultWeek) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;
 
 export const WeekPicker = props => {
-  const { momentDateValue, minMomentDate, maxMomentDate, onChange } = props;
+  const { momentDateValue, minMomentDate, maxMomentDate, onChange, weekDisplayFormat } = props;
+
+  const { pickerFormat, modifier } = weekDisplayFormat
+    ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+    : GRANULARITY_CONFIG[GRANULARITIES.WEEK];
+
   const date = momentDateValue.isoWeekday(1);
 
   const weeksInYear = date.isoWeeksInYear();
@@ -20,15 +28,23 @@ export const WeekPicker = props => {
   const maxAvailableWeekIndex = useBoundaryWeekOrDefault(date, maxMomentDate, weeksInYear);
 
   const menuItems = [];
+  const weekLabels = [];
   // Prefer moment mutation to creation for performance reasons
   const mutatingMoment = date.clone();
   for (let w = 1; w <= weeksInYear; w++) {
-    const week = mutatingMoment.isoWeek(w).format(FORMAT);
+    const weekLabel = momentToDateString(
+      mutatingMoment.isoWeek(w),
+      GRANULARITIES.SINGLE_WEEK,
+      pickerFormat,
+      modifier,
+    );
+    weekLabels.push(weekLabel);
+
     const disabled = w < minAvailableWeekIndex || w > maxAvailableWeekIndex;
 
     menuItems.push(
       <MenuItem value={w} key={w} disabled={disabled}>
-        {week}
+        {weekLabel}
       </MenuItem>,
     );
   }
@@ -39,7 +55,7 @@ export const WeekPicker = props => {
       selectedValue={date.isoWeek()}
       menuItems={menuItems}
       onChange={e => onChange(date.clone().isoWeek(e.target.value))}
-      getFormattedValue={weekIndex => date.isoWeek(weekIndex).format(FORMAT)}
+      getFormattedValue={weekIndex => weekLabels[weekIndex]}
     />
   );
 };
