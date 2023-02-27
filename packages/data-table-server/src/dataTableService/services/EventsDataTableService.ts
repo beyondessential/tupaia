@@ -116,7 +116,7 @@ export class EventsDataTableService extends DataTableService<
         endDate: endDateString,
         dataElementCodes: dataElementCodesForFetch,
       },
-      aggregations,
+      { aggregations },
     )) as RawEvent[];
     return response.map(event => {
       const { dataValues, ...restOfEvent } = event;
