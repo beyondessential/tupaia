@@ -45,7 +45,7 @@ export const VizTypeSelector = ({ value, onChange }) => {
         id="viz-type-selector"
         label="Visualisation type"
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => e.target.value && onChange(e.target.value)}
         groupedOptions={groupedOptions}
       />
       <Tooltip title={tooltipContent} interactive>
