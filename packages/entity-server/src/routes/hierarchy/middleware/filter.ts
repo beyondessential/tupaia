@@ -4,8 +4,8 @@
  */
 
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
-
-import { Writable, ObjectLikeKeys, Flatten } from '../../../types';
+import { ObjectLikeKeys, Flatten } from '@tupaia/tsutils';
+import { Writable } from '../../../types';
 import { EntityFilter, EntityFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';

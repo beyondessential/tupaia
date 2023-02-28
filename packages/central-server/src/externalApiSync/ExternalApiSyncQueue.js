@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import autobind from 'react-autobind';
-import { getIsProductionEnvironment } from '../devops';
+import { getIsProductionEnvironment } from '@tupaia/utils';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;

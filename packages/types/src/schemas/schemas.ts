@@ -26893,7 +26893,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 		}
 	},
 	"type": "object",
-	"additionalProperties": false,
+	"additionalProperties": {},
 	"required": [
 		"answers",
 		"id",
