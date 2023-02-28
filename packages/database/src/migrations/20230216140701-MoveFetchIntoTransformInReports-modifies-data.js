@@ -14,11 +14,13 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const convertToNewKeys = fetchConfig => {
+const convertToNewKeys = (fetchConfig, dataGroupCode) => {
   const convertedConfig = {};
   const { dataElements, dataGroups, aggregations, ...restOfFetchConfig } = fetchConfig;
   if (dataElements) convertedConfig.dataElementCodes = dataElements;
-  if (dataGroups) convertedConfig.dataGroupCode = dataGroups;
+  if (dataGroupCode) {
+    convertedConfig.dataGroupCode = dataGroupCode;
+  }
   if (aggregations) {
     aggregations.map(aggregation => {
       if (typeof aggregation === 'string') {
@@ -40,7 +42,7 @@ const convertToOldKeys = fetchConfig => {
   const convertedConfig = {};
   const { dataElementCodes, dataGroupCode, ...restOfFetchConfig } = fetchConfig;
   if (dataElementCodes) convertedConfig.dataElements = dataElementCodes;
-  if (dataGroupCode) convertedConfig.dataGroups = dataGroupCode;
+  if (dataGroupCode) convertedConfig.dataGroups = [dataGroupCode];
   return {
     ...convertedConfig,
     ...restOfFetchConfig,
@@ -52,16 +54,35 @@ const convertToNewConfig = config => {
   if (!fetch) {
     return config;
   }
-  const fetchConfigWithNewKeys = convertToNewKeys(fetch);
-  const fetchDataTransform = { transform: 'fetchData', parameters: fetchConfigWithNewKeys };
-  const newTransform = [fetchDataTransform, ...transform];
-  return { transform: newTransform, ...restOfConfig };
+  const { dataGroups } = fetch;
+  if (!dataGroups) {
+    const fetchConfigWithNewKeys = convertToNewKeys(fetch);
+    const fetchDataTransform = { transform: 'fetchData', parameters: fetchConfigWithNewKeys };
+    const newTransformSet = [fetchDataTransform, ...transform];
+    return { transform: newTransformSet, ...restOfConfig };
+  }
+  const fetchTransforms = dataGroups.map(dataGroupCode => {
+    const fetchConfigWithNewKeys = convertToNewKeys(fetch, dataGroupCode);
+    const fetchTransform = { transform: 'fetchData', parameters: fetchConfigWithNewKeys };
+    return fetchTransform;
+  });
+  const newTransformSet = [...fetchTransforms, ...transform];
+  return { transform: newTransformSet, ...restOfConfig };
 };
 
 const convertToOldConfig = config => {
   const { transform, ...restOfConfig } = config;
   if (!transform) {
     return config;
+  }
+  const fetchTransforms = transform.filter(tr => tr.transform === 'fetchData');
+  if (fetchTransforms.length > 1) {
+    const dataGroups = fetchTransforms.map(fetch => fetch.dataGroupCode);
+    const fetchDataTransform = transform.shift();
+    const parametersWithOldKeys = convertToOldKeys(fetchDataTransform.parameters);
+    parametersWithOldKeys.dataGroups = dataGroups;
+    transform.shift();
+    return { fetch: parametersWithOldKeys, transform, ...restOfConfig };
   }
   const fetchDataTransform = transform.shift();
   const parametersWithOldKeys = convertToOldKeys(fetchDataTransform.parameters);
