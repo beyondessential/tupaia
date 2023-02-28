@@ -5,11 +5,12 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Select, TextField, PreviewFilters, DataTable, FetchLoader } from '@tupaia/ui-components';
+import { Select, TextField, DataTable, FetchLoader } from '@tupaia/ui-components';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { DataTableType } from '@tupaia/types';
+import { PreviewFilters } from './components/PreviewFilters';
 import { Autocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
 import { useParameters } from './useParameters';

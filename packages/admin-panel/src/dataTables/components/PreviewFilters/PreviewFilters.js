@@ -6,10 +6,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FlexStart as BaseFlexStart } from '@tupaia/ui-components';
 
 import { ParametersType } from '../editing/types';
 import { FilterTypeOptions } from './filters';
-import { FlexStart as BaseFlexStart } from '../../Layout';
 
 const Grid = styled.div`
   width: 200px;
@@ -24,7 +24,7 @@ export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
   return (
     <FlexStart>
       {parameters.map(p => {
-        const option = FilterTypeOptions.find(t => t.value === p.type);
+        const option = FilterTypeOptions.find(t => t.value === p?.config?.type);
         if (option) {
           const { FilterComponent } = option;
           return (
@@ -33,7 +33,7 @@ export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
                 {...p}
                 haveTriedToFetch={haveTriedToFetch}
                 onChange={newValue => {
-                  onChange(p.id, 'inputFilterValue', newValue);
+                  onChange(p.name, newValue);
                 }}
               />
             </Grid>

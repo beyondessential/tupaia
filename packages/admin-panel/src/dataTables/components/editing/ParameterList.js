@@ -6,8 +6,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
-import { TextButton as BaseTextButton } from '../../Button';
+import { TextButton as BaseTextButton } from '@tupaia/ui-components';
 
 const TextButton = styled(BaseTextButton)`
   font-weight: 500;

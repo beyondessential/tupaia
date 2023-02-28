@@ -5,11 +5,10 @@
 
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-
-import { Select } from '../../../Inputs';
+import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const BooleanField = ({
+export const TextField = ({
   id,
   name,
   defaultValue,
@@ -23,25 +22,23 @@ export const BooleanField = ({
   }, [hasDefaultValue]);
 
   return (
-    <Select
-      options={[
-        { label: 'true', value: true },
-        { label: 'false', value: false },
-      ]}
+    <BaseTextField
       id={id}
       name={name}
+      placeholder="Text"
+      type="text"
       label={name}
       value={inputFilterValue}
-      error={haveTriedToFetch && inputFilterValue === undefined}
-      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
       onChange={event => {
         onChange(event.target.value);
       }}
+      error={haveTriedToFetch && inputFilterValue === undefined}
+      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
     />
   );
 };
 
-BooleanField.propTypes = {
+TextField.propTypes = {
   ...ParameterType,
   onChange: PropTypes.func.isRequired,
 };

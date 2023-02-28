@@ -4,10 +4,11 @@
  */
 
 import React from 'react';
-import { ParameterList, SQLQueryEditor } from '@tupaia/ui-components';
+import { SQLQueryEditor } from '@tupaia/ui-components';
 import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
+import { ParameterList, ParameterItem } from '../components/editing';
 import { useParameters } from '../useParameters';
 import { useSqlEditor } from '../useSqlEditor';
 

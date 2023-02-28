@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
-import { TextField as BaseTextField } from '../../../Inputs';
+import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 export const NumberField = ({

@@ -9,9 +9,13 @@ import styled from 'styled-components';
 import { Divider as BaseDivider } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import BaseDeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import { Checkbox as BaseCheckbox, Select, TextField } from '../../Inputs';
-import { IconButton as BaseIconButton } from '../../IconButton';
-import { FlexStart } from '../../Layout';
+import {
+  FlexStart,
+  Checkbox as BaseCheckbox,
+  Select,
+  TextField,
+  IconButton as BaseIconButton,
+} from '@tupaia/ui-components';
 import { FilterTypeOptions } from '../PreviewFilters';
 
 const Divider = styled(BaseDivider)`
