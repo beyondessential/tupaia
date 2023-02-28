@@ -8,15 +8,7 @@ import React, { useEffect } from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const TextField = ({
-  id,
-  name,
-  defaultValue,
-  hasDefaultValue,
-  inputFilterValue,
-  onChange,
-  haveTriedToFetch,
-}) => {
+export const TextField = ({ id, name, defaultValue, hasDefaultValue, onChange }) => {
   useEffect(() => {
     onChange(defaultValue);
   }, [hasDefaultValue]);
@@ -28,12 +20,10 @@ export const TextField = ({
       placeholder="Text"
       type="text"
       label={name}
-      value={inputFilterValue}
+      value={defaultValue}
       onChange={event => {
         onChange(event.target.value);
       }}
-      error={haveTriedToFetch && inputFilterValue === undefined}
-      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
     />
   );
 };

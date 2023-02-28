@@ -9,15 +9,7 @@ import React, { useEffect } from 'react';
 import { Select } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const BooleanField = ({
-  id,
-  name,
-  defaultValue,
-  hasDefaultValue,
-  inputFilterValue,
-  onChange,
-  haveTriedToFetch,
-}) => {
+export const BooleanField = ({ id, name, defaultValue, hasDefaultValue, onChange }) => {
   useEffect(() => {
     onChange(defaultValue);
   }, [hasDefaultValue]);
@@ -31,9 +23,7 @@ export const BooleanField = ({
       id={id}
       name={name}
       label={name}
-      value={inputFilterValue}
-      error={haveTriedToFetch && inputFilterValue === undefined}
-      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
+      value={defaultValue}
       onChange={event => {
         onChange(event.target.value);
       }}

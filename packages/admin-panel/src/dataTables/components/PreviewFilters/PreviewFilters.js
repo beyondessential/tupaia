@@ -20,7 +20,7 @@ const FlexStart = styled(BaseFlexStart)`
   flex-wrap: wrap;
 `;
 
-export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
+export const PreviewFilters = ({ parameters, onChange }) => {
   return (
     <FlexStart>
       {parameters.map(p => {
@@ -31,7 +31,6 @@ export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
             <Grid key={p.id}>
               <FilterComponent
                 {...p}
-                haveTriedToFetch={haveTriedToFetch}
                 onChange={newValue => {
                   onChange(p.name, newValue);
                 }}
@@ -48,7 +47,4 @@ export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
 PreviewFilters.propTypes = {
   parameters: ParametersType.isRequired,
   onChange: PropTypes.func.isRequired,
-  haveTriedToFetch: PropTypes.bool,
 };
-
-PreviewFilters.defaultProps = { haveTriedToFetch: true };

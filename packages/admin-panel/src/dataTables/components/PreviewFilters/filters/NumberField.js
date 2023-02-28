@@ -9,15 +9,7 @@ import React, { useEffect } from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const NumberField = ({
-  id,
-  name,
-  defaultValue,
-  hasDefaultValue,
-  inputFilterValue,
-  onChange,
-  haveTriedToFetch,
-}) => {
+export const NumberField = ({ id, name, defaultValue, hasDefaultValue, onChange }) => {
   useEffect(() => {
     onChange(defaultValue);
   }, [hasDefaultValue]);
@@ -29,9 +21,7 @@ export const NumberField = ({
       placeholder="number..."
       type="number"
       label={name}
-      value={inputFilterValue}
-      error={haveTriedToFetch && inputFilterValue === undefined}
-      helperText={haveTriedToFetch && inputFilterValue === undefined && 'should not be empty'}
+      value={defaultValue}
       onChange={event => {
         onChange(event.target.value);
       }}
