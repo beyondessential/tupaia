@@ -12,7 +12,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core
 import { DataTableType } from '@tupaia/types';
 import { Autocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
-import { useDataTable } from './useDataTable';
+import { useParameters } from './useParameters';
 import { useDataTablePreview } from './query';
 import { getColumns } from '../utilities';
 import { PlayButton } from './PlayButton';
@@ -59,7 +59,7 @@ export const DataTableEditFields = ({ onEditField, recordData }) => {
     setFetchDisabled(hasError === undefined ? false : !!hasError);
   }, [recordData]);
 
-  const { additionalParameters, onParametersChange } = useDataTable({ onEditField, recordData });
+  const { additionalParameters, onParametersChange } = useParameters({ onEditField, recordData });
   const {
     data: reportData = { columns: [], rows: [], limit: 0, total: 0 },
     refetch,

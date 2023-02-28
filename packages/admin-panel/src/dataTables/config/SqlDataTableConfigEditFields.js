@@ -8,7 +8,8 @@ import { ParameterList, SQLQueryEditor } from '@tupaia/ui-components';
 import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
-import { useDataTable } from '../useDataTable';
+import { useParameters } from '../useParameters';
+import { useSqlEditor } from '../useSqlEditor';
 
 export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
   const {
@@ -16,9 +17,8 @@ export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
     onParametersAdd,
     onParametersDelete,
     onParametersChange,
-    sql,
-    setSql,
-  } = useDataTable({ onEditField, recordData });
+  } = useParameters({ onEditField, recordData });
+  const { sql, setSql } = useSqlEditor({ onEditField, recordData });
 
   return (
     <Accordion defaultExpanded>
