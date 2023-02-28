@@ -102,19 +102,15 @@ export const DateRangePicker = ({
   const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = max ? moment(max) : moment();
 
-  const {
-    defaultStartDate,
-    defaultEndDate,
-    currentStartDate,
-    currentEndDate,
-  } = getDefaultStartDateAndEndDate(
-    isSingleDate,
-    granularity,
-    startDate,
-    endDate,
-    minMomentDate,
-    maxMomentDate,
-  );
+  const { defaultStartDate, defaultEndDate, currentStartDate, currentEndDate } =
+    getDefaultStartDateAndEndDate(
+      isSingleDate,
+      granularity,
+      startDate,
+      endDate,
+      minMomentDate,
+      maxMomentDate,
+    );
 
   useEffect(() => {
     // Prevent set dates to the same dates

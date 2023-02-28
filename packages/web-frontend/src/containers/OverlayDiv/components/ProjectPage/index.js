@@ -74,10 +74,10 @@ const ProjectPageComponent = ({
   projects,
 }) => {
   const exploreProject = projects.find(p => p.code === EXPLORE_CODE);
-  const selectExploreProject = React.useCallback(() => onSelectProject(exploreProject), [
-    onSelectProject,
-    exploreProject,
-  ]);
+  const selectExploreProject = React.useCallback(
+    () => onSelectProject(exploreProject),
+    [onSelectProject, exploreProject],
+  );
 
   const projectsWithAccess = renderProjectsWithFilter(
     projects,

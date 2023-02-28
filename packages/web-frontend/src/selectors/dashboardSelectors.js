@@ -99,9 +99,8 @@ export const selectShouldUseDashboardData = createSelector(
     if (candidateInfoViewKey !== infoViewKey) return false;
     if (!candidateViewContent || candidateViewContent.type === 'matrix') return false;
 
-    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-      candidateViewContent,
-    );
+    const { startDate: defaultStartDate, endDate: defaultEndDate } =
+      getDefaultDates(candidateViewContent);
     const {
       startDate: candidateStartDate = defaultStartDate,
       endDate: candidateEndDate = defaultEndDate,

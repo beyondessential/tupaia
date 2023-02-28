@@ -22,7 +22,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "date-fns": "^2.16.1",
+    "date-fns": "^2.29.3",
     "lodash.startcase": "^4.4.0",
     "mathjs": "^9.4.0"
   },

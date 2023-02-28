@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
 import { State, Store } from '@sambego/storybook-state';
 import moment from 'moment';
 import { forceReRender } from '@storybook/react';

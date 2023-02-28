@@ -143,17 +143,11 @@ const EnlargedDialogComponent = ({
   fetchViewData,
   drillDownDatesByLevel,
 }) => {
-  const {
-    drillDownContent,
-    drillDownConfig,
-    drillDownState,
-    setDrillDownState,
-    viewContent,
-  } = useDrillDownState(contentByLevel);
+  const { drillDownContent, drillDownConfig, drillDownState, setDrillDownState, viewContent } =
+    useDrillDownState(contentByLevel);
 
-  const { exportOptions, setExportOptions, exportStatus, setExportStatus } = useExports(
-    viewContent,
-  );
+  const { exportOptions, setExportOptions, exportStatus, setExportStatus } =
+    useExports(viewContent);
 
   const viewContentWithExportOptions = viewContent
     ? {
@@ -205,10 +199,8 @@ const EnlargedDialogComponent = ({
     const newDrillDownLevel = drillDownState.drillDownLevel + 1;
 
     const { parameterLink, keyLink, itemCode: drillDownCode } = drillDown;
-    const {
-      parameterLinks: oldParameterLinks,
-      parameterValues: oldParameterValues,
-    } = drillDownState;
+    const { parameterLinks: oldParameterLinks, parameterValues: oldParameterValues } =
+      drillDownState;
     oldParameterLinks[newDrillDownLevel] = parameterLink;
     oldParameterValues[newDrillDownLevel] = chartItem[keyLink];
 

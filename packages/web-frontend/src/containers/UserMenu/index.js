@@ -238,12 +238,8 @@ UserMenu.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const {
-    isUserLoggedIn,
-    currentUserUsername,
-    isRequestingLogin,
-    loginFailedMessage,
-  } = state.authentication;
+  const { isUserLoggedIn, currentUserUsername, isRequestingLogin, loginFailedMessage } =
+    state.authentication;
 
   return {
     isUserLoggedIn,

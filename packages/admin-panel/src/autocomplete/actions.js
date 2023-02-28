@@ -20,46 +20,48 @@ export const changeSelection = (reduxId, selection) => ({
   reduxId,
 });
 
-export const changeSearchTerm = (
-  reduxId,
-  endpoint,
-  labelColumn,
-  valueColumn,
-  searchTerm,
-  parentRecord,
-  baseFilter = {},
-  pageSize = MAX_AUTOCOMPLETE_RESULTS,
-) => async (dispatch, getState, { api }) => {
-  const fetchId = generateId();
-  dispatch({
-    type: AUTOCOMPLETE_INPUT_CHANGE,
-    searchTerm,
+export const changeSearchTerm =
+  (
     reduxId,
-    fetchId,
-  });
-  try {
-    const filter = convertSearchTermToFilter({ ...baseFilter, [labelColumn]: searchTerm });
-    const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
-      filter: JSON.stringify(filter),
-      pageSize,
-      sort: JSON.stringify([`${labelColumn} ASC`]),
-      columns: JSON.stringify([labelColumn, valueColumn]),
-      distinct: true,
-    });
+    endpoint,
+    labelColumn,
+    valueColumn,
+    searchTerm,
+    parentRecord,
+    baseFilter = {},
+    pageSize = MAX_AUTOCOMPLETE_RESULTS,
+  ) =>
+  async (dispatch, getState, { api }) => {
+    const fetchId = generateId();
     dispatch({
-      type: AUTOCOMPLETE_RESULTS_CHANGE,
-      results: response.body,
+      type: AUTOCOMPLETE_INPUT_CHANGE,
+      searchTerm,
       reduxId,
       fetchId,
     });
-  } catch (error) {
-    dispatch({
-      type: AUTOCOMPLETE_SEARCH_FAILURE,
-      reduxId,
-      fetchId,
-    });
-  }
-};
+    try {
+      const filter = convertSearchTermToFilter({ ...baseFilter, [labelColumn]: searchTerm });
+      const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
+        filter: JSON.stringify(filter),
+        pageSize,
+        sort: JSON.stringify([`${labelColumn} ASC`]),
+        columns: JSON.stringify([labelColumn, valueColumn]),
+        distinct: true,
+      });
+      dispatch({
+        type: AUTOCOMPLETE_RESULTS_CHANGE,
+        results: response.body,
+        reduxId,
+        fetchId,
+      });
+    } catch (error) {
+      dispatch({
+        type: AUTOCOMPLETE_SEARCH_FAILURE,
+        reduxId,
+        fetchId,
+      });
+    }
+  };
 
 export const clearState = reduxId => ({
   type: AUTOCOMPLETE_RESET,

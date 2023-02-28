@@ -19,10 +19,8 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { name, code, permissionGroup } = defaults;
   const [searchInput, setSearchInput] = useState(permissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedSearchInput });
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);

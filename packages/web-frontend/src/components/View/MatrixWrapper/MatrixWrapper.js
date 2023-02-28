@@ -248,13 +248,8 @@ export class MatrixWrapper extends Component {
   }
 
   renderMatrix() {
-    const {
-      viewContent,
-      organisationUnitName,
-      isExporting,
-      onChangeConfig,
-      onItemClick,
-    } = this.props;
+    const { viewContent, organisationUnitName, isExporting, onChangeConfig, onItemClick } =
+      this.props;
     let titleText;
     const { expandedMatrixData, offsetWidth } = this.state;
     const {

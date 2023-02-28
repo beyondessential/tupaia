@@ -46,7 +46,9 @@ export class DataDownloadWrapper extends PureComponent {
     const selectedSurveyCodes = Object.entries(this.state.selectedSurveys)
       .filter(([, isSelected]) => isSelected)
       .map(([surveyCode]) => surveyCode);
-    return getAbsoluteApiRequestUri(`${viewContent.downloadUrl}&surveyCodes=${selectedSurveyCodes}`);
+    return getAbsoluteApiRequestUri(
+      `${viewContent.downloadUrl}&surveyCodes=${selectedSurveyCodes}`,
+    );
   };
 
   toggleSelection = surveyCode =>

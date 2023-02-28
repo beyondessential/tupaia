@@ -28,10 +28,8 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   } = defaults;
   const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedSearchInput });
   const [projectCodes, setProjectCodes] = useState(inputProjectCodes);
   const [countryCodes, setCountryCodes] = useState(inputCountryCodes);
 

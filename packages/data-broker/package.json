@@ -30,13 +30,13 @@
     "@tupaia/superset-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "@tupaia/weather-api": "1.0.0",
-    "case": "^1.5.5",
+    "case": "^1.6.3",
     "lodash.flatten": "^4.4.0",
     "lodash.groupby": "^4.6.0",
     "lodash.isequal": "^4.5.0",
     "lodash.keyby": "^4.6.0",
     "lodash.pickby": "^4.6.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "winston": "^3.3.3"
   },
   "devDependencies": {
