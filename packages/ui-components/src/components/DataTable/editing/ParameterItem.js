@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types';
-import faker from 'faker';
 import React from 'react';
 import styled from 'styled-components';
 import { Divider as BaseDivider } from '@material-ui/core';
@@ -118,7 +117,7 @@ ParameterItem.propTypes = {
   error: PropTypes.string,
   hasDefaultValue: PropTypes.bool,
   hasError: PropTypes.bool,
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string,
   type: PropTypes.string,
   onDelete: PropTypes.func.isRequired,
@@ -130,7 +129,6 @@ ParameterItem.defaultProps = {
   error: '',
   hasDefaultValue: false,
   hasError: false,
-  id: faker.random.uuid,
   name: '',
   type: '',
 };
