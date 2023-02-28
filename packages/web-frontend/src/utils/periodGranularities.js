@@ -137,7 +137,9 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
  * @return {*}
  */
 export const momentToDateString = (date, granularity, format, modifier) => {
-  switch (modifier) {
+  // Use the explicit modifier passed in, otherwise fall back to the default modifier of the granularity
+  const mod = modifier ?? GRANULARITY_CONFIG[granularity].modifier ?? null;
+  switch (mod) {
     case 'startOfWeek':
       return date.clone().startOf('W').format(format);
     case 'endOfWeek':
