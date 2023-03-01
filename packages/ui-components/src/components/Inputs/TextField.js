@@ -3,11 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
 
-const BaseTextField = props => <MuiTextField fullWidth {...props} variant="outlined" />;
+const BaseTextField = ({ value, ...other }) => (
+  <MuiTextField fullWidth value={value} {...other} variant="outlined" />
+);
+
+BaseTextField.propTypes = {
+  value: PropTypes.string,
+};
+
+BaseTextField.defaultProps = {
+  value: '',
+};
 
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
