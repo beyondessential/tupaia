@@ -4,15 +4,15 @@
  */
 
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Select } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 export const BooleanField = ({ name, value, onChange }) => {
-  useEffect(() => {
+  if (!value) {
     onChange(false);
-  }, [!!value]);
+  }
 
   return (
     <Select

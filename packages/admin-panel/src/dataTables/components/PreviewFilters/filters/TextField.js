@@ -8,10 +8,9 @@ import React from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const TextField = ({ id, name, value, onChange }) => {
+export const TextField = ({ name, value, onChange }) => {
   return (
     <BaseTextField
-      id={id}
       name={name}
       placeholder="Text"
       type="text"
