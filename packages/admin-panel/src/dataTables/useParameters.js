@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { getRuntimeParameters, useRuntimeParameters } from './useRuntimeParameters';
+import { useRuntimeParameters } from './useRuntimeParameters';
 
 const convertRecordDataToFronendConfig = (additionalParameters = []) => {
   return additionalParameters.map((p, index) => ({
@@ -79,6 +79,13 @@ export const useParameters = ({ recordData, onEditField }) => {
           newParameters[index].name = newValue;
           renameRuntimeParameter(oldName, newValue);
         }
+        break;
+      }
+      case 'type': {
+        const { name } = newParameters[index];
+        upsertRuntimeParameter(name, undefined);
+        const newConfig = { ...newParameters[index].config, [key]: newValue };
+        newParameters[index].config = newConfig;
         break;
       }
       default: {

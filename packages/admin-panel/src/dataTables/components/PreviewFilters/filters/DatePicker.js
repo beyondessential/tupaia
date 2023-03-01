@@ -4,12 +4,16 @@
  */
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { DatePicker as BaseDatePicker } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 export const DatePicker = ({ name, value, onChange }) => {
+  useEffect(() => {
+    onChange(new Date());
+  }, [!!value]);
+
   return <BaseDatePicker label={name} onChange={onChange} value={value} />;
 };
 DatePicker.propTypes = {

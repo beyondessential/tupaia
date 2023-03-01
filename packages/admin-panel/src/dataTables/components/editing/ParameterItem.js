@@ -17,6 +17,7 @@ import {
   IconButton as BaseIconButton,
 } from '@tupaia/ui-components';
 import { FilterTypeOptions } from '../PreviewFilters';
+import { DefaultValueType } from './types';
 
 const Divider = styled(BaseDivider)`
   margin-bottom: 20px;
@@ -53,6 +54,9 @@ export const ParameterItem = props => {
     onChange,
   } = props;
 
+  const option = FilterTypeOptions.find(t => t.value === type) || {};
+  const { FilterComponent } = option;
+
   return (
     <Grid container spacing={0} key={id}>
       <Grid container spacing={2}>
@@ -76,6 +80,7 @@ export const ParameterItem = props => {
             options={FilterTypeOptions}
             onChange={event => {
               onChange(id, 'type', event.target.value);
+              onChange(id, 'defaultValue', undefined);
             }}
           />
         </Grid>
@@ -99,14 +104,15 @@ export const ParameterItem = props => {
       </Grid>
       {hasDefaultValue && (
         <Grid item xs={5}>
-          <TextField
-            value={defaultValue}
-            placeholder="Text"
-            label="Default value"
-            onChange={event => {
-              onChange(id, 'defaultValue', event.target.value);
-            }}
-          />
+          {FilterComponent && (
+            <FilterComponent
+              value={defaultValue}
+              label="Default value"
+              onChange={newValue => {
+                onChange(id, 'defaultValue', newValue);
+              }}
+            />
+          )}
         </Grid>
       )}
       <Grid item xs={10}>
@@ -117,7 +123,7 @@ export const ParameterItem = props => {
 };
 
 ParameterItem.propTypes = {
-  defaultValue: PropTypes.string,
+  defaultValue: DefaultValueType,
   error: PropTypes.string,
   hasDefaultValue: PropTypes.bool,
   hasError: PropTypes.bool,
@@ -129,7 +135,7 @@ ParameterItem.propTypes = {
 };
 
 ParameterItem.defaultProps = {
-  defaultValue: '',
+  defaultValue: undefined,
   error: '',
   hasDefaultValue: false,
   hasError: false,

@@ -4,19 +4,22 @@
  */
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Select } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const BooleanField = ({ id, name, value, onChange }) => {
+export const BooleanField = ({ name, value, onChange }) => {
+  useEffect(() => {
+    onChange(false);
+  }, [!!value]);
+
   return (
     <Select
       options={[
         { label: 'true', value: true },
         { label: 'false', value: false },
       ]}
-      id={id}
       name={name}
       label={name}
       value={value}
@@ -29,5 +32,6 @@ export const BooleanField = ({ id, name, value, onChange }) => {
 
 BooleanField.propTypes = {
   ...ParameterType,
+
   onChange: PropTypes.func.isRequired,
 };

@@ -3,10 +3,15 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const getRuntimeParameters = (additionalParameters = []) => {
-  return Object.fromEntries(additionalParameters.map(p => [p.name, p?.config?.defaultValue]));
+  return Object.fromEntries(
+    additionalParameters.map(p => [
+      p.name,
+      p?.config?.hasDefaultValue ? p?.config?.defaultValue : undefined,
+    ]),
+  );
 };
 
 export const useRuntimeParameters = ({ additionalParameters }) => {
