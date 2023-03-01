@@ -3,6 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { useCallback, useEffect, useState } from 'react';
+import { getRuntimeParameters, useRuntimeParameters } from './useRuntimeParameters';
+
 const convertRecordDataToFronendConfig = (additionalParameters = []) => {
   return additionalParameters.map((p, index) => ({
     ...p,
@@ -12,10 +15,21 @@ const convertRecordDataToFronendConfig = (additionalParameters = []) => {
 
 export const useParameters = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
+  const [additionalParameters, setAdditionalParameters] = useState([]);
 
-  const additionalParameters = convertRecordDataToFronendConfig(config.additionalParameters);
+  useEffect(() => {
+    const newAdditionalParameters = convertRecordDataToFronendConfig(config.additionalParameters);
+    setAdditionalParameters(newAdditionalParameters);
+  }, [JSON.stringify(config)]);
 
-  const onParametersAdd = () => {
+  const {
+    runtimeParameters,
+    upsertRuntimeParameter,
+    renameRuntimeParameter,
+    removeRuntimeParameter,
+  } = useRuntimeParameters({ additionalParameters });
+
+  const onParametersAdd = useCallback(() => {
     const defaultNewParameter = {
       id: `parameter_${additionalParameters.length}`,
     };
@@ -24,14 +38,17 @@ export const useParameters = ({ recordData, onEditField }) => {
       ...config,
       additionalParameters: [...additionalParameters, defaultNewParameter],
     });
-  };
+  });
 
-  const onParametersDelete = selectedParameterId => {
+  const onParametersDelete = useCallback(selectedParameterId => {
+    const parameterToRemove = additionalParameters.find(p => p.id === selectedParameterId);
+    removeRuntimeParameter(parameterToRemove.name);
+
     const newParameterList = additionalParameters.filter(p => p.id !== selectedParameterId);
     onEditField('config', { ...config, additionalParameters: newParameterList });
-  };
+  });
 
-  const onParametersChange = (id, key, newValue) => {
+  const onParametersChange = useCallback((id, key, newValue) => {
     const newParameters = [...additionalParameters];
     const index = additionalParameters.findIndex(p => p.id === id);
 
@@ -57,6 +74,10 @@ export const useParameters = ({ recordData, onEditField }) => {
         } catch (e) {
           newParameters[index].hasError = true;
           newParameters[index].error = e.message;
+        } finally {
+          const oldName = newParameters[index].name;
+          newParameters[index].name = newValue;
+          renameRuntimeParameter(oldName, newValue);
         }
         break;
       }
@@ -68,7 +89,14 @@ export const useParameters = ({ recordData, onEditField }) => {
     }
 
     onEditField('config', { ...config, additionalParameters: newParameters });
-  };
+  });
 
-  return { additionalParameters, onParametersAdd, onParametersDelete, onParametersChange };
+  return {
+    additionalParameters,
+    onParametersAdd,
+    onParametersDelete,
+    onParametersChange,
+    runtimeParameters,
+    upsertRuntimeParameter,
+  };
 };

@@ -1,0 +1,46 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import { useCallback } from 'react';
+
+export const getRuntimeParameters = (additionalParameters = []) => {
+  return Object.fromEntries(additionalParameters.map(p => [p.name, p?.config?.defaultValue]));
+};
+
+export const useRuntimeParameters = ({ additionalParameters }) => {
+  const [runtimeParameters, setRuntimeParameters] = useState({});
+
+  useEffect(() => {
+    const defaultRuntimeParameters = getRuntimeParameters(additionalParameters);
+    setRuntimeParameters(defaultRuntimeParameters);
+  }, [JSON.stringify(additionalParameters)]);
+
+  const upsertRuntimeParameter = useCallback((key, value) => {
+    const newRuntimeParameters = { ...runtimeParameters };
+    newRuntimeParameters[key] = value;
+    setRuntimeParameters(newRuntimeParameters);
+  });
+
+  const removeRuntimeParameter = useCallback(keyToRemove => {
+    const newRuntimeParameters = Object.fromEntries(
+      Object.entries(runtimeParameters).filter(([key]) => key !== keyToRemove),
+    );
+    setRuntimeParameters(newRuntimeParameters);
+  });
+
+  const renameRuntimeParameter = useCallback((oldName, newName) => {
+    const value = runtimeParameters[oldName];
+    removeRuntimeParameter(oldName);
+    upsertRuntimeParameter(newName, value);
+  });
+
+  return {
+    runtimeParameters,
+    setRuntimeParameters,
+    upsertRuntimeParameter,
+    removeRuntimeParameter,
+    renameRuntimeParameter,
+  };
+};

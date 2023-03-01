@@ -20,7 +20,7 @@ const FlexStart = styled(BaseFlexStart)`
   flex-wrap: wrap;
 `;
 
-export const PreviewFilters = ({ parameters, onChange }) => {
+export const PreviewFilters = ({ parameters, onChange, runtimeParameters }) => {
   return (
     <FlexStart>
       {parameters.map(p => {
@@ -31,6 +31,7 @@ export const PreviewFilters = ({ parameters, onChange }) => {
             <Grid key={p.id}>
               <FilterComponent
                 {...p}
+                value={runtimeParameters[p.name]}
                 onChange={newValue => {
                   onChange(p.name, newValue);
                 }}
@@ -47,4 +48,5 @@ export const PreviewFilters = ({ parameters, onChange }) => {
 PreviewFilters.propTypes = {
   parameters: ParametersType.isRequired,
   onChange: PropTypes.func.isRequired,
+  runtimeParameters: PropTypes.object.isRequired,
 };

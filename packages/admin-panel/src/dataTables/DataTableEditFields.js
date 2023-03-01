@@ -51,179 +51,203 @@ const typeFieldsMap = {
   [DataTableType.events]: NoConfig,
 };
 
-export const DataTableEditFields = ({ onEditField, recordData }) => {
-  const [fetchDisabled, setFetchDisabled] = useState(false);
-  const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
+export const DataTableEditFields = React.memo(
+  props => {
+    const { onEditField, recordData } = props;
+    const [fetchDisabled, setFetchDisabled] = useState(false);
+    const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
+    const {
+      additionalParameters,
+      runtimeParameters,
+      upsertRuntimeParameter,
+      onParametersAdd,
+      onParametersDelete,
+      onParametersChange,
+    } = useParameters({
+      onEditField,
+      recordData,
+    });
 
-  useEffect(() => {
-    const hasError = recordData?.config?.additionalParameters?.some(p => p.hasError);
-    setFetchDisabled(hasError === undefined ? false : !!hasError);
-  }, [recordData]);
+    useEffect(() => {
+      const hasError = recordData?.config?.additionalParameters?.some(p => p.hasError);
+      setFetchDisabled(hasError === undefined ? false : !!hasError);
+    }, [JSON.stringify(recordData)]);
 
-  const { additionalParameters, onParametersChange } = useParameters({ onEditField, recordData });
-  const {
-    data: reportData = { columns: [], rows: [], limit: 0, total: 0 },
-    refetch,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useDataTablePreview({
-    previewConfig: recordData,
-    onSettled: () => {
-      setFetchDisabled(false);
-    },
-  });
+    const {
+      data: reportData = { columns: [], rows: [], limit: 0, total: 0 },
+      refetch,
+      isLoading,
+      isFetching,
+      isError,
+      error,
+    } = useDataTablePreview({
+      previewConfig: recordData,
+      runtimeParameters,
+      onSettled: () => {
+        setFetchDisabled(false);
+      },
+    });
 
-  const fetchPreviewData = () => {
-    setHaveTriedToFetch(true);
-    refetch();
-  };
+    const fetchPreviewData = () => {
+      setHaveTriedToFetch(true);
+      refetch();
+    };
 
-  const columns = useMemo(() => getColumns(reportData), [reportData]);
-  const rows = useMemo(() => reportData.rows, [reportData]);
+    const columns = useMemo(() => getColumns(reportData), [reportData]);
+    const rows = useMemo(() => reportData.rows, [reportData]);
 
-  const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
+    const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
-  const onChangeType = newType => {
-    if (newType === DataTableType.sql) {
-      onEditField('config', {
-        sql: "SELECT * FROM analytics WHERE entity_code = 'DL';",
-        externalDatabaseConnectionCode: 'analytics_demo_land',
-        additionalParameters: [],
-      });
-    } else {
-      onEditField('config', {});
-    }
-    onEditField('type', newType);
-  };
+    const onChangeType = newType => {
+      if (newType === DataTableType.sql) {
+        onEditField('config', {
+          sql: "SELECT * FROM analytics WHERE entity_code = 'DL';",
+          externalDatabaseConnectionCode: 'analytics_demo_land',
+          additionalParameters: [],
+        });
+      } else {
+        onEditField('config', {});
+      }
+      onEditField('type', newType);
+    };
 
-  const onSqlConfigChange = (field, newValue) => {
-    if (recordData.type === DataTableType.sql) {
-      onEditField('config', {
-        ...recordData?.config,
-        [field]: newValue,
-      });
-    }
-  };
+    const onSqlConfigChange = (field, newValue) => {
+      if (recordData.type === DataTableType.sql) {
+        onEditField('config', {
+          ...recordData?.config,
+          [field]: newValue,
+        });
+      }
+    };
 
-  return (
-    <div>
-      <Accordion defaultExpanded>
-        <AccordionSummary>Data Table</AccordionSummary>
-        <AccordionDetails>
-          <FieldWrapper>
-            <TextField
-              label="Code"
-              name="code"
-              value={recordData?.code}
-              required
-              error={haveTriedToFetch && !recordData.code}
-              helperText={haveTriedToFetch && !recordData.code && 'should not be empty'}
-              onChange={event => onEditField('code', event.target.value)}
-            />
-          </FieldWrapper>
-          <FieldWrapper>
-            <TextField
-              label="Description"
-              name="description"
-              value={recordData?.description}
-              required
-              error={haveTriedToFetch && !recordData.description}
-              helperText={haveTriedToFetch && !recordData.description && 'should not be empty'}
-              onChange={event => onEditField('description', event.target.value)}
-            />
-          </FieldWrapper>
-          <FieldWrapper>
-            <Autocomplete
-              allowMultipleValues
-              key="permission_groups"
-              inputKey="permission_groups"
-              label="Permission Groups"
-              onChange={selectedValues => onEditField('permission_groups', selectedValues)}
-              placeholder={recordData.permission_groups}
-              id="inputField-permission_groups"
-              reduxId="dataTableEditFields-permission_groups"
-              endpoint="permissionGroups"
-              optionLabelKey="name"
-              optionValueKey="name"
-            />
-          </FieldWrapper>
-          <FieldWrapper>
-            <Select
-              id="data-table-edit--type"
-              label="Type"
-              name="type"
-              required
-              options={dataTableTypeOptions}
-              onChange={event => onChangeType(event.target.value)}
-              value={recordData?.type}
-            />
-          </FieldWrapper>
-          <FieldWrapper>
-            {recordData?.type === DataTableType.sql && (
-              <TextField
-                label="Database Connection"
-                name="config.externalDatabaseConnectionCode"
-                required
-                onChange={event =>
-                  onSqlConfigChange('externalDatabaseConnectionCode', event.target.value)
-                }
-                error={haveTriedToFetch && !recordData?.config?.externalDatabaseConnectionCode}
-                helperText={
-                  haveTriedToFetch &&
-                  !recordData?.config?.externalDatabaseConnectionCode &&
-                  'should not be empty'
-                }
-                value={recordData?.config?.externalDatabaseConnectionCode || ''}
-              />
-            )}
-          </FieldWrapper>
-        </AccordionDetails>
-      </Accordion>
-
-      {ConfigComponent ? (
-        <ConfigComponent onEditField={onEditField} recordData={recordData} />
-      ) : (
+    return (
+      <div>
         <Accordion defaultExpanded>
-          <AccordionSummary>Config</AccordionSummary>
-        </Accordion>
-      )}
-
-      <Accordion defaultExpanded>
-        <AccordionSummary>Preview</AccordionSummary>
-        <AccordionDetails>
-          <Grid container spacing={2}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <PreviewFilters
-                parameters={additionalParameters}
-                onChange={onParametersChange}
-                haveTriedToFetch={haveTriedToFetch}
+          <AccordionSummary>Data Table</AccordionSummary>
+          <AccordionDetails>
+            <FieldWrapper>
+              <TextField
+                label="Code"
+                name="code"
+                value={recordData?.code}
+                required
+                error={haveTriedToFetch && !recordData.code}
+                helperText={haveTriedToFetch && !recordData.code && 'should not be empty'}
+                onChange={event => onEditField('code', event.target.value)}
               />
-              <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
-            </div>
-            <Grid item xs={12}>
-              <FetchLoader
-                isLoading={isLoading || isFetching}
-                isError={isError}
-                error={error}
-                isNoData={!rows.length}
-                noDataMessage="No Data Found"
-              >
-                <StyledTable
-                  columns={columns}
-                  data={rows}
-                  rowLimit={reportData.limit}
-                  total={reportData.total}
+            </FieldWrapper>
+            <FieldWrapper>
+              <TextField
+                label="Description"
+                name="description"
+                value={recordData?.description}
+                required
+                error={haveTriedToFetch && !recordData.description}
+                helperText={haveTriedToFetch && !recordData.description && 'should not be empty'}
+                onChange={event => onEditField('description', event.target.value)}
+              />
+            </FieldWrapper>
+            <FieldWrapper>
+              <Autocomplete
+                allowMultipleValues
+                key="permission_groups"
+                inputKey="permission_groups"
+                label="Permission Groups"
+                onChange={selectedValues => onEditField('permission_groups', selectedValues)}
+                placeholder={recordData.permission_groups}
+                id="inputField-permission_groups"
+                reduxId="dataTableEditFields-permission_groups"
+                endpoint="permissionGroups"
+                optionLabelKey="name"
+                optionValueKey="name"
+              />
+            </FieldWrapper>
+            <FieldWrapper>
+              <Select
+                id="data-table-edit--type"
+                label="Type"
+                name="type"
+                required
+                options={dataTableTypeOptions}
+                onChange={event => onChangeType(event.target.value)}
+                value={recordData?.type}
+              />
+            </FieldWrapper>
+            <FieldWrapper>
+              {recordData?.type === DataTableType.sql && (
+                <TextField
+                  label="Database Connection"
+                  name="config.externalDatabaseConnectionCode"
+                  required
+                  onChange={event =>
+                    onSqlConfigChange('externalDatabaseConnectionCode', event.target.value)
+                  }
+                  error={haveTriedToFetch && !recordData?.config?.externalDatabaseConnectionCode}
+                  helperText={
+                    haveTriedToFetch &&
+                    !recordData?.config?.externalDatabaseConnectionCode &&
+                    'should not be empty'
+                  }
+                  value={recordData?.config?.externalDatabaseConnectionCode || ''}
                 />
-              </FetchLoader>
+              )}
+            </FieldWrapper>
+          </AccordionDetails>
+        </Accordion>
+
+        {ConfigComponent ? (
+          <ConfigComponent
+            onEditField={onEditField}
+            recordData={recordData}
+            additionalParameters={additionalParameters}
+            onParametersAdd={onParametersAdd}
+            onParametersDelete={onParametersDelete}
+            onParametersChange={onParametersChange}
+          />
+        ) : (
+          <Accordion defaultExpanded>
+            <AccordionSummary>Config</AccordionSummary>
+          </Accordion>
+        )}
+
+        <Accordion defaultExpanded>
+          <AccordionSummary>Preview</AccordionSummary>
+          <AccordionDetails>
+            <Grid container spacing={2}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <PreviewFilters
+                  parameters={additionalParameters}
+                  onChange={upsertRuntimeParameter}
+                  runtimeParameters={runtimeParameters}
+                />
+                <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
+              </div>
+              <Grid item xs={12}>
+                <FetchLoader
+                  isLoading={isLoading || isFetching}
+                  isError={isError}
+                  error={error}
+                  isNoData={!rows.length}
+                  noDataMessage="No Data Found"
+                >
+                  <StyledTable
+                    columns={columns}
+                    data={rows}
+                    rowLimit={reportData.limit}
+                    total={reportData.total}
+                  />
+                </FetchLoader>
+              </Grid>
             </Grid>
-          </Grid>
-        </AccordionDetails>
-      </Accordion>
-    </div>
-  );
-};
+          </AccordionDetails>
+        </Accordion>
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    return JSON.stringify(prevProps.recordData) === JSON.stringify(nextProps.recordData);
+  },
+);
 
 DataTableEditFields.propTypes = {
   onEditField: PropTypes.func.isRequired,

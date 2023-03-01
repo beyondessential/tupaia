@@ -5,16 +5,15 @@
 
 export const onProcessDataForSave = data => {
   const processedData = { ...data };
-  const { config = {}, type: dataTableType } = processedData;
-  if (dataTableType === 'sql') {
-    const { additionalParameters = [] } = config;
-    const modifiedParameters = additionalParameters.map(p => {
-      const { name, type, required, hasDefaultValue, defaultValue } = p;
-      return { name, config: { type, required, hasDefaultValue, defaultValue } };
-    });
+  const { config: dataTableConfig } = processedData;
 
-    processedData.config.additionalParameters = modifiedParameters;
-  }
+  const { additionalParameters = [] } = dataTableConfig;
+  // Remove other configs
+  const modifiedParameters = additionalParameters.map(({ name, config }) => {
+    return { name, config };
+  });
+
+  processedData.config.additionalParameters = modifiedParameters;
 
   return processedData;
 };

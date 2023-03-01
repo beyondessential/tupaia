@@ -9,16 +9,16 @@ import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-u
 
 import PropTypes from 'prop-types';
 import { ParameterList, ParameterItem } from '../components/editing';
-import { useParameters } from '../useParameters';
 import { useSqlEditor } from '../useSqlEditor';
 
-export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
-  const {
-    additionalParameters,
-    onParametersAdd,
-    onParametersDelete,
-    onParametersChange,
-  } = useParameters({ onEditField, recordData });
+export const SqlDataTableConfigEditFields = ({
+  onEditField,
+  recordData,
+  additionalParameters,
+  onParametersAdd,
+  onParametersDelete,
+  onParametersChange,
+}) => {
   const { sql, setSql } = useSqlEditor({ onEditField, recordData });
 
   return (
@@ -43,12 +43,20 @@ export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
             />
           </Grid>
           <Grid item xs={4}>
-            <ParameterList
-              parameters={additionalParameters}
-              onDelete={onParametersDelete}
-              onAdd={onParametersAdd}
-              onChange={onParametersChange}
-            />
+            <ParameterList onAdd={onParametersAdd}>
+              {additionalParameters.map(({ id, config, ...other }) => {
+                return (
+                  <ParameterItem
+                    key={id}
+                    id={id}
+                    {...config}
+                    {...other}
+                    onDelete={onParametersDelete}
+                    onChange={onParametersChange}
+                  />
+                );
+              })}
+            </ParameterList>
           </Grid>
         </Grid>
       </AccordionDetails>
@@ -57,6 +65,10 @@ export const SqlDataTableConfigEditFields = ({ onEditField, recordData }) => {
 };
 
 SqlDataTableConfigEditFields.propTypes = {
+  additionalParameters: PropTypes.array.isRequired,
   onEditField: PropTypes.func.isRequired,
+  onParametersAdd: PropTypes.func.isRequired,
+  onParametersChange: PropTypes.func.isRequired,
+  onParametersDelete: PropTypes.func.isRequired,
   recordData: PropTypes.object.isRequired,
 };

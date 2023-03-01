@@ -4,16 +4,12 @@
  */
 
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const NumberField = ({ id, name, defaultValue, hasDefaultValue, onChange }) => {
-  useEffect(() => {
-    onChange(defaultValue);
-  }, [hasDefaultValue]);
-
+export const NumberField = ({ id, name, value, onChange }) => {
   return (
     <BaseTextField
       id={id}
@@ -21,7 +17,7 @@ export const NumberField = ({ id, name, defaultValue, hasDefaultValue, onChange 
       placeholder="number..."
       type="number"
       label={name}
-      value={defaultValue}
+      value={value}
       onChange={event => {
         onChange(event.target.value);
       }}

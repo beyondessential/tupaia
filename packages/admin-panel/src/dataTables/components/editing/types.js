@@ -8,12 +8,11 @@ import PropTypes from 'prop-types';
 export const ParameterType = {
   id: PropTypes.string,
   name: PropTypes.string,
-  type: PropTypes.string,
-  required: PropTypes.bool,
-  hasDefaultValue: PropTypes.bool,
-  defaultValue: PropTypes.string,
-  inputFilterValue: PropTypes.any,
-  haveTriedToFetch: PropTypes.bool,
+  config: PropTypes.shape({
+    type: PropTypes.string,
+    hasDefaultValue: PropTypes.bool,
+    defaultValue: PropTypes.string,
+  }),
 };
 
 export const ParametersType = PropTypes.arrayOf(PropTypes.shape(ParameterType));

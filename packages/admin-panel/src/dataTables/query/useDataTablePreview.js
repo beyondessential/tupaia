@@ -6,84 +6,13 @@ import { useQuery } from 'react-query';
 import { post } from '../../VizBuilderApp/api/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
-/**
- * {
-    "code": "data_lake_db_test",
-    "type": "sql",
-    "config": {
-      "sql": "SELECT * FROM Table",
-      "externalDatabaseConnectionCode": "db_code",
-      "additionalParameters": [
-        {
-          "id": "entityCode",
-          "name": "entityCode",
-          "config": {
-            "type": "string"
-          },
-          "inputFilterValue": "AU_SA%",
-          "hasError": false,
-          "errorMessage": ""
-        }
-      ]
-    },
-    "permission_groups": [
-      "*"
-    ]
-  }
-
-* => 
-  * {
-    "code": "data_lake_db_test",
-    "type": "sql",
-    "config": {
-      "sql": "SELECT * FROM Table",
-      "externalDatabaseConnectionCode": "db_code",
-      "additionalParameters": [
-        {
-          "name": "entityCode",
-          "config": {
-            "type": "string"
-          }
-        }
-      ]
-    },
-    "runtimeParameters": {
-      "entityCode": "AU_SA%",
-    },
-    "permission_groups": [
-      "*"
-    ]
-  }
-*/
-const pullValidConfig = previewConfig => {
-  const { code, type, config, permission_groups: permissionGroups } = previewConfig;
-  const { additionalParameters, ...restOfConfigs } = config;
-  const filterInputValues = {};
-  const newAdditionalParameters = [];
-
-  additionalParameters.forEach(p => {
-    newAdditionalParameters.push({ name: p.name, config: p.config });
-    filterInputValues[p.name] = p.inputFilterValue;
-  });
-
-  return {
-    code,
-    type,
-    config: { additionalParameters: newAdditionalParameters, ...restOfConfigs },
-    permission_groups: permissionGroups,
-    runtimeParameters: { ...filterInputValues },
-  };
-};
-
-export const useDataTablePreview = ({ previewConfig, onSettled }) =>
+export const useDataTablePreview = ({ previewConfig, runtimeParameters, onSettled }) =>
   useQuery(
     ['fetchDataTablePreviewData', previewConfig],
     async () => {
-      const newPreviewConfig = pullValidConfig(previewConfig);
-
       const response = await post('fetchDataTablePreviewData', {
         data: {
-          previewConfig: newPreviewConfig,
+          previewConfig: { ...previewConfig, runtimeParameters },
         },
       });
 

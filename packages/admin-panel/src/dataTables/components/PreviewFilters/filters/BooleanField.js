@@ -4,16 +4,12 @@
  */
 
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Select } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const BooleanField = ({ id, name, defaultValue, hasDefaultValue, onChange }) => {
-  useEffect(() => {
-    onChange(defaultValue);
-  }, [hasDefaultValue]);
-
+export const BooleanField = ({ id, name, value, onChange }) => {
   return (
     <Select
       options={[
@@ -23,7 +19,7 @@ export const BooleanField = ({ id, name, defaultValue, hasDefaultValue, onChange
       id={id}
       name={name}
       label={name}
-      value={defaultValue}
+      value={value}
       onChange={event => {
         onChange(event.target.value);
       }}
