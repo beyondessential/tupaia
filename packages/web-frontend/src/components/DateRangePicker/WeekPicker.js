@@ -28,7 +28,7 @@ export const WeekPicker = props => {
   const maxAvailableWeekIndex = useBoundaryWeekOrDefault(date, maxMomentDate, weeksInYear);
 
   const menuItems = [];
-  const weekLabels = [];
+  const weekLabelsByIsoWeek = {};
   // Prefer moment mutation to creation for performance reasons
   const mutatingMoment = date.clone();
   for (let w = 1; w <= weeksInYear; w++) {
@@ -38,7 +38,7 @@ export const WeekPicker = props => {
       pickerFormat,
       modifier,
     );
-    weekLabels.push(weekLabel);
+    weekLabelsByIsoWeek[w] = `${weekLabel} yoo ${w}`;
 
     const disabled = w < minAvailableWeekIndex || w > maxAvailableWeekIndex;
 
@@ -55,7 +55,7 @@ export const WeekPicker = props => {
       selectedValue={date.isoWeek()}
       menuItems={menuItems}
       onChange={e => onChange(date.clone().isoWeek(e.target.value))}
-      getFormattedValue={weekIndex => weekLabels[weekIndex]}
+      getFormattedValue={w => weekLabelsByIsoWeek[w]}
     />
   );
 };
