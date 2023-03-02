@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { DataElementMetadata, DataElementModel, DhisMetadataObject } from '../../../types';
+import { DataElementMetadata, DataElementModel } from '../../../types';
 import { DataElement } from '../types';
 import { DhisTranslator } from '../translators';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
@@ -38,7 +38,7 @@ export class DataElementsMetadataPuller {
     options: PullDataElementsOptions,
   ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
-    let metadata: DhisMetadataObject | DataElementMetadata[] = [];
+    let metadata: DataElementMetadata[] = [];
 
     for (const entry of Object.entries(dataSourcesByDhisType)) {
       const [dhisDataType, groupedDataSources] = entry;
