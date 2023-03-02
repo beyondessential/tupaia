@@ -34,12 +34,11 @@ exports.up = async function (db) {
   );
   for (const report of reports) {
     const { transform } = report.config;
-    const { dataElementCodes } = transform[0].parameters;
 
     const fetchMetaData = {
       transform: 'fetchData',
       dataTableCode: 'data_element_metadata',
-      parameters: { dataElementCodes },
+      parameters: { dataElementCodes: '=@all.dataElement' },
       join: [
         {
           tableColumn: 'dataElement',
