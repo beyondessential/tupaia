@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 export const getRuntimeParameters = (additionalParameters = []) => {
   return Object.fromEntries(
@@ -14,14 +14,7 @@ export const getRuntimeParameters = (additionalParameters = []) => {
   );
 };
 
-export const useRuntimeParameters = ({ additionalParameters }) => {
-  const [runtimeParameters, setRuntimeParameters] = useState({});
-
-  useEffect(() => {
-    const defaultRuntimeParameters = getRuntimeParameters(additionalParameters);
-    setRuntimeParameters(defaultRuntimeParameters);
-  }, [JSON.stringify(additionalParameters)]);
-
+export const useRuntimeParameters = ({ runtimeParameters, setRuntimeParameters }) => {
   const upsertRuntimeParameter = useCallback((key, value) => {
     const newRuntimeParameters = { ...runtimeParameters };
     newRuntimeParameters[key] = value;
@@ -42,8 +35,6 @@ export const useRuntimeParameters = ({ additionalParameters }) => {
   });
 
   return {
-    runtimeParameters,
-    setRuntimeParameters,
     upsertRuntimeParameter,
     removeRuntimeParameter,
     renameRuntimeParameter,

@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { useRuntimeParameters } from './useRuntimeParameters';
+import { getRuntimeParameters, useRuntimeParameters } from './useRuntimeParameters';
 
 const convertRecordDataToFronendConfig = (additionalParameters = []) => {
   return additionalParameters.map((p, index) => ({
@@ -16,18 +16,20 @@ const convertRecordDataToFronendConfig = (additionalParameters = []) => {
 export const useParameters = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
   const [additionalParameters, setAdditionalParameters] = useState([]);
+  const [runtimeParameters, setRuntimeParameters] = useState({});
+
+  const {
+    upsertRuntimeParameter,
+    renameRuntimeParameter,
+    removeRuntimeParameter,
+  } = useRuntimeParameters({ runtimeParameters, setRuntimeParameters });
 
   useEffect(() => {
     const newAdditionalParameters = convertRecordDataToFronendConfig(config.additionalParameters);
     setAdditionalParameters(newAdditionalParameters);
+    const defaultRuntimeParameters = getRuntimeParameters(newAdditionalParameters);
+    setRuntimeParameters(defaultRuntimeParameters);
   }, [JSON.stringify(config)]);
-
-  const {
-    runtimeParameters,
-    upsertRuntimeParameter,
-    renameRuntimeParameter,
-    removeRuntimeParameter,
-  } = useRuntimeParameters({ additionalParameters });
 
   const onParametersAdd = useCallback(() => {
     const defaultNewParameter = {
@@ -41,11 +43,11 @@ export const useParameters = ({ recordData, onEditField }) => {
   });
 
   const onParametersDelete = useCallback(selectedParameterId => {
-    const parameterToRemove = additionalParameters.find(p => p.id === selectedParameterId);
-    removeRuntimeParameter(parameterToRemove.name);
-
     const newParameterList = additionalParameters.filter(p => p.id !== selectedParameterId);
     onEditField('config', { ...config, additionalParameters: newParameterList });
+
+    const parameterToRemove = additionalParameters.find(p => p.id === selectedParameterId);
+    removeRuntimeParameter(parameterToRemove.name);
   });
 
   const onParametersChange = useCallback((id, key, newValue) => {
