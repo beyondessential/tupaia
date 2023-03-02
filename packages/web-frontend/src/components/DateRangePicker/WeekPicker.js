@@ -38,7 +38,7 @@ export const WeekPicker = props => {
       pickerFormat,
       modifier,
     );
-    weekLabelsByIsoWeek[w] = `${weekLabel} yoo ${w}`;
+    weekLabelsByIsoWeek[w] = weekLabel;
 
     const disabled = w < minAvailableWeekIndex || w > maxAvailableWeekIndex;
 
