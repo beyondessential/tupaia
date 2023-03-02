@@ -32,6 +32,10 @@ export const BooleanField = ({ name, value, onChange }) => {
 
 BooleanField.propTypes = {
   ...ParameterType,
-
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.bool,
+};
+
+BooleanField.defaultProps = {
+  value: null,
 };

@@ -9,6 +9,10 @@ import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 export const TextField = ({ name, value, onChange }) => {
+  if (!value) {
+    onChange('');
+  }
+
   return (
     <BaseTextField
       name={name}
@@ -26,4 +30,9 @@ export const TextField = ({ name, value, onChange }) => {
 TextField.propTypes = {
   ...ParameterType,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.string,
+};
+
+TextField.defaultProps = {
+  value: null,
 };

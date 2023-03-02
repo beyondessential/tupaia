@@ -10,6 +10,10 @@ import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 export const NumberField = ({ id, name, value, onChange }) => {
+  if (!value) {
+    onChange(0);
+  }
+
   return (
     <BaseTextField
       id={id}
@@ -28,4 +32,9 @@ export const NumberField = ({ id, name, value, onChange }) => {
 NumberField.propTypes = {
   ...ParameterType,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.number,
+};
+
+NumberField.defaultProps = {
+  value: null,
 };

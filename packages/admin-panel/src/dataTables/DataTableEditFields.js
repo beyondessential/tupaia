@@ -53,7 +53,11 @@ const typeFieldsMap = {
 
 export const DataTableEditFields = React.memo(
   props => {
-    const { onEditField, recordData } = props;
+    const { onEditField, recordData, isLoading: isDataLoading } = props;
+    if (isDataLoading) {
+      return <div />;
+    }
+
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
     const {
@@ -252,4 +256,5 @@ export const DataTableEditFields = React.memo(
 DataTableEditFields.propTypes = {
   onEditField: PropTypes.func.isRequired,
   recordData: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };

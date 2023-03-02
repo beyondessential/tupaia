@@ -16,7 +16,13 @@ export const DatePicker = ({ name, value, onChange }) => {
 
   return <BaseDatePicker label={name} onChange={onChange} value={value} />;
 };
+
 DatePicker.propTypes = {
   ...ParameterType,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
+};
+
+DatePicker.defaultProps = {
+  value: null,
 };

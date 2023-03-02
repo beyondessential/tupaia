@@ -28,7 +28,7 @@ EditButtonComponent.defaultProps = {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onEdit: () => {
     const recordId = ownProps.value;
-    dispatch(openEditModal(ownProps.actionConfig, recordId));
+    dispatch(openEditModal({ ...ownProps.actionConfig, isLoading: true }, recordId));
     if (ownProps.actionConfig?.displayUsedBy) {
       dispatch(fetchUsedBy(ownProps.actionConfig.recordType, recordId));
     }
