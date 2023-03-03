@@ -7360,6 +7360,7 @@ __metadata:
     "@material-ui/styles": ^4.11.5
     "@testing-library/cypress": ^7.0.0
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
     axios: ^0.21.4
@@ -7380,7 +7381,7 @@ __metadata:
     query-string: ^5.1.1
     react: 17.0.0
     react-autobind: ^1.0.6
-    react-beforeunload: ^2.5.3
+    react-beforeunload: ^2.5.1
     react-datepicker: ^1.8.0
     react-dom: 17.0.0
     react-hook-form: ^6.15.8
@@ -13540,7 +13541,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"case@npm:^1.5.5, case@npm:^1.6.3":
+"case@npm:^1.5.5":
+  version: 1.6.2
+  resolution: "case@npm:1.6.2"
+  checksum: 469c0df0abb4174548c73b9421225ad8df4ca1da37f154ada5c30d868f7ee0144e4eff6318b9d0a66f3a0bf62de8eea07e79a0be2454e0330711f0fdac881896
+  languageName: node
+  linkType: hard
+
+"case@npm:^1.6.3":
   version: 1.6.3
   resolution: "case@npm:1.6.3"
   checksum: febe73278f910b0d28aab7efd6f51c235f9aa9e296148edb56dfb83fd58faa88308c30ce9a0122b6e53e0362c44f4407105bd5ef89c46860fc2b184e540fd68d
@@ -15955,7 +15963,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.16.1, date-fns@npm:^2.29.3":
+"date-fns@npm:^2.16.1":
+  version: 2.16.1
+  resolution: "date-fns@npm:2.16.1"
+  checksum: f19c2b3b9bd62fdbc55b160c87b4656b3a260d79ee7a32a9cbc19107c3d61d71b569c0957351f9a07fc84c35283f74b0af5276620d4a37e36eef1898fa6c25b2
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^2.29.3":
   version: 2.29.3
   resolution: "date-fns@npm:2.29.3"
   checksum: e01cf5b62af04e05dfff921bb9c9933310ed0e1ae9a81eb8653452e64dc841acf7f6e01e1a5ae5644d0337e9a7f936175fd2cb6819dc122fdd9c5e86c56be484
@@ -32641,15 +32656,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-beforeunload@npm:^2.5.3":
+"react-beforeunload@npm:^2.5.1":
   version: 2.5.3
-  resolution: "react-beforeunload@npm:2.5.3"
+  resolution: "react-beforeunload@npm:2.5.1"
   dependencies:
     prop-types: ^15.8.1
     tiny-invariant: ^1.2.0
   peerDependencies:
-    react: ^16.8.0 || 17 || 18
-  checksum: 3abc4d4022e1b75169054d063de3e8e75801a332d8365339dbe93e54a133694ece961a6a16fbce56908370c141b8893d451a7a9b07323b1f7d21cde4ba073a04
+    react: ^16.8.0 || ^17.0.0
+  checksum: 9cc026a2670498ee13180d81f742ebc4383a27f7e98a349237f79e6868fabb963e4347ea1191090c7b5d3b95e9d710369bab4fb57b8f5ba16d0b16b578206bc1
   languageName: node
   linkType: hard
 
@@ -37344,8 +37359,8 @@ __metadata:
   linkType: hard
 
 "styled-components@npm:^5.3.6":
-  version: 5.3.6
-  resolution: "styled-components@npm:5.3.6"
+  version: 5.3.8
+  resolution: "styled-components@npm:5.3.8"
   dependencies:
     "@babel/helper-module-imports": ^7.0.0
     "@babel/traverse": ^7.4.5
@@ -37361,7 +37376,7 @@ __metadata:
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
     react-is: ">= 16.8.0"
-  checksum: 68eac1e451be81d66739cf86de8ec9e72f46e7584aa359271761a2437468210bd7cf0a864281fc97dab08c32b35e6bf7513dc8b4104ed6b196cf8d65674dd289
+  checksum: 60148083f4057cd0dd4ad555e82800ec4ec4b8822fd81645f084e9beebf91420f4c9c75875b44933755d32ec97c46be6b79ca0c23578e5a731e3399e6ea0d901
   languageName: node
   linkType: hard
 
