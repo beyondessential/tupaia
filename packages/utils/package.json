@@ -22,13 +22,13 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "case": "^1.6.3",
+    "case": "^1.5.5",
     "countrynames": "^0.1.1",
     "fast-memoize": "^2.5.2",
     "jsonwebtoken": "^8.5.1",
     "lodash.get": "^4.4.2",
     "lodash.pickby": "^4.6.0",
-    "moment": "^2.29.4",
+    "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "node-fetch": "^1.7.3",
     "numeral": "^2.0.6",
