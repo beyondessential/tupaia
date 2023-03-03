@@ -7,13 +7,14 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { Chart, FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
+import { Chart, FlexSpaceBetween, FetchLoader, DataGrid } from '@tupaia/ui-components';
 
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
+import { getReportPreviewDataColumns, getRowsWithIds } from '../../utilities';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -41,17 +42,17 @@ const PanelTabPanel = styled.div`
   border-top: none;
 `;
 
-const StyledTable = styled(DataTable)`
-  table {
-    border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
-    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
-    table-layout: auto;
+// const StyledTable = styled(DataTable)`
+//   table {
+//     border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
+//     border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
+//     table-layout: auto;
 
-    thead {
-      text-transform: none;
-    }
-  }
-`;
+//     thead {
+//       text-transform: none;
+//     }
+//   }
+// `;
 
 const Container = styled(FlexSpaceBetween)`
   align-items: stretch;
@@ -180,8 +181,13 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
-  const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
-  const rows = useMemo(() => (tab === 0 ? reportData.rows || [] : []), [reportData]);
+  const columns = useMemo(() => (tab === 0 ? getReportPreviewDataColumns(reportData) : []), [
+    reportData,
+  ]);
+
+  const rows = useMemo(() => (tab === 0 ? getRowsWithIds(reportData.rows) || [] : []), [
+    reportData,
+  ]);
   const data = useMemo(() => reportData, [reportData]);
 
   // only update Chart Preview when play button is clicked
@@ -212,7 +218,7 @@ export const PreviewSection = () => {
               isNoData={!rows.length}
               noDataMessage="No Data Found"
             >
-              <StyledTable columns={columns} data={rows} rowLimit={100} />
+              <DataGrid columns={columns} rows={rows} />
             </FetchLoader>
           ) : (
             <IdleMessage />
