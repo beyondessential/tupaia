@@ -5,15 +5,6 @@
 
 import { useCallback } from 'react';
 
-export const getRuntimeParameters = (additionalParameters = []) => {
-  return Object.fromEntries(
-    additionalParameters.map(p => [
-      p.name,
-      p?.config?.hasDefaultValue ? p?.config?.defaultValue : undefined,
-    ]),
-  );
-};
-
 export const useRuntimeParameters = ({ runtimeParameters, setRuntimeParameters }) => {
   const upsertRuntimeParameter = useCallback((key, value) => {
     const newRuntimeParameters = { ...runtimeParameters };
