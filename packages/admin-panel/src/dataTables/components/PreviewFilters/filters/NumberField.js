@@ -9,16 +9,14 @@ import React from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const NumberField = ({ id, name, value, onChange }) => {
-  if (!value) {
-    onChange(0);
-  }
+export const NumberField = ({ id, name, value, onChange, config }) => {
+  const defaultValue = config?.hasDefaultValue ? config?.defaultValue : null;
 
   return (
     <BaseTextField
       id={id}
       name={name}
-      placeholder="number..."
+      placeholder={defaultValue}
       type="number"
       label={name}
       value={value}

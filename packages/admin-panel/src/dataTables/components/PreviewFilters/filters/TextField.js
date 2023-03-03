@@ -8,15 +8,13 @@ import React from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const TextField = ({ name, value, onChange }) => {
-  if (!value) {
-    onChange('');
-  }
+export const TextField = ({ name, value, onChange, config }) => {
+  const defaultValue = config?.hasDefaultValue ? config?.defaultValue : null;
 
   return (
     <BaseTextField
       name={name}
-      placeholder="Text"
+      placeholder={defaultValue}
       type="text"
       label={name}
       value={value}

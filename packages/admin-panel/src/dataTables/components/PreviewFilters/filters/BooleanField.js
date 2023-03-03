@@ -9,20 +9,20 @@ import React from 'react';
 import { Select } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
-export const BooleanField = ({ name, value, onChange }) => {
-  if (!value) {
-    onChange(false);
-  }
+export const BooleanField = ({ name, value, onChange, config }) => {
+  const defaultValue = config?.hasDefaultValue ? config?.defaultValue.toString() : null;
 
   return (
     <Select
+      id={name}
+      placeholder={defaultValue}
       options={[
         { label: 'true', value: true },
         { label: 'false', value: false },
       ]}
       name={name}
       label={name}
-      value={value}
+      value={value || defaultValue}
       onChange={event => {
         onChange(event.target.value);
       }}
