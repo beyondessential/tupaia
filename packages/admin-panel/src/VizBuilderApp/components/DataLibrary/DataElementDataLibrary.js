@@ -71,22 +71,18 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
 
   const debouncedInputValue = useDebounce(inputValue, 200);
 
-  const {
-    data: dataElementSearchResults = [],
-    isFetching: isFetchingDataElements,
-  } = useSearchDataSources({
-    search: debouncedInputValue,
-    type: 'dataElement',
-    maxResults: MAX_RESULTS,
-  });
-  const {
-    data: dataGroupSearchResults = [],
-    isFetching: isFetchingDataGroups,
-  } = useSearchDataSources({
-    search: debouncedInputValue,
-    type: 'dataGroup',
-    maxResults: MAX_RESULTS,
-  });
+  const { data: dataElementSearchResults = [], isFetching: isFetchingDataElements } =
+    useSearchDataSources({
+      search: debouncedInputValue,
+      type: 'dataElement',
+      maxResults: MAX_RESULTS,
+    });
+  const { data: dataGroupSearchResults = [], isFetching: isFetchingDataGroups } =
+    useSearchDataSources({
+      search: debouncedInputValue,
+      type: 'dataGroup',
+      maxResults: MAX_RESULTS,
+    });
 
   const options = {
     [DATA_TYPES.DATA_ELEMENT]: inputValue ? dataElementSearchResults : [],

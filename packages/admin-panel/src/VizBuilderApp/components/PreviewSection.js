@@ -107,34 +107,6 @@ const TABS = {
 
 const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 
-const convertValueToPrimitive = val => {
-  if (val === null) return val;
-  switch (typeof val) {
-    case 'object':
-      return JSON.stringify(val);
-    case 'function':
-      return '[Function]';
-    default:
-      return val;
-  }
-};
-
-const getColumns = ({ columns: columnKeys = [] }) => {
-  const indexColumn = {
-    Header: '#',
-    id: 'index',
-    accessor: (_row, i) => i + 1,
-  };
-  const columns = columnKeys.map(columnKey => {
-    return {
-      Header: columnKey,
-      accessor: row => convertValueToPrimitive(row[columnKey]),
-    };
-  });
-
-  return [indexColumn, ...columns];
-};
-
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
@@ -181,13 +153,15 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
-  const columns = useMemo(() => (tab === 0 ? getReportPreviewDataColumns(reportData) : []), [
-    reportData,
-  ]);
+  const columns = useMemo(
+    () => (tab === 0 ? getReportPreviewDataColumns(reportData) : []),
+    [reportData],
+  );
 
-  const rows = useMemo(() => (tab === 0 ? getRowsWithIds(reportData.rows) || [] : []), [
-    reportData,
-  ]);
+  const rows = useMemo(
+    () => (tab === 0 ? getRowsWithIds(reportData.rows) || [] : []),
+    [reportData],
+  );
   const data = useMemo(() => reportData, [reportData]);
 
   // only update Chart Preview when play button is clicked
