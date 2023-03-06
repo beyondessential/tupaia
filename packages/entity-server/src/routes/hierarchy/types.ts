@@ -4,7 +4,7 @@
  */
 
 import { Request } from 'express';
-import { Resolved } from '@tupaia/tsutils';
+import { Resolved } from '@tupaia/types';
 import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
 

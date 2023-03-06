@@ -5391,6 +5391,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/lodash.keyby": ^4.6.6
     dotenv: ^8.2.0
@@ -5682,6 +5683,7 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/api-error-handler": ^1.0.32
     "@types/client-sessions": ^0.8.0
