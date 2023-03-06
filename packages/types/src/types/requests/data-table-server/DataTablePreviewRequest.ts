@@ -7,7 +7,7 @@
 /**
  * @format id
  */
-import { DataTable } from '../models';
+import { DataTable } from '../../models';
 
 export interface DataTablePreviewRequest extends DataTable {
   runtimeParameters: Record<string, unknown>;
