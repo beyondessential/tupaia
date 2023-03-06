@@ -45,7 +45,8 @@ const transform = async (table: TransformTable, transformSteps: BuiltTransformPa
     } catch (e) {
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
       const errorMessagePrefix = `Error in transform[${i + 1}]${titlePart}: `;
-      throw new Error(`${errorMessagePrefix}${(e as Error).message}`);
+      e.message = `${errorMessagePrefix}${(e as Error).message}`;
+      throw e;
     }
   }
 
