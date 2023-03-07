@@ -43,11 +43,8 @@ const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
 const NoConfig = () => <>This Data Table type has no configuration options</>;
 
 const typeFieldsMap = {
+  ...Object.fromEntries(Object.values(DataTableType).map(type => [type, NoConfig])),
   [DataTableType.sql]: SqlDataTableConfigEditFields,
-  [DataTableType.analytics]: NoConfig,
-  [DataTableType.entities]: NoConfig,
-  [DataTableType.entity_relations]: NoConfig,
-  [DataTableType.events]: NoConfig,
 };
 
 export const DataTableEditFields = ({ onEditField, recordData }) => {
