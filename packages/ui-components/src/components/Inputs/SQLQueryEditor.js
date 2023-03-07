@@ -30,7 +30,7 @@ export const SQLQueryEditor = props => {
   const [annotations, setAnnotations] = useState({});
   const validateQuery = query => {
     // need to do this to add nextline \n
-    const queryArray = query.replace(':', '-').split('\n');
+    const queryArray = query.replaceAll(':', '-').split('\n');
     const sqlQuery = queryArray.join('\n');
     try {
       parser.parse(sqlQuery);

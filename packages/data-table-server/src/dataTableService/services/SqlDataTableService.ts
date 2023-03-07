@@ -61,6 +61,6 @@ export class SqlDataTableService extends DataTableService<
     const results = await databaseConnection.executeSql(wrappedResultQuery, params);
     const total = await databaseConnection.executeSql(wrappedCountQuery, params);
 
-    return { rows: results, total: total[0].count, limit: LIMIT };
+    return { rows: results, total: +total[0].count, limit: LIMIT };
   }
 }
