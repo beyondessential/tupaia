@@ -9,20 +9,33 @@ import React from 'react';
 import { Select } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
+const getBooleanValue = value => {
+  if (typeof value === 'string') {
+    return Boolean.valueOf(value);
+  }
+
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  return '';
+};
+
 export const BooleanField = ({ name, value, onChange, config }) => {
-  const defaultValue = config?.hasDefaultValue ? config?.defaultValue.toString() : null;
+  const defaultValue = getBooleanValue(config?.hasDefaultValue && config?.defaultValue);
+  const booleanValue = getBooleanValue(value);
 
   return (
     <Select
       id={name}
-      placeholder={defaultValue}
+      placeholder={defaultValue.toString()}
       options={[
         { label: 'true', value: true },
         { label: 'false', value: false },
       ]}
       name={name}
       label={name}
-      value={value || defaultValue}
+      value={typeof booleanValue === 'boolean' ? booleanValue : defaultValue}
       onChange={event => {
         onChange(event.target.value);
       }}

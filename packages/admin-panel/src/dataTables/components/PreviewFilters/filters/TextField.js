@@ -9,7 +9,7 @@ import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 export const TextField = ({ name, value, onChange, config }) => {
-  const defaultValue = config?.hasDefaultValue ? config?.defaultValue : null;
+  const defaultValue = config?.hasDefaultValue ? config?.defaultValue : '';
 
   return (
     <BaseTextField
@@ -32,5 +32,5 @@ TextField.propTypes = {
 };
 
 TextField.defaultProps = {
-  value: null,
+  value: '',
 };

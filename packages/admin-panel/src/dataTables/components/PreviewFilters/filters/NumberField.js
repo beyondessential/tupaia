@@ -9,19 +9,27 @@ import React from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
+const getNumberValue = value => {
+  if (typeof value === 'number') {
+    return value;
+  }
+  return '';
+};
+
 export const NumberField = ({ id, name, value, onChange, config }) => {
-  const defaultValue = config?.hasDefaultValue ? config?.defaultValue : null;
+  const defaultValue = getNumberValue(config?.hasDefaultValue && config?.defaultValue);
+  const numberValue = getNumberValue(value);
 
   return (
     <BaseTextField
       id={id}
       name={name}
-      placeholder={defaultValue}
+      placeholder={defaultValue.toString()}
       type="number"
       label={name}
-      value={value}
+      value={numberValue}
       onChange={event => {
-        onChange(event.target.value);
+        onChange(+event.target.value);
       }}
     />
   );

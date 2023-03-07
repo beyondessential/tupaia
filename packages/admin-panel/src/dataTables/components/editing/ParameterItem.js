@@ -98,6 +98,9 @@ export const ParameterItem = props => {
             checked={hasDefaultValue}
             onChange={event => {
               onChange(id, 'hasDefaultValue', event.target.checked);
+              if (!event.target.checked) {
+                onChange(id, 'defaultValue', undefined);
+              }
             }}
           />
         </FlexStart>
@@ -106,6 +109,7 @@ export const ParameterItem = props => {
         <Grid item xs={5}>
           {FilterComponent && (
             <FilterComponent
+              name={name}
               value={defaultValue}
               label="Default value"
               onChange={newValue => {

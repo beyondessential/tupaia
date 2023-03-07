@@ -28,7 +28,7 @@ export const DatePicker = ({ name, value, onChange, config }) => {
 
   return (
     <BaseDatePicker
-      label={name}
+      label={name || ''}
       onChange={onChange}
       value={dateValue}
       placeholder={defaultDateValue && format(defaultDateValue, 'dd/MM/yyyy')}
