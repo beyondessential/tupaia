@@ -20,7 +20,21 @@ export interface MultiEntityRequestParams {
 export type RequestBody = Record<string, never>;
 
 export type MultiEntityRequestBody = RequestBody & {
-  entities: string[] | undefined;
+  entities: string[];
+};
+
+export const MultiEntityRequestBodySchema = {
+  type: 'object',
+  properties: {
+    entities: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+      minItems: 1,
+    },
+  },
+  required: ['entities'],
 };
 
 export interface EntityRequestQuery {
