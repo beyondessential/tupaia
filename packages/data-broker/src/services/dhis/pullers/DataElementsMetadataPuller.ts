@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { DataElementModel } from '../../../types';
+import { DataElementMetadata, DataElementModel } from '../../../types';
 import { DataElement } from '../types';
 import { DhisTranslator } from '../translators';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
@@ -38,25 +38,26 @@ export class DataElementsMetadataPuller {
     options: PullDataElementsOptions,
   ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
-    const metadata = [];
+    let metadata: DataElementMetadata[] = [];
 
     for (const entry of Object.entries(dataSourcesByDhisType)) {
       const [dhisDataType, groupedDataSources] = entry;
       const dataElementCodes = groupedDataSources.map(({ dataElementCode }) => dataElementCode);
       if (dhisDataType === this.dataSourceModel.getDhisDataTypes().INDICATOR) {
         const indicators = await api.fetchIndicators({ dataElementCodes });
-        metadata.push(
-          ...this.translator.translateInboundIndicators(indicators, groupedDataSources),
-        );
+        const results = this.translator.translateInboundIndicators(indicators, groupedDataSources);
+        metadata = metadata.concat(results);
       } else {
         const { additionalFields, includeOptions } = options;
         const dataElements = await api.fetchDataElements(dataElementCodes, {
           additionalFields,
           includeOptions,
         });
-        metadata.push(
-          ...this.translator.translateInboundDataElements(dataElements, groupedDataSources),
+        const results = this.translator.translateInboundDataElements(
+          dataElements,
+          groupedDataSources,
         );
+        metadata = metadata.concat(results);
       }
     }
 
