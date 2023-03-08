@@ -23,7 +23,7 @@
     "@tupaia/tsutils": "1.0.0",
     "lodash.pick": "^4.4.0",
     "node-fetch": "^1.7.3",
-    "qs": "^6.10.1"
+    "qs": "^6.10.3"
   },
   "devDependencies": {
     "@tupaia/types": "1.0.0"
