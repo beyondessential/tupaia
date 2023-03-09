@@ -165,7 +165,7 @@ export const DataTableEditFields = React.memo(
             </FieldWrapper>
             <FieldWrapper>
               <Select
-                id="data-table-edit--type"
+                id="data-table-edit-type"
                 label="Type"
                 name="type"
                 required
@@ -176,20 +176,17 @@ export const DataTableEditFields = React.memo(
             </FieldWrapper>
             <FieldWrapper>
               {recordData?.type === DataTableType.sql && (
-                <TextField
+                <Autocomplete
                   label="Database Connection"
-                  name="config.externalDatabaseConnectionCode"
-                  required
-                  onChange={event =>
-                    onSqlConfigChange('externalDatabaseConnectionCode', event.target.value)
+                  onChange={selectedValues =>
+                    onSqlConfigChange('externalDatabaseConnectionCode', selectedValues)
                   }
-                  error={haveTriedToFetch && !recordData?.config?.externalDatabaseConnectionCode}
-                  helperText={
-                    haveTriedToFetch &&
-                    !recordData?.config?.externalDatabaseConnectionCode &&
-                    'should not be empty'
-                  }
-                  value={recordData?.config?.externalDatabaseConnectionCode || ''}
+                  placeholder={recordData?.config?.externalDatabaseConnectionCode}
+                  id="config.externalDatabaseConnectionCode"
+                  reduxId="dataTableEditFields-external_database_connections"
+                  endpoint="externalDatabaseConnections"
+                  optionLabelKey="name"
+                  optionValueKey="code"
                 />
               )}
             </FieldWrapper>
