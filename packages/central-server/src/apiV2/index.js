@@ -119,10 +119,7 @@ import {
   ManuallySyncSyncGroup,
 } from './syncGroups';
 import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
-import {
-  TestExternalDatabaseConnection,
-  GETExternalDatabaseConnections,
-} from './externalDatabaseConnections';
+import { TestExternalDatabaseConnection } from './externalDatabaseConnections';
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -233,7 +230,6 @@ apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
 apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
-apiV2.get('/externalDatabaseConnections', useRouteHandler(GETExternalDatabaseConnections));
 apiV2.get('/externalDatabaseConnections/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get(
   '/externalDatabaseConnections/:recordId/test',

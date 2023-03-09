@@ -186,7 +186,7 @@ export const DataTableEditFields = React.memo(
                   reduxId="dataTableEditFields-external_database_connections"
                   endpoint="externalDatabaseConnections"
                   optionLabelKey="name"
-                  optionValueKey="name"
+                  optionValueKey="code"
                 />
               )}
             </FieldWrapper>
