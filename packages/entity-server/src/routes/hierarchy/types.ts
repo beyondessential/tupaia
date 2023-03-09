@@ -31,7 +31,6 @@ export const MultiEntityRequestBodySchema = {
       items: {
         type: 'string',
       },
-      minItems: 1,
     },
   },
   required: ['entities'],
