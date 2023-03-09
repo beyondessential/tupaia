@@ -9,22 +9,21 @@ import {
   hasDashboardRelationEditPermissions,
   createDashboardRelationsDBFilter,
 } from '../dashboardRelations';
-import { hasBESAdminAccess, hasSomePermissionGroupsAccess } from '../../permissions';
+import { hasBESAdminAccess } from '../../permissions';
 
 import { mergeFilter } from '../utilities';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
-  const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
   const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
 
   // To view a dashboard item, the user has to have access to the relation between the
   // dashboard item and ANY of the dashboards it is in
   // OR user's access policy covers the dashboard item's permission_group_ids column
-
   if (permittedDashboardItems.includes(dashboardItemId)) {
     return true;
   }
 
+  const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
   for (const dashboard of dashboards) {
     if (
       await hasDashboardRelationGetPermissions(
@@ -44,9 +43,7 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 };
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
-  const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
   const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
-
   // To edit a dashboard item, the user has to have access to the relation between the
   // dashboard item and ALL of the dashboards it is in
   // OR user's access policy covers the dashboard item's permission_group_ids column
@@ -55,6 +52,7 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
     return true;
   }
 
+  const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
   for (const dashboard of dashboards) {
     if (
       !(await hasDashboardRelationEditPermissions(
@@ -139,7 +137,9 @@ const getPermittedDashboardItems = async (accessPolicy, models) => {
         permissionGroupId => permissionGroupIdToName[permissionGroupId],
       );
 
-      const hasPermission = hasSomePermissionGroupsAccess(accessPolicy, permissionGroupNames);
+      const hasPermission = permissionGroupNames.some(permissionGroup =>
+        accessPolicy.allowsSome(undefined, permissionGroup),
+      );
       return !!hasPermission;
     })
     .map(item => item.id);

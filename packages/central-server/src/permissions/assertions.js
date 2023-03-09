@@ -78,16 +78,6 @@ export const hasPermissionGroupsAccess = (accessPolicy, permissionGroups) => {
   return true;
 };
 
-export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) => {
-  for (let i = 0; i < permissionGroups.length; i++) {
-    if (accessPolicy.allowsSome(undefined, permissionGroups[i])) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
 export const assertBESAdminAccess = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) {
     return true;
