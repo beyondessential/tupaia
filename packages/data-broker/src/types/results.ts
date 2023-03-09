@@ -72,3 +72,8 @@ export interface Diagnostics {
   errors: string[];
   wasSuccessful: boolean;
 }
+
+export type Metadata = {
+  code: string;
+  [key: string]: any; // any metadata
+};

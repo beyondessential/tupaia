@@ -102,8 +102,4 @@ export class DataLakeService extends Service {
 
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }
-
-  public async pullMetadata(dataSources: DataSource[]) {
-    return dataSources.map(dataSource => ({ code: dataSource.code, name: undefined }));
-  }
 }
