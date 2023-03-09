@@ -20,27 +20,34 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
     };
   }
 
+  const relations = await models.mapOverlayGroupRelations.find({
+    child_id: mapOverlayId,
+  });
+
+  const permissionGroups = Array.from(
+    new Set(relations.map(({ permission_group: permissionGroup }) => permissionGroup)),
+  );
   const entities = await models.entity.find({ code: mapOverlay.country_codes });
   for (let i = 0; i < entities.length; i++) {
-    if (
-      await hasAccessToEntityForVisualisation(
-        accessPolicy,
-        models,
-        entities[i],
-        mapOverlay.permission_group,
-      )
-    ) {
-      return {
-        result: true,
-      };
+    for (let j = 0; j < permissionGroups.length; j++) {
+      if (
+        await hasAccessToEntityForVisualisation(
+          accessPolicy,
+          models,
+          entities[i],
+          permissionGroups[j],
+        )
+      ) {
+        return {
+          result: true,
+        };
+      }
     }
   }
 
   return {
     result: false,
-    errorMessage: `Requires "${
-      mapOverlay.permission_group
-    }" access to all countries "${mapOverlay.country_codes.toString()}" of the map overlay`,
+    errorMessage: `Requires one of "${permissionGroups}" access any country "${mapOverlay.country_codes.toString()}" of the map overlay`,
   };
 };
 
@@ -53,6 +60,13 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     };
   }
 
+  const relations = await models.mapOverlayGroupRelations.find({
+    child_id: mapOverlayId,
+  });
+
+  const permissionGroups = Array.from(
+    new Set(relations.map(({ permission_group: permissionGroup }) => permissionGroup)),
+  );
   const entities = await models.entity.find({ code: mapOverlay.country_codes });
   let hasPermissionGroupAccess = false;
 
@@ -65,16 +79,18 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
         errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.country_codes}) for the map overlay "${mapOverlayId}"`,
       };
     }
-    if (
-      !hasPermissionGroupAccess &&
-      (await hasAccessToEntityForVisualisation(
-        accessPolicy,
-        models,
-        entities[i],
-        mapOverlay.permission_group,
-      ))
-    ) {
-      hasPermissionGroupAccess = true;
+    for (let j = 0; j < entities.length; j++) {
+      if (
+        !hasPermissionGroupAccess &&
+        (await hasAccessToEntityForVisualisation(
+          accessPolicy,
+          models,
+          entities[i],
+          permissionGroups[j],
+        ))
+      ) {
+        hasPermissionGroupAccess = true;
+      }
     }
   }
 
@@ -128,7 +144,10 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
         "map_overlay"."country_codes"
         &&
         ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."permission_group")::TEXT)
+          SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->r.permission_group)::TEXT)
+          FROM (SELECT unnest(permission_groups) AS permission_group
+                FROM map_overlay_group_relation mogr
+                WHERE mogr.child_id = "map_overlay".id) r
         )
       )
       -- For project level overlays, pull the country codes from the child entities and check that there is
@@ -147,7 +166,10 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
         )::TEXT[]
         &&
         ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."permission_group")::TEXT)
+          SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->r.permission_group)::TEXT)
+          FROM (SELECT unnest(permission_groups) AS permission_group
+                FROM map_overlay_group_relation mogr
+                WHERE mogr.child_id = "map_overlay".id) r
         )
       )
     )`,
