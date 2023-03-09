@@ -78,7 +78,7 @@ export const openBulkEditModal = (
 };
 
 export const openEditModal = (
-  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {} },
+  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {}, isLoading = false },
   recordId,
 ) => async (dispatch, getState, { api }) => {
   // Open the modal instantly
@@ -90,6 +90,7 @@ export const openEditModal = (
     recordData: {},
     endpoint: editEndpoint,
     extraDialogProps,
+    isLoading,
   });
 
   // And then fetch data / set default field values for edit/new respectively

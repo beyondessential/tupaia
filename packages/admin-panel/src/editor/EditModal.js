@@ -67,6 +67,7 @@ export const EditModalComponent = ({
           )}
           {FieldsComponent && (
             <FieldsComponent
+              isLoading={isLoading}
               recordData={recordData}
               onEditField={(fieldSource, newValue) => {
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);

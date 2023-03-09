@@ -6,10 +6,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FlexStart as BaseFlexStart } from '@tupaia/ui-components';
 
 import { ParametersType } from '../editing/types';
 import { FilterTypeOptions } from './filters';
-import { FlexStart as BaseFlexStart } from '../../Layout';
 
 const Grid = styled.div`
   width: 200px;
@@ -20,20 +20,20 @@ const FlexStart = styled(BaseFlexStart)`
   flex-wrap: wrap;
 `;
 
-export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
+export const PreviewFilters = ({ parameters, onChange, runtimeParameters }) => {
   return (
     <FlexStart>
       {parameters.map(p => {
-        const option = FilterTypeOptions.find(t => t.value === p.type);
+        const option = FilterTypeOptions.find(t => t.value === p?.config?.type);
         if (option) {
           const { FilterComponent } = option;
           return (
             <Grid key={p.id}>
               <FilterComponent
                 {...p}
-                haveTriedToFetch={haveTriedToFetch}
+                value={runtimeParameters[p.name]}
                 onChange={newValue => {
-                  onChange(p.id, 'inputFilterValue', newValue);
+                  onChange(p.name, newValue);
                 }}
               />
             </Grid>
@@ -48,7 +48,5 @@ export const PreviewFilters = ({ parameters, onChange, haveTriedToFetch }) => {
 PreviewFilters.propTypes = {
   parameters: ParametersType.isRequired,
   onChange: PropTypes.func.isRequired,
-  haveTriedToFetch: PropTypes.bool,
+  runtimeParameters: PropTypes.object.isRequired,
 };
-
-PreviewFilters.defaultProps = { haveTriedToFetch: true };

@@ -30,15 +30,10 @@ const buildOrgUnits = async (reqContext: ReqContext, data: Row[]) => {
   });
 };
 
-// TODO: This function no longer works as the analytics data-table doesn't return metadata (fix in RN-687)
-const buildDataElementCodeToName = async () => {
-  // return data.metadata?.dataElementCodeToName || {}; <-- old behaviour when pulling from data-broker
-  return {};
-};
+
 
 const contextBuilders: Record<ContextDependency, ContextBuilder<ContextDependency>> = {
   orgUnits: buildOrgUnits,
-  dataElementCodeToName: buildDataElementCodeToName,
 };
 
 function validateDependency(key: string): asserts key is keyof typeof contextBuilders {

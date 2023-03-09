@@ -20,7 +20,6 @@ export type ReqContext = {
 
 type Dependencies = {
   orgUnits?: { code: string; name: string; id: string; attributes: Record<string, any> }[];
-  dataElementCodeToName?: Record<string, string>;
 };
 export type ContextDependency = keyof Dependencies;
 
