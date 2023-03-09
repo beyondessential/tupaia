@@ -27,7 +27,8 @@ describe('rawDataExport', () => {
     });
   });
 
-  it('Add the rest of data elements that has no value into columns', async () => {
+  // legacy test from outputContext for raw data table output. Due to this being deprecated, now the output will behave exactly the same as rows and columns.
+  it('Does not add the rest of data elements that has no value into columns', async () => {
     const expectedData = {
       columns: [
         {
@@ -36,19 +37,11 @@ describe('rawDataExport', () => {
         },
         {
           key: 'dataElement_A',
-          title: 'Laos',
+          title: 'dataElement_A',
         },
         {
           key: 'dataElement_B',
-          title: 'Tonga',
-        },
-        {
-          key: 'dataElement_C',
-          title: 'Australia',
-        },
-        {
-          key: 'dataElement_D',
-          title: 'New Zealand',
+          title: 'dataElement_B',
         },
       ],
       rows: [
@@ -75,11 +68,9 @@ describe('rawDataExport', () => {
     const config = {
       type: 'rawDataExport',
     };
-    const context = {
-      dataGroups: ['dataGroupCode'], // required
-    };
+
     const reportServerAggregator = new ReportServerAggregator(aggregator);
-    const output = buildOutput(config, context, reportServerAggregator);
+    const output = buildOutput(config, reportServerAggregator);
 
     const results = await output(
       TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT),
