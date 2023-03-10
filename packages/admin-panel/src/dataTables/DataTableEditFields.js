@@ -110,7 +110,7 @@ export const DataTableEditFields = React.memo(
       if (newType === DataTableType.sql) {
         onEditField('config', {
           sql: "SELECT * FROM analytics WHERE entity_code = 'DL';",
-          externalDatabaseConnectionCode: 'analytics_demo_land',
+          externalDatabaseConnectionCode: null,
           additionalParameters: [],
         });
       } else {
