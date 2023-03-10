@@ -5,7 +5,13 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Select, TextField, DataTable, FetchLoader } from '@tupaia/ui-components';
+import {
+  Select,
+  TextField,
+  DataTable,
+  FetchLoader,
+  Autocomplete as UIAutocomplete,
+} from '@tupaia/ui-components';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
@@ -14,7 +20,7 @@ import { PreviewFilters } from './components/PreviewFilters';
 import { Autocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
 import { useParameters } from './useParameters';
-import { useDataTablePreview } from './query';
+import { useDataTablePreview, useExternalDatabaseConnections } from './query';
 import { getColumns } from '../utilities';
 import { PlayButton } from './PlayButton';
 
@@ -57,6 +63,7 @@ export const DataTableEditFields = React.memo(
 
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
+    const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
       additionalParameters,
       runtimeParameters,
@@ -176,17 +183,21 @@ export const DataTableEditFields = React.memo(
             </FieldWrapper>
             <FieldWrapper>
               {recordData?.type === DataTableType.sql && (
-                <Autocomplete
+                <UIAutocomplete
+                  options={externalDatabaseConnections}
                   label="Database Connection"
-                  onChange={selectedValues =>
-                    onSqlConfigChange('externalDatabaseConnectionCode', selectedValues)
+                  onChange={(event, selectedValues) =>
+                    onSqlConfigChange('externalDatabaseConnectionCode', selectedValues?.code)
                   }
                   placeholder={recordData?.config?.externalDatabaseConnectionCode}
-                  id="config.externalDatabaseConnectionCode"
-                  reduxId="dataTableEditFields-external_database_connections"
-                  endpoint="externalDatabaseConnections"
-                  optionLabelKey="name"
-                  optionValueKey="code"
+                  getOptionSelected={(option, selected) => option.code === selected.code}
+                  getOptionLabel={option => option?.name || ''}
+                  value={
+                    externalDatabaseConnections.find(
+                      connection =>
+                        connection.code === recordData?.config?.externalDatabaseConnectionCode,
+                    ) || {}
+                  }
                 />
               )}
             </FieldWrapper>

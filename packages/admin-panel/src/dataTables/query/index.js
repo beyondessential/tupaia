@@ -4,3 +4,4 @@
  */
 
 export * from './useDataTablePreview';
+export * from './useExternalDatabaseConnections';
