@@ -4,6 +4,4 @@
  *
  */
 
-export * from './schemas';
-export * from './types';
-export * from './utils';
+export type CssColor = string; // e.g. green or #abc123

@@ -5,10 +5,8 @@
 
 import { CamelKeysToSnake, LegacyReport, Report, VizData } from '../types';
 
-type VizType = 'view' | 'chart' | 'matrix';
-
+// TODO: use DashboardItem['config']
 type Presentation = Record<string, unknown> & {
-  readonly type: VizType;
   readonly output: Record<string, unknown>;
 };
 
@@ -49,7 +47,7 @@ export type UpsertDashboard = NewDashboard | Dashboard;
 export type DashboardItem = {
   id: string;
   code: string;
-  config: { name?: string } & { type: VizType } & Record<string, unknown>;
+  config: { name?: string } & Record<string, unknown>;
   reportCode: string;
   legacy: boolean;
 };

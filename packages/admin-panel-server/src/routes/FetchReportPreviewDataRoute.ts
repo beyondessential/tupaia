@@ -14,8 +14,8 @@ import {
   draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
-  VIZ_TYPE_PARAM,
-  VizType,
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DashboardItemOrMapOverlayParam,
 } from '../viz-builder';
 import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
@@ -31,7 +31,7 @@ export type FetchReportPreviewDataRequest = Request<
     hierarchy: string;
     permissionGroup?: string;
     previewMode?: PreviewMode;
-    vizType: VizType;
+    dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam;
   }
 >;
 
@@ -76,18 +76,21 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
   };
 
   private getReportConfig = () => {
-    const { previewMode, vizType } = this.req.query;
+    const { previewMode, dashboardItemOrMapOverlay } = this.req.query;
     const { previewConfig, testData } = this.req.body;
 
-    const extractor = this.getVizExtractor(vizType, previewConfig);
+    const extractor = this.getVizExtractor(dashboardItemOrMapOverlay, previewConfig);
 
     extractor.setReportValidatorContext({ testData });
 
     return extractor.getReport(previewMode).config;
   };
 
-  private getVizExtractor = (vizType: VizType, previewConfig: Record<string, unknown>) => {
-    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+  private getVizExtractor = (
+    dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam,
+    previewConfig: Record<string, unknown>,
+  ) => {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
       return new DashboardVisualisationExtractor(
         previewConfig,
         draftDashboardItemValidator,
@@ -95,7 +98,7 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
       );
     }
 
-    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
       return new MapOverlayVisualisationExtractor(
         previewConfig,
         draftMapOverlayValidator,
@@ -104,7 +107,9 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
     }
 
     throw new Error(
-      `Unknown viz type: ${vizType}, must be one of: [${Object.values(VIZ_TYPE_PARAM)}]`,
+      `Unknown param dashboardItemOrMapOverlay: ${dashboardItemOrMapOverlay}, must be one of: [${Object.values(
+        DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+      )}]`,
     );
   };
 }
