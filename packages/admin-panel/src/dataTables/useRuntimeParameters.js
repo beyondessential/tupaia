@@ -5,29 +5,29 @@
 
 import { useCallback } from 'react';
 
-export const useRuntimeParameters = ({ runtimeParameters, setRuntimeParameters }) => {
-  const upsertRuntimeParameter = useCallback((key, value) => {
-    const newRuntimeParameters = { ...runtimeParameters };
-    newRuntimeParameters[key] = value;
-    setRuntimeParameters(newRuntimeParameters);
+export const useRuntimeParameters = ({ runtimeParams, setRuntimeParams }) => {
+  const upsertRuntimeParam = useCallback((key, value) => {
+    const newRuntimeParams = { ...runtimeParams };
+    newRuntimeParams[key] = value;
+    setRuntimeParams(newRuntimeParams);
   });
 
-  const removeRuntimeParameter = useCallback(keyToRemove => {
-    const newRuntimeParameters = Object.fromEntries(
-      Object.entries(runtimeParameters).filter(([key]) => key !== keyToRemove),
+  const removeRuntimeParam = useCallback(keyToRemove => {
+    const newRuntimeParams = Object.fromEntries(
+      Object.entries(runtimeParams).filter(([key]) => key !== keyToRemove),
     );
-    setRuntimeParameters(newRuntimeParameters);
+    setRuntimeParams(newRuntimeParams);
   });
 
-  const renameRuntimeParameter = useCallback((oldName, newName) => {
-    const value = runtimeParameters[oldName];
-    removeRuntimeParameter(oldName);
-    upsertRuntimeParameter(newName, value);
+  const renameRuntimeParam = useCallback((oldName, newName) => {
+    const value = runtimeParams[oldName];
+    removeRuntimeParam(oldName);
+    upsertRuntimeParam(newName, value);
   });
 
   return {
-    upsertRuntimeParameter,
-    removeRuntimeParameter,
-    renameRuntimeParameter,
+    upsertRuntimeParam,
+    removeRuntimeParam,
+    renameRuntimeParam,
   };
 };

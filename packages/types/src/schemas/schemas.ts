@@ -3044,7 +3044,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 
 export const DataTablePreviewRequestSchema = {
 	"properties": {
-		"runtimeParameters": {
+		"runtimeParams": {
 			"type": "object"
 		},
 		"code": {
@@ -3081,7 +3081,7 @@ export const DataTablePreviewRequestSchema = {
 		"code",
 		"id",
 		"permission_groups",
-		"runtimeParameters",
+		"runtimeParams",
 		"type"
 	]
 } 

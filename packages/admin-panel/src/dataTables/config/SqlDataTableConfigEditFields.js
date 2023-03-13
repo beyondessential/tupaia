@@ -14,10 +14,10 @@ import { useSqlEditor } from '../useSqlEditor';
 export const SqlDataTableConfigEditFields = ({
   onEditField,
   recordData,
-  additionalParameters,
-  onParametersAdd,
-  onParametersDelete,
-  onParametersChange,
+  additionalParams,
+  onParamsAdd,
+  onParamsDelete,
+  onParamsChange,
 }) => {
   const { sql, setSql } = useSqlEditor({ onEditField, recordData });
 
@@ -37,22 +37,22 @@ export const SqlDataTableConfigEditFields = ({
         <Grid container spacing={1}>
           <Grid item xs={8}>
             <SQLQueryEditor
-              customKeywords={additionalParameters.map(p => p.name)}
+              customKeywords={additionalParams.map(p => p.name)}
               onChange={setSql}
               value={sql}
             />
           </Grid>
           <Grid item xs={4}>
-            <ParameterList onAdd={onParametersAdd}>
-              {additionalParameters.map(({ id, config, ...other }) => {
+            <ParameterList onAdd={onParamsAdd}>
+              {additionalParams.map(({ id, config, ...other }) => {
                 return (
                   <ParameterItem
                     key={id}
                     id={id}
                     {...config}
                     {...other}
-                    onDelete={onParametersDelete}
-                    onChange={onParametersChange}
+                    onDelete={onParamsDelete}
+                    onChange={onParamsChange}
                   />
                 );
               })}
@@ -65,10 +65,10 @@ export const SqlDataTableConfigEditFields = ({
 };
 
 SqlDataTableConfigEditFields.propTypes = {
-  additionalParameters: PropTypes.array.isRequired,
+  additionalParams: PropTypes.array.isRequired,
   onEditField: PropTypes.func.isRequired,
-  onParametersAdd: PropTypes.func.isRequired,
-  onParametersChange: PropTypes.func.isRequired,
-  onParametersDelete: PropTypes.func.isRequired,
+  onParamsAdd: PropTypes.func.isRequired,
+  onParamsChange: PropTypes.func.isRequired,
+  onParamsDelete: PropTypes.func.isRequired,
   recordData: PropTypes.object.isRequired,
 };

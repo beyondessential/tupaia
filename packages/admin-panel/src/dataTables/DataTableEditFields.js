@@ -65,19 +65,19 @@ export const DataTableEditFields = React.memo(
     const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
-      additionalParameters,
-      runtimeParameters,
-      upsertRuntimeParameter,
-      onParametersAdd,
-      onParametersDelete,
-      onParametersChange,
+      additionalParams,
+      runtimeParams,
+      upsertRuntimeParam,
+      onParamsAdd,
+      onParamsDelete,
+      onParamsChange,
     } = useParameters({
       onEditField,
       recordData,
     });
 
     useEffect(() => {
-      const hasError = recordData?.config?.additionalParameters?.some(p => p.hasError);
+      const hasError = recordData?.config?.additionalParams?.some(p => p.hasError);
       setFetchDisabled(hasError === undefined ? false : !!hasError);
     }, [JSON.stringify(recordData)]);
 
@@ -90,7 +90,7 @@ export const DataTableEditFields = React.memo(
       error,
     } = useDataTablePreview({
       previewConfig: recordData,
-      runtimeParameters,
+      runtimeParams,
       onSettled: () => {
         setFetchDisabled(false);
       },
@@ -111,7 +111,7 @@ export const DataTableEditFields = React.memo(
         onEditField('config', {
           sql: "SELECT * FROM analytics WHERE entity_code = 'DL';",
           externalDatabaseConnectionCode: null,
-          additionalParameters: [],
+          additionalParams: [],
         });
       } else {
         onEditField('config', {});
@@ -208,10 +208,10 @@ export const DataTableEditFields = React.memo(
           <ConfigComponent
             onEditField={onEditField}
             recordData={recordData}
-            additionalParameters={additionalParameters}
-            onParametersAdd={onParametersAdd}
-            onParametersDelete={onParametersDelete}
-            onParametersChange={onParametersChange}
+            additionalParams={additionalParams}
+            onParamsAdd={onParamsAdd}
+            onParamsDelete={onParamsDelete}
+            onParamsChange={onParamsChange}
           />
         ) : (
           <Accordion defaultExpanded>
@@ -225,9 +225,9 @@ export const DataTableEditFields = React.memo(
             <Grid container spacing={2}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <PreviewFilters
-                  parameters={additionalParameters}
-                  onChange={upsertRuntimeParameter}
-                  runtimeParameters={runtimeParameters}
+                  params={additionalParams}
+                  onChange={upsertRuntimeParam}
+                  runtimeParams={runtimeParams}
                 />
                 <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
               </div>

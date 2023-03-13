@@ -6,8 +6,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRuntimeParameters } from './useRuntimeParameters';
 
-const convertRecordDataToFronendConfig = (additionalParameters = []) => {
-  return additionalParameters.map((p, index) => ({
+const convertRecordDataToFronendConfig = (additionalParams = []) => {
+  return additionalParams.map((p, index) => ({
     ...p,
     id: `parameter_${index}`,
   }));
@@ -15,46 +15,45 @@ const convertRecordDataToFronendConfig = (additionalParameters = []) => {
 
 export const useParameters = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
-  const [additionalParameters, setAdditionalParameters] = useState([]);
-  const [runtimeParameters, setRuntimeParameters] = useState({});
+  const [additionalParams, setAdditionalParams] = useState([]);
+  const [runtimeParams, setRuntimeParams] = useState({});
 
-  const {
-    upsertRuntimeParameter,
-    renameRuntimeParameter,
-    removeRuntimeParameter,
-  } = useRuntimeParameters({ runtimeParameters, setRuntimeParameters });
+  const { upsertRuntimeParam, renameRuntimeParam, removeRuntimeParam } = useRuntimeParameters({
+    runtimeParams,
+    setRuntimeParams,
+  });
 
   useEffect(() => {
-    const newAdditionalParameters = convertRecordDataToFronendConfig(config.additionalParameters);
-    setAdditionalParameters(newAdditionalParameters);
-    const defaultRuntimeParameters = Object.fromEntries(
-      newAdditionalParameters.map(p => [p.name, undefined]),
+    const newAdditionalParams = convertRecordDataToFronendConfig(config.additionalParams);
+    setAdditionalParams(newAdditionalParams);
+    const defaultRuntimeParams = Object.fromEntries(
+      newAdditionalParams.map(p => [p.name, undefined]),
     );
-    setRuntimeParameters(defaultRuntimeParameters);
+    setRuntimeParams(defaultRuntimeParams);
   }, [JSON.stringify(config)]);
 
-  const onParametersAdd = useCallback(() => {
-    const defaultNewParameter = {
-      id: `parameter_${additionalParameters.length}`,
+  const onParamsAdd = useCallback(() => {
+    const defaultNewParam = {
+      id: `parameter_${additionalParams.length}`,
     };
 
     onEditField('config', {
       ...config,
-      additionalParameters: [...additionalParameters, defaultNewParameter],
+      additionalParams: [...additionalParams, defaultNewParam],
     });
   });
 
-  const onParametersDelete = useCallback(selectedParameterId => {
-    const newParameterList = additionalParameters.filter(p => p.id !== selectedParameterId);
-    onEditField('config', { ...config, additionalParameters: newParameterList });
+  const onParamsDelete = useCallback(selectedParameterId => {
+    const newParameterList = additionalParams.filter(p => p.id !== selectedParameterId);
+    onEditField('config', { ...config, additionalParams: newParameterList });
 
-    const parameterToRemove = additionalParameters.find(p => p.id === selectedParameterId);
-    removeRuntimeParameter(parameterToRemove.name);
+    const parameterToRemove = additionalParams.find(p => p.id === selectedParameterId);
+    removeRuntimeParam(parameterToRemove.name);
   });
 
-  const onParametersChange = useCallback((id, key, newValue) => {
-    const newParameters = [...additionalParameters];
-    const index = additionalParameters.findIndex(p => p.id === id);
+  const onParamsChange = useCallback((id, key, newValue) => {
+    const newParams = [...additionalParams];
+    const index = additionalParams.findIndex(p => p.id === id);
 
     switch (key) {
       case 'name': {
@@ -63,7 +62,7 @@ export const useParameters = ({ recordData, onEditField }) => {
             throw new Error('Cannot be empty');
           }
 
-          if (additionalParameters.findIndex(p => p.name === newValue) !== -1) {
+          if (additionalParams.findIndex(p => p.name === newValue) !== -1) {
             throw new Error('Duplicated parameter name');
           }
 
@@ -73,41 +72,41 @@ export const useParameters = ({ recordData, onEditField }) => {
             throw new Error('Contains space or special characters');
           }
 
-          newParameters[index].hasError = false;
-          newParameters[index].error = '';
+          newParams[index].hasError = false;
+          newParams[index].error = '';
         } catch (e) {
-          newParameters[index].hasError = true;
-          newParameters[index].error = e.message;
+          newParams[index].hasError = true;
+          newParams[index].error = e.message;
         } finally {
-          const oldName = newParameters[index].name;
-          newParameters[index].name = newValue;
-          renameRuntimeParameter(oldName, newValue);
+          const oldName = newParams[index].name;
+          newParams[index].name = newValue;
+          renameRuntimeParam(oldName, newValue);
         }
         break;
       }
       case 'type': {
-        const { name } = newParameters[index];
-        upsertRuntimeParameter(name, undefined);
+        const { name } = newParams[index];
+        upsertRuntimeParam(name, undefined);
         const newConfig = { type: newValue };
-        newParameters[index].config = newConfig;
+        newParams[index].config = newConfig;
         break;
       }
       default: {
-        const newConfig = { ...newParameters[index].config, [key]: newValue };
-        newParameters[index].config = newConfig;
+        const newConfig = { ...newParams[index].config, [key]: newValue };
+        newParams[index].config = newConfig;
         break;
       }
     }
 
-    onEditField('config', { ...config, additionalParameters: newParameters });
+    onEditField('config', { ...config, additionalParams: newParams });
   });
 
   return {
-    additionalParameters,
-    onParametersAdd,
-    onParametersDelete,
-    onParametersChange,
-    runtimeParameters,
-    upsertRuntimeParameter,
+    additionalParams,
+    onParamsAdd,
+    onParamsDelete,
+    onParamsChange,
+    runtimeParams,
+    upsertRuntimeParam,
   };
 };
