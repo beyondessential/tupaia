@@ -27,8 +27,7 @@ describe('rawDataExport', () => {
     });
   });
 
-  // legacy test from outputContext for raw data table output. Due to this being deprecated, now the output will behave exactly the same as rows and columns.
-  it('Does not add the rest of data elements that has no value into columns', async () => {
+  it('returns columns with an array of objects (key, title) and rows', async () => {
     const expectedData = {
       columns: [
         {
