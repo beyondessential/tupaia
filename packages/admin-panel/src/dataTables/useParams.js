@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import { useFetchDataTableBuiltInParams } from './query/useFetchDataTableBuiltInParams';
 import { useRuntimeParams } from './useRuntimeParams';
 
 const convertRecordDataToFronendConfig = (additionalParams = []) => {
@@ -14,6 +15,7 @@ const convertRecordDataToFronendConfig = (additionalParams = []) => {
 };
 
 export const useParams = ({ recordData, onEditField }) => {
+  const { data: builtInParams = [] } = useFetchDataTableBuiltInParams(recordData.type);
   const { config = {} } = recordData;
   const [additionalParams, setAdditionalParams] = useState([]);
   const [runtimeParams, setRuntimeParams] = useState({});
@@ -27,10 +29,10 @@ export const useParams = ({ recordData, onEditField }) => {
     const newAdditionalParams = convertRecordDataToFronendConfig(config.additionalParams);
     setAdditionalParams(newAdditionalParams);
     const defaultRuntimeParams = Object.fromEntries(
-      newAdditionalParams.map(p => [p.name, undefined]),
+      [...newAdditionalParams, ...builtInParams].map(p => [p.name, undefined]),
     );
     setRuntimeParams(defaultRuntimeParams);
-  }, [JSON.stringify(config)]);
+  }, [JSON.stringify(config), recordData.type]);
 
   const onParamsAdd = useCallback(() => {
     const defaultNewParam = {
@@ -102,6 +104,7 @@ export const useParams = ({ recordData, onEditField }) => {
   });
 
   return {
+    builtInParams,
     additionalParams,
     onParamsAdd,
     onParamsDelete,

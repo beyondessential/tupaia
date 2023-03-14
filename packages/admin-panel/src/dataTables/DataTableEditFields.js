@@ -65,6 +65,7 @@ export const DataTableEditFields = React.memo(
     const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
+      builtInParams,
       additionalParams,
       runtimeParams,
       upsertRuntimeParam,
@@ -90,6 +91,8 @@ export const DataTableEditFields = React.memo(
       error,
     } = useDataTablePreview({
       previewConfig: recordData,
+      builtInParams,
+      additionalParams,
       runtimeParams,
       onSettled: () => {
         setFetchDisabled(false);
@@ -225,7 +228,7 @@ export const DataTableEditFields = React.memo(
             <Grid container spacing={2}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <PreviewFilters
-                  params={additionalParams}
+                  params={[...additionalParams, ...builtInParams]}
                   onChange={upsertRuntimeParam}
                   runtimeParams={runtimeParams}
                 />

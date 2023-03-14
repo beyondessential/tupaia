@@ -6,10 +6,10 @@ import { useQuery } from 'react-query';
 import { post } from '../../VizBuilderApp/api/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
-const assignDefaultValueToRuntimeParam = (previewConfig, runtimeParams) => {
+const assignDefaultValueToRuntimeParam = ({ builtInParams, additionalParams, runtimeParams }) => {
   const newRuntimeParams = { ...runtimeParams };
-  const { additionalParams } = previewConfig?.config;
-  additionalParams.forEach(p => {
+
+  [...builtInParams, ...additionalParams].forEach(p => {
     const runtimeParameterValue = runtimeParams[p.name];
     if (
       p?.config?.hasDefaultValue &&
@@ -24,15 +24,25 @@ const assignDefaultValueToRuntimeParam = (previewConfig, runtimeParams) => {
   return newRuntimeParams;
 };
 
-export const useDataTablePreview = ({ previewConfig, runtimeParams, onSettled }) =>
+export const useDataTablePreview = ({
+  previewConfig,
+  builtInParams,
+  additionalParams,
+  runtimeParams,
+  onSettled,
+}) =>
   useQuery(
-    ['fetchDataTablePreviewData', previewConfig],
+    ['fetchDataTablePreviewData'],
     async () => {
       const response = await post('fetchDataTablePreviewData', {
         data: {
           previewConfig: {
             ...previewConfig,
-            runtimeParams: assignDefaultValueToRuntimeParam(previewConfig, runtimeParams),
+            runtimeParams: assignDefaultValueToRuntimeParam({
+              builtInParams,
+              additionalParams,
+              runtimeParams,
+            }),
           },
         },
       });
