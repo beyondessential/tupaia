@@ -42,7 +42,6 @@ export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
   const context: Context = {
     request: reqContext,
     dependencies: [],
-    outputContext: {},
   };
 
   return context;

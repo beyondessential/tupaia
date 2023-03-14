@@ -82,25 +82,12 @@ export const updateContext = async (context: Context, data: Row[]): Promise<Cont
   return context;
 };
 
-export const updateOutputContext = async (
-  context: Context,
-  dataGroups?: string[],
-): Promise<Context> => {
-  if (!context.outputContext.dataGroups) {
-    context.outputContext.dataGroups = dataGroups;
-  } else {
-    context.outputContext.dataGroups.push(...(dataGroups || []));
-  }
-
-  return context;
-};
-
 export const buildContext = async (
   transform: unknown,
   reqContext: ReqContext,
 ): Promise<Context> => {
   const dependencies = detectDependencies(transform);
 
-  const context: Context = { request: reqContext, dependencies, outputContext: {} };
+  const context: Context = { request: reqContext, dependencies };
   return context;
 };

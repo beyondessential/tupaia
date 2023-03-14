@@ -8,7 +8,6 @@ import { yup } from '@tupaia/utils';
 import { ReportServerAggregator } from '../../aggregator';
 import { TransformTable } from '../transform';
 import { outputBuilders } from './functions/outputBuilders';
-import { OutputContext } from './types';
 
 type OutputParams = {
   type: keyof typeof outputBuilders;
@@ -24,12 +23,11 @@ const paramsValidator = yup.object().shape({
 const output = (
   table: TransformTable,
   params: OutputParams,
-  outputContext: OutputContext,
   aggregator: ReportServerAggregator,
 ) => {
   const { type, config } = params;
 
-  const outputBuilder = outputBuilders[type](config, outputContext);
+  const outputBuilder = outputBuilders[type](config);
   return outputBuilder(table, aggregator);
 };
 
@@ -39,11 +37,7 @@ const buildParams = (params: unknown): OutputParams => {
   return { type, config: restOfParams };
 };
 
-export const buildOutput = (
-  params: unknown,
-  outputContext: OutputContext,
-  aggregator: ReportServerAggregator,
-) => {
+export const buildOutput = (params: unknown, aggregator: ReportServerAggregator) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => output(table, builtParams, outputContext, aggregator);
+  return (table: TransformTable) => output(table, builtParams, aggregator);
 };
