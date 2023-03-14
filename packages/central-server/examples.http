@@ -1,0 +1,43 @@
+@hostname = localhost
+@port = 8090
+@host = {{hostname}}:{{port}}
+@version = v2
+
+@contentType = application/json
+@client-authorization  = Basic meditrak_client:{{meditrak-client-password}}
+
+### Login
+# @name login
+POST http://{{host}}/{{version}}/auth HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{client-authorization}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}",
+    "deviceName": "test"
+}
+
+### Set refresh token
+
+@refreshToken = {{login.response.body.refreshToken}}
+
+### Refresh Token
+
+POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
+content-type: {{contentType}}
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
+
+### Set tokens
+
+@accessToken = {{login.response.body.accessToken}}
+@user-authorization = Bearer {{accessToken}}
+
+### /dashboardItems
+GET http://{{host}}/{{version}}/dashboardItems HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
