@@ -48,7 +48,11 @@ describe('KoBoService', () => {
   });
 
   describe('pullMetadata()', () => {
-    it('throws an error', () =>
-      expect(koboService.pullMetadata()).toBeRejectedWith('not supported'));
+    const dataServiceMapping = new DataServiceMapping();
+
+    it('default implementation', () =>
+      expect(koboService.pullMetadata([], 'dataElement', { dataServiceMapping })).resolves.toEqual(
+        [],
+      ));
   });
 });

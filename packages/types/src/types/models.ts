@@ -8,6 +8,7 @@
  * Rerun generate:models to recreate this file.
  */
 import { ReportConfig } from './models-extra';
+import { DashboardItemConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -115,7 +116,7 @@ export interface Dashboard {
 }
 export interface DashboardItem {
   'code': string;
-  'config'?: any;
+  'config'?: DashboardItemConfig;
   'id': string;
   'legacy'?: boolean;
   'reportCode'?: string | null;
@@ -175,7 +176,7 @@ export interface DataTable {
   'description'?: string | null;
   'id': string;
   'permissionGroups'?: string[];
-  'type': DataTableType;
+  'type'?: DataTableType | null;
 }
 export interface DhisInstance {
   'code': string;
@@ -613,6 +614,9 @@ export enum EntityType {
   'incident_reported' = 'incident_reported',
   'fiji_aspen_facility' = 'fiji_aspen_facility',
   'wish_sub_district' = 'wish_sub_district',
+  'trap' = 'trap',
+  'asset' = 'asset',
+  'institute' = 'institute',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
@@ -627,7 +631,11 @@ export enum DisasterEventType {
   'resolve' = 'resolve',
 }
 export enum DataTableType {
-  'internal' = 'internal',
+  'analytics' = 'analytics',
+  'events' = 'events',
+  'entity_relations' = 'entity_relations',
+  'entities' = 'entities',
+  'sql' = 'sql',
 }
 export enum DataSourceType {
   'dataElement' = 'dataElement',

@@ -223,7 +223,7 @@ export class MatrixWrapper extends Component {
 
   renderPeriodSelector() {
     const { viewContent } = this.props;
-    const { periodGranularity } = viewContent;
+    const { periodGranularity, weekDisplayFormat } = viewContent;
     const { isLoading } = this.state;
 
     if (!periodGranularity) {
@@ -242,6 +242,7 @@ export class MatrixWrapper extends Component {
           min={datePickerLimits.startDate}
           max={datePickerLimits.endDate}
           isLoading={isLoading}
+          weekDisplayFormat={weekDisplayFormat}
         />
       </div>
     );

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import { addMomentOffset } from '@tupaia/utils';
+import { WEEK_DISPLAY_CONFIG, WEEK_DISPLAY_FORMATS } from './weekDisplayFormats';
 
 export const DEFAULT_MIN_DATE = '20150101';
 
@@ -33,10 +34,7 @@ const CONFIG = {
     momentUnit: 'day',
   },
   [WEEK]: {
-    chartFormat: 'D MMM YYYY',
-    rangeFormat: '[W/C] D MMM YYYY',
-    pickerFormat: '[W/C] D MMM YYYY',
-    urlFormat: '[Week_Starting]_D_MMM_YYYY',
+    ...WEEK_DISPLAY_CONFIG[WEEK_DISPLAY_FORMATS.WEEK_COMMENCING_ABBR],
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
   },
@@ -140,10 +138,25 @@ export const roundStartEndDates = (granularity, startDate, endDate) => ({
   endDate: roundEndDate(granularity, endDate),
 });
 
-export const momentToDateString = (date, granularity, format) =>
-  granularity === WEEK || granularity === SINGLE_WEEK
-    ? date.clone().startOf('W').format(format)
-    : date.clone().format(format);
+/**
+ * @param date
+ * @param granularity
+ * @param format
+ * @param {'startOfWeek' | 'endOfWeek' | undefined} modifier
+ * @return {*}
+ */
+export const momentToDateString = (date, granularity, format, modifier) => {
+  // Use the explicit modifier passed in, otherwise fall back to the default modifier of the granularity
+  const mod = modifier ?? GRANULARITY_CONFIG[granularity].modifier ?? null;
+  switch (mod) {
+    case 'startOfWeek':
+      return date.clone().startOf('W').format(format);
+    case 'endOfWeek':
+      return date.clone().endOf('W').format(format);
+    default:
+      return date.clone().format(format);
+  }
+};
 
 /**
  * Get default dates for start and end period of single date period granularities,

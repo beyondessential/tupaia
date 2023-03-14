@@ -15,6 +15,10 @@ export interface DataElementMetadata {
   name: string;
 }
 
+export interface DhisMetadataObject extends DataElementMetadata {
+  id: string;
+}
+
 export interface DataGroupMetadata {
   code: string;
   name: string;
@@ -68,3 +72,8 @@ export interface Diagnostics {
   errors: string[];
   wasSuccessful: boolean;
 }
+
+export type Metadata = {
+  code: string;
+  [key: string]: any; // any metadata
+};

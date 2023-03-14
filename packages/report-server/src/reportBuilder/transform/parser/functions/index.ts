@@ -4,12 +4,18 @@
  */
 
 import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
-import { orgUnitCodeToName, dataElementCodeToName, orgUnitIdToCode, orgUnitAttribute } from "./context";
+import {
+  orgUnitCodeToName,
+  dataElementCodeToName,
+  orgUnitIdToCode,
+  orgUnitAttribute,
+} from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  periodToMoment,
   formatAsFractionAndPercentage,
 } from './utils';
 import { add, divide, sum, mean } from './math';
@@ -30,6 +36,7 @@ export const customFunctions = {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  periodToMoment,
   formatAsFractionAndPercentage,
   any,
   all,

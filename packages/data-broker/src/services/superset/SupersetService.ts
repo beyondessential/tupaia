@@ -58,10 +58,6 @@ export class SupersetService extends Service {
     return puller(dataSources, options);
   }
 
-  public async pullMetadata(): Promise<never> {
-    throw new Error('pullMetadata is not supported in SupersetService');
-  }
-
   private async pullAnalytics(
     dataSources: DataElement[],
     options: PullOptions,
