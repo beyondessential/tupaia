@@ -41,4 +41,12 @@ export class MockDataTableApi implements DataTableApiInterface {
   }> {
     throw new Error('Method not implemented.');
   }
+
+  public getBuiltInParameters(
+    dataTableType: string,
+  ): Promise<{
+    parameters: { name: string; config: Record<string, unknown> }[];
+  }> {
+    throw new Error('Method not implemented.');
+  }
 }

@@ -94,3 +94,12 @@ Authorization: {{authorization}}
 GET http://{{host}}/{{version}}/dataTable/analytics/parameters HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+### Get parameters for analytics data-table by configs
+POST http://{{host}}/{{version}}/dataTable/builtInParameters HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+  "type": "analytics"
+}
