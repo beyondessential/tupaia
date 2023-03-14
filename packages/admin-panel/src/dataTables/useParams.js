@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { useRuntimeParameters } from './useRuntimeParameters';
+import { useRuntimeParams } from './useRuntimeParams';
 
 const convertRecordDataToFronendConfig = (additionalParams = []) => {
   return additionalParams.map((p, index) => ({
@@ -13,12 +13,12 @@ const convertRecordDataToFronendConfig = (additionalParams = []) => {
   }));
 };
 
-export const useParameters = ({ recordData, onEditField }) => {
+export const useParams = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
   const [additionalParams, setAdditionalParams] = useState([]);
   const [runtimeParams, setRuntimeParams] = useState({});
 
-  const { upsertRuntimeParam, renameRuntimeParam, removeRuntimeParam } = useRuntimeParameters({
+  const { upsertRuntimeParam, renameRuntimeParam, removeRuntimeParam } = useRuntimeParams({
     runtimeParams,
     setRuntimeParams,
   });

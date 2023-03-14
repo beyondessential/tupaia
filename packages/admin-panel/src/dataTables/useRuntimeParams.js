@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react';
 
-export const useRuntimeParameters = ({ runtimeParams, setRuntimeParams }) => {
+export const useRuntimeParams = ({ runtimeParams, setRuntimeParams }) => {
   const upsertRuntimeParam = useCallback((key, value) => {
     const newRuntimeParams = { ...runtimeParams };
     newRuntimeParams[key] = value;

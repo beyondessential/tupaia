@@ -19,7 +19,7 @@ import { DataTableType } from '@tupaia/types';
 import { PreviewFilters } from './components/PreviewFilters';
 import { Autocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
-import { useParameters } from './useParameters';
+import { useParams } from './useParams';
 import { useDataTablePreview, useExternalDatabaseConnections } from './query';
 import { getColumns } from '../utilities';
 import { PlayButton } from './PlayButton';
@@ -71,7 +71,7 @@ export const DataTableEditFields = React.memo(
       onParamsAdd,
       onParamsDelete,
       onParamsChange,
-    } = useParameters({
+    } = useParams({
       onEditField,
       recordData,
     });
