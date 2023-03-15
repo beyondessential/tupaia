@@ -3,17 +3,16 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
-import { EntityType } from '../../../models';
-import { EntityServerModelRegistry } from '../../../types';
+import { EntityType } from '../../models';
+import { EntityServerModelRegistry } from '../../types';
+import { ResponseObjectBuilder } from '../utils';
 import {
   ExtendedEntityFieldName,
   FlattableEntityFieldName,
   EntityResponseObject,
   FlattenedEntity,
-} from '../types';
-import { extendedFieldFunctions, isExtendedField } from '../extendedFieldFunctions';
-import { EntityResponseObjectBuilder } from './EntityResponseObjectBuilder';
+} from './types';
+import { extendedFieldFunctions, isExtendedField } from './extendedFieldFunctions';
 
 type FormatContext = { hierarchyId: string; allowedCountries: string[] };
 
@@ -42,7 +41,7 @@ export async function formatEntityForResponse(
     return entity[field];
   }
   const fields = fieldOrFields;
-  const responseBuilder = new EntityResponseObjectBuilder();
+  const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
     if (isExtendedField(field)) {
@@ -92,9 +91,9 @@ export async function formatEntitiesForResponse(
     ? await models.ancestorDescendantRelation.getParentCodeToChildCodes(hierarchyId)
     : {};
 
-  const responseBuilders: EntityResponseObjectBuilder[] = new Array(entities.length)
+  const responseBuilders = new Array(entities.length)
     .fill(0)
-    .map(() => new EntityResponseObjectBuilder()); // fill array with empty objects
+    .map(() => new ResponseObjectBuilder<EntityResponseObject>()); // fill array with empty objects
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
     if (isExtendedField(field)) {
