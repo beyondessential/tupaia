@@ -11,7 +11,7 @@ const throwNoAccessError = (hierarchyName: string) => {
   throw new PermissionsError(`No access to requested hierarchy: ${hierarchyName}`);
 };
 
-export const attachCommonContext = async (
+export const attachCommonEntityContext = async (
   req: Request<{ hierarchyName: string }, any, any, { field?: string; fields?: string }> & {
     ctx: CommonContext;
   },

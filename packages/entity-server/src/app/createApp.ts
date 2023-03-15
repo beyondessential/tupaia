@@ -24,7 +24,7 @@ import {
   MultiEntityRelationshipsRoute,
 } from '../routes';
 import {
-  attachCommonContext,
+  attachCommonEntityContext,
   attachSingleEntityContext,
   attachMultiEntityContext,
 } from '../routes/hierarchy/middleware';
@@ -41,25 +41,25 @@ export function createApp(db = new TupaiaDatabase()) {
       // MultiEntity routes
       .post<MultiEntityRequest>(
         'hierarchy/:hierarchyName$',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityRoute),
       )
       .post<MultiEntityDescendantsRequest>(
         'hierarchy/:hierarchyName/descendants',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityDescendantsRoute),
       )
       .post<MultiEntityRelativesRequest>(
         'hierarchy/:hierarchyName/relatives',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityRelativesRoute),
       )
       .post<MultiEntityRelationshipsRequest>(
         'hierarchy/:hierarchyName/relationships',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         attachRelationshipsContext,
         handleWith(MultiEntityRelationshipsRoute),
@@ -68,25 +68,25 @@ export function createApp(db = new TupaiaDatabase()) {
       // SingleEntity routes
       .get<SingleEntityRequest>(
         'hierarchy/:hierarchyName/:entityCode',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         handleWith(SingleEntityRoute),
       )
       .get<DescendantsRequest>(
         'hierarchy/:hierarchyName/:entityCode/descendants',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         handleWith(EntityDescendantsRoute),
       )
       .get<RelativesRequest>(
         'hierarchy/:hierarchyName/:entityCode/relatives',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         handleWith(EntityRelativesRoute),
       )
       .get<RelationshipsRequest>(
         'hierarchy/:hierarchyName/:entityCode/relationships',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         attachRelationshipsContext,
         handleWith(EntityRelationshipsRoute),
