@@ -4,7 +4,7 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { Context, updateContext, updateOutputContext } from '../../../context';
+import { Context, updateContext } from '../../../context';
 import { Row } from '../../../types';
 import { createJoin } from './createJoin';
 import { TransformTable } from '../../table';
@@ -54,7 +54,6 @@ const fetchData = async (table: TransformTable, params: FetchParams, context: Co
 
   const jointRows = join(table.getRows(), newRows);
   await updateContext(context, jointRows); // TODO: Remove this in favour of using data-tables (RN-687)
-  await updateOutputContext(context, parameters.dataGroups as string[] | undefined); // TODO: Remove this in favour of using data-tables (RN-688)
 
   return new TransformTable([...existingColumns, ...newColumns], jointRows);
 };

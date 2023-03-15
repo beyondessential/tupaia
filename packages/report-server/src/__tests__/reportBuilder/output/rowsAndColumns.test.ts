@@ -22,9 +22,8 @@ describe('rowsAndColumns', () => {
     const config = {
       type: 'rowsAndColumns',
     };
-    const context = {};
     const reportServerAggregator = new ReportServerAggregator(aggregator);
-    const output = buildOutput(config, context, reportServerAggregator);
+    const output = buildOutput(config, reportServerAggregator);
 
     const results = await output(table);
     expect(results).toEqual(expectedData);
