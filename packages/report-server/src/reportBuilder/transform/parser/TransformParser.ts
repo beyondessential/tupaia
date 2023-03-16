@@ -76,12 +76,12 @@ export class TransformParser extends ExpressionParser {
       this.rows.forEach(row => addRowToLookup(row, this.lookups.all));
       addRowToLookup(this.lookups.current, this.lookups.allPrevious);
       this.addRowToScope(this.lookups.current);
-
-      Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
-        this.set(`@${lookupName}`, lookup);
-      });
       this.set('where', this.whereFunction); // no '@' prefix for where
     }
+
+    Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
+      this.set(`@${lookupName}`, lookup);
+    });
 
     this.context = context;
   }
