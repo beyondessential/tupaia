@@ -4,11 +4,7 @@
  */
 
 import { hasBESAdminAccess } from '../../permissions';
-
-const getPermissionListWithWildcard = async accessPolicy => {
-  const userPermissionGroups = accessPolicy.getPermissionGroups();
-  return ['*', ...userPermissionGroups];
-};
+import { getPermissionListWithWildcard } from '../utilities';
 
 export const assertDataElementGETPermissions = async (accessPolicy, models, dataElementId) => {
   // User requires access to any permission group

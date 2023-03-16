@@ -45,3 +45,4 @@ export {
 } from './translateSurveyResponseFields';
 export { translateObjectFields } from './translateObjectFields';
 export { getUserInfoInString } from './getUserInfoInString';
+export { getPermissionListWithWildcard } from './getPermissionListWithWildcard';
