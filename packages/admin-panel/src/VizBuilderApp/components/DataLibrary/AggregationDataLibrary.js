@@ -10,12 +10,27 @@ import { prefetchAggregationOptions, useSearchAggregationOptions } from '../../a
 import { AggregateSelectedOptionWithJsonEditor } from './component';
 
 // Converts internal value array to Viz config.aggregate data structure
-const aggregateToValue = aggregate =>
-  aggregate.map(({ id, type: code, ...restOfConfig }, index) => ({
-    id: id || `${code}-${index}`, // id used by drag and drop function
-    code,
-    ...restOfConfig,
-  }));
+const aggregateToValue = aggregate => {
+  const value = [];
+  let index = 0;
+  for (const agg of aggregate) {
+    if (typeof agg === 'string') {
+      value.push({
+        id: `${agg}-${index}`, // id used by drag and drop function
+        code: agg,
+      });
+    } else if (typeof agg === 'object') {
+      const { id, type: code, ...restOfConfig } = agg;
+      value.push({
+        id: id || `${code}-${index}`, // id used by drag and drop function
+        code,
+        ...restOfConfig,
+      });
+    }
+    index++;
+  }
+  return value;
+};
 
 const valueToAggregate = value =>
   value.map(({ id, code, isDisabled = false, ...restOfConfig }, index) => ({
