@@ -48,15 +48,11 @@ const dataElementMetaDataDataTableService = new DataTableServiceBuilder()
   .build();
 
 describe('DataElementMetaDataDataTableService', () => {
-  describe('parameter validation', () => {
-    const testData: [string, unknown, string][] = [
-      ['missing dataElementCodes', {}, 'dataElementCodes is a required field'],
-    ];
+  describe('accept no dataElementCodes', () => {
+    const testData: [string, unknown][] = [['accept no dataElementCodes', {}]];
 
-    it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      expect(() => dataElementMetaDataDataTableService.fetchData(parameters)).toThrow(
-        expectedError,
-      );
+    it.each(testData)('%s', async (_, parameters: unknown) => {
+      await expect(dataElementMetaDataDataTableService.fetchData(parameters)).resolves.toEqual([]);
     });
   });
 
@@ -67,11 +63,11 @@ describe('DataElementMetaDataDataTableService', () => {
         name: 'dataElementCodes',
         config: {
           type: 'array',
+          defaultValue: [],
           innerType: {
             type: 'string',
             required: true,
           },
-          required: true,
         },
       },
     ]);
