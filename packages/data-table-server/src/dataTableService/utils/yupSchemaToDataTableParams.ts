@@ -14,12 +14,31 @@ interface YupDescription {
   tests?: { name?: string }[];
 }
 
-const yupDescriptionToDataTableParam = (description: YupDescription): DataTableParameterConfig => {
+const translateType = (type: string, name?: string) => {
+  if (!name) {
+    return type;
+  }
+
+  const builtInParamType: Record<string, string> = {
+    hierarchy: 'hierarchy',
+    dataElementCodes: 'dataElementCodes',
+    dataGroupCode: 'dataGroupCode',
+    organisationUnitCodes: 'organisationUnitCodes',
+  };
+
+  return builtInParamType[name] || type;
+};
+
+const yupDescriptionToDataTableParam = (
+  description: YupDescription,
+  paramName?: string,
+): DataTableParameterConfig => {
   const { type, defaultValue, innerType, oneOf, tests } = description;
   const isRequired = tests && tests.some(({ name }) => name === 'required');
   const paramOfInnerType = innerType ? yupDescriptionToDataTableParam(innerType) : undefined;
+  const newType = translateType(type, paramName);
   const param: DataTableParameterConfig = {
-    type,
+    type: newType,
   };
 
   if (defaultValue !== undefined) {
@@ -51,7 +70,7 @@ export const yupSchemaToDataTableParams = (schema: yup.AnyObjectSchema): DataTab
     const defaultValue = schema.fields[name].getDefault();
     return {
       name,
-      config: yupDescriptionToDataTableParam({ type, innerType, oneOf, tests, defaultValue }),
+      config: yupDescriptionToDataTableParam({ type, innerType, oneOf, tests, defaultValue }, name),
     };
   });
 };

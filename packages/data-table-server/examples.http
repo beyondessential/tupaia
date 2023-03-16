@@ -101,5 +101,10 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 {
-  "type": "analytics"
+  "type": "analytics",
+  "code": "data_lake_db_test",
+  "permission_groups": [
+    "*"
+  ],
+  "runtimeParams":{}
 }
