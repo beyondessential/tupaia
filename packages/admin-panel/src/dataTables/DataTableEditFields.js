@@ -10,7 +10,7 @@ import {
   TextField,
   DataTable,
   FetchLoader,
-  Autocomplete as UIAutocomplete,
+  Autocomplete as ExternalDatabaseConnectionAutocomplete,
 } from '@tupaia/ui-components';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
@@ -183,7 +183,7 @@ export const DataTableEditFields = React.memo(
             </FieldWrapper>
             <FieldWrapper>
               {recordData?.type === DataTableType.sql && (
-                <UIAutocomplete
+                <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
                   options={externalDatabaseConnections}
                   label="Database Connection"
                   onChange={(event, selectedValues) =>
