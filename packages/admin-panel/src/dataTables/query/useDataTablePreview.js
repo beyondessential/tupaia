@@ -15,7 +15,8 @@ const assignDefaultValueToRuntimeParam = ({ builtInParams, additionalParams, run
       p?.config?.hasDefaultValue &&
       (runtimeParameterValue === undefined ||
         runtimeParameterValue === null ||
-        runtimeParameterValue === '')
+        runtimeParameterValue === '' ||
+        (Array.isArray(runtimeParameterValue) && runtimeParameterValue.length === 0))
     ) {
       newRuntimeParams[p.name] = p?.config?.defaultValue;
     }

@@ -32,6 +32,7 @@ export const Autocomplete = props => {
     canCreateNewOptions,
     allowMultipleValues,
     optionLabelKey,
+    muiProps,
   } = props;
 
   const muiPropsForCreateNewOptions = canCreateNewOptions
@@ -39,12 +40,15 @@ export const Autocomplete = props => {
         filterOptions: (autocompleteOptions, params) => {
           const filter = createFilterOptions();
           const filtered = filter(autocompleteOptions, params);
+          const { inputValue } = params;
 
           // Suggest the creation of a new value
-          if (params.inputValue !== '') {
-            filtered.push({
-              [optionLabelKey]: params.inputValue,
-            });
+          if (inputValue !== '') {
+            if (optionLabelKey) {
+              filtered.push({
+                [optionLabelKey]: inputValue,
+              });
+            } else filtered.push(inputValue);
           }
 
           return filtered;
@@ -62,14 +66,19 @@ export const Autocomplete = props => {
         multiple: true,
         renderTags: (values, getTagProps) =>
           values.map((option, index) => (
-            <Chip color="primary" label={option[optionLabelKey]} {...getTagProps({ index })} />
+            <Chip
+              color="primary"
+              label={optionLabelKey ? option[optionLabelKey] : option}
+              {...getTagProps({ index })}
+            />
           )),
       }
     : {};
 
-  const muiProps = {
+  const extraMuiProps = {
     ...muiPropsForCreateNewOptions,
     ...muiPropsForMultipleValues,
+    ...muiProps,
   };
 
   return (
@@ -85,7 +94,7 @@ export const Autocomplete = props => {
       inputValue={searchTerm}
       placeholder={placeholder}
       helperText={helperText}
-      muiProps={muiProps}
+      muiProps={extraMuiProps}
     />
   );
 };
@@ -99,13 +108,13 @@ Autocomplete.propTypes = {
   getOptionLabel: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   onChangeSelection: PropTypes.func.isRequired,
-  onChangeSearchTerm: PropTypes.func.isRequired,
+  onChangeSearchTerm: PropTypes.func,
   searchTerm: PropTypes.string,
   placeholder: PropTypes.string,
   helperText: PropTypes.string,
   canCreateNewOptions: PropTypes.bool,
   allowMultipleValues: PropTypes.bool,
-  optionLabelKey: PropTypes.string.isRequired,
+  optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
 };
 
@@ -119,4 +128,6 @@ Autocomplete.defaultProps = {
   canCreateNewOptions: false,
   allowMultipleValues: false,
   muiProps: {},
+  optionLabelKey: null,
+  onChangeSearchTerm: () => {},
 };
