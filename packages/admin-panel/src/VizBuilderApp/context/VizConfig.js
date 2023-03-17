@@ -139,9 +139,18 @@ const amendStepsToBaseConfig = visualisation => {
   const { aggregate, transform } = { ...data };
   // Remove frontend config (isDisabled, id, schema) in aggregation steps.
   const filteredAggregate = Array.isArray(aggregate)
-    ? aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
-        ...restOfConfig,
-      }))
+    ? aggregate.map(agg => {
+        if (typeof agg === 'string') {
+          return {
+            type: agg,
+          };
+        }
+        if (typeof agg === 'object') {
+          const { isDisabled, id, schema, ...restOfConfig } = agg;
+          return restOfConfig;
+        }
+        return agg;
+      })
     : aggregate;
 
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
