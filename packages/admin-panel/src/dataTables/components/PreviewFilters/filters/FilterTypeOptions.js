@@ -10,6 +10,7 @@ import { BooleanField } from './BooleanField';
 import { HierarchyField } from './HierarchyField';
 import { OrganisationUnitCodesField } from './OrganisationUnitCodesField';
 import { DataElementCodesField } from './DataElementCodesField';
+import { DataGroupCodeField } from './DataGroupCodeField';
 
 export const FilterTypeOptions = [
   { label: 'Text', value: 'string', FilterComponent: TextField },
@@ -27,4 +28,5 @@ export const FilterTypeOptions = [
     value: 'dataElementCodes',
     FilterComponent: DataElementCodesField,
   },
+  { label: 'Data Group Code', value: 'dataGroupCode', FilterComponent: DataGroupCodeField },
 ];
