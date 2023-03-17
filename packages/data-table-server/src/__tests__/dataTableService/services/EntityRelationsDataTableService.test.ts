@@ -42,9 +42,13 @@ describe('EntityRelationsDataTableService', () => {
   it('getParameters', () => {
     const parameters = entityRelationsDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      { config: { defaultValue: 'explore', type: 'hierarchy' }, name: 'hierarchy' },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'organisationUnitCodes',
+        },
         name: 'entityCodes',
       },
       { config: { type: 'string', required: true }, name: 'ancestorType' },

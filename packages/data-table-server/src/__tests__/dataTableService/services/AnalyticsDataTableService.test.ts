@@ -125,13 +125,21 @@ describe('AnalyticsDataTableService', () => {
   it('getParameters', () => {
     const parameters = analyticsDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      { config: { defaultValue: 'explore', type: 'hierarchy' }, name: 'hierarchy' },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'organisationUnitCodes',
+        },
         name: 'organisationUnitCodes',
       },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'dataElementCodes',
+        },
         name: 'dataElementCodes',
       },
       { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },

@@ -24,6 +24,7 @@ const translateType = (type: string, name?: string) => {
     dataElementCodes: 'dataElementCodes',
     dataGroupCode: 'dataGroupCode',
     organisationUnitCodes: 'organisationUnitCodes',
+    entityCodes: 'organisationUnitCodes',
   };
 
   return builtInParamType[name] || type;
