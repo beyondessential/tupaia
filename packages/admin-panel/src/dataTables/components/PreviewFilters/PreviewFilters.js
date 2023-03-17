@@ -31,6 +31,7 @@ export const PreviewFilters = ({ params, onChange, runtimeParams }) => {
             <Grid key={p.id}>
               <FilterComponent
                 {...p}
+                runtimeParams={runtimeParams} // organisationUnitCodes parameter needs hierarachy as input
                 value={runtimeParams[p.name]}
                 onChange={newValue => {
                   onChange(p.name, newValue);

@@ -8,6 +8,7 @@ import { TextField } from './TextField';
 import { NumberField } from './NumberField';
 import { BooleanField } from './BooleanField';
 import { HierarchyField } from './HierarchyField';
+import { OrganisationUnitCodesField } from './OrganisationUnitCodesField';
 
 export const FilterTypeOptions = [
   { label: 'Text', value: 'string', FilterComponent: TextField },
@@ -15,4 +16,9 @@ export const FilterTypeOptions = [
   { label: 'Boolean', value: 'boolean', FilterComponent: BooleanField },
   { label: 'Number', value: 'number', FilterComponent: NumberField },
   { label: 'Hierarchy', value: 'hierarchy', FilterComponent: HierarchyField },
+  {
+    label: 'Organisation Unit Codes',
+    value: 'organisationUnitCodes',
+    FilterComponent: OrganisationUnitCodesField,
+  },
 ];
