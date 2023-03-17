@@ -7,7 +7,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
+import { getDefaultPeriod, convertPeriodStringToDateRange, yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
 import { mapProjectEntitiesToCountries } from './utils';
@@ -16,8 +16,8 @@ const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.date().default(new Date(EARLIEST_DATA_DATE_STRING)),
-  endDate: yup.date().default(() => new Date()),
+  startDate: yup.date(),
+  endDate: yup.date(),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -50,8 +50,8 @@ export class AnalyticsDataTableService extends DataTableService<
     hierarchy: string;
     dataElementCodes: string[];
     organisationUnitCodes: string[];
-    startDate: Date;
-    endDate: Date;
+    startDate?: Date;
+    endDate?: Date;
     aggregations?: { type: string; config?: Record<string, unknown> }[];
   }) {
     const {
@@ -63,8 +63,9 @@ export class AnalyticsDataTableService extends DataTableService<
       aggregations,
     } = params;
 
-    const startDateString = startDate.toISOString();
-    const endDateString = endDate.toISOString();
+    const [defaultStartDate, defaultEndDate] = convertPeriodStringToDateRange(getDefaultPeriod());
+    const startDateString = (startDate ?? new Date(defaultStartDate)).toISOString();
+    const endDateString = (endDate ?? new Date(defaultEndDate)).toISOString();
 
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(

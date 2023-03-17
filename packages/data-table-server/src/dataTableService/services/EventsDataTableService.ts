@@ -7,7 +7,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { Aggregator } from '@tupaia/aggregator';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataBroker } from '@tupaia/data-broker';
-import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
+import { getDefaultPeriod, convertPeriodStringToDateRange, yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
 import { mapProjectEntitiesToCountries } from './utils';
@@ -17,8 +17,8 @@ const requiredParamsSchema = yup.object().shape({
   dataGroupCode: yup.string().required(),
   dataElementCodes: yup.array().of(yup.string().required()).min(1),
   organisationUnitCodes: yup.array().of(yup.string().required()).strict().required(),
-  startDate: yup.date().default(new Date(EARLIEST_DATA_DATE_STRING)),
-  endDate: yup.date().default(() => new Date()),
+  startDate: yup.date(),
+  endDate: yup.date(),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -94,8 +94,9 @@ export class EventsDataTableService extends DataTableService<
       }),
     );
 
-    const startDateString = startDate ? startDate.toISOString() : undefined;
-    const endDateString = endDate ? endDate.toISOString() : undefined;
+    const [defaultStartDate, defaultEndDate] = convertPeriodStringToDateRange(getDefaultPeriod());
+    const startDateString = (startDate ?? new Date(defaultStartDate)).toISOString();
+    const endDateString = (endDate ?? new Date(defaultEndDate)).toISOString();
 
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(
