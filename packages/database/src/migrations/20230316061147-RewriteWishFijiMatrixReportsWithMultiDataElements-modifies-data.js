@@ -124,16 +124,24 @@ const updatedTransform = dataElementCodes => [
   },
 ];
 
+const convertOutputToAllColumns = output => {
+  const columns = ['*'];
+  return { ...output, columns };
+};
+
 exports.up = async function (db) {
   const { rows: reports } = await db.runSql(`
   SELECT * FROM report WHERE code IN (${arrayToDbString(REPORTS.map(rep => rep.code))})
   `);
 
   for (const report of reports) {
-    const { transform } = report.config;
+    const { output } = report.config;
+
+    const outputWithAllColumns = convertOutputToAllColumns(output);
 
     const newConfig = {
       ...report.config,
+      output: outputWithAllColumns,
       transform: updatedTransform(
         REPORTS.find(({ code }) => code === report.code).dataElementCodes,
       ),
