@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { DataTableType } from '@tupaia/types';
 import { PreviewFilters } from './components/PreviewFilters';
-import { Autocomplete } from '../autocomplete';
+import { ReduxAutocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
 import { useParams } from './useParams';
 import { useDataTablePreview, useExternalDatabaseConnections } from './query';
@@ -159,7 +159,7 @@ export const DataTableEditFields = React.memo(
               />
             </FieldWrapper>
             <FieldWrapper>
-              <Autocomplete
+              <ReduxAutocomplete
                 allowMultipleValues
                 key="permission_groups"
                 inputKey="permission_groups"

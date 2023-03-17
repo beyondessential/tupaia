@@ -7,7 +7,7 @@ import 'react-table/react-table.css';
 export { LoginPage, LogoutPage } from './pages';
 export { PrivateRoute } from './authentication';
 export * from './pages/resources';
-export { Autocomplete } from './autocomplete';
+export { ReduxAutocomplete } from './autocomplete';
 export { ExportModal } from './importExport';
 export { IconButton } from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';

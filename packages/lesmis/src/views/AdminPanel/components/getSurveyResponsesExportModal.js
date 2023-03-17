@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { DateTimePicker, RadioGroup } from '@tupaia/ui-components';
-import { Autocomplete, ExportModal } from '@tupaia/admin-panel';
+import { ReduxAutocomplete, ExportModal } from '@tupaia/admin-panel';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 
 const MODES = {
@@ -33,7 +33,7 @@ export const getSurveyResponsesExportModal = translate => {
         exportEndpoint="surveyResponses"
         {...props}
       >
-        <Autocomplete
+        <ReduxAutocomplete
           label={translate('admin.surveysToInclude')}
           helperText={translate('admin.pleaseEnterTheNamesOfTheSurveysToBeExported.')}
           reduxId="surveyCodes"
@@ -60,7 +60,7 @@ export const getSurveyResponsesExportModal = translate => {
           value={mode}
         />
         {mode === MODES.COUNTRY ? (
-          <Autocomplete
+          <ReduxAutocomplete
             label={translate('admin.countriesToInclude')}
             helperText={translate('admin.pleaseEnterTheNamesOfTheCountriesToBeExported.')}
             reduxId="countryCode"
@@ -70,7 +70,7 @@ export const getSurveyResponsesExportModal = translate => {
             optionValueKey="code"
           />
         ) : (
-          <Autocomplete
+          <ReduxAutocomplete
             label={translate('admin.entitiesToInclude')}
             helperText={translate('admin.pleaseEnterTheNamesOfTheEntitiesToBeExported')}
             reduxId="entityIds"

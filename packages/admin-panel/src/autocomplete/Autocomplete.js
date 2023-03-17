@@ -1,18 +1,14 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import throttle from 'lodash.throttle';
-import { connect } from 'react-redux';
-import MuiChip from '@material-ui/core/Chip';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
-import { Autocomplete as AutocompleteBase } from '@tupaia/ui-components';
-import { getAutocompleteState } from './selectors';
-import { changeSelection, changeSearchTerm, clearState } from './actions';
+import MuiChip from '@material-ui/core/Chip';
+import { Autocomplete as UIAutocomplete } from '@tupaia/ui-components';
 
 const Chip = styled(MuiChip)`
   &:first-child {
@@ -20,179 +16,107 @@ const Chip = styled(MuiChip)`
   }
 `;
 
-const getPlaceholder = (placeholder, selection) => {
-  if (selection && selection.length) {
-    return null;
-  }
-
-  if (placeholder) {
-    return Array.isArray(placeholder) ? placeholder.join(', ') : placeholder;
-  }
-  return 'Start typing to search';
-};
-
-const filter = createFilterOptions();
-
-const AutocompleteComponent = React.memo(
-  ({
+export const Autocomplete = props => {
+  const {
+    value,
+    label,
+    options,
+    getOptionSelected,
+    getOptionLabel,
+    isLoading,
     onChangeSelection,
     onChangeSearchTerm,
-    selection,
-    isLoading,
-    results,
-    label,
-    onClearState,
-    optionLabelKey,
-    allowMultipleValues,
-    canCreateNewOptions,
     searchTerm,
     placeholder,
     helperText,
-  }) => {
-    React.useEffect(() => {
-      onChangeSearchTerm('');
-
-      return () => {
-        onClearState();
-      };
-    }, []);
-
-    let value = selection;
-
-    // If value is null and  multiple is true mui autocomplete will crash
-    if (allowMultipleValues && selection === null && !searchTerm) {
-      value = [];
-    }
-
-    return (
-      <AutocompleteBase
-        value={value}
-        label={label}
-        options={results}
-        getOptionSelected={(option, selected) =>
-          option[optionLabelKey] === selected[optionLabelKey]
-        }
-        getOptionLabel={option => (option && option[optionLabelKey] ? option[optionLabelKey] : '')}
-        loading={isLoading}
-        onChange={onChangeSelection}
-        onInputChange={throttle((event, newValue) => onChangeSearchTerm(newValue), 50)}
-        inputValue={searchTerm}
-        placeholder={getPlaceholder(placeholder, selection)}
-        helperText={helperText}
-        muiProps={{
-          filterOptions: (options, params) => {
-            const filtered = filter(options, params);
-
-            // Suggest the creation of a new value
-            if (canCreateNewOptions && params.inputValue !== '') {
-              filtered.push({
-                [optionLabelKey]: params.inputValue,
-              });
-            }
-
-            return filtered;
-          },
-          freeSolo: canCreateNewOptions,
-          disableClearable: allowMultipleValues,
-          multiple: allowMultipleValues,
-          selectOnFocus: canCreateNewOptions,
-          clearOnBlur: canCreateNewOptions,
-          handleHomeEndKeys: canCreateNewOptions,
-          renderTags: (values, getTagProps) =>
-            values.map((option, index) => (
-              <Chip color="primary" label={option[optionLabelKey]} {...getTagProps({ index })} />
-            )),
-        }}
-      />
-    );
-  },
-);
-
-AutocompleteComponent.propTypes = {
-  allowMultipleValues: PropTypes.bool,
-  canCreateNewOptions: PropTypes.bool,
-  isLoading: PropTypes.bool.isRequired,
-  onChangeSearchTerm: PropTypes.func.isRequired,
-  onChangeSelection: PropTypes.func.isRequired,
-  onClearState: PropTypes.func.isRequired,
-  optionLabelKey: PropTypes.string.isRequired,
-  results: PropTypes.arrayOf(PropTypes.object),
-  searchTerm: PropTypes.string,
-  placeholder: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  label: PropTypes.string,
-  helperText: PropTypes.string,
-  selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-};
-
-AutocompleteComponent.defaultProps = {
-  allowMultipleValues: false,
-  selection: [],
-  results: [],
-  canCreateNewOptions: false,
-  searchTerm: null,
-  placeholder: null,
-  label: null,
-  helperText: null,
-};
-
-const mapStateToProps = (state, { reduxId }) => {
-  const { selection, searchTerm, results, isLoading, fetchId } = getAutocompleteState(
-    state,
-    reduxId,
-  );
-  return { selection, searchTerm, results, isLoading, fetchId };
-};
-
-const mapDispatchToProps = (
-  dispatch,
-  {
-    endpoint,
-    optionLabelKey,
-    optionValueKey,
-    reduxId,
-    onChange,
-    parentRecord = {},
+    canCreateNewOptions,
     allowMultipleValues,
-    baseFilter,
-    pageSize,
-  },
-) => ({
-  onChangeSelection: (event, newSelection, reason) => {
-    if (newSelection === null) {
-      onChange(null);
-    } else if (allowMultipleValues) {
-      const newValues = newSelection.map(selected => selected[optionValueKey]);
-      if (reason === 'create-option') {
-        newValues[newValues.length - 1] = event.target.value;
+    optionLabelKey,
+  } = props;
+
+  const muiPropsForCreateNewOptions = canCreateNewOptions
+    ? {
+        filterOptions: (autocompleteOptions, params) => {
+          const filter = createFilterOptions();
+          const filtered = filter(autocompleteOptions, params);
+
+          // Suggest the creation of a new value
+          if (params.inputValue !== '') {
+            filtered.push({
+              [optionLabelKey]: params.inputValue,
+            });
+          }
+
+          return filtered;
+        },
+        freeSolo: true,
+        selectOnFocus: true,
+        clearOnBlur: true,
+        handleHomeEndKeys: true,
       }
-      onChange(newValues);
-    } else {
-      onChange(newSelection[optionValueKey]);
-    }
+    : {};
 
-    // @see https://material-ui.com/api/autocomplete for a description of reasons
-    if (reason === 'create-option') {
-      const newValues = newSelection;
-      newValues[newValues.length - 1] = { [optionLabelKey]: event.target.value };
-      dispatch(changeSelection(reduxId, newValues));
-    } else {
-      dispatch(changeSelection(reduxId, newSelection));
-    }
-  },
-  onChangeSearchTerm: newSearchTerm =>
-    dispatch(
-      changeSearchTerm(
-        reduxId,
-        endpoint,
-        optionLabelKey,
-        optionValueKey,
-        newSearchTerm,
-        parentRecord,
-        baseFilter,
-        pageSize,
-      ),
-    ),
-  onClearState: () => dispatch(clearState(reduxId)),
-});
+  const muiPropsForMultipleValues = allowMultipleValues
+    ? {
+        disableClearable: true,
+        multiple: true,
+        renderTags: (values, getTagProps) =>
+          values.map((option, index) => (
+            <Chip color="primary" label={option[optionLabelKey]} {...getTagProps({ index })} />
+          )),
+      }
+    : {};
 
-export const Autocomplete = connect(mapStateToProps, mapDispatchToProps)(AutocompleteComponent);
+  const muiProps = {
+    ...muiPropsForCreateNewOptions,
+    ...muiPropsForMultipleValues,
+  };
+
+  return (
+    <UIAutocomplete
+      value={value}
+      label={label}
+      options={options}
+      getOptionSelected={getOptionSelected}
+      getOptionLabel={getOptionLabel}
+      loading={isLoading}
+      onChange={onChangeSelection}
+      onInputChange={(event, newValue) => onChangeSearchTerm(newValue)}
+      inputValue={searchTerm}
+      placeholder={placeholder}
+      helperText={helperText}
+      muiProps={muiProps}
+    />
+  );
+};
+
+Autocomplete.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  value: PropTypes.any,
+  label: PropTypes.string,
+  options: PropTypes.array.isRequired,
+  getOptionSelected: PropTypes.func.isRequired,
+  getOptionLabel: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+  onChangeSelection: PropTypes.func.isRequired,
+  onChangeSearchTerm: PropTypes.func.isRequired,
+  searchTerm: PropTypes.string,
+  placeholder: PropTypes.string,
+  helperText: PropTypes.string,
+  canCreateNewOptions: PropTypes.bool,
+  allowMultipleValues: PropTypes.bool,
+  optionLabelKey: PropTypes.string.isRequired,
+  muiProps: PropTypes.object,
+};
+
+Autocomplete.defaultProps = {
+  value: null,
+  label: '',
+  isLoading: false,
+  searchTerm: '',
+  placeholder: '',
+  helperText: '',
+  canCreateNewOptions: false,
+  allowMultipleValues: false,
+  muiProps: {},
+};
