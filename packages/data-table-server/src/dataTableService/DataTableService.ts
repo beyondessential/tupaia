@@ -86,10 +86,10 @@ export abstract class DataTableService<
   }
 
   protected async pullPreviewData(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     params: yup.InferType<RequiredParamsSchema>,
   ): Promise<{ rows: RecordSchema[]; total: number; limit: number }> {
-    return { rows: [], total: 0, limit: 0 };
+    const results = await this.pullData(params);
+    return { rows: results, total: results.length, limit: results.length };
   }
 
   public fetchPreviewData(params: unknown = {}) {

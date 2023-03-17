@@ -9,6 +9,7 @@ import { NumberField } from './NumberField';
 import { BooleanField } from './BooleanField';
 import { HierarchyField } from './HierarchyField';
 import { OrganisationUnitCodesField } from './OrganisationUnitCodesField';
+import { DataElementCodesField } from './DataElementCodesField';
 
 export const FilterTypeOptions = [
   { label: 'Text', value: 'string', FilterComponent: TextField },
@@ -20,5 +21,10 @@ export const FilterTypeOptions = [
     label: 'Organisation Unit Codes',
     value: 'organisationUnitCodes',
     FilterComponent: OrganisationUnitCodesField,
+  },
+  {
+    label: 'Data Element Codes',
+    value: 'dataElementCodes',
+    FilterComponent: DataElementCodesField,
   },
 ];
