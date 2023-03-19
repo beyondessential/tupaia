@@ -134,8 +134,8 @@ describe('AnalyticsDataTableService', () => {
         config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date(), type: 'date' }, name: 'endDate' },
+      { config: { type: 'date' }, name: 'startDate' },
+      { config: { type: 'date' }, name: 'endDate' },
     ]);
   });
 
