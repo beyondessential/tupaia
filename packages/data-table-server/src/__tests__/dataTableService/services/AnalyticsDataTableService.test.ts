@@ -9,7 +9,7 @@ import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
-const CURRENT_DATE_STUB = '2020-12-31';
+const CURRENT_DATE_STUB = '2023-12-31';
 
 const TEST_ANALYTICS = [
   { period: '2020-01-01', organisationUnit: 'TO', dataElement: 'PSSS_AFR_Cases', value: 7 },
@@ -134,8 +134,8 @@ describe('AnalyticsDataTableService', () => {
         config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
         name: 'dataElementCodes',
       },
-      { config: { type: 'date' }, name: 'startDate' },
-      { config: { type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
+      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
     ]);
   });
 

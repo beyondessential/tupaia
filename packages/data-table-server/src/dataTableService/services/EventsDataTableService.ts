@@ -12,13 +12,16 @@ import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
 import { mapProjectEntitiesToCountries } from './utils';
 
+const getDefaultStartDate = () => new Date(convertPeriodStringToDateRange(getDefaultPeriod())[0]);
+const getDefaultEndDate = () => new Date(convertPeriodStringToDateRange(getDefaultPeriod())[1]);
+
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataGroupCode: yup.string().required(),
   dataElementCodes: yup.array().of(yup.string().required()).min(1),
   organisationUnitCodes: yup.array().of(yup.string().required()).strict().required(),
-  startDate: yup.date(),
-  endDate: yup.date(),
+  startDate: yup.date().default(getDefaultStartDate),
+  endDate: yup.date().default(getDefaultEndDate),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -94,9 +97,8 @@ export class EventsDataTableService extends DataTableService<
       }),
     );
 
-    const [defaultStartDate, defaultEndDate] = convertPeriodStringToDateRange(getDefaultPeriod());
-    const startDateString = (startDate ?? new Date(defaultStartDate)).toISOString();
-    const endDateString = (endDate ?? new Date(defaultEndDate)).toISOString();
+    const startDateString = startDate ? startDate.toISOString() : undefined;
+    const endDateString = endDate ? endDate.toISOString() : undefined;
 
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(

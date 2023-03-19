@@ -12,12 +12,15 @@ import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
 import { mapProjectEntitiesToCountries } from './utils';
 
+const getDefaultStartDate = () => new Date(convertPeriodStringToDateRange(getDefaultPeriod())[0]);
+const getDefaultEndDate = () => new Date(convertPeriodStringToDateRange(getDefaultPeriod())[1]);
+
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.date(),
-  endDate: yup.date(),
+  startDate: yup.date().default(getDefaultStartDate),
+  endDate: yup.date().default(getDefaultEndDate),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
