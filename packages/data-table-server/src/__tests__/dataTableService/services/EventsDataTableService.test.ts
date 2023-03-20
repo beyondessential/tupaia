@@ -9,7 +9,7 @@ import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
-const CURRENT_DATE_STUB = '2020-12-31';
+const CURRENT_DATE_STUB = '2023-12-31';
 
 type Event = { eventDate: string; orgUnit: string; dataValues: Record<string, unknown> };
 
@@ -208,8 +208,8 @@ describe('EventsDataTableService', () => {
         config: { innerType: { required: true, type: 'string' }, type: 'dataElementCodes' },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date(), type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
+      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
     ]);
   });
 

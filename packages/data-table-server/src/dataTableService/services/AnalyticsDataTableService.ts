@@ -7,17 +7,17 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
+import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
-import { mapProjectEntitiesToCountries } from './utils';
+import { getDefaultEndDate, getDefaultStartDate, mapProjectEntitiesToCountries } from './utils';
 
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.date().default(new Date(EARLIEST_DATA_DATE_STRING)),
-  endDate: yup.date().default(() => new Date()),
+  startDate: yup.date().default(getDefaultStartDate),
+  endDate: yup.date().default(getDefaultEndDate),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
