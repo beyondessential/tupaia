@@ -53,8 +53,8 @@ export class AnalyticsDataTableService extends DataTableService<
     hierarchy: string;
     dataElementCodes: string[];
     organisationUnitCodes: string[];
-    startDate?: Date;
-    endDate?: Date;
+    startDate: Date;
+    endDate: Date;
     aggregations?: { type: string; config?: Record<string, unknown> }[];
   }) {
     const {
