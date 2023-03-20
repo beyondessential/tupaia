@@ -7,13 +7,10 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { getDefaultPeriod, convertPeriodStringToDateRange, yup } from '@tupaia/utils';
+import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
-import { mapProjectEntitiesToCountries } from './utils';
-
-const getDefaultStartDate = () => new Date(convertPeriodStringToDateRange(getDefaultPeriod())[0]);
-const getDefaultEndDate = () => new Date(convertPeriodStringToDateRange(getDefaultPeriod())[1]);
+import { getDefaultEndDate, getDefaultStartDate, mapProjectEntitiesToCountries } from './utils';
 
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
