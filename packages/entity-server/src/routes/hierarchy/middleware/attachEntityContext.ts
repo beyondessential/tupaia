@@ -6,6 +6,8 @@ import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
 import { EntityType, EntityFilter } from '../../../models';
 import { extractFilterFromQuery } from './filter';
+import { ajvValidate } from '@tupaia/tsutils';
+import { MultiEntityRequestBodySchema } from '../types';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
 
@@ -98,22 +100,15 @@ export const attachSingleEntityContext = async (
 };
 
 export const attachMultiEntityContext = async (
-  req: Request<
-    { hierarchyName: string },
-    any,
-    { entities: string[] | undefined },
-    { filter?: string }
-  > & {
+  req: Request<{ hierarchyName: string }, any, { entities: string[] }, { filter?: string }> & {
     ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
   },
   res: Response,
   next: NextFunction,
 ) => {
   try {
+    await ajvValidate(MultiEntityRequestBodySchema, req.body);
     const { entities: entityCodes } = req.body;
-    if (!entityCodes) {
-      throw new Error('Must provide { "entities": [code1,code2,...] } in request body');
-    }
 
     const context = await validateEntitiesAndBuildContext(req, entityCodes);
 

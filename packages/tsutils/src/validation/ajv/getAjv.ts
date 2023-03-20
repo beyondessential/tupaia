@@ -9,7 +9,7 @@ import addFormats from 'ajv-formats';
 
 import { IdFormat } from './customFormats';
 
-type DatabaseModels = { entity: any; question: any; optionSet: any };
+export type DatabaseModels = { entity: any; question: any; optionSet: any };
 
 export const getAjv = (models?: DatabaseModels) => {
   const ajv = new Ajv();

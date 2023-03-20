@@ -7,7 +7,7 @@
 /**
  * @format id
  */
-import { EntityType } from '../models';
+import { EntityType } from '../../models';
 
 type Id = string;
 

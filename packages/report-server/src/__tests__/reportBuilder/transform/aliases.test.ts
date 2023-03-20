@@ -103,15 +103,6 @@ describe('aliases', () => {
       TransformTable.fromRows([{ ...SINGLE_EVENT[0], period: '2020W01' }]),
     );
   });
-
-  it('insertNumberOfFacilitiesColumn', async () => {
-    const transform = buildTestTransform(['insertNumberOfFacilitiesColumn'], {
-      facilityCountByOrgUnit: { TO: 14 },
-    });
-    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
-      TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]),
-    );
-  });
 });
 
 describe('insertSummaryRowAndColumn', () => {

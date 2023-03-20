@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Resolved } from '@tupaia/tsutils';
+import { Resolved } from '@tupaia/types';
 import { buildRows } from './rows';
 import { buildRowsAndColumns } from './rowsAndColumns';
 import { buildMatrix } from './matrix';
