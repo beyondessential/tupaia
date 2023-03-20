@@ -84,7 +84,10 @@ export class EditDashboardVisualisation extends EditHandler {
 
   async editRecord() {
     const { report } = this.req.body;
-    await assertPermissionGroupAccess(this.accessPolicy, report.permission_group);
+    // Skip permission check as legacy report has no permission group
+    if (report.permission_group) {
+      assertPermissionGroupAccess(this.accessPolicy, report.permission_group);
+    }
     return this.models.wrapInTransaction(async transactingModels => {
       const dashboardItemRecord = this.getDashboardItemRecord();
       const reportRecord = this.getReportRecord();
