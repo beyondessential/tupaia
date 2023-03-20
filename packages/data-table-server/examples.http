@@ -54,7 +54,7 @@ Authorization: {{authorization}}
   "config": {
     "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode",
     "externalDatabaseConnectionCode": "DATA_LAKE_DB",
-    "additionalParameters": [
+    "additionalParams": [
       {
         "name": "entityCode",
         "config": {
@@ -63,7 +63,7 @@ Authorization: {{authorization}}
       }
     ]
   },
-  "runtimeParameters": {
+  "runtimeParams": {
     "entityCode": "AU_SA%"
   },
   "permission_groups": [
@@ -94,3 +94,17 @@ Authorization: {{authorization}}
 GET http://{{host}}/{{version}}/dataTable/analytics/parameters HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+### Get parameters for analytics data-table by configs
+POST http://{{host}}/{{version}}/dataTable/builtInParameters HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+  "type": "analytics",
+  "code": "data_lake_db_test",
+  "permission_groups": [
+    "*"
+  ],
+  "runtimeParams":{}
+}

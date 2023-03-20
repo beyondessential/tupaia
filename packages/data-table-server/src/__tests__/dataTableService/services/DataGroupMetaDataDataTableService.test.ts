@@ -75,7 +75,7 @@ describe('DataGroupMetaDataDataTableService', () => {
       {
         name: 'dataGroupCode',
         config: {
-          type: 'string',
+          type: 'dataGroupCode',
           required: true,
         },
       },

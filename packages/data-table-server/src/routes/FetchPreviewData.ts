@@ -19,7 +19,7 @@ export class FetchPreviewDataRoute extends Route<FetchPreviewDataRequest> {
   public async buildResponse() {
     const { body, ctx } = this.req;
 
-    const requestParams = { ...body.runtimeParameters };
+    const requestParams = { ...body.runtimeParams };
     const { rows, total, limit } = await ctx.dataTableService.fetchPreviewData(requestParams);
     let columnArray = new Set();
     for (const row of rows) {

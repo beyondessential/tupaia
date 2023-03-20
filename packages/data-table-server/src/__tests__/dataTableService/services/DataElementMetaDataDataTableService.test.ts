@@ -62,7 +62,7 @@ describe('DataElementMetaDataDataTableService', () => {
       {
         name: 'dataElementCodes',
         config: {
-          type: 'array',
+          type: 'dataElementCodes',
           defaultValue: [],
           innerType: {
             type: 'string',

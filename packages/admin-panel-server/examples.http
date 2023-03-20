@@ -187,7 +187,7 @@ Authorization: {{authorization}}
     "config": {
       "sql": "SELECT * FROM analytics WHERE entity_code LIKE :entityCode",
       "externalDatabaseConnectionCode": "DATA_LAKE_DB",
-      "additionalParameters": [
+      "additionalParams": [
         {
           "name": "entityCode",
           "config": {
@@ -196,7 +196,7 @@ Authorization: {{authorization}}
         }
       ]
     },
-    "runtimeParameters": {
+    "runtimeParams": {
       "entityCode": "AU_SA%"
     },
     "permission_groups": [

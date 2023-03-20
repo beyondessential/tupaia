@@ -6,36 +6,44 @@ import { useQuery } from 'react-query';
 import { post } from '../../VizBuilderApp/api/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
-const assignDefaultValueToRuntimeParameter = (previewConfig, runtimeParameters) => {
-  const newRuntimeParameters = { ...runtimeParameters };
-  const { additionalParameters } = previewConfig?.config;
-  additionalParameters.forEach(p => {
-    const runtimeParameterValue = runtimeParameters[p.name];
+const assignDefaultValueToRuntimeParam = ({ builtInParams, additionalParams, runtimeParams }) => {
+  const newRuntimeParams = { ...runtimeParams };
+
+  [...builtInParams, ...additionalParams].forEach(p => {
+    const runtimeParameterValue = runtimeParams[p.name];
     if (
       p?.config?.hasDefaultValue &&
       (runtimeParameterValue === undefined ||
         runtimeParameterValue === null ||
-        runtimeParameterValue === '')
+        runtimeParameterValue === '' ||
+        (Array.isArray(runtimeParameterValue) && runtimeParameterValue.length === 0))
     ) {
-      newRuntimeParameters[p.name] = p?.config?.defaultValue;
+      newRuntimeParams[p.name] = p?.config?.defaultValue;
     }
   });
 
-  return newRuntimeParameters;
+  return newRuntimeParams;
 };
 
-export const useDataTablePreview = ({ previewConfig, runtimeParameters, onSettled }) =>
+export const useDataTablePreview = ({
+  previewConfig,
+  builtInParams,
+  additionalParams,
+  runtimeParams,
+  onSettled,
+}) =>
   useQuery(
-    ['fetchDataTablePreviewData', previewConfig],
+    ['fetchDataTablePreviewData'],
     async () => {
       const response = await post('fetchDataTablePreviewData', {
         data: {
           previewConfig: {
             ...previewConfig,
-            runtimeParameters: assignDefaultValueToRuntimeParameter(
-              previewConfig,
-              runtimeParameters,
-            ),
+            runtimeParams: assignDefaultValueToRuntimeParam({
+              builtInParams,
+              additionalParams,
+              runtimeParams,
+            }),
           },
         },
       });
