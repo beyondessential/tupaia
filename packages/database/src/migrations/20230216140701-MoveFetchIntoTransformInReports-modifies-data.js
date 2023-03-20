@@ -22,7 +22,7 @@ const convertToNewKeys = (fetchConfig, dataGroupCode) => {
     convertedConfig.dataGroupCode = dataGroupCode;
   }
   if (aggregations) {
-    aggregations.map(aggregation => {
+    convertedConfig.aggregations = aggregations.map(aggregation => {
       if (typeof aggregation === 'string') {
         return {
           type: aggregation,
@@ -31,7 +31,7 @@ const convertToNewKeys = (fetchConfig, dataGroupCode) => {
       return aggregation;
     });
   }
-  convertedConfig.aggregations = aggregations;
+
   return {
     ...convertedConfig,
     ...restOfFetchConfig,
