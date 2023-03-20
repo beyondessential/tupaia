@@ -66,6 +66,8 @@ export class AnalyticsDataTableService extends DataTableService<
       aggregations,
     } = params;
 
+    const startDateString = startDate.toISOString();
+    const endDateString = endDate.toISOString();
 
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(
