@@ -66,9 +66,6 @@ export class AnalyticsDataTableService extends DataTableService<
       aggregations,
     } = params;
 
-    const [defaultStartDate, defaultEndDate] = convertPeriodStringToDateRange(getDefaultPeriod());
-    const startDateString = (startDate ?? new Date(defaultStartDate)).toISOString();
-    const endDateString = (endDate ?? new Date(defaultEndDate)).toISOString();
 
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(
