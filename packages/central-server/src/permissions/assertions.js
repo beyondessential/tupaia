@@ -116,7 +116,7 @@ export const assertVizBuilderAccess = accessPolicy => {
 };
 
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
-  if (hasPermissionGroupAccess(accessPolicy, permissionGroupName)) {
+  if (!permissionGroupName || hasPermissionGroupAccess(accessPolicy, permissionGroupName)) {
     return true;
   }
 
