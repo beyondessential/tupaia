@@ -19,7 +19,6 @@ export type ReqContext = {
 
 type Dependencies = {
   orgUnits?: { code: string; name: string; id: string; attributes: Record<string, any> }[];
-  facilityCountByOrgUnit?: Record<string, number>; // { TO: 14, PG: 9 }
 };
 export type ContextDependency = keyof Dependencies;
 

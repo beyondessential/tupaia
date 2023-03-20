@@ -51,8 +51,10 @@ const fetchData = async (table: TransformTable, params: FetchParams, context: Co
   const newColumns = Array.from(new Set(newRows.map(Object.keys).flat())).filter(
     column => !existingColumns.includes(column),
   );
-  await updateContext(context, newRows); // TODO: Remove this in favour of using data-tables (RN-687)
+
   const jointRows = join(table.getRows(), newRows);
+  await updateContext(context, jointRows); // TODO: Remove this in favour of using data-tables (RN-687)
+
   return new TransformTable([...existingColumns, ...newColumns], jointRows);
 };
 

@@ -30,31 +30,10 @@ const buildOrgUnits = async (reqContext: ReqContext, data: Row[]) => {
   });
 };
 
-const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: Row[]) => {
-  const orgUnitCodes = getOrgUnitCodesFromData(data);
 
-  const facilitiesByOrgUnitCode = await reqContext.services.entity.getRelationshipsOfEntities(
-    reqContext.hierarchy,
-    orgUnitCodes,
-    'ancestor',
-    {},
-    {},
-    { filter: { type: 'facility' } },
-  );
-
-  const facilityCountByOrgUnit = Object.fromEntries(
-    Object.entries(facilitiesByOrgUnitCode).map(([orgUnit, facilities]) => [
-      orgUnit,
-      (facilities as any[]).length,
-    ]),
-  );
-
-  return facilityCountByOrgUnit;
-};
 
 const contextBuilders: Record<ContextDependency, ContextBuilder<ContextDependency>> = {
   orgUnits: buildOrgUnits,
-  facilityCountByOrgUnit: buildFacilityCountByOrgUnit,
 };
 
 function validateDependency(key: string): asserts key is keyof typeof contextBuilders {

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { RecursivePartial } from '@tupaia/tsutils';
+import { RecursivePartial } from '@tupaia/types';
 import { Context } from '../../../reportBuilder/context';
 import { buildTransform } from '../../../reportBuilder/transform';
 

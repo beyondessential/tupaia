@@ -7,7 +7,7 @@ import { Request } from 'express';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { NullableKeysToOptional } from '@tupaia/tsutils';
+import { NullableKeysToOptional } from '@tupaia/types';
 
 import { getLeaderboard } from './getLeaderboard';
 import { MeditrakAppServerModelRegistry } from '../../types';

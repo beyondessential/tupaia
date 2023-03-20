@@ -4,3 +4,4 @@
  */
 
 export { getAjv } from './getAjv';
+export { validate as ajvValidate } from './validate';
