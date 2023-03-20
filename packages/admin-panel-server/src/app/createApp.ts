@@ -40,6 +40,8 @@ import {
   ImportMapOverlayVisualisationRoute,
   FetchTransformSchemasRequest,
   FetchTransformSchemasRoute,
+  FetchDataTableBuiltInParamsRequest,
+  FetchDataTableBuiltInParamsRoute,
 } from '../routes';
 import { authHandlerProvider } from '../auth';
 
@@ -85,6 +87,10 @@ export function createApp() {
     .post<FetchDataTablePreviewDataRequest>(
       'fetchDataTablePreviewData',
       handleWith(FetchDataTablePreviewDataRoute),
+    )
+    .get<FetchDataTableBuiltInParamsRequest>(
+      'fetchDataTableBuiltInParams',
+      handleWith(FetchDataTableBuiltInParamsRoute),
     )
     .get(
       'export/dashboardVisualisation/:dashboardVisualisationId',

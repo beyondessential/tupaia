@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import debounce from 'lodash.debounce';
 import MuiPaper from '@material-ui/core/Paper';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
@@ -100,12 +99,9 @@ const LocationField = ({
     value={location}
     options={locations}
     loading={isLoadingLocations}
-    onInputChange={debounce(
-      (event, newValue) => {
-        setLocationSearch(newValue);
-      },
-      [200],
-    )}
+    onInputChange={(event, newValue) => {
+      setLocationSearch(newValue);
+    }}
     getOptionLabel={option => option.name}
     renderOption={option => <span>{option.name}</span>}
     onChange={onChange}

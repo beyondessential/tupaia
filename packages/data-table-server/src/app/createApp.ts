@@ -39,6 +39,11 @@ export function createApp(database = new TupaiaDatabase()) {
       attachDataTableToContext,
       handleWith(ParametersRoute),
     )
+    .post<ParametersRequest>(
+      'dataTable/builtInParameters',
+      attachDataTableFromPreviewToContext,
+      handleWith(ParametersRoute),
+    )
     .build();
 
   return app;

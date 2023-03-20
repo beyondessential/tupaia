@@ -61,6 +61,14 @@ const COLUMNS = [
     Cell: TestDatabaseConnectionCell,
     width: 70,
   },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
+    },
+  },
 ];
 
 const CREATE_CONFIG = {

@@ -48,7 +48,7 @@ exports.up = async function (db) {
     };
     const excludeUnusedMetadata = {
       transform: 'excludeColumns',
-      columns: ['id', 'code'],
+      columns: ['id', 'code', 'options'],
     };
     const renameDataElementName = {
       transform: 'updateColumns',

@@ -10,7 +10,7 @@ import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 
 const requiredParamsSchema = yup.object().shape({
-  dataElementCodes: yup.array().of(yup.string().required()).required(),
+  dataElementCodes: yup.array().of(yup.string().required()).default([]),
 });
 
 const configSchema = yup.object();
@@ -37,6 +37,9 @@ export class DataElementMetadataDataTableService extends DataTableService<
 
   protected async pullData(params: { dataElementCodes: string[] }) {
     const { dataElementCodes } = params;
+    if (dataElementCodes.length === 0) {
+      return [];
+    }
 
     const aggregator = new Aggregator(
       new DataBroker({

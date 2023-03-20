@@ -5,16 +5,22 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Select, TextField, DataTable, FetchLoader } from '@tupaia/ui-components';
+import {
+  Select,
+  TextField,
+  DataTable,
+  FetchLoader,
+  Autocomplete as ExternalDatabaseConnectionAutocomplete,
+} from '@tupaia/ui-components';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { DataTableType } from '@tupaia/types';
 import { PreviewFilters } from './components/PreviewFilters';
-import { Autocomplete } from '../autocomplete';
+import { ReduxAutocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
-import { useParameters } from './useParameters';
-import { useDataTablePreview } from './query';
+import { useParams } from './useParams';
+import { useDataTablePreview, useExternalDatabaseConnections } from './query';
 import { getColumns } from '../utilities';
 import { PlayButton } from './PlayButton';
 
@@ -57,20 +63,22 @@ export const DataTableEditFields = React.memo(
 
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
+    const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
-      additionalParameters,
-      runtimeParameters,
-      upsertRuntimeParameter,
-      onParametersAdd,
-      onParametersDelete,
-      onParametersChange,
-    } = useParameters({
+      builtInParams,
+      additionalParams,
+      runtimeParams,
+      upsertRuntimeParam,
+      onParamsAdd,
+      onParamsDelete,
+      onParamsChange,
+    } = useParams({
       onEditField,
       recordData,
     });
 
     useEffect(() => {
-      const hasError = recordData?.config?.additionalParameters?.some(p => p.hasError);
+      const hasError = recordData?.config?.additionalParams?.some(p => p.hasError);
       setFetchDisabled(hasError === undefined ? false : !!hasError);
     }, [JSON.stringify(recordData)]);
 
@@ -83,7 +91,9 @@ export const DataTableEditFields = React.memo(
       error,
     } = useDataTablePreview({
       previewConfig: recordData,
-      runtimeParameters,
+      builtInParams,
+      additionalParams,
+      runtimeParams,
       onSettled: () => {
         setFetchDisabled(false);
       },
@@ -103,8 +113,8 @@ export const DataTableEditFields = React.memo(
       if (newType === DataTableType.sql) {
         onEditField('config', {
           sql: "SELECT * FROM analytics WHERE entity_code = 'DL';",
-          externalDatabaseConnectionCode: 'analytics_demo_land',
-          additionalParameters: [],
+          externalDatabaseConnectionCode: null,
+          additionalParams: [],
         });
       } else {
         onEditField('config', {});
@@ -149,7 +159,7 @@ export const DataTableEditFields = React.memo(
               />
             </FieldWrapper>
             <FieldWrapper>
-              <Autocomplete
+              <ReduxAutocomplete
                 allowMultipleValues
                 key="permission_groups"
                 inputKey="permission_groups"
@@ -176,17 +186,21 @@ export const DataTableEditFields = React.memo(
             </FieldWrapper>
             <FieldWrapper>
               {recordData?.type === DataTableType.sql && (
-                <Autocomplete
+                <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
+                  options={externalDatabaseConnections}
                   label="Database Connection"
-                  onChange={selectedValues =>
-                    onSqlConfigChange('externalDatabaseConnectionCode', selectedValues)
+                  onChange={(event, selectedValues) =>
+                    onSqlConfigChange('externalDatabaseConnectionCode', selectedValues?.code)
                   }
                   placeholder={recordData?.config?.externalDatabaseConnectionCode}
-                  id="config.externalDatabaseConnectionCode"
-                  reduxId="dataTableEditFields-external_database_connections"
-                  endpoint="externalDatabaseConnections"
-                  optionLabelKey="name"
-                  optionValueKey="code"
+                  getOptionSelected={(option, selected) => option.code === selected.code}
+                  getOptionLabel={option => option?.name || ''}
+                  value={
+                    externalDatabaseConnections.find(
+                      connection =>
+                        connection.code === recordData?.config?.externalDatabaseConnectionCode,
+                    ) || {}
+                  }
                 />
               )}
             </FieldWrapper>
@@ -197,10 +211,10 @@ export const DataTableEditFields = React.memo(
           <ConfigComponent
             onEditField={onEditField}
             recordData={recordData}
-            additionalParameters={additionalParameters}
-            onParametersAdd={onParametersAdd}
-            onParametersDelete={onParametersDelete}
-            onParametersChange={onParametersChange}
+            additionalParams={additionalParams}
+            onParamsAdd={onParamsAdd}
+            onParamsDelete={onParamsDelete}
+            onParamsChange={onParamsChange}
           />
         ) : (
           <Accordion defaultExpanded>
@@ -214,9 +228,9 @@ export const DataTableEditFields = React.memo(
             <Grid container spacing={2}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <PreviewFilters
-                  parameters={additionalParameters}
-                  onChange={upsertRuntimeParameter}
-                  runtimeParameters={runtimeParameters}
+                  params={[...additionalParams, ...builtInParams]}
+                  onChange={upsertRuntimeParam}
+                  runtimeParams={runtimeParams}
                 />
                 <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
               </div>

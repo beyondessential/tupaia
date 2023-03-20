@@ -9,7 +9,7 @@ import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
-const CURRENT_DATE_STUB = '2020-12-31';
+const CURRENT_DATE_STUB = '2023-12-31';
 
 type Event = { eventDate: string; orgUnit: string; dataValues: Record<string, unknown> };
 
@@ -191,21 +191,25 @@ describe('EventsDataTableService', () => {
   it('getParameters', () => {
     const parameters = eventsDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      { config: { defaultValue: 'explore', type: 'hierarchy' }, name: 'hierarchy' },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'organisationUnitCodes',
+        },
         name: 'organisationUnitCodes',
       },
       {
-        config: { required: true, type: 'string' },
+        config: { required: true, type: 'dataGroupCode' },
         name: 'dataGroupCode',
       },
       {
-        config: { innerType: { required: true, type: 'string' }, type: 'array' },
+        config: { innerType: { required: true, type: 'string' }, type: 'dataElementCodes' },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date(), type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
+      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
     ]);
   });
 
