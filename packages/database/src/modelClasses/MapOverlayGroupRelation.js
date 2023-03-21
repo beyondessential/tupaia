@@ -5,6 +5,8 @@
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
+import { SqlQuery } from '../SqlQuery';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { TYPES } from '../types';
 
 const MAP_OVERLAY = 'mapOverlay';
@@ -40,11 +42,18 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     });
   }
 
-  async findGroupRelations(mapOverlayGroupIds) {
+  async findGroupRelations(mapOverlayGroupIds, permissionGroups) {
     return this.find({
       map_overlay_group_id: {
         comparator: 'IN',
         comparisonValue: mapOverlayGroupIds,
+      },
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: `("child_type" = 'mapOverlayGroup' OR "permission_groups" && ${SqlQuery.array(
+          permissionGroups,
+          'text',
+        )})`,
+        parameters: permissionGroups,
       },
     });
   }

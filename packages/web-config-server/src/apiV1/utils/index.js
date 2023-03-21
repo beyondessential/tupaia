@@ -36,10 +36,7 @@ export { sumResults } from './sumResults';
 export { mergeTableDataOnKey } from './mergeTableDataOnKey';
 export { transposeMatrix, sortByColumns } from './matrixUtils';
 export { getAggregatePeriod } from './getAggregatePeriod';
-export {
-  findAccessibleMapOverlays,
-  findAccessibleGroupedMapOverlays,
-} from './findAccessibleGroupedMapOverlays';
+export { findAccessibleMapOverlays } from './findAccessibleGroupedMapOverlays';
 export {
   fetchAggregatedAnalyticsByDhisIds,
   checkAllDataElementsAreDhisIndicators,

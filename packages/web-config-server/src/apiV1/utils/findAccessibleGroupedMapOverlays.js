@@ -1,12 +1,8 @@
-import keyBy from 'lodash.keyby';
-import groupBy from 'lodash.groupby';
 import isEqual from 'lodash.isequal';
 import orderBy from 'lodash.orderby';
 
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 
-const { AND, RAW } = QUERY_CONJUNCTIONS;
 const INFO = 'info';
 const REFERENCE = 'reference';
 /**
@@ -15,7 +11,8 @@ const REFERENCE = 'reference';
 const findNestedGroupedMapOverlays = async (
   models,
   mapOverlayItemRelations,
-  accessibleMapOverlays,
+  country,
+  permissionGroups,
 ) => {
   let mapOverlayResults = [];
   const mapOverlayGroupResults = [];
@@ -30,10 +27,10 @@ const findNestedGroupedMapOverlays = async (
   if (mapOverlayRelations.length) {
     const mapOverlayIds = mapOverlayRelations.map(m => m.child_id);
 
-    const mapOverlays = Object.values(accessibleMapOverlays).filter(mapOverlay =>
-      mapOverlayIds.includes(mapOverlay.id),
-    );
-
+    const mapOverlays = await models.mapOverlay.find({
+      id: mapOverlayIds,
+      country_codes: { comparator: '@>', comparisonValue: [country] },
+    });
     mapOverlayResults = translateOverlaysForResponse(mapOverlays);
   }
 
@@ -56,24 +53,32 @@ const findNestedGroupedMapOverlays = async (
     for (let i = 0; i < mapOverlayGroupRelations.length; i++) {
       const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
       const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
-      const childMapOverlayGroupRelations = await mapOverlayGroupRelation.findChildRelations();
+      const childMapOverlayGroupRelations = await models.mapOverlayGroupRelation.findGroupRelations(
+        [mapOverlayGroupRelation.child_id],
+        permissionGroups,
+      );
       const children = await findNestedGroupedMapOverlays(
         models,
         childMapOverlayGroupRelations,
-        accessibleMapOverlays,
+        country,
+        permissionGroups,
       );
-      const mapOverlayGroupResult = integrateMapOverlayItemsReference({
-        id: mapOverlayGroupRelation.child_id,
-        groupName: name,
-        children,
-      });
-      mapOverlayGroupResults.push(mapOverlayGroupResult);
+
+      if (children.length > 0) {
+        const mapOverlayGroupResult = integrateMapOverlayItemsReference({
+          id: mapOverlayGroupRelation.child_id,
+          groupName: name,
+          children,
+        });
+        mapOverlayGroupResults.push(mapOverlayGroupResult);
+      }
     }
   }
   const sortedMapOverlayResults = sortMapOverlayItems(
     mapOverlayGroupResults.concat(mapOverlayResults),
     mapOverlayItemRelations,
   );
+
   return sortedMapOverlayResults.map(item => {
     const { id, code: mapOverlayCode, ...itemToReturn } = item;
     return { mapOverlayCode, ...itemToReturn };
@@ -125,20 +130,6 @@ const integrateMapOverlayItemsReference = ({ id, groupName, children }) => {
   };
 };
 
-const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
-  if (!nestedMapOverlayGroups || !nestedMapOverlayGroups.length) {
-    return false;
-  }
-
-  return nestedMapOverlayGroups.every(({ children }) => {
-    if (!children) {
-      return true;
-    }
-
-    return children.length > 0 ? checkIfGroupedMapOverlaysAreEmpty(children) : false;
-  });
-};
-
 /**
  * Sort map overlays/map overlay groups with sort_order first, then alphabetically
  * @param {*} mapOverlayItems
@@ -175,82 +166,19 @@ const translateOverlaysForResponse = mapOverlays =>
 /**
  * Find accessible Map Overlays that have matched entityCode, projectCode and permissionGroups
  */
-export const findAccessibleMapOverlays = async (
-  models,
-  overlayCode,
-  projectCode,
-  permissionGroups,
-) => {
-  const mapOverlays = await models.mapOverlay.find({
-    [RAW]: {
-      sql: `("permission_group" = '' OR "permission_group" IN (${permissionGroups
-        .map(() => '?')
-        .join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
-      parameters: permissionGroups,
-    },
-    [AND]: {
-      [RAW]: {
-        sql: '"country_codes" IS NULL OR :overlayCode = ANY("country_codes")',
-        parameters: {
-          overlayCode,
-        },
-      },
-      [AND]: {
-        project_codes: {
-          comparator: '@>',
-          comparisonValue: [projectCode],
-        },
-      },
-    },
-  });
-
-  return keyBy(mapOverlays, 'id');
-};
-
-/**
- * Find accessible grouped MapOverlays, starting from the top level MapOverlayGroups
- */
-export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOverlays) => {
-  // Find all the top level Map Overlay Groups
-  const mapOverlayGroups = await models.mapOverlayGroup.findTopLevelMapOverlayGroups();
-  const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
-  const mapOverlayGroupIds = mapOverlayGroups.map(mapOverlayGroup => mapOverlayGroup.id);
-  const mapOverlayGroupRelations = await models.mapOverlayGroupRelation.findGroupRelations(
-    mapOverlayGroupIds,
+export const findAccessibleMapOverlays = async (models, projectCode, country, permissionGroups) => {
+  const projectMapOverlayGroup = await models.mapOverlayGroup.findOne({ code: projectCode });
+  const projectRelations = await models.mapOverlayGroupRelation.findGroupRelations(
+    [projectMapOverlayGroup.id],
+    permissionGroups,
   );
-  const relationsByGroupId = groupBy(mapOverlayGroupRelations, 'map_overlay_group_id');
-  const worldToTopLevelGroupRelations = await models.mapOverlayGroupRelation.findTopLevelMapOverlayGroupRelations();
-  const worldRelationById = keyBy(worldToTopLevelGroupRelations, 'child_id'); // child_id should be unique because these are top level overlay groups
-  const groupIds = Object.keys(relationsByGroupId);
-  const accessibleOverlayGroups = [];
-  const accessibleRelations = [];
 
-  for (let i = 0; i < groupIds.length; i++) {
-    const groupId = groupIds[i];
-    const name = mapOverlayGroupIdToName[groupId];
-    const groupRelations = relationsByGroupId[groupId];
-    const nestedMapOverlayGroups = await findNestedGroupedMapOverlays(
-      models,
-      groupRelations,
-      accessibleMapOverlays,
-    );
+  const mapOverlayHierarchy = await findNestedGroupedMapOverlays(
+    models,
+    projectRelations,
+    country,
+    permissionGroups,
+  );
 
-    const isNonEmptyMapOverlayGroup = checkIfGroupedMapOverlaysAreEmpty(nestedMapOverlayGroups);
-
-    if (isNonEmptyMapOverlayGroup) {
-      accessibleRelations.push(worldRelationById[groupId]);
-      const accessibleOverlayGroup = integrateMapOverlayItemsReference({
-        id: groupId,
-        groupName: name,
-        children: nestedMapOverlayGroups,
-      });
-      accessibleOverlayGroups.push(accessibleOverlayGroup);
-    }
-  }
-
-  const sortedGroups = sortMapOverlayItems(accessibleOverlayGroups, accessibleRelations);
-  return sortedGroups.map(og => {
-    const { id, ...restOfOverlayGroup } = og;
-    return restOfOverlayGroup;
-  });
+  return mapOverlayHierarchy;
 };
