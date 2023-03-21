@@ -10,6 +10,7 @@ import {
   DataElementMetadataDataTableService,
   DataGroupMetaDataDataTableService,
   EntitiesDataTableService,
+  EntityAttributesDataTableService,
   EntityRelationsDataTableService,
   EventsDataTableService,
   SqlDataTableService,
@@ -56,6 +57,7 @@ const dataTablesServiceBuilders = {
   entities: () => new DataTableServiceBuilderForType(EntitiesDataTableService),
   entity_relations: () => new DataTableServiceBuilderForType(EntityRelationsDataTableService),
   sql: () => new DataTableServiceBuilderForType(SqlDataTableService),
+  entity_attributes: () => new DataTableServiceBuilderForType(EntityAttributesDataTableService),
 };
 
 const isValidServiceType = (

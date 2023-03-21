@@ -96,6 +96,9 @@ const ENTITY_RELATION_TYPE = {
   DESCENDANTS: 'descendants',
 };
 
+/**
+ * @property {any | null} [metadata]
+ */
 export class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
