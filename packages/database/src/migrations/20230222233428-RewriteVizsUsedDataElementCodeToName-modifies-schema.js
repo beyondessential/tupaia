@@ -28,6 +28,40 @@ const restoreDataElementCodeToName = transform => {
   );
 };
 
+const fetchForPalauMatrix = {
+  transform: 'fetchData',
+  join: [
+    {
+      tableColumn: 'dataElement',
+      newDataColumn: 'code',
+    },
+  ],
+  parameters: {
+    dataElementCodes: [
+      'PW_OPD01_004',
+      'PW_OPD01_005',
+      'PW_OPD01_006',
+      'PW_OPD01_007',
+      'PW_OPD01_009',
+      'PW_OPD01_010',
+      'PW_OPD01_011',
+      'PW_OPD01_012',
+      'PW_OPD01_014',
+      'PW_OPD01_015',
+      'PW_OPD01_016',
+      'PW_OPD01_017',
+      'PW_OPD01_018',
+      'PW_OPD01_019',
+      'PW_OPD01_020',
+      'PW_OPD01_021',
+      'PW_OPD01_022',
+      'PW_OPD01_023',
+      'PW_OPD01_024',
+    ],
+  },
+  dataTableCode: 'data_element_metadata',
+};
+
 exports.up = async function (db) {
   const { rows: reports } = await db.runSql(
     `SELECT * FROM report WHERE config::text LIKE '%dataElementCodeToName($dataElement)%'`,
@@ -65,6 +99,15 @@ exports.up = async function (db) {
     let newTransform = transform
       .map(t => {
         if (JSON.stringify(t).includes('dataElementCodeToName(')) {
+          if (report.code === 'nu_pw_matrix_opr_daily_ward_report') {
+            return [
+              fetchForPalauMatrix,
+              excludeUnusedMetadata,
+              renameDataElementName,
+              t,
+              removeDataElementMetadata,
+            ];
+          }
           return [
             fetchMetaData,
             excludeUnusedMetadata,
