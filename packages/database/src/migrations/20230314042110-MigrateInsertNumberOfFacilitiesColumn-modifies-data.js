@@ -144,7 +144,7 @@ const updateStandardReports = async db => {
             transform: 'fetchData',
             dataTableCode: 'entity_relations',
             parameters: {
-              entityCodes: '=@all.organisationUnit or []',
+              entityCodes: '=exists(@all.organisationUnit) ? @all.organisationUnit : []',
               hierarchy: '=@params.hierarchy',
               ancestorType: 'country',
               descendantType: 'facility',
