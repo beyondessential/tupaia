@@ -32,7 +32,7 @@ export const useParams = ({ recordData, onEditField }) => {
       [...newAdditionalParams, ...builtInParams].map(p => [p.name, undefined]),
     );
     setRuntimeParams(defaultRuntimeParams);
-  }, [JSON.stringify(config), recordData.type]);
+  }, [JSON.stringify(config?.additionalParams), recordData.type]);
 
   const onParamsAdd = useCallback(() => {
     const defaultNewParam = {
