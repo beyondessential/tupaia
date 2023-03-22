@@ -3,12 +3,21 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { useState, useEffect } from 'react';
+import debounce from 'lodash.debounce';
+
 export const useSqlEditor = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
-  const { sql = '' } = config;
+  const [sql, setSql] = useState(config?.sql || '');
 
-  const setSql = newSql => {
-    onEditField('config', { ...config, sql: newSql });
-  };
+  useEffect(() => {
+    const debouncedEditSql = debounce(() => {
+      onEditField('config', { ...config, sql });
+    }, 100);
+
+    debouncedEditSql();
+    return debouncedEditSql.cancel;
+  }, [sql]);
+
   return { sql, setSql };
 };
