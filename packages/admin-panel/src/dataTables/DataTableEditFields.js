@@ -144,7 +144,7 @@ export const DataTableEditFields = React.memo(
                 required
                 error={haveTriedToFetch && !recordData.code}
                 helperText={haveTriedToFetch && !recordData.code && 'should not be empty'}
-                onChange={event => onEditField('code', event.target.value)}
+                onChange={event => onEditField('code', event.target.value.trim())}
               />
             </FieldWrapper>
             <FieldWrapper>

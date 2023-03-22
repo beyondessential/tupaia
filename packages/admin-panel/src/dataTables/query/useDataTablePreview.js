@@ -22,7 +22,13 @@ const assignDefaultValueToRuntimeParam = ({ builtInParams, additionalParams, run
     }
   });
 
-  return newRuntimeParams;
+  const trimmedRuntimeParams = Object.fromEntries(
+    Object.entries(newRuntimeParams).map(([key, value]) => {
+      return [key, typeof value === 'string' ? value.trim() : value];
+    }),
+  );
+
+  return trimmedRuntimeParams;
 };
 
 export const useDataTablePreview = ({
