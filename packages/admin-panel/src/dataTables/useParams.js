@@ -4,13 +4,15 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import generateId from 'uuid/v1';
+
 import { useFetchDataTableBuiltInParams } from './query/useFetchDataTableBuiltInParams';
 import { useRuntimeParams } from './useRuntimeParams';
 
 const convertRecordDataToFronendConfig = (additionalParams = []) => {
-  return additionalParams.map((p, index) => ({
+  return additionalParams.map(p => ({
     ...p,
-    id: `parameter_${index}`,
+    id: generateId(),
   }));
 };
 
@@ -32,25 +34,30 @@ export const useParams = ({ recordData, onEditField }) => {
       [...newAdditionalParams, ...builtInParams].map(p => [p.name, undefined]),
     );
     setRuntimeParams(defaultRuntimeParams);
-  }, [JSON.stringify(config?.additionalParams), recordData.type]);
+  }, [recordData.type]);
+
+  const onEditAdditionalParams = newAdditionalParams => {
+    onEditField('config', {
+      ...config,
+      additionalParams: newAdditionalParams,
+    });
+
+    setAdditionalParams(newAdditionalParams);
+  };
 
   const onParamsAdd = useCallback(() => {
     const defaultNewParam = {
-      id: `parameter_${additionalParams.length}`,
+      id: generateId(),
     };
 
-    onEditField('config', {
-      ...config,
-      additionalParams: [...additionalParams, defaultNewParam],
-    });
+    onEditAdditionalParams([...additionalParams, defaultNewParam]);
   });
 
   const onParamsDelete = useCallback(selectedParameterId => {
-    const newParameterList = additionalParams.filter(p => p.id !== selectedParameterId);
-    onEditField('config', { ...config, additionalParams: newParameterList });
-
     const parameterToRemove = additionalParams.find(p => p.id === selectedParameterId);
     removeRuntimeParam(parameterToRemove.name);
+    const newParameterList = additionalParams.filter(p => p.id !== selectedParameterId);
+    onEditAdditionalParams(newParameterList);
   });
 
   const onParamsChange = useCallback((id, key, newValue) => {
@@ -100,7 +107,7 @@ export const useParams = ({ recordData, onEditField }) => {
       }
     }
 
-    onEditField('config', { ...config, additionalParams: newParams });
+    onEditAdditionalParams(newParams);
   });
 
   return {
