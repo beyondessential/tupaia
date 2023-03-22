@@ -11,15 +11,21 @@ import { DatePicker as BaseDatePicker } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 
 const getDateValue = value => {
+  let dateValue = null;
+
   if (value instanceof Date) {
-    return value;
+    dateValue = value;
   }
 
   if (typeof value === 'string') {
-    return new Date(value);
+    dateValue = new Date(value);
   }
 
-  return null;
+  if (!dateValue || dateValue.toString() === 'Invalid Date') {
+    return null;
+  }
+
+  return dateValue;
 };
 
 export const DatePicker = ({ name, value, onChange, config }) => {
