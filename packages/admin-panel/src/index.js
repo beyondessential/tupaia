@@ -20,6 +20,28 @@ import { theme } from './theme';
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));
 
+const disableReactDevTools = () => {
+  const globalDevtoolsReactHook = '__REACT_DEVTOOLS_GLOBAL_HOOK__';
+  // Check if the React Developer Tools global hook exists
+  if (typeof window[globalDevtoolsReactHook] !== 'object') {
+    return;
+  }
+  const reactHookKeys = Object.keys(window[globalDevtoolsReactHook]);
+  reactHookKeys.forEach(prop => {
+    if (prop !== 'renderers') {
+      // Replace all of its properties, except 'renderers' with a no-op function or a null value
+      // depending on their types
+
+      window[globalDevtoolsReactHook][prop] =
+        typeof window[globalDevtoolsReactHook][prop] === 'function' ? () => {} : null;
+    }
+  });
+};
+
+if (process.env.NODE_ENV === 'production') {
+  disableReactDevTools();
+}
+
 const api = new TupaiaApi();
 const queryClient = new QueryClient();
 

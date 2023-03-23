@@ -14,9 +14,9 @@ import { TupaiaService } from './tupaia';
 import { DataLakeService } from './data-lake';
 import { DhisService } from './dhis';
 import { IndicatorService } from './indicator';
-import { WeatherService } from './weather/WeatherService';
-import { KoBoService } from './kobo/KoBoService';
-import { SupersetService } from './superset/SupersetService';
+import { WeatherService } from './weather';
+import { KoBoService } from './kobo';
+import { SupersetService } from './superset';
 import { Service } from './Service';
 
 export const createService = (

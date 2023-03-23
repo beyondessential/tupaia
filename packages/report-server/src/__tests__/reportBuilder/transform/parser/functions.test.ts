@@ -165,6 +165,13 @@ describe('functions', () => {
         ));
     });
 
+    describe('periodToMoment', () => {
+      it('converts given period to moment instance for further manipulation and custom formats', () =>
+        expect(
+          new TransformParser().evaluate("=periodToMoment('20200101').format('MM YYYY ddd')"),
+        ).toBe('01 2020 Wed'));
+    });
+
     describe('dateStringToPeriod', () => {
       it('converts given date string to period', () =>
         expect(new TransformParser().evaluate("=dateStringToPeriod('2020-02-15', 'WEEK')")).toBe(

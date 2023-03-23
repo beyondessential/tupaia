@@ -16,9 +16,10 @@ import {
   roundStartDate,
   roundEndDate,
   toStandardDateString,
+  WEEK_DISPLAY_CONFIG,
 } from '../Chart';
 
-const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
+const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
 /**
  *
@@ -26,12 +27,23 @@ const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
  * @param granularity
  * @param startDate
  * @param endDate
+ * @param {string} weekDisplayFormat one of WEEK_DISPLAY_FORMATS
  * @returns {*|string}
  */
-const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
-  const { rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
-  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat);
-  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat);
+const getDatesAsString = (
+  isSingleDate,
+  granularity = DEFAULT_GRANULARITY,
+  startDate,
+  endDate,
+  weekDisplayFormat,
+) => {
+  const { rangeFormat, modifier } =
+    [GRANULARITIES.WEEK, GRANULARITIES.SINGLE_WEEK].includes(granularity) && weekDisplayFormat
+      ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+      : GRANULARITY_CONFIG[granularity];
+
+  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat, modifier);
+  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat, modifier);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
@@ -58,6 +70,7 @@ const getCurrentDates = (granularity, startDate, endDate, defaultStartDate, defa
  * @param maxDate
  * @param granularity
  * @param onSetDates
+ * @param weekDisplayFormat
  * @returns {{handleReset: handleReset, handleDateChange: handleDateChange, nextDisabled: boolean, labelText: (*|string), isSingleDate: boolean, currentStartDate: (*|moment.Moment), currentEndDate: (*|moment.Moment), prevDisabled: boolean, changePeriod: changePeriod}}
  */
 export const useDateRangePicker = ({
@@ -67,6 +80,7 @@ export const useDateRangePicker = ({
   maxDate,
   granularity,
   onSetDates,
+  weekDisplayFormat,
 }) => {
   /**
    * Call the on change handler prop using iso formatted date
@@ -95,7 +109,13 @@ export const useDateRangePicker = ({
 
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);
   const prevDisabled = currentStartDate.isSameOrBefore(minMomentDate);
-  const labelText = getDatesAsString(isSingleDate, granularity, currentStartDate, currentEndDate);
+  const labelText = getDatesAsString(
+    isSingleDate,
+    granularity,
+    currentStartDate,
+    currentEndDate,
+    weekDisplayFormat,
+  );
 
   /**
    * Set the current date the specified number of periods forward or backwards

@@ -1,0 +1,3 @@
+# Ignore auto-generated files
+packages/types/src/schemas/schemas.ts
+packages/types/src/types/models.ts

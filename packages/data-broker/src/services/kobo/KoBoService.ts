@@ -103,8 +103,4 @@ export class KoBoService extends Service {
 
     return resultsByDataGroupCode;
   };
-
-  public async pullMetadata(): Promise<never> {
-    throw new Error('pullMetadata is not supported in KoBoService');
-  }
 }
