@@ -23,11 +23,6 @@ describe('EntityRelationsDataTableService', () => {
         'entityCodes is a required field',
       ],
       [
-        'missing ancestorType',
-        { entityCodes: ['TO'], descendantType: 'sub_district' },
-        'ancestorType is a required field',
-      ],
-      [
         'missing descendantType',
         { entityCodes: ['TO'], ancestorType: 'district' },
         'descendantType is a required field',
@@ -51,7 +46,7 @@ describe('EntityRelationsDataTableService', () => {
         },
         name: 'entityCodes',
       },
-      { config: { type: 'string', required: true }, name: 'ancestorType' },
+      { config: { type: 'string' }, name: 'ancestorType' },
       { config: { type: 'string', required: true }, name: 'descendantType' },
     ]);
   });
