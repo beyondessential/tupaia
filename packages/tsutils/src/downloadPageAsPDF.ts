@@ -2,7 +2,8 @@ import cookie from 'cookie';
 import puppeteer from 'puppeteer';
 
 const verifyPDFPageUrl = (pdfPageUrl: string): string => {
-  const validDomains = ['tupaia.org', 'lesmis.la', 'www.lesmis.la'];
+  const { VALID_DOMAINS = 'tupaia.org' } = process.env;
+  const validDomains = VALID_DOMAINS?.split(' ');
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
   }

@@ -25,6 +25,11 @@ for PACKAGE in $PACKAGES; do
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
     sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" ${ENV_FILE_PATH}
 
+    if [[ -v DOMAIN ]]; then
+        # Replace the placeholder [domain]
+        sed -i -e "s/\[domain\]/${DOMAIN}/g" ${ENV_FILE_PATH}
+    fi
+
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
         if [[ ${PACKAGE} == "central-server" || ${PACKAGE} == "web-config-server" ]]; then
