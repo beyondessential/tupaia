@@ -25,6 +25,7 @@ export const findQuestionsInSurvey = async (models, surveyId) => {
         'question_label',
         'detail_label',
         'config',
+        'hook',
       ],
       multiJoin: [
         {

@@ -8,6 +8,7 @@
  * Rerun generate:models to recreate this file.
  */
 import { ReportConfig } from './models-extra';
+import { DashboardItemConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -115,9 +116,10 @@ export interface Dashboard {
 }
 export interface DashboardItem {
   'code': string;
-  'config'?: any;
+  'config'?: DashboardItemConfig;
   'id': string;
   'legacy'?: boolean;
+  'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
 export interface DashboardRelation {
@@ -311,8 +313,6 @@ export interface MapOverlay {
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
   'name': string;
-  'permission_group': string;
-  'project_codes'?: string[] | null;
   'report_code'?: string | null;
 }
 export interface MapOverlayGroup {
@@ -325,6 +325,7 @@ export interface MapOverlayGroupRelation {
   'child_type': string;
   'id': string;
   'map_overlay_group_id': string;
+  'permission_groups'?: string[] | null;
   'sort_order'?: number | null;
 }
 export interface MeditrakDevice {
@@ -613,6 +614,12 @@ export enum EntityType {
   'incident_reported' = 'incident_reported',
   'fiji_aspen_facility' = 'fiji_aspen_facility',
   'wish_sub_district' = 'wish_sub_district',
+  'trap' = 'trap',
+  'asset' = 'asset',
+  'institute' = 'institute',
+  'msupply_store' = 'msupply_store',
+  'complaint' = 'complaint',
+  'water_sample' = 'water_sample',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',

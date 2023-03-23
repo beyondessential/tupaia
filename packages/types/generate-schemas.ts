@@ -12,6 +12,7 @@ const settings: TJS.PartialArgs = {
   required: true,
   ignoreErrors: true,
   validationKeywords: customAsyncValidationKeys,
+  noExtraProps: true,
 };
 
 interface SchemaWithProperties {

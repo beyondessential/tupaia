@@ -5,7 +5,6 @@
 
 import {
   EMAIL_ADDRESS_CHANGE,
-  PASSWORD_CHANGE,
   REMEMBER_ME_CHANGE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -17,11 +16,6 @@ import {
 export const changeEmailAddress = emailAddress => ({
   type: EMAIL_ADDRESS_CHANGE,
   emailAddress,
-});
-
-export const changePassword = password => ({
-  type: PASSWORD_CHANGE,
-  password,
 });
 
 export const changeRememberMe = rememberMe => ({

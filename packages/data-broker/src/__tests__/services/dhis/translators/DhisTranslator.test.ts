@@ -46,7 +46,114 @@ describe('DhisTranslator', () => {
 
   describe('translateInboundEventAnalytics', () => {});
 
-  describe('translateInboundDataElements', () => {});
+  describe('translateInboundDataElements', () => {
+    const baseDhisDataElementMetadata = [
+      { code: 'codeA', name: 'A', id: 'id_a' },
+      { code: 'codeB', name: 'B', id: 'id_b' },
+      { code: 'codeC', name: 'C', id: 'id_c' },
+    ];
+
+    const dhisServiceType = 'dhis' as const;
+
+    it('translates data element metadata code to data element code', () => {
+      const dataElements = [
+        {
+          code: 'dataElementCodeA',
+          dataElementCode: 'codeA',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+        {
+          code: 'dataElementCodeB',
+          dataElementCode: 'codeB',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+        {
+          code: 'dataElementCodeC',
+          dataElementCode: 'codeC',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+      ];
+
+      const expectResults = [
+        { code: 'dataElementCodeA', name: 'A', id: 'id_a' },
+        { code: 'dataElementCodeB', name: 'B', id: 'id_b' },
+        { code: 'dataElementCodeC', name: 'C', id: 'id_c' },
+      ];
+
+      expect(
+        translator.translateInboundDataElements(baseDhisDataElementMetadata, dataElements),
+      ).toStrictEqual(expect.arrayContaining(expectResults));
+    });
+
+    it('works when some data elements share the same dhis data element code', () => {
+      const dhisDataElementMetadata = [
+        ...baseDhisDataElementMetadata,
+        { code: 'codeA_B', name: 'A_B', id: 'id_a_b' },
+      ];
+
+      const dataElements = [
+        {
+          code: 'dataElementCodeA',
+          dataElementCode: 'codeA_B',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+        {
+          code: 'dataElementCodeB',
+          dataElementCode: 'codeA_B',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+        {
+          code: 'dataElementCodeC',
+          dataElementCode: 'codeC',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+      ];
+
+      const expectResults = [
+        { code: 'dataElementCodeA', name: 'A_B', id: 'id_a_b' },
+        { code: 'dataElementCodeB', name: 'A_B', id: 'id_a_b' },
+        { code: 'dataElementCodeC', name: 'C', id: 'id_c' },
+      ];
+
+      expect(
+        translator.translateInboundDataElements(dhisDataElementMetadata, dataElements),
+      ).toStrictEqual(expect.arrayContaining(expectResults));
+    });
+
+    it('attaches the rest of data elements', () => {
+      const dataElements = [
+        {
+          code: 'dataElementCodeA',
+          dataElementCode: 'codeA',
+          service_type: dhisServiceType,
+          config: {},
+          permission_groups: [],
+        },
+      ];
+
+      const expectResults = [
+        { code: 'dataElementCodeA', name: 'A', id: 'id_a' },
+        { code: 'codeB', name: 'B', id: 'id_b' },
+        { code: 'codeC', name: 'C', id: 'id_c' },
+      ];
+
+      expect(
+        translator.translateInboundDataElements(baseDhisDataElementMetadata, dataElements),
+      ).toStrictEqual(expectResults);
+    });
+  });
 
   describe('translateInboundIndicators', () => {});
 });

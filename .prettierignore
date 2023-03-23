@@ -1,0 +1,3 @@
+# Ignore generated files
+packages/types/src/schemas/schemas.ts
+packages/types/src/models/models.ts

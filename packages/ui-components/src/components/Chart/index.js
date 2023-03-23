@@ -9,3 +9,4 @@ export * from './periodGranularities';
 export * from './parseChartConfig';
 export * from './constants';
 export * from './utils';
+export * from './weekDisplayFormats';

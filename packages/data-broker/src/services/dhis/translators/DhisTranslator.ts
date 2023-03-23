@@ -11,13 +11,13 @@ import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 import { DATA_SOURCE_TYPES } from '../../../utils';
 import { DataElement, DataSource, DhisAnalytics, DhisEventAnalytics, ValueType } from '../types';
-import { DataBrokerModelRegistry, DataElementMetadata, Event, OutboundEvent } from '../../../types';
-
-interface DhisMetadataObject {
-  id: string;
-  code: string;
-  name: string;
-}
+import {
+  DataBrokerModelRegistry,
+  DataElementMetadata,
+  DhisMetadataObject,
+  Event,
+  OutboundEvent,
+} from '../../../types';
 
 interface OutboundDataValue {
   code: string;

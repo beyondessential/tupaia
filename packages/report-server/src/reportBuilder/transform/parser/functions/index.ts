@@ -10,6 +10,7 @@ import {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  periodToMoment,
   formatAsFractionAndPercentage,
 } from './utils';
 import { add, divide, sum, mean, min, max } from './math';
@@ -31,6 +32,7 @@ export const customFunctions = {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  periodToMoment,
   formatAsFractionAndPercentage,
   any,
   all,

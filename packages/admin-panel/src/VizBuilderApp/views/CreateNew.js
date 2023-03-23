@@ -9,7 +9,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { Button, FlexEnd } from '@tupaia/ui-components';
 import { DashboardMetadataForm } from '../components';
-import { VIZ_TYPE_PARAM } from '../constants';
+import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 import { MapOverlayMetadataForm } from '../components/MapOverlay';
 import { useVizBuilderBasePath } from '../utils';
 
@@ -49,23 +49,25 @@ const Footer = styled(FlexEnd)`
   border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
-const getMetadataFormComponent = vizType => {
-  if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) return DashboardMetadataForm;
-  if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) return MapOverlayMetadataForm;
-  throw new Error(`Unknown viz type ${vizType}`);
+const getMetadataFormComponent = dashboardItemOrMapOverlay => {
+  if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM)
+    return DashboardMetadataForm;
+  if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY)
+    return MapOverlayMetadataForm;
+  throw new Error(`Unknown viz type ${dashboardItemOrMapOverlay}`);
 };
 
 export const CreateNew = () => {
-  const { vizType } = useParams();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const history = useHistory();
   const basePath = useVizBuilderBasePath();
 
   const handleCreate = () => {
-    history.push(`${basePath}/viz-builder/${vizType}/`);
+    history.push(`${basePath}/viz-builder/${dashboardItemOrMapOverlay}/`);
   };
 
-  const MetadataFormComponent = getMetadataFormComponent(vizType);
+  const MetadataFormComponent = getMetadataFormComponent(dashboardItemOrMapOverlay);
 
   return (
     <Container>

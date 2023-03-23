@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
-import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
 import { useTabPanel, useVizConfig, useVisualisation, useVizConfigError } from '../context';
@@ -77,19 +76,24 @@ export const Panel = () => {
     );
   }
 
+  const jsonEditorProps = {
+    mode: 'code',
+    mainMenuBar: false,
+  };
+
   return (
     <Container>
       <PanelNav>
         <JsonToggleButton />
         <PlayButton />
       </PanelNav>
-
       <TabPanel isSelected Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
             value={vizData.transform}
             onChange={value => setTabValue('transform', value)}
             onInvalidChange={handleInvalidChange}
+            {...jsonEditorProps}
           />
         ) : (
           <TransformDataLibrary

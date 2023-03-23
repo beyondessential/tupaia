@@ -71,6 +71,7 @@ export const DateRangePicker = ({
   granularity,
   onSetDates,
   isLoading,
+  weekDisplayFormat,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -89,6 +90,7 @@ export const DateRangePicker = ({
     maxDate,
     granularity,
     onSetDates,
+    weekDisplayFormat,
   });
 
   const handleOpen = () => {
@@ -137,6 +139,7 @@ export const DateRangePicker = ({
         isOpen={isOpen}
         onClose={handleClose}
         onSetNewDates={handleDateChange}
+        weekDisplayFormat={weekDisplayFormat}
       />
     </>
   );
@@ -150,6 +153,7 @@ DateRangePicker.propTypes = {
   granularity: GRANULARITY_SHAPE,
   onSetDates: PropTypes.func,
   isLoading: PropTypes.bool,
+  weekDisplayFormat: PropTypes.string,
 };
 
 DateRangePicker.defaultProps = {
@@ -160,4 +164,5 @@ DateRangePicker.defaultProps = {
   granularity: GRANULARITIES.DAY,
   onSetDates: () => {},
   isLoading: false,
+  weekDisplayFormat: null,
 };

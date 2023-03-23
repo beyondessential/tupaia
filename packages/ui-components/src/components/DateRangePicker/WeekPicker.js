@@ -8,15 +8,27 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { GRANULARITY_CONFIG, GRANULARITIES } from '../Chart';
-
-const { pickerFormat: FORMAT } = GRANULARITY_CONFIG[GRANULARITIES.WEEK];
+import {
+  GRANULARITY_CONFIG,
+  GRANULARITIES,
+  WEEK_DISPLAY_CONFIG,
+  momentToDateString,
+} from '../Chart';
 
 const useBoundaryWeekOrDefault = (currentDate, boundaryDate, defaultWeek) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;
 
-export const WeekPicker = props => {
-  const { momentDateValue, minMomentDate, maxMomentDate, onChange } = props;
+export const WeekPicker = ({
+  momentDateValue,
+  minMomentDate,
+  maxMomentDate,
+  weekDisplayFormat,
+  onChange,
+}) => {
+  const { pickerFormat, modifier } = weekDisplayFormat
+    ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+    : GRANULARITY_CONFIG[GRANULARITIES.WEEK];
+
   const date = momentDateValue.isoWeekday(1);
 
   const weeksInYear = date.isoWeeksInYear();
@@ -27,12 +39,18 @@ export const WeekPicker = props => {
   // Prefer moment mutation to creation for performance reasons
   const mutatingMoment = date.clone();
   for (let w = 1; w <= weeksInYear; w++) {
-    const week = mutatingMoment.isoWeek(w).format(FORMAT);
+    const weekLabel = momentToDateString(
+      mutatingMoment.isoWeek(w),
+      GRANULARITIES.SINGLE_WEEK,
+      pickerFormat,
+      modifier,
+    );
+
     const disabled = w < minAvailableWeekIndex || w > maxAvailableWeekIndex;
 
     menuItems.push(
       <MenuItem value={w} key={w} disabled={disabled}>
-        {week}
+        {weekLabel}
       </MenuItem>,
     );
   }

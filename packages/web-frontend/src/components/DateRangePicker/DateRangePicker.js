@@ -91,6 +91,7 @@ export const DateRangePicker = ({
   onSetDates,
   isLoading,
   align,
+  weekDisplayFormat,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [initialStartDate] = useState(startDate);
@@ -147,7 +148,13 @@ export const DateRangePicker = ({
 
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);
   const prevDisabled = currentStartDate.isSameOrBefore(minMomentDate);
-  const labelText = getDatesAsString(isSingleDate, granularity, currentStartDate, currentEndDate);
+  const labelText = getDatesAsString(
+    isSingleDate,
+    granularity,
+    currentStartDate,
+    currentEndDate,
+    weekDisplayFormat,
+  );
 
   return (
     <>
@@ -207,6 +214,7 @@ export const DateRangePicker = ({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onSetNewDates={onSetDates}
+          weekDisplayFormat={weekDisplayFormat}
         />
       )}
     </>
@@ -224,6 +232,7 @@ DateRangePicker.propTypes = {
   onSetDates: PropTypes.func,
   isLoading: PropTypes.bool,
   align: PropTypes.string,
+  weekDisplayFormat: PropTypes.string,
 };
 
 DateRangePicker.defaultProps = {
@@ -235,4 +244,5 @@ DateRangePicker.defaultProps = {
   onSetDates: () => {},
   isLoading: false,
   align: 'left',
+  weekDisplayFormat: null,
 };

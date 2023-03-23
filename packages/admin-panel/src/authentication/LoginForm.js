@@ -7,15 +7,10 @@ import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
-import {
-  getEmailAddress,
-  getErrorMessage,
-  getIsLoading,
-  getPassword,
-  getRememberMe,
-} from './selectors';
-import { changeEmailAddress, changePassword, login, changeRememberMe } from './actions';
+import { getEmailAddress, getErrorMessage, getIsLoading, getRememberMe } from './selectors';
+import { changeEmailAddress, login, changeRememberMe } from './actions';
 
 const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
@@ -37,17 +32,17 @@ const StyledButton = styled(Button)`
 
 const LoginFormComponent = ({
   emailAddress,
-  password,
   rememberMe,
   errorMessage,
   isLoading,
   onChangeEmailAddress,
-  onChangePassword,
   onChangeRememberMe,
   onLogin,
 }) => {
+  const { watch, register } = useForm();
+  const password = watch('password');
   return (
-    <form onSubmit={onLogin} noValidate>
+    <form onSubmit={event => onLogin(event, password)} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <TextField
@@ -62,7 +57,7 @@ const LoginFormComponent = ({
         name="password"
         type="password"
         placeholder="Password"
-        onChange={onChangePassword}
+        inputRef={register()}
       />
       <Checkbox
         name="remember"
@@ -80,12 +75,10 @@ const LoginFormComponent = ({
 
 LoginFormComponent.propTypes = {
   emailAddress: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
   rememberMe: PropTypes.bool,
   errorMessage: PropTypes.string,
   isLoading: PropTypes.bool,
   onChangeEmailAddress: PropTypes.func.isRequired,
-  onChangePassword: PropTypes.func.isRequired,
   onChangeRememberMe: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
 };
@@ -98,7 +91,6 @@ LoginFormComponent.defaultProps = {
 
 const mapStateToProps = state => ({
   emailAddress: getEmailAddress(state),
-  password: getPassword(state),
   rememberMe: getRememberMe(state),
   errorMessage: getErrorMessage(state),
   isLoading: getIsLoading(state),
@@ -108,11 +100,10 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   ...ownProps,
   ...stateProps,
   onChangeEmailAddress: event => dispatch(changeEmailAddress(event.target.value)),
-  onChangePassword: event => dispatch(changePassword(event.target.value)),
   onChangeRememberMe: event => dispatch(changeRememberMe(event.target.checked)),
-  onLogin: event => {
+  onLogin: (event, password) => {
     event.preventDefault();
-    dispatch(login(stateProps.emailAddress, stateProps.password));
+    dispatch(login(stateProps.emailAddress, password));
   },
 });
 
