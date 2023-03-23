@@ -18,11 +18,6 @@ describe('EntityRelationsDataTableService', () => {
   describe('parameter validation', () => {
     const testData: [string, unknown, string][] = [
       [
-        'missing entityCodes',
-        { ancestorType: 'district', descendantType: 'sub_district' },
-        'entityCodes is a required field',
-      ],
-      [
         'missing ancestorType',
         { entityCodes: ['TO'], descendantType: 'sub_district' },
         'ancestorType is a required field',
@@ -37,6 +32,15 @@ describe('EntityRelationsDataTableService', () => {
     it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
       expect(() => entityRelationsDataTableService.fetchData(parameters)).toThrow(expectedError);
     });
+
+    it('set entityCodes as default value []', async () => {
+      await expect(
+        entityRelationsDataTableService.fetchData({
+          ancestorType: 'district',
+          descendantType: 'sub_district',
+        }),
+      ).resolves.toEqual([]);
+    });
   });
 
   it('getParameters', () => {
@@ -46,7 +50,7 @@ describe('EntityRelationsDataTableService', () => {
       {
         config: {
           innerType: { required: true, type: 'string' },
-          required: true,
+          defaultValue: [],
           type: 'organisationUnitCodes',
         },
         name: 'entityCodes',

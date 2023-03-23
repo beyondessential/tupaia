@@ -16,12 +16,13 @@ const entitiesDataTableService = new DataTableServiceBuilder()
 
 describe('EntitiesDataTableService', () => {
   describe('parameter validation', () => {
-    const testData: [string, unknown, string][] = [
-      ['missing entityCodes', {}, 'entityCodes is a required field'],
-    ];
-
-    it.each(testData)('%s', (_, parameters: unknown, expectedError: string) => {
-      expect(() => entitiesDataTableService.fetchData(parameters)).toThrow(expectedError);
+    it('set entityCodes as default value []', async () => {
+      await expect(
+        entitiesDataTableService.fetchData({
+          ancestorType: 'district',
+          descendantType: 'sub_district',
+        }),
+      ).resolves.toEqual([]);
     });
   });
 
@@ -32,7 +33,7 @@ describe('EntitiesDataTableService', () => {
       {
         config: {
           innerType: { required: true, type: 'string' },
-          required: true,
+          defaultValue: [],
           type: 'organisationUnitCodes',
         },
         name: 'entityCodes',

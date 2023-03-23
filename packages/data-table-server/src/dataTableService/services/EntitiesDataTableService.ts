@@ -9,7 +9,7 @@ import { DataTableService } from '../DataTableService';
 
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
-  entityCodes: yup.array().of(yup.string().required()).required(),
+  entityCodes: yup.array().of(yup.string().required()).default([]),
   filter: yup.object(),
   fields: yup.array().of(yup.string().required()).default(['code']),
   includeDescendants: yup.boolean().default(false),
