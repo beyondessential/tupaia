@@ -21,6 +21,7 @@
     "test:debug": "yarn test --debug"
   },
   "dependencies": {
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/data-api": "1.0.0",
     "@tupaia/data-lake-api": "1.0.0",
     "@tupaia/database": "1.0.0",
@@ -28,6 +29,7 @@
     "@tupaia/indicators": "1.0.0",
     "@tupaia/kobo-api": "1.0.0",
     "@tupaia/superset-api": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "@tupaia/weather-api": "1.0.0",
     "case": "^1.5.5",
