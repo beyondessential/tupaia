@@ -43,6 +43,10 @@ const transform = async (table: TransformTable, transformSteps: BuiltTransformPa
     try {
       transformedTable = await transformStep.apply(transformedTable);
     } catch (e) {
+      if (e instanceof ExitWithNoDataSignal) {
+        // Return a no data result
+        return new TransformTable();
+      }
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
       const errorMessagePrefix = `Error in transform[${i + 1}]${titlePart}: `;
       e.message = `${errorMessagePrefix}${(e as Error).message}`;
@@ -82,3 +86,8 @@ export const buildTransform = (params: unknown, context: Context) => {
   const builtParams = validatedParams.map(param => buildParams(param, context));
   return (table: TransformTable) => transform(table, builtParams);
 };
+
+/**
+ * A signal to exit the transform steps early
+ */
+export class ExitWithNoDataSignal extends Error {}

@@ -9,11 +9,13 @@ import { Row } from '../../../types';
 import { createJoin } from './createJoin';
 import { TransformTable } from '../../table';
 import { TransformParser } from '../../parser';
+import { ExitWithNoDataSignal } from '../../transform';
 
 type FetchParams = {
   dataTableCode: string;
   parameters: Record<string, unknown>;
   join: (existingRows: Row[], newRows: Row[]) => Row[];
+  exitOnNoData?: boolean;
 };
 
 export const paramsValidator = yup.object().shape({
@@ -25,10 +27,11 @@ export const paramsValidator = yup.object().shape({
       newDataColumn: yup.string().required(),
     }),
   ),
+  exitOnNoData: yup.boolean().default(true),
 });
 
 const fetchData = async (table: TransformTable, params: FetchParams, context: Context) => {
-  const { dataTableCode, parameters, join } = params;
+  const { dataTableCode, parameters, join, exitOnNoData } = params;
   const parser = new TransformParser(table, context);
 
   const parsedParameters = Object.fromEntries(
@@ -47,6 +50,11 @@ const fetchData = async (table: TransformTable, params: FetchParams, context: Co
   );
 
   const newRows = response.data as Row[];
+
+  if (newRows.length === 0 && exitOnNoData) {
+    throw new ExitWithNoDataSignal();
+  }
+
   const existingColumns = table.getColumns();
   const newColumns = Array.from(new Set(newRows.map(Object.keys).flat())).filter(
     column => !existingColumns.includes(column),
@@ -59,13 +67,14 @@ const fetchData = async (table: TransformTable, params: FetchParams, context: Co
 };
 
 const buildParams = (params: unknown): FetchParams => {
-  const { dataTableCode, parameters, join } = paramsValidator.validateSync(params);
+  const { dataTableCode, parameters, join, exitOnNoData } = paramsValidator.validateSync(params);
 
   const joinFunction = createJoin(join);
   return {
     dataTableCode,
     parameters,
     join: joinFunction,
+    exitOnNoData,
   };
 };
 
