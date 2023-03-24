@@ -95,6 +95,10 @@ exports.up = async function (db) {
       transform: 'excludeColumns',
       columns: ['dataElementName'],
     };
+    const sortRowsByPeriod = {
+      transform: 'sortRows',
+      by: 'period',
+    };
 
     let newTransform = transform
       .map(t => {
@@ -106,6 +110,7 @@ exports.up = async function (db) {
               renameDataElementName,
               t,
               removeDataElementMetadata,
+              sortRowsByPeriod,
             ];
           }
           return [

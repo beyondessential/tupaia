@@ -13,7 +13,7 @@ export const createJoin = (joinConfig?: { tableColumn: string; newDataColumn: st
   tableRows: Row[],
   newDataRows: Row[],
 ) => {
-  if (!joinConfig) {
+  if (!joinConfig || joinConfig.length === 0) {
     return tableRows.concat(newDataRows);
   }
 
