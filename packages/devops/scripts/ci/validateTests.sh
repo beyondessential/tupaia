@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-DIR=$(dirname "$0")
-ROOT="${DIR}/../../../../"
+ROOT="$(git rev-parse --show-toplevel)"
 
 node ${ROOT}/scripts/node/validateTests
