@@ -9,7 +9,7 @@
         - name: Validate branch name
           command: './packages/devops/scripts/ci/validateBranchName.sh'
         - name: Validate new migrations
-          command: './packages/devops/scripts/ci/validate_migrations.sh'
+          command: './packages/devops/scripts/ci/validateNewMigrations.sh'
         - name: Validate tests
           command: './packages/devops/scripts/ci/validateTests.sh'
     - type: serial

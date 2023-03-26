@@ -36,6 +36,7 @@ function check_migration_outdated() {
 
   if (( $migration_timestamp < $included_migrations_timestamp )); then
     log_error "❌ New migration should be created after $valid_migration_date. Invalid migration name: '$migration_name'"
+    exit 1
   fi
 }
 
