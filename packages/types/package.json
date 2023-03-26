@@ -27,7 +27,7 @@
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
     "dotenv": "^16.0.3",
-    "knex": "^2.3.0",
+    "knex": "^2.4.0",
     "ts-node": "^10.9.1",
     "typescript-json-schema": "^0.55.0"
   }
