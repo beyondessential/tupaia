@@ -4,7 +4,8 @@ FROM node:14.19.3-alpine3.15
 RUN apk --no-cache add \
   bash \
   postgresql-client \
-  git
+  git \
+  openssh-client
 
 # set Yarn v3
 RUN yarn set version berry
