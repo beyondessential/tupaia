@@ -28,6 +28,7 @@ export type DeleteOptions = {
 
 export type PullOptions = {
   dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
 };
 
 export type PullMetadataOptions = {

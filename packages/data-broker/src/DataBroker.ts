@@ -8,7 +8,6 @@ import { lower } from 'case';
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { toArray } from '@tupaia/utils';
-import { isNotNullish } from '@tupaia/tsutils';
 import { createService } from './services';
 import { DataServiceResolver } from './services/DataServiceResolver';
 import {
@@ -25,6 +24,7 @@ import {
 } from './types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from './utils';
 import { DataServiceMapping } from './services/DataServiceMapping';
+import groupBy from 'lodash.groupby';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -58,9 +58,12 @@ type ResultMerger =
 
 type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
-type PermissionChecker =
-  | ((dataSources: DataSource[], countryCodes: string[] | null) => Promise<boolean>)
-  | (() => boolean);
+type PermissionChecker = (
+  dataSources: DataSource[],
+  organisationUnitCodes?: string[],
+) => Promise<string[] | undefined>;
+
+type ValidatedOptions = { organisationUnitCodes?: string[] } & Record<string, unknown>;
 
 let modelRegistry: DataBrokerModelRegistry;
 
@@ -80,14 +83,16 @@ const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes
   return ['*', ...userPermissionGroups];
 };
 
-const getOrganisationUnitCodes = (options: {
-  organisationUnitCode?: string;
-  organisationUnitCodes?: string[];
-}) => {
-  const { organisationUnitCode, organisationUnitCodes } = options;
+const setOrganisationUnitCodes = (
+  options: Record<string, unknown> & {
+    organisationUnitCode?: string;
+    organisationUnitCodes?: string[];
+  },
+) => {
+  const { organisationUnitCode, organisationUnitCodes, ...restOfOptions } = options;
   const orgUnitCodes =
-    organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : null);
-  return orgUnitCodes;
+    organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : undefined);
+  return { ...restOfOptions, organisationUnitCodes: orgUnitCodes };
 };
 
 export class DataBroker {
@@ -153,20 +158,24 @@ export class DataBroker {
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
   };
 
-  private getCountryCodes = async (organisationUnitCodes: string[]) => {
+  private getOrganisationUnitsByCountry = async (organisationUnitCodes: string[]) => {
     const orgUnits = await this.models.entity.find({ code: organisationUnitCodes });
-    const orgUnitCountryCodes = orgUnits.map(orgUnit => orgUnit.country_code).filter(isNotNullish);
-    const countryCodes = [...new Set(orgUnitCountryCodes)];
-    return countryCodes;
+    const organisationUnitCodesByCountryCodes = Object.fromEntries(
+      Object.entries(groupBy(orgUnits, 'country_code')).map(([countryCode, orgUnitsInCountry]) => [
+        countryCode,
+        orgUnitsInCountry.map(({ code }) => code),
+      ]),
+    );
+    return organisationUnitCodesByCountryCodes;
   };
 
   private checkDataElementPermissions = async (
     dataElements: DataSource[],
-    countryCodes: string[] | null,
+    organisationUnitCodes?: string[],
   ) => {
     const allUserPermissions = this.getUserPermissions();
     if (allUserPermissions.includes(BES_ADMIN_PERMISSION_GROUP)) {
-      return true;
+      return organisationUnitCodes;
     }
 
     const getDataElementsWithMissingPermissions = (permissions: string[]) =>
@@ -175,7 +184,7 @@ export class DataBroker {
         .filter(element => !element.permission_groups.some(group => permissions.includes(group)))
         .map(element => element.code);
 
-    if (countryCodes === null) {
+    if (!organisationUnitCodes) {
       const missingPermissions = getDataElementsWithMissingPermissions(allUserPermissions);
       if (missingPermissions.length > 0) {
         throw new Error(
@@ -183,53 +192,63 @@ export class DataBroker {
         );
       }
 
-      return true;
+      return organisationUnitCodes;
     }
 
-    const missingPermissionsPerCountry: Record<string, string[]> = {};
+    const organisationUnitsByCountry = await this.getOrganisationUnitsByCountry(
+      organisationUnitCodes,
+    );
+    const countryCodes = Object.keys(organisationUnitsByCountry);
+
+    let organisationUnitsWithPermission: string[] = [];
     countryCodes.forEach(country => {
       const missingPermissions = getDataElementsWithMissingPermissions(
         this.getUserPermissions([country]),
       );
-      if (missingPermissions.length > 0) {
-        missingPermissionsPerCountry[country] = missingPermissions;
+      if (missingPermissions.length === 0) {
+        // Have access to all data elements for country
+        organisationUnitsWithPermission = organisationUnitsWithPermission.concat(
+          organisationUnitsByCountry[country],
+        );
       }
     });
 
-    if (Object.keys(missingPermissionsPerCountry).length > 0) {
-      const missingPermissionsPerCountryString = Object.entries(missingPermissionsPerCountry)
-        .map(([country, permissions]) => `${country}: ${permissions}`)
-        .join('\n');
+    if (organisationUnitsWithPermission.length === 0) {
       throw new Error(
-        `Missing permissions to the following data elements:\n${missingPermissionsPerCountryString}`,
+        `Missing permissions to the following data elements:\n${dataElements.map(
+          ({ code }) => code,
+        )}`,
       );
     }
 
-    return true;
+    return organisationUnitsWithPermission;
   };
 
   private checkDataGroupPermissions = async (
     dataGroups: DataSource[],
-    countryCodes: string[] | null,
+    organisationUnitCodes?: string[],
   ) => {
     const missingPermissions = [];
     for (const group of dataGroups) {
       const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(group.code);
       try {
-        await this.checkDataElementPermissions(dataElements, countryCodes);
+        await this.checkDataElementPermissions(dataElements, organisationUnitCodes);
       } catch {
         missingPermissions.push(group.code);
       }
     }
     if (missingPermissions.length === 0) {
-      return true;
+      return organisationUnitCodes;
     }
     throw new Error(`Missing permissions to the following data groups: ${missingPermissions}`);
   };
 
   // No check for syncGroups currently
-  private checkSyncGroupPermissions = () => {
-    return true;
+  private checkSyncGroupPermissions = async (
+    syncGroups: DataSource[],
+    organisationUnitCodes?: string[],
+  ) => {
+    return organisationUnitCodes;
   };
 
   private async fetchDataSources(dataSourceSpec: DataSourceSpec) {
@@ -311,14 +330,14 @@ export class DataBroker {
   public async pull(dataSourceSpec: DataSourceSpec, options: Record<string, unknown> = {}) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const { type } = dataSourceSpec;
-    const orgUnitCodes = getOrganisationUnitCodes(options);
+    const validatedOptions = setOrganisationUnitCodes(options);
 
-    const pulls = await this.getPulls(dataSources, orgUnitCodes);
+    const pulls = await this.getPulls(dataSources, validatedOptions.organisationUnitCodes);
     const nestedResults = await Promise.all(
       pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
         return this.pullForServiceAndType(
           dataSourcesForThisPull,
-          options,
+          validatedOptions,
           type,
           serviceType,
           dataServiceMapping,
@@ -336,21 +355,24 @@ export class DataBroker {
 
   private pullForServiceAndType = async (
     dataSources: DataSource[],
-    options: Record<string, unknown>,
+    options: ValidatedOptions,
     type: DataSourceType,
     serviceType: ServiceType,
     dataServiceMapping: DataServiceMapping,
   ) => {
-    const organisationUnitCodes = getOrganisationUnitCodes(options);
-    const countryCodes =
-      organisationUnitCodes === null
-        ? null // null countryCodes will get permissions for any countries
-        : await this.getCountryCodes(organisationUnitCodes);
+    const { organisationUnitCodes } = options;
     const permissionChecker = this.permissionCheckers[type];
-    // Permission checkers will throw if they fail
-    await permissionChecker(dataSources, countryCodes);
+    // Permission checkers will throw if no access to any organisationUnits
+    const organisationUnitCodesWithAccess = await permissionChecker(
+      dataSources,
+      organisationUnitCodes,
+    );
     const service = this.createService(serviceType);
-    return service.pull(dataSources, type, { ...options, dataServiceMapping });
+    return service.pull(dataSources, type, {
+      ...options,
+      dataServiceMapping,
+      organisationUnitCodes: organisationUnitCodesWithAccess,
+    });
   };
 
   private mergeAnalytics = (
@@ -442,7 +464,7 @@ export class DataBroker {
 
   private async getPulls(
     dataSources: DataSourceTypeInstance[],
-    orgUnitCodes: string[] | null,
+    orgUnitCodes?: string[],
   ): Promise<
     {
       dataSources: DataSource[];
@@ -451,7 +473,7 @@ export class DataBroker {
     }[]
   > {
     // Special case where no org unit is provided
-    if (orgUnitCodes === null) {
+    if (!orgUnitCodes) {
       const pulls = [];
       const mapping = await this.dataServiceResolver.getMapping(dataSources);
       for (const serviceType of mapping.uniqueServiceTypes()) {
@@ -474,7 +496,7 @@ export class DataBroker {
 
     // First we get the mapping for each country, then if any two countries have the
     // exact same mapping we simply combine them
-    const countryCodes = await this.getCountryCodes(orgUnitCodes);
+    const countryCodes = Object.keys(await this.getOrganisationUnitsByCountry(orgUnitCodes));
 
     if (countryCodes.length === 1) {
       // No special logic needed, exit early
