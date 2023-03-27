@@ -54,8 +54,8 @@ function validate_migrations(){
 current_branch_name=$(get_branch_name)
 origin_branch_name="master"
 
-git branch $origin_branch_name
-git fetch --all --prune
+git checkout $origin_branch_name
+git checkout $current_branch_name
 
 validate_migrations $current_branch_name $origin_branch_name
 
