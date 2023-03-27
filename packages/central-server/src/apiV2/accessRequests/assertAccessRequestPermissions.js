@@ -5,7 +5,7 @@
 
 import { hasBESAdminAccess, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import {
-  getAdminPanelAllowedEntityIds,
+  getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
   mergeFilter,
 } from '../utilities';
@@ -76,7 +76,7 @@ export const createAccessRequestDBFilter = async (accessPolicy, models, criteria
   // If we don't have BES Admin access, add a filter to the SQL query
   const dbConditions = { ...criteria };
   dbConditions['access_request.entity_id'] = mergeFilter(
-    await getAdminPanelAllowedEntityIds(accessPolicy, models),
+    await getAdminPanelAllowedCountryIds(accessPolicy, models),
     dbConditions['access_request.entity_id'],
   );
 
