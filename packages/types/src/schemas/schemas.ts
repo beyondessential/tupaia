@@ -24436,6 +24436,7 @@ export const DataTableSchema = {
 				"data_element_metadata",
 				"data_group_metadata",
 				"entities",
+				"entity_attributes",
 				"entity_relations",
 				"events",
 				"sql"
@@ -24666,7 +24667,6 @@ export const EntitySchema = {
 				"case_contact",
 				"catchment",
 				"city",
-				"complaint",
 				"country",
 				"disaster",
 				"district",
@@ -24692,7 +24692,6 @@ export const EntitySchema = {
 				"sub_facility",
 				"trap",
 				"village",
-				"water_sample",
 				"wish_sub_district",
 				"world"
 			],
@@ -24997,6 +24996,15 @@ export const MapOverlaySchema = {
 		"name": {
 			"type": "string"
 		},
+		"permission_group": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"report_code": {
 			"type": "string"
 		}
@@ -25005,7 +25013,8 @@ export const MapOverlaySchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"name"
+		"name",
+		"permission_group"
 	]
 } 
 
@@ -25043,12 +25052,6 @@ export const MapOverlayGroupRelationSchema = {
 		},
 		"map_overlay_group_id": {
 			"type": "string"
-		},
-		"permission_groups": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
 		},
 		"sort_order": {
 			"type": "number"
@@ -25308,7 +25311,6 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"case_contact",
 				"catchment",
 				"city",
-				"complaint",
 				"country",
 				"disaster",
 				"district",
@@ -25334,7 +25336,6 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"sub_facility",
 				"trap",
 				"village",
-				"water_sample",
 				"wish_sub_district",
 				"world"
 			],
@@ -26068,7 +26069,6 @@ export const EntityTypeSchema = {
 		"case_contact",
 		"catchment",
 		"city",
-		"complaint",
 		"country",
 		"disaster",
 		"district",
@@ -26094,7 +26094,6 @@ export const EntityTypeSchema = {
 		"sub_facility",
 		"trap",
 		"village",
-		"water_sample",
 		"wish_sub_district",
 		"world"
 	],
@@ -26127,6 +26126,7 @@ export const DataTableTypeSchema = {
 		"data_element_metadata",
 		"data_group_metadata",
 		"entities",
+		"entity_attributes",
 		"entity_relations",
 		"events",
 		"sql"
@@ -26207,7 +26207,6 @@ export const EntityCreatedSchema = {
 				"case_contact",
 				"catchment",
 				"city",
-				"complaint",
 				"country",
 				"disaster",
 				"district",
@@ -26233,7 +26232,6 @@ export const EntityCreatedSchema = {
 				"sub_facility",
 				"trap",
 				"village",
-				"water_sample",
 				"wish_sub_district",
 				"world"
 			],
@@ -26376,7 +26374,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"case_contact",
 							"catchment",
 							"city",
-							"complaint",
 							"country",
 							"disaster",
 							"district",
@@ -26402,7 +26399,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"sub_facility",
 							"trap",
 							"village",
-							"water_sample",
 							"wish_sub_district",
 							"world"
 						],
@@ -26477,8 +26473,8 @@ export const MeditrakSurveyResponseRequestSchema = {
 export const DataTablePreviewRequestSchema = {
 	"properties": {
 		"runtimeParams": {
-			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": true,
+			"type": "object"
 		},
 		"code": {
 			"type": "string"
@@ -26502,6 +26498,7 @@ export const DataTablePreviewRequestSchema = {
 				"data_element_metadata",
 				"data_group_metadata",
 				"entities",
+				"entity_attributes",
 				"entity_relations",
 				"events",
 				"sql"
@@ -26515,7 +26512,6 @@ export const DataTablePreviewRequestSchema = {
 		"code",
 		"id",
 		"permission_groups",
-		"runtimeParams",
 		"type"
 	]
 } 

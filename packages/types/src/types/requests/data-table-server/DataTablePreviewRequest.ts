@@ -10,5 +10,8 @@
 import { DataTable } from '../../models';
 
 export interface DataTablePreviewRequest extends DataTable {
-  runtimeParams: Record<string, unknown>;
+  /**
+   * @additionalProperties true
+   */
+  runtimeParams?: Record<string, unknown>;
 }
