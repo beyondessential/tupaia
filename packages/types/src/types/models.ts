@@ -313,6 +313,8 @@ export interface MapOverlay {
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
   'name': string;
+  'permission_group': string;
+  'project_codes'?: string[] | null;
   'report_code'?: string | null;
 }
 export interface MapOverlayGroup {
@@ -325,7 +327,6 @@ export interface MapOverlayGroupRelation {
   'child_type': string;
   'id': string;
   'map_overlay_group_id': string;
-  'permission_groups'?: string[] | null;
   'sort_order'?: number | null;
 }
 export interface MeditrakDevice {
@@ -618,8 +619,6 @@ export enum EntityType {
   'asset' = 'asset',
   'institute' = 'institute',
   'msupply_store' = 'msupply_store',
-  'complaint' = 'complaint',
-  'water_sample' = 'water_sample',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
@@ -641,6 +640,7 @@ export enum DataTableType {
   'sql' = 'sql',
   'data_group_metadata' = 'data_group_metadata',
   'data_element_metadata' = 'data_element_metadata',
+  'entity_attributes' = 'entity_attributes',
 }
 export enum DataSourceType {
   'dataElement' = 'dataElement',
