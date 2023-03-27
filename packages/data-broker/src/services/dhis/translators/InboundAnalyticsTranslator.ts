@@ -10,6 +10,7 @@ import keyBy from 'lodash.keyby';
 import pickBy from 'lodash.pickby';
 import { DataElement, DhisAnalyticDimension, DhisAnalytics } from '../types';
 import { Values } from '../../../types';
+import { formatInboundDataElementName } from './formatDataElementName';
 
 const DIMENSIONS: Record<string, DhisAnalyticDimension> = {
   DATA_ELEMENT: 'dx',
@@ -171,7 +172,7 @@ export class InboundAnalyticsTranslator {
         ...item,
         uid: translatedId,
         code: this.dataElementKeyToSourceCode![dataElementKey],
-        name: name + (coComboName ? ` - ${coComboName}` : ''),
+        name: formatInboundDataElementName(name, coComboName),
       };
     });
 
