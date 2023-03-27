@@ -4,9 +4,9 @@
  */
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
+import { ajvValidate } from '@tupaia/tsutils';
 import { EntityType, EntityFilter } from '../../../models';
 import { extractFilterFromQuery } from './filter';
-import { ajvValidate } from '@tupaia/tsutils';
 import { MultiEntityRequestBodySchema } from '../types';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;

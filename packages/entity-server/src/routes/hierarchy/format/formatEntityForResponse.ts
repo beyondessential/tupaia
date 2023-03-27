@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityType } from '../../../models';
 import { EntityServerModelRegistry } from '../../../types';
 import {

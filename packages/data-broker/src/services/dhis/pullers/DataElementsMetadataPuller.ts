@@ -6,6 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
+import { isNotNullish } from '@tupaia/tsutils';
 import { DataElementModel } from '../../../types';
 import { DataElement } from '../types';
 import { DhisTranslator } from '../translators';
@@ -49,13 +50,21 @@ export class DataElementsMetadataPuller {
           ...this.translator.translateInboundIndicators(indicators, groupedDataSources),
         );
       } else {
+        const categoryOptionComboCodes = groupedDataSources
+          .map(ds => ds.config?.categoryOptionCombo)
+          .filter(isNotNullish);
         const { additionalFields, includeOptions } = options;
         const dataElements = await api.fetchDataElements(dataElementCodes, {
           additionalFields,
           includeOptions,
         });
+        const categoryOptionCombos = await api.fetchCategoryOptionCombos(categoryOptionComboCodes);
         metadata.push(
-          ...this.translator.translateInboundDataElements(dataElements, groupedDataSources),
+          ...this.translator.translateInboundDataElements(
+            dataElements,
+            categoryOptionCombos,
+            groupedDataSources,
+          ),
         );
       }
     }

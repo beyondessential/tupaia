@@ -571,6 +571,21 @@ export class DhisApi {
     return dataGroupMetadata;
   }
 
+  async fetchCategoryOptionCombos(categoryOptionComboCodes, { additionalFields = [] } = {}) {
+    if (categoryOptionComboCodes.length === 0) {
+      return [];
+    }
+
+    const fields = ['id', 'code', 'name', ...additionalFields];
+    const categoryOptionCombos = await this.getRecords({
+      type: CATEGORY_OPTION_COMBO,
+      codes: categoryOptionComboCodes,
+      fields,
+    });
+
+    return categoryOptionCombos;
+  }
+
   buildFetchIndicatorsQuery = queryInput => {
     const { dataElementIds, dataElementCodes } = queryInput;
 
