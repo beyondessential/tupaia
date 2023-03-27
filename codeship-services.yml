@@ -1,4 +1,4 @@
-# 'validation' service checks:
+# 'validation1' service checks:
 #  - branch name
 #  - that there are no exclusive tests
 #    - TODO: use eslint no-exclusive-tests flag at lint step after RN-201
