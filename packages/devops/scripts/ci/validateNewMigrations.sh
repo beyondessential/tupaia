@@ -52,6 +52,9 @@ function validate_migrations(){
 }
 
 current_branch_name=$(get_branch_name)
-origin_branch_name="origin/master"
+origin_branch_name="master"
+
 validate_migrations $current_branch_name $origin_branch_name
- 
+
+log_success "✔ New migrations are valid!"
+exit 0
