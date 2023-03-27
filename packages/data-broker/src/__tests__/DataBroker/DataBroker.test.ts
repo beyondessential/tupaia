@@ -34,7 +34,7 @@ describe('DataBroker', () => {
     tupaia: new MockService(mockModels).setMockData(DATA_BY_SERVICE.tupaia),
   };
   const createServiceMock = stubCreateService(SERVICES);
-  const options = { organisationUnitCode: 'TO' };
+  const options = { organisationUnitCodes: ['TO'] };
 
   it('getDataSourceTypes()', () => {
     expect(new DataBroker().getDataSourceTypes()).toStrictEqual(DATA_SOURCE_TYPES);
@@ -186,22 +186,22 @@ describe('DataBroker', () => {
       const assertServicePulledDataElementsOnce = (
         service: Service,
         dataElements: DataElement[],
-        expectedOptions: Record<string, unknown>,
+        expectedOrganisationUnitCodes: string[],
       ) =>
         expect(service.pull).toHaveBeenCalledOnceWith(
           dataElements,
           'dataElement',
-          expect.objectContaining(expectedOptions),
+          expect.objectContaining({
+            organisationUnitCodes: expect.arrayContaining(expectedOrganisationUnitCodes),
+          }),
         );
 
       it('pulls from different data services for the same data element', async () => {
         const dataBroker = new DataBroker();
-        const multipleCountryOptions = {
-          organisationUnitCodes: ['FJ_FACILITY_01', 'TO_FACILITY_01'],
-        };
+        const multipleCountryFacilities = ['FJ_FACILITY_01', 'TO_FACILITY_01'];
         await dataBroker.pull(
           { code: ['MAPPED_01', 'MAPPED_02'], type: 'dataElement' },
-          multipleCountryOptions,
+          { organisationUnitCodes: multipleCountryFacilities },
         );
 
         expect(createServiceMock).toHaveBeenCalledTimes(2);
@@ -219,12 +219,12 @@ describe('DataBroker', () => {
         assertServicePulledDataElementsOnce(
           SERVICES.dhis,
           [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
-          multipleCountryOptions, // all org units
+          multipleCountryFacilities, // all org units
         );
         assertServicePulledDataElementsOnce(
           SERVICES.tupaia,
           [DATA_ELEMENTS.MAPPED_01, DATA_ELEMENTS.MAPPED_02], // all data elements
-          multipleCountryOptions, // all org units
+          multipleCountryFacilities, // all org units
         );
       });
     });
@@ -352,9 +352,7 @@ describe('DataBroker', () => {
             },
             { organisationUnitCodes: ['TO'] },
           ),
-        ).toBeRejectedWith(
-          'Missing permissions to the following data elements:\nTO: RESTRICTED_01',
-        );
+        ).toBeRejectedWith('Missing permissions to the following data elements:\nRESTRICTED_01');
       });
 
       it("throws an error if any of data elements in fetch the user doesn't have required permissions for", async () => {
@@ -366,37 +364,7 @@ describe('DataBroker', () => {
             },
             { organisationUnitCodes: ['TO'] },
           ),
-        ).toBeRejectedWith(
-          `Missing permissions to the following data elements:\nTO: RESTRICTED_01`,
-        );
-      });
-
-      it("throws an error if any of entities in fetch the user doesn't have required permissions for", async () => {
-        await expect(
-          new DataBroker({
-            accessPolicy: new AccessPolicy({ FJ: ['Public'], TO: ['Admin'] }),
-          }).pull(
-            {
-              code: ['RESTRICTED_01'],
-              type: 'dataElement',
-            },
-            { organisationUnitCodes: ['FJ', 'TO'] },
-          ),
-        ).toBeRejectedWith(
-          'Missing permissions to the following data elements:\nFJ: RESTRICTED_01',
-        );
-      });
-
-      it("doesn't throw if the user has access to the data element in the requested entity", async () => {
-        await expect(
-          new DataBroker({ accessPolicy: new AccessPolicy({ TO: ['Admin'] }) }).pull(
-            {
-              code: ['RESTRICTED_01'],
-              type: 'dataElement',
-            },
-            { organisationUnitCodes: ['TO'] },
-          ),
-        ).toResolve();
+        ).toBeRejectedWith(`Missing permissions to the following data elements:\nRESTRICTED_01`);
       });
 
       it("doesn't throw if the user has BES Admin access", async () => {
@@ -409,6 +377,66 @@ describe('DataBroker', () => {
             { organisationUnitCodes: ['TO'] },
           ),
         ).toResolve();
+      });
+
+      it("doesn't throw if the user has access to the data element in the requested entity", async () => {
+        const results = await new DataBroker({
+          accessPolicy: new AccessPolicy({ TO: ['Admin'] }),
+        }).pull(
+          {
+            code: ['RESTRICTED_01'],
+            type: 'dataElement',
+          },
+          { organisationUnitCodes: ['TO'] },
+        );
+        expect(results).toEqual({
+          results: [
+            {
+              analytics: [
+                {
+                  dataElement: 'RESTRICTED_01',
+                  organisationUnit: 'TO',
+                  period: '20210101',
+                  value: 4,
+                },
+              ],
+              numAggregationsProcessed: 0,
+            },
+          ],
+          metadata: {
+            dataElementCodeToName: {},
+          },
+        });
+      });
+
+      it('just returns data for entities that the user have appropriate access to', async () => {
+        const results = await new DataBroker({
+          accessPolicy: new AccessPolicy({ FJ: ['Admin'] }),
+        }).pull(
+          {
+            code: ['RESTRICTED_01'],
+            type: 'dataElement',
+          },
+          { organisationUnitCodes: ['TO', 'FJ'] },
+        );
+        expect(results).toEqual({
+          results: [
+            {
+              analytics: [
+                {
+                  dataElement: 'RESTRICTED_01',
+                  organisationUnit: 'FJ',
+                  period: '20210101',
+                  value: 5,
+                },
+              ],
+              numAggregationsProcessed: 0,
+            },
+          ],
+          metadata: {
+            dataElementCodeToName: {},
+          },
+        });
       });
     });
 

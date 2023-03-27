@@ -64,7 +64,11 @@ export const DATA_BY_SERVICE = {
     ],
   },
   tupaia: {
-    analytics: [{ dataElement: 'TUPAIA_01', organisationUnit: 'TO', period: '20210101', value: 3 }],
+    analytics: [
+      { dataElement: 'TUPAIA_01', organisationUnit: 'TO', period: '20210101', value: 3 },
+      { dataElement: 'RESTRICTED_01', organisationUnit: 'TO', period: '20210101', value: 4 },
+      { dataElement: 'RESTRICTED_01', organisationUnit: 'FJ', period: '20210101', value: 5 },
+    ],
     eventsByProgram: {
       TUPAIA_PROGRAM_01: [
         {
