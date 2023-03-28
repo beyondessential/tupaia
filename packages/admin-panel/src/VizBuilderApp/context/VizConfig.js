@@ -12,6 +12,8 @@ import React, { useReducer, createContext, useContext } from 'react';
 const initialConfigState = {
   project: null,
   location: null,
+  startDate: null,
+  endDate: null,
   testData: null,
   visualisation: {
     id: null,
@@ -27,6 +29,8 @@ const initialConfigState = {
 
 const SET_PROJECT = 'SET_PROJECT';
 const SET_LOCATION = 'SET_LOCATION';
+const SET_START_DATE = 'SET_START_DATE';
+const SET_END_DATE = 'SET_END_DATE';
 const SET_TEST_DATA = 'SET_TEST_DATA';
 const SET_VISUALISATION = 'SET_VISUALISATION';
 const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
@@ -43,6 +47,12 @@ function configReducer(state, action) {
       return set(state, 'location', action.value);
     case SET_PROJECT: {
       return set(state, 'project', action.value);
+    }
+    case SET_START_DATE: {
+      return set(state, 'startDate', action.value);
+    }
+    case SET_END_DATE: {
+      return set(state, 'endDate', action.value);
     }
     case SET_TEST_DATA: {
       return set(state, 'testData', action.value);
@@ -90,6 +100,8 @@ const useConfigStore = () => {
 
   const setLocation = value => dispatch({ type: SET_LOCATION, value });
   const setProject = value => dispatch({ type: SET_PROJECT, value });
+  const setStartDate = value => dispatch({ type: SET_START_DATE, value });
+  const setEndDate = value => dispatch({ type: SET_END_DATE, value });
   const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
   const setVisualisation = value => {
     if (!value.data.transform) {
@@ -118,6 +130,8 @@ const useConfigStore = () => {
     {
       setLocation,
       setProject,
+      setStartDate,
+      setEndDate,
       setTestData,
       setVisualisation,
       setVisualisationValue,
