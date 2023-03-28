@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 DIR=$(dirname "$0")
-ROOT="$(git rev-parse --show-toplevel)"
+ROOT="${DIR}/../../../../"
 
 . ${DIR}/utils.sh
 
@@ -58,7 +58,7 @@ origin_branch_name="master"
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
 
-git fetch
+git fetch --quiet
 git fetch origin $origin_branch_name:$origin_branch_name --quiet
 validate_migrations $current_branch_name $origin_branch_name
 
