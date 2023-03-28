@@ -58,8 +58,11 @@ origin_branch_name="master"
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
 
-git fetch --quiet --no-submodules
-git fetch origin $origin_branch_name:$origin_branch_name --quiet --no-submodules
+# Remove this sub module because it uses ssh, while container doesn't have that setup. 
+git rm $ROOT/packages/data-api/scripts/pg-mv-fast-refresh
+
+git fetch --quiet
+git fetch origin $origin_branch_name:$origin_branch_name --quiet
 validate_migrations $current_branch_name $origin_branch_name
 
 log_success "✔ New migrations are valid!"
