@@ -36,7 +36,6 @@ function check_migration_outdated() {
 
   if (( $migration_timestamp < $included_migrations_timestamp )); then
     log_error "❌ New migration should be created after $valid_migration_date. Invalid migration name: '$migration_name'"
-    exit 1
   fi
 }
 
@@ -45,10 +44,19 @@ function validate_migrations(){
     local origin_branch_name=$2
     local migrations_dir="${ROOT}/packages/database/src/migrations"
     local new_migration_names_in_string=$(git diff --diff-filter=A --name-only $origin_branch_name $current_branch_name $migrations_dir)
+    local errors="";
 
     while read -r migration_name; do
-      check_migration_outdated "$migration_name"
+      if [[ "$migration_name" == "" ]]; then
+        break
+      fi
+      errors="$errors$(check_migration_outdated "$migration_name")"
     done <<< "$new_migration_names_in_string"
+
+    if [[ "$errors" != "" ]]; then
+        echo $errors;
+        exit 1;
+    fi
 }
 
 current_branch_name=$(get_branch_name)
