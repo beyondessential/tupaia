@@ -112,10 +112,7 @@ const amendImpactedTransform = (lastPartOfTransform, initialFetchType) => {
     amendedTransformArray[0] = JSON.parse(amendedTransform);
     return amendedTransformArray;
   }
-  const amendedTransform = currentTransform.replace(
-    'orgUnitCodeToName($orgUnit)',
-    '$organisationUnit',
-  );
+  const amendedTransform = currentTransform.replace('orgUnitCodeToName($orgUnit)', '$orgUnit');
   amendedTransformArray[0] = JSON.parse(amendedTransform);
   return amendedTransformArray;
 };
