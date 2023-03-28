@@ -4,8 +4,7 @@ FROM node:14.19.3-alpine3.15
 RUN apk --no-cache add \
   bash \
   postgresql-client \
-  git \
-  openssh-client
+  git 
 
 # set Yarn v3
 RUN yarn set version berry
@@ -130,9 +129,6 @@ COPY ./tsconfig* ./
 
 ## build internal dependencies
 # RUN yarn build:internal-dependencies
-
-# copy everything else from the repo
-COPY . ./
 
 # Make sure all packages build
 # RUN yarn build:non-internal-dependencies
