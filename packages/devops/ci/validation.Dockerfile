@@ -6,13 +6,6 @@ RUN apk --no-cache add \
   git
 
 
-# fix container not trusting GitHub
-RUN mkdir -p ~/.ssh
-RUN touch ~/.ssh/config
-RUN chmod 700 ~/.ssh
-RUN chmod 644 ~/.ssh/config
-RUN echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-
 # set Yarn v3
 RUN yarn set version berry
 
