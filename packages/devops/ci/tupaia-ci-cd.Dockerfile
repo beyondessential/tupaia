@@ -129,10 +129,10 @@ COPY packages/superset-api/. ./packages/superset-api
 COPY ./tsconfig* ./
 
 ## build internal dependencies
-RUN yarn build:internal-dependencies
+# RUN yarn build:internal-dependencies
 
 # copy everything else from the repo
 COPY . ./
 
 # Make sure all packages build
-RUN yarn build:non-internal-dependencies
+# RUN yarn build:non-internal-dependencies

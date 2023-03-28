@@ -54,6 +54,12 @@ function validate_migrations(){
 current_branch_name=$(get_branch_name)
 origin_branch_name="master"
 
+mkdir -p ~/.ssh
+touch ~/.ssh/known_hosts
+chmod 700 ~/.ssh
+chmod 644 ~/.ssh/known_hosts
+ssh-keyscan github.com >> ~/.ssh/known_hosts # prevent error: "Host key verification failed."
+
 git fetch origin $origin_branch_name --quiet
 
 validate_migrations $current_branch_name $origin_branch_name
