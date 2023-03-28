@@ -4,6 +4,7 @@
  */
 
 import { lower } from 'case';
+import groupBy from 'lodash.groupby';
 
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
@@ -24,7 +25,6 @@ import {
 } from './types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from './utils';
 import { DataServiceMapping } from './services/DataServiceMapping';
-import groupBy from 'lodash.groupby';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -201,6 +201,9 @@ export class DataBroker {
     const countryCodes = Object.keys(organisationUnitsByCountry);
 
     let organisationUnitsWithPermission: string[] = [];
+    const countriesMissingPermission = Object.fromEntries(
+      dataElements.map(({ code }) => [code, [] as string[]]),
+    );
     countryCodes.forEach(country => {
       const missingPermissions = getDataElementsWithMissingPermissions(
         this.getUserPermissions([country]),
@@ -211,13 +214,18 @@ export class DataBroker {
           organisationUnitsByCountry[country],
         );
       }
+
+      missingPermissions.forEach(dataElement =>
+        countriesMissingPermission[dataElement].push(country),
+      );
     });
 
     if (organisationUnitsWithPermission.length === 0) {
+      const dataElementsWithNoAccess = Object.entries(countriesMissingPermission)
+        .filter(([, countries]) => countries.length === countryCodes.length)
+        .map(([dataElement]) => dataElement);
       throw new Error(
-        `Missing permissions to the following data elements:\n${dataElements.map(
-          ({ code }) => code,
-        )}`,
+        `Missing permissions to the following data elements:\n${dataElementsWithNoAccess}`,
       );
     }
 

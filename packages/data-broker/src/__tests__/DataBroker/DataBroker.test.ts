@@ -357,9 +357,9 @@ describe('DataBroker', () => {
 
       it("throws an error if any of data elements in fetch the user doesn't have required permissions for", async () => {
         await expect(
-          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Public'] }) }).pull(
+          new DataBroker({ accessPolicy: new AccessPolicy({ TO: ['Public'] }) }).pull(
             {
-              code: ['TEST_01', 'RESTRICTED_01'],
+              code: ['TUPAIA_01', 'RESTRICTED_01'],
               type: 'dataElement',
             },
             { organisationUnitCodes: ['TO'] },
