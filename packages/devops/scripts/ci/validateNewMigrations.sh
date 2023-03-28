@@ -58,7 +58,8 @@ origin_branch_name="master"
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
 
-git fetch origin $origin_branch_name --quiet
+git fetch
+git fetch origin $origin_branch_name:$origin_branch_name --quiet
 validate_migrations $current_branch_name $origin_branch_name
 
 log_success "✔ New migrations are valid!"
