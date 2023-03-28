@@ -55,6 +55,76 @@ const REPORTS = [
   },
 ];
 
+const riskFactorFoodTransform = [
+  {
+    transform: 'fetchData',
+    parameters: {
+      aggregations: [
+        {
+          type: 'FINAL_EACH_YEAR',
+          config: {
+            dataSourceEntityType: 'village',
+          },
+          description: 'Get the latest response for each year within selected period',
+        },
+      ],
+      dataElementCodes: ['WISH_KRF11', 'WISH_KRF12'],
+    },
+    dataTableCode: 'analytics',
+  },
+  {
+    transform: 'fetchData',
+    join: [
+      {
+        tableColumn: 'dataElement',
+        newDataColumn: 'code',
+      },
+    ],
+    parameters: {
+      dataElementCodes: '=@all.dataElement',
+    },
+    dataTableCode: 'data_element_metadata',
+  },
+  {
+    transform: 'updateColumns',
+    insert: {
+      dataElementName: "=$period == '2019' ? $name + ' Baseline' : $name + ' Endline'",
+    },
+    exclude: ['dataElement', 'code', 'name'],
+  },
+  {
+    transform: 'fetchData',
+    join: [
+      {
+        tableColumn: 'organisationUnit',
+        newDataColumn: 'code',
+      },
+    ],
+    parameters: {
+      fields: ['name', 'code'],
+      entityCodes: '=@all.organisationUnit',
+    },
+    dataTableCode: 'entities',
+  },
+  {
+    transform: 'updateColumns',
+    insert: {
+      name: '=$name',
+      "=$dataElementName + ' (' + $period + ')'": '=exists($value) ? $value : -999',
+    },
+    exclude: '*',
+  },
+  {
+    transform: 'mergeRows',
+    using: 'single',
+    groupBy: 'name',
+  },
+  {
+    transform: 'sortRows',
+    by: 'name',
+  },
+];
+
 const updatedTransform = dataElementCode => [
   {
     transform: 'fetchData',
@@ -105,8 +175,8 @@ const updatedTransform = dataElementCode => [
   {
     transform: 'updateColumns',
     insert: {
-      'Endline (2022)': "=exists($Endline2022)?$Endline2022 : 'undefined'",
-      'Baseline (2019)': "=exists($Baseline2019)?$Baseline2019 : 'undefined'",
+      'Endline (2022)': '=exists($Endline2022)?$Endline2022 : -999',
+      'Baseline (2019)': '=exists($Baseline2019)?$Baseline2019 : -999',
     },
     include: 'name',
   },
@@ -122,7 +192,10 @@ exports.up = async function (db) {
 
     const newConfig = {
       ...report.config,
-      transform: updatedTransform(REPORTS.find(({ code }) => code === report.code).dataElementCode),
+      transform:
+        report.code === 'wish_krf_fj_matrix_food'
+          ? riskFactorFoodTransform
+          : updatedTransform(REPORTS.find(({ code }) => code === report.code).dataElementCode),
     };
 
     await db.runSql(
