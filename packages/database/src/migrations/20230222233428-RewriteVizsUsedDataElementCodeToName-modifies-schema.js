@@ -28,6 +28,7 @@ const restoreDataElementCodeToName = transform => {
   );
 };
 
+const PALAU_MATRIX_REPORT_CODE = 'nu_pw_matrix_opr_daily_ward_report';
 const fetchForPalauMatrix = {
   transform: 'fetchData',
   join: [
@@ -99,11 +100,15 @@ exports.up = async function (db) {
       transform: 'sortRows',
       by: 'period',
     };
+    const orderColumnsByDate = {
+      transform: 'orderColumns',
+      sortBy: 'date',
+    };
 
     let newTransform = transform
       .map(t => {
         if (JSON.stringify(t).includes('dataElementCodeToName(')) {
-          if (report.code === 'nu_pw_matrix_opr_daily_ward_report') {
+          if (report.code === PALAU_MATRIX_REPORT_CODE) {
             return [
               fetchForPalauMatrix,
               excludeUnusedMetadata,
@@ -124,6 +129,10 @@ exports.up = async function (db) {
         return [t];
       })
       .flat();
+
+    if (report.code === PALAU_MATRIX_REPORT_CODE) {
+      newTransform = newTransform.concat([orderColumnsByDate]);
+    }
 
     newTransform = removeDataElementCodeToName(newTransform);
 
@@ -157,6 +166,10 @@ exports.down = async function (db) {
 
     newTransform = newTransform.filter(t => !t.isToRemove);
     newTransform = restoreDataElementCodeToName(newTransform);
+
+    if (report.code === PALAU_MATRIX_REPORT_CODE) {
+      newTransform = newTransform.slice(0, -1); // Remove column sort
+    }
 
     const newConfig = { ...report.config, transform: newTransform };
 
