@@ -1,0 +1,25 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import { Flattable, Flattened } from '../../types';
+
+export type HierarchyFields = Readonly<{
+  id: string;
+  code: string;
+  name: string;
+  attributes: Record<string, unknown>;
+}>;
+
+export type FlattableHierarchyFieldName = keyof Flattable<HierarchyFields>;
+export type FlattenedHierarchy = Flattened<HierarchyFields>;
+
+export type HierarchyResponseObject = Partial<HierarchyFields>;
+
+export type HierarchyFieldName = keyof HierarchyFields;
+
+export interface HierarchyContext {
+  fields: HierarchyFieldName[];
+  field?: FlattableHierarchyFieldName;
+}

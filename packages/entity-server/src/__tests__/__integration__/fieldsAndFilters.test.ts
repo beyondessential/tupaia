@@ -64,7 +64,7 @@ describe('fieldsAndFilters', () => {
       expect(error.error).toContain('Invalid single field requested attributes');
     });
 
-    it('can fetch a an entity as single field', async () => {
+    it('can fetch an entity as single field', async () => {
       const { body: entity } = await app.get('hierarchy/redblue/KANTO', {
         query: { field: 'name' },
       });
@@ -99,7 +99,7 @@ describe('fieldsAndFilters', () => {
       expect(entity).toEqual(getEntityWithFields('KANTO', ['name', 'attributes']));
     });
 
-    it('can multiple entities with specific fields', async () => {
+    it('can fetch multiple entities with specific fields', async () => {
       const { body: entities } = await app.post('hierarchy/redblue', {
         query: { fields: 'code,type,attributes' },
         body: { entities: ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'] },
