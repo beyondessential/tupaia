@@ -4,7 +4,7 @@
  */
 import { NextFunction, Request, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { extractFieldsFromQuery, extractFieldFromQuery } from './fields';
+import { extractEntityFieldsFromQuery, extractEntityFieldFromQuery } from './fields';
 import { CommonContext } from '../types';
 
 const throwNoAccessError = (hierarchyName: string) => {
@@ -29,8 +29,8 @@ export const attachCommonEntityContext = async (
     req.ctx.hierarchyId = hierarchy.id;
 
     const { fields, field } = req.query;
-    req.ctx.fields = extractFieldsFromQuery(fields);
-    req.ctx.field = extractFieldFromQuery(field);
+    req.ctx.fields = extractEntityFieldsFromQuery(fields);
+    req.ctx.field = extractEntityFieldFromQuery(field);
 
     next();
   } catch (error) {
