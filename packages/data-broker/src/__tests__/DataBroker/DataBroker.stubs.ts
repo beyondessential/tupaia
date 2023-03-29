@@ -41,36 +41,50 @@ export class MockService extends Service {
     return this;
   }
 
-  public pull = jest.fn().mockImplementation((dataSources: DataSource[], type: DataSourceType) => {
-    const { analytics, eventsByProgram, dataElements } = this.mockData;
-    const dataSourceCodes = dataSources.map(({ code }) => code);
+  public pull = jest
+    .fn()
+    .mockImplementation(
+      (
+        dataSources: DataSource[],
+        type: DataSourceType,
+        options: { organisationUnitCodes?: string[] },
+      ) => {
+        const { analytics, eventsByProgram, dataElements } = this.mockData;
+        const { organisationUnitCodes } = options;
+        const dataSourceCodes = dataSources.map(({ code }) => code);
 
-    switch (type) {
-      case 'dataElement': {
-        const results = analytics.filter(({ dataElement }) =>
-          dataSourceCodes.includes(dataElement),
-        );
-        const selectedDataElements = dataElements.filter(({ code }) =>
-          dataSourceCodes.includes(code),
-        );
-        const dataElementCodeToName = reduceToDictionary(selectedDataElements, 'code', 'name');
+        switch (type) {
+          case 'dataElement': {
+            let results = analytics.filter(({ dataElement }) =>
+              dataSourceCodes.includes(dataElement),
+            );
+            if (organisationUnitCodes) {
+              results = results.filter(({ organisationUnit }) =>
+                organisationUnitCodes.includes(organisationUnit),
+              );
+            }
+            const selectedDataElements = dataElements.filter(({ code }) =>
+              dataSourceCodes.includes(code),
+            );
+            const dataElementCodeToName = reduceToDictionary(selectedDataElements, 'code', 'name');
 
-        return {
-          results,
-          metadata: {
-            dataElementCodeToName,
-          },
-        };
-      }
-      case 'dataGroup': {
-        return Object.entries(eventsByProgram)
-          .filter(([program]) => dataSourceCodes.includes(program))
-          .flatMap(([, events]) => events);
-      }
-      default:
-        throw new Error(`Invalid data source type: ${type}`);
-    }
-  });
+            return {
+              results,
+              metadata: {
+                dataElementCodeToName,
+              },
+            };
+          }
+          case 'dataGroup': {
+            return Object.entries(eventsByProgram)
+              .filter(([program]) => dataSourceCodes.includes(program))
+              .flatMap(([, events]) => events);
+          }
+          default:
+            throw new Error(`Invalid data source type: ${type}`);
+        }
+      },
+    );
 
   public push = jest.fn();
 
