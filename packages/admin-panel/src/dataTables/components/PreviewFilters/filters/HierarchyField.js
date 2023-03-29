@@ -23,7 +23,7 @@ export const HierarchyField = ({ name, value, onChange, config }) => {
       placeholder={config?.defaultValue}
       options={hierarchies.map(p => p['project.code'])}
       disabled={isLoading}
-      onChange={(event, selectedValues) => onChange(selectedValues?.code)}
+      onChange={(event, selectedValue) => onChange(selectedValue)}
     />
   );
 };
