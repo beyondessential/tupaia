@@ -14,7 +14,7 @@ fi
 
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "DROP DATABASE IF EXISTS $DB_NAME"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER"
-PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE EXTENSION postgis"
+PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE EXTENSION IF NOT EXISTS postgis"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH SUPERUSER"
 PGPASSWORD=$DB_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_USER -d $DB_NAME -f ./src/__tests__/testData/testDataDump.sql
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH NOSUPERUSER"
@@ -28,7 +28,7 @@ DB_NAME=$DB_NAME yarn workspace @tupaia/data-api build-analytics-table
 
 echo "Deleting migrations that target data modifications, as there is no data to migrate on the test database"
 rm -rf ./src/migrations-backup
-mkdir  ./src/migrations-backup
+mkdir ./src/migrations-backup
 cp -r ./src/migrations/* ./src/migrations-backup/
 rm ./src/migrations/*modifies-data.js
 DB_NAME=$DB_NAME yarn migrate
