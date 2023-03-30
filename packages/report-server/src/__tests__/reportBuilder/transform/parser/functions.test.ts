@@ -122,25 +122,6 @@ describe('functions', () => {
         expect(parser.evaluate("=orgUnitCodeToName('WS')")).toBe(undefined);
       });
     });
-
-    describe('orgUnitAttribute()', () => {
-      const context = {
-        orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji', attributes: { x: 1 } },
-          { id: '5678', code: 'TO', name: 'Tonga', attributes: { y: 2 } },
-        ],
-      };
-
-      it('gets attribute of org unit', () => {
-        const parser = new TransformParser(undefined, (context as unknown) as Context);
-        expect(parser.evaluate("=orgUnitAttribute('FJ', 'x')")).toBe(1);
-      });
-
-      it('returns undefined if the attribute is not set', () => {
-        const parser = new TransformParser(undefined, (context as unknown) as Context);
-        expect(parser.evaluate("=orgUnitAttribute('TO', 'x')")).toBe(undefined);
-      });
-    });
   });
 
   describe('utils', () => {

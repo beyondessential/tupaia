@@ -4,7 +4,7 @@
  */
 
 import { value, first, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
-import { orgUnitCodeToName, orgUnitIdToCode, orgUnitAttribute } from './context';
+import { orgUnitCodeToName, orgUnitIdToCode } from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -41,13 +41,11 @@ export const customFunctions = {
 export const contextFunctions = {
   orgUnitIdToCode: orgUnitIdToCode.func,
   orgUnitCodeToName: orgUnitCodeToName.func,
-  orgUnitAttribute: orgUnitAttribute.func,
 };
 
 export const contextFunctionDependencies = {
   orgUnitIdToCode: orgUnitIdToCode.dependencies,
   orgUnitCodeToName: orgUnitCodeToName.dependencies,
-  orgUnitAttribute: orgUnitAttribute.dependencies,
 };
 
 /**
