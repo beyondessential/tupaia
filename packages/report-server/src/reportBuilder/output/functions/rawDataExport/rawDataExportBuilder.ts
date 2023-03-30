@@ -50,7 +50,7 @@ export class RawDataExportBuilder {
           const { dataElements } = await this.aggregator.fetchDataGroup(surveyCode);
           return dataElements.map(dataElement => ({
             key: dataElement.code,
-            title: dataElement.text,
+            title: dataElement.text || dataElement.name || '',
           }));
         }),
       )
