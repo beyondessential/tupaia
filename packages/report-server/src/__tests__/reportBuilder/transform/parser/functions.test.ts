@@ -85,25 +85,6 @@ describe('functions', () => {
   });
 
   describe('context', () => {
-    describe('orgUnitIdToCode()', () => {
-      const context = {
-        orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji', attributes: {} },
-          { id: '5678', code: 'TO', name: 'Tonga', attributes: {} },
-        ],
-      };
-
-      it('converts given org unit id to code', () => {
-        const parser = new TransformParser(undefined, context as Context);
-        expect(parser.evaluate("=orgUnitIdToCode('1234')")).toBe('FJ');
-      });
-
-      it('returns undefined if the org unit id is not found', () => {
-        const parser = new TransformParser(undefined, context as Context);
-        expect(parser.evaluate("=orgUnitIdToCode('abcd')")).toBe(undefined);
-      });
-    });
-
     describe('orgUnitCodeToName()', () => {
       const context = {
         orgUnits: [

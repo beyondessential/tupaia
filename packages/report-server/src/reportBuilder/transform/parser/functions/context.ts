@@ -29,15 +29,3 @@ export const orgUnitCodeToName: ContextFunctionConfig = {
     return codeToName[orgUnitCode];
   },
 };
-
-export const orgUnitIdToCode: ContextFunctionConfig = {
-  dependencies: ['orgUnits'],
-  func: ({ getContext }) => (orgUnitId: string) => {
-    const { orgUnits } = getContext();
-    if (!orgUnits) {
-      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitIdToCode()'");
-    }
-    const idToCode = reduceToDictionary(orgUnits, 'id', 'code');
-    return idToCode[orgUnitId];
-  },
-};
