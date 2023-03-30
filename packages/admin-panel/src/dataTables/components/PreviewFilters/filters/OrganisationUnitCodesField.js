@@ -11,8 +11,8 @@ import { ParameterType } from '../../editing';
 import { useLocations } from '../../../../VizBuilderApp/api';
 import { Autocomplete } from '../../../../autocomplete';
 
-export const OrganisationUnitCodesField = ({ name, onChange, runTimeParams }) => {
-  const { hierarchy = 'explore' } = runTimeParams;
+export const OrganisationUnitCodesField = ({ name, onChange, runtimeParams }) => {
+  const { hierarchy = 'explore' } = runtimeParams;
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOptions, setSelectedOptions] = useState([]); // [{code:"DL", name:"Demo Land"}]
   const { data: locations = [], isLoading } = useLocations(hierarchy, searchTerm);
@@ -49,9 +49,9 @@ export const OrganisationUnitCodesField = ({ name, onChange, runTimeParams }) =>
 OrganisationUnitCodesField.propTypes = {
   ...ParameterType,
   onChange: PropTypes.func.isRequired,
-  runTimeParams: PropTypes.object,
+  runtimeParams: PropTypes.object,
 };
 
 OrganisationUnitCodesField.defaultProps = {
-  runTimeParams: {},
+  runtimeParams: {},
 };
