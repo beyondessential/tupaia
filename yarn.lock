@@ -5248,6 +5248,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/data-broker@workspace:packages/data-broker"
   dependencies:
+    "@tupaia/access-policy": 3.0.0
     "@tupaia/data-api": 1.0.0
     "@tupaia/data-lake-api": 1.0.0
     "@tupaia/database": 1.0.0

@@ -21,6 +21,7 @@
     "test:debug": "yarn test --debug"
   },
   "dependencies": {
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/data-api": "1.0.0",
     "@tupaia/data-lake-api": "1.0.0",
     "@tupaia/database": "1.0.0",

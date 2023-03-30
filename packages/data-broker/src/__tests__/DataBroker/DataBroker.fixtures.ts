@@ -14,6 +14,11 @@ export const DATA_ELEMENTS = dataElementTypes({
   TUPAIA_01: { code: 'TUPAIA_01', service_type: 'tupaia' },
   MAPPED_01: { code: 'MAPPED_01', service_type: 'dhis' },
   MAPPED_02: { code: 'MAPPED_02', service_type: 'dhis' },
+  RESTRICTED_01: {
+    code: 'RESTRICTED_01',
+    service_type: 'tupaia',
+    permission_groups: ['Admin'],
+  },
 });
 export const DATA_GROUPS = dataGroupTypes({
   DHIS_PROGRAM_01: { code: 'DHIS_PROGRAM_01', service_type: 'dhis' },
@@ -59,7 +64,11 @@ export const DATA_BY_SERVICE = {
     ],
   },
   tupaia: {
-    analytics: [{ dataElement: 'TUPAIA_01', organisationUnit: 'TO', period: '20210101', value: 3 }],
+    analytics: [
+      { dataElement: 'TUPAIA_01', organisationUnit: 'TO', period: '20210101', value: 3 },
+      { dataElement: 'RESTRICTED_01', organisationUnit: 'TO', period: '20210101', value: 4 },
+      { dataElement: 'RESTRICTED_01', organisationUnit: 'FJ', period: '20210101', value: 5 },
+    ],
     eventsByProgram: {
       TUPAIA_PROGRAM_01: [
         {
