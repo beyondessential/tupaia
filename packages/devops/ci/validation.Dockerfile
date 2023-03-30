@@ -5,7 +5,6 @@ RUN apk --no-cache add \
   bash \
   git
 
-
 # set Yarn v3
 RUN yarn set version berry
 
@@ -18,5 +17,5 @@ COPY . ./
 # run yarn without building, so we can cache node_modules without code changes invalidating this layer
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
 
-#
+# /scripts/node/validateTests.js use utils package
 RUN yarn workspace @tupaia/utils build
