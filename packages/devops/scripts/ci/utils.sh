@@ -36,3 +36,13 @@ function get_max_length() {
 
     echo $max
 }
+
+function get_branch_name() {
+    local branch_name="$CI_BRANCH"
+    if [[ $branch_name == "" ]]; then
+        # Get currently checked out branch
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
+    fi
+
+    echo $branch_name
+}
