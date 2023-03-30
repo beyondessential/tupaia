@@ -9,6 +9,9 @@ import type { Entity } from '@tupaia/types';
 
 export type EntityFields = Readonly<Entity>;
 
-export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {}
+// inconsistency between js-to-ts type from @tupaia/database and db-to-ts from @tupaia/types
+type BaseEntityTypeWithoutMetadata = Omit<BaseEntityType, 'metadata'>;
+
+export interface EntityType extends EntityFields, Omit<BaseEntityTypeWithoutMetadata, 'id'> {}
 
 export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {}
