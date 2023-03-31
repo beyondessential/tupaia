@@ -25,6 +25,8 @@ export const ENTITIES = [
     type: 'facility',
   },
   { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
+  { code: 'VU_Facility1', attributes: { x: 5, y: 'hello', z: {} } },
+  { code: 'VU_Facility2', attributes: { x: 6 } },
 ];
 
 export const ENTITY_RELATIONS = {

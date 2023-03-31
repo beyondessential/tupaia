@@ -29,35 +29,3 @@ export const orgUnitCodeToName: ContextFunctionConfig = {
     return codeToName[orgUnitCode];
   },
 };
-
-export const orgUnitIdToCode: ContextFunctionConfig = {
-  dependencies: ['orgUnits'],
-  func: ({ getContext }) => (orgUnitId: string) => {
-    const { orgUnits } = getContext();
-    if (!orgUnits) {
-      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitIdToCode()'");
-    }
-    const idToCode = reduceToDictionary(orgUnits, 'id', 'code');
-    return idToCode[orgUnitId];
-  },
-};
-
-export const orgUnitAttribute: ContextFunctionConfig = {
-  dependencies: ['orgUnits'],
-  func: ({ getContext }) => (orgUnitCode: string, attributeKey: string) => {
-    const { orgUnits } = getContext();
-    if (!orgUnits) {
-      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitAttribute()'");
-    }
-    if (!orgUnitCode)
-      throw new Error("Missing first argument 'orgUnitCode' required by 'orgUnitAttribute()'");
-    if (!attributeKey)
-      throw new Error("Missing second argument 'attributeKey' required by 'orgUnitAttribute()'");
-    const orgUnit = orgUnits.find(orgUnit => orgUnit.code === orgUnitCode);
-    if (!orgUnit) {
-      throw new Error(`No org unit found with code "${orgUnitCode}" in orgUnitAttribute()`);
-    }
-    const { attributes = {} } = orgUnit;
-    return attributes[attributeKey];
-  },
-};
