@@ -13,7 +13,7 @@ else
   echo "Run yarn workspace @tupaia/types generate to fix"
   echo ""
   echo "Diff:"
-  git --no-pager diff packages/types
+  git --no-pager diff
   echo "Exiting build"
   exit 1
 fi
