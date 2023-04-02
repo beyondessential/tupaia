@@ -40,8 +40,8 @@ export const BarChart = ({
         return 1;
       }
     }
-    /*
-      There is a known bug with Recharts where if a bar graph is a time scale, it overflows the bars over the edge of the axes. 
+    /* 
+      [There is a known bug with Recharts](https://github.com/recharts/recharts/issues/2711) where if a bar graph is a time scale, it overflows the bars over the edge of the axes. 
       As a workaround, until it is fixed, setting the bar size to be a specific value stops this from happening.
     */
     if (getIsTimeSeries(data) && !isEnlarged) {
