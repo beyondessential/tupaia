@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { Bar, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, CHART_TYPES } from './constants';
+import { getIsTimeSeries } from './utils';
 
 export const BarChart = ({
   color = BLUE,
@@ -38,6 +39,13 @@ export const BarChart = ({
       if ((chartConfigHasTooManyKeys && stackSize === 0) || chartConfigHasTooManyStacks) {
         return 1;
       }
+    }
+    /*
+      There is a known bug with Recharts where if a bar graph is a time scale, it overflows the bars over the edge of the axes. 
+      As a workaround, until it is fixed, setting the bar size to be a specific value stops this from happening.
+    */
+    if (getIsTimeSeries(data) && !isEnlarged) {
+      return Math.max(1, Math.floor(200 / data.length));
     }
     return undefined;
   };
