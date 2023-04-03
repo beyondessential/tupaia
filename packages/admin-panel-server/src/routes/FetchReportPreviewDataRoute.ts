@@ -29,8 +29,8 @@ export type FetchReportPreviewDataRequest = Request<
   {
     entityCode: string;
     hierarchy: string;
-    startDate: string;
-    endDate: string;
+    startDate?: string;
+    endDate?: string;
     permissionGroup?: string;
     previewMode?: PreviewMode;
     dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam;
@@ -46,19 +46,15 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
 
     const reportConfig = this.getReportConfig();
 
-    return this.req.ctx.services.report.testReport(
-      {
-        organisationUnitCodes: entityCode as string,
-        hierarchy: hierarchy as string,
-        startDate,
-        endDate,
-        permissionGroup: permissionGroup as string,
-      },
-      {
-        testData,
-        testConfig: reportConfig,
-      },
-    );
+    const parameters: Record<string, string> = { hierarchy, organisationUnitCodes: entityCode };
+    if (startDate) parameters.startDate = startDate;
+    if (endDate) parameters.endDate = endDate;
+    if (permissionGroup) parameters.permissionGroup = permissionGroup;
+
+    return this.req.ctx.services.report.testReport(parameters, {
+      testData,
+      testConfig: reportConfig,
+    });
   }
 
   private validate = () => {

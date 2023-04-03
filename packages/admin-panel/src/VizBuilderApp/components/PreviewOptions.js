@@ -174,19 +174,11 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    if (!date) {
-      return;
-    }
-
     setSelectedStartDate(date.toISOString());
     setStartDate(date.toISOString());
   };
 
   const handleChangeEndDate = date => {
-    if (!date) {
-      return;
-    }
-
     setSelectedEndDate(date.toISOString());
     setEndDate(date.toISOString());
   };
