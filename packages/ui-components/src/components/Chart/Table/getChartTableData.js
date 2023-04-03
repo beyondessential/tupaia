@@ -87,6 +87,11 @@ const processColumns = (viewContent, sortByTimestamp) => {
   return firstColumn ? [firstColumn, ...configColumns] : configColumns;
 };
 
+const sortDates = (dateA, dateB) => {
+  const dateAMoreRecent = dateA > dateB;
+  return dateAMoreRecent ? 1 : -1;
+};
+
 const processData = viewContent => {
   if (!viewContent?.data) {
     return [];
@@ -97,16 +102,15 @@ const processData = viewContent => {
   if (chartType === CHART_TYPES.PIE) {
     return data.sort((a, b) => b.value - a.value);
   }
-  return data;
+  return data.sort((a, b) => sortDates(a.timestamp, b.timestamp));
 };
 
 export const getChartTableData = viewContent => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
-  const sortByTimestamp = useMemo(() => (rowA, rowB) => {
-    const rowAMoreRecent = rowA.original.timestamp > rowB.original.timestamp;
-    return rowAMoreRecent ? 1 : -1;
-  });
+  const sortByTimestamp = useMemo(() => (rowA, rowB) =>
+    sortDates(rowA.original.timestamp, rowB.original.timestamp),
+  );
   const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [
     JSON.stringify(viewContent),
   ]);
