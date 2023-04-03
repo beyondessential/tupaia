@@ -10,6 +10,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 import {
   Autocomplete as AutocompleteComponent,
+  DatePicker as DatePickerComponent,
   FlexEnd,
   FlexSpaceBetween,
   FlexStart,
@@ -25,11 +26,27 @@ const Container = styled(FlexSpaceBetween)`
 `;
 
 const Autocomplete = styled(AutocompleteComponent)`
-  flex: 1;
+  flex: 1 1 0px;
   margin: 0 15px 0 0;
   max-width: 30%;
 
   input.MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input {
+    font-size: 14px;
+    line-height: 1;
+    padding: 10px;
+  }
+
+  .MuiFormControl-root {
+    margin: 0;
+  }
+`;
+
+const DatePicker = styled(DatePickerComponent)`
+  flex: 1 1 0px;
+  margin: 0 15px 0 0;
+  max-width: 30%;
+
+  input.MuiInputBase-input.MuiOutlinedInput-input {
     font-size: 14px;
     line-height: 1;
     padding: 10px;
@@ -128,9 +145,14 @@ export const PreviewOptions = () => {
   const [locationSearch, setLocationSearch] = useState('');
   const [selectedProjectOption, setSelectedProjectOption] = useState(null);
   const [selectedLocationOption, setSelectedLocationOption] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [{ project, location }, { setProject, setLocation, setTestData }] = useVizConfig();
+  const [
+    { project, location },
+    { setProject, setLocation, setStartDate, setEndDate, setTestData },
+  ] = useVizConfig();
   const { mutateAsync: uploadTestData } = useUploadTestData();
 
   const handleSelectProject = (event, value) => {
@@ -149,6 +171,16 @@ export const PreviewOptions = () => {
 
     setSelectedLocationOption(value);
     setLocation(value.code);
+  };
+
+  const handleChangeStartDate = date => {
+    setSelectedStartDate(date.toISOString());
+    setStartDate(date.toISOString());
+  };
+
+  const handleChangeEndDate = date => {
+    setSelectedEndDate(date.toISOString());
+    setEndDate(date.toISOString());
   };
 
   const handleUploadData = async file => {
@@ -198,6 +230,16 @@ export const PreviewOptions = () => {
               isLoadingLocations={isLoadingLocations}
               setLocationSearch={setLocationSearch}
               onChange={handleSelectLocation}
+            />
+            <DatePicker
+              placeholder="Select Start Date"
+              value={selectedStartDate}
+              onChange={handleChangeStartDate}
+            />
+            <DatePicker
+              placeholder="Select End Date"
+              value={selectedEndDate}
+              onChange={handleChangeEndDate}
             />
             <LinkButton
               onClick={() => {
