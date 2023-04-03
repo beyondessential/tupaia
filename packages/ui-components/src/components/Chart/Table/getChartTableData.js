@@ -102,7 +102,12 @@ const processData = viewContent => {
   if (chartType === CHART_TYPES.PIE) {
     return data.sort((a, b) => b.value - a.value);
   }
-  return data.sort((a, b) => sortDates(a.timestamp, b.timestamp));
+  // For time series, sort by timestamp so that the table is in chronological order always
+  if (getIsTimeSeries(data)) {
+    return data.sort((a, b) => sortDates(a.timestamp, b.timestamp));
+  }
+
+  return data;
 };
 
 export const getChartTableData = viewContent => {
