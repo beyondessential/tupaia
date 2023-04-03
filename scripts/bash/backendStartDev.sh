@@ -16,7 +16,7 @@ type_script=false
 inspect_port=${1}
 
 # Start server command for JS
-start_server="nodemon -w src --exec \"babel-node src --inspect=${inspect_port} --config-file '../../babel.config.json'\""
+start_server="nodemon -w src --exec \"babel-node src --inspect=${inspect_port} --stack-trace-limit=100 --stack-size=1024 --config-file '../../babel.config.json'\""
 
 while [ "$2" != "" ]; do
     case $2 in
@@ -41,7 +41,7 @@ done
 
 # Start server command for TS
 if [[ ${type_script} == true ]]; then
-    start_server="nodemon --watch src -e ts,json --exec node --inspect=${inspect_port} -r ts-node/register src/index.ts"
+    start_server="nodemon --watch src -e ts,json --exec node --stack-trace-limit=100 --stack-size=1024 --inspect=${inspect_port} -r ts-node/register src/index.ts"
 fi
 
 echo "Starting server"
