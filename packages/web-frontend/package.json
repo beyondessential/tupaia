@@ -27,7 +27,7 @@
     "storybook": "start-storybook -s public -p 6007",
     "test": "node scripts/test.js --env=jsdom",
     "start-ui-components": "yarn workspace @tupaia/ui-components start-dev",
-    "start-frontend": "npm-run-all -c -l -p start-components start-dev"
+    "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev"
   },
   "resolutions": {
     "jss": "10.0.0"
