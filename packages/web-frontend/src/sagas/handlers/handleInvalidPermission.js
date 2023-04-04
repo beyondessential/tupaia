@@ -1,6 +1,10 @@
 import { put, select } from 'redux-saga/effects';
 import { setOverlayComponent } from '../../actions';
-import { LANDING } from '../../containers/OverlayDiv/constants';
+import {
+  LANDING,
+  PAGE_NOT_FOUND,
+  REQUEST_PROJECT_ACCESS,
+} from '../../containers/OverlayDiv/constants';
 import { setRequestingAccess } from '../../projects/actions';
 import { selectProjectByCode } from '../../selectors';
 
@@ -15,15 +19,11 @@ export function* handleInvalidPermission({ projectCode }) {
     if (Object.keys(project).length > 0) {
       // Todo: Handle dashboard does not exist somehow
       yield put(setRequestingAccess(project));
-      yield put(setOverlayComponent('requestProjectAccess'));
+      yield put(setOverlayComponent(REQUEST_PROJECT_ACCESS));
       return;
     }
 
-    // handle 404s
-    // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
-    // eslint-disable-next-line no-console
-    console.log('project does not exist - 404');
-    alert('Project does not exist');
+    yield put(setOverlayComponent(PAGE_NOT_FOUND));
     return;
   }
   // show login dialog

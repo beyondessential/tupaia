@@ -1,7 +1,13 @@
 import queryString from 'query-string';
 import { call, put } from 'redux-saga/effects';
-import { fetchOrgUnit, fetchOrgUnitError, fetchOrgUnitSuccess } from '../../actions';
+import {
+  fetchOrgUnit,
+  fetchOrgUnitError,
+  fetchOrgUnitSuccess,
+  setOverlayComponent,
+} from '../../actions';
 import { request } from '../../utils';
+import { PAGE_NOT_FOUND } from '../../containers/OverlayDiv/constants';
 
 /**
  * fetchOrgUnitData
@@ -23,13 +29,11 @@ export function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
-    console.log('ORG UNIT ERROR');
-    alert('Org unit does not exist');
-    // Maybe call handle invalid permission here too
     if (error.errorFunction) {
       yield put(error.errorFunction(error));
     }
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
+    yield put(setOverlayComponent(PAGE_NOT_FOUND));
 
     throw error;
   }

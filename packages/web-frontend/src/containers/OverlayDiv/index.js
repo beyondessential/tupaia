@@ -27,7 +27,9 @@ import {
   PROJECT_LANDING,
   DISASTER,
   REQUEST_PROJECT_ACCESS,
+  PAGE_NOT_FOUND,
 } from './constants';
+import { NotFoundPage } from './components/NotFoundPage';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -91,6 +93,7 @@ export const OverlayDiv = ({
     ),
     [DISASTER]: Disaster,
     [REQUEST_PROJECT_ACCESS]: RequestProjectAccessDialog,
+    [PAGE_NOT_FOUND]: NotFoundPage,
   };
   const OverlayComponent = components[overlay];
 
