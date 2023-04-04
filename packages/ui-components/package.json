@@ -19,7 +19,8 @@
     "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "start-dev": "babel src --out-dir dist -w"
   },
   "dependencies": {
     "@date-io/date-fns": "1.x",
@@ -47,6 +48,9 @@
     "xlsx": "^0.17.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.4",
+    "@babel/plugin-transform-runtime": "^7.21.4",
     "@material-ui/styles": "^4.9.10",
     "@storybook/react": "^6.3.9",
     "faker": "^4.1.0",
