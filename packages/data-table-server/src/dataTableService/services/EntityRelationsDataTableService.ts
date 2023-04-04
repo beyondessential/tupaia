@@ -10,7 +10,7 @@ import { DataTableService } from '../DataTableService';
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   entityCodes: yup.array().of(yup.string().required()).required(),
-  ancestorType: yup.string().required(),
+  ancestorType: yup.string(),
   descendantType: yup.string().required(),
 });
 
@@ -37,7 +37,7 @@ export class EntityRelationsDataTableService extends DataTableService<
   protected async pullData(params: {
     hierarchy: string;
     entityCodes: string[];
-    ancestorType: string;
+    ancestorType?: string;
     descendantType: string;
   }) {
     const { hierarchy, entityCodes, ancestorType, descendantType } = params;
@@ -46,7 +46,7 @@ export class EntityRelationsDataTableService extends DataTableService<
       entityCodes,
       'descendant',
       {},
-      { filter: { type: ancestorType } },
+      ancestorType ? { filter: { type: ancestorType } } : undefined,
       { filter: { type: descendantType } },
     );
 

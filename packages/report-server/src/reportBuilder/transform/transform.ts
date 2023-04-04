@@ -13,7 +13,7 @@ import { TransformTable } from './table';
 type BuiltTransformParams = {
   title?: string;
   name: string;
-  apply: (table: TransformTable) => TransformTable;
+  apply: (table: TransformTable) => TransformTable | Promise<TransformTable>;
 };
 
 const transformParamsValidator = yup.lazy((value: unknown) => {
@@ -36,17 +36,24 @@ const transformParamsValidator = yup.lazy((value: unknown) => {
 
 const paramsValidator = yup.array().required();
 
-const transform = (table: TransformTable, transformSteps: BuiltTransformParams[]) => {
+const transform = async (table: TransformTable, transformSteps: BuiltTransformParams[]) => {
   let transformedTable: TransformTable = table;
-  transformSteps.forEach((transformStep: BuiltTransformParams, index: number) => {
+  for (let i = 0; i < transformSteps.length; i++) {
+    const transformStep = transformSteps[i];
     try {
-      transformedTable = transformStep.apply(transformedTable);
+      transformedTable = await transformStep.apply(transformedTable);
     } catch (e) {
+      if (e instanceof ExitWithNoDataSignal) {
+        // Return a no data result
+        return new TransformTable();
+      }
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
-      const errorMessagePrefix = `Error in transform[${index + 1}]${titlePart}: `;
-      throw new Error(`${errorMessagePrefix}${(e as Error).message}`);
+      const errorMessagePrefix = `Error in transform[${i + 1}]${titlePart}: `;
+      e.message = `${errorMessagePrefix}${(e as Error).message}`;
+      throw e;
     }
-  });
+  }
+
   return transformedTable;
 };
 
@@ -73,9 +80,14 @@ const buildParams = (params: unknown, context: Context): BuiltTransformParams =>
   };
 };
 
-export const buildTransform = (params: unknown, context: Context = {}) => {
+export const buildTransform = (params: unknown, context: Context) => {
   const validatedParams = paramsValidator.validateSync(params);
 
   const builtParams = validatedParams.map(param => buildParams(param, context));
   return (table: TransformTable) => transform(table, builtParams);
 };
+
+/**
+ * A signal to exit the transform steps early
+ */
+export class ExitWithNoDataSignal extends Error {}
