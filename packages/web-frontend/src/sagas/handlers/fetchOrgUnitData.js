@@ -23,6 +23,9 @@ export function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
+    console.log('ORG UNIT ERROR');
+    alert('Org unit does not exist');
+    // Maybe call handle invalid permission here too
     if (error.errorFunction) {
       yield put(error.errorFunction(error));
     }

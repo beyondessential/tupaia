@@ -13,6 +13,7 @@ export function* handleInvalidPermission({ projectCode }) {
     const project = selectProjectByCode(state, projectCode);
 
     if (Object.keys(project).length > 0) {
+      // Todo: Handle dashboard does not exist somehow
       yield put(setRequestingAccess(project));
       yield put(setOverlayComponent('requestProjectAccess'));
       return;
@@ -21,7 +22,8 @@ export function* handleInvalidPermission({ projectCode }) {
     // handle 404s
     // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
     // eslint-disable-next-line no-console
-    console.error('project does not exist - 404');
+    console.log('project does not exist - 404');
+    alert('Project does not exist');
     return;
   }
   // show login dialog
