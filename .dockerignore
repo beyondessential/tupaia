@@ -15,7 +15,6 @@
 *.pem
 codeship_deploy_key.pub
 codeship_deploy_key
-data/
 dump.sql
 *.todo
 **/cypress/screenshots
