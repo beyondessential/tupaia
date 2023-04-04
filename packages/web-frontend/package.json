@@ -26,7 +26,7 @@
     "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server",
     "storybook": "start-storybook -s public -p 6007",
     "test": "node scripts/test.js --env=jsdom",
-    "start-ui-components": "yarn workspace @tupaia/ui-components start-dev",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
     "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev"
   },
   "resolutions": {
