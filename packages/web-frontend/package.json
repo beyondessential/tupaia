@@ -24,6 +24,7 @@
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
     "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server",
+    "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
     "storybook": "start-storybook -s public -p 6007",
     "test": "node scripts/test.js --env=jsdom",
     "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",

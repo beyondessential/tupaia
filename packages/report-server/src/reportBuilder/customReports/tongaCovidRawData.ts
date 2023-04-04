@@ -4,9 +4,7 @@
  */
 import { format, differenceInYears, addDays, isDate } from 'date-fns';
 import keyBy from 'lodash.keyby';
-import { createAggregator } from '@tupaia/aggregator';
-import { ReportServerAggregator } from '../../aggregator';
-import { FetchReportQuery, Event } from '../../types';
+import { Event } from '../../types';
 import { ReqContext } from '../context';
 import SURVEYS from './data/tongaCovidRawData.json';
 
@@ -94,7 +92,7 @@ const fetchEvents = async (
   endDate?: string,
   period?: string,
 ) => {
-  const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
+  const { aggregator } = reqContext;
   const resultEventsPromise = aggregator.fetchEvents(
     'C19T_Results',
     undefined,
@@ -252,8 +250,14 @@ const addVillageAndIsland = (
   });
 };
 
-export const tongaCovidRawData = async (reqContext: ReqContext, query: FetchReportQuery) => {
-  const { organisationUnitCodes: entityCodes, hierarchy, startDate, endDate, period } = query;
+export const tongaCovidRawData = async (reqContext: ReqContext) => {
+  const {
+    organisationUnitCodes: entityCodes,
+    hierarchy,
+    startDate,
+    endDate,
+    period,
+  } = reqContext.query;
 
   const { individualCodes, villageByIndividual, islandByIndividual } = await fetchEntities(
     reqContext,
