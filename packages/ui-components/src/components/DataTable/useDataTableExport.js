@@ -25,7 +25,12 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
     );
     const body =
       tableData.length > 0
-        ? tableData.map(row => tableColumns.map(col => row.values[col.id]))
+        ? tableData.map(row =>
+            tableColumns.map(col => {
+              const value = row.values[col.id];
+              return isNaN(value) ? value : Number(value);
+            }),
+          )
         : [['There is no available data for the selected time period.']];
 
     // Make xlsx worksheet
