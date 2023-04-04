@@ -18,6 +18,7 @@ import {
   Event,
   OutboundEvent,
 } from '../../../types';
+import { formatInboundDataElementName } from './formatDataElementName';
 
 interface OutboundDataValue {
   code: string;
@@ -43,12 +44,10 @@ export interface DataElementDescriptor {
 export class DhisTranslator {
   private readonly models: DataBrokerModelRegistry;
   private readonly inboundAnalyticsTranslator: InboundAnalyticsTranslator;
-  private readonly dataElementsByCode: Record<string, unknown>;
 
   public constructor(models: DataBrokerModelRegistry) {
     this.models = models;
     this.inboundAnalyticsTranslator = new InboundAnalyticsTranslator();
-    this.dataElementsByCode = {};
   }
 
   private get dataSourceTypes() {
@@ -210,6 +209,7 @@ export class DhisTranslator {
   // Override metadata code by data element code
   public translateInboundDataElements = (
     metadata: DhisMetadataObject[],
+    categoryOptionCombos: DhisMetadataObject[],
     dataElements: DataElement[],
   ) => {
     const metadataGroupedByCode = Object.fromEntries(
@@ -221,10 +221,19 @@ export class DhisTranslator {
     metadata.forEach(mData => {
       const translatedMetadata = dataElements
         .filter(dataSource => dataSource.dataElementCode === mData.code)
-        .map(({ code, dataElementCode }) => ({
-          ...metadataGroupedByCode[dataElementCode],
-          code,
-        }));
+        .map(({ code, dataElementCode, config }) => {
+          const { id, name } = metadataGroupedByCode[dataElementCode];
+          const { categoryOptionCombo: categoryOptionComboCode } = config;
+          const categoryOptionCombo = categoryOptionCombos.find(
+            item => item.code === categoryOptionComboCode,
+          );
+          const dataElementName = formatInboundDataElementName(name, categoryOptionCombo?.name);
+          return {
+            id,
+            name: dataElementName,
+            code,
+          };
+        });
 
       if (translatedMetadata.length > 0) {
         results = results.concat(translatedMetadata);

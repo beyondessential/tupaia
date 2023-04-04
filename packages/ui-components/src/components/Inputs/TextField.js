@@ -14,6 +14,7 @@ const ADORNMENT_COLOUR = '#c4c4c7';
 
 export const TextField = styled(BaseTextField)`
   margin-bottom: 1.2rem;
+  cursor: auto;
 
   .MuiInputBase-root {
     background: ${props => props.theme.palette.common.white};

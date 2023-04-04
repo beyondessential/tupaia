@@ -29,6 +29,7 @@
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/tsutils": "1.0.0",
+    "@tupaia/types": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",

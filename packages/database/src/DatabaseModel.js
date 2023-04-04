@@ -207,6 +207,9 @@ export class DatabaseModel {
     return this.find({}, queryOptions);
   }
 
+  /**
+   * @returns {*} DatabaseTypeClass
+   */
   generateInstance = async (fields = {}) => {
     const data = {};
 
@@ -226,6 +229,9 @@ export class DatabaseModel {
     return this.createTypeInstance(data);
   };
 
+  /**
+   * @returns {*} DatabaseTypeClass
+   */
   createTypeInstance = (data = {}) => {
     return new this.DatabaseTypeClass(this, data);
   };

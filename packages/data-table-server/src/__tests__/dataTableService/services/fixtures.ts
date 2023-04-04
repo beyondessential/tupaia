@@ -4,6 +4,8 @@
  */
 
 export const ENTITIES = [
+  { code: 'test', name: 'Test Project', type: 'project' },
+  { code: 'explore', name: 'Explore', type: 'project' },
   { code: 'AU', name: 'Australia', type: 'country' },
   { code: 'FJ', name: 'Fiji', type: 'country' },
   { code: 'PG', name: 'PNG', type: 'country' },
@@ -23,15 +25,21 @@ export const ENTITIES = [
     type: 'facility',
   },
   { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
+  { code: 'VU_Facility1', attributes: { x: 5, y: 'hello', z: {} } },
+  { code: 'VU_Facility2', attributes: { x: 6 } },
 ];
 
 export const ENTITY_RELATIONS = {
   explore: [
+    { parent: 'explore', child: 'AU' },
+    { parent: 'explore', child: 'FJ' },
     { parent: 'AU', child: 'AU_Facility1' },
     { parent: 'AU', child: 'AU_Facility2' },
     { parent: 'FJ', child: 'FJ_Facility' },
   ],
   test: [
+    { parent: 'test', child: 'PG' },
+    { parent: 'test', child: 'FJ' },
     { parent: 'PG', child: 'PG_Facility' },
     { parent: 'FJ', child: 'FJ_Facility' },
   ],

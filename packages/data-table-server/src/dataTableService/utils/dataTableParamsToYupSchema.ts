@@ -15,7 +15,7 @@ const attachQualifiersToSchema = (
     qualifiedSchema = qualifiedSchema.oneOf(oneOf);
   }
   if (defaultValue) {
-    qualifiedSchema = qualifiedSchema.default(defaultValue);
+    qualifiedSchema = qualifiedSchema.default(schema.cast(defaultValue)); // This aims to cast date defaultValue from string type to date type
   } else if (required) {
     qualifiedSchema = qualifiedSchema.required();
   }
@@ -31,7 +31,18 @@ const dataTableParamConfigConfigToYupSchema = (paramConfig: DataTableParameterCo
       schema = yup.string();
       return attachQualifiersToSchema(schema, paramConfig);
     case 'date':
-      schema = yup.date();
+      schema = yup.date().transform((value, originalValue) => {
+        if (value instanceof Date) {
+          return value;
+        }
+        const newValue = new Date(originalValue);
+
+        if (newValue.toString() === 'Invalid Date') {
+          return new Error('Invalid Date');
+        }
+
+        return newValue;
+      });
       return attachQualifiersToSchema(schema, paramConfig);
     case 'array':
       schema = yup.array();

@@ -23,11 +23,6 @@ describe('EntityRelationsDataTableService', () => {
         'entityCodes is a required field',
       ],
       [
-        'missing ancestorType',
-        { entityCodes: ['TO'], descendantType: 'sub_district' },
-        'ancestorType is a required field',
-      ],
-      [
         'missing descendantType',
         { entityCodes: ['TO'], ancestorType: 'district' },
         'descendantType is a required field',
@@ -42,12 +37,16 @@ describe('EntityRelationsDataTableService', () => {
   it('getParameters', () => {
     const parameters = entityRelationsDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      { config: { defaultValue: 'explore', type: 'hierarchy' }, name: 'hierarchy' },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'organisationUnitCodes',
+        },
         name: 'entityCodes',
       },
-      { config: { type: 'string', required: true }, name: 'ancestorType' },
+      { config: { type: 'string' }, name: 'ancestorType' },
       { config: { type: 'string', required: true }, name: 'descendantType' },
     ]);
   });
