@@ -6,21 +6,24 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import DownloadIcon from '@material-ui/icons/GetApp';
+import { Grid } from '@material-ui/core';
 import {
   Dialog,
   DialogHeader,
   DialogContent as BaseDialogContent,
-  FlexSpaceBetween as BaseFlexSpaceBetween,
   CheckboxList,
   LoadingContainer,
+  FlexEnd,
+  DialogFooter as BaseDialogFooter,
+  Button,
 } from '@tupaia/ui-components';
-import MuiIconButton from '@material-ui/core/Button';
 import { useDashboardItemsExportToPDF } from '../utils/useDashboardItemsExportToPDF';
 import { DARK_BLUE, PRIMARY_BLUE } from '../styles';
+import { PrimaryButton as BasePrimaryButton } from '../components/Buttons';
 
-const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
-  width: 95%;
+const StyledRootGrid = styled(Grid)`
+  justify-content: center;
+  alignitems: center;
 `;
 
 const DialogContent = styled(BaseDialogContent)`
@@ -34,9 +37,23 @@ const DialogContent = styled(BaseDialogContent)`
   }
 `;
 
-const MuiButton = styled(MuiIconButton)`
-  margin: 0px 20px;
+const PrimaryButton = styled(BasePrimaryButton)`
+  text-transform: capitalize;
+  margin-left: 1rem;
+`;
+const TextButton = styled(Button)`
+  text-transform: capitalize;
+  padding: 0.375rem 0.8rem;
   background-color: transparent;
+  &:hover {
+    background-color: ${props => props.theme.palette.action.hover};
+  }
+`;
+
+const DialogFooter = styled(BaseDialogFooter)`
+  padding-top: 0;
+  padding-bottom: 2em;
+  border-bottom: none;
 `;
 
 export const DashboardExportModal = ({
@@ -52,7 +69,16 @@ export const DashboardExportModal = ({
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   useEffect(() => {
-    const defaultList = currentGroupDashboard.items.map((item, index) => ({ ...item, index }));
+    const defaultList = currentGroupDashboard.items.map((item, index) => {
+      // at this stage, we only allow exporting charts
+      const itemIsDisabled = item.type === 'view' || item.type === 'matrix';
+      return {
+        ...item,
+        index,
+        disabled: itemIsDisabled,
+        tooltip: itemIsDisabled ? 'PDF export coming soon' : '',
+      };
+    });
     setList(defaultList);
     setSelectedItems([]);
   }, [currentGroupDashboard]);
@@ -72,20 +98,8 @@ export const DashboardExportModal = ({
   };
 
   return (
-    <Dialog onClose={onClose} open={isOpen} maxWidth="lg">
-      <DialogHeader onClose={onClose}>
-        <FlexSpaceBetween>
-          <MuiButton
-            startIcon={<DownloadIcon />}
-            variant="outlined"
-            onClick={exportSelectedItems}
-            disableElevation
-            disabled={isExporting}
-          >
-            export
-          </MuiButton>
-        </FlexSpaceBetween>
-      </DialogHeader>
+    <Dialog onClose={onClose} open={isOpen} maxWidth="md">
+      <DialogHeader onClose={onClose} />
       <DialogContent>
         <LoadingContainer
           heading="Exporting charts to PDF"
@@ -93,14 +107,37 @@ export const DashboardExportModal = ({
           errorMessage={errorMessage}
           onReset={onReset}
         >
-          <CheckboxList
-            list={list}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            title="Visualisation"
-          />
+          <StyledRootGrid container>
+            <Grid item xs={10}>
+              <CheckboxList
+                list={list}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
+                title="Select Visualisation"
+              />
+            </Grid>
+          </StyledRootGrid>
         </LoadingContainer>
       </DialogContent>
+      <DialogFooter>
+        <StyledRootGrid container>
+          <Grid item xs={10}>
+            <FlexEnd>
+              <TextButton onClick={onClose} disableElevation>
+                Cancel
+              </TextButton>
+              <PrimaryButton
+                variant="contained"
+                onClick={exportSelectedItems}
+                disableElevation
+                disabled={isExporting}
+              >
+                Download
+              </PrimaryButton>
+            </FlexEnd>
+          </Grid>
+        </StyledRootGrid>
+      </DialogFooter>
     </Dialog>
   );
 };
