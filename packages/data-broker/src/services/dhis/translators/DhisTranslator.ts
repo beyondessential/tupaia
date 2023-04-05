@@ -222,7 +222,7 @@ export class DhisTranslator {
       const translatedMetadata = dataElements
         .filter(dataSource => dataSource.dataElementCode === mData.code)
         .map(({ code, dataElementCode, config }) => {
-          const { id, name } = metadataGroupedByCode[dataElementCode];
+          const { id, name, options } = metadataGroupedByCode[dataElementCode];
           const { categoryOptionCombo: categoryOptionComboCode } = config;
           const categoryOptionCombo = categoryOptionCombos.find(
             item => item.code === categoryOptionComboCode,
@@ -231,6 +231,7 @@ export class DhisTranslator {
           return {
             id,
             name: dataElementName,
+            options,
             code,
           };
         });
