@@ -131,7 +131,7 @@ export class EnlargedDialogContent extends PureComponent {
     const { viewContent, errorMessage, isLoading } = this.props;
     const noData = viewContent.data && viewContent.data.length === 0;
 
-    if (isLoading) return <LoadingIndicator />;
+    if (isLoading) return <LoadingIndicator showBackground={false} />;
     if (errorMessage) {
       return <StyledAlert severity="error">{errorMessage}</StyledAlert>;
     }
