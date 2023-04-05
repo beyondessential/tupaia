@@ -228,12 +228,17 @@ export class DhisTranslator {
             item => item.code === categoryOptionComboCode,
           );
           const dataElementName = formatInboundDataElementName(name, categoryOptionCombo?.name);
-          return {
+          const metadataResults: DhisMetadataObject = {
             id,
             name: dataElementName,
-            options,
             code,
           };
+
+          if (options) {
+            metadataResults.options = options;
+          }
+
+          return metadataResults;
         });
 
       if (translatedMetadata.length > 0) {
