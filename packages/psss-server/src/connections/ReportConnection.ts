@@ -38,13 +38,13 @@ export class ReportConnection extends ApiConnection {
       throw new Error('No organisationUnitCodes provided');
     }
 
-    const [startWeek, endWeek] = periods;
-    const [startDate] = convertPeriodStringToDateRange(startWeek);
-    const [, endDate] = convertPeriodStringToDateRange(endWeek);
-
     if (orgUnitCodes.length === 0) {
       return buildEmptyReport(periods);
     }
+
+    const [startWeek, endWeek] = periods;
+    const [startDate] = convertPeriodStringToDateRange(startWeek);
+    const [, endDate] = convertPeriodStringToDateRange(endWeek);
 
     return this.get(`fetchReport/${reportCode}`, {
       organisationUnitCodes: orgUnitCodes.join(','),
