@@ -131,9 +131,12 @@ COPY ./tsconfig* ./
 
 
 ## build and install internal dependencies
-## TODO: Only build required dependencies , passing --packagePath doesn't work as it doesn't recurse
+# TODO: Only build required dependencies , passing --packagePath doesn't work
+# as it doesn't recurse through deps as expected
 RUN yarn build:internal-dependencies
 
 # copy everything else from the repo
 COPY . ./
-RUN  yarn workspace @tupaia/admin-panel-server build
+
+## TODO: Only build required packages.. unfort. `workspaces foreach -vRt run build` fails with a dependency cycle.
+RUN yarn build:non-internal-dependencies
