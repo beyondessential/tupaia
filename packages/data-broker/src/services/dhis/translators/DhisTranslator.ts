@@ -222,17 +222,23 @@ export class DhisTranslator {
       const translatedMetadata = dataElements
         .filter(dataSource => dataSource.dataElementCode === mData.code)
         .map(({ code, dataElementCode, config }) => {
-          const { id, name } = metadataGroupedByCode[dataElementCode];
+          const { id, name, options } = metadataGroupedByCode[dataElementCode];
           const { categoryOptionCombo: categoryOptionComboCode } = config;
           const categoryOptionCombo = categoryOptionCombos.find(
             item => item.code === categoryOptionComboCode,
           );
           const dataElementName = formatInboundDataElementName(name, categoryOptionCombo?.name);
-          return {
+          const metadataResults: DhisMetadataObject = {
             id,
             name: dataElementName,
             code,
           };
+
+          if (options) {
+            metadataResults.options = options;
+          }
+
+          return metadataResults;
         });
 
       if (translatedMetadata.length > 0) {
