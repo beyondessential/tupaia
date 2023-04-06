@@ -47,8 +47,8 @@ class RefreshDatabaseScript extends Script {
     const dbName = requireEnv('DB_NAME');
     const dbUser = requireEnv('DB_USER');
     const dbPgUser = requireEnv('DB_PG_USER');
-    const dbPort = getEnvVarOrDefault('DB_PORT', 5432);
-    const dbHost = getEnvVarOrDefault('DB_HOST', 'localhost');
+    const dbPort = getEnvVarOrDefault('DB_PORT', '');
+    const dbHost = getEnvVarOrDefault('DB_HOST', '');
 
 
     this.logInfo(`Refreshing the ${dbName} database (owner: ${dbUser})...`);
