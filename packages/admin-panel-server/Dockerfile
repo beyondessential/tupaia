@@ -1,10 +1,7 @@
 FROM node:14.19.3-alpine3.15 as builder
 
 # install features not available in base alpine distro
-RUN apk --no-cache add \
-  bash \
-  postgresql-client \
-  git
+RUN apk --no-cache add bash
 
 # set Yarn v3
 RUN yarn set version berry
