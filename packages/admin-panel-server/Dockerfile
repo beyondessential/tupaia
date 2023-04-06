@@ -64,7 +64,7 @@ COPY packages/web-frontend/package.json ./packages/web-frontend/
 # run yarn without building, so we can cache node_modules without code changes invalidating this layer
 # TODO: Install tupaia/admin-panel-server AND its internal dependencies instead
 # of the entire project ( yarn workspace @tupaia/admin-panel-server install etc..)
-RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
+RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus -A
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
