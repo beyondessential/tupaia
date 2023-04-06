@@ -58,7 +58,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/projects', catchAsyncErrors(getProjects));
-  api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
+  api.get('/dashboards/:recordId?', handleWith(DashboardsHandler)); // New style dashboards
   api.get('/report/:reportCode', handleWith(ReportHandler));
   api.post('/pdf', catchAsyncErrors(PDFExportHandler));
 

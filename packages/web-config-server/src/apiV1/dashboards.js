@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { filterEntities } from '@tupaia/utils';
+import { filterEntities, RespondingError } from '@tupaia/utils';
 import orderBy from 'lodash.orderby';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
@@ -17,8 +17,21 @@ const checkEntityAgainstConditions = (entity, conditions = {}) =>
 export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
 
+  findSingleRecord = async recordId => {
+    const dashboard = await this.models.dashboard.find({ name: recordId });
+    if (!dashboard) {
+      throw new RespondingError('Dashboard not found', 404);
+    }
+    return dashboard;
+  };
+
   buildResponse = async () => {
-    const { entity, query } = this;
+    const { entity, params, query } = this;
+
+    if (params.recordId) {
+      return this.findSingleRecord(params.recordId);
+    }
+
     const hierarchyId = await this.fetchHierarchyId();
     // Fetch dashboards
     const dashboards = await this.models.dashboard.getDashboards(entity, hierarchyId);
@@ -31,6 +44,7 @@ export default class extends RouteHandler {
       entity,
       query.projectCode,
     );
+
     const allDashboardRelationsAtLevel = await this.models.dashboardRelation.find({
       dashboard_id: dashboards.map(d => d.id),
       entity_types: {

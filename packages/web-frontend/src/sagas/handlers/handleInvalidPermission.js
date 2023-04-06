@@ -1,12 +1,13 @@
-import { put, select } from 'redux-saga/effects';
-import { setOverlayComponent } from '../../actions';
+import { call, put, select } from 'redux-saga/effects';
+import { fetchCountryAccessDataError, setOverlayComponent } from '../../actions';
 import {
   LANDING,
   PAGE_NOT_FOUND,
   REQUEST_PROJECT_ACCESS,
 } from '../../containers/OverlayDiv/constants';
 import { setRequestingAccess } from '../../projects/actions';
-import { selectProjectByCode } from '../../selectors';
+import { selectCurrentDashboardNameFromLocation, selectProjectByCode } from '../../selectors';
+import { request } from '../../utils';
 
 export function* handleInvalidPermission({ projectCode }) {
   const state = yield select();
@@ -18,9 +19,19 @@ export function* handleInvalidPermission({ projectCode }) {
 
     if (Object.keys(project).length > 0) {
       // Todo: Handle dashboard does not exist somehow
-      yield put(setRequestingAccess(project));
-      yield put(setOverlayComponent(REQUEST_PROJECT_ACCESS));
-      return;
+      const dashboardName = selectCurrentDashboardNameFromLocation(state);
+
+      const dashboard = yield call(
+        request,
+        `dashboards/${dashboardName}`,
+        fetchCountryAccessDataError,
+      );
+
+      if (dashboard?.id) {
+        yield put(setRequestingAccess(project));
+        yield put(setOverlayComponent(REQUEST_PROJECT_ACCESS));
+        return;
+      }
     }
 
     yield put(setOverlayComponent(PAGE_NOT_FOUND));

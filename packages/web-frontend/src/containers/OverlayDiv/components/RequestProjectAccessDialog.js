@@ -258,6 +258,8 @@ export const RequestProjectAccessComponent = React.memo(
                       label={country.name}
                       key={country.id}
                       name={`entityIds.${country.id}`}
+                      defaultChecked={country.hasAccess}
+                      disabled={country.hasAccess}
                     />
                   ))}
                   <TextField
