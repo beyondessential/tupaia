@@ -101,3 +101,6 @@ COPY . ./
 
 ## TODO: Only build required packages.. unfort. `workspaces foreach -vRt run build` fails with a dependency cycle.
 RUN yarn build:non-internal-dependencies
+
+WORKDIR /tupaia/packages/central-server/
+CMD ["node", "dist"]
