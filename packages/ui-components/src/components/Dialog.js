@@ -88,6 +88,7 @@ DialogHeader.propTypes = {
 DialogHeader.defaultProps = {
   color: 'textPrimary',
   children: null,
+  title: null,
 };
 
 export const DialogContent = styled.div`

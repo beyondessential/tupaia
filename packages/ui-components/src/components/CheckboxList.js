@@ -10,9 +10,8 @@ import {
   Card,
   CardHeader,
   List,
-  ListItem,
+  ListItem as BaseListItem,
   Checkbox,
-  Divider,
 } from '@material-ui/core';
 import styled from 'styled-components';
 import { FlexStart } from './Layout/Flexbox';
@@ -24,7 +23,7 @@ const StyledCard = styled(Card)`
   max-height: 30rem;
   overflow: auto;
   background-color: transparent;
-  border: 1px solid ${props => props.theme.palette.common.white};
+  border: 1px solid #ebebeb;
   .MuiCheckbox-root {
     margin-left: 1em;
     margin-right: 1em;
@@ -33,6 +32,8 @@ const StyledCard = styled(Card)`
 
 const StyledCardHeader = styled(CardHeader)`
   text-align: left;
+  border-bottom: 0.5px solid #ebebeb;
+  padding: 0.8rem 1rem;
 `;
 
 const StyledSubHeader = styled.p`
@@ -45,6 +46,30 @@ const FormControl = styled(BaseFormControl)`
   width: 100%;
   flex-direction: row;
   align-items: center;
+`;
+
+const ListItem = styled(BaseListItem)`
+  .MuiFormControlLabel-root {
+    width: 100%;
+  }
+  &:not(&:last-child) {
+    .MuiFormControlLabel-label {
+      width: 100%;
+      position: relative;
+      &:before {
+        content: '';
+        position: absolute;
+        /* To reach the base of the list item  we need to make it -70% from the base */
+        bottom: -70%;
+        left: 0;
+        height: 1px;
+        width: 100%;
+        /*  It is not possible to make a line less than 1px, so reducing the opacity of the border so as to make it appear thinner */
+        opacity: 0.4;
+        background-color: #ebebeb;
+      }
+    }
+  }
 `;
 
 function not(a, b) {
@@ -118,18 +143,17 @@ export const CheckboxList = ({ list, title = 'Choices', selectedItems, setSelect
         {children}
       </Tooltip>
     ) : (
-      <div>{children}</div>
+      <>{children}</>
     );
 
   return (
     <StyledCard>
       <StyledCardHeader title={<Title title={title} items={list} />} />
-      <Divider />
-      <List dense component="div" role="list">
+      <List>
         {list.map(item => {
           const { name, code, disabled, tooltip } = item;
           return (
-            <ListItem key={code} role="listitem">
+            <ListItem key={code}>
               <CheckboxWrapper tooltip={tooltip}>
                 <FormControl disabled={disabled}>
                   <FormControlLabel
@@ -150,7 +174,6 @@ export const CheckboxList = ({ list, title = 'Choices', selectedItems, setSelect
             </ListItem>
           );
         })}
-        <ListItem />
       </List>
     </StyledCard>
   );
