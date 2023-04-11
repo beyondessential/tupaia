@@ -100,5 +100,14 @@ COPY . ./
 ## TODO: Only build required packages.. unfort. `workspaces foreach -vRt run build` fails with a dependency cycle.
 RUN yarn build:non-internal-dependencies
 
+# Build final production image
+FROM node:14.19.3-alpine3.15 as dist
+WORKDIR /tupaia
+
+COPY --from=builder /tupaia/packages/ ./packages/
+COPY --from=builder /tupaia/node_modules/ ./node_modules
+RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=1 yarn workspaces focus --all  --production
+
+# Set workdir at runtime to specifiy service to start /tupaia/packages/<service>/
 WORKDIR /tupaia/packages/central-server/
 CMD ["node", "dist"]
