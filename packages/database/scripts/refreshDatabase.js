@@ -62,8 +62,9 @@ class RefreshDatabaseScript extends Script {
     const dbArgs = { user: dbPgUser, port: dbPort, host: dbHost };
     this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`, dbArgs);
     this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER ${dbUser}`, dbArgs);
-    // Loading GIS extension is optional - it's already loaded when using
-    // postgis/postgis Docker container
+    // Loading GIS extension is optional. Its already loaded in the
+    // postgis/postgis Docker image. Loading an extension thats already loaded
+    // fails.
     if (this.args.gis) {
       this.execDbCommand('CREATE EXTENSION postgis', dbArgs);
     }
