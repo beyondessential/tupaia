@@ -13,9 +13,8 @@ import { TYPES } from '../types';
 
 const EXT_DB_CONNECTION_ENV_VAR_PREFIX = 'EXT_DB';
 
-pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, value => {
-  return parseFloat(value);
-});
+pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
+pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
 
 export class ExternalDatabaseConnectionType extends DatabaseType {
   static databaseType = TYPES.EXTERNAL_DATABASE_CONNECTION;
