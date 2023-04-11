@@ -9,16 +9,9 @@ WORKDIR /tupaia
 
 # get ready for dependencies to be installed via yarn, before copying the rest of the package, so
 # that node_modules is built and added to the container cache without changes to code invalidating it
-COPY package.json ./
-COPY yarn.lock ./
-COPY babel.config.json ./
-COPY tsconfig-js.json ./
-COPY jest.config-ts.json ./
-COPY scripts/. ./scripts
-
+COPY .yarnrc.yml package.json yarn.lock babel.config.json tsconfig-js.json jest.config-ts.json ./
 COPY .yarn ./.yarn
-COPY .yarnrc.yml ./
-
+COPY scripts ./scripts
 
 ## copy *just the package.json* of each package so it is ready for yarn install, without adding the
 ## src directories, so that code changes don't invalidate the container cache before we've run yarn
