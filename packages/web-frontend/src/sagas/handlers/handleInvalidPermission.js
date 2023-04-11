@@ -1,6 +1,10 @@
 import { put, select } from 'redux-saga/effects';
 import { setOverlayComponent } from '../../actions';
-import { LANDING, REQUEST_PROJECT_ACCESS } from '../../containers/OverlayDiv/constants';
+import {
+  LANDING,
+  PAGE_NOT_FOUND,
+  REQUEST_PROJECT_ACCESS,
+} from '../../containers/OverlayDiv/constants';
 import { setRequestingAccess } from '../../projects/actions';
 import { selectProjectByCode } from '../../selectors';
 
@@ -17,6 +21,9 @@ export function* handleInvalidPermission({ projectCode }) {
       yield put(setOverlayComponent(REQUEST_PROJECT_ACCESS));
       return;
     }
+
+    yield put(setOverlayComponent(PAGE_NOT_FOUND));
+    return;
   }
   // show login dialog
   yield put(setOverlayComponent(LANDING));
