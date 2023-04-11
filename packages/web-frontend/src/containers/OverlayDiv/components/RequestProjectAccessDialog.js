@@ -391,6 +391,11 @@ const mapStateToProps = state => {
     errorMessage,
   } = state.requestCountryAccess;
 
+  console.log(
+    'countries.filter(c => requestingAccess.names.includes(c.name))',
+    countries.filter(c => requestingAccess.names.includes(c.name)),
+  );
+
   return {
     project: requestingAccess,
     countries: countries.filter(c => requestingAccess.names.includes(c.name)),
