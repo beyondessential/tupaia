@@ -1,13 +1,8 @@
-import { call, put, select } from 'redux-saga/effects';
-import { fetchCountryAccessDataError, setOverlayComponent } from '../../actions';
-import {
-  LANDING,
-  PAGE_NOT_FOUND,
-  REQUEST_PROJECT_ACCESS,
-} from '../../containers/OverlayDiv/constants';
+import { put, select } from 'redux-saga/effects';
+import { setOverlayComponent } from '../../actions';
+import { LANDING, REQUEST_PROJECT_ACCESS } from '../../containers/OverlayDiv/constants';
 import { setRequestingAccess } from '../../projects/actions';
-import { selectCurrentDashboardNameFromLocation, selectProjectByCode } from '../../selectors';
-import { request } from '../../utils';
+import { selectProjectByCode } from '../../selectors';
 
 export function* handleInvalidPermission({ projectCode }) {
   const state = yield select();
