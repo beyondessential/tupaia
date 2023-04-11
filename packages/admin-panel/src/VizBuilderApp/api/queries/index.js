@@ -9,5 +9,6 @@ export * from './useUser';
 export * from './useDashboardVisualisation';
 export * from './useMapOverlays';
 export * from './useCountries';
+export * from './useEntities';
 export * from './useSearchPermissionGroups';
 export * from './useSearchTransformSchemas';
