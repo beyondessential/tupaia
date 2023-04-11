@@ -44,3 +44,13 @@ export const truncateString = (string, maxLength) => {
   if (string.length <= maxLength) return string;
   return `${string.substring(0, maxLength - 3)}...`;
 };
+
+/**
+ * @param {string} input e.g. 'DashboardItem'
+ * @returns {string} e.g. 'Dashboard Item'
+ */
+export const pascalCaseToWords = input => {
+  const words = input.match(/[A-Z][a-z]+/g);
+  if (!words) return '';
+  return words.join(' ');
+};

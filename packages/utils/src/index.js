@@ -44,3 +44,4 @@ export { createClassExtendingProxy } from './proxy';
 export { fetchPatiently } from './fetchPatiently';
 export { oneSecondSleep, sleep } from './sleep';
 export { convertToCDNHost } from './convertToCDNHost';
+export * from './models';
