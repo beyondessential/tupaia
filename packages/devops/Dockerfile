@@ -22,42 +22,8 @@ COPY .yarnrc.yml ./
 
 ## copy *just the package.json* of each package so it is ready for yarn install, without adding the
 ## src directories, so that code changes don't invalidate the container cache before we've run yarn
-## TODO: Only include internal deps needed by admin-panel-server
-COPY packages/access-policy/package.json ./packages/access-policy/
-COPY packages/admin-panel/package.json ./packages/admin-panel/
-COPY packages/admin-panel-server/package.json ./packages/admin-panel-server/
-COPY packages/aggregator/package.json ./packages/aggregator/
-COPY packages/api-client/package.json ./packages/api-client/
-COPY packages/auth/package.json ./packages/auth/
-COPY packages/central-server/package.json ./packages/central-server/
-COPY packages/data-api/package.json ./packages/data-api/
-COPY packages/data-broker/package.json ./packages/data-broker/
-COPY packages/data-lake-api/package.json ./packages/data-lake-api/
-COPY packages/data-table-server/package.json ./packages/data-table-server/
-COPY packages/database/package.json ./packages/database/
-COPY packages/devops/package.json ./packages/devops/
-COPY packages/dhis-api/package.json ./packages/dhis-api/
-COPY packages/e2e/package.json ./packages/e2e/
-COPY packages/entity-server/package.json ./packages/entity-server/
-COPY packages/expression-parser/package.json ./packages/expression-parser/
-COPY packages/indicators/package.json ./packages/indicators/
-COPY packages/kobo-api/package.json ./packages/kobo-api/
-COPY packages/superset-api/package.json ./packages/superset-api/
-COPY packages/lesmis/package.json ./packages/lesmis/
-COPY packages/lesmis-server/package.json ./packages/lesmis-server/
-COPY packages/meditrak-app/package.json ./packages/meditrak-app/
-COPY packages/meditrak-app-server/package.json ./packages/meditrak-app-server/
-COPY packages/psss/package.json ./packages/psss/
-COPY packages/psss-server/package.json ./packages/psss-server/
-COPY packages/report-server/package.json ./packages/report-server/
-COPY packages/server-boilerplate/package.json ./packages/server-boilerplate/
-COPY packages/tsutils/package.json ./packages/tsutils/
-COPY packages/types/package.json ./packages/types/
-COPY packages/ui-components/package.json ./packages/ui-components/
-COPY packages/utils/package.json ./packages/utils/
-COPY packages/weather-api/package.json ./packages/weather-api/
-COPY packages/web-config-server/package.json ./packages/web-config-server/
-COPY packages/web-frontend/package.json ./packages/web-frontend/
+COPY packages/ pkgs/
+RUN for pkg in $(ls pkgs); do if test -s pkgs/$pkg/package.json; then mkdir -p packages/$pkg && mv -v pkgs/$pkg/package.json packages/$pkg/; fi; done
 
 # run yarn without building, so we can cache node_modules without code changes invalidating this layer
 # TODO: Install tupaia/admin-panel-server AND its internal dependencies instead
