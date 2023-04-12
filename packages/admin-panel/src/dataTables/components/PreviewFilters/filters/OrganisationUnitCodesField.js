@@ -10,11 +10,13 @@ import PropTypes from 'prop-types';
 import { ParameterType } from '../../editing';
 import { useEntities } from '../../../../VizBuilderApp/api';
 import { Autocomplete } from '../../../../autocomplete';
+import { useDebounce } from '../../../../utilities';
 
 export const OrganisationUnitCodesField = ({ name, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 100);
   const [selectedOptions, setSelectedOptions] = useState([]); // [{code:"DL", name:"Demo Land"}]
-  const { data: entities = [], isLoading } = useEntities(searchTerm);
+  const { data: entities = [], isLoading } = useEntities(debouncedSearchTerm);
   const limitedLocations = entities.slice(0, 20); // limit the options to 20 to stop the ui jamming
 
   return (
