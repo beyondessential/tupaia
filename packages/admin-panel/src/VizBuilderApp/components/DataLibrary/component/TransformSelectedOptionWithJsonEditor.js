@@ -15,6 +15,8 @@ const getDefaultValueByType = type => {
       return [];
     case 'object':
       return {};
+    case 'boolean':
+      return false;
     default:
       return null;
   }
@@ -38,7 +40,7 @@ export const TransformSelectedOptionWithJsonEditor = ({
           (value.oneOf && value.oneOf[0].type) ||
           (value.enum && typeof value.enum[0]) ||
           (value.oneOf && typeof value.oneOf[0].enum[0]);
-        const defaultValue = getDefaultValueByType(type);
+        const defaultValue = value.defaultValue || getDefaultValueByType(type);
 
         return [key, defaultValue];
       }),
