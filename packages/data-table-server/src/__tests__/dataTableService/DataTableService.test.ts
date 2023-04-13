@@ -53,8 +53,14 @@ describe('DataTableService', () => {
 
     const additionalParams = [
       { name: 'stringParam', config: { type: 'string' } },
+      { name: 'hierarchyParam', config: { type: 'hierarchy' } },
+      { name: 'dataGroupCodeParam', config: { type: 'dataGroupCode' } },
+      { name: 'numberParam', config: { type: 'number' } },
+      { name: 'booleanParam', config: { type: 'boolean' } },
       { name: 'dateParam', config: { type: 'date' } },
-      { name: 'arrayParam', config: { type: 'array', innerType: { type: 'string' } } },
+      { name: 'arrayParam', config: { type: 'array' } },
+      { name: 'organisationUnitCodesParam', config: { type: 'organisationUnitCodes' } },
+      { name: 'dataElementCodesParam', config: { type: 'dataElementCodes' } },
       { name: 'requiredParam', config: { type: 'string', required: true } },
       { name: 'defaultParam', config: { type: 'string', defaultValue: 'default' } },
       { name: 'oneOfParam', config: { type: 'string', oneOf: ['cat', 'dog'] } },
@@ -79,8 +85,14 @@ describe('DataTableService', () => {
     describe('additionalParameters in fetchData()', () => {
       const validParameterValues = {
         stringParam: 'test',
+        hierarchyParam: 'testHierarchy',
+        dataGroupCodeParam: 'testDataGroupCode',
         dateParam: '2020-01-01T00:00:00.000Z',
+        numberParam: 7,
+        booleanParam: true,
         arrayParam: ['test1', 'test2'],
+        dataElementCodesParam: ['testDataElement1', 'testDataElement2'],
+        organisationUnitCodesParam: ['testOrganisationUnit1', 'testOrganisationUnit2'],
         requiredParam: 'required',
         defaultParam: undefined,
         oneOfParam: 'cat',
@@ -89,7 +101,23 @@ describe('DataTableService', () => {
       describe('additionalParameter validation', () => {
         const testData: [string, Record<string, unknown>, string][] = [
           ['dateParam not a date', { dateParam: 'cat' }, 'dateParam must be a `date` type'],
+          ['number not a number', { numberParam: 'cat' }, 'numberParam must be a `number` type'],
+          [
+            'boolean not a boolean',
+            { booleanParam: 'cat' },
+            'booleanParam must be a `boolean` type',
+          ],
           ['arrayParam not an array', { arrayParam: false }, 'arrayParam must be a `array` type'],
+          [
+            'dataElementCodesParam not an array',
+            { dataElementCodesParam: false },
+            'dataElementCodesParam must be a `array` type',
+          ],
+          [
+            'organisationUnitCodesParam not an array',
+            { organisationUnitCodesParam: false },
+            'organisationUnitCodesParam must be a `array` type',
+          ],
           [
             'requiredParam not provided',
             { requiredParam: undefined },

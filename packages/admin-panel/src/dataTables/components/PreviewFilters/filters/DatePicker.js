@@ -31,11 +31,21 @@ const getDateValue = value => {
 export const DatePicker = ({ name, value, onChange, config }) => {
   const dateValue = getDateValue(value);
   const defaultDateValue = getDateValue(config?.hasDefaultValue && config?.defaultValue);
+  // Convert date to UTC as server uses UTC timezone
+  const onChangeDate = localDate => {
+    if (!localDate) {
+      return;
+    }
+    const UTCDate = new Date(
+      Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate()),
+    );
+    onChange(UTCDate);
+  };
 
   return (
     <BaseDatePicker
       label={name || ''}
-      onChange={onChange}
+      onChange={onChangeDate}
       value={dateValue}
       placeholder={defaultDateValue && format(defaultDateValue, 'dd/MM/yyyy')}
     />
