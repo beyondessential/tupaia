@@ -31,6 +31,8 @@ const Container = styled(MuiContainer)`
 const RightCol = styled(FlexColumn)`
   padding-left: 30px;
   flex: 1;
+  // To solve overflow problem of data table content, use min-width: 0 https://stackoverflow.com/a/66689926
+  min-width: 0;
 `;
 
 const StyledAlert = styled(SmallAlert)`

@@ -113,6 +113,11 @@ describe('DataTableService', () => {
             ).toThrow(expectedError);
           },
         );
+
+        // TODO: Add unit test
+        // eslint-disable-next-line jest/no-commented-out-tests
+        // it('parses default date parameters from string to date type', async () => {
+        // });
       });
 
       it('parameters are passed in to fetchData()', async () => {

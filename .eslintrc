@@ -47,7 +47,8 @@
         "packages/report-server/**",
         "packages/server-boilerplate/**",
         "packages/supserset-api/**",
-        "packages/tsutils/**"
+        "packages/tsutils/**",
+        "packages/types/**"
       ],
       "extends": "@beyondessential/ts",
       "parserOptions": {

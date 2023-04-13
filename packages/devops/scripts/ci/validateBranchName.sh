@@ -13,17 +13,6 @@ MAX_SUBDOMAIN_SUFFIX_LENGTH=$(get_max_length "${SUBDOMAIN_SUFFIXES[@]}")
 MAX_BRANCH_NAME_LENGTH=$((MAX_SUBDOMAIN_LENGTH - ${MAX_SUBDOMAIN_SUFFIX_LENGTH} - 1)) # Subtract 1 for the connecting `-`
 # As of 11/08/21, MAX_BRANCH_NAME_LENGTH = 64 - 17 - 1 = 46 (Longest subdomain "tonga-aggregation")
 
-
-function get_branch_name() {
-    local branch_name="$CI_BRANCH"
-    if [[ $branch_name == "" ]]; then
-        # Get currently checked out branch
-        branch_name=$(git rev-parse --abbrev-ref HEAD)
-    fi
-
-    echo $branch_name
-}
-
 function validate_name_ending() {
     local branch_name=$1
 

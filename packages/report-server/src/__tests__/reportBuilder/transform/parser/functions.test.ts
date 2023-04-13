@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Context } from '../../../../reportBuilder/context';
 import { TransformParser } from '../../../../reportBuilder/transform/parser';
 
 describe('functions', () => {
@@ -16,6 +17,14 @@ describe('functions', () => {
 
       it('returns a boolean when passed to it', () =>
         expect(new TransformParser().evaluate('=value(true)')).toBe(true));
+    });
+
+    describe('first', () => {
+      it('returns the final value of an array', () =>
+        expect(new TransformParser().evaluate("=first(['first', 'last'])")).toBe('first'));
+
+      it('throws an error when not passed an array', () =>
+        expect(() => new TransformParser().evaluate('=first(1)')).toThrowError());
     });
 
     describe('last', () => {
@@ -76,25 +85,6 @@ describe('functions', () => {
   });
 
   describe('context', () => {
-    describe('orgUnitIdToCode()', () => {
-      const context = {
-        orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji', attributes: {} },
-          { id: '5678', code: 'TO', name: 'Tonga', attributes: {} },
-        ],
-      };
-
-      it('converts given org unit id to code', () => {
-        const parser = new TransformParser(undefined, context);
-        expect(parser.evaluate("=orgUnitIdToCode('1234')")).toBe('FJ');
-      });
-
-      it('returns undefined if the org unit id is not found', () => {
-        const parser = new TransformParser(undefined, context);
-        expect(parser.evaluate("=orgUnitIdToCode('abcd')")).toBe(undefined);
-      });
-    });
-
     describe('orgUnitCodeToName()', () => {
       const context = {
         orgUnits: [
@@ -104,53 +94,13 @@ describe('functions', () => {
       };
 
       it('converts given org unit code to name', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, context as Context);
         expect(parser.evaluate("=orgUnitCodeToName('TO')")).toBe('Tonga');
       });
 
       it('returns undefined if the org unit code is not found', () => {
-        const parser = new TransformParser(undefined, context);
+        const parser = new TransformParser(undefined, context as Context);
         expect(parser.evaluate("=orgUnitCodeToName('WS')")).toBe(undefined);
-      });
-    });
-
-    describe('dataElementCodeToName()', () => {
-      const context = {
-        dataElementCodeToName: {
-          FijiBCSC93: 'Haloperidol Tablets 5mg',
-          FijiBCSC61: 'Benztropine  Injection 2mg/ml',
-        },
-      };
-
-      it('converts given data element code to name', () => {
-        const parser = new TransformParser(undefined, context);
-        expect(parser.evaluate("=dataElementCodeToName('FijiBCSC93')")).toBe(
-          'Haloperidol Tablets 5mg',
-        );
-      });
-
-      it('returns undefined if the data element code is not found', () => {
-        const parser = new TransformParser(undefined, context);
-        expect(parser.evaluate("=dataElementCodeToName('BCD1')")).toBe(undefined);
-      });
-    });
-
-    describe('orgUnitAttribute()', () => {
-      const context = {
-        orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji', attributes: { x: 1 } },
-          { id: '5678', code: 'TO', name: 'Tonga', attributes: { y: 2 } },
-        ],
-      };
-
-      it('gets attribute of org unit', () => {
-        const parser = new TransformParser(undefined, context);
-        expect(parser.evaluate("=orgUnitAttribute('FJ', 'x')")).toBe(1);
-      });
-
-      it('returns undefined if the attribute is not set', () => {
-        const parser = new TransformParser(undefined, context);
-        expect(parser.evaluate("=orgUnitAttribute('TO', 'x')")).toBe(undefined);
       });
     });
   });
@@ -300,6 +250,28 @@ describe('functions', () => {
 
       it('throws an error if there is one string as an argument', () =>
         expect(() => new TransformParser().evaluate("=mean(3,6,'cat')")).toThrow());
+    });
+
+    describe('min', () => {
+      it('finds the smallest value of multiple arguments', () =>
+        expect(new TransformParser().evaluate('=min(4,2,6)')).toBe(2));
+
+      it('finds the smallest value of an array argument', () =>
+        expect(new TransformParser().evaluate('=min([4,2,6])')).toBe(2));
+
+      it('supports string arguments', () =>
+        expect(new TransformParser().evaluate("=min(['dog','cat','fish'])")).toBe('cat'));
+    });
+
+    describe('max', () => {
+      it('finds the largest value of multiple arguments', () =>
+        expect(new TransformParser().evaluate('=max(4,6,2)')).toBe(6));
+
+      it('finds the largest value of an array argument', () =>
+        expect(new TransformParser().evaluate('=max([4,6,2])')).toBe(6));
+
+      it('supports string arguments', () =>
+        expect(new TransformParser().evaluate("=max(['cat','fish','dog'])")).toBe('fish'));
     });
   });
 });

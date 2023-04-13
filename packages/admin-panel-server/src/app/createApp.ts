@@ -25,6 +25,8 @@ import {
   FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
+  FetchDataTablePreviewDataRequest,
+  FetchDataTablePreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
@@ -36,10 +38,10 @@ import {
   UserRoute,
   ImportMapOverlayVisualisationRequest,
   ImportMapOverlayVisualisationRoute,
-  FetchAggregationOptionsRequest,
-  FetchAggregationOptionsRoute,
   FetchTransformSchemasRequest,
   FetchTransformSchemasRoute,
+  FetchDataTableBuiltInParamsRequest,
+  FetchDataTableBuiltInParamsRoute,
 } from '../routes';
 import { authHandlerProvider } from '../auth';
 
@@ -82,6 +84,14 @@ export function createApp() {
       'dashboardVisualisation/:dashboardVisualisationId',
       handleWith(FetchDashboardVisualisationRoute),
     )
+    .post<FetchDataTablePreviewDataRequest>(
+      'fetchDataTablePreviewData',
+      handleWith(FetchDataTablePreviewDataRoute),
+    )
+    .get<FetchDataTableBuiltInParamsRequest>(
+      'fetchDataTableBuiltInParams',
+      handleWith(FetchDataTableBuiltInParamsRoute),
+    )
     .get(
       'export/dashboardVisualisation/:dashboardVisualisationId',
       handleWith(ExportDashboardVisualisationRoute),
@@ -116,10 +126,6 @@ export function createApp() {
     .get<FetchMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(FetchMapOverlayVisualisationRoute),
-    )
-    .get<FetchAggregationOptionsRequest>(
-      'fetchAggregationOptions',
-      handleWith(FetchAggregationOptionsRoute),
     )
     .get<FetchTransformSchemasRequest>(
       'fetchTransformSchemas',
