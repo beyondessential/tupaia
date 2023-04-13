@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { isDefined } from '@tupaia/tsutils';
+import { isDefined, yupTsUtils } from '@tupaia/tsutils';
 import { yup } from '@tupaia/utils';
 import { TransformTable } from '../../table';
 import { sortByFunctions } from './sortByFunctions';
@@ -13,11 +13,13 @@ type OrderColumnsParams = {
   sorter?: (column1: string, column2: string) => number;
 };
 
+const sortByValidator = yup
+  .mixed<keyof typeof sortByFunctions>()
+  .oneOf(Object.keys(sortByFunctions) as (keyof typeof sortByFunctions)[]);
+
 export const paramsValidator = yup.object().shape({
   order: yup.array().of(yup.string().required()),
-  sortBy: yup
-    .mixed<keyof typeof sortByFunctions>()
-    .oneOf(Object.keys(sortByFunctions) as (keyof typeof sortByFunctions)[]),
+  sortBy: yupTsUtils.describableLazy(() => sortByValidator, [sortByValidator]),
 });
 
 const orderColumns = (table: TransformTable, params: OrderColumnsParams) => {
@@ -91,15 +93,4 @@ const buildParams = (params: unknown): OrderColumnsParams => {
 export const buildOrderColumns = (params: unknown) => {
   const builtParams = buildParams(params);
   return (table: TransformTable) => orderColumns(table, builtParams);
-};
-
-export const orderColumnsSchema = {
-  ...paramsValidator.describe(),
-  fields: {
-    ...paramsValidator.describe().fields,
-    // Override sortBy describe, as viz-builder doesn't support mixed schemas
-    sortBy: {
-      enum: Object.keys(sortByFunctions),
-    },
-  },
 };

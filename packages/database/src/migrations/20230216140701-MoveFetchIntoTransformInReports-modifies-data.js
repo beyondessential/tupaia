@@ -61,9 +61,16 @@ const convertToNewConfig = config => {
     const newTransformSet = [fetchDataTransform, ...transform];
     return { transform: newTransformSet, ...restOfConfig };
   }
-  const fetchTransforms = dataGroups.map(dataGroupCode => {
+  const fetchTransforms = dataGroups.map((dataGroupCode, index) => {
     const fetchConfigWithNewKeys = convertToNewKeys(fetch, dataGroupCode);
-    const fetchTransform = { transform: 'fetchData', parameters: fetchConfigWithNewKeys };
+    const fetchTransform = {
+      transform: 'fetchData',
+      parameters: fetchConfigWithNewKeys,
+    };
+    // not the last one
+    if (index !== dataGroups.length - 1) {
+      fetchTransform.exitOnNoData = false;
+    }
     return fetchTransform;
   });
   const newTransformSet = [...fetchTransforms, ...transform];
