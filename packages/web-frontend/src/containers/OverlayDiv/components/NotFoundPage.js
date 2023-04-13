@@ -10,36 +10,36 @@ import { goHome } from '../../../actions';
 import { connect } from 'react-redux';
 
 const Container = styled.div`
-  height: 500px;
-  width: 800px;
+  height: 32rem;
+  width: 50rem;
   max-width: 100%;
   max-height: 100%;
   text-align: center;
   padding-top: 20%;
-  padding-bottom: 30px;
+  padding-bottom: 1.875rem;
 `;
 
 const Image = styled.img`
-  width: 300px;
+  width: 18.75rem;
   max-width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
 `;
 
 const Text = styled(Typography)`
-  font-size: 18px;
-  line-height: 21px;
-  color: white;
-  margin-bottom: 30px;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  color: ${props => props.theme.palette.common.white};
+  margin-bottom: 1.875rem;
 `;
 
 const StyledButton = styled(PrimaryButton)`
-  width: 300px;
+  width: 18.75rem;
 `;
 
 const NotFoundPageComponent = ({ goHome }) => {
   return (
     <Container>
-      <Image src="/images/404.svg" />
+      <Image src="/images/404.svg" alt="page not found" />
       <Text>The page you are looking for does not exist</Text>
       <StyledButton variant="contained" color="primary" onClick={goHome}>
         Back to home page
