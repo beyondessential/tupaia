@@ -60,7 +60,8 @@ WORKDIR /tupaia
 
 COPY --from=builder /tupaia/packages/ ./packages/
 COPY --from=builder /tupaia/node_modules/ ./node_modules
-RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=1 yarn workspaces focus --all  --production
+# TODO: Remove dev dependencies here. Running yarn workspaces focus -A
+# --production doesn't work - it removes deps required at runtime !
 
 # Set workdir at runtime to specifiy service to start /tupaia/packages/<service>/
 WORKDIR /tupaia/packages/central-server/
