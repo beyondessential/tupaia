@@ -56,13 +56,18 @@ RUN yarn build:non-internal-dependencies
 
 # Build final production image
 FROM node:14.19.3-alpine3.15 as dist
+# TODO: Bash can be removed if ./scripts/bash/downloadEnvironmentVariables.sh is
+# made posix shell compatible.
+RUN apk --no-cache add bash && \
+    apk --no-cache add lastpass-cli
 WORKDIR /tupaia
 
 COPY --from=builder /tupaia/packages/ ./packages/
 COPY --from=builder /tupaia/node_modules/ ./node_modules
+COPY --from=builder /tupaia/scripts/bash/downloadEnvironmentVariables.sh /tupaia/scripts/bash/docker-startup.sh ./scripts/bash/
 # TODO: Remove dev dependencies here. Running yarn workspaces focus -A
 # --production doesn't work - it removes deps required at runtime !
 
-# Set workdir at runtime to specifiy service to start /tupaia/packages/<service>/
-WORKDIR /tupaia/packages/central-server/
-CMD ["node", "dist"]
+ENTRYPOINT ["./scripts/bash/docker-startup.sh"]
+# Set cmd at rudownloadEnvironmentVariablesntime to specifiy service to start
+CMD ["central-server", "dev"]
