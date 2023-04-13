@@ -13,6 +13,7 @@ import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { IdleMessage } from './IdleMessage';
+import { getColumns } from '../../utilities';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -105,41 +106,16 @@ const TABS = {
 
 const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 
-const convertValueToPrimitive = val => {
-  if (val === null) return val;
-  switch (typeof val) {
-    case 'object':
-      return JSON.stringify(val);
-    case 'function':
-      return '[Function]';
-    default:
-      return val;
-  }
-};
-
-const getColumns = ({ columns: columnKeys = [] }) => {
-  const indexColumn = {
-    Header: '#',
-    id: 'index',
-    accessor: (_row, i) => i + 1,
-  };
-  const columns = columnKeys.map(columnKey => {
-    return {
-      Header: columnKey,
-      accessor: row => convertValueToPrimitive(row[columnKey]),
-    };
-  });
-
-  return [indexColumn, ...columns];
-};
-
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [{ project, location, testData, visualisation }, { setPresentation }] = useVizConfig();
+  const [
+    { project, location, startDate, endDate, testData, visualisation },
+    { setPresentation },
+  ] = useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
 
   const [viewContent, setViewContent] = useState(null);
@@ -156,6 +132,8 @@ export const PreviewSection = () => {
     visualisation: visualisationForFetchingData,
     project,
     location,
+    startDate,
+    endDate,
     testData,
     enabled: fetchEnabled,
     onSettled: () => {

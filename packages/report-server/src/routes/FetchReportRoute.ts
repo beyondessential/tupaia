@@ -39,21 +39,27 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const report = await this.findReport();
     const permissionGroupName = await report.permissionGroupName();
 
-    const reqContext = {
-      hierarchy,
-      permissionGroup: permissionGroupName,
-      services: this.req.ctx.services,
-      accessPolicy: this.req.accessPolicy,
-    };
-
-    const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
     const reportQuery = {
       organisationUnitCodes: parseOrgUnitCodes(organisationUnitCodes),
       hierarchy,
       ...restOfParams,
     };
 
-    const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
-    return reportBuilder.build(aggregator, reportQuery);
+    const reqContext = {
+      query: reportQuery,
+      hierarchy,
+      permissionGroup: permissionGroupName,
+      services: this.req.ctx.services,
+      accessPolicy: this.req.accessPolicy,
+      aggregator: new ReportServerAggregator(
+        createAggregator(undefined, {
+          accessPolicy: this.req.accessPolicy,
+          services: this.req.ctx.services,
+        }),
+      ),
+    };
+
+    const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
+    return reportBuilder.build();
   }
 }

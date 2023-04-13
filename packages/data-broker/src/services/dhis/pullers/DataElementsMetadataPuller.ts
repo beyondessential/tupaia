@@ -6,7 +6,8 @@
 import groupBy from 'lodash.groupby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { DataElementMetadata, DataElementModel } from '../../../types';
+import { isNotNullish } from '@tupaia/tsutils';
+import { DataElementModel } from '../../../types';
 import { DataElement } from '../types';
 import { DhisTranslator } from '../translators';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
@@ -38,26 +39,33 @@ export class DataElementsMetadataPuller {
     options: PullDataElementsOptions,
   ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
-    let metadata: DataElementMetadata[] = [];
+    const metadata = [];
 
     for (const entry of Object.entries(dataSourcesByDhisType)) {
       const [dhisDataType, groupedDataSources] = entry;
       const dataElementCodes = groupedDataSources.map(({ dataElementCode }) => dataElementCode);
       if (dhisDataType === this.dataSourceModel.getDhisDataTypes().INDICATOR) {
         const indicators = await api.fetchIndicators({ dataElementCodes });
-        const results = this.translator.translateInboundIndicators(indicators, groupedDataSources);
-        metadata = metadata.concat(results);
+        metadata.push(
+          ...this.translator.translateInboundIndicators(indicators, groupedDataSources),
+        );
       } else {
+        const categoryOptionComboCodes = groupedDataSources
+          .map(ds => ds.config?.categoryOptionCombo)
+          .filter(isNotNullish);
         const { additionalFields, includeOptions } = options;
         const dataElements = await api.fetchDataElements(dataElementCodes, {
           additionalFields,
           includeOptions,
         });
-        const results = this.translator.translateInboundDataElements(
-          dataElements,
-          groupedDataSources,
+        const categoryOptionCombos = await api.fetchCategoryOptionCombos(categoryOptionComboCodes);
+        metadata.push(
+          ...this.translator.translateInboundDataElements(
+            dataElements,
+            categoryOptionCombos,
+            groupedDataSources,
+          ),
         );
-        metadata = metadata.concat(results);
       }
     }
 

@@ -5,10 +5,6 @@
 
 import { Row } from '../../../types';
 
-export type RawDataExportContext = {
-  dataGroups: string[];
-};
-
 export type RawDataExport = {
   columns: {
     key: string;
