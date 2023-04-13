@@ -10,7 +10,6 @@ import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 const ENTITY_HIERARCHY_ENDPOINT = 'entityHierarchy';
-const TITLE = 'Entity Hierarchy';
 
 const FIELDS = [
   {
@@ -40,7 +39,6 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Entity Hierarchy',
       editEndpoint: ENTITY_HIERARCHY_ENDPOINT,
       fields: FIELDS,
     },
@@ -49,7 +47,7 @@ const COLUMNS = [
 
 export const EntityHierarchyPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title={TITLE}
+    model="EntityHierarchy"
     endpoint={ENTITY_HIERARCHY_ENDPOINT}
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

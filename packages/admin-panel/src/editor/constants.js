@@ -17,3 +17,9 @@ export const DATA_CHANGE_ACTIONS = {
   finish: EDITOR_DATA_EDIT_SUCCESS,
   error: EDITOR_ERROR,
 };
+
+export const EDITOR_TYPE = {
+  EDIT: 'EDIT',
+  BULK_EDIT: 'BULK_EDIT',
+  CREATE: 'CREATE',
+};

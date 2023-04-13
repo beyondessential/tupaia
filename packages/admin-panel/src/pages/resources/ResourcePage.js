@@ -11,12 +11,14 @@ import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
+import { ResourcePageContextProvider } from '../../context';
 
 const Container = styled(PageBody)`
   overflow: auto;
 `;
 
 export const ResourcePage = ({
+  model,
   columns,
   createConfig,
   endpoint,
@@ -47,7 +49,7 @@ export const ResourcePage = ({
     getHeaderEl,
   );
   return (
-    <>
+    <ResourcePageContextProvider initialModel={model}>
       {HeaderPortal}
       <Container>
         <DataFetchingTable
@@ -63,11 +65,12 @@ export const ResourcePage = ({
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
       <LogsModal />
-    </>
+    </ResourcePageContextProvider>
   );
 };
 
 ResourcePage.propTypes = {
+  model: PropTypes.string,
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
@@ -95,6 +98,7 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
+  model: null,
   createConfig: null,
   expansionTabs: null,
   importConfig: null,

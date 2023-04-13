@@ -10,6 +10,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { ImportModal } from '../importExport';
 import { CreateButton as SingleCreateButton, BulkCreateButton } from '../editor';
+import { useResourcePageContext } from '../context';
 
 const HeaderButtonContainer = styled.div`
   display: grid;
@@ -41,11 +42,13 @@ export const Header = ({
   const CreateButton =
     createConfig && createConfig.bulkCreate ? BulkCreateButton : SingleCreateButton;
 
+  const { humanFriendlyModelNames } = useResourcePageContext();
+
   return (
     <HeaderMain>
       <MuiContainer maxWidth="xl">
         <HeaderInner>
-          <Typography variant="h1">{title}</Typography>
+          <Typography variant="h1">{title ?? humanFriendlyModelNames}</Typography>
           <HeaderButtonContainer>
             {importConfig && <ImportModal {...importConfig} />}
             {createConfig && <CreateButton {...createConfig} />}
@@ -59,7 +62,7 @@ export const Header = ({
 };
 
 Header.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   importConfig: PropTypes.object,
   createConfig: PropTypes.object,
   exportConfig: PropTypes.object,
@@ -68,6 +71,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
+  title: null,
   importConfig: null,
   createConfig: null,
   exportConfig: {},

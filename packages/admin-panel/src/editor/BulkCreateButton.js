@@ -25,6 +25,7 @@ BulkCreateButtonComponent.propTypes = {
     bulkGetEndpoint: PropTypes.string,
     bulkUpdateEndpoint: PropTypes.string,
     fields: PropTypes.array,
+    title: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string,

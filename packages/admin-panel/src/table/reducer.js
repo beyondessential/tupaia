@@ -45,8 +45,9 @@ const handleDataFetchSuccess = (payload, currentState) => {
 };
 
 const stateChanges = {
-  [ACTION_REQUEST]: ({ confirmMessage, actionCreator }) => ({
+  [ACTION_REQUEST]: ({ confirmMessage, title, actionCreator }) => ({
     confirmActionMessage: confirmMessage,
+    confirmActionTitle: title,
     pendingActionCreator: actionCreator,
   }),
   [ACTION_CANCEL]: () => ({

@@ -20,6 +20,7 @@ import { ModalContentProvider, InputField } from '../widgets';
 import { useApi } from '../utilities/ApiProvider';
 import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { useResourcePageContext } from '../context';
 
 const STATUS = {
   IDLE: 'idle',
@@ -54,6 +55,7 @@ export const ImportModalComponent = React.memo(
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
     const [fileName, setFileName] = useState(noFileMessage);
+    const { humanFriendlyModelNames } = useResourcePageContext();
 
     const handleOpen = () => setIsOpen(true);
 
@@ -160,7 +162,7 @@ export const ImportModalComponent = React.memo(
           <form>
             <DialogHeader
               onClose={handleClose}
-              title={fileErrorMessage ? 'Error' : title}
+              title={fileErrorMessage ? 'Error' : title ?? `Import ${humanFriendlyModelNames}`}
               color={fileErrorMessage ? 'error' : 'textPrimary'}
             />
             <ModalContentProvider

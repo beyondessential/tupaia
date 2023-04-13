@@ -9,12 +9,13 @@ import { connect } from 'react-redux';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import { openEditModal } from './actions';
+import { EDITOR_TYPE } from './constants';
 
 export const CreateButtonComponent = ({ dispatch, label, actionConfig }) => (
   <LightOutlinedButton
     id="page-new-button"
     startIcon={<AddCircleIcon />}
-    onClick={() => dispatch(openEditModal(actionConfig))}
+    onClick={() => dispatch(openEditModal({ ...actionConfig, editorType: EDITOR_TYPE.CREATE }))}
   >
     {label}
   </LightOutlinedButton>
@@ -24,6 +25,7 @@ CreateButtonComponent.propTypes = {
   actionConfig: PropTypes.PropTypes.shape({
     editEndpoint: PropTypes.string,
     fields: PropTypes.array,
+    title: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string,

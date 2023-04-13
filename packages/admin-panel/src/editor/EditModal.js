@@ -13,6 +13,22 @@ import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
 import { ModalContentProvider } from '../widgets';
 import { UsedBy } from '../usedBy/UsedBy';
+import { useResourcePageContext } from '../context';
+import { EDITOR_TYPE } from './constants';
+
+const getTitle = (type, title, humanFriendlyModelName, humanFriendlyModelNames) => {
+  if (title) return title;
+  switch (type) {
+    case EDITOR_TYPE.EDIT:
+      return `Edit ${humanFriendlyModelName}`;
+    case EDITOR_TYPE.BULK_EDIT:
+      return `Edit ${humanFriendlyModelNames}`;
+    case EDITOR_TYPE.CREATE:
+      return `New ${humanFriendlyModelName}`;
+    default:
+      return null;
+  }
+};
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
@@ -47,12 +63,20 @@ export const EditModalComponent = ({
   cancelButtonText,
   saveButtonText,
   extraDialogProps,
+  editorType,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
+  const { humanFriendlyModelName, humanFriendlyModelNames } = useResourcePageContext();
+  const resolvedTitle = getTitle(
+    editorType,
+    title,
+    humanFriendlyModelName,
+    humanFriendlyModelNames,
+  );
 
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
-      <DialogHeader onClose={onDismiss} title={title} />
+      <DialogHeader onClose={onDismiss} title={resolvedTitle} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         <>
           {!FieldsComponent && fields.length > 0 && (
@@ -112,11 +136,12 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
+  editorType: PropTypes.string,
 };
 
 EditModalComponent.defaultProps = {
   errorMessage: null,
-  title: 'Edit',
+  title: null,
   recordData: null,
   FieldsComponent: null,
   isUnchanged: false,
@@ -126,6 +151,7 @@ EditModalComponent.defaultProps = {
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
+  editorType: EDITOR_TYPE.EDIT,
 };
 
 const mapStateToProps = state => ({

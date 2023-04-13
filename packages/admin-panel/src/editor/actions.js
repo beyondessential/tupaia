@@ -12,6 +12,7 @@ import {
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
   EDITOR_OPEN,
+  EDITOR_TYPE,
 } from './constants';
 import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 
@@ -22,6 +23,15 @@ export const openBulkEditModal = (
   recordId,
   rowData,
 ) => async (dispatch, getState, { api }) => {
+  // Open the modal instantly
+  dispatch({
+    type: EDITOR_OPEN,
+    fields,
+    title,
+    recordData: {},
+    editorType: EDITOR_TYPE.BULK_EDIT,
+  });
+
   if (recordId) {
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
@@ -67,18 +77,19 @@ export const openBulkEditModal = (
         });
       }
     });
-
-    dispatch({
-      type: EDITOR_OPEN,
-      fields,
-      recordData: {},
-      endpoint: bulkUpdateEndpoint,
-    });
   }
 };
 
 export const openEditModal = (
-  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {}, isLoading = false },
+  {
+    editEndpoint,
+    title,
+    fields,
+    FieldsComponent,
+    extraDialogProps = {},
+    isLoading = false,
+    editorType = EDITOR_TYPE.EDIT,
+  },
   recordId,
 ) => async (dispatch, getState, { api }) => {
   // Open the modal instantly
@@ -91,6 +102,7 @@ export const openEditModal = (
     endpoint: editEndpoint,
     extraDialogProps,
     isLoading,
+    editorType,
   });
 
   // And then fetch data / set default field values for edit/new respectively
