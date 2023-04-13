@@ -86,8 +86,8 @@ const EDITOR_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'Add Sync Group',
   actionConfig: {
+    title: 'New Sync Group',
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },
@@ -95,6 +95,7 @@ const CREATE_CONFIG = {
 
 export const SyncGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
+    model="DataServiceSyncGroup"
     title="Sync Groups"
     endpoint="dataServiceSyncGroups"
     columns={COLUMNS}

@@ -134,7 +134,7 @@ const CREATE_CONFIG = {
 
 export const DashboardsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Dashboards"
+    model="Dashboard"
     endpoint={DASHBOARDS_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

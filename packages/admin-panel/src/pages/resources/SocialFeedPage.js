@@ -106,6 +106,7 @@ const CREATE_CONFIG = {
 
 export const SocialFeedPage = ({ getHeaderEl }) => (
   <ResourcePage
+    model="FeedItem"
     title="Social Feed"
     endpoint="feedItems"
     baseFilter={{ type: 'markdown' }}

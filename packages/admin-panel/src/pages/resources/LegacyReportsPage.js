@@ -48,6 +48,7 @@ const COLUMNS = [
 
 export const LegacyReportsPage = ({ getHeaderEl }) => (
   <ResourcePage
+    model="LegacyReport"
     title="Legacy Reports"
     endpoint="legacyReports"
     columns={COLUMNS}

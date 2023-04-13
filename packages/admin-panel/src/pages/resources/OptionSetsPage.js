@@ -71,7 +71,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Option Sets',
   actionConfig: {
     importEndpoint: 'optionSets',
   },
@@ -91,7 +90,7 @@ const IMPORT_CONFIG = {
 
 export const OptionSetsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Option Sets"
+    model="OptionSet"
     endpoint="optionSets"
     columns={OPTION_SET_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

@@ -74,6 +74,7 @@ const CREATE_CONFIG = {
 
 export const DataElementDataServicesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
+    model="DataElementDataService"
     title="Data Mapping"
     endpoint="dataElementDataServices"
     columns={COLUMNS}

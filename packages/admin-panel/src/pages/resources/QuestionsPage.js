@@ -110,7 +110,7 @@ const EDITOR_CONFIG = {
 
 export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Questions"
+    model="Question"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

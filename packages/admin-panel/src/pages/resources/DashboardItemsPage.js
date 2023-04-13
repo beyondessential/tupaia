@@ -133,7 +133,7 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
 
   return (
     <ResourcePage
-      title="Dashboard Items"
+      model="DashboardItem"
       endpoint={DASHBOARD_ITEMS_ENDPOINT}
       columns={columns}
       importConfig={importConfig}

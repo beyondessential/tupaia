@@ -74,7 +74,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Entities',
   subtitle:
     'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
   actionConfig: {
@@ -102,7 +101,7 @@ const IMPORT_CONFIG = {
 
 export const EntitiesPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Entities"
+    model="Entity"
     endpoint={ENTITIES_ENDPOINT}
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}

@@ -29,9 +29,8 @@ const EXPANSION_CONFIG = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Country',
   actionConfig: {
-    title: 'Create New Country',
+    title: 'New Country',
     editEndpoint: 'countries',
     fields: FIELDS,
   },
@@ -39,7 +38,7 @@ const CREATE_CONFIG = {
 
 export const CountriesPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Countries"
+    model="Country"
     endpoint="countries"
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}

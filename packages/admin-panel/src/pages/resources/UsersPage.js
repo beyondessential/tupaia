@@ -135,8 +135,8 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'New User',
   actionConfig: {
+    title: 'New User',
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
@@ -154,6 +154,7 @@ const CREATE_CONFIG = {
 
 export const UsersPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
+    model="UserAccount"
     title="Users"
     endpoint="users"
     columns={COLUMNS}

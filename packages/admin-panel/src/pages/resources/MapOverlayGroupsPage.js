@@ -113,7 +113,7 @@ const CREATE_CONFIG = {
 
 export const MapOverlayGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Map Overlay Groups"
+    model="MapOverlayGroup"
     endpoint={MAP_OVERLAY_GROUPS_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

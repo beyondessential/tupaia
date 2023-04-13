@@ -197,7 +197,7 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
 
   return (
     <ResourcePage
-      title="Map Overlays"
+      model="MapOverlay"
       endpoint="mapOverlays"
       columns={COLUMNS}
       importConfig={importConfig}

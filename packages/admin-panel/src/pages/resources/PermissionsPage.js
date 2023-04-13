@@ -60,14 +60,15 @@ const FIELDS = [
     type: 'delete',
     actionConfig: {
       endpoint: PERMISSIONS_ENDPOINT,
+      title: 'Delete User Permission?',
     },
   },
 ];
 
 const CREATE_CONFIG = {
-  title: 'Give User Permission',
   bulkCreate: true,
   actionConfig: {
+    title: 'Give User Permissions',
     bulkUpdateEndpoint: PERMISSIONS_ENDPOINT,
     fields: [
       {
@@ -143,6 +144,7 @@ const processDataForSave = (fieldsToSave, recordData) => {
 
 export const PermissionsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
+    model="UserEntityPermission"
     title="Permissions"
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}

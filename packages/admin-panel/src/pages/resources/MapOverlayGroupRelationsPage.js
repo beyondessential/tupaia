@@ -90,7 +90,7 @@ const CREATE_CONFIG = {
 
 export const MapOverlayGroupRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Map Overlay Group Relations"
+    model="MapOverlayGroupRelation"
     endpoint="mapOverlayGroupRelations"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

@@ -139,7 +139,7 @@ const CREATE_CONFIG = {
 
 export const ProjectsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Projects"
+    model="Project"
     endpoint="projects"
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

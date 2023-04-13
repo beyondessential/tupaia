@@ -15,9 +15,7 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create Permission Group',
   actionConfig: {
-    title: 'Edit Permission Group',
     editEndpoint: 'permissionGroups',
     fields: [
       ...COLUMNS,
@@ -34,6 +32,7 @@ const CREATE_CONFIG = {
 
 export const PermissionGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
+    model="PermissionGroup"
     title="Permission Groups"
     endpoint="permissionGroups"
     columns={COLUMNS}

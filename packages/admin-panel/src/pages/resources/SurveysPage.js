@@ -374,7 +374,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Surveys',
   actionConfig: {
     importEndpoint: 'surveys',
   },
@@ -447,7 +446,7 @@ const IMPORT_CONFIG = {
 
 export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Surveys"
+    model="Survey"
     endpoint="surveys"
     columns={SURVEY_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

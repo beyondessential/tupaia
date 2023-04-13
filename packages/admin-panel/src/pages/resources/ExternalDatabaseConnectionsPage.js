@@ -49,7 +49,6 @@ const COLUMNS = [
     type: 'edit',
     actionConfig: {
       editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
-      title: 'Edit External Database Connection',
       fields: [...FIELDS],
     },
   },
@@ -72,7 +71,6 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new External Database Connection',
   actionConfig: {
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
     fields: [...FIELDS],
@@ -81,7 +79,7 @@ const CREATE_CONFIG = {
 
 export const ExternalDatabaseConnectionsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="External Database Connections"
+    model="ExternalDatabaseConnection"
     endpoint={EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT}
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

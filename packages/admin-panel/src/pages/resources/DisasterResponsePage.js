@@ -52,7 +52,6 @@ const bounds = {
 const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];
 
 const IMPORT_CONFIG = {
-  title: 'Import Disasters',
   actionConfig: {
     importEndpoint: 'disasters',
   },
@@ -60,7 +59,7 @@ const IMPORT_CONFIG = {
 
 export const DisasterResponsePage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Disasters"
+    model="Disaster"
     endpoint="disasters"
     columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}

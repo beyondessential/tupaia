@@ -110,7 +110,7 @@ const CREATE_CONFIG = {
 
 export const DashboardRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Dashboard Relations"
+    model="DashboardRelation"
     endpoint={DASHBOARD_RELATION_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}

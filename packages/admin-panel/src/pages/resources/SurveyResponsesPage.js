@@ -165,7 +165,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Survey Responses',
   actionConfig: {
     importEndpoint: 'surveyResponses',
     extraQueryParameters: {
@@ -188,7 +187,7 @@ const IMPORT_CONFIG = {
 
 export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="Survey Responses"
+    model="SurveyResponse"
     endpoint="surveyResponses"
     columns={SURVEY_RESPONSE_PAGE_COLUMNS}
     defaultFilters={[{ id: 'outdated', value: false }]}

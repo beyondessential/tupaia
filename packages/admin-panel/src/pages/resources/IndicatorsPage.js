@@ -60,6 +60,7 @@ const CREATE_CONFIG = {
 
 export const IndicatorsPage = ({ getHeaderEl }) => (
   <ResourcePage
+    model="Indicator"
     title="Indicators"
     endpoint="indicators"
     columns={COLUMNS}

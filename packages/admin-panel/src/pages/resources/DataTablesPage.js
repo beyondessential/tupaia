@@ -79,7 +79,7 @@ const CREATE_CONFIG = {
 
 export const DataTablesPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Data-Tables"
+    model="DataTable"
     endpoint={DATA_TABLES_ENDPOINT}
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

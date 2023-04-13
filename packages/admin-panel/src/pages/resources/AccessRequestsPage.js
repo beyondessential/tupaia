@@ -176,7 +176,7 @@ const EXPANSION_CONFIG = [
 
 export const AccessRequestsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Access Requests"
+    model="AccessRequest"
     endpoint="accessRequests"
     columns={USER_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
