@@ -94,13 +94,13 @@ export class UserBar extends Component {
   renderDialog() {
     const { isDialogVisible, onCloseUserDialog, dialogPage } = this.props;
     const width = this.getWidth();
+    // Don't let the user close a dialog if it is a password reset form as the one time login token
+    // is used to load the form and so they need to do the password reset now */
     return (
       <Dialog
         open={isDialogVisible}
         style={{ zIndex: 1301 }}
         PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
-        {/* Don't let the user close a dialog if it is a password reset form as the one time login
-        token is used to load the form and so they need to do the password reset now*/}
         onClose={dialogPage === DIALOG_PAGE_RESET_PASSWORD ? null : () => onCloseUserDialog()}
         ref={dialog => {
           this.dialog = dialog;
