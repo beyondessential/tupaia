@@ -10,6 +10,7 @@ import MuiRadioGroup from '@material-ui/core/RadioGroup';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import MuiFormControl from '@material-ui/core/FormControl';
 import MuiFormLabel from '@material-ui/core/FormLabel';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
 
 const FormControl = styled(MuiFormControl)`
   display: block;
@@ -75,6 +76,7 @@ export const RadioGroup = ({
   className,
   labelKey,
   valueKey,
+  helperText,
 }) => (
   <FormControl component="fieldset" className={className} color="primary">
     <FormLabel component="legend">{label}</FormLabel>
@@ -88,6 +90,7 @@ export const RadioGroup = ({
         />
       ))}
     </StyledRadioGroup>
+    {helperText && <MuiFormHelperText>{helperText}</MuiFormHelperText>}
   </FormControl>
 );
 
@@ -100,6 +103,7 @@ RadioGroup.propTypes = {
   className: PropTypes.string,
   labelKey: PropTypes.string,
   valueKey: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 RadioGroup.defaultProps = {
@@ -107,4 +111,5 @@ RadioGroup.defaultProps = {
   className: null,
   labelKey: 'label',
   valueKey: 'value',
+  helperText: null,
 };
