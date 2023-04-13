@@ -11,7 +11,7 @@ import { Autocomplete } from '../../../../autocomplete';
 
 export const ArrayField = ({ name, onChange, value, config }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { defaultValue } = config;
+  const { defaultValue = [] } = config || {};
   const placeholder = value.length === 0 ? JSON.stringify(defaultValue) : 'type to add more';
 
   return (
