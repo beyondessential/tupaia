@@ -248,7 +248,7 @@ export const selectAreMeasuresOnTheSameEntityLevel = createSelector(
     }
 
     const measureLevelsFromMeasures = Object.values(measureInfo)
-      .map(({ measureLevel }) => measureLevel)
+      .map(({ measureLevel = [] }) => measureLevel)
       .flat();
     if (measureLevelsFromMeasures.length <= 1) {
       return true;

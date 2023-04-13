@@ -8,15 +8,9 @@ import {
   DataTableType as BaseDataTableType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
+import type { DataTable } from '@tupaia/types';
 
-export type DataTableFields = Readonly<{
-  id: string;
-  code: string;
-  description: string | null;
-  type: 'analytics' | 'events' | 'entities' | 'entity_relations' | 'sql';
-  config: Record<string, unknown>;
-  permission_groups: string[];
-}>;
+export type DataTableFields = Readonly<DataTable>;
 
 export interface DataTableType extends DataTableFields, Omit<BaseDataTableType, 'id'> {}
 

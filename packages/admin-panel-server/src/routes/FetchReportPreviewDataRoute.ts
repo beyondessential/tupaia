@@ -27,8 +27,10 @@ export type FetchReportPreviewDataRequest = Request<
     testData?: unknown[];
   },
   {
-    entityCode: string;
-    hierarchy: string;
+    entityCode?: string;
+    hierarchy?: string;
+    startDate?: string;
+    endDate?: string;
     permissionGroup?: string;
     previewMode?: PreviewMode;
     dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam;
@@ -39,39 +41,30 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
   public async buildResponse() {
     this.validate();
 
-    const { entityCode, hierarchy, permissionGroup } = this.req.query;
+    const { entityCode, hierarchy, startDate, endDate, permissionGroup } = this.req.query;
     const { testData = null } = this.req.body;
 
     const reportConfig = this.getReportConfig();
 
-    return this.req.ctx.services.report.testReport(
-      {
-        organisationUnitCodes: entityCode as string,
-        hierarchy: hierarchy as string,
-        permissionGroup: permissionGroup as string,
-      },
-      {
-        testData,
-        testConfig: reportConfig,
-      },
-    );
+    const parameters: Record<string, string> = {};
+    if (hierarchy) parameters.hierarchy = hierarchy;
+    if (entityCode) parameters.organisationUnitCodes = entityCode;
+    if (startDate) parameters.startDate = startDate;
+    if (startDate) parameters.startDate = startDate;
+    if (endDate) parameters.endDate = endDate;
+    if (permissionGroup) parameters.permissionGroup = permissionGroup;
+
+    return this.req.ctx.services.report.testReport(parameters, {
+      testData,
+      testConfig: reportConfig,
+    });
   }
 
   private validate = () => {
-    const { entityCode, hierarchy } = this.req.query;
-    const { previewConfig, testData } = this.req.body;
+    const { previewConfig } = this.req.body;
 
     if (!previewConfig) {
       throw new Error('Requires preview config to fetch preview data');
-    }
-
-    if (!testData) {
-      if (!hierarchy) {
-        throw new Error('Requires hierarchy or test data to fetch preview data');
-      }
-      if (!entityCode) {
-        throw new Error('Requires entity or test data to fetch preview data');
-      }
     }
   };
 

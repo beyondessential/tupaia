@@ -77,11 +77,23 @@ export const openBulkEditModal = (
   }
 };
 
-export const openEditModal = ({ editEndpoint, title, fields }, recordId) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
+export const openEditModal = (
+  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {}, isLoading = false },
+  recordId,
+) => async (dispatch, getState, { api }) => {
+  // Open the modal instantly
+  dispatch({
+    type: EDITOR_OPEN,
+    fields,
+    FieldsComponent,
+    title,
+    recordData: {},
+    endpoint: editEndpoint,
+    extraDialogProps,
+    isLoading,
+  });
+
+  // And then fetch data / set default field values for edit/new respectively
   if (recordId) {
     const endpoint = `${editEndpoint}/${recordId}`;
     dispatch({
@@ -125,14 +137,6 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
           newValue,
         });
       }
-    });
-
-    dispatch({
-      type: EDITOR_OPEN,
-      fields,
-      title,
-      recordData: {},
-      endpoint: editEndpoint,
     });
   }
 };

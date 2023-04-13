@@ -10,7 +10,7 @@ import { FieldValue } from '../../../types';
 const checkIsNum = (values: FieldValue[]): number[] => {
   const assertIsNumber = (value: FieldValue): value is number => {
     if (typeof value !== 'number') {
-      throw new Error(`Expected number, got '${typeof value}'.`);
+      throw new Error(`Expected number, got '${typeof value}'. Value was: ${value}`);
     }
     return true;
   };
@@ -101,7 +101,9 @@ const single = (values: FieldValue[]): FieldValue => {
   }
 
   throw new Error(
-    `'single' merge strategy expects a single value per group, however ${definedValues.length} were found`,
+    `'single' merge strategy expects a single value per group, however ${
+      definedValues.length
+    } were found: ${JSON.stringify(definedValues)}`,
   );
 };
 

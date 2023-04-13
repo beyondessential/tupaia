@@ -4,7 +4,7 @@
  */
 
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
-import { ObjectLikeKeys, Flatten } from '@tupaia/tsutils';
+import { ObjectLikeKeys, Flatten } from '@tupaia/types';
 import { Writable } from '../../../types';
 import { EntityFilter, EntityFields } from '../../../models';
 

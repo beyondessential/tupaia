@@ -30,7 +30,7 @@ import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
-import { GETDataTables } from './dataTables';
+import { CreateDataTables, GETDataTables } from './dataTables';
 import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -55,6 +55,7 @@ import {
   CreateDashboardVisualisation,
   EditDashboardVisualisation,
 } from './dashboardVisualisations';
+import { GETEntityRelations } from './entityRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import {
@@ -119,7 +120,10 @@ import {
   ManuallySyncSyncGroup,
 } from './syncGroups';
 import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
-import { TestExternalDatabaseConnection } from './externalDatabaseConnections';
+import {
+  GETExternalDatabaseConnections,
+  TestExternalDatabaseConnection,
+} from './externalDatabaseConnections';
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -220,6 +224,7 @@ apiV2.get('/dataTables/:recordId?', useRouteHandler(GETDataTables));
 apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
+apiV2.get('/entityRelations/:recordId?', useRouteHandler(GETEntityRelations));
 apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
 apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
@@ -230,7 +235,10 @@ apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
 apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
-apiV2.get('/externalDatabaseConnections/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get(
+  '/externalDatabaseConnections/:recordId?',
+  useRouteHandler(GETExternalDatabaseConnections),
+);
 apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
@@ -256,6 +264,7 @@ apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataTables', useRouteHandler(CreateDataTables));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
@@ -286,6 +295,7 @@ apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
+apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));

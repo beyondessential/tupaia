@@ -27,7 +27,7 @@ const getColumnId = ({ id, accessor, Header }) => {
   return Header;
 };
 
-export const DataTable = ({ columns, data, className, rowLimit }) => {
+export const DataTable = ({ columns, data, className, rowLimit, total }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -50,10 +50,11 @@ export const DataTable = ({ columns, data, className, rowLimit }) => {
     useSortBy,
   );
 
-  const hasLimitedRows = rowLimit !== null && rows.length > rowLimit;
+  const totalRows = total || rows.length;
+  const hasLimitedRows = rowLimit !== null && totalRows > rowLimit;
   const rowsToRender = hasLimitedRows ? rows.slice(0, rowLimit) : rows;
   const limitedRowsMessage = hasLimitedRows
-    ? `Displaying ${rowLimit} of ${rows.length} rows`
+    ? `Displaying ${rowLimit} of ${total || totalRows} rows`
     : null;
 
   return (
@@ -98,9 +99,11 @@ DataTable.propTypes = {
   data: PropTypes.array.isRequired,
   className: PropTypes.string,
   rowLimit: PropTypes.number,
+  total: PropTypes.number,
 };
 
 DataTable.defaultProps = {
   className: null,
   rowLimit: null,
+  total: null,
 };
