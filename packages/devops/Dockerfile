@@ -50,8 +50,8 @@ COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json ./
 # Build and install internal dependencies
 RUN yarn build:internal-dependencies
 
-# Copy everything else from the repo
-COPY . ./
+COPY packages/ packages/
+
 RUN yarn build:non-internal-dependencies
 
 # Build final production image
