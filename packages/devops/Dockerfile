@@ -1,4 +1,4 @@
-FROM node:14.19.3-alpine3.15 as builder
+FROM node:14.19.3-alpine3.15 as base
 
 # install features not available in base alpine distro
 RUN apk --no-cache add bash && \
@@ -9,15 +9,21 @@ WORKDIR /tupaia
 
 # get ready for dependencies to be installed via yarn, before copying the rest of the package, so
 # that node_modules is built and added to the container cache without changes to code invalidating it
-COPY .yarnrc.yml package.json yarn.lock babel.config.json tsconfig-js.json jest.config-ts.json ./
-COPY .yarn ./.yarn
-COPY scripts ./scripts
 
 ## copy *just the package.json* of each package so it is ready for yarn install, without adding the
 ## src directories, so that code changes don't invalidate the container cache before we've run yarn
+WORKDIR /pre
+FROM base as yarnprep
+COPY .yarnrc.yml package.json yarn.lock ./
 COPY packages/ pkgs/
 RUN for pkg in $(ls pkgs); do if test -s pkgs/$pkg/package.json; then mkdir -p packages/$pkg && mv -v pkgs/$pkg/package.json packages/$pkg/; fi; done
 
+
+FROM base as builder
+WORKDIR /tupaia
+COPY --from=yarnprep /pre/package.json /pre/yarn.lock /pre/.yarnrc.yml ./
+COPY .yarn ./.yarn
+COPY --from=yarnprep /pre/packages/ ./packages
 # run yarn without building, so we can cache node_modules without code changes invalidating this layer
 # TODO: Install tupaia/admin-panel-server AND its internal dependencies instead
 # of the entire project ( yarn workspace @tupaia/admin-panel-server install etc..)
@@ -45,9 +51,9 @@ COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
 COPY packages/superset-api/. ./packages/superset-api
-COPY ./tsconfig* ./
+COPY scripts ./scripts
 
-
+COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json ./
 ## build and install internal dependencies
 # TODO: Only build required dependencies , passing --packagePath doesn't work
 # as it doesn't recurse through deps as expected
