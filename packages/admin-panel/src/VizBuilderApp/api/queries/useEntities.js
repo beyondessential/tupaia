@@ -9,7 +9,7 @@ import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
 export const useEntities = search =>
   useQuery(
-    ['entities'],
+    ['entities', search],
     async () => {
       const endpoint = stringifyQuery(undefined, `entities`, {
         columns: JSON.stringify(['name', 'code']),
