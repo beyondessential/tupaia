@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import AWS from 'aws-sdk';
 import { snake } from 'case';
+import { S3Client } from '@tupaia/utils';
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-
 /**
  * Handles POST endpoints:
  * - /projects
@@ -19,14 +20,23 @@ export class CreateProject extends CreateHandler {
     );
   }
 
+  async uploadImage(encodedImage, projectCode, type) {
+    // If the image is unset or not a base64 encoded image, we will return '', as we are only wanting to handle base64 encoded images.
+    if (!encodedImage || !encodedImage.includes('data:image')) return '';
+    const s3Client = new S3Client(new AWS.S3());
+    // Upload the image with a standardised file name and upload to s3.
+    const imagePath = await s3Client.uploadImage(encodedImage, `${projectCode}_${type}`, true);
+    return imagePath;
+  }
+
   async createRecord() {
     const {
       code: rawProjectCode,
       name,
       description,
       sort_order,
-      image_url,
-      logo_url,
+      image_url = '',
+      logo_url = '',
       permission_groups,
       countries,
       entityTypes,
@@ -35,7 +45,6 @@ export class CreateProject extends CreateHandler {
     } = this.newRecordData;
 
     const projectCode = snake(rawProjectCode);
-
     await this.models.wrapInTransaction(async transactingModels => {
       const { id: projectEntityId } = await this.createProjectEntity(
         transactingModels,
@@ -56,12 +65,14 @@ export class CreateProject extends CreateHandler {
         projectCode,
       );
 
+      const projectImagePath = await this.uploadImage(image_url, projectCode, 'project_image');
+      const logoImagePath = await this.uploadImage(logo_url, projectCode, 'project_logo');
       return transactingModels.project.create({
         code: projectCode,
         description,
         sort_order,
-        image_url,
-        logo_url,
+        image_url: projectImagePath,
+        logo_url: logoImagePath,
         permission_groups,
         default_measure,
         dashboard_group_name: dashboardGroupName,
