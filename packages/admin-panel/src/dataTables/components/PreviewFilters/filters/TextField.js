@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { TextField as BaseTextField } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
+import { getTextFieldValue } from './utils';
 
 export const TextField = ({ name, value, onChange, config }) => {
   const defaultValue = config?.hasDefaultValue ? config?.defaultValue : '';
@@ -19,7 +20,7 @@ export const TextField = ({ name, value, onChange, config }) => {
       label={name}
       value={value}
       onChange={event => {
-        onChange(event.target.value);
+        onChange(getTextFieldValue(event.target.value));
       }}
     />
   );
