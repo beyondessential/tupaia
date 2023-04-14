@@ -14,6 +14,7 @@ import {
   DateTimePicker,
   RadioGroup,
   Select,
+  ImageUploadField,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
@@ -36,6 +37,10 @@ const StyledLink = styled(Link)`
   &:active {
     text-decoration: none;
   }
+`;
+
+const StyledFileInputWrapper = styled.div`
+  margin-bottom: 1.2rem;
 `;
 
 export const registerInputFields = () => {
@@ -221,5 +226,22 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       type="password"
     />
+  ));
+  registerInputField('image', props => (
+    <StyledFileInputWrapper>
+      <ImageUploadField
+        name={props.name}
+        encodedImage={props.value}
+        onDelete={() => props.onChange(props.inputKey, null)}
+        onChange={image => props.onChange(props.inputKey, image)}
+        label={props.label}
+        buttonLabel={props.buttonLabel}
+        avatarVariant={props.avatarVariant}
+        deleteModal={props.deleteModal}
+        maxWidth={props.maxWidth}
+        maxHeight={props.maxHeight}
+        secondaryLabel={props.secondaryLabel}
+      />
+    </StyledFileInputWrapper>
   ));
 };
