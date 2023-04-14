@@ -21,7 +21,6 @@ export const useFetchDataTableBuiltInParams = dataTableType =>
       return parameters.map((p, index) => ({
         ...p,
         id: `builtIn_parameter_${index}`,
-        config: { hasDefaultValue: !!p.config?.defaultValue, ...p.config },
       }));
     },
     {

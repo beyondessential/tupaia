@@ -23,9 +23,7 @@ const getBooleanValue = value => {
 
 export const BooleanField = ({ name, value, onChange, config }) => {
   const defaultValue =
-    config?.hasDefaultValue && typeof config?.defaultValue === 'boolean'
-      ? `${config?.defaultValue}`
-      : undefined;
+    typeof config?.defaultValue === 'boolean' ? `${config?.defaultValue}` : undefined;
 
   const booleanValue = getBooleanValue(value);
 
