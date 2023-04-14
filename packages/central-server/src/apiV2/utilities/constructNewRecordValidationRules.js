@@ -21,7 +21,7 @@ import {
   constructRecordExistsWithCode,
   constructIsValidEntityType,
 } from '@tupaia/utils';
-import { DataTableType } from '@tupaia/types';
+import { DataTableType, PeriodGranularity, ServiceType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
@@ -302,6 +302,41 @@ export const constructForSingle = (models, recordType) => {
             return true;
           },
         ],
+      };
+    case TYPES.SURVEY:
+      return {
+        name: [isAString],
+        code: [
+          constructRecordNotExistsWithField(models.survey, 'code'),
+          constructRecordNotExistsWithField(models.dataGroup, 'code'),
+        ], // When creating a Survey we also create a Data Group at the same time
+        permission_group_id: [
+          hasContent,
+          async permissionGroupId => {
+            const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
+            if (!permissionGroup) {
+              throw new Error('Permission group does not exist');
+            }
+            return true;
+          },
+        ],
+        country_ids: [
+          constructIsEmptyOr(async countryIds => {
+            const countries = await models.country.find({ id: countryIds });
+            if (countryIds.length !== countries.length) {
+              throw new Error('Some provided countries do not exist');
+            }
+            return true;
+          }),
+        ],
+        survey_group_id: [constructIsEmptyOr(constructRecordExistsWithId(models.surveyGroup))],
+        integration_metadata: [],
+        period_granularity: [
+          constructIsEmptyOr(constructIsOneOf(Object.values(PeriodGranularity))),
+        ],
+        requires_approval: [constructIsEmptyOr(isBoolean)],
+        'data_group.service_type': [constructIsOneOf([ServiceType.dhis, ServiceType.tupaia])],
+        'data_group.config': [],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

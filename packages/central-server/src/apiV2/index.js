@@ -39,7 +39,7 @@ import { GETPermissionGroups } from './GETPermissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
-import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
+import { CreateSurvey, DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
@@ -259,6 +259,7 @@ apiV2.post('/userEntityPermissions', useRouteHandler(CreateUserEntityPermissions
 apiV2.post('/me/requestCountryAccess', allowAnyone(requestCountryAccess));
 apiV2.post('/me/deleteAccount', allowAnyone(deleteAccount));
 apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
+apiV2.post('/surveys', useRouteHandler(CreateSurvey));
 apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
