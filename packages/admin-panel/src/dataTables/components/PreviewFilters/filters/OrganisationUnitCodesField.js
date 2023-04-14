@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { ParameterType } from '../../editing';
 import { useLocations } from '../../../../VizBuilderApp/api';
 import { Autocomplete } from '../../../../autocomplete';
+import { getArrayFieldValue } from './utils';
 
 export const OrganisationUnitCodesField = ({ name, onChange, runtimeParams }) => {
   const { hierarchy = 'explore' } = runtimeParams;
@@ -35,7 +36,7 @@ export const OrganisationUnitCodesField = ({ name, onChange, runtimeParams }) =>
       isLoading={isLoading}
       onChangeSelection={(event, selectedValues) => {
         setSelectedOptions(selectedValues);
-        onChange(selectedValues.map(v => v.code));
+        onChange(getArrayFieldValue(selectedValues.map(v => v.code)));
       }}
       onChangeSearchTerm={setSearchTerm}
       searchTerm={searchTerm}

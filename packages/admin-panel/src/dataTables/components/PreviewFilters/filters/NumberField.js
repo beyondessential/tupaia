@@ -29,7 +29,12 @@ export const NumberField = ({ id, name, value, onChange, config }) => {
       label={name}
       value={numberValue}
       onChange={event => {
-        onChange(+event.target.value);
+        const { value: newValue } = event.target;
+        if (newValue === '') {
+          onChange(undefined);
+        } else {
+          onChange(+newValue);
+        }
       }}
     />
   );
