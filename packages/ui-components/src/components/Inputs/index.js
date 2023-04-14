@@ -14,5 +14,5 @@ export * from './GroupedSelect';
 export * from './DatePicker';
 export * from './RadioGroup';
 export * from './FileUploadField';
-export * from './ProfileImageField';
+export * from './ImageUploadField';
 export * from './SQLQueryEditor';
