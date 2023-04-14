@@ -238,7 +238,7 @@ export class DatabaseModel {
 
   // Read the field values and convert them to database friendly representations
   // ready to save to the record.
-  getDatabaseSafeData = async fieldValues => {
+  getDatabaseSafeData = async (fieldValues = {}) => {
     const data = {};
     const schema = await this.fetchSchema();
     Object.entries(schema).forEach(([fieldName, fieldConfig]) => {
