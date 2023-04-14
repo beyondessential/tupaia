@@ -14,16 +14,6 @@ export const assertDataTableGETPermissions = async (accessPolicy, models, dataTa
   throw new Error('You do not have permission to view this data-table');
 };
 
-export const assertDataTableEditPermissions = async (accessPolicy, models, dataTableId) => {
-  // User requires access to all permission groups
-  if (await assertDataTablePermissions(accessPolicy, models, dataTableId, 'every')) {
-    return true;
-  }
-  throw new Error(
-    'You require access to all of a data-tables permission groups to perform this action',
-  );
-};
-
 const assertDataTablePermissions = async (accessPolicy, models, dataTableId, test) => {
   const dataTable = await models.dataTable.findById(dataTableId);
   if (!dataTable) {
