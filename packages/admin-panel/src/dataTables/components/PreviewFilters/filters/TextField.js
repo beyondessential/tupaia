@@ -10,7 +10,7 @@ import { ParameterType } from '../../editing';
 import { getTextFieldValue } from './utils';
 
 export const TextField = ({ name, value, onChange, config }) => {
-  const defaultValue = config?.hasDefaultValue ? config?.defaultValue : '';
+  const defaultValue = config?.defaultValue || '';
 
   return (
     <BaseTextField

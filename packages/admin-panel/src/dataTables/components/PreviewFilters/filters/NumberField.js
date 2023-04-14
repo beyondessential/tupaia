@@ -17,7 +17,7 @@ const getNumberValue = value => {
 };
 
 export const NumberField = ({ id, name, value, onChange, config }) => {
-  const defaultValue = getNumberValue(config?.hasDefaultValue && config?.defaultValue);
+  const defaultValue = getNumberValue(config?.defaultValue);
   const numberValue = getNumberValue(value);
 
   return (
