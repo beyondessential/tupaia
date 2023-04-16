@@ -174,13 +174,15 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    setSelectedStartDate(date.toISOString());
-    setStartDate(date.toISOString());
+    const newDate = date ? date.toISOString() : null;
+    setSelectedStartDate(newDate);
+    setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
-    setSelectedEndDate(date.toISOString());
-    setEndDate(date.toISOString());
+    const newDate = date ? date.toISOString() : null;
+    setSelectedEndDate(newDate);
+    setEndDate(newDate);
   };
 
   const handleUploadData = async file => {
