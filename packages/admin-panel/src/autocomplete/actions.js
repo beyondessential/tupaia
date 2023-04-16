@@ -44,7 +44,6 @@ export const changeSearchTerm = (
       pageSize,
       sort: JSON.stringify([`${labelColumn} ASC`]),
       columns: JSON.stringify([labelColumn, valueColumn]),
-      distinct: true,
     });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,
