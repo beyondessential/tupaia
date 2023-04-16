@@ -101,7 +101,7 @@ export class UserBar extends Component {
         open={isDialogVisible}
         style={{ zIndex: 1301 }}
         PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
-        onClose={dialogPage === DIALOG_PAGE_RESET_PASSWORD ? null : () => onCloseUserDialog()}
+        onClose={dialogPage === DIALOG_PAGE_RESET_PASSWORD ? null : onCloseUserDialog}
         ref={dialog => {
           this.dialog = dialog;
         }}
