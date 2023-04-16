@@ -94,9 +94,7 @@ export const Autocomplete = props => {
       getOptionLabel={getOptionLabel}
       loading={isLoading}
       onChange={onChangeSelection}
-      onInputChange={(event, newValue) => {
-        onChangeSearchTerm(newValue);
-      }}
+      onInputChange={(event, newValue) => onChangeSearchTerm(newValue)}
       inputValue={searchTerm}
       placeholder={placeholder}
       helperText={helperText}
