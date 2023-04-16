@@ -38,8 +38,6 @@ const ReduxAutocompleteComponent = React.memo(
     helperText,
   }) => {
     React.useEffect(() => {
-      onChangeSearchTerm('');
-
       return () => {
         onClearState();
       };

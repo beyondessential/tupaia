@@ -76,6 +76,10 @@ export const Autocomplete = props => {
     : {};
 
   const extraMuiProps = {
+    onOpen: () => {
+      // We don't load the option values until we open the search for the first time
+      onChangeSearchTerm(searchTerm || '');
+    },
     ...muiPropsForCreateNewOptions,
     ...muiPropsForMultipleValues,
     ...muiProps,
@@ -90,7 +94,9 @@ export const Autocomplete = props => {
       getOptionLabel={getOptionLabel}
       loading={isLoading}
       onChange={onChangeSelection}
-      onInputChange={(event, newValue) => onChangeSearchTerm(newValue)}
+      onInputChange={(event, newValue) => {
+        onChangeSearchTerm(newValue);
+      }}
       inputValue={searchTerm}
       placeholder={placeholder}
       helperText={helperText}
