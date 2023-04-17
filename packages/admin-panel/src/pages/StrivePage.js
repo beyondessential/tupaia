@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { usePortalWithCallback } from '../utilities';
 import { Header, PageBody } from '../widgets';
+import { ResourcePageContextProvider } from '../context';
 
 const importConfig = {
   title: 'Import Lab Results or Vector Data',
@@ -27,7 +28,7 @@ export const StrivePage = ({ getHeaderEl }) => {
     getHeaderEl,
   );
   return (
-    <>
+    <ResourcePageContextProvider>
       {HeaderPortal}
       <StyledBody>
         <Typography variant="h4" gutterBottom>
@@ -35,7 +36,7 @@ export const StrivePage = ({ getHeaderEl }) => {
         </Typography>
         <Typography>Use the above Import button to import lab results or vector data.</Typography>
       </StyledBody>
-    </>
+    </ResourcePageContextProvider>
   );
 };
 
