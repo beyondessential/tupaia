@@ -17,6 +17,7 @@ export interface DataElementMetadata {
 
 export interface DhisMetadataObject extends DataElementMetadata {
   id: string;
+  options?: Record<string, string>;
 }
 
 export interface DataGroupMetadata {

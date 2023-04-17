@@ -12,9 +12,9 @@ export {
 } from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
 export {
-  getAdminPanelAllowedEntityIds,
+  getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
-} from './getAdminPanelAllowedEntityIds';
+} from './getAdminPanelAllowedCountries';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
@@ -45,3 +45,4 @@ export {
 } from './translateSurveyResponseFields';
 export { translateObjectFields } from './translateObjectFields';
 export { getUserInfoInString } from './getUserInfoInString';
+export { getPermissionListWithWildcard } from './getPermissionListWithWildcard';

@@ -5,10 +5,11 @@
 
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { TupaiaApiClient } from '@tupaia/api-client';
+import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
+import { ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
-const CURRENT_DATE_STUB = '2020-12-31';
+const CURRENT_DATE_STUB = '2023-12-31';
 
 const TEST_ANALYTICS = [
   { period: '2020-01-01', organisationUnit: 'TO', dataElement: 'PSSS_AFR_Cases', value: 7 },
@@ -49,7 +50,9 @@ jest.mock('@tupaia/data-broker', () => ({
 }));
 
 const accessPolicy = new AccessPolicy({ DL: ['Public'] });
-const apiClient = {} as TupaiaApiClient;
+const apiClient = new MockTupaiaApiClient({
+  entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS),
+});
 const analyticsDataTableService = new DataTableServiceBuilder()
   .setServiceType('analytics')
   .setContext({ apiClient, accessPolicy })
@@ -122,17 +125,25 @@ describe('AnalyticsDataTableService', () => {
   it('getParameters', () => {
     const parameters = analyticsDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      { config: { defaultValue: 'explore', type: 'hierarchy' }, name: 'hierarchy' },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'organisationUnitCodes',
+        },
         name: 'organisationUnitCodes',
       },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'dataElementCodes',
+        },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2017-01-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date(), type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
+      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
     ]);
   });
 
@@ -170,6 +181,28 @@ describe('AnalyticsDataTableService', () => {
 
       const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
         organisationUnitCodes,
+        startDate,
+        endDate,
+      });
+
+      expect(analytics).toEqual(expectedAnalytics);
+    });
+
+    it('maps project organisationUnits to child countries', async () => {
+      const dataElementCodes = ['PSSS_AFR_Cases', 'PSSS_ILI_Cases'];
+      const startDate = '2020-01-01';
+      const endDate = '2020-01-16';
+
+      const analytics = await analyticsDataTableService.fetchData({
+        hierarchy: 'explore',
+        organisationUnitCodes: ['explore'],
+        dataElementCodes,
+        startDate,
+        endDate,
+      });
+
+      const { results: expectedAnalytics } = fetchFakeAnalytics(dataElementCodes, {
+        organisationUnitCodes: ['AU', 'FJ'], // AU and FJ are the countries in explore
         startDate,
         endDate,
       });

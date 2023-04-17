@@ -4,7 +4,7 @@
  */
 
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
-import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/tsutils';
+import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in';
 type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';

@@ -4,12 +4,13 @@
  */
 
 import { MULTIPLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
 
 describe('transform', () => {
   it('throws an error for an unknown transform', () => {
     expect(() =>
-      buildTransform([
+      buildTestTransform([
         {
           transform: 'flyToTheMoon',
           insert: {
@@ -21,8 +22,8 @@ describe('transform', () => {
     ).toThrow();
   });
 
-  it('can perform transforms in a row', () => {
-    const transform = buildTransform([
+  it('can perform transforms in a row', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'updateColumns',
         insert: {
@@ -42,13 +43,13 @@ describe('transform', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([{ Total: 11 }]),
     );
   });
 
-  it('supports title and description in transforms', () => {
-    const transform = buildTransform([
+  it('supports title and description in transforms', async () => {
+    const transform = buildTestTransform([
       {
         title: 'Key value by data element',
         description: 'Add a column for each data element name, useful for aggregating later on',
@@ -74,7 +75,7 @@ describe('transform', () => {
         exclude: '*',
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([{ Total: 11 }]),
     );
   });

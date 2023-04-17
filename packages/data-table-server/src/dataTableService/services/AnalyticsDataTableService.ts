@@ -7,16 +7,17 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
+import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
+import { getDefaultEndDate, getDefaultStartDate, mapProjectEntitiesToCountries } from './utils';
 
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.date().default(new Date(EARLIEST_DATA_DATE_STRING)),
-  endDate: yup.date().default(() => new Date()),
+  startDate: yup.date().default(getDefaultStartDate),
+  endDate: yup.date().default(getDefaultEndDate),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -65,6 +66,13 @@ export class AnalyticsDataTableService extends DataTableService<
     const startDateString = startDate.toISOString();
     const endDateString = endDate.toISOString();
 
+    // Ensure that if fetching for project, we map it to the underlying countries
+    const entityCodesForFetch = await mapProjectEntitiesToCountries(
+      this.ctx.apiClient,
+      hierarchy,
+      organisationUnitCodes,
+    );
+
     const aggregator = new Aggregator(
       new DataBroker({
         services: this.ctx.apiClient,
@@ -75,7 +83,7 @@ export class AnalyticsDataTableService extends DataTableService<
     const { results } = await aggregator.fetchAnalytics(
       dataElementCodes,
       {
-        organisationUnitCodes,
+        organisationUnitCodes: entityCodesForFetch,
         hierarchy,
         startDate: startDateString,
         endDate: endDateString,

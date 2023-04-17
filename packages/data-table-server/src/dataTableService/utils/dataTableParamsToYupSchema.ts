@@ -15,7 +15,7 @@ const attachQualifiersToSchema = (
     qualifiedSchema = qualifiedSchema.oneOf(oneOf);
   }
   if (defaultValue) {
-    qualifiedSchema = qualifiedSchema.default(defaultValue);
+    qualifiedSchema = qualifiedSchema.default(schema.cast(defaultValue)); // This aims to cast date defaultValue from string type to date type
   } else if (required) {
     qualifiedSchema = qualifiedSchema.required();
   }
@@ -24,25 +24,44 @@ const attachQualifiersToSchema = (
 };
 
 const dataTableParamConfigConfigToYupSchema = (paramConfig: DataTableParameterConfig) => {
-  const { type, innerType } = paramConfig;
+  const { type } = paramConfig;
   let schema: yup.AnySchema;
   switch (type) {
     case 'string':
+    case 'hierarchy':
+    case 'dataGroupCode':
       schema = yup.string();
-      return attachQualifiersToSchema(schema, paramConfig);
+      break;
+    case 'number':
+      schema = yup.number();
+      break;
+    case 'boolean':
+      schema = yup.bool();
+      break;
     case 'date':
-      schema = yup.date();
-      return attachQualifiersToSchema(schema, paramConfig);
+      schema = yup.date().transform((value, originalValue) => {
+        if (value instanceof Date) {
+          return value;
+        }
+        const newValue = new Date(originalValue);
+
+        if (newValue.toString() === 'Invalid Date') {
+          return new Error('Invalid Date');
+        }
+
+        return newValue;
+      });
+      break;
     case 'array':
-      schema = yup.array();
-      if (innerType) {
-        const innerValidator = dataTableParamConfigConfigToYupSchema(innerType);
-        schema = (schema as yup.ArraySchema<yup.AnySchema>).of(innerValidator);
-      }
-      return attachQualifiersToSchema(schema, paramConfig);
+    case 'dataElementCodes':
+    case 'organisationUnitCodes':
+      schema = yup.array().of(yup.string());
+      break;
     default:
       throw new Error(`Missing logic to serialize to yup validator for parameter of type: ${type}`);
   }
+
+  return attachQualifiersToSchema(schema, paramConfig);
 };
 
 export const dataTableParamsToYupSchema = (params: DataTableParameter[]): yup.AnyObjectSchema => {

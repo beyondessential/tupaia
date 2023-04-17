@@ -46,13 +46,4 @@ describe('KoBoService', () => {
         ).resolves.toHaveProperty('xyz', [TRANSLATED_DATA]));
     });
   });
-
-  describe('pullMetadata()', () => {
-    const dataServiceMapping = new DataServiceMapping();
-
-    it('default implementation', () =>
-      expect(koboService.pullMetadata([], 'dataElement', { dataServiceMapping })).resolves.toEqual(
-        [],
-      ));
-  });
 });

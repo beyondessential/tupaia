@@ -95,7 +95,8 @@ export class ReportServerAggregator {
         .of(
           yup.object().shape({
             code: yup.string().required(),
-            text: yup.string().required(),
+            text: yup.string(),
+            name: yup.string(),
           }),
         )
         .required(),

@@ -28,9 +28,13 @@ describe('EntitiesDataTableService', () => {
   it('getParameters', () => {
     const parameters = entitiesDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: 'explore', type: 'string' }, name: 'hierarchy' },
+      { config: { defaultValue: 'explore', type: 'hierarchy' }, name: 'hierarchy' },
       {
-        config: { innerType: { required: true, type: 'string' }, required: true, type: 'array' },
+        config: {
+          innerType: { required: true, type: 'string' },
+          required: true,
+          type: 'organisationUnitCodes',
+        },
         name: 'entityCodes',
       },
       {
@@ -62,12 +66,12 @@ describe('EntitiesDataTableService', () => {
           type: 'country',
         },
         {
-          name: 'Australian Facility 1',
-          type: 'facility',
-        },
-        {
           name: 'Fiji',
           type: 'country',
+        },
+        {
+          name: 'Australian Facility 1',
+          type: 'facility',
         },
       ]);
     });

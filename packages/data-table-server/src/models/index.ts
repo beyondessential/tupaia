@@ -8,3 +8,4 @@ export {
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionType,
 } from './ExternalDatabaseConnection';
+export { EntityModel } from './Entity';
