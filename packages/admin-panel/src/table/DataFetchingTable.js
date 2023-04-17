@@ -108,6 +108,7 @@ class DataFetchingTableComponent extends React.Component {
       resizedColumns,
       expansionTabStates,
       onExpandedTabChange,
+      TableComponent,
       nestingLevel,
     } = this.props;
 
@@ -134,6 +135,7 @@ class DataFetchingTableComponent extends React.Component {
         freezeWhenExpanded
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
+        TableComponent={TableComponent}
         ExpanderComponent={({ isExpanded }) => (
           <div className="expander">
             {isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />}

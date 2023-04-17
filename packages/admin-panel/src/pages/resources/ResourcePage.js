@@ -13,8 +13,24 @@ import { usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 
 const Container = styled(PageBody)`
-  overflow: auto;
+  // This is a work around to put the scroll bar at the top of the section by rotating the
+  // div that has overflow and then flipping back the child immediately as there is no nice
+  // way in css to show the scroll bar at the top of the section
+  .scroll-container {
+    overflow: auto;
+    transform: rotateX(180deg);
+
+    > div {
+      transform: rotateX(180deg);
+    }
+  }
 `;
+
+const TableComponent = ({ children }) => (
+  <div className="scroll-container">
+    <div>{children}</div>
+  </div>
+);
 
 export const ResourcePage = ({
   columns,
@@ -57,6 +73,7 @@ export const ResourcePage = ({
           reduxId={reduxId || endpoint}
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
+          TableComponent={TableComponent}
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
         />
