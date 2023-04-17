@@ -28,7 +28,9 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
         ? tableData.map(row =>
             tableColumns.map(col => {
               const value = row.values[col.id];
-              return isNaN(value) ? value : Number(value);
+              const num = parseFloat(value);
+              // if it's a number, return in number format
+              return isNaN(num) ? value : num;
             }),
           )
         : [['There is no available data for the selected time period.']];
