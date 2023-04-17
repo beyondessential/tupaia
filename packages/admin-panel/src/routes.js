@@ -213,7 +213,7 @@ export const ROUTES = [
         component: DisasterResponsePage,
       },
       {
-        label: 'Entity Hierarchy',
+        label: 'Entity Hierarchies',
         to: '/hierarchy',
         component: EntityHierarchyPage,
       },
