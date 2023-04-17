@@ -3,25 +3,21 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
 import { ParameterType } from '../../editing';
-import { useLocations } from '../../../../VizBuilderApp/api';
+import { useEntities } from '../../../../VizBuilderApp/api';
 import { Autocomplete } from '../../../../autocomplete';
+import { useDebounce } from '../../../../utilities';
 
-export const OrganisationUnitCodesField = ({ name, onChange, runtimeParams }) => {
-  const { hierarchy = 'explore' } = runtimeParams;
+export const OrganisationUnitCodesField = ({ name, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 100);
   const [selectedOptions, setSelectedOptions] = useState([]); // [{code:"DL", name:"Demo Land"}]
-  const { data: locations = [], isLoading } = useLocations(hierarchy, searchTerm);
-  const limitedLocations = locations.slice(0, 20); // limit the options to 20 to stop the ui jamming
-
-  useEffect(() => {
-    setSelectedOptions([]);
-    onChange([]);
-  }, [hierarchy]); // hierarchy determines entity relation visibility
+  const { data: entities = [], isLoading } = useEntities(debouncedSearchTerm);
+  const limitedLocations = entities.slice(0, 20); // limit the options to 20 to stop the ui jamming
 
   return (
     <Autocomplete
@@ -49,9 +45,4 @@ export const OrganisationUnitCodesField = ({ name, onChange, runtimeParams }) =>
 OrganisationUnitCodesField.propTypes = {
   ...ParameterType,
   onChange: PropTypes.func.isRequired,
-  runtimeParams: PropTypes.object,
-};
-
-OrganisationUnitCodesField.defaultProps = {
-  runtimeParams: {},
 };
