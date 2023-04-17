@@ -4,7 +4,7 @@
  */
 
 import { Request } from 'express';
-import { Resolved } from '@tupaia/tsutils';
+import { Resolved } from '@tupaia/types';
 import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
 
@@ -20,7 +20,20 @@ export interface MultiEntityRequestParams {
 export type RequestBody = Record<string, never>;
 
 export type MultiEntityRequestBody = RequestBody & {
-  entities: string[] | undefined;
+  entities: string[];
+};
+
+export const MultiEntityRequestBodySchema = {
+  type: 'object',
+  properties: {
+    entities: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+    },
+  },
+  required: ['entities'],
 };
 
 export interface EntityRequestQuery {

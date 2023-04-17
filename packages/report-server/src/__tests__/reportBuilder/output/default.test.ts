@@ -16,9 +16,8 @@ describe('default', () => {
   it('defaults to rows', async () => {
     const table = TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA);
     const expectedData = table.getRows();
-    const context = {};
     const reportServerAggregator = new ReportServerAggregator(aggregator);
-    const output = buildOutput(undefined, context, reportServerAggregator);
+    const output = buildOutput(undefined, reportServerAggregator);
 
     const results = await output(table);
     expect(results).toEqual(expectedData);

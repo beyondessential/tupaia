@@ -34,16 +34,16 @@ const additionalParamsConfigValidator = yup
  * (eg. SQL type data-tables use the SqlDataTableService)
  *
  * Concrete implementations of this class will specify the following generic arguments
- * - context: the context dependencies that need to be available for the data-table service (eg. models, apiClient, etc.)
- * - config schema: the config options required by the data-table service
- * - required params schema: the parameters required by the data-table service at fetch time
- * - record schema: the shape of the rows returned when fetching data
+ * - Context: the context dependencies that need to be available for the data-table service (eg. models, apiClient, etc.)
+ * - RequiredParamsSchema: the parameters required at fetch time
+ * - ConfigSchema: the config options required at create time
+ * - ResultRow: the shape of each row returned when fetching data
  */
 export abstract class DataTableService<
   Context extends Record<string, unknown> = Record<string, unknown>,
   RequiredParamsSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
   ConfigSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
-  RecordSchema = unknown
+  ResultRow = unknown
 > {
   protected readonly ctx: Context;
   protected readonly requiredParamsSchema: RequiredParamsSchema;
@@ -78,11 +78,23 @@ export abstract class DataTableService<
   /**
    * Implement specific functionality for pulling data in the concrete implementation
    */
-  protected abstract pullData(params: yup.InferType<RequiredParamsSchema>): Promise<RecordSchema[]>;
+  protected abstract pullData(params: yup.InferType<RequiredParamsSchema>): Promise<ResultRow[]>;
 
   public fetchData(params: unknown = {}) {
     const validatedParams = this.validateParams(params);
     return this.pullData(validatedParams);
+  }
+
+  protected async pullPreviewData(
+    params: yup.InferType<RequiredParamsSchema>,
+  ): Promise<{ rows: ResultRow[]; total: number; limit: number }> {
+    const results = await this.pullData(params);
+    return { rows: results, total: results.length, limit: results.length };
+  }
+
+  public fetchPreviewData(params: unknown = {}) {
+    const validatedParams = this.validateParams(params);
+    return this.pullPreviewData(validatedParams);
   }
 
   public getParameters(): DataTableParameter[] {
