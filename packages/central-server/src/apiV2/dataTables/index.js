@@ -4,4 +4,3 @@
  */
 
 export { GETDataTables } from './GETDataTables';
-export { CreateDataTables } from './CreateDataTables';

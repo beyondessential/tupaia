@@ -14,10 +14,10 @@ export class GETDataTables extends GETHandler {
   permissionsFilteredInternally = true;
 
   async findSingleRecord(dataTableId, options) {
-    const dataGroupPermissionChecker = accessPolicy =>
+    const dataTablePermissionChecker = accessPolicy =>
       assertDataTableGETPermissions(accessPolicy, this.models, dataTableId);
     await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, dataGroupPermissionChecker]),
+      assertAnyPermissions([assertBESAdminAccess, dataTablePermissionChecker]),
     );
 
     return super.findSingleRecord(dataTableId, options);
