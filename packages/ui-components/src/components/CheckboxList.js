@@ -25,15 +25,24 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: 1px solid #ebebeb;
   .MuiCheckbox-root {
-    margin-left: 1em;
-    margin-right: 1em;
+    margin: 0 1em;
+    padding: 0;
   }
+`;
+
+const FormControl = styled(BaseFormControl)`
+  width: 100%;
+  flex-direction: row;
+  height: 100%;
 `;
 
 const StyledCardHeader = styled(CardHeader)`
   text-align: left;
   border-bottom: 0.5px solid #ebebeb;
-  padding: 0.8rem 1rem;
+  padding: 1.2em 1.7em;
+  .MuiFormControl-root {
+    align-items: center;
+  }
 `;
 
 const StyledSubHeader = styled.p`
@@ -42,15 +51,12 @@ const StyledSubHeader = styled.p`
   margin: 0;
 `;
 
-const FormControl = styled(BaseFormControl)`
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-`;
-
 const ListItem = styled(BaseListItem)`
+  padding: 0;
   .MuiFormControlLabel-root {
     width: 100%;
+    padding: 1.2em 1em;
+    margin: 0;
   }
   &:not(&:last-child) {
     .MuiFormControlLabel-label {
@@ -60,8 +66,8 @@ const ListItem = styled(BaseListItem)`
         content: '';
         position: absolute;
         /* To reach the base of the list item  we need to make it -70% from the base */
-        bottom: -70%;
-        left: 0;
+        bottom: -1.2em;
+        left: -0.5em;
         height: 1px;
         width: 100%;
         /*  It is not possible to make a line less than 1px, so reducing the opacity of the border so as to make it appear thinner */
@@ -70,6 +76,10 @@ const ListItem = styled(BaseListItem)`
       }
     }
   }
+`;
+
+const ListTitle = styled.span`
+  font-weight: bold;
 `;
 
 function not(a, b) {
@@ -113,7 +123,7 @@ export const CheckboxList = ({ list, title = 'Choices', selectedItems, setSelect
     <FlexStart>
       <FormControl>
         <FormControlLabel
-          label={title}
+          label={<ListTitle>{title}</ListTitle>}
           control={
             <Checkbox
               onClick={handleCheckAll(enabledItems)}

@@ -71,7 +71,7 @@ export const DashboardExportModal = ({
   useEffect(() => {
     const defaultList = currentGroupDashboard.items.map((item, index) => {
       // at this stage, we only allow exporting charts
-      const itemIsDisabled = item.type === 'view' || item.type === 'matrix';
+      const itemIsDisabled = item.type !== 'chart';
       return {
         ...item,
         index,
@@ -113,7 +113,7 @@ export const DashboardExportModal = ({
                 list={list}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
-                title="Select Visualisation"
+                title="Select Visualisations"
               />
             </Grid>
           </StyledRootGrid>
