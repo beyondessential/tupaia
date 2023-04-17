@@ -34,6 +34,7 @@ const defaultFinishedMessage = () => <span>Your import has been successfully pro
 
 export const ImportModalComponent = React.memo(
   ({
+    label,
     title,
     subtitle,
     queryParameters,
@@ -212,7 +213,7 @@ export const ImportModalComponent = React.memo(
           startIcon={<ImportIcon />}
           onClick={handleOpen}
         >
-          {confirmButtonText}
+          {label}
         </LightOutlinedButton>
       </>
     );
@@ -220,6 +221,7 @@ export const ImportModalComponent = React.memo(
 );
 
 ImportModalComponent.propTypes = {
+  label: PropTypes.string,
   title: PropTypes.string,
   subtitle: PropTypes.string,
   translate: PropTypes.func,
@@ -237,6 +239,7 @@ ImportModalComponent.propTypes = {
 
 ImportModalComponent.defaultProps = {
   translate: text => text,
+  label: 'Import',
   title: null,
   queryParameters: [],
   actionConfig: {},
