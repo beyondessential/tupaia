@@ -4,9 +4,10 @@
  */
 
 import { Request } from 'express';
+import keyBy from 'lodash.keyby';
 
-import { QueryConjunctions, Route } from '@tupaia/server-boilerplate';
-import { formatEntitiesForResponse } from './format';
+import { Route } from '@tupaia/server-boilerplate';
+import { formatHierarchiesForResponse } from './format';
 import { FlattenedHierarchy, HierarchyContext, HierarchyResponseObject } from './types';
 
 type ReqParams = Record<string, never>;
@@ -26,43 +27,23 @@ export class HierarchyRoute extends Route<HierarchyRequest> {
   public async buildResponse() {
     const { field, fields } = this.req.ctx;
 
-    const allPermissionGroups = this.req.accessPolicy.getPermissionGroups();
-    const countryCodesByPermissionGroup: Record<string, string[]> = {};
-    // Generate lists of country codes we have access to per permission group
-    allPermissionGroups.forEach(pg => {
-      countryCodesByPermissionGroup[pg] = this.req.accessPolicy.getEntitiesAllowed(pg);
-    });
-
+    const projects = await this.req.models.project.getAccessibleProjects(this.req.accessPolicy);
+    const projectsByEntityId = keyBy(projects, 'entity_id');
     const entities = await this.req.models.entity.find(
-      {
-        type: 'project',
-        [QueryConjunctions.RAW]: {
-          // Pulls permission_group/country_code pairs from the project
-          // Returns any project where we have access to at least one of those pairs
-          sql: `(
-            SELECT COUNT(*) > 0 FROM
-            (
-              SELECT UNNEST(project.permission_groups) as permission_group, child_entity.country_code
-              FROM entity as child_entity
-              INNER JOIN entity_relation
-                ON entity_relation.child_id = child_entity.id
-                AND entity_relation.parent_id = project.entity_id
-                AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-            ) AS count
-            WHERE country_code IN
-            (
-              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->permission_group)::TEXT)
-            )
-          )`,
-          parameters: [JSON.stringify(countryCodesByPermissionGroup)],
-        },
-      },
-      {
-        sort: ['name'],
-        joinWith: 'project',
-      },
+      { id: projects.map(p => p.entity_id) },
+      { sort: ['name'] },
     );
 
-    return formatEntitiesForResponse(entities, field || fields);
+    const hierarchies = entities.map(entity => {
+      const project = projectsByEntityId[entity.id];
+
+      return {
+        id: project.entity_hierarchy_id,
+        code: project.code,
+        name: entity.name,
+      };
+    });
+
+    return formatHierarchiesForResponse(hierarchies, field || fields);
   }
 }

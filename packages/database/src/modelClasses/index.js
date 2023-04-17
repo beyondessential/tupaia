@@ -148,7 +148,7 @@ export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQue
 export { OptionModel } from './Option';
 export { OptionSetModel } from './OptionSet';
 export { PermissionGroupModel } from './PermissionGroup';
-export { ProjectModel } from './Project';
+export { ProjectModel, ProjectType } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
 export { SurveyModel } from './Survey';

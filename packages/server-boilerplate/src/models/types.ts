@@ -74,6 +74,7 @@ export type QueryOptions = {
   offset?: number;
   sort?: string[];
   joinWith?: string;
+  joinCondition?: [string, string];
 };
 
 type BaseModelOverrides<Fields = unknown, Type = unknown> = {

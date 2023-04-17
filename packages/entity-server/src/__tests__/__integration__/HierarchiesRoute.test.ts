@@ -4,6 +4,7 @@
  */
 
 import { TestableServer } from '@tupaia/server-boilerplate';
+
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
 import { COUNTRIES, getHierarchiesWithFields } from './fixtures';
 
@@ -32,14 +33,6 @@ describe('/hierarchies', () => {
         expect(error.error).toContain('Invalid single field requested fake_field');
       });
 
-      it('throws error if requesting field for not flat property', async () => {
-        const { body: error } = await app.get('hierarchies', {
-          query: { field: 'attributes' },
-        });
-
-        expect(error.error).toContain('Invalid single field requested attributes');
-      });
-
       it('can fetch hierarchies as single field', async () => {
         const { body: hierarchies } = await app.get('hierarchies', {
           query: { field: 'name' },
@@ -60,12 +53,12 @@ describe('/hierarchies', () => {
 
       it('can fetch hierarchies with specific fields', async () => {
         const { body: hierarchies } = await app.get('hierarchies', {
-          query: { fields: 'code,attributes' },
+          query: { fields: 'code,name' },
         });
 
         expect(hierarchies).toBeArray();
         expect(hierarchies).toStrictEqual(
-          getHierarchiesWithFields(['goldsilver', 'redblue'], ['code', 'attributes']),
+          getHierarchiesWithFields(['goldsilver', 'redblue'], ['code', 'name']),
         );
       });
     });

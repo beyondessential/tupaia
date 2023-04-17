@@ -9,7 +9,6 @@ export type HierarchyFields = Readonly<{
   id: string;
   code: string;
   name: string;
-  attributes: Record<string, unknown>;
 }>;
 
 export type FlattableHierarchyFieldName = keyof Flattable<HierarchyFields>;

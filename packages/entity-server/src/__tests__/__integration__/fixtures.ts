@@ -64,13 +64,11 @@ export const PROJECTS = [
     code: 'redblue',
     permission_groups: ['Public'],
     projectEntityName: 'Pokemon Red/Blue',
-    projectEntityAttributes: { type: 'legacy' },
   },
   {
     code: 'goldsilver',
     permission_groups: ['Public'],
     projectEntityName: 'Pokemon Gold/Silver',
-    projectEntityAttributes: { type: 'modern' },
   },
 ];
 
@@ -81,13 +79,13 @@ export const ENTITIES: Entity[] = [
     code: 'redblue',
     name: 'Pokemon Red/Blue',
     type: 'project',
-    attributes: { type: 'legacy' },
+    attributes: {},
   },
   {
     code: 'goldsilver',
     name: 'Pokemon Gold/Silver',
     type: 'project',
-    attributes: { type: 'modern' },
+    attributes: {},
   },
   // country -> city    -> facility
   //                    -> individual

@@ -4,12 +4,18 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { AncestorDescendantRelationModel, EntityModel, EntityHierarchyModel } from './models';
+import {
+  AncestorDescendantRelationModel,
+  EntityModel,
+  EntityHierarchyModel,
+  ProjectModel,
+} from './models';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
+  readonly project: ProjectModel;
 }
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
