@@ -6,6 +6,10 @@
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
 
 export class AutocompleteConfigCellBuilder extends KeyValueCellBuilder {
+  individualFieldProcessors = {
+    attributes: AutocompleteConfigCellBuilder.processAttributesField,
+  };
+
   async processValue(value, key) {
     if (key === 'createNew') {
       return value ? 'Yes' : 'No';
@@ -27,40 +31,20 @@ export class AutocompleteConfigCellBuilder extends KeyValueCellBuilder {
    * Converted to Excel config:
    * attributes.parent_project: <questionCode>
    */
-  async processAttributesField(attributesObject = {}) {
-    return Promise.all(
+  static async processAttributesField(models, attributesObject = {}) {
+    const processedAttributes = await Promise.all(
       Object.entries(attributesObject).map(async ([key, value]) => {
-        const processedValue = await this.fetchQuestionCode(value);
-        return `attributes.${key}: ${processedValue}`;
+        const question = await models.question.findById(value?.questionId);
+        if (!question) {
+          throw new Error(`Could not find a question with id matching ${value?.questionId}`);
+        }
+        return `attributes.${key}: ${question.code}`;
       }),
     );
+    return processedAttributes.join('\r\n');
   }
 
   extractRelevantObject({ autocomplete }) {
     return autocomplete;
-  }
-
-  // We need to override the build function so we can process the attributes field separately
-  async build(jsonStringOrObject) {
-    if (!jsonStringOrObject) {
-      return '';
-    }
-    const fullObject =
-      typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-    const { attributes, ...object } = this.extractRelevantObject(fullObject) || {};
-    const attributeFields = await this.processAttributesField(attributes);
-    const processedFields = await Promise.all(
-      Object.entries(object).map(async ([key, value]) => {
-        if (this.individualFieldProcessors[key]) {
-          return this.individualFieldProcessors[key](value);
-        }
-        const processedKey = await this.processKey(key);
-        const processedValue = await this.processValue(value, key);
-        return `${processedKey}: ${processedValue}`;
-      }),
-    );
-    console.log('attibuteFields', attributeFields);
-    console.log('processedFields', processedFields);
-    return [...attributeFields, ...processedFields].join('\r\n');
   }
 }
