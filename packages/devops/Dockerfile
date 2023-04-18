@@ -42,7 +42,7 @@ COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
 COPY packages/superset-api/. ./packages/superset-api
-COPY scripts ./scripts
+COPY scripts/bash/ ./scripts/bash/
 
 #  Build tooling configuration files
 COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json .eslintrc ./
@@ -64,10 +64,10 @@ WORKDIR /tupaia
 
 COPY --from=builder /tupaia/packages/ ./packages/
 COPY --from=builder /tupaia/node_modules/ ./node_modules
-COPY --from=builder /tupaia/scripts/bash/downloadEnvironmentVariables.sh /tupaia/scripts/bash/docker-startup.sh ./scripts/bash/
+COPY scripts/docker/downloadEnvironmentVariables.sh scripts/docker/docker-startup.sh ./scripts/docker/
 # TODO: Remove dev dependencies here. Running yarn workspaces focus -A
 # --production doesn't work - it removes deps required at runtime !
 
-ENTRYPOINT ["./scripts/bash/docker-startup.sh"]
+ENTRYPOINT ["./scripts/docker/docker-startup.sh"]
 # Set cmd at rudownloadEnvironmentVariablesntime to specifiy service to start
 CMD ["central-server", "dev"]
