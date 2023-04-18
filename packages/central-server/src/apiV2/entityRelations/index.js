@@ -4,3 +4,6 @@
  */
 
 export { GETEntityRelations } from './GETEntityRelations';
+export { CreateEntityRelations } from './CreateEntityRelations';
+export { EditEntityRelations } from './EditEntityRelations';
+export { DeleteEntityRelations } from './DeleteEntityRelations';

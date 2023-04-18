@@ -55,7 +55,12 @@ import {
   CreateDashboardVisualisation,
   EditDashboardVisualisation,
 } from './dashboardVisualisations';
-import { GETEntityRelations } from './entityRelations';
+import {
+  CreateEntityRelations,
+  DeleteEntityRelations,
+  EditEntityRelations,
+  GETEntityRelations,
+} from './entityRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import {
@@ -266,6 +271,7 @@ apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
+apiV2.post('/entityRelations', useRouteHandler(CreateEntityRelations));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
@@ -305,6 +311,7 @@ apiV2.put('/dashboards/:recordId', useRouteHandler(EditDashboard));
 apiV2.put('/dashboardItems/:recordId', useRouteHandler(EditDashboardItem));
 apiV2.put('/dashboardRelations/:recordId', useRouteHandler(EditDashboardRelation));
 apiV2.put('/dashboardVisualisations/:recordId', useRouteHandler(EditDashboardVisualisation));
+apiV2.put('/entityRelations/:recordId', useRouteHandler(EditEntityRelations));
 apiV2.put('/mapOverlayVisualisations/:recordId', useRouteHandler(EditMapOverlayVisualisation));
 apiV2.put('/legacyReports/:recordId', useRouteHandler(EditLegacyReport));
 apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
@@ -332,6 +339,7 @@ apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/entityRelations/:recordId', useRouteHandler(DeleteEntityRelations));
 apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));

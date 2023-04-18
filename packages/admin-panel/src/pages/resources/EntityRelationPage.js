@@ -16,7 +16,7 @@ export const COLUMNS = [
       optionsEndpoint: 'entityRelations',
       optionLabelKey: 'parent_entity.name',
       optionValueKey: 'parent_entity.id',
-      sourceKey: 'parent_entity',
+      sourceKey: 'parent_id',
     },
   },
   {
@@ -24,6 +24,9 @@ export const COLUMNS = [
     source: 'child_entity.name',
     editConfig: {
       optionsEndpoint: 'entityRelations',
+      optionLabelKey: 'child_entity.name',
+      optionValueKey: 'child_entity.id',
+      sourceKey: 'child_id',
     },
   },
   {
@@ -31,6 +34,9 @@ export const COLUMNS = [
     source: 'entity_hierarchy.name',
     editConfig: {
       optionsEndpoint: 'entityRelations',
+      optionLabelKey: 'entity_hierarchy.name',
+      optionValueKey: 'entity_hierarchy.id',
+      sourceKey: 'entity_hierarchy_id',
     },
   },
 ];
@@ -59,41 +65,7 @@ const FIELDS = [
 
 const CREATE_CONFIG = {
   title: 'Create Entity Relation',
-  actionConfig: COLUMNS,
-};
-
-// When creating, return an array of records for bulk editing on the server
-// When editing, just process a single record as normal
-const processDataForSave = (fieldsToSave, recordData) => {
-  const isEditingSingle = Object.keys(recordData).length > 0;
-  if (isEditingSingle) {
-    return fieldsToSave;
-  }
-
-  // Creating new records in bulk
-  const records = [];
-
-  const getRecordValues = (partialRecord, values) => {
-    const [firstKey] = Object.keys(values);
-    const { [firstKey]: ids, ...remainingRows } = values;
-
-    ids.forEach(id => {
-      const record = {
-        ...partialRecord,
-        [firstKey]: id,
-      };
-
-      if (Object.entries(remainingRows).length > 0) {
-        getRecordValues(record, remainingRows);
-      } else {
-        records.push(record);
-      }
-    });
-  };
-
-  getRecordValues({}, fieldsToSave);
-
-  return records;
+  actionConfig: { fields: COLUMNS, editEndpoint: ENDPOINT },
 };
 
 export const EntityRelationPage = ({ getHeaderEl, ...props }) => (
@@ -104,7 +76,6 @@ export const EntityRelationPage = ({ getHeaderEl, ...props }) => (
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
     {...props}
-    onProcessDataForSave={processDataForSave}
   />
 );
 

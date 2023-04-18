@@ -303,6 +303,12 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
       };
+    case TYPES.ENTITY_RELATION:
+      return {
+        parent_id: [constructRecordExistsWithId(models.entity)],
+        child_id: [constructRecordExistsWithId(models.entity)],
+        entity_hierarchy_id: [constructRecordExistsWithId(models.entityHierarchy)],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
