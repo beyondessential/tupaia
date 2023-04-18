@@ -5,13 +5,9 @@
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import { getPermissionListWithWildcard } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
-
-const getPermissionListWithWildcard = async accessPolicy => {
-  const userPermissionGroups = accessPolicy.getPermissionGroups();
-  return ['*', ...userPermissionGroups];
-};
 
 export const assertDataGroupGETPermissions = async (accessPolicy, models, dataGroupId) => {
   if (await assertDataGroupPermissions(accessPolicy, models, dataGroupId, 'some')) {
