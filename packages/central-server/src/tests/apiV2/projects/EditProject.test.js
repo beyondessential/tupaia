@@ -8,12 +8,8 @@ import AWS from 'aws-sdk';
 import { S3Client } from '@tupaia/utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import {
-  BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../../permissions';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
-import { createExportDeclaration } from 'typescript';
 
 const rollbackRecords = async (models, projectCode) => {
   await models.project.delete({ code: projectCode });

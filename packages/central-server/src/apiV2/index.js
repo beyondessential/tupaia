@@ -40,10 +40,9 @@ import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
-import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
-import { CreateProject, EditProject } from './projects';
+import { CreateProject, EditProject, GETProjects } from './projects';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
