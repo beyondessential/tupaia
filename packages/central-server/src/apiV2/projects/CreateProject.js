@@ -6,26 +6,22 @@
 import AWS from 'aws-sdk';
 import { snake } from 'case';
 import { S3Client } from '@tupaia/utils';
-import { CreateHandler } from '../CreateHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { BESAdminCreateHandler } from '../CreateHandler';
+import { getProjectImageUploadName } from './getProjectImageUploadName';
 /**
  * Handles POST endpoints:
  * - /projects
  */
 
-export class CreateProject extends CreateHandler {
-  async assertUserHasAccess() {
-    await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess], 'You need BES Admin to create new projects'),
-    );
-  }
-
-  async uploadImage(encodedImage, projectCode, type) {
-    // If the image is unset or not a base64 encoded image, we will return '', as we are only wanting to handle base64 encoded images.
-    if (!encodedImage || !encodedImage.includes('data:image')) return '';
+export class CreateProject extends BESAdminCreateHandler {
+  async uploadImage(encodedImage, projectCode, type) { 
     const s3Client = new S3Client(new AWS.S3());
     // Upload the image with a standardised file name and upload to s3.
-    const imagePath = await s3Client.uploadImage(encodedImage, `${projectCode}_${type}`, true);
+    const imagePath = await s3Client.uploadImage(
+      encodedImage,
+      getProjectImageUploadName(projectCode, type),
+      true,
+    );
     return imagePath;
   }
 
@@ -35,13 +31,13 @@ export class CreateProject extends CreateHandler {
       name,
       description,
       sort_order,
-      image_url = '',
-      logo_url = '',
       permission_groups,
       countries,
       entityTypes,
       default_measure,
       dashboard_group_name,
+      image_url,
+      logo_url,
     } = this.newRecordData;
 
     const projectCode = snake(rawProjectCode);
@@ -64,22 +60,39 @@ export class CreateProject extends CreateHandler {
         dashboard_group_name,
         projectCode,
       );
-
-      const projectImagePath = await this.uploadImage(image_url, projectCode, 'project_image');
-      const logoImagePath = await this.uploadImage(logo_url, projectCode, 'project_logo');
-      return transactingModels.project.create({
+      // Add the project, and then upload the images afterward, so that if an error is caught when creating the record, the images aren't uploaded unnecessarily
+      const newProject = await transactingModels.project.create({
         code: projectCode,
         description,
         sort_order,
-        image_url: projectImagePath,
-        logo_url: logoImagePath,
+        image_url: '',
+        logo_url: '',
         permission_groups,
         default_measure,
         dashboard_group_name: dashboardGroupName,
         entity_id: projectEntityId,
         entity_hierarchy_id: projectEntityHierarchyId,
       });
+      await this.insertImagePaths(
+        transactingModels,
+        newProject.id,
+        projectCode,
+        image_url,
+        logo_url,
+      );
+
+      return newProject;
     });
+  }
+
+  async insertImagePaths(models, projectId, projectCode, image_url, logo_url) {
+    // image_url and logo_url are currently required fields, so the validator will error before this point if either of these is falsey.
+    const updates = {
+      image_url: await this.uploadImage(image_url, projectCode, 'project_image'),
+      logo_url: await this.uploadImage(logo_url, projectCode, 'project_logo'),
+    };
+    // The record has already been updated, so update the existing record with the new fields
+    return models.project.updateById(projectId, updates);
   }
 
   async createProjectEntity(models, projectCode, name) {

@@ -115,5 +115,41 @@ describe('Editing a project', async () => {
       expect(result.length).to.equal(1);
       expect(result[0].logo_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
     });
+
+    it('does not upload a new image_url or logo_url if is not a base64 encoded image', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: TEST_PROJECT_INPUT,
+      });
+
+      const result = await models.project.find({
+        id: TEST_PROJECT_INPUT.id,
+      });
+
+      expect(result.length).to.equal(1);
+      expect(result[0].image_url).to.equal(TEST_PROJECT_INPUT.image_url);
+      expect(result[0].logo_url).to.equal(TEST_PROJECT_INPUT.logo_url);
+    });
+
+    it('does not upload a new image_url or logo_url if these are null', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: {
+          ...TEST_PROJECT_INPUT,
+          image_url: null,
+          logo_url: null,
+        },
+      });
+
+      const result = await models.project.find({
+        id: TEST_PROJECT_INPUT.id,
+      });
+
+      expect(result.length).to.equal(1);
+      expect(result[0].image_url).to.equal(null);
+      expect(result[0].logo_url).to.equal(null);
+    });
   });
 });

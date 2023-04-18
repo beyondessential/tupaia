@@ -8,10 +8,7 @@ import AWS from 'aws-sdk';
 import { S3Client } from '@tupaia/utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import {
-  BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../../permissions';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
 const rollbackRecords = async (models, projectCode) => {
@@ -31,9 +28,6 @@ describe('Creating a project', async () => {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  const TUPAIA_ADMIN_POLICY = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
-  };
   const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
 
   const TEST_COUNTRY_ID = generateId();
@@ -145,20 +139,6 @@ describe('Creating a project', async () => {
           error:
             'Invalid content for field "entityTypes" causing message "Some provided entity types do not exist"',
         });
-      });
-    });
-
-    it('Throws an error when the user does not have BES Admin permission', async () => {
-      await app.grantAccess(TUPAIA_ADMIN_POLICY);
-
-      const { body: result } = await app.post('projects', {
-        body: {
-          ...TEST_PROJECT_INPUT,
-        },
-      });
-
-      expect(result).to.deep.equal({
-        error: 'You need BES Admin to create new projects',
       });
     });
 

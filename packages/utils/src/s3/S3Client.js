@@ -112,10 +112,10 @@ export class S3Client {
 
     const filePath = getS3ImageFilePath();
     const fileName = fileId ? `${filePath}${fileId}.png` : `${filePath}${getUniqueFileName()}.png`;
-    const alreadyExists = await this.checkIfFileExists(fileName);
     // In some cases we want to allow overwriting of existing files
-    if (alreadyExists && !allowOverwrite) {
-      throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
+    if (!allowOverwrite) {
+      if (await this.checkIfFileExists(fileName))
+        throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
     }
     return this.uploadPublicImage(fileName, buffer);
   }
