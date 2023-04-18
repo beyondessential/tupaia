@@ -12,9 +12,12 @@ import {
   URL_COMPONENTS,
   VERIFY_EMAIL_PREFIX,
 } from '../../historyNavigation/constants';
+import { isMobile } from '../../utils';
 
 export function* handleUserPage(userPage, initialComponents) {
-  yield put(setOverlayComponent(LANDING));
+  // Don't show the overlay on mobile if the user is on the password reset page, because the overlay component appears over the top of the password reset page
+  const shouldDisplayOverlay = !isMobile() || userPage !== PASSWORD_RESET_PREFIX;
+  if (shouldDisplayOverlay) yield put(setOverlayComponent(LANDING));
 
   switch (userPage) {
     case PASSWORD_RESET_PREFIX:
