@@ -164,23 +164,25 @@ export const CheckboxList = ({ list, title = 'Choices', selectedItems, setSelect
           const { name, code, disabled, tooltip } = item;
           return (
             <ListItem key={code}>
-              <CheckboxWrapper tooltip={tooltip}>
-                <FormControl disabled={disabled}>
-                  <FormControlLabel
-                    label={name}
-                    control={
-                      <Checkbox
-                        checked={
-                          selectedItems.findIndex(selectedItem => selectedItem.code === code) !== -1
-                        }
-                        onClick={handleCheck(item)}
-                        tabIndex={-1}
-                        disableRipple
-                      />
-                    }
-                  />
-                </FormControl>
-              </CheckboxWrapper>
+              <FormControl disabled={disabled}>
+                <FormControlLabel
+                  label={
+                    <CheckboxWrapper tooltip={tooltip}>
+                      <span>{name}</span>
+                    </CheckboxWrapper>
+                  }
+                  control={
+                    <Checkbox
+                      checked={
+                        selectedItems.findIndex(selectedItem => selectedItem.code === code) !== -1
+                      }
+                      onClick={handleCheck(item)}
+                      tabIndex={-1}
+                      disableRipple
+                    />
+                  }
+                />
+              </FormControl>
             </ListItem>
           );
         })}
