@@ -35,6 +35,7 @@ import {
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
   EntityHierarchyPage,
+  EntityRelationPage,
 } from './pages/resources';
 import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
@@ -189,6 +190,11 @@ export const ROUTES = [
         label: 'Entity Types',
         to: '/entityTypes',
         component: EntityTypesPage,
+      },
+      {
+        label: 'Entity Relations',
+        to: '/entityRelations',
+        component: EntityRelationPage,
       },
     ],
   },

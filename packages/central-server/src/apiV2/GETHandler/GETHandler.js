@@ -118,6 +118,7 @@ export class GETHandler extends CRUDHandler {
 
   async buildResponse() {
     let options = await this.getDbQueryOptions();
+    console.log('HANDLE REQUEST', options);
 
     // handle request for a single record
     const { recordId } = this;

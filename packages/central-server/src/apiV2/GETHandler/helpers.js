@@ -98,6 +98,7 @@ export const getQueryOptionsForColumns = (
     );
   }
   const multiJoin = [];
+
   const recordTypesInQuery = new Set([baseRecordType]);
   columnNames
     .filter(c => c.includes('.'))
@@ -111,7 +112,17 @@ export const getQueryOptionsForColumns = (
           `${recordType}.id`,
           `${baseRecordType}.${getForeignKeyColumnName(recordType)}`,
         ];
-        multiJoin.push({ joinWith: recordType, joinCondition, joinType });
+
+        if (
+          typeof joinCondition === 'object' &&
+          !Array.isArray(joinCondition) &&
+          joinCondition.joinWith
+        ) {
+          multiJoin.push(joinCondition);
+        } else {
+          multiJoin.push({ joinWith: recordType, joinCondition, joinType });
+        }
+
         recordTypesInQuery.add(recordType);
       }
     });
