@@ -30,6 +30,7 @@ jobs:
       - name: Validate new migration
         run: packages/devops/scripts/ci/validateNewMigrations.sh
 
+  #    - TODO: use eslint no-exclusive-tests flag at lint step after RN-201
   validate_tests:
     name: Validate unit tests
     strategy:
