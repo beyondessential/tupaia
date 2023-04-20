@@ -29,6 +29,7 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   DIALOG_PAGE_VERIFICATION_PAGE,
   DIALOG_PAGE_ONE_TIME_LOGIN,
+  goHome,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
 import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
@@ -91,15 +92,24 @@ export class UserBar extends Component {
     }
   }
 
+  /** If a user clicks out of a reset password dialog, reset to home */
+  handleCloseDialog = () => {
+    const { dialogPage, onCloseUserDialog, resetToHome } = this.props;
+    if (dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN || dialogPage === DIALOG_PAGE_RESET_PASSWORD) {
+      resetToHome();
+    }
+    onCloseUserDialog();
+  };
+
   renderDialog() {
-    const { isDialogVisible, onCloseUserDialog } = this.props;
+    const { isDialogVisible } = this.props;
     const width = this.getWidth();
     return (
       <Dialog
         open={isDialogVisible}
         style={{ zIndex: 1301 }}
         PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
-        onClose={() => onCloseUserDialog()}
+        onClose={this.handleCloseDialog}
         ref={dialog => {
           this.dialog = dialog;
         }}
@@ -208,6 +218,7 @@ UserBar.propTypes = {
     DIALOG_PAGE_VERIFICATION_PAGE,
     '',
   ]).isRequired,
+  resetToHome: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -242,6 +253,7 @@ const mapDispatchToProps = dispatch => {
     onOpenLandingPage: () => dispatch(setOverlayComponent(LANDING)),
     onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
+    resetToHome: () => dispatch(goHome()),
   };
 };
 
