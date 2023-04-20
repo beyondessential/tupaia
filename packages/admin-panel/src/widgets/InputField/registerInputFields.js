@@ -14,6 +14,7 @@ import {
   DateTimePicker,
   RadioGroup,
   Select,
+  HexcodeField,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
@@ -220,6 +221,16 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       type="password"
+    />
+  ));
+  registerInputField('hexcode', props => (
+    <HexcodeField
+      id={props.id}
+      label={props.label}
+      value={props.value}
+      onChange={value => props.onChange(props.inputKey, value)}
+      disabled={props.disabled}
+      helperText={props.secondaryLabel}
     />
   ));
 };
