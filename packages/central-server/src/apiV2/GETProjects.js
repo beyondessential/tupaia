@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import keyBy from 'lodash.keyBy';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from './GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
@@ -47,6 +47,34 @@ export class GETProjects extends GETHandler {
     );
 
     return super.findSingleRecord(projectId, options);
+  }
+
+  async findRecords(criteria, options) {
+    console.log('options', options);
+    const countryNameKey = options.columns.find(x => Object.keys(x)[0] === 'countryNames');
+    if (!countryNameKey) {
+      return super.findRecords(criteria, options);
+    }
+
+    const columns = options.columns.filter(x => Object.keys(x)[0] !== 'countryNames');
+    const dbOptions = { ...options, columns };
+    const projects = await this.database.find(this.recordType, criteria, dbOptions);
+
+    const countries = await this.database.executeSql(
+      `SELECT p.id as "projectId", ARRAY_AGG(child_entity.name) as "countryNames" FROM entity e
+        JOIN project p ON p.entity_id = e.id
+        JOIN entity_relation er ON er.entity_hierarchy_id = p.entity_hierarchy_id AND er.parent_id = e.id
+        JOIN entity child_entity ON child_entity.id = er.child_id
+       WHERE child_entity.type = 'country' GROUP BY p.id;`,
+    );
+
+    const countriesById = keyBy(countries, 'projectId');
+    return projects.map(project => {
+      return {
+        ...project,
+        countryNames: countriesById[project.id].countryNames,
+      };
+    });
   }
 
   async getPermissionsFilter(criteria, options) {

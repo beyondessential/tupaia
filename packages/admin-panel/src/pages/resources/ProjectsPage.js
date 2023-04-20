@@ -55,6 +55,18 @@ const FIELDS = [
     },
   },
   {
+    Header: 'Countries',
+    source: 'countryNames',
+    type: 'jsonTooltip',
+    editConfig: {
+      optionsEndpoint: 'countries',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'countries',
+      allowMultipleValues: true,
+    },
+  },
+  {
     Header: 'Image',
     source: 'image_url',
     type: 'tooltip',
