@@ -10,6 +10,7 @@ import { Autocomplete } from '@tupaia/ui-components';
 
 import { ParameterType } from '../../editing';
 import { useProjects } from '../../../../VizBuilderApp/api';
+import { getTextFieldValue } from './utils';
 
 export const HierarchyField = ({ name, value, onChange, config }) => {
   const { data: hierarchies = [], isLoading } = useProjects();
@@ -23,7 +24,7 @@ export const HierarchyField = ({ name, value, onChange, config }) => {
       placeholder={config?.defaultValue}
       options={hierarchies.map(p => p['project.code'])}
       disabled={isLoading}
-      onChange={(event, selectedValue) => onChange(selectedValue)}
+      onChange={(event, selectedValue) => onChange(getTextFieldValue(selectedValue))}
     />
   );
 };
