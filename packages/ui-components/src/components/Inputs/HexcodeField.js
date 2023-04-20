@@ -35,11 +35,8 @@ export const HexcodeField = ({ value, onChange, label, helperText, id, disabled 
   const handleChangeValue = event => {
     onChange(event.target.value);
   };
-  const getIsValidHexCode = () => {
-    // validate the input against standard hexcode pattern
-    if (!value) return false;
-    return value.match(HEXCODE_PATTERN);
-  };
+
+  const isValidHexCode = value ? value.match(HEXCODE_PATTERN) : false;
   return (
     <HexcodeFieldWrapper>
       <HexcodeFieldContainer>
@@ -54,7 +51,7 @@ export const HexcodeField = ({ value, onChange, label, helperText, id, disabled 
             pattern: HEXCODE_PATTERN,
           }}
         />
-        {getIsValidHexCode() && (
+        {isValidHexCode && (
           <HexcodePreview backgroundColor={value} aria-label={`Colour preview for ${label}`} />
         )}
       </HexcodeFieldContainer>
