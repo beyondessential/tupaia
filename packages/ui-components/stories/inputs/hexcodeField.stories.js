@@ -12,8 +12,8 @@ export default {
 };
 
 const Container = styled.div`
-  max-width: 1200px;
-  padding: 2rem;
+  max-width: 25em;
+  padding: 2em;
 `;
 
 export const WithHelperText = () => {

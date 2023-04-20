@@ -16,8 +16,6 @@ const HexcodeFieldContainer = styled.div`
 
 const HexcodePreview = styled.div`
   background-color: ${({ backgroundColor }) => backgroundColor};
-  height: 100%;
-  width: 100%;
   border-radius: 50%;
   width: 3em;
   height: 3em;
@@ -27,8 +25,8 @@ const HexcodePreview = styled.div`
 `;
 
 const HexInput = styled(TextField)`
-  max-width: 18em;
   margin-bottom: 0;
+  width: calc(100% - 4em);
 `;
 
 const HEXCODE_PATTERN = /^#([0-9A-F]{3}){1,2}$/i;
