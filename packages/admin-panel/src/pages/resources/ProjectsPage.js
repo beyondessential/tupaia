@@ -57,6 +57,7 @@ const FIELDS = [
   {
     Header: 'Countries',
     source: 'countryNames',
+    Filter: ArrayFilter,
     type: 'jsonTooltip',
     editConfig: {
       optionsEndpoint: 'countries',
@@ -98,20 +99,6 @@ const NEW_PROJECT_COLUMNS = [
     source: 'name',
   },
   ...FIELDS,
-
-  {
-    Header: 'Country Code/s',
-    source: 'country.code',
-    Filter: ArrayFilter,
-    Cell: ({ value }) => prettyArray(value),
-    editConfig: {
-      optionsEndpoint: 'countries',
-      optionLabelKey: 'country.code',
-      optionValueKey: 'country.id',
-      sourceKey: 'countries',
-      allowMultipleValues: true,
-    },
-  },
   {
     Header: 'Canonical Types (leave blank for default)',
     source: 'entityTypes',
