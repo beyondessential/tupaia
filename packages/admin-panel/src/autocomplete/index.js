@@ -4,5 +4,6 @@
  */
 
 export { ReduxAutocomplete } from './ReduxAutocomplete';
+export { ResourceAutocomplete } from './ResourceAutocomplete';
 export { Autocomplete } from './Autocomplete';
 export { reducer } from './reducer';
