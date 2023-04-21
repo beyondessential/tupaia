@@ -15,6 +15,7 @@ import {
   constructIsEmptyOr,
 } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { VerifiedEmail } from '@tupaia/types';
 import { assertBESAdminAccess } from '../../permissions';
 
 export async function importUsers(req, res) {
@@ -97,5 +98,5 @@ const FIELD_VALIDATORS = {
   mobile_number: [],
   password: [hasContent],
   permission_group: [hasContent],
-  verified_email: [constructIsEmptyOr(constructIsOneOf(['unverified', 'verified', 'new_user']))],
+  verified_email: [constructIsEmptyOr(constructIsOneOf(Object.values(VerifiedEmail)))],
 };
