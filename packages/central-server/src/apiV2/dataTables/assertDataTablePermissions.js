@@ -4,11 +4,7 @@
  */
 
 import { hasBESAdminAccess } from '../../permissions';
-
-const getPermissionListWithWildcard = async accessPolicy => {
-  const userPermissionGroups = accessPolicy.getPermissionGroups();
-  return ['*', ...userPermissionGroups];
-};
+import { getPermissionListWithWildcard } from '../utilities';
 
 export const assertDataTableGETPermissions = async (accessPolicy, models, dataTableId) => {
   // User requires access to any permission group
@@ -16,16 +12,6 @@ export const assertDataTableGETPermissions = async (accessPolicy, models, dataTa
     return true;
   }
   throw new Error('You do not have permission to view this data-table');
-};
-
-export const assertDataTableEditPermissions = async (accessPolicy, models, dataTableId) => {
-  // User requires access to all permission groups
-  if (await assertDataTablePermissions(accessPolicy, models, dataTableId, 'every')) {
-    return true;
-  }
-  throw new Error(
-    'You require access to all of a data-tables permission groups to perform this action',
-  );
 };
 
 const assertDataTablePermissions = async (accessPolicy, models, dataTableId, test) => {

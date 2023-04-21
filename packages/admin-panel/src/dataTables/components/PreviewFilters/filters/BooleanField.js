@@ -18,24 +18,27 @@ const getBooleanValue = value => {
     return value;
   }
 
-  return '';
+  return undefined;
 };
 
 export const BooleanField = ({ name, value, onChange, config }) => {
-  const defaultValue = getBooleanValue(config?.hasDefaultValue && config?.defaultValue);
+  const defaultValue =
+    typeof config?.defaultValue === 'boolean' ? `${config?.defaultValue}` : undefined;
+
   const booleanValue = getBooleanValue(value);
 
   return (
     <Select
       id={name}
-      placeholder={defaultValue.toString()}
+      placeholder={defaultValue}
       options={[
+        { label: 'none', value: undefined },
         { label: 'true', value: true },
         { label: 'false', value: false },
       ]}
       name={name}
       label={name}
-      value={typeof booleanValue === 'boolean' ? booleanValue : defaultValue}
+      value={booleanValue}
       onChange={event => {
         onChange(event.target.value);
       }}

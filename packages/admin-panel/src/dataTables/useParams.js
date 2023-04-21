@@ -9,7 +9,7 @@ import generateId from 'uuid/v1';
 import { useFetchDataTableBuiltInParams } from './query/useFetchDataTableBuiltInParams';
 import { useRuntimeParams } from './useRuntimeParams';
 
-const convertRecordDataToFronendConfig = (additionalParams = []) => {
+const convertRecordDataToFrontendConfig = (additionalParams = []) => {
   return additionalParams.map(p => ({
     ...p,
     id: generateId(),
@@ -28,7 +28,7 @@ export const useParams = ({ recordData, onEditField }) => {
   });
 
   useEffect(() => {
-    const newAdditionalParams = convertRecordDataToFronendConfig(config.additionalParams);
+    const newAdditionalParams = convertRecordDataToFrontendConfig(config.additionalParams);
     setAdditionalParams(newAdditionalParams);
     const defaultRuntimeParams = Object.fromEntries(
       [...newAdditionalParams, ...builtInParams].map(p => [p.name, undefined]),

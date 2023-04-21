@@ -1,0 +1,34 @@
+@host = https://dev-tonga-aggregation.tupaia.org
+@contentType = application/json
+
+# In order to setup authorization, please set a base64encoded value of the dev Tupaia DHIS login in your restClient environment variables, as dhisClientEncoded.
+# Also set the username and password for the dev Tupaia DHIS login in your restClient environment variables, as dhisUsername and dhisPassword.
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{dhisClientEncoded}}
+
+# This is an example time period for the below requests
+@timePeriod=pe:201801;201802;201803;201804;201805;201806;201807;201808;201809;201810;201811;201812
+
+### Login
+# @name login
+POST {{host}}/uaa/oauth/token HTTP/1.1
+content-type: application/x-www-form-urlencoded
+authorization: {{authorization}}
+
+username={{dhisClient}}
+&password={{dhisPassword}}
+&grant_type=password
+
+
+### Fetch DHIS Population Data for time period. This will use the access_token from the login request as authorization, so you will need to run login first.
+# @name fetchDhisPopData
+
+GET {{host}}/api/analytics/rawData.json?paging=false&inputIdScheme=code&outputIdScheme=code&includeMetadataDetails=true&dimension=dx:POP02_POP37;POP_2017&dimension=ou:TO&dimension=co&dimension={{timePeriod}}
+authorization: Bearer {{login.response.body.access_token}}
+
+### Fetch DHIS Family Planning Data for time period. This will use the access_token from the login request as authorization, so you will need to run login first.
+# @name fetchDhisFamPlanData
+
+GET {{host}}/api/analytics/rawData.json?paging=false&inputIdScheme=code&outputIdScheme=code&includeMetadataDetails=true&dimension=dx:Family_Planning_Acceptors_Depo_Provera;Family_Planning_Acceptors_IUD;Family_Planning_Acceptors_Jadelle;Family_Planning_Acceptors_Natural_Method;Family_Planning_Acceptors_Other;Family_Planning_Acceptors_Pill_Combined;Family_Planning_Acceptors_Pill_Single;Family_Planning_Acceptors_Sterilization_Female;Family_Planning_Acceptors_Sterilization_Male;Family_Planning_Acceptors_Condom_Female;Family_Planning_Acceptors_Condom_Male&dimension=ou:TO&dimension=co&dimension={{timePeriod}}
+authorization: Bearer {{login.response.body.access_token}}
+
