@@ -17,7 +17,7 @@ import {
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
-import { ReduxAutocomplete } from '../../autocomplete';
+import { ResourceAutocomplete } from '../../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
 
@@ -40,7 +40,7 @@ const StyledLink = styled(Link)`
 
 export const registerInputFields = () => {
   registerInputField('autocomplete', props => (
-    <ReduxAutocomplete
+    <ResourceAutocomplete
       id={props.id}
       placeholder={props.value}
       label={props.label}
@@ -48,10 +48,8 @@ export const registerInputFields = () => {
       endpoint={props.optionsEndpoint}
       optionLabelKey={props.optionLabelKey}
       optionValueKey={props.optionValueKey}
-      reduxId={props.inputKey}
       onChange={inputValue => props.onChange(props.inputKey, inputValue)}
       canCreateNewOptions={props.canCreateNewOptions}
-      disabled={props.disabled}
       allowMultipleValues={props.allowMultipleValues}
       parentRecord={props.parentRecord}
       baseFilter={props.baseFilter}
