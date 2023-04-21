@@ -32,6 +32,10 @@ const TableComponent = ({ children }) => (
   </div>
 );
 
+TableComponent.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 export const ResourcePage = ({
   columns,
   createConfig,
@@ -103,6 +107,7 @@ ResourcePage.propTypes = {
   exportConfig: PropTypes.object,
   deleteConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
+  TableComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
@@ -118,6 +123,7 @@ ResourcePage.defaultProps = {
   exportConfig: {},
   deleteConfig: {},
   ExportModalComponent: null,
+  TableComponent: null,
   LinksComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},

@@ -209,6 +209,7 @@ DataFetchingTableComponent.propTypes = {
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
+  TableComponent: PropTypes.elementType,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
   onExpandedChange: PropTypes.func.isRequired,
@@ -238,6 +239,7 @@ DataFetchingTableComponent.defaultProps = {
   numberOfPages: 0,
   nestingLevel: 0,
   deleteConfig: {},
+  TableComponent: null,
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({
