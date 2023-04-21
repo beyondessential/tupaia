@@ -178,9 +178,8 @@ export const DashboardReportModal = () => {
 
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
-  const { isExporting, isExportLoading, exportRef, exportToImg } = useExportToImage(
-    pngExportFilename,
-  );
+  const { isExporting, isExportLoading, exportRef, exportToImg } =
+    useExportToImage(pngExportFilename);
 
   // Set up Excel export
   const viewContent = { ...config, data: reportData, startDate, endDate };

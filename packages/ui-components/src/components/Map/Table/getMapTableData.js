@@ -53,10 +53,10 @@ const processData = (serieses, measureData) => {
 
 export const getMapTableData = (serieses, measureData) => {
   const columns = useMemo(() => processColumns(serieses), [JSON.stringify(serieses)]);
-  const data = useMemo(() => processData(serieses, measureData), [
-    JSON.stringify(serieses),
-    JSON.stringify(measureData),
-  ]);
+  const data = useMemo(
+    () => processData(serieses, measureData),
+    [JSON.stringify(serieses), JSON.stringify(measureData)],
+  );
   return {
     columns,
     data,

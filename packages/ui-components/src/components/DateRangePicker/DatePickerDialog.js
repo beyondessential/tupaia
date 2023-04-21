@@ -23,17 +23,8 @@ import {
   roundStartEndDates,
 } from '../Chart';
 
-const {
-  DAY,
-  WEEK,
-  SINGLE_WEEK,
-  MONTH,
-  SINGLE_MONTH,
-  QUARTER,
-  SINGLE_QUARTER,
-  YEAR,
-  SINGLE_YEAR,
-} = GRANULARITIES;
+const { DAY, WEEK, SINGLE_WEEK, MONTH, SINGLE_MONTH, QUARTER, SINGLE_QUARTER, YEAR, SINGLE_YEAR } =
+  GRANULARITIES;
 
 const Container = styled.div`
   display: flex;

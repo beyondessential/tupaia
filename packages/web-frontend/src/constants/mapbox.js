@@ -138,8 +138,7 @@ const ethnicity = key => ({
   ],
   reference: {
     name: 'opendevelopmentmekong',
-    link:
-      'https://data.opendevelopmentmekong.net/dataset/geo-referencing-of-ethnic-groups-of-laos?type=dataset',
+    link: 'https://data.opendevelopmentmekong.net/dataset/geo-referencing-of-ethnic-groups-of-laos?type=dataset',
   },
 });
 const terrain = key => ({

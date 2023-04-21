@@ -8,8 +8,8 @@ import MuiMenuItem from '@material-ui/core/MenuItem';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { TextField } from './TextField';
 import { ListSubheader } from '@material-ui/core';
+import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.secondary};

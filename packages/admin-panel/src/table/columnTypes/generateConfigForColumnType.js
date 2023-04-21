@@ -12,9 +12,8 @@ import { Tooltip, JSONTooltip } from './Tooltip';
 import { LogsButton } from '../../logsTable';
 import { SyncStatus } from '../../sync';
 
-const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
-  <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
-);
+const generateCustomCell = (CustomCell, actionConfig, reduxId) => props =>
+  <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />;
 
 const BUTTON_WIDTH = 60;
 

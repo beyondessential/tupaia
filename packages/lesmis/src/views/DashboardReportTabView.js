@@ -49,10 +49,10 @@ export const DashboardReportTabView = ({
     includeDrillDowns: false,
   });
   const { scrollToTop, isScrolledPastTop, onLoadTabBar } = useStickyBar(dashboardsRef);
-  const subDashboards = useMemo(() => data?.filter(filterSubDashboards), [
-    data,
-    filterSubDashboards,
-  ]);
+  const subDashboards = useMemo(
+    () => data?.filter(filterSubDashboards),
+    [data, filterSubDashboards],
+  );
   const activeSubDashboard = useDefaultDashboardTab(selectedSubDashboard, subDashboards);
 
   const getResultsEl = () => {

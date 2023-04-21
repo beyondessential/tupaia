@@ -91,9 +91,10 @@ const RootScreen = ({
   selectedTab,
   setSelectedTab,
 }) => {
-  const handleChangeSelectedTab = useCallback((event, newValue) => setSelectedTab(newValue), [
-    setSelectedTab,
-  ]);
+  const handleChangeSelectedTab = useCallback(
+    (event, newValue) => setSelectedTab(newValue),
+    [setSelectedTab],
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalElement, setModalElement] = useState(null);

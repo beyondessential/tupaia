@@ -20,9 +20,8 @@ const StyledCardContent = styled(CardContent)`
 `;
 
 export const ReportsSubmittedCardComponent = React.memo(({ countryCodes }) => {
-  const { isLoading, sitesReported, sites, currentWeekNumber } = useConfirmedCountries(
-    countryCodes,
-  );
+  const { isLoading, sitesReported, sites, currentWeekNumber } =
+    useConfirmedCountries(countryCodes);
 
   return (
     <Card variant="outlined">

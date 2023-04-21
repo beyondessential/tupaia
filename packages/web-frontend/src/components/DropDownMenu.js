@@ -70,13 +70,8 @@ export class DropDownMenu extends PureComponent {
   }
 
   renderMenuComponent() {
-    const {
-      options,
-      selectedOptionIndex,
-      menuListStyle,
-      anchorOrigin,
-      StyledOptionComponent,
-    } = this.props;
+    const { options, selectedOptionIndex, menuListStyle, anchorOrigin, StyledOptionComponent } =
+      this.props;
     const { anchorEl } = this.state;
     const OptionComponent = StyledOptionComponent || Typography;
 

@@ -26,8 +26,7 @@ export const useDropdownOptionsWithFavouriteDashboardItems = () => {
     isFavouriteOnly: true,
   });
 
-  const dropdownOptionsWithFavouriteDashboardItems = getDropdownOptionsWithFavouriteDashboardItems(
-    data,
-  );
+  const dropdownOptionsWithFavouriteDashboardItems =
+    getDropdownOptionsWithFavouriteDashboardItems(data);
   return { dropdownOptionsWithFavouriteDashboardItems, isLoading, isError, error };
 };

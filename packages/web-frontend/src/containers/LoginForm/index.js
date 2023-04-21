@@ -18,12 +18,8 @@ import { isMobile } from '../../utils';
 const FormComponent = isMobile() ? MobileLoginFormComponent : LoginFormComponent;
 
 const mapStateToProps = state => {
-  const {
-    loginFailedMessage,
-    isRequestingLogin,
-    successMessage,
-    emailVerified,
-  } = state.authentication;
+  const { loginFailedMessage, isRequestingLogin, successMessage, emailVerified } =
+    state.authentication;
 
   return {
     loginFailedMessage,

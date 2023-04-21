@@ -131,13 +131,19 @@ const refreshDataWithDebounce = debounce(
   200,
 );
 
-export const refreshData = (reduxId, endpoint, columns, baseFilter, tableState) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
-  return refreshDataWithDebounce(reduxId, endpoint, columns, baseFilter, tableState, dispatch, api);
-};
+export const refreshData =
+  (reduxId, endpoint, columns, baseFilter, tableState) =>
+  async (dispatch, getState, { api }) => {
+    return refreshDataWithDebounce(
+      reduxId,
+      endpoint,
+      columns,
+      baseFilter,
+      tableState,
+      dispatch,
+      api,
+    );
+  };
 
 export const cancelAction = reduxId => ({
   type: ACTION_CANCEL,
@@ -160,30 +166,28 @@ export const requestDeleteRecord = (reduxId, endpoint, id, confirmMessage) => ({
   actionCreator: () => deleteRecordFromTable(reduxId, endpoint, id),
 });
 
-export const deleteRecordFromTable = (reduxId, endpoint, id) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
-  const fetchId = generateId();
-  dispatch({
-    type: DATA_CHANGE_REQUEST,
-    fetchId,
-    reduxId,
-  });
-  try {
-    await api.delete(`${endpoint}/${id}`);
+export const deleteRecordFromTable =
+  (reduxId, endpoint, id) =>
+  async (dispatch, getState, { api }) => {
+    const fetchId = generateId();
     dispatch({
-      type: DATA_CHANGE_SUCCESS,
+      type: DATA_CHANGE_REQUEST,
       fetchId,
       reduxId,
     });
-  } catch (error) {
-    dispatch({
-      type: DATA_CHANGE_ERROR,
-      reduxId,
-      fetchId,
-      errorMessage: error.message,
-    });
-  }
-};
+    try {
+      await api.delete(`${endpoint}/${id}`);
+      dispatch({
+        type: DATA_CHANGE_SUCCESS,
+        fetchId,
+        reduxId,
+      });
+    } catch (error) {
+      dispatch({
+        type: DATA_CHANGE_ERROR,
+        reduxId,
+        fetchId,
+        errorMessage: error.message,
+      });
+    }
+  };

@@ -16,14 +16,8 @@ const renderReferenceTooltip = reference => {
 };
 
 export const DialogTitleWrapper = props => {
-  const {
-    titleText,
-    periodGranularity,
-    color,
-    renderPeriodSelector,
-    reference,
-    isExporting,
-  } = props;
+  const { titleText, periodGranularity, color, renderPeriodSelector, reference, isExporting } =
+    props;
   const styles = {
     titleText: {
       display: 'flex',

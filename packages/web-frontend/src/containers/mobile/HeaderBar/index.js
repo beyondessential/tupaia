@@ -73,9 +73,10 @@ const HeaderBar = React.memo(props => {
 
   const handleOpenSignupOverlay = React.useCallback(() => openSignupOverlay(true), []);
   const handleCloseSignupOverlay = React.useCallback(() => openSignupOverlay(false), []);
-  const handleToggleUserMenuExpand = React.useCallback(() => toggleMenuExpanded(!isLoginExpanded), [
-    isLoginExpanded,
-  ]);
+  const handleToggleUserMenuExpand = React.useCallback(
+    () => toggleMenuExpanded(!isLoginExpanded),
+    [isLoginExpanded],
+  );
 
   return (
     <Container>
@@ -156,13 +157,8 @@ HeaderBar.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const {
-    currentUserUsername,
-    isUserLoggedIn,
-    isDialogVisible,
-    dialogPage,
-    isRequestingLogin,
-  } = state.authentication;
+  const { currentUserUsername, isUserLoggedIn, isDialogVisible, dialogPage, isRequestingLogin } =
+    state.authentication;
 
   return {
     userMenuIsExpanded: isDialogVisible && dialogPage === DIALOG_PAGE_USER_MENU,

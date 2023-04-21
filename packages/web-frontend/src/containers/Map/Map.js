@@ -61,13 +61,8 @@ class MapComponent extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const {
-      mapOverlayCodes,
-      isMeasureLoading,
-      position,
-      tileSetUrl,
-      displayedMapOverlayCodes,
-    } = this.props;
+    const { mapOverlayCodes, isMeasureLoading, position, tileSetUrl, displayedMapOverlayCodes } =
+      this.props;
 
     if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
       return true;

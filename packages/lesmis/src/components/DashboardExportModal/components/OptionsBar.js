@@ -12,12 +12,8 @@ import Pagination from '@material-ui/lab/Pagination';
 import { I18n } from '../../../utils';
 
 export const OptionsBar = ({ totalPage, page, setPage, isDisabled, exportOptions }) => {
-  const {
-    exportWithLabels,
-    toggleExportWithLabels,
-    exportWithTable,
-    toggleExportWithTable,
-  } = exportOptions;
+  const { exportWithLabels, toggleExportWithLabels, exportWithTable, toggleExportWithTable } =
+    exportOptions;
 
   return (
     <FlexEnd>

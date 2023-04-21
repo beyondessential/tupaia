@@ -25,17 +25,8 @@ import {
   roundStartEndDates,
 } from '../../utils/periodGranularities';
 
-const {
-  DAY,
-  WEEK,
-  SINGLE_WEEK,
-  MONTH,
-  SINGLE_MONTH,
-  QUARTER,
-  SINGLE_QUARTER,
-  YEAR,
-  SINGLE_YEAR,
-} = GRANULARITIES;
+const { DAY, WEEK, SINGLE_WEEK, MONTH, SINGLE_MONTH, QUARTER, SINGLE_QUARTER, YEAR, SINGLE_YEAR } =
+  GRANULARITIES;
 
 const DateRow = ({ granularity, ...props }) => {
   switch (granularity) {

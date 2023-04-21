@@ -113,12 +113,13 @@ const processData = viewContent => {
 export const getChartTableData = viewContent => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
-  const sortByTimestamp = useMemo(() => (rowA, rowB) =>
-    sortDates(rowA.original.timestamp, rowB.original.timestamp),
+  const sortByTimestamp = useMemo(
+    () => (rowA, rowB) => sortDates(rowA.original.timestamp, rowB.original.timestamp),
   );
-  const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [
-    JSON.stringify(viewContent),
-  ]);
+  const columns = useMemo(
+    () => processColumns(viewContent, sortByTimestamp),
+    [JSON.stringify(viewContent)],
+  );
   const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
   return {
     columns,
