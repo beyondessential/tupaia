@@ -14,13 +14,8 @@ export function* fetchViewData(parameters, errorHandler) {
     parameters.startDate || parameters.endDate ? parameters : getDefaultDates(viewConfig);
 
   // Build the request url
-  const {
-    organisationUnitCode,
-    dashboardCode,
-    itemCode,
-    isExpanded,
-    extraUrlParameters,
-  } = parameters;
+  const { organisationUnitCode, dashboardCode, itemCode, isExpanded, extraUrlParameters } =
+    parameters;
   const { reportCode, legacy } = viewConfig;
   const urlParameters = {
     organisationUnitCode,

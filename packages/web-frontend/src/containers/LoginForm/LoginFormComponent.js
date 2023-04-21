@@ -33,9 +33,10 @@ export const LoginFormComponent = React.memo(
     const [shouldShowVerifyForm, setVerifyForm] = useState(false);
 
     const showVerifyForm = useCallback(() => setVerifyForm(true), []);
-    const onSubmit = useCallback(({ email, password }) => onAttemptUserLogin(email, password), [
-      onAttemptUserLogin,
-    ]);
+    const onSubmit = useCallback(
+      ({ email, password }) => onAttemptUserLogin(email, password),
+      [onAttemptUserLogin],
+    );
     const renderForm = useCallback(
       submitForm => (
         <>

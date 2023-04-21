@@ -65,15 +65,8 @@ export const useCountryWeeklyReport = (orgUnit, period, count) => {
   const upcomingReportSubmitted = upcomingReportPeriod === period;
   const lastPeriod = subtractWeeksFromPeriod(period, upcomingReportSubmitted ? 1 : 2);
 
-  const {
-    startWeek,
-    endWeek,
-    page,
-    setPage,
-    rowsPerPage,
-    setRowsPerPage,
-    rowsOnThisPage,
-  } = usePagination(lastPeriod, count);
+  const { startWeek, endWeek, page, setPage, rowsPerPage, setRowsPerPage, rowsOnThisPage } =
+    usePagination(lastPeriod, count);
 
   const confirmedQuery = usePaginatedReport(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek },

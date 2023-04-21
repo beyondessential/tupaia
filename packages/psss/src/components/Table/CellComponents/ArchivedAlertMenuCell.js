@@ -5,9 +5,8 @@ import * as COLORS from '../../../constants/colors';
 import { ArchiveTableContext } from '../../../context';
 
 export const ArchivedAlertMenuCell = React.memo(({ id }) => {
-  const { setAlertId, setIsRestoreModalOpen, setIsDeleteModalOpen } = useContext(
-    ArchiveTableContext,
-  );
+  const { setAlertId, setIsRestoreModalOpen, setIsDeleteModalOpen } =
+    useContext(ArchiveTableContext);
 
   const restoreAlert = useCallback(() => {
     setAlertId(id);

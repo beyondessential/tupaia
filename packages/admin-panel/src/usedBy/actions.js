@@ -12,27 +12,29 @@ const RECORD_TYPE_USED_BY_FN = {
   question: getQuestionUsedBy,
 };
 
-export const fetchUsedBy = (recordType, recordId) => async (dispatch, getState, { api }) => {
-  dispatch({
-    type: USED_BY_FETCH_BEGIN,
-  });
-
-  const getUsedBy = RECORD_TYPE_USED_BY_FN[recordType] ?? null;
-  if (!getUsedBy) {
-    throw new Error('Unsupported record type');
-  }
-
-  try {
-    const usedBy = await getUsedBy(api, recordId);
+export const fetchUsedBy =
+  (recordType, recordId) =>
+  async (dispatch, getState, { api }) => {
     dispatch({
-      type: USED_BY_FETCH_SUCCESS,
-      recordId,
-      usedBy,
+      type: USED_BY_FETCH_BEGIN,
     });
-  } catch (error) {
-    dispatch({
-      type: USED_BY_FETCH_ERROR,
-      errorMessage: error.message,
-    });
-  }
-};
+
+    const getUsedBy = RECORD_TYPE_USED_BY_FN[recordType] ?? null;
+    if (!getUsedBy) {
+      throw new Error('Unsupported record type');
+    }
+
+    try {
+      const usedBy = await getUsedBy(api, recordId);
+      dispatch({
+        type: USED_BY_FETCH_SUCCESS,
+        recordId,
+        usedBy,
+      });
+    } catch (error) {
+      dispatch({
+        type: USED_BY_FETCH_ERROR,
+        errorMessage: error.message,
+      });
+    }
+  };

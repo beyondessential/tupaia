@@ -22,7 +22,10 @@ import { BREWER_PALETTE, WHITE } from '../constants';
 import { IconContainer } from './IconContainer';
 
 // allows passing a color to a material icon & scales it down a bit
-const wrapMaterialIcon = Base => ({ color }) => <Base htmlColor={color} viewBox="-3 -3 29 29" />;
+const wrapMaterialIcon =
+  Base =>
+  ({ color }) =>
+    <Base htmlColor={color} viewBox="-3 -3 29 29" />;
 
 const StyledSvgWrapper = styled.span`
   * {
@@ -30,11 +33,14 @@ const StyledSvgWrapper = styled.span`
   }
 `;
 
-const wrapSvgIcon = Base => ({ color }) => (
-  <StyledSvgWrapper color={color}>
-    <Base />
-  </StyledSvgWrapper>
-);
+const wrapSvgIcon =
+  Base =>
+  ({ color }) =>
+    (
+      <StyledSvgWrapper color={color}>
+        <Base />
+      </StyledSvgWrapper>
+    );
 
 const PinIcon = ({ color, scale }) => {
   return (

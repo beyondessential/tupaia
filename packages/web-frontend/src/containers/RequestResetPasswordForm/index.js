@@ -14,11 +14,8 @@ import { RequestResetPasswordFormComponent } from './RequestResetPasswordFormCom
 import { attemptResetPassword, closeUserPage } from '../../actions';
 
 const mapStateToProps = state => {
-  const {
-    resetPasswordFailedMessage,
-    isRequestingResetPassword,
-    hasResetPasswordCompleted,
-  } = state.resetPassword;
+  const { resetPasswordFailedMessage, isRequestingResetPassword, hasResetPasswordCompleted } =
+    state.resetPassword;
 
   return {
     resetPasswordFailedMessage,

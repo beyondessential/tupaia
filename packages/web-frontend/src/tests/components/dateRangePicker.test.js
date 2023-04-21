@@ -84,8 +84,10 @@ describe('dateRangePicker', () => {
       const endDate = momentToDateString(moment(), key, value.rangeFormat);
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(labelText).toHaveTextContent(endDate);
       } else {
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(labelText).toHaveTextContent(`${startDate} - ${endDate}`);
       }
     });
@@ -100,8 +102,10 @@ describe('dateRangePicker', () => {
       const endDate = TEST_END_DATE_STRINGS[key];
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(labelText).toHaveTextContent(endDate);
       } else {
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(labelText).toHaveTextContent(`${startDate} - ${endDate}`);
       }
     });

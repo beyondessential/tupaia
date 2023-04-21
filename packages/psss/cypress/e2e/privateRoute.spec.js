@@ -24,6 +24,7 @@ describe('private route', () => {
   it('does not let a single country user see the countries page', () => {
     cy.server();
     cy.loginTestUser1();
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000);
     cy.visit('/');
     cy.findByText(/countries/).should('not.exist');
@@ -33,6 +34,7 @@ describe('private route', () => {
   it('does not let a single country user see the wrong country page', () => {
     cy.server();
     cy.loginTestUser1();
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000);
     cy.visit('/weekly-reports/ws');
     cy.findByText(/authorisation required/i, { selector: 'h1' });
@@ -41,6 +43,7 @@ describe('private route', () => {
   it('shows a 404 page if a user goes to an invalid url', () => {
     cy.server();
     cy.loginTestUser1();
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000);
     cy.visit('/chewbacca');
     cy.findByText(/404/i, { selector: 'h1' });

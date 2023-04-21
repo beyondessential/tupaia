@@ -26,12 +26,8 @@ export const ExportButton = ({ actionConfig, row }) => {
     <IconButton
       className="export-button"
       onClick={async () => {
-        const {
-          exportEndpoint,
-          rowIdQueryParameter,
-          extraQueryParameters,
-          fileName,
-        } = actionConfig;
+        const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
+          actionConfig;
         const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row);
         const endpoint = `export/${exportEndpoint}${
           !queryParameters && row.id ? `/${row.id}` : ''

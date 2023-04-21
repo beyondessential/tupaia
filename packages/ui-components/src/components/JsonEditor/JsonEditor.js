@@ -90,15 +90,8 @@ export class JsonEditor extends Component {
   }
 
   componentDidMount() {
-    const {
-      allowedModes,
-      innerRef,
-      htmlElementProps,
-      tag,
-      onChange,
-      onInvalidChange,
-      ...rest
-    } = this.props;
+    const { allowedModes, innerRef, htmlElementProps, tag, onChange, onInvalidChange, ...rest } =
+      this.props;
 
     this.createEditor({
       ...rest,

@@ -109,70 +109,67 @@ const getPieLegendDisplayValue = (chartConfig, value, item, isEnlarged, viewCont
   return isMobile() && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
 
-export const getPieLegend = ({
-  chartConfig = {},
-  isEnlarged,
-  isExporting,
-  legendPosition,
-  viewContent,
-}) => ({ payload }) => (
-  <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, payload: item }) => {
-      const displayValue = getPieLegendDisplayValue(
-        chartConfig,
-        value,
-        item,
-        isEnlarged,
-        viewContent,
-      );
+export const getPieLegend =
+  ({ chartConfig = {}, isEnlarged, isExporting, legendPosition, viewContent }) =>
+  ({ payload }) =>
+    (
+      <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
+        {payload.map(({ color, value, payload: item }) => {
+          const displayValue = getPieLegendDisplayValue(
+            chartConfig,
+            value,
+            item,
+            isEnlarged,
+            viewContent,
+          );
 
-      return (
-        <LegendItem
-          key={value}
-          isExporting={isExporting}
-          className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
-          disabled
-        >
-          <TooltipContainer>
-            <Box
+          return (
+            <LegendItem
+              key={value}
+              isExporting={isExporting}
               className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
-              style={{ background: color }}
-            />
-            <Text>{displayValue}</Text>
-          </TooltipContainer>
-        </LegendItem>
-      );
-    })}
-  </PieLegendContainer>
-);
+              disabled
+            >
+              <TooltipContainer>
+                <Box
+                  className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
+                  style={{ background: color }}
+                />
+                <Text>{displayValue}</Text>
+              </TooltipContainer>
+            </LegendItem>
+          );
+        })}
+      </PieLegendContainer>
+    );
 
-export const getCartesianLegend = ({
-  chartConfig,
-  onClick,
-  getIsActiveKey,
-  isExporting,
-  legendPosition,
-}) => ({ payload }) => (
-  <LegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, dataKey }) => {
-      const displayValue = chartConfig[value]?.label || value;
+export const getCartesianLegend =
+  ({ chartConfig, onClick, getIsActiveKey, isExporting, legendPosition }) =>
+  ({ payload }) =>
+    (
+      <LegendContainer $position={legendPosition} $isExporting={isExporting}>
+        {payload.map(({ color, value, dataKey }) => {
+          const displayValue = chartConfig[value]?.label || value;
 
-      return (
-        <LegendItem
-          key={value}
-          onClick={() => onClick(dataKey)}
-          isExporting={isExporting}
-          className={isMobile() ? 'small' : 'enlarged'}
-          style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
-        >
-          <Tooltip title="Click to filter data" placement="top" arrow>
-            <TooltipContainer>
-              <Box className={isMobile() ? 'small' : 'enlarged'} style={{ background: color }} />
-              <Text>{displayValue}</Text>
-            </TooltipContainer>
-          </Tooltip>
-        </LegendItem>
-      );
-    })}
-  </LegendContainer>
-);
+          return (
+            <LegendItem
+              key={value}
+              onClick={() => onClick(dataKey)}
+              isExporting={isExporting}
+              className={isMobile() ? 'small' : 'enlarged'}
+              style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
+            >
+              <Tooltip title="Click to filter data" placement="top" arrow>
+                <TooltipContainer>
+                  <Box
+                    className={isMobile() ? 'small' : 'enlarged'}
+                    style={{ background: color }}
+                  />
+                  <Text>{displayValue}</Text>
+                </TooltipContainer>
+              </Tooltip>
+            </LegendItem>
+          );
+        })}
+      </LegendContainer>
+    );

@@ -112,10 +112,8 @@ export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [
-    { project, location, startDate, endDate, testData, visualisation },
-    { setPresentation },
-  ] = useVizConfig();
+  const [{ project, location, startDate, endDate, testData, visualisation }, { setPresentation }] =
+    useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
 
   const [viewContent, setViewContent] = useState(null);

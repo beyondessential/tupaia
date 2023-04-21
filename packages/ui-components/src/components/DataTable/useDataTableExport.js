@@ -9,7 +9,11 @@ import { useTable } from 'react-table';
 import moment from 'moment';
 
 export const useDataTableExport = (columns, data, title, startDate, endDate) => {
-  const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
+  const {
+    headerGroups,
+    rows: tableData,
+    columns: tableColumns,
+  } = useTable({
     columns,
     data,
   });

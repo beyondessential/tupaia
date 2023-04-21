@@ -57,9 +57,8 @@ export const DashboardExportModal = ({
     setSelectedItems([]);
   }, [currentGroupDashboard]);
 
-  const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF(
-    pathname,
-  );
+  const { isExporting, exportToPDF, errorMessage, onReset } =
+    useDashboardItemsExportToPDF(pathname);
 
   const exportSelectedItems = async () => {
     const selectedDashboardItems = selectedItems

@@ -59,9 +59,8 @@ const createColumns = isForMultipleCountries => [
 ];
 
 export const OutbreaksTable = React.memo(({ handlePanelOpen, countryCode }) => {
-  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
-    'outbreaks',
-  );
+  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } =
+    useTableQuery('outbreaks');
 
   return (
     <>

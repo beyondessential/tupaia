@@ -173,13 +173,8 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderToolbar() {
-    const {
-      onCloseOverlay,
-      onOpenExportDialog,
-      isExporting,
-      onUnDrillDown,
-      isDrilledDown,
-    } = this.props;
+    const { onCloseOverlay, onOpenExportDialog, isExporting, onUnDrillDown, isDrilledDown } =
+      this.props;
 
     if (isExporting) {
       return null;
