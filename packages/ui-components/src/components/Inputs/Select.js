@@ -105,6 +105,7 @@ Select.propTypes = {
   defaultValue: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
+  tooltip: PropTypes.string,
 };
 
 Select.defaultProps = {
@@ -114,6 +115,7 @@ Select.defaultProps = {
   value: '',
   label: null,
   onChange: null,
+  tooltip: '',
 };
 
 export const NativeSelect = ({ value, onChange, options, placeholder, defaultValue, ...props }) => {

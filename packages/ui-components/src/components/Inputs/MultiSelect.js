@@ -54,10 +54,12 @@ MultiSelect.propTypes = {
   placeholder: PropTypes.string,
   defaultValue: PropTypes.array,
   renderValue: PropTypes.func,
+  tooltip: PropTypes.string,
 };
 
 MultiSelect.defaultProps = {
   placeholder: 'Please select',
   defaultValue: [],
   renderValue: selected => selected.join(', '),
+  tooltip: '',
 };

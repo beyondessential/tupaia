@@ -46,6 +46,23 @@ export const SimpleExample = () => {
   );
 };
 
+export const LegendTooltip = () => {
+  const [value, setValue] = useState('female');
+
+  return (
+    <Container>
+      <RadioGroup
+        label="Gender"
+        name="gender"
+        tooltip="Please select an option"
+        options={options}
+        value={value}
+        onChange={e => setValue(e.target.value)}
+      />
+    </Container>
+  );
+};
+
 export const BooleanField = () => {
   const [value, setValue] = useState(true);
 
@@ -72,6 +89,7 @@ export const BooleanField = () => {
           {
             label: 'Yes',
             value: true,
+            tooltip: 'This is a tooltip',
           },
           {
             label: 'No',
