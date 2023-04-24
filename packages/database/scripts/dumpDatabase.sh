@@ -82,8 +82,12 @@ target_path="$(
 )/$DUMP_FILE_NAME"
 target_zip_path="$target_path.gz"
 
-show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER dbname=tupaia sslmode=require sslkey=$identity_file\" -Z1 -f $target_zip_path"
+# Some tables we just want the schema only, not the data, since they're not needed for dev and it speeds up the dump
+schema_only_tables=api_request_log
+
+show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER dbname=tupaia sslmode=require sslkey=$identity_file\" -T=$schema_only_tables -Z1 -f $target_zip_path"
 show_loading_spinner "Unzipping $target_zip_path" "gunzip -f $target_zip_path"
+show_loading_spinner "Dumping schema only tables to $target_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER -s dbname=tupaia sslmode=require sslkey=$identity_file\"  -t=$schema_only_tables >> $target_path"
 
 echo "Dump file available at $target_path"
 
