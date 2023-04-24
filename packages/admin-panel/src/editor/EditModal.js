@@ -47,6 +47,7 @@ export const EditModalComponent = ({
   cancelButtonText,
   saveButtonText,
   extraDialogProps,
+  sections,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
 
@@ -63,6 +64,7 @@ export const EditModalComponent = ({
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
                 return onEditField(fieldSourceToEdit, newValue);
               }}
+              sections={sections}
             />
           )}
           {FieldsComponent && (
@@ -112,6 +114,13 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      description: PropTypes.string,
+      fields: PropTypes.arrayOf(PropTypes.string),
+    }),
+  ),
 };
 
 EditModalComponent.defaultProps = {
@@ -126,6 +135,7 @@ EditModalComponent.defaultProps = {
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
+  sections: [],
 };
 
 const mapStateToProps = state => ({

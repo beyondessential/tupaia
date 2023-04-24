@@ -34,6 +34,7 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
+  sections,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -61,7 +62,11 @@ export const ResourcePage = ({
           deleteConfig={deleteConfig}
         />
       </Container>
-      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
+      <EditModal
+        onProcessDataForSave={onProcessDataForSave}
+        {...editorConfig}
+        sections={sections}
+      />
       <LogsModal />
     </>
   );
@@ -92,6 +97,13 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      description: PropTypes.string,
+      fields: PropTypes.arrayOf(PropTypes.string),
+    }),
+  ),
 };
 
 ResourcePage.defaultProps = {
@@ -108,4 +120,5 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
+  sections: [],
 };
