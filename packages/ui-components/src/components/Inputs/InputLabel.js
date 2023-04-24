@@ -26,8 +26,11 @@ const TooltipWrapper = styled.span`
     height: 100%;
     width: 100%;
   }
-  &:hover {
-    border-color: ${props => props.theme.palette.text.secondary};
+  &:hover,
+  &:focus {
+    svg {
+      fill: ${props => props.theme.palette.primary.main};
+    }
   }
 `;
 
