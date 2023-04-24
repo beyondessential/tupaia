@@ -76,5 +76,5 @@
   "engines": {
     "node": "^14.19.3"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@3.2.4"
 }
