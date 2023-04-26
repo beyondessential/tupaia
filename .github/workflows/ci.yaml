@@ -47,58 +47,14 @@ jobs:
       - name: Validate unit tests
         run: packages/devops/scripts/ci/validateTests.sh
 
-  tests_internal_dependencies:
-    name: Test internal dependencies
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgis/postgis:13-3.2
-        env:
-          POSTGRES_PASSWORD: opensesame
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 14.19.3
-          cache: yarn
-      - run: yarn set version 3.2.4
-
-      - name: Install LastPass CLI
-        run: |
-          sudo apt-get upgrade -y
-          sudo apt-get install -y lastpass-cli
-      - name: Login to LastPass
-        run: echo ${{ secrets.LASTPASS_PASSWORD }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ secrets.LASTPASS_USERNAME }}
-      - name: Pull secrets from LastPass and save as environment variables
-        run: lpass show --notes "GitHub Action .env Environment Variables" >> $GITHUB_ENV
-      - name: Logout of LastPass
-        run: lpass logout --force
-
-      - name: Install dependencies
-        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
-      - name: Build internal dependencies
-        run: yarn build:internal-dependencies
-      - name: Test internal dependencies
-        run: ./packages/devops/scripts/ci/testInternalDependencies.sh
-
-  tests:
+  unit_tests:
     name: Run unit tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         package:
+          - internal-dependencies
           - admin-panel-server
           - central-server
           - data-table-server
@@ -152,5 +108,11 @@ jobs:
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
       - name: Build internal dependencies
         run: yarn build:internal-dependencies
-      - name: Testing ${{ matrix.package }}
+
+      - if: ${{ matrix.package == 'internal-dependencies' }}
+        name: Test internal dependencies
+        run: ./packages/devops/scripts/ci/testInternalDependencies.sh
+
+      - if: ${{ matrix.package != 'internal-dependencies' }}
+        name: Test ${{ matrix.package }}
         run: ./packages/devops/scripts/ci/testBackend.sh ${{ matrix.package }}
