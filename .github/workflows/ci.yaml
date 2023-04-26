@@ -47,9 +47,31 @@ jobs:
       - name: Validate unit tests
         run: packages/devops/scripts/ci/validateTests.sh
 
+  pull_secrets_from_lastpass:
+    name: Pull secrets from LastPass
+    runs-on: ubuntu-latest
+    outputs:
+      DB_PG_PASSWORD: ${{ steps.pull_secrets.outputs.DB_PG_PASSWORD }}
+    steps:
+      - name: Install LastPass CLI
+        run: |
+          sudo apt-get upgrade -y
+          sudo apt-get install -y lastpass-cli
+      - name: Login to LastPass
+        run: echo ${{ secrets.LASTPASS_PASSWORD }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ secrets.LASTPASS_USERNAME }}
+      - name: Pull secrets from LastPass
+        id: pull_secrets
+        run: |
+          env_vars=$(lpass show --notes "GitHub Action .env Environment Variables")
+          echo "::set-output name=env-vars::$env_vars"
+          echo $env_vars | grep DB_PG_PASSWORD >> "$GITHUB_OUTPUT"
+      - name: Logout of LastPass
+        run: lpass logout --force
+
   unit_tests:
     name: Run unit tests
     runs-on: ubuntu-latest
+    needs: pull_secrets_from_lastpass
     strategy:
       fail-fast: false
       matrix:
@@ -75,7 +97,7 @@ jobs:
       postgres:
         image: postgis/postgis:13-3.2
         env:
-          POSTGRES_PASSWORD: opensesame
+          POSTGRES_PASSWORD: ${{ needs.pull_secrets_from_lastpass.outputs.DB_PG_PASSWORD }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -94,16 +116,8 @@ jobs:
           cache: yarn
       - run: yarn set version 3.2.4
 
-      - name: Install LastPass CLI
-        run: |
-          sudo apt-get upgrade -y
-          sudo apt-get install -y lastpass-cli
-      - name: Login to LastPass
-        run: echo ${{ secrets.LASTPASS_PASSWORD }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ secrets.LASTPASS_USERNAME }}
-      - name: Pull secrets from LastPass and save as environment variables
-        run: lpass show --notes "GitHub Action .env Environment Variables" >> $GITHUB_ENV
-      - name: Logout of LastPass
-        run: lpass logout --force
+      - name: Save secrets as environment variables
+        run: echo ${{ needs.pull_secrets_from_lastpass.outputs.env-vars }} >> $GITHUB_ENV
 
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
       - name: Build internal dependencies
