@@ -152,4 +152,4 @@ jobs:
       - name: Build internal dependencies
         run: yarn build:internal-dependencies
       - name: Testing ${{ matrix.package }}
-        run: ./packages/devops/scripts/ci/testBackend.sh {{ matrix.package }}
+        run: ./packages/devops/scripts/ci/testBackend.sh ${{ matrix.package }}
