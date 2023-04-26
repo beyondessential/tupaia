@@ -18,10 +18,11 @@ export class EditProject extends EditHandler {
       return super.updateRecord();
     }
 
-    await this.models.wrapInTransaction(async transactingModels => {
+    return this.models.wrapInTransaction(async transactingModels => {
       await this.createProjectEntityRelations(transactingModels, this.recordId, countries);
+
       if (Object.keys(updatedFields).length > 0) {
-        return this.models.project.updateById(this.recordId, updatedFields);
+        await this.models.project.updateById(this.recordId, updatedFields);
       }
 
       return { id: this.recordId };
@@ -55,9 +56,9 @@ export class EditProject extends EditHandler {
     const existingRelationIds = existingRelations.map(x => x.id);
     const savedRelationIds = [];
 
-    for (const countryName of countries) {
+    for (const countryId of countries) {
       const { code: countryCode } = await models.country.findOne({
-        name: countryName,
+        id: countryId,
       });
       const { id: entityId } = await models.entity.findOne({
         code: countryCode,

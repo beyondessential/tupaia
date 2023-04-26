@@ -56,13 +56,13 @@ const FIELDS = [
   },
   {
     Header: 'Countries',
-    source: 'countryNames',
+    source: 'countries',
     Filter: ArrayFilter,
     type: 'jsonTooltip',
     editConfig: {
       optionsEndpoint: 'countries',
-      optionLabelKey: 'name',
-      optionValueKey: 'name',
+      optionLabelKey: 'country.name',
+      optionValueKey: 'country.id',
       sourceKey: 'countries',
       allowMultipleValues: true,
     },

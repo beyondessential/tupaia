@@ -46,26 +46,26 @@ export class GETProjects extends GETHandler {
       assertAnyPermissions([assertBESAdminAccess, projectPermissionChecker]),
     );
 
-    const countryNameKey = options.columns.find(x => Object.keys(x)[0] === 'countryNames');
+    const countryNameKey = options.columns.find(x => Object.keys(x)[0] === 'countries');
     if (!countryNameKey) {
       return super.findSingleRecord(projectId, options);
     }
 
-    const columns = options.columns.filter(x => Object.keys(x)[0] !== 'countryNames');
+    const columns = options.columns.filter(x => Object.keys(x)[0] !== 'countries');
     const dbOptions = { ...options, columns: [...columns, { id: 'project.id' }] };
     const countries = await this.getProjectCountries();
     const countriesById = keyBy(countries, 'projectId');
     const project = await super.findSingleRecord(projectId, dbOptions);
-    return { ...project, countryNames: countriesById[project.id].countryNames };
+    return { ...project, countries: countriesById[project.id].countryNames };
   }
 
   async findRecords(criteria, options) {
-    const countryNameKey = options.columns.find(x => Object.keys(x)[0] === 'countryNames');
+    const countryNameKey = options.columns.find(x => Object.keys(x)[0] === 'countries');
     if (!countryNameKey) {
       return super.findRecords(criteria, options);
     }
 
-    const columns = options.columns.filter(x => Object.keys(x)[0] !== 'countryNames');
+    const columns = options.columns.filter(x => Object.keys(x)[0] !== 'countries');
     const dbOptions = { ...options, columns };
     const projects = await this.database.find(this.recordType, criteria, dbOptions);
 
@@ -74,7 +74,7 @@ export class GETProjects extends GETHandler {
     return projects.map(project => {
       return {
         ...project,
-        countryNames: countriesById[project.id].countryNames,
+        countries: countriesById[project.id].countryNames,
       };
     });
   }
