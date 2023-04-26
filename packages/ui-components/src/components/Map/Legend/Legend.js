@@ -82,10 +82,12 @@ export const Legend = React.memo(
           // if type is radius or popup-only, don't create a legend
           if ([MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type)) return false;
           // if hideFromLegend is true, don't create a legend
-          if (hideFromLegend === true) return false;
+          if (hideFromLegend) return false;
           // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
           if ([MEASURE_TYPE_SHADED_SPECTRUM, MEASURE_TYPE_SPECTRUM].includes(type))
-            return noDataColour ? true : !(min === null || max === null);
+            return noDataColour
+              ? true
+              : !(min === null || min === undefined || max === null || max === undefined);
           return values.filter(value => !value?.hideFromLegend).length > 0;
         },
       );
