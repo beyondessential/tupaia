@@ -45,6 +45,12 @@ export const openBulkEditModal = (
         type: EDITOR_DATA_FETCH_SUCCESS,
         recordData: response.body,
       });
+      dispatch({
+        type: EDITOR_OPEN,
+        fields,
+        recordData: response.body,
+        endpoint: bulkUpdateEndpoint,
+      });
     } catch (error) {
       dispatch({
         type: EDITOR_ERROR,

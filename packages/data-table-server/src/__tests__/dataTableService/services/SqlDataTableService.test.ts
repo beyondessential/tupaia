@@ -69,12 +69,33 @@ describe('SqlDataTableService', () => {
         .setConfig({
           sql,
           externalDatabaseConnectionCode: externalDatabaseConnection.code,
-          additionalParameters: [{ name: 'entityCode', config: { type: 'string' } }],
+          additionalParams: [{ name: 'entityCode', config: { type: 'string' } }],
         })
         .build();
 
       const [result] = await service.fetchData(params);
       expect(result).toEqual({ sql, params });
+    });
+
+    it('converts params with missing values to nulls', async () => {
+      const sql =
+        'SELECT * FROM analytics WHERE entity_code = :entityCode AND hierarchy = :hierarchy';
+      const params = { entityCode: 'TO' };
+      const service = new DataTableServiceBuilder()
+        .setServiceType('sql')
+        .setContext({ models: modelsStub })
+        .setConfig({
+          sql,
+          externalDatabaseConnectionCode: externalDatabaseConnection.code,
+          additionalParams: [
+            { name: 'entityCode', config: { type: 'string' } },
+            { name: 'hierarchy', config: { type: 'string' } },
+          ],
+        })
+        .build();
+
+      const [result] = await service.fetchData(params);
+      expect(result).toEqual({ sql, params: { ...params, hierarchy: null } });
     });
   });
 });
