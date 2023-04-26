@@ -12,6 +12,7 @@ import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 import { reportServer } from './dataBuilders';
+import { log } from 'console';
 
 const ADD_TO_ALL_KEY = '$all';
 
@@ -188,7 +189,10 @@ export default class extends DataAggregatingRouteHandler {
           throw new CustomError(accessDeniedForMeasure);
         }
       }),
-    );
+    ).catch(e => {
+      // in the event of an access denied error, we need to catch this and handle it by throwing it further down the chain, so that the frontend can handle it and not show a blank screen
+      throw new Error(e);
+    });
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const responseData = await Promise.all(
