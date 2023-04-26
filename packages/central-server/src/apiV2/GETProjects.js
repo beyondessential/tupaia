@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import keyBy from 'lodash.keyBy';
+import keyBy from 'lodash.keyby';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from './GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
