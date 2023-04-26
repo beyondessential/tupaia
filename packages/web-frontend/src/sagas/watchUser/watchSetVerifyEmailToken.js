@@ -4,6 +4,7 @@ import {
   openEmailVerifiedPage,
   setOverlayComponent,
   SET_VERIFY_EMAIL_TOKEN,
+  goHome,
 } from '../../actions';
 import { request } from '../../utils';
 
@@ -13,10 +14,10 @@ function* attemptVerifyToken(action) {
   try {
     yield call(request, requestResourceUrl);
     yield put(openEmailVerifiedPage());
-    yield put(setOverlayComponent('landing'));
   } catch (error) {
     yield put(fetchEmailVerifyError());
-    yield put(setOverlayComponent('landing'));
+  } finally {
+    yield put(goHome());
   }
 }
 
