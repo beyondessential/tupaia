@@ -120,6 +120,7 @@ const mapDispatchToProps = (
     allowMultipleValues,
     baseFilter,
     pageSize,
+    distinct,
   },
 ) => ({
   onChangeSelection: (event, newSelection, reason) => {
@@ -155,6 +156,7 @@ const mapDispatchToProps = (
         parentRecord,
         baseFilter,
         pageSize,
+        distinct,
       ),
     ),
   onClearState: () => dispatch(clearState(reduxId)),
