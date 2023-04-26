@@ -50,7 +50,6 @@ jobs:
   tests_internal_dependencies:
     name: Test internal dependencies
     runs-on: ubuntu-latest
-    needs: [validate_branch_name, validate_migration, validate_tests]
 
     services:
       postgres:
@@ -93,7 +92,6 @@ jobs:
   tests:
     name: Run unit tests
     runs-on: ubuntu-latest
-    needs: [validate_branch_name, validate_migration, validate_tests]
     strategy:
       matrix:
         package:
