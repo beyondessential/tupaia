@@ -55,6 +55,7 @@ jobs:
     steps:
       - name: Install LastPass CLI
         run: |
+          sudo apt-get update -y
           sudo apt-get upgrade -y
           sudo apt-get install -y lastpass-cli
       - name: Login to LastPass
