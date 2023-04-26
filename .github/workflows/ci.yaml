@@ -1,4 +1,4 @@
-name: Validation
+name: Tupaia CI
 on:
   push:
     branches:
@@ -62,6 +62,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
 
     steps:
       - uses: actions/checkout@v3
@@ -122,6 +125,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
 
     steps:
       - uses: actions/checkout@v3
@@ -143,7 +149,7 @@ jobs:
         run: lpass logout --force
 
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
-      - name: Testing internal dependencies
+      - name: Build internal dependencies
         run: yarn build:internal-dependencies
       - name: Testing ${{ matrix.package }}
         run: ./packages/devops/scripts/ci/testBackend.sh {{ matrix.package }}
