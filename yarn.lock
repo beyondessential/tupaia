@@ -5053,7 +5053,6 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/database": 1.0.0
-    "@tupaia/report-server": 0.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -5649,7 +5648,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/report-server@0.0.0, @tupaia/report-server@workspace:packages/report-server":
+"@tupaia/report-server@workspace:packages/report-server":
   version: 0.0.0-use.local
   resolution: "@tupaia/report-server@workspace:packages/report-server"
   dependencies:

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { StandardOrCustomReportConfig } from '../types';
+import type { StandardOrCustomReportConfig } from '@tupaia/types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildTransform, TransformTable } from './transform';
