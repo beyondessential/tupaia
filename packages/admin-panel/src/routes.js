@@ -165,14 +165,14 @@ export const ROUTES = [
         component: PermissionGroupsPage,
       },
       {
-        label: 'Access Requests',
-        to: '/access-requests',
-        component: AccessRequestsPage,
-      },
-      {
         label: 'Permission Groups Viewer',
         to: '/permission-groups-viewer',
         component: PermissionGroupsViewerPage,
+      },
+      {
+        label: 'Access Requests',
+        to: '/access-requests',
+        component: AccessRequestsPage,
       },
     ],
   },

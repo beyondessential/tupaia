@@ -12,6 +12,10 @@ const COLUMNS = [
     Header: 'Name',
     source: 'name',
   },
+  {
+    Header: 'Parent',
+    source: 'parent.name',
+  },
 ];
 
 const CREATE_CONFIG = {
