@@ -9,6 +9,12 @@ import { assertAdminPanelAccess, hasTupaiaAdminPanelAccess } from '../permission
 export class GETPermissionGroups extends GETHandler {
   permissionsFilteredInternally = true;
 
+  columns = [
+    { name: 'permission_group.name' },
+    { id: 'permission_group.id' },
+    { parent_id: 'permission_group.parent_id' },
+  ];
+
   async assertUserHasAccess() {
     await this.assertPermissions(assertAdminPanelAccess);
   }
@@ -30,30 +36,28 @@ export class GETPermissionGroups extends GETHandler {
     };
   }
 
-  getCustomMultiJoin(multiJoin) {
-    let customJoin = multiJoin;
-    const parent = customJoin.find(join => join.joinWith === 'parent');
-    if (parent) {
-      customJoin = customJoin.filter(join => join.joinWith !== 'parent');
-      customJoin.push({
-        joinWith: 'permission_group',
-        joinAs: 'parent',
-        joinCondition: ['permission_group.parent_id', 'parent.id'],
-        joinType: null,
-      });
-    }
+  getAncestors(data, parentId, ancestors) {
+    const parent = data.find(x => x.id === parentId);
 
-    return customJoin;
+    if (parent) {
+      const newAncestors = [...ancestors, parent];
+      return this.getAncestors(data, parent.parent_id, newAncestors);
+    }
+    return ancestors;
+  }
+
+  getAllPermissionGroupRecords() {
+    return this.database.find(this.recordType, {}, { columns: this.columns });
   }
 
   async findRecords(criteria, options) {
-    const multiJoin = this.getCustomMultiJoin(options.multiJoin);
-    return super.findRecords(criteria, { ...options, multiJoin });
-  }
+    const records = await super.findRecords(criteria, { ...options, columns: this.columns });
+    // add check for ancestors
+    const data = await this.getAllPermissionGroupRecords();
 
-  async countRecords(criteria, { multiJoin: baseJoin }) {
-    const multiJoin = this.getCustomMultiJoin(baseJoin);
-    const options = { multiJoin }; // only the join option is required for count
-    return this.database.count(this.recordType, criteria, options);
+    return records.map(r => {
+      const ancestors = this.getAncestors(data, r.parent_id, []);
+      return { ...r, ancestors };
+    });
   }
 }
