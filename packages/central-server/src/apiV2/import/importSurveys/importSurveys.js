@@ -426,7 +426,7 @@ async function processOptionSetName(models, name, excelRowNumber, tabName) {
   // TODO: Figure out why undefined value is returning all results.
   if (name) {
     const optionSet = await models.optionSet.findOne({ name });
-    if (optionSet !== null) {
+    if (!optionSet) {
       const message = 'The Option Set listed does not exist.';
       throw new ImportValidationError(message, excelRowNumber, 'optionSet', tabName);
     }
