@@ -9,7 +9,9 @@ import { assertAdminPanelAccess, hasTupaiaAdminPanelAccess } from '../permission
 export class GETPermissionGroups extends GETHandler {
   permissionsFilteredInternally = true;
 
-  columns = [
+  ancestorsFieldKey = 'ancestors';
+
+  dbQueryColumns = [
     { name: 'permission_group.name' },
     { id: 'permission_group.id' },
     { parent_id: 'permission_group.parent_id' },
@@ -36,6 +38,12 @@ export class GETPermissionGroups extends GETHandler {
     };
   }
 
+  /**
+   * Recursive function that get's all the ancestors for a given permission group
+   * @param data: the full data set of permission groups
+   * @param parentId: a permission group id
+   * @param ancestors: the accumulating array of ancestor records
+   */
   getAncestors(data, parentId, ancestors) {
     const parent = data.find(x => x.id === parentId);
 
@@ -46,18 +54,32 @@ export class GETPermissionGroups extends GETHandler {
     return ancestors;
   }
 
+  /**
+   * Get all the permission groups so that ancestors can be looked up and attached
+   */
   getAllPermissionGroupRecords() {
-    return this.database.find(this.recordType, {}, { columns: this.columns });
+    return this.database.find(
+      this.recordType,
+      {},
+      {
+        columns: this.dbQueryColumns,
+      },
+    );
   }
 
   async findRecords(criteria, options) {
-    const records = await super.findRecords(criteria, { ...options, columns: this.columns });
-    // add check for ancestors
+    // If ancestors were not requested, return the standard response. Otherwise attach them below
+    if (!options.columns.find(column => Object.keys(column).includes(this.ancestorsFieldKey))) {
+      return super.findRecords(criteria, options);
+    }
+
+    // Manually set the query columns as they need to include the id, name and parent_id and not ancestors
+    const records = await super.findRecords(criteria, { ...options, columns: this.dbQueryColumns });
     const data = await this.getAllPermissionGroupRecords();
 
-    return records.map(r => {
-      const ancestors = this.getAncestors(data, r.parent_id, []);
-      return { ...r, ancestors };
+    return records.map(record => {
+      const ancestors = this.getAncestors(data, record.parent_id, []);
+      return { ...record, ancestors };
     });
   }
 }
