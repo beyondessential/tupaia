@@ -39,7 +39,8 @@ export class GETPermissionGroups extends GETHandler {
   }
 
   /**
-   * Recursive function that get's all the ancestors for a given permission group
+   * Recursive function that gets all the ancestors for a given permission group
+   *
    * @param data: the full data set of permission groups
    * @param parentId: a permission group id
    * @param ancestors: the accumulating array of ancestor records
