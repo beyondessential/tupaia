@@ -7,7 +7,7 @@ import React from 'react';
 import { InfoOutlined } from '@material-ui/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Tooltip } from '../Tooltip';
+import { Tooltip as BaseTooltip } from '../Tooltip';
 
 /** Styled label for inputs. Handles tooltips for labels if present. */
 
@@ -19,9 +19,12 @@ const LabelWrapper = styled.span`
 const TooltipWrapper = styled.span`
   pointer-events: auto;
   cursor: pointer;
-  margin-left: 0.5em;
-  height: 1.4em;
+  margin-left: 0.4em;
   border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 1rem;
   svg {
     height: 100%;
     width: 100%;
@@ -30,6 +33,18 @@ const TooltipWrapper = styled.span`
   &:focus {
     svg {
       fill: ${props => props.theme.palette.primary.main};
+    }
+  }
+`;
+
+const Tooltip = styled(BaseTooltip)`
+  & .MuiTooltip-tooltip {
+    background-color: ${props => props.theme.palette.text.primary};
+    border-radius: 3px;
+    font-weight: ${props => props.theme.typography.fontWeightRegular};
+    font-size: 0.69rem;
+    .MuiTooltip-arrow {
+      color: ${props => props.theme.palette.text.primary};
     }
   }
 `;
