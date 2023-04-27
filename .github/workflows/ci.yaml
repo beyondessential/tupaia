@@ -97,6 +97,10 @@ jobs:
           - database
           - indicators
           - web-frontend
+        include:
+          - command: ./packages/devops/scripts/ci/testBackend.sh
+          - command: ./packages/devops/scripts/ci/testInternalDependencies.sh
+            package: internal-dependencies
 
     services:
       postgres:
@@ -133,13 +137,8 @@ jobs:
       - name: Build internal dependencies
         run: yarn build:internal-dependencies
 
-      - if: ${{ matrix.package == 'internal-dependencies' }}
-        name: Test internal dependencies
-        run: ./packages/devops/scripts/ci/testInternalDependencies.sh
-
-      - if: ${{ matrix.package != 'internal-dependencies' }}
-        name: Test ${{ matrix.package }}
-        run: ./packages/devops/scripts/ci/testBackend.sh ${{ matrix.package }}
+      - name: Test ${{ matrix.package }}
+        run: ${{ matrix.command }} ${{ matrix.package }}
 
   remove_secrets_from_artifact:
     name: Remove secrets from artifact
