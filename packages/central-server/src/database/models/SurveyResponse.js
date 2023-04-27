@@ -71,7 +71,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   };
 
   /**
-   * Returns the SQL to inclue only event based survey responses from a statement that has
+   * Returns the SQL to include only event based survey responses from a statement that has
    * already JOINed both survey and entity
    */
   getOnlyEventsQueryClause = () => `
@@ -99,7 +99,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       [surveyResponseId],
     );
     if (result.length === 0) return false;
-    return result[0].count === '1';
+    return result[0].count === 1;
   }
 
   approvalStatusTypes = SURVEY_RESPONSE_APPROVAL_STATUS;
