@@ -27,7 +27,7 @@ const NO_RESULTS_SECTION = { title: 'No results', data: [] };
 export class EntityList extends PureComponent {
   constructor(props) {
     super(props);
-    this.allEntitiesQuery = fetchEntities(
+    this.baseEntities = fetchEntities(
       this.props.realmDatabase,
       this.props.baseEntityFilters,
       this.props.checkEntityAttributes,
@@ -107,14 +107,8 @@ export class EntityList extends PureComponent {
       return;
     }
 
-    const primarySearchResults = this.allEntitiesQuery.filtered(
-      `name BEGINSWITH[c] $0`,
-      searchTerm,
-    );
-    const secondarySearchResults = this.allEntitiesQuery.filtered(
-      `(NOT name BEGINSWITH[c] $0) AND (name CONTAINS[c] $0 OR parent.name BEGINSWITH[c] $0)`,
-      searchTerm,
-    );
+    const primarySearchResults = this.baseEntities.filter(entity => entity.name.startsWith(searchTerm));
+    const secondarySearchResults = this.baseEntities.filter(entity => !entity.name.startsWith(searchTerm) && entity.name.includes(searchTerm));
     this.setState({
       searchTerm,
       primarySearchResults,
@@ -139,8 +133,8 @@ export class EntityList extends PureComponent {
     }
 
     const { recentEntities } = this.props;
-    const allEntities = this.allEntitiesQuery.slice(0, numberToShow);
-    const moreAvailable = allEntities.length < this.allEntitiesQuery.length;
+    const allEntities = this.baseEntities.slice(0, numberToShow);
+    const moreAvailable = allEntities.length < this.baseEntities.length;
     if (recentEntities?.length > 0) {
       return {
         sections: [
@@ -188,7 +182,7 @@ export class EntityList extends PureComponent {
     const { isOpen, numberToShow } = this.state;
 
     // if base query is empty, the survey is probably misconfigured
-    if (this.allEntitiesQuery.length === 0) {
+    if (this.baseEntities.length === 0) {
       return (
         <Text style={localStyles.noResultsText}>
           No valid entities for this question, please contact your survey administrator.
@@ -232,8 +226,8 @@ export class EntityList extends PureComponent {
     const { selectedEntityId } = this.props;
     const { searchTerm } = this.state;
 
-    if (this.allEntitiesQuery.length > 0 && selectedEntityId) {
-      const selectedEntity = this.allEntitiesQuery.filtered(`id = "${selectedEntityId}"`)[0];
+    if (this.baseEntities.length > 0 && selectedEntityId) {
+      const selectedEntity = this.baseEntities.filter(entity => entity.id === selectedEntityId)[0];
       return (
         <View style={localStyles.container}>
           {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
