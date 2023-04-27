@@ -14,7 +14,7 @@ const attachQualifiersToSchema = (
   if (oneOf) {
     qualifiedSchema = qualifiedSchema.oneOf(oneOf);
   }
-  if (defaultValue) {
+  if (defaultValue !== undefined) {
     qualifiedSchema = qualifiedSchema.default(schema.cast(defaultValue)); // This aims to cast date defaultValue from string type to date type
   } else if (required) {
     qualifiedSchema = qualifiedSchema.required();

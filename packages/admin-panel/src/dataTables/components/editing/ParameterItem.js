@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Divider as BaseDivider } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
@@ -42,18 +42,9 @@ const DeleteOutlinedIcon = styled(BaseDeleteOutlinedIcon)`
 `;
 
 export const ParameterItem = props => {
-  const {
-    id,
-    name,
-    type,
-    hasDefaultValue,
-    defaultValue,
-    hasError,
-    error,
-    onDelete,
-    onChange,
-  } = props;
+  const { id, name, type, defaultValue, hasError, error, onDelete, onChange } = props;
 
+  const [hasDefaultValue, setHasDefaultValue] = useState(defaultValue !== undefined);
   const option = FilterTypeOptions.find(t => t.value === type) || {};
   const { FilterComponent } = option;
 
@@ -97,7 +88,7 @@ export const ParameterItem = props => {
             color="primary"
             checked={hasDefaultValue}
             onChange={event => {
-              onChange(id, 'hasDefaultValue', event.target.checked);
+              setHasDefaultValue(event.target.checked);
               if (!event.target.checked) {
                 onChange(id, 'defaultValue', undefined);
               }
@@ -129,7 +120,6 @@ export const ParameterItem = props => {
 ParameterItem.propTypes = {
   defaultValue: DefaultValueType,
   error: PropTypes.string,
-  hasDefaultValue: PropTypes.bool,
   hasError: PropTypes.bool,
   id: PropTypes.string.isRequired,
   name: PropTypes.string,
@@ -141,7 +131,6 @@ ParameterItem.propTypes = {
 ParameterItem.defaultProps = {
   defaultValue: undefined,
   error: '',
-  hasDefaultValue: false,
   hasError: false,
   name: '',
   type: '',

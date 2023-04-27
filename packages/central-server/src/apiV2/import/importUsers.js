@@ -12,8 +12,10 @@ import {
   ObjectValidator,
   hasContent,
   constructIsOneOf,
+  constructIsEmptyOr,
 } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { VerifiedEmail } from '@tupaia/types';
 import { assertBESAdminAccess } from '../../permissions';
 
 export async function importUsers(req, res) {
@@ -90,10 +92,11 @@ const FIELD_VALIDATORS = {
   first_name: [hasContent],
   last_name: [],
   email: [hasContent],
-  gender: [hasContent, constructIsOneOf(['f', 'm'])],
+  gender: [constructIsEmptyOr(constructIsOneOf(['f', 'm', 'unknown']))],
   employer: [hasContent],
   position: [hasContent],
   mobile_number: [],
   password: [hasContent],
   permission_group: [hasContent],
+  verified_email: [constructIsEmptyOr(constructIsOneOf(Object.values(VerifiedEmail)))],
 };

@@ -11,6 +11,7 @@ import { ParameterType } from '../../editing';
 import { useEntities } from '../../../../VizBuilderApp/api';
 import { Autocomplete } from '../../../../autocomplete';
 import { useDebounce } from '../../../../utilities';
+import { getArrayFieldValue } from './utils';
 
 export const OrganisationUnitCodesField = ({ name, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,7 +32,7 @@ export const OrganisationUnitCodesField = ({ name, onChange }) => {
       isLoading={isLoading}
       onChangeSelection={(event, selectedValues) => {
         setSelectedOptions(selectedValues);
-        onChange(selectedValues.map(v => v.code));
+        onChange(getArrayFieldValue(selectedValues.map(v => v.code)));
       }}
       onChangeSearchTerm={setSearchTerm}
       searchTerm={searchTerm}

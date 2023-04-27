@@ -91,8 +91,6 @@ export const DataTableEditFields = React.memo(
       error,
     } = useDataTablePreview({
       previewConfig: recordData,
-      builtInParams,
-      additionalParams,
       runtimeParams,
       onSettled: () => {
         setFetchDisabled(false);
