@@ -36,7 +36,7 @@ const DescendantsContainer = styled.div`
   border-radius: 5px 5px 0px 0px;
 `;
 
-export const HorizontalTree = ({ fetchData }) => {
+export const HorizontalTree = ({ fetchData, className }) => {
   const [selectedRoot, setSelectedRoot] = useState(undefined);
   const { data, isLoading, error, fetchData: fetchRootData } = useData(fetchData);
   const {
@@ -52,7 +52,7 @@ export const HorizontalTree = ({ fetchData }) => {
   }, [fetchRootData]);
 
   return (
-    <Container>
+    <Container className={className}>
       <RootContainer>
         <Column
           data={data}
@@ -88,4 +88,9 @@ export const HorizontalTree = ({ fetchData }) => {
 
 HorizontalTree.propTypes = {
   fetchData: PropTypes.func.isRequired,
+  className: PropTypes.string,
+};
+
+HorizontalTree.defaultProps = {
+  className: undefined,
 };

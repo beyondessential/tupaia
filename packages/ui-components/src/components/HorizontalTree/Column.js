@@ -25,17 +25,16 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
   flex: 1;
-  width: 278px;
   padding: 12px;
-  overflow-y: overlay;
+  overflow-y: auto;
   border-right: 1px solid ${({ theme }) => theme.palette.grey['400']};
 
   .MuiListItem-root {
+    align-items: flex-start;
     border-radius: 10px;
     width: 100%;
     padding: 0;
     background-color: transparent;
-    word-break: break-all;
 
     &.Mui-selected {
       color: ${({ isExpanded, showExpandIcon, theme }) =>
