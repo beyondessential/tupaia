@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { InputGroup } from '@tupaia/ui-components';
 import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { SECTION_FIELD_TYPE } from './constants';
 
 export const Editor = ({ fields, recordData, onEditField }) => {
   const onInputChange = (inputKey, inputValue, editConfig = {}) => {
@@ -70,7 +71,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
 
   // Get the form fields and sections that are visible from the fields prop, handling nested sections
   const visibleFormItems = filterVisibleFields(fields).reduce((result, field) => {
-    if (field.type === 'section') {
+    if (field.type === SECTION_FIELD_TYPE) {
       const visibleSubfields = filterVisibleFields(field.fields);
       if (!visibleSubfields.length) return result;
       return [
@@ -87,7 +88,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
   return (
     <div>
       {visibleFormItems.map(item =>
-        item.type === 'section' ? (
+        item.type === SECTION_FIELD_TYPE ? (
           <InputGroup
             key={item.title}
             title={item.title}
