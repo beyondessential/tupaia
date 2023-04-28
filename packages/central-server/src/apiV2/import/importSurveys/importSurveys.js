@@ -4,25 +4,18 @@
  */
 
 import xlsx from 'xlsx';
-
 import {
   respond,
   DatabaseError,
   UploadError,
   ImportValidationError,
-  ValidationError,
   ObjectValidator,
 } from '@tupaia/utils';
-import {
-  deleteScreensForSurvey,
-  deleteOrphanQuestions,
-  validateSurveyFields,
-} from '../../../dataAccessors';
+import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import {
   splitStringOnComma,
   splitOnNewLinesOrCommas,
-  extractTabNameFromQuery,
   getArrayQueryParameter,
 } from '../../utilities';
 import { ConfigImporter } from './ConfigImporter';
@@ -32,29 +25,13 @@ import {
   validateSurveyMetadataRow,
   SURVEY_METADATA,
 } from './processSurveyMetadata';
-import {
-  caseAndSpaceInsensitiveEquals,
-  convertCellToJson,
-  findOrCreateSurveyCode,
-} from './utilities';
+import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../../database';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { assertCanImportSurveys } from './assertCanImportSurveys';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
-const DEFAULT_SERVICE_TYPE = 'tupaia';
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
-
-const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
-  const existingDataGroup = await models.dataGroup.findOne({ code: surveyCode });
-  if (existingDataGroup !== null) {
-    if (serviceType !== existingDataGroup.service_type) {
-      throw new ImportValidationError(
-        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to import with Data service: ${serviceType}.`,
-      );
-    }
-  }
-};
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -62,20 +39,6 @@ const validateQuestionExistence = rows => {
     throw new ImportValidationError('No questions listed in import file');
   }
   return true;
-};
-
-const updateOrCreateDataGroup = async (models, { surveyCode, serviceType, dhisInstanceCode }) => {
-  const dataGroup = await models.dataGroup.findOrCreate(
-    {
-      code: surveyCode,
-    },
-    { service_type: serviceType, config: { dhisInstanceCode } },
-  );
-
-  dataGroup.sanitizeConfig();
-  await dataGroup.save();
-
-  return dataGroup;
 };
 
 const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
@@ -117,118 +80,41 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
  * Responds to POST requests to the /surveys endpoint
  */
 export async function importSurveys(req, res) {
-  const { models } = req;
-  if (!req.query || !req.query.surveyNames) {
-    throw new ValidationError('HTTP query should contain surveyNames');
-  }
-  const requestedSurveyNames = getArrayQueryParameter(req.query.surveyNames);
-  if (!req.file) {
-    throw new UploadError();
-  }
-  const workbook = xlsx.readFile(req.file.path);
   try {
+    if (!req.file) {
+      throw new UploadError();
+    }
+    const { models, query, file } = req;
+
+    const workbook = xlsx.readFile(file.path);
+    const tabNames = Object.keys(workbook.Sheets);
+    const querySurveyCodes = getArrayQueryParameter(query.surveyCodes);
+
+    if (querySurveyCodes) {
+      for (const querySurveyCode of querySurveyCodes) {
+        if (!tabNames.includes(querySurveyCode)) {
+          throw new ImportValidationError(
+            `Survey with code ${querySurveyCode} specified in import but there is no tab named ${querySurveyCode} in the spreadsheet.`,
+          );
+        }
+      }
+    }
+
+    const importSurveysPermissionsChecker = async accessPolicy =>
+      assertCanImportSurveys(accessPolicy, models, querySurveyCodes);
+
+    await req.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
+    );
+
     await models.wrapInTransaction(async transactingModels => {
-      const permissionGroup = await transactingModels.permissionGroup.findOne({
-        name: req.query.permissionGroup || 'Public',
-      });
-      if (!permissionGroup) {
-        throw new DatabaseError('finding permission group');
-      }
+      for (const sheets of Object.entries(workbook.Sheets)) {
+        const [tabName, sheet] = sheets;
 
-      const surveyNames = Object.entries(workbook.Sheets).map(([tabName]) => {
-        return extractTabNameFromQuery(tabName, requestedSurveyNames);
-      });
-
-      const importSurveysPermissionsChecker = async accessPolicy =>
-        assertCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
-
-      await req.assertPermissions(
-        assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
-      );
-
-      let surveyGroup;
-      if (req.query.surveyGroup) {
-        surveyGroup = await transactingModels.surveyGroup.findOrCreate({
-          name: req.query.surveyGroup,
-        });
-      }
-
-      // Go through each sheet, and make a survey for each
-      for (const surveySheets of Object.entries(workbook.Sheets)) {
-        const [tabName, sheet] = surveySheets;
-        const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
-        const surveyCode = await findOrCreateSurveyCode(transactingModels, surveyName);
-
-        const { serviceType = DEFAULT_SERVICE_TYPE, dhisInstanceCode = '' } = req.query;
-
-        await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
-
-        try {
-          await validateSurveyFields(transactingModels, {
-            code: surveyCode,
-            serviceType,
-            periodGranularity: req.query.periodGranularity,
-            dhisInstanceCode,
-          });
-        } catch (error) {
-          throw new ImportValidationError(error.message);
-        }
-
-        const dataGroup = await updateOrCreateDataGroup(transactingModels, {
-          surveyCode,
-          serviceType,
-          dhisInstanceCode,
-        });
-
-        // Clear all existing data element/data group associations
-        // We will re-create the ones required by the survey while processing its questions
-        await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
-
-        // Refresh SurveyDate element
-        await dataGroup.deleteSurveyDateElement();
-        await dataGroup.upsertSurveyDateElement();
-
-        // Get the survey based on the name of the sheet/tab
-        const survey = await transactingModels.survey.findOrCreate(
-          {
-            name: surveyName,
-          },
-          {
-            // If no survey with that name is found, give it a code and public permissions
-            code: surveyCode,
-            permission_group_id: permissionGroup.id,
-            data_group_id: dataGroup.id,
-          },
-        );
+        if (querySurveyCodes && !querySurveyCodes.includes(tabName)) continue;
+        const survey = await models.survey.findOne({ code: tabName });
         if (!survey) {
-          throw new DatabaseError('creating survey, check format of import file');
-        }
-
-        // Work out what fields of the survey should be updated based on query params
-        const fieldsToForceUpdate = {};
-        if (req.query.countryIds) {
-          // Set the countries this survey is available in
-          fieldsToForceUpdate.country_ids = getArrayQueryParameter(req.query.countryIds);
-        }
-        if (surveyGroup) {
-          fieldsToForceUpdate.survey_group_id = surveyGroup.id;
-        }
-        if (req.query.permissionGroup) {
-          // A non-default permission group was provided
-          fieldsToForceUpdate.permission_group_id = permissionGroup.id;
-        }
-        if (req.query.surveyCode) {
-          fieldsToForceUpdate.code = req.query.surveyCode;
-        }
-        if (req.query.periodGranularity) {
-          fieldsToForceUpdate.period_granularity = req.query.periodGranularity;
-        }
-        if (req.query.requiresApproval) {
-          fieldsToForceUpdate.requires_approval = req.query.requiresApproval;
-        }
-        // Update the survey based on the fields to force update
-        if (Object.keys(fieldsToForceUpdate).length > 0) {
-          await transactingModels.survey.update({ id: survey.id }, fieldsToForceUpdate);
+          throw new Error(`Tab name "${tabName}" does not match an existing survey code`);
         }
 
         // Delete all existing survey screens and components that were attached to this survey
@@ -310,6 +196,8 @@ export async function importSurveys(req, res) {
             optionSet,
             hook,
           } = questionObject;
+
+          const dataGroup = await transactingModels.dataGroup.findById(survey.data_group_id);
 
           let dataElement;
           if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {

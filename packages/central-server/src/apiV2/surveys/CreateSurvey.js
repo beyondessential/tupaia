@@ -5,6 +5,7 @@
 
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { validateSurveyFields } from '../../dataAccessors';
 
 /**
  * Handles POST endpoints:
@@ -16,6 +17,11 @@ export class CreateSurvey extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess], 'You need BES Admin to create new Surveys'),
     );
+  }
+
+  async validateNewRecord() {
+    await super.validateNewRecord();
+    await validateSurveyFields(this.models, this.newRecordData); // extra validation too complex for constructNewRecordValidationRules, and reused by Edit route
   }
 
   async createRecord() {

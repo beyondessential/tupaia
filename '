@@ -1,0 +1,23 @@
+Add ResourceAutocomplete
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Fri Apr 21 16:08:24 2023 +1000
+#
+# On branch mdev-48-pre-fill-survey
+# Changes to be committed:
+#	new file:   packages/admin-panel/src/autocomplete/ResourceAutocomplete.js
+#	modified:   packages/admin-panel/src/autocomplete/index.js
+#	new file:   packages/admin-panel/src/autocomplete/useSearchResults.js
+#
+# Changes not staged for commit:
+#	modified:   packages/admin-panel/src/pages/resources/SurveysPage.js
+#	modified:   packages/admin-panel/src/widgets/InputField/registerInputFields.js
+#	modified:   packages/central-server/src/apiV2/export/exportSurveys/SurveyExporter.js
+#	modified:   packages/central-server/src/apiV2/import/importSurveys/assertCanImportSurveys.js
+#	modified:   packages/central-server/src/apiV2/import/importSurveys/importSurveys.js
+#	modified:   packages/central-server/src/apiV2/surveys/CreateSurvey.js
+#	modified:   packages/central-server/src/dataAccessors/editSurvey.js
+#	modified:   packages/central-server/src/dataAccessors/validateSurveyFields.js
+#

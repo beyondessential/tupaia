@@ -3,30 +3,20 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Autocomplete } from './Autocomplete';
 import { useSearchResults } from './useSearchResults';
-
-const getPlaceholder = (placeholder, selection) => {
-  if (selection && selection.length) {
-    return null;
-  }
-
-  if (placeholder) {
-    return Array.isArray(placeholder) ? placeholder.join(', ') : placeholder;
-  }
-  return 'Start typing to search';
-};
+import { useGetInitialOptions } from './useGetInitialOptions';
 
 export const ResourceAutocomplete = ({
   placeholder,
+  initialValue,
   label,
   helperText,
   endpoint,
   optionLabelKey,
   optionValueKey,
-  // eslint-disable-next-line no-unused-vars
   onChange,
   canCreateNewOptions,
   allowMultipleValues,
@@ -34,9 +24,17 @@ export const ResourceAutocomplete = ({
   baseFilter,
   pageSize,
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  // eslint-disable-next-line no-nested-ternary
+  const initialValueAsArray = initialValue
+    ? Array.isArray(initialValue)
+      ? initialValue
+      : [initialValue]
+    : [];
 
-  const { data = [], isFetching } = useSearchResults({
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selection, setSelection] = useState([]);
+
+  const { data: searchResults = [], isFetching: isSearching } = useSearchResults({
     endpoint,
     searchTerm,
     labelColumn: optionLabelKey,
@@ -46,8 +44,19 @@ export const ResourceAutocomplete = ({
     baseFilter,
   });
 
-  // eslint-disable-next-line no-unused-vars
-  const [selection, setSelection] = useState([]);
+  // On load this Autocomplete will only have values. To render properly we need the complete options (the label as well for each value).
+  const { data: initialOptions = [], isFetching: isFetchingInitialOptions } = useGetInitialOptions({
+    endpoint,
+    values: initialValueAsArray,
+    labelColumn: optionLabelKey,
+    valueColumn: optionValueKey,
+    parentRecord,
+    baseFilter,
+  });
+
+  useEffect(() => {
+    setSelection(initialOptions);
+  }, [initialOptions]);
 
   const onChangeSelection = (event, newSelection, reason) => {
     if (newSelection === null) {
@@ -76,24 +85,26 @@ export const ResourceAutocomplete = ({
     <Autocomplete
       value={selection}
       label={label}
-      options={data}
+      options={[...searchResults, ...initialOptions]}
       getOptionSelected={(option, selected) => option[optionLabelKey] === selected[optionLabelKey]}
       getOptionLabel={option => (option && option[optionLabelKey] ? option[optionLabelKey] : '')}
-      isLoading={isFetching}
+      isLoading={isFetchingInitialOptions || isSearching}
       onChangeSelection={onChangeSelection}
       onChangeSearchTerm={setSearchTerm}
       searchTerm={searchTerm}
-      placeholder={getPlaceholder(placeholder, selection)}
+      placeholder={selection.length > 0 ? null : placeholder}
       helperText={helperText}
       canCreateNewOptions={canCreateNewOptions}
       allowMultipleValues={allowMultipleValues}
       optionLabelKey={optionLabelKey}
+      disabled={isFetchingInitialOptions}
     />
   );
 };
 
 ResourceAutocomplete.propTypes = {
-  placeholder: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  placeholder: PropTypes.string,
+  initialValue: PropTypes.oneOf(PropTypes.string, PropTypes.array),
   label: PropTypes.string,
   helperText: PropTypes.string,
   endpoint: PropTypes.string.isRequired,
@@ -108,7 +119,8 @@ ResourceAutocomplete.propTypes = {
 };
 
 ResourceAutocomplete.defaultProps = {
-  placeholder: [],
+  placeholder: 'Start typing to search',
+  initialValue: [],
   label: null,
   helperText: null,
   canCreateNewOptions: null,

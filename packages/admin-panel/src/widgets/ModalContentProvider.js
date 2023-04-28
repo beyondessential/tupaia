@@ -30,7 +30,7 @@ export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
           </SmallAlert>
         </>
       )}
-      <span style={isLoading || !!errorMessage ? { display: 'none' } : {}}>{children}</span>
+      {!isLoading && !errorMessage && children}
     </Content>
   );
 };

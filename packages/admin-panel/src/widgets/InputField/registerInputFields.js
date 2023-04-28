@@ -17,7 +17,7 @@ import {
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
-import { ResourceAutocomplete } from '../../autocomplete';
+import { ReduxAutocomplete, ResourceAutocomplete } from '../../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
 
@@ -39,10 +39,39 @@ const StyledLink = styled(Link)`
 `;
 
 export const registerInputFields = () => {
+  registerInputField('autocomplete2', props => (
+    <ReduxAutocomplete
+      id={props.id}
+      placeholder={props.value}
+      label={props.label}
+      helperText={props.secondaryLabel}
+      endpoint={props.optionsEndpoint}
+      optionLabelKey={props.optionLabelKey}
+      optionValueKey={props.optionValueKey}
+      reduxId={props.inputKey}
+      onChange={inputValue => props.onChange(props.inputKey, inputValue)}
+      canCreateNewOptions={props.canCreateNewOptions}
+      disabled={props.disabled}
+      allowMultipleValues={props.allowMultipleValues}
+      parentRecord={props.parentRecord}
+      baseFilter={props.baseFilter}
+      pageSize={props.pageSize}
+    />
+  ));
   registerInputField('autocomplete', props => (
     <ResourceAutocomplete
       id={props.id}
-      placeholder={props.value}
+      placeholder={props.placeholder ?? undefined}
+      // eslint-disable-next-line no-nested-ternary
+      value={props.value ? (Array.isArray(props.value) ? props.value : [props.value]) : []}
+      initialValue={
+        // eslint-disable-next-line no-nested-ternary
+        props.initialValue
+          ? Array.isArray(props.initialValue)
+            ? props.initialValue
+            : [props.initialValue]
+          : []
+      }
       label={props.label}
       helperText={props.secondaryLabel}
       endpoint={props.optionsEndpoint}

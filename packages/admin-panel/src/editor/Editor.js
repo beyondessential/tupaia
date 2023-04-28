@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 
-export const Editor = ({ fields, recordData, onEditField }) => {
+export const Editor = ({ fields, recordData, initialRecordData, onEditField }) => {
   const onInputChange = (inputKey, inputValue, editConfig = {}) => {
     const { setFieldsOnChange } = editConfig;
     if (setFieldsOnChange) {
@@ -21,14 +21,14 @@ export const Editor = ({ fields, recordData, onEditField }) => {
     onEditField(inputKey, inputValue);
   };
 
-  const selectValue = (editConfig, accessor, source) => {
+  const selectValue = (editConfig, accessor, source, selectFrom = recordData) => {
     if (editConfig.accessor) {
-      return editConfig.accessor(recordData);
+      return editConfig.accessor(selectFrom);
     }
     if (accessor) {
-      return accessor(recordData);
+      return accessor(selectFrom);
     }
-    return recordData[source];
+    return selectFrom[source];
   };
 
   return (
@@ -55,8 +55,10 @@ export const Editor = ({ fields, recordData, onEditField }) => {
             label={Header}
             onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
             value={selectValue(editConfig, accessor, source)}
+            initialValue={selectValue(editConfig, accessor, source, initialRecordData)}
             disabled={!editable}
             recordData={recordData}
+            initialRecordData={initialRecordData}
             id={`inputField-${labelToId(source)}`}
             {...editConfig}
           />
@@ -68,5 +70,6 @@ export const Editor = ({ fields, recordData, onEditField }) => {
 Editor.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
+  initialRecordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
 };

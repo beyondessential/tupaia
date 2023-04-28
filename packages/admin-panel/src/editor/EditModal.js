@@ -53,6 +53,7 @@ export const EditModalComponent = ({
   onEditField,
   onSave,
   recordData,
+  initialRecordData,
   title,
   fields,
   FieldsComponent,
@@ -79,10 +80,11 @@ export const EditModalComponent = ({
       <DialogHeader onClose={onDismiss} title={resolvedTitle} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         <>
-          {!FieldsComponent && fields.length > 0 && (
+          {!FieldsComponent && fields.length > 0 && !isLoading && (
             <Editor
               fields={fields}
               recordData={recordData}
+              initialRecordData={initialRecordData}
               onEditField={(fieldSource, newValue) => {
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
                 return onEditField(fieldSourceToEdit, newValue);
@@ -93,6 +95,7 @@ export const EditModalComponent = ({
             <FieldsComponent
               isLoading={isLoading}
               recordData={recordData}
+              initialRecordData={initialRecordData}
               onEditField={(fieldSource, newValue) => {
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
                 return onEditField(fieldSourceToEdit, newValue);
@@ -126,6 +129,7 @@ EditModalComponent.propTypes = {
   onEditField: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   recordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  initialRecordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   FieldsComponent: PropTypes.elementType,
@@ -143,6 +147,7 @@ EditModalComponent.defaultProps = {
   errorMessage: null,
   title: null,
   recordData: null,
+  initialRecordData: null,
   FieldsComponent: null,
   isUnchanged: false,
   displayUsedBy: false,
@@ -195,6 +200,7 @@ const mergeProps = (
     ...dispatchProps,
     editedFields,
     recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
+    initialRecordData: recordData,
     onSave: () => {
       // If there is no record data, this is a new record
       const isNew = Object.keys(recordData).length === 0;

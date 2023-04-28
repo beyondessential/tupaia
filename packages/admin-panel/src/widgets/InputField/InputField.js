@@ -16,6 +16,9 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
   if (options) {
     return 'enum';
   }
+  if (type === 'autocomplete2') {
+    return 'autocomplete2';
+  }
   if (optionsEndpoint) {
     return 'autocomplete';
   }
@@ -29,17 +32,21 @@ export const InputField = ({ type, ...inputProps }) => {
   return <InputComponent {...inputProps} />;
 };
 
+const ValuePropType = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.array,
+  PropTypes.object,
+  PropTypes.bool,
+  PropTypes.number,
+]);
+
 export const inputFieldPropTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
   recordData: PropTypes.object,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-    PropTypes.object,
-    PropTypes.bool,
-    PropTypes.number,
-  ]),
+  initialRecordData: PropTypes.object,
+  value: ValuePropType,
+  initialValue: ValuePropType,
   inputKey: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.object),
   optionsEndpoint: PropTypes.string,
@@ -58,7 +65,9 @@ export const inputFieldPropTypes = {
 export const inputFieldDefaultProps = {
   allowMultipleValues: false,
   value: null,
+  initialValue: null,
   recordData: {},
+  initialRecordData: {},
   options: null,
   optionsEndpoint: null,
   optionLabelKey: 'name',

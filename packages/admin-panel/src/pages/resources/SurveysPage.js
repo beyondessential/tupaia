@@ -36,7 +36,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'countries',
       optionLabelKey: 'name',
-      optionValueKey: 'code',
+      optionValueKey: 'id',
       allowMultipleValues: true,
       secondaryLabel:
         'Select the countries this survey should be available in, or leave blank for all',
@@ -49,13 +49,13 @@ const FIELDS = [
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'id',
-      secondaryLabel:
-        'Select the permission group this survey should be available for, or leave blank for Public',
+      secondaryLabel: 'Select the permission group this survey should be available for',
     },
   },
   {
     Header: 'Survey Group',
     source: 'survey_group_id',
+    type: 'autocomplete2',
     editConfig: {
       optionsEndpoint: 'surveyGroups',
       optionLabelKey: 'name',
@@ -67,6 +67,7 @@ const FIELDS = [
   {
     Header: 'Repeating',
     source: 'can_repeat',
+    type: 'boolean',
     editConfig: {
       type: 'boolean',
     },
@@ -83,6 +84,7 @@ const FIELDS = [
   {
     Header: 'Requires Approval',
     source: 'requires_approval',
+    type: 'boolean',
     editConfig: {
       type: 'boolean',
       secondaryLabel:
@@ -97,7 +99,7 @@ const FIELDS = [
       options: SERVICE_TYPES,
       setFieldsOnChange: (newValue, currentRecord = null) => {
         const { dhisInstanceCode = 'regional' } = currentRecord
-          ? currentRecord['data_group.config']
+          ? currentRecord['data_group.config'] ?? {}
           : {};
         const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
         return { 'data_group.config': config };
@@ -119,8 +121,8 @@ const FIELDS = [
                 label: 'DHIS Server',
                 fieldName: 'dhisInstanceCode',
                 optionsEndpoint: 'dhisInstances',
-                optionLabelKey: 'dhisInstances.code',
-                optionValueKey: 'dhisInstances.code',
+                optionLabelKey: 'code',
+                optionValueKey: 'code',
               },
             ]
           : [],
@@ -163,8 +165,14 @@ const FIELDS = [
 const SURVEY_COLUMNS = [
   FIELDS[0],
   FIELDS[1],
-  FIELDS[3],
-  FIELDS[4],
+  {
+    Header: 'Permission Group',
+    source: 'permission_group.name',
+  },
+  {
+    Header: 'Survey Group',
+    source: 'survey_group.name',
+  },
   FIELDS[5],
   FIELDS[7],
   {
@@ -195,6 +203,34 @@ const SURVEY_COLUMNS = [
     },
   },
 ];
+
+const CREATE_CONFIG = {
+  actionConfig: {
+    editEndpoint: 'surveys',
+    fields: [...FIELDS],
+    title: 'New Survey',
+  },
+  label: 'New Survey',
+};
+
+const IMPORT_CONFIG = {
+  title: 'Import Survey Questions',
+  label: 'Import Questions',
+  actionConfig: {
+    importEndpoint: 'surveys',
+  },
+  queryParameters: [
+    {
+      label: 'Surveys',
+      secondaryLabel:
+        'Please enter the Surveys for the Questions to be imported against. Each tab in the file should be a matching Survey code. Leave blank to import all tabs.',
+      parameterKey: 'surveyNames',
+      optionsEndpoint: 'surveys',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
+  ],
+};
 
 const QUESTION_FIELDS = [
   {
@@ -401,13 +437,6 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-const CREATE_CONFIG = {
-  actionConfig: {
-    editEndpoint: 'surveys',
-    fields: [...FIELDS],
-  },
-};
-
 export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     model="Survey"
@@ -415,6 +444,7 @@ export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
     columns={SURVEY_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
+    importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
     {...restOfProps}
   />
