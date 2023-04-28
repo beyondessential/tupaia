@@ -51,11 +51,7 @@ const usePermissionGroups = () => {
       return null;
     }
 
-    if (node) {
-      return getDescendantData(node.id, data);
-    }
-
-    return getDescendantData(null, data);
+    return getDescendantData(node ? node.id : null, data);
   }
 
   return { fetchData };
