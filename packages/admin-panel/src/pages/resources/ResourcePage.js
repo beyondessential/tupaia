@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
+import { getExplodedFields, usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 
 const Container = styled(PageBody)`
@@ -34,7 +34,6 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
-  sections,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -52,7 +51,7 @@ export const ResourcePage = ({
       {HeaderPortal}
       <Container>
         <DataFetchingTable
-          columns={columns}
+          columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
           endpoint={endpoint}
           expansionTabs={expansionTabs}
           reduxId={reduxId || endpoint}
@@ -62,11 +61,7 @@ export const ResourcePage = ({
           deleteConfig={deleteConfig}
         />
       </Container>
-      <EditModal
-        onProcessDataForSave={onProcessDataForSave}
-        {...editorConfig}
-        sections={sections}
-      />
+      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
       <LogsModal />
     </>
   );
@@ -97,13 +92,6 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
-  sections: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      description: PropTypes.string,
-      fields: PropTypes.arrayOf(PropTypes.string),
-    }),
-  ),
 };
 
 ResourcePage.defaultProps = {
@@ -120,5 +108,4 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
-  sections: [],
 };

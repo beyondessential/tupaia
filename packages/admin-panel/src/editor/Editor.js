@@ -9,7 +9,7 @@ import { InputGroup } from '@tupaia/ui-components';
 import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 
-export const Editor = ({ fields, recordData, onEditField, sections }) => {
+export const Editor = ({ fields, recordData, onEditField }) => {
   const onInputChange = (inputKey, inputValue, editConfig = {}) => {
     const { setFieldsOnChange } = editConfig;
     if (setFieldsOnChange) {
@@ -50,7 +50,7 @@ export const Editor = ({ fields, recordData, onEditField, sections }) => {
     });
   };
 
-  // Get the input field
+  // Get the input for the field
   const getFieldInput = field => {
     const { editable = true, editConfig = {}, source, Header, accessor } = field;
     return (
@@ -68,38 +68,36 @@ export const Editor = ({ fields, recordData, onEditField, sections }) => {
     );
   };
 
-  // The sections that are visible, and their associated input fields
-  const visibleSections = sections.reduce((result, section) => {
-    const visibleFields = filterVisibleFields(section.fields);
-    // If none of the fields are visible, don't show the section
-    if (!visibleFields.length) return result;
-    return [
-      ...result,
-      {
-        ...section,
-        fields: visibleFields.reduce((fieldResult, fieldName) => {
-          const fieldInfo = fields.find(f => f.source === fieldName);
-          if (!fieldInfo) return fieldResult;
-          return [...fieldResult, getFieldInput(fieldInfo)];
-        }, []),
-      },
-    ];
+  // Get the form fields and sections that are visible from the fields prop, handling nested sections
+  const visibleFormItems = filterVisibleFields(fields).reduce((result, field) => {
+    if (field.type === 'section') {
+      const visibleSubfields = filterVisibleFields(field.fields);
+      if (!visibleSubfields.length) return result;
+      return [
+        ...result,
+        {
+          ...field,
+          fields: visibleSubfields,
+        },
+      ];
+    }
+    return [...result, field];
   }, []);
-
-  // The fields that are not part of a larger subsection
-  const standaloneFields = fields.filter(field => {
-    if (!sections.length) return true;
-    const { source } = field;
-    return !sections.find(section => section.fields.includes(source));
-  });
 
   return (
     <div>
-      {/** Display the sections first, then the standalone fields */}
-      {visibleSections.map(({ title, fields: sectionFields, description }) => (
-        <InputGroup title={title} description={description} fields={sectionFields} />
-      ))}
-      {filterVisibleFields(standaloneFields).map(field => getFieldInput(field))}
+      {visibleFormItems.map(item =>
+        item.type === 'section' ? (
+          <InputGroup
+            key={item.title}
+            title={item.title}
+            description={item.description}
+            fields={item.fields.map(subfield => getFieldInput(subfield))}
+          />
+        ) : (
+          getFieldInput(item)
+        ),
+      )}
     </div>
   );
 };
@@ -108,18 +106,4 @@ Editor.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
-  sections: PropTypes.arrayOf(
-    PropTypes.shape({
-      /** the section heading */
-      title: PropTypes.string,
-      /** the section description */
-      description: PropTypes.string,
-      /** an array of field names */
-      fields: PropTypes.arrayOf(PropTypes.string),
-    }),
-  ),
-};
-
-Editor.defaultProps = {
-  sections: [],
 };

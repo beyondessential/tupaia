@@ -13,6 +13,7 @@ import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
 import { ModalContentProvider } from '../widgets';
 import { UsedBy } from '../usedBy/UsedBy';
+import { getExplodedFields } from '../utilities';
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
@@ -47,9 +48,9 @@ export const EditModalComponent = ({
   cancelButtonText,
   saveButtonText,
   extraDialogProps,
-  sections,
 }) => {
-  const fieldsBySource = keyBy(fields, 'source');
+  // key the fields by their source so we can easily find the field to edit. Use the exploded fields so that any subfields are placed into the top level of the array
+  const fieldsBySource = keyBy(getExplodedFields(fields), 'source');
 
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
@@ -64,7 +65,6 @@ export const EditModalComponent = ({
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
                 return onEditField(fieldSourceToEdit, newValue);
               }}
-              sections={sections}
             />
           )}
           {FieldsComponent && (
@@ -114,13 +114,6 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
-  sections: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      description: PropTypes.string,
-      fields: PropTypes.arrayOf(PropTypes.string),
-    }),
-  ),
 };
 
 EditModalComponent.defaultProps = {
@@ -135,7 +128,6 @@ EditModalComponent.defaultProps = {
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
-  sections: [],
 };
 
 const mapStateToProps = state => ({
