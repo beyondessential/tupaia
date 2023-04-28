@@ -67,6 +67,7 @@ const HANDLER_DEBOUNCE_DURATION = 250;
 // string, independent of timezones, rather than being converted to local time
 pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
+pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
 
 export class TupaiaDatabase {
   /**
