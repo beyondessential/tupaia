@@ -46,19 +46,21 @@ export const LogsModalComponent = ({
 
 LogsModalComponent.propTypes = {
   errorMessage: PropTypes.string,
-  isLoading: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool,
   isOpen: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
   title: PropTypes.string,
   logs: PropTypes.arrayOf(PropTypes.string).isRequired,
-  logsCount: PropTypes.number.isRequired,
+  logsCount: PropTypes.number,
   page: PropTypes.number.isRequired,
   logsPerPage: PropTypes.number.isRequired,
   onChangeLogsTablePage: PropTypes.func.isRequired,
 };
 
 LogsModalComponent.defaultProps = {
+  isLoading: false,
   errorMessage: null,
+  logsCount: null,
   title: 'Logs',
 };
 
