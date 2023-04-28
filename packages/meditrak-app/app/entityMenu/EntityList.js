@@ -181,7 +181,7 @@ export class EntityList extends PureComponent {
   renderResults() {
     const { isOpen, numberToShow } = this.state;
 
-    // if base query is empty, the survey is probably misconfigured
+    // if baseEntities fetch returned empty, the survey is probably misconfigured
     if (this.baseEntities.length === 0) {
       return (
         <Text style={localStyles.noResultsText}>
