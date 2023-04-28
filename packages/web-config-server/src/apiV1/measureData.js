@@ -12,7 +12,6 @@ import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 import { reportServer } from './dataBuilders';
-import { log } from 'console';
 
 const ADD_TO_ALL_KEY = '$all';
 
