@@ -99,7 +99,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       [surveyResponseId],
     );
     if (result.length === 0) return false;
-    return result[0].count === '1';
+    return parseInt(result[0].count) === 1;
   }
 
   approvalStatusTypes = SURVEY_RESPONSE_APPROVAL_STATUS;
