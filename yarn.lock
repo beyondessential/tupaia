@@ -7286,7 +7286,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^8.1.0":
+"@testing-library/dom@npm:^8.0.0, @testing-library/dom@npm:^8.1.0":
   version: 8.20.0
   resolution: "@testing-library/dom@npm:8.20.0"
   dependencies:
@@ -7361,6 +7361,20 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: 10ac55ac040ab8642f1bf84a0186628ec5e913a39e910055fbfa94ad49e8456102ea91586ec240b65d078e2085f9ab7aa13a4059ce98ce89f9352f29463b8201
+  languageName: node
+  linkType: hard
+
+"@testing-library/react@npm:^12.1.2":
+  version: 12.1.5
+  resolution: "@testing-library/react@npm:12.1.5"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    "@testing-library/dom": ^8.0.0
+    "@types/react-dom": <18.0.0
+  peerDependencies:
+    react: <18.0.0
+    react-dom: <18.0.0
+  checksum: 4abd0490405e709a7df584a0db604e508a4612398bb1326e8fa32dd9393b15badc826dcf6d2f7525437886d507871f719f127b9860ed69ddd204d1fa834f576a
   languageName: node
   linkType: hard
 
@@ -8165,6 +8179,7 @@ __metadata:
     "@mui/material": ^5.11.10
     "@mui/x-data-grid": ^5.17.25
     "@storybook/react": ^6.5.16
+    "@testing-library/react": ^12.1.2
     "@tupaia/utils": 1.0.0
     ace-builds: ^1.15.2
     babel-loader: ^8.2.2
@@ -9095,6 +9110,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:<18.0.0":
+  version: 17.0.20
+  resolution: "@types/react-dom@npm:17.0.20"
+  dependencies:
+    "@types/react": ^17
+  checksum: 525439fb14a033fc5dbe74711ecc50ec82273a528df9656594066a6219401e975101dafffd15d9a1a57a9442d52ea0c92eaacae09554dde27cd792e773f67467
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^18.0.0":
   version: 18.0.11
   resolution: "@types/react-dom@npm:18.0.11"
@@ -9190,6 +9214,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react@npm:^17":
+  version: 17.0.58
+  resolution: "@types/react@npm:17.0.58"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 4eaf32b86c43f388c681e34a00921c508dd88a1d1022aebfadc5fe802b7c5bed863de1a17eed31e43ca2d65222952dfe79a022055a0e6e4e1ad89fc5a42ec05e
+  languageName: node
+  linkType: hard
+
 "@types/resolve@npm:0.0.8":
   version: 0.0.8
   resolution: "@types/resolve@npm:0.0.8"
@@ -9205,6 +9240,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: e99fc7cc6265407987b30deda54c1c24bb1478803faf6037557a774b2f034c5b097ffd65847daa87e82a61a250d919f35c3588654b0fdaa816906650f596d1b0
+  languageName: node
+  linkType: hard
+
+"@types/scheduler@npm:*":
+  version: 0.16.3
+  resolution: "@types/scheduler@npm:0.16.3"
+  checksum: 2b0aec39c24268e3ce938c5db2f2e77f5c3dd280e05c262d9c2fe7d890929e4632a6b8e94334017b66b45e4f92a5aa42ba3356640c2a1175fa37bef2f5200767
   languageName: node
   linkType: hard
 
