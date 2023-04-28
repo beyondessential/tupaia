@@ -132,3 +132,6 @@ RUN yarn build:internal-dependencies
 
 # copy everything else from the repo
 COPY . ./
+
+# Make sure all packages build, it is possible to break CI in Codeship if removing this
+RUN yarn build:non-internal-dependencies
