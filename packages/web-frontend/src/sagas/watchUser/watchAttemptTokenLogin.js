@@ -7,6 +7,7 @@ import {
 } from '../../actions';
 import { LOGIN_TYPES } from '../../constants';
 import { request } from '../../utils';
+import { fetchProjectData } from '../../projects/sagas';
 
 function* attemptTokenLogin(action) {
   const { passwordResetToken } = action;
@@ -39,6 +40,7 @@ function* attemptTokenLogin(action) {
 
     yield put(findLoggedIn(LOGIN_TYPES.TOKEN, true)); // default to email verified for one time login to prevent a nag screen
     yield put(fetchResetTokenLoginSuccess());
+    yield call(fetchProjectData);
   } catch (error) {
     yield put(error.errorFunction(error));
   }

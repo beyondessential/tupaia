@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 
 import { ParameterType } from '../../editing';
 import { ReduxAutocomplete } from '../../../../autocomplete';
+import { getTextFieldValue } from './utils';
 
 export const DataGroupCodeField = ({ name, onChange }) => {
   return (
@@ -16,7 +17,7 @@ export const DataGroupCodeField = ({ name, onChange }) => {
       key="dataGroupCode"
       inputKey="dataGroupCodeField"
       label={name}
-      onChange={selectedValues => onChange(selectedValues)}
+      onChange={selectedValue => onChange(getTextFieldValue(selectedValue))}
       id="inputField-dataGroupCode"
       reduxId="dataTableEditFields-dataGroupCodeField"
       endpoint="dataGroups"
