@@ -153,3 +153,16 @@ jobs:
         with:
           name: secrets
           path: secrets.env
+
+  build_step:
+    name: Run build to make sure it will succeed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.4
+      - run: yarn
+      - run: yarn build
