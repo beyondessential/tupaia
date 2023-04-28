@@ -62,9 +62,11 @@ const COMPARATORS = {
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
 
+// Danger: pgTypes is a global variable, so it will be shared between all instances of TupaiaDatabase
 // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
 // string, independent of timezones, rather than being converted to local time
 pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
+pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
 
 export class TupaiaDatabase {
   /**
