@@ -5,22 +5,36 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { InputGroup } from '@tupaia/ui-components';
 import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { createBase64Image } from '../utilities/createBase64Image';
 import { SECTION_FIELD_TYPE } from './constants';
 
+const EditorWrapper = styled.div`
+  .file_upload_label {
+    font-size: 0.9375rem;
+    text-transform: initial;
+    color: ${props => props.theme.palette.text.secondary};
+  }
+`;
+
 export const Editor = ({ fields, recordData, onEditField }) => {
-  const onInputChange = (inputKey, inputValue, editConfig = {}) => {
-    const { setFieldsOnChange } = editConfig;
+  const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
+    const { setFieldsOnChange, type } = editConfig;
+    let updatedValue = inputValue;
+    if (type === 'image' && inputValue) {
+      // If the input is a file, we need to convert the file to a base64 encoded image.
+      updatedValue = await createBase64Image(inputValue);
+    }
     if (setFieldsOnChange) {
-      const newFields = setFieldsOnChange(inputValue, recordData);
+      const newFields = setFieldsOnChange(updatedValue, recordData);
       Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
         onEditField(fieldKey, fieldValue);
       });
     }
-
-    onEditField(inputKey, inputValue);
+    onEditField(inputKey, updatedValue);
   };
 
   const selectValue = (editConfig, accessor, source) => {
@@ -86,7 +100,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
   }, []);
 
   return (
-    <div>
+    <EditorWrapper>
       {visibleFormItems.map(item =>
         item.type === SECTION_FIELD_TYPE ? (
           <InputGroup
@@ -99,7 +113,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
           getFieldInput(item)
         ),
       )}
-    </div>
+    </EditorWrapper>
   );
 };
 
