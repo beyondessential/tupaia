@@ -8,6 +8,10 @@ export class KeyValueCellBuilder {
     this.models = models;
   }
 
+  // Override handlers for specific fields that can't run through generic handlers
+  // e.g. object fields that map one to many in our excel format
+  individualFieldProcessors = {};
+
   fetchQuestionCode = async ({ questionId }) => {
     const question = await this.models.question.findById(questionId);
     if (!question) {
@@ -37,6 +41,9 @@ export class KeyValueCellBuilder {
     const object = this.extractRelevantObject(fullObject) || {};
     const processedFields = await Promise.all(
       Object.entries(object).map(async ([key, value]) => {
+        if (this.individualFieldProcessors[key]) {
+          return this.individualFieldProcessors[key](this.models, value);
+        }
         const processedKey = await this.processKey(key);
         const processedValue = await this.processValue(value, key);
         return `${processedKey}: ${processedValue}`;
