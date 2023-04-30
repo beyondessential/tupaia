@@ -26,6 +26,7 @@ const Container = styled.div`
 const ContentContainer = styled.div`
   flex: 1;
   padding: 12px;
+  min-width: 278px;
   overflow-y: auto;
   border-right: 1px solid ${({ theme }) => theme.palette.grey['400']};
 
@@ -34,14 +35,20 @@ const ContentContainer = styled.div`
     border-radius: 10px;
     width: 100%;
     padding: 0;
-    background-color: transparent;
+
+    &:hover {
+      background-color: ${({ readOnly, theme }) =>
+        readOnly ? theme.palette.grey['200'] : 'transparent'};
+    }
 
     &.Mui-selected {
-      color: ${({ isExpanded, showExpandIcon, theme }) =>
-        !showExpandIcon || !isExpanded ? theme.palette.primary.contrastText : undefined};
+      color: ${({ isExpanded, showExpandIcon, readOnly, theme }) =>
+        readOnly || !showExpandIcon || !isExpanded
+          ? theme.palette.primary.contrastText
+          : undefined};
 
-      background-color: ${({ isExpanded, showExpandIcon, theme }) => {
-        if (!showExpandIcon) {
+      background-color: ${({ isExpanded, showExpandIcon, readOnly, theme }) => {
+        if (!showExpandIcon || readOnly) {
           return theme.palette.primary.main;
         }
         if (isExpanded) {
@@ -62,6 +69,11 @@ const ContentContainer = styled.div`
       .MuiListItemText-root {
         background-color: ${({ isExpanded, theme }) => !isExpanded && theme.palette.primary.main};
       }
+
+      .MuiIconButton-root {
+        color: ${({ readOnly, theme }) =>
+          readOnly ? theme.palette.primary.contrastText : undefined};
+      }
     }
 
     .MuiIconButton-root {
@@ -73,13 +85,18 @@ const ContentContainer = styled.div`
   .MuiListItemText-root {
     width: ${({ showExpandIcon }) => (showExpandIcon ? '217px' : '100%')};
     flex: none;
-    margin: 0px;
+    margin: 0;
     padding: 10px 16px;
     border-radius: 10px;
 
     &:hover {
-      background-color: ${({ theme }) => theme.palette.grey['200']};
+      background-color: ${({ theme, readOnly }) =>
+        !readOnly ? theme.palette.grey['200'] : undefined};
     }
+  }
+
+  .MuiIconButton-root:hover {
+    background-color: ${({ readOnly }) => (readOnly ? 'transparent' : undefined)};
   }
 `;
 
@@ -95,6 +112,7 @@ export const Column = ({
   showExpandIcon,
   onSelect,
   onExpand,
+  readOnly,
 }) => {
   const { updateFilter, applyFilter, checkMatchesFilter } = useFilter();
   const [selected, setSelected] = useState(undefined);
@@ -118,8 +136,8 @@ export const Column = ({
     node => {
       setSelected(node);
       onSelect(node);
-      if (!showExpandIcon) {
-        // Expand icon is not shown, expand when we click anywhere on the item
+      // Expand when we click anywhere on the item
+      if (!showExpandIcon || readOnly) {
         onExpand(node);
       }
     },
@@ -143,6 +161,7 @@ export const Column = ({
           className={`${CLASS_NAME}-content`}
           isExpanded={isExpanded}
           showExpandIcon={showExpandIcon}
+          readOnly={readOnly}
         >
           <FetchLoader isLoading={isLoading} isError={isError} error={error}>
             {filteredData?.length === 0 ? (
@@ -161,8 +180,11 @@ export const Column = ({
                     >
                       <ListItemText primary={node.name} color="primary" />
                       {showExpandIcon && hasChildren && (
-                        <IconButton aria-label="Expand item">
-                          <ChevronRightIcon onClick={e => handleClickIcon(node, e)} />
+                        <IconButton
+                          aria-label="Expand item"
+                          onClick={e => handleClickIcon(node, e)}
+                        >
+                          <ChevronRightIcon />
                         </IconButton>
                       )}
                     </ListItem>
@@ -189,6 +211,7 @@ Column.propTypes = {
       ).isRequired,
     }),
   ),
+  readOnly: PropTypes.bool,
   isExpanded: PropTypes.bool,
   isLoading: PropTypes.bool,
   error: PropTypes.shape({
@@ -205,6 +228,7 @@ Column.defaultProps = {
   isLoading: false,
   error: null,
   showExpandIcon: true,
+  readOnly: false,
   onSelect: () => {},
   onExpand: () => {},
 };

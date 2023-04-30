@@ -64,7 +64,7 @@ export const PermissionGroupsViewerPage = ({ getHeaderEl }) => {
     <>
       {HeaderPortal}
       <Container>
-        <StyledHorizontalTree fetchData={fetchData} />
+        <StyledHorizontalTree fetchData={fetchData} readOnly />
       </Container>
       <LogsModal />
     </>

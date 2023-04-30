@@ -36,7 +36,7 @@ const DescendantsContainer = styled.div`
   border-radius: 5px 5px 0px 0px;
 `;
 
-export const HorizontalTree = ({ fetchData, className }) => {
+export const HorizontalTree = ({ fetchData, className, readOnly }) => {
   const [selectedRoot, setSelectedRoot] = useState(undefined);
   const { data, isLoading, error, fetchData: fetchRootData } = useData(fetchData);
   const {
@@ -76,6 +76,7 @@ export const HorizontalTree = ({ fetchData, className }) => {
             isLoading={areChildrenLoading}
             error={childrenError}
             fetchData={node => fetchData(selectedRoot, node)}
+            readOnly={readOnly}
           />
         )}
         <Box display="flex" flexDirection="column" width="100%">
@@ -89,8 +90,10 @@ export const HorizontalTree = ({ fetchData, className }) => {
 HorizontalTree.propTypes = {
   fetchData: PropTypes.func.isRequired,
   className: PropTypes.string,
+  readOnly: PropTypes.bool,
 };
 
 HorizontalTree.defaultProps = {
   className: undefined,
+  readOnly: false,
 };
