@@ -14,6 +14,8 @@ import {
   DateTimePicker,
   RadioGroup,
   Select,
+  ImageUploadField,
+  HexcodeField,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
@@ -36,6 +38,10 @@ const StyledLink = styled(Link)`
   &:active {
     text-decoration: none;
   }
+`;
+
+const StyledFileInputWrapper = styled.div`
+  margin-bottom: 1.2rem;
 `;
 
 export const registerInputFields = () => {
@@ -230,6 +236,33 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       type="password"
       tooltip={props.labelTooltip}
+    />
+  ));
+  registerInputField('image', props => (
+    <StyledFileInputWrapper>
+      <ImageUploadField
+        name={props.name}
+        encodedImage={props.value}
+        onDelete={() => props.onChange(props.inputKey, null)}
+        onChange={image => props.onChange(props.inputKey, image)}
+        label={props.label}
+        buttonLabel={props.buttonLabel}
+        avatarVariant={props.avatarVariant}
+        deleteModal={props.deleteModal}
+        maxWidth={props.maxWidth}
+        maxHeight={props.maxHeight}
+        secondaryLabel={props.secondaryLabel}
+      />
+    </StyledFileInputWrapper>
+  ));
+  registerInputField('hexcode', props => (
+    <HexcodeField
+      id={props.id}
+      label={props.label}
+      value={props.value}
+      onChange={value => props.onChange(props.inputKey, value)}
+      disabled={props.disabled}
+      helperText={props.secondaryLabel}
     />
   ));
 };
