@@ -252,6 +252,7 @@ export const registerInputFields = () => {
         maxWidth={props.maxWidth}
         maxHeight={props.maxHeight}
         secondaryLabel={props.secondaryLabel}
+        tooltip={props.labelTooltip}
       />
     </StyledFileInputWrapper>
   ));
@@ -263,6 +264,7 @@ export const registerInputFields = () => {
       onChange={value => props.onChange(props.inputKey, value)}
       disabled={props.disabled}
       helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
     />
   ));
 };

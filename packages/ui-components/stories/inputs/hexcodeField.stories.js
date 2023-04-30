@@ -59,3 +59,26 @@ export const DisabledInput = () => {
     </Container>
   );
 };
+
+export const WithTooltip = () => {
+  const [value, setValue] = useState('#000000');
+  return (
+    <Container>
+      <HexcodeField
+        value={value}
+        label="Background color"
+        id="background-color"
+        onChange={setValue}
+        tooltip="This colour is for the background"
+      />
+      <HexcodeField
+        value={value}
+        label="Main color"
+        id="main-color"
+        onChange={setValue}
+        tooltip="This colour is for the text"
+        helperText="Please pick a contrasting colour"
+      />
+    </Container>
+  );
+};
