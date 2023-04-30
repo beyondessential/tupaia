@@ -15,6 +15,7 @@ import {
   RadioGroup,
   Select,
   ImageUploadField,
+  HexcodeField,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
@@ -243,5 +244,15 @@ export const registerInputFields = () => {
         secondaryLabel={props.secondaryLabel}
       />
     </StyledFileInputWrapper>
+  ));
+  registerInputField('hexcode', props => (
+    <HexcodeField
+      id={props.id}
+      label={props.label}
+      value={props.value}
+      onChange={value => props.onChange(props.inputKey, value)}
+      disabled={props.disabled}
+      helperText={props.secondaryLabel}
+    />
   ));
 };

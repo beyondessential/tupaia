@@ -30,7 +30,7 @@ const getDateValue = value => {
 
 export const DatePicker = ({ name, value, onChange, config }) => {
   const dateValue = getDateValue(value);
-  const defaultDateValue = getDateValue(config?.hasDefaultValue && config?.defaultValue);
+  const defaultDateValue = getDateValue(config?.defaultValue);
   // Convert date to UTC as server uses UTC timezone
   const onChangeDate = localDate => {
     if (!localDate) {
