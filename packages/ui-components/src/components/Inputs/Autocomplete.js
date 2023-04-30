@@ -60,6 +60,7 @@ export const Autocomplete = ({
   inputRef,
   name,
   defaultValue,
+  tooltip,
 }) => (
   <StyledAutocomplete
     id={id}
@@ -81,6 +82,7 @@ export const Autocomplete = ({
       <TextField
         {...params}
         label={label}
+        tooltip={tooltip}
         name={name}
         placeholder={placeholder}
         error={error}
@@ -123,6 +125,7 @@ Autocomplete.propTypes = {
   inputRef: PropTypes.func,
   name: PropTypes.string,
   defaultValue: PropTypes.any,
+  tooltip: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
@@ -145,4 +148,5 @@ Autocomplete.defaultProps = {
   inputRef: null,
   name: null,
   defaultValue: null,
+  tooltip: '',
 };

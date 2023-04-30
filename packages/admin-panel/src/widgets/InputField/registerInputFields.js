@@ -62,6 +62,7 @@ export const registerInputFields = () => {
       parentRecord={props.parentRecord}
       baseFilter={props.baseFilter}
       pageSize={props.pageSize}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('json', props => (
@@ -87,6 +88,7 @@ export const registerInputFields = () => {
       options={props.options}
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('jsonEditor', props => (
@@ -117,15 +119,18 @@ export const registerInputFields = () => {
         {
           label: 'Yes',
           value: true,
+          tooltip: props.optionTooltips ? props.optionTooltips.true : null,
         },
         {
           label: 'No',
           value: false,
+          tooltip: props.optionTooltips ? props.optionTooltips.false : null,
         },
       ]}
       value={props.value}
       disabled={props.disabled}
       helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('date', props => (
@@ -136,6 +141,7 @@ export const registerInputFields = () => {
       value={props.moment(props.value).isValid() ? moment(props.value) : null}
       onChange={date => props.onChange(props.inputKey, date.toISOString())}
       disabled={props.disabled}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('datetime-local', props => (
@@ -155,6 +161,7 @@ export const registerInputFields = () => {
         }
       }}
       disabled={props.disabled}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('datetime-utc', props => (
@@ -204,6 +211,7 @@ export const registerInputFields = () => {
       multiline
       type="textarea"
       rows="4"
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('text', props => (
@@ -215,6 +223,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       type={props.type}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('password', props => (
@@ -226,6 +235,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       type="password"
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('image', props => (
