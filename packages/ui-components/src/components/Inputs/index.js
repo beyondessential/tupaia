@@ -17,3 +17,4 @@ export * from './FileUploadField';
 export * from './ProfileImageField';
 export * from './SQLQueryEditor';
 export * from './HexcodeField';
+export * from './InputGroup';

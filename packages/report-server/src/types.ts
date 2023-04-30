@@ -5,7 +5,6 @@
 
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { ModelRegistry } from '@tupaia/database';
-import { Report } from '@tupaia/types';
 import { ReportModel } from './models';
 
 export type RequestContext = {
@@ -33,12 +32,6 @@ export type AggregationObject = {
 };
 
 export type Aggregation = string | AggregationObject;
-
-type CustomReportConfig = {
-  customReport: string;
-};
-
-export type StandardOrCustomReportConfig = Report['config'] | CustomReportConfig;
 
 export interface Event {
   event: string;
