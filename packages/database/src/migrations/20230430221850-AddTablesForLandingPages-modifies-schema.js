@@ -19,7 +19,7 @@ exports.up = async function (db) {
     CREATE TABLE landing_page (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      url TEXT NOT NULL,
+      url_segment TEXT NOT NULL,
       image_url TEXT,
       logo_url TEXT,
       primary_hexcode TEXT,
