@@ -42,7 +42,7 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  await db.runSql(`DROP_TABLE landing_page_projects`);
+  await db.runSql(`DROP TABLE landing_page_projects`);
   await db.runSql(`DROP TABLE landing_page`);
 };
 
