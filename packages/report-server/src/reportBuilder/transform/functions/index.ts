@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
 import { Context } from '../../context';
 
 import {
@@ -26,7 +27,7 @@ import {
   paramsValidator as gatherColumnsParamsValidator,
 } from './gatherColumns';
 import { buildFetchData, paramsValidator as fetchDataParamsValidator } from './fetchData';
-import { buildOrderColumns, orderColumnsSchema } from './orderColumns';
+import { buildOrderColumns, paramsValidator as orderColumnsParamsValidator } from './orderColumns';
 import { TransformTable } from '../table';
 
 type TransformBuilder = (
@@ -47,21 +48,15 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   orderColumns: buildOrderColumns,
 };
 
-export const transformSchemas: Record<
-  string,
-  {
-    type: string;
-    fields: Record<string, unknown>;
-  }
-> = {
-  fetchData: fetchDataParamsValidator.describe(),
-  insertColumns: insertColumnsParamsValidator.describe(),
-  excludeColumns: excludeColumnsParamsValidator.describe(),
-  updateColumns: updateColumnsParamsValidator.describe(),
-  mergeRows: mergeRowsParamsValidator.describe(),
-  sortRows: sortRowsParamsValidator.describe(),
-  excludeRows: excludeRowsParamsValidator.describe(),
-  insertRows: insertRowsParamsValidator.describe(),
-  gatherColumns: gatherColumnsParamsValidator.describe(),
-  orderColumns: orderColumnsSchema,
+export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
+  fetchData: fetchDataParamsValidator,
+  insertColumns: insertColumnsParamsValidator,
+  excludeColumns: excludeColumnsParamsValidator,
+  updateColumns: updateColumnsParamsValidator,
+  mergeRows: mergeRowsParamsValidator,
+  sortRows: sortRowsParamsValidator,
+  excludeRows: excludeRowsParamsValidator,
+  insertRows: insertRowsParamsValidator,
+  gatherColumns: gatherColumnsParamsValidator,
+  orderColumns: orderColumnsParamsValidator,
 };

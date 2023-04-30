@@ -20,9 +20,36 @@ const StyledHomeButton = styled(HomeButton)`
   margin-bottom: 14px;
 `;
 
+const StyledNavBar = styled(BaseNavBar)`
+  .mobile {
+    display: none;
+  }
+  @media screen and (max-width: 1300px) {
+    .mobile {
+      display: block;
+      margin-right: 0;
+    }
+    .desktop {
+      display: none;
+    }
+    .MuiTab-root {
+      font-size: 14px;
+      margin: 0 0.8rem;
+    }
+    .MuiSvgIcon-root {
+      display: none;
+    }
+  }
+`;
+
 export const Navbar = ({ links, user }) => (
-  <BaseNavBar
-    HomeButton={<StyledHomeButton source="/admin-panel-logo-white.svg" />}
+  <StyledNavBar
+    HomeButton={
+      <>
+        <StyledHomeButton source="/admin-panel-logo-white.svg" className="desktop" />
+        <StyledHomeButton source="/tupaia.svg" className="mobile" />
+      </>
+    }
     links={links}
     Profile={() => <ProfileButton user={user} />}
     isTabActive={isTabActive}

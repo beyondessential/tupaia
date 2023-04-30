@@ -27,8 +27,8 @@ export type FetchReportPreviewDataRequest = Request<
     testData?: unknown[];
   },
   {
-    entityCode: string;
-    hierarchy: string;
+    entityCode?: string;
+    hierarchy?: string;
     startDate?: string;
     endDate?: string;
     permissionGroup?: string;
@@ -46,7 +46,10 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
 
     const reportConfig = this.getReportConfig();
 
-    const parameters: Record<string, string> = { hierarchy, organisationUnitCodes: entityCode };
+    const parameters: Record<string, string> = {};
+    if (hierarchy) parameters.hierarchy = hierarchy;
+    if (entityCode) parameters.organisationUnitCodes = entityCode;
+    if (startDate) parameters.startDate = startDate;
     if (startDate) parameters.startDate = startDate;
     if (endDate) parameters.endDate = endDate;
     if (permissionGroup) parameters.permissionGroup = permissionGroup;
@@ -58,20 +61,10 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
   }
 
   private validate = () => {
-    const { entityCode, hierarchy } = this.req.query;
-    const { previewConfig, testData } = this.req.body;
+    const { previewConfig } = this.req.body;
 
     if (!previewConfig) {
       throw new Error('Requires preview config to fetch preview data');
-    }
-
-    if (!testData) {
-      if (!hierarchy) {
-        throw new Error('Requires hierarchy or test data to fetch preview data');
-      }
-      if (!entityCode) {
-        throw new Error('Requires entity or test data to fetch preview data');
-      }
     }
   };
 

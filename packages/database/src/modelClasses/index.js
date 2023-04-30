@@ -124,6 +124,7 @@ export {
   AncestorDescendantRelationModel,
   AncestorDescendantRelationType,
 } from './AncestorDescendantRelation';
+export { APIClientModel } from './APIClient';
 export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';

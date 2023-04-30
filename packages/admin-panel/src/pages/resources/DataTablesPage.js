@@ -62,6 +62,14 @@ const COLUMNS = [
       },
     },
   },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: DATA_TABLES_ENDPOINT,
+    },
+  },
 ];
 
 const CREATE_CONFIG = {

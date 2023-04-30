@@ -10,6 +10,7 @@ export const DefaultValueType = PropTypes.oneOfType([
   PropTypes.number,
   PropTypes.bool,
   PropTypes.instanceOf(Date),
+  PropTypes.array,
 ]);
 
 export const ParameterType = {

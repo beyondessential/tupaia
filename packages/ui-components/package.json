@@ -19,7 +19,8 @@
     "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "build-dev:watch": "yarn run package:build:js -w"
   },
   "dependencies": {
     "@date-io/date-fns": "1.x",
