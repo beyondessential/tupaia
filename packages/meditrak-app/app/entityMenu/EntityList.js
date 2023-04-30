@@ -107,8 +107,10 @@ export class EntityList extends PureComponent {
       return;
     }
 
-    const primarySearchResults = this.baseEntities.filter(entity => entity.name.startsWith(searchTerm));
-    const secondarySearchResults = this.baseEntities.filter(entity => !entity.name.startsWith(searchTerm) && entity.name.includes(searchTerm));
+    // Use toLowerCase to ignore search casing
+    const primarySearchResults = this.baseEntities.filter(entity => entity.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
+    const secondarySearchResults = this.baseEntities.filter(entity => !entity.name.toLowerCase().startsWith(searchTerm)
+                                                            && entity.name.toLowerCase().includes(searchTerm.toLowerCase()));
     this.setState({
       searchTerm,
       primarySearchResults,
