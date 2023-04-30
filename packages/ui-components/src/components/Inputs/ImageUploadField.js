@@ -12,6 +12,7 @@ import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 import { Avatar } from '../Avatar';
+import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -89,6 +90,7 @@ export const ImageUploadField = React.memo(
     maxHeight,
     maxWidth,
     secondaryLabel,
+    tooltip,
   }) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [isValid, setIsValid] = useState(true);
@@ -146,7 +148,12 @@ export const ImageUploadField = React.memo(
           )}
         </Box>
         <LabelWrapper>
-          <TextLabel className="file_upload_label">{label}</TextLabel>
+          <InputLabel
+            className="file_upload_label"
+            label={label}
+            tooltip={tooltip}
+            as={TextLabel}
+          />
           {secondaryLabel && (
             <FormHelperText id={`${name}-description`}>{secondaryLabel}</FormHelperText>
           )}
@@ -183,6 +190,7 @@ ImageUploadField.propTypes = {
   maxHeight: PropTypes.number,
   maxWidth: PropTypes.number,
   secondaryLabel: PropTypes.string,
+  tooltip: PropTypes.string,
 };
 
 ImageUploadField.defaultProps = {
@@ -193,4 +201,10 @@ ImageUploadField.defaultProps = {
   avatarInitial: '',
   buttonLabel: 'Upload photo',
   avatarVariant: 'circular',
+  tooltip: '',
+  label: '',
+  deleteModal: null,
+  maxHeight: null,
+  maxWidth: null,
+  secondaryLabel: '',
 };

@@ -31,7 +31,7 @@ const HexInput = styled(TextField)`
 
 const HEXCODE_PATTERN = /^#([0-9A-F]{3}){1,2}$/i;
 
-export const HexcodeField = ({ value, onChange, label, helperText, id, disabled }) => {
+export const HexcodeField = ({ value, onChange, label, helperText, id, disabled, tooltip }) => {
   const handleChangeValue = event => {
     onChange(event.target.value);
   };
@@ -42,6 +42,7 @@ export const HexcodeField = ({ value, onChange, label, helperText, id, disabled 
       <HexcodeFieldContainer>
         <HexInput
           label={label}
+          tooltip={tooltip}
           value={value}
           id={id}
           onChange={handleChangeValue}
@@ -67,6 +68,7 @@ HexcodeField.propTypes = {
   helperText: PropTypes.string,
   id: PropTypes.string,
   disabled: PropTypes.bool,
+  tooltip: PropTypes.string,
 };
 
 HexcodeField.defaultProps = {
@@ -76,4 +78,5 @@ HexcodeField.defaultProps = {
   helperText: '',
   id: '',
   disabled: false,
+  tooltip: '',
 };
