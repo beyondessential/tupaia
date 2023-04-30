@@ -16,3 +16,4 @@ export * from './RadioGroup';
 export * from './FileUploadField';
 export * from './ProfileImageField';
 export * from './SQLQueryEditor';
+export * from './InputGroup';
