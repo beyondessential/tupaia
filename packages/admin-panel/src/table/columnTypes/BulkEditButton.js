@@ -7,8 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
-import { IconButton } from '../widgets';
-import { openBulkEditModal } from './actions';
+import { IconButton } from '../../widgets';
+import { openBulkEditModal } from '../../editor/actions';
 
 export const BulkEditButtonComponent = ({ dispatch, value: recordId, actionConfig, row }) => {
   return (

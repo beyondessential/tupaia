@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { BulkEditButton } from '../../editor';
 import { DeleteButton } from './DeleteButton';
 import { ExportButton } from '../../importExport';
 import { BooleanSelectFilter } from './columnFilters';
@@ -12,6 +11,7 @@ import { Tooltip, JSONTooltip } from './Tooltip';
 import { LogsButton } from '../../logsTable';
 import { SyncStatus } from '../../sync';
 import { EditButton } from './EditButton';
+import { BulkEditButton } from './BulkEditButton';
 
 const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
   <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
