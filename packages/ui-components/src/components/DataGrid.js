@@ -11,13 +11,7 @@ export const DataGrid = ({ columns, rows }) => {
     <div style={{ height: '100%', width: '100%' }}>
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1 }}>
-          <MuiDataGrid
-            columns={columns}
-            rows={rows}
-            density="compact"
-            disableSelectionOnClick
-            style={{ height: 600, width: 800 }}
-          />
+          <MuiDataGrid columns={columns} rows={rows} density="compact" disableSelectionOnClick />
         </div>
       </div>
     </div>

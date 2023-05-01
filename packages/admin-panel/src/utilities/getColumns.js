@@ -30,3 +30,25 @@ export const getColumns = ({ columns: columnKeys = [] }) => {
 
   return [indexColumn, ...columns];
 };
+
+export const getReportPreviewDataColumns = ({ columns: columnKeys = [] }) => {
+  const indexColumn = {
+    headerName: '#',
+    field: 'id',
+    width: 75,
+  };
+  const columns = columnKeys.map(columnKey => {
+    return {
+      headerName: columnKey,
+      field: columnKey,
+      width: 200,
+    };
+  });
+
+  return [indexColumn, ...columns];
+};
+
+export const getRowsWithIds = rows => {
+  const rowsWithIds = rows.map((dataPoint, index) => ({ id: index + 1, ...dataPoint }));
+  return rowsWithIds;
+};
