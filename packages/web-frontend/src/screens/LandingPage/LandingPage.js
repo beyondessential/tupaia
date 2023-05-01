@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import OverlayDiv from '../../containers/OverlayDiv';
 import { useAuth } from './useAuth';
 import { useNavigation } from './useNavigation';
-import { renderProjectsWithFilter } from '../../containers/OverlayDiv/components/ProjectPage';
+import { ProjectCardList } from '../../containers/OverlayDiv/components/ProjectPage/ProjectCardList';
 import { useCustomLandingPages } from './useCustomLandingPages';
 
 const Wrapper = styled.div`
@@ -83,29 +83,6 @@ export const LandingPage = () => {
   const { projects } = useCustomLandingPages();
   const { isUserLoggedIn, currentUserUsername } = useAuth();
 
-  const projectsWithAccess = renderProjectsWithFilter(
-    projects,
-    true,
-    navigateToProject,
-    'View project',
-  );
-
-  const projectsPendingAccess = renderProjectsWithFilter(
-    projects,
-    'pending',
-    navigateToRequestProjectAccess,
-    'Approval in progress',
-  );
-
-  const noAccessAction = isUserLoggedIn ? navigateToRequestProjectAccess : navigateToLogin;
-  const noAccessText = isUserLoggedIn ? 'Request access' : 'Log in';
-  const projectsWithoutAccess = renderProjectsWithFilter(
-    projects,
-    false,
-    noAccessAction,
-    noAccessText,
-  );
-
   return (
     <>
       <NavBar>
@@ -128,9 +105,24 @@ export const LandingPage = () => {
         <Container maxWidth={false}>
           <Title variant="h1">Select a project below to view.</Title>
           <Projects>
-            {projectsWithAccess}
-            {projectsPendingAccess}
-            {projectsWithoutAccess}
+            <ProjectCardList
+              projects={projects}
+              accessType
+              action={navigateToProject}
+              actionText="View project"
+            />
+            <ProjectCardList
+              projects={projects}
+              accessType="pending"
+              action={navigateToRequestProjectAccess}
+              actionText="Approval in progress"
+            />
+            <ProjectCardList
+              projects={projects}
+              accessType={false}
+              action={isUserLoggedIn ? navigateToRequestProjectAccess : navigateToLogin}
+              actionText={isUserLoggedIn ? 'Request access' : 'Log in'}
+            />
           </Projects>
           <Footer />
         </Container>
