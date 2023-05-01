@@ -45,7 +45,7 @@ const ExploreButton = styled(Button)`
   }
 `;
 
-const renderProjectsWithFilter = (projects, accessType, action, actionText) => {
+export const renderProjectsWithFilter = (projects, accessType, action, actionText) => {
   const hasPendingType = accessType === 'pending';
   const hasAccessType = hasPendingType ? false : accessType;
   return projects
