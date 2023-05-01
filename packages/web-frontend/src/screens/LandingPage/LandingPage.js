@@ -1,6 +1,6 @@
 /*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * This is just a place holder Landing Page template. The actual landing page template will be
+ * developed in another ticket. @see waitp-1189
  */
 
 import React from 'react';
@@ -127,6 +127,8 @@ export const LandingPage = () => {
           <Footer />
         </Container>
       </Wrapper>
+      {/* Include the OverlayDiv so that the loging and logout functionality is available on the */}
+      {/* custom landing pages */}
       <OverlayDiv />
     </>
   );

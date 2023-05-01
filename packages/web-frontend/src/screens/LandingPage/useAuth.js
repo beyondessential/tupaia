@@ -6,7 +6,5 @@
 import { useSelector } from 'react-redux';
 
 export const useAuth = () => {
-  const authentication = useSelector(state => state.authentication);
-
-  return { ...authentication };
+  return useSelector(state => state.authentication);
 };
