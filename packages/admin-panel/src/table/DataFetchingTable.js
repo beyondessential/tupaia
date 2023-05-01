@@ -239,7 +239,7 @@ DataFetchingTableComponent.defaultProps = {
   numberOfPages: 0,
   nestingLevel: 0,
   deleteConfig: {},
-  TableComponent: null,
+  TableComponent: undefined,
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({
