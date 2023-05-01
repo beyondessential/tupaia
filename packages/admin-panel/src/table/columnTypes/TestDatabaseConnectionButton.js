@@ -42,7 +42,7 @@ const TestConnectionIconButton = styled(IconButton)`
   display: flex;
 `;
 
-export const TestDatabaseConnectionCell = ({ row }) => {
+export const TestDatabaseConnectionButton = ({ row }) => {
   const api = useApi();
   const [buttonState, setButtonState] = useState(BUTTON_STATES.IDLE);
   const [toolTip, setTooltip] = useState(null);
@@ -109,6 +109,6 @@ export const TestDatabaseConnectionCell = ({ row }) => {
   );
 };
 
-TestDatabaseConnectionCell.propTypes = {
+TestDatabaseConnectionButton.propTypes = {
   row: PropTypes.object.isRequired,
 };

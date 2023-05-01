@@ -12,6 +12,7 @@ import { LogsButton } from '../../logsTable';
 import { SyncStatus } from '../../sync';
 import { EditButton } from './EditButton';
 import { BulkEditButton } from './BulkEditButton';
+import { TestDatabaseConnectionButton } from './TestDatabaseConnectionButton';
 
 const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
   <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
@@ -34,6 +35,7 @@ const CUSTOM_CELL_COMPONENTS = {
   jsonTooltip: JSONTooltip,
   logs: LogsButton,
   sync: SyncStatus,
+  testDatabaseConnection: TestDatabaseConnectionButton,
 };
 
 const BUTTON_COLUMN_TYPES = ['edit', 'export', 'delete', 'logs'];
