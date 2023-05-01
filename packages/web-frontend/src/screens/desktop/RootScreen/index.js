@@ -11,7 +11,6 @@
  */
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LandingPage } from '../../LandingPage';
 
 import MainPage from './MainPage';
 import PDFExportPage from './PDFExportPage';
@@ -24,7 +23,6 @@ const RootScreen = () => {
           path=":projectCode/:countryCode/:dashboardCode/:pdfExportType"
           element={<PDFExportPage />}
         />
-        <Route path="landing-page" element={<LandingPage />} />
         <Route path="*" element={<MainPage />} />
       </Routes>
     </BrowserRouter>

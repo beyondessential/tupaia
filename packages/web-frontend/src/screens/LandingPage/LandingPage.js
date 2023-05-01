@@ -77,6 +77,7 @@ const Footer = styled.div`
 `;
 
 export const LandingPage = () => {
+  console.log('landing...');
   const { projects, navigateToProject, navigateToRequestProjectAccess } = useProjects();
 
   const { isUserLoggedIn, currentUserUsername, navigateToLogin, navigateToLogout } = useAuth();
