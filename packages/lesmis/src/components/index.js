@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './ApproveButton';
 export * from './Breadcrumbs';
 export * from './DashboardSearch';
 export * from './DashboardReport';
@@ -25,7 +24,6 @@ export * from './MiniMap';
 export * from './NavBar';
 export * from './PageHeader';
 export * from './PanelComponent';
-export * from './RejectButton';
 export * from './SearchBar';
 export * from './ScrollToTopButton';
 export * from './SignUpLink';
