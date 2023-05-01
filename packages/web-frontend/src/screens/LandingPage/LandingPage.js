@@ -127,7 +127,7 @@ export const LandingPage = () => {
           <Footer />
         </Container>
       </Wrapper>
-      {/* Include the OverlayDiv so that the loging and logout functionality is available on the */}
+      {/* Include the OverlayDiv so that the login and logout functionality is available on the */}
       {/* custom landing pages */}
       <OverlayDiv />
     </>

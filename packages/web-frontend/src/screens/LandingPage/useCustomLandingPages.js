@@ -5,7 +5,7 @@
 
 import { useSelector } from 'react-redux';
 
-// This will need to be replace with real data when it's ready. @see waitp-1195
+// This will need to be replaced with real data when it's ready. @see waitp-1195
 const customLandingPages = [
   {
     name: 'Fiji',
