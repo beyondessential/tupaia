@@ -19,7 +19,7 @@ exports.up = async function (db) {
     CREATE TABLE external_database_connection (
       id TEXT PRIMARY KEY,
       code TEXT NOT NULL UNIQUE,
-      name TEXT NOT NULL,
+      name TEXT UNIQUE NOT NULL,
       description TEXT,
       permission_groups TEXT[] NOT NULL DEFAULT '{}'
     )
