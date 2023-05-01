@@ -14,6 +14,7 @@ import SessionExpiredDialog from '../../../containers/SessionExpiredDialog';
 import OverlayDiv from '../../../containers/OverlayDiv';
 import { DIALOG_Z_INDEX } from '../../../styles';
 import { LandingPage } from '../../LandingPage';
+import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
 
 const Container = styled.div`
   position: fixed;
@@ -48,8 +49,9 @@ const MapContainer = styled.div`
   transition: width 0.5s ease;
 `;
 
-const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth, isLandingPage }) => {
-  if (isLandingPage) {
+const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
+  const { isCustomLandingPage } = useCustomLandingPages();
+  if (isCustomLandingPage) {
     return <LandingPage />;
   }
 
@@ -86,15 +88,11 @@ MainPage.defaultProps = {
   isLoading: false,
 };
 
-const LANDING_PAGE_URL = 'landing-page';
-
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
-  const { pathname } = state.routing;
 
   return {
-    isLandingPage: pathname.substring(1) === LANDING_PAGE_URL,
     enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
     isLoading: state.global.isLoadingOrganisationUnit,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,

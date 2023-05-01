@@ -9,10 +9,11 @@ import MuiContainer from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useAuth } from './useAuth';
 import OverlayDiv from '../../containers/OverlayDiv';
-import { useProjects } from './useProjects';
+import { useAuth } from './useAuth';
+import { useNavigation } from './useNavigation';
 import { renderProjectsWithFilter } from '../../containers/OverlayDiv/components/ProjectPage';
+import { useCustomLandingPages } from './useCustomLandingPages';
 
 const Wrapper = styled.div`
   position: relative;
@@ -47,10 +48,6 @@ const Title = styled(Typography)`
   color: white;
   text-shadow: 1px 1px #333;
   max-width: 480px;
-
-  ${props => props.theme.breakpoints.down('sm')} {
-    line-height: 1.4;
-  }
 `;
 
 const NavBar = styled.div`
@@ -77,10 +74,14 @@ const Footer = styled.div`
 `;
 
 export const LandingPage = () => {
-  console.log('landing...');
-  const { projects, navigateToProject, navigateToRequestProjectAccess } = useProjects();
-
-  const { isUserLoggedIn, currentUserUsername, navigateToLogin, navigateToLogout } = useAuth();
+  const {
+    navigateToProject,
+    navigateToRequestProjectAccess,
+    navigateToLogin,
+    navigateToLogout,
+  } = useNavigation();
+  const { projects } = useCustomLandingPages();
+  const { isUserLoggedIn, currentUserUsername } = useAuth();
 
   const projectsWithAccess = renderProjectsWithFilter(
     projects,
@@ -118,7 +119,7 @@ export const LandingPage = () => {
           <Button onClick={navigateToLogout}>Logout</Button>
         ) : (
           <div>
-            <Button>Register</Button>
+            <Button onClick={navigateToLogin}>Register</Button>
             <Button onClick={navigateToLogin}>Login</Button>
           </div>
         )}
