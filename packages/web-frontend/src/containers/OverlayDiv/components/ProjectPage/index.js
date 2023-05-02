@@ -17,7 +17,7 @@ import {
 } from '../../constants';
 import { setProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent } from '../../../../actions';
-import { ProjectCard } from './ProjectCard';
+import { ProjectCardList } from './ProjectCardList';
 
 // code for general explore mode project.
 const EXPLORE_CODE = 'explore';
@@ -45,27 +45,6 @@ const ExploreButton = styled(Button)`
   }
 `;
 
-const renderProjectsWithFilter = (projects, accessType, action, actionText) => {
-  const hasPendingType = accessType === 'pending';
-  const hasAccessType = hasPendingType ? false : accessType;
-  return projects
-    .filter(
-      ({ code, hasAccess, hasPendingAccess = false }) =>
-        code !== EXPLORE_CODE && hasAccess === hasAccessType && hasPendingAccess === hasPendingType,
-    )
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map(project => (
-      <ProjectCard
-        key={project.name}
-        projectAction={() => action(project)}
-        actionText={actionText}
-        accessType={hasAccessType}
-        hasAccessPending={hasPendingType}
-        {...project}
-      />
-    ));
-};
-
 const ProjectPageComponent = ({
   onSelectProject,
   onRequestProjectAccess,
@@ -79,38 +58,30 @@ const ProjectPageComponent = ({
     exploreProject,
   ]);
 
-  const projectsWithAccess = renderProjectsWithFilter(
-    projects,
-    true,
-    onSelectProject,
-    'View project',
-  );
-
-  const projectsPendingAccess = renderProjectsWithFilter(
-    projects,
-    'pending',
-    onRequestProjectAccess,
-    'Approval in progress',
-  );
-
-  const noAccessAction = isUserLoggedIn ? onRequestProjectAccess : openLoginDialog;
-  const noAccessText = isUserLoggedIn ? 'Request access' : 'Log in';
-  const projectsWithoutAccess = renderProjectsWithFilter(
-    projects,
-    false,
-    noAccessAction,
-    noAccessText,
-  );
-
   return (
     <div>
       <ExploreButton onClick={selectExploreProject} variant="outlined">
         <ExploreIcon /> I just want to explore
       </ExploreButton>
       <Container>
-        {projectsWithAccess}
-        {projectsPendingAccess}
-        {projectsWithoutAccess}
+        <ProjectCardList
+          projects={projects}
+          accessType
+          action={onSelectProject}
+          actionText="View project"
+        />
+        <ProjectCardList
+          projects={projects}
+          accessType="pending"
+          action={onRequestProjectAccess}
+          actionText="Approval in progress"
+        />
+        <ProjectCardList
+          projects={projects}
+          accessType={false}
+          action={isUserLoggedIn ? onRequestProjectAccess : openLoginDialog}
+          actionText={isUserLoggedIn ? 'Request access' : 'Log in'}
+        />
       </Container>
     </div>
   );
