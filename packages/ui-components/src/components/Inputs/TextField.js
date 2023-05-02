@@ -8,6 +8,7 @@ import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { InputLabel } from './InputLabel';
+import { InputAdornment } from '@material-ui/core';
 
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
@@ -98,6 +99,9 @@ const StyledTextField = styled(MuiTextField)`
 
   .MuiInputAdornment-positionStart {
     margin-right: 0;
+    .MuiTypography-body1 {
+      padding-left: 0.5rem;
+    }
   }
 
   .MuiInputBase-inputAdornedStart,
