@@ -50,14 +50,17 @@ COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json .eslintr
 # Build and install internal dependencies
 RUN yarn build:internal-dependencies
 
-COPY packages/ packages/
+COPY packages/ ./packages/
 
-RUN yarn build:non-internal-dependencies
+# Build server packages
+# Not using parrallel tasks (-P)  as node eats all the ram
+RUN yarn workspaces foreach --verbose --from '@tupaia/*-server' run build
 
 # Build final production image
 FROM node:14.19.3-alpine3.15 as dist
 WORKDIR /tupaia
 
+# We could copy just the servers here but the size difference is negligble and not worth the extra  layers.
 COPY --from=builder /tupaia/packages/ ./packages/
 COPY --from=builder /tupaia/node_modules/ ./node_modules
 # TODO: Remove dev dependencies here. Running yarn workspaces focus -A
