@@ -18,6 +18,8 @@ COPY --from=yarnprep /pre/package.json /pre/yarn.lock /pre/.yarnrc.yml ./
 COPY .yarn ./.yarn
 COPY --from=yarnprep /pre/packages/ ./packages
 # Run yarn without building, so we can cache node_modules without code changes invalidating this layer
+
+# Trying to install just the dependencies for the frontend packages doesn't work as root level dev dependencies are needed for the build. I can't figure out a way to install just these deps.
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus -A
 
 ## Add content of all internal dependency packages ready for internal dependencies to be built
@@ -41,9 +43,8 @@ COPY packages/web-frontend packages/web-frontend
 COPY packages/admin-panel packages/admin-panel
 COPY packages/psss packages/psss
 
-RUN yarn workspace @tupaia/web-frontend build && \
-    yarn workspace @tupaia/admin-panel build && \
-    yarn workspace @tupaia/psss build
+# Not using parrallel tasks (-P)  as node eats all the ram
+RUN yarn workspaces foreach --verbose -j 1 --from '{@tupaia/psss,@tupaia/admin-panel,@tupaia/web-frontend}' run build
 
 FROM docker.io/bitnami/git:2.40.1 as h5bp
 # add h5bp config
