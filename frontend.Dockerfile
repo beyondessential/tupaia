@@ -21,6 +21,7 @@ COPY --from=yarnprep /pre/packages/ ./packages
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus -A
 
 ## Add content of all internal dependency packages ready for internal dependencies to be built
+COPY packages/access-policy/. ./packages/access-policy
 COPY packages/utils/. ./packages/utils
 COPY packages/tsutils/. ./packages/tsutils
 COPY packages/types/. ./packages/types
@@ -32,12 +33,17 @@ COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json .eslintr
 
 # Build and install internal dependencies
 RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/web-frontend
+RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/admin-panel
+RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/psss
 
-
+# Build the frontends
 COPY packages/web-frontend packages/web-frontend
+COPY packages/admin-panel packages/admin-panel
+COPY packages/psss packages/psss
 
-RUN yarn build:web-frontend
-
+RUN yarn workspace @tupaia/web-frontend build && \
+    yarn workspace @tupaia/admin-panel build && \
+    yarn workspace @tupaia/psss build
 
 FROM docker.io/bitnami/git:2.40.1 as h5bp
 # add h5bp config
@@ -56,3 +62,5 @@ COPY --from=h5bp server-configs-nginx/h5bp /etc/nginx/h5bp
 WORKDIR "/home/ubuntu/tupaia"
 COPY packages/devops/misc/error_page.html ./error_page.html
 COPY --from=builder /tupaia/packages/web-frontend/build ./packages/web-frontend/build
+COPY --from=builder /tupaia/packages/admin-panel/build ./packages/admin-panel/build
+COPY --from=builder /tupaia/packages/psss/build ./packages/psss/build
