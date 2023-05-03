@@ -9,8 +9,8 @@ import {
   REQUEST_PROJECT_ACCESS,
   LANDING,
   AUTH_VIEW_STATES,
-} from '../../containers/OverlayDiv/constants';
-import { attemptUserLogout, setAuthViewState, setOverlayComponent } from '../../actions';
+} from '../../containers/OverlayDiv/constants'; 
+import { attemptLandingPageLogout, setAuthViewState, setOverlayComponent } from '../../actions';
 
 export const useNavigation = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export const useNavigation = () => {
   };
 
   const navigateToLogout = () => {
-    dispatch(attemptUserLogout());
+    dispatch(attemptLandingPageLogout());
   };
 
   const navigateToRequestProjectAccess = project => {
