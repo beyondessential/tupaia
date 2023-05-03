@@ -18,6 +18,11 @@ import {
 import { setProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent } from '../../../../actions';
 import { ProjectCardList } from './ProjectCardList';
+import {
+  ALLOWED_PROJECT_ACCESS_TYPE,
+  DENIED_PROJECT_ACCESS_TYPE,
+  PENDING_PROJECT_ACCESS_TYPE,
+} from '../../../../constants';
 
 // code for general explore mode project.
 const EXPLORE_CODE = 'explore';
@@ -66,21 +71,12 @@ const ProjectPageComponent = ({
       <Container>
         <ProjectCardList
           projects={projects}
-          accessType
-          action={onSelectProject}
-          actionText="View project"
-        />
-        <ProjectCardList
-          projects={projects}
-          accessType="pending"
-          action={onRequestProjectAccess}
-          actionText="Approval in progress"
-        />
-        <ProjectCardList
-          projects={projects}
-          accessType={false}
-          action={isUserLoggedIn ? onRequestProjectAccess : openLoginDialog}
-          actionText={isUserLoggedIn ? 'Request access' : 'Log in'}
+          actions={{
+            [DENIED_PROJECT_ACCESS_TYPE]: isUserLoggedIn ? onRequestProjectAccess : openLoginDialog,
+            [ALLOWED_PROJECT_ACCESS_TYPE]: onSelectProject,
+            [PENDING_PROJECT_ACCESS_TYPE]: onRequestProjectAccess,
+          }}
+          isUserLoggedIn={isUserLoggedIn}
         />
       </Container>
     </div>

@@ -35,6 +35,7 @@ const PROJECTS_ITEM = 'PROJECTS_ITEM';
 const CHANGE_PASSWORD_ITEM = 'CHANGE_PASSWORD_ITEM';
 const REQUEST_COUNTRY_ACCESS_ITEM = 'REQUEST_COUNTRY_ACCESS_ITEM';
 const LOG_OUT_ITEM = 'LOG_OUT_ITEM';
+import { DARK_BLUE, WHITE } from '../../styles';
 
 const UserMenuContainer = styled.div`
   display: flex;
@@ -43,13 +44,9 @@ const UserMenuContainer = styled.div`
 
 const SignInButton = styled(Button)`
   text-transform: none;
-
-  border-color: ${props => props.theme.palette.text.primary};
-  border: 1px;
-  border-style: solid;
+  border: 1px solid ${props => props.secondaryColor};
   border-radius: 18px;
-
-  font-weight: 400;
+  font-weight: ${props => props.theme.typography.fontWeightRegular};
   height: 30px;
   margin-right: 5px;
 `;

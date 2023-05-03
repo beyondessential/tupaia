@@ -13,6 +13,11 @@ import Alarm from '@material-ui/icons/Alarm';
 import Button from '@material-ui/core/Button';
 
 import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
+import {
+  ALLOWED_PROJECT_ACCESS_TYPE,
+  DENIED_PROJECT_ACCESS_TYPE,
+  PENDING_PROJECT_ACCESS_TYPE,
+} from '../../../../constants';
 
 const Card = styled.div`
   display: grid;
@@ -111,7 +116,6 @@ export const ProjectCard = ({
   projectAction,
   actionText,
   accessType,
-  hasAccessPending,
 }) => {
   return (
     <Card>
@@ -130,11 +134,15 @@ export const ProjectCard = ({
         <Button
           onClick={projectAction}
           color="primary"
-          style={hasAccessPending ? styles.pendingAccessButton : styles.accessButton}
-          variant={accessType || hasAccessPending ? 'contained' : 'outlined'}
+          style={
+            accessType === PENDING_PROJECT_ACCESS_TYPE
+              ? styles.pendingAccessButton
+              : styles.accessButton
+          }
+          variant={accessType === DENIED_PROJECT_ACCESS_TYPE ? 'outlined' : 'contained'}
         >
-          {!accessType && !hasAccessPending && <LockIcon />}
-          {hasAccessPending && <AlarmIcon />}
+          {accessType === DENIED_PROJECT_ACCESS_TYPE && <LockIcon />}
+          {accessType === PENDING_PROJECT_ACCESS_TYPE && <AlarmIcon />}
           {actionText}
         </Button>
       </Footer>

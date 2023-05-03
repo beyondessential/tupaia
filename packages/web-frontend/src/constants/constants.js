@@ -36,3 +36,7 @@ export const LOGIN_TYPES = {
   TOKEN: 'token',
   MANUAL: 'manual',
 };
+
+export const PENDING_PROJECT_ACCESS_TYPE = 'PENDING';
+export const DENIED_PROJECT_ACCESS_TYPE = 'DENIED';
+export const ALLOWED_PROJECT_ACCESS_TYPE = 'ACCESS';
