@@ -34,7 +34,7 @@ export const CompactDataGrid = () => {
   const { data } = useTableData();
 
   return (
-    <div>
+    <div style={{ height: 600 }}>
       <DataGrid columns={columns} rows={data} />
     </div>
   );

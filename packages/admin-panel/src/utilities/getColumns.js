@@ -48,7 +48,5 @@ export const getReportPreviewDataColumns = ({ columns: columnKeys = [] }) => {
   return [indexColumn, ...columns];
 };
 
-export const getRowsWithIds = rows => {
-  const rowsWithIds = rows.map((dataPoint, index) => ({ id: index + 1, ...dataPoint }));
-  return rowsWithIds;
-};
+export const getRowsWithIds = rows =>
+  rows.map((dataPoint, index) => ({ id: index + 1, ...dataPoint }));
