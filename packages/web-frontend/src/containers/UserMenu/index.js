@@ -22,6 +22,7 @@ import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandin
 import {
   DIALOG_PAGE_CHANGE_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  attemptUserLogout,
   closeDropdownOverlays,
   openUserPage,
   setOverlayComponent,
@@ -264,6 +265,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeDropdownOverlays()) &&
       dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
     onClickSignIn: () => dispatch(setOverlayComponent(LANDING)),
+    onAttemptUserLogout: () => dispatch(attemptUserLogout()),
   };
 };
 
