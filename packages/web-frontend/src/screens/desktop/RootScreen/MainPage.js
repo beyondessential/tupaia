@@ -73,6 +73,7 @@ const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
           </>
         )}
       </Container>
+      {/** Only show the map when is not a custom landing page */}
       {!isCustomLandingPage && (
         <MapContainer $rightOffset={sidePanelWidth}>
           <Map />

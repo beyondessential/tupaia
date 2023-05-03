@@ -56,6 +56,7 @@ const Name = styled(Typography)`
   }
 `;
 
+// If logo is from a custom landing page, don't wrap in clickable button
 const Logo = ({ isCustomLandingPage, children, onClick }) =>
   isCustomLandingPage ? children : <LogoButton onClick={onClick}>{children}</LogoButton>;
 
@@ -66,11 +67,13 @@ export const TopBarLogoComponent = ({ onClickLogo }) => {
     include_name_in_header: displayName = false,
     logo_url: customLandingPageLogo,
   } = customLandingPageSettings;
+  // If is a custom landing page, use the logo from the settings, else use the Tupaia logo
   const logoSrc = isCustomLandingPage ? customLandingPageLogo : TUPAIA_LIGHT_LOGO_SRC;
   return (
     <LogoWrapper>
       <Logo onClick={onClickLogo} isCustomLandingPage={isCustomLandingPage}>
         <LogoImage src={logoSrc} alt="Logo" />
+        {/** If a custom landing page has set to display the name in the header, display it here */}
         {displayName && <Name variant="h1">{name}</Name>}
       </Logo>
     </LogoWrapper>
