@@ -1,30 +1,15 @@
 /*
- * This is just a place holder Landing Page template. The actual landing page template will be
- * developed in another ticket. @see waitp-1189
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import OverlayDiv from '../../containers/OverlayDiv';
-import { useAuth } from './useAuth';
-import { useNavigation } from './useNavigation';
-import { ProjectCardList } from '../../containers/OverlayDiv/components/ProjectPage/ProjectCardList';
 import { useCustomLandingPages } from './useCustomLandingPages';
-import { DARKEST_GREY, WHITE } from '../../styles';
-import {
-  ALLOWED_PROJECT_ACCESS_TYPE,
-  DENIED_PROJECT_ACCESS_TYPE,
-  PENDING_PROJECT_ACCESS_TYPE,
-} from '../../constants';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { MultiProjectLandingPage } from './MultiProjectLandingPage';
-import UserMenu from '../../containers/UserMenu';
-import UserBar from '../../containers/UserBar';
-import TopBar from '../../containers/TopBar';
 
 const Wrapper = styled.div`
   position: relative;
@@ -42,41 +27,25 @@ const Container = styled(MuiContainer)`
   padding: 3.5rem;
 `;
 
-// const Title = styled(Typography)`
-//   font-style: normal;
-//   font-weight: 600;
-//   font-size: 2rem;
-//   line-height: 3rem;
-//   margin-bottom: 1.8rem;
-//   color: white;
-//   text-shadow: 1px 1px #333;
-//   max-width: 480px;
-// `;
-
-// const Footer = styled.div`
-//   position: absolute;
-//   bottom: 0;
-//   left: 50px;
-//   right: 50px;
-//   border-top: 1px solid white;
-//   height: 75px;
-// `;
+const Footer = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 50px;
+  right: 50px;
+  border-top: 1px solid white;
+  height: 75px;
+`;
 
 export const LandingPage = () => {
   const { projects, customLandingPageSettings } = useCustomLandingPages();
-  const {
-    image_url: backgroundImage,
-    logo_url: logoImage,
-    primary_hexcode: primaryColor = DARKEST_GREY,
-    secondary_hexcode: secondaryColor = WHITE,
-  } = customLandingPageSettings;
+  const { image_url: backgroundImage } = customLandingPageSettings;
 
   return (
     <>
       <Wrapper backgroundImage={backgroundImage}>
         <Container maxWidth={false}>
           {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}
-          {/* <Footer /> */}
+          <Footer />
         </Container>
       </Wrapper>
       {/* Include the OverlayDiv so that the login and logout functionality is available on the */}
