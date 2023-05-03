@@ -22,6 +22,7 @@ import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandin
 import {
   DIALOG_PAGE_CHANGE_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  attemptLandingPageLogout,
   attemptUserLogout,
   closeDropdownOverlays,
   openUserPage,
@@ -131,6 +132,7 @@ const UserMenu = ({
   onToggleRequestCountryAccessPanel,
   onAttemptUserLogout,
   onClickRegister,
+  onAttemptLandingPageLogout,
 }) => {
   const { isCustomLandingPage, customLandingPageSettings = {} } = useCustomLandingPages();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -161,7 +163,16 @@ const UserMenu = ({
       type: 'link',
       url: window.location.origin,
     };
-    menuItems = isUserLoggedIn ? [visitMainSite, changePassword, logout] : [visitMainSite];
+    menuItems = isUserLoggedIn
+      ? [
+          visitMainSite,
+          changePassword,
+          {
+            ...logout,
+            action: onAttemptLandingPageLogout,
+          },
+        ]
+      : [visitMainSite];
   } else {
     // otherwise display as usual
     const viewProjects = {
@@ -263,6 +274,7 @@ UserMenu.propTypes = {
   onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
   onAttemptUserLogout: PropTypes.func.isRequired,
   onClickRegister: PropTypes.func.isRequired,
+  onAttemptLandingPageLogout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -290,6 +302,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(setOverlayComponent(LANDING));
       dispatch(setAuthViewState(AUTH_VIEW_STATES.REGISTER));
     },
+    onAttemptLandingPageLogout: () => dispatch(attemptLandingPageLogout()),
   };
 };
 
