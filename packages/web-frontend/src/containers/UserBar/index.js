@@ -108,45 +108,6 @@ export class UserBar extends Component {
     }
   }
 
-  getMenuItems = () => {
-    const {
-      isUserLoggedIn,
-      onOpenViewProjects,
-      onToggleChangePasswordPanel,
-      onToggleRequestCountryAccessPanel,
-      onAttemptUserLogout,
-    } = this.props;
-
-    const viewProjects = {
-      text: 'View projects',
-      action: onOpenViewProjects,
-    };
-    const helpCentre = {
-      text: 'Help centre',
-      type: 'link',
-      url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
-    };
-    if (!isUserLoggedIn) {
-      return [viewProjects, helpCentre];
-    }
-    return [
-      viewProjects,
-      {
-        text: 'Change password',
-        action: onToggleChangePasswordPanel,
-      },
-      {
-        text: 'Request country access',
-        action: onToggleRequestCountryAccessPanel,
-      },
-      helpCentre,
-      {
-        text: 'Logout',
-        action: onAttemptUserLogout,
-      },
-    ];
-  };
-
   renderDialogContent() {
     const { dialogPage, onOpenUserPage, onCloseUserDialog, onOpenLandingPage } = this.props;
 
@@ -249,7 +210,6 @@ export class UserBar extends Component {
 UserBar.propTypes = {
   onOpenUserPage: PropTypes.func.isRequired,
   onOpenLandingPage: PropTypes.func.isRequired,
-  onOpenViewProjects: PropTypes.func.isRequired,
   onCloseUserDialog: PropTypes.func.isRequired,
   isDialogVisible: PropTypes.bool.isRequired,
   dialogPage: PropTypes.oneOf([
@@ -263,10 +223,6 @@ UserBar.propTypes = {
     DIALOG_PAGE_VERIFICATION_PAGE,
     '',
   ]).isRequired,
-  isUserLoggedIn: PropTypes.bool.isRequired,
-  onToggleChangePasswordPanel: PropTypes.func.isRequired,
-  onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
-  onAttemptUserLogout: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -287,12 +243,11 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { isDialogVisible, dialogPage, isUserLoggedIn } = state.authentication;
+  const { isDialogVisible, dialogPage } = state.authentication;
 
   return {
     isDialogVisible,
     dialogPage,
-    isUserLoggedIn,
   };
 };
 
@@ -300,14 +255,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onCloseUserDialog: () => dispatch(closeUserPage()),
     onOpenLandingPage: () => dispatch(setOverlayComponent(LANDING)),
-    onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
-    onToggleChangePasswordPanel: () =>
-      dispatch(closeDropdownOverlays()) && dispatch(openUserPage(DIALOG_PAGE_CHANGE_PASSWORD)),
-    onToggleRequestCountryAccessPanel: () =>
-      dispatch(closeDropdownOverlays()) &&
-      dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
-    onAttemptUserLogout: () => dispatch(attemptUserLogout()),
   };
 };
 
