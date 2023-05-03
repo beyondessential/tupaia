@@ -6,7 +6,7 @@
 import { useDispatch } from 'react-redux';
 import { setProject, setRequestingAccess } from '../../projects/actions';
 import { REQUEST_PROJECT_ACCESS, LANDING } from '../../containers/OverlayDiv/constants';
-import { attemptUserLogout, setOverlayComponent } from '../../actions';
+import { attemptLandingPageLogout, setOverlayComponent } from '../../actions';
 
 export const useNavigation = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ export const useNavigation = () => {
   };
 
   const navigateToLogout = () => {
-    dispatch(attemptUserLogout());
+    dispatch(attemptLandingPageLogout());
   };
 
   const navigateToRequestProjectAccess = project => {
