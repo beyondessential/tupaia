@@ -58,6 +58,7 @@ import {
   SHOW_UNVERIFIED_LOGIN,
   FETCH_LOGOUT_ERROR,
   FETCH_LOGOUT_SUCCESS,
+  FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
   FETCH_MEASURES_ERROR,
   FETCH_MEASURES_SUCCESS,
   CHANGE_ORG_UNIT_ERROR,
@@ -212,6 +213,7 @@ function authentication(
         isRequestingLogin: false,
       };
     case FETCH_LOGOUT_SUCCESS:
+    case FETCH_LANDING_PAGE_LOGOUT_SUCCESS:
       return {
         ...state,
         currentUserUsername: 'Public User',
@@ -558,6 +560,7 @@ function searchBar(
         searchString: '',
       };
     case FETCH_LOGOUT_SUCCESS:
+    case FETCH_LANDING_PAGE_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
       return {
         ...state,
