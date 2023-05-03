@@ -5,20 +5,19 @@
 
 import { useDispatch } from 'react-redux';
 import { setProject, setRequestingAccess } from '../../projects/actions';
-import { REQUEST_PROJECT_ACCESS, LANDING } from '../../containers/OverlayDiv/constants';
 import {
-  DIALOG_PAGE_CHANGE_PASSWORD,
-  attemptUserLogout,
-  closeDropdownOverlays,
-  openUserPage,
-  setOverlayComponent,
-} from '../../actions';
+  REQUEST_PROJECT_ACCESS,
+  LANDING,
+  AUTH_VIEW_STATES,
+} from '../../containers/OverlayDiv/constants';
+import { attemptUserLogout, setAuthViewState, setOverlayComponent } from '../../actions';
 
 export const useNavigation = () => {
   const dispatch = useDispatch();
 
   const navigateToLogin = () => {
     dispatch(setOverlayComponent(LANDING));
+    dispatch(setAuthViewState(AUTH_VIEW_STATES.LOGIN));
   };
 
   const navigateToLogout = () => {

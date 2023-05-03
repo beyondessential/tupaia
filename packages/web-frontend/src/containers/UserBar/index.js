@@ -29,8 +29,7 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   DIALOG_PAGE_VERIFICATION_PAGE,
   DIALOG_PAGE_ONE_TIME_LOGIN,
-  closeDropdownOverlays,
-  attemptUserLogout,
+  setAuthViewState,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
 import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
@@ -39,7 +38,7 @@ import { SignupForm } from '../SignupForm';
 import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
-import { LANDING, VIEW_PROJECTS } from '../OverlayDiv/constants';
+import { LANDING, AUTH_VIEW_STATES } from '../OverlayDiv/constants';
 import { DARK_BLUE, WHITE } from '../../styles';
 import { OneTimeLoginForm } from '../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../styles/LightThemeProvider';
@@ -109,7 +108,12 @@ export class UserBar extends Component {
   }
 
   renderDialogContent() {
-    const { dialogPage, onOpenUserPage, onCloseUserDialog, onOpenLandingPage } = this.props;
+    const {
+      dialogPage,
+      onOpenUserPage,
+      onCloseUserDialog,
+      onNavigateToRequestPasswordReset,
+    } = this.props;
 
     switch (dialogPage) {
       case DIALOG_PAGE_LOGIN:
@@ -123,13 +127,7 @@ export class UserBar extends Component {
       case DIALOG_PAGE_ONE_TIME_LOGIN:
         return (
           <LightThemeProvider>
-            <OneTimeLoginForm
-              onNavigateToRequestPasswordReset={() => {
-                // This prop can be changed to a simple link/removed after url based routing implemented in #770
-                onCloseUserDialog();
-                onOpenLandingPage();
-              }}
-            />
+            <OneTimeLoginForm onNavigateToRequestPasswordReset={onNavigateToRequestPasswordReset} />
           </LightThemeProvider>
         );
 
@@ -209,7 +207,7 @@ export class UserBar extends Component {
 
 UserBar.propTypes = {
   onOpenUserPage: PropTypes.func.isRequired,
-  onOpenLandingPage: PropTypes.func.isRequired,
+  onNavigateToRequestPasswordReset: PropTypes.func.isRequired,
   onCloseUserDialog: PropTypes.func.isRequired,
   isDialogVisible: PropTypes.bool.isRequired,
   dialogPage: PropTypes.oneOf([
@@ -254,7 +252,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onCloseUserDialog: () => dispatch(closeUserPage()),
-    onOpenLandingPage: () => dispatch(setOverlayComponent(LANDING)),
+    onNavigateToRequestPasswordReset: () => {
+      dispatch(setOverlayComponent(LANDING));
+      dispatch(setAuthViewState(AUTH_VIEW_STATES.LOGIN));
+      dispatch(closeUserPage());
+    },
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
   };
 };

@@ -66,7 +66,7 @@ export const LandingPage = ({ isUserLoggedIn, isViewingProjects }) => {
         )}
       </div>
       {isLoginPageVisible ? (
-        <LoginPage isUserLoggedIn={isUserLoggedIn} />
+        <LoginPage />
       ) : (
         <ProjectPage openLoginDialog={hideProjects} isUserLoggedIn={isUserLoggedIn} />
       )}

@@ -25,9 +25,10 @@ import {
   attemptUserLogout,
   closeDropdownOverlays,
   openUserPage,
+  setAuthViewState,
   setOverlayComponent,
 } from '../../actions';
-import { LANDING, VIEW_PROJECTS } from '../OverlayDiv/constants';
+import { LANDING, AUTH_VIEW_STATES, VIEW_PROJECTS } from '../OverlayDiv/constants';
 
 const UserMenuContainer = styled.div`
   display: flex;
@@ -39,9 +40,11 @@ const SignInButton = styled(Button)`
   text-transform: none;
   border: 1px solid ${props => props.secondaryColor};
   border-radius: 18px;
-  font-weight: ${props => props.theme.typography.fontWeightRegular};
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
   height: 30px;
-  margin-right: 5px;
+  margin-right: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
 `;
 
 const StyledMenuButton = styled(Button)`
@@ -96,6 +99,11 @@ const MenuListItem = styled(ListItem)`
   padding: 0;
 `;
 
+const RegisterButton = styled(Button)`
+  text-transform: none;
+  margin-right: 0.5em;
+`;
+
 const MenuItem = ({ type, children, ...props }) =>
   type === 'link' ? (
     <MenuItemLink {...props} target="_blank">
@@ -122,6 +130,7 @@ const UserMenu = ({
   onToggleChangePasswordPanel,
   onToggleRequestCountryAccessPanel,
   onAttemptUserLogout,
+  onClickRegister,
 }) => {
   const { isCustomLandingPage, customLandingPageSettings = {} } = useCustomLandingPages();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -189,14 +198,21 @@ const UserMenu = ({
     setMenuOpen(false);
   };
 
+  const showRegisterButton = !isUserLoggedIn && isCustomLandingPage;
+
   return (
     <UserMenuContainer secondaryColor={secondaryColor}>
       {isUserLoggedIn ? (
         <UsernameContainer>{currentUserUsername}</UsernameContainer>
       ) : (
-        <SignInButton onClick={onClickSignIn} secondaryColor={secondaryColor}>
-          {signInText}
-        </SignInButton>
+        <>
+          {showRegisterButton && (
+            <RegisterButton onClick={onClickRegister}>Register</RegisterButton>
+          )}
+          <SignInButton onClick={onClickSignIn} secondaryColor={secondaryColor}>
+            {signInText}
+          </SignInButton>
+        </>
       )}
       <div>
         <StyledMenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
@@ -246,6 +262,7 @@ UserMenu.propTypes = {
   onToggleChangePasswordPanel: PropTypes.func.isRequired,
   onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
   onAttemptUserLogout: PropTypes.func.isRequired,
+  onClickRegister: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -264,8 +281,15 @@ const mapDispatchToProps = dispatch => {
     onToggleRequestCountryAccessPanel: () =>
       dispatch(closeDropdownOverlays()) &&
       dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
-    onClickSignIn: () => dispatch(setOverlayComponent(LANDING)),
+    onClickSignIn: () => {
+      dispatch(setOverlayComponent(LANDING));
+      dispatch(setAuthViewState(AUTH_VIEW_STATES.LOGIN));
+    },
     onAttemptUserLogout: () => dispatch(attemptUserLogout()),
+    onClickRegister: () => {
+      dispatch(setOverlayComponent(LANDING));
+      dispatch(setAuthViewState(AUTH_VIEW_STATES.REGISTER));
+    },
   };
 };
 

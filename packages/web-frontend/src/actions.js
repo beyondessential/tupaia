@@ -132,6 +132,7 @@ export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS = 'SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS';
 export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 export const SET_MAX_SELECTED_OVERLAYS = 'SET_MAX_SELECTED_OVERLAYS';
+export const SET_AUTH_VIEW_STATE = 'SET_AUTH_VIEW_STATE';
 
 /**
  * Attempt password change using old password, new password and new password
@@ -1107,4 +1108,7 @@ export function updateHistoryLocation(location) {
 
 export function setMobileTab(tab) {
   return { type: SET_MOBILE_TAB, tab };
+}
+export function setAuthViewState(authViewState) {
+  return { type: SET_AUTH_VIEW_STATE, authViewState };
 }
