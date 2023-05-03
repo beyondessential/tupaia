@@ -18,6 +18,15 @@ import styled from 'styled-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import { ListItem, Button, Popover, Link } from '@material-ui/core';
 import { DARK_BLUE, WHITE } from '../../styles';
+import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandingPages';
+import {
+  DIALOG_PAGE_CHANGE_PASSWORD,
+  DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  closeDropdownOverlays,
+  openUserPage,
+  setOverlayComponent,
+} from '../../actions';
+import { LANDING, VIEW_PROJECTS } from '../OverlayDiv/constants';
 
 const UserMenuContainer = styled.div`
   display: flex;
@@ -108,12 +117,68 @@ const UserMenu = ({
   isUserLoggedIn,
   currentUserUsername,
   onClickSignIn,
-  signInText,
-  menuItems,
-  primaryColor,
-  secondaryColor,
+  onOpenViewProjects,
+  onToggleChangePasswordPanel,
+  onToggleRequestCountryAccessPanel,
+  onAttemptUserLogout,
 }) => {
+  const { isCustomLandingPage, customLandingPageSettings = {} } = useCustomLandingPages();
   const [menuOpen, setMenuOpen] = useState(false);
+  const {
+    secondary_hexcode: customLandingPageSecondaryColor,
+    primary_hexcode: customLandingPagePrimaryColor,
+  } = customLandingPageSettings;
+
+  const primaryColor = customLandingPagePrimaryColor || DARK_BLUE;
+  const secondaryColor = customLandingPageSecondaryColor || WHITE;
+
+  const signInText = isCustomLandingPage ? 'Log in' : 'Sign In / Register';
+
+  let menuItems = [];
+
+  const logout = {
+    text: 'Logout',
+    action: onAttemptUserLogout,
+  };
+  const changePassword = {
+    text: 'Change Password',
+    action: onToggleChangePasswordPanel,
+  };
+  // if is a custom landing page, display only the appropriate items
+  if (isCustomLandingPage) {
+    const visitMainSite = {
+      text: 'Visit tupaia.org',
+      type: 'link',
+      url: window.location.origin,
+    };
+    menuItems = isUserLoggedIn ? [visitMainSite, changePassword, logout] : [visitMainSite];
+  } else {
+    // otherwise display as usual
+    const viewProjects = {
+      text: 'View projects',
+      action: onOpenViewProjects,
+    };
+    const helpCentre = {
+      text: 'Help centre',
+      type: 'link',
+      url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
+    };
+    menuItems = isUserLoggedIn
+      ? [
+          viewProjects,
+          changePassword,
+          {
+            text: 'Request country access',
+            action: onToggleRequestCountryAccessPanel,
+          },
+          helpCentre,
+          {
+            text: 'Logout',
+            action: onAttemptUserLogout,
+          },
+        ]
+      : [viewProjects, helpCentre];
+  }
 
   const toggleUserMenu = () => {
     setMenuOpen(!menuOpen);
@@ -176,19 +241,10 @@ UserMenu.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
   onClickSignIn: PropTypes.func.isRequired,
   currentUserUsername: PropTypes.string.isRequired,
-  signInText: PropTypes.string.isRequired,
-  menuItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      text: PropTypes.string.isRequired,
-      action: PropTypes.func.isRequired,
-    }),
-  ).isRequired,
-  primaryColor: PropTypes.string,
-  secondaryColor: PropTypes.string,
-};
-UserMenu.defaultProps = {
-  primaryColor: DARK_BLUE,
-  secondaryColor: WHITE,
+  onOpenViewProjects: PropTypes.func.isRequired,
+  onToggleChangePasswordPanel: PropTypes.func.isRequired,
+  onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
+  onAttemptUserLogout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -199,4 +255,16 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, {})(UserMenu);
+const mapDispatchToProps = dispatch => {
+  return {
+    onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
+    onToggleChangePasswordPanel: () =>
+      dispatch(closeDropdownOverlays()) && dispatch(openUserPage(DIALOG_PAGE_CHANGE_PASSWORD)),
+    onToggleRequestCountryAccessPanel: () =>
+      dispatch(closeDropdownOverlays()) &&
+      dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
+    onClickSignIn: () => dispatch(setOverlayComponent(LANDING)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

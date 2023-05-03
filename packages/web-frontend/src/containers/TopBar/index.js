@@ -7,16 +7,16 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import TopBarLogo from '../TopBarLogo';
 import SearchBar from '../SearchBar';
 import UserBar from '../UserBar';
-import { TOP_BAR_HEIGHT } from '../../styles';
+import { DARK_BLUE, TOP_BAR_HEIGHT, WHITE } from '../../styles';
+import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandingPages';
 
 // Both min height and height must be specified due to bugs in Firefox flexbox
 // that means that topbar height will be ignored even if using flex-basis.
 const TopBarWrapper = styled.div`
-  background-color: #282a35;
+  background-color: ${props => props.primaryColor};
   min-height: ${TOP_BAR_HEIGHT}px;
   height: ${TOP_BAR_HEIGHT}px;
   display: flex;
@@ -24,27 +24,30 @@ const TopBarWrapper = styled.div`
   position: relative;
   padding: 0 10px;
   border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+  > * {
+    color: ${props => props.secondaryColor};
+    background-color: ${props => props.primaryColor};
+  }
 `;
 
-const TopBar = ({ logo, showSearchBar, userBar }) => (
-  <TopBarWrapper>
-    <TopBarLogo {...logo} />
-    {showSearchBar && <SearchBar />}
-    <UserBar />
-  </TopBarWrapper>
-);
+const TopBar = () => {
+  const { isCustomLandingPage, customLandingPageSettings } = useCustomLandingPages();
+  let primaryColor = DARK_BLUE;
+  let secondaryColor = WHITE;
 
-TopBar.propTypes = {
-  logo: PropTypes.shape({
-    url: PropTypes.string.isRequired,
-    onClick: PropTypes.func,
-  }).isRequired,
-  showSearchBar: PropTypes.bool,
-  userBar: PropTypes.shape.isRequired,
-};
+  if (isCustomLandingPage) {
+    primaryColor = customLandingPageSettings.primary_hexcode || DARK_BLUE;
+    secondaryColor = customLandingPageSettings.secondary_hexcode || WHITE;
+  }
 
-TopBar.defaultProps = {
-  showSearchBar: true,
+  return (
+    <TopBarWrapper secondaryColor={secondaryColor} primaryColor={primaryColor}>
+      <TopBarLogo />
+      {/** only display the search bar when not in a custom landing page */}
+      {!isCustomLandingPage && <SearchBar />}
+      <UserBar />
+    </TopBarWrapper>
+  );
 };
 
 export default TopBar;

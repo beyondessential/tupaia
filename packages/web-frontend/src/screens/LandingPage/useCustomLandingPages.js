@@ -10,7 +10,11 @@ const customLandingPages = [
   {
     name: 'Fiji',
     urlSegment: 'landing-page-fiji',
-    projects: ['wish', 'fanafana', 'unfpa'],
+    projects: ['wish'],
+    image_url: 'https://loremflickr.com/2000/2000',
+    logo_url: 'https://loremflickr.com/800/800',
+    include_name_in_header: true,
+    primary_hexcode: 'pink',
   },
 ];
 
@@ -33,5 +37,6 @@ export const useCustomLandingPages = () => {
   return {
     isCustomLandingPage: !!customLandingPage,
     projects: getLandingPageProjects(customLandingPage, projectData),
+    customLandingPageSettings: customLandingPage,
   };
 };

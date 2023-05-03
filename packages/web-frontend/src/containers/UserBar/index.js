@@ -12,11 +12,11 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
 import {
   closeUserPage,
   openUserPage,
@@ -40,9 +40,24 @@ import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
 import { LANDING, VIEW_PROJECTS } from '../OverlayDiv/constants';
-import { USER_BAR_STYLES, DARK_BLUE, WHITE } from '../../styles';
+import { DARK_BLUE, WHITE } from '../../styles';
 import { OneTimeLoginForm } from '../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../styles/LightThemeProvider';
+
+const UserBarWrapper = styled.div`
+  margin-left: 10px;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+`;
+
+const UserBarContainer = styled.div`
+  border-radius: 8px;
+  pointer-events: auto;
+  cursor: auto;
+  display: flex;
+  justify-content: space-around;
+`;
 
 export class UserBar extends Component {
   getDialogTitle() {
@@ -218,20 +233,15 @@ export class UserBar extends Component {
 
   render() {
     const form = this.renderDialog();
-    const { onOpenLandingPage } = this.props;
 
     return (
-      <div style={USER_BAR_STYLES.container}>
-        <div style={USER_BAR_STYLES.userMenu}>
-          <UserMenu
-            onClickSignIn={onOpenLandingPage}
-            signInText="Sign In / Register"
-            menuItems={this.getMenuItems()}
-          />
+      <UserBarWrapper>
+        <UserBarContainer>
+          <UserMenu />
           <EmailVerifyNag />
-        </div>
+        </UserBarContainer>
         {form}
-      </div>
+      </UserBarWrapper>
     );
   }
 }

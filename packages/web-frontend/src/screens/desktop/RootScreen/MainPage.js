@@ -15,8 +15,6 @@ import OverlayDiv from '../../../containers/OverlayDiv';
 import { DIALOG_Z_INDEX } from '../../../styles';
 import { LandingPage } from '../../LandingPage';
 import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
-import { TUPAIA_LIGHT_LOGO_SRC } from '../../../constants';
-import { goHome } from '../../../actions';
 
 const Container = styled.div`
   position: fixed;
@@ -51,36 +49,35 @@ const MapContainer = styled.div`
   transition: width 0.5s ease;
 `;
 
-const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth, onClickLogo }) => {
+const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
   const { isCustomLandingPage } = useCustomLandingPages();
-  if (isCustomLandingPage) {
-    return <LandingPage />;
-  }
 
   return (
     <>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
       <Container>
         <EnvBanner />
-        <TopBar
-          logo={{
-            url: TUPAIA_LIGHT_LOGO_SRC,
-            onClick: onClickLogo,
-          }}
-          showSearchBar
-        />
-        <ContentContainer>
-          <MapDiv />
-          <SidePanel />
-        </ContentContainer>
-        <OverlayDiv />
-        <SessionExpiredDialog />
-        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-        <LoadingScreen isLoading={isLoading} />
+        <TopBar />
+        {isCustomLandingPage ? (
+          <LandingPage />
+        ) : (
+          <>
+            <ContentContainer>
+              <MapDiv />
+              <SidePanel />
+            </ContentContainer>
+            <OverlayDiv />
+            <SessionExpiredDialog />
+            {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+            <LoadingScreen isLoading={isLoading} />
+          </>
+        )}
       </Container>
-      <MapContainer $rightOffset={sidePanelWidth}>
-        <Map />
-      </MapContainer>
+      {!isCustomLandingPage && (
+        <MapContainer $rightOffset={sidePanelWidth}>
+          <Map />
+        </MapContainer>
+      )}
     </>
   );
 };
@@ -89,7 +86,6 @@ MainPage.propTypes = {
   enlargedDialogIsVisible: PropTypes.bool,
   isLoading: PropTypes.bool,
   sidePanelWidth: PropTypes.number.isRequired,
-  onClickLogo: PropTypes.func.isRequired,
 };
 
 MainPage.defaultProps = {
@@ -108,10 +104,4 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  onClickLogo: () => {
-    dispatch(goHome());
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
+export default connect(mapStateToProps)(MainPage);
