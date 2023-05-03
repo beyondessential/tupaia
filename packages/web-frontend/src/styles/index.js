@@ -41,6 +41,7 @@ export const BLUE = '#22c7fc';
 export const LIGHT_BLUE = '#cde9ff';
 export const DARKENED_BLUE = '#0296c5';
 export const DARK_GREY = 'rgba(255, 255, 255, 0.6)';
+export const DARKEST_GREY = 'rgb(40, 42, 53)'
 export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];

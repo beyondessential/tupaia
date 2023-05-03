@@ -29,6 +29,8 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   DIALOG_PAGE_VERIFICATION_PAGE,
   DIALOG_PAGE_ONE_TIME_LOGIN,
+  closeDropdownOverlays,
+  attemptUserLogout,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
 import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
@@ -91,26 +93,44 @@ export class UserBar extends Component {
     }
   }
 
-  renderDialog() {
-    const { isDialogVisible, onCloseUserDialog, dialogPage } = this.props;
-    const width = this.getWidth();
-    // Don't let the user close a dialog if it is a password reset form as the one time login token
-    // is used to load the form and so they need to do the password reset now */
-    return (
-      <Dialog
-        open={isDialogVisible}
-        style={{ zIndex: 1301 }}
-        PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
-        onClose={dialogPage === DIALOG_PAGE_RESET_PASSWORD ? null : onCloseUserDialog}
-        ref={dialog => {
-          this.dialog = dialog;
-        }}
-      >
-        <DialogTitle style={styles.dialogTitle}>{this.getDialogTitle()}</DialogTitle>
-        <DialogContent>{this.renderDialogContent()}</DialogContent>
-      </Dialog>
-    );
-  }
+  getMenuItems = () => {
+    const {
+      isUserLoggedIn,
+      onOpenViewProjects,
+      onToggleChangePasswordPanel,
+      onToggleRequestCountryAccessPanel,
+      onAttemptUserLogout,
+    } = this.props;
+
+    const viewProjects = {
+      text: 'View projects',
+      action: onOpenViewProjects,
+    };
+    const helpCentre = {
+      text: 'Help centre',
+      type: 'link',
+      url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
+    };
+    if (!isUserLoggedIn) {
+      return [viewProjects, helpCentre];
+    }
+    return [
+      viewProjects,
+      {
+        text: 'Change password',
+        action: onToggleChangePasswordPanel,
+      },
+      {
+        text: 'Request country access',
+        action: onToggleRequestCountryAccessPanel,
+      },
+      helpCentre,
+      {
+        text: 'Logout',
+        action: onAttemptUserLogout,
+      },
+    ];
+  };
 
   renderDialogContent() {
     const { dialogPage, onOpenUserPage, onCloseUserDialog, onOpenLandingPage } = this.props;
@@ -175,15 +195,38 @@ export class UserBar extends Component {
     }
   }
 
+  renderDialog() {
+    const { isDialogVisible, onCloseUserDialog, dialogPage } = this.props;
+    const width = this.getWidth();
+    // Don't let the user close a dialog if it is a password reset form as the one time login token
+    // is used to load the form and so they need to do the password reset now */
+    return (
+      <Dialog
+        open={isDialogVisible}
+        style={{ zIndex: 1301 }}
+        PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
+        onClose={dialogPage === DIALOG_PAGE_RESET_PASSWORD ? null : onCloseUserDialog}
+        ref={dialog => {
+          this.dialog = dialog;
+        }}
+      >
+        <DialogTitle style={styles.dialogTitle}>{this.getDialogTitle()}</DialogTitle>
+        <DialogContent>{this.renderDialogContent()}</DialogContent>
+      </Dialog>
+    );
+  }
+
   render() {
     const form = this.renderDialog();
+    const { onOpenLandingPage } = this.props;
 
     return (
       <div style={USER_BAR_STYLES.container}>
         <div style={USER_BAR_STYLES.userMenu}>
           <UserMenu
-            openLandingPage={this.props.onOpenLandingPage}
-            openViewProjects={this.props.onOpenViewProjects}
+            onClickSignIn={onOpenLandingPage}
+            signInText="Sign In / Register"
+            menuItems={this.getMenuItems()}
           />
           <EmailVerifyNag />
         </div>
@@ -210,6 +253,10 @@ UserBar.propTypes = {
     DIALOG_PAGE_VERIFICATION_PAGE,
     '',
   ]).isRequired,
+  isUserLoggedIn: PropTypes.bool.isRequired,
+  onToggleChangePasswordPanel: PropTypes.func.isRequired,
+  onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
+  onAttemptUserLogout: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -230,11 +277,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const { isDialogVisible, dialogPage } = state.authentication;
+  const { isDialogVisible, dialogPage, isUserLoggedIn } = state.authentication;
 
   return {
     isDialogVisible,
     dialogPage,
+    isUserLoggedIn,
   };
 };
 
@@ -244,6 +292,12 @@ const mapDispatchToProps = dispatch => {
     onOpenLandingPage: () => dispatch(setOverlayComponent(LANDING)),
     onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
+    onToggleChangePasswordPanel: () =>
+      dispatch(closeDropdownOverlays()) && dispatch(openUserPage(DIALOG_PAGE_CHANGE_PASSWORD)),
+    onToggleRequestCountryAccessPanel: () =>
+      dispatch(closeDropdownOverlays()) &&
+      dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
+    onAttemptUserLogout: () => dispatch(attemptUserLogout()),
   };
 };
 

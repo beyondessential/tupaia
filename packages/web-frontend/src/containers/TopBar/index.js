@@ -6,32 +6,45 @@
  */
 
 import React from 'react';
-import TupaiaHome from '../TupaiaHome';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import TopBarLogo from '../TopBarLogo';
 import SearchBar from '../SearchBar';
 import UserBar from '../UserBar';
 import { TOP_BAR_HEIGHT } from '../../styles';
 
-const styles = {
-  topBar: {
-    backgroundColor: '#282a35',
-    // Both min height and height must be specified due to bugs in Firefox flexbox
-    // that means that topbar height will be ignored even if using flex-basis.
-    minHeight: TOP_BAR_HEIGHT,
-    height: TOP_BAR_HEIGHT,
-    display: 'flex',
-    zIndex: 1000,
-    position: 'relative',
-    padding: '0 10px',
-    borderBottom: '1px solid rgba(151, 151, 151, 0.3)',
-  },
+// Both min height and height must be specified due to bugs in Firefox flexbox
+// that means that topbar height will be ignored even if using flex-basis.
+const TopBarWrapper = styled.div`
+  background-color: #282a35;
+  min-height: ${TOP_BAR_HEIGHT}px;
+  height: ${TOP_BAR_HEIGHT}px;
+  display: flex;
+  z-index: 1000;
+  position: relative;
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+`;
+
+const TopBar = ({ logo, showSearchBar, userBar }) => (
+  <TopBarWrapper>
+    <TopBarLogo {...logo} />
+    {showSearchBar && <SearchBar />}
+    <UserBar />
+  </TopBarWrapper>
+);
+
+TopBar.propTypes = {
+  logo: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
+  }).isRequired,
+  showSearchBar: PropTypes.bool,
+  userBar: PropTypes.shape.isRequired,
 };
 
-const TopBar = () => (
-  <div style={styles.topBar}>
-    <TupaiaHome />
-    <SearchBar />
-    <UserBar />
-  </div>
-);
+TopBar.defaultProps = {
+  showSearchBar: true,
+};
 
 export default TopBar;

@@ -15,6 +15,8 @@ import OverlayDiv from '../../../containers/OverlayDiv';
 import { DIALOG_Z_INDEX } from '../../../styles';
 import { LandingPage } from '../../LandingPage';
 import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../../constants';
+import { goHome } from '../../../actions';
 
 const Container = styled.div`
   position: fixed;
@@ -49,7 +51,7 @@ const MapContainer = styled.div`
   transition: width 0.5s ease;
 `;
 
-const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
+const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth, onClickLogo }) => {
   const { isCustomLandingPage } = useCustomLandingPages();
   if (isCustomLandingPage) {
     return <LandingPage />;
@@ -60,7 +62,13 @@ const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
       <Container>
         <EnvBanner />
-        <TopBar />
+        <TopBar
+          logo={{
+            url: TUPAIA_LIGHT_LOGO_SRC,
+            onClick: onClickLogo,
+          }}
+          showSearchBar
+        />
         <ContentContainer>
           <MapDiv />
           <SidePanel />
@@ -81,6 +89,7 @@ MainPage.propTypes = {
   enlargedDialogIsVisible: PropTypes.bool,
   isLoading: PropTypes.bool,
   sidePanelWidth: PropTypes.number.isRequired,
+  onClickLogo: PropTypes.func.isRequired,
 };
 
 MainPage.defaultProps = {
@@ -99,4 +108,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(MainPage);
+const mapDispatchToProps = dispatch => ({
+  onClickLogo: () => {
+    dispatch(goHome());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
