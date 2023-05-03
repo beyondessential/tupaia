@@ -37,6 +37,6 @@ export const useCustomLandingPages = () => {
   return {
     isCustomLandingPage: !!customLandingPage,
     projects: getLandingPageProjects(customLandingPage, projectData),
-    customLandingPageSettings: customLandingPage,
+    customLandingPageSettings: customLandingPage || {},
   };
 };
