@@ -27,7 +27,10 @@ exports.up = async function (db) {
       extended_title TEXT,
       long_bio TEXT,
       contact_us TEXT,
-      external_link TEXT
+      external_link TEXT,
+      phone_number TEXT,
+      website_url TEXT,
+      include_name_in_header BOOLEAN
     )
   `);
   await db.runSql(`
