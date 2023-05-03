@@ -9,6 +9,8 @@ import {
   PENDING_PROJECT_ACCESS_TYPE,
 } from '../../constants';
 import { useNavigation } from './useNavigation';
+import { useCustomLandingPages } from './useCustomLandingPages';
+import { useAuth } from './useAuth';
 
 const Projects = styled.div`
   display: grid;
@@ -29,8 +31,10 @@ const Title = styled(Typography)`
   text-shadow: 1px 1px #333;
   max-width: 480px;
 `;
-export function MultiProjectLandingPage({ projects, isUserLoggedIn }) {
+export function MultiProjectLandingPage() {
   const { navigateToProject, navigateToRequestProjectAccess, navigateToLogin } = useNavigation();
+  const { projects } = useCustomLandingPages();
+  const { isUserLoggedIn } = useAuth();
   return (
     <Projects>
       <Title variant="h1">Select a project below to view.</Title>
@@ -48,8 +52,3 @@ export function MultiProjectLandingPage({ projects, isUserLoggedIn }) {
     </Projects>
   );
 }
-
-MultiProjectLandingPage.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isUserLoggedIn: PropTypes.bool.isRequired,
-};

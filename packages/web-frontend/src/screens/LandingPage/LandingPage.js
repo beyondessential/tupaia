@@ -70,17 +70,12 @@ export const LandingPage = () => {
     primary_hexcode: primaryColor = DARKEST_GREY,
     secondary_hexcode: secondaryColor = WHITE,
   } = customLandingPageSettings;
-  const { isUserLoggedIn } = useAuth();
 
   return (
     <>
       <Wrapper backgroundImage={backgroundImage}>
         <Container maxWidth={false}>
-          {projects.length > 1 ? (
-            <MultiProjectLandingPage projects={projects} isUserLoggedIn={isUserLoggedIn} />
-          ) : (
-            <SingleProjectLandingPage isUserLoggedIn={isUserLoggedIn} project={projects[0]} />
-          )}
+          {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}
           {/* <Footer /> */}
         </Container>
       </Wrapper>

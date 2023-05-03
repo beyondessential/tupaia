@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useCustomLandingPages } from './useCustomLandingPages';
+import { useAuth } from './useAuth';
 
-export function SingleProjectLandingPage({ isUserLoggedIn, project }) {
+export function SingleProjectLandingPage() {
+  const { projects } = useCustomLandingPages();
+  const { isUserLoggedIn } = useAuth();
+  const project = projects[0];
   return <div>SingleProjectLandingPage</div>;
 }
-
-SingleProjectLandingPage.propTypes = {
-  isUserLoggedIn: PropTypes.bool.isRequired,
-  project: PropTypes.object.isRequired,
-};
