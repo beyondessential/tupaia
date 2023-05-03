@@ -6,10 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import { EnvBanner } from '@tupaia/ui-components';
 import OverlayDiv from '../../containers/OverlayDiv';
 import { useCustomLandingPages } from './useCustomLandingPages';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { MultiProjectLandingPage } from './MultiProjectLandingPage';
+import TopBar from '../../containers/TopBar';
 
 const Wrapper = styled.div`
   position: relative;
@@ -42,6 +44,8 @@ export const LandingPage = () => {
 
   return (
     <>
+      <EnvBanner />
+      <TopBar />
       <Wrapper backgroundImage={backgroundImage}>
         <Container maxWidth={false}>
           {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}

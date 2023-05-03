@@ -37,6 +37,8 @@ export const LOGIN_TYPES = {
   MANUAL: 'manual',
 };
 
-export const PENDING_PROJECT_ACCESS_TYPE = 'PENDING';
-export const DENIED_PROJECT_ACCESS_TYPE = 'DENIED';
-export const ALLOWED_PROJECT_ACCESS_TYPE = 'ACCESS';
+export const PROJECT_ACCESS_TYPES = {
+  PENDING: 'PENDING',
+  ALLOWED: 'ALLOWED',
+  DENIED: 'DENIED',
+};

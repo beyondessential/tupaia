@@ -2,11 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { ProjectCardList } from '../../containers/OverlayDiv/components/ProjectPage/ProjectCardList';
-import {
-  ALLOWED_PROJECT_ACCESS_TYPE,
-  DENIED_PROJECT_ACCESS_TYPE,
-  PENDING_PROJECT_ACCESS_TYPE,
-} from '../../constants';
+import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { useNavigation } from './useNavigation';
 import { useCustomLandingPages } from './useCustomLandingPages';
 import { useAuth } from './useAuth';
@@ -40,9 +36,9 @@ export function MultiProjectLandingPage() {
       <ProjectCardList
         projects={projects}
         actions={{
-          [ALLOWED_PROJECT_ACCESS_TYPE]: navigateToProject,
-          [PENDING_PROJECT_ACCESS_TYPE]: navigateToRequestProjectAccess,
-          [DENIED_PROJECT_ACCESS_TYPE]: isUserLoggedIn
+          [PROJECT_ACCESS_TYPES.ALLOWED]: navigateToProject,
+          [PROJECT_ACCESS_TYPES.PENDING]: navigateToRequestProjectAccess,
+          [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
             ? navigateToRequestProjectAccess
             : navigateToLogin,
         }}

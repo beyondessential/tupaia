@@ -51,6 +51,7 @@ const MapContainer = styled.div`
 
 const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
   const { isCustomLandingPage } = useCustomLandingPages();
+  if (isCustomLandingPage) return <LandingPage />;
 
   return (
     <>
@@ -58,27 +59,18 @@ const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
       <Container>
         <EnvBanner />
         <TopBar />
-        {isCustomLandingPage ? (
-          <LandingPage />
-        ) : (
-          <>
-            <ContentContainer>
-              <MapDiv />
-              <SidePanel />
-            </ContentContainer>
-            <OverlayDiv />
-            <SessionExpiredDialog />
-            {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-            <LoadingScreen isLoading={isLoading} />
-          </>
-        )}
+        <ContentContainer>
+          <MapDiv />
+          <SidePanel />
+        </ContentContainer>
+        <OverlayDiv />
+        <SessionExpiredDialog />
+        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+        <LoadingScreen isLoading={isLoading} />
       </Container>
-      {/** Only show the map when is not a custom landing page */}
-      {!isCustomLandingPage && (
-        <MapContainer $rightOffset={sidePanelWidth}>
-          <Map />
-        </MapContainer>
-      )}
+      <MapContainer $rightOffset={sidePanelWidth}>
+        <Map />
+      </MapContainer>
     </>
   );
 };

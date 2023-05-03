@@ -8,16 +8,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Lock from '@material-ui/icons/Lock';
-import Alarm from '@material-ui/icons/Alarm';
-import Button from '@material-ui/core/Button';
-
-import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
-import {
-  ALLOWED_PROJECT_ACCESS_TYPE,
-  DENIED_PROJECT_ACCESS_TYPE,
-  PENDING_PROJECT_ACCESS_TYPE,
-} from '../../../../constants';
+import { BOX_SHADOW, WHITE, LIGHT_GREY } from '../../../../styles';
 
 const Card = styled.div`
   display: grid;
@@ -90,33 +81,7 @@ const Footer = styled(FullWidthRow)`
   padding: 0 16px;
 `;
 
-const LockIcon = styled(Lock)`
-  margin-right: 5px;
-`;
-
-const AlarmIcon = styled(Alarm)`
-  margin-right: 5px;
-`;
-
-const styles = {
-  pendingAccessButton: {
-    background: LIGHT_BLUE,
-    color: FORM_BLUE,
-    padding: '5px',
-  },
-  accessButton: {},
-};
-
-export const ProjectCard = ({
-  name,
-  description,
-  imageUrl,
-  logoUrl,
-  names,
-  projectAction,
-  actionText,
-  accessType,
-}) => {
+export const ProjectCard = ({ name, description, imageUrl, logoUrl, names, projectButton }) => {
   return (
     <Card>
       <Header>
@@ -131,20 +96,7 @@ export const ProjectCard = ({
       <FullWidthRow>{description}</FullWidthRow>
       <Footer>
         <Countries>{name === 'Disaster Response' ? 'Global' : names.sort().join(', ')}</Countries>
-        <Button
-          onClick={projectAction}
-          color="primary"
-          style={
-            accessType === PENDING_PROJECT_ACCESS_TYPE
-              ? styles.pendingAccessButton
-              : styles.accessButton
-          }
-          variant={accessType === DENIED_PROJECT_ACCESS_TYPE ? 'outlined' : 'contained'}
-        >
-          {accessType === DENIED_PROJECT_ACCESS_TYPE && <LockIcon />}
-          {accessType === PENDING_PROJECT_ACCESS_TYPE && <AlarmIcon />}
-          {actionText}
-        </Button>
+        {projectButton}
       </Footer>
     </Card>
   );
@@ -156,10 +108,7 @@ ProjectCard.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   logoUrl: PropTypes.string,
   names: PropTypes.arrayOf(PropTypes.string).isRequired,
-  projectAction: PropTypes.func.isRequired,
-  actionText: PropTypes.string.isRequired,
-  accessType: PropTypes.bool.isRequired,
-  hasAccessPending: PropTypes.bool.isRequired,
+  projectButton: PropTypes.node.isRequired,
 };
 
 ProjectCard.defaultProps = {
