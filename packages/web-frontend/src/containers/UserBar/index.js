@@ -92,10 +92,11 @@ export class UserBar extends Component {
     }
   }
 
-  /** If a user clicks out of a reset password dialog, reset to home */
+   /* Don't let the user close a dialog if it is a password reset form as the one time login token is used to load the form and so they need to do the password reset now */
   handleCloseDialog = () => {
     const { dialogPage, onCloseUserDialog, resetToHome } = this.props;
-    if (dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN || dialogPage === DIALOG_PAGE_RESET_PASSWORD) {
+    if(dialogPage === DIALOG_PAGE_RESET_PASSWORD) return;
+    if (dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN) {
       resetToHome();
     }
     onCloseUserDialog();
@@ -104,6 +105,8 @@ export class UserBar extends Component {
   renderDialog() {
     const { isDialogVisible } = this.props;
     const width = this.getWidth();
+    // Don't let the user close a dialog if it is a password reset form as the one time login token
+    // is used to load the form and so they need to do the password reset now */
     return (
       <Dialog
         open={isDialogVisible}
