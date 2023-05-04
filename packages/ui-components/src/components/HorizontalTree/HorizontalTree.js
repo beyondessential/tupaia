@@ -31,7 +31,7 @@ const RootContainer = styled.div`
 
 const DescendantsContainer = styled.div`
   display: flex;
-  width: 100%;
+  flex: 1;
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-radius: 5px 5px 0px 0px;
 `;

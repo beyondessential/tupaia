@@ -42,7 +42,7 @@ function getDescendantData(parentNodeId, data) {
 const usePermissionGroups = () => {
   const { isLoading, data } = useQuery(
     ['permissionGroups'],
-    async () => get('permissionGroups'),
+    async () => get(`permissionGroups?pageSize=1000`), // Fetch all records
     DEFAULT_REACT_QUERY_OPTIONS,
   );
 

@@ -17,6 +17,7 @@ const COLUMNS = [
     Header: 'Ancestors',
     source: 'ancestors',
     filterable: false,
+    sortable: false,
     // eslint-disable-next-line react/prop-types
     Cell: ({ value: ancestors }) => (ancestors.length > 0 ? prettyArray(ancestors) : <ul> - </ul>),
     accessor: ({ ancestors }) => ancestors.map(a => a.name).reverse(),
