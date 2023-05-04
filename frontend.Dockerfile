@@ -59,7 +59,8 @@ WORKDIR /home/ubuntu/tupaia
 # COPY packages/devops/configs/nginx.conf /etc/nginx/nginx.conf
 COPY packages/devops/configs/servers.conf /etc/nginx/conf.d/servers.conf
 COPY --from=h5bp server-configs-nginx/h5bp /etc/nginx/h5bp
-
+# copy .env files into package dirs prior to nginx startup
+COPY scripts/docker/nginx/copy-env.sh /docker-entrypoint.d/50-copy-env.sh
 WORKDIR "/home/ubuntu/tupaia"
 COPY packages/devops/misc/error_page.html ./error_page.html
 COPY --from=builder /tupaia/packages/web-frontend/build ./packages/web-frontend/build
