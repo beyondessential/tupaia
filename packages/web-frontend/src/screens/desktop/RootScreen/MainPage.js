@@ -14,7 +14,7 @@ import SessionExpiredDialog from '../../../containers/SessionExpiredDialog';
 import OverlayDiv from '../../../containers/OverlayDiv';
 import { DIALOG_Z_INDEX } from '../../../styles';
 import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
-import { LandingPageDesktop } from '../../LandingPage';
+import { LandingPage } from '../../LandingPage';
 
 const Container = styled.div`
   position: fixed;
@@ -51,7 +51,7 @@ const MapContainer = styled.div`
 
 const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
   const { isCustomLandingPage } = useCustomLandingPages();
-  if (isCustomLandingPage) return <LandingPageDesktop />;
+  if (isCustomLandingPage) return <LandingPage />;
 
   return (
     <>

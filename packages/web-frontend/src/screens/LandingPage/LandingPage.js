@@ -14,6 +14,8 @@ import { MultiProjectLandingPage } from './MultiProjectLandingPage';
 import TopBar from '../../containers/TopBar';
 import { TOP_BAR_HEIGHT } from '../../styles';
 import { LandingPageFooter } from './LandingPageFooter';
+import { isMobile } from '../../utils';
+import HeaderBar from '../../containers/mobile/HeaderBar';
 
 /**
  * This is the template for landing pages when the user is not on a mobile device
@@ -46,17 +48,19 @@ const ContentWrapper = styled.div`
   height: 80%;
 `;
 
-export const LandingPageDesktop = () => {
+export const LandingPage = () => {
   const {
     projects,
     customLandingPageSettings: { image_url: backgroundImage },
   } = useCustomLandingPages();
 
+  const NavBar = isMobile() ? HeaderBar : TopBar;
+
   return (
     <>
       <Wrapper backgroundImage={backgroundImage}>
         <EnvBanner />
-        <TopBar />
+        <NavBar />
         <Container maxWidth={false}>
           <ContentWrapper>
             {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}
