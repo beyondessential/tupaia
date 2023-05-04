@@ -1,4 +1,5 @@
-# Fetch environment from LastPass
+# Fetch environment from LastPass and write to /env/<package>/.env
+# Should be run by the tupaia ECS task prior to starting the service containers.
 FROM alpine:3.17.3
 RUN apk --no-cache add bash && \
     apk --no-cache add lastpass-cli

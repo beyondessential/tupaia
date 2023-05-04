@@ -1,19 +1,20 @@
 #!/bin/bash -e
 
-# A slightly modified version of ../../scripts/bash/downloadEnvironmentVariables.sh
+# Fetch environment from LastPass, write to ${ENV_DEST}/${DEPLOYMENT_NAME}/.env
+# Is modified from ../../scripts/bash/downloadEnvironmentVariables.sh
 
 # Attempting multiple logins to LastPass from the same IP in succession often
 # results in LastPass blocking the IP for some time. To avoid getting blocked
 # the script can be run by a "non essential" container in the ECS Task to fetch
-# configration from LastPass prior to the application containers starting. The
-# configuration is written to a docker volume which can be mounted into each
+# configuration from LastPass prior to the application containers starting. The
+# configuration is written to a Docker volume which can be mounted into each
 # application container.
 
 # The following changes have been made to the original script:
 
-# - By not being in the ../../scripts/bash directory modifications to this
-#   script don't invalidate the docker cache prior to the application packages
-#   build.
+# - By not being in the ../../scripts/bash directory, modifications to this
+#   script don't invalidate the Docker cache prior to the application packages
+#   build. This was done to speed up development and testing of the script.
 #
 # - Containers running in the ECS task will read env files from a common volume
 #   mount. To support this a destination directory needs to be provided as the
