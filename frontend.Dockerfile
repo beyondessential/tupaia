@@ -34,9 +34,9 @@ COPY scripts/bash/ ./scripts/bash/
 COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json .eslintrc ./
 
 # Build and install internal dependencies
-RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/web-frontend
-RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/admin-panel
-RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/psss
+RUN scripts/bash/buildInternalDependencies.sh --packagePath packages/web-frontend && \
+    scripts/bash/buildInternalDependencies.sh --packagePath packages/admin-panel && \
+    scripts/bash/buildInternalDependencies.sh --packagePath packages/psss
 
 # Build the frontends
 COPY packages/web-frontend packages/web-frontend
