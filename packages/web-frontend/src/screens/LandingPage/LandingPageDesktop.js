@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import { Link, Typography } from '@material-ui/core';
 import { EnvBanner } from '@tupaia/ui-components';
 import OverlayDiv from '../../containers/OverlayDiv';
 import { useCustomLandingPages } from './useCustomLandingPages';
@@ -14,8 +13,6 @@ import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { MultiProjectLandingPage } from './MultiProjectLandingPage';
 import TopBar from '../../containers/TopBar';
 import { TOP_BAR_HEIGHT } from '../../styles';
-import { List } from 'material-ui';
-import { ListItem } from 'material-ui/List';
 import { LandingPageFooter } from './LandingPageFooter';
 
 const Wrapper = styled.div`
@@ -45,7 +42,7 @@ const ContentWrapper = styled.div`
   height: 80%;
 `;
 
-export const LandingPage = () => {
+export const LandingPageDesktop = () => {
   const {
     projects,
     customLandingPageSettings: { image_url: backgroundImage },
