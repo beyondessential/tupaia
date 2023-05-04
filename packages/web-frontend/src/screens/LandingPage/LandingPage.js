@@ -46,7 +46,7 @@ const ContentWrapper = styled.div`
   height: 80%;
 `;
 
-export const LandingPageDesktop = () => {
+export const LandingPage = () => {
   const {
     projects,
     customLandingPageSettings: { image_url: backgroundImage },
