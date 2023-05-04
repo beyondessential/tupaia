@@ -36,6 +36,8 @@ export const TYPES = {
   FEED_ITEM: 'feed_item',
   GEOGRAPHICAL_AREA: 'geographical_area',
   INDICATOR: 'indicator',
+  LANDING_PAGE: 'landing_page',
+  LANDING_PAGE_PROJECTS: 'landing_page_projects',
   LEGACY_REPORT: 'legacy_report',
   MAP_OVERLAY: 'map_overlay',
   MAP_OVERLAY_GROUP: 'map_overlay_group',

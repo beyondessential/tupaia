@@ -29,6 +29,8 @@ import { FacilityModel } from './Facility';
 import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
+import { LandingPageModel } from './LandingPage';
+import { LandingPageProjectsModel } from './LandingPageProjects';
 import { LegacyReportModel } from './LegacyReport';
 import { UserFavouriteDashboardItemModel } from './UserFavouriteDashboardItem';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
@@ -90,6 +92,8 @@ export const modelClasses = {
   FeedItem: FeedItemModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
+  LandingPage: LandingPageModel,
+  LandingPageProjects: LandingPageProjectsModel,
   LegacyReport: LegacyReportModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
