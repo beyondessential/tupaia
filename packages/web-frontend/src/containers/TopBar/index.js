@@ -19,6 +19,7 @@ const TopBarWrapper = styled.div`
   background-color: ${props => props.primaryColor};
   min-height: ${TOP_BAR_HEIGHT}px;
   height: ${TOP_BAR_HEIGHT}px;
+  box-sizing: border-box;
   display: flex;
   z-index: 1000;
   position: relative;

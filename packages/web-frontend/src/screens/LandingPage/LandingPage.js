@@ -12,6 +12,12 @@ import { useCustomLandingPages } from './useCustomLandingPages';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { MultiProjectLandingPage } from './MultiProjectLandingPage';
 import TopBar from '../../containers/TopBar';
+import { TOP_BAR_HEIGHT } from '../../styles';
+import { LandingPageFooter } from './LandingPageFooter';
+
+/**
+ * This is the template for landing pages when the user is not on a mobile device
+ */
 
 const Wrapper = styled.div`
   position: relative;
@@ -20,36 +26,42 @@ const Wrapper = styled.div`
   background-color: #000000;
   background-image: ${({ backgroundImage }) =>
     backgroundImage ? `url(${backgroundImage})` : 'none'};
+  display: flex;
+  flex-direction: column;
 `;
 
 const Container = styled(MuiContainer)`
-  position: relative;
-  min-height: calc(100vh - 75px);
-  background: linear-gradient(rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
   padding: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - ${TOP_BAR_HEIGHT}px);
+  overflow-y: auto;
 `;
 
-const Footer = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 50px;
-  right: 50px;
-  border-top: 1px solid white;
-  height: 75px;
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 80%;
 `;
 
 export const LandingPage = () => {
-  const { projects, customLandingPageSettings } = useCustomLandingPages();
-  const { image_url: backgroundImage } = customLandingPageSettings;
+  const {
+    projects,
+    customLandingPageSettings: { image_url: backgroundImage },
+  } = useCustomLandingPages();
 
   return (
     <>
-      <EnvBanner />
-      <TopBar />
       <Wrapper backgroundImage={backgroundImage}>
+        <EnvBanner />
+        <TopBar />
         <Container maxWidth={false}>
-          {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}
-          <Footer />
+          <ContentWrapper>
+            {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}
+          </ContentWrapper>
+          <LandingPageFooter />
         </Container>
       </Wrapper>
       {/* Include the OverlayDiv so that the login and logout functionality is available on the */}

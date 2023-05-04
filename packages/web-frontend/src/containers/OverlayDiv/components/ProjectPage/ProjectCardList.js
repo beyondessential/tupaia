@@ -12,6 +12,7 @@ import Alarm from '@material-ui/icons/Alarm';
 import { ProjectCard } from './ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../../../constants';
 import { FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
+import { getProjectAccessType } from '../../../../utils';
 
 const EXPLORE_CODE = 'explore';
 const LockIcon = styled(Lock)`
@@ -28,33 +29,28 @@ const StyledPendingButton = styled(Button)`
   padding: 5px;
 `;
 // eslint-disable-next-line react/prop-types
-const ProjectDeniedButton = ({ action, text }) => (
+const ProjectDeniedButton = ({ action, isUserLoggedIn }) => (
   <Button onClick={action} color="primary" variant="outlined">
     <LockIcon />
-    {text}
+    {isUserLoggedIn ? 'Request access' : 'Log in'}
   </Button>
 );
 
 // eslint-disable-next-line react/prop-types
-const ProjectPendingButton = ({ action, text }) => (
+const ProjectPendingButton = ({ action }) => (
   <StyledPendingButton onClick={action} variant="contained">
     <AlarmIcon />
-    {text}
+    Approval in progress
   </StyledPendingButton>
 );
 // eslint-disable-next-line react/prop-types
-const ProjectAllowedButton = ({ action, text }) => (
+const ProjectAllowedButton = ({ action }) => (
   <Button onClick={action} variant="contained" color="primary">
-    {text}
+    View project
   </Button>
 );
 
 export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
-  const actionTexts = {
-    [PROJECT_ACCESS_TYPES.PENDING]: 'Approval in progress',
-    [PROJECT_ACCESS_TYPES.ALLOWED]: 'View project',
-    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn ? 'Request access' : 'Log in',
-  };
   const ProjectButtons = {
     [PROJECT_ACCESS_TYPES.PENDING]: ProjectPendingButton,
     [PROJECT_ACCESS_TYPES.ALLOWED]: ProjectAllowedButton,
@@ -65,9 +61,7 @@ export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
     // If there is no action passed in for this access type, then the project card is useless, so ignore it so that nothing breaks
     if (!action) return result;
     const accessTypeProjects = projects.filter(({ code, hasAccess, hasPendingAccess = false }) => {
-      let projectAccessType = PROJECT_ACCESS_TYPES.DENIED;
-      if (hasAccess) projectAccessType = PROJECT_ACCESS_TYPES.ALLOWED;
-      if (hasPendingAccess) projectAccessType = PROJECT_ACCESS_TYPES.PENDING;
+      const projectAccessType = getProjectAccessType({ hasPendingAccess, hasAccess });
       return code !== EXPLORE_CODE && projectAccessType === accessType;
     });
     return [
@@ -76,23 +70,13 @@ export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
         .sort((a, b) => a.sortOrder - b.sortOrder)
         .map(project => ({
           ...project,
-          actionText: actionTexts[accessType],
           ProjectButton: ProjectButtons[accessType],
           action: actions[accessType],
         })),
     ];
   }, []);
   return sortedProjects.map(project => {
-    const {
-      name,
-      description,
-      logoUrl,
-      imageUrl,
-      actionText,
-      ProjectButton,
-      names,
-      action,
-    } = project;
+    const { name, description, logoUrl, imageUrl, ProjectButton, names, action } = project;
     return (
       <ProjectCard
         key={name}
@@ -100,7 +84,9 @@ export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
         description={description}
         imageUrl={imageUrl}
         logoUrl={logoUrl}
-        projectButton={<ProjectButton text={actionText} action={() => action(project)} />}
+        projectButton={
+          <ProjectButton action={() => action(project)} isUserLoggedIn={isUserLoggedIn} />
+        }
         names={names}
       />
     );
