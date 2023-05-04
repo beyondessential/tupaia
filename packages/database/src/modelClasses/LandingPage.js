@@ -15,4 +15,20 @@ export class LandingPageModel extends DatabaseModel {
   get LandingPageTypeClass() {
     return LandingPageType;
   }
+
+  async getAttachedProjects(landingPageId) {
+    const landingPage = await this.findOne({
+      id: landingPageId,
+    });
+
+    if (!landingPage) return [];
+
+    const projectRelations = await this.otherModels.landingPageProjects.find({
+      landingPageId,
+    });
+
+    return this.otherModels.project.find({
+      id: projectRelations.map(({ project_id: projectId }) => projectId),
+    });
+  }
 }
