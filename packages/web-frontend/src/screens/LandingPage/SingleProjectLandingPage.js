@@ -79,7 +79,7 @@ export function SingleProjectLandingPage() {
       {extendedTitle && (
         <ExtendedTitle variant={includeNameInHeader ? 'h2' : 'h1'}>{extendedTitle}</ExtendedTitle>
       )}
-      {/* Only display a button if access type is set */}
+      {/* Only display a button if access type is set, and button is disabled if access has not yet been granted */}
       {accessType && (
         <ActionButton
           variant="contained"
