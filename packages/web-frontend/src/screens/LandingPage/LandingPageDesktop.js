@@ -15,6 +15,10 @@ import TopBar from '../../containers/TopBar';
 import { TOP_BAR_HEIGHT } from '../../styles';
 import { LandingPageFooter } from './LandingPageFooter';
 
+/**
+ * This is the template for landing pages when the user is not on a mobile device
+ */
+
 const Wrapper = styled.div`
   position: relative;
   background-size: cover;

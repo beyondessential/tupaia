@@ -50,10 +50,12 @@ export const LandingPageFooter = () => {
     phone_number: phoneNumber,
     website_url: websiteUrl,
   } = customLandingPageSettings;
+  // use h3 for footer item headers if there is already an h2 in the page (i.e. the name is h1, and the extended title is h2, else h2)
+  const footerHeaderVariant = includeNameInHeader ? 'h3' : 'h2';
   return (
     <Footer>
       <FooterContentWrapper>
-        <FooterHeader variant={includeNameInHeader ? 'h3' : 'h2'}>About {name}</FooterHeader>
+        <FooterHeader variant={footerHeaderVariant}>About {name}</FooterHeader>
         <FooterBodyText>
           {longBio}
           {externalLink && (
@@ -67,7 +69,7 @@ export const LandingPageFooter = () => {
         </FooterBodyText>
       </FooterContentWrapper>
       <FooterContentWrapper>
-        <FooterHeader variant={includeNameInHeader ? 'h3' : 'h2'}>Contact us</FooterHeader>
+        <FooterHeader variant={footerHeaderVariant}>Contact us</FooterHeader>
         <FooterContactList>
           {phoneNumber && (
             <FooterContactListItem>

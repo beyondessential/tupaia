@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Typography } from '@material-ui/core';
@@ -6,6 +11,10 @@ import { useAuth } from './useAuth';
 import { getProjectAccessType } from '../../utils';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { useNavigation } from './useNavigation';
+
+/**
+ * This is the template for the content of a landing page if there is only one project
+ */
 
 const Wrapper = styled.div`
   max-width: 30em;
@@ -39,14 +48,20 @@ export function SingleProjectLandingPage() {
     },
     projects,
   } = useCustomLandingPages();
+
   const { isUserLoggedIn } = useAuth();
   const { navigateToLogin, navigateToProject, navigateToRequestProjectAccess } = useNavigation();
+
   const actionTexts = {
     [PROJECT_ACCESS_TYPES.PENDING]: 'Approval in progress',
     [PROJECT_ACCESS_TYPES.ALLOWED]: 'View data',
     [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn ? 'Request access' : 'Log in to view data',
   };
-  const accessType = getProjectAccessType(projects[0]);
+
+  const [project] = projects;
+
+  const accessType = getProjectAccessType(project);
+
   const actions = {
     [PROJECT_ACCESS_TYPES.ALLOWED]: navigateToProject,
     [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
@@ -57,13 +72,14 @@ export function SingleProjectLandingPage() {
   const onClickActionButton = () => {
     const action = actions[accessType];
     if (!action) return;
-    action(projects[0]);
+    action(project);
   };
   return (
     <Wrapper>
       {extendedTitle && (
         <ExtendedTitle variant={includeNameInHeader ? 'h2' : 'h1'}>{extendedTitle}</ExtendedTitle>
       )}
+      {/* Only display a button if access type is set */}
       {accessType && (
         <ActionButton
           variant="contained"
