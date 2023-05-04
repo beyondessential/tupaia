@@ -43,8 +43,8 @@ const StyledTab = styled(LightTab)`
   }
 `;
 
-export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth }) => (
-  <Wrapper>
+export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth, className }) => (
+  <Wrapper className={className}>
     <MuiContainer maxWidth={maxWidth}>
       <Inner>
         <NavLinks>

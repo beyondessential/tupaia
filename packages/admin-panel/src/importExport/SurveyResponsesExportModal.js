@@ -56,8 +56,8 @@ export const SurveyResponsesExportModal = () => {
       />
       {mode === MODES.COUNTRY ? (
         <ReduxAutocomplete
-          label="Countries to Include"
-          helperText="Please enter the names of the countries to be exported."
+          label="Country to Include"
+          helperText="Please enter the name of the country to be exported."
           reduxId="countryCode"
           onChange={inputValue => handleValueChange('countryCode', inputValue)}
           endpoint="countries"
