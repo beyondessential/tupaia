@@ -39,8 +39,12 @@ LogsTable.propTypes = {
   logs: PropTypes.arrayOf(
     PropTypes.shape({ timestamp: PropTypes.string, message: PropTypes.string }),
   ).isRequired,
-  logsCount: PropTypes.number.isRequired,
+  logsCount: PropTypes.number,
   page: PropTypes.number.isRequired,
   logsPerPage: PropTypes.number.isRequired,
   onChangePage: PropTypes.func.isRequired,
+};
+
+LogsTable.defaultProps = {
+  logsCount: null,
 };
