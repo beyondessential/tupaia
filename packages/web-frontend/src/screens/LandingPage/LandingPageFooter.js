@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
 import styled from 'styled-components';
 import { Link, Typography } from '@material-ui/core';
