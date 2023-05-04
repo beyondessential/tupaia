@@ -5,14 +5,19 @@
 
 import { useDispatch } from 'react-redux';
 import { setProject, setRequestingAccess } from '../../projects/actions';
-import { REQUEST_PROJECT_ACCESS, LANDING } from '../../containers/OverlayDiv/constants';
-import { attemptLandingPageLogout, setOverlayComponent } from '../../actions';
+import {
+  REQUEST_PROJECT_ACCESS,
+  LANDING,
+  AUTH_VIEW_STATES,
+} from '../../containers/OverlayDiv/constants'; 
+import { attemptLandingPageLogout, setAuthViewState, setOverlayComponent } from '../../actions';
 
 export const useNavigation = () => {
   const dispatch = useDispatch();
 
   const navigateToLogin = () => {
     dispatch(setOverlayComponent(LANDING));
+    dispatch(setAuthViewState(AUTH_VIEW_STATES.LOGIN));
   };
 
   const navigateToLogout = () => {
@@ -28,5 +33,10 @@ export const useNavigation = () => {
     dispatch(setProject(project.code));
   };
 
-  return { navigateToLogin, navigateToLogout, navigateToProject, navigateToRequestProjectAccess };
+  return {
+    navigateToLogin,
+    navigateToLogout,
+    navigateToProject,
+    navigateToRequestProjectAccess,
+  };
 };

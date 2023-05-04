@@ -11,53 +11,48 @@
  * The controls for user Menu: show signIn option and loginForm.
  * If user is logged in, shows username and SingOut option.
  */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import styled from 'styled-components';
 import MenuIcon from '@material-ui/icons/Menu';
-import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
-import MenuItem from '@material-ui/core/MenuItem';
+import { ListItem, Button, Popover, Link } from '@material-ui/core';
+import { DARK_BLUE, WHITE } from '../../styles';
+import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandingPages';
 import {
+  DIALOG_PAGE_CHANGE_PASSWORD,
+  DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  attemptLandingPageLogout,
   attemptUserLogout,
   closeDropdownOverlays,
   openUserPage,
-  DIALOG_PAGE_LOGIN,
-  DIALOG_PAGE_CHANGE_PASSWORD,
-  DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  setAuthViewState,
+  setOverlayComponent,
 } from '../../actions';
-import { DARK_BLUE } from '../../styles';
-
-const LOG_IN_ITEM = 'LOG_IN_ITEM';
-const PROJECTS_ITEM = 'PROJECTS_ITEM';
-const CHANGE_PASSWORD_ITEM = 'CHANGE_PASSWORD_ITEM';
-const REQUEST_COUNTRY_ACCESS_ITEM = 'REQUEST_COUNTRY_ACCESS_ITEM';
-const LOG_OUT_ITEM = 'LOG_OUT_ITEM';
+import { LANDING, AUTH_VIEW_STATES, VIEW_PROJECTS } from '../OverlayDiv/constants';
 
 const UserMenuContainer = styled.div`
   display: flex;
   align-items: center;
+  color: ${props => props.secondaryColor};
 `;
 
 const SignInButton = styled(Button)`
   text-transform: none;
-
-  border-color: ${props => props.theme.palette.text.primary};
-  border: 1px;
-  border-style: solid;
+  border: 1px solid ${props => props.secondaryColor};
   border-radius: 18px;
-
-  font-weight: 400;
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
   height: 30px;
-  margin-right: 5px;
+  margin-right: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
 `;
 
 const StyledMenuButton = styled(Button)`
   width: 32px;
   min-width: 32px;
   height: 32px;
+  text-align: right;
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`
@@ -67,86 +62,178 @@ const StyledMenuIcon = styled(MenuIcon)`
 
 const UsernameContainer = styled.div`
   padding-right: 5px;
-  color: ${props => props.theme.palette.text.primary};
   font-weight: 400;
   font-size: 0.875rem;
 `;
 
-const SignInContainer = styled.span`
-  padding-right: 4px;
-  padding-left: 4px;
+const MenuItemButton = styled(Button)`
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: ${props => props.theme.typography.fontWeightRegular};
+  padding: 0.4em 1em;
+  line-height: 1.4;
+  width: 100%;
+  justify-content: flex-start;
+`;
+const MenuItemLink = styled(Link)`
+  font-size: 1rem;
+  padding: 0.4em 1em;
+  line-height: 1.4;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
 `;
 
-const openHelpCenter = () =>
-  window
-    .open('https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm', '_blank')
-    .focus();
+const MenuList = styled.ul`
+  list-style: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+`;
 
-class UserMenu extends Component {
-  constructor(props) {
-    super(props);
+const MenuListItem = styled(ListItem)`
+  padding: 0;
+`;
 
-    this.state = {
-      menuOpen: false,
+const RegisterButton = styled(Button)`
+  text-transform: none;
+  margin-right: 0.5em;
+`;
+
+const MenuItem = ({ type, children, ...props }) =>
+  type === 'link' ? (
+    <MenuItemLink {...props} target="_blank">
+      {children}
+    </MenuItemLink>
+  ) : (
+    <MenuItemButton {...props}>{children}</MenuItemButton>
+  );
+
+MenuItem.propTypes = {
+  type: PropTypes.oneOf(['link', 'button']),
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+};
+
+MenuItem.defaultProps = {
+  type: 'button',
+};
+
+const UserMenu = ({
+  isUserLoggedIn,
+  currentUserUsername,
+  onClickSignIn,
+  onOpenViewProjects,
+  onToggleChangePasswordPanel,
+  onToggleRequestCountryAccessPanel,
+  onAttemptUserLogout,
+  onClickRegister,
+  onAttemptLandingPageLogout,
+}) => {
+  const { isCustomLandingPage, customLandingPageSettings = {} } = useCustomLandingPages();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const {
+    secondary_hexcode: customLandingPageSecondaryColor,
+    primary_hexcode: customLandingPagePrimaryColor,
+  } = customLandingPageSettings;
+
+  const primaryColor = customLandingPagePrimaryColor || DARK_BLUE;
+  const secondaryColor = customLandingPageSecondaryColor || WHITE;
+
+  const signInText = isCustomLandingPage ? 'Log in' : 'Sign In / Register';
+
+  let menuItems = [];
+
+  const logout = {
+    text: 'Logout',
+    action: onAttemptUserLogout,
+  };
+  const changePassword = {
+    text: 'Change Password',
+    action: onToggleChangePasswordPanel,
+  };
+  // if is a custom landing page, display only the appropriate items
+  if (isCustomLandingPage) {
+    const visitMainSite = {
+      text: 'Visit tupaia.org',
+      type: 'link',
+      url: window.location.origin,
     };
+    menuItems = isUserLoggedIn
+      ? [
+          visitMainSite,
+          changePassword,
+          {
+            ...logout,
+            action: onAttemptLandingPageLogout,
+          },
+        ]
+      : [visitMainSite];
+  } else {
+    // otherwise display as usual
+    const viewProjects = {
+      text: 'View projects',
+      action: onOpenViewProjects,
+    };
+    const helpCentre = {
+      text: 'Help centre',
+      type: 'link',
+      url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
+    };
+    menuItems = isUserLoggedIn
+      ? [
+          viewProjects,
+          changePassword,
+          {
+            text: 'Request country access',
+            action: onToggleRequestCountryAccessPanel,
+          },
+          helpCentre,
+          {
+            text: 'Logout',
+            action: onAttemptUserLogout,
+          },
+        ]
+      : [viewProjects, helpCentre];
   }
 
-  toggleUserMenu(isMenuOpen) {
-    this.setState({
-      menuOpen: !isMenuOpen,
-    });
-  }
+  const toggleUserMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
-  closeUserMenu() {
-    this.setState({
-      menuOpen: false,
-    });
-  }
+  const closeUserMenu = () => {
+    setMenuOpen(false);
+  };
 
-  selectMenuItem(item) {
-    switch (item) {
-      case LOG_IN_ITEM:
-        this.props.onToggleLoginPanel();
-        break;
+  const showRegisterButton = !isUserLoggedIn && isCustomLandingPage;
 
-      case PROJECTS_ITEM:
-        this.props.onToggleProjectsPanel();
-        break;
-
-      case CHANGE_PASSWORD_ITEM:
-        this.props.onToggleChangePasswordPanel();
-        break;
-
-      case REQUEST_COUNTRY_ACCESS_ITEM:
-        this.props.onToggleRequestCountryAccessPanel();
-        break;
-
-      case LOG_OUT_ITEM:
-      default:
-        this.props.onAttemptUserLogout();
-        break;
-    }
-    this.closeUserMenu();
-  }
-
-  render() {
-    const { isUserLoggedIn, currentUserUsername, openLandingPage, openViewProjects } = this.props;
-
-    const Menu = ({ children: menuItems }) => (
+  return (
+    <UserMenuContainer secondaryColor={secondaryColor}>
+      {isUserLoggedIn ? (
+        <UsernameContainer>{currentUserUsername}</UsernameContainer>
+      ) : (
+        <>
+          {showRegisterButton && (
+            <RegisterButton onClick={onClickRegister}>Register</RegisterButton>
+          )}
+          <SignInButton onClick={onClickSignIn} secondaryColor={secondaryColor}>
+            {signInText}
+          </SignInButton>
+        </>
+      )}
       <div>
-        <StyledMenuButton
-          onClick={() => this.toggleUserMenu(this.state.menuOpen)}
-          style={styles.username}
-          disableRipple
-          id="user-menu-button"
-        >
+        <StyledMenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
           <StyledMenuIcon />
         </StyledMenuButton>
         <Popover
-          PaperProps={{ style: { backgroundColor: DARK_BLUE } }}
-          open={this.state.menuOpen}
+          PaperProps={{ style: { backgroundColor: primaryColor } }}
+          open={menuOpen}
           anchorEl={() => document.getElementById('user-menu-button')}
-          onClose={() => this.closeUserMenu()}
+          onClose={closeUserMenu}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',
@@ -156,115 +243,66 @@ class UserMenu extends Component {
             horizontal: 'right',
           }}
         >
-          {menuItems}
+          <MenuList>
+            {menuItems.map(({ action, text, type, url }) => (
+              <MenuListItem key={text}>
+                <MenuItem
+                  type={type}
+                  onClick={() => {
+                    if (action) action();
+                    closeUserMenu();
+                  }}
+                  href={url}
+                >
+                  {text}
+                </MenuItem>
+              </MenuListItem>
+            ))}
+          </MenuList>
         </Popover>
       </div>
-    );
-
-    const ViewProjects = () => (
-      <MenuItem
-        onClick={() => {
-          openViewProjects();
-          this.closeUserMenu();
-        }}
-      >
-        View projects
-      </MenuItem>
-    );
-
-    const HelpCenter = () => (
-      <MenuItem
-        onClick={() => {
-          openHelpCenter();
-          this.closeUserMenu();
-        }}
-      >
-        Help centre
-      </MenuItem>
-    );
-
-    if (!isUserLoggedIn) {
-      return (
-        <UserMenuContainer>
-          <SignInButton onClick={() => openLandingPage()}>
-            <SignInContainer>Sign in / Register</SignInContainer>
-          </SignInButton>
-          <Menu>
-            <ViewProjects />
-            <HelpCenter />
-          </Menu>
-        </UserMenuContainer>
-      );
-    }
-
-    return (
-      <UserMenuContainer>
-        <UsernameContainer>{currentUserUsername}</UsernameContainer>
-        <Menu>
-          <ViewProjects />
-          <MenuItem onClick={() => this.selectMenuItem(CHANGE_PASSWORD_ITEM)}>
-            Change password
-          </MenuItem>
-          <MenuItem onClick={() => this.selectMenuItem(REQUEST_COUNTRY_ACCESS_ITEM)}>
-            Request country access
-          </MenuItem>
-          <HelpCenter />
-          <MenuItem onClick={() => this.selectMenuItem(LOG_OUT_ITEM)}>Log out</MenuItem>
-        </Menu>
-      </UserMenuContainer>
-    );
-  }
-}
-
-const styles = {
-  menu: {
-    textAlign: 'right',
-  },
-  username: {
-    textAlign: 'right',
-  },
+    </UserMenuContainer>
+  );
 };
 
 UserMenu.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
-  onAttemptUserLogout: PropTypes.func.isRequired,
-  openLandingPage: PropTypes.func.isRequired,
-  openViewProjects: PropTypes.func.isRequired,
+  onClickSignIn: PropTypes.func.isRequired,
   currentUserUsername: PropTypes.string.isRequired,
-  onToggleLoginPanel: PropTypes.func.isRequired,
-  onToggleProjectsPanel: PropTypes.func.isRequired,
+  onOpenViewProjects: PropTypes.func.isRequired,
   onToggleChangePasswordPanel: PropTypes.func.isRequired,
   onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
+  onAttemptUserLogout: PropTypes.func.isRequired,
+  onClickRegister: PropTypes.func.isRequired,
+  onAttemptLandingPageLogout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => {
-  const {
-    isUserLoggedIn,
-    currentUserUsername,
-    isRequestingLogin,
-    loginFailedMessage,
-  } = state.authentication;
-
+  const { isUserLoggedIn, currentUserUsername } = state.authentication;
   return {
     isUserLoggedIn,
     currentUserUsername,
-    isRequestingLogin,
-    loginFailedMessage,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onToggleLoginPanel: () =>
-      dispatch(closeDropdownOverlays()) && dispatch(openUserPage(DIALOG_PAGE_LOGIN)),
-    onToggleProjectsPanel: () =>
-      dispatch(closeDropdownOverlays()) && dispatch(openUserPage(DIALOG_PAGE_LOGIN)),
+    onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
     onToggleChangePasswordPanel: () =>
       dispatch(closeDropdownOverlays()) && dispatch(openUserPage(DIALOG_PAGE_CHANGE_PASSWORD)),
     onToggleRequestCountryAccessPanel: () =>
       dispatch(closeDropdownOverlays()) &&
       dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
+    onClickSignIn: () => {
+      dispatch(setOverlayComponent(LANDING));
+      dispatch(setAuthViewState(AUTH_VIEW_STATES.LOGIN));
+    },
     onAttemptUserLogout: () => dispatch(attemptUserLogout()),
+    onClickRegister: () => {
+      dispatch(setOverlayComponent(LANDING));
+      dispatch(setAuthViewState(AUTH_VIEW_STATES.REGISTER));
+    },
+    onAttemptLandingPageLogout: () => dispatch(attemptLandingPageLogout()),
   };
 };
 

@@ -51,9 +51,7 @@ const MapContainer = styled.div`
 
 const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
   const { isCustomLandingPage } = useCustomLandingPages();
-  if (isCustomLandingPage) {
-    return <LandingPage />;
-  }
+  if (isCustomLandingPage) return <LandingPage />;
 
   return (
     <>
