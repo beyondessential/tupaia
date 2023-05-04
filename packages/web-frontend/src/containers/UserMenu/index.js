@@ -60,10 +60,12 @@ const StyledMenuIcon = styled(MenuIcon)`
   height: 28px;
 `;
 
-const UsernameContainer = styled.div`
+const UsernameContainer = styled.p`
   padding-right: 5px;
-  font-weight: 400;
+  font-weight: ${({ theme, isCustomLandingPage }) =>
+    isCustomLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
   font-size: 0.875rem;
+  text-transform: ${({ isCustomLandingPage }) => (isCustomLandingPage ? 'uppercase' : 'none')};
 `;
 
 const MenuItemButton = styled(Button)`
@@ -214,7 +216,9 @@ const UserMenu = ({
   return (
     <UserMenuContainer secondaryColor={secondaryColor}>
       {isUserLoggedIn ? (
-        <UsernameContainer>{currentUserUsername}</UsernameContainer>
+        <UsernameContainer isCustomLandingPage={isCustomLandingPage}>
+          {currentUserUsername}
+        </UsernameContainer>
       ) : (
         <>
           {showRegisterButton && (

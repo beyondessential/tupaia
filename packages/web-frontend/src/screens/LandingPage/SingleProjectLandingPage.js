@@ -1,5 +1,78 @@
 import React from 'react';
+import styled from 'styled-components';
+import { Button, Typography } from '@material-ui/core';
+import { useCustomLandingPages } from './useCustomLandingPages';
+import { useAuth } from './useAuth';
+import { getProjectAccessType } from '../../utils';
+import { PROJECT_ACCESS_TYPES } from '../../constants';
+import { useNavigation } from './useNavigation';
+
+const Wrapper = styled.div`
+  max-width: 30em;
+`;
+
+const ExtendedTitle = styled(Typography)`
+  color: ${props => props.theme.palette.common.white};
+  font-weight: ${props => props.theme.typography.fontWeightBold};
+  font-size: 2em;
+`;
+
+const ActionButton = styled(Button)`
+  width: 75%;
+  background-color: ${props => props.theme.palette.common.white};
+  color: ${props => props.theme.palette.common.black};
+  text-transform: none;
+  font-size: 1em;
+  line-height: 1.5;
+  padding: 1em;
+  border-radius: 0.6em;
+  ${ExtendedTitle} + & {
+    margin-top: 2em;
+  }
+`;
 
 export function SingleProjectLandingPage() {
-  return <div> </div>;
+  const {
+    customLandingPageSettings: {
+      extended_title: extendedTitle,
+      include_name_in_header: includeNameInHeader,
+    },
+    projects,
+  } = useCustomLandingPages();
+  const { isUserLoggedIn } = useAuth();
+  const { navigateToLogin, navigateToProject, navigateToRequestProjectAccess } = useNavigation();
+  const actionTexts = {
+    [PROJECT_ACCESS_TYPES.PENDING]: 'Approval in progress',
+    [PROJECT_ACCESS_TYPES.ALLOWED]: 'View data',
+    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn ? 'Request access' : 'Log in to view data',
+  };
+  const accessType = getProjectAccessType(projects[0]);
+  const actions = {
+    [PROJECT_ACCESS_TYPES.ALLOWED]: navigateToProject,
+    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
+      ? navigateToRequestProjectAccess
+      : navigateToLogin,
+  };
+
+  const onClickActionButton = () => {
+    const action = actions[accessType];
+    if (!action) return;
+    action(projects[0]);
+  };
+  return (
+    <Wrapper>
+      {extendedTitle && (
+        <ExtendedTitle variant={includeNameInHeader ? 'h2' : 'h1'}>{extendedTitle}</ExtendedTitle>
+      )}
+      {accessType && (
+        <ActionButton
+          variant="contained"
+          disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}
+          onClick={onClickActionButton}
+        >
+          {actionTexts[accessType]}
+        </ActionButton>
+      )}
+    </Wrapper>
+  );
 }

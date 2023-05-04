@@ -10,11 +10,17 @@ const customLandingPages = [
   {
     name: 'Fiji',
     urlSegment: 'landing-page-fiji',
-    projects: ['wish'],
+    projects: ['fanafana'],
     image_url: 'https://loremflickr.com/2000/2000',
     logo_url: 'https://loremflickr.com/800/800',
     include_name_in_header: true,
     primary_hexcode: 'pink',
+    extended_title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    long_bio:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    external_link: 'https://www.bes.au',
+    phone_number: '+123 456 789',
+    website_url: 'https://www.bes.au',
   },
 ];
 
