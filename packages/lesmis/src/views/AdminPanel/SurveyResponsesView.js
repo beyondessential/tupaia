@@ -6,7 +6,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 
 import { SurveyResponsesPage } from '@tupaia/admin-panel';
-import { ApproveButton, getRejectButton } from '../../components';
+import { ApproveButton, getRejectButton } from './components';
 import { getSurveyResponsePageConfigs } from './pages/helpers/getSurveyResponsePageConfigs';
 
 export const ApprovedSurveyResponsesView = props => {

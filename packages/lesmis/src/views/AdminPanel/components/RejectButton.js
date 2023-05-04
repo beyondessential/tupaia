@@ -5,15 +5,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ConfirmModal } from '@tupaia/ui-components';
-import { IconButton, DataChangeAction } from '@tupaia/admin-panel';
+import { IconButton, DataChangeAction, useApi } from '@tupaia/admin-panel';
 import { Delete } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRejectSurveyResponseStatus } from '../api';
 
 export const getRejectButton = translate => {
   const RejectButton = ({ value: id }) => {
+    const api = useApi();
     const [isOpen, setIsOpen] = useState(false);
-    const { mutate, isLoading, isError, error } = useRejectSurveyResponseStatus();
+    const { mutate, isLoading, isError, error } = useRejectSurveyResponseStatus(api);
 
     const handleClickReject = ({ onEditBegin, onEditSuccess, onEditError }) => {
       onEditBegin();

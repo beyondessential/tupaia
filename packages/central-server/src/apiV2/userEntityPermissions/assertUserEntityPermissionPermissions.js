@@ -8,7 +8,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions';
-import { getAdminPanelAllowedEntityIds, getAdminPanelAllowedCountryCodes } from '../utilities';
+import { getAdminPanelAllowedCountryIds, getAdminPanelAllowedCountryCodes } from '../utilities';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
@@ -78,7 +78,7 @@ export const createUserEntityPermissionDBFilter = async (accessPolicy, models, c
   }
   // If we don't have BES Admin access, add a filter to the SQL query
   const dbConditions = {
-    'user_entity_permission.entity_id': await getAdminPanelAllowedEntityIds(accessPolicy, models),
+    'user_entity_permission.entity_id': await getAdminPanelAllowedCountryIds(accessPolicy, models),
     ...criteria,
   };
 

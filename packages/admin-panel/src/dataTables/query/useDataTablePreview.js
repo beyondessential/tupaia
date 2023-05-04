@@ -6,38 +6,17 @@ import { useQuery } from 'react-query';
 import { post } from '../../VizBuilderApp/api/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
-const assignDefaultValueToRuntimeParam = ({ builtInParams, additionalParams, runtimeParams }) => {
-  const newRuntimeParams = { ...runtimeParams };
-
-  [...builtInParams, ...additionalParams].forEach(p => {
-    const runtimeParameterValue = runtimeParams[p.name];
-    if (
-      p?.config?.hasDefaultValue &&
-      (runtimeParameterValue === undefined ||
-        runtimeParameterValue === null ||
-        runtimeParameterValue === '' ||
-        (Array.isArray(runtimeParameterValue) && runtimeParameterValue.length === 0))
-    ) {
-      newRuntimeParams[p.name] = p?.config?.defaultValue;
-    }
-  });
-
-  const trimmedRuntimeParams = Object.fromEntries(
-    Object.entries(newRuntimeParams).map(([key, value]) => {
+const trimWhitespace = object => {
+  const trimmedObject = Object.fromEntries(
+    Object.entries(object).map(([key, value]) => {
       return [key, typeof value === 'string' ? value.trim() : value];
     }),
   );
 
-  return trimmedRuntimeParams;
+  return trimmedObject;
 };
 
-export const useDataTablePreview = ({
-  previewConfig,
-  builtInParams,
-  additionalParams,
-  runtimeParams,
-  onSettled,
-}) =>
+export const useDataTablePreview = ({ previewConfig, runtimeParams, onSettled }) =>
   useQuery(
     ['fetchDataTablePreviewData'],
     async () => {
@@ -45,11 +24,7 @@ export const useDataTablePreview = ({
         data: {
           previewConfig: {
             ...previewConfig,
-            runtimeParams: assignDefaultValueToRuntimeParam({
-              builtInParams,
-              additionalParams,
-              runtimeParams,
-            }),
+            runtimeParams: trimWhitespace(runtimeParams),
           },
         },
       });
