@@ -4,7 +4,6 @@
  */
 
 export { addSurveyImage } from './addSurveyImage';
-export { editSurvey } from './editSurvey';
 export { findQuestionsInSurvey } from './findQuestionsInSurvey';
 export { findAnswersInSurveyResponse } from './findAnswersInSurveyResponse';
 export { deleteScreensForSurvey } from './deleteScreensForSurvey';
