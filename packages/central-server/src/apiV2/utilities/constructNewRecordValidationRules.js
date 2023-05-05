@@ -20,6 +20,9 @@ import {
   ValidationError,
   constructRecordExistsWithCode,
   constructIsValidEntityType,
+  isHexColor,
+  isUrl,
+  isAlphaNumeric,
 } from '@tupaia/utils';
 import { DataTableType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
@@ -298,6 +301,24 @@ export const constructForSingle = (models, recordType) => {
             });
             if (permissionGroupNames.length !== permissionGroups.length) {
               throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
+      };
+    case TYPES.LANDING_PAGE:
+      return {
+        name: [hasContent],
+        url_segment: [hasContent, isAlphaNumeric],
+        website_url: [constructIsEmptyOr(isUrl)],
+        project_codes: [
+          hasContent,
+          async projectCodes => {
+            const projects = await models.project.find({
+              code: projectCodes,
+            });
+            if (projectCodes.length !== projects.length) {
+              throw new Error('Some provided projects do not exist');
             }
             return true;
           },

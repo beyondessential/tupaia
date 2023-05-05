@@ -92,7 +92,6 @@ export const modelClasses = {
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
   LandingPage: LandingPageModel,
-  LandingPageProjects: LandingPageProjectsModel,
   LegacyReport: LegacyReportModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
