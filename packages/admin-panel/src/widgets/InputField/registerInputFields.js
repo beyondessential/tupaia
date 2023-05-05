@@ -6,6 +6,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { InputAdornment } from '@material-ui/core';
 import styled from 'styled-components';
 import {
   Button,
@@ -16,6 +17,7 @@ import {
   Select,
   ImageUploadField,
   HexcodeField,
+  Checkbox,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
@@ -42,6 +44,20 @@ const StyledLink = styled(Link)`
 
 const StyledFileInputWrapper = styled.div`
   margin-bottom: 1.2rem;
+`;
+
+// Handle styling of the checkbox for just the admin-panel so as not to overwrite styles of the checkbox used elsewhere
+export const StyledCheckboxWrapper = styled.div`
+  .MuiFormControlLabel-label {
+    font-size: 0.975rem;
+    color: ${props => props.theme.palette.text.secondary};
+  }
+  .MuiButtonBase-root:not(.MuiIconButton-colorPrimary) {
+    color: ${props => props.theme.palette.text.secondary};
+  }
+  .MuiSvgIcon-root {
+    font-size: 1.2rem;
+  }
 `;
 
 export const registerInputFields = () => {
@@ -212,6 +228,9 @@ export const registerInputFields = () => {
       type="textarea"
       rows="4"
       tooltip={props.labelTooltip}
+      placeholder={props.placeholder}
+      minLength={props.minLength}
+      maxLength={props.maxLength}
     />
   ));
   registerInputField('text', props => (
@@ -224,6 +243,14 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       type={props.type}
       tooltip={props.labelTooltip}
+      placeholder={props.placeholder}
+      minLength={props.minLength}
+      maxLength={props.maxLength}
+      InputProps={{
+        startAdornment: props.startAdornment ? (
+          <InputAdornment position="start">{props.startAdornment}</InputAdornment>
+        ) : null,
+      }}
     />
   ));
   registerInputField('password', props => (
@@ -252,6 +279,7 @@ export const registerInputFields = () => {
         maxWidth={props.maxWidth}
         maxHeight={props.maxHeight}
         secondaryLabel={props.secondaryLabel}
+        tooltip={props.labelTooltip}
       />
     </StyledFileInputWrapper>
   ));
@@ -263,6 +291,35 @@ export const registerInputFields = () => {
       onChange={value => props.onChange(props.inputKey, value)}
       disabled={props.disabled}
       helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
+    />
+  ));
+  registerInputField('checkbox', props => (
+    <StyledCheckboxWrapper>
+      <Checkbox
+        id={props.id}
+        label={props.label}
+        checked={props.value || false}
+        value={props.optionValue}
+        onChange={e => props.onChange(props.inputKey, e.target.checked ? props.optionValue : null)}
+        disabled={props.disabled}
+        helperText={props.secondaryLabel}
+        tooltip={props.labelTooltip}
+        color="secondary"
+      />
+    </StyledCheckboxWrapper>
+  ));
+  registerInputField('radio', props => (
+    <RadioGroup
+      id={props.id}
+      label={props.label}
+      onChange={event => props.onChange(props.inputKey, event.target.value)} // convert to boolean value
+      options={props.options}
+      value={props.value}
+      disabled={props.disabled}
+      helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
+      name={props.name}
     />
   ));
 };

@@ -27,6 +27,7 @@ import {
 import { LANDING } from '../constants';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../../constants';
 import { BLUE, WHITE, GREY } from '../../../styles';
+import { useCustomLandingPages } from '../../../screens/LandingPage/useCustomLandingPages';
 
 const leftPadding = '40px';
 
@@ -196,6 +197,7 @@ export const RequestProjectAccessComponent = React.memo(
     success,
     errorMessage,
   }) => {
+    const { isCustomLandingPage } = useCustomLandingPages();
     const requestedCountries = countries.filter(c => c.accessRequests.includes(project.code));
     const availableCountries = countries.filter(c => !c.accessRequests.includes(project.code));
 
@@ -204,15 +206,42 @@ export const RequestProjectAccessComponent = React.memo(
       hideForm = true;
 
     const modalMessage = success ? (
-      <SuccessMessage projectName={project.name} onBackToProjects={onBackToProjects} />
+      <>
+        <Alert severity="success">
+          Thank you for your access request to {project.name}. We will review your application and
+          respond by email shortly.
+        </Alert>
+        <Note>
+          Note: This can take some time to process, as requests require formal permission to be
+          granted.
+        </Note>
+        {!isCustomLandingPage && (
+          <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
+        )}
+      </>
     ) : (
-      <RequestPendingMessage
-        requestedCountries={requestedCountries}
-        availableCountries={availableCountries}
-        setRequestingAdditionalCountryAccess={setRequestingAdditionalCountryAccess}
-        handleRequest={onRequestProjectAdditionalAccess}
-        onBackToProjects={onBackToProjects}
-      />
+      <>
+        <p>
+          <b>You have already requested access to this project</b>
+        </p>
+        <RequestedProjectCountryAccessList
+          requestedCountries={requestedCountries}
+          availableCountries={availableCountries}
+          handleRequest={onRequestProjectAdditionalAccess}
+        />
+        <p>
+          This can take some time to process, as requests require formal permission to be granted.
+        </p>
+        <p>
+          {`If you have any questions, please email: `}
+          <a style={styles.contactLink} href="mailto:admin@tupaia.org">
+            admin@tupaia.org
+          </a>
+        </p>
+        {!isCustomLandingPage && (
+          <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
+        )}
+      </>
     );
 
     return (
@@ -225,10 +254,12 @@ export const RequestProjectAccessComponent = React.memo(
               world
             </TagLine>
           </div>
-          <ExploreButton onClick={onBackToProjects} variant="outlined">
-            <ExploreIcon />
-            &nbsp; View other projects
-          </ExploreButton>
+          {!isCustomLandingPage && (
+            <ExploreButton onClick={onBackToProjects} variant="outlined">
+              <ExploreIcon />
+              &nbsp; View other projects
+            </ExploreButton>
+          )}
         </Header>
         <Title>Requesting Project Access</Title>
         <HeroImage src={project.imageUrl}>
@@ -280,45 +311,6 @@ export const RequestProjectAccessComponent = React.memo(
   },
 );
 
-export const SuccessMessage = ({ projectName, onBackToProjects }) => (
-  <>
-    <Alert severity="success">
-      Thank you for your access request to {projectName}. We will review your application and
-      respond by email shortly.
-    </Alert>
-    <Note>
-      Note: This can take some time to process, as requests require formal permission to be granted.
-    </Note>
-    <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
-  </>
-);
-
-export const RequestPendingMessage = ({
-  requestedCountries,
-  availableCountries,
-  handleRequest,
-  onBackToProjects,
-}) => (
-  <>
-    <p>
-      <b>You have already requested access to this project</b>
-    </p>
-    <RequestedProjectCountryAccessList
-      requestedCountries={requestedCountries}
-      availableCountries={availableCountries}
-      handleRequest={handleRequest}
-    />
-    <p>This can take some time to process, as requests require formal permission to be granted.</p>
-    <p>
-      {`If you have any questions, please email: `}
-      <a style={styles.contactLink} href="mailto:admin@tupaia.org">
-        admin@tupaia.org
-      </a>
-    </p>
-    <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
-  </>
-);
-
 export const RequestedProjectCountryAccessList = ({
   requestedCountries,
   availableCountries,
@@ -341,22 +333,10 @@ export const RequestedProjectCountryAccessList = ({
   );
 };
 
-SuccessMessage.propTypes = {
-  projectName: PropTypes.string.isRequired,
-  onBackToProjects: PropTypes.func.isRequired,
-};
-
 RequestedProjectCountryAccessList.propTypes = {
   requestedCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
   availableCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
   handleRequest: PropTypes.func.isRequired,
-};
-
-RequestPendingMessage.propTypes = {
-  requestedCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
-  availableCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
-  handleRequest: PropTypes.func.isRequired,
-  onBackToProjects: PropTypes.func.isRequired,
 };
 
 RequestProjectAccessComponent.propTypes = {

@@ -19,6 +19,7 @@ export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
 export const ATTEMPT_LOGOUT = 'ATTEMPT_LOGOUT';
+export const ATTEMPT_LANDING_PAGE_LOGOUT = 'ATTEMPT_LANDING_PAGE_LOGOUT';
 export const ATTEMPT_RESET_PASSWORD = 'ATTEMPT_RESET_PASSWORD';
 export const RESEND_VERIFICATION_EMAIL = 'RESEND_VERIFICATION_EMAIL';
 export const FETCH_RESEND_VERIFICATION_EMAIL = 'FETCH_RESEND_VERIFICATION_EMAIL';
@@ -66,6 +67,7 @@ export const FETCH_RESET_TOKEN_LOGIN_ERROR = 'FETCH_RESET_TOKEN_LOGIN_ERROR';
 export const FETCH_RESET_TOKEN_LOGIN_SUCCESS = 'FETCH_RESET_TOKEN_LOGIN_SUCCESS';
 export const FETCH_LOGOUT_ERROR = 'FETCH_LOGOUT_ERROR';
 export const FETCH_LOGOUT_SUCCESS = 'FETCH_LOGOUT_SUCCESS';
+export const FETCH_LANDING_PAGE_LOGOUT_SUCCESS = 'FETCH_LANDING_PAGE_LOGOUT_SUCCESS';
 export const FETCH_MEASURE_DATA_ERROR = 'FETCH_MEASURE_DATA_ERROR';
 export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
 export const FETCH_ALL_MEASURE_DATA_SUCCESS = 'FETCH_ALL_MEASURE_DATA_SUCCESS';
@@ -132,6 +134,7 @@ export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS = 'SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS';
 export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 export const SET_MAX_SELECTED_OVERLAYS = 'SET_MAX_SELECTED_OVERLAYS';
+export const SET_AUTH_VIEW_STATE = 'SET_AUTH_VIEW_STATE';
 
 /**
  * Attempt password change using old password, new password and new password
@@ -267,11 +270,26 @@ export function attemptUserLogout() {
 }
 
 /**
+ * Attempt logout from current user in a CUSTOM LANDING PAGE by clicking on Log out button.
+ */
+export function attemptLandingPageLogout() {
+  return {
+    type: ATTEMPT_LANDING_PAGE_LOGOUT,
+  };
+}
+
+/**
  * Changes the current session to logout. Should show Sing in button on UserBar
  */
 export function fetchUserLogoutSuccess() {
   return {
     type: FETCH_LOGOUT_SUCCESS,
+  };
+}
+
+export function fetchLandingPageLogoutSuccess() {
+  return {
+    type: FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
   };
 }
 
@@ -1107,4 +1125,7 @@ export function updateHistoryLocation(location) {
 
 export function setMobileTab(tab) {
   return { type: SET_MOBILE_TAB, tab };
+}
+export function setAuthViewState(authViewState) {
+  return { type: SET_AUTH_VIEW_STATE, authViewState };
 }
