@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from '@material-ui/core';
 import { SECTION_FIELD_TYPE } from '../../editor/constants';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -8,9 +9,9 @@ import { prettyArray } from '../../utilities';
 const LANDING_PAGES_ENDPOINT = 'landingPages';
 
 // the URL prefix to display in the url_segment field
-const URL_PREFIX = `${window.location.origin
-  .replace('admin', 'www')
-  .replace(new RegExp('(https://)|(http://)'), '')}/`;
+const URL_PREFIX = window.location.origin.replace('admin', 'www');
+
+const DISPLAY_URL_PREFIX = `${URL_PREFIX.replace(new RegExp('(https://)|(http://)'), '')}/`;
 
 // All the fields for create/edit of a custom landing page
 const FIELDS = [
@@ -21,7 +22,10 @@ const FIELDS = [
         Header: 'Name',
         source: 'name',
         // this is to denote this field as a column in the table
-        isColumn: true,
+        column: {
+          // sets what order to put the column in the table
+          sortOrder: 0,
+        },
       },
       {
         Header: 'Add name to header title (optional)',
@@ -40,11 +44,20 @@ const FIELDS = [
         isColumn: true,
         // this is to mark this field as being non-editable (disabled in edit mode)
         updateDisabled: true,
-        // format the value to include the URL prefix in the table
-        Cell: ({ value }) => `${URL_PREFIX}${value}`,
+        column: {
+          sortOrder: 2,
+        },
+        // format the value to include the URL prefix in the table, and display as a clickable link
+        // eslint-disable-next-line react/prop-types
+        Cell: ({ value }) => (
+          <Link
+            href={`${URL_PREFIX}/${value}`}
+            target="_blank"
+          >{`${DISPLAY_URL_PREFIX}${value}`}</Link>
+        ),
         editConfig: {
           // the prefix to display in the field
-          startAdornment: URL_PREFIX,
+          startAdornment: DISPLAY_URL_PREFIX,
         },
       },
     ],
@@ -195,7 +208,10 @@ const FIELDS = [
       {
         Header: 'Project code/s',
         source: 'project_codes',
-        isColumn: true,
+        column: {
+          sortOrder: 1,
+          Header: 'Projects',
+        },
         Filter: ArrayFilter,
         Cell: ({ value }) => prettyArray(value),
         editConfig: {
@@ -240,11 +256,17 @@ const EDIT_FIELDS = FIELDS.reduce((result, item) => {
 // Only show fields that are marked as columns, plus the edit and delete buttons
 const COLUMNS = [
   ...FIELDS.reduce((result, item) => {
-    if (item.type === SECTION_FIELD_TYPE) {
-      return [...result, ...item.fields.filter(field => field.isColumn)];
-    }
-    return item.isColumn ? [...result, item] : result;
-  }, []),
+    const fields = item.fields || [item];
+    return [
+      ...result,
+      ...fields
+        .filter(field => field.column)
+        .map(field => ({
+          ...field,
+          Header: field.column.Header || field.Header,
+        })),
+    ];
+  }, []).sort((a, b) => a.column.sortOrder - b.column.sortOrder),
   {
     Header: 'Edit',
     type: 'edit',
