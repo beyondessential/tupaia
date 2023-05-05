@@ -46,7 +46,7 @@ class LandingPageType extends DatabaseType {
 }
 
 export class LandingPageModel extends DatabaseModel {
-  get LandingPageTypeClass() {
+  get DatabaseTypeClass() {
     return LandingPageType;
   }
 }
