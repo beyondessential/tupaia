@@ -44,6 +44,11 @@ const Tabs = styled(MuiTabs)`
   }
 `;
 
+const TabContentWrapper = styled(Box)`
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    padding: 1.5em;
+  }
+`;
 const TabPanel = ({ children, value, index, ...other }) => {
   return (
     <Typography
@@ -54,13 +59,16 @@ const TabPanel = ({ children, value, index, ...other }) => {
       aria-labelledby={`wrapped-tab-${index}`}
       {...other}
     >
-      <Box p={3}>{children}</Box>
+      <TabContentWrapper>{children}</TabContentWrapper>
     </Typography>
   );
 };
 
 const LoginPanel = styled(TabPanel)`
-  margin: 0 64px;
+  margin: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    margin: 0 4em;
+  }
 `;
 
 const ContentContainer = styled.div`

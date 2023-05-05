@@ -9,14 +9,14 @@
  * UserMenu
  *
  * The controls for user Menu: show signIn option and loginForm.
- * If user is logged in, shows username and SingOut option.
+ * If user is logged in, shows username and SignOut option.
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import MenuIcon from '@material-ui/icons/Menu';
-import { ListItem, Button, Popover, Link } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { DARK_BLUE, WHITE } from '../../styles';
 import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandingPages';
 import {
@@ -32,6 +32,8 @@ import {
 import { LANDING, AUTH_VIEW_STATES, VIEW_PROJECTS } from '../OverlayDiv/constants';
 import { isMobile } from '../../utils';
 import { PopoverMenu } from './PopoverMenu';
+import { DrawerMenu } from './DrawerMenu';
+import { UserInfo } from './UserInfo';
 
 const UserMenuContainer = styled.div`
   display: flex;
@@ -39,91 +41,18 @@ const UserMenuContainer = styled.div`
   color: ${props => props.secondaryColor};
 `;
 
-const SignInButton = styled(Button)`
-  text-transform: none;
-  border: 1px solid ${props => props.secondaryColor};
-  border-radius: 18px;
-  font-weight: ${props => props.theme.typography.fontWeightMedium};
-  height: 30px;
-  margin-right: 0.5em;
-  padding-left: 1em;
-  padding-right: 1em;
-`;
-
 const StyledMenuButton = styled(Button)`
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
+  width: 2em;
+  min-width: 2em;
+  height: 2em;
   text-align: right;
-`;
-
-const StyledMenuIcon = styled(MenuIcon)`
-  width: 28px;
-  height: 28px;
-`;
-
-const UsernameContainer = styled.div`
-  padding-right: 5px;
-  font-weight: 400;
-  font-size: 0.875rem;
-`;
-
-const MenuItemButton = styled(Button)`
-  text-transform: none;
-  font-size: 1rem;
-  font-weight: ${props => props.theme.typography.fontWeightRegular};
-  padding: 0.4em 1em;
-  line-height: 1.4;
-  width: 100%;
-  justify-content: flex-start;
-`;
-const MenuItemLink = styled(Link)`
-  font-size: 1rem;
-  padding: 0.4em 1em;
-  line-height: 1.4;
-  width: 100%;
-  color: inherit;
-  text-decoration: none;
-  &:hover,
-  &:focus {
-    text-decoration: none;
-    background-color: rgba(255, 255, 255, 0.08);
-  }
-`;
-
-const MenuList = styled.ul`
-  list-style: none;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  padding-inline-start: 0;
-`;
-
-const MenuListItem = styled(ListItem)`
   padding: 0;
 `;
 
-const RegisterButton = styled(Button)`
-  text-transform: none;
-  margin-right: 0.5em;
+const StyledMenuIcon = styled(MenuIcon)`
+  width: 100%;
+  height: 100%;
 `;
-
-const MenuItem = ({ type, children, ...props }) =>
-  type === 'link' ? (
-    <MenuItemLink {...props} target="_blank">
-      {children}
-    </MenuItemLink>
-  ) : (
-    <MenuItemButton {...props}>{children}</MenuItemButton>
-  );
-
-MenuItem.propTypes = {
-  type: PropTypes.oneOf(['link', 'button']),
-  children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-};
-
-MenuItem.defaultProps = {
-  type: 'button',
-};
 
 const UserMenu = ({
   isUserLoggedIn,
@@ -148,60 +77,58 @@ const UserMenu = ({
 
   const signInText = isCustomLandingPage ? 'Log in' : 'Sign In / Register';
 
-  let menuItems = [];
-
   const logout = {
-    text: 'Logout',
+    actionText: 'Logout',
     action: onAttemptUserLogout,
   };
   const changePassword = {
-    text: 'Change Password',
+    actionText: 'Change Password',
     action: onToggleChangePasswordPanel,
   };
-  // if is a custom landing page, display only the appropriate items
-  if (isCustomLandingPage) {
-    const visitMainSite = {
-      text: 'Visit tupaia.org',
-      type: 'link',
-      url: window.location.origin,
-    };
-    menuItems = isUserLoggedIn
-      ? [
-          visitMainSite,
-          changePassword,
-          {
-            ...logout,
-            action: onAttemptLandingPageLogout,
-          },
-        ]
-      : [visitMainSite];
-  } else {
-    // otherwise display as usual
-    const viewProjects = {
-      text: 'View projects',
-      action: onOpenViewProjects,
-    };
-    const helpCentre = {
-      text: 'Help centre',
-      type: 'link',
-      url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
-    };
-    menuItems = isUserLoggedIn
-      ? [
-          viewProjects,
-          changePassword,
-          {
-            text: 'Request country access',
-            action: onToggleRequestCountryAccessPanel,
-          },
-          helpCentre,
-          {
-            text: 'Logout',
-            action: onAttemptUserLogout,
-          },
-        ]
-      : [viewProjects, helpCentre];
-  }
+  const isDrawer = isMobile();
+
+  const visitMainSite = {
+    preText: isDrawer ? 'Visit ' : '',
+    actionText: isDrawer ? 'tupaia.org' : 'Visit tupaia.org',
+    type: 'link',
+    url: window.location.origin,
+  };
+  const viewProjects = {
+    actionText: 'View projects',
+    action: onOpenViewProjects,
+  };
+  const helpCentre = {
+    actionText: 'Help centre',
+    type: 'link',
+    url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
+  };
+
+  const customLandingPageMenuItems = isUserLoggedIn
+    ? [
+        visitMainSite,
+        changePassword,
+        {
+          ...logout,
+          action: onAttemptLandingPageLogout,
+        },
+      ]
+    : [visitMainSite];
+
+  const baseMenuItems = isUserLoggedIn
+    ? [
+        viewProjects,
+        changePassword,
+        {
+          actionText: 'Request country access',
+          action: onToggleRequestCountryAccessPanel,
+        },
+        helpCentre,
+        {
+          actionText: 'Logout',
+          action: onAttemptUserLogout,
+        },
+      ]
+    : [viewProjects, helpCentre];
 
   const toggleUserMenu = () => {
     setMenuOpen(!menuOpen);
@@ -213,33 +140,38 @@ const UserMenu = ({
 
   const showRegisterButton = !isUserLoggedIn && isCustomLandingPage;
 
+  const MenuComponent = isDrawer ? DrawerMenu : PopoverMenu;
+  const menuItems = isCustomLandingPage ? customLandingPageMenuItems : baseMenuItems;
+
   return (
     <UserMenuContainer secondaryColor={secondaryColor}>
-      {isUserLoggedIn ? (
-        <UsernameContainer>{currentUserUsername}</UsernameContainer>
-      ) : (
-        <>
-          {showRegisterButton && (
-            <RegisterButton onClick={onClickRegister}>Register</RegisterButton>
-          )}
-          <SignInButton onClick={onClickSignIn} secondaryColor={secondaryColor}>
-            {signInText}
-          </SignInButton>
-        </>
+      {/** Only display the user info before the menu button if user is not on a mobile device, as the drawer menu handles this for mobile devices */}
+      {!isDrawer && (
+        <UserInfo
+          showRegisterButton={showRegisterButton}
+          currentUserUsername={currentUserUsername}
+          isCustomLandingPage={isCustomLandingPage}
+          onClickRegister={onClickRegister}
+          onClickSignIn={onClickSignIn}
+          signInText={signInText}
+          secondaryColor={secondaryColor}
+        />
       )}
-      <div>
-        <StyledMenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
-          <StyledMenuIcon />
-        </StyledMenuButton>
-        {isMobile() ? null : (
-          <PopoverMenu
-            menuOpen={menuOpen}
-            menuItems={menuItems}
-            primaryColor={primaryColor}
-            onCloseMenu={closeUserMenu}
-          />
-        )}
-      </div>
+      <StyledMenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
+        <StyledMenuIcon />
+      </StyledMenuButton>
+      <MenuComponent
+        menuOpen={menuOpen}
+        primaryColor={primaryColor}
+        onCloseMenu={closeUserMenu}
+        secondaryColor={secondaryColor}
+        onClickSignIn={onClickSignIn}
+        onClickRegister={onClickRegister}
+        signInText={signInText}
+        menuItems={menuItems}
+        isUserLoggedIn={isUserLoggedIn}
+        currentUserUsername={currentUserUsername}
+      />
     </UserMenuContainer>
   );
 };
@@ -260,7 +192,7 @@ const mapStateToProps = state => {
   const { isUserLoggedIn, currentUserUsername } = state.authentication;
   return {
     isUserLoggedIn,
-    currentUserUsername,
+    currentUserUsername: isUserLoggedIn ? currentUserUsername : null,
   };
 };
 

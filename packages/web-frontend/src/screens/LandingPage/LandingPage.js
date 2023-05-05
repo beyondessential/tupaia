@@ -30,14 +30,14 @@ const Wrapper = styled.div`
 
 const Container = styled(MuiContainer)`
   background: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
-  padding: 1rem;
+  padding: 1em;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE}px);
   overflow-y: auto;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    padding: 3.5rem;
+    padding: 2em 3.5em;
     height: calc(100vh - ${TOP_BAR_HEIGHT}px);
   }
 `;

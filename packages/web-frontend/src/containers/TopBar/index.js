@@ -10,15 +10,15 @@ import styled from 'styled-components';
 import TopBarLogo from '../TopBarLogo';
 import SearchBar from '../SearchBar';
 import UserBar from '../UserBar';
-import { DARK_BLUE, TOP_BAR_HEIGHT, WHITE } from '../../styles';
+import { DARK_BLUE, TOP_BAR_HEIGHT, TOP_BAR_HEIGHT_MOBILE, WHITE } from '../../styles';
 import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandingPages';
 
 // Both min height and height must be specified due to bugs in Firefox flexbox
 // that means that topbar height will be ignored even if using flex-basis.
 const TopBarWrapper = styled.div`
   background-color: ${props => props.primaryColor};
-  min-height: ${TOP_BAR_HEIGHT}px;
-  height: ${TOP_BAR_HEIGHT}px;
+  min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
+  height: ${TOP_BAR_HEIGHT_MOBILE}px;
   box-sizing: border-box;
   display: flex;
   z-index: 1000;
@@ -28,6 +28,10 @@ const TopBarWrapper = styled.div`
   > * {
     color: ${props => props.secondaryColor};
     background-color: ${props => props.primaryColor};
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    min-height: ${TOP_BAR_HEIGHT}px;
+    height: ${TOP_BAR_HEIGHT}px;
   }
 `;
 
