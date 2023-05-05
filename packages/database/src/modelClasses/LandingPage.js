@@ -9,26 +9,44 @@ import { TYPES } from '../types';
 
 class LandingPageType extends DatabaseType {
   static databaseType = TYPES.LANDING_PAGE;
-}
 
-export class LandingPageModel extends DatabaseModel {
-  get LandingPageTypeClass() {
-    return LandingPageType;
+  async attachProjects(projectCodes) {
+    const projects = await this.otherModels.project.find({
+      code: projectCodes,
+    });
+    for (const project of projects) {
+      await this.otherModels.landingPageProjects.create({
+        landing_page_id: this.id,
+        project_id: project.id,
+      });
+    }
   }
 
-  async getAttachedProjects(landingPageId) {
-    const landingPage = await this.findOne({
-      id: landingPageId,
+  async detachProjects(projectCodes) {
+    const projects = await this.otherModels.project.find({
+      code: projectCodes,
     });
+    for (const project of projects) {
+      await this.otherModels.landingPageProjects.delete({
+        landing_page_id: this.id,
+        project_id: project.id,
+      });
+    }
+  }
 
-    if (!landingPage) return [];
-
+  async getAttachedProjects() {
     const projectRelations = await this.otherModels.landingPageProjects.find({
-      landingPageId,
+      landing_page_id: this.id,
     });
 
     return this.otherModels.project.find({
       id: projectRelations.map(({ project_id: projectId }) => projectId),
     });
+  }
+}
+
+export class LandingPageModel extends DatabaseModel {
+  get LandingPageTypeClass() {
+    return LandingPageType;
   }
 }
