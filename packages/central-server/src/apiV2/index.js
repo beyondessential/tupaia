@@ -123,6 +123,7 @@ import {
   GETExternalDatabaseConnections,
   TestExternalDatabaseConnection,
 } from './externalDatabaseConnections';
+import { GETLandingPages, EditLandingPage, CreateLandingPage } from './landingPages';
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -243,6 +244,7 @@ apiV2.get(
   useRouteHandler(TestExternalDatabaseConnection),
 );
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 
 /**
  * POST routes
@@ -280,6 +282,7 @@ apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 
 /**
  * PUT routes
@@ -317,6 +320,7 @@ apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 
 /**
  * DELETE routes
@@ -350,6 +354,7 @@ apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/landingPages/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 
