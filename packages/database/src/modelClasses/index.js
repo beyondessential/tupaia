@@ -30,7 +30,6 @@ import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LandingPageModel } from './LandingPage';
-import { LandingPageProjectsModel } from './LandingPageProjects';
 import { LegacyReportModel } from './LegacyReport';
 import { UserFavouriteDashboardItemModel } from './UserFavouriteDashboardItem';
 import { MapOverlayGroupModel } from './MapOverlayGroup';

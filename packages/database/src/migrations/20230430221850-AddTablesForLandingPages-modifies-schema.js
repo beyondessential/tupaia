@@ -30,22 +30,13 @@ exports.up = async function (db) {
       external_link TEXT,
       phone_number TEXT,
       website_url TEXT,
-      include_name_in_header BOOLEAN
-    )
-  `);
-  await db.runSql(`
-    CREATE TABLE landing_page_projects (
-      id TEXT PRIMARY KEY,
-      landing_page_id TEXT NOT NULL,
-      project_id TEXT NOT NULL,
-      FOREIGN KEY (landing_page_id) REFERENCES landing_page (id) ON UPDATE CASCADE ON DELETE CASCADE,
-      FOREIGN KEY (project_id) REFERENCES project (id) ON UPDATE CASCADE ON DELETE CASCADE
+      include_name_in_header BOOLEAN,
+      project_codes TEXT[]
     )
   `);
 };
 
 exports.down = async function (db) {
-  await db.runSql(`DROP TABLE landing_page_projects`);
   await db.runSql(`DROP TABLE landing_page`);
 };
 
