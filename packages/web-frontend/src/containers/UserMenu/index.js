@@ -30,6 +30,8 @@ import {
   setOverlayComponent,
 } from '../../actions';
 import { LANDING, AUTH_VIEW_STATES, VIEW_PROJECTS } from '../OverlayDiv/constants';
+import { isMobile } from '../../utils';
+import { PopoverMenu } from './PopoverMenu';
 
 const UserMenuContainer = styled.div`
   display: flex;
@@ -60,12 +62,10 @@ const StyledMenuIcon = styled(MenuIcon)`
   height: 28px;
 `;
 
-const UsernameContainer = styled.p`
+const UsernameContainer = styled.div`
   padding-right: 5px;
-  font-weight: ${({ theme, isCustomLandingPage }) =>
-    isCustomLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
+  font-weight: 400;
   font-size: 0.875rem;
-  text-transform: ${({ isCustomLandingPage }) => (isCustomLandingPage ? 'uppercase' : 'none')};
 `;
 
 const MenuItemButton = styled(Button)`
@@ -216,9 +216,7 @@ const UserMenu = ({
   return (
     <UserMenuContainer secondaryColor={secondaryColor}>
       {isUserLoggedIn ? (
-        <UsernameContainer isCustomLandingPage={isCustomLandingPage}>
-          {currentUserUsername}
-        </UsernameContainer>
+        <UsernameContainer>{currentUserUsername}</UsernameContainer>
       ) : (
         <>
           {showRegisterButton && (
@@ -233,37 +231,14 @@ const UserMenu = ({
         <StyledMenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
           <StyledMenuIcon />
         </StyledMenuButton>
-        <Popover
-          PaperProps={{ style: { backgroundColor: primaryColor } }}
-          open={menuOpen}
-          anchorEl={() => document.getElementById('user-menu-button')}
-          onClose={closeUserMenu}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-        >
-          <MenuList>
-            {menuItems.map(({ action, text, type, url }) => (
-              <MenuListItem key={text}>
-                <MenuItem
-                  type={type}
-                  onClick={() => {
-                    if (action) action();
-                    closeUserMenu();
-                  }}
-                  href={url}
-                >
-                  {text}
-                </MenuItem>
-              </MenuListItem>
-            ))}
-          </MenuList>
-        </Popover>
+        {isMobile() ? null : (
+          <PopoverMenu
+            menuOpen={menuOpen}
+            menuItems={menuItems}
+            primaryColor={primaryColor}
+            onCloseMenu={closeUserMenu}
+          />
+        )}
       </div>
     </UserMenuContainer>
   );

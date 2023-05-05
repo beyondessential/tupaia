@@ -56,6 +56,7 @@ export const LEAFLET_Z_INDEX = 1000; // Leaflet base z-index is 400, but attribu
 export const EXPORT_CHART_PADDING = 20;
 export const DASHBOARD_META_MARGIN = 15;
 export const TOP_BAR_HEIGHT = 60;
+export const TOP_BAR_HEIGHT_MOBILE = 50;
 export const CONTROL_BAR_WIDTH = 340;
 export const CONTROL_BAR_PADDING = 10;
 export const MAP_CONTROLS_WIDTH = 166;
