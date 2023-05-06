@@ -17,7 +17,7 @@
     "lint:fix": "yarn lint --fix",
     "start": "PORT=8088 yarn package:start:react-scripts",
     "start-dev": "yarn start",
-    "start-mobile": "REACT_APP_APP_TYPE=mobile PORT=8089 PORT=8088 package:start:react-scripts",
+    "start-mobile": "REACT_APP_APP_TYPE=mobile PORT=8089 PORT=8088 yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",

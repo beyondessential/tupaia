@@ -62,16 +62,12 @@ const COMPARATORS = {
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
 
-// turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
-// string, independent of timezones, rather than being converted to local time
-pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
-
 export class TupaiaDatabase {
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
-  constructor(transactingConnection, transactingChangeChannel) {
+  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
     autobind(this);
     this.changeHandlers = {};
     this.transactingChangeChannel = transactingChangeChannel;
@@ -93,6 +89,19 @@ export class TupaiaDatabase {
     this.connectionPromise = connectToDatabase();
 
     this.handlerLock = new Multilock();
+
+    this.configurePgGlobals(useNumericStuff);
+  }
+
+  configurePgGlobals(useNumericStuff = false) {
+    // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
+    // string, independent of timezones, rather than being converted to local time
+    pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
+
+    if (useNumericStuff) {
+      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
+      pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
+    }
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 
 import { ParameterType } from '../../editing';
 import { ReduxAutocomplete } from '../../../../autocomplete';
+import { getArrayFieldValue } from './utils';
 
 export const DataElementCodesField = ({ name, onChange }) => {
   return (
@@ -17,7 +18,7 @@ export const DataElementCodesField = ({ name, onChange }) => {
       key="dataElementCodes"
       inputKey="dataElementCodesField"
       label={name}
-      onChange={selectedValues => onChange(selectedValues)}
+      onChange={selectedValues => onChange(getArrayFieldValue(selectedValues))}
       id="inputField-dataElementCodes"
       reduxId="dataTableEditFields-dataElementCodesField"
       endpoint="dataElements"

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { StandardOrCustomReportConfig } from '@tupaia/report-server';
+import type { StandardOrCustomReportConfig } from '@tupaia/types';
 import { Report as BaseReportType } from '@tupaia/types';
 
 export type VizData = {

@@ -18,7 +18,6 @@ import {
   ReportRoute,
   UserRoute,
   VerifyEmailRoute,
-  UpdateSurveyResponseRoute,
   PDFExportRoute,
 } from '../routes';
 import { attachSession } from '../session';
@@ -31,7 +30,6 @@ import { EntityRequest } from '../routes/EntityRoute';
 import { ReportRequest } from '../routes/ReportRoute';
 import { VerifyEmailRequest } from '../routes/VerifyEmailRoute';
 import { RegisterRequest } from '../routes/RegisterRoute';
-import { UpdateSurveyResponseRequest } from '../routes/UpdateSurveyResponseRoute';
 import { PDFExportRequest } from '../routes/PDFExportRoute';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -67,11 +65,6 @@ export function createApp() {
     .post<RegisterRequest>('register', handleWith(RegisterRoute))
     .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
     .post<PDFExportRequest>('pdf', handleWith(PDFExportRoute))
-
-    /**
-     * PUT
-     */
-    .put<UpdateSurveyResponseRequest>('survey-response/:id', handleWith(UpdateSurveyResponseRoute))
 
     .build();
 
