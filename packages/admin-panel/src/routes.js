@@ -36,6 +36,7 @@ import {
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
   EntityHierarchyPage,
+  CustomLandingPagesPage,
 } from './pages/resources';
 import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
@@ -219,8 +220,8 @@ export const ROUTES = [
         component: EntityHierarchyPage,
       },
       {
-        label: 'Custom Landing Pages',
-        to: '/landingPages',
+        label: 'Landing Pages',
+        to: '/landing-pages',
         component: CustomLandingPagesPage,
       },
     ],
