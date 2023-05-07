@@ -79,6 +79,7 @@ export const registerInputFields = () => {
       baseFilter={props.baseFilter}
       pageSize={props.pageSize}
       tooltip={props.labelTooltip}
+      distinct={props.distinct}
     />
   ));
   registerInputField('json', props => (
