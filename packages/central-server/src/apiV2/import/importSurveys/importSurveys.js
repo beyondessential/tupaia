@@ -22,7 +22,6 @@ import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/m
 import {
   splitStringOnComma,
   splitOnNewLinesOrCommas,
-  extractTabNameFromQuery,
   getArrayQueryParameter,
 } from '../../utilities';
 import { ConfigImporter } from './ConfigImporter';
@@ -32,14 +31,10 @@ import {
   validateSurveyMetadataRow,
   SURVEY_METADATA,
 } from './processSurveyMetadata';
-import {
-  caseAndSpaceInsensitiveEquals,
-  convertCellToJson,
-  findOrCreateSurveyCode,
-} from './utilities';
+import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../../database';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
-import { assertCanImportSurveys } from './assertCanImportSurveys';
+import { assertCanImportSurvey } from './assertCanImportSurvey';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
@@ -118,10 +113,11 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
  */
 export async function importSurveys(req, res) {
   const { models } = req;
-  if (!req.query || !req.query.surveyNames) {
-    throw new ValidationError('HTTP query should contain surveyNames');
+  if (!req.query?.surveyCode) {
+    throw new ValidationError('surveyCode required');
   }
-  const requestedSurveyNames = getArrayQueryParameter(req.query.surveyNames);
+  const { surveyCode } = req.query;
+
   if (!req.file) {
     throw new UploadError();
   }
@@ -135,12 +131,8 @@ export async function importSurveys(req, res) {
         throw new DatabaseError('finding permission group');
       }
 
-      const surveyNames = Object.entries(workbook.Sheets).map(([tabName]) => {
-        return extractTabNameFromQuery(tabName, requestedSurveyNames);
-      });
-
       const importSurveysPermissionsChecker = async accessPolicy =>
-        assertCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
+        assertCanImportSurvey(accessPolicy, transactingModels, surveyCode, req.query.countryIds);
 
       await req.assertPermissions(
         assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
@@ -153,260 +145,260 @@ export async function importSurveys(req, res) {
         });
       }
 
-      // Go through each sheet, and make a survey for each
-      for (const surveySheets of Object.entries(workbook.Sheets)) {
-        const [tabName, sheet] = surveySheets;
-        const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
-        const surveyCode = await findOrCreateSurveyCode(transactingModels, surveyName);
+      if (Object.keys(workbook.Sheets).length !== 1) {
+        throw new ImportValidationError('Questions spreadsheet must have exactly one tab');
+      }
+      const [firstTab] = Object.entries(workbook.Sheets);
+      const [tabName, sheet] = firstTab;
+      if (tabName !== surveyCode) {
+        throw new ImportValidationError(
+          `Spreadsheet tab "${tabName}" does not match given survey code "${surveyCode}", are you sure this is the right spreadsheet?`,
+        );
+      }
 
-        const { serviceType = DEFAULT_SERVICE_TYPE, dhisInstanceCode = '' } = req.query;
+      const { serviceType = DEFAULT_SERVICE_TYPE, dhisInstanceCode = '' } = req.query;
 
-        await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+      await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
 
-        try {
-          await validateSurveyFields(transactingModels, {
-            code: surveyCode,
-            serviceType,
-            periodGranularity: req.query.periodGranularity,
-            dhisInstanceCode,
-          });
-        } catch (error) {
-          throw new ImportValidationError(error.message);
-        }
-
-        const dataGroup = await updateOrCreateDataGroup(transactingModels, {
-          surveyCode,
+      try {
+        await validateSurveyFields(transactingModels, {
+          code: surveyCode,
           serviceType,
+          periodGranularity: req.query.periodGranularity,
           dhisInstanceCode,
         });
+      } catch (error) {
+        throw new ImportValidationError(error.message);
+      }
 
-        // Clear all existing data element/data group associations
-        // We will re-create the ones required by the survey while processing its questions
-        await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
+      const dataGroup = await updateOrCreateDataGroup(transactingModels, {
+        surveyCode,
+        serviceType,
+        dhisInstanceCode,
+      });
 
-        // Refresh SurveyDate element
-        await dataGroup.deleteSurveyDateElement();
-        await dataGroup.upsertSurveyDateElement();
+      // Clear all existing data element/data group associations
+      // We will re-create the ones required by the survey while processing its questions
+      await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
 
-        // Get the survey based on the name of the sheet/tab
-        const survey = await transactingModels.survey.findOrCreate(
-          {
-            name: surveyName,
-          },
-          {
-            // If no survey with that name is found, give it a code and public permissions
-            code: surveyCode,
-            permission_group_id: permissionGroup.id,
-            data_group_id: dataGroup.id,
-          },
-        );
-        if (!survey) {
-          throw new DatabaseError('creating survey, check format of import file');
+      // Refresh SurveyDate element
+      await dataGroup.deleteSurveyDateElement();
+      await dataGroup.upsertSurveyDateElement();
+
+      // Get the survey based on the name of the sheet/tab
+      const survey = await transactingModels.survey.findOrCreate(
+        {
+          code: surveyCode,
+        },
+        {
+          // If no survey with that name is found, give it a code and public permissions
+          name: surveyCode,
+          permission_group_id: permissionGroup.id,
+          data_group_id: dataGroup.id,
+        },
+      );
+      if (!survey) {
+        throw new DatabaseError('creating survey, check format of import file');
+      }
+
+      // Work out what fields of the survey should be updated based on query params
+      const fieldsToForceUpdate = {};
+      if (req.query.countryIds) {
+        // Set the countries this survey is available in
+        fieldsToForceUpdate.country_ids = getArrayQueryParameter(req.query.countryIds);
+      }
+      if (surveyGroup) {
+        fieldsToForceUpdate.survey_group_id = surveyGroup.id;
+      }
+      if (req.query.permissionGroup) {
+        // A non-default permission group was provided
+        fieldsToForceUpdate.permission_group_id = permissionGroup.id;
+      }
+      if (req.query.surveyName) {
+        fieldsToForceUpdate.name = req.query.surveyName;
+      }
+      if (req.query.periodGranularity) {
+        fieldsToForceUpdate.period_granularity = req.query.periodGranularity;
+      }
+      if (req.query.requiresApproval) {
+        fieldsToForceUpdate.requires_approval = req.query.requiresApproval;
+      }
+      // Update the survey based on the fields to force update
+      if (Object.keys(fieldsToForceUpdate).length > 0) {
+        await transactingModels.survey.update({ id: survey.id }, fieldsToForceUpdate);
+      }
+
+      // Delete all existing survey screens and components that were attached to this survey
+      await deleteScreensForSurvey(transactingModels, survey.id);
+      const rows = xlsx.utils.sheet_to_json(sheet);
+      validateQuestionExistence(rows);
+
+      // Add all questions to the survey, creating screens, components and questions as required
+      let currentScreen;
+      let currentSurveyScreenComponent;
+      let hasSeenDateOfDataQuestion = false;
+      const questionCodes = []; // An array to hold all qustion codes, allowing duplicate checking
+      const configImporter = new ConfigImporter(transactingModels, rows);
+      const objectValidator = new ObjectValidator(constructQuestionValidators(transactingModels));
+      let hasPrimaryEntityQuestion = false;
+      for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+        const row = rows[rowIndex];
+        const constructImportValidationError = (message, field) =>
+          new ImportValidationError(message, excelRowNumber, field);
+
+        if (row.type === SURVEY_METADATA) {
+          await validateSurveyMetadataRow(rows, rowIndex, constructImportValidationError);
+          await processSurveyMetadataRow(transactingModels, rows, rowIndex, survey.id);
+          continue;
         }
 
-        // Work out what fields of the survey should be updated based on query params
-        const fieldsToForceUpdate = {};
-        if (req.query.countryIds) {
-          // Set the countries this survey is available in
-          fieldsToForceUpdate.country_ids = getArrayQueryParameter(req.query.countryIds);
+        const questionObject = row;
+        const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
+
+        // Validate rows
+        await objectValidator.validate(questionObject, constructImportValidationError);
+        // Validate no duplicate codes
+        if (
+          questionObject.code &&
+          questionObject.code.length > 0 &&
+          questionCodes.includes(questionObject.code)
+        ) {
+          throw new ImportValidationError('Question code is not unique', excelRowNumber);
         }
-        if (surveyGroup) {
-          fieldsToForceUpdate.survey_group_id = surveyGroup.id;
-        }
-        if (req.query.permissionGroup) {
-          // A non-default permission group was provided
-          fieldsToForceUpdate.permission_group_id = permissionGroup.id;
-        }
-        if (req.query.surveyCode) {
-          fieldsToForceUpdate.code = req.query.surveyCode;
-        }
-        if (req.query.periodGranularity) {
-          fieldsToForceUpdate.period_granularity = req.query.periodGranularity;
-        }
-        if (req.query.requiresApproval) {
-          fieldsToForceUpdate.requires_approval = req.query.requiresApproval;
-        }
-        // Update the survey based on the fields to force update
-        if (Object.keys(fieldsToForceUpdate).length > 0) {
-          await transactingModels.survey.update({ id: survey.id }, fieldsToForceUpdate);
-        }
-
-        // Delete all existing survey screens and components that were attached to this survey
-        await deleteScreensForSurvey(transactingModels, survey.id);
-        const rows = xlsx.utils.sheet_to_json(sheet);
-        validateQuestionExistence(rows);
-
-        // Add all questions to the survey, creating screens, components and questions as required
-        let currentScreen;
-        let currentSurveyScreenComponent;
-        let hasSeenDateOfDataQuestion = false;
-        const questionCodes = []; // An array to hold all qustion codes, allowing duplicate checking
-        const configImporter = new ConfigImporter(transactingModels, rows);
-        const objectValidator = new ObjectValidator(constructQuestionValidators(transactingModels));
-        let hasPrimaryEntityQuestion = false;
-        for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-          const row = rows[rowIndex];
-          const constructImportValidationError = (message, field) =>
-            new ImportValidationError(message, excelRowNumber, field, tabName);
-
-          if (row.type === SURVEY_METADATA) {
-            await validateSurveyMetadataRow(rows, rowIndex, constructImportValidationError);
-            await processSurveyMetadataRow(transactingModels, rows, rowIndex, survey.id);
-            continue;
-          }
-
-          const questionObject = row;
-          const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
-
-          // Validate rows
-          await objectValidator.validate(questionObject, constructImportValidationError);
-          // Validate no duplicate codes
-          if (
-            questionObject.code &&
-            questionObject.code.length > 0 &&
-            questionCodes.includes(questionObject.code)
-          ) {
-            throw new ImportValidationError('Question code is not unique', excelRowNumber);
-          }
-          // Validate no second primary entity question
-          if (questionObject.type === ANSWER_TYPES.PRIMARY_ENTITY) {
-            if (hasPrimaryEntityQuestion) {
-              throw new ImportValidationError(
-                `Only one ${ANSWER_TYPES.PRIMARY_ENTITY} question allowed`,
-                excelRowNumber,
-              );
-            }
-            hasPrimaryEntityQuestion = true;
-          }
-          questionCodes.push(questionObject.code);
-
-          // Validate max one date of data/submission date question
-          if (questionObject.type === 'DateOfData' || questionObject.type === 'SubmissionDate') {
-            if (hasSeenDateOfDataQuestion) {
-              // Previously had another submission date question
-              throw new ImportValidationError(
-                'Only one DateOfData/SubmissionDate question allowed',
-                excelRowNumber,
-              );
-            }
-            hasSeenDateOfDataQuestion = true;
-          }
-
-          // Extract question details from spreadsheet row
-          const {
-            code,
-            type,
-            name,
-            text,
-            questionLabel,
-            detail,
-            detailLabel,
-            options,
-            optionLabels,
-            optionColors,
-            newScreen,
-            visibilityCriteria,
-            validationCriteria,
-            optionSet,
-            hook,
-          } = questionObject;
-
-          let dataElement;
-          if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
-            dataElement = await updateOrCreateDataElementInGroup(
-              transactingModels,
-              code,
-              dataGroup,
+        // Validate no second primary entity question
+        if (questionObject.type === ANSWER_TYPES.PRIMARY_ENTITY) {
+          if (hasPrimaryEntityQuestion) {
+            throw new ImportValidationError(
+              `Only one ${ANSWER_TYPES.PRIMARY_ENTITY} question allowed`,
+              excelRowNumber,
             );
           }
+          hasPrimaryEntityQuestion = true;
+        }
+        questionCodes.push(questionObject.code);
 
-          // Compose question based on details from spreadsheet
-          const questionToUpsert = {
-            code,
-            type,
-            name,
-            text,
-            detail,
-            hook,
-            options: processOptions(options, optionLabels, optionColors, type),
-            option_set_id: await processOptionSetName(transactingModels, optionSet),
-            data_element_id: dataElement && dataElement.id,
-          };
-
-          // Either create or update the question depending on if there exists a matching code
-          let question;
-          if (code) {
-            question = await transactingModels.question.updateOrCreate({ code }, questionToUpsert);
-          } else {
-            // No code in spreadsheet, can't match so just create a new question
-            question = await transactingModels.question.create(questionToUpsert);
+        // Validate max one date of data/submission date question
+        if (questionObject.type === 'DateOfData' || questionObject.type === 'SubmissionDate') {
+          if (hasSeenDateOfDataQuestion) {
+            // Previously had another submission date question
+            throw new ImportValidationError(
+              'Only one DateOfData/SubmissionDate question allowed',
+              excelRowNumber,
+            );
           }
-
-          // Generate the screen and screen component
-          const shouldStartNewScreen = caseAndSpaceInsensitiveEquals(newScreen, 'yes');
-          if (!currentScreen || shouldStartNewScreen) {
-            // Spreadsheet indicates this question starts a new screen
-            // Create a new survey screen
-            currentScreen = await transactingModels.surveyScreen.create({
-              survey_id: survey.id,
-              screen_number: currentScreen ? currentScreen.screen_number + 1 : 1, // Next screen
-            });
-            // Clear existing survey screen component
-            currentSurveyScreenComponent = undefined;
-          }
-
-          // Create a new survey screen component to display this question
-          const visibilityCriteriaObject = await convertCellToJson(
-            visibilityCriteria,
-            splitStringOnComma,
-          );
-          const processedVisibilityCriteria = {};
-          await Promise.all(
-            Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
-              if (questionCode === VIS_CRITERIA_CONJUNCTION) {
-                // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
-                // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
-                const [conjunctionType] = answers;
-                processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
-              } else if (questionCode === 'hidden') {
-                processedVisibilityCriteria.hidden = answers[0] === 'true';
-              } else {
-                const { id: questionId } = await transactingModels.question.findOne({
-                  code: questionCode,
-                });
-                processedVisibilityCriteria[questionId] = answers;
-              }
-            }),
-          );
-
-          currentSurveyScreenComponent = await transactingModels.surveyScreenComponent.create({
-            screen_id: currentScreen.id,
-            question_id: question.id,
-            component_number: currentSurveyScreenComponent
-              ? currentSurveyScreenComponent.component_number + 1
-              : 1,
-            visibility_criteria: JSON.stringify(processedVisibilityCriteria),
-            validation_criteria: JSON.stringify(
-              convertCellToJson(validationCriteria, processValidationCriteriaValue),
-            ),
-            question_label: questionLabel,
-            detail_label: detailLabel,
-          });
-
-          try {
-            const componentId = currentSurveyScreenComponent.id;
-            await configImporter.add(rowIndex, componentId);
-          } catch (error) {
-            const validationError = constructImportValidationError(error.message, 'config');
-            throw validationError;
-          }
+          hasSeenDateOfDataQuestion = true;
         }
 
-        await configImporter.import();
+        // Extract question details from spreadsheet row
+        const {
+          code,
+          type,
+          name,
+          text,
+          questionLabel,
+          detail,
+          detailLabel,
+          options,
+          optionLabels,
+          optionColors,
+          newScreen,
+          visibilityCriteria,
+          validationCriteria,
+          optionSet,
+          hook,
+        } = questionObject;
 
-        // Clear  any orphaned questions (i.e. questions no longer included in a survey)
-        await deleteOrphanQuestions(transactingModels);
+        let dataElement;
+        if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
+          dataElement = await updateOrCreateDataElementInGroup(transactingModels, code, dataGroup);
+        }
+
+        // Compose question based on details from spreadsheet
+        const questionToUpsert = {
+          code,
+          type,
+          name,
+          text,
+          detail,
+          hook,
+          options: processOptions(options, optionLabels, optionColors, type),
+          option_set_id: await processOptionSetName(transactingModels, optionSet),
+          data_element_id: dataElement && dataElement.id,
+        };
+
+        // Either create or update the question depending on if there exists a matching code
+        let question;
+        if (code) {
+          question = await transactingModels.question.updateOrCreate({ code }, questionToUpsert);
+        } else {
+          // No code in spreadsheet, can't match so just create a new question
+          question = await transactingModels.question.create(questionToUpsert);
+        }
+
+        // Generate the screen and screen component
+        const shouldStartNewScreen = caseAndSpaceInsensitiveEquals(newScreen, 'yes');
+        if (!currentScreen || shouldStartNewScreen) {
+          // Spreadsheet indicates this question starts a new screen
+          // Create a new survey screen
+          currentScreen = await transactingModels.surveyScreen.create({
+            survey_id: survey.id,
+            screen_number: currentScreen ? currentScreen.screen_number + 1 : 1, // Next screen
+          });
+          // Clear existing survey screen component
+          currentSurveyScreenComponent = undefined;
+        }
+
+        // Create a new survey screen component to display this question
+        const visibilityCriteriaObject = await convertCellToJson(
+          visibilityCriteria,
+          splitStringOnComma,
+        );
+        const processedVisibilityCriteria = {};
+        await Promise.all(
+          Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
+            if (questionCode === VIS_CRITERIA_CONJUNCTION) {
+              // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
+              // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
+              const [conjunctionType] = answers;
+              processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
+            } else if (questionCode === 'hidden') {
+              processedVisibilityCriteria.hidden = answers[0] === 'true';
+            } else {
+              const { id: questionId } = await transactingModels.question.findOne({
+                code: questionCode,
+              });
+              processedVisibilityCriteria[questionId] = answers;
+            }
+          }),
+        );
+
+        currentSurveyScreenComponent = await transactingModels.surveyScreenComponent.create({
+          screen_id: currentScreen.id,
+          question_id: question.id,
+          component_number: currentSurveyScreenComponent
+            ? currentSurveyScreenComponent.component_number + 1
+            : 1,
+          visibility_criteria: JSON.stringify(processedVisibilityCriteria),
+          validation_criteria: JSON.stringify(
+            convertCellToJson(validationCriteria, processValidationCriteriaValue),
+          ),
+          question_label: questionLabel,
+          detail_label: detailLabel,
+        });
+
+        try {
+          const componentId = currentSurveyScreenComponent.id;
+          await configImporter.add(rowIndex, componentId);
+        } catch (error) {
+          const validationError = constructImportValidationError(error.message, 'config');
+          throw validationError;
+        }
       }
+
+      await configImporter.import();
+
+      // Clear  any orphaned questions (i.e. questions no longer included in a survey)
+      await deleteOrphanQuestions(transactingModels);
     });
   } catch (error) {
     if (error.respond) {

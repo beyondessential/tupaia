@@ -374,20 +374,23 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Surveys',
+  title: 'Import Survey',
   actionConfig: {
     importEndpoint: 'surveys',
   },
   queryParameters: [
     {
-      label: 'Survey Names',
-      secondaryLabel:
-        'Please enter the names of the surveys to be imported. These should match the tab names in the file.',
-      parameterKey: 'surveyNames',
+      label: 'Survey Code',
+      secondaryLabel: 'Please enter the code of the survey to be imported.',
+      parameterKey: 'surveyCode',
       optionsEndpoint: 'surveys',
-      optionValueKey: 'name',
-      allowMultipleValues: true,
+      optionValueKey: 'code',
+      optionLabelKey: 'code',
       canCreateNewOptions: true,
+    },
+    {
+      source: 'surveyName',
+      label: 'Name',
     },
     {
       label: 'Countries',
