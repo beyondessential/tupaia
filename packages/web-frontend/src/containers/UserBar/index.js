@@ -30,6 +30,7 @@ import {
   DIALOG_PAGE_VERIFICATION_PAGE,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   setAuthViewState,
+  goHome,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
 import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
@@ -107,6 +108,37 @@ export class UserBar extends Component {
     }
   }
 
+   /* Don't let the user close a dialog if it is a password reset form as the one time login token is used to load the form and so they need to do the password reset now */
+  handleCloseDialog = () => {
+    const { dialogPage, onCloseUserDialog, resetToHome } = this.props;
+    if (dialogPage === DIALOG_PAGE_RESET_PASSWORD) return;
+    if (dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN) {
+      resetToHome();
+    }
+    onCloseUserDialog();
+  };
+
+  renderDialog() {
+    const { isDialogVisible } = this.props;
+    const width = this.getWidth();
+    // Don't let the user close a dialog if it is a password reset form as the one time login token
+    // is used to load the form and so they need to do the password reset now */
+    return (
+      <Dialog
+        open={isDialogVisible}
+        style={{ zIndex: 1301 }}
+        PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
+        onClose={this.handleCloseDialog}
+        ref={dialog => {
+          this.dialog = dialog;
+        }}
+      >
+        <DialogTitle style={styles.dialogTitle}>{this.getDialogTitle()}</DialogTitle>
+        <DialogContent>{this.renderDialogContent()}</DialogContent>
+      </Dialog>
+    );
+  }
+
   renderDialogContent() {
     const {
       dialogPage,
@@ -169,27 +201,6 @@ export class UserBar extends Component {
     }
   }
 
-  renderDialog() {
-    const { isDialogVisible, onCloseUserDialog, dialogPage } = this.props;
-    const width = this.getWidth();
-    // Don't let the user close a dialog if it is a password reset form as the one time login token
-    // is used to load the form and so they need to do the password reset now */
-    return (
-      <Dialog
-        open={isDialogVisible}
-        style={{ zIndex: 1301 }}
-        PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
-        onClose={dialogPage === DIALOG_PAGE_RESET_PASSWORD ? null : onCloseUserDialog}
-        ref={dialog => {
-          this.dialog = dialog;
-        }}
-      >
-        <DialogTitle style={styles.dialogTitle}>{this.getDialogTitle()}</DialogTitle>
-        <DialogContent>{this.renderDialogContent()}</DialogContent>
-      </Dialog>
-    );
-  }
-
   render() {
     const form = this.renderDialog();
 
@@ -221,6 +232,7 @@ UserBar.propTypes = {
     DIALOG_PAGE_VERIFICATION_PAGE,
     '',
   ]).isRequired,
+  resetToHome: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -258,6 +270,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeUserPage());
     },
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
+    resetToHome: () => dispatch(goHome()),
   };
 };
 

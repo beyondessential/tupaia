@@ -13,6 +13,7 @@ import {
   EntityTypesPage,
   OptionSetsPage,
   PermissionGroupsPage,
+  PermissionGroupsViewerPage,
   PermissionsPage,
   SocialFeedPage,
   SurveyResponsesPage,
@@ -164,6 +165,11 @@ export const ROUTES = [
         label: 'Permission Groups',
         to: '/permission-groups',
         component: PermissionGroupsPage,
+      },
+      {
+        label: 'Permission Groups Viewer',
+        to: '/permission-groups-viewer',
+        component: PermissionGroupsViewerPage,
       },
       {
         label: 'Access Requests',
