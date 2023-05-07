@@ -8,6 +8,7 @@ import { Assignment, InsertChart, PeopleAlt, Flag, Storage, Language } from '@ma
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
+  CustomLandingPagesPage,
   EntitiesPage,
   EntityTypesPage,
   OptionSetsPage,
