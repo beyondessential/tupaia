@@ -43,7 +43,7 @@ const Container = styled(MuiContainer)`
 const ContentWrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 80%;
+  // height: 80%;
 `;
 
 export const LandingPage = () => {

@@ -10,11 +10,11 @@ const customLandingPages = [
   {
     name: 'Fiji',
     urlSegment: 'landing-page-fiji',
-    projects: ['wish'],
+    projects: ['wish', 'unfpa'],
     image_url: 'https://placehold.co/2000x2000',
     logo_url: 'https://placehold.co/800x800',
     include_name_in_header: true,
-    primary_hexcode: 'pink',
+    primary_hexcode: '#010261',
     extended_title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     long_bio:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
