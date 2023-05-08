@@ -50,7 +50,14 @@ export const LandingPage = () => {
   const {
     projects,
     customLandingPageSettings: { image_url: backgroundImage },
+    isLoading,
+    isError,
+    error,
   } = useCustomLandingPages();
+
+  if (isLoading) {
+    return 'loading...';
+  }
 
   return (
     <>

@@ -2,8 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { request } from '../../utils';
 
 // This will need to be replaced with real data when it's ready. @see waitp-1195
 const customLandingPages = [
@@ -24,9 +25,32 @@ const customLandingPages = [
   },
 ];
 
-function getLandingPage(pathname) {
-  const urlSegment = pathname.substring(1);
-  return customLandingPages.find(page => page.urlSegment === urlSegment);
+function useLandingPagesData() {
+  const urlSegment = useSelector(state => state.routing.pathname);
+  const [data, setData] = useState(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setError(null);
+      setIsLoading(true);
+
+      try {
+        const results = await request(`landingPage${urlSegment}`);
+        setData(results);
+      } catch (e) {
+        setError(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log('data', data);
+
+  return { data, isLoading, isError: !!error, error };
 }
 
 function getLandingPageProjects(landingPage, projects) {
@@ -36,11 +60,15 @@ function getLandingPageProjects(landingPage, projects) {
   return projects.filter(project => landingPage.projects.includes(project.code));
 }
 export const useCustomLandingPages = () => {
-  const pathname = useSelector(state => state.routing.pathname);
   const projectData = useSelector(({ project }) => project?.projects || []);
-  const customLandingPage = getLandingPage(pathname);
+  const { data: customLandingPage, isLoading, isError, error } = useLandingPagesData();
+
+  console.log('customLandingPage', customLandingPage);
 
   return {
+    isLoading,
+    isError,
+    error,
     isCustomLandingPage: !!customLandingPage,
     projects: getLandingPageProjects(customLandingPage, projectData),
     customLandingPageSettings: customLandingPage || {},
