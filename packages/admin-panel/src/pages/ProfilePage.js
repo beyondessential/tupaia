@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
-import { Button, SmallAlert, TextField, ProfileImageField } from '@tupaia/ui-components';
+import { Button, SmallAlert, TextField, ImageUploadField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { createBase64Image } from '../utilities/createBase64Image';
@@ -80,9 +80,8 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
     }
   });
 
-  const handleFileChange = async event => {
+  const handleFileChange = async fileObject => {
     setStatus(STATUS.DISABLED);
-    const fileObject = event.target.files[0];
     const base64 = await createBase64Image(fileObject);
     const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
     setProfileImage({
@@ -108,12 +107,17 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
         <form onSubmit={onSubmit} noValidate>
           {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
           {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
-          <ProfileImageField
+          <ImageUploadField
             name="profileImage"
-            profileImage={profileImage && profileImage.data}
-            userInitial={userInitial}
+            encodedImage={profileImage && profileImage.data}
             onChange={handleFileChange}
             onDelete={handleFileDelete}
+            avatarInitial={userInitial}
+            label="Your avatar"
+            deleteModal={{
+              title: 'Remove Photo',
+              message: 'Are you sure you want to delete your photo?',
+            }}
           />
           <Divider />
           <TextField

@@ -5,11 +5,12 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { SET_PROJECT_DATA, REQUEST_PROJECT_ACCESS } from '../actions';
+import { SET_PROJECT_DATA, REQUEST_PROJECT_ACCESS, SET_CUSTOM_LANDING_PAGE_DATA } from '../actions';
 
 export default function projects(
   state = {
     projects: [],
+    customLandingPage: null,
     requestingAccess: null,
     error: '',
   },
@@ -25,6 +26,11 @@ export default function projects(
       return {
         ...state,
         requestingAccess: action.project,
+      };
+    case SET_CUSTOM_LANDING_PAGE_DATA:
+      return {
+        ...state,
+        customLandingPage: action.data,
       };
     default:
       return state;

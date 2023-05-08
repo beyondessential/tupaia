@@ -3,7 +3,13 @@ import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 import request from '../utils/request';
 import { setProjects, fetchProjectsError } from './actions';
 
-import { SET_PROJECT, setOrgUnit, FETCH_LOGOUT_SUCCESS } from '../actions';
+import {
+  SET_PROJECT,
+  setOrgUnit,
+  FETCH_LOGOUT_SUCCESS,
+  FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
+  SET_CUSTOM_LANDING_PAGE_DATA,
+} from '../actions';
 import { selectProjectByCode, selectCurrentOrgUnitCode } from '../selectors';
 
 export function* fetchProjectData() {
@@ -16,8 +22,27 @@ export function* fetchProjectData() {
   }
 }
 
+export function* fetchCustomLandingPageData() {
+  try {
+    const { routing: location } = yield select();
+
+    const data = yield call(request, `landingPage/${location.pathname.substring(1)}`);
+    yield put({
+      type: SET_CUSTOM_LANDING_PAGE_DATA,
+      data,
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+}
+
 function* watchUserLogoutSuccessAndRefetchProjectData() {
   yield takeLatest(FETCH_LOGOUT_SUCCESS, fetchProjectData);
+}
+
+function* watchLandingPageLogoutSuccessAndRefetchProjectData() {
+  yield takeLatest(FETCH_LANDING_PAGE_LOGOUT_SUCCESS, fetchProjectData);
 }
 
 function* loadProject(action) {
@@ -43,4 +68,8 @@ function* watchSelectProjectAndLoadProjectState() {
   yield takeLatest(SET_PROJECT, loadProject);
 }
 
-export default [watchSelectProjectAndLoadProjectState, watchUserLogoutSuccessAndRefetchProjectData];
+export default [
+  watchSelectProjectAndLoadProjectState,
+  watchUserLogoutSuccessAndRefetchProjectData,
+  watchLandingPageLogoutSuccessAndRefetchProjectData,
+];

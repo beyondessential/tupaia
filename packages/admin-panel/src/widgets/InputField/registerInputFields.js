@@ -6,6 +6,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { InputAdornment } from '@material-ui/core';
 import styled from 'styled-components';
 import {
   Button,
@@ -14,7 +15,9 @@ import {
   DateTimePicker,
   RadioGroup,
   Select,
+  ImageUploadField,
   HexcodeField,
+  Checkbox,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';
@@ -39,6 +42,24 @@ const StyledLink = styled(Link)`
   }
 `;
 
+const StyledFileInputWrapper = styled.div`
+  margin-bottom: 1.2rem;
+`;
+
+// Handle styling of the checkbox for just the admin-panel so as not to overwrite styles of the checkbox used elsewhere
+export const StyledCheckboxWrapper = styled.div`
+  .MuiFormControlLabel-label {
+    font-size: 0.975rem;
+    color: ${props => props.theme.palette.text.secondary};
+  }
+  .MuiButtonBase-root:not(.MuiIconButton-colorPrimary) {
+    color: ${props => props.theme.palette.text.secondary};
+  }
+  .MuiSvgIcon-root {
+    font-size: 1.2rem;
+  }
+`;
+
 export const registerInputFields = () => {
   registerInputField('autocomplete', props => (
     <ReduxAutocomplete
@@ -57,6 +78,8 @@ export const registerInputFields = () => {
       parentRecord={props.parentRecord}
       baseFilter={props.baseFilter}
       pageSize={props.pageSize}
+      tooltip={props.labelTooltip}
+      distinct={props.distinct}
     />
   ));
   registerInputField('json', props => (
@@ -82,6 +105,7 @@ export const registerInputFields = () => {
       options={props.options}
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('jsonEditor', props => (
@@ -112,15 +136,18 @@ export const registerInputFields = () => {
         {
           label: 'Yes',
           value: true,
+          tooltip: props.optionTooltips ? props.optionTooltips.true : null,
         },
         {
           label: 'No',
           value: false,
+          tooltip: props.optionTooltips ? props.optionTooltips.false : null,
         },
       ]}
       value={props.value}
       disabled={props.disabled}
       helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('date', props => (
@@ -131,6 +158,7 @@ export const registerInputFields = () => {
       value={props.moment(props.value).isValid() ? moment(props.value) : null}
       onChange={date => props.onChange(props.inputKey, date.toISOString())}
       disabled={props.disabled}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('datetime-local', props => (
@@ -150,6 +178,7 @@ export const registerInputFields = () => {
         }
       }}
       disabled={props.disabled}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('datetime-utc', props => (
@@ -199,6 +228,10 @@ export const registerInputFields = () => {
       multiline
       type="textarea"
       rows="4"
+      tooltip={props.labelTooltip}
+      placeholder={props.placeholder}
+      minLength={props.minLength}
+      maxLength={props.maxLength}
     />
   ));
   registerInputField('text', props => (
@@ -210,6 +243,15 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       type={props.type}
+      tooltip={props.labelTooltip}
+      placeholder={props.placeholder}
+      minLength={props.minLength}
+      maxLength={props.maxLength}
+      InputProps={{
+        startAdornment: props.startAdornment ? (
+          <InputAdornment position="start">{props.startAdornment}</InputAdornment>
+        ) : null,
+      }}
     />
   ));
   registerInputField('password', props => (
@@ -221,7 +263,26 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       type="password"
+      tooltip={props.labelTooltip}
     />
+  ));
+  registerInputField('image', props => (
+    <StyledFileInputWrapper>
+      <ImageUploadField
+        name={props.name}
+        encodedImage={props.value}
+        onDelete={() => props.onChange(props.inputKey, null)}
+        onChange={image => props.onChange(props.inputKey, image)}
+        label={props.label}
+        buttonLabel={props.buttonLabel}
+        avatarVariant={props.avatarVariant}
+        deleteModal={props.deleteModal}
+        maxWidth={props.maxWidth}
+        maxHeight={props.maxHeight}
+        secondaryLabel={props.secondaryLabel}
+        tooltip={props.labelTooltip}
+      />
+    </StyledFileInputWrapper>
   ));
   registerInputField('hexcode', props => (
     <HexcodeField
@@ -231,6 +292,35 @@ export const registerInputFields = () => {
       onChange={value => props.onChange(props.inputKey, value)}
       disabled={props.disabled}
       helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
+    />
+  ));
+  registerInputField('checkbox', props => (
+    <StyledCheckboxWrapper>
+      <Checkbox
+        id={props.id}
+        label={props.label}
+        checked={props.value || false}
+        value={props.optionValue}
+        onChange={e => props.onChange(props.inputKey, e.target.checked ? props.optionValue : null)}
+        disabled={props.disabled}
+        helperText={props.secondaryLabel}
+        tooltip={props.labelTooltip}
+        color="secondary"
+      />
+    </StyledCheckboxWrapper>
+  ));
+  registerInputField('radio', props => (
+    <RadioGroup
+      id={props.id}
+      label={props.label}
+      onChange={event => props.onChange(props.inputKey, event.target.value)} // convert to boolean value
+      options={props.options}
+      value={props.value}
+      disabled={props.disabled}
+      helperText={props.secondaryLabel}
+      tooltip={props.labelTooltip}
+      name={props.name}
     />
   ));
 };

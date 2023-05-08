@@ -24,6 +24,9 @@ export const useDashboardItemsExportToPDF = pathname => {
       const endpoint = `${pathname}/pdf-export`;
       const pdfPageUrl = stringifyQuery(hostname, endpoint, queryParams);
 
+      // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
+      const cookieDomain = new URL(process.env.REACT_APP_CONFIG_SERVER_BASE_URL).hostname;
+
       await download(
         'pdf',
         () => {},
@@ -32,7 +35,10 @@ export const useDashboardItemsExportToPDF = pathname => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ pdfPageUrl }),
+          body: JSON.stringify({
+            pdfPageUrl,
+            cookieDomain,
+          }),
           responseType: 'blob',
         },
         fileName,

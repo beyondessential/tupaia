@@ -3,7 +3,7 @@ import { fetchUserLoginSuccess, FETCH_INITIAL_DATA, findUserLoginFailed } from '
 import { LOGIN_TYPES } from '../../constants';
 import { getInitialLocation } from '../../historyNavigation';
 import { clearLocation } from '../../historyNavigation/historyNavigation';
-import { fetchProjectData } from '../../projects/sagas';
+import { fetchCustomLandingPageData, fetchProjectData } from '../../projects/sagas';
 import request from '../../utils/request';
 import { handleLocationChange } from '../handlers';
 
@@ -11,6 +11,7 @@ export function* watchFetchInitialData() {
   yield take(FETCH_INITIAL_DATA);
 
   // Login must happen first so that projects return the correct access flags
+  yield call(fetchCustomLandingPageData);
   yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
   yield call(fetchProjectData);
   yield call(handleLocationChange, {

@@ -102,8 +102,9 @@ export class S3Client {
    * @public
    * @param {*} base64EncodedImage
    * @param {*} [fileId]
+   * @param {*} [allowOverwrite]
    */
-  async uploadImage(base64EncodedImage, fileId) {
+  async uploadImage(base64EncodedImage, fileId, allowOverwrite = false) {
     const buffer = Buffer.from(
       base64EncodedImage.replace(/^data:image\/\w+;base64,/, ''),
       'base64',
@@ -111,10 +112,10 @@ export class S3Client {
 
     const filePath = getS3ImageFilePath();
     const fileName = fileId ? `${filePath}${fileId}.png` : `${filePath}${getUniqueFileName()}.png`;
-
-    const alreadyExists = await this.checkIfFileExists(fileName);
-    if (alreadyExists) {
-      throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
+    // In some cases we want to allow overwriting of existing files
+    if (!allowOverwrite) {
+      if (await this.checkIfFileExists(fileName))
+        throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
     }
     return this.uploadPublicImage(fileName, buffer);
   }

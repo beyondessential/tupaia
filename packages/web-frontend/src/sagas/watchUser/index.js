@@ -2,7 +2,6 @@ export * from './refreshBrowserWhenFinishingUserSession';
 export * from './watchAttemptChangePasswordAndFetchIt';
 export * from './watchAttemptResetPasswordAndFetchIt';
 export * from './watchAttemptTokenLogin';
-export * from './watchAttemptTokenLoginSuccess';
 export * from './watchAttemptUserLoginAndFetchIt';
 export * from './watchAttemptUserLogout';
 export * from './watchAttemptUserSignupAndFetchIt';

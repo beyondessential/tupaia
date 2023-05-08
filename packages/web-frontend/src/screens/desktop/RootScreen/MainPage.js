@@ -13,6 +13,8 @@ import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 import SessionExpiredDialog from '../../../containers/SessionExpiredDialog';
 import OverlayDiv from '../../../containers/OverlayDiv';
 import { DIALOG_Z_INDEX } from '../../../styles';
+import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
+import { LandingPage } from '../../LandingPage';
 
 const Container = styled.div`
   position: fixed;
@@ -47,26 +49,31 @@ const MapContainer = styled.div`
   transition: width 0.5s ease;
 `;
 
-const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => (
-  <>
-    {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
-    <Container>
-      <EnvBanner />
-      <TopBar />
-      <ContentContainer>
-        <MapDiv />
-        <SidePanel />
-      </ContentContainer>
-      <OverlayDiv />
-      <SessionExpiredDialog />
-      {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-      <LoadingScreen isLoading={isLoading} />
-    </Container>
-    <MapContainer $rightOffset={sidePanelWidth}>
-      <Map />
-    </MapContainer>
-  </>
-);
+const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
+  const { isCustomLandingPage } = useCustomLandingPages();
+  if (isCustomLandingPage) return <LandingPage />;
+
+  return (
+    <>
+      {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
+      <Container>
+        <EnvBanner />
+        <TopBar />
+        <ContentContainer>
+          <MapDiv />
+          <SidePanel />
+        </ContentContainer>
+        <OverlayDiv />
+        <SessionExpiredDialog />
+        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+        <LoadingScreen isLoading={isLoading} />
+      </Container>
+      <MapContainer $rightOffset={sidePanelWidth}>
+        <Map />
+      </MapContainer>
+    </>
+  );
+};
 
 MainPage.propTypes = {
   enlargedDialogIsVisible: PropTypes.bool,
