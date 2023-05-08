@@ -54,7 +54,10 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 2em;
+  margin: 1em 0 2em;
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    margin-top: 2em;
+  }
 `;
 
 export function MultiProjectLandingPage() {
