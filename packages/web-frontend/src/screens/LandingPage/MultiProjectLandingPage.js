@@ -6,6 +6,7 @@ import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { useNavigation } from './useNavigation';
 import { useCustomLandingPages } from './useCustomLandingPages';
 import { useAuth } from './useAuth';
+import { TRANS_BLACK } from '../../styles';
 
 const ProjectsWrapper = styled.div`
   width: 100%;
@@ -16,26 +17,36 @@ const ProjectsWrapper = styled.div`
 const ProjectsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  column-gap: 1.2rem;
-  row-gap: 1.2rem;
+  column-gap: 1.2em;
+  row-gap: 1.2em;
   > div {
-    border: 1.6rem solid ${props => props.primaryColor};
+    border: 1.1em solid ${props => props.primaryColor};
+    border-radius: 4px;
   }
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-    column-gap: 3.2rem;
-    row-gap: 3.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
+    column-gap: 3.2em;
+    row-gap: 3.2em;
+  }
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    > div {
+      border-width: 1.5em;
+    }
   }
 `;
 
 const Title = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  font-size: 2rem;
-  line-height: 3rem;
-  margin-bottom: 1.8rem;
+  font-size: 1.5em;
+  line-height: 1.4;
+  margin-bottom: 1.2em;
   color: ${({ theme }) => theme.palette.common.white};
-  text-shadow: 1px 1px #333;
-  max-width: 480px;
+  text-shadow: 1px 1px ${TRANS_BLACK};
+  max-width: 30em;
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    font-size: 2em;
+    margin-bottom: 1.8em;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -43,6 +54,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 2em;
 `;
 
 export function MultiProjectLandingPage() {
