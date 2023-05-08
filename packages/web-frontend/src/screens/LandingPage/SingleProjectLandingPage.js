@@ -18,12 +18,19 @@ import { useNavigation } from './useNavigation';
 
 const Wrapper = styled.div`
   max-width: 30em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 `;
 
 const ExtendedTitle = styled(Typography)`
   color: ${props => props.theme.palette.common.white};
   font-weight: ${props => props.theme.typography.fontWeightBold};
-  font-size: 2em;
+  font-size: 1.5em;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    font-size: 2em;
+  }
 `;
 
 const ActionButton = styled(Button)`
@@ -31,12 +38,15 @@ const ActionButton = styled(Button)`
   background-color: ${props => props.theme.palette.common.white};
   color: ${props => props.theme.palette.common.black};
   text-transform: none;
-  font-size: 1em;
+  font-size: 0.975em;
   line-height: 1.5;
   padding: 1em;
   border-radius: 0.6em;
   ${ExtendedTitle} + & {
     margin-top: 2em;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    font-size: 1em;
   }
 `;
 

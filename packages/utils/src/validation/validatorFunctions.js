@@ -91,6 +91,27 @@ export const isEmail = value => {
   }
 };
 
+export const isHexColor = value => {
+  if (!validator.isHexColor(value.toString())) {
+    // Coerce to string before checking with validator
+    throw new ValidationError('Not a valid hex colour');
+  }
+};
+
+export const isUrl = value => {
+  if (!validator.isUrl(value.toString())) {
+    // Coerce to string before checking with validator
+    throw new ValidationError('Not a valid url');
+  }
+};
+
+export const isAlphaNumeric = value => {
+  const alphaNumeric = /[a-zA-Z0-9]/;
+  if (!alphaNumeric.test(value.toString())) {
+    throw new ValidationError('Value must use letters and numbers only');
+  }
+};
+
 export const isPlainObject = value => {
   if (!checkIsOfType(value, 'object')) {
     throw new Error('Not a plain javascript object');
