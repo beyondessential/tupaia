@@ -37,6 +37,7 @@ import {
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
   EntityHierarchyPage,
+  CustomLandingPagesPage,
 } from './pages/resources';
 import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
