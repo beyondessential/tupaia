@@ -1,14 +1,6 @@
-# Tupaia Config Server
+# @tupaia/web-config-server
 
-## Open Source Info
-
-### Open Source Mission statement
-
-> By engaging and collaborating with our community we can deliver a more robust product that bridges cultural differences and empowers decision making within health systems worldwide.
-
-### Code of Conduct
-
-For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.com/beyond-essential/tupaia/blob/master/code-of-conduct.md) published in the repo.
+Orchestration server for the main Tupaia application
 
 ## Development
 
