@@ -29,14 +29,14 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoImage = styled.img`
-  max-height: 100%;
+  max-height: 80%;
   width: auto;
 `;
 
 const LogoButton = styled.button`
   cursor: pointer;
   pointer-events: auto;
-  padding: 0.75em;
+  padding: 0.5em;
   height: 100%;
   display: flex;
   justify-content: center;
