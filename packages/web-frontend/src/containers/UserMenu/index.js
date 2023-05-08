@@ -34,6 +34,7 @@ import { isMobile } from '../../utils';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { UserInfo } from './UserInfo';
+import { MenuItem } from './MenuList';
 
 const UserMenuContainer = styled.div`
   display: flex;
@@ -53,6 +54,18 @@ const StyledMenuIcon = styled(MenuIcon)`
   width: 100%;
   height: 100%;
 `;
+
+const createUserMenuItem = (text, onClick, href, onCloseMenu) => {
+  const handleClickMenuItem = () => {
+    if (onClick) onClick();
+    onCloseMenu();
+  };
+  return (
+    <MenuItem onClick={handleClickMenuItem} onCloseMenu={onCloseMenu} href={href}>
+      {text}
+    </MenuItem>
+  );
+};
 
 const UserMenu = ({
   isUserLoggedIn,
@@ -75,103 +88,104 @@ const UserMenu = ({
   const primaryColor = customLandingPagePrimaryColor || DARK_BLUE;
   const secondaryColor = customLandingPageSecondaryColor || WHITE;
 
-  const signInText = isCustomLandingPage ? 'Log in' : 'Sign In / Register';
-
-  const logout = {
-    actionText: 'Logout',
-    action: onAttemptUserLogout,
-  };
-  const changePassword = {
-    actionText: 'Change Password',
-    action: onToggleChangePasswordPanel,
-  };
   const isDrawer = isMobile();
 
-  const visitMainSite = {
-    preText: isDrawer ? 'Visit ' : '',
-    actionText: isDrawer ? 'tupaia.org' : 'Visit tupaia.org',
-    type: 'link',
-    url: window.location.origin,
-  };
-  const viewProjects = {
-    actionText: 'View projects',
-    action: onOpenViewProjects,
-  };
-  const helpCentre = {
-    actionText: 'Help centre',
-    type: 'link',
-    url: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
-  };
-
-  const customLandingPageMenuItems = isUserLoggedIn
-    ? [
-        visitMainSite,
-        changePassword,
-        {
-          ...logout,
-          action: onAttemptLandingPageLogout,
-        },
-      ]
-    : [visitMainSite];
-
-  const baseMenuItems = isUserLoggedIn
-    ? [
-        viewProjects,
-        changePassword,
-        {
-          actionText: 'Request country access',
-          action: onToggleRequestCountryAccessPanel,
-        },
-        helpCentre,
-        {
-          actionText: 'Logout',
-          action: onAttemptUserLogout,
-        },
-      ]
-    : [viewProjects, helpCentre];
+  // When is mobile, use a drawer menu, otherwise use a popover menu
+  const MenuComponent = isDrawer ? DrawerMenu : PopoverMenu;
 
   const toggleUserMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
-  const closeUserMenu = () => {
+  const onCloseMenu = () => {
     setMenuOpen(false);
   };
 
-  const showRegisterButton = !isUserLoggedIn && isCustomLandingPage;
+  // Create the menu items
+  const VisitMainSite = (
+    <MenuItem href="https://www.tupaia.org" onCloseMenu={onCloseMenu}>
+      Visit&nbsp;<span>tupaia.org</span>
+    </MenuItem>
+  );
 
-  const MenuComponent = isDrawer ? DrawerMenu : PopoverMenu;
-  const menuItems = isCustomLandingPage ? customLandingPageMenuItems : baseMenuItems;
+  const ViewProjects = (
+    <MenuItem onClick={onOpenViewProjects} onCloseMenu={onCloseMenu}>
+      View projects
+    </MenuItem>
+  );
+
+  const HelpCentre = (
+    <MenuItem
+      href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm"
+      onCloseMenu={onCloseMenu}
+    >
+      Help centre
+    </MenuItem>
+  );
+  const Logout = (
+    <MenuItem
+      onClick={isCustomLandingPage ? onAttemptLandingPageLogout : onAttemptUserLogout}
+      onCloseMenu={onCloseMenu}
+    >
+      Logout
+    </MenuItem>
+  );
+  const ChangePassword = (
+    <MenuItem onClick={onToggleChangePasswordPanel} onCloseMenu={onCloseMenu}>
+      Change password
+    </MenuItem>
+  );
+  // The custom landing pages need different menu items to the other views
+  const customLandingPageMenuItems = isUserLoggedIn
+    ? [VisitMainSite, ChangePassword, Logout]
+    : [VisitMainSite];
+
+  const baseMenuItems = isUserLoggedIn
+    ? [
+        ViewProjects,
+        ChangePassword,
+        <MenuItem onClick={onToggleRequestCountryAccessPanel} onCloseMenu={onCloseMenu}>
+          Request country access
+        </MenuItem>,
+        HelpCentre,
+        Logout,
+      ]
+    : [ViewProjects, HelpCentre];
+
+  // The different types of menus need different props, so handle this here and give the correct ones
+  const menuProps = isDrawer
+    ? {
+        primaryColor,
+        menuOpen,
+        onCloseMenu,
+        secondaryColor,
+        onClickSignIn,
+        onClickRegister,
+        isUserLoggedIn,
+        currentUserUsername,
+      }
+    : { primaryColor, menuOpen, onCloseMenu };
 
   return (
     <UserMenuContainer secondaryColor={secondaryColor}>
       {/** Only display the user info before the menu button if user is not on a mobile device, as the drawer menu handles this for mobile devices */}
       {!isDrawer && (
         <UserInfo
-          showRegisterButton={showRegisterButton}
+          showRegisterButton={!isUserLoggedIn && isCustomLandingPage}
           currentUserUsername={currentUserUsername}
           isCustomLandingPage={isCustomLandingPage}
           onClickRegister={onClickRegister}
           onClickSignIn={onClickSignIn}
-          signInText={signInText}
+          signInText={isCustomLandingPage ? 'Log in' : 'Sign In / Register'}
           secondaryColor={secondaryColor}
         />
       )}
       <StyledMenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
         <StyledMenuIcon />
       </StyledMenuButton>
-      <MenuComponent
-        menuOpen={menuOpen}
-        primaryColor={primaryColor}
-        onCloseMenu={closeUserMenu}
-        secondaryColor={secondaryColor}
-        onClickSignIn={onClickSignIn}
-        onClickRegister={onClickRegister}
-        signInText={signInText}
-        menuItems={menuItems}
-        isUserLoggedIn={isUserLoggedIn}
-        currentUserUsername={currentUserUsername}
-      />
+      <MenuComponent {...menuProps}>
+        {isCustomLandingPage ? customLandingPageMenuItems : baseMenuItems}
+      </MenuComponent>
     </UserMenuContainer>
   );
 };

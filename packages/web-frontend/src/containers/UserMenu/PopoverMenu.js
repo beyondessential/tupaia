@@ -12,7 +12,7 @@ import { MenuList } from './MenuList';
  * PopoverMenu is a popover menu used when the user is on a desktop device
  */
 
-export const PopoverMenu = ({ menuItems, primaryColor, menuOpen, onCloseMenu }) => {
+export const PopoverMenu = ({ children, primaryColor, menuOpen, onCloseMenu }) => {
   return (
     <Popover
       PaperProps={{ style: { backgroundColor: primaryColor } }}
@@ -28,21 +28,13 @@ export const PopoverMenu = ({ menuItems, primaryColor, menuOpen, onCloseMenu }) 
         horizontal: 'right',
       }}
     >
-      <MenuList menuItems={menuItems} closeMenu={onCloseMenu} />
+      <MenuList>{children}</MenuList>
     </Popover>
   );
 };
 
 PopoverMenu.propTypes = {
-  menuItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      url: PropTypes.string,
-      actionText: PropTypes.string,
-      action: PropTypes.func,
-      preText: PropTypes.string,
-      type: PropTypes.oneOf(['link', 'button']),
-    }),
-  ).isRequired,
+  children: PropTypes.node.isRequired,
   menuOpen: PropTypes.bool.isRequired,
   onCloseMenu: PropTypes.func.isRequired,
   primaryColor: PropTypes.string.isRequired,

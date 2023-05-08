@@ -46,54 +46,40 @@ const MenuListItem = styled(ListItem)`
 `;
 
 // If is a link, use a link component, else a button so that we have correct semantic HTML
-const MenuItem = ({ type, children, ...props }) =>
-  type === 'link' ? (
-    <MenuItemLink {...props} target="_blank">
-      {children}
-    </MenuItemLink>
-  ) : (
-    <MenuItemButton {...props}>{children}</MenuItemButton>
+export const MenuItem = ({ href, children, onClick, onCloseMenu }) => {
+  const handleClickMenuItem = () => {
+    if (onClick) onClick();
+    onCloseMenu();
+  };
+  return (
+    <MenuListItem>
+      {href ? (
+        <MenuItemLink href={href} target="_blank" onClick={handleClickMenuItem}>
+          {children}
+        </MenuItemLink>
+      ) : (
+        <MenuItemButton onClick={handleClickMenuItem}>{children}</MenuItemButton>
+      )}
+    </MenuListItem>
   );
+};
+
 MenuItem.propTypes = {
-  type: PropTypes.oneOf(['link', 'button']),
+  href: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+  onCloseMenu: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
 
 MenuItem.defaultProps = {
-  type: 'button',
+  href: null,
+  onClick: null,
 };
 
-export const MenuList = ({ menuItems, closeMenu }) => {
-  return (
-    <MenuListWrapper>
-      {menuItems.map(({ type, actionText, url, action, preText }) => (
-        <MenuListItem key={actionText}>
-          <MenuItem
-            type={type}
-            onClick={() => {
-              if (action) action();
-              closeMenu();
-            }}
-            href={url}
-          >
-            {preText}
-            <span>{actionText}</span>
-          </MenuItem>
-        </MenuListItem>
-      ))}
-    </MenuListWrapper>
-  );
+export const MenuList = ({ children }) => {
+  return <MenuListWrapper>{children}</MenuListWrapper>;
 };
 
 MenuList.propTypes = {
-  menuItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      url: PropTypes.string,
-      actionText: PropTypes.string,
-      action: PropTypes.func,
-      preText: PropTypes.string,
-      type: PropTypes.oneOf(['link', 'button']),
-    }),
-  ).isRequired,
-  closeMenu: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };

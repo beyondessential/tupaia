@@ -9,7 +9,8 @@ import PropTypes from 'prop-types';
 import { Drawer } from '@material-ui/core';
 import { IconButton } from '@tupaia/ui-components';
 import CloseIcon from '@material-ui/icons/Close';
-import { MenuList } from './MenuList';
+import { MenuItem, MenuList } from './MenuList';
+import { DARK_BLUE, WHITE } from '../../styles';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
@@ -63,31 +64,16 @@ const MenuCloseButton = styled(IconButton)`
 `;
 
 export const DrawerMenu = ({
-  menuItems: baseMenuItems,
+  children,
   menuOpen,
   onCloseMenu,
   primaryColor,
   secondaryColor,
   onClickSignIn,
   onClickRegister,
-  signInText,
   isUserLoggedIn,
   currentUserUsername,
 }) => {
-  // if logged in, show the base menu items, else add also a login and register button
-  const menuItems = isUserLoggedIn
-    ? baseMenuItems
-    : [
-        {
-          actionText: signInText,
-          action: onClickSignIn,
-        },
-        {
-          actionText: 'Register',
-          action: onClickRegister,
-        },
-        ...baseMenuItems,
-      ];
   return (
     <Drawer
       anchor="right"
@@ -104,24 +90,39 @@ export const DrawerMenu = ({
             </MenuCloseButton>
           </MenuHeaderContainer>
         </MenuHeaderWrapper>
-        <MenuList menuItems={menuItems} closeMenu={onCloseMenu} />
+        <MenuList>
+          {/** If the user is not logged in, show the register and login buttons */}
+          {!isUserLoggedIn && (
+            <>
+              <MenuItem onClick={onClickSignIn} onCloseMenu={onCloseMenu}>
+                Log in
+              </MenuItem>
+              <MenuItem onClick={onClickRegister} onCloseMenu={onCloseMenu}>
+                Register
+              </MenuItem>
+            </>
+          )}
+          {children}
+        </MenuList>
       </MenuWrapper>
     </Drawer>
   );
 };
 
 DrawerMenu.propTypes = {
-  menuItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      url: PropTypes.string,
-      actionText: PropTypes.string,
-      action: PropTypes.func,
-      preText: PropTypes.string,
-      type: PropTypes.oneOf(['link', 'button']),
-    }),
-  ).isRequired,
+  children: PropTypes.node.isRequired,
   menuOpen: PropTypes.bool.isRequired,
   onCloseMenu: PropTypes.func.isRequired,
-  primaryColor: PropTypes.string.isRequired,
-  secondaryColor: PropTypes.string.isRequired,
+  primaryColor: PropTypes.string,
+  secondaryColor: PropTypes.string,
+  onClickSignIn: PropTypes.func.isRequired,
+  onClickRegister: PropTypes.func.isRequired,
+  isUserLoggedIn: PropTypes.bool.isRequired,
+  currentUserUsername: PropTypes.string,
+};
+
+DrawerMenu.defaultProps = {
+  currentUserUsername: null,
+  primaryColor: DARK_BLUE,
+  secondaryColor: WHITE,
 };
