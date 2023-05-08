@@ -37,7 +37,11 @@ const Header = styled.div`
   justify-content: center;
   margin-bottom: 15px;
   height: 120px;
-  background: ${LIGHT_GREY}; /* fallback color */
+  background-color: ${LIGHT_GREY}; /* fallback color */
+  background-image: ${({ backgroundImage }) => `url(${backgroundImage})`};
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 
   > img {
     width: 100%;
@@ -84,8 +88,7 @@ const Footer = styled(FullWidthRow)`
 export const ProjectCard = ({ name, description, imageUrl, logoUrl, names, projectButton }) => {
   return (
     <Card>
-      <Header>
-        <img alt="project background" src={imageUrl} />
+      <Header backgroundImage={imageUrl}>
         {logoUrl && (
           <Logo>
             <img alt="project logo" src={logoUrl} />
