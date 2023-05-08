@@ -1,19 +1,39 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
 import styled from 'styled-components';
-import { Link, Typography } from '@material-ui/core';
-import { List } from 'material-ui';
+import { Link, Typography, List } from '@material-ui/core';
 import { useCustomLandingPages } from './useCustomLandingPages';
+
+const Footer = styled.footer`
+  color: ${props => props.theme.palette.common.white};
+  display: flex;
+  flex-direction: column;
+`;
+
+const FooterContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
+    flex-direction: row;
+  }
+`;
 
 const FooterHeader = styled(Typography)`
   font-size: 1.2em;
   font-weight: ${props => props.theme.typography.fontWeightBold};
+  margin-bottom: 1em;
 `;
-const Footer = styled.div`
-  color: ${props => props.theme.palette.common.white};
-  display: flex;
-`;
+
 const FooterBodyText = styled.p`
-  margin-bottom: 0;
+  margin: 0;
+  font-size: 0.875em;
+  @media screen and (min-width: ${props => props.theme.breakpoints.values.sm}px) {
+    font-size: 1em;
+  }
 `;
 
 const FooterLink = styled(Link)`
@@ -21,22 +41,43 @@ const FooterLink = styled(Link)`
   text-decoration: underline;
 `;
 
-const FooterContentWrapper = styled.div`
+const FooterContentContainer = styled.div`
   & + & {
-    margin-left: 4em;
+    margin-top: 1em;
   }
   @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
     width: 30%;
+    & + & {
+      margin-left: 4em;
+      margin-top: 0;
+    }
   }
 `;
 
 const FooterContactList = styled(List)`
   list-style: none;
+  padding: 0;
 `;
 
 const FooterContactListItem = styled.li`
+  font-size: 0.875em;
   & + & {
     margin-top: 0.5em;
+  }
+  @media screen and (min-width: ${props => props.theme.breakpoints.values.sm}px) {
+    font-size: 1em;
+  }
+`;
+
+const FooterPoweredByWrapper = styled.div`
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: -2px;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1em;
+  @media screen and (min-width: ${props => props.theme.breakpoints.values.sm}px) {
+    padding-top: 2em;
+    margin-top: -3px;
   }
 `;
 
@@ -55,37 +96,47 @@ export const LandingPageFooter = () => {
   return (
     <Footer>
       <FooterContentWrapper>
-        <FooterHeader variant={footerHeaderVariant}>About {name}</FooterHeader>
+        <FooterContentContainer>
+          <FooterHeader variant={footerHeaderVariant}>About {name}</FooterHeader>
+          <FooterBodyText>
+            {longBio}
+            {externalLink && (
+              <>
+                &nbsp;
+                <FooterLink href={externalLink} target="_blank">
+                  Learn more
+                </FooterLink>
+              </>
+            )}
+          </FooterBodyText>
+        </FooterContentContainer>
+        <FooterContentContainer>
+          <FooterHeader variant={footerHeaderVariant}>Contact us</FooterHeader>
+          <FooterContactList>
+            {phoneNumber && (
+              <FooterContactListItem>
+                Ph: &nbsp;<FooterLink href={`tel:${phoneNumber}`}>{phoneNumber}</FooterLink>
+              </FooterContactListItem>
+            )}
+            {websiteUrl && (
+              <FooterContactListItem>
+                Website: &nbsp;
+                <FooterLink href={websiteUrl} target="_blank">
+                  {websiteUrl}
+                </FooterLink>
+              </FooterContactListItem>
+            )}
+          </FooterContactList>
+        </FooterContentContainer>
+      </FooterContentWrapper>
+      <FooterPoweredByWrapper>
         <FooterBodyText>
-          {longBio}
-          {externalLink && (
-            <>
-              &nbsp;
-              <FooterLink href={externalLink} target="_blank">
-                Learn more
-              </FooterLink>
-            </>
-          )}
+          Powered by &nbsp;
+          <FooterLink href="https://tupaia.org" target="_blank">
+            Tupaia
+          </FooterLink>
         </FooterBodyText>
-      </FooterContentWrapper>
-      <FooterContentWrapper>
-        <FooterHeader variant={footerHeaderVariant}>Contact us</FooterHeader>
-        <FooterContactList>
-          {phoneNumber && (
-            <FooterContactListItem>
-              Ph: &nbsp;<FooterLink href={`tel:${phoneNumber}`}>{phoneNumber}</FooterLink>
-            </FooterContactListItem>
-          )}
-          {websiteUrl && (
-            <FooterContactListItem>
-              Website: &nbsp;
-              <FooterLink href={websiteUrl} target="_blank">
-                {websiteUrl}
-              </FooterLink>
-            </FooterContactListItem>
-          )}
-        </FooterContactList>
-      </FooterContentWrapper>
+      </FooterPoweredByWrapper>
     </Footer>
   );
 };
