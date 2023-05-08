@@ -55,18 +55,6 @@ const StyledMenuIcon = styled(MenuIcon)`
   height: 100%;
 `;
 
-const createUserMenuItem = (text, onClick, href, onCloseMenu) => {
-  const handleClickMenuItem = () => {
-    if (onClick) onClick();
-    onCloseMenu();
-  };
-  return (
-    <MenuItem onClick={handleClickMenuItem} onCloseMenu={onCloseMenu} href={href}>
-      {text}
-    </MenuItem>
-  );
-};
-
 const UserMenu = ({
   isUserLoggedIn,
   currentUserUsername,
@@ -102,38 +90,32 @@ const UserMenu = ({
   };
 
   // Create the menu items
-  const VisitMainSite = (
-    <MenuItem href="https://www.tupaia.org" onCloseMenu={onCloseMenu}>
-      Visit&nbsp;<span>tupaia.org</span>
+  const BaseMenuItem = ({ children, ...props }) => (
+    <MenuItem onCloseMenu={onCloseMenu} {...props}>
+      {children}
     </MenuItem>
   );
 
-  const ViewProjects = (
-    <MenuItem onClick={onOpenViewProjects} onCloseMenu={onCloseMenu}>
-      View projects
-    </MenuItem>
+  const VisitMainSite = (
+    <BaseMenuItem href="https://www.tupaia.org">
+      Visit&nbsp;<span>tupaia.org</span>
+    </BaseMenuItem>
   );
+
+  const ViewProjects = <BaseMenuItem onClick={onOpenViewProjects}>View projects</BaseMenuItem>;
 
   const HelpCentre = (
-    <MenuItem
-      href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm"
-      onCloseMenu={onCloseMenu}
-    >
+    <BaseMenuItem href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm">
       Help centre
-    </MenuItem>
+    </BaseMenuItem>
   );
   const Logout = (
-    <MenuItem
-      onClick={isCustomLandingPage ? onAttemptLandingPageLogout : onAttemptUserLogout}
-      onCloseMenu={onCloseMenu}
-    >
+    <BaseMenuItem onClick={isCustomLandingPage ? onAttemptLandingPageLogout : onAttemptUserLogout}>
       Logout
-    </MenuItem>
+    </BaseMenuItem>
   );
   const ChangePassword = (
-    <MenuItem onClick={onToggleChangePasswordPanel} onCloseMenu={onCloseMenu}>
-      Change password
-    </MenuItem>
+    <BaseMenuItem onClick={onToggleChangePasswordPanel}>Change password</BaseMenuItem>
   );
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isUserLoggedIn
@@ -144,9 +126,9 @@ const UserMenu = ({
     ? [
         ViewProjects,
         ChangePassword,
-        <MenuItem onClick={onToggleRequestCountryAccessPanel} onCloseMenu={onCloseMenu}>
+        <BaseMenuItem onClick={onToggleRequestCountryAccessPanel}>
           Request country access
-        </MenuItem>,
+        </BaseMenuItem>,
         HelpCentre,
         Logout,
       ]
