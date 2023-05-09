@@ -21,8 +21,8 @@ import {
   constructRecordExistsWithCode,
   constructIsValidEntityType,
   isHexColor,
-  isUrl,
-  isAlphaNumeric,
+  isURL,
+  isURLSegment,
 } from '@tupaia/utils';
 import { DataTableType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
@@ -309,8 +309,23 @@ export const constructForSingle = (models, recordType) => {
     case TYPES.LANDING_PAGE:
       return {
         name: [hasContent],
-        url_segment: [hasContent, isAlphaNumeric],
-        website_url: [constructIsEmptyOr(isUrl)],
+        website_url: [constructIsEmptyOr(isURL)],
+        external_link: [constructIsEmptyOr(isURL)],
+        primary_hexcode: [constructIsEmptyOr(isHexColor)],
+        secondary_hexcode: [constructIsEmptyOr(isHexColor)],
+        url_segment: [
+          hasContent,
+          isURLSegment,
+          async urlSegment => {
+            const existingLandingPage = await models.landingPage.findOne({
+              url_segment: urlSegment,
+            });
+            if (existingLandingPage) {
+              throw new Error(`A landing page with the url segment "${urlSegment}" already exists`);
+            }
+            return true;
+          },
+        ],
         project_codes: [
           hasContent,
           async projectCodes => {
