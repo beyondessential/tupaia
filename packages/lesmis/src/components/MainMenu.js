@@ -97,7 +97,7 @@ const AdminPanelLink = () => {
   const { translate } = useI18n();
 
   return (
-    <LocaleListItemLink to="/admin" target="_blank">
+    <LocaleListItemLink to="/admin">
       <ListItemIcon>
         <Build />
       </ListItemIcon>
