@@ -10,8 +10,9 @@
  */
 import { connect } from 'react-redux';
 
-import { attemptChangePassword, closeUserPage } from '../../actions';
+import { attemptChangePassword, closeUserPage, goHome } from '../../actions';
 import { ChangePasswordFormComponent } from './ChangePasswordFormComponent';
+import { PASSWORD_RESET_PREFIX } from '../../historyNavigation/constants';
 
 const mapStateToProps = state => {
   const {
@@ -29,11 +30,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onAttemptChangePassword: ({ oldPassword, password, passwordConfirm, passwordResetToken }) =>
       dispatch(attemptChangePassword(oldPassword, password, passwordConfirm, passwordResetToken)),
-    onClose: () => dispatch(closeUserPage()),
+    onClose: () => {
+      dispatch(closeUserPage());
+      if (ownProps.useResetToken) dispatch(goHome());
+    },
   };
 };
 

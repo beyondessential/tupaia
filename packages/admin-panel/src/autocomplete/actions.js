@@ -29,6 +29,7 @@ export const changeSearchTerm = (
   parentRecord,
   baseFilter = {},
   pageSize = MAX_AUTOCOMPLETE_RESULTS,
+  distinct = null,
 ) => async (dispatch, getState, { api }) => {
   const fetchId = generateId();
   dispatch({
@@ -44,7 +45,7 @@ export const changeSearchTerm = (
       pageSize,
       sort: JSON.stringify([`${labelColumn} ASC`]),
       columns: JSON.stringify([labelColumn, valueColumn]),
-      distinct: true,
+      distinct,
     });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,

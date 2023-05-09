@@ -264,6 +264,9 @@
     "permissions": "Permissions",
     "users": "Users",
     "user": "User",
-    "onceDeletedThisCantBeUndone": "Once deleted this can't be undone"
+    "onceDeletedThisCantBeUndone": "Once deleted this can't be undone",
+    "externalData": "External Data",
+    "externalDatabaseConnections": "External Database Connections",
+    "dataTables": "Data Tables"
   }
 }
