@@ -3,14 +3,9 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { EditHandler } from '../EditHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { BESAdminEditHandler } from '../EditHandler';
 
-export class EditProject extends EditHandler {
-  async assertUserHasAccess() {
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess]));
-  }
-
+export class EditProject extends BESAdminEditHandler {
   async editRecord() {
     const { countries, ...updatedFields } = this.updatedFields;
 
