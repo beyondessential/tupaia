@@ -7,19 +7,19 @@ import AWS from 'aws-sdk';
 import { snake } from 'case';
 import { S3Client } from '@tupaia/utils';
 import { BESAdminCreateHandler } from '../CreateHandler';
-import { getProjectImageUploadName } from './getProjectImageUploadName';
+import { getStandardisedImageName } from '../../utilities';
 /**
  * Handles POST endpoints:
  * - /projects
  */
 
 export class CreateProject extends BESAdminCreateHandler {
-  async uploadImage(encodedImage, projectCode, type) { 
+  async uploadImage(encodedImage, projectCode, type) {
     const s3Client = new S3Client(new AWS.S3());
     // Upload the image with a standardised file name and upload to s3.
     const imagePath = await s3Client.uploadImage(
       encodedImage,
-      getProjectImageUploadName(projectCode, type),
+      getStandardisedImageName(projectCode, type),
       true,
     );
     return imagePath;

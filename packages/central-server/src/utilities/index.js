@@ -7,3 +7,4 @@ export { getApiUrl } from './getApiUrl';
 export { getTempDirectory } from './getTempDirectory';
 export { resourceToRecordType } from './resourceToRecordType';
 export { sendEmail } from './sendEmail';
+export { getStandardisedImageName } from './getStandardisedImageName';

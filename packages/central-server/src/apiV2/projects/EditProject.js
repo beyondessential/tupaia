@@ -5,7 +5,7 @@
 import AWS from 'aws-sdk';
 import { S3Client } from '@tupaia/utils';
 import { BESAdminEditHandler } from '../EditHandler';
-import { getProjectImageUploadName } from './getProjectImageUploadName';
+import { getStandardisedImageName } from '../../utilities';
 
 export class EditProject extends BESAdminEditHandler {
   async uploadImage(encodedImage = '', projectCode, type) {
@@ -15,7 +15,7 @@ export class EditProject extends BESAdminEditHandler {
     // Upload the image with a standardised file name and upload to s3
     const imagePath = await s3Client.uploadImage(
       encodedImage,
-      getProjectImageUploadName(projectCode, type),
+      getStandardisedImageName(projectCode, type),
       true,
     );
     return imagePath;
