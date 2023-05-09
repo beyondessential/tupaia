@@ -260,6 +260,9 @@
     "permissions": "ການອະນຸຍາດ",
     "user": "ຜູ້ໃຊ້",
     "users": "ຜູ້ໃຊ້",
-    "onceDeletedThisCantBeUndone": "ເມື່ອລຶບແລ້ວອັນນີ້ຈະບໍ່ສາມາດຍົກເລີກໄດ້"
+    "onceDeletedThisCantBeUndone": "ເມື່ອລຶບແລ້ວອັນນີ້ຈະບໍ່ສາມາດຍົກເລີກໄດ້",
+    "externalData": "External Data",
+    "externalDatabaseConnections": "External Database Connections",
+    "dataTables": "Data Tables"
   }
 }
