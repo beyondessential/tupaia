@@ -8,6 +8,7 @@ import {
   setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
+  SET_CUSTOM_LANDING_PAGE_DATA,
 } from '../actions';
 import { selectProjectByCode, selectCurrentOrgUnitCode } from '../selectors';
 
@@ -15,6 +16,21 @@ export function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+}
+
+export function* fetchCustomLandingPageData() {
+  try {
+    const { routing: location } = yield select();
+
+    const data = yield call(request, `landingPage/${location.pathname.substring(1)}`);
+    yield put({
+      type: SET_CUSTOM_LANDING_PAGE_DATA,
+      data,
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

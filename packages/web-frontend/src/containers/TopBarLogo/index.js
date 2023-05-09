@@ -29,14 +29,14 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoImage = styled.img`
-  max-height: 100%;
+  max-height: 80%;
   width: auto;
 `;
 
 const LogoButton = styled.button`
   cursor: pointer;
   pointer-events: auto;
-  padding: 0.75em;
+  padding: 0.5em;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -64,8 +64,8 @@ export const TopBarLogoComponent = ({ onClickLogo }) => {
   const { isCustomLandingPage, customLandingPageSettings = {} } = useCustomLandingPages();
   const {
     name,
-    include_name_in_header: displayName = false,
-    logo_url: customLandingPageLogo,
+    includeNameInHeader: displayName = false,
+    logoUrl: customLandingPageLogo,
   } = customLandingPageSettings;
   // If is a custom landing page, use the logo from the settings, else use the Tupaia logo
   const logoSrc = isCustomLandingPage ? customLandingPageLogo : TUPAIA_LIGHT_LOGO_SRC;

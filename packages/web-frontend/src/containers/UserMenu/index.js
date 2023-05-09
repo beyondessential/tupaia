@@ -69,8 +69,8 @@ const UserMenu = ({
   const { isCustomLandingPage, customLandingPageSettings = {} } = useCustomLandingPages();
   const [menuOpen, setMenuOpen] = useState(false);
   const {
-    secondary_hexcode: customLandingPageSecondaryColor,
-    primary_hexcode: customLandingPagePrimaryColor,
+    secondaryHexcode: customLandingPageSecondaryColor,
+    primaryHexcode: customLandingPagePrimaryColor,
   } = customLandingPageSettings;
 
   const primaryColor = customLandingPagePrimaryColor || DARK_BLUE;

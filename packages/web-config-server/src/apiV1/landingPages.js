@@ -29,7 +29,7 @@ function buildProjectData(project) {
 }
 
 async function buildLandingPageDataForFrontend(landingPage, req) {
-  const projectData = await req.models.project.find({ code: landingPage.projectCodes });
+  const projectData = await req.models.project.find({ code: landingPage.project_codes });
   const projects = projectData.map(project => buildProjectData(project));
 
   const {
@@ -44,6 +44,7 @@ async function buildLandingPageDataForFrontend(landingPage, req) {
     phone_number: phoneNumber,
     website_url: websiteUrl,
     include_name_in_header: includeNameInHeader,
+    extended_title: extendedTitle,
   } = landingPage;
 
   return {
@@ -58,13 +59,18 @@ async function buildLandingPageDataForFrontend(landingPage, req) {
     phoneNumber,
     websiteUrl,
     includeNameInHeader,
-
+    extendedTitle,
     projects,
   };
 }
 
 export async function getLandingPage(req, res) {
-  const { landingPageUrl } = req.query;
+  const { landingPageUrl } = req.params;
+
   const landingPage = await req.models.landingPage.findOne({ url_segment: landingPageUrl });
-  return respond(res, await buildLandingPageDataForFrontend(landingPage, req));
+
+  if (!landingPage) {
+    return respond(res, null, 200);
+  }
+  return respond(res, await buildLandingPageDataForFrontend(landingPage, req), 200);
 }

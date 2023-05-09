@@ -42,8 +42,8 @@ const TopBar = () => {
 
   // If a custom landing page is being used, use the primary and secondary colors from settings if set, else default back to the original colors
   if (isCustomLandingPage) {
-    primaryColor = customLandingPageSettings.primary_hexcode || DARK_BLUE;
-    secondaryColor = customLandingPageSettings.secondary_hexcode || WHITE;
+    primaryColor = customLandingPageSettings.primaryHexcode || DARK_BLUE;
+    secondaryColor = customLandingPageSettings.secondaryHexcode || WHITE;
   }
 
   return (

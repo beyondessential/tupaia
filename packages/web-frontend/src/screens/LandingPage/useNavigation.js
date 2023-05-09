@@ -4,12 +4,16 @@
  */
 
 import { useDispatch } from 'react-redux';
-import { setProject, setRequestingAccess } from '../../projects/actions';
+import {
+  setProject,
+  setRequestingAccess,
+  clearCustomLandingPageData,
+} from '../../projects/actions';
 import {
   REQUEST_PROJECT_ACCESS,
   LANDING,
   AUTH_VIEW_STATES,
-} from '../../containers/OverlayDiv/constants'; 
+} from '../../containers/OverlayDiv/constants';
 import { attemptLandingPageLogout, setAuthViewState, setOverlayComponent } from '../../actions';
 
 export const useNavigation = () => {
@@ -30,6 +34,7 @@ export const useNavigation = () => {
   };
 
   const navigateToProject = project => {
+    dispatch(clearCustomLandingPageData());
     dispatch(setProject(project.code));
   };
 

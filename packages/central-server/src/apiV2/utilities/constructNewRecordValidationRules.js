@@ -21,8 +21,8 @@ import {
   constructRecordExistsWithCode,
   constructIsValidEntityType,
   isHexColor,
-  isUrl,
-  isAlphaNumeric,
+  isURL,
+  isURLPathSegment,
 } from '@tupaia/utils';
 import { DataTableType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
@@ -309,8 +309,15 @@ export const constructForSingle = (models, recordType) => {
     case TYPES.LANDING_PAGE:
       return {
         name: [hasContent],
-        url_segment: [hasContent, isAlphaNumeric],
-        website_url: [constructIsEmptyOr(isUrl)],
+        website_url: [constructIsEmptyOr(isURL)],
+        external_link: [constructIsEmptyOr(isURL)],
+        primary_hexcode: [constructIsEmptyOr(isHexColor)],
+        secondary_hexcode: [constructIsEmptyOr(isHexColor)],
+        url_segment: [
+          hasContent,
+          isURLPathSegment,
+          constructRecordNotExistsWithField(models.landingPage, 'url_segment'),
+        ],
         project_codes: [
           hasContent,
           async projectCodes => {
