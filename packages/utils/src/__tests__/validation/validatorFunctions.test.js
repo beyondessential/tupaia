@@ -8,8 +8,11 @@ import {
   constructEveryItemSync,
   constructIsArrayOf,
   constructIsOneOfType,
+  isURLPathSegment,
   isArray,
   isBoolean,
+  isHexColor,
+  isURL,
 } from '../../validation';
 
 describe('validatorFunctions', () => {
@@ -45,6 +48,44 @@ describe('validatorFunctions', () => {
       it.each(testData)('%s', (type, value) => {
         expect(() => isBoolean(value)).toThrow(/should contain a boolean/i);
       });
+    });
+  });
+
+  describe('isURL', () => {
+    it('pass if given a valid url', () => {
+      expect(() => isURL('www.beyondessential.com.au')).not.toThrow();
+      expect(() => isURL('https://www.beyondessential.com.au')).not.toThrow();
+    });
+
+    it('fails if given a non valid url', () => {
+      expect(() => isURL('junk')).toThrow();
+      expect(() => isURL('asdf')).toThrow();
+    });
+  });
+
+  describe('isHexColor', () => {
+    it('pass if given a valid hex color', () => {
+      expect(() => isHexColor('#aabbcc')).not.toThrow();
+      expect(() => isHexColor('#333')).not.toThrow();
+    });
+
+    it('fails if given a non valid hex color', () => {
+      expect(() => isHexColor('123456123')).toThrow();
+      expect(() => isHexColor('aaggee')).toThrow();
+      expect(() => isHexColor('12')).toThrow();
+    });
+  });
+
+  describe('isURLPathSegment', () => {
+    it('pass if given a valid string', () => {
+      expect(() => isURLPathSegment('example123')).not.toThrow();
+      expect(() => isURLPathSegment('example_segment')).not.toThrow();
+      expect(() => isURLPathSegment('example-segment')).not.toThrow();
+    });
+
+    it('fails if given a non valid string', () => {
+      expect(() => isURLPathSegment('about/page')).toThrow();
+      expect(() => isURLPathSegment('invalid!segment"')).toThrow();
     });
   });
 

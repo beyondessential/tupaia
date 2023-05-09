@@ -98,17 +98,17 @@ export const isHexColor = value => {
   }
 };
 
-export const isUrl = value => {
-  if (!validator.isUrl(value.toString())) {
+export const isURL = value => {
+  if (!validator.isURL(value.toString())) {
     // Coerce to string before checking with validator
     throw new ValidationError('Not a valid url');
   }
 };
 
-export const isAlphaNumeric = value => {
-  const alphaNumeric = /[a-zA-Z0-9]/;
-  if (!alphaNumeric.test(value.toString())) {
-    throw new ValidationError('Value must use letters and numbers only');
+export const isURLPathSegment = value => {
+  const urlSegmentRegex = /^[a-zA-Z0-9_-]+$/;
+  if (!urlSegmentRegex.test(value.toString())) {
+    throw new ValidationError('No a valid url segment');
   }
 };
 
@@ -212,10 +212,10 @@ export const constructRecordExistsWithField = (model, field) => async value => {
   }
 };
 
-export const constructRecordNotExistsWithField = (model, field) => async value => {
+export const constructRecordNotExistsWithField = (model, field = 'code') => async value => {
   hasContent(value);
 
-  const record = await model.findOne({ code: value });
+  const record = await model.findOne({ [field]: value });
   if (record) {
     throw new ValidationError(
       `Another ${model.databaseType} record already exists with with ${field}: ${value}`,
