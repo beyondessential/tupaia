@@ -8,12 +8,12 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { EnvBanner } from '@tupaia/ui-components';
 import OverlayDiv from '../../containers/OverlayDiv';
-import { useCustomLandingPages } from './useCustomLandingPages';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { MultiProjectLandingPage } from './MultiProjectLandingPage';
 import TopBar from '../../containers/TopBar';
 import { TOP_BAR_HEIGHT, TOP_BAR_HEIGHT_MOBILE } from '../../styles';
 import { LandingPageFooter } from './LandingPageFooter';
+import { useCustomLandingPages } from './useCustomLandingPages';
 
 /**
  * This is the template for landing pages when the user is not on a mobile device
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   position: relative;
   background-size: cover;
   background-position: center;
-  background-color: #000000;
+  background-color: #262834;
   background-image: ${({ backgroundImage }) =>
     backgroundImage ? `url(${backgroundImage})` : 'none'};
 `;
@@ -43,8 +43,8 @@ const Container = styled(MuiContainer)`
 `;
 
 export const LandingPage = () => {
-  const { projects, customLandingPageSettings } = useCustomLandingPages();
-  const { image_url: backgroundImage } = customLandingPageSettings;
+  const { customLandingPageSettings, projects } = useCustomLandingPages();
+  const { imageUrl: backgroundImage } = customLandingPageSettings;
 
   return (
     <>

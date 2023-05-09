@@ -35,6 +35,7 @@ const ExtendedTitle = styled(Typography)`
 
 const ActionButton = styled(Button)`
   width: 75%;
+  min-width: 10rem;
   background-color: ${props => props.theme.palette.common.white};
   color: ${props => props.theme.palette.common.black};
   text-transform: none;
@@ -52,10 +53,7 @@ const ActionButton = styled(Button)`
 
 export function SingleProjectLandingPage() {
   const {
-    customLandingPageSettings: {
-      extended_title: extendedTitle,
-      include_name_in_header: includeNameInHeader,
-    },
+    customLandingPageSettings: { extendedTitle, includeNameInHeader },
     projects,
   } = useCustomLandingPages();
 

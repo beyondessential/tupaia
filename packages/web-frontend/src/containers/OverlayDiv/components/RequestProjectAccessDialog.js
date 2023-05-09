@@ -371,7 +371,7 @@ const mapStateToProps = state => {
 
   return {
     project: requestingAccess,
-    countries: countries.filter(c => requestingAccess.names.includes(c.name)),
+    countries: countries.filter(c => requestingAccess.names?.includes(c.name)),
     isRequestingCountryAccess,
     isRequestingAdditionalCountryAccess,
     isLoading: isFetchingCountryAccessData || isRequestingCountryAccess,
