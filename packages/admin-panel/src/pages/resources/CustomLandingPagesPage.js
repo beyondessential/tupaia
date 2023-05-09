@@ -285,13 +285,6 @@ export const CustomLandingPagesPage = ({ getHeaderEl }) => {
       columns={COLUMNS}
       getHeaderEl={getHeaderEl}
       createConfig={CREATE_CONFIG}
-      onProcessDataForSave={(editedFields, recordData) => {
-        // If the landing page is being edited, and the url_segment field is not being edited, then include the existing url_segment in the edited fields so that it can be used for generating landing page image names.
-        if (recordData.url_segment && !editedFields.url_segment) {
-          return { ...editedFields, url_segment: recordData.url_segment };
-        }
-        return editedFields;
-      }}
     />
   );
 };

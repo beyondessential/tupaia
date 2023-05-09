@@ -4,20 +4,20 @@
  */
 
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
-import AWS from 'aws-sdk';
-import { S3Client } from '@tupaia/utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
+import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 describe('Editing a landing page', async () => {
-  let s3ClientStub;
+  let uploadImageStub;
+  const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
+
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
-
-  const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
+  const URL_SEGMENT = 'theUrlSegment';
 
   const TEST_LANDING_PAGE_INPUT = {
     id: generateId(),
@@ -31,23 +31,23 @@ describe('Editing a landing page', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
-    await findOrCreateDummyRecord(models.landingPage, TEST_LANDING_PAGE_INPUT);
-    sinon.createStubInstance(AWS.S3);
+  before(() => {
+    uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
   });
-  beforeEach(() => {
-    s3ClientStub = sinon
-      .stub(S3Client.prototype, 'uploadImage')
-      .returns(Promise.resolve(EXAMPLE_UPLOADED_IMAGE_URL));
+  beforeEach(async () => {
+    await findOrCreateDummyRecord(models.landingPage, {
+      ...TEST_LANDING_PAGE_INPUT,
+      url_segment: URL_SEGMENT,
+    });
   });
 
   afterEach(async () => {
+    await models.landingPage.delete({ id: TEST_LANDING_PAGE_INPUT.id });
     app.revokeAccess();
-    s3ClientStub.restore();
   });
 
   after(async () => {
-    await models.landingPage.delete({ id: TEST_LANDING_PAGE_INPUT.id });
+    uploadImageStub.restore();
   });
 
   describe('PUT /landingPages', async () => {
@@ -68,7 +68,7 @@ describe('Editing a landing page', async () => {
       expect(result[0].extended_title).to.equal('the updated extended title');
     });
 
-    it('uploads the value of image_url if is a base64 encoded image', async () => {
+    it('uploads the value of image_url if it has changed', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
 
       await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
@@ -86,7 +86,7 @@ describe('Editing a landing page', async () => {
       expect(result[0].image_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
     });
 
-    it('uploads the value of logo_url if is a base64 encoded image', async () => {
+    it('uploads the value of logo_url if it has changed', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
 
       await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
@@ -104,11 +104,15 @@ describe('Editing a landing page', async () => {
       expect(result[0].logo_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
     });
 
-    it('does not upload a new image_url or logo_url if is not a base64 encoded image', async () => {
+    it('does not upload a new image_url or logo_url if these have not changed', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
 
       await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
-        body: TEST_LANDING_PAGE_INPUT,
+        body: {
+          ...TEST_LANDING_PAGE_INPUT,
+          image_url: undefined,
+          logo_url: undefined,
+        },
       });
 
       const result = await models.landingPage.find({
@@ -118,26 +122,6 @@ describe('Editing a landing page', async () => {
       expect(result.length).to.equal(1);
       expect(result[0].image_url).to.equal(TEST_LANDING_PAGE_INPUT.image_url);
       expect(result[0].logo_url).to.equal(TEST_LANDING_PAGE_INPUT.logo_url);
-    });
-
-    it('does not upload a new image_url or logo_url if these are null', async () => {
-      await app.grantAccess(BES_ADMIN_POLICY);
-
-      await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
-        body: {
-          ...TEST_LANDING_PAGE_INPUT,
-          image_url: null,
-          logo_url: null,
-        },
-      });
-
-      const result = await models.landingPage.find({
-        id: TEST_LANDING_PAGE_INPUT.id,
-      });
-
-      expect(result.length).to.equal(1);
-      expect(result[0].image_url).to.equal(null);
-      expect(result[0].logo_url).to.equal(null);
     });
   });
 });

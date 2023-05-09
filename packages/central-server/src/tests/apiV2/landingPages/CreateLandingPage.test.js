@@ -2,17 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import AWS from 'aws-sdk';
-import { S3Client } from '@tupaia/utils';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
+import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 describe('Creating a landing page', async () => {
-  let s3ClientStub;
+  let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
@@ -42,13 +40,11 @@ describe('Creating a landing page', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
-    sinon.createStubInstance(AWS.S3);
+  before(() => {
+    uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
   });
+
   beforeEach(async () => {
-    s3ClientStub = sinon
-      .stub(S3Client.prototype, 'uploadImage')
-      .returns(Promise.resolve(EXAMPLE_UPLOADED_IMAGE_URL));
     await findOrCreateDummyRecord(models.project, { code: TEST_PROJECT_CODE });
   });
 
@@ -56,7 +52,10 @@ describe('Creating a landing page', async () => {
     await models.landingPage.delete({ url_segment: TEST_LANDING_PAGE_INPUT.url_segment });
     await models.project.delete({ code: TEST_PROJECT_CODE });
     app.revokeAccess();
-    s3ClientStub.restore();
+  });
+
+  after(async () => {
+    uploadImageStub.restore();
   });
 
   describe('POST /landingPages', async () => {
@@ -77,7 +76,7 @@ describe('Creating a landing page', async () => {
         expect(result[0].url_segment).to.equal(TEST_LANDING_PAGE_INPUT.url_segment);
       });
 
-      it('uploads the value of image_url if is a base64 encoded image', async () => {
+      it('uploads the value of image_url', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
         await app.post('landingPages', {
@@ -94,7 +93,7 @@ describe('Creating a landing page', async () => {
         expect(result[0].image_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
       });
 
-      it('uploads the value of logo_url if is a base64 encoded image', async () => {
+      it('uploads the value of logo_url', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
         await app.post('landingPages', {

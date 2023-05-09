@@ -2,36 +2,39 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import AWS from 'aws-sdk';
-import { S3Client } from '@tupaia/utils';
 import { BESAdminEditHandler } from '../EditHandler';
-import { getStandardisedImageName } from '../../utilities';
+import { uploadImage } from '../utilities';
 
 export class EditLandingPage extends BESAdminEditHandler {
-  async uploadImage(encodedImage = '', landingPageUrlSegment, type) {
-    // If the image is not a base64 encoded image, then it is already a url to an image in S3, so we can just return that url as it is. This is on the off chance that the image is being uploaded as a url instead of an encoded image, or it is not being updated at all.
-    if (!encodedImage || !encodedImage.includes('data:image')) return encodedImage;
-    const s3Client = new S3Client(new AWS.S3());
-    // Upload the image with a standardised file name and upload to s3
-    const imagePath = await s3Client.uploadImage(
-      encodedImage,
-      getStandardisedImageName(landingPageUrlSegment, type),
-      true,
-    );
-    return imagePath;
+  // Fetch the url_segment of the landing page, as this is needed as a unique identifier to upload the images to S3. If it is being edited, then the url_segment will be in the updatedFields, otherwise it will need to be fetched from the database
+  async getLandingPageUrlSegment() {
+    const { url_segment: urlSegment } = this.updatedFields;
+    if (urlSegment) return urlSegment;
+    const landingPage = await this.models.landingPage.findById(this.recordId, {
+      columns: ['url_segment'],
+    });
+    return landingPage.url_segment;
   }
 
-  // Before updating the landingPage, if the image_url and logo_url have changed, we need to upload the new images to S3 and update the image_url and logo_url fields with the new urls. This also will handle deleting of the image_url and logo_url fields, as the uploadImage function will return the original value if the encoded image is null or not a base64 encoded image.
+  // Before updating the landingPage, if the image_url and logo_url have changed, we need to upload the new images to S3 and update the image_url and logo_url fields with the new urls.
+  // If image_url/logo_url are undefined, then we are not editing them and can just update the record as normal.
+  // If image_url/logo_url are null or empty strings, then we are removing the image.
   async updateRecord() {
-    const { image_url: imageUrl, logo_url: logoUrl, url_segment: urlSegment } = this.updatedFields;
+    const { image_url: encodedBackgroundImage, logo_url: encodedLogoImage } = this.updatedFields;
     const updatedFields = { ...this.updatedFields };
 
+    const urlSegment = await this.getLandingPageUrlSegment();
+
     // check first if field is undefined, as we don't want to upload an image if the field is not being updated, since this might cause the field to be reset
-    if (imageUrl !== undefined) {
-      updatedFields.image_url = await this.uploadImage(imageUrl, urlSegment, 'landing_page_image');
+    if (encodedBackgroundImage !== undefined) {
+      updatedFields.image_url = await uploadImage(
+        encodedBackgroundImage,
+        urlSegment,
+        'landing_page_image',
+      );
     }
-    if (logoUrl !== undefined) {
-      updatedFields.logo_url = await this.uploadImage(logoUrl, urlSegment, 'landing_page_logo');
+    if (encodedLogoImage !== undefined) {
+      updatedFields.logo_url = await uploadImage(encodedLogoImage, urlSegment, 'landing_page_logo');
     }
     await this.models.landingPage.updateById(this.recordId, updatedFields);
   }
