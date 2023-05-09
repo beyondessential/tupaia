@@ -105,7 +105,7 @@ export const isURL = value => {
   }
 };
 
-export const isURLSegment = value => {
+export const isURLPathSegment = value => {
   const urlSegmentRegex = /^[a-zA-Z0-9_-]+$/;
   if (!urlSegmentRegex.test(value.toString())) {
     throw new ValidationError('No a valid url segment');
@@ -212,10 +212,10 @@ export const constructRecordExistsWithField = (model, field) => async value => {
   }
 };
 
-export const constructRecordNotExistsWithField = (model, field) => async value => {
+export const constructRecordNotExistsWithField = (model, field = 'code') => async value => {
   hasContent(value);
 
-  const record = await model.findOne({ code: value });
+  const record = await model.findOne({ [field]: value });
   if (record) {
     throw new ValidationError(
       `Another ${model.databaseType} record already exists with with ${field}: ${value}`,
