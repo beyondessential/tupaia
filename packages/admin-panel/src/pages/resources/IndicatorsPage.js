@@ -22,6 +22,7 @@ const FIELDS = [
       optionLabelKey: 'builder',
       optionValueKey: 'builder',
       sourceKey: 'builder',
+      distinct: true,
     },
   },
   {
