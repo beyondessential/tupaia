@@ -98,17 +98,17 @@ export const isHexColor = value => {
   }
 };
 
-export const isURL = value => {
-  if (!validator.isURL(value.toString())) {
+export const isUrl = value => {
+  if (!validator.isUrl(value.toString())) {
     // Coerce to string before checking with validator
     throw new ValidationError('Not a valid url');
   }
 };
 
-export const isURLSegment = value => {
-  const urlSegmentRegex = /^[a-zA-Z0-9_-]+$/;
-  if (!urlSegmentRegex.test(value.toString())) {
-    throw new ValidationError('No a valid url segment');
+export const isAlphaNumeric = value => {
+  const alphaNumeric = /[a-zA-Z0-9]/;
+  if (!alphaNumeric.test(value.toString())) {
+    throw new ValidationError('Value must use letters and numbers only');
   }
 };
 
