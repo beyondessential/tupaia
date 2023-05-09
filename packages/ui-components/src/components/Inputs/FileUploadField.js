@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
+import { InputLabel } from '@material-ui/core';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -25,7 +27,23 @@ const FileName = styled.span`
   margin-left: 0.8rem;
 `;
 
-export const FileUploadField = ({ onChange, name, fileName, multiple, textOnButton }) => {
+const StyledInputLabel = styled(InputLabel)`
+  &.MuiFormLabel-root {
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+`;
+
+export const FileUploadField = ({
+  onChange,
+  name,
+  fileName,
+  multiple,
+  textOnButton,
+  label,
+  helperText,
+  error,
+}) => {
   const inputEl = useRef(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
 
@@ -39,31 +57,38 @@ export const FileUploadField = ({ onChange, name, fileName, multiple, textOnButt
       newName = event.target.value.split('\\').pop();
     }
 
-    onChange(event, newName);
+    onChange(event, newName, input.files);
   };
 
   return (
-    <FlexStart as="label" htmlFor={name}>
-      <HiddenFileInput
-        ref={inputEl}
-        id={name}
-        name={name}
-        type="file"
-        onChange={handleChange}
-        value=""
-        multiple={multiple}
-      />
-      <GreyButton component="span" startIcon={<SaveAlt />}>
-        {text}
-      </GreyButton>
-      {fileName && <FileName>{fileName}</FileName>}
-    </FlexStart>
+    <>
+      {label && <StyledInputLabel>{label}</StyledInputLabel>}
+      <FlexStart as="label" htmlFor={name}>
+        <HiddenFileInput
+          ref={inputEl}
+          id={name}
+          name={name}
+          type="file"
+          onChange={handleChange}
+          value=""
+          multiple={multiple}
+        />
+        <GreyButton component="span" startIcon={<SaveAlt />}>
+          {text}
+        </GreyButton>
+        {fileName && <FileName>{fileName}</FileName>}
+      </FlexStart>
+      {helperText && <MuiFormHelperText error={error}>{helperText}</MuiFormHelperText>}
+    </>
   );
 };
 
 FileUploadField.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  helperText: PropTypes.string,
+  error: PropTypes.bool,
   fileName: PropTypes.string,
   textOnButton: PropTypes.string,
   multiple: PropTypes.bool,
@@ -71,6 +96,9 @@ FileUploadField.propTypes = {
 
 FileUploadField.defaultProps = {
   onChange: () => {},
+  label: null,
+  helperText: null,
+  error: false,
   fileName: 'No File chosen',
   multiple: false,
   textOnButton: null,
