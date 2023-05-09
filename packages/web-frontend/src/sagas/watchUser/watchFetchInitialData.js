@@ -1,4 +1,4 @@
-import { call, put, take } from 'redux-saga/effects';
+import { call, put, take, select } from 'redux-saga/effects';
 import { fetchUserLoginSuccess, FETCH_INITIAL_DATA, findUserLoginFailed } from '../../actions';
 import { LOGIN_TYPES } from '../../constants';
 import { getInitialLocation } from '../../historyNavigation';
@@ -10,14 +10,20 @@ import { handleLocationChange } from '../handlers';
 export function* watchFetchInitialData() {
   yield take(FETCH_INITIAL_DATA);
 
-  // Login must happen first so that projects return the correct access flags
   yield call(fetchCustomLandingPageData);
+  // Login must happen first so that projects return the correct access flags
   yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
   yield call(fetchProjectData);
-  yield call(handleLocationChange, {
-    location: getInitialLocation(),
-    previousLocation: clearLocation(),
-  });
+
+  const state = yield select();
+
+  // Only handle the location change if it's not a custom landing page
+  if (!state.project?.customLandingPage) {
+    yield call(handleLocationChange, {
+      location: getInitialLocation(),
+      previousLocation: clearLocation(),
+    });
+  }
 }
 
 /**
