@@ -8,7 +8,7 @@ import {
   constructEveryItemSync,
   constructIsArrayOf,
   constructIsOneOfType,
-  isURLSegment,
+  isURLPathSegment,
   isArray,
   isBoolean,
   isHexColor,
@@ -76,16 +76,16 @@ describe('validatorFunctions', () => {
     });
   });
 
-  describe('isURLSegment', () => {
+  describe('isURLPathSegment', () => {
     it('pass if given a valid string', () => {
-      expect(() => isURLSegment('example123')).not.toThrow();
-      expect(() => isURLSegment('example_segment')).not.toThrow();
-      expect(() => isURLSegment('example-segment')).not.toThrow();
+      expect(() => isURLPathSegment('example123')).not.toThrow();
+      expect(() => isURLPathSegment('example_segment')).not.toThrow();
+      expect(() => isURLPathSegment('example-segment')).not.toThrow();
     });
 
     it('fails if given a non valid string', () => {
-      expect(() => isURLSegment('about/page')).toThrow();
-      expect(() => isURLSegment('invalid!segment"')).toThrow();
+      expect(() => isURLPathSegment('about/page')).toThrow();
+      expect(() => isURLPathSegment('invalid!segment"')).toThrow();
     });
   });
 

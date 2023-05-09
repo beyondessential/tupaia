@@ -22,7 +22,7 @@ import {
   constructIsValidEntityType,
   isHexColor,
   isURL,
-  isURLSegment,
+  isURLPathSegment,
 } from '@tupaia/utils';
 import { DataTableType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
@@ -315,16 +315,8 @@ export const constructForSingle = (models, recordType) => {
         secondary_hexcode: [constructIsEmptyOr(isHexColor)],
         url_segment: [
           hasContent,
-          isURLSegment,
-          async urlSegment => {
-            const existingLandingPage = await models.landingPage.findOne({
-              url_segment: urlSegment,
-            });
-            if (existingLandingPage) {
-              throw new Error(`A landing page with the url segment "${urlSegment}" already exists`);
-            }
-            return true;
-          },
+          isURLPathSegment,
+          constructRecordNotExistsWithField(models.landingPage, 'url_segment'),
         ],
         project_codes: [
           hasContent,
