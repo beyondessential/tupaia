@@ -5081,6 +5081,7 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": 3.0.0
     "@tupaia/types": 1.0.0
+    "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
     axios: ^0.21.1
@@ -5470,6 +5471,7 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": 3.0.0
     "@tupaia/admin-panel": 1.0.0
+    "@tupaia/ui-chart-components": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
     axios: ^0.21.1
@@ -5754,6 +5756,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/ui-chart-components@1.0, @tupaia/ui-chart-components@1.0.0, @tupaia/ui-chart-components@workspace:packages/ui-chart-components":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/ui-chart-components@workspace:packages/ui-chart-components"
+  dependencies:
+    "@material-ui/core": ^4.9.8
+    "@material-ui/styles": ^4.9.10
+    "@storybook/react": ^6.3.9
+    "@tupaia/ui-components": 1.0.0
+    "@tupaia/utils": 1.0.0
+    lodash.get: ^4.4.2
+    moment: ^2.29.1
+    prop-types: ^15.7.2
+    react: ^16.13.1
+    react-dom: ^16.13.1
+    react-table: ^7.7.0
+    recharts: ^1.8.5
+    styled-components: ^5.0.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/ui-components@1.0, @tupaia/ui-components@1.0.0, @tupaia/ui-components@workspace:packages/ui-components":
   version: 0.0.0-use.local
   resolution: "@tupaia/ui-components@workspace:packages/ui-components"
@@ -5807,6 +5829,7 @@ __metadata:
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
+    prop-types: ^15.6.2
     validator: ^8.2.0
     winston: ^3.3.3
     xlsx: ^0.10.9
@@ -5890,6 +5913,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.11.0
     "@testing-library/react": ^11.0.2
     "@testing-library/user-event": ^12.0.11
+    "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
     case: ^1.6.3

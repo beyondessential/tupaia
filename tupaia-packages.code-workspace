@@ -113,6 +113,10 @@
       "path": "packages/superset-api"
     },
     {
+      "name": "ui-chart-components",
+      "path": "packages/ui-chart-components"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },
