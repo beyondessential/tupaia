@@ -98,6 +98,7 @@ export const isHexColor = value => {
   }
 };
 
+
 export const isURL = value => {
   if (!validator.isURL(value.toString())) {
     // Coerce to string before checking with validator

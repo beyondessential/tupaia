@@ -4,12 +4,11 @@
  */
 
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
-import AWS from 'aws-sdk';
-import { S3Client } from '@tupaia/utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
+import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 const rollbackRecords = async (models, projectCode) => {
   await models.project.delete({ code: projectCode });
@@ -23,7 +22,7 @@ const rollbackRecords = async (models, projectCode) => {
 };
 
 describe('Creating a project', async () => {
-  let s3ClientStub;
+  let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
@@ -62,18 +61,16 @@ describe('Creating a project', async () => {
     await findOrCreateDummyRecord(models.project, { code: 'test_project' });
     await findOrCreateDummyRecord(models.permissionGroup, { name: 'test_group1' });
     await findOrCreateDummyRecord(models.mapOverlay, { id: TEST_MAP_OVERLAY_ID, code: '126' });
-    sinon.createStubInstance(AWS.S3);
-  });
-  beforeEach(() => {
-    s3ClientStub = sinon
-      .stub(S3Client.prototype, 'uploadImage')
-      .returns(Promise.resolve(EXAMPLE_UPLOADED_IMAGE_URL));
+    uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
   });
 
   afterEach(async () => {
     await rollbackRecords(models, 'test_project_new');
     app.revokeAccess();
-    s3ClientStub.restore();
+  });
+
+  after(() => {
+    uploadImageStub.restore();
   });
 
   describe('POST /projects', async () => {
@@ -186,7 +183,7 @@ describe('Creating a project', async () => {
       });
     });
 
-    it('uploads the value of image_url if is a base64 encoded image', async () => {
+    it('uploads the value of image_url', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
 
       await app.post('projects', {
@@ -201,7 +198,7 @@ describe('Creating a project', async () => {
       expect(result[0].image_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
     });
 
-    it('uploads the value of logo_url if is a base64 encoded image', async () => {
+    it('uploads the value of logo_url', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
 
       await app.post('projects', {
