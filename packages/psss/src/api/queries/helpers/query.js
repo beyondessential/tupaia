@@ -49,7 +49,7 @@ export const usePaginatedReport = (endpoint, apiOptions = {}, queryOptions = {})
     ...queryOptions,
     keepPreviousData: true,
   });
-  const data = query?.data?.results ?? [];
+  const data = query?.data?.data?.results ?? [];
 
   return { ...query, data };
 };
