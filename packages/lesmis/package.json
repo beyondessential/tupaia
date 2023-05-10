@@ -24,7 +24,8 @@
     "start-lesmis-server": "yarn workspace @tupaia/lesmis-server start-dev",
     "test": "yarn package:test",
     "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
-    "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
+    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build-dev:watch",
+    "start-frontend": "npm-run-all -c -l -p start-ui-components start-ui-chart-components start-dev",
     "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-lesmis-server"
   },
   "browserslist": [
@@ -37,6 +38,7 @@
     "@material-ui/styles": "^4.9.10",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/admin-panel": "1.0.0",
+    "@tupaia/ui-chart-components": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
