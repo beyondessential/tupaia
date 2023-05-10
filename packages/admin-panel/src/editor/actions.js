@@ -153,16 +153,38 @@ export const editField = (fieldKey, newValue) => ({
   newValue,
 });
 
-export const saveEdits = (endpoint, editedFields, isNew) => async (dispatch, getState, { api }) => {
+export const saveEdits = (endpoint, editedFields, isNew, filesByFieldKey = {}) => async (
+  dispatch,
+  getState,
+  { api },
+) => {
   dispatch({
     type: EDITOR_DATA_EDIT_BEGIN,
   });
   try {
-    if (isNew) {
-      await api.post(endpoint, null, editedFields);
+    if (filesByFieldKey && Object.keys(filesByFieldKey).length > 0) {
+      if (isNew) {
+        await api.multipartPost({
+          endpoint,
+          filesByMultipartKey: filesByFieldKey,
+          payload: editedFields,
+        });
+      } else {
+        await api.multipartPut({
+          endpoint,
+          filesByMultipartKey: filesByFieldKey,
+          payload: editedFields,
+        });
+      }
     } else {
-      await api.put(endpoint, null, editedFields);
+      // eslint-disable-next-line
+      if (isNew) {
+        await api.post(endpoint, null, editedFields);
+      } else {
+        await api.put(endpoint, null, editedFields);
+      }
     }
+
     dispatch({
       type: EDITOR_DATA_EDIT_SUCCESS,
     });

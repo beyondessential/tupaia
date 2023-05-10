@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import keyBy from 'lodash.keyby';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -49,6 +49,20 @@ export const EditModalComponent = ({
   extraDialogProps,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
+  // Files cannot be stored in redux (https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions)
+  // So instead we keep a map of fieldKey -> File, and store only the filename in redux.
+  const [files, setFiles] = useState({});
+  const handleSetFormFile = (inputKey, { fileName, file }) => {
+    setFiles({
+      ...files,
+      [inputKey]: file,
+    });
+    onEditField(inputKey, fileName);
+  };
+  useEffect(() => {
+    // Rely on the fact that opening/closing the modal clears `fields` to make sure that `files` gets wiped between forms.
+    setFiles({});
+  }, [fields]);
 
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
@@ -63,6 +77,7 @@ export const EditModalComponent = ({
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
                 return onEditField(fieldSourceToEdit, newValue);
               }}
+              onSetFormFile={handleSetFormFile}
             />
           )}
           {FieldsComponent && (
@@ -73,6 +88,7 @@ export const EditModalComponent = ({
                 const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
                 return onEditField(fieldSourceToEdit, newValue);
               }}
+              onSetFormFile={handleSetFormFile}
             />
           )}
           {displayUsedBy && <UsedBy {...usedByConfig} />}
@@ -84,7 +100,7 @@ export const EditModalComponent = ({
         </Button>
         <Button
           id="form-button-save"
-          onClick={onSave}
+          onClick={() => onSave(files)}
           disabled={!!errorMessage || isLoading || isUnchanged}
         >
           {saveButtonText}
@@ -169,14 +185,14 @@ const mergeProps = (
     ...dispatchProps,
     editedFields,
     recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
-    onSave: () => {
+    onSave: files => {
       // If there is no record data, this is a new record
       const isNew = Object.keys(recordData).length === 0;
       let fieldValuesToSave = { ...editedFields };
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }
-      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
+      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files));
     },
     endpoint,
     usedByConfig,
