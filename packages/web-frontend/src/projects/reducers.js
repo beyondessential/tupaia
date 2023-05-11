@@ -16,7 +16,7 @@ import {
 export default function projects(
   state = {
     projects: [],
-    isLoadingCustomLandingPage: false,
+    isLoadingCustomLandingPage: true,
     customLandingPage: null,
     requestingAccess: null,
     error: '',

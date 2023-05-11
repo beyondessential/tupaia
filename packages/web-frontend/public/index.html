@@ -128,7 +128,16 @@
         background: #262834;
         font-family: Roboto, sans-serif;
       }
-      .spinner:before {
+      #tupaia-spinner {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          width: 100vw;
+          z-index: 9999;
+          background: #262834;
+      }
+      #tupaia-spinner:before {
         content: '';
         box-sizing: border-box;
         position: absolute;
@@ -150,6 +159,7 @@
     <noscript>
       <p style="color: white">You need to enable JavaScript to run this app.</p>
     </noscript>
-    <div id="root"><div class="spinner"></div></div>
+    <div id="tupaia-spinner"></div>
+    <div id="root"></div>
   </body>
 </html>
