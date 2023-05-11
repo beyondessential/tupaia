@@ -21,10 +21,6 @@ export const useCustomLandingPages = () => {
     isCustomLandingPageLoading,
     isCustomLandingPage: !!landingPage,
     customLandingPageSettings: landingPage || {},
-    // tupaia requires projects to work so we can assume that if there are no projects, it's just
-    // because they haven't loaded yet. We can replace this with more idiomatic loading state
-    // when we refactor to use react-query
-    isProjectsLoading: projectData.length === 0,
     projects: getLandingPageProjects(landingPage, projectData),
   };
 };
