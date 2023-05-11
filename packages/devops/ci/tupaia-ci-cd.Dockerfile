@@ -93,6 +93,8 @@ RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/ui-chart-components
 COPY packages/ui-chart-components/package.json ./packages/ui-chart-components
+RUN mkdir -p ./packages/ui-map-components
+COPY packages/ui-map-components/package.json ./packages/ui-map-components
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
 RUN mkdir -p ./packages/weather-api
