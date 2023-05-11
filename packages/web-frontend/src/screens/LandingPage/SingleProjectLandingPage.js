@@ -11,7 +11,6 @@ import { useAuth } from './useAuth';
 import { getProjectAccessType } from '../../utils';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { useNavigation } from './useNavigation';
-import { LoadingScreen } from '../LoadingScreen';
 
 /**
  * This is the template for the content of a landing page if there is only one project
@@ -86,7 +85,6 @@ export function SingleProjectLandingPage() {
     if (!action) return;
     action(project);
   };
-
   return (
     <Wrapper>
       {extendedTitle && (
