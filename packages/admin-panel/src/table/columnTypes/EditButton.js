@@ -7,9 +7,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
-import { IconButton } from '../widgets';
-import { openEditModal } from './actions';
-import { fetchUsedBy } from '../usedBy';
+import { IconButton } from '../../widgets';
+import { openEditModal } from '../../editor/actions';
+import { fetchUsedBy } from '../../usedBy';
 
 export const EditButtonComponent = ({ onEdit }) => (
   <IconButton className="edit-button" onClick={onEdit}>

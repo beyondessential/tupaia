@@ -44,7 +44,7 @@ const STATUS = {
 export const ArchiveAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
   const { setIsOpen } = useContext(AlertsPanelContext);
-  const [archiveAlert, { error }] = useArchiveAlert(alertId);
+  const { mutate: archiveAlert, error } = useArchiveAlert(alertId);
 
   const handleArchive = useCallback(async () => {
     setStatus(STATUS.LOADING);

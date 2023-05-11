@@ -124,7 +124,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       pageQueryKey,
     );
 
-    const [confirmReport, { isLoading: isConfirming, reset, error }] = useConfirmWeeklyReport(
+    const { mutate: confirmReport, isLoading: isConfirming, reset, error } = useConfirmWeeklyReport(
       countryCode,
       activeWeek,
     );

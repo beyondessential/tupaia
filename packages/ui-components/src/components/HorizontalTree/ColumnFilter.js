@@ -24,7 +24,7 @@ export const useFilter = () => {
 
   const applyFilter = useCallback(
     (items, { field }) =>
-      filter ? items.filter(item => item[field].toLowerCase().includes(filter)) : items,
+      filter ? items?.filter(item => item[field].toLowerCase().includes(filter)) : items,
     [filter],
   );
 
