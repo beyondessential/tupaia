@@ -131,6 +131,7 @@ const TableBody = ({ ...props }) => {
             expanded={expanded}
             rowIndex={rowIndex}
             key={rowData.id}
+            rowData={rowData}
             {...props}
           />
         );

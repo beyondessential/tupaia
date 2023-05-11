@@ -5,11 +5,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { getIsChartData, getNoDataString } from '@tupaia/utils';
 import { useLocation } from 'react-router-dom';
 import { ColorCircle } from './ColorCircle';
 import { HeaderRow, SubHeaderRow, StandardRow, LinkRow } from './Rows';
 import { FetchLoader } from '../FetchLoader';
-import { getIsChartData, getNoDataString } from '../Chart';
 import { SmallAlert } from '../Alert';
 
 const Container = styled.div`
