@@ -15,5 +15,6 @@ module.exports = {
   moduleNameMapper: {
     '^react-native$': 'react-native-web',
     '^@tupaia/ui-components$': '<rootDir>/jestFileMock.js',
+    '^@tupaia/ui-chart-components$': '<rootDir>/jestFileMock.js',
   },
 };
