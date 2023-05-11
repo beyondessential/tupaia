@@ -6,8 +6,9 @@
 import { useQueryClient, useMutation } from 'react-query';
 import { remove, put, post } from './api';
 
-export const useConfirmWeeklyReport = (countryCode, period) =>
-  useMutation(
+export const useConfirmWeeklyReport = (countryCode, period) => {
+  const queryClient = useQueryClient();
+  return useMutation(
     () =>
       post(`confirmedWeeklyReport/${countryCode}`, {
         params: { week: period },
@@ -15,22 +16,24 @@ export const useConfirmWeeklyReport = (countryCode, period) =>
     {
       onSuccess: response => {
         // Same as useSaveWeeklyReport, we need to invalidate all weekly data
-        useQueryClient().invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
+        queryClient.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
         // regional (multi-country) level
-        useQueryClient().invalidateQueries('confirmedWeeklyReport', { exact: true });
+        queryClient.invalidateQueries('confirmedWeeklyReport', { exact: true });
 
         if (response?.alertData?.createdAlerts?.length > 0) {
-          useQueryClient().invalidateQueries(`alerts/active`);
+          queryClient.invalidateQueries(`alerts/active`);
         }
         if (response?.alertData?.alertsArchived) {
-          useQueryClient().invalidateQueries(`alerts/archive`);
+          queryClient.invalidateQueries(`alerts/archive`);
         }
       },
     },
   );
+};
 
-export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) =>
-  useMutation(
+export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) => {
+  const queryClient = useQueryClient();
+  return useMutation(
     data =>
       put(`weeklyReport/${countryCode}/${siteCode}`, {
         params: { week },
@@ -38,16 +41,18 @@ export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) =>
       }),
     {
       onSuccess: () => {
-        useQueryClient().invalidateQueries(`weeklyReport/${countryCode}/sites`);
+        queryClient.invalidateQueries(`weeklyReport/${countryCode}/sites`);
         // Even though we only changed one week of data, we need to re-fetch the complete list because
         // the data for a specific week is dependant on previous weeks, even across pages.
-        useQueryClient().invalidateQueries(`weeklyReport/${countryCode}`);
+        queryClient.invalidateQueries(`weeklyReport/${countryCode}`);
       },
     },
   );
+};
 
-export const useDeleteWeeklyReport = ({ countryCode, week }) =>
-  useMutation(
+export const useDeleteWeeklyReport = ({ countryCode, week }) => {
+  const queryClient = useQueryClient();
+  return useMutation(
     () =>
       remove(`weeklyReport/${countryCode}`, {
         params: { week },
@@ -55,10 +60,11 @@ export const useDeleteWeeklyReport = ({ countryCode, week }) =>
     {
       onSuccess: () => {
         // Same as useSaveWeeklyReport, we need to invalidate all weekly data
-        useQueryClient().invalidateQueries(`weeklyReport/${countryCode}`);
+        queryClient.invalidateQueries(`weeklyReport/${countryCode}`);
       },
     },
   );
+};
 
 export const combineMutationResults = results => ({
   isError: !!results.find(r => r.isError),

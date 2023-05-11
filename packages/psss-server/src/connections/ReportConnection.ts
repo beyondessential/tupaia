@@ -42,7 +42,7 @@ export class ReportConnection extends ApiConnection {
       return buildEmptyReport(periods);
     }
 
-    const [startWeek, endWeek] = periods;
+    const [startWeek, endWeek = startWeek] = periods;
     const [startDate] = convertPeriodStringToDateRange(startWeek);
     const [, endDate] = convertPeriodStringToDateRange(endWeek);
 
