@@ -9,9 +9,9 @@ import { prettyArray } from '../../utilities';
 const LANDING_PAGES_ENDPOINT = 'landingPages';
 
 // the URL prefix to display in the url_segment field
-const URL_PREFIX = window.location.origin.replace('admin', 'www');
+const URL_PREFIX = `https://${process.env.NODE_ENV === 'production' ? 'www' : 'dev'}.tupaia.org`;
 
-const DISPLAY_URL_PREFIX = `${URL_PREFIX.replace(new RegExp('(https://)|(http://)'), '')}/`;
+const DISPLAY_URL_PREFIX = `${URL_PREFIX.replace('https://', '')}/`;
 
 // All the fields of a custom landing page
 const FIELDS = {
