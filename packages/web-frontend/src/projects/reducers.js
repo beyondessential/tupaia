@@ -10,11 +10,13 @@ import {
   REQUEST_PROJECT_ACCESS,
   SET_CUSTOM_LANDING_PAGE_DATA,
   CLEAR_CUSTOM_LANDING_PAGE_DATA,
+  CUSTOM_LANDING_PAGE_LOADING,
 } from '../actions';
 
 export default function projects(
   state = {
     projects: [],
+    isLoadingCustomLandingPage: true,
     customLandingPage: null,
     requestingAccess: null,
     error: '',
@@ -32,10 +34,16 @@ export default function projects(
         ...state,
         requestingAccess: action.project,
       };
+    case CUSTOM_LANDING_PAGE_LOADING:
+      return {
+        ...state,
+        isLoadingCustomLandingPage: action.isLoading,
+      };
     case SET_CUSTOM_LANDING_PAGE_DATA:
       return {
         ...state,
         customLandingPage: action.data,
+        isLoadingCustomLandingPage: false,
       };
     case CLEAR_CUSTOM_LANDING_PAGE_DATA:
       return {

@@ -2,6 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 function getLandingPageProjects(landingPage, projects) {
@@ -15,8 +16,10 @@ function getLandingPageProjects(landingPage, projects) {
 export const useCustomLandingPages = () => {
   const projectData = useSelector(({ project }) => project?.projects || []);
   const landingPage = useSelector(state => state.project.customLandingPage);
+  const isCustomLandingPageLoading = useSelector(state => state.project.isLoadingCustomLandingPage);
 
   return {
+    isCustomLandingPageLoading,
     isCustomLandingPage: !!landingPage,
     customLandingPageSettings: landingPage || {},
     projects: getLandingPageProjects(landingPage, projectData),

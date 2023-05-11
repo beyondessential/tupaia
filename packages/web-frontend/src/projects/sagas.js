@@ -9,6 +9,7 @@ import {
   FETCH_LOGOUT_SUCCESS,
   FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
   SET_CUSTOM_LANDING_PAGE_DATA,
+  CUSTOM_LANDING_PAGE_LOADING,
 } from '../actions';
 import { selectProjectByCode, selectCurrentOrgUnitCode } from '../selectors';
 
@@ -24,6 +25,10 @@ export function* fetchProjectData() {
 
 export function* fetchCustomLandingPageData() {
   try {
+    yield put({
+      type: CUSTOM_LANDING_PAGE_LOADING,
+      isLoading: true,
+    });
     const { routing: location } = yield select();
 
     const data = yield call(request, `landingPage/${location.pathname.substring(1)}`);
@@ -31,7 +36,15 @@ export function* fetchCustomLandingPageData() {
       type: SET_CUSTOM_LANDING_PAGE_DATA,
       data,
     });
+    yield put({
+      type: CUSTOM_LANDING_PAGE_LOADING,
+      isLoading: false,
+    });
   } catch (error) {
+    yield put({
+      type: CUSTOM_LANDING_PAGE_LOADING,
+      isLoading: false,
+    });
     // eslint-disable-next-line no-console
     console.error(error);
   }
