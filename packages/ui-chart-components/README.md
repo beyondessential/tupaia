@@ -1,4 +1,4 @@
-# @tupaia/ui-components
+# @tupaia/ui-chart-components
 
 A library of chart interface components for the Tupaia project.
 
