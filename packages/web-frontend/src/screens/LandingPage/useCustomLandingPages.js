@@ -18,16 +18,8 @@ export const useCustomLandingPages = () => {
   const landingPage = useSelector(state => state.project.customLandingPage);
   const isCustomLandingPageLoading = useSelector(state => state.project.isLoadingCustomLandingPage);
 
-  useEffect(() => {
-    if (isCustomLandingPageLoading === false) {
-      const el = document.getElementById('tupaia-spinner');
-      if (el) {
-        el.remove();
-      }
-    }
-  }, [isCustomLandingPageLoading]);
-
   return {
+    isCustomLandingPageLoading,
     isCustomLandingPage: !!landingPage,
     customLandingPageSettings: landingPage || {},
     projects: getLandingPageProjects(landingPage, projectData),
