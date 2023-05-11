@@ -91,6 +91,8 @@ RUN mkdir -p ./packages/types
 COPY packages/types/package.json ./packages/types
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
+RUN mkdir -p ./packages/ui-chart-components
+COPY packages/ui-chart-components/package.json ./packages/ui-chart-components
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
 RUN mkdir -p ./packages/weather-api
@@ -121,6 +123,7 @@ COPY packages/utils/. ./packages/utils
 COPY packages/tsutils/. ./packages/tsutils
 COPY packages/types/. ./packages/types
 COPY packages/ui-components/. ./packages/ui-components
+COPY packages/ui-chart-components/. ./packages/ui-chart-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api

@@ -76,6 +76,7 @@
         "packages/lesmis/**",
         "packages/psss/**",
         "packages/ui-components/**",
+        "packages/ui-chart-components/**",
         "packages/web-frontend/**"
       ],
       "env": {
@@ -161,6 +162,12 @@
     },
     {
       "files": ["packages/ui-components/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
+      "files": ["packages/ui-chart-components/**"],
       "rules": {
         "import/no-extraneous-dependencies": "off"
       }
