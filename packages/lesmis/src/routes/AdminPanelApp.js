@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
+import { Assignment, InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
 import {
   LogoutPage,
@@ -25,6 +25,8 @@ import {
   UsersPage,
   PermissionsPage,
   EntitiesPage,
+  ExternalDatabaseConnectionsPage,
+  DataTablesPage,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -36,7 +38,7 @@ import {
 } from '../views/AdminPanel/SurveyResponsesView';
 import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n } from '../utils';
+import { useAdminPanelUrl, useI18n, isLesmisAdmin } from '../utils';
 
 const getRoutes = (adminUrl, translate) => {
   return [
@@ -129,6 +131,11 @@ const getRoutes = (adminUrl, translate) => {
           to: '/map-overlay-group-relations',
           component: MapOverlayGroupRelationsPage,
         },
+        {
+          label: translate('admin.dataTables'),
+          to: '/dataTables',
+          component: DataTablesPage,
+        },
       ],
     },
     {
@@ -160,14 +167,27 @@ const getRoutes = (adminUrl, translate) => {
         },
       ],
     },
+    {
+      label: translate('admin.externalData'),
+      to: `${adminUrl}/external-database-connections`,
+      icon: <Language />,
+      tabs: [
+        {
+          label: translate('admin.externalDatabaseConnections'),
+          to: '',
+          component: ExternalDatabaseConnectionsPage,
+        },
+      ],
+    },
   ];
 };
 
-const AdminPanelApp = ({ user, isBESAdmin }) => {
+const AdminPanelApp = ({ user }) => {
   const { translate } = useI18n();
   const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
   const adminUrl = useAdminPanelUrl();
+  const userIsLesmisAdmin = isLesmisAdmin(user);
 
   const getHeaderEl = () => {
     return headerEl;
@@ -183,9 +203,8 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
       <Route path={`${path}/logout`} exact>
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
-      <LesmisAdminRoute path={`${path}/viz-builder`} isBESAdmin>
+      <LesmisAdminRoute path={`${path}/viz-builder`} isLESMISAdmin={userIsLesmisAdmin}>
         <VizBuilderApp
-          basePath={adminUrl}
           Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
         />
       </LesmisAdminRoute>
@@ -194,7 +213,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
         <div ref={headerEl} />
         <Switch>
           {[...routes].map(route => (
-            <LesmisAdminRoute key={route.to} path={`${route.to}`} isBESAdmin={isBESAdmin}>
+            <LesmisAdminRoute key={route.to} path={`${route.to}`} isLESMISAdmin={userIsLesmisAdmin}>
               <TabsToolbar links={route.tabs} maxWidth="xl" />
               <Switch>
                 {route.tabs.map(tab => (
@@ -221,17 +240,11 @@ AdminPanelApp.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
-  isBESAdmin: PropTypes.bool,
-};
-
-AdminPanelApp.defaultProps = {
-  isBESAdmin: false,
 };
 
 export default connect(
   state => ({
     user: state?.authentication?.user || {},
-    isBESAdmin: state?.authentication?.isBESAdmin || false,
   }),
   null,
 )(AdminPanelApp);

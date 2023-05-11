@@ -63,7 +63,7 @@ import winston from './log';
   /**
    * Start the server
    */
-  const port = 8090;
+  const port = process.env.PORT || 8090;
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
   const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';

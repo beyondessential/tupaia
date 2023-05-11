@@ -34,3 +34,4 @@ packages/.vscode/settings.json
 !.yarn/versions
 .pnp.*
 # yarn end
+**/Dockerfile
