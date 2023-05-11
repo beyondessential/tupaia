@@ -8,8 +8,8 @@ import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { formatDataValueByType, CHART_TYPES } from '@tupaia/utils';
-import { VALUE_TYPES, PRESENTATION_OPTIONS_SHAPE } from '../../constants';
+import { formatDataValueByType } from '@tupaia/utils';
+import { VALUE_TYPES, PRESENTATION_OPTIONS_SHAPE, CHART_TYPES } from '../../constants';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 

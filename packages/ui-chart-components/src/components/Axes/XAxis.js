@@ -6,10 +6,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
-import { CHART_TYPES } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
-import { DARK_BLUE } from '../../constants';
+import { DARK_BLUE, CHART_TYPES } from '../../constants';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',

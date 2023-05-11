@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink } from 'react-router-dom';
-import { FlexSpaceBetween } from '../Layout';
+import { FlexSpaceBetween } from '@tupaia/ui-components';
 
 const Heading = styled(Typography)`
   font-size: 1.125rem;

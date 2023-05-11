@@ -3,14 +3,16 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { getIsChartData, getNoDataString } from '@tupaia/utils';
 import { useLocation } from 'react-router-dom';
+import { FetchLoader, SmallAlert } from '@tupaia/ui-components';
+import { getIsChartData, getNoDataString } from '@tupaia/ui-chart-components';
+import PropTypes from 'prop-types';
+import { VisualHeader } from '../VisualHeader';
+import { FavouriteButton } from '../../FavouriteButton';
+import { YearLabel } from '../../YearLabel';
 import { ColorCircle } from './ColorCircle';
-import { HeaderRow, SubHeaderRow, StandardRow, LinkRow } from './Rows';
-import { FetchLoader } from '../FetchLoader';
-import { SmallAlert } from '../Alert';
+import { HeaderRow, StandardRow, SubHeaderRow, LinkRow } from './Rows';
 
 const Container = styled.div`
   position: relative;
@@ -109,7 +111,7 @@ const NoData = styled(SmallAlert)`
   transform: translate(-50%, -50%);
 `;
 
-export const ListVisual = React.memo(
+const ListVisualContent = React.memo(
   ({ viewContent, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
     const { data, ...config } = viewContent;
 
@@ -156,7 +158,7 @@ export const ListVisual = React.memo(
   },
 );
 
-ListVisual.propTypes = {
+ListVisualContent.propTypes = {
   drilldownPathname: PropTypes.string,
   viewContent: PropTypes.object,
   reportCodes: PropTypes.object,
@@ -167,7 +169,7 @@ ListVisual.propTypes = {
   error: PropTypes.string,
 };
 
-ListVisual.defaultProps = {
+ListVisualContent.defaultProps = {
   drilldownPathname: null,
   viewContent: null,
   reportCodes: null,
@@ -176,4 +178,38 @@ ListVisual.defaultProps = {
   isError: false,
   isEnlarged: false,
   error: null,
+};
+
+export const ListVisual = props => {
+  const { name, isEnlarged, isFavourite, handleFavouriteStatusChange, useYearSelector } = props;
+
+  return (
+    <>
+      {!isEnlarged && (
+        <VisualHeader name={name}>
+          <YearLabel useYearSelector={useYearSelector} />
+          <FavouriteButton
+            isFavourite={isFavourite}
+            handleFavouriteStatusChange={handleFavouriteStatusChange}
+          />
+        </VisualHeader>
+      )}
+      <ListVisualContent {...props} />
+    </>
+  );
+};
+
+ListVisual.propTypes = {
+  isEnlarged: PropTypes.bool,
+  useYearSelector: PropTypes.bool,
+  name: PropTypes.string,
+  isFavourite: PropTypes.bool.isRequired,
+  handleFavouriteStatusChange: PropTypes.func,
+};
+
+ListVisual.defaultProps = {
+  isEnlarged: false,
+  useYearSelector: false,
+  name: null,
+  handleFavouriteStatusChange: () => {},
 };

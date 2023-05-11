@@ -7,8 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
 import { DataTable, SmallAlert } from '@tupaia/ui-components';
-import { getIsChartData, getNoDataString } from '@tupaia/utils';
-import { getChartTableData } from '../utils';
+import { getChartTableData, getIsChartData, getNoDataString } from '../utils';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;

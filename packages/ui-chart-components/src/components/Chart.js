@@ -8,10 +8,16 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { SmallAlert } from '@tupaia/ui-components';
-import { CHART_TYPES, getIsChartData, getNoDataString } from '@tupaia/utils';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
-import { getIsTimeSeries, isDataKey, parseChartConfig } from '../utils';
+import {
+  getIsTimeSeries,
+  isDataKey,
+  parseChartConfig,
+  getIsChartData,
+  getNoDataString,
+} from '../utils';
+import { CHART_TYPES } from '../constants';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;

@@ -1,4 +1,4 @@
-import { getDateRangeForGranularity } from '../../period/periodGranularity';
+import { getDateRangeForGranularity } from '../../period/getDateRangeForGranularity';
 
 describe('getDateRangeForGranularity', () => {
   const testData = [

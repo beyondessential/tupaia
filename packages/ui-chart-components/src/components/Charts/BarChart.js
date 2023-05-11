@@ -6,8 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Bar, LabelList } from 'recharts';
-import { formatDataValueByType, CHART_TYPES } from '@tupaia/utils';
-import { BLUE } from '../../constants';
+import { formatDataValueByType } from '@tupaia/utils';
+import { BLUE, CHART_TYPES } from '../../constants';
 import { getIsTimeSeries } from '../../utils';
 
 export const BarChart = ({

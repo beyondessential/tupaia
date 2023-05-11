@@ -6,8 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ReferenceLine } from 'recharts';
-import { formatDataValueByType, CHART_TYPES } from '@tupaia/utils';
-import { TUPAIA_ORANGE } from '../../constants';
+import { formatDataValueByType } from '@tupaia/utils';
+import { TUPAIA_ORANGE, CHART_TYPES } from '../../constants';
 import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({ referenceLineLabel, isExporting }) => {

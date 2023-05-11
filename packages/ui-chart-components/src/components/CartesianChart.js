@@ -17,8 +17,7 @@ import {
   Tooltip,
   Brush,
 } from 'recharts';
-import { CHART_TYPES } from '@tupaia/utils';
-import { CHART_BLUES, VIEW_CONTENT_SHAPE, DEFAULT_DATA_KEY } from '../constants';
+import { CHART_BLUES, VIEW_CONTENT_SHAPE, DEFAULT_DATA_KEY, CHART_TYPES } from '../constants';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,

@@ -4,8 +4,7 @@
  *
  */
 
-import { CHART_TYPES } from '@tupaia/utils';
-import { COLOR_PALETTES } from '../constants';
+import { COLOR_PALETTES, CHART_TYPES } from '../constants';
 import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';

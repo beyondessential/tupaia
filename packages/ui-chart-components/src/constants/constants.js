@@ -16,3 +16,12 @@ export const VALUE_TYPES = {
 };
 
 export const DEFAULT_DATA_KEY = 'value';
+
+export const CHART_TYPES = {
+  AREA: 'area',
+  BAR: 'bar',
+  COMPOSED: 'composed',
+  LINE: 'line',
+  PIE: 'pie',
+  GAUGE: 'gauge',
+};

@@ -8,8 +8,11 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { getIsChartData } from '@tupaia/utils';
-import { Chart as ChartComponent, ChartTable as BaseChartTable } from '@tupaia/ui-chart-components';
+import {
+  Chart as ChartComponent,
+  ChartTable as BaseChartTable,
+  getIsChartData,
+} from '@tupaia/ui-chart-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';

@@ -4,8 +4,8 @@
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { formatDataValueByType, CHART_TYPES } from '@tupaia/utils';
-import { DEFAULT_DATA_KEY } from '../constants';
+import { formatDataValueByType } from '@tupaia/utils';
+import { DEFAULT_DATA_KEY, CHART_TYPES } from '../constants';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 
