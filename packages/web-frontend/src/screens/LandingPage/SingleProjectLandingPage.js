@@ -58,7 +58,6 @@ const ActionButton = styled(Button)`
 export function SingleProjectLandingPage() {
   const {
     customLandingPageSettings: { extendedTitle, includeNameInHeader },
-    isProjectsLoading,
     projects,
   } = useCustomLandingPages();
 
@@ -87,14 +86,6 @@ export function SingleProjectLandingPage() {
     if (!action) return;
     action(project);
   };
-
-  if (isProjectsLoading) {
-    return (
-      <Wrapper>
-        <LoadingScreen isLoading />
-      </Wrapper>
-    );
-  }
 
   return (
     <Wrapper>
