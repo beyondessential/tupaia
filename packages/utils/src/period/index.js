@@ -15,3 +15,5 @@ export * from './getDefaultPeriod';
 export * from './period';
 export * from './periodGranularity';
 export { getExportDatesString } from './getExportDatesString';
+export * from './chartGranularities';
+export * from './weekDisplayFormats';
