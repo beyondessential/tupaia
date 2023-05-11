@@ -17,9 +17,9 @@ The page will reload if you make edits.<br />
 Storybook is an open source tool for developing UI components.
 [https://github.com/storybookjs/storybook](https://github.com/storybookjs/storybook)
 
-## Material UI
+## Recharts
 
-The components are mostly built on top of components from the Material UI library. https://material-ui.com.
+The components are mostly built on top of components from the [ReCharts library](https://recharts.org).
 
 ##### Notes on approach:
 

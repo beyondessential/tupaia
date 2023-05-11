@@ -13,7 +13,7 @@ export { convertDateRangeToPeriodQueryString } from './convertDateRangeToPeriodQ
 export { getMostRecentPeriod, getMostAncientPeriod } from './periodExtremes';
 export * from './getDefaultPeriod';
 export * from './period';
-export * from './periodGranularity';
+export * from './getDateRangeForGranularity';
 export { getExportDatesString } from './getExportDatesString';
-export * from './chartGranularities';
+export * from './periodGranularity';
 export * from './weekDisplayFormats';
