@@ -9,6 +9,7 @@ import { Link, Typography, List } from '@material-ui/core';
 import { useCustomLandingPages } from './useCustomLandingPages';
 
 const Footer = styled.footer`
+  margin-top: auto;
   color: ${props => props.theme.palette.common.white};
   display: flex;
   flex-direction: column;

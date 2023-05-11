@@ -14,6 +14,7 @@ import TopBar from '../../containers/TopBar';
 import { TOP_BAR_HEIGHT, TOP_BAR_HEIGHT_MOBILE } from '../../styles';
 import { LandingPageFooter } from './LandingPageFooter';
 import { useCustomLandingPages } from './useCustomLandingPages';
+import { LoadingScreen } from '../LoadingScreen';
 
 /**
  * This is the template for landing pages when the user is not on a mobile device
@@ -53,7 +54,12 @@ export const LandingPage = () => {
       <TopBar />
       <Wrapper backgroundImage={backgroundImage}>
         <Container maxWidth={false}>
-          {projects.length > 1 ? <MultiProjectLandingPage /> : <SingleProjectLandingPage />}
+          {/* tupaia requires projects to work so we can assume that if there are no projects, it's just */}
+          {/* because they haven't loaded yet. We can replace this with more idiomatic loading state */}
+          {/* when we refactor to use react-query */}
+          {projects.length === 0 && <LoadingScreen isLoading background={null} />}
+          {projects.length === 1 && <SingleProjectLandingPage />}
+          {projects.length > 1 && <MultiProjectLandingPage />}
           <LandingPageFooter />
         </Container>
       </Wrapper>
