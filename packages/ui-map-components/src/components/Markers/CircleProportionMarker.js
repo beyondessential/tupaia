@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CircleMarker } from 'react-leaflet';
 import styled from 'styled-components';
-import { getColor } from '../utils';
+import { getColor } from '../../utils';
 
 const HoverCircle = styled(CircleMarker)`
   &:hover {

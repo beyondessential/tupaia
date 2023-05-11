@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { MapContainer as LeafletMapContainer } from 'react-leaflet';
 import { LeafletStyles } from './LeafletStyles';
-import { DEFAULT_BOUNDS } from './constants';
+import { DEFAULT_BOUNDS } from '../constants';
 
 const Map = styled(LeafletMapContainer)`
   ${LeafletStyles};

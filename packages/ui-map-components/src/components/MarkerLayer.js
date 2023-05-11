@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { LayerGroup, Polygon } from 'react-leaflet';
 import { MeasureMarker, MeasurePopup } from './Markers';
 import { AreaTooltip } from './AreaTooltip';
-import { getSingleFormattedValue, MEASURE_TYPE_RADIUS } from './utils';
+import { getSingleFormattedValue, MEASURE_TYPE_RADIUS } from '../utils';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFormattedInfo } from './utils';
+import { getFormattedInfo } from '../utils';
 
 const getMetadata = (data, key) => {
   if (data.metadata) {

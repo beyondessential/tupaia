@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
-import { MAP_COLORS } from './constants';
+import { MAP_COLORS } from '../constants';
 
 const { POLYGON_HIGHLIGHT } = MAP_COLORS;
 

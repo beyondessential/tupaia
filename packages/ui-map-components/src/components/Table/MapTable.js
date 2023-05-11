@@ -4,8 +4,8 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { DataTable } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
-import { DataTable } from '../../DataTable';
 
 export const MapTable = ({ serieses, measureData, className }) => {
   const { columns, data } = getMapTableData(serieses, measureData);

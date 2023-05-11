@@ -13,7 +13,7 @@ import {
   MEASURE_TYPE_SHADED_SPECTRUM,
   MEASURE_TYPE_SPECTRUM,
   MEASURE_TYPE_POPUP_ONLY,
-} from '../utils';
+} from '../../utils';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
 

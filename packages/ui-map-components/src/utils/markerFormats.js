@@ -14,7 +14,7 @@ import {
   MAP_COLORS,
   SCALE_TYPES,
 } from '../constants';
-import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../Markers/markerIcons';
+import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';

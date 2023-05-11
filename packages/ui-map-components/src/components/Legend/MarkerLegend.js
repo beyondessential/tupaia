@@ -8,7 +8,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
-import { UNKNOWN_COLOR } from '../constants';
+import { UNKNOWN_COLOR } from '../../constants';
 import {
   DEFAULT_ICON,
   HIDDEN_ICON,
@@ -23,7 +23,7 @@ import {
   MEASURE_TYPE_SHADING,
   MEASURE_VALUE_NULL,
   MEASURE_VALUE_OTHER,
-} from '../utils';
+} from '../../utils';
 import { LegendEntry } from './LegendEntry';
 
 const Container = styled(MuiBox)`

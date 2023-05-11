@@ -9,9 +9,9 @@ import PropTypes from 'prop-types';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { resolveSpectrumColour } from '../utils';
+import { resolveSpectrumColour } from '../../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
-import { SCALE_TYPES } from '../constants';
+import { SCALE_TYPES } from '../../constants';
 import { LegendEntry } from './LegendEntry';
 
 const FlexCenter = styled(MuiBox)`

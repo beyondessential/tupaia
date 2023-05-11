@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
 import { AreaTooltip } from './AreaTooltip';
-import { MAP_COLORS, BREWER_PALETTE } from './constants';
+import { MAP_COLORS, BREWER_PALETTE } from '../constants';
 import ActivePolygon from './ActivePolygon';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;

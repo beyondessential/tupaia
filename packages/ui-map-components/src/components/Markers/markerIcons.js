@@ -18,7 +18,7 @@ import { ICON_BASE_SIZE } from './constants';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
 import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
 import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
-import { BREWER_PALETTE, WHITE } from '../constants';
+import { BREWER_PALETTE, WHITE } from '../../constants';
 import { IconContainer } from './IconContainer';
 
 // allows passing a color to a material icon & scales it down a bit

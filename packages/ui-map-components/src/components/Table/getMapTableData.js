@@ -4,7 +4,7 @@
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { getFormattedInfo } from '../utils';
+import { getFormattedInfo } from '../../utils';
 
 const FirstColumnCell = styled.span`
   font-weight: 500;

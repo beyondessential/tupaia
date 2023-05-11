@@ -5814,6 +5814,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/ui-map-components@workspace:packages/ui-map-components":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/ui-map-components@workspace:packages/ui-map-components"
+  dependencies:
+    "@material-ui/core": ^4.9.8
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/styles": ^4.9.10
+    "@storybook/react": ^6.3.9
+    "@tupaia/ui-components": 1.0.0
+    "@tupaia/utils": 1.0.0
+    leaflet: ^1.7.1
+    lodash.get: ^4.4.2
+    moment: ^2.29.1
+    prop-types: ^15.7.2
+    react: ^16.13.1
+    react-dom: ^16.13.1
+    react-leaflet: ^3.2.1
+    react-table: ^7.7.0
+    styled-components: ^5.0.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/utils@1.0.0, @tupaia/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
