@@ -142,6 +142,7 @@ const ListVisualContent = React.memo(
 
             return drillDownReportCode ? (
               <DrillDownLink
+                // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 pathname={drilldownPathname}
                 reportCode={drillDownReportCode}
@@ -149,6 +150,7 @@ const ListVisualContent = React.memo(
                 <Row />
               </DrillDownLink>
             ) : (
+              // eslint-disable-next-line react/no-array-index-key
               <Row key={index} />
             );
           })}
