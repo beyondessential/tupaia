@@ -44,6 +44,7 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 - [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
+- [ui-chart-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-chart-components/README.md)
 - [server-boilerplate](https://github.com/beyondessential/tupaia/blob/dev/packages/server-boilerplate/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
@@ -72,7 +73,7 @@ We use codeship for the CI/CD
 
 ## Tests
 
-Most of the packages support the following scripts for testing: 
+Most of the packages support the following scripts for testing:
 
 ```
 

@@ -8,6 +8,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import styled from 'styled-components';
+import {
+  DEFAULT_MIN_DATE,
+  GRANULARITIES,
+  GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_SHAPE,
+  roundStartEndDates,
+} from '@tupaia/utils';
 import { Dialog, DialogHeader, DialogContent, DialogFooter } from '../Dialog';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
@@ -15,13 +22,6 @@ import { YearPicker } from './YearPicker';
 import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
 import { Button, OutlinedButton } from '../Button';
-import {
-  DEFAULT_MIN_DATE,
-  GRANULARITIES,
-  GRANULARITIES_WITH_ONE_DATE,
-  GRANULARITY_SHAPE,
-  roundStartEndDates,
-} from '../Chart';
 
 const {
   DAY,

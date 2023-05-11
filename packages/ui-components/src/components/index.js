@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './Chart';
 export * from './DataLibrary';
 export * from './DataTable';
 export * from './DateRangePicker';
@@ -12,7 +11,6 @@ export * from './Icons';
 export * from './Inputs';
 export * from './JsonEditor';
 export * from './Layout';
-export * from './ListVisual';
 export * from './Map';
 export * from './Modal';
 export * from './Table';

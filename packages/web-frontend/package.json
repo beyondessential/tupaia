@@ -28,7 +28,8 @@
     "storybook": "start-storybook -s public -p 6007",
     "test": "node scripts/test.js --env=jsdom",
     "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
-    "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev"
+    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build-dev:watch",
+    "start-frontend": "npm-run-all -c -l -p start-ui-components start-ui-chart-components start-dev"
   },
   "resolutions": {
     "jss": "10.0.0"
@@ -39,6 +40,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
+    "@tupaia/ui-chart-components": "1.0",
     "@tupaia/ui-components": "1.0",
     "@tupaia/utils": "1.0.0",
     "core-js": "^3.16.1",

@@ -6,14 +6,14 @@
 import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { MenuItem } from '../Inputs';
-import { DatePicker } from './DatePicker';
 import {
   GRANULARITY_CONFIG,
   GRANULARITIES,
   WEEK_DISPLAY_CONFIG,
-  momentToDateString,
-} from '../Chart';
+  momentToDateDisplayString,
+} from '@tupaia/utils';
+import { MenuItem } from '../Inputs';
+import { DatePicker } from './DatePicker';
 
 const useBoundaryWeekOrDefault = (currentDate, boundaryDate, defaultWeek) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;
@@ -39,7 +39,7 @@ export const WeekPicker = ({
   // Prefer moment mutation to creation for performance reasons
   const mutatingMoment = date.clone();
   for (let w = 1; w <= weeksInYear; w++) {
-    const weekLabel = momentToDateString(
+    const weekLabel = momentToDateDisplayString(
       mutatingMoment.isoWeek(w),
       GRANULARITIES.SINGLE_WEEK,
       pickerFormat,

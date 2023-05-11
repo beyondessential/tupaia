@@ -14,9 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiButton from '@material-ui/core/Button';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import MuiIconButton from '@material-ui/core/IconButton';
-// Todo: Move period granularities to tupaia utils
-// @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2788
-import { GRANULARITIES, GRANULARITY_SHAPE } from '../Chart';
+import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
 import { useDateRangePicker } from './useDateRangePicker';
 import { DatePickerDialog } from './DatePickerDialog';
 import { FlexStart } from '../Layout';

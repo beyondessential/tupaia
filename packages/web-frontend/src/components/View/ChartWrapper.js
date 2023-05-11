@@ -10,7 +10,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButtonComponent from '@material-ui/lab/ToggleButton';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart as ChartComponent, ChartTable } from '@tupaia/ui-components';
+import { Chart as ChartComponent, ChartTable } from '@tupaia/ui-chart-components';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { ChartContainer, ChartViewContainer } from './Layout';
 import { FlexEnd } from '../Flexbox';

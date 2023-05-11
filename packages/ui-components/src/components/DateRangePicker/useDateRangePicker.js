@@ -11,13 +11,13 @@ import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
-  momentToDateString,
+  WEEK_DISPLAY_CONFIG,
+  momentToDateDisplayString,
   roundStartEndDates,
   roundStartDate,
   roundEndDate,
   toStandardDateString,
-  WEEK_DISPLAY_CONFIG,
-} from '../Chart';
+} from '@tupaia/utils';
 
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
@@ -42,8 +42,13 @@ const getDatesAsString = (
       ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
       : GRANULARITY_CONFIG[granularity];
 
-  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat, modifier);
-  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat, modifier);
+  const formattedStartDate = momentToDateDisplayString(
+    startDate,
+    granularity,
+    rangeFormat,
+    modifier,
+  );
+  const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
