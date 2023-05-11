@@ -31,7 +31,8 @@ const FooterHeader = styled(Typography)`
 const FooterBodyText = styled.p`
   margin: 0;
   font-size: 0.875em;
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 1em;
   }
 `;
@@ -64,7 +65,8 @@ const FooterContactListItem = styled.li`
   & + & {
     margin-top: 0.5em;
   }
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 1em;
   }
 `;
@@ -75,7 +77,8 @@ const FooterPoweredByWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   padding-top: 1em;
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.sm}px) and (min-height: 600px) {
     padding-top: 2em;
     margin-top: -3px;
   }

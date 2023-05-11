@@ -43,7 +43,8 @@ const Title = styled(Typography)`
   color: ${({ theme }) => theme.palette.common.white};
   text-shadow: 1px 1px ${TRANS_BLACK};
   max-width: 30em;
-  @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 2em;
     margin-bottom: 1.8em;
   }
@@ -64,17 +65,16 @@ export function MultiProjectLandingPage() {
   const { navigateToProject, navigateToRequestProjectAccess, navigateToLogin } = useNavigation();
   const {
     projects,
-    customLandingPageSettings: {
-      include_name_in_header: includeNameInHeader,
-      primary_hexcode: primaryColor,
-    },
+    customLandingPageSettings: { includeNameInHeader, primaryHexcode },
   } = useCustomLandingPages();
+
   const { isUserLoggedIn } = useAuth();
+
   return (
     <Wrapper>
       <Title variant={includeNameInHeader ? 'h2' : 'h1'}>Select a project below to view.</Title>
       <ProjectsWrapper>
-        <ProjectsContainer primaryColor={primaryColor}>
+        <ProjectsContainer primaryColor={primaryHexcode}>
           <ProjectCardList
             projects={projects}
             actions={{
