@@ -12,7 +12,7 @@ import SidePanel from '../../../containers/SidePanel';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 import SessionExpiredDialog from '../../../containers/SessionExpiredDialog';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { DARK_BLUE, DIALOG_Z_INDEX } from '../../../styles';
+import { DIALOG_Z_INDEX } from '../../../styles';
 import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
 import { LandingPage } from '../../LandingPage';
 
@@ -51,10 +51,7 @@ const MapContainer = styled.div`
 
 const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
   const { isCustomLandingPage } = useCustomLandingPages();
-
-  if (isCustomLandingPage) {
-    return <LandingPage />;
-  }
+  if (isCustomLandingPage) return <LandingPage />;
 
   return (
     <>

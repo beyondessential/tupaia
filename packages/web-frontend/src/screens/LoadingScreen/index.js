@@ -8,33 +8,21 @@
 import React from 'react';
 
 import CircularProgress from 'material-ui/CircularProgress';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
 
-const Screen = styled.div`
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  background: ${props => props.$background};
-  position: fixed;
-  align-items: center;
-  justify-content: center;
-  z-index: ${Number.MAX_SAFE_INTEGER};
-`;
-
-export const LoadingScreen = ({ isLoading, background }) =>
-  isLoading ? (
-    <Screen $background={background}>
-      <CircularProgress />
-    </Screen>
-  ) : null;
-
-LoadingScreen.propTypes = {
-  isLoading: PropTypes.bool,
-  background: PropTypes.string,
-};
-
-LoadingScreen.defaultProps = {
-  isLoading: false,
+const loadingScreenStyle = {
+  height: '100vh',
+  width: '100vw',
+  display: 'flex',
   background: 'rgba(0, 0, 0, 0.5)',
+  position: 'fixed',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: Number.MAX_SAFE_INTEGER, // top top top
 };
+
+export const LoadingScreen = ({ isLoading }) =>
+  isLoading ? (
+    <div style={loadingScreenStyle}>
+      <CircularProgress />
+    </div>
+  ) : null;
