@@ -36,17 +36,14 @@ export function* fetchCustomLandingPageData() {
       type: SET_CUSTOM_LANDING_PAGE_DATA,
       data,
     });
-    yield put({
-      type: CUSTOM_LANDING_PAGE_LOADING,
-      isLoading: false,
-    });
   } catch (error) {
-    yield put({
-      type: CUSTOM_LANDING_PAGE_LOADING,
-      isLoading: false,
-    });
     // eslint-disable-next-line no-console
     console.error(error);
+  } finally {
+    yield put({
+      type: CUSTOM_LANDING_PAGE_LOADING,
+      isLoading: false,
+    });
   }
 }
 
