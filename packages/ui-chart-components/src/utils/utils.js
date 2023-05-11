@@ -1,11 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import moment from 'moment';
 import { useTheme } from '@material-ui/core/styles';
-import { GRANULARITY_CONFIG, CHART_TYPES } from '@tupaia/utils';
+import { GRANULARITY_CONFIG } from '@tupaia/utils';
 
 export const isMobile = () => process.env.REACT_APP_APP_TYPE === 'mobile';
 

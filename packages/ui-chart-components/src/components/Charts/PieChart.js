@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -40,7 +40,7 @@ import {
 import { OFF_WHITE, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
-import { TooltipContainer } from '../Reference/TooltipContainer';
+import { TooltipContainer } from '../Reference';
 
 const Heading = styled(Typography)`
   font-weight: 500;

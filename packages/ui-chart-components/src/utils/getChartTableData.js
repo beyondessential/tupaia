@@ -1,12 +1,13 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType, CHART_TYPES } from '@tupaia/utils';
-import { formatTimestampForChart, getIsTimeSeries, parseChartConfig } from '../../utils';
-import { DEFAULT_DATA_KEY } from '../../constants';
+import { DEFAULT_DATA_KEY } from '../constants';
+import { formatTimestampForChart, getIsTimeSeries } from './utils';
+import { parseChartConfig } from './parseChartConfig';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell

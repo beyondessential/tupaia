@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  moduleDirectories: ['node_modules', 'helpers'],
+  moduleDirectories: ['node_modules'],
   collectCoverageFrom: ['**/src/components/**/*.js'],
   // handle static assets @see https://jestjs.io/docs/webpack#handling-static-assets
   moduleNameMapper: {
@@ -12,5 +12,6 @@ module.exports = {
       '<rootDir>/jestFileMock.js',
     '^file-loader': '<rootDir>/jestFileMock.js',
   },
+  transformIgnorePatterns: ['/node_modules/'],
   testTimeout: 30 * 1000, // 30 seconds. Needed for CI as some test take a while if CPU has high load
 };

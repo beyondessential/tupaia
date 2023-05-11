@@ -1,7 +1,9 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *
  */
+
 import { CHART_TYPES } from '@tupaia/utils';
 import { COLOR_PALETTES } from '../constants';
 import { isDataKey } from './utils';

@@ -1,13 +1,14 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
 import React from 'react';
 import styled from 'styled-components';
 import { Button, FlexEnd } from '@tupaia/ui-components';
+import { useChartDataExport } from '../src/utils';
 import { Chart } from '../src/components/Chart';
-import { ChartTable, useChartDataExport } from '../src/components/Table';
+import { ChartTable } from '../src/components';
 
 const LightContainer = styled.div`
   width: 750px;
@@ -26,17 +27,14 @@ const ChartContainer = styled.div`
 
 export const LightThemeChartTemplate = args => {
   const { viewContent } = args;
-  const { doExport } = useChartDataExport(viewContent);
 
-  const handleExport = () => {
-    doExport();
-  };
+  const { doExport } = useChartDataExport(viewContent);
 
   return (
     <>
       <LightContainer>
         <FlexEnd p={2}>
-          <Button onClick={handleExport}>Export</Button>
+          <Button onClick={doExport}>Export</Button>
         </FlexEnd>
         <ChartContainer>
           <Chart {...args} />
@@ -57,15 +55,13 @@ const DarkContainer = styled(LightContainer)`
 export const DarkThemeTemplate = args => {
   const { viewContent } = args;
 
-  const handleExport = () => {
-    useChartDataExport(viewContent);
-  };
+  const { doExport } = useChartDataExport(viewContent);
 
   return (
     <>
       <DarkContainer>
         <FlexEnd p={2}>
-          <Button onClick={handleExport}>Export</Button>
+          <Button onClick={doExport}>Export</Button>
         </FlexEnd>
         <ChartContainer>
           <Chart {...args} />
