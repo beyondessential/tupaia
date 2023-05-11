@@ -1,6 +1,6 @@
 import React from 'react';
 import { addDecorator } from '@storybook/react';
-import { AppProviders } from '../helpers/AppProviders';
+import { AppProviders } from './AppProviders';
 
 export const parameters = {
   backgrounds: {
