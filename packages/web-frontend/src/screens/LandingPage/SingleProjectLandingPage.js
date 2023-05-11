@@ -5,12 +5,13 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography, CircularProgress } from '@material-ui/core';
 import { useCustomLandingPages } from './useCustomLandingPages';
 import { useAuth } from './useAuth';
 import { getProjectAccessType } from '../../utils';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { useNavigation } from './useNavigation';
+import { LoadingScreen } from '../LoadingScreen';
 
 /**
  * This is the template for the content of a landing page if there is only one project
@@ -23,6 +24,11 @@ const Wrapper = styled.div`
   justify-content: center;
   height: 100%;
   min-height: 55vh;
+`;
+
+const Loader = styled(CircularProgress)`
+  margin: 50% 50%;
+  color: rgba(255, 255, 255, 0.5);
 `;
 
 const ExtendedTitle = styled(Typography)`
@@ -57,6 +63,7 @@ const ActionButton = styled(Button)`
 export function SingleProjectLandingPage() {
   const {
     customLandingPageSettings: { extendedTitle, includeNameInHeader },
+    isProjectsLoading,
     projects,
   } = useCustomLandingPages();
 
@@ -85,6 +92,15 @@ export function SingleProjectLandingPage() {
     if (!action) return;
     action(project);
   };
+
+  if (isProjectsLoading) {
+    return (
+      <Wrapper>
+        <LoadingScreen isLoading />
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       {extendedTitle && (
