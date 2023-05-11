@@ -22,13 +22,15 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 100%;
+  min-height: 55vh;
 `;
 
 const ExtendedTitle = styled(Typography)`
   color: ${props => props.theme.palette.common.white};
   font-weight: ${props => props.theme.typography.fontWeightBold};
   font-size: 1.5em;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 2em;
   }
 `;
@@ -46,7 +48,8 @@ const ActionButton = styled(Button)`
   ${ExtendedTitle} + & {
     margin-top: 2em;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 1em;
   }
 `;
