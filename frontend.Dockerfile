@@ -57,12 +57,13 @@ RUN git clone https://github.com/h5bp/server-configs-nginx.git && \
 
 # Build final production image
 FROM nginx:1.24.0-alpine3.17
+RUN apk add bash
 WORKDIR /home/ubuntu/tupaia
 
 COPY packages/devops/configs/servers.conf /etc/nginx/conf.d/servers.conf
 COPY --from=h5bp server-configs-nginx/h5bp /etc/nginx/h5bp
 # copy .env files into package dirs prior to nginx startup
-COPY scripts/docker/nginx/copy-env.sh /docker-entrypoint.d/50-copy-env.sh
+COPY scripts/docker/nginx/create-env.sh /docker-entrypoint.d/50-create-env.sh
 # Use /home/ubuntu as workdir to be compatible with existing nginx config
 # (packages/devops/configs/servers.conf)
 WORKDIR "/home/ubuntu/tupaia"
