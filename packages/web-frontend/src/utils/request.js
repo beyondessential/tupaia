@@ -8,7 +8,6 @@
 import 'whatwg-fetch';
 import downloadJs from 'downloadjs';
 import { showSessionExpiredError, showServerUnreachableError } from '../actions';
-import { sleep } from './sleep';
 
 /**
  * Returns the HTTP status code off an error response.
@@ -119,10 +118,6 @@ export default async function request(
   requestContext = {},
   shouldRetryOnFail = true,
 ) {
-  if (resourceUrl.includes('landingPage')) {
-    console.log('sleep');
-    await sleep(3000);
-  }
   const url = getAbsoluteApiRequestUri(resourceUrl);
   try {
     return await performDeduplicatedRequest(url, {
