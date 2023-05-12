@@ -25,7 +25,7 @@ function convert_timestamp_to_date() {
 function check_migration_outdated() {
   local migration_name=$1
 
-  included_date_offset=$((90*24*60*60*1000)) # include migrations up to 90 days old
+  included_date_offset=$((180*24*60*60*1000)) # include migrations up to 180 days old
   included_migrations_timestamp=$(( $($date_command +%s) - included_date_offset / 1000 ))
   valid_migration_date=$(convert_timestamp_to_date "$included_migrations_timestamp")
  
