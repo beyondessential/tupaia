@@ -53,6 +53,8 @@ const FIELDS = {
         title: 'Remove landing page image',
         message: 'Are you sure you want to delete your image?',
       },
+      minWidth: 1500,
+      minHeight: 900,
       maxHeight: 2000,
       maxWidth: 2000,
     },
@@ -67,8 +69,8 @@ const FIELDS = {
         title: 'Remove logo image',
         message: 'Are you sure you want to delete your image?',
       },
-      maxHeight: 800,
-      maxWidth: 800,
+      maxHeight: 300,
+      maxWidth: 300,
     },
   },
   PRIMARY_COLOR: {
@@ -155,13 +157,13 @@ const SECTIONS = {
   MAIN_IMAGE: {
     type: SECTION_FIELD_TYPE,
     title: 'Add main image',
-    description: '(2000px x 2000px)',
+    description: '(Width:1500-2000px and height:900-2000px)',
     fields: [FIELDS.IMAGE],
   },
   LOGO: {
     type: SECTION_FIELD_TYPE,
     title: 'Add logo image',
-    description: '(800px x 800px)',
+    description: '(Max 300px x 300px)',
     fields: [FIELDS.LOGO],
   },
   PRIMARY_COLOR: {
@@ -174,7 +176,7 @@ const SECTIONS = {
   SECONDARY_COLOR: {
     title: 'Secondary colour',
     description:
-      'This colour will be used for text and other accents. Please select the option that provides the most contrast to your primary colour. If no colour is specified a default colour will be applied.',
+      'This colour will be used for text and other accents that appear in the header bar. Please select the option that provides most contrast to your primary colour. If no colour is specified a default colour will be applied.',
     type: SECTION_FIELD_TYPE,
     fields: [FIELDS.SECONDARY_COLOR],
   },
