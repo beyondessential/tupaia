@@ -10,6 +10,7 @@ import {
   catchAsyncErrors,
   handleError,
   logApiRequest,
+  multipartJson,
 } from './middleware';
 
 import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
@@ -39,7 +40,7 @@ import { GETPermissionGroups } from './GETPermissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
-import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
+import { CreateSurvey, DeleteSurveys, EditSurvey, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
@@ -281,6 +282,7 @@ apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
 
 /**
  * PUT routes
@@ -288,7 +290,7 @@ apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
 apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
-apiV2.put('/surveys/:recordId', useRouteHandler(EditSurveys));
+apiV2.put('/surveys/:recordId', useRouteHandler(EditSurvey));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
 apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
@@ -318,6 +320,7 @@ apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/survey/:recordId', multipartJson, useRouteHandler(EditSurvey));
 
 /**
  * DELETE routes

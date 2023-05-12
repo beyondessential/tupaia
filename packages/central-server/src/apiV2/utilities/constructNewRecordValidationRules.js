@@ -21,7 +21,7 @@ import {
   constructRecordExistsWithCode,
   constructIsValidEntityType,
 } from '@tupaia/utils';
-import { DataTableType } from '@tupaia/types';
+import { DataTableType, PeriodGranularity } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
@@ -302,6 +302,34 @@ export const constructForSingle = (models, recordType) => {
             return true;
           },
         ],
+      };
+    case TYPES.SURVEY:
+      return {
+        code: [constructRecordNotExistsWithField(models.survey, 'code')],
+        name: [isAString],
+        permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
+        country_ids: [
+          async countryIds => {
+            const countryEntities = await models.country.find({
+              id: countryIds,
+            });
+            if (countryEntities.length !== countryIds.length) {
+              throw new Error('One or more provided countries do not exist');
+            }
+            return true;
+          },
+        ],
+        can_repeat: [hasContent, isBoolean],
+        survey_group_id: [constructIsEmptyOr(constructRecordExistsWithId(models.surveyGroup))],
+        integration_metadata: [],
+        period_granularity: [
+          constructIsEmptyOr(constructIsOneOf(Object.values(PeriodGranularity))),
+        ],
+        requires_approval: [hasContent, isBoolean],
+        // data_group_id -> generated at create time, needs following additional fields:
+        'data_group.service_type': [constructIsEmptyOr(constructIsOneOf(['dhis', 'tupaia']))],
+        'data_group.config': [hasContent],
+        // also survey questions comes in as a file
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

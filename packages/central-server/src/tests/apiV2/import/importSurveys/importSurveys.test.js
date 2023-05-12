@@ -55,63 +55,64 @@ describe('importSurveys(): POST import/surveys', () => {
 
   let survey1_id;
 
-    before(async () => {
-      await resetTestData();
-      adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Admin',
-      });
-
-      ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
-        code: 'KI',
-        name: 'Kiribati',
-      }));
-
-      ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
-        code: 'VU',
-        name: 'Vanuatu',
-      }));
-
-      const addQuestion = (id, type) =>
-        upsertQuestion(
-          models.question,
-          {
-            code: id,
-          },
-          {
-            id,
-            text: `Test question ${id}`,
-            name: `Test question ${id}`,
-            type,
-          },
-        );
-
-      // Questions used for all the surveys
-      await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
-      await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
-
-      const { survey: s1 } = await buildAndInsertSurvey(models, {
-          code: EXISTING_TEST_SURVEY_CODE_1,
-          name: EXISTING_TEST_SURVEY_CODE_1,
-          permission_group_id: adminPermissionGroup.id,
-          country_ids: [vanuatuCountry.id],
-          dataGroup: {
-            service_type: 'tupaia',
-          },
-      });
-      survey1_id = s1.id;
+  before(async () => {
+    await resetTestData();
+    adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
     });
 
-    afterEach(() => {
-      app.revokeAccess();
+    ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'KI',
+      name: 'Kiribati',
+    }));
+
+    ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'VU',
+      name: 'Vanuatu',
+    }));
+
+    const addQuestion = (id, type) =>
+      upsertQuestion(
+        models.question,
+        {
+          code: id,
+        },
+        {
+          id,
+          text: `Test question ${id}`,
+          name: `Test question ${id}`,
+          type,
+        },
+      );
+
+    // Questions used for all the surveys
+    await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
+    await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
+
+    const { survey: s1 } = await buildAndInsertSurvey(models, {
+      code: EXISTING_TEST_SURVEY_CODE_1,
+      name: EXISTING_TEST_SURVEY_CODE_1,
+      permission_group_id: adminPermissionGroup.id,
+      country_ids: [vanuatuCountry.id],
+      dataGroup: {
+        service_type: 'tupaia',
+      },
     });
+    survey1_id = s1.id;
+  });
+
+  afterEach(() => {
+    app.revokeAccess();
+  });
 
   describe('Test permissions when importing surveys', async () => {
     describe('Edit existing surveys', async () => {
       it('Sufficient permissions - Should pass permissions check if user has the survey permission group access to all of the survey countries', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 1',
           },
         });
@@ -124,8 +125,9 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Should pass permissions check if new countries are specified and user has the survey permission group access to the new countries', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 2',
             country_ids: [kiribatiCountry.id],
           },
@@ -145,8 +147,9 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Should pass permissions check if users have BES Admin access to any countries', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 3',
           },
         });
@@ -159,8 +162,9 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Should pass permissions check if users have both [survey permission group] - [Tupaia Admin Panel] access to all of the survey countries', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 4',
           },
         });
@@ -181,8 +185,9 @@ describe('importSurveys(): POST import/surveys', () => {
 
         await app.grantAccess(policy);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 5',
           },
         });
@@ -201,8 +206,9 @@ describe('importSurveys(): POST import/surveys', () => {
 
         await app.grantAccess(policy);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 6',
             country_ids: [kiribatiCountry.id],
           },
@@ -222,8 +228,9 @@ describe('importSurveys(): POST import/surveys', () => {
 
         await app.grantAccess(policy);
 
-        const response = await app.put(`survey/${survey1_id}`, {
-          body: {
+        const response = await app.multipartPut({
+          endpoint: `survey/${survey1_id}`,
+          payload: {
             name: 'Any change will do 7',
           },
         });
@@ -236,8 +243,9 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Should pass permissions user have Tupaia Admin Panel access to the specified countries of the new survey', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
-        const response = await app.post('surveys', {
-          body: {
+        const response = await app.multipartPost({
+          endpoint: `surveys`,
+          payload: {
             ...BASIC_SURVEY_CREATE_PAYLOAD,
             name: 'NEW_TEST_SURVEY_1', // must be unique
             code: 'NEW_TEST_SURVEY_1', // must be unique
@@ -254,8 +262,9 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Should pass permissions check if user has BES Admin access to any countries', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
-        const response = await app.post('surveys', {
-          body: {
+        const response = await app.multipartPost({
+          endpoint: `surveys`,
+          payload: {
             ...BASIC_SURVEY_CREATE_PAYLOAD,
             name: 'NEW_TEST_SURVEY_2', // must be unique
             code: 'NEW_TEST_SURVEY_2', // must be unique
@@ -263,6 +272,7 @@ describe('importSurveys(): POST import/surveys', () => {
             permission_group_id: adminPermissionGroup.id,
           },
         });
+
         const { statusCode } = response;
 
         expect(statusCode).to.equal(200);
@@ -279,8 +289,9 @@ describe('importSurveys(): POST import/surveys', () => {
 
         await app.grantAccess(policy);
 
-        const response = await app.post('surveys', {
-          body: {
+        const response = await app.multipartPost({
+          endpoint: `surveys`,
+          payload: {
             ...BASIC_SURVEY_CREATE_PAYLOAD,
             name: 'NEW_TEST_SURVEY_3', // must be unique
             code: 'NEW_TEST_SURVEY_3', // must be unique
@@ -296,21 +307,21 @@ describe('importSurveys(): POST import/surveys', () => {
 
   describe('Functionality', () => {
     it('Imports questions', async () => {
-      const surveyQuestionsFileName = 'importANewSurvey.xlsx';
-
       await app.grantAccess(DEFAULT_POLICY);
 
-      const response = await app.post('surveys', {
-        body: {
+      const response = await app.multipartPost({
+        endpoint: `surveys`,
+        payload: {
           ...BASIC_SURVEY_CREATE_PAYLOAD,
           name: 'NEW_TEST_SURVEY_4', // must be unique
           code: 'NEW_TEST_SURVEY_4', // must be unique
           country_ids: [kiribatiCountry.id],
           permission_group_id: adminPermissionGroup.id,
         },
-      })
-        .attach('surveyQuestions', `${TEST_DATA_FOLDER}/surveys/${surveyQuestionsFileName}`);
-
+        filesByMultipartKey: {
+          surveyQuestions: `${TEST_DATA_FOLDER}/surveys/new_survey_import_1_test.xlsx`,
+        },
+      });
       const { statusCode } = response;
 
       expect(statusCode).to.equal(200);
@@ -323,10 +334,11 @@ describe('importSurveys(): POST import/surveys', () => {
     it('Updates survey properties', async () => {
       await app.grantAccess(DEFAULT_POLICY);
 
-      const response = await app.put(`survey/${survey1_id}`, {
-        body: {
+      const response = await app.multipartPut({
+        endpoint: `survey/${survey1_id}`,
+        payload: {
           name: 'Any change will do 1',
-          periodGranularity: 'weekly'
+          period_granularity: 'weekly',
         },
       });
 
