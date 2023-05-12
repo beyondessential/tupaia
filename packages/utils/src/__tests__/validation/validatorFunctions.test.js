@@ -13,6 +13,7 @@ import {
   isBoolean,
   isHexColor,
   isURL,
+  constructIsShorterThan,
 } from '../../validation';
 
 describe('validatorFunctions', () => {
@@ -250,6 +251,20 @@ describe('validatorFunctions', () => {
         const validator = constructIsArrayOf(type);
         expect(() => validator(value)).toThrow(expectedError);
       });
+    });
+  });
+
+  describe('constructIsShorterThan', () => {
+    const validator = constructIsShorterThan(5);
+
+    it('fails if value is longer than max length', () => {
+      expect(() => validator('123456')).toThrowError(/Must be shorter than 5 characters/i);
+    });
+
+    it('passes if given a string shorter than or equal to the max length', () => {
+      expect(() => validator('123')).not.toThrow();
+      expect(() => validator('12345')).not.toThrow();
+      expect(() => validator('')).not.toThrow();
     });
   });
 });
