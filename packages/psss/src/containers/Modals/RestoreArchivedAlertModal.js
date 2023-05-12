@@ -20,7 +20,7 @@ const STATUS = {
 
 export const RestoreArchivedAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
-  const [restoreArchivedAlert, { error }] = useRestoreArchivedAlert(alertId);
+  const { mutate: restoreArchivedAlert, error } = useRestoreArchivedAlert(alertId);
 
   const handleArchive = useCallback(async () => {
     setStatus(STATUS.LOADING);

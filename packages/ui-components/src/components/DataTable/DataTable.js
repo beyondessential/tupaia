@@ -14,6 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
+import { DataTableCell } from './DataTableCell';
 
 const getColumnId = ({ id, accessor, Header }) => {
   if (id) {
@@ -81,8 +82,8 @@ export const DataTable = ({ columns, data, className, rowLimit, total }) => {
             prepareRow(row);
             return (
               <TableRow {...row.getRowProps()}>
-                {row.cells.map(({ getCellProps, render }) => (
-                  <TableCell {...getCellProps()}>{render('Cell')}</TableCell>
+                {row.cells.map(({ getCellProps, value }) => (
+                  <DataTableCell value={value} {...getCellProps()} />
                 ))}
               </TableRow>
             );
