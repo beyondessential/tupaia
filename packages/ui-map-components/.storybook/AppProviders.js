@@ -8,7 +8,7 @@ import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
-import { lightTheme, darkTheme } from '../stories/story-utils/theme';
+import { lightTheme, darkTheme } from '../stories/theme';
 
 export const AppProviders = ({ params, children }) => {
   const theme = params?.theme === 'dark' ? darkTheme : lightTheme;
