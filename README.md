@@ -45,6 +45,7 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [ui-chart-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-chart-components/README.md)
+- [ui-map-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-map-components/README.md)
 - [server-boilerplate](https://github.com/beyondessential/tupaia/blob/dev/packages/server-boilerplate/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 

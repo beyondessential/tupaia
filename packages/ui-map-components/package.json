@@ -1,0 +1,43 @@
+{
+    "name": "@tupaia/ui-map-components",
+    "version": "1.0.0",
+    "private": true,
+    "description": "A library of map components for the tupaia monorepo",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/beyondessential/tupaia",
+        "directory": "packages/ui-map-components"
+    },
+    "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+    "source": "src/index.js",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rm -rf dist && npm run --prefix ../../ package:build:js",
+        "build-dev": "npm run build",
+        "lint": "yarn package:lint:js",
+        "lint:fix": "yarn lint --fix",
+        "storybook": "start-storybook -s public -p 6006",
+        "test": "yarn package:test --env=jsdom",
+        "test:coverage": "yarn test --coverage",
+        "test:watch": "yarn test --watch",
+        "build-dev:watch": "yarn run package:build:js -w"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.9.8",
+        "@material-ui/icons": "^4.9.1",
+        "@tupaia/ui-components": "1.0.0",
+        "@tupaia/utils": "1.0.0",
+        "leaflet": "^1.7.1",
+        "moment": "^2.29.1",
+        "prop-types": "^15.7.2",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-leaflet": "^3.2.1",
+        "react-table": "^7.7.0",
+        "styled-components": "^5.0.1"
+    },
+    "devDependencies": {
+        "@material-ui/styles": "^4.9.10",
+        "@storybook/react": "^6.3.9"
+    }
+}
