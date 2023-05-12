@@ -4,10 +4,10 @@
  *
  */
 
-export const VIZ_TYPE_PARAM = {
+export const DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM = {
   DASHBOARD_ITEM: 'dashboard-item',
   MAP_OVERLAY: 'map-overlay',
 };
 
-export type VizTypeKeys = keyof typeof VIZ_TYPE_PARAM;
-export type VizType = typeof VIZ_TYPE_PARAM[VizTypeKeys];
+export type DashboardItemOrMapOverlayParamKeys = keyof typeof DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM;
+export type DashboardItemOrMapOverlayParam = typeof DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM[DashboardItemOrMapOverlayParamKeys];

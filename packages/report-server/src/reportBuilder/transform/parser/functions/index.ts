@@ -3,22 +3,24 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
-import { orgUnitCodeToName, dataElementCodeToName, orgUnitIdToCode, orgUnitAttribute } from "./context";
+import { value, first, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
+import { orgUnitCodeToName } from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  periodToMoment,
   formatAsFractionAndPercentage,
 } from './utils';
-import { add, divide, sum, mean } from './math';
+import { add, divide, sum, mean, min, max } from './math';
 
 /**
  * Custom functions to be imported into mathjs
  */
 export const customFunctions = {
   value,
+  first,
   last,
   eq,
   notEq,
@@ -30,23 +32,18 @@ export const customFunctions = {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  periodToMoment,
   formatAsFractionAndPercentage,
   any,
   all,
 };
 
 export const contextFunctions = {
-  orgUnitIdToCode: orgUnitIdToCode.func,
   orgUnitCodeToName: orgUnitCodeToName.func,
-  dataElementCodeToName: dataElementCodeToName.func,
-  orgUnitAttribute: orgUnitAttribute.func,
 };
 
 export const contextFunctionDependencies = {
-  orgUnitIdToCode: orgUnitIdToCode.dependencies,
   orgUnitCodeToName: orgUnitCodeToName.dependencies,
-  dataElementCodeToName: dataElementCodeToName.dependencies,
-  orgUnitAttribute: orgUnitAttribute.dependencies,
 };
 
 /**
@@ -63,4 +60,6 @@ export const functionExtensions = {
 export const functionOverrides = {
   sum,
   mean,
+  min,
+  max,
 };

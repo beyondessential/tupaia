@@ -4,6 +4,7 @@
  *
  */
 export * from './I18n';
+export * from './isLesmisAdmin';
 export * from './makeEntityLink';
 export * from './search';
 export * from './useAdminPanelUrl';

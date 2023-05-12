@@ -4,61 +4,59 @@
  */
 
 export const HIERARCHY = 'test_hierarchy';
-export const ENTITIES = {
-  test_hierarchy: [
-    { code: 'TO', name: 'Tonga', type: 'country' },
-    {
-      code: 'TO_Island_1',
-      name: 'Tonga Island 1',
-      type: 'district',
-    },
-    {
-      code: 'TO_Island_2',
-      name: 'Tonga Island 2',
-      type: 'district',
-    },
-    {
-      code: 'TO_Village_1',
-      name: 'Tonga Village 1',
-      type: 'village',
-    },
-    {
-      code: 'TO_Village_2',
-      name: 'Tonga Village 2',
-      type: 'village',
-    },
-    {
-      code: 'TO_Village_3',
-      name: 'Tonga Village 3',
-      type: 'village',
-    },
-    {
-      code: 'TO_Individual_1',
-      name: 'Tonga Individual 1',
-      type: 'individual',
-    },
-    {
-      code: 'TO_Individual_2',
-      name: 'Tonga Individual 2',
-      type: 'individual',
-    },
-    {
-      code: 'TO_Individual_3',
-      name: 'Tonga Individual 3',
-      type: 'individual',
-    },
-    {
-      code: 'TO_Individual_4',
-      name: 'Tonga Individual 4',
-      type: 'individual',
-    },
-    {
-      code: 'TO_Individual_5',
-      name: 'Tonga Individual 5',
-      type: 'individual',
-    },
-  ],
-};
+export const ENTITIES = [
+  { code: 'TO', name: 'Tonga', type: 'country' },
+  {
+    code: 'TO_Island_1',
+    name: 'Tonga Island 1',
+    type: 'district',
+  },
+  {
+    code: 'TO_Island_2',
+    name: 'Tonga Island 2',
+    type: 'district',
+  },
+  {
+    code: 'TO_Village_1',
+    name: 'Tonga Village 1',
+    type: 'village',
+  },
+  {
+    code: 'TO_Village_2',
+    name: 'Tonga Village 2',
+    type: 'village',
+  },
+  {
+    code: 'TO_Village_3',
+    name: 'Tonga Village 3',
+    type: 'village',
+  },
+  {
+    code: 'TO_Individual_1',
+    name: 'Tonga Individual 1',
+    type: 'individual',
+  },
+  {
+    code: 'TO_Individual_2',
+    name: 'Tonga Individual 2',
+    type: 'individual',
+  },
+  {
+    code: 'TO_Individual_3',
+    name: 'Tonga Individual 3',
+    type: 'individual',
+  },
+  {
+    code: 'TO_Individual_4',
+    name: 'Tonga Individual 4',
+    type: 'individual',
+  },
+  {
+    code: 'TO_Individual_5',
+    name: 'Tonga Individual 5',
+    type: 'individual',
+  },
+];
 
 export const RELATIONS = {
   test_hierarchy: [

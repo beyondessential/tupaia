@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
+import { ArrayAnalytic, arrayToAnalytics } from '../../../utils';
 
 // surveyCode, entityCode, data_time, answers
 export type ArraySurveyResponse = [string, string, string, Record<string, string>];
@@ -22,9 +22,6 @@ const arrayToFetchOptions = ([startDate, endDate, organisationUnitCodes]: ArrayF
   organisationUnitCodes,
 });
 
-// dataElement, organisationUnit, period, value
-type ArrayAnalytic = [string, string, string, number];
-
 // description, indicatorCodes, arrayFetchOptions, expected
 export type ArrayTestCase = [string, string[], ArrayFetchOptions, string | ArrayAnalytic[]];
 
@@ -40,7 +37,7 @@ export const arrayToTestCase = (arrayTestCase: ArrayTestCase) => {
       fetchOptions: arrayToFetchOptions(arrayFetchOptions),
     },
     throws,
-    expected: throws ? expected : arrayToAnalytics(expected),
+    expected: typeof expected === 'string' ? expected : arrayToAnalytics(expected),
   };
 };
 

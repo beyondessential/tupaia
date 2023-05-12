@@ -5,10 +5,10 @@
 
 import groupBy from 'lodash.groupby';
 
-import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { stripFields } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { AggregationList, Analytic, AnalyticCluster, FetchOptions, Indicator } from '../../types';
+import { analyticsToAnalyticClusters } from '../../utils';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
 import {

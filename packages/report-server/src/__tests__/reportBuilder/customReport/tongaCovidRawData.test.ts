@@ -5,12 +5,14 @@
 
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { ReqContext } from '../../../reportBuilder/context';
+import { Aggregator } from '@tupaia/aggregator';
+import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 
+import { ReqContext } from '../../../reportBuilder/context';
 import { tongaCovidRawData } from '../../../reportBuilder/customReports/tongaCovidRawData';
 
-import { entityApiMock } from '../testUtils';
 import { ENTITIES, EVENTS, HIERARCHY, RELATIONS } from './tongaCovidRawData.fixtures';
+import { ReportServerAggregator } from '../../../aggregator';
 
 const CURRENT_DATE_STUB = '2020-12-15T00:00:00Z';
 
@@ -33,22 +35,23 @@ const fetchFakeEvents = (
     }));
 };
 
-jest.mock('@tupaia/aggregator', () => ({
-  createAggregator: jest.fn().mockImplementation(() => ({
-    fetchEvents: fetchFakeEvents,
-  })),
-}));
-
 describe('tongaCovidRawData', () => {
-  const apiMock = entityApiMock(ENTITIES, RELATIONS);
-
+  const dataBroker = { context: {} };
+  const aggregator = new Aggregator(dataBroker);
+  aggregator.fetchEvents = fetchFakeEvents as any; // Stub out fetchEvents with fake test data
+  const reportServerAggregator = new ReportServerAggregator(aggregator);
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Public',
-    services: {
-      entity: apiMock,
-    } as ReqContext['services'],
+    services: new MockTupaiaApiClient({
+      entity: new MockEntityApi(ENTITIES, RELATIONS),
+    }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
+    query: {
+      organisationUnitCodes: ['TO'],
+      hierarchy: 'test_hierarchy',
+    },
+    aggregator: reportServerAggregator,
   };
 
   beforeAll(() => {
@@ -191,10 +194,7 @@ describe('tongaCovidRawData', () => {
       ],
     };
 
-    const numberOfFacilitiesInTonga = await tongaCovidRawData(reqContext, {
-      organisationUnitCodes: ['TO'],
-      hierarchy: 'test_hierarchy',
-    });
+    const numberOfFacilitiesInTonga = await tongaCovidRawData(reqContext);
 
     expect(numberOfFacilitiesInTonga).toEqual(expectedValue);
   });

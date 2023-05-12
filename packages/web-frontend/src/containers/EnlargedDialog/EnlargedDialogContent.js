@@ -128,9 +128,10 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderBody() {
-    const { viewContent, errorMessage } = this.props;
+    const { viewContent, errorMessage, isLoading } = this.props;
     const noData = viewContent.data && viewContent.data.length === 0;
 
+    if (isLoading) return <LoadingIndicator showBackground={false} />;
     if (errorMessage) {
       return <StyledAlert severity="error">{errorMessage}</StyledAlert>;
     }
@@ -221,7 +222,7 @@ export class EnlargedDialogContent extends PureComponent {
 
   renderPeriodSelector() {
     const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
-    const { periodGranularity, startDate, endDate } = viewContent;
+    const { periodGranularity, startDate, endDate, weekDisplayFormat } = viewContent;
 
     const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
 
@@ -236,6 +237,7 @@ export class EnlargedDialogContent extends PureComponent {
           min={datePickerLimits.startDate}
           max={datePickerLimits.endDate}
           isLoading={isLoading}
+          weekDisplayFormat={weekDisplayFormat}
         />
       </div>
     );

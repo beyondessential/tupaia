@@ -13,7 +13,7 @@ export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
 
     filterObject[key] = {
       comparator: `ilike`,
-      comparisonValue: `%${value}%`,
+      comparisonValue: `${value}%`,
       castAs: 'text',
     };
   });

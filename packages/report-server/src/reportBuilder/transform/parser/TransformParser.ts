@@ -55,7 +55,7 @@ export class TransformParser extends ExpressionParser {
 
     this.rows = table.getRows();
     this.lookups = {
-      params: context?.query || {},
+      params: {},
       current: {},
       previous: {},
       next: {},
@@ -65,18 +65,23 @@ export class TransformParser extends ExpressionParser {
       table: this.rows,
     };
 
+    if (context) {
+      this.lookups.params = context.request?.query || {};
+      this.set('@params', this.lookups.params);
+    }
+
     if (this.rows.length > 0) {
       this.lookups.current = this.rows[this.currentRow];
       this.lookups.next = this.rows[this.currentRow + 1] || {};
       this.rows.forEach(row => addRowToLookup(row, this.lookups.all));
       addRowToLookup(this.lookups.current, this.lookups.allPrevious);
       this.addRowToScope(this.lookups.current);
-
-      Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
-        this.set(`@${lookupName}`, lookup);
-      });
       this.set('where', this.whereFunction); // no '@' prefix for where
     }
+
+    Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
+      this.set(`@${lookupName}`, lookup);
+    });
 
     this.context = context;
   }

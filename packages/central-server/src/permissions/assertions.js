@@ -7,6 +7,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   LESMIS_ADMIN_PERMISSION_GROUP,
+  VIZ_BUILDER_USER_PERMISSION_GROUP,
 } from './constants';
 
 /**
@@ -61,6 +62,32 @@ export const hasLESMISAdminAccess = accessPolicy =>
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
+export const hasVizBuilderAccess = accessPolicy =>
+  accessPolicy.allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
+
+export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
+  accessPolicy.allowsSome(undefined, permissionGroup);
+
+// has access to all permission groups inputted
+export const hasPermissionGroupsAccess = (accessPolicy, permissionGroups) => {
+  for (let i = 0; i < permissionGroups.length; i++) {
+    if (!accessPolicy.allowsSome(undefined, permissionGroups[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) => {
+  for (let i = 0; i < permissionGroups.length; i++) {
+    if (accessPolicy.allowsSome(undefined, permissionGroups[i])) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const assertBESAdminAccess = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) {
     return true;
@@ -78,4 +105,31 @@ export const assertAdminPanelAccess = accessPolicy => {
   }
 
   throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
+};
+
+export const assertVizBuilderAccess = accessPolicy => {
+  if (hasVizBuilderAccess(accessPolicy)) {
+    return true;
+  }
+
+  throw new Error(`Need ${VIZ_BUILDER_USER_PERMISSION_GROUP} access`);
+};
+
+export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
+  if (hasPermissionGroupAccess(accessPolicy, permissionGroupName)) {
+    return true;
+  }
+
+  throw new Error(`Need ${permissionGroupName} access`);
+};
+
+export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {
+  if (
+    hasPermissionGroupsAccess(accessPolicy, permissionGroupNames) ||
+    hasBESAdminAccess(accessPolicy)
+  ) {
+    return true;
+  }
+
+  throw new Error(`You do not have access to all related permission groups`);
 };

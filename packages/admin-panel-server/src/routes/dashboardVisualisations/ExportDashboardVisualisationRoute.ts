@@ -81,6 +81,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
       const dashboardItem = await centralApi.fetchResources(
         `dashboardItems/${dashboardVisualisationId}`,
       );
+
       if (!dashboardItem) {
         // We assert that the record exists, since a specific id was provided
         throw new Error(`Could not find visualisation with id ${dashboardVisualisationId}`);

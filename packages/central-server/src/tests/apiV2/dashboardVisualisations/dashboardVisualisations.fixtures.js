@@ -14,6 +14,7 @@ const DASHBOARD_ITEMS = [
     config: { name: 'Modern Dashboard Item', type: 'view', viewType: 'singleValue' },
     report_code: 'Modern_Report',
     legacy: false,
+    permissionGroupIds: [],
   },
   {
     id: generateTestId(),
@@ -21,6 +22,7 @@ const DASHBOARD_ITEMS = [
     config: { name: 'Legacy Dashboard Item', type: 'chart', chartType: 'bar' },
     report_code: 'Legacy_Report',
     legacy: true,
+    permissionGroupIds: [],
   },
   {
     id: generateTestId(),

@@ -107,10 +107,12 @@ const buildKeyAndValueFunctions = (keyMapper, valueMapper) => {
  * * `string`: uses the provided string as the field key
  * * `Function`, will receive the object as its input eg object => object.value * 2
  *
- * @param {ObjectCollection} objectCollection
- * @param {string|Function} keyMapper
- * @param {string|Function} valueMapper
- * @return {Object<string, string>}
+ * @template {Object} T
+ *
+ * @param {T[] | Record<string, T>} objectCollection
+ * @param {string | (object: T) => string} keyMapper
+ * @param {string | (object: T) => string} valueMapper
+ * @return {Record<string, string>}
  */
 export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => {
   const objects = collectionToArray(objectCollection);

@@ -14,18 +14,18 @@ import {
   useExportMapOverlayVisualisation,
 } from '../api/mutations';
 import { useVisualisation, useVizConfigError } from '../context';
-import { VIZ_TYPE_PARAM } from '../constants';
+import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 
 export const ExportButton = () => {
   const { visualisation } = useVisualisation();
 
-  const { vizType } = useParams();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const useExportViz = () => {
-    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
       return useExportDashboardVisualisation(visualisation);
     }
-    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
       return useExportMapOverlayVisualisation(visualisation);
     }
     throw new Error('Unknown viz type');

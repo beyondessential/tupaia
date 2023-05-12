@@ -14,14 +14,12 @@ import styled from 'styled-components';
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
-
+import { ICON_BASE_SIZE } from './constants';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import { Cyclone } from './disasterIcons/Cyclone';
-import { Earthquake } from './disasterIcons/Earthquake';
-import { Tsunami } from './disasterIcons/Tsunami';
-import { Volcano } from './disasterIcons/Volcano';
-import { Flood } from './disasterIcons/Flood';
+import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
+import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../constants';
+import { IconContainer } from './IconContainer';
 
 // allows passing a color to a material icon & scales it down a bit
 const wrapMaterialIcon = Base => ({ color }) => <Base htmlColor={color} viewBox="-3 -3 29 29" />;
@@ -38,30 +36,6 @@ const wrapSvgIcon = Base => ({ color }) => (
   </StyledSvgWrapper>
 );
 
-const ICON_BASE_SIZE = 20;
-
-const IconContainer = ({ children, scale, ...props }) => (
-  <svg
-    width={`${ICON_BASE_SIZE * scale}px`}
-    height={`${ICON_BASE_SIZE * scale}px`}
-    viewBox="0 0 1000 1000"
-    style={{ marginRight: '0.25rem' }}
-    {...props}
-  >
-    {children}
-  </svg>
-);
-
-IconContainer.propTypes = {
-  children: PropTypes.node,
-  scale: PropTypes.number,
-};
-
-IconContainer.defaultProps = {
-  children: null,
-  scale: 1,
-};
-
 const PinIcon = ({ color, scale }) => {
   return (
     <IconContainer fill={color} scale={scale} viewBox="0 0 27 39">
@@ -72,6 +46,18 @@ const PinIcon = ({ color, scale }) => {
       <circle cx="13.5" cy="14.1316" r="6" fill="white" fillOpacity="0.9" />
     </IconContainer>
   );
+};
+
+const UpArrowIcon = ({ scale }) => {
+  return UpArrow(scale);
+};
+
+const RightArrowIcon = ({ scale }) => {
+  return RightArrow(scale);
+};
+
+const DownArrowIcon = ({ scale }) => {
+  return DownArrow(scale);
 };
 
 const HealthPinIcon = ({ color, scale }) => (
@@ -243,6 +229,21 @@ const icons = {
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
+  upArrow: {
+    Component: UpArrowIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
+  rightArrow: {
+    Component: RightArrowIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
+  downArrow: {
+    Component: DownArrowIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
   healthPin: {
     Component: HealthPinIcon,
     iconAnchor: [12, 24],
@@ -361,6 +362,24 @@ const iconDefaultProps = {
 
 PinIcon.propTypes = iconPropTypes;
 PinIcon.defaultProps = iconDefaultProps;
+UpArrowIcon.propTypes = {
+  scale: PropTypes.number,
+};
+UpArrowIcon.defaultProps = {
+  scale: 1,
+};
+DownArrowIcon.propTypes = {
+  scale: PropTypes.number,
+};
+DownArrowIcon.defaultProps = {
+  scale: 1,
+};
+RightArrowIcon.propTypes = {
+  scale: PropTypes.number,
+};
+RightArrowIcon.defaultProps = {
+  scale: 1,
+};
 HealthPinIcon.propTypes = iconPropTypes;
 HealthPinIcon.defaultProps = iconDefaultProps;
 CircleIcon.propTypes = iconPropTypes;

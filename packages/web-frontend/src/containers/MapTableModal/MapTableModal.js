@@ -25,6 +25,7 @@ import {
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { Tooltip } from '../../components/Tooltip';
+import { useOverlayDates } from '../MapOverlayBar/useOverlayDates';
 
 const IconButton = styled(MuiIconButton)`
   margin-right: -10px;
@@ -43,7 +44,15 @@ const MapTableModalComponent = ({
     ? `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`
     : '';
 
-  const { doExport } = useMapDataExport(measureOptions, measureData, title);
+  let startDate = null;
+  let endDate = null;
+  if (currentMapOverlays.length === 1) {
+    const mapOverlayDates = useOverlayDates(currentMapOverlays[0]);
+    startDate = mapOverlayDates.startDate;
+    endDate = mapOverlayDates.endDate;
+  }
+
+  const { doExport } = useMapDataExport(measureOptions, measureData, title, startDate, endDate);
 
   if (!currentMapOverlays || !measureData || !measureOptions || measureData.length === 0) {
     return null;

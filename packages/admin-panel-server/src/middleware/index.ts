@@ -4,4 +4,3 @@
  */
 
 export { upload } from './upload';
-export { verifyBESAdminAccess } from './verifyBESAdminAccess';

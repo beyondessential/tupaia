@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
 import { Context } from '../../context';
 
 import {
@@ -25,15 +26,17 @@ import {
   buildGatherColumns,
   paramsValidator as gatherColumnsParamsValidator,
 } from './gatherColumns';
-import { buildOrderColumns, orderColumnsSchema } from './orderColumns';
+import { buildFetchData, paramsValidator as fetchDataParamsValidator } from './fetchData';
+import { buildOrderColumns, paramsValidator as orderColumnsParamsValidator } from './orderColumns';
 import { TransformTable } from '../table';
 
 type TransformBuilder = (
   params: unknown,
   context: Context,
-) => (table: TransformTable) => TransformTable;
+) => (table: TransformTable) => TransformTable | Promise<TransformTable>;
 
 export const transformBuilders: Record<string, TransformBuilder> = {
+  fetchData: buildFetchData,
   insertColumns: buildInsertColumns,
   excludeColumns: buildExcludeColumns,
   updateColumns: buildUpdateColumns,
@@ -45,20 +48,15 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   orderColumns: buildOrderColumns,
 };
 
-export const transformSchemas: Record<
-  string,
-  {
-    type: string;
-    fields: Record<string, unknown>;
-  }
-> = {
-  insertColumns: insertColumnsParamsValidator.describe(),
-  excludeColumns: excludeColumnsParamsValidator.describe(),
-  updateColumns: updateColumnsParamsValidator.describe(),
-  mergeRows: mergeRowsParamsValidator.describe(),
-  sortRows: sortRowsParamsValidator.describe(),
-  excludeRows: excludeRowsParamsValidator.describe(),
-  insertRows: insertRowsParamsValidator.describe(),
-  gatherColumns: gatherColumnsParamsValidator.describe(),
-  orderColumns: orderColumnsSchema,
+export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
+  fetchData: fetchDataParamsValidator,
+  insertColumns: insertColumnsParamsValidator,
+  excludeColumns: excludeColumnsParamsValidator,
+  updateColumns: updateColumnsParamsValidator,
+  mergeRows: mergeRowsParamsValidator,
+  sortRows: sortRowsParamsValidator,
+  excludeRows: excludeRowsParamsValidator,
+  insertRows: insertRowsParamsValidator,
+  gatherColumns: gatherColumnsParamsValidator,
+  orderColumns: orderColumnsParamsValidator,
 };

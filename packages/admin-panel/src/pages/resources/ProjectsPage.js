@@ -30,6 +30,7 @@ const FIELDS = [
       optionLabelKey: 'name',
       optionValueKey: 'name',
       sourceKey: 'dashboard_group_name',
+      distinct: true,
     },
   },
   {

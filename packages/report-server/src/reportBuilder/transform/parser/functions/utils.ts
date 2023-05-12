@@ -9,6 +9,7 @@ import {
   periodToTimestamp as basePeriodToTimestamp,
   periodToDisplayString as basePeriodToDisplayString,
   formatDataValueByType as baseFormatDataValueByType,
+  periodToMoment as basePeriodToMoment,
 } from '@tupaia/utils';
 
 export const convertToPeriod = (period: string, targetType: string): string => {
@@ -43,4 +44,8 @@ export const formatAsFractionAndPercentage = (numerator: number, denominator: nu
     { value: numerator / denominator, metadata: { numerator, denominator } },
     'fractionAndPercentage',
   );
+};
+
+export const periodToMoment = (period: string): any => {
+  return basePeriodToMoment(period);
 };

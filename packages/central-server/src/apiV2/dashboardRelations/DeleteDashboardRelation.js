@@ -4,15 +4,10 @@
  */
 
 import { DeleteHandler } from '../DeleteHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertDashboardRelationEditPermissions } from './assertDashboardRelationsPermissions';
+import { assertBESAdminAccess } from '../../permissions';
 
 export class DeleteDashboardRelation extends DeleteHandler {
   async assertUserHasAccess() {
-    const dashboardRelationChecker = accessPolicy =>
-      assertDashboardRelationEditPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, dashboardRelationChecker]),
-    );
+    await this.assertPermissions(assertBESAdminAccess);
   }
 }

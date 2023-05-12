@@ -112,7 +112,7 @@ const FIELDS = [
   },
 ];
 
-export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, ...props }) => {
+export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -123,7 +123,6 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, ..
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
       editConfig: {
         type: 'link',
         linkOptions: {
@@ -211,11 +210,9 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, ..
 
 MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.bool,
   vizBuilderBaseUrl: PropTypes.string,
 };
 
 MapOverlaysPage.defaultProps = {
-  isBESAdmin: false,
   vizBuilderBaseUrl: '',
 };

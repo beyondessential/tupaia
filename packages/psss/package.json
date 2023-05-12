@@ -19,7 +19,7 @@
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "start-dev": "yarn package:start:react-scripts",
-    "start-fullstack": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server  start-dev",
+    "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev -s",
@@ -27,7 +27,10 @@
     "test": "yarn test:jest",
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
-    "test:jest": "yarn package:test --env=jsdom"
+    "test:jest": "yarn package:test --env=jsdom",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
+    "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
+    "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server"
   },
   "browserslist": [
     "defaults"
@@ -53,8 +56,7 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.0.0",
     "react-password-strength-bar": "^0.3.3",
-    "react-query": "^2.25.2",
-    "react-query-devtools": "^2.6.0",
+    "react-query": "^3.19.0",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.2",
