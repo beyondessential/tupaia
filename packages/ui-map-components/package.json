@@ -28,7 +28,6 @@
         "@tupaia/ui-components": "1.0.0",
         "@tupaia/utils": "1.0.0",
         "leaflet": "^1.7.1",
-        "lodash.get": "^4.4.2",
         "moment": "^2.29.1",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",

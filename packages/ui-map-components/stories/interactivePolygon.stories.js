@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import {
@@ -10,7 +9,7 @@ import {
   AttributionControl,
   MapContainer,
 } from 'react-leaflet';
-import { InteractivePolygon } from '../../src/components/Map';
+import { InteractivePolygon } from '../src';
 import multiOverlaySerieses from './data/interactivePolygonSerieses.json';
 import area from './data/entityAreaData.json';
 
@@ -27,7 +26,7 @@ const position = {
 };
 
 export default {
-  title: 'Map/InteractivePolygon',
+  title: 'InteractivePolygon',
   decorators: [
     Story => (
       <MapContainer

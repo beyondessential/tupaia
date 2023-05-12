@@ -1,10 +1,9 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { getHeatmapColor, getReverseHeatmapColor } from '../../../components/Map/utils';
+import { getHeatmapColor, getReverseHeatmapColor } from '../utils';
 
 describe('getHeatmapColorByOrder()', () => {
   it('getHeatmapColor() should return expected rgb', () => {

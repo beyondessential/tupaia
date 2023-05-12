@@ -1,12 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import styled from 'styled-components';
-import { Legend } from '../../src/components/Map';
+import { Legend } from '../src';
 import mapOverlaySerieses from './data/mapOverlaySerieses.json';
 import spectrumMapOverlaySeries from './data/spectrumMapOverlaySerieses.json';
 
@@ -18,7 +17,7 @@ const mapOverlayCodeA = 'mapOverlayCodeA';
 const mapOverlayCodeB = 'mapOverlayCodeB';
 
 export default {
-  title: 'Map/Legend',
+  title: 'Legend',
   component: Legend,
   argTypes: {
     displayedMapOverlayCodes: {

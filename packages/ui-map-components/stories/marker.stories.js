@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -12,7 +11,7 @@ import {
   AttributionControl,
   MapContainer,
 } from 'react-leaflet';
-import { MeasureMarker, MeasurePopup } from '../../src/components/Map';
+import { MeasureMarker, MeasurePopup } from '../src';
 
 const Container = styled.div`
   padding: 1rem;
@@ -24,7 +23,7 @@ const DEFAULT_BOUNDS = [
 ];
 
 export default {
-  title: 'Map/Marker',
+  title: 'Marker',
   decorators: [
     Story => (
       <Container>

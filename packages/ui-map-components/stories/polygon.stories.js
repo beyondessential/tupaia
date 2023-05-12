@@ -1,12 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import styled from 'styled-components';
 import L from 'leaflet';
-import { LeafletMapContainer, TileLayer, PolygonLayer } from '../../src/components/Map';
+import { LeafletMapContainer, TileLayer, PolygonLayer } from '../src';
 import entityData from './data/entityData.json';
 
 const Container = styled.div`
@@ -15,7 +14,7 @@ const Container = styled.div`
 `;
 
 export default {
-  title: 'Map/MapLayers',
+  title: 'MapLayers',
   decorators: [
     Story => (
       <Container>

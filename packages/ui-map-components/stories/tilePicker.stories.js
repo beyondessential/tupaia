@@ -1,16 +1,13 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import {
-  MapContainer,
-  TileLayer,
-  TilePicker as TilePickerComponent,
-} from '../../src/components/Map';
+import { MapContainer } from 'react-leaflet';
+import { TileLayer, TilePicker as TilePickerComponent } from '../src/components';
 
 const Container = styled.div`
   position: relative;

@@ -1,17 +1,16 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { YES_COLOR, NO_COLOR } from '../../../components/Map/constants';
+import { YES_COLOR, NO_COLOR } from '../constants';
 import {
   autoAssignColors,
   createValueMapping,
   getMeasureDisplayInfo,
   getFormattedInfo,
   flattenNumericalMeasureData,
-} from '../../../components/Map/utils';
+} from '../utils';
 
 describe('measures', () => {
   describe('processing', () => {
