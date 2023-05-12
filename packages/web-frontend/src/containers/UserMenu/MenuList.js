@@ -16,6 +16,9 @@ const MenuListWrapper = styled.ul`
   margin-block-start: 0;
   margin-block-end: 0;
   padding-inline-start: 0;
+  * {
+    color: ${({ secondaryColor }) => secondaryColor};
+  }
 `;
 
 const MenuItemButton = styled(Button)`
@@ -32,7 +35,6 @@ const MenuItemLink = styled(Link)`
   padding: 0.4em 1em;
   line-height: 1.4;
   width: 100%;
-  color: inherit;
   text-decoration: none;
   &:hover,
   &:focus {
@@ -43,10 +45,11 @@ const MenuItemLink = styled(Link)`
 
 const MenuListItem = styled(ListItem)`
   padding: 0;
+  color: ${({ secondaryColor }) => secondaryColor};
 `;
 
 // If is a link, use a link component, else a button so that we have correct semantic HTML
-export const MenuItem = ({ href, children, onClick, onCloseMenu }) => {
+export const MenuItem = ({ href, children, onClick, onCloseMenu, secondaryColor }) => {
   const handleClickMenuItem = () => {
     if (onClick) onClick();
     onCloseMenu();
@@ -76,10 +79,11 @@ MenuItem.defaultProps = {
   onClick: null,
 };
 
-export const MenuList = ({ children }) => {
-  return <MenuListWrapper>{children}</MenuListWrapper>;
+export const MenuList = ({ children, secondaryColor }) => {
+  return <MenuListWrapper secondaryColor={secondaryColor}>{children}</MenuListWrapper>;
 };
 
 MenuList.propTypes = {
   children: PropTypes.node.isRequired,
+  secondaryColor: PropTypes.string.isRequired,
 };

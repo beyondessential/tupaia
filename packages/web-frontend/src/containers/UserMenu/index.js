@@ -91,7 +91,7 @@ const UserMenu = ({
 
   // Create the menu items
   const BaseMenuItem = ({ children, ...props }) => (
-    <MenuItem onCloseMenu={onCloseMenu} {...props}>
+    <MenuItem onCloseMenu={onCloseMenu} {...props} secondaryColor={secondaryColor}>
       {children}
     </MenuItem>
   );
@@ -146,7 +146,7 @@ const UserMenu = ({
         isUserLoggedIn,
         currentUserUsername,
       }
-    : { primaryColor, menuOpen, onCloseMenu };
+    : { primaryColor, menuOpen, onCloseMenu, secondaryColor };
 
   return (
     <UserMenuContainer secondaryColor={secondaryColor}>

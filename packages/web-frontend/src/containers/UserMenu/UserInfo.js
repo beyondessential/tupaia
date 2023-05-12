@@ -17,12 +17,12 @@ const UsernameContainer = styled.p`
   font-weight: ${({ isCustomLandingPage, theme }) =>
     isCustomLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
   font-size: 0.875rem;
-  text-transform: ${({ isCustomLandingPage }) => (isCustomLandingPage ? 'uppercase' : 'none')};
+  text-transform: ${({ isCustomLandingPage }) => (isCustomLandingPage ? 'uppercase' : 'none')}; 
 `;
 
 const RegisterButton = styled(Button)`
   text-transform: none;
-  margin-right: 0.5em;
+  margin-right: 0.5em; 
 `;
 
 const SignInButton = styled(Button)`
