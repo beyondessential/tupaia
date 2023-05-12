@@ -17,9 +17,9 @@ The page will reload if you make edits.<br />
 Storybook is an open source tool for developing UI components.
 [https://github.com/storybookjs/storybook](https://github.com/storybookjs/storybook)
 
-## Recharts
+## Leaflet
 
-The components are mostly built on top of components from the [ReCharts library](https://recharts.org).
+The components are mostly built on top of components from the [Leaflet JS library](https://leafletjs.com).
 
 ##### Notes on approach:
 
