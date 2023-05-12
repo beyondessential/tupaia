@@ -2116,7 +2116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.10.5, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.2, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.2, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.15.4
   resolution: "@babel/runtime@npm:7.15.4"
   dependencies:
@@ -5473,6 +5473,7 @@ __metadata:
     "@tupaia/admin-panel": 1.0.0
     "@tupaia/ui-chart-components": 1.0.0
     "@tupaia/ui-components": 1.0.0
+    "@tupaia/ui-map-components": 1.0.0
     "@tupaia/utils": 1.0.0
     axios: ^0.21.1
     camelcase: ^6.2.0
@@ -5639,7 +5640,6 @@ __metadata:
     react-hook-form: ^6.0.0
     react-password-strength-bar: ^0.3.3
     react-query: ^3.19.0
-    react-query-devtools: ^2.6.0
     react-redux: ^7.1.0
     react-router-dom: ^5.1.2
     redux: ^4.0.2
@@ -5818,6 +5818,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/ui-map-components@1.0, @tupaia/ui-map-components@1.0.0, @tupaia/ui-map-components@workspace:packages/ui-map-components":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/ui-map-components@workspace:packages/ui-map-components"
+  dependencies:
+    "@material-ui/core": ^4.9.8
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/styles": ^4.9.10
+    "@storybook/react": ^6.3.9
+    "@tupaia/ui-components": 1.0.0
+    "@tupaia/utils": 1.0.0
+    leaflet: ^1.7.1
+    moment: ^2.29.1
+    prop-types: ^15.7.2
+    react: ^16.13.1
+    react-dom: ^16.13.1
+    react-leaflet: ^3.2.1
+    react-table: ^7.7.0
+    styled-components: ^5.0.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/utils@1.0.0, @tupaia/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
@@ -5919,6 +5940,7 @@ __metadata:
     "@testing-library/user-event": ^12.0.11
     "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
+    "@tupaia/ui-map-components": 1.0
     "@tupaia/utils": 1.0.0
     case: ^1.6.3
     chalk: 1.1.3
@@ -23344,16 +23366,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"match-sorter@npm:^4.1.0":
-  version: 4.2.1
-  resolution: "match-sorter@npm:4.2.1"
-  dependencies:
-    "@babel/runtime": ^7.10.5
-    remove-accents: 0.4.2
-  checksum: 7f3cd8f84cdb4567b7a81f66a095e418044f318f41b6c8a1640730c99e370af9e5054f5a1ed2dfa1287a23101d75a105da63e4d95e8ac2f7061a8f8b32367c7d
-  languageName: node
-  linkType: hard
-
 "match-sorter@npm:^6.0.2":
   version: 6.1.0
   resolution: "match-sorter@npm:6.1.0"
@@ -29806,18 +29818,6 @@ __metadata:
     "@popperjs/core": ^2.0.0
     react: ^16.8.0 || ^17
   checksum: 915fcf08e1da4fd48a200074fcdd936f601ee2173f1e730cfed8a54fd47716aa8bf9cce2392463e3bcbe64a096d0baf463809ed2874b94d3a9d430ae6d817b5d
-  languageName: node
-  linkType: hard
-
-"react-query-devtools@npm:^2.6.0":
-  version: 2.6.3
-  resolution: "react-query-devtools@npm:2.6.3"
-  dependencies:
-    match-sorter: ^4.1.0
-  peerDependencies:
-    react: ^16.6.3 || ^17.0.0
-    react-query: ^2.0.0
-  checksum: 55cd257c32af83ac33ddff32a7234922fc53dd212c8a92dbee2a5c494c08763a94f60c8f455416ee4dde8ee7d908c7762b90f11d25d86e87efff9b729a8c2cfc
   languageName: node
   linkType: hard
 

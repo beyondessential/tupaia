@@ -11,7 +11,6 @@ export * from './Icons';
 export * from './Inputs';
 export * from './JsonEditor';
 export * from './Layout';
-export * from './Map';
 export * from './Modal';
 export * from './Table';
 export * from './UserMessage';

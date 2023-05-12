@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { omitBy } from 'lodash';
 import PropTypes from 'prop-types';
 
-import { InteractivePolygon } from '@tupaia/ui-components';
+import { InteractivePolygon } from '@tupaia/ui-map-components';
 
 import { organisationUnitIsArea } from '../../../utils';
 import {
