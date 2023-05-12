@@ -23,8 +23,8 @@
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
     "start-lesmis-server": "yarn workspace @tupaia/lesmis-server start-dev",
     "test": "yarn package:test",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
-    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build-dev:watch",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
+    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build -w",
     "start-frontend": "npm-run-all -c -l -p start-ui-components start-ui-chart-components start-dev",
     "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-lesmis-server"
   },

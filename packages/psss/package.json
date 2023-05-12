@@ -28,7 +28,7 @@
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
     "test:jest": "yarn package:test --env=jsdom",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
     "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
     "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server"
   },
