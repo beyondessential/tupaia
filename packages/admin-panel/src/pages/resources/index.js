@@ -34,3 +34,5 @@ export { LegacyReportsPage } from './LegacyReportsPage';
 export { ProjectsPage } from './ProjectsPage';
 export { SyncGroupsPage } from './SyncGroupsPage';
 export { ExternalDatabaseConnectionsPage } from './ExternalDatabaseConnectionsPage';
+export { EntityHierarchyPage } from './EntityHierarchyPage';
+export { PermissionGroupsViewerPage } from './PermissionGroupsViewerPage';

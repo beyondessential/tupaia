@@ -419,6 +419,7 @@ export class DhisApi {
   }
 
   /**
+   * @returns {{ headers: any, metaData: any, rows: string[][] }}
    * @private
    */
   async fetchAnalyticsQueries(queries, endpoint) {
@@ -570,6 +571,21 @@ export class DhisApi {
     return dataGroupMetadata;
   }
 
+  async fetchCategoryOptionCombos(categoryOptionComboCodes, { additionalFields = [] } = {}) {
+    if (categoryOptionComboCodes.length === 0) {
+      return [];
+    }
+
+    const fields = ['id', 'code', 'name', ...additionalFields];
+    const categoryOptionCombos = await this.getRecords({
+      type: CATEGORY_OPTION_COMBO,
+      codes: categoryOptionComboCodes,
+      fields,
+    });
+
+    return categoryOptionCombos;
+  }
+
   buildFetchIndicatorsQuery = queryInput => {
     const { dataElementIds, dataElementCodes } = queryInput;
 
@@ -655,6 +671,9 @@ export class DhisApi {
     }
   }
 
+  /**
+   * @param {{ dataElement: string; period: string; orgUnit: string; categoryOptionCombo?: string}} data
+   */
   async deleteDataValue({
     dataElement: dataElementCode,
     period,

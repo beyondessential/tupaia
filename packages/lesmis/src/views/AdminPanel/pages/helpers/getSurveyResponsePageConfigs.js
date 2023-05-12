@@ -5,7 +5,7 @@
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { getImportConfigs } from './getImportConfigs';
-import { getSurveyResponsesExportModal } from '../../components/getSurveyResponsesExportModal';
+import { getSurveyResponsesExportModal } from '../../components';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
 import { getBaseEditorConfigs } from './getEditorConfigs';

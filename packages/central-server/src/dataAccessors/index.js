@@ -12,3 +12,4 @@ export { deleteOrphanQuestions } from './deleteOrphanQuestions';
 export { createUser } from './createUser';
 export { updateOrCreateSurveyResponse } from './updateOrCreateSurveyResponse';
 export { validateSurveyFields } from './validateSurveyFields';
+export { upsertAnswers } from './upsertAnswers';

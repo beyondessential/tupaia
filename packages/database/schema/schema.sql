@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.1
--- Dumped by pg_dump version 13.1
+-- Dumped from database version 13.7
+-- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -57,7 +57,14 @@ CREATE TYPE public.data_source_type AS ENUM (
 --
 
 CREATE TYPE public.data_table_type AS ENUM (
-    'internal'
+    'analytics',
+    'events',
+    'entity_relations',
+    'entities',
+    'sql',
+    'data_group_metadata',
+    'data_element_metadata',
+    'entity_attributes'
 );
 
 
@@ -113,7 +120,17 @@ CREATE TYPE public.entity_type AS ENUM (
     'local_government',
     'medical_area',
     'nursing_zone',
-    'fetp_graduate'
+    'fetp_graduate',
+    'incident',
+    'incident_reported',
+    'fiji_aspen_facility',
+    'wish_sub_district',
+    'trap',
+    'asset',
+    'institute',
+    'msupply_store',
+    'complaint',
+    'water_sample'
 );
 
 
@@ -420,40 +437,39 @@ $_X$;
 CREATE FUNCTION public.drop_analytics_log_tables() RETURNS void
     LANGUAGE plpgsql
     AS $_X$
-declare
-      tStartTime TIMESTAMP;
-      source_table TEXT;
-      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
-    
-    begin
-      IF (SELECT EXISTS (
-        SELECT FROM pg_tables
-        WHERE schemaname = 'public'
-        AND tablename   = 'analytics'
-      ))
-      THEN
-        RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
-      ELSE
-        RAISE NOTICE 'Dropping Materialized View Logs...';
-        FOREACH source_table IN ARRAY source_tables_array LOOP
-          IF (SELECT EXISTS (
-            SELECT FROM pg_tables
-            WHERE schemaname = 'public'
-            AND tablename   = 'log$_' || source_table
-          ))
-          THEN
-            EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
-            tStartTime := clock_timestamp();
-            PERFORM mv$removeMaterializedViewLog(source_table, 'public');
-            RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-            EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
-          ELSE
-            RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
-          END IF;
-        END LOOP;
-      END IF;
-    end
-$_X$;
+  declare
+    tStartTime TIMESTAMP;
+    source_table TEXT;
+    source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
+  
+  begin
+    IF (SELECT EXISTS (
+      SELECT FROM pg_tables
+      WHERE schemaname = 'public'
+      AND tablename   = 'analytics'
+    ))
+    THEN
+      RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
+    ELSE
+      RAISE NOTICE 'Dropping Materialized View Logs...';
+      FOREACH source_table IN ARRAY source_tables_array LOOP
+        IF (SELECT EXISTS (
+          SELECT FROM pg_tables
+          WHERE schemaname = 'public'
+          AND tablename   = 'log$_' || source_table
+        ))
+        THEN
+          EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+          tStartTime := clock_timestamp();
+          PERFORM mv$removeMaterializedViewLog(source_table, 'public');
+          RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+          EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+        ELSE
+          RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
+        END IF;
+      END LOOP;
+    END IF;
+  end $_X$;
 
 
 --
@@ -909,7 +925,8 @@ CREATE TABLE public.dashboard_item (
     code text NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     report_code text,
-    legacy boolean DEFAULT false NOT NULL
+    legacy boolean DEFAULT false NOT NULL,
+    permission_group_ids text[]
 );
 
 
@@ -1017,9 +1034,9 @@ CREATE TABLE public.data_table (
     id text NOT NULL,
     code text NOT NULL,
     description text,
-    type public.data_table_type NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
-    permission_groups text[] DEFAULT '{}'::text[] NOT NULL
+    permission_groups text[] NOT NULL,
+    type public.data_table_type NOT NULL
 );
 
 
@@ -1150,6 +1167,19 @@ CREATE TABLE public.error_log (
     api_request_log_id text,
     type text,
     error_time timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: external_database_connection; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.external_database_connection (
+    id text NOT NULL,
+    code text NOT NULL,
+    name text NOT NULL,
+    description text,
+    permission_groups text[] DEFAULT '{}'::text[] NOT NULL
 );
 
 
@@ -2114,6 +2144,22 @@ ALTER TABLE ONLY public.entity_relation
 
 ALTER TABLE ONLY public.error_log
     ADD CONSTRAINT error_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: external_database_connection external_database_connection_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.external_database_connection
+    ADD CONSTRAINT external_database_connection_code_key UNIQUE (code);
+
+
+--
+-- Name: external_database_connection external_database_connection_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.external_database_connection
+    ADD CONSTRAINT external_database_connection_pkey PRIMARY KEY (id);
 
 
 --
@@ -3098,6 +3144,13 @@ CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity 
 
 
 --
+-- Name: external_database_connection external_database_connection_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER external_database_connection_trigger AFTER INSERT OR DELETE OR UPDATE ON public.external_database_connection FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
 -- Name: geographical_area geographical_area_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3791,6 +3844,23 @@ ALTER TABLE ONLY public.user_favourite_dashboard_item
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO tupaia;
+
+
+--
+-- Name: user_favourite_dashboard_item user_favourite_dashboard_item_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_favourite_dashboard_item
+    ADD CONSTRAINT user_favourite_dashboard_item_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO tupaia;
 GRANT USAGE ON SCHEMA public TO tupaia_read;
 
@@ -3799,468 +3869,8 @@ GRANT USAGE ON SCHEMA public TO tupaia_read;
 -- Name: TABLE access_request; Type: ACL; Schema: public; Owner: -
 --
 
-GRANT SELECT ON TABLE public.access_request TO tupaia_read;
-
-
---
--- Name: TABLE admin_panel_session; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.admin_panel_session TO tupaia_read;
-
-
---
--- Name: TABLE ancestor_descendant_relation; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.ancestor_descendant_relation TO tupaia_read;
-
-
---
--- Name: TABLE answer; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.answer TO tupaia_read;
-
-
---
--- Name: TABLE api_client; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.api_client TO tupaia_read;
-
-
---
--- Name: TABLE api_request_log; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.api_request_log TO tupaia_read;
-
-
---
--- Name: TABLE clinic; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.clinic TO tupaia_read;
-
-
---
--- Name: TABLE comment; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.comment TO tupaia_read;
-
-
---
--- Name: TABLE country; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.country TO tupaia_read;
-
-
---
--- Name: TABLE dashboard; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.dashboard TO tupaia_read;
-
-
---
--- Name: TABLE dashboard_item; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.dashboard_item TO tupaia_read;
-
-
---
--- Name: TABLE dashboard_relation; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.dashboard_relation TO tupaia_read;
-
-
---
--- Name: TABLE data_element; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_element TO tupaia_read;
-
-
---
--- Name: TABLE data_element_data_group; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_element_data_group TO tupaia_read;
-
-
---
--- Name: TABLE data_element_data_service; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_element_data_service TO tupaia_read;
-
-
---
--- Name: TABLE data_group; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_group TO tupaia_read;
-
-
---
--- Name: TABLE data_service_entity; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_service_entity TO tupaia_read;
-
-
---
--- Name: TABLE data_service_sync_group; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_service_sync_group TO tupaia_read;
-
-
---
--- Name: TABLE data_table; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.data_table TO tupaia_read;
-
-
---
--- Name: TABLE dhis_instance; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.dhis_instance TO tupaia_read;
-
-
---
--- Name: TABLE dhis_sync_log; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.dhis_sync_log TO tupaia_read;
-
-
---
--- Name: TABLE dhis_sync_queue; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.dhis_sync_queue TO tupaia_read;
-
-
---
--- Name: TABLE disaster; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.disaster TO tupaia_read;
-
-
---
--- Name: TABLE "disasterEvent"; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public."disasterEvent" TO tupaia_read;
-
-
---
--- Name: TABLE entity; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.entity TO tupaia_read;
-
-
---
--- Name: TABLE entity_hierarchy; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.entity_hierarchy TO tupaia_read;
-
-
---
--- Name: TABLE entity_relation; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.entity_relation TO tupaia_read;
-
-
---
--- Name: TABLE error_log; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.error_log TO tupaia_read;
-
-
---
--- Name: TABLE feed_item; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.feed_item TO tupaia_read;
-
-
---
--- Name: TABLE geographical_area; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.geographical_area TO tupaia_read;
-
-
---
--- Name: TABLE indicator; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.indicator TO tupaia_read;
-
-
---
--- Name: TABLE legacy_report; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.legacy_report TO tupaia_read;
-
-
---
--- Name: TABLE lesmis_session; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.lesmis_session TO tupaia_read;
-
-
---
--- Name: TABLE map_overlay; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.map_overlay TO tupaia_read;
-
-
---
--- Name: TABLE map_overlay_group; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.map_overlay_group TO tupaia_read;
-
-
---
--- Name: TABLE map_overlay_group_relation; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.map_overlay_group_relation TO tupaia_read;
-
-
---
--- Name: TABLE meditrak_device; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.meditrak_device TO tupaia_read;
-
-
---
--- Name: TABLE meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.meditrak_sync_queue TO tupaia_read;
-
-
---
--- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.migrations TO tupaia_read;
-
-
---
--- Name: TABLE ms1_sync_log; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.ms1_sync_log TO tupaia_read;
-
-
---
--- Name: TABLE ms1_sync_queue; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.ms1_sync_queue TO tupaia_read;
-
-
---
--- Name: TABLE one_time_login; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.one_time_login TO tupaia_read;
-
-
---
--- Name: TABLE option; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.option TO tupaia_read;
-
-
---
--- Name: TABLE option_set; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.option_set TO tupaia_read;
-
-
---
--- Name: TABLE permission_group; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.permission_group TO tupaia_read;
-
-
---
--- Name: TABLE project; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.project TO tupaia_read;
-
-
---
--- Name: TABLE psss_session; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.psss_session TO tupaia_read;
-
-
---
--- Name: TABLE question; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.question TO tupaia_read;
-
-
---
--- Name: TABLE refresh_token; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.refresh_token TO tupaia_read;
-
-
---
--- Name: TABLE report; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.report TO tupaia_read;
-
-
---
--- Name: TABLE setting; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.setting TO tupaia_read;
-
-
---
--- Name: TABLE superset_instance; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.superset_instance TO tupaia_read;
-
-
---
--- Name: TABLE survey; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.survey TO tupaia_read;
-
-
---
--- Name: TABLE survey_group; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.survey_group TO tupaia_read;
-
-
---
--- Name: TABLE survey_response; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.survey_response TO tupaia_read;
-
-
---
--- Name: TABLE survey_response_comment; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.survey_response_comment TO tupaia_read;
-
-
---
--- Name: TABLE survey_screen; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.survey_screen TO tupaia_read;
-
-
---
--- Name: TABLE survey_screen_component; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.survey_screen_component TO tupaia_read;
-
-
---
--- Name: TABLE sync_group_log; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.sync_group_log TO tupaia_read;
-
-
---
--- Name: TABLE "userSession"; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public."userSession" TO tupaia_read;
-
-
---
--- Name: TABLE user_account; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.user_account TO tupaia_read;
-
-
---
--- Name: TABLE user_entity_permission; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.user_entity_permission TO tupaia_read;
-
-
---
--- Name: TABLE user_favourite_dashboard_item; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.user_favourite_dashboard_item TO tupaia_read;
-
-
---
--- Name: TABLE permissions_based_meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.permissions_based_meditrak_sync_queue TO tupaia_read;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public REVOKE ALL ON TABLES  FROM tupaia;
-ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES  TO tupaia_read;
-
-
---
--- PostgreSQL database dump complete
---
-
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 13.1
--- Dumped by pg_dump version 13.1
+-- Dumped from database version 13.7
+-- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -5821,6 +5431,35 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1541	/20220920062403-AddEntityIdIndexOnSurveyResponseTable-modifies-schema	2022-10-04 01:35:41.726
 1542	/20220916024924-AddUnfpaFacilities-modifies-data	2022-10-17 23:48:26.256
 1543	/20220925225155-AddSupersetMappings-modifies-data	2022-10-17 23:48:26.371
+1544	/20221001204123-AddExternalDatabaseConnectionTable-modifies-schema	2022-11-08 01:12:59.712
+1545	/20221006004520-AddEntityRelationsDataTable-modifies-data	2022-11-08 01:13:00.247
+1546	/20221006010514-AddEntitiesDataTable-modifies-data	2022-11-08 01:13:01.077
+1547	/20221102231839-AddNigeriaToTupaia-modifies-data	2022-11-08 01:13:01.854
+1548	/20221104002716-UnfpaPopulationTileSet-modifies-data	2022-11-22 01:31:32.806
+1549	/20221110021119-AddFacilitiesPenfaa-modifies-data	2022-11-22 01:31:33.685
+1550	/20221111050217-AddSupersetInstances-modifies-data	2022-11-22 01:31:33.722
+1551	/20221102021424-ChangeWishSubDistrictToUseNewType-modifies-data	2023-01-10 05:11:31.165
+1552	/20230109035514-PalauEditAndCreatePermissions-modifies-data	2023-01-24 00:40:29.817
+1553	/20230110023215-SolIslandsDeleteCovidProject-modifies-data	2023-01-24 00:40:30.105
+1554	/20230118223340-ChangeSupersetCountryCodeToFj-modifies-data	2023-01-24 00:40:30.163
+1555	/20230116004255-AddPermissionGroupColumnToDashboardItems-modifies-data	2023-02-14 00:20:56.161
+1556	/20230119053753-ConvertInternalDataTablesToTheirOwnTypes-modifies-schema	2023-02-14 00:20:58.597
+1557	/20221002042508-AddSqlDataTableType-modifies-schema	2023-02-16 13:58:55.864336
+1558	/20230214033100-ChangeConstraintOnTypeAndPermissionGroupsInDataTable-modifies-schema	2023-04-13 14:08:46.011
+1559	/20230216140701-MoveFetchIntoTransformInReports-modifies-data	2023-04-13 14:09:18.031
+1560	/20230216141720-ConvertReportsToPullFromDataTables-modifies-schema	2023-04-13 14:09:49.522
+1561	/20230217031100-AddNewDataTableTypes-modifies-schema	2023-04-13 14:10:00.428
+1562	/20230219232553-AddMetadataInDataTable-modifies-data	2023-04-13 14:10:00.645
+1563	/20230222233428-RewriteVizsUsedDataElementCodeToName-modifies-schema	2023-04-13 14:10:02.728
+1564	/20230314005038-RewriteWishFijiBaselineVizesWithOrgUnitContext-modifies-data	2023-04-13 14:10:03.256
+1565	/20230314042110-MigrateInsertNumberOfFacilitiesColumn-modifies-data	2023-04-13 14:10:04.073
+1566	/20230316041331-RewriteWishFijiMatrixReports-modifies-data	2023-04-13 14:10:04.457
+1567	/20230316061147-RewriteWishFijiMatrixReportsWithMultiDataElements-modifies-data	2023-04-13 14:10:04.717
+1568	/20230320011713-ConvertOrgUnitCodeToNameMatrixReports-modifies-data	2023-04-13 14:10:06.267
+1569	/20230321045049-AddEntityAttributesDataTableType-modifies-schema	2023-04-13 14:10:06.56
+1570	/20230328002338-FixDateOffsetVizes-modifies-data	2023-04-13 14:10:07.118
+1571	/20230402232608-AddEntityAttributesDataTable-modifies-data	2023-04-13 14:10:07.319
+1572	/20230413041856-FixupDropAnalyticsLogTablesFunction-modifies-schema	2023-04-13 14:20:27.99
 \.
 
 
@@ -5828,7 +5467,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1543, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1572, true);
 
 
 --
@@ -5837,6 +5476,8 @@ SELECT pg_catalog.setval('public.migrations_id_seq', 1543, true);
 
 ALTER TABLE ONLY public.migrations
     ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
+
+
 
 
 --

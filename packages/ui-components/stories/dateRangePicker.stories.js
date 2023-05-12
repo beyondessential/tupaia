@@ -5,8 +5,9 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { DateRangePicker } from '../src';
+import { DateRangePicker, WEEK_DISPLAY_FORMATS } from '../src';
 import { GRANULARITIES } from '../src/components/Chart';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 
 const Container = styled.div`
   padding: 1rem;
@@ -93,3 +94,32 @@ export const SingleYear = Template.bind({});
 SingleYear.args = {
   granularity: GRANULARITIES.SINGLE_YEAR,
 };
+
+export const WeekFormat = () => (
+  <>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Format</TableCell>
+          <TableCell>Single Week</TableCell>
+          <TableCell>Date Range</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {Object.values(WEEK_DISPLAY_FORMATS).map(format => (
+          <TableRow>
+            <TableCell>
+              <strong>{format}</strong>
+            </TableCell>
+            <TableCell>
+              <Template granularity={GRANULARITIES.SINGLE_WEEK} weekDisplayFormat={format} />
+            </TableCell>
+            <TableCell>
+              <Template granularity={GRANULARITIES.WEEK} weekDisplayFormat={format} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </>
+);

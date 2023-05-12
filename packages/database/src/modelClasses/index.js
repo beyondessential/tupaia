@@ -124,6 +124,7 @@ export {
   AncestorDescendantRelationModel,
   AncestorDescendantRelationType,
 } from './AncestorDescendantRelation';
+export { APIClientModel } from './APIClient';
 export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
@@ -131,10 +132,15 @@ export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
+export { DataServiceSyncGroupModel, DataServiceSyncGroupType } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableType } from './DataTable';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
+export {
+  ExternalDatabaseConnectionModel,
+  ExternalDatabaseConnectionType,
+} from './ExternalDatabaseConnection';
 export { FacilityModel } from './Facility';
 export { FeedItemModel, FeedItemType } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
@@ -144,9 +150,12 @@ export { OptionModel } from './Option';
 export { OptionSetModel } from './OptionSet';
 export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel } from './Project';
+export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
+export { SurveyModel } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
+export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';

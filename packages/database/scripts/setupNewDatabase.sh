@@ -31,7 +31,7 @@ else
 fi
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE ROLE tupaia_read PASSWORD '$DB_PASSWORD'" || echo "Role tupaia_read already exists?"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER"
-PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER $DB_NAME -c "CREATE EXTENSION postgis"
+PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS postgis"
 PGPASSWORD=$DB_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_USER -d $DB_NAME -f schema/schema.sql
 
 if [ "$IS_RDS" = "1" ]; then
@@ -51,7 +51,7 @@ DB_NAME=$DB_NAME yarn workspace @tupaia/data-api build-analytics-table
 
 echo "Deleting migrations that target data modifications, as there is no data to migrate in the new database"
 rm -rf ./src/migrations-backup
-mkdir  ./src/migrations-backup
+mkdir ./src/migrations-backup
 cp -r ./src/migrations/* ./src/migrations-backup/
 rm ./src/migrations/*modifies-data.js
 DB_NAME=$DB_NAME yarn migrate

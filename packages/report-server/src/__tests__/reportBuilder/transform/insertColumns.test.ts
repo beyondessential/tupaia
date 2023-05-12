@@ -4,11 +4,12 @@
  */
 
 import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform, TransformTable } from '../../../reportBuilder/transform';
+import { TransformTable } from '../../../reportBuilder/transform';
+import { buildTestTransform } from '../testUtils';
 
 describe('insertColumns', () => {
-  it('can insert basic values', () => {
-    const transform = buildTransform([
+  it('can insert basic values', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertColumns',
         columns: {
@@ -18,13 +19,13 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], number: 1, string: 'Hi', boolean: false }]),
     );
   });
 
-  it('can insert using a value from the row', () => {
-    const transform = buildTransform([
+  it('can insert using a value from the row', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertColumns',
         columns: {
@@ -32,13 +33,13 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], dataElementValue: 4 }]),
     );
   });
 
-  it('can use a value from the row as a column name', () => {
-    const transform = buildTransform([
+  it('can use a value from the row as a column name', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertColumns',
         columns: {
@@ -46,13 +47,13 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], BCD1: 4 }]),
     );
   });
 
-  it('can execute functions', () => {
-    const transform = buildTransform([
+  it('can execute functions', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertColumns',
         columns: {
@@ -60,13 +61,13 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toStrictEqual(
       TransformTable.fromRows([{ ...SINGLE_ANALYTIC[0], period: '1st Jan 2020' }]),
     );
   });
 
-  it('can perform the insert on all rows', () => {
-    const transform = buildTransform([
+  it('can perform the insert on all rows', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertColumns',
         columns: {
@@ -75,7 +76,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MULTIPLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows([
         { ...MULTIPLE_ANALYTICS[0], period: '1st Jan 2020', BCD1: 4 },
         { ...MULTIPLE_ANALYTICS[1], period: '2nd Jan 2020', BCD1: 2 },
@@ -84,8 +85,8 @@ describe('insertColumns', () => {
     );
   });
 
-  it('where is processed before remaining fields', () => {
-    const transform = buildTransform([
+  it('where is processed before remaining fields', async () => {
+    const transform = buildTestTransform([
       {
         transform: 'insertColumns',
         where: '=exists($BCD1)',
@@ -94,7 +95,7 @@ describe('insertColumns', () => {
         },
       },
     ]);
-    expect(transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
+    expect(await transform(TransformTable.fromRows(MERGEABLE_ANALYTICS))).toStrictEqual(
       TransformTable.fromRows(
         [
           { ...MERGEABLE_ANALYTICS[0], newVal: 8 },

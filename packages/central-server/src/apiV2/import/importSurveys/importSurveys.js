@@ -308,6 +308,7 @@ export async function importSurveys(req, res) {
             visibilityCriteria,
             validationCriteria,
             optionSet,
+            hook,
           } = questionObject;
 
           let dataElement;
@@ -326,6 +327,7 @@ export async function importSurveys(req, res) {
             name,
             text,
             detail,
+            hook,
             options: processOptions(options, optionLabels, optionColors, type),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
             data_element_id: dataElement && dataElement.id,

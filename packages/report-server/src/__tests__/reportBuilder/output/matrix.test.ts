@@ -24,7 +24,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: 1,
         },
-        {},
         reportServerAggregator,
       );
 
@@ -86,7 +85,6 @@ describe('matrix', () => {
           categoryField: 'InfrastructureType',
           rowField: 'FacilityType',
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(
@@ -147,7 +145,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: '*',
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(
@@ -187,7 +184,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: ['Laos'],
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(
@@ -243,7 +239,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: ['Tonga', '*', 'Laos'],
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(
@@ -262,7 +257,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: ['InfrastructureType', 'Laos', 'Tonga'],
         },
-        {},
         reportServerAggregator,
       );
       await expect(async () => {
@@ -279,7 +273,6 @@ describe('matrix', () => {
           categoryField: 'FacilityType',
           rowField: 'FacilityType',
         },
-        {},
         reportServerAggregator,
       );
       await expect(async () => {
@@ -329,7 +322,6 @@ describe('matrix', () => {
           type: 'matrix',
           rowField: 'FacilityType',
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA));
@@ -388,7 +380,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: '*',
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(
@@ -407,7 +398,6 @@ describe('matrix', () => {
           rowField: 'FacilityType',
           columns: ['FacilityType', 'Laos', 'Tonga'],
         },
-        {},
         reportServerAggregator,
       );
       await expect(async () => {
@@ -424,7 +414,6 @@ describe('matrix', () => {
           categoryField: 'FacilityType',
           rowField: 'FacilityType',
         },
-        {},
         reportServerAggregator,
       );
       await expect(async () => {
@@ -440,7 +429,6 @@ describe('matrix', () => {
           type: 'matrix',
           categoryField: 'FacilityType',
         },
-        {},
         reportServerAggregator,
       );
       await expect(async () => {
@@ -496,7 +484,6 @@ describe('matrix', () => {
           type: 'matrix',
           rowField: 'FacilityType',
         },
-        {},
         reportServerAggregator,
       );
       const result = await output(

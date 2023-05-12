@@ -35,7 +35,7 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
 /**
  * @param pdfPageUrl the url to visit and download as a pdf
  * @param userCookie the user's cookie to bypass auth, and ensure page renders under the correct user context
- * @param cookieDomain the domain of cookie, required when setting up cookie in page
+ * @param cookieDomain the domain of cookie, required when setting up cookie in page.
  * @returns pdf buffer
  */
 export const downloadPageAsPDF = async (

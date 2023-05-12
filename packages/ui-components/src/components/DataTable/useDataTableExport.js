@@ -8,13 +8,15 @@ import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment from 'moment';
 
-export const useDataTableExport = (columns, data, title) => {
+export const useDataTableExport = (columns, data, title, startDate, endDate) => {
   const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
     columns,
     data,
   });
 
   const doExport = () => {
+    const date = moment().format('Do MMM YY');
+
     // Get data from react table properties
     const header = headerGroups.map(({ headers }) =>
       headers.map(({ Header: getHeader, id }) =>
@@ -23,7 +25,15 @@ export const useDataTableExport = (columns, data, title) => {
     );
     const body =
       tableData.length > 0
-        ? tableData.map(row => tableColumns.map(col => row.values[col.id]))
+        ? tableData.map(row =>
+            tableColumns.map(col => {
+              const value = row.values[col.id];
+              const valueIsPercentageString = value.includes('%');
+              const num = valueIsPercentageString ? value : parseFloat(value);
+              // if it's a number, return in number format
+              return isNaN(num) ? value : num;
+            }),
+          )
         : [['There is no available data for the selected time period.']];
 
     // Make xlsx worksheet
@@ -39,10 +49,28 @@ export const useDataTableExport = (columns, data, title) => {
     // add body
     xlsx.utils.sheet_add_aoa(sheet, body, { origin: -1 });
 
-    const date = moment().format('Do MMM YY');
+    // spacer before footer
+    xlsx.utils.sheet_add_aoa(sheet, [[]], {
+      origin: -1,
+    });
+    xlsx.utils.sheet_add_aoa(sheet, [[]], {
+      origin: -1,
+    });
+
+    // footer
+    if (startDate && endDate) {
+      const formatDate = date => moment(date).format('DD/MM/YY');
+      xlsx.utils.sheet_add_aoa(
+        sheet,
+        [[`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`]],
+        {
+          origin: -1,
+        },
+      );
+    }
     xlsx.utils.sheet_add_aoa(
       sheet,
-      [[], [], [`Exported on ${date} from ${window.location.hostname}`]],
+      [[`Exported on ${String(moment())} from ${window.location.hostname}`]],
       {
         origin: -1,
       },

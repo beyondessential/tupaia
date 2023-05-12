@@ -16,6 +16,7 @@ configureWinston();
 dotenv.config(); // Load the environment variables into process.env
 
 const database = new TupaiaDatabase();
+database.configurePgGlobals(true);
 
 /**
  * Set up app with routes etc.

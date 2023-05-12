@@ -4,7 +4,7 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { DataTableParameterConfig } from '../types';
+import { DataTableParameter, DataTableParameterConfig } from '../types';
 
 interface YupDescription {
   type: string;
@@ -14,12 +14,32 @@ interface YupDescription {
   tests?: { name?: string }[];
 }
 
-const yupDescriptionToDataTableParam = (description: YupDescription): DataTableParameterConfig => {
+const translateType = (type: string, name?: string) => {
+  if (!name) {
+    return type;
+  }
+
+  const builtInParamType: Record<string, string> = {
+    hierarchy: 'hierarchy',
+    dataElementCodes: 'dataElementCodes',
+    dataGroupCode: 'dataGroupCode',
+    organisationUnitCodes: 'organisationUnitCodes',
+    entityCodes: 'organisationUnitCodes',
+  };
+
+  return builtInParamType[name] || type;
+};
+
+const yupDescriptionToDataTableParam = (
+  description: YupDescription,
+  paramName?: string,
+): DataTableParameterConfig => {
   const { type, defaultValue, innerType, oneOf, tests } = description;
   const isRequired = tests && tests.some(({ name }) => name === 'required');
   const paramOfInnerType = innerType ? yupDescriptionToDataTableParam(innerType) : undefined;
+  const newType = translateType(type, paramName);
   const param: DataTableParameterConfig = {
-    type,
+    type: newType,
   };
 
   if (defaultValue !== undefined) {
@@ -41,21 +61,17 @@ const yupDescriptionToDataTableParam = (description: YupDescription): DataTableP
   return param;
 };
 
-export const yupSchemaToDataTableParams = (
-  schema: yup.AnyObjectSchema,
-): Record<string, DataTableParameterConfig> => {
+export const yupSchemaToDataTableParams = (schema: yup.AnyObjectSchema): DataTableParameter[] => {
   const descriptions = schema.describe().fields;
-  return Object.fromEntries(
-    Object.entries(descriptions).map(([name, description]) => {
-      const { type } = description;
-      const innerType = 'innerType' in description ? description.innerType : undefined;
-      const oneOf = 'oneOf' in description ? description.oneOf : undefined;
-      const tests = 'tests' in description ? description.tests : undefined;
-      const defaultValue = schema.fields[name].getDefault();
-      return [
-        name,
-        yupDescriptionToDataTableParam({ type, innerType, oneOf, tests, defaultValue }),
-      ];
-    }),
-  );
+  return Object.entries(descriptions).map(([name, description]) => {
+    const { type } = description;
+    const innerType = 'innerType' in description ? description.innerType : undefined;
+    const oneOf = 'oneOf' in description ? description.oneOf : undefined;
+    const tests = 'tests' in description ? description.tests : undefined;
+    const defaultValue = schema.fields[name].getDefault();
+    return {
+      name,
+      config: yupDescriptionToDataTableParam({ type, innerType, oneOf, tests, defaultValue }, name),
+    };
+  });
 };

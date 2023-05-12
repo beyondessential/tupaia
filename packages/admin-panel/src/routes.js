@@ -12,6 +12,7 @@ import {
   EntityTypesPage,
   OptionSetsPage,
   PermissionGroupsPage,
+  PermissionGroupsViewerPage,
   PermissionsPage,
   SocialFeedPage,
   SurveyResponsesPage,
@@ -34,6 +35,7 @@ import {
   SyncGroupsPage,
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
+  EntityHierarchyPage,
 } from './pages/resources';
 import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
@@ -163,6 +165,11 @@ export const ROUTES = [
         component: PermissionGroupsPage,
       },
       {
+        label: 'Permission Groups Viewer',
+        to: '/permission-groups-viewer',
+        component: PermissionGroupsViewerPage,
+      },
+      {
         label: 'Access Requests',
         to: '/access-requests',
         component: AccessRequestsPage,
@@ -210,6 +217,11 @@ export const ROUTES = [
         label: 'Disaster',
         to: '/disaster',
         component: DisasterResponsePage,
+      },
+      {
+        label: 'Entity Hierarchy',
+        to: '/hierarchy',
+        component: EntityHierarchyPage,
       },
     ],
   },

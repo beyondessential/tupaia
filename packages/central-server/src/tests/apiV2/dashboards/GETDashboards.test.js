@@ -140,7 +140,11 @@ describe('Permissions checker for GETDashboards', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboards?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([nationalDashboard2.id, projectDashboard1.id]);
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalDashboard1.id,
+        nationalDashboard2.id,
+        projectDashboard1.id,
+      ]);
     });
 
     it('Sufficient permissions: Should return the full list of dashboard if we have BES Admin access', async () => {

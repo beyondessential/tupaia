@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ModelRegistry } from '@tupaia/database';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { ModelRegistry } from '@tupaia/database';
 import { ReportModel } from './models';
-import { Report } from '@tupaia/types';
 
 export type RequestContext = {
   services: TupaiaApiClient;
@@ -33,14 +32,6 @@ export type AggregationObject = {
 };
 
 export type Aggregation = string | AggregationObject;
-
-type Transform = string | Record<string, unknown>;
-
-type CustomReportConfig = {
-  customReport: string;
-};
-
-export type StandardOrCustomReportConfig = Report['config'] | CustomReportConfig;
 
 export interface Event {
   event: string;
