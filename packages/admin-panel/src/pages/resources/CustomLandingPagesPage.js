@@ -78,6 +78,7 @@ const FIELDS = {
     source: 'primary_hexcode',
     editConfig: {
       type: 'hexcode',
+      placeholder: '#000000',
     },
   },
   SECONDARY_COLOR: {
@@ -105,6 +106,7 @@ const FIELDS = {
       maxLength: 60,
       type: 'text',
       placeholder: 'A short sentence about your project',
+      labelTooltip: 'This will only be shown on single project landing pages',
     },
   },
   LONG_BIO: {
@@ -119,6 +121,9 @@ const FIELDS = {
   PHONE_NUMBER: {
     Header: 'Phone',
     source: 'phone_number',
+    editConfig: {
+      placeholder: '+123456789',
+    },
   },
   WEBSITE_URL: {
     Header: 'Website',
@@ -273,7 +278,7 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New landing page',
+    title: 'New Landing Page',
     editEndpoint: LANDING_PAGES_ENDPOINT,
     fields: CREATE_FIELDS,
   },

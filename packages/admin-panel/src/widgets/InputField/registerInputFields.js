@@ -295,6 +295,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
+      placeholder={props.placeholder}
     />
   ));
   registerInputField('checkbox', props => (

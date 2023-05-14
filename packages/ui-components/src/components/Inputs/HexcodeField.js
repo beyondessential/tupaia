@@ -31,7 +31,16 @@ const HexInput = styled(TextField)`
 
 const HEXCODE_PATTERN = /^#([0-9A-F]{3}){1,2}$/i;
 
-export const HexcodeField = ({ value, onChange, label, helperText, id, disabled, tooltip }) => {
+export const HexcodeField = ({
+  value,
+  onChange,
+  label,
+  helperText,
+  id,
+  disabled,
+  tooltip,
+  placeholder,
+}) => {
   const handleChangeValue = event => {
     onChange(event.target.value);
   };
@@ -51,6 +60,7 @@ export const HexcodeField = ({ value, onChange, label, helperText, id, disabled,
             'aria-describedby': helperText ? `${id}-helper-text` : null,
             pattern: HEXCODE_PATTERN,
           }}
+          placeholder={placeholder}
         />
         {isValidHexCode && (
           <HexcodePreview backgroundColor={value} aria-label={`Colour preview for ${label}`} />
@@ -69,6 +79,7 @@ HexcodeField.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   tooltip: PropTypes.string,
+  placeholder: PropTypes.string,
 };
 
 HexcodeField.defaultProps = {
@@ -79,4 +90,5 @@ HexcodeField.defaultProps = {
   id: '',
   disabled: false,
   tooltip: '',
+  placeholder: '',
 };
