@@ -20,31 +20,50 @@ const SERVICE_TYPES = [
   { label: 'Tupaia', value: 'tupaia' },
 ];
 
-const SURVEY_FIELDS = [
-  {
+const SURVEY_FIELDS = {
+  name: {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
   },
-  {
+  code: {
     Header: 'Code',
     source: 'code',
   },
-  {
+  country_ids: {
+    Header: 'Countries',
+    source: 'country_ids',
+    editConfig: {
+      optionsEndpoint: 'countries',
+      optionLabelKey: 'name',
+      optionValueKey: 'id',
+      allowMultipleValues: true,
+      secondaryLabel:
+        'Select the countries this survey should be available in, or leave blank for all',
+    },
+  },
+  permission_group_id: {
     Header: 'Permission Group',
-    source: 'permission_group.name',
+    source: 'permission_group_id',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'id',
+      secondaryLabel: 'Select the permission group this survey should be available for',
     },
   },
-  {
+  survey_group_id: {
     Header: 'Survey Group',
-    source: 'survey_group.name',
+    source: 'survey_group_id',
     editConfig: {
       optionsEndpoint: 'surveyGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'id',
+      secondaryLabel:
+        'Select the survey group this survey should be a part of, or leave blank for none',
     },
   },
-  {
+  can_repeat: {
     Header: 'Repeating',
     source: 'can_repeat',
     type: 'boolean',
@@ -52,18 +71,123 @@ const SURVEY_FIELDS = [
       type: 'boolean',
     },
   },
-  {
+  period_granularity: {
+    Header: 'Reporting Period',
+    source: 'period_granularity',
+    editConfig: {
+      options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
+      secondaryLabel:
+        'Select a reporting period if new responses should overwrite previous ones within the same period',
+    },
+  },
+  requires_approval: {
     Header: 'Requires Approval',
     source: 'requires_approval',
     type: 'boolean',
     editConfig: {
       type: 'boolean',
+      secondaryLabel:
+        'Select whether survey responses require approval before their data appear in visualisations',
     },
   },
-];
+  'data_group.service_type': {
+    Header: 'Data Service',
+    source: 'data_group.service_type',
+    editConfig: {
+      secondaryLabel: 'Select the data service this survey should use',
+      options: SERVICE_TYPES,
+      setFieldsOnChange: (newValue, currentRecord = null) => {
+        const { dhisInstanceCode = 'regional' } = currentRecord
+          ? currentRecord['data_group.config'] ?? {}
+          : {};
+        const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
+        return { 'data_group.config': config };
+      },
+    },
+  },
+  'data_group.config': {
+    Header: 'Data Service Configuration',
+    source: 'data_group.config',
+    editConfig: {
+      type: 'json',
+      visibilityCriteria: {
+        'data_group.service_type': 'dhis',
+      },
+      getJsonFieldSchema: (_, { recordData }) =>
+        recordData['data_group.service_type'] === 'dhis'
+          ? [
+              {
+                label: 'DHIS Server',
+                fieldName: 'dhisInstanceCode',
+                optionsEndpoint: 'dhisInstances',
+                optionLabelKey: 'code',
+                optionValueKey: 'code',
+              },
+            ]
+          : [],
+    },
+  },
+  integration_metadata: {
+    Header: 'Integration Details',
+    source: 'integration_metadata',
+    editConfig: {
+      type: 'json',
+      getJsonFieldSchema: () => [
+        {
+          label: 'MS1',
+          fieldName: 'ms1',
+          type: 'json',
+          variant: 'grey',
+          getJsonFieldSchema: () => [
+            {
+              label: 'Endpoint',
+              fieldName: 'endpoint',
+              type: 'json',
+              getJsonFieldSchema: () => [
+                {
+                  label: 'Route',
+                  fieldName: 'route',
+                },
+                {
+                  label: 'Method (POST or PUT)',
+                  fieldName: 'method',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  surveyQuestions: {
+    Header: 'Survey Questions',
+    source: 'surveyQuestions',
+    editConfig: {
+      type: 'file',
+      name: 'surveyQuestions',
+      secondaryLabel:
+        'Import a questions spreadsheet to update the questions and screens of this survey.',
+    },
+  },
+};
 
 const SURVEY_COLUMNS = [
-  ...SURVEY_FIELDS,
+  SURVEY_FIELDS.name,
+  SURVEY_FIELDS.code,
+  {
+    Header: 'Permission Group',
+    source: 'permission_group.name',
+  },
+  {
+    Header: 'Survey Group',
+    source: 'survey_group.name',
+  },
+  SURVEY_FIELDS.can_repeat,
+  SURVEY_FIELDS.period_granularity,
+  {
+    Header: 'Service Type',
+    source: 'data_group.service_type',
+  },
   {
     Header: 'Export',
     source: 'id',
@@ -80,82 +204,7 @@ const SURVEY_COLUMNS = [
     actionConfig: {
       title: 'Edit Survey',
       editEndpoint: 'surveys',
-      fields: [
-        ...SURVEY_FIELDS,
-        {
-          Header: 'Reporting Period',
-          source: 'period_granularity',
-          editConfig: {
-            options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
-          },
-        },
-        {
-          Header: 'Data Service',
-          source: 'data_group.service_type',
-          editConfig: {
-            options: SERVICE_TYPES,
-            setFieldsOnChange: (newValue, currentRecord) => {
-              const { dhisInstanceCode = 'regional' } = currentRecord['data_group.config'];
-              const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
-              return { 'data_group.config': config };
-            },
-          },
-        },
-        {
-          Header: 'Data Service Configuration',
-          source: 'data_group.config',
-          editConfig: {
-            type: 'json',
-            visibilityCriteria: {
-              'data_group.service_type': 'dhis',
-            },
-            getJsonFieldSchema: (_, { recordData }) =>
-              recordData['data_group.service_type'] === 'dhis'
-                ? [
-                    {
-                      label: 'DHIS Server',
-                      fieldName: 'dhisInstanceCode',
-                      optionsEndpoint: 'dhisInstances',
-                      optionLabelKey: 'dhisInstances.code',
-                      optionValueKey: 'dhisInstances.code',
-                    },
-                  ]
-                : [],
-          },
-        },
-        {
-          Header: 'Integration Details',
-          source: 'integration_metadata',
-          editConfig: {
-            type: 'json',
-            getJsonFieldSchema: () => [
-              {
-                label: 'MS1',
-                fieldName: 'ms1',
-                type: 'json',
-                variant: 'grey',
-                getJsonFieldSchema: () => [
-                  {
-                    label: 'Endpoint',
-                    fieldName: 'endpoint',
-                    type: 'json',
-                    getJsonFieldSchema: () => [
-                      {
-                        label: 'Route',
-                        fieldName: 'route',
-                      },
-                      {
-                        label: 'Method (POST or PUT)',
-                        fieldName: 'method',
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
+      fields: [...Object.values(SURVEY_FIELDS)],
     },
   },
   {
@@ -167,6 +216,14 @@ const SURVEY_COLUMNS = [
     },
   },
 ];
+
+const CREATE_CONFIG = {
+  actionConfig: {
+    editEndpoint: 'surveys',
+    fields: [...Object.values(SURVEY_FIELDS)],
+    title: 'New Survey',
+  },
+};
 
 const QUESTION_FIELDS = [
   {
@@ -373,88 +430,13 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-const IMPORT_CONFIG = {
-  title: 'Import Survey',
-  actionConfig: {
-    importEndpoint: 'surveys',
-  },
-  queryParameters: [
-    {
-      label: 'Survey Code',
-      secondaryLabel: 'Please enter the code of the survey to be imported.',
-      parameterKey: 'surveyCode',
-      optionsEndpoint: 'surveys',
-      optionValueKey: 'code',
-      optionLabelKey: 'code',
-      canCreateNewOptions: true,
-    },
-    {
-      source: 'surveyName',
-      label: 'Name',
-    },
-    {
-      label: 'Countries',
-      secondaryLabel:
-        'Select the countries this survey should be available in, or leave blank for all',
-      parameterKey: 'countryIds',
-      optionsEndpoint: 'countries',
-      allowMultipleValues: true,
-    },
-    {
-      label: 'Permission Group',
-      secondaryLabel:
-        'Select the permission group this survey should be available for, or leave blank for Public',
-      parameterKey: 'permissionGroup',
-      optionsEndpoint: 'permissionGroups',
-      optionValueKey: 'name',
-    },
-    {
-      label: 'Survey Group',
-      secondaryLabel:
-        'Select the survey group this survey should be a part of, or leave blank for none',
-      parameterKey: 'surveyGroup',
-      optionsEndpoint: 'surveyGroups',
-      canCreateNewOptions: true,
-      optionValueKey: 'name',
-    },
-    {
-      label: 'Reporting Period',
-      secondaryLabel:
-        'Select a reporting period if new responses should overwrite previous ones within the same period',
-      parameterKey: 'periodGranularity',
-      options: PERIOD_GRANULARITIES,
-    },
-    {
-      label: 'Requires Approval',
-      secondaryLabel:
-        'Select whether survey responses require approval before their data appear in visualisations',
-      parameterKey: 'requiresApproval',
-      type: 'boolean',
-    },
-    {
-      label: 'Data Service',
-      secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
-      parameterKey: 'serviceType',
-      options: SERVICE_TYPES,
-    },
-    {
-      label: 'DHIS Server',
-      parameterKey: 'dhisInstanceCode',
-      optionsEndpoint: 'dhisInstances',
-      optionLabelKey: 'dhisInstances.code',
-      optionValueKey: 'dhisInstances.code',
-      visibilityCriteria: { serviceType: 'dhis' },
-    },
-  ],
-};
-
 export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Surveys"
     endpoint="surveys"
     columns={SURVEY_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
-    importConfig={IMPORT_CONFIG}
+    createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
     {...restOfProps}
   />
