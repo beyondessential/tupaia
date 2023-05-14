@@ -98,7 +98,6 @@ export const isHexColor = value => {
   }
 };
 
-
 export const isURL = value => {
   if (!validator.isURL(value.toString())) {
     // Coerce to string before checking with validator
@@ -288,7 +287,13 @@ export const constructIsNotPresentOr = validatorFunction => (value, object, key)
 
 export const constructIsLongerThan = minLength => value => {
   if (value.length < minLength) {
-    throw new ValidationError(`Must be longer than ${value} characters`);
+    throw new ValidationError(`Must be longer than ${minLength} characters`);
+  }
+};
+
+export const constructIsShorterThan = maxLength => value => {
+  if (value && value.length > maxLength) {
+    throw new ValidationError(`Must be shorter than ${maxLength} characters`);
   }
 };
 

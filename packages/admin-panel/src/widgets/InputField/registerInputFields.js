@@ -230,8 +230,10 @@ export const registerInputFields = () => {
       rows="4"
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
-      minLength={props.minLength}
-      maxLength={props.maxLength}
+      inputProps={{
+        minLength: props.minLength,
+        maxLength: props.maxLength,
+      }}
     />
   ));
   registerInputField('text', props => (
@@ -245,12 +247,12 @@ export const registerInputFields = () => {
       type={props.type}
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
-      minLength={props.minLength}
-      maxLength={props.maxLength}
       InputProps={{
         startAdornment: props.startAdornment ? (
           <InputAdornment position="start">{props.startAdornment}</InputAdornment>
         ) : null,
+        minLength: props.minLength,
+        maxLength: props.maxLength,
       }}
     />
   ));

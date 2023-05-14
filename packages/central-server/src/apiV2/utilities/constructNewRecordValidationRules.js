@@ -23,6 +23,7 @@ import {
   isHexColor,
   isURL,
   isURLPathSegment,
+  constructIsShorterThan,
 } from '@tupaia/utils';
 import { DataTableType } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
@@ -313,6 +314,8 @@ export const constructForSingle = (models, recordType) => {
         external_link: [constructIsEmptyOr(isURL)],
         primary_hexcode: [constructIsEmptyOr(isHexColor)],
         secondary_hexcode: [constructIsEmptyOr(isHexColor)],
+        long_bio: [constructIsEmptyOr(constructIsShorterThan(250))],
+        extended_title: [constructIsEmptyOr(constructIsShorterThan(60))],
         url_segment: [
           hasContent,
           isURLPathSegment,

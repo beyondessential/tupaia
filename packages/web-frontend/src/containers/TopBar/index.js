@@ -26,8 +26,13 @@ const TopBarWrapper = styled.div`
   padding: 0 10px;
   border-bottom: 1px solid rgba(151, 151, 151, 0.3);
   > * {
-    color: ${props => props.secondaryColor};
     background-color: ${props => props.primaryColor};
+  }
+  button,
+  a,
+  p,
+  li {
+    color: ${props => props.secondaryColor};
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     min-height: ${TOP_BAR_HEIGHT}px;

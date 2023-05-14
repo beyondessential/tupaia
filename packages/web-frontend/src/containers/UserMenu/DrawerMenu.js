@@ -51,6 +51,7 @@ const MenuHeaderContainer = styled.div`
   justify-content: flex-end;
   padding: 0.8em 0;
   align-items: center;
+  color: ${({ secondaryColor }) => secondaryColor};
 `;
 
 const MenuCloseIcon = styled(CloseIcon)`
@@ -90,7 +91,7 @@ export const DrawerMenu = ({
             </MenuCloseButton>
           </MenuHeaderContainer>
         </MenuHeaderWrapper>
-        <MenuList>
+        <MenuList secondaryColor={secondaryColor}>
           {/** If the user is not logged in, show the register and login buttons */}
           {!isUserLoggedIn && (
             <>

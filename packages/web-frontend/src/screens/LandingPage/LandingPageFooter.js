@@ -95,8 +95,15 @@ export const LandingPageFooter = () => {
     phoneNumber,
     websiteUrl,
   } = customLandingPageSettings;
+
   // use h3 for footer item headers if there is already an h2 in the page (i.e. the name is h1, and the extended title is h2, else h2)
   const footerHeaderVariant = includeNameInHeader ? 'h3' : 'h2';
+
+  // Parse the url, because if the http(s) is not included, the link will not be assumed to be the current origin + the url
+  const parseUrl = url => {
+    if (url.includes('http')) return url;
+    return `https://${url}`;
+  };
   return (
     <Footer>
       <FooterContentWrapper>
@@ -107,7 +114,7 @@ export const LandingPageFooter = () => {
             {externalLink && (
               <>
                 &nbsp;
-                <FooterLink href={externalLink} target="_blank">
+                <FooterLink href={parseUrl(externalLink)} target="_blank">
                   Learn more
                 </FooterLink>
               </>
@@ -125,7 +132,7 @@ export const LandingPageFooter = () => {
             {websiteUrl && (
               <FooterContactListItem>
                 Website: &nbsp;
-                <FooterLink href={websiteUrl} target="_blank">
+                <FooterLink href={parseUrl(websiteUrl)} target="_blank">
                   {websiteUrl}
                 </FooterLink>
               </FooterContactListItem>
