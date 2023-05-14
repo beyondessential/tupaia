@@ -46,7 +46,10 @@ const Container = styled(MuiContainer)`
 
 export const LandingPage = () => {
   const { customLandingPageSettings, projects } = useCustomLandingPages();
-  const { imageUrl: backgroundImage } = customLandingPageSettings;
+  const { imageUrl } = customLandingPageSettings;
+
+  const timestamp = Date.now();
+  const backgroundImage = imageUrl ? `${imageUrl}?t=${timestamp}` : null;
 
   return (
     <>

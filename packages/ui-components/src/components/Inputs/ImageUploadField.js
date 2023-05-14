@@ -126,6 +126,13 @@ export const ImageUploadField = React.memo(
       if (validated) onChange(image);
     };
 
+    const timestamp = Date.now();
+
+    const decachedImage =
+      encodedImage && !encodedImage.includes('base64')
+        ? `${encodedImage}?t=${timestamp}`
+        : encodedImage;
+
     return (
       <Label as="label" htmlFor={name}>
         <HiddenFileInput
@@ -138,7 +145,12 @@ export const ImageUploadField = React.memo(
           aria-invalid={!isValid}
         />
         <Box position="relative">
-          <StyledAvatar initial={avatarInitial} src={encodedImage} variant={avatarVariant}>
+          <StyledAvatar
+            initial={avatarInitial}
+            src={decachedImage}
+            variant={avatarVariant}
+            alt={`Image for field ${label}`}
+          >
             {avatarInitial}
           </StyledAvatar>
           {encodedImage && (
