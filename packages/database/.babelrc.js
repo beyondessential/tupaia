@@ -1,5 +1,5 @@
-// Setting date offset to 180 days to manage how infrequently we release LESMIS
-const includedDateOffset = 180 * 24 * 60 * 60 * 1000; // include migrations up to 180 days old
+// Setting date offset to 270 days to manage how infrequently we release LESMIS
+const includedDateOffset = 270 * 24 * 60 * 60 * 1000; // include migrations up to 270 days old
 const includedMigrationsDate = new Date().setTime(Date.now() - includedDateOffset);
 const checkMigrationOutdated = function (migrationName) {
   const yearPart = migrationName.substring(0, 4);
@@ -12,7 +12,7 @@ const checkMigrationOutdated = function (migrationName) {
 const getIgnore = api => {
   if (api.caller(caller => caller.name === '@babel/cli')) {
     // When building @tupaia/database, babel-cli compiles in advance, so we only want it to bother
-    // with the last 180 days of migrations, otherwise it takes too long
+    // with the last 270 days of migrations, otherwise it takes too long
     return [
       'src/__tests__/**',
       function (filepath) {
