@@ -42,67 +42,67 @@ describe('importSurveys(): POST import/surveys', () => {
   let vanuatuCountry;
   let kiribatiCountry;
 
+  before(async () => {
+    await resetTestData();
+    const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
+    });
+
+    ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'KI',
+      name: 'Kiribati',
+    }));
+
+    ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'VU',
+      name: 'Vanuatu',
+    }));
+
+    const addQuestion = (id, type) =>
+      upsertQuestion(
+        models.question,
+        {
+          code: id,
+        },
+        {
+          id,
+          text: `Test question ${id}`,
+          name: `Test question ${id}`,
+          type,
+        },
+      );
+
+    // Questions used for all the surveys
+    await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
+    await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
+
+    await buildAndInsertSurveys(models, [
+      {
+        code: EXISTING_TEST_SURVEY_NAME_1,
+        name: EXISTING_TEST_SURVEY_NAME_1,
+        permission_group_id: adminPermissionGroup.id,
+        country_ids: [vanuatuCountry.id],
+        dataGroup: {
+          service_type: 'tupaia',
+        },
+      },
+      {
+        code: EXISTING_TEST_SURVEY_NAME_2,
+        name: EXISTING_TEST_SURVEY_NAME_2,
+        permission_group_id: adminPermissionGroup.id,
+        country_ids: [kiribatiCountry.id],
+        dataGroup: {
+          service_type: 'tupaia',
+        },
+      },
+    ]);
+  });
+
+  afterEach(() => {
+    app.revokeAccess();
+  });
+
   describe('Test permissions when importing surveys', async () => {
-    before(async () => {
-      await resetTestData();
-      const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Admin',
-      });
-
-      ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
-        code: 'KI',
-        name: 'Kiribati',
-      }));
-
-      ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
-        code: 'VU',
-        name: 'Vanuatu',
-      }));
-
-      const addQuestion = (id, type) =>
-        upsertQuestion(
-          models.question,
-          {
-            code: id,
-          },
-          {
-            id,
-            text: `Test question ${id}`,
-            name: `Test question ${id}`,
-            type,
-          },
-        );
-
-      // Questions used for all the surveys
-      await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
-      await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
-
-      await buildAndInsertSurveys(models, [
-        {
-          code: EXISTING_TEST_SURVEY_NAME_1,
-          name: EXISTING_TEST_SURVEY_NAME_1,
-          permission_group_id: adminPermissionGroup.id,
-          country_ids: [vanuatuCountry.id],
-          dataGroup: {
-            service_type: 'tupaia',
-          },
-        },
-        {
-          code: EXISTING_TEST_SURVEY_NAME_2,
-          name: EXISTING_TEST_SURVEY_NAME_2,
-          permission_group_id: adminPermissionGroup.id,
-          country_ids: [kiribatiCountry.id],
-          dataGroup: {
-            service_type: 'tupaia',
-          },
-        },
-      ]);
-    });
-
-    afterEach(() => {
-      app.revokeAccess();
-    });
-
     describe('Import existing surveys', async () => {
       it('Sufficient permissions - Single survey: Should pass permissions check if user has the survey permission group access to all of the survey countries', async () => {
         const fileName = 'importAnExistingSurvey.xlsx';
@@ -337,6 +337,44 @@ describe('importSurveys(): POST import/surveys', () => {
 
         expectPermissionError(response, /Need Tupaia Admin Panel access to Kiribati/);
       });
+    });
+  });
+
+  describe('Functionality', () => {
+    it('Imports questions', async () => {
+      const fileName = 'importANewSurvey.xlsx';
+
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app
+        .post(
+          `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_1}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
+        )
+        .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
+      const { statusCode } = response;
+      expect(statusCode).to.equal(200);
+
+      const survey = await models.survey.findOne({ name: NEW_TEST_SURVEY_NAME_1 });
+      const surveyScreenComponents = await survey.surveyScreenComponents();
+      expect(surveyScreenComponents.length).to.equal(2);
+    });
+
+    it('Updates survey properties', async () => {
+      const fileName = 'importAnExistingSurvey.xlsx';
+
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app
+        .post(
+          `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&serviceType=${SERVICE_TYPE}&periodGranularity=weekly`,
+        )
+        .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
+      const { statusCode } = response;
+
+      expect(statusCode).to.equal(200);
+
+      const survey = await models.survey.findOne({ name: EXISTING_TEST_SURVEY_NAME_1 });
+      expect(survey.period_granularity).to.equal('weekly');
     });
   });
 });
