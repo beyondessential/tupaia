@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { EnvBanner } from '@tupaia/ui-components';
+import { EnvBanner, Alert } from '@tupaia/ui-components';
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
 import { Map } from '../../../containers/Map';
@@ -52,6 +52,7 @@ const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => (
     {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
     <Container>
       <EnvBanner />
+      <Alert>Test</Alert>
       <TopBar />
       <ContentContainer>
         <MapDiv />
