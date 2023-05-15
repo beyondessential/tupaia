@@ -31,6 +31,7 @@ const TopBarWrapper = styled.div`
   button,
   a,
   p,
+  h1,
   li {
     color: ${props => props.secondaryColor};
   }
