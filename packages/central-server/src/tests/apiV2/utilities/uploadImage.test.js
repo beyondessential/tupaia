@@ -9,7 +9,8 @@ import sinon from 'sinon';
 import { uploadImage } from '../../../apiV2/utilities';
 
 describe('uploadImage', async () => {
-  let s3ClientStub;
+  let uploadImageStub;
+  let deleteFileStub;
   const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
   const UNIQUE_ID = 'theUniqueId';
   const IMAGE_SUFFIX = 'theImageSuffix';
@@ -21,18 +22,26 @@ describe('uploadImage', async () => {
     sinon.createStubInstance(AWS.S3);
   });
   beforeEach(() => {
-    s3ClientStub = sinon
+    uploadImageStub = sinon
       .stub(S3Client.prototype, 'uploadImage')
       .returns(Promise.resolve(EXAMPLE_UPLOADED_IMAGE_URL));
+    deleteFileStub = sinon.stub(S3Client.prototype, 'deleteFile').resolves();
   });
 
   afterEach(async () => {
-    s3ClientStub.restore();
+    uploadImageStub.restore();
+    deleteFileStub.restore();
   });
 
   it('uploads the image and returns the result if is a base64 encoded image', async () => {
-    const result = await uploadImage(ENCODED_IMAGE, UNIQUE_ID, IMAGE_SUFFIX);
+    const result = await uploadImage(ENCODED_IMAGE, UNIQUE_ID, IMAGE_SUFFIX, true);
     expect(result).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+    expect(deleteFileStub).not.called;
+  });
+
+  it('removes the existing image if path is passed in', async () => {
+    uploadImage(ENCODED_IMAGE, UNIQUE_ID, IMAGE_SUFFIX, true, 'existingImageUrl');
+    expect(deleteFileStub).calledWith('existingImageUrl');
   });
 
   it('does not upload the image if is not a base64 encoded image', async () => {

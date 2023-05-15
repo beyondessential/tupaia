@@ -74,8 +74,8 @@ export class CreateProject extends BESAdminCreateHandler {
   async insertImagePaths(models, projectId, projectCode, encodedBackgroundImage, encodedLogoImage) {
     // image_url and logo_url are currently required fields, so the validator will error before this point if either of these is falsey.
     const updates = {
-      image_url: await uploadImage(encodedBackgroundImage, projectCode, 'project_image'),
-      logo_url: await uploadImage(encodedLogoImage, projectCode, 'project_logo'),
+      image_url: await uploadImage(encodedBackgroundImage, projectCode, 'project_image', true),
+      logo_url: await uploadImage(encodedLogoImage, projectCode, 'project_logo', true),
     };
     // The record has already been updated, so update the existing record with the new fields
     return models.project.updateById(projectId, updates);
