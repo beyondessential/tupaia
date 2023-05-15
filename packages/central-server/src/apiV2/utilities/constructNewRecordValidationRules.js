@@ -309,9 +309,9 @@ export const constructForSingle = (models, recordType) => {
         name: [isAString],
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
         countryNames: [
-          async countryName => {
+          async countryNames => {
             const countryEntities = await models.country.find({
-              name: countryName,
+              name: countryNames,
             });
             if (countryEntities.length !== countryNames.length) {
               throw new Error('One or more provided countries do not exist');

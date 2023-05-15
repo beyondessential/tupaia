@@ -290,7 +290,6 @@ apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
 apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
-apiV2.put('/surveys/:recordId', useRouteHandler(EditSurvey));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
 apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
@@ -320,7 +319,7 @@ apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/survey/:recordId', multipartJson, useRouteHandler(EditSurvey));
+apiV2.put('/surveys/:recordId', multipartJson, useRouteHandler(EditSurvey));
 
 /**
  * DELETE routes
