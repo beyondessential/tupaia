@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -50,17 +50,7 @@ const MapContainer = styled.div`
 `;
 
 const MainPage = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
-  const { isCustomLandingPageLoading, isCustomLandingPage } = useCustomLandingPages();
-
-  // Once the custom landing pages are loaded, hide the tupaia app loader in index.html
-  useEffect(() => {
-    if (isCustomLandingPageLoading === false) {
-      const el = document.getElementById('tupaia-spinner');
-      if (el) {
-        el.remove();
-      }
-    }
-  }, [isCustomLandingPageLoading]);
+  const { isCustomLandingPage } = useCustomLandingPages();
 
   if (isCustomLandingPage) {
     return <LandingPage />;
