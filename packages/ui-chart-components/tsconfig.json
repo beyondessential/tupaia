@@ -5,7 +5,7 @@
     "jsx": "react",
     "target": "es5",
     "allowJs": true,
-    "outDir": "dist",
+    "outDir": "dist"
   },
   "include": [
     "src/**/*"

@@ -4,24 +4,44 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Bar, LabelList } from 'recharts';
+import { BarChartConfig } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, CHART_TYPES } from '../../constants';
 import { getIsTimeSeries } from '../../utils';
 
-export const BarChart = ({
+interface DataProps {
+  name: string;
+  value: string;
+  timestamp?: string;
+}
+
+interface BarChartProps {
+  dataKey: string;
+  yAxisId: string;
+  stackId: string;
+  valueType: string;
+  color?: string;
+  data: DataProps[];
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  chartConfig: BarChartConfig;
+  exportWithLabels?: boolean;
+}
+
+export const BarChart: React.FC<BarChartProps> = ({
   color = BLUE,
   dataKey,
   yAxisId,
   stackId,
   valueType,
   data,
-  isEnlarged,
-  isExporting,
+  isEnlarged = false,
+  isExporting = false,
   chartConfig,
-  exportWithLabels,
+  exportWithLabels = true,
 }) => {
+  console.log({ data });
   const getBarSize = () => {
     if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
       return isEnlarged ? 100 : 50;
@@ -70,24 +90,4 @@ export const BarChart = ({
       )}
     </Bar>
   );
-};
-
-BarChart.propTypes = {
-  dataKey: PropTypes.string.isRequired,
-  yAxisId: PropTypes.string.isRequired,
-  stackId: PropTypes.string.isRequired,
-  valueType: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  chartConfig: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-  data: PropTypes.array.isRequired,
-  exportWithLabels: PropTypes.bool,
-};
-
-BarChart.defaultProps = {
-  color: BLUE,
-  exportWithLabels: true,
-  isExporting: false,
-  isEnlarged: false,
 };

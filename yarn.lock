@@ -5765,6 +5765,7 @@ __metadata:
     "@storybook/react": ^6.3.9
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/recharts": ^1.8.24
     lodash.get: ^4.4.2
     moment: ^2.29.1
     prop-types: ^15.7.2
@@ -5788,8 +5789,8 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@storybook/react": ^6.3.9
     "@tupaia/utils": 1.0.0
-    "@types/react": ^18.2.6
-    "@types/react-dom": ^18.2.4
+    "@types/react": 16.*
+    "@types/react-dom": 16.*
     "@types/styled-components": ^5.1.26
     ace-builds: ^1.4.13
     date-fns: ^2.12.0
@@ -6163,6 +6164,22 @@ __metadata:
   dependencies:
     "@types/express": "*"
   checksum: a62f674f1827ce5df5da947d4d2cf862128693f6d8ac088d2e9a0494ab616d264845c0f1ef554b5d4a539e9fc30c4c7d74df68d36698bc13363129682e8af2a9
+  languageName: node
+  linkType: hard
+
+"@types/d3-path@npm:^1":
+  version: 1.0.9
+  resolution: "@types/d3-path@npm:1.0.9"
+  checksum: acbf7376fd7bef61701bce915bf5a9cb5eaa9741b7919d3e644f841a65faf1aea3cf63ba949c21ddda8c9849221394856a2054805aa698d3bb5ac3fe7d029817
+  languageName: node
+  linkType: hard
+
+"@types/d3-shape@npm:^1":
+  version: 1.3.8
+  resolution: "@types/d3-shape@npm:1.3.8"
+  dependencies:
+    "@types/d3-path": ^1
+  checksum: a7f78a3f0be1215b512efb636ba381768ab4104ef9b72b7fcc2ab9810e7d6fc2ee062f3103ef99236f4462deabac60d2fd96375315ec7ad33278757918c94592
   languageName: node
   linkType: hard
 
@@ -6735,12 +6752,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.4":
-  version: 18.2.4
-  resolution: "@types/react-dom@npm:18.2.4"
+"@types/react-dom@npm:16.*":
+  version: 16.9.19
+  resolution: "@types/react-dom@npm:16.9.19"
   dependencies:
-    "@types/react": "*"
-  checksum: 8301f35cf1cbfec8c723e9477aecf87774e3c168bd457d353b23c45064737213d3e8008b067c6767b7b08e4f2b3823ee239242a6c225fc91e7f8725ef8734124
+    "@types/react": ^16
+  checksum: c696f137aba09be0ea87ad6e99a083607b4fc574857d92c264cc6518ee929ef7e94855362436c2ef5fefb70ebfc9b7413634bb3a2f3a8c2b7522521faaac7d62
   languageName: node
   linkType: hard
 
@@ -6803,14 +6820,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.6":
-  version: 18.2.6
-  resolution: "@types/react@npm:18.2.6"
+"@types/react@npm:16.*, @types/react@npm:^16":
+  version: 16.14.41
+  resolution: "@types/react@npm:16.14.41"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: dea9d232d8df7ac357367a69dcb557711ab3d5501807ffa77cebeee73d49ee94d095f298e36853c63ed47cce097eee4c7eae2aaa8c02fac3f0171ec1b523a819
+  checksum: 48b721b41af4b4b6fa0433ddca27aee72bd8969e95c7bcb1fd2e9fda81e0a602dea5f855072f1458996d3e45ceeae0751d7d1f6687e6dd1698a6fc5c67cc7b82
+  languageName: node
+  linkType: hard
+
+"@types/recharts@npm:^1.8.24":
+  version: 1.8.24
+  resolution: "@types/recharts@npm:1.8.24"
+  dependencies:
+    "@types/d3-shape": ^1
+    "@types/react": "*"
+  checksum: 1341e5472bf62a83ab98648bc5c14a9a81fba16af9255203ef12a21caa21a988fac3198d9771703394eb876d4fbefb42e818865e35ecfe0d105aee1d1164aa6e
   languageName: node
   linkType: hard
 

@@ -36,6 +36,7 @@
     },
     "devDependencies": {
         "@material-ui/styles": "^4.9.10",
-        "@storybook/react": "^6.3.9"
+        "@storybook/react": "^6.3.9",
+        "@types/recharts": "^1.8.24"
     }
 }
