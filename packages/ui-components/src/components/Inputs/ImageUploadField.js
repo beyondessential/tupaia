@@ -79,7 +79,7 @@ const LabelWrapper = styled(Box)`
 export const ImageUploadField = React.memo(
   ({
     name,
-    encodedImage,
+    imageSrc,
     onDelete,
     onChange,
     avatarInitial,
@@ -149,10 +149,15 @@ export const ImageUploadField = React.memo(
           aria-invalid={!errorMessage}
         />
         <Box position="relative">
-          <StyledAvatar initial={avatarInitial} src={encodedImage} variant={avatarVariant}>
+          <StyledAvatar
+            initial={avatarInitial}
+            src={imageSrc}
+            variant={avatarVariant}
+            alt={`Image for field ${label}`}
+          >
             {avatarInitial}
           </StyledAvatar>
-          {encodedImage && (
+          {imageSrc && (
             <DeleteButton onClick={() => setConfirmModalIsOpen(true)}>
               <DeleteIcon />
             </DeleteButton>
@@ -188,7 +193,7 @@ export const ImageUploadField = React.memo(
 ImageUploadField.propTypes = {
   name: PropTypes.string.isRequired,
   userInitial: PropTypes.string,
-  encodedImage: PropTypes.string,
+  imageSrc: PropTypes.string,
   onChange: PropTypes.func,
   onDelete: PropTypes.func,
   avatarInitial: PropTypes.string,
@@ -206,7 +211,7 @@ ImageUploadField.propTypes = {
 
 ImageUploadField.defaultProps = {
   userInitial: undefined,
-  encodedImage: null,
+  imageSrc: null,
   onChange: () => {},
   onDelete: () => {},
   avatarInitial: '',

@@ -43,8 +43,14 @@ export class CreateLandingPage extends BESAdminCreateHandler {
         encodedBackgroundImage,
         landingPageUrlSegment,
         'landing_page_image',
+        true,
       ),
-      logo_url: await uploadImage(encodedLogoImage, landingPageUrlSegment, 'landing_page_logo'),
+      logo_url: await uploadImage(
+        encodedLogoImage,
+        landingPageUrlSegment,
+        'landing_page_logo',
+        true,
+      ),
     };
     // The record has already been updated, so update the existing record with the new fields
     return models.landingPage.updateById(landingPageId, updates);
