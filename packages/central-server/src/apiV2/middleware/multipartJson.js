@@ -19,22 +19,28 @@ import bodyParser from 'body-parser';
  *    - files keyed by fieldname
  */
 export const multipartJson = async (req, res, next) => {
-  const parserMiddleware = multer({
-    storage: multer.diskStorage({
-      destination: getTempDirectory('uploads'),
-      filename: (req, file, callback) => {
-        callback(null, `${Date.now()}_${file.originalname}`);
-      },
-    }),
-  }).any();
+  if (req.headers['content-type'].startsWith('multipart/form-data')) {
+    const parserMiddleware = multer({
+      storage: multer.diskStorage({
+        destination: getTempDirectory('uploads'),
+        filename: (req, file, callback) => {
+          callback(null, `${Date.now()}_${file.originalname}`);
+        },
+      }),
+    }).any();
 
-  parserMiddleware(req, res, () => {
-    req.body = JSON.parse(req.body.payload || '{}');
+    parserMiddleware(req, res, () => {
+      req.body = JSON.parse(req?.body?.payload || '{}');
 
-    for (const file of req.files) {
-      req.body[file.fieldname] = file;
-    }
+      if (req.files) {
+        for (const file of req.files) {
+          req.body[file.fieldname] = file;
+        }
+      }
 
+      next();
+    });
+  } else {
     next();
-  });
+  }
 };
