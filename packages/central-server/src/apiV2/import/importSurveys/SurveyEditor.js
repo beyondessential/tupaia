@@ -10,8 +10,6 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions
 import { assertCanImportSurvey } from './assertCanImportSurvey';
 import { importSurveysQuestions } from './importSurveyQuestions';
 
-const DEFAULT_SERVICE_TYPE = 'tupaia';
-
 const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
   const existingDataGroup = await models.dataGroup.findOne({ code: surveyCode });
   if (existingDataGroup !== null) {
@@ -82,7 +80,7 @@ export class SurveyEditor {
       integration_metadata,
       period_granularity,
       requires_approval,
-      'data_group.service_type': serviceType = DEFAULT_SERVICE_TYPE,
+      'data_group.service_type': serviceType,
       'data_group.config': dataGroupConfig = {},
       surveyQuestions,
     } = fields;
@@ -118,11 +116,13 @@ export class SurveyEditor {
 
     const { dhisInstanceCode = '' } = dataGroupConfig;
 
-    await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+    if (serviceType) {
+      await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+    }
 
     try {
       await validateSurveyFields(transactingModels, {
-        surveyCode,
+        code: surveyCode,
         serviceType,
         periodGranularity: period_granularity,
         dhisInstanceCode,
@@ -160,12 +160,20 @@ export class SurveyEditor {
       // Set the countries this survey is available in
       fieldsToForceUpdate.country_ids = getArrayQueryParameter(country_ids);
     }
-    if (survey_group_id) {
-      fieldsToForceUpdate.survey_group_id = surveyGroup.id;
+    if (survey_group_id !== undefined) {
+      if (survey_group_id === null) {
+        fieldsToForceUpdate.survey_group_id = null;
+      } else {
+        fieldsToForceUpdate.survey_group_id = surveyGroup.id;
+      }
     }
-    if (permission_group_id) {
-      // A non-default permission group was provided
-      fieldsToForceUpdate.permission_group_id = permissionGroup.id;
+    if (permission_group_id !== undefined) {
+      if (permission_group_id === null) {
+        fieldsToForceUpdate.permission_group_id = null;
+      } else {
+        // A non-default permission group was provided
+        fieldsToForceUpdate.permission_group_id = permissionGroup.id;
+      }
     }
     if (name) {
       fieldsToForceUpdate.name = name;
