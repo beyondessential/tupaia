@@ -14,12 +14,12 @@ import {
   upsertQuestion,
   TestableApp,
   expectResponseError,
-} from '../../../testUtilities';
+} from '../../testUtilities';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
-} from '../../../../permissions';
-import { expectPermissionError } from '../../../testUtilities/expectResponseError';
+} from '../../../permissions';
+import { expectPermissionError } from '../../testUtilities/expectResponseError';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
@@ -44,7 +44,7 @@ const BASIC_SURVEY_CREATE_PAYLOAD = {
   'data_group.config': {},
 };
 
-describe('importSurveys(): POST import/surveys', () => {
+describe('Create and Edit Surveys', () => {
   const app = new TestableApp();
   const { models } = app;
 
@@ -105,7 +105,7 @@ describe('importSurveys(): POST import/surveys', () => {
     app.revokeAccess();
   });
 
-  describe('Test permissions when importing surveys', async () => {
+  describe('Permissions', async () => {
     describe('Edit existing surveys', async () => {
       it('Sufficient permissions - Should pass permissions check if user has the survey permission group access to all of the survey countries', async () => {
         await app.grantAccess(DEFAULT_POLICY);
@@ -239,7 +239,7 @@ describe('importSurveys(): POST import/surveys', () => {
       });
     });
 
-    describe('Import new surveys', async () => {
+    describe('New surveys', async () => {
       it('Sufficient permissions - Should pass permissions user have Tupaia Admin Panel access to the specified countries of the new survey', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 

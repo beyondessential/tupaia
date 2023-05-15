@@ -4,7 +4,7 @@
  */
 
 import { EditHandler } from '../EditHandler';
-import { SurveyEditor } from '../import/importSurveys/SurveyEditor';
+import { SurveyEditor } from './SurveyEditor';
 import { convertNamesToIds } from './convertNamesToIds';
 
 /**

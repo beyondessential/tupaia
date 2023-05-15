@@ -3,12 +3,12 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, ImportValidationError, ValidationError } from '@tupaia/utils';
-import { validateSurveyFields } from '../../../dataAccessors';
-import { getArrayQueryParameter } from '../../utilities';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { DatabaseError, ImportValidationError } from '@tupaia/utils';
+import { validateSurveyFields } from '../../dataAccessors';
+import { getArrayQueryParameter } from '../utilities';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertCanImportSurvey } from './assertCanImportSurvey';
-import { importSurveysQuestions } from './importSurveyQuestions';
+import { importSurveysQuestions } from '../import/importSurveys';
 
 const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
   const existingDataGroup = await models.dataGroup.findOne({ code: surveyCode });
@@ -194,6 +194,8 @@ export class SurveyEditor {
     if (Object.keys(fieldsToForceUpdate).length > 0) {
       await transactingModels.survey.update({ id: survey.id }, fieldsToForceUpdate);
     }
+
+    console.log('surveyQuestions', surveyQuestions);
 
     // Import questions
     if (surveyQuestions) {

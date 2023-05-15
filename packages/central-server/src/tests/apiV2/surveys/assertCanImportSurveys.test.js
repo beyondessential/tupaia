@@ -10,9 +10,9 @@ import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
-import { getModels } from '../../../testUtilities';
-import { assertCanImportSurvey } from '../../../../apiV2/import/importSurveys/assertCanImportSurvey';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import { getModels } from '../../testUtilities';
+import { assertCanImportSurvey } from '../../../apiV2/surveys/assertCanImportSurvey';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
