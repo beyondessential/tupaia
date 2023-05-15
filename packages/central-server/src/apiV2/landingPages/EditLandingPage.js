@@ -6,10 +6,10 @@ import { BESAdminEditHandler } from '../EditHandler';
 import { uploadImage } from '../utilities';
 
 export class EditLandingPage extends BESAdminEditHandler {
-  // Fetch the provided of the landing page
-  async getFields(fields) {
+  // Fetch the url_segment and existing image paths for the landing page
+  async getFields() {
     const landingPage = await this.models.landingPage.findById(this.recordId, {
-      columns: fields,
+      columns: ['url_segment', 'image_url', 'logo_url'],
     });
     return landingPage;
   }
@@ -26,7 +26,7 @@ export class EditLandingPage extends BESAdminEditHandler {
       url_segment: urlSegment,
       image_url: backgroundImageUrl,
       logo_url: logoImageUrl,
-    } = await this.getFields(['url_segment', 'image_url', 'logo_url']);
+    } = await this.getFields();
 
     // check first if field is undefined, as we don't want to upload an image if the field is not being updated, since this might cause the field to be reset
     if (encodedBackgroundImage !== undefined) {
