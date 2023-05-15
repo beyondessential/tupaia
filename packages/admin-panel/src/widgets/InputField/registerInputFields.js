@@ -281,6 +281,8 @@ export const registerInputFields = () => {
         deleteModal={props.deleteModal}
         maxWidth={props.maxWidth}
         maxHeight={props.maxHeight}
+        minWidth={props.minWidth}
+        minHeight={props.minHeight}
         secondaryLabel={props.secondaryLabel}
         tooltip={props.labelTooltip}
       />

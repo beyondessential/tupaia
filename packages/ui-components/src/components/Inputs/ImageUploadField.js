@@ -89,41 +89,52 @@ export const ImageUploadField = React.memo(
     avatarVariant,
     maxHeight,
     maxWidth,
+    minHeight,
+    minWidth,
     secondaryLabel,
     tooltip,
   }) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-    const [isValid, setIsValid] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     const inputEl = useRef(null);
 
     const handleDelete = () => {
       setConfirmModalIsOpen(false);
       inputEl.current.value = '';
-      setIsValid(true);
+      setErrorMessage(null);
       onDelete();
     };
 
-    const validateImageSize = async file => {
-      // If no max height or width is provided, or if file is not set, we don't need to validate so can return true.
-      if ((!maxHeight && !maxWidth) || !file) return true;
-      // Check image is within the specified height and width, and return true if so, else false.
+    const getImageSize = async file => {
       const img = new Image();
       img.src = window.URL.createObjectURL(file);
       await img.decode();
       const height = img.naturalHeight;
       const width = img.naturalWidth;
       window.URL.revokeObjectURL(img.src);
-      if (height > maxHeight || width > maxWidth) {
-        return false;
+      return { height, width };
+    };
+
+    const validateImageSize = async file => {
+      // If no max height or width is provided, or if file is not set, we don't need to validate so can return null.
+      if (!file || (!minWidth && !minHeight && !maxWidth && !maxHeight)) return true;
+      // Check image is within the specified height and width, and return the appropriate message if so, else null.
+      const { height, width } = await getImageSize(file);
+
+      if ((maxHeight && height > maxHeight) || (maxWidth && width > maxWidth)) {
+        return 'Image size is too large';
       }
-      return true;
+      if ((minHeight && height < minHeight) || (minWidth && width < minWidth)) {
+        return 'Image size is too small';
+      }
+      return null;
     };
     const handleFileUpload = async event => {
       const image = event.target.files[0];
-      const validated = await validateImageSize(image);
-      setIsValid(validated);
+      const newErrorMessage = await validateImageSize(image);
+      setErrorMessage(newErrorMessage);
       // Only call onChange if image is validated, so the user can't upload anything invalid.
-      if (validated) onChange(image);
+      if (!newErrorMessage) onChange(image);
     };
 
     return (
@@ -135,7 +146,7 @@ export const ImageUploadField = React.memo(
           type="file"
           onChange={handleFileUpload}
           aria-describedby={secondaryLabel ? `${name}-description` : null}
-          aria-invalid={!isValid}
+          aria-invalid={!errorMessage}
         />
         <Box position="relative">
           <StyledAvatar initial={avatarInitial} src={encodedImage} variant={avatarVariant}>
@@ -158,9 +169,7 @@ export const ImageUploadField = React.memo(
             <FormHelperText id={`${name}-description`}>{secondaryLabel}</FormHelperText>
           )}
           <GreyOutlinedButton component="span">{buttonLabel}</GreyOutlinedButton>
-          {!isValid && (
-            <ErrorMessage id={`${name}-error-message`}>Image size is too large</ErrorMessage>
-          )}
+          {errorMessage && <ErrorMessage id={`${name}-error-message`}>{errorMessage}</ErrorMessage>}
         </LabelWrapper>
 
         {deleteModal && (
@@ -189,6 +198,8 @@ ImageUploadField.propTypes = {
   avatarVariant: PropTypes.string,
   maxHeight: PropTypes.number,
   maxWidth: PropTypes.number,
+  minHeight: PropTypes.number,
+  minWidth: PropTypes.number,
   secondaryLabel: PropTypes.string,
   tooltip: PropTypes.string,
 };
@@ -206,5 +217,7 @@ ImageUploadField.defaultProps = {
   deleteModal: null,
   maxHeight: null,
   maxWidth: null,
+  minHeight: null,
+  minWidth: null,
   secondaryLabel: '',
 };
