@@ -109,7 +109,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
           {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
           <ImageUploadField
             name="profileImage"
-            encodedImage={profileImage && profileImage.data}
+            imageSrc={profileImage && profileImage.data}
             onChange={handleFileChange}
             onDelete={handleFileDelete}
             avatarInitial={userInitial}

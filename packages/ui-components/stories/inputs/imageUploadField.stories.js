@@ -44,7 +44,7 @@ export const Simple = () => {
     <Container>
       <ImageUploadField
         name="profileImage"
-        encodedImage={profileImage && profileImage.data}
+        imageSrc={profileImage && profileImage.data}
         onChange={handleFileChange}
         onDelete={handleFileDelete}
         avatarInitial="BES"

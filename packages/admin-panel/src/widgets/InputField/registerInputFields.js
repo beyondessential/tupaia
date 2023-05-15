@@ -272,7 +272,7 @@ export const registerInputFields = () => {
     <StyledFileInputWrapper>
       <ImageUploadField
         name={props.name}
-        encodedImage={props.value}
+        imageSrc={props.value}
         onDelete={() => props.onChange(props.inputKey, null)}
         onChange={image => props.onChange(props.inputKey, image)}
         label={props.label}

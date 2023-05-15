@@ -48,14 +48,11 @@ export const LandingPage = () => {
   const { customLandingPageSettings, projects } = useCustomLandingPages();
   const { imageUrl } = customLandingPageSettings;
 
-  const timestamp = Date.now();
-  const backgroundImage = imageUrl ? `${imageUrl}?t=${timestamp}` : null;
-
   return (
     <>
       <EnvBanner />
       <TopBar />
-      <Wrapper backgroundImage={backgroundImage}>
+      <Wrapper backgroundImage={imageUrl}>
         <Container maxWidth={false}>
           {/* tupaia requires projects to work so we can assume that if there are no projects, it's just */}
           {/* because they haven't loaded yet. We can replace this with more idiomatic loading state */}

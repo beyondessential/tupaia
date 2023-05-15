@@ -98,6 +98,25 @@ export class S3Client {
     return this.uploadPrivateFile(s3FilePath, fileStream);
   }
 
+  async deleteFile(filePath) {
+    const fileName = filePath.split(getS3ImageFilePath())[1];
+    return new Promise((resolve, reject) => {
+      this.s3.deleteObject(
+        {
+          Bucket: S3_BUCKET_NAME,
+          Key: fileName,
+        },
+        (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        },
+      );
+    });
+  }
+
   /**
    * @public
    * @param {*} base64EncodedImage

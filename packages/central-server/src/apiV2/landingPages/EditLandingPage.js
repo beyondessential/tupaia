@@ -6,14 +6,12 @@ import { BESAdminEditHandler } from '../EditHandler';
 import { uploadImage } from '../utilities';
 
 export class EditLandingPage extends BESAdminEditHandler {
-  // Fetch the url_segment of the landing page, as this is needed as a unique identifier to upload the images to S3. If it is being edited, then the url_segment will be in the updatedFields, otherwise it will need to be fetched from the database
-  async getLandingPageUrlSegment() {
-    const { url_segment: urlSegment } = this.updatedFields;
-    if (urlSegment) return urlSegment;
+  // Fetch the provided of the landing page
+  async getFields(fields) {
     const landingPage = await this.models.landingPage.findById(this.recordId, {
-      columns: ['url_segment'],
+      columns: fields,
     });
-    return landingPage.url_segment;
+    return landingPage;
   }
 
   // Before updating the landingPage, if the image_url and logo_url have changed, we need to upload the new images to S3 and update the image_url and logo_url fields with the new urls.
@@ -23,18 +21,31 @@ export class EditLandingPage extends BESAdminEditHandler {
     const { image_url: encodedBackgroundImage, logo_url: encodedLogoImage } = this.updatedFields;
     const updatedFields = { ...this.updatedFields };
 
-    const urlSegment = await this.getLandingPageUrlSegment();
+    // Grab the existing image urls and the landing page url_segment (as this is not editable at this stage) so we can use them for image upload handling
+    const {
+      url_segment: urlSegment,
+      image_url: backgroundImageUrl,
+      logo_url: logoImageUrl,
+    } = await this.getFields(['url_segment', 'image_url', 'logo_url']);
 
     // check first if field is undefined, as we don't want to upload an image if the field is not being updated, since this might cause the field to be reset
     if (encodedBackgroundImage !== undefined) {
       updatedFields.image_url = await uploadImage(
         encodedBackgroundImage,
         urlSegment,
-        'landing_page_image',
+        'landing_page_background_image',
+        true,
+        backgroundImageUrl,
       );
     }
     if (encodedLogoImage !== undefined) {
-      updatedFields.logo_url = await uploadImage(encodedLogoImage, urlSegment, 'landing_page_logo');
+      updatedFields.logo_url = await uploadImage(
+        encodedLogoImage,
+        urlSegment,
+        'landing_page_logo_image',
+        true,
+        logoImageUrl,
+      );
     }
     await this.models.landingPage.updateById(this.recordId, updatedFields);
   }
