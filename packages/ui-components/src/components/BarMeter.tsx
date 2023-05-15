@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { FC, ReactElement } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 
 const Bar = styled.div`
@@ -41,7 +40,11 @@ const LegendValue = styled.span`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const BarMeter = ({ value, total, legend }) => (
+export const BarMeter: FC<{
+  value: number;
+  total: number;
+  legend?: string;
+}> = ({ value, total, legend = 'Value' }): ReactElement => (
   <div>
     <Legend>
       {legend}: <LegendValue>{`${value}/${total}`}</LegendValue>
@@ -52,13 +55,3 @@ export const BarMeter = ({ value, total, legend }) => (
     </Bar>
   </div>
 );
-
-BarMeter.propTypes = {
-  value: PropTypes.number.isRequired,
-  total: PropTypes.number.isRequired,
-  legend: PropTypes.string,
-};
-
-BarMeter.defaultProps = {
-  legend: 'Value',
-};

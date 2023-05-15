@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import MuiAlert from '@material-ui/lab/Alert';
+import React, { FC, ReactElement } from 'react';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
 import PropTypes from 'prop-types';
@@ -27,25 +27,18 @@ const StyledAlert = styled(MuiAlert)`
   }
 `;
 
-export const Alert = ({ variant, severity, iconMapping, ...props }) => (
-  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
-);
-
-Alert.propTypes = {
-  severity: PropTypes.string,
-  variant: PropTypes.string,
-  iconMapping: PropTypes.object,
-};
-
-Alert.defaultProps = {
-  severity: 'success',
-  variant: 'filled',
-  iconMapping: {
+export const Alert: FC<AlertProps> = ({
+  variant = 'filled',
+  severity = 'success',
+  iconMapping = {
     success: <CheckCircle />,
     error: <Warning />,
     warning: <Warning />,
   },
-};
+  ...props
+}): ReactElement => (
+  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+);
 
 const StyledSmallAlert = styled(StyledAlert)`
   font-size: 0.875rem;
@@ -60,22 +53,15 @@ const StyledSmallAlert = styled(StyledAlert)`
   }
 `;
 
-export const SmallAlert = ({ variant, severity, iconMapping, ...props }) => (
-  <StyledSmallAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
-);
-
-SmallAlert.propTypes = {
-  severity: PropTypes.string,
-  variant: PropTypes.string,
-  iconMapping: PropTypes.object,
-};
-
-SmallAlert.defaultProps = {
-  severity: 'success',
-  variant: 'filled',
-  iconMapping: {
+export const SmallAlert: FC<AlertProps> = ({
+  variant = 'filled',
+  severity = 'success',
+  iconMapping = {
     success: <CheckCircle fontSize="inherit" />,
     error: <Warning fontSize="inherit" />,
     warning: <Warning fontSize="inherit" />,
   },
-};
+  ...props
+}): ReactElement => (
+  <StyledSmallAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+);

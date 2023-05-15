@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { FC, ReactElement, ReactNode } from 'react';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
+import Typography, { TypographyProps } from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
 export const Card = styled(MuiCard)`
@@ -25,36 +24,36 @@ const StyledDiv = styled.div`
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const HeaderTitle = styled(Typography)`
+const HeaderTitle = styled(Typography)<TypographyProps>`
   font-size: 0.9375rem;
   line-height: 1.125rem;
   font-weight: 500;
 `;
 
-const HeaderLabel = styled(Typography)`
+const HeaderLabel = styled(Typography)<TypographyProps>`
   font-size: 0.9375rem;
   line-height: 1.125rem;
   font-weight: 400;
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const CardHeader = ({ title, label, color }) => (
+export const CardHeader: FC<{
+  title: string | ReactNode;
+  label?: string | ReactNode;
+  color?:
+    | 'initial'
+    | 'inherit'
+    | 'primary'
+    | 'secondary'
+    | 'textPrimary'
+    | 'textSecondary'
+    | 'error';
+}> = ({ title, label, color = 'initial' }): ReactElement => (
   <StyledDiv>
     <HeaderTitle color={color}>{title}</HeaderTitle>
     <HeaderLabel color={color}>{label}</HeaderLabel>
   </StyledDiv>
 );
-
-CardHeader.propTypes = {
-  title: PropTypes.any.isRequired,
-  label: PropTypes.any,
-  color: PropTypes.string,
-};
-
-CardHeader.defaultProps = {
-  color: 'initial',
-  label: null,
-};
 
 export const CardContent = styled(MuiCardContent)`
   padding: 20px 30px;
