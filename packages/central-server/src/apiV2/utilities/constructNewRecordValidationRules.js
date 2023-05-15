@@ -307,20 +307,22 @@ export const constructForSingle = (models, recordType) => {
       return {
         code: [constructRecordNotExistsWithField(models.survey, 'code')],
         name: [isAString],
-        permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
-        country_ids: [
-          async countryIds => {
+        'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
+        countryNames: [
+          async countryName => {
             const countryEntities = await models.country.find({
-              id: countryIds,
+              name: countryName,
             });
-            if (countryEntities.length !== countryIds.length) {
+            if (countryEntities.length !== countryNames.length) {
               throw new Error('One or more provided countries do not exist');
             }
             return true;
           },
         ],
         can_repeat: [hasContent, isBoolean],
-        survey_group_id: [constructIsEmptyOr(constructRecordExistsWithId(models.surveyGroup))],
+        'survey_group.name': [
+          constructIsEmptyOr(constructRecordExistsWithField(models.surveyGroup, 'name')),
+        ],
         integration_metadata: [],
         period_granularity: [
           constructIsEmptyOr(constructIsOneOf(Object.values(PeriodGranularity))),

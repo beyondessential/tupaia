@@ -32,11 +32,12 @@ const SURVEY_FIELDS = {
   },
   country_ids: {
     Header: 'Countries',
-    source: 'country_ids',
+    source: 'countryNames', // TODO: cleanup as part of RN-910
     editConfig: {
+      sourceKey: 'countryNames',
       optionsEndpoint: 'countries',
       optionLabelKey: 'name',
-      optionValueKey: 'id',
+      optionValueKey: 'name',
       allowMultipleValues: true,
       secondaryLabel:
         'Select the countries this survey should be available in, or leave blank for all',
@@ -44,21 +45,23 @@ const SURVEY_FIELDS = {
   },
   permission_group_id: {
     Header: 'Permission Group',
-    source: 'permission_group_id',
+    source: 'permission_group.name', // TODO: cleanup as part of RN-910
     editConfig: {
+      sourceKey: 'permission_group.name',
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
-      optionValueKey: 'id',
+      optionValueKey: 'name',
       secondaryLabel: 'Select the permission group this survey should be available for',
     },
   },
   survey_group_id: {
     Header: 'Survey Group',
-    source: 'survey_group_id',
+    source: 'survey_group.name', // TODO: cleanup as part of RN-910
     editConfig: {
+      sourceKey: 'survey_group.name',
       optionsEndpoint: 'surveyGroups',
       optionLabelKey: 'name',
-      optionValueKey: 'id',
+      optionValueKey: 'name',
       secondaryLabel:
         'Select the survey group this survey should be a part of, or leave blank for none',
     },

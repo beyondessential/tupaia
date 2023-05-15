@@ -5,6 +5,7 @@
 
 import { EditHandler } from '../EditHandler';
 import { SurveyEditor } from '../import/importSurveys/SurveyEditor';
+import { convertNamesToIds } from './convertNamesToIds';
 
 /**
  * See ./README.md
@@ -21,6 +22,9 @@ export class EditSurvey extends EditHandler {
 
   async editRecord() {
     const surveyEditor = new SurveyEditor(this.models, this.req.assertPermissions);
-    return surveyEditor.edit(this.recordId, this.updatedFields);
+
+    const convertedFields = await convertNamesToIds(this.models, this.updatedFields);
+
+    return surveyEditor.edit(this.recordId, convertedFields);
   }
 }

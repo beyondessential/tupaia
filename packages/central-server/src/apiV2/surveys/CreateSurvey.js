@@ -5,6 +5,7 @@
 
 import { CreateHandler } from '../CreateHandler';
 import { SurveyEditor } from '../import/importSurveys/SurveyEditor';
+import { convertNamesToIds } from './convertNamesToIds';
 
 /**
  * See ./README.md
@@ -21,6 +22,9 @@ export class CreateSurvey extends CreateHandler {
 
   async createRecord() {
     const surveyEditor = new SurveyEditor(this.models, this.req.assertPermissions);
-    return surveyEditor.create(this.newRecordData);
+
+    const convertedFields = await convertNamesToIds(this.models, this.newRecordData);
+
+    return surveyEditor.create(convertedFields);
   }
 }
