@@ -30,12 +30,15 @@ export function* fetchCustomLandingPageData() {
       isLoading: true,
     });
     const { routing: location } = yield select();
+    const urlSegment = location.pathname.split('/')[1];
 
-    const data = yield call(request, `landingPage/${location.pathname.substring(1)}`);
-    yield put({
-      type: SET_CUSTOM_LANDING_PAGE_DATA,
-      data,
-    });
+    if (urlSegment) {
+      const data = yield call(request, `landingPage/${urlSegment}`);
+      yield put({
+        type: SET_CUSTOM_LANDING_PAGE_DATA,
+        data,
+      });
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
