@@ -19,6 +19,19 @@ import {
 } from '../utils';
 import { CHART_TYPES } from '../constants';
 
+interface ChartProps {
+  viewContent: {
+    name?: string;
+    chartType?: string;
+    data?: any[];
+    chartConfig?: any;
+  };
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+  legendPosition?: string;
+}
+
 const UnknownChartTitle = styled(Typography)`
   position: relative;
   color: rgba(255, 255, 255, 0.87);
@@ -32,7 +45,7 @@ const UnknownChartContainer = styled.div`
   position: relative;
 `;
 
-const UnknownChart = () => (
+const UnknownChart: React.FC = () => (
   <UnknownChartContainer>
     <UnknownChartTitle variant="h2">New chart coming soon</UnknownChartTitle>
   </UnknownChartContainer>
@@ -44,9 +57,9 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-const removeNonNumericData = data =>
+const removeNonNumericData = (data: any[]): any[] =>
   data.map(dataSeries => {
-    const filteredDataSeries = {};
+    const filteredDataSeries: any = {};
     Object.entries(dataSeries).forEach(([key, value]) => {
       if (!isDataKey(key) || !Number.isNaN(Number(value))) {
         filteredDataSeries[key] = value;
@@ -55,10 +68,10 @@ const removeNonNumericData = data =>
     return filteredDataSeries;
   });
 
-const sortData = data =>
+const sortData = (data: any[]): any[] =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-const getViewContent = viewContent => {
+const getViewContent = (viewContent: ChartProps['viewContent']) => {
   const { chartConfig, data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
   return chartConfig
@@ -81,7 +94,13 @@ const getChartComponent = chartType => {
   }
 };
 
-export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
+export const Chart: React.FC<ChartProps> = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = true,
+  onItemClick = () => {},
+  legendPosition = 'bottom',
+}) => {
   const { chartType } = viewContent;
 
   if (!Object.values(CHART_TYPES).includes(chartType)) {
@@ -108,24 +127,4 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legen
       legendPosition={legendPosition}
     />
   );
-};
-
-Chart.propTypes = {
-  viewContent: PropTypes.shape({
-    name: PropTypes.string,
-    chartType: PropTypes.string,
-    data: PropTypes.array,
-  }),
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-  legendPosition: PropTypes.string,
-};
-
-Chart.defaultProps = {
-  viewContent: null,
-  isEnlarged: true,
-  isExporting: false,
-  legendPosition: 'bottom',
-  onItemClick: () => {},
 };

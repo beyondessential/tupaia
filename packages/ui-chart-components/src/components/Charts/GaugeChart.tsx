@@ -18,8 +18,7 @@
   }
  */
 
-import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import {
@@ -33,23 +32,37 @@ import {
 import { VIEW_CONTENT_SHAPE, BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
 
-const Text = styled(RechartText)`
+interface GaugeChartProps {
+  viewContent: {
+    data: { value: number }[];
+    color?: string;
+    [key: string]: any;
+  };
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+}
+
+const Text = styled(RechartText)`<{ $fontSize: string; $isExporting: boolean }>
   font-size: ${p => p.$fontSize};
   font-weight: bold;
   fill: ${({ theme, $isExporting }) => {
     return theme.palette.type === 'light' || $isExporting ? TRANS_BLACK : WHITE;
-  }};
-`;
+  }};`;
 
-const getHeight = (isExporting, isEnlarged) => {
+const getHeight = (isExporting?: boolean, isEnlarged?: boolean) => {
   if (isExporting) {
     return 420;
   }
   return isEnlarged && isMobile() ? 320 : undefined;
 };
 
-export const GaugeChart = props => {
-  const { viewContent, isExporting, isEnlarged, onItemClick } = props;
+export const GaugeChart: React.FC<GaugeChartProps> = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = false,
+  onItemClick = () => {},
+}) => {
   const { data, color = BLUE, ...restOfConfigs } = viewContent;
 
   const generateElements = () => {
@@ -73,7 +86,7 @@ export const GaugeChart = props => {
   const innerRadius = 60 * responsiveStyle;
   const outerRadius = innerRadius * 1.4;
 
-  const getLabelContent = useCallback(({ value, x, y, fontSize }) => {
+  const getLabelContent = ({ value, x, y, fontSize }) => {
     const positioningProps = {
       x,
       y,
@@ -85,7 +98,7 @@ export const GaugeChart = props => {
         {value}
       </Text>
     );
-  });
+  };
 
   return (
     <ResponsiveContainer width="100%" height={height} aspect={isMobile() ? null : 2}>
@@ -146,17 +159,4 @@ export const GaugeChart = props => {
       </BasePieChart>
     </ResponsiveContainer>
   );
-};
-
-GaugeChart.propTypes = {
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-};
-
-GaugeChart.defaultProps = {
-  isEnlarged: false,
-  isExporting: false,
-  onItemClick: () => {},
 };
