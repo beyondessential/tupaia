@@ -4,7 +4,6 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import {
   AreaChart,
@@ -17,7 +16,9 @@ import {
   Tooltip,
   Brush,
 } from 'recharts';
-import { CHART_BLUES, VIEW_CONTENT_SHAPE, DEFAULT_DATA_KEY, CHART_TYPES } from '../constants';
+import { BaseChartConfig } from '@tupaia/types';
+import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
+import { ChartTypes, ViewContent } from '../types';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,
@@ -27,7 +28,7 @@ import { getCartesianLegend, ReferenceLines, ChartTooltip as CustomTooltip } fro
 import { isMobile } from '../utils';
 import { XAxis as XAxisComponent, YAxes } from './Axes';
 
-const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
+const { Area, Bar, Composed, Line } = ChartTypes;
 
 // Orientation of the axis is used as an alias for its id
 const Y_AXIS_IDS = {
@@ -55,23 +56,23 @@ const LEGEND_ALL_DATA = {
 };
 
 const CHART_TYPE_TO_CONTAINER = {
-  [AREA]: AreaChart,
-  [BAR]: BarChart,
-  [COMPOSED]: ComposedChart,
-  [LINE]: LineChart,
+  [Area]: AreaChart,
+  [Bar]: BarChart,
+  [Composed]: ComposedChart,
+  [Line]: LineChart,
 };
 
 const CHART_TYPE_TO_CHART = {
-  [AREA]: AreaChartComponent,
-  [BAR]: BarChartComponent,
-  [COMPOSED]: BarChartComponent,
-  [LINE]: LineChartComponent,
+  [Area]: AreaChartComponent,
+  [Bar]: BarChartComponent,
+  [Composed]: BarChartComponent,
+  [Line]: LineChartComponent,
 };
 
-const getRealDataKeys = chartConfig =>
+const getRealDataKeys = (chartConfig: BaseChartConfig) =>
   Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
-const getLegendAlignment = (legendPosition, isExporting) => {
+const getLegendAlignment = (legendPosition: string, isExporting: boolean) => {
   if (isExporting) {
     return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
@@ -81,14 +82,14 @@ const getLegendAlignment = (legendPosition, isExporting) => {
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getHeight = (isExporting, isEnlarged, hasLegend) => {
+const getHeight = (isExporting: boolean, isEnlarged: boolean, hasLegend: boolean) => {
   if (isExporting) {
     return 500;
   }
   return isEnlarged && hasLegend && isMobile() ? 320 : undefined;
 };
 
-const getMargin = (isExporting, isEnlarged) => {
+const getMargin = (isExporting: string, isEnlarged: boolean) => {
   if (isExporting) {
     return { left: 20, right: 20, top: 20, bottom: 60 };
   }
@@ -100,11 +101,19 @@ const getMargin = (isExporting, isEnlarged) => {
   return { left: 0, right: 0, top: 0, bottom: 0 };
 };
 
-/**
- * Cartesian Chart types using recharts
- * @see https://recharts.org
- */
-export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPosition }) => {
+interface CartesianChartProps {
+  viewContent: ViewContent;
+  legendPosition: string;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+}
+
+export const CartesianChart: React.FC<CartesianChartProps> = ({
+  viewContent,
+  isEnlarged = false,
+  isExporting = false,
+  legendPosition = 'bottom',
+}) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
   // eslint-disable-next-line no-unused-vars
@@ -254,18 +263,4 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
       </ChartContainer>
     </ResponsiveContainer>
   );
-};
-
-CartesianChart.propTypes = {
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
-  legendPosition: PropTypes.string,
-};
-
-CartesianChart.defaultProps = {
-  isEnlarged: false,
-  isExporting: false,
-  viewContent: null,
-  legendPosition: 'bottom',
 };

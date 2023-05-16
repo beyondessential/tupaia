@@ -6,7 +6,7 @@
 import type { BaseConfig, ValueType } from './common';
 import { CssColor } from '../../css';
 
-type BaseChartConfig = BaseConfig & {
+export type BaseChartConfig = BaseConfig & {
   ticks?: any;
 
   startDate?: string;

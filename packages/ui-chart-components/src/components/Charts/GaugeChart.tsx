@@ -2,22 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-/**
- * GaugeChart
- *
- * Renders a recharts GaugeChart from data provided by viewContent object
- * @prop {object} viewContent An object with the following structure
-   {
-    "type":"chart",
-    "chartType":"gauge",
-    "name":"% Stock on Hand",
-    "valueType": "percentage",
-    "color": "#111111",
-    "data":[{ value:0.485 }]
-  }
- */
-
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -29,7 +13,7 @@ import {
   Label,
   Text as RechartText,
 } from 'recharts';
-import { VIEW_CONTENT_SHAPE, BLUE, TRANS_BLACK, WHITE } from '../../constants';
+import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
 
 interface GaugeChartProps {

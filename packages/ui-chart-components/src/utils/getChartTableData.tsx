@@ -5,16 +5,18 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { DEFAULT_DATA_KEY, CHART_TYPES } from '../constants';
+import { DEFAULT_DATA_KEY } from '../constants';
+import { ChartTypes } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
+import { ValueTypes, ViewContent } from '../types';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
-const sanitizeValueType = valueType =>
-  valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
-
-const getFormattedValue = (value, valueType) =>
+const sanitizeValueType = (valueType: ValueTypes): ValueTypes => {
+  return valueType === ValueTypes.FractionAndPercentage ? ValueTypes.Percentage : valueType;
+};
+const getFormattedValue = (value: string | undefined, valueType: ValueTypes): any =>
   value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
 const FirstColumnCell = styled.span`
@@ -41,7 +43,7 @@ const makeFirstColumn = (header, accessor, sortRows) => {
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent, sortByTimestamp) => {
+const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -92,14 +94,14 @@ const sortDates = (dateA, dateB) => {
   return dateAMoreRecent ? 1 : -1;
 };
 
-const processData = viewContent => {
+const processData = (viewContent: ViewContent) => {
   if (!viewContent?.data) {
     return [];
   }
 
   const { data, chartType } = viewContent;
 
-  if (chartType === CHART_TYPES.PIE) {
+  if (chartType === ChartTypes.Pie) {
     return data.sort((a, b) => b.value - a.value);
   }
   // For time series, sort by timestamp so that the table is in chronological order always
@@ -110,7 +112,7 @@ const processData = viewContent => {
   return data;
 };
 
-export const getChartTableData = viewContent => {
+export const getChartTableData = (viewContent: ViewContent) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
   const sortByTimestamp = useMemo(() => (rowA, rowB) =>

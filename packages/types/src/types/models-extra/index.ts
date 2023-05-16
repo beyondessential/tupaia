@@ -11,4 +11,5 @@ export type {
   GaugeChartConfig,
   LineChartConfig,
   PieChartConfig,
+  BaseChartConfig,
 } from './dashboard-item';

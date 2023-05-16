@@ -8,7 +8,8 @@ import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
-import { DARK_BLUE, CHART_TYPES } from '../../constants';
+import { DARK_BLUE } from '../../constants';
+import { ChartTypes } from '../../types';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -58,7 +59,7 @@ const calculateXAxisHeight = (data, isExporting) => {
 
 export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
-  const { BAR, COMPOSED } = CHART_TYPES;
+  const { Bar, Composed } = ChartTypes;
   const { chartType, chartConfig = {}, data } = viewContent;
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);

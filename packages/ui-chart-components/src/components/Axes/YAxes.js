@@ -7,10 +7,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { YAxis as YAxisComponent } from 'recharts';
-import { DARK_BLUE, VALUE_TYPES } from '../../constants';
+import { DARK_BLUE } from '../../constants';
+import { ValueTypes } from '../../types';
 import { getContrastTextColor } from '../../utils';
 
-const { PERCENTAGE } = VALUE_TYPES;
+const { Percentage } = ValueTypes;
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -48,7 +49,7 @@ const parseDomainConfig = config => {
 };
 
 const getDefaultYAxisDomain = viewContent =>
-  viewContent.valueType === PERCENTAGE ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
+  viewContent.valueType === Percentage ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
 const calculateYAxisDomain = ({ min, max }) => {
   return [parseDomainConfig(min), parseDomainConfig(max)];
@@ -73,7 +74,7 @@ const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
  */
 const getAxisWidth = (data, dataKeys, valueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
-  if (valueType === VALUE_TYPES.NUMBER || valueType === undefined) {
+  if (valueType === ValueTypes.Number || valueType === undefined) {
     const values = data.map(item => dataKeys.map(key => item[key])).flat();
     const maxValue = Math.max(...values);
 
@@ -116,7 +117,7 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
-      allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
+      allowDataOverflow={valueType === Percentage || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
       label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor, isEnlarged)}
       tickFormatter={value =>

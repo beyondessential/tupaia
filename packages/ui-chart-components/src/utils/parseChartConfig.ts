@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-
-import { COLOR_PALETTES, CHART_TYPES } from '../constants';
+import { BaseChartConfig } from '@tupaia/types';
+import { COLOR_PALETTES } from '../constants';
+import { ChartTypes, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';
@@ -20,7 +21,7 @@ export const getLayeredOpacity = (numberOfLayers, index, ascending = false) => {
   return ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers;
 };
 
-export const parseChartConfig = viewContent => {
+export const parseChartConfig = (viewContent: ViewContent) => {
   const { chartType, chartConfig = {}, data, colorPalette: paletteName } = viewContent;
   const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = chartConfig;
 
@@ -41,7 +42,7 @@ export const parseChartConfig = viewContent => {
 /**
  * Sets numeric values for each chart config opacity
  */
-const setOpacityValues = chartConfig => {
+const setOpacityValues = (chartConfig: BaseChartConfig): BaseChartConfig => {
   const newConfig = {};
 
   Object.entries(chartConfig).forEach(([key, configItem], index, array) => {
@@ -57,7 +58,11 @@ const setOpacityValues = chartConfig => {
 };
 
 // Adds default colors for every element with no color defined
-const addDefaultColorsToConfig = (chartConfig, paletteName, chartType) => {
+const addDefaultColorsToConfig = (
+  chartConfig: BaseChartConfig,
+  paletteName,
+  chartType: ChartTypes,
+) => {
   const newConfig = {};
 
   const palette = paletteName || getDefaultPaletteName(chartType, Object.keys(chartConfig).length);
@@ -77,8 +82,8 @@ const addDefaultColorsToConfig = (chartConfig, paletteName, chartType) => {
   return newConfig;
 };
 
-const getDefaultPaletteName = (chartType, numberRequired) => {
-  if (chartType === CHART_TYPES.COMPOSED) {
+const getDefaultPaletteName = (chartType: ChartTypes, numberRequired: number): string => {
+  if (chartType === ChartTypes.Composed) {
     return 'COMPOSED_CHART_COLOR_PALETTE';
   }
   return numberRequired > Object.keys(COLOR_PALETTES.CHART_COLOR_PALETTE).length
@@ -88,8 +93,8 @@ const getDefaultPaletteName = (chartType, numberRequired) => {
 
 // Used to layer line charts on top of bar charts for composed charts.
 const CHART_SORT_ORDER = {
-  [CHART_TYPES.LINE]: 0,
-  [CHART_TYPES.BAR]: 1,
+  [ChartTypes.Line]: 0,
+  [ChartTypes.Bar]: 1,
 };
 
 const defaultSort = (a, b) => {
@@ -97,7 +102,7 @@ const defaultSort = (a, b) => {
 };
 
 // Bad practice to rely on object ordering: https://stackoverflow.com/questions/9179680/is-it-acceptable-style-for-node-js-libraries-to-rely-on-object-key-order
-const sortChartConfigByLegendOrder = chartConfig => {
+const sortChartConfigByLegendOrder = (chartConfig: BaseChartConfig) => {
   return Object.entries(chartConfig)
     .sort(defaultSort)
     .sort(([, cfg1], [, cfg2]) => {
@@ -115,7 +120,11 @@ const sortChartConfigByLegendOrder = chartConfig => {
     );
 };
 
-const createDynamicConfig = (chartConfig, dynamicChartConfig, data) => {
+const createDynamicConfig = (
+  chartConfig: BaseChartConfig,
+  dynamicChartConfig: BaseChartConfig,
+  data,
+): BaseChartConfig => {
   // Just find keys. Doesn't include keys which end in _metadata.
   const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
   const keys = new Set(dataKeys);

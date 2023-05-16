@@ -18,6 +18,7 @@ export {
   GaugeChartConfig,
   LineChartConfig,
   PieChartConfig,
+  BaseChartConfig,
 } from './models-extra';
 
 export interface AccessRequest {

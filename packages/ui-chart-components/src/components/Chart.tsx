@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { SmallAlert } from '@tupaia/ui-components';
@@ -17,20 +16,7 @@ import {
   getIsChartData,
   getNoDataString,
 } from '../utils';
-import { CHART_TYPES } from '../constants';
-
-interface ChartProps {
-  viewContent: {
-    name?: string;
-    chartType?: string;
-    data?: any[];
-    chartConfig?: any;
-  };
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-  onItemClick?: (item: any) => void;
-  legendPosition?: string;
-}
+import { ChartTypes, ViewContent } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -83,16 +69,24 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = chartType => {
+const getChartComponent = (chartType: ChartTypes) => {
   switch (chartType) {
-    case CHART_TYPES.PIE:
+    case ChartTypes.Pie:
       return PieChart;
-    case CHART_TYPES.GAUGE:
+    case ChartTypes.Gauge:
       return GaugeChart;
     default:
       return CartesianChart;
   }
 };
+
+interface ChartProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+  legendPosition?: string;
+}
 
 export const Chart: React.FC<ChartProps> = ({
   viewContent,
@@ -103,11 +97,11 @@ export const Chart: React.FC<ChartProps> = ({
 }) => {
   const { chartType } = viewContent;
 
-  if (!Object.values(CHART_TYPES).includes(chartType)) {
+  if (!Object.values(ChartTypes).includes(chartType)) {
     return <UnknownChart />;
   }
 
-  if (!getIsChartData(viewContent)) {
+  if (!getIsChartData({ chartType: viewContent.chartType, data: viewContent.data })) {
     return (
       <NoData severity="info" variant="standard">
         {getNoDataString(viewContent)}
