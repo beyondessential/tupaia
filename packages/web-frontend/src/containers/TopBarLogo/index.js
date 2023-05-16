@@ -69,7 +69,8 @@ export const TopBarLogoComponent = ({ onClickLogo }) => {
   } = customLandingPageSettings;
 
   // If is a custom landing page, use the logo from the settings, else use the Tupaia logo
-  const logoSrc = isCustomLandingPage ? customLandingPageLogo : TUPAIA_LIGHT_LOGO_SRC;
+  const logoSrc =
+    isCustomLandingPage && customLandingPageLogo ? customLandingPageLogo : TUPAIA_LIGHT_LOGO_SRC;
   return (
     <LogoWrapper>
       <Logo onClick={onClickLogo} isCustomLandingPage={isCustomLandingPage}>

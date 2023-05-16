@@ -12,17 +12,18 @@ import { Button } from '@material-ui/core';
  * UserInfo is a component that displays the user's name if user is logged in, or a register and sign in button if not set
  */
 const UsernameContainer = styled.p`
-  padding-right: 5px;
+  padding-right: 1.5rem;
+  padding-right: ${({ isCustomLandingPage }) => (isCustomLandingPage ? '1.5rem' : '5px')};
   margin: 0;
   font-weight: ${({ isCustomLandingPage, theme }) =>
     isCustomLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
   font-size: 0.875rem;
-  text-transform: ${({ isCustomLandingPage }) => (isCustomLandingPage ? 'uppercase' : 'none')}; 
+  text-transform: ${({ isCustomLandingPage }) => (isCustomLandingPage ? 'uppercase' : 'none')};
 `;
 
 const RegisterButton = styled(Button)`
   text-transform: none;
-  margin-right: 0.5em; 
+  margin-right: 1.3rem;
 `;
 
 const SignInButton = styled(Button)`
@@ -31,7 +32,7 @@ const SignInButton = styled(Button)`
   border-radius: 18px;
   font-weight: ${props => props.theme.typography.fontWeightMedium};
   height: 30px;
-  margin-right: 0.5em;
+  margin-right: 1.7rem;
   padding-left: 1em;
   padding-right: 1em;
 `;

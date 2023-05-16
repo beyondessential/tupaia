@@ -25,7 +25,7 @@ const FooterContentWrapper = styled.div`
 
 const FooterHeader = styled(Typography)`
   font-size: 1.2em;
-  font-weight: ${props => props.theme.typography.fontWeightBold};
+  font-weight: 600;
   margin-bottom: 1em;
 `;
 
@@ -103,41 +103,48 @@ export const LandingPageFooter = () => {
     if (url.includes('http')) return url;
     return `https://${url}`;
   };
+
+  const hasAboutSection = longBio || externalLink;
+  const hasContactSection = phoneNumber || websiteUrl;
   return (
     <Footer>
       <FooterContentWrapper>
-        <FooterContentContainer>
-          <FooterHeader variant={footerHeaderVariant}>About {name}</FooterHeader>
-          <FooterBodyText>
-            {longBio}
-            {externalLink && (
-              <>
-                &nbsp;
-                <FooterLink href={parseUrl(externalLink)} target="_blank">
-                  Learn more
-                </FooterLink>
-              </>
-            )}
-          </FooterBodyText>
-        </FooterContentContainer>
-        <FooterContentContainer>
-          <FooterHeader variant={footerHeaderVariant}>Contact us</FooterHeader>
-          <FooterContactList>
-            {phoneNumber && (
-              <FooterContactListItem>
-                Ph: &nbsp;<FooterLink href={`tel:${phoneNumber}`}>{phoneNumber}</FooterLink>
-              </FooterContactListItem>
-            )}
-            {websiteUrl && (
-              <FooterContactListItem>
-                Website: &nbsp;
-                <FooterLink href={parseUrl(websiteUrl)} target="_blank">
-                  {websiteUrl}
-                </FooterLink>
-              </FooterContactListItem>
-            )}
-          </FooterContactList>
-        </FooterContentContainer>
+        {hasAboutSection && (
+          <FooterContentContainer>
+            <FooterHeader variant={footerHeaderVariant}>About {name}</FooterHeader>
+            <FooterBodyText>
+              {longBio}
+              {externalLink && (
+                <>
+                  &nbsp;
+                  <FooterLink href={parseUrl(externalLink)} target="_blank">
+                    Learn more
+                  </FooterLink>
+                </>
+              )}
+            </FooterBodyText>
+          </FooterContentContainer>
+        )}
+        {hasContactSection && (
+          <FooterContentContainer>
+            <FooterHeader variant={footerHeaderVariant}>Contact us</FooterHeader>
+            <FooterContactList>
+              {phoneNumber && (
+                <FooterContactListItem>
+                  Ph: &nbsp;<FooterLink href={`tel:${phoneNumber}`}>{phoneNumber}</FooterLink>
+                </FooterContactListItem>
+              )}
+              {websiteUrl && (
+                <FooterContactListItem>
+                  Website: &nbsp;
+                  <FooterLink href={parseUrl(websiteUrl)} target="_blank">
+                    {websiteUrl}
+                  </FooterLink>
+                </FooterContactListItem>
+              )}
+            </FooterContactList>
+          </FooterContentContainer>
+        )}
       </FooterContentWrapper>
       <FooterPoweredByWrapper>
         <FooterBodyText>
