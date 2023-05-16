@@ -1,4 +1,4 @@
-# E2e Tests
+# @tupaia/e2e
 
 [Cypress](https://www.cypress.io/) is used as the end-to-end test framework. This is the root folder of the test code and its configuration.
 
