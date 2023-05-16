@@ -3,8 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, ReactElement } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
@@ -25,17 +24,26 @@ const Heading = styled(Typography)`
   margin-bottom: 0.8rem;
 `;
 
-export const ConfirmDeleteModal = React.memo(
+export const ConfirmDeleteModal: FC<{
+  isOpen?: boolean;
+  title?: string;
+  message?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  description?: string;
+  cancelButtonText?: string;
+  confirmButtonText?: string;
+}> = React.memo(
   ({
-    isOpen,
-    title,
-    message,
+    isOpen = false,
+    title = 'Delete Record',
+    message = '',
     onConfirm,
     onCancel,
-    description,
-    cancelButtonText,
-    confirmButtonText,
-  }) => (
+    description = `Once deleted this can't be undone.`,
+    cancelButtonText = 'Cancel',
+    confirmButtonText = 'Yes, Delete',
+  }): ReactElement => (
     <Dialog onClose={onCancel} open={isOpen}>
       <DialogHeader onClose={onCancel} title={title} color="error" />
       <DialogContent>
@@ -52,23 +60,3 @@ export const ConfirmDeleteModal = React.memo(
     </Dialog>
   ),
 );
-
-ConfirmDeleteModal.propTypes = {
-  onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool,
-  title: PropTypes.string,
-  message: PropTypes.string,
-  description: PropTypes.string,
-  cancelButtonText: PropTypes.string,
-  confirmButtonText: PropTypes.string,
-};
-
-ConfirmDeleteModal.defaultProps = {
-  isOpen: false,
-  title: 'Delete Record',
-  message: '',
-  description: `Once deleted this can't be undone.`,
-  cancelButtonText: 'Cancel',
-  confirmButtonText: 'Yes, Delete',
-};

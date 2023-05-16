@@ -2,8 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useRef } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useRef, ElementType, FC } from 'react';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
@@ -29,9 +28,25 @@ const ButtonGroup = styled(MuiButtonGroup)`
   margin-right: 1rem;
 `;
 
-export const SplitButton = ({ options, selectedId, setSelectedId, onClick, ButtonComponent }) => {
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef(null);
+type Option = {
+  id: string;
+  label: string;
+};
+export const SplitButton: FC<{
+  options: Option[];
+  selectedId?: string | null;
+  setSelectedId: (id: string) => void;
+  onClick?: (id: string | null) => void;
+  ButtonComponent?: ElementType;
+}> = ({
+  options,
+  selectedId = null,
+  setSelectedId,
+  onClick = () => {},
+  ButtonComponent = DefaultButton,
+}) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
 
   const selectedOption = options.find(o => o.id === selectedId);
 
@@ -39,7 +54,7 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
     onClick(selectedId);
   };
 
-  const handleMenuItemClick = (event, id) => {
+  const handleMenuItemClick = (id: string) => {
     setSelectedId(id);
     setOpen(false);
   };
@@ -48,9 +63,9 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
     setOpen(prevOpen => !prevOpen);
   };
 
-  const handleClose = event => {
+  const handleClose = (event: React.MouseEvent<Document>) => {
     // if the user clicks away, but their click still lands on some part of the component, keep open
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    if (anchorRef.current && anchorRef.current.contains(event.target as Node)) {
       return;
     }
 
@@ -61,7 +76,7 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
     <Grid item xs={12}>
       <ButtonGroup ref={anchorRef}>
         <ButtonComponent onClick={handleClick} style={{ minWidth: '10rem' }}>
-          {selectedOption.label}
+          {selectedOption && selectedOption.label}
         </ButtonComponent>
         <ButtonComponent style={{ minWidth: 'auto' }} onClick={handleToggle}>
           <KeyboardArrowDown />
@@ -83,7 +98,7 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
                     <MenuItem
                       key={id}
                       selected={id === selectedId}
-                      onClick={event => handleMenuItemClick(event, id)}
+                      onClick={() => handleMenuItemClick(id)}
                     >
                       {label}
                     </MenuItem>
@@ -96,24 +111,4 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
       </Popper>
     </Grid>
   );
-};
-
-SplitButton.propTypes = {
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      label: PropTypes.string,
-    }),
-  ).isRequired,
-  selectedId: PropTypes.string,
-  setSelectedId: PropTypes.func,
-  onClick: PropTypes.func,
-  ButtonComponent: PropTypes.any,
-};
-
-SplitButton.defaultProps = {
-  ButtonComponent: DefaultButton,
-  selectedId: null,
-  setSelectedId: null,
-  onClick: () => {},
 };

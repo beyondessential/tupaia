@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { ElementType, FC, ReactElement, forwardRef, useState } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiButton from '@material-ui/core/Button';
 import Popper from '@material-ui/core/Popper';
@@ -20,23 +19,15 @@ const StyledListItem = styled(MuiListItem)`
   line-height: 1rem;
   padding: 0.5rem 1.25rem;
   color: ${props => props.theme.palette.text.secondary};
-
   &:hover {
     color: ${props => props.theme.palette.text.primary};
     background: none;
   }
 `;
 
-export const ProfileButtonItem = ({ button, ...props }) => (
-  <StyledListItem button={button} component={button ? null : RouterLink} {...props} />
-);
-
-ProfileButtonItem.propTypes = {
-  button: PropTypes.bool,
-};
-
-ProfileButtonItem.defaultProps = {
-  button: false,
+// There is an issue with the types for the component prop on ListItem, which the usual workarounds don't fix, so for now we are just putting the types as 'any'
+export const ProfileButtonItem: FC<any> = ({ button = false, ...props }): ReactElement => {
+  return <StyledListItem {...props} button={button} component={button ? null : RouterLink} />;
 };
 
 const Paper = styled.div`
@@ -100,8 +91,19 @@ const StyledButton = styled(MuiButton)`
   }
 `;
 
-export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+interface UserProps {
+  name: string;
+  firstName?: string;
+  profileImage?: string;
+  email?: string;
+}
+
+export const ProfileButton: FC<{
+  user: UserProps;
+  MenuOptions: ElementType;
+  className?: string;
+}> = React.memo(({ user, MenuOptions, className = '' }) => {
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
 
   const open = Boolean(anchorEl);
   const userInitial = user.name.substring(0, 1);
@@ -114,7 +116,7 @@ export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
           onClick={event => setAnchorEl(anchorEl ? null : event.currentTarget)}
           className={className}
           endIcon={
-            <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+            <StyledAvatar src={user.profileImage} initial={userInitial}>
               {userInitial}
             </StyledAvatar>
           }
@@ -124,7 +126,7 @@ export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
         <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
           <Paper>
             <Header>
-              <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+              <StyledAvatar src={user.profileImage} initial={userInitial}>
                 {userInitial}
               </StyledAvatar>
               <Details>
@@ -141,18 +143,3 @@ export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
     </ClickAwayListener>
   );
 });
-
-ProfileButton.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
-  MenuOptions: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-  className: PropTypes.string,
-};
-
-ProfileButton.defaultProps = {
-  className: null,
-};
