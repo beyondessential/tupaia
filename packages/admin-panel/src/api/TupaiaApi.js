@@ -17,17 +17,13 @@ const isJsonResponse = response => {
   return contentType.startsWith('application/json');
 };
 
-const {
-  REACT_APP_API_URL = 'http://localhost:8070/v1',
-  REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-} = process.env;
+const { REACT_APP_API_URL = 'http://localhost:8070/v1' } = process.env;
 
 export class TupaiaApi {
   constructor(config) {
     this.store = null; // Redux store for keeping state, will be injected after creation
     // set config
     this.apiUrl = config?.apiUrl || REACT_APP_API_URL;
-    this.clientBasicAuthHeader = config?.basicAuthHeader || REACT_APP_CLIENT_BASIC_AUTH_HEADER;
   }
 
   injectReduxStore(store) {
@@ -39,12 +35,7 @@ export class TupaiaApi {
   }
 
   async login(loginCredentials) {
-    const { body: authenticationDetails } = await this.post(
-      'login',
-      null,
-      loginCredentials,
-      this.clientBasicAuthHeader,
-    );
+    const { body: authenticationDetails } = await this.post('login', null, loginCredentials);
     return authenticationDetails;
   }
 
