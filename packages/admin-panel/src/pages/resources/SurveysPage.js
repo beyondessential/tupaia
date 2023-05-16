@@ -39,8 +39,7 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'name',
       optionValueKey: 'name',
       allowMultipleValues: true,
-      secondaryLabel:
-        'Select the countries this survey should be available in, or leave blank for all',
+      secondaryLabel: 'Select the countries this survey should be available in',
     },
   },
   permission_group_id: {

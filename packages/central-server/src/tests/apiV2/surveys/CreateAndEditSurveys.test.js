@@ -20,6 +20,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
+import path from 'path';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
@@ -40,7 +41,7 @@ const EXISTING_TEST_SURVEY_CODE_1 = 'existing_survey_import_1_test';
 const BASIC_SURVEY_CREATE_PAYLOAD = {
   can_repeat: false,
   requires_approval: false,
-  service_type: 'tupaia',
+  'data_group.service_type': 'tupaia',
   'data_group.config': {},
 };
 
@@ -111,7 +112,7 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 1',
           },
@@ -126,10 +127,10 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 2',
-            country_ids: [kiribatiCountry.id],
+            countryNames: [kiribatiCountry.name],
           },
         });
 
@@ -148,7 +149,7 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 3',
           },
@@ -163,7 +164,7 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 4',
           },
@@ -186,7 +187,7 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(policy);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 5',
           },
@@ -207,10 +208,10 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(policy);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 6',
-            country_ids: [kiribatiCountry.id],
+            countryNames: [kiribatiCountry.name],
           },
         });
 
@@ -229,7 +230,7 @@ describe('Create and Edit Surveys', () => {
         await app.grantAccess(policy);
 
         const response = await app.multipartPut({
-          endpoint: `survey/${survey1_id}`,
+          endpoint: `surveys/${survey1_id}`,
           payload: {
             name: 'Any change will do 7',
           },
@@ -249,8 +250,8 @@ describe('Create and Edit Surveys', () => {
             ...BASIC_SURVEY_CREATE_PAYLOAD,
             name: 'NEW_TEST_SURVEY_1', // must be unique
             code: 'NEW_TEST_SURVEY_1', // must be unique
-            country_ids: [kiribatiCountry.id],
-            permission_group_id: adminPermissionGroup.id,
+            countryNames: [kiribatiCountry.name],
+            'permission_group.name': adminPermissionGroup.name,
           },
         });
 
@@ -268,8 +269,8 @@ describe('Create and Edit Surveys', () => {
             ...BASIC_SURVEY_CREATE_PAYLOAD,
             name: 'NEW_TEST_SURVEY_2', // must be unique
             code: 'NEW_TEST_SURVEY_2', // must be unique
-            country_ids: [kiribatiCountry.id],
-            permission_group_id: adminPermissionGroup.id,
+            countryNames: [kiribatiCountry.name],
+            'permission_group.name': adminPermissionGroup.name,
           },
         });
 
@@ -295,8 +296,8 @@ describe('Create and Edit Surveys', () => {
             ...BASIC_SURVEY_CREATE_PAYLOAD,
             name: 'NEW_TEST_SURVEY_3', // must be unique
             code: 'NEW_TEST_SURVEY_3', // must be unique
-            country_ids: [kiribatiCountry.id],
-            permission_group_id: adminPermissionGroup.id,
+            countryNames: [kiribatiCountry.name],
+            'permission_group.name': adminPermissionGroup.name,
           },
         });
 
@@ -313,20 +314,20 @@ describe('Create and Edit Surveys', () => {
         endpoint: `surveys`,
         payload: {
           ...BASIC_SURVEY_CREATE_PAYLOAD,
-          name: 'NEW_TEST_SURVEY_4', // must be unique
-          code: 'NEW_TEST_SURVEY_4', // must be unique
-          country_ids: [kiribatiCountry.id],
-          permission_group_id: adminPermissionGroup.id,
+          name: 'new_survey_import_1_test', // must be unique
+          code: 'new_survey_import_1_test', // must be unique
+          countryNames: [kiribatiCountry.name],
+          'permission_group.name': adminPermissionGroup.name,
         },
         filesByMultipartKey: {
-          surveyQuestions: `${TEST_DATA_FOLDER}/surveys/new_survey_import_1_test.xlsx`,
+          surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importANewSurvey.xlsx`),
         },
       });
       const { statusCode } = response;
 
       expect(statusCode).to.equal(200);
 
-      const survey = await models.survey.findOne({ code: 'NEW_TEST_SURVEY_4' });
+      const survey = await models.survey.findOne({ code: 'new_survey_import_1_test' });
       const surveyScreenComponents = await survey.surveyScreenComponents();
       expect(surveyScreenComponents.length).to.equal(2);
     });
@@ -335,7 +336,7 @@ describe('Create and Edit Surveys', () => {
       await app.grantAccess(DEFAULT_POLICY);
 
       const response = await app.multipartPut({
-        endpoint: `survey/${survey1_id}`,
+        endpoint: `surveys/${survey1_id}`,
         payload: {
           name: 'Any change will do 1',
           period_granularity: 'weekly',

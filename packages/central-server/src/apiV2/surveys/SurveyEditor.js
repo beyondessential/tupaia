@@ -22,12 +22,19 @@ const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
 };
 
 const updateOrCreateDataGroup = async (models, { surveyCode, serviceType, dhisInstanceCode }) => {
-  const dataGroup = await models.dataGroup.findOrCreate(
-    {
+  let dataGroup = await models.dataGroup.findOne({ code: surveyCode });
+  if (dataGroup !== null) {
+    if (serviceType) dataGroup.service_type = serviceType;
+    if (dhisInstanceCode) {
+      dataGroup.config = { dhisInstanceCode };
+    }
+  } else {
+    dataGroup = await models.dataGroup.create({
       code: surveyCode,
-    },
-    { service_type: serviceType, config: { dhisInstanceCode } },
-  );
+      service_type: serviceType,
+      config: { dhisInstanceCode },
+    });
+  }
 
   dataGroup.sanitizeConfig();
   await dataGroup.save();
@@ -194,8 +201,6 @@ export class SurveyEditor {
     if (Object.keys(fieldsToForceUpdate).length > 0) {
       await transactingModels.survey.update({ id: survey.id }, fieldsToForceUpdate);
     }
-
-    console.log('surveyQuestions', surveyQuestions);
 
     // Import questions
     if (surveyQuestions) {

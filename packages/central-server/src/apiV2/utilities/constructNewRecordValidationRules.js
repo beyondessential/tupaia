@@ -310,6 +310,9 @@ export const constructForSingle = (models, recordType) => {
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
         countryNames: [
           async countryNames => {
+            if (countryNames.length < 1) {
+              throw new Error('Must specify at least one country');
+            }
             const countryEntities = await models.country.find({
               name: countryNames,
             });
@@ -329,7 +332,7 @@ export const constructForSingle = (models, recordType) => {
         ],
         requires_approval: [hasContent, isBoolean],
         // data_group_id -> generated at create time, needs following additional fields:
-        'data_group.service_type': [constructIsEmptyOr(constructIsOneOf(['dhis', 'tupaia']))],
+        'data_group.service_type': [constructIsOneOf(['dhis', 'tupaia'])],
         'data_group.config': [hasContent],
         // also survey questions comes in as a file
       };
