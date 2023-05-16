@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import MuiDialog from '@material-ui/core/Dialog';
+import React, { FC, ReactElement, ReactNode } from 'react';
+import MuiDialog, { DialogProps as MuiDialogProps } from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
@@ -27,15 +26,15 @@ const StyledDialog = styled(MuiDialog)`
   }
 `;
 
-export const Dialog = ({ children, ...props }) => (
+interface DialogProps extends MuiDialogProps {
+  children: ReactNode;
+}
+
+export const Dialog: FC<DialogProps> = ({ children, ...props }): ReactElement => (
   <StyledDialog fullWidth maxWidth="sm" {...props}>
     {children}
   </StyledDialog>
 );
-
-Dialog.propTypes = {
-  children: PropTypes.any.isRequired,
-};
 
 const Header = styled(FlexStart)`
   position: relative;
@@ -59,7 +58,19 @@ const CloseButton = styled(IconButton)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const DialogHeader = ({ title, onClose, color, children }) => (
+export const DialogHeader: FC<{
+  title: string;
+  onClose: () => void;
+  color?:
+    | 'inherit'
+    | 'initial'
+    | 'textPrimary'
+    | 'primary'
+    | 'secondary'
+    | 'textSecondary'
+    | 'error';
+  children?: ReactNode;
+}> = ({ title, onClose, color = 'textPrimary', children }) => (
   <Header>
     <DialogTitle color={color} variant="h3">
       {title}
@@ -70,18 +81,6 @@ export const DialogHeader = ({ title, onClose, color, children }) => (
     </CloseButton>
   </Header>
 );
-
-DialogHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  color: PropTypes.string,
-  children: PropTypes.any,
-};
-
-DialogHeader.defaultProps = {
-  color: 'textPrimary',
-  children: null,
-};
 
 export const DialogContent = styled.div`
   padding: 2.5rem 1.875rem;

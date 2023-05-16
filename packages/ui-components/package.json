@@ -52,7 +52,6 @@
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
     "@storybook/react": "^6.3.9",
-    "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",

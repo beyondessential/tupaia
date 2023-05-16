@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC, ReactElement } from 'react';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
-import PropTypes from 'prop-types';
 import Fade from '@material-ui/core/Fade';
-import MuiAlert from '@material-ui/lab/Alert';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 const StyledAlert = styled(MuiAlert)`
   position: relative;
@@ -35,7 +34,20 @@ const StyledAlert = styled(MuiAlert)`
   }
 `;
 
-export const Toast = ({ variant, severity, timeout, iconMapping, ...props }) => {
+export const Toast: FC<
+  AlertProps & {
+    timeout?: number;
+  }
+> = ({
+  variant = 'filled',
+  severity = 'success',
+  timeout = 0,
+  iconMapping = {
+    success: <CheckCircle />,
+    error: <Warning />,
+  },
+  ...props
+}): ReactElement => {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
@@ -59,21 +71,4 @@ export const Toast = ({ variant, severity, timeout, iconMapping, ...props }) => 
       />
     </Fade>
   );
-};
-
-Toast.propTypes = {
-  severity: PropTypes.string,
-  variant: PropTypes.string,
-  timeout: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
-  iconMapping: PropTypes.object,
-};
-
-Toast.defaultProps = {
-  severity: 'success',
-  variant: 'filled',
-  timeout: false,
-  iconMapping: {
-    success: <CheckCircle />,
-    error: <Warning />,
-  },
 };

@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback } from 'react';
-import MuiTabs from '@material-ui/core/Tabs';
+import React, { useState, useCallback, FC, ReactElement } from 'react';
+import MuiTabs, { TabsProps } from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 
@@ -17,10 +17,10 @@ export const StyledTabs = styled(MuiTabs)`
   }
 `;
 
-export const Tabs = props => {
+export const Tabs: FC<TabsProps> = (props): ReactElement => {
   const [value, setValue] = useState(0);
   const handleChange = useCallback(
-    (event, newValue) => {
+    (event: any, newValue: any) => {
       setValue(newValue);
     },
     [setValue],

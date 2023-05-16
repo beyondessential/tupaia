@@ -4,14 +4,20 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiTooltip from '@material-ui/core/Tooltip';
+import MuiTooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 
 // extend popper styles as a work around for custom styling
 // https://github.com/mui-org/material-ui/issues/11467
-export const Tooltip = styled(({ placement, ...props }) => (
-  <MuiTooltip classes={{ popper: props.className }} placement={placement} arrow {...props} />
+
+// For placement options @see https://material-ui.com/api/tooltip
+export const Tooltip = styled((props: TooltipProps) => (
+  <MuiTooltip
+    {...props}
+    classes={{ popper: props.className }}
+    placement={props.placement || 'top'}
+    arrow
+  />
 ))`
   & .MuiTooltip-tooltip {
     background: rgba(0, 0, 0, 0.7);
@@ -27,12 +33,3 @@ export const Tooltip = styled(({ placement, ...props }) => (
     }
   }
 `;
-
-Tooltip.propTypes = {
-  placement: PropTypes.string,
-};
-
-// For placement options @see https://material-ui.com/api/tooltip
-Tooltip.defaultProps = {
-  placement: 'top',
-};
