@@ -21,6 +21,10 @@ export async function createApp() {
   // Uncomment to log out incoming requests
   // app.use(morgan('dev'));
 
+  app.get('/healthcheck', (req, res) => {
+    res.status(200).send('OK').end();
+  });
+
   app.use(compression());
 
   // Allow all origins

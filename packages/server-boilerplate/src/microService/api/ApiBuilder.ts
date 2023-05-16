@@ -50,6 +50,13 @@ export class ApiBuilder {
     }
 
     /**
+     * Healthcheck
+     */
+    this.app.get('/healthcheck', (req, res) => {
+      res.status(200).send('OK').end();
+    });
+
+    /**
      * Add middleware
      */
     this.app.use(

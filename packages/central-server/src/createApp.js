@@ -18,6 +18,10 @@ import { apiV2 } from './apiV2';
 export function createApp(database, models) {
   const app = express();
 
+  app.get('/healthcheck', (req, res) => {
+    res.status(200).send('OK').end();
+  });
+
   /**
    * Add middleware
    */
