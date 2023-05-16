@@ -15,7 +15,8 @@
     "strictNullChecks": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "types/react-table-config.d.ts"
   ],
   "exclude": [
     "src/__tests__",
