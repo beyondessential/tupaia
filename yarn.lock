@@ -5803,6 +5803,7 @@ __metadata:
     "@tupaia/utils": 1.0.0
     "@types/react-dom": ^18.2.4
     "@types/react-router-dom": ^5.3.3
+    "@types/react-table": ^7.7.14
     "@types/styled-components": ^5.1.26
     ace-builds: ^1.4.13
     date-fns: ^2.12.0
@@ -6822,6 +6823,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: f1ae43654935f5991008ac1f7ed7ceaee6d18bccf33901902833fc6b302c2aed5b19f2def86825e3cebde9be94354dfbdca525a16824523a8f0304225a3ef26f
+  languageName: node
+  linkType: hard
+
+"@types/react-table@npm:^7.7.14":
+  version: 7.7.14
+  resolution: "@types/react-table@npm:7.7.14"
+  dependencies:
+    "@types/react": "*"
+  checksum: 238047beca9abecc4b3e1e377b823b492b1a00d011b8456012bbcbd2682d5a7e0c0b1cca6384ccc41e724156e991d35e5725a5a3c4b01ff7bbaf095643569da9
   languageName: node
   linkType: hard
 
