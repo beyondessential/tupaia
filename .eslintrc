@@ -208,7 +208,9 @@
       ],
       "rules": {
         "import/no-extraneous-dependencies": "off",
-        "react/prop-types": "off"
+        "react/prop-types": "off",
+        "import/no-unresolved": 0, // Turn off linting error for imports
+        "import/extensions": 0 // Turn off linting error for imports
       }
     },
     {
