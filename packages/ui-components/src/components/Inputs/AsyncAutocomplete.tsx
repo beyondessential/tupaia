@@ -3,17 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import throttle from 'lodash.throttle';
-import PropTypes from 'prop-types';
-import { Autocomplete } from './Autocomplete';
+import { Autocomplete, BaseAutocompleteProps } from './Autocomplete';
+
+type FetchOptions = (query: string) => Promise<any[]>;
 
 /**
  * Custom hook to fetch autocomplete options given a callback function
  */
-const useOptions = (fetchOptions, query) => {
-  const [options, setOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+const useOptions = (fetchOptions: FetchOptions, query: string): [any[], boolean] => {
+  const [options, setOptions] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let active = true;
@@ -39,21 +41,25 @@ const useOptions = (fetchOptions, query) => {
 /**
  * Async Autocomplete. Gets options from a resource
  */
+interface AsyncAutocompleteProps extends BaseAutocompleteProps {
+  fetchOptions: FetchOptions;
+}
+
 export const AsyncAutocomplete = ({
   fetchOptions,
   id,
-  label,
+  label = '',
   value,
   onChange,
   getOptionSelected,
   getOptionLabel,
-  placeholder,
-  error,
-  disabled,
-  required,
+  placeholder = '',
+  error = false,
+  disabled = false,
+  required = false,
   helperText,
   muiProps,
-}) => {
+}: AsyncAutocompleteProps) => {
   const [query, setQuery] = useState('');
   const [options, loading] = useOptions(fetchOptions, query);
 
@@ -78,35 +84,4 @@ export const AsyncAutocomplete = ({
       muiProps={muiProps}
     />
   );
-};
-
-AsyncAutocomplete.propTypes = {
-  fetchOptions: PropTypes.func.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.any,
-  id: PropTypes.string,
-  required: PropTypes.bool,
-  error: PropTypes.bool,
-  disabled: PropTypes.bool,
-  helperText: PropTypes.string,
-  onChange: PropTypes.func,
-  getOptionSelected: PropTypes.func,
-  getOptionLabel: PropTypes.func,
-  placeholder: PropTypes.string,
-  muiProps: PropTypes.object,
-};
-
-AsyncAutocomplete.defaultProps = {
-  label: '',
-  getOptionSelected: undefined,
-  getOptionLabel: undefined,
-  placeholder: '',
-  required: false,
-  disabled: false,
-  error: false,
-  value: undefined,
-  onChange: undefined,
-  muiProps: undefined,
-  id: undefined,
-  helperText: undefined,
 };
