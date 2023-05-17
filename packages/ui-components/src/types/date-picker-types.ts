@@ -1,4 +1,7 @@
 import { Moment } from 'moment';
+import { GRANULARITIES } from '@tupaia/utils';
+
+type ValueOf<T> = T[keyof T];
 
 export type BaseDatePickerProps = {
   momentDateValue: Moment;
@@ -7,10 +10,18 @@ export type BaseDatePickerProps = {
   maxMomentDate: Moment;
 };
 
-export type YearPickerProps = BaseDatePickerProps & {
-  isIsoYear: boolean;
+export type YearPickerProps = Pick<
+  BaseDatePickerProps,
+  'maxMomentDate' | 'minMomentDate' | 'momentDateValue'
+> & {
+  isIsoYear?: boolean;
+  onChange: (date: Moment | number) => void;
 };
 
 export type WeekPickerProps = BaseDatePickerProps & {
   weekDisplayFormat?: string;
 };
+
+export type GranularityType = ValueOf<typeof GRANULARITIES>;
+
+export type ModifierType = 'startOfWeek' | 'endOfWeek' | undefined;

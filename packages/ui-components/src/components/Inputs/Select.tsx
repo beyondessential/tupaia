@@ -62,7 +62,7 @@ type SelectProps = SelectFieldProps & {
 
 export const Select = ({
   value = '',
-  onChange = null,
+  onChange,
   options = [],
   showPlaceholder = true,
   placeholder = 'Please select',

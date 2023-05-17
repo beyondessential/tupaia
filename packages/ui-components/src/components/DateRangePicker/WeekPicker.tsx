@@ -13,7 +13,7 @@ import {
 } from '@tupaia/utils';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { WeekPickerProps } from '../../types/date-picker-types';
+import { ModifierType, WeekPickerProps } from '../../types/date-picker-types';
 
 const useBoundaryWeekOrDefault = (currentDate: Moment, boundaryDate: Moment, defaultWeek: number) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;
@@ -26,15 +26,12 @@ export const WeekPicker = ({
   onChange,
 }: WeekPickerProps) => {
   // need to cast string of modifier to type
-  const {
-    pickerFormat,
-    modifier,
-  }: {
-    pickerFormat: string;
-    modifier?: any; // TODO: TS add type for modifier somehow
-  } = weekDisplayFormat
+  const { pickerFormat, modifier } = (weekDisplayFormat
     ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
-    : GRANULARITY_CONFIG[GRANULARITIES.WEEK];
+    : GRANULARITY_CONFIG[GRANULARITIES.WEEK]) as {
+    pickerFormat: string;
+    modifier?: ModifierType;
+  };
 
   const date = momentDateValue.isoWeekday(1);
 
