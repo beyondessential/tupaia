@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';
 import Typography, { TypographyProps } from '@material-ui/core/Typography';
@@ -37,7 +37,7 @@ const HeaderLabel = styled(Typography)<TypographyProps>`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const CardHeader: FC<{
+interface CardHeaderProps {
   title: string | ReactNode;
   label?: string | ReactNode;
   color?:
@@ -48,7 +48,9 @@ export const CardHeader: FC<{
     | 'textPrimary'
     | 'textSecondary'
     | 'error';
-}> = ({ title, label, color = 'initial' }): ReactElement => (
+}
+
+export const CardHeader = ({ title, label, color = 'initial' }: CardHeaderProps) => (
   <StyledDiv>
     <HeaderTitle color={color}>{title}</HeaderTitle>
     <HeaderLabel color={color}>{label}</HeaderLabel>

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect, FC, ReactElement } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
 import Fade from '@material-ui/core/Fade';
@@ -34,11 +34,11 @@ const StyledAlert = styled(MuiAlert)`
   }
 `;
 
-export const Toast: FC<
-  AlertProps & {
-    timeout?: number;
-  }
-> = ({
+interface ToastProps extends AlertProps {
+  timeout?: number;
+}
+
+export const Toast = ({
   variant = 'filled',
   severity = 'success',
   timeout = 0,
@@ -47,7 +47,7 @@ export const Toast: FC<
     error: <Warning />,
   },
   ...props
-}): ReactElement => {
+}: ToastProps) => {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, ReactElement } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 
@@ -40,11 +40,13 @@ const LegendValue = styled.span`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const BarMeter: FC<{
+interface BarMeterProps {
   value: number;
   total: number;
   legend?: string;
-}> = ({ value, total, legend = 'Value' }): ReactElement => (
+}
+
+export const BarMeter = ({ value, total, legend = 'Value' }: BarMeterProps) => (
   <div>
     <Legend>
       {legend}: <LegendValue>{`${value}/${total}`}</LegendValue>

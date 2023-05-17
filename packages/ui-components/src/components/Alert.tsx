@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, ReactElement } from 'react';
+import React from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
-import PropTypes from 'prop-types';
 
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
@@ -27,7 +26,7 @@ const StyledAlert = styled(MuiAlert)`
   }
 `;
 
-export const Alert: FC<AlertProps> = ({
+export const Alert = ({
   variant = 'filled',
   severity = 'success',
   iconMapping = {
@@ -36,7 +35,7 @@ export const Alert: FC<AlertProps> = ({
     warning: <Warning />,
   },
   ...props
-}): ReactElement => (
+}: AlertProps) => (
   <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
 );
 
@@ -53,15 +52,17 @@ const StyledSmallAlert = styled(StyledAlert)`
   }
 `;
 
-export const SmallAlert: FC<AlertProps> = ({
+export const SmallAlert = ({
   variant = 'filled',
   severity = 'success',
+
   iconMapping = {
     success: <CheckCircle fontSize="inherit" />,
     error: <Warning fontSize="inherit" />,
     warning: <Warning fontSize="inherit" />,
   },
+
   ...props
-}): ReactElement => (
+}: AlertProps) => (
   <StyledSmallAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
 );

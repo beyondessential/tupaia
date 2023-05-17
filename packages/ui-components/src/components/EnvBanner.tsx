@@ -24,9 +24,13 @@ const StyledBanner = styled(FlexCenter)<{
   }
 `;
 
-export const EnvBanner: FC<{
-  color?: CSSStyleDeclaration['color'];
-}> = ({ color = '#f39c12' }) => {
+export const EnvBanner = (
+  {
+    color = '#f39c12'
+  }: {
+    color?: CSSStyleDeclaration['color'];
+  }
+) => {
   const deploymentName = process.env.REACT_APP_DEPLOYMENT_NAME;
 
   if (

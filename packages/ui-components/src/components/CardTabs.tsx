@@ -8,8 +8,8 @@ import React, {
   createContext,
   useContext,
   useCallback,
-  FC,
   ReactNode,
+  ElementType,
   ReactElement,
 } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
@@ -27,9 +27,7 @@ const TabsContext = createContext<TabContextProps | null>(null);
  * CardTabs are composable using `CardTabs`, `TabList`, `Tab`, `TabPanels` and `TabPanel`.
  * An alternative `DataTabs` api can be used to pass in labels and panels in an array.
  */
-export const CardTabs: FC<{
-  children: ReactNode[];
-}> = ({ children }): ReactElement => {
+export const CardTabs = ({ children }: { children: ReactNode[] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>{children}</TabsContext.Provider>
@@ -42,10 +40,13 @@ const StyledTabs = styled(MuiTabs)`
   }
 `;
 
-export const CardTabList: FC<{
+export const CardTabList = ({
+  children,
+  Context = TabsContext,
+}: {
   children: ReactNode;
   Context?: typeof TabsContext;
-}> = ({ children, Context = TabsContext }): ReactElement => {
+}) => {
   const { activeIndex, setActiveIndex } = useContext(Context)!;
   const handleChange = useCallback(
     (event: any, newValue: number) => {
@@ -60,9 +61,7 @@ export const CardTabList: FC<{
   );
 };
 
-export const CardTab = styled(
-  ({ children, ...props }): ReactElement => <MuiTab {...props} label={children} />,
-)`
+export const CardTab = styled(({ children, ...props }) => <MuiTab {...props} label={children} />)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   background: ${props => props.theme.palette.grey['100']};
@@ -81,10 +80,13 @@ export const CardTab = styled(
   }
 `;
 
-export const CardTabPanels: FC<{
+export const CardTabPanels = ({
+  children,
+  Context = TabsContext,
+}: {
   children: ReactElement[];
   Context?: typeof TabsContext;
-}> = ({ children, Context = TabsContext }): ReactElement => {
+}) => {
   const { activeIndex } = useContext(Context)!;
   return children[activeIndex];
 };
@@ -96,9 +98,7 @@ export const CardTabPanel = styled.div`
 /*
  * CardTabs with an array api. Each entry in 'data' should contain 'label' and 'content' fields.
  */
-export const DataCardTabs: FC<{
-  data: { label: string; content: ReactNode }[];
-}> = ({ data }): ReactElement => {
+export const DataCardTabs = ({ data }: { data: { label: string; content: ReactNode }[] }) => {
   return (
     <CardTabs>
       <CardTabList>

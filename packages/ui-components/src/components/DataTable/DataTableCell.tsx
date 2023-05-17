@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { FC, ReactElement } from 'react';
+import React from 'react';
 import { TableCell, TableCellProps } from '@material-ui/core';
 
 const getDataType = (value: any): string => (value === null ? 'null' : typeof value);
@@ -21,11 +21,12 @@ const formatValue = (value: any): string => {
   }
 };
 
-export const DataTableCell: FC<
-  TableCellProps & {
-    value: number | string | boolean | Object | Function;
-  }
-> = ({ value, ...props }): ReactElement => {
+export const DataTableCell = ({
+  value,
+  ...props
+}: TableCellProps & {
+  value: number | string | boolean | Object | Function;
+}) => {
   return (
     <TableCell {...props} className={`data-type-${getDataType(value)}`}>
       {formatValue(value)}

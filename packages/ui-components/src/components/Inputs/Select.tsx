@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback, FC, ReactElement } from 'react';
+import React, { useState, useCallback } from 'react';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import {
   SelectProps as MuiSelectProps,
@@ -35,7 +35,7 @@ type SelectFieldProps = TextFieldProps & {
   SelectProps?: MuiSelectProps;
 };
 
-export const SelectField: FC<SelectFieldProps> = ({ SelectProps = {}, ...props }): ReactElement => (
+export const SelectField = ({ SelectProps = {}, ...props }: SelectFieldProps) => (
   <StyledTextField
     SelectProps={{
       IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
@@ -60,7 +60,7 @@ type SelectProps = SelectFieldProps & {
   showPlaceholder?: boolean;
 };
 
-export const Select: FC<SelectProps> = ({
+export const Select = ({
   value = '',
   onChange = null,
   options = [],
@@ -68,7 +68,7 @@ export const Select: FC<SelectProps> = ({
   placeholder = 'Please select',
   defaultValue = '',
   ...props
-}): ReactElement => {
+}: SelectProps) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
@@ -106,14 +106,14 @@ export const Select: FC<SelectProps> = ({
   );
 };
 
-export const NativeSelect: FC<SelectProps> = ({
+export const NativeSelect = ({
   value = null,
   onChange,
   options,
   placeholder = 'Please select',
   defaultValue = '',
   ...props
-}): ReactElement => {
+}: SelectProps) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(

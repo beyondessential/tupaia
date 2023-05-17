@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, CSSProperties, ReactElement } from 'react';
+import React, { CSSProperties } from 'react';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
@@ -69,9 +69,7 @@ interface Option {
   style?: CSSProperties;
 }
 
-export const ActionsMenu: FC<{
-  options: Option[];
-}> = ({ options }): ReactElement => {
+export const ActionsMenu = ({ options }: { options: Option[] }) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>

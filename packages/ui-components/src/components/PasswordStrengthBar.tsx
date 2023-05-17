@@ -4,7 +4,7 @@
  *
  */
 
-import React, { ElementType, FC, Suspense } from 'react';
+import React, { ElementType, Suspense } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -46,15 +46,15 @@ interface PasswordStrengthBarProps extends BoxProps {
   scoreWords?: string[];
 }
 
-export const PasswordStrengthBar: FC<PasswordStrengthBarProps> = ({
+export const PasswordStrengthBar = ({
   StrengthBarComponent = PasswordStrengthBarFallback,
   password = '',
   minLength = 9,
-  helperText = null,
+  helperText,
   barColors = ['#deded0', '#FF9811', '#FF9811', '#FF9811', '#FF9811'],
   scoreWords = ['weak', 'okay', 'good', 'strong', 'very strong'],
   ...props
-}) => {
+}: PasswordStrengthBarProps) => {
   const theme = useTheme();
   return (
     <Container {...props}>
