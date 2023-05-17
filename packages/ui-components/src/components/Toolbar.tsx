@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
@@ -21,12 +21,14 @@ const ToolbarWrapper = styled.div`
   }
 `;
 
-export const BaseToolbar: FC<{
+interface BaseToolbarProps {
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false | undefined;
   children?: ReactNode;
-}> = ({ children, maxWidth = undefined }): ReactElement => (
+}
+
+export const BaseToolbar = ({ children, maxWidth = undefined }: BaseToolbarProps) => (
   <ToolbarWrapper>
-    <Container maxWidth={maxWidth}>{children!}</Container>
+    <Container maxWidth={maxWidth}>{children || null}</Container>
   </ToolbarWrapper>
 );
 
@@ -46,18 +48,20 @@ const ToolbarTab = styled(LightTab)`
  * a component for navigating to router links
  */
 
-type Link = {
+interface Link {
   label: string;
   to: string;
   exact?: boolean;
-  icon?: ReactElement;
+  icon?: ReactNode;
   id?: string;
-};
+}
 
-export const TabsToolbar: FC<{
+interface TabsToolbarProps {
   links: Link[];
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false | undefined;
-}> = ({ links: linkInput, maxWidth }) => {
+}
+
+export const TabsToolbar = ({ links: linkInput, maxWidth }: TabsToolbarProps) => {
   const location = useLocation();
   const match = useRouteMatch();
   const links = linkInput.map(link => ({

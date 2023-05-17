@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, ReactElement } from 'react';
+import React from 'react';
 import {
   Card,
   CardHeader,
@@ -64,32 +64,36 @@ function union(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
   return [...a, ...not(b, a)];
 }
 
-const Title: FC<{
+interface TitleProps {
   title: string;
   numberOfCheckedItems: number;
   totalItems: number;
-}> = ({ title, numberOfCheckedItems, totalItems }): ReactElement => (
+}
+
+const Title = ({ title, numberOfCheckedItems, totalItems }: TitleProps) => (
   <FlexStart>
     <StyledHeader>{title}</StyledHeader>
     <StyledSubHeader>{`${numberOfCheckedItems}/${totalItems} selected`}</StyledSubHeader>
   </FlexStart>
 );
 
-const List: FC<{
+interface ListProps {
   items: ListItemProps[];
   title: string;
   selectedItems: ListItemProps[];
   handleCheckAll: (items: ListItemProps[]) => () => void;
   handleCheck: (item: ListItemProps) => () => void;
   numberOfChecked: number;
-}> = ({
+}
+
+const List = ({
   items,
   handleCheckAll,
   title,
   numberOfChecked,
   handleCheck,
   selectedItems,
-}): ReactElement => (
+}: ListProps) => (
   <StyledCard>
     <StyledCardHeader
       avatar={
@@ -130,12 +134,19 @@ const List: FC<{
   </StyledCard>
 );
 
-export const CheckboxList: FC<{
+interface CheckboxListProps {
   list: ListItemProps[];
   title?: string;
   selectedItems: any[];
   setSelectedItems: (items: ListItemProps[]) => void;
-}> = ({ list, title = 'Choices', selectedItems, setSelectedItems }): ReactElement => {
+}
+
+export const CheckboxList = ({
+  list,
+  title = 'Choices',
+  selectedItems,
+  setSelectedItems,
+}: CheckboxListProps) => {
   const numberOfChecked = (items: ListItemProps[]) => intersection(selectedItems, items).length;
 
   const handleCheckAll = (items: ListItemProps[]) => () => {

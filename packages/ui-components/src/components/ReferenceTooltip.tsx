@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { FC, ReactElement } from 'react';
+import React from 'react';
 import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
@@ -52,7 +52,7 @@ interface Reference {
   link?: string;
 }
 
-const Content: FC<Reference> = ({ text = '', name = '', link = '' }): ReactElement => {
+const Content = ({ text = '', name = '', link = '' }: Reference) => {
   if (text) {
     return (
       <TextCaption variant="caption">
@@ -70,10 +70,15 @@ const Content: FC<Reference> = ({ text = '', name = '', link = '' }): ReactEleme
   );
 };
 
-export const ReferenceTooltip: FC<{
+interface ReferenceTooltipProps {
   iconStyleOption?: string;
   reference?: Reference;
-}> = ({ iconStyleOption = DEFAULT, reference = {} }): ReactElement => {
+}
+
+export const ReferenceTooltip = ({
+  iconStyleOption = DEFAULT,
+  reference = {},
+}: ReferenceTooltipProps) => {
   return (
     <StyledToolTip
       arrow

@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, ReactElement } from 'react';
+import React from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
@@ -24,7 +24,7 @@ const Heading = styled(Typography)`
   margin-bottom: 0.8rem;
 `;
 
-export const ConfirmDeleteModal: FC<{
+interface ConfirmDeleteModalProps {
   isOpen?: boolean;
   title?: string;
   message?: string;
@@ -33,7 +33,9 @@ export const ConfirmDeleteModal: FC<{
   description?: string;
   cancelButtonText?: string;
   confirmButtonText?: string;
-}> = React.memo(
+}
+
+export const ConfirmDeleteModal = React.memo(
   ({
     isOpen = false,
     title = 'Delete Record',
@@ -43,7 +45,7 @@ export const ConfirmDeleteModal: FC<{
     description = `Once deleted this can't be undone.`,
     cancelButtonText = 'Cancel',
     confirmButtonText = 'Yes, Delete',
-  }): ReactElement => (
+  }: ConfirmDeleteModalProps) => (
     <Dialog onClose={onCancel} open={isOpen}>
       <DialogHeader onClose={onCancel} title={title} color="error" />
       <DialogContent>

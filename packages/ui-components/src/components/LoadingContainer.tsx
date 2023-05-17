@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
@@ -55,10 +55,12 @@ const ErrorAlert = styled(SmallAlert)`
   justify-content: center;
 `;
 
-const ErrorScreen: FC<{
+interface ErrorScreenProps {
   onReset: () => void;
   errorMessage: string;
-}> = ({ onReset, errorMessage }): ReactElement => {
+}
+
+const ErrorScreen = ({ onReset, errorMessage }: ErrorScreenProps) => {
   return (
     <>
       <ErrorText>{errorMessage}</ErrorText>
@@ -67,10 +69,12 @@ const ErrorScreen: FC<{
   );
 };
 
-const Wrapper: FC<{
+interface WrapperProps {
   children: ReactNode;
   loadingContainerChildren: ReactNode;
-}> = ({ children: loadingScreenChildren, loadingContainerChildren }): ReactElement => (
+}
+
+const Wrapper = ({ children: loadingScreenChildren, loadingContainerChildren }: WrapperProps) => (
   <Container className="loading-container">
     {loadingContainerChildren}
     <LoadingScreen className="loading-screen">{loadingScreenChildren}</LoadingScreen>
@@ -80,21 +84,23 @@ const Wrapper: FC<{
 /**
  * Adds a loader around the children
  */
-export const LoadingContainer: FC<{
+interface LoadingContainerProps {
   isLoading: boolean;
   heading?: string;
   text?: string;
   children: ReactNode;
   errorMessage?: string;
   onReset?: () => void;
-}> = ({
+}
+
+export const LoadingContainer = ({
   isLoading,
   heading = 'Saving Data',
   text = 'Please do not refresh the browser or close this page',
   children = null,
   errorMessage,
-  onReset = null,
-}): ReactElement => {
+  onReset,
+}: LoadingContainerProps) => {
   if (onReset && errorMessage) {
     return (
       <Wrapper loadingContainerChildren={children}>

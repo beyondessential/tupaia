@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { ElementType, ReactNode } from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { SmallAlert } from './Alert';
@@ -15,29 +15,31 @@ const Container = styled(FlexCenter)`
   align-self: center;
 `;
 
-const SpinningLoader: FC = (): ReactElement => (
+const SpinningLoader = () => (
   <Container>
     <CircularProgress size={50} />
   </Container>
 );
 
-export const FetchLoader: FC<{
+interface FetchLoaderProps {
   isLoading?: boolean;
   isError?: boolean;
   isNoData?: boolean;
   error?: any;
   noDataMessage?: string;
-  Loader?: FC;
+  Loader?: ElementType;
   children?: ReactNode;
-}> = ({
+}
+
+export const FetchLoader = ({
   isLoading = false,
   isError = false,
   isNoData = false,
   error = null,
-  noDataMessage = null,
+  noDataMessage,
   children = null,
   Loader = SpinningLoader,
-}) => {
+}: FetchLoaderProps) => {
   if (isLoading) {
     return <Loader />;
   }

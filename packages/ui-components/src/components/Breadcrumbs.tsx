@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { FC, useEffect, useState, ReactElement } from 'react';
+import React, { useEffect, useState } from 'react';
 import MuiBreadcrumbs, {
   BreadcrumbsProps as MuiBreadcrumbsProps,
 } from '@material-ui/core/Breadcrumbs';
@@ -53,7 +53,7 @@ const LinkRef = React.forwardRef<HTMLAnchorElement, ReactRouterLinkProps>((props
   <RouterLink innerRef={ref} {...props} />
 ));
 
-const Link: FC<MuiLinkProps & ReactRouterLinkProps> = (props): ReactElement => (
+const Link = (props: MuiLinkProps & ReactRouterLinkProps) => (
   <MuiLink color="inherit" {...props} component={LinkRef} />
 );
 
@@ -65,7 +65,7 @@ interface BreadcrumbsProps extends MuiBreadcrumbsProps {
   home?: string;
 }
 
-export const Breadcrumbs: FC<BreadcrumbsProps> = ({ home = 'Dashboard', ...props }) => {
+export const Breadcrumbs = ({ home = 'Dashboard', ...props }: BreadcrumbsProps) => {
   const location = useLocation();
   const [pathnames, setPathnames] = useState<string[]>([]);
 

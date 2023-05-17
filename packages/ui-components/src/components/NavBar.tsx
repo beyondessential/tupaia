@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ElementType, FC, ReactElement, ReactNode } from 'react';
+import React, { ElementType, ReactNode } from 'react';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
@@ -53,7 +53,7 @@ interface LinkProps {
   id?: string;
 }
 
-export const NavBar: FC<{
+interface NavBarProps {
   HomeButton: ReactNode;
   Profile: ElementType;
   links: LinkProps[];
@@ -63,14 +63,16 @@ export const NavBar: FC<{
   ) => boolean;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
   className?: string;
-}> = ({
+}
+
+export const NavBar = ({
   HomeButton,
   Profile,
   links,
-  isTabActive = () => {},
+  isTabActive,
   maxWidth = false,
   className,
-}): ReactElement => (
+}: NavBarProps) => (
   <Wrapper className={className}>
     <MuiContainer maxWidth={maxWidth}>
       <Inner>
