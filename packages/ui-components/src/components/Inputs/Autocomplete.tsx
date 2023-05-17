@@ -104,7 +104,7 @@ export const Autocomplete = ({
     PaperComponent={StyledPaper}
     renderInput={params => (
       <TextField
-        {...(params as any)}
+        {...params}
         label={label}
         name={name}
         placeholder={placeholder}

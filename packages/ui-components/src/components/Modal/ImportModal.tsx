@@ -5,7 +5,7 @@
 
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { MouseEventHandler, ReactNode, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { SmallAlert } from '../Alert';
@@ -32,37 +32,49 @@ const Heading = styled(Typography)`
   margin-bottom: 18px;
 `;
 
+interface ImportModalProps {
+  isOpen: boolean;
+  title?: string;
+  subtitle?: string;
+  actionText?: string;
+  loadingText?: string;
+  loadingHeading?: string;
+  showLoadingContainer?: boolean;
+  onSubmit: (file: File | null) => Promise<{ message?: string }>;
+  onClose: () => void;
+}
+
 export const ImportModal = ({
   isOpen,
-  title,
-  subtitle,
-  actionText,
-  loadingText,
-  loadingHeading,
-  showLoadingContainer,
+  title = 'Import',
+  subtitle = '',
+  actionText = 'Import',
+  loadingText = 'Importing',
+  loadingHeading = 'Importing data',
+  showLoadingContainer = false,
   onSubmit,
   onClose,
-}) => {
+}: ImportModalProps) => {
   const [status, setStatus] = useState(STATUS.IDLE);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [file, setFile] = useState(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null | undefined>(null);
   const [fileName, setFileName] = useState(NO_FILE_MESSAGE);
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setErrorMessage(null);
     setStatus(STATUS.LOADING);
 
     try {
-      const { message } = await onSubmit(file);
+      const { message } = await onSubmit(file || null);
       if (showLoadingContainer && message) {
         setStatus(STATUS.SUCCESS);
         setSuccessMessage(message);
       } else {
         handleClose();
       }
-    } catch (error) {
+    } catch (error: any) {
       setStatus(STATUS.ERROR);
       setErrorMessage(error.message);
     }
@@ -70,7 +82,6 @@ export const ImportModal = ({
 
   const handleClose = async () => {
     onClose();
-
     setStatus(STATUS.IDLE);
     setErrorMessage(null);
     setSuccessMessage(null);
@@ -89,12 +100,12 @@ export const ImportModal = ({
   };
 
   const ContentContainer = showLoadingContainer
-    ? ({ children }) => (
+    ? ({ children }: { children: ReactNode }) => (
         <LoadingContainer heading={loadingHeading} isLoading={status === STATUS.LOADING}>
           {children}
         </LoadingContainer>
       )
-    : ({ children }) => <>{children}</>;
+    : ({ children }: { children: ReactNode }) => <>{children}</>;
 
   const renderContent = useCallback(() => {
     switch (status) {
@@ -115,9 +126,9 @@ export const ImportModal = ({
             <p>{subtitle}</p>
             <form>
               <FileUploadField
-                onChange={({ target }, newName) => {
+                onChange={(event, newName = '') => {
                   setFileName(newName);
-                  setFile(target.files[0]);
+                  setFile(event?.target?.files?.[0]);
                 }}
                 name="file-upload"
                 fileName={fileName}
@@ -172,25 +183,4 @@ export const ImportModal = ({
       <DialogFooter>{renderButtons()}</DialogFooter>
     </Dialog>
   );
-};
-
-ImportModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  actionText: PropTypes.string,
-  loadingText: PropTypes.string,
-  loadingHeading: PropTypes.string,
-  showLoadingContainer: PropTypes.bool,
-  onSubmit: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
-
-ImportModal.defaultProps = {
-  title: 'Import',
-  subtitle: '',
-  actionText: 'Import',
-  loadingText: 'Importing',
-  loadingHeading: 'Importing data',
-  showLoadingContainer: false,
 };
