@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { SVGAttributes } from 'react';
 import styled from 'styled-components';
 import BaseIcon from './BaseIcon';
 
@@ -13,7 +13,7 @@ const StyledSVG = styled(BaseIcon)`
   }
 `;
 
-export const Home = props => (
+export const Home = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <StyledSVG {...props} viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <path
