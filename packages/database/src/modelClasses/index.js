@@ -159,4 +159,5 @@ export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
+export { UserSessionModel } from './UserSession';
 export { SupersetInstanceModel } from './SupersetInstance';
