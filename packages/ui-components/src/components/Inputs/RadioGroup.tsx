@@ -4,19 +4,19 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import MuiRadio from '@material-ui/core/Radio';
 import MuiRadioGroup from '@material-ui/core/RadioGroup';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
-import MuiFormControl from '@material-ui/core/FormControl';
-import MuiFormLabel from '@material-ui/core/FormLabel';
+import MuiFormControl, { FormControlProps } from '@material-ui/core/FormControl';
+import MuiFormLabel, { FormLabelProps } from '@material-ui/core/FormLabel';
+import { OverrideableComponentProps } from '../../types';
 
-const FormControl = styled(MuiFormControl)`
+const FormControl = styled(MuiFormControl)<OverrideableComponentProps<FormControlProps>>`
   display: block;
   margin-bottom: 1.2rem;
 `;
 
-const FormLabel = styled(MuiFormLabel)`
+const FormLabel = styled(MuiFormLabel)<OverrideableComponentProps<FormLabelProps>>`
   position: relative;
   font-size: 0.9375rem;
   line-height: 1.125rem;
@@ -66,6 +66,19 @@ const Radio = styled(MuiRadio)`
   }
 `;
 
+interface RadioGroupProps {
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string | boolean;
+  name: string;
+  options: {
+    [key: string]: string;
+  }[];
+  label?: string;
+  className?: string;
+  labelKey?: string;
+  valueKey?: string;
+}
+
 export const RadioGroup = ({
   options,
   value,
@@ -73,9 +86,9 @@ export const RadioGroup = ({
   label,
   name,
   className,
-  labelKey,
-  valueKey,
-}) => (
+  labelKey = 'label',
+  valueKey = 'value',
+}: RadioGroupProps) => (
   <FormControl component="fieldset" className={className} color="primary">
     <FormLabel component="legend">{label}</FormLabel>
     <StyledRadioGroup aria-label={name} name={name} value={value} onChange={onChange}>
@@ -90,21 +103,3 @@ export const RadioGroup = ({
     </StyledRadioGroup>
   </FormControl>
 );
-
-RadioGroup.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-  name: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  label: PropTypes.string,
-  className: PropTypes.string,
-  labelKey: PropTypes.string,
-  valueKey: PropTypes.string,
-};
-
-RadioGroup.defaultProps = {
-  label: null,
-  className: null,
-  labelKey: 'label',
-  valueKey: 'value',
-};

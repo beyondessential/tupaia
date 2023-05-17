@@ -4,7 +4,6 @@
  */
 
 import React, { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Box from '@material-ui/core/Box';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -63,14 +62,28 @@ const TextLabel = styled.div`
   margin-bottom: 0.6rem;
 `;
 
+interface ProfileImageFieldProps {
+  name: string;
+  profileImage?: string;
+  userInitial?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onDelete?: () => void;
+}
+
 export const ProfileImageField = React.memo(
-  ({ name, profileImage, userInitial, onDelete, onChange }) => {
+  ({
+    name,
+    profileImage,
+    userInitial,
+    onDelete = () => {},
+    onChange = () => {},
+  }: ProfileImageFieldProps) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-    const inputEl = useRef(null);
+    const inputEl = useRef<HTMLInputElement | null>(null);
 
     const handleDelete = () => {
       setConfirmModalIsOpen(false);
-      inputEl.current.value = '';
+      if (inputEl.current) inputEl.current.value = '';
       onDelete();
     };
 
@@ -102,18 +115,3 @@ export const ProfileImageField = React.memo(
     );
   },
 );
-
-ProfileImageField.propTypes = {
-  name: PropTypes.string.isRequired,
-  userInitial: PropTypes.string,
-  profileImage: PropTypes.string,
-  onChange: PropTypes.func,
-  onDelete: PropTypes.func,
-};
-
-ProfileImageField.defaultProps = {
-  userInitial: undefined,
-  profileImage: null,
-  onChange: () => {},
-  onDelete: () => {},
-};
