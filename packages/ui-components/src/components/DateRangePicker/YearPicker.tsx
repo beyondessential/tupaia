@@ -7,7 +7,7 @@ import React from 'react';
 import { Moment } from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { YearPickerProps } from '../../types/date-picker-types';
+import { YearPickerProps } from '../../types';
 
 export const YearPicker = ({
   momentDateValue,

@@ -5,11 +5,10 @@
 
 import React from 'react';
 import MuiAutocomplete from '@material-ui/lab/Autocomplete';
-import MuiPaper from '@material-ui/core/Paper';
+import MuiPaper, { PaperProps } from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
@@ -17,7 +16,7 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   font-size: 1.5rem;
 `;
 
-const Paper = props => <MuiPaper {...props} variant="outlined" elevation={0} />;
+const Paper = (props: PaperProps) => <MuiPaper {...props} variant="outlined" elevation={0} />;
 
 const StyledPaper = styled(Paper)`
   .MuiAutocomplete-option {
@@ -39,19 +38,45 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   }
 `;
 
+export interface BaseAutocompleteProps {
+  label?: string;
+  value?: any;
+  id?: string;
+  required?: boolean;
+  error?: boolean;
+  disabled?: boolean;
+  helperText?: string;
+  onChange?: (event: Event, newValue: string) => void;
+  getOptionSelected?: (option: any, value: any) => boolean;
+  getOptionLabel?: (option: any) => string;
+  placeholder?: string;
+  muiProps?: any;
+}
+
+interface AutocompleteProps extends BaseAutocompleteProps {
+  options: any[];
+  loading?: boolean;
+  onInputChange?: (event: any, newValue: any) => void;
+  inputValue?: any;
+  className?: string;
+  inputRef?: any;
+  name?: string;
+  defaultValue?: any;
+}
+
 export const Autocomplete = ({
   options,
   id,
-  label,
+  label = '',
   getOptionSelected,
   getOptionLabel,
   value,
   onChange,
-  loading,
-  placeholder,
-  error,
-  disabled,
-  required,
+  loading = false,
+  placeholder = '',
+  error = false,
+  disabled = false,
+  required = false,
   helperText,
   onInputChange,
   inputValue,
@@ -60,7 +85,7 @@ export const Autocomplete = ({
   inputRef,
   name,
   defaultValue,
-}) => (
+}: AutocompleteProps) => (
   <StyledAutocomplete
     id={id}
     className={className}
@@ -101,48 +126,3 @@ export const Autocomplete = ({
     {...muiProps}
   />
 );
-
-Autocomplete.propTypes = {
-  options: PropTypes.array.isRequired,
-  label: PropTypes.string,
-  id: PropTypes.string,
-  required: PropTypes.bool,
-  error: PropTypes.bool,
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  helperText: PropTypes.string,
-  value: PropTypes.any,
-  inputValue: PropTypes.any,
-  onChange: PropTypes.func,
-  getOptionSelected: PropTypes.func,
-  getOptionLabel: PropTypes.func,
-  placeholder: PropTypes.string,
-  onInputChange: PropTypes.func,
-  muiProps: PropTypes.object,
-  className: PropTypes.string,
-  inputRef: PropTypes.func,
-  name: PropTypes.string,
-  defaultValue: PropTypes.any,
-};
-
-Autocomplete.defaultProps = {
-  label: '',
-  placeholder: '',
-  required: false,
-  loading: false,
-  error: false,
-  id: undefined,
-  disabled: false,
-  getOptionSelected: undefined,
-  getOptionLabel: undefined,
-  helperText: undefined,
-  value: undefined,
-  inputValue: undefined,
-  onChange: undefined,
-  onInputChange: undefined,
-  muiProps: undefined,
-  className: null,
-  inputRef: null,
-  name: null,
-  defaultValue: null,
-};

@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import MuiCheckbox from '@material-ui/core/Checkbox';
+import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@material-ui/core/Checkbox';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
+import styled from 'styled-components'; 
 
 const StyledCheckbox = styled(MuiCheckbox)`
   &.MuiButtonBase-root:not(.MuiIconButton-colorPrimary) {
@@ -28,7 +27,20 @@ const FormHelperText = styled(MuiFormHelperText)`
   margin-top: -4px;
 `;
 
-export const Checkbox = ({ label, helperText, error, className, ...props }) => {
+interface CheckboxProps extends MuiCheckboxProps {
+  label?: string;
+  error?: boolean;
+  className?: string;
+  helperText?: string;
+}
+
+export const Checkbox = ({
+  label,
+  helperText,
+  error = false,
+  className,
+  ...props
+}: CheckboxProps) => {
   if (label) {
     return (
       <Wrapper className={className}>
@@ -39,18 +51,4 @@ export const Checkbox = ({ label, helperText, error, className, ...props }) => {
   }
 
   return <StyledCheckbox className={className} {...props} />;
-};
-
-Checkbox.propTypes = {
-  label: PropTypes.string,
-  error: PropTypes.bool,
-  className: PropTypes.string,
-  helperText: PropTypes.string,
-};
-
-Checkbox.defaultProps = {
-  error: false,
-  label: null,
-  className: null,
-  helperText: null,
 };

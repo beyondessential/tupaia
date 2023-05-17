@@ -5801,6 +5801,7 @@ __metadata:
     "@mui/types": ^7.2.4
     "@storybook/react": ^6.3.9
     "@tupaia/utils": 1.0.0
+    "@types/lodash.throttle": ^4.1.7
     "@types/react-dom": ^18.2.4
     "@types/react-router-dom": ^5.3.3
     "@types/react-table": ^7.7.14
@@ -6519,6 +6520,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: 1a4d85dd4ce371352b65dead78e1c6d89c4d59c440bfd9b27023b1113c8610115f2dda17c056b94697f7bfbd947bd8abfe0afd5195b65e2675b404e0e1542fae
+  languageName: node
+  linkType: hard
+
+"@types/lodash.throttle@npm:^4.1.7":
+  version: 4.1.7
+  resolution: "@types/lodash.throttle@npm:4.1.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 6e1b3836488fecbdc537b6ad9b3fe4855c7336b0fa388773cd57d486619f565a48cabc04b28677fd3819be3f2d13d2bb8f9d4428aa5632885c86cb99729bfd69
   languageName: node
   linkType: hard
 

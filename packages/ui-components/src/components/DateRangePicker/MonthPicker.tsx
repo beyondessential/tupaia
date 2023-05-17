@@ -8,7 +8,7 @@ import React from 'react';
 import moment from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { BaseDatePickerProps } from '../../types/date-picker-types';
+import { BaseDatePickerProps } from '../../types';
 
 export const MonthPicker = ({
   momentDateValue,
