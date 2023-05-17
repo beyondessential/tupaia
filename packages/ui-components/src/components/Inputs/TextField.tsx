@@ -4,10 +4,12 @@
  */
 
 import React from 'react';
-import MuiTextField from '@material-ui/core/TextField';
+import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
 
-const BaseTextField = props => <MuiTextField fullWidth {...props} variant="outlined" />;
+const BaseTextField = (props: TextFieldProps) => (
+  <MuiTextField fullWidth {...props} variant="outlined" />
+);
 
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';

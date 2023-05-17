@@ -165,7 +165,7 @@ export const ButtonSelect = ({
         ),
       }}
       select
-      {...muiProps}
+      {...(muiProps as any)}
     >
       {options.map(option => (
         <MuiMenuItem key={option[valueKey]} value={option[valueKey]}>

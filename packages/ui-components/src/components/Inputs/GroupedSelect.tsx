@@ -5,12 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
-import {
-  ListSubheader,
-  SelectProps as MuiSelectProps,
-  SvgIconProps,
-  TextFieldProps,
-} from '@material-ui/core';
+import { ListSubheader, SvgIconProps, TextFieldProps } from '@material-ui/core';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -34,17 +29,13 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-type GroupedSelectFieldProps = TextFieldProps & {
-  SelectProps?: MuiSelectProps;
-};
-
-export const GroupedSelectField = ({ SelectProps = {}, ...props }: GroupedSelectFieldProps) => (
+export const GroupedSelectField = ({ SelectProps = {}, ...props }: TextFieldProps) => (
   <StyledTextField
     SelectProps={{
       IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
     }}
-    {...props}
+    {...(props as any)}
     select
   />
 );
@@ -54,7 +45,7 @@ const MenuItem = styled(MuiMenuItem)`
   padding-bottom: 0.5rem;
 `;
 
-type GroupedSelectProps = GroupedSelectFieldProps & {
+type GroupedSelectProps = TextFieldProps & {
   groupedOptions: { [key: string]: { label: string; value?: string }[] };
   showPlaceholder?: boolean;
   placeholder?: string;
