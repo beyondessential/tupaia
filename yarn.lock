@@ -5741,6 +5741,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/tupaia-web-server@workspace:packages/tupaia-web-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/tupaia-web-server@workspace:packages/tupaia-web-server"
+  dependencies:
+    "@tupaia/server-boilerplate": 1.0.0
+    dotenv: ^8.2.0
+    express: ^4.16.2
+    winston: ^3.2.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/types@1.0.0, @tupaia/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@tupaia/types@workspace:packages/types"
