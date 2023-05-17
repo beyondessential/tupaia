@@ -11,6 +11,7 @@ import {
   SET_CUSTOM_LANDING_PAGE_DATA,
   CLEAR_CUSTOM_LANDING_PAGE_DATA,
   CUSTOM_LANDING_PAGE_LOADING,
+  FETCH_LOGIN_SUCCESS,
 } from '../actions';
 
 export default function projects(
@@ -24,6 +25,11 @@ export default function projects(
   action,
 ) {
   switch (action.type) {
+    case FETCH_LOGIN_SUCCESS:
+      return {
+        ...state,
+        projects: [],
+      };
     case SET_PROJECT_DATA:
       return {
         ...state,
