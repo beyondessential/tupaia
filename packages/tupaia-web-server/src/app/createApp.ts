@@ -3,18 +3,18 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import { UserSessionModel } from '../models';
 import {
   OrchestratorApiBuilder,
   handleWith,
   useForwardUnhandledRequests,
 } from '@tupaia/server-boilerplate';
+import { TupaiaWebSessionModel } from '../models';
 
-const { WEB_CONFIG_API_URL = 'http://localhost:8000/v1' } = process.env;
+const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
 export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web')
-    .useSessionModel(UserSessionModel)
+    .useSessionModel(TupaiaWebSessionModel)
     .build();
 
   useForwardUnhandledRequests(app, WEB_CONFIG_API_URL, '');
