@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useRef, ElementType, FC } from 'react';
+import React, { useState, useRef, ElementType } from 'react';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
@@ -32,19 +32,22 @@ type Option = {
   id: string;
   label: string;
 };
-export const SplitButton: FC<{
+
+interface SplitButtonProps {
   options: Option[];
   selectedId?: string | null;
   setSelectedId: (id: string) => void;
   onClick?: (id: string | null) => void;
   ButtonComponent?: ElementType;
-}> = ({
+}
+
+export const SplitButton = ({
   options,
   selectedId = null,
   setSelectedId,
   onClick = () => {},
   ButtonComponent = DefaultButton,
-}) => {
+}: SplitButtonProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 

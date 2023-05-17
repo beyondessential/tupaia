@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
 import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
@@ -44,13 +44,7 @@ interface ButtonProps extends MuiButtonProps {
   loadingText?: string;
 }
 
-export const Button: FC<ButtonProps> = ({
-  children,
-  isLoading,
-  loadingText,
-  disabled,
-  ...props
-}): ReactElement => (
+export const Button = ({ children, isLoading, loadingText, disabled, ...props }: ButtonProps) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
     {isLoading ? `${loadingText}...` : children}
   </StyledButton>
@@ -142,7 +136,7 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-export const OutlinedButton: FC<MuiButtonProps> = props => <Button {...props} variant="outlined" />;
+export const OutlinedButton = (props: MuiButtonProps) => <Button {...props} variant="outlined" />;
 
 export const ErrorOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.error.main};
@@ -217,7 +211,7 @@ interface LinkProps extends MuiLinkProps {
   children: ReactNode;
 }
 
-export const LinkButton: FC<LinkProps> = ({ children, onClick }) => (
+export const LinkButton = ({ children, onClick }: LinkProps) => (
   <StyledLink onClick={onClick} as="button">
     {children}
   </StyledLink>

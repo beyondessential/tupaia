@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { FC } from 'react';
+import React from 'react';
 import { useTable, useSortBy } from 'react-table';
 import {
   TableCell,
@@ -37,13 +37,19 @@ const getColumnId = ({
   return Header;
 };
 
-export const DataTable: FC<{
+export const DataTable = ({
+  columns,
+  data,
+  className = '',
+  rowLimit = 0,
+  total = 0,
+}: {
   columns: any[];
   data: any[];
   className?: string;
   rowLimit?: number;
   total?: number;
-}> = ({ columns, data, className = '', rowLimit = 0, total = 0 }) => {
+}) => {
   const {
     getTableProps,
     getTableBodyProps,

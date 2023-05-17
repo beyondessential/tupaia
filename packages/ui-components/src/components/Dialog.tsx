@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import MuiDialog, { DialogProps as MuiDialogProps } from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
@@ -30,7 +30,7 @@ interface DialogProps extends MuiDialogProps {
   children: ReactNode;
 }
 
-export const Dialog: FC<DialogProps> = ({ children, ...props }): ReactElement => (
+export const Dialog = ({ children, ...props }: DialogProps) => (
   <StyledDialog fullWidth maxWidth="sm" {...props}>
     {children}
   </StyledDialog>
@@ -58,7 +58,7 @@ const CloseButton = styled(IconButton)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const DialogHeader: FC<{
+interface DialogHeaderProps {
   title: string;
   onClose: () => void;
   color?:
@@ -70,7 +70,14 @@ export const DialogHeader: FC<{
     | 'textSecondary'
     | 'error';
   children?: ReactNode;
-}> = ({ title, onClose, color = 'textPrimary', children }) => (
+}
+
+export const DialogHeader = ({
+  title,
+  onClose,
+  color = 'textPrimary',
+  children,
+}: DialogHeaderProps) => (
   <Header>
     <DialogTitle color={color} variant="h3">
       {title}
