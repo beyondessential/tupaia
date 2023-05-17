@@ -2,11 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { TupaiaDatabase, UserSessionModel } from '@tupaia/database';
+import { TupaiaDatabase } from '@tupaia/database';
+import { UserSessionModel } from '../models';
 import {
   OrchestratorApiBuilder,
   handleWith,
-  useForwardUnhandledRequests
+  useForwardUnhandledRequests,
 } from '@tupaia/server-boilerplate';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/v1' } = process.env;
@@ -17,4 +18,6 @@ export function createApp() {
     .build();
 
   useForwardUnhandledRequests(app, WEB_CONFIG_API_URL, '');
+
+  return app;
 }
