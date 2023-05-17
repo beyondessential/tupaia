@@ -18,7 +18,7 @@ import {
   roundEndDate,
   toStandardDateString,
 } from '@tupaia/utils';
-import { GranularityType, ModifierType } from '../../types/date-picker-types';
+import { GranularityType, ModifierType } from '../../types';
 
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 /**

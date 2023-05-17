@@ -21,11 +21,7 @@ import { YearPicker } from './YearPicker';
 import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
 import { Button, OutlinedButton } from '../Button';
-import {
-  BaseDatePickerProps,
-  WeekPickerProps,
-  YearPickerProps,
-} from '../../types/date-picker-types';
+import { BaseDatePickerProps, WeekPickerProps, YearPickerProps } from '../../types';
 
 const {
   DAY,

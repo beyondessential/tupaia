@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { ReactNode } from 'react';
+import React, { ElementType, ReactElement, ReactNode } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
 import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
@@ -62,7 +62,15 @@ export const LightPrimaryButton = styled(Button)`
   }
 `;
 
-export const GreyButton = styled(Button)`
+/**
+ *   We need to add extra props here because of the issue with MUI types and 'component'
+ *  [More info here]{@link https://github.com/mui/material-ui/issues/29440}
+ * */
+export const GreyButton = styled(Button)<
+  ButtonProps & {
+    component?: keyof JSX.IntrinsicElements | ElementType;
+  }
+>`
   background-color: #6f7b82;
   color: ${props => props.theme.palette.common.white};
 `;
