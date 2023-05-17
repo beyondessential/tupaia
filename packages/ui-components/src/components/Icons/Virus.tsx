@@ -2,10 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { SVGAttributes } from 'react';
 import BaseIcon from './BaseIcon';
 
-export const Virus = props => (
+export const Virus = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <BaseIcon {...props} viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <g>
