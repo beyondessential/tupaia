@@ -11,13 +11,20 @@ const DIRECTION = {
   DESC: 'desc',
 };
 
-const toggleOrder = order => (order === DIRECTION.DESC ? DIRECTION.ASC : DIRECTION.DESC);
+type OrderType = typeof DIRECTION[keyof typeof DIRECTION];
+
+const toggleOrder = (order: OrderType) =>
+  order === DIRECTION.DESC ? DIRECTION.ASC : DIRECTION.DESC;
 
 /**
  * @param {string | undefined} initialOrderBy (Initial) key of a sorted column
  * @param {'asc' | 'desc'} initialOrder
  */
-export const useTableSorting = (data, initialOrderBy, initialOrder = DIRECTION.ASC) => {
+export const useTableSorting = (
+  data: any[],
+  initialOrderBy: string,
+  initialOrder: OrderType = DIRECTION.ASC,
+) => {
   const [orderBy, setOrderBy] = useState(initialOrderBy);
   const [order, setOrder] = useState(initialOrder);
 
@@ -25,7 +32,7 @@ export const useTableSorting = (data, initialOrderBy, initialOrder = DIRECTION.A
   const sortedData = [...data].sort(getSortByKey(orderBy, { ascending }));
 
   const sortColumn = useCallback(
-    columnKey => {
+    (columnKey: string) => {
       const newOrder = columnKey === orderBy ? toggleOrder(order) : DIRECTION.ASC;
       setOrderBy(columnKey);
       setOrder(newOrder);

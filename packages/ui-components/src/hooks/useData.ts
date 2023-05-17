@@ -5,10 +5,12 @@
 
 import { useCallback, useState } from 'react';
 
-export const useData = fetcher => {
-  const [data, setData] = useState(undefined);
+type FetcherType = (...args: any[]) => Promise<any>;
+
+export const useData = (fetcher: FetcherType) => {
+  const [data, setData] = useState<any>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(
     async (...args) => {
