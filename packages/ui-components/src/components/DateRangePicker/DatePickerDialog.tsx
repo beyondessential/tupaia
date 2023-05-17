@@ -62,7 +62,7 @@ const DateRow = ({ granularity, ...props }: DateRowProps) => {
         <Container>
           <DayPicker {...props} />
           <MonthPicker {...props} />
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
     case SINGLE_WEEK:
@@ -70,7 +70,7 @@ const DateRow = ({ granularity, ...props }: DateRowProps) => {
       return (
         <Container>
           <WeekPicker {...props} />
-          <YearPicker {...props} isIsoYear />
+          <YearPicker {...(props as YearPickerProps)} isIsoYear />
         </Container>
       );
     case MONTH:
@@ -78,7 +78,7 @@ const DateRow = ({ granularity, ...props }: DateRowProps) => {
       return (
         <Container>
           <MonthPicker {...props} />
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
     case QUARTER:
@@ -86,14 +86,14 @@ const DateRow = ({ granularity, ...props }: DateRowProps) => {
       return (
         <Container>
           <QuarterPicker {...props} />
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
     case YEAR:
     case SINGLE_YEAR:
       return (
         <Container>
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
   }

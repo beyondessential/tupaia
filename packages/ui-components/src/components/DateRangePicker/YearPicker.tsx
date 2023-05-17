@@ -4,20 +4,21 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
+import { Moment } from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
+import { YearPickerProps } from '../../types/date-picker-types';
 
 export const YearPicker = ({
   momentDateValue,
   minMomentDate,
   maxMomentDate,
-  isIsoYear,
+  isIsoYear = false,
   onChange,
-}) => {
-  const momentToYear = (momentInstance, ...args) =>
-    isIsoYear ? momentInstance.isoWeekYear(...args) : momentInstance.year(...args);
+}: YearPickerProps) => {
+  const momentToYear = (momentInstance: Moment, ...args: any[]) =>
+    isIsoYear ? momentInstance.isoWeekYear(...(args as [])) : momentInstance.year(...(args as []));
+
   const minYear = momentToYear(minMomentDate);
   const maxYear = momentToYear(maxMomentDate);
   const yearOptions = [];
@@ -38,16 +39,4 @@ export const YearPicker = ({
       menuItems={yearOptions}
     />
   );
-};
-
-YearPicker.propTypes = {
-  momentDateValue: PropTypes.instanceOf(moment).isRequired,
-  minMomentDate: PropTypes.instanceOf(moment).isRequired,
-  maxMomentDate: PropTypes.instanceOf(moment).isRequired,
-  isIsoYear: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
-};
-
-YearPicker.defaultProps = {
-  isIsoYear: false,
 };

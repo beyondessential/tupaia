@@ -5,12 +5,16 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
+import { BaseDatePickerProps } from '../../types/date-picker-types';
 
-export const DayPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onChange }) => {
+export const DayPicker = ({
+  momentDateValue,
+  minMomentDate,
+  maxMomentDate,
+  onChange,
+}: BaseDatePickerProps) => {
   const daysInMonth = momentDateValue.daysInMonth();
   const minAvailableDay = momentDateValue.isSame(minMomentDate, 'month') ? minMomentDate.date() : 1;
   const maxAvailableDay = momentDateValue.isSame(maxMomentDate, 'month')
@@ -34,11 +38,4 @@ export const DayPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onCha
       menuItems={dayOptions}
     />
   );
-};
-
-DayPicker.propTypes = {
-  momentDateValue: PropTypes.instanceOf(moment).isRequired,
-  minMomentDate: PropTypes.instanceOf(moment).isRequired,
-  maxMomentDate: PropTypes.instanceOf(moment).isRequired,
-  onChange: PropTypes.func.isRequired,
 };

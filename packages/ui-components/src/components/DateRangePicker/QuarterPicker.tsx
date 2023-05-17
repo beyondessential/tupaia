@@ -5,14 +5,19 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
+import { BaseDatePickerProps } from '../../types/date-picker-types';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
-export const QuarterPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onChange }) => {
+export const QuarterPicker = ({
+  momentDateValue,
+  minMomentDate,
+  maxMomentDate,
+  onChange,
+}: BaseDatePickerProps) => {
   const minAvailableQuarterNumber = momentDateValue.isSame(minMomentDate, 'year')
     ? minMomentDate.quarter()
     : 1;
@@ -43,11 +48,4 @@ export const QuarterPicker = ({ momentDateValue, minMomentDate, maxMomentDate, o
       onChange={e => onChange(moment(momentDateValue).quarter(e.target.value))}
     />
   );
-};
-
-QuarterPicker.propTypes = {
-  momentDateValue: PropTypes.instanceOf(moment).isRequired,
-  minMomentDate: PropTypes.instanceOf(moment).isRequired,
-  maxMomentDate: PropTypes.instanceOf(moment).isRequired,
-  onChange: PropTypes.func.isRequired,
 };

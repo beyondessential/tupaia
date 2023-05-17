@@ -26,9 +26,9 @@ interface BaseToolbarProps {
   children?: ReactNode;
 }
 
-export const BaseToolbar = ({ children, maxWidth = undefined }: BaseToolbarProps) => (
+export const BaseToolbar = ({ children, maxWidth }: BaseToolbarProps) => (
   <ToolbarWrapper>
-    <Container maxWidth={maxWidth}>{children || null}</Container>
+    <Container maxWidth={maxWidth}>{children!}</Container>
   </ToolbarWrapper>
 );
 

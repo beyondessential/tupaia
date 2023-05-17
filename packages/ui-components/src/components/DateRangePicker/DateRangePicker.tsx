@@ -5,7 +5,6 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
@@ -18,6 +17,7 @@ import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
 import { useDateRangePicker } from './useDateRangePicker';
 import { DatePickerDialog } from './DatePickerDialog';
 import { FlexStart } from '../Layout';
+import { Moment } from 'moment';
 
 const IconButton = styled(MuiIconButton)`
   background: white;
@@ -61,16 +61,27 @@ const Label = styled(Button)`
   pointer-events: none;
 `;
 
+interface DateRangePickerProps {
+  startDate?: Moment;
+  endDate?: Moment;
+  minDate?: string;
+  maxDate?: string;
+  granularity?: typeof GRANULARITY_SHAPE;
+  onSetDates: (startDate: string, endDate: string) => void;
+  isLoading?: boolean;
+  weekDisplayFormat?: string;
+}
+
 export const DateRangePicker = ({
   startDate,
   endDate,
   minDate,
   maxDate,
-  granularity,
+  granularity = GRANULARITIES.DAY,
   onSetDates,
-  isLoading,
+  isLoading = false,
   weekDisplayFormat,
-}) => {
+}: DateRangePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     isSingleDate,
@@ -141,26 +152,4 @@ export const DateRangePicker = ({
       />
     </>
   );
-};
-
-DateRangePicker.propTypes = {
-  startDate: PropTypes.string,
-  endDate: PropTypes.string,
-  minDate: PropTypes.string,
-  maxDate: PropTypes.string,
-  granularity: GRANULARITY_SHAPE,
-  onSetDates: PropTypes.func,
-  isLoading: PropTypes.bool,
-  weekDisplayFormat: PropTypes.string,
-};
-
-DateRangePicker.defaultProps = {
-  startDate: null,
-  endDate: null,
-  minDate: null,
-  maxDate: null,
-  granularity: GRANULARITIES.DAY,
-  onSetDates: () => {},
-  isLoading: false,
-  weekDisplayFormat: null,
 };
