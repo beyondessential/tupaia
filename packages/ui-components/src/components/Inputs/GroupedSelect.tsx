@@ -35,7 +35,7 @@ export const GroupedSelectField = ({ SelectProps = {}, ...props }: TextFieldProp
       IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
     }}
-    {...(props as any)}
+    {...props}
     select
   />
 );

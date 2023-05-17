@@ -28,8 +28,8 @@ interface FileUploadFieldProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>, fileName?: string) => void;
   name: string;
   fileName: string;
-  multiple: boolean;
-  textOnButton: string;
+  multiple?: boolean;
+  textOnButton?: string;
 }
 
 export const FileUploadField = ({

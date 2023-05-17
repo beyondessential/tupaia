@@ -2,8 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useRef, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useRef, useEffect, useState, ReactElement } from 'react';
 import styled from 'styled-components';
 import { Button, OutlinedButton } from '../Button';
 import { TextField } from '../Inputs';
@@ -37,18 +36,29 @@ const TextareaField = styled(TextField)`
   }
 `;
 
-const MessageView = ({ status, message }) => {
-  const inputRef = useRef(null);
+type Message = {
+  id: string;
+  content: string;
+};
+
+interface MessageViewProps {
+  status: string;
+  message: Message;
+}
+
+const MessageView = ({ status, message }: MessageViewProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (status === STATUS.EDITING) {
-      const input = inputRef.current;
-      const { length } = input.value;
-      input.setSelectionRange(length, length);
-      input.focus();
+      const input = inputRef?.current;
+      const inputLength = input?.value?.length || 0;
+      input?.setSelectionRange(inputLength, inputLength);
+      input?.focus();
     }
   }, [status, inputRef]);
 
+  const readOnly = status !== STATUS.EDITING;
   return (
     <TextareaField
       inputRef={inputRef}
@@ -57,18 +67,10 @@ const MessageView = ({ status, message }) => {
       multiline
       defaultValue={message.content}
       InputProps={{
-        readOnly: status !== STATUS.EDITING,
+        readOnly,
       }}
     />
   );
-};
-
-MessageView.propTypes = {
-  status: PropTypes.string.isRequired,
-  message: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    content: PropTypes.string,
-  }),
 };
 
 const StyledCard = styled(({ focus, ...props }) => <Card {...props} />)`
@@ -80,7 +82,23 @@ const CardActions = styled(FlexEnd)`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, className }) => {
+interface UserMessageProps {
+  Header: ReactElement;
+  Footer: ReactElement;
+  message: Message;
+  onUpdate: (id: string) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+  className?: string;
+}
+
+export const UserMessage = ({
+  Header,
+  Footer,
+  message,
+  onUpdate,
+  onDelete,
+  className,
+}: UserMessageProps) => {
   const [status, setStatus] = useState(STATUS.READ_ONLY);
 
   const handleUpdate = async () => {
@@ -114,21 +132,4 @@ export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, class
       )}
     </StyledCard>
   );
-};
-
-UserMessage.propTypes = {
-  Header: PropTypes.any.isRequired,
-  Footer: PropTypes.any,
-  message: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    content: PropTypes.string,
-  }),
-  onUpdate: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  className: PropTypes.string,
-};
-
-UserMessage.defaultProps = {
-  Footer: null,
-  className: null,
 };

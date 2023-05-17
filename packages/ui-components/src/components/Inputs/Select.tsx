@@ -34,7 +34,7 @@ export const SelectField = ({ SelectProps = {}, ...props }: TextFieldProps) => {
         IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
         ...SelectProps,
       }}
-      {...(props as any)} // This is a workaround for issue with rest props being considered incompatible with the type of TextFieldProps
+      {...props}
       select
     />
   );

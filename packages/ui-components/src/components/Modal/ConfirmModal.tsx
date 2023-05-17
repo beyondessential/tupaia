@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReportProblem from '@material-ui/icons/ReportProblem';
 import Typography from '@material-ui/core/Typography';
@@ -29,6 +28,20 @@ const PositionedAlert = styled(Alert)`
   margin-top: 1rem;
 `;
 
+interface ConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  isLoading: boolean;
+  title: string;
+  mainText: string;
+  description?: string;
+  error?: string;
+  actionText: string;
+  loadingText?: string;
+  cancelText: string;
+  handleAction: () => void;
+}
+
 export const ConfirmModal = ({
   isOpen,
   onClose,
@@ -39,9 +52,9 @@ export const ConfirmModal = ({
   description,
   actionText,
   loadingText,
-  cancelText,
+  cancelText = 'Cancel',
   handleAction,
-}) => {
+}: ConfirmModalProps) => {
   return (
     <Dialog onClose={onClose} open={isOpen}>
       <DialogHeader onClose={onClose} title={title} />
@@ -69,24 +82,4 @@ export const ConfirmModal = ({
       </DialogFooter>
     </Dialog>
   );
-};
-
-ConfirmModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
-  mainText: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  error: PropTypes.string,
-  actionText: PropTypes.string.isRequired,
-  loadingText: PropTypes.string.isRequired,
-  cancelText: PropTypes.string,
-  handleAction: PropTypes.func.isRequired,
-};
-
-ConfirmModal.defaultProps = {
-  description: null,
-  error: null,
-  cancelText: 'Cancel',
 };
