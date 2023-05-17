@@ -4,8 +4,7 @@
  *
  */
 import React from 'react';
-import moment from 'moment';
-import PropTypes from 'prop-types';
+import { Moment } from 'moment';
 import {
   GRANULARITY_CONFIG,
   GRANULARITIES,
@@ -14,8 +13,9 @@ import {
 } from '@tupaia/utils';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
+import { WeekPickerProps } from '../../types/date-picker-types';
 
-const useBoundaryWeekOrDefault = (currentDate, boundaryDate, defaultWeek) =>
+const useBoundaryWeekOrDefault = (currentDate: Moment, boundaryDate: Moment, defaultWeek: number) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;
 
 export const WeekPicker = ({
@@ -24,8 +24,15 @@ export const WeekPicker = ({
   maxMomentDate,
   weekDisplayFormat,
   onChange,
-}) => {
-  const { pickerFormat, modifier } = weekDisplayFormat
+}: WeekPickerProps) => {
+  // need to cast string of modifier to type
+  const {
+    pickerFormat,
+    modifier,
+  }: {
+    pickerFormat: string;
+    modifier?: any; // TODO: TS add type for modifier somehow
+  } = weekDisplayFormat
     ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
     : GRANULARITY_CONFIG[GRANULARITIES.WEEK];
 
@@ -63,11 +70,4 @@ export const WeekPicker = ({
       onChange={e => onChange(date.clone().isoWeek(e.target.value))}
     />
   );
-};
-
-WeekPicker.propTypes = {
-  momentDateValue: PropTypes.instanceOf(moment).isRequired,
-  minMomentDate: PropTypes.instanceOf(moment).isRequired,
-  maxMomentDate: PropTypes.instanceOf(moment).isRequired,
-  onChange: PropTypes.func.isRequired,
 };
