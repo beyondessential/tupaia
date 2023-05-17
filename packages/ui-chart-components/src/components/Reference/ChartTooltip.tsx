@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../constants';
-import { ChartTypes, ValueTypes } from '../../types';
+import { ChartTypes, ValueType } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
@@ -169,7 +169,7 @@ export const ChartTooltip = props => {
 };
 
 ChartTooltip.propTypes = {
-  valueType: PropTypes.oneOf(Object.values(ValueTypes)),
+  valueType: PropTypes.oneOf(Object.values(ValueType)),
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
   payload: PropTypes.array,
 };

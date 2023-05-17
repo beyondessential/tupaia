@@ -9,11 +9,6 @@ import { DataTable, SmallAlert } from '@tupaia/ui-components';
 import { ViewContent } from '../types';
 import { getChartTableData, getIsChartData, getNoDataString } from '../utils';
 
-interface ChartTableProps {
-  viewContent?: ViewContent;
-  className?: string;
-}
-
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
 `;
@@ -23,6 +18,11 @@ const NoData = styled(SmallAlert)`
   margin-left: auto;
   margin-right: auto;
 `;
+
+interface ChartTableProps {
+  viewContent: ViewContent;
+  className?: string;
+}
 
 export const ChartTable: React.FC<ChartTableProps> = ({ viewContent, className }) => {
   const { columns, data } = getChartTableData(viewContent);

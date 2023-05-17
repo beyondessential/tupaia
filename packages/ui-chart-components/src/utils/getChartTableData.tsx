@@ -9,14 +9,14 @@ import { DEFAULT_DATA_KEY } from '../constants';
 import { ChartTypes } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
-import { ValueTypes, ViewContent } from '../types';
+import { ValueType, ViewContent } from '../types';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
-const sanitizeValueType = (valueType: ValueTypes): ValueTypes => {
-  return valueType === ValueTypes.FractionAndPercentage ? ValueTypes.Percentage : valueType;
+const sanitizeValueType = (valueType: ValueType): ValueType => {
+  return valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 };
-const getFormattedValue = (value: string | undefined, valueType: ValueTypes): any =>
+const getFormattedValue = (value: string | undefined, valueType: ValueType): any =>
   value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
 const FirstColumnCell = styled.span`

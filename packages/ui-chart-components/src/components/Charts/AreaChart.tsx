@@ -10,7 +10,7 @@ import { BLUE } from '../../constants';
 interface AreaChartProps {
   color?: string;
   dataKey: string;
-  yAxisId: string;
+  yAxisId: string | number;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }

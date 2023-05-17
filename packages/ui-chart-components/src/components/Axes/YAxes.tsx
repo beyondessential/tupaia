@@ -4,14 +4,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE } from '../../constants';
-import { ValueTypes } from '../../types';
+import { ViewContent } from '../../types';
 import { getContrastTextColor } from '../../utils';
-
-const { Percentage } = ValueTypes;
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -48,8 +45,8 @@ const parseDomainConfig = config => {
   }
 };
 
-const getDefaultYAxisDomain = viewContent =>
-  viewContent.valueType === Percentage ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
+const getDefaultYAxisDomain = (viewContent: ViewContent) =>
+  viewContent.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
 const calculateYAxisDomain = ({ min, max }) => {
   return [parseDomainConfig(min), parseDomainConfig(max)];
@@ -74,7 +71,7 @@ const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
  */
 const getAxisWidth = (data, dataKeys, valueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
-  if (valueType === ValueTypes.Number || valueType === undefined) {
+  if (valueType === 'number' || valueType === undefined) {
     const values = data.map(item => dataKeys.map(key => item[key])).flat();
     const maxValue = Math.max(...values);
 
@@ -92,8 +89,21 @@ const getAxisWidth = (data, dataKeys, valueType) => {
 
   return undefined;
 };
+interface YAxisProps {
+  viewContent: ViewContent;
+  config?: object;
+  chartDataConfig: object;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+}
 
-const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlarged }) => {
+const YAxis: React.FC<YAxisProps> = ({
+  config = {},
+  viewContent,
+  chartDataConfig,
+  isExporting = false,
+  isEnlarged = false,
+}) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
@@ -117,7 +127,7 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
-      allowDataOverflow={valueType === Percentage || containsClamp(yAxisDomain)}
+      allowDataOverflow={valueType === 'percentage' || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
       label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor, isEnlarged)}
       tickFormatter={value =>
@@ -136,21 +146,19 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
   );
 };
 
-YAxis.propTypes = {
-  config: PropTypes.object,
-  viewContent: PropTypes.object.isRequired,
-  chartDataConfig: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
+interface YAxesProps {
+  viewContent: ViewContent;
+  chartDataConfig: object;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+}
 
-YAxis.defaultProps = {
-  config: {},
-  isExporting: false,
-  isEnlarged: false,
-};
-
-export const YAxes = ({ viewContent, chartDataConfig, isExporting, isEnlarged }) => {
+export const YAxes: React.FC<YAxesProps> = ({
+  viewContent,
+  chartDataConfig,
+  isExporting = false,
+  isEnlarged = false,
+}) => {
   const { chartConfig = {} } = viewContent;
 
   const axisPropsById = {
@@ -179,16 +187,4 @@ export const YAxes = ({ viewContent, chartDataConfig, isExporting, isEnlarged })
   return axesProps.length > 0
     ? axesProps.map(props => YAxis({ config: props, ...baseProps }))
     : YAxis(baseProps);
-};
-
-YAxes.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  chartDataConfig: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-YAxes.defaultProps = {
-  isExporting: false,
-  isEnlarged: false,
 };

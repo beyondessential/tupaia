@@ -31,10 +31,10 @@ import { XAxis as XAxisComponent, YAxes } from './Axes';
 const { Area, Bar, Composed, Line } = ChartTypes;
 
 // Orientation of the axis is used as an alias for its id
-const Y_AXIS_IDS = {
-  left: 0,
-  right: 1,
-};
+enum Y_AXIS_IDS {
+  left = 0,
+  right = 1,
+}
 
 const DEFAULT_Y_AXIS = {
   id: Y_AXIS_IDS.left,
@@ -45,7 +45,8 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
+  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
 const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
@@ -69,7 +70,7 @@ const CHART_TYPE_TO_CHART = {
   [Line]: LineChartComponent,
 };
 
-const getRealDataKeys = (chartConfig: BaseChartConfig) =>
+const getRealDataKeys = (chartConfig: BaseChartConfig | {}) =>
   Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
 const getLegendAlignment = (legendPosition: string, isExporting: boolean) => {
@@ -89,7 +90,7 @@ const getHeight = (isExporting: boolean, isEnlarged: boolean, hasLegend: boolean
   return isEnlarged && hasLegend && isMobile() ? 320 : undefined;
 };
 
-const getMargin = (isExporting: string, isEnlarged: boolean) => {
+const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
   if (isExporting) {
     return { left: 20, right: 20, top: 20, bottom: 60 };
   }
@@ -114,8 +115,10 @@ export const CartesianChart: React.FC<CartesianChartProps> = ({
   isExporting = false,
   legendPosition = 'bottom',
 }) => {
-  const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
-  const [activeDataKeys, setActiveDataKeys] = useState([]);
+  const [chartConfig, setChartConfig] = useState<BaseChartConfig | object>(
+    viewContent.chartConfig || {},
+  );
+  const [activeDataKeys, setActiveDataKeys] = useState<string[]>([]);
   // eslint-disable-next-line no-unused-vars
   const [_, setLoaded] = useState(false);
 
@@ -137,48 +140,50 @@ export const CartesianChart: React.FC<CartesianChartProps> = ({
     referenceAreas,
   } = viewContent;
 
-  const getIsActiveKey = legendDatakey =>
+  const getIsActiveKey = (legendDataKey: string) =>
     activeDataKeys.length === 0 ||
-    activeDataKeys.includes(legendDatakey) ||
-    legendDatakey === LEGEND_ALL_DATA_KEY;
+    activeDataKeys.includes(legendDataKey) ||
+    legendDataKey === LEGEND_ALL_DATA_KEY;
 
-  const updateChartConfig = hasDisabledData => {
+  const updateChartConfig = (hasDisabledData: boolean) => {
     const newChartConfig = { ...chartConfig };
 
-    if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
+    if (hasDisabledData && !chartConfig.hasOwnProperty(LEGEND_ALL_DATA_KEY)) {
       const allChartType = Object.values(chartConfig)[0].chartType || defaultChartType || 'line';
       newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
       setChartConfig(newChartConfig);
-    } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
+    } else if (!hasDisabledData && chartConfig.hasOwnProperty(LEGEND_ALL_DATA_KEY)) {
       delete newChartConfig[LEGEND_ALL_DATA_KEY];
       setChartConfig(newChartConfig);
     }
   };
 
-  const onLegendClick = legendDatakey => {
+  const onLegendClick = (legendDataKey: string) => {
     const actionWillSelectAllKeys =
       activeDataKeys.length + 1 >= getRealDataKeys(chartConfig).length &&
-      !activeDataKeys.includes(legendDatakey);
+      !activeDataKeys.includes(legendDataKey);
 
-    if (legendDatakey === LEGEND_ALL_DATA_KEY || actionWillSelectAllKeys) {
+    if (legendDataKey === LEGEND_ALL_DATA_KEY || actionWillSelectAllKeys) {
       setActiveDataKeys([]);
       return;
     }
 
     // Note, may be false even if the dataKey is active
-    if (activeDataKeys.includes(legendDatakey)) {
-      setActiveDataKeys(activeDataKeys.filter(dk => dk !== legendDatakey));
+    if (activeDataKeys.includes(legendDataKey)) {
+      setActiveDataKeys(activeDataKeys.filter(dk => dk !== legendDataKey));
     } else {
-      setActiveDataKeys([...activeDataKeys, legendDatakey]);
+      setActiveDataKeys([...activeDataKeys, legendDataKey]);
     }
   };
 
-  const filterDisabledData = data => {
+  const filterDisabledData = (data: object[]) => {
     // Can't disable data without chartConfig
-    if (!Object.keys(chartConfig).length === 0) return data;
+    if (Object.keys(chartConfig).length === 0) {
+      return data;
+    }
 
     const hasDisabledData = activeDataKeys.length >= 1;
-    updateChartConfig(hasDisabledData, viewContent);
+    updateChartConfig(hasDisabledData);
 
     return hasDisabledData
       ? data.map(dataSeries =>
@@ -207,7 +212,7 @@ export const CartesianChart: React.FC<CartesianChartProps> = ({
       <ChartContainer
         data={filterDisabledData(data)}
         margin={getMargin(isExporting, isEnlarged)}
-        reverseStackOrder={isExporting === true}
+        reverseStackOrder={isExporting}
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
@@ -257,7 +262,7 @@ export const CartesianChart: React.FC<CartesianChartProps> = ({
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
-        {defaultChartType === BAR && data.length > 20 && !isExporting && isEnlarged && (
+        {defaultChartType === Bar && data.length > 20 && !isExporting && isEnlarged && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
       </ChartContainer>

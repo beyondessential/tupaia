@@ -4,12 +4,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
-import { ChartTypes } from '../../types';
+import { ChartTypes, ViewContent } from '../../types';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -33,7 +32,7 @@ const X_AXIS_PADDING = {
   },
 };
 
-const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
+const renderXAxisLabel = (label, fillColor, isEnlarged: boolean, isExporting: boolean) => {
   if (label && isEnlarged && !isExporting)
     return {
       value: label,
@@ -46,7 +45,7 @@ const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
 
 const BASE_H = 40;
 
-const calculateXAxisHeight = (data, isExporting) => {
+const calculateXAxisHeight = (data, isExporting: boolean) => {
   if (getIsTimeSeries(data)) {
     return BASE_H;
   }
@@ -57,7 +56,17 @@ const calculateXAxisHeight = (data, isExporting) => {
   return BASE_H;
 };
 
-export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
+interface XAxisProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+}
+
+export const XAxis: React.FC<XAxisProps> = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = false,
+}) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { Bar, Composed } = ChartTypes;
   const { chartType, chartConfig = {}, data } = viewContent;
@@ -70,7 +79,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     @see https://recharts.org/en-US/api/YAxis
   */
   const getXAxisTickInterval = () => {
-    if (chartType === BAR || chartType === COMPOSED) {
+    if (chartType === Bar || chartType === Composed) {
       if (isTimeSeries) {
         return 'preserveStartEnd';
       }
@@ -110,13 +119,13 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     if (isExporting) {
       return renderVerticalTick;
     }
-    return isEnlarged || chartType === BAR ? undefined : renderTickFirstAndLastLabel;
+    return isEnlarged || chartType === Bar ? undefined : renderTickFirstAndLastLabel;
   };
 
   const getXAxisPadding = () => {
     const hasBars =
-      chartType === BAR ||
-      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
+      chartType === Bar ||
+      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
 
     if (hasBars && data.length > 1 && isTimeSeries) {
       const paddingKey = isEnlarged ? 'enlarged' : 'preview';
@@ -157,15 +166,4 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       {...(isTimeSeries ? AXIS_TIME_PROPS : {})}
     />
   );
-};
-
-XAxis.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-XAxis.defaultProps = {
-  isExporting: false,
-  isEnlarged: false,
 };

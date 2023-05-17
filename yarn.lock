@@ -5766,6 +5766,7 @@ __metadata:
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.get": ^4.4.7
     "@types/recharts": ^1.8.24
     lodash.get: ^4.4.2
     moment: ^2.29.1
@@ -6453,6 +6454,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: 57256262754e9082c25ddcaa28c9e27b215a70716790f1d47550b0bab608b2ec5fd4786ba7d109161b8d4e6c8e0b4dbc2356111d3d8415e7934d8616ee64d286
+  languageName: node
+  linkType: hard
+
+"@types/lodash.get@npm:^4.4.7":
+  version: 4.4.7
+  resolution: "@types/lodash.get@npm:4.4.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0dbf1960606e4707c34e8ffbe97ffaad0e47fc5df7a6e24ea6e4fe5838d2468aa13360f38815c77b06e3c9932631ae15662b4139036a69ee16aeb54827a21405
   languageName: node
   linkType: hard
 

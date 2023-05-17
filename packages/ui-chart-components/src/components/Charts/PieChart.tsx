@@ -2,30 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-/**
- * PieChart
- *
- * Renders a recharts PieChart from data provided by viewContent object
- * @prop {object} viewContent An object with the following structure
-   {
-    "type":"chart",
-    "chartType":"pie",
-    "name":"% Stock on Hand",
-    "valueType": "percentage",
-    "presentationOptions": {
-      "sectorKey1": { "color": "#111111", "label": "Satanic" },
-      "sectorKey2": { "color": "#222222", "label": "Nesting" },
-      "sectorKey3": { "color": "#333333", "label": "HelpMe" }
-    },
-    "data":[{ name: "Total value stock consumables", value:24063409.4 },
-            { name: "Total value stock medicines", value:24565440.6 },
-            ...]
-  }
- */
-
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -37,10 +14,11 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import { OFF_WHITE, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from '../../constants';
+import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
+import { ViewContent } from '../../types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -69,7 +47,7 @@ const Text = styled(Typography)`
   color: #333;
 `;
 
-const getLegendAlignment = (legendPosition, isExporting) => {
+const getLegendAlignment = (legendPosition: string, isExporting: boolean) => {
   if (isExporting) {
     return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
@@ -79,7 +57,7 @@ const getLegendAlignment = (legendPosition, isExporting) => {
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getFormattedValue = (viewContent, data) => {
+const getFormattedValue = (viewContent: ViewContent, data) => {
   const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
   const { name, value, originalItem } = data;
@@ -88,9 +66,7 @@ const getFormattedValue = (viewContent, data) => {
   return formatDataValueByType({ value, metadata }, valueTypeForLabel);
 };
 
-const makeCustomTooltip = viewContent => props => {
-  const { active, payload } = props;
-
+const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }) => {
   if (!active || !payload || !payload.length) {
     return null;
   }
@@ -109,21 +85,33 @@ const makeCustomTooltip = viewContent => props => {
   );
 };
 
-const makeLabel = viewContent => props => {
-  const { payload } = props;
+const makeLabel = (viewContent: ViewContent) => ({ payload }) => {
   return getFormattedValue(viewContent, payload.payload);
 };
 
 const chartColorAtIndex = (colorArray, index) => colorArray[index % colorArray.length];
 
-const getHeight = (isExporting, isEnlarged) => {
+const getHeight = (isExporting: boolean, isEnlarged: boolean) => {
   if (isExporting) {
     return 420;
   }
   return isEnlarged && isMobile() ? 320 : undefined;
 };
 
-export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
+interface PieChartProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+  legendPosition?: string;
+}
+export const PieChart: React.FC<PieChartProps> = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = false,
+  onItemClick = () => {},
+  legendPosition = 'bottom',
+}) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { presentationOptions, data } = viewContent;
   // eslint-disable-next-line no-unused-vars
@@ -216,19 +204,4 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
       </BasePieChart>
     </ResponsiveContainer>
   );
-};
-
-PieChart.propTypes = {
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-  legendPosition: PropTypes.string,
-};
-
-PieChart.defaultProps = {
-  isEnlarged: false,
-  isExporting: false,
-  onItemClick: () => {},
-  legendPosition: 'bottom',
 };

@@ -19,7 +19,7 @@ interface DataProps {
 
 interface BarChartProps {
   dataKey: string;
-  yAxisId: string;
+  yAxisId: string | number;
   stackId: string;
   valueType: string;
   color?: string;

@@ -10,7 +10,7 @@ import { BLUE, DARK_BLUE } from '../../constants';
 interface LineChartProps {
   dataKey: string;
   opacity?: string;
-  yAxisId: string;
+  yAxisId: string | number;
   valueType: string;
   color?: string;
   isExporting?: boolean;
