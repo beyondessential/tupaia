@@ -5,12 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
-import {
-  SelectProps as MuiSelectProps,
-  SvgIconProps,
-  TextFieldProps,
-  MenuItem as MuiMenuItem,
-} from '@material-ui/core';
+import { SvgIconProps, TextFieldProps, MenuItem as MuiMenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { TextField } from './TextField';
 
@@ -31,20 +26,20 @@ const StyledTextField = styled(TextField)`
     }
   }
 `;
-type SelectFieldProps = TextFieldProps & {
-  SelectProps?: MuiSelectProps;
+
+export const SelectField = ({ SelectProps = {}, ...props }: TextFieldProps) => {
+  return (
+    <StyledTextField
+      SelectProps={{
+        IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
+        ...SelectProps,
+      }}
+      {...(props as any)} // This is a workaround for issue with rest props being considered incompatible with the type of TextFieldProps
+      select
+    />
+  );
 };
 
-export const SelectField = ({ SelectProps = {}, ...props }: SelectFieldProps) => (
-  <StyledTextField
-    SelectProps={{
-      IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
-      ...SelectProps,
-    }}
-    {...props}
-    select
-  />
-);
 export const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
@@ -55,7 +50,7 @@ type Option = {
   label: string;
 };
 
-type SelectProps = SelectFieldProps & {
+type SelectProps = TextFieldProps & {
   options: Option[];
   showPlaceholder?: boolean;
 };

@@ -2,10 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { ElementType, ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
 import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
+import { OverrideableComponentProps } from '../types';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
@@ -66,11 +67,8 @@ export const LightPrimaryButton = styled(Button)`
  *   We need to add extra props here because of the issue with MUI types and 'component'
  *  [More info here]{@link https://github.com/mui/material-ui/issues/29440}
  * */
-export const GreyButton = styled(Button)<
-  ButtonProps & {
-    component?: keyof JSX.IntrinsicElements | ElementType;
-  }
->`
+
+export const GreyButton = styled(Button)<OverrideableComponentProps<ButtonProps>>`
   background-color: #6f7b82;
   color: ${props => props.theme.palette.common.white};
 `;
@@ -187,7 +185,8 @@ export const LightOutlinedButton = styled(OutlinedButton)`
 /*
  * Grey Outline Button
  */
-export const GreyOutlinedButton = styled(OutlinedButton)`
+// eslint-disable-next-line no-bitwise
+export const GreyOutlinedButton = styled(OutlinedButton)<OverrideableComponentProps<ButtonProps>>`
   color: ${props => props.theme.palette.text.secondary};
   border: 1px solid ${props => props.theme.palette.grey['400']};
   background: none;
