@@ -16,7 +16,7 @@ import {
   getIsChartData,
   getNoDataString,
 } from '../utils';
-import { ChartTypes, ViewContent } from '../types';
+import { ChartType, ViewContent } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -69,11 +69,11 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = (chartType: ChartTypes) => {
+const getChartComponent = (chartType: ChartType) => {
   switch (chartType) {
-    case ChartTypes.Pie:
+    case ChartType.Pie:
       return PieChart;
-    case ChartTypes.Gauge:
+    case ChartType.Gauge:
       return GaugeChart;
     default:
       return CartesianChart;
@@ -97,7 +97,7 @@ export const Chart: React.FC<ChartProps> = ({
 }) => {
   const { chartType } = viewContent;
 
-  if (!Object.values(ChartTypes).includes(chartType)) {
+  if (!Object.values(ChartType).includes(chartType)) {
     return <UnknownChart />;
   }
 

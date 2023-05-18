@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { TUPAIA_ORANGE } from '../../constants';
-import { ChartTypes } from '../../types';
+import { ChartType } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({ referenceLineLabel, isExporting }) => {
@@ -124,7 +124,7 @@ const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
 };
 
 export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }) => {
-  if (viewContent.chartType === ChartTypes.Bar) {
+  if (viewContent.chartType === ChartType.Bar) {
     return BarReferenceLine({ viewContent, isExporting, isEnlarged });
   }
   return ValueReferenceLine({ viewContent, isExporting, isEnlarged });

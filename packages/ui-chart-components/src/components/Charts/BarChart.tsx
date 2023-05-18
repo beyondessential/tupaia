@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { Bar, LabelList } from 'recharts';
-import { BarChartConfig } from '@tupaia/types';
+import { BarChartConfig, ComposedChartConfig } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE } from '../../constants';
-import { ChartTypes } from '../../types';
+import { ChartType } from '../../types';
 import { getIsTimeSeries } from '../../utils';
 
 interface DataProps {
@@ -26,7 +26,7 @@ interface BarChartProps {
   data: DataProps[];
   isEnlarged?: boolean;
   isExporting?: boolean;
-  chartConfig: BarChartConfig;
+  chartConfig: BarChartConfig | ComposedChartConfig;
   exportWithLabels?: boolean;
 }
 
@@ -43,7 +43,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   exportWithLabels = true,
 }) => {
   const getBarSize = () => {
-    if (chartConfig.chartType === ChartTypes.Composed || data.length === 1) {
+    if (chartConfig.chartType === ChartType.Composed || data.length === 1) {
       return isEnlarged ? 100 : 50;
     }
     // Too many stacks will automatically set bar size to 0.

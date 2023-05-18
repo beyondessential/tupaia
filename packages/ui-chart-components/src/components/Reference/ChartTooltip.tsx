@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../constants';
-import { ChartTypes, ValueType } from '../../types';
+import { ChartType, ValueType } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
@@ -69,10 +69,10 @@ const MultiValueTooltip = ({
   const { name: headline, timestamp } = data;
 
   if (chartType) {
-    if (chartType === ChartTypes.Bar) {
+    if (chartType === ChartType.Bar) {
       payload.reverse();
     }
-    if (chartType === ChartTypes.Line) {
+    if (chartType === ChartType.Line) {
       payload.sort((obj1, obj2) => obj2.value - obj1.value);
     }
   }

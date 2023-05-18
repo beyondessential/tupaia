@@ -12,7 +12,7 @@ export interface DataProps {
   timestamp?: string;
 }
 
-export enum ChartTypes {
+export enum ChartType {
   Area = 'area',
   Bar = 'bar',
   Composed = 'composed',
@@ -38,8 +38,25 @@ export enum ChartTypes {
  *   }
  */
 // Todo: add period granularity to this type
+
+export type VizPeriodGranularity =
+  | 'day'
+  | 'one_day_at_a_time'
+  | 'week'
+  | 'one_week_at_a_time'
+  | 'month'
+  | 'one_month_at_a_time'
+  | 'quarter'
+  | 'one_quarter_at_a_time'
+  | 'year'
+  | 'one_year_at_a_time';
+
+type PresentationOptions = {
+  periodTickFormat?: string;
+};
+
 export type ViewContent = {
-  chartType: ChartTypes;
+  chartType: ChartType;
   valueType?: ValueType;
   name?: string;
   xName?: string;
@@ -52,7 +69,7 @@ export type ViewContent = {
   labelType?: string;
   data: DataProps[];
   chartConfig?: BaseChartConfig;
-  presentationOptions?: object;
+  presentationOptions?: PresentationOptions;
   renderLegendForOneItem?: boolean;
   referenceAreas?: ReferenceAreaProps[];
 };

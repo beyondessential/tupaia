@@ -5,21 +5,16 @@
  */
 import { BaseChartConfig } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { ChartTypes, ViewContent } from '../types';
+import { ChartType, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';
 
-/**
- *
- * @param {number} numberOfLayers
- * @param {number} index
- * @param {boolean = false} ascending
- * @returns {number} opacity value
- */
-export const getLayeredOpacity = (numberOfLayers, index, ascending = false) => {
-  return ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers;
-};
+export const getLayeredOpacity = (
+  numberOfLayers: number,
+  index: number,
+  ascending: boolean = false,
+) => (ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers);
 
 export const parseChartConfig = (viewContent: ViewContent) => {
   const { chartType, chartConfig = {}, data, colorPalette: paletteName } = viewContent;
@@ -60,8 +55,8 @@ const setOpacityValues = (chartConfig: BaseChartConfig): BaseChartConfig => {
 // Adds default colors for every element with no color defined
 const addDefaultColorsToConfig = (
   chartConfig: BaseChartConfig,
-  paletteName,
-  chartType: ChartTypes,
+  paletteName: string,
+  chartType: ChartType,
 ) => {
   const newConfig = {};
 
@@ -82,8 +77,8 @@ const addDefaultColorsToConfig = (
   return newConfig;
 };
 
-const getDefaultPaletteName = (chartType: ChartTypes, numberRequired: number): string => {
-  if (chartType === ChartTypes.Composed) {
+const getDefaultPaletteName = (chartType: ChartType, numberRequired: number): string => {
+  if (chartType === ChartType.Composed) {
     return 'COMPOSED_CHART_COLOR_PALETTE';
   }
   return numberRequired > Object.keys(COLOR_PALETTES.CHART_COLOR_PALETTE).length
@@ -93,8 +88,8 @@ const getDefaultPaletteName = (chartType: ChartTypes, numberRequired: number): s
 
 // Used to layer line charts on top of bar charts for composed charts.
 const CHART_SORT_ORDER = {
-  [ChartTypes.Line]: 0,
-  [ChartTypes.Bar]: 1,
+  [ChartType.Line]: 0,
+  [ChartType.Bar]: 1,
 };
 
 const defaultSort = (a, b) => {

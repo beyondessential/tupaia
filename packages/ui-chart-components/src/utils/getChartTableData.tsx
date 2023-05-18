@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ChartTypes } from '../types';
+import { ChartType } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 import { ValueType, ViewContent } from '../types';
@@ -101,7 +101,7 @@ const processData = (viewContent: ViewContent) => {
 
   const { data, chartType } = viewContent;
 
-  if (chartType === ChartTypes.Pie) {
+  if (chartType === ChartType.Pie) {
     return data.sort((a, b) => b.value - a.value);
   }
   // For time series, sort by timestamp so that the table is in chronological order always

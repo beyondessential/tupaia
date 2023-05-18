@@ -8,7 +8,7 @@ import { Text, XAxis as XAxisComponent } from 'recharts';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
-import { ChartTypes, ViewContent } from '../../types';
+import { ChartType, DataProps, ViewContent } from '../../types';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -32,20 +32,26 @@ const X_AXIS_PADDING = {
   },
 };
 
-const renderXAxisLabel = (label, fillColor, isEnlarged: boolean, isExporting: boolean) => {
-  if (label && isEnlarged && !isExporting)
+const renderXAxisLabel = (
+  label: string | number | undefined,
+  fillColor: string | undefined,
+  isEnlarged: boolean,
+  isExporting: boolean,
+) => {
+  if (label && isEnlarged && !isExporting) {
     return {
       value: label,
       fill: fillColor,
       offset: -5,
       position: 'insideBottom',
     };
-  return null;
+  }
+  return undefined;
 };
 
 const BASE_H = 40;
 
-const calculateXAxisHeight = (data, isExporting: boolean) => {
+const calculateXAxisHeight = (data: DataProps[], isExporting: boolean) => {
   if (getIsTimeSeries(data)) {
     return BASE_H;
   }
@@ -68,7 +74,7 @@ export const XAxis: React.FC<XAxisProps> = ({
   isEnlarged = false,
 }) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
-  const { Bar, Composed } = ChartTypes;
+  const { Bar, Composed } = ChartType;
   const { chartType, chartConfig = {}, data } = viewContent;
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);
@@ -90,7 +96,7 @@ export const XAxis: React.FC<XAxisProps> = ({
     return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
-  const formatXAxisTick = tickData => {
+  const formatXAxisTick = (tickData: number) => {
     const { periodGranularity, presentationOptions = {} } = viewContent;
     const { periodTickFormat } = presentationOptions;
 
@@ -99,7 +105,7 @@ export const XAxis: React.FC<XAxisProps> = ({
       : tickData;
   };
 
-  const renderTickFirstAndLastLabel = tickProps => {
+  const renderTickFirstAndLastLabel = (tickProps: any) => {
     const { index, payload } = tickProps;
 
     // Only render first and last ticks labels, the rest just have a tick mark without text
@@ -125,6 +131,7 @@ export const XAxis: React.FC<XAxisProps> = ({
   const getXAxisPadding = () => {
     const hasBars =
       chartType === Bar ||
+      // @ts-ignore
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
 
     if (hasBars && data.length > 1 && isTimeSeries) {
@@ -137,7 +144,7 @@ export const XAxis: React.FC<XAxisProps> = ({
     return { left: 0, right: 10 };
   };
 
-  const renderVerticalTick = tickProps => {
+  const renderVerticalTick = (tickProps: any) => {
     const { payload, ...restOfProps } = tickProps;
 
     return (
@@ -155,6 +162,7 @@ export const XAxis: React.FC<XAxisProps> = ({
   return (
     <XAxisComponent
       dataKey="name"
+      // @ts-ignore
       label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}

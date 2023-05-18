@@ -13,6 +13,8 @@ import {
   Legend,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
+  LegendProps,
 } from 'recharts';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
@@ -57,7 +59,7 @@ const getLegendAlignment = (legendPosition: string, isExporting: boolean) => {
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getFormattedValue = (viewContent: ViewContent, data) => {
+const getFormattedValue = (viewContent: ViewContent, data: any) => {
   const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
   const { name, value, originalItem } = data;
@@ -66,7 +68,7 @@ const getFormattedValue = (viewContent: ViewContent, data) => {
   return formatDataValueByType({ value, metadata }, valueTypeForLabel);
 };
 
-const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }) => {
+const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }: TooltipProps) => {
   if (!active || !payload || !payload.length) {
     return null;
   }
@@ -85,11 +87,12 @@ const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }) =>
   );
 };
 
-const makeLabel = (viewContent: ViewContent) => ({ payload }) => {
+const makeLabel = (viewContent: ViewContent) => ({ payload }: any) => {
   return getFormattedValue(viewContent, payload.payload);
 };
 
-const chartColorAtIndex = (colorArray, index) => colorArray[index % colorArray.length];
+const chartColorAtIndex = (colorArray: string[], index: number) =>
+  colorArray[index % colorArray.length];
 
 const getHeight = (isExporting: boolean, isEnlarged: boolean) => {
   if (isExporting) {
@@ -125,7 +128,7 @@ export const PieChart: React.FC<PieChartProps> = ({
     }, 50);
   }, []);
 
-  const handleMouseEnter = (event, index) => {
+  const handleMouseEnter = (event: React.MouseEvent, index: number) => {
     setActiveIndex(index);
   };
 
@@ -133,8 +136,10 @@ export const PieChart: React.FC<PieChartProps> = ({
     setActiveIndex(-1);
   };
 
-  const getPresentationOption = (key, option) =>
-    presentationOptions && presentationOptions[key] && presentationOptions[key][option];
+  const getPresentationOption = (key: string, option: string) =>
+    !!presentationOptions &&
+    presentationOptions.hasOwnProperty(key) &&
+    presentationOptions[key][option];
 
   const getValidData = () =>
     data

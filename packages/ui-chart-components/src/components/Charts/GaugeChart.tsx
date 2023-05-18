@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   Label,
   Text as RechartText,
+  LabelProps,
 } from 'recharts';
 import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
@@ -27,12 +28,13 @@ interface GaugeChartProps {
   onItemClick?: (item: any) => void;
 }
 
-const Text = styled(RechartText)`<{ $fontSize: string; $isExporting: boolean }>
-  font-size: ${p => p.$fontSize};
+const Text = styled(RechartText)<{ $fontSize: string | number | undefined; $isExporting: boolean }>`
+  font-size: ${({ $fontSize }) => $fontSize};
   font-weight: bold;
   fill: ${({ theme, $isExporting }) => {
     return theme.palette.type === 'light' || $isExporting ? TRANS_BLACK : WHITE;
-  }};`;
+  }};
+`;
 
 const getHeight = (isExporting?: boolean, isEnlarged?: boolean) => {
   if (isExporting) {
@@ -70,7 +72,7 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
   const innerRadius = 60 * responsiveStyle;
   const outerRadius = innerRadius * 1.4;
 
-  const getLabelContent = ({ value, x, y, fontSize }) => {
+  const getLabelContent = ({ value, x, y, fontSize }: LabelProps) => {
     const positioningProps = {
       x,
       y,
@@ -78,6 +80,7 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
       verticalAnchor: 'middle',
     };
     return (
+      // @ts-ignore
       <Text {...positioningProps} $fontSize={fontSize} $isExporting={isExporting}>
         {value}
       </Text>
@@ -85,7 +88,7 @@ export const GaugeChart: React.FC<GaugeChartProps> = ({
   };
 
   return (
-    <ResponsiveContainer width="100%" height={height} aspect={isMobile() ? null : 2}>
+    <ResponsiveContainer width="100%" height={height} aspect={isMobile() ? undefined : 2}>
       <BasePieChart>
         <Pie
           cy="70%"

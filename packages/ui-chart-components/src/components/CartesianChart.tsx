@@ -18,7 +18,7 @@ import {
 } from 'recharts';
 import { BaseChartConfig } from '@tupaia/types';
 import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
-import { ChartTypes, ViewContent } from '../types';
+import { ChartType, ViewContent } from '../types';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,
@@ -28,7 +28,7 @@ import { getCartesianLegend, ReferenceLines, ChartTooltip as CustomTooltip } fro
 import { isMobile } from '../utils';
 import { XAxis as XAxisComponent, YAxes } from './Axes';
 
-const { Area, Bar, Composed, Line } = ChartTypes;
+const { Area, Bar, Composed, Line } = ChartType;
 
 // Orientation of the axis is used as an alias for its id
 enum Y_AXIS_IDS {
