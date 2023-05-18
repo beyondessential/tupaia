@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
