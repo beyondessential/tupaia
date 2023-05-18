@@ -20,6 +20,8 @@ import { LoadingScreen } from '../LoadingScreen';
  * This is the template for landing pages when the user is not on a mobile device
  */
 
+const DEFAULT_LANDING_IMAGE_URL = '/images/custom-landing-page-default.png';
+
 const Wrapper = styled.div`
   position: relative;
   background-size: cover;
@@ -52,7 +54,7 @@ export const LandingPage = () => {
     <>
       <EnvBanner />
       <TopBar />
-      <Wrapper backgroundImage={imageUrl}>
+      <Wrapper backgroundImage={imageUrl || DEFAULT_LANDING_IMAGE_URL}>
         <Container maxWidth={false}>
           {/* tupaia requires projects to work so we can assume that if there are no projects, it's just */}
           {/* because they haven't loaded yet. We can replace this with more idiomatic loading state */}

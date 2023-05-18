@@ -46,6 +46,9 @@ const Title = styled(Typography)`
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 2em;
+  }
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.lg}px) and (min-height: 800px) {
     margin-bottom: 1.8em;
   }
 `;
@@ -55,8 +58,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 1em 0 2em;
-  @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  margin-bottom: 2em;
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.lg}px) {
     margin-top: 2em;
   }
 `;
