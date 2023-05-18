@@ -6,9 +6,15 @@
 import xlsx from 'xlsx';
 import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
-export const useDataTableExport = (columns, data, title, startDate, endDate) => {
+export const useDataTableExport = (
+  columns: any[],
+  data: any[],
+  title: string,
+  startDate: Moment | string | Date,
+  endDate: Moment | string | Date,
+) => {
   const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
     columns,
     data,
@@ -19,9 +25,11 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
 
     // Get data from react table properties
     const header = headerGroups.map(({ headers }) =>
-      headers.map(({ Header: getHeader, id }) =>
-        typeof getHeader === 'function' ? getHeader({ column: { id } }) : getHeader,
-      ),
+      headers.map(({ Header, id }) => {
+        // If Header is a function, call it to get the header value, otherwise create a function, so that a typescript error about Header possibly not being callable is not thrown
+        const getHeader = typeof Header === 'function' ? Header : () => Header;
+        return getHeader({ column: { id } });
+      }),
     );
     const body =
       tableData.length > 0
@@ -59,7 +67,8 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
 
     // footer
     if (startDate && endDate) {
-      const formatDate = date => moment(date).format('DD/MM/YY');
+      const formatDate = (dateToFormat: Date | string | Moment) =>
+        moment(dateToFormat).format('DD/MM/YY');
       xlsx.utils.sheet_add_aoa(
         sheet,
         [[`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`]],
