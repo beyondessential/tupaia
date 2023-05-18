@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 export * from './DataLibrary';
@@ -43,4 +43,4 @@ export * from './Toolbar';
 export * from './Tooltip';
 export * from './PDFExportComponent';
 export * from './CheckboxList';
-export * from './FavouriteButton'; 
+export * from './FavouriteButton';
