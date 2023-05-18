@@ -53,7 +53,7 @@ export const DatePicker = ({
       InputAdornmentProps={{ position: 'start' }}
       onChange={onChange}
       animateYearScrolling
-      TextFieldComponent={(...args: any[]) => <TextFieldComponent {...args} />}
+      TextFieldComponent={TextFieldComponent}
       className={className}
       {...props}
     />
@@ -78,7 +78,7 @@ export const DateTimePicker = ({
       format={format}
       onChange={onChange}
       animateYearScrolling
-      TextFieldComponent={(...args: any[]) => <TextFieldComponent {...args} />}
+      TextFieldComponent={TextFieldComponent}
       className={className}
       {...props}
     />
