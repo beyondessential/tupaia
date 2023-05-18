@@ -7,10 +7,8 @@
     "outDir": "dist",
   },
   "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/__tests__",
-    "src/stories/**/*"
+    "src/**/*",
+    "jest.config.ts",
+    "helpers/**/*"
   ]
 }

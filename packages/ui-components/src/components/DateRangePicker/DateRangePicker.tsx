@@ -67,7 +67,7 @@ interface DateRangePickerProps {
   minDate?: string;
   maxDate?: string;
   granularity?: typeof GRANULARITY_SHAPE;
-  onSetDates: (startDate: string, endDate: string) => void;
+  onSetDates?: (startDate: string, endDate: string) => void;
   isLoading?: boolean;
   weekDisplayFormat?: string;
 }
@@ -78,7 +78,7 @@ export const DateRangePicker = ({
   minDate,
   maxDate,
   granularity = GRANULARITIES.DAY,
-  onSetDates,
+  onSetDates = () => {},
   isLoading = false,
   weekDisplayFormat,
 }: DateRangePickerProps) => {
