@@ -5818,6 +5818,7 @@ __metadata:
     react: ^16.13.1
     react-ace: ^10.1.0
     react-beautiful-dnd: ^13.1.0
+    react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
     react-hook-form: ^6.0.6
     react-leaflet: ^3.2.1
@@ -29195,12 +29196,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-docgen-typescript-plugin@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "react-docgen-typescript-plugin@npm:1.0.5"
+  dependencies:
+    debug: ^4.1.1
+    endent: ^2.0.1
+    find-cache-dir: ^3.3.1
+    flat-cache: ^3.0.4
+    micromatch: ^4.0.2
+    react-docgen-typescript: ^2.2.2
+    tslib: ^2.0.0
+  peerDependencies:
+    typescript: ">= 4.x"
+    webpack: ">= 4"
+  checksum: 0f83d33c7b6dc82fef34ee820c94485c374d853774c5c26b04754ba3674fe4db2c7fc210b30fa0ca77c5033633553c12742aab6305a7f16cd263c70fedf27589
+  languageName: node
+  linkType: hard
+
 "react-docgen-typescript@npm:^2.0.0":
   version: 2.1.0
   resolution: "react-docgen-typescript@npm:2.1.0"
   peerDependencies:
     typescript: ">= 4.3.x"
   checksum: b1ab06ba635631c8f4575e33a85c6c591dd22cefb18f7a4d0b30a4c7c2e4f51e74d0bd597f59272189345e56949e13f4b387496a87bb75705c5d80e070585a04
+  languageName: node
+  linkType: hard
+
+"react-docgen-typescript@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "react-docgen-typescript@npm:2.2.2"
+  peerDependencies:
+    typescript: ">= 4.3.x"
+  checksum: a9826459ea44e818f21402728dd47f5cae60bd936574cefd4f90ad101ff3eebacd67b6e017b793309734ce62c037aa3072dbc855d2b0e29bad1a38cbf5bac115
   languageName: node
   linkType: hard
 
