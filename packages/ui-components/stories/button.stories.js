@@ -118,7 +118,9 @@ export const text = () => (
 
 export const loading = () => (
   <Container>
-    <Button isLoading>Default</Button>
+    <Button isLoading loadingText="Loading">
+      Default
+    </Button>
   </Container>
 );
 
