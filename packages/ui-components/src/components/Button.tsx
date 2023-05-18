@@ -199,20 +199,19 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
   }
 `;
 
-const StyledLink = styled(MuiLink)`
+const StyledLink = styled(MuiLink)<OverrideableComponentProps<MuiLinkProps>>`
   text-decoration: underline;
   font-size: 1em;
   line-height: 1.2;
 `;
 
-// TODO: check if this looks correct -  PSSS uses it only
 interface LinkProps extends MuiLinkProps {
   onClick: () => void;
   children: ReactNode;
 }
 
 export const LinkButton = ({ children, onClick }: LinkProps) => (
-  <StyledLink onClick={onClick} as="button">
+  <StyledLink onClick={onClick} component="button">
     {children}
   </StyledLink>
 );
