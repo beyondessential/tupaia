@@ -48,6 +48,7 @@
         "packages/server-boilerplate/**",
         "packages/supserset-api/**",
         "packages/tsutils/**",
+        "packages/tupaia-web-server/**",
         "packages/types/**"
       ],
       "extends": "@beyondessential/ts",
