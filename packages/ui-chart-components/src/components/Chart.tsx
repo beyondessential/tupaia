@@ -16,7 +16,7 @@ import {
   getIsChartData,
   getNoDataString,
 } from '../utils';
-import { ChartType, ViewContent } from '../types';
+import { ChartType, ViewContent, LegendPosition } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -85,7 +85,7 @@ interface ChartProps {
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
-  legendPosition?: string;
+  legendPosition?: LegendPosition;
 }
 
 export const Chart: React.FC<ChartProps> = ({

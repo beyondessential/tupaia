@@ -8,9 +8,14 @@ import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { formatDataValueByType } from '@tupaia/utils';
+import { LegendPosition, ViewContent } from '../../types';
 import { isMobile } from '../../utils';
+import { PieChartConfig } from '@tupaia/types';
 
-const LegendContainer = styled.div`
+const LegendContainer = styled.div<{
+  $position?: LegendPosition;
+  $isExporting?: boolean;
+}>`
   display: flex;
   flex-wrap: ${props => (props.$isExporting ? 'nowrap' : 'wrap')};
   justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
@@ -28,7 +33,7 @@ const PieLegendContainer = styled(LegendContainer)`
   padding: 0;
 `;
 
-const getLegendTextColor = (theme, isExporting) => {
+const getLegendTextColor = (theme: any, isExporting: boolean) => {
   if (isExporting) {
     return '#2c3236';
   }
@@ -97,8 +102,24 @@ const Text = styled.span`
   line-height: 1.4;
 `;
 
-const getPieLegendDisplayValue = (chartConfig, value, item, isEnlarged, viewContent) => {
+interface PieLegendProps {
+  chartConfig: PieChartConfig;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  legendPosition?: LegendPosition;
+  viewContent: ViewContent;
+}
+
+const getPieLegendDisplayValue = (
+  chartConfig: PieChartConfig,
+  value: string,
+  item: any,
+  viewContent: ViewContent,
+  isEnlarged?: boolean,
+) => {
+  // @ts-ignore
   if (chartConfig[value]?.label) {
+    // @ts-ignore
     return chartConfig[value].label;
   }
 
@@ -110,20 +131,20 @@ const getPieLegendDisplayValue = (chartConfig, value, item, isEnlarged, viewCont
 };
 
 export const getPieLegend = ({
-  chartConfig = {},
+  chartConfig,
   isEnlarged,
   isExporting,
   legendPosition,
   viewContent,
-}) => ({ payload }) => (
+}: PieLegendProps) => ({ payload }: { payload: any }) => (
   <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, payload: item }) => {
+    {payload.map(({ color, value, payload: item }: any) => {
       const displayValue = getPieLegendDisplayValue(
         chartConfig,
         value,
         item,
-        isEnlarged,
         viewContent,
+        isEnlarged,
       );
 
       return (
@@ -146,15 +167,23 @@ export const getPieLegend = ({
   </PieLegendContainer>
 );
 
+interface CartesianLegendProps {
+  chartConfig?: any;
+  onClick: any;
+  getIsActiveKey: any;
+  isExporting?: boolean;
+  legendPosition?: LegendPosition;
+}
+
 export const getCartesianLegend = ({
   chartConfig,
   onClick,
   getIsActiveKey,
   isExporting,
   legendPosition,
-}) => ({ payload }) => (
+}: CartesianLegendProps) => ({ payload }: { payload: any }) => (
   <LegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, dataKey }) => {
+    {payload.map(({ color, value, dataKey }: any) => {
       const displayValue = chartConfig[value]?.label || value;
 
       return (

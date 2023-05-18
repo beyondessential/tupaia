@@ -4,12 +4,19 @@
  */
 import { BaseChartConfig } from '@tupaia/types';
 import { ReferenceAreaProps } from 'recharts';
+import { ConfirmModal } from '@tupaia/ui-components';
 
 // Todo: move some of these types to @tupaia/types and integrate
 export interface DataProps {
   name: string;
   value: string | number;
   timestamp?: string;
+}
+
+export type TableAccessor = Function | string;
+
+export interface LooseObject {
+  [k: string]: any;
 }
 
 export enum ChartType {
@@ -20,6 +27,8 @@ export enum ChartType {
   Pie = 'pie',
   Gauge = 'gauge',
 }
+
+export type LegendPosition = 'top' | 'bottom';
 
 /**
  *   {
@@ -37,7 +46,6 @@ export enum ChartType {
  *             ...]
  *   }
  */
-// Todo: add period granularity to this type
 
 export type VizPeriodGranularity =
   | 'day'
@@ -51,8 +59,23 @@ export type VizPeriodGranularity =
   | 'year'
   | 'one_year_at_a_time';
 
-type PresentationOptions = {
+type ConditionalMatrixConditionShape = {
+  key: string;
+  color: string;
+  label?: string;
+  legendLabel?: string;
+  condition: number | object;
+  description?: string;
+};
+
+export type PresentationOptions = {
+  type?: string;
+  showRawValue?: boolean;
   periodTickFormat?: string;
+  exportWithLabels?: boolean;
+  hideAverage?: boolean;
+  valueFormat?: string;
+  conditions?: ConditionalMatrixConditionShape[];
 };
 
 export type ViewContent = {
@@ -65,7 +88,7 @@ export type ViewContent = {
   startDate?: string;
   endDate?: string;
   colorPalette?: string;
-  periodGranularity?: string;
+  periodGranularity?: VizPeriodGranularity;
   labelType?: string;
   data: DataProps[];
   chartConfig?: BaseChartConfig;

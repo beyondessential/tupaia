@@ -5,7 +5,7 @@
  */
 import { BaseChartConfig } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { ChartType, ViewContent } from '../types';
+import { ChartType, DataProps, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';
@@ -24,7 +24,8 @@ export const parseChartConfig = (viewContent: ViewContent) => {
     ? createDynamicConfig(restOfConfig, configForAllKeys, data)
     : restOfConfig;
 
-  const addDefaultColors = config => addDefaultColorsToConfig(config, paletteName, chartType);
+  const addDefaultColors = (config: BaseChartConfig) =>
+    addDefaultColorsToConfig(config, paletteName, chartType);
 
   const chartConfigs = [baseConfig];
 
@@ -55,7 +56,7 @@ const setOpacityValues = (chartConfig: BaseChartConfig): BaseChartConfig => {
 // Adds default colors for every element with no color defined
 const addDefaultColorsToConfig = (
   chartConfig: BaseChartConfig,
-  paletteName: string,
+  paletteName?: string,
   chartType: ChartType,
 ) => {
   const newConfig = {};
@@ -118,9 +119,10 @@ const sortChartConfigByLegendOrder = (chartConfig: BaseChartConfig) => {
 const createDynamicConfig = (
   chartConfig: BaseChartConfig,
   dynamicChartConfig: BaseChartConfig,
-  data,
+  data: DataProps[],
 ): BaseChartConfig => {
   // Just find keys. Doesn't include keys which end in _metadata.
+  // @ts-ignore
   const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
   const keys = new Set(dataKeys);
 

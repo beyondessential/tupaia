@@ -18,7 +18,7 @@ import {
 } from 'recharts';
 import { BaseChartConfig } from '@tupaia/types';
 import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
-import { ChartType, ViewContent } from '../types';
+import { ChartType, ViewContent, LegendPosition } from '../types';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,
@@ -73,7 +73,7 @@ const CHART_TYPE_TO_CHART = {
 const getRealDataKeys = (chartConfig: BaseChartConfig | {}) =>
   Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
-const getLegendAlignment = (legendPosition: string, isExporting: boolean) => {
+const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean) => {
   if (isExporting) {
     return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
@@ -104,7 +104,7 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
 
 interface CartesianChartProps {
   viewContent: ViewContent;
-  legendPosition: string;
+  legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }
@@ -263,7 +263,12 @@ export const CartesianChart: React.FC<CartesianChartProps> = ({
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
         {defaultChartType === Bar && data.length > 20 && !isExporting && isEnlarged && (
-          <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
+          <Brush
+            dataKey="name"
+            height={20}
+            stroke={CHART_BLUES['blue1']}
+            fill={CHART_BLUES['blue2']}
+          />
         )}
       </ChartContainer>
     </ResponsiveContainer>

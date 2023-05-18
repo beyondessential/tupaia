@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ChartType } from '../types';
+import { ChartType, LooseObject, TableAccessor } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 import { ValueType, ViewContent } from '../types';
@@ -24,12 +24,11 @@ const FirstColumnCell = styled.span`
   text-align: left;
 `;
 
-const makeFirstColumn = (header, accessor, sortRows) => {
-  const firstColumn = {
+const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: string) => {
+  const firstColumn: LooseObject = {
     Header: header,
     accessor,
-    // eslint-disable-next-line react/prop-types
-    Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
+    Cell: ({ value }: { value: string }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
   };
   if (sortRows) {
     firstColumn.sortType = sortRows;
@@ -43,7 +42,7 @@ const makeFirstColumn = (header, accessor, sortRows) => {
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => {
+const processColumns = (viewContent: ViewContent, sortByTimestamp: string) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -60,7 +59,7 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => 
   if (hasTimeSeriesData) {
     firstColumn = makeFirstColumn(
       xName || 'Date',
-      row => formatTimestampForChart(row.timestamp, periodGranularity),
+      (row: LooseObject) => formatTimestampForChart(row.timestamp, periodGranularity),
       sortByTimestamp,
     );
   }
@@ -73,11 +72,11 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => 
   const configColumns = Object.keys(chartDataConfig).map(columnKey => {
     return {
       id: columnKey,
-      Header: props => {
+      Header: (props: LooseObject) => {
         const columnId = props.column.id;
         return chartConfig[columnId]?.label || columnId;
       },
-      accessor: row => {
+      accessor: (row: LooseObject) => {
         const rowValue = row[columnKey];
         const columnConfig = chartConfig[columnKey];
         const valueType = columnConfig?.valueType || viewContent.valueType;
@@ -89,7 +88,7 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => 
   return firstColumn ? [firstColumn, ...configColumns] : configColumns;
 };
 
-const sortDates = (dateA, dateB) => {
+const sortDates = (dateA: Date, dateB: Date) => {
   const dateAMoreRecent = dateA > dateB;
   return dateAMoreRecent ? 1 : -1;
 };
@@ -102,11 +101,11 @@ const processData = (viewContent: ViewContent) => {
   const { data, chartType } = viewContent;
 
   if (chartType === ChartType.Pie) {
-    return data.sort((a, b) => b.value - a.value);
+    return data.sort((a: any, b: any) => b.value - a.value);
   }
   // For time series, sort by timestamp so that the table is in chronological order always
   if (getIsTimeSeries(data)) {
-    return data.sort((a, b) => sortDates(a.timestamp, b.timestamp));
+    return data.sort((a: any, b: any) => sortDates(a.timestamp, b.timestamp));
   }
 
   return data;
@@ -115,7 +114,7 @@ const processData = (viewContent: ViewContent) => {
 export const getChartTableData = (viewContent: ViewContent) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
-  const sortByTimestamp = useMemo(() => (rowA, rowB) =>
+  const sortByTimestamp = useMemo(() => (rowA: any, rowB: any) =>
     sortDates(rowA.original.timestamp, rowB.original.timestamp),
   );
   const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [

@@ -7,14 +7,19 @@ import React from 'react';
 import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { PRESENTATION_OPTIONS_SHAPE } from '../../constants';
-import { ChartType, ValueType } from '../../types';
+import {
+  ChartType,
+  ValueType,
+  PresentationOptions,
+  LooseObject,
+  VizPeriodGranularity,
+} from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
+import { BaseChartConfig } from '@tupaia/types';
 
-function formatLabelledValue(label, value, valueType, metadata) {
+function formatLabelledValue(label: string, value: any, valueType: string, metadata: LooseObject) {
   const valueText = formatDataValueByType({ value, metadata }, valueType);
   if (label) {
     return `${label}: ${valueText}`;
@@ -56,7 +61,18 @@ const Box = styled.div`
   margin-right: 5px;
 `;
 
-const MultiValueTooltip = ({
+interface ChartTooltipProps {
+  payload: any[];
+  active?: boolean;
+  presentationOptions?: PresentationOptions;
+  valueType: ValueType;
+  chartConfig?: BaseChartConfig;
+  chartType?: ChartType;
+  labelType?: ValueType;
+  periodGranularity?: VizPeriodGranularity;
+}
+
+const MultiValueTooltip: React.FC<ChartTooltipProps> = ({
   valueType,
   chartConfig,
   presentationOptions,
@@ -78,6 +94,7 @@ const MultiValueTooltip = ({
   }
 
   const valueLabels = payload.map(({ dataKey, value, color }) => {
+    // @ts-ignore
     const options = chartConfig && chartConfig[dataKey];
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
@@ -112,7 +129,12 @@ const MultiValueTooltip = ({
   );
 };
 
-const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }) => {
+const SingleValueTooltip: React.FC<ChartTooltipProps> = ({
+  valueType,
+  payload,
+  periodGranularity,
+  labelType,
+}) => {
   const data = payload[0].payload;
   const { name, value, timestamp } = data;
   const metadata = data.value_metadata;
@@ -133,7 +155,13 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   );
 };
 
-const NoDataTooltip = ({ payload, periodGranularity }) => {
+const NoDataTooltip = ({
+  payload,
+  periodGranularity,
+}: {
+  payload: any[];
+  periodGranularity?: VizPeriodGranularity;
+}) => {
   const data = payload[0]?.payload;
   const { name = undefined, timestamp = undefined } = data || {};
 
@@ -150,7 +178,7 @@ const NoDataTooltip = ({ payload, periodGranularity }) => {
   );
 };
 
-export const ChartTooltip = props => {
+export const ChartTooltip: React.FC<ChartTooltipProps> = props => {
   const { payload, active, presentationOptions } = props;
 
   const data = payload || []; // This is to handle when recharts overrides the payload as null
@@ -167,19 +195,3 @@ export const ChartTooltip = props => {
   // For no data display, pass the non-filtered data so we can pull the name
   return <NoDataTooltip {...props} payload={data} />;
 };
-
-ChartTooltip.propTypes = {
-  valueType: PropTypes.oneOf(Object.values(ValueType)),
-  presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
-  payload: PropTypes.array,
-};
-
-ChartTooltip.defaultProps = {
-  payload: [],
-  valueType: null,
-  presentationOptions: null,
-};
-
-SingleValueTooltip.propTypes = ChartTooltip.propTypes;
-MultiValueTooltip.propTypes = ChartTooltip.propTypes;
-NoDataTooltip.propTypes = ChartTooltip.propTypes;

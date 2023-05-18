@@ -4,35 +4,30 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { TUPAIA_ORANGE } from '../../constants';
 import { ChartType } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
+import { ViewContent } from '../../types';
 
-const ReferenceLineLabel = ({ referenceLineLabel, isExporting }) => {
+const ReferenceLineLabel = ({
+  referenceLineLabel,
+  isExporting,
+}: {
+  referenceLineLabel: string;
+  isExporting: boolean;
+}) => {
   if (referenceLineLabel === undefined) return null;
   return (
     <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />
   );
 };
 
-ReferenceLineLabel.propTypes = {
-  referenceLineLabel: PropTypes.string.isRequired,
-  isExporting: PropTypes.bool,
-};
-
-ReferenceLineLabel.defaultProps = {
-  isExporting: false,
-};
-
-// Todo: move orientationToYAxis to constants or utils
-// Orientation of the axis is used as an alias for its id
-const Y_AXIS_IDS = {
-  left: 0,
-  right: 1,
-};
+enum Y_AXIS_IDS {
+  left = 0,
+  right = 1,
+}
 
 const DEFAULT_Y_AXIS = {
   id: Y_AXIS_IDS.left,
@@ -43,9 +38,16 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
+  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
-const ValueReferenceLine = ({ viewContent, isExporting }) => {
+interface ReferenceLineProps {
+  viewContent: ViewContent;
+  isExporting: boolean;
+  isEnlarged?: boolean;
+}
+
+const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) => {
   const { chartConfig = {} } = viewContent;
 
   const referenceLines = Object.entries(chartConfig)
@@ -61,6 +63,7 @@ const ValueReferenceLine = ({ viewContent, isExporting }) => {
     <ReferenceLine
       stroke={isExporting ? '#000000' : '#ffffff'}
       strokeDasharray="3 3"
+      // @ts-ignore
       label={ReferenceLineLabel({
         referenceLineLabel: referenceLine.referenceLineLabel,
         isExporting,
@@ -70,16 +73,7 @@ const ValueReferenceLine = ({ viewContent, isExporting }) => {
   ));
 };
 
-ValueReferenceLine.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-};
-
-ValueReferenceLine.defaultProps = {
-  isExporting: false,
-};
-
-const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
+const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
   const { valueType, data, presentationOptions } = viewContent;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
@@ -99,23 +93,13 @@ const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
           fill={TUPAIA_ORANGE}
         />
       }
+      // @ts-ignore
       isAnimationActive={isEnlarged && !isExporting}
     />
   );
 };
 
-AverageReferenceLine.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-AverageReferenceLine.defaultProps = {
-  isExporting: false,
-  isEnlarged: false,
-};
-
-const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
+const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
   const { referenceLines } = viewContent.presentationOptions || {};
   if (referenceLines) {
     return ValueReferenceLine({ viewContent: { chartConfig: { ...referenceLines } }, isExporting });
@@ -123,20 +107,9 @@ const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
   return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
 };
 
-export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }) => {
+export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
   if (viewContent.chartType === ChartType.Bar) {
     return BarReferenceLine({ viewContent, isExporting, isEnlarged });
   }
   return ValueReferenceLine({ viewContent, isExporting, isEnlarged });
-};
-
-ReferenceLines.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-ReferenceLines.defaultProps = {
-  isExporting: false,
-  isEnlarged: false,
 };

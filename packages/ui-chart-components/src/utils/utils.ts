@@ -10,13 +10,14 @@ import { DataProps, ChartType, ViewContent, VizPeriodGranularity } from '../type
 
 export const isMobile = () => process.env.REACT_APP_APP_TYPE === 'mobile';
 
+const granularityConfig = GRANULARITY_CONFIG as any;
+
 // Timestamps returned from the back-end correspond to UTC time
-// @ts-ignore
 export const formatTimestampForChart = (
   timestamp: number,
   granularity: VizPeriodGranularity,
-  periodTickFormat: any,
-) => moment.utc(timestamp).format(periodTickFormat || GRANULARITY_CONFIG[granularity].chartFormat);
+  periodTickFormat?: any,
+) => moment.utc(timestamp).format(periodTickFormat || granularityConfig[granularity].chartFormat);
 
 export const getIsTimeSeries = (data: DataProps[]) => data && data.length > 0 && data[0]?.timestamp;
 

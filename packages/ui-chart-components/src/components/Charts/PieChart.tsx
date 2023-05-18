@@ -14,13 +14,12 @@ import {
   ResponsiveContainer,
   Tooltip,
   TooltipProps,
-  LegendProps,
 } from 'recharts';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
-import { ViewContent } from '../../types';
+import { ViewContent, LegendPosition } from '../../types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -49,7 +48,7 @@ const Text = styled(Typography)`
   color: #333;
 `;
 
-const getLegendAlignment = (legendPosition: string, isExporting: boolean) => {
+const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean) => {
   if (isExporting) {
     return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
@@ -106,7 +105,7 @@ interface PieChartProps {
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
-  legendPosition?: string;
+  legendPosition?: LegendPosition;
 }
 export const PieChart: React.FC<PieChartProps> = ({
   viewContent,
