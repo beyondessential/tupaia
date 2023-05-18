@@ -36,6 +36,12 @@ for p in "$tupaia_package_dir"/*; do
     package=$(basename "$p")
     if [ -f "$tupaia_env_dir/$package/.env" ]; then
         echo  "creating $p/.env-config.js"
-        env-js "$tupaia_env_dir/$package/.env" "$p/.env-config.js"
+        if [[ $package == "web-frontend" ]]; then
+            # web frontend serves different bundles for desktop and mobile
+            env-js "$tupaia_env_dir/$package/.env" "$p/build/mobile/.env-config.js"
+            env-js "$tupaia_env_dir/$package/.env" "$p/build/desktop/.env-config.js"
+        else
+            env-js "$tupaia_env_dir/$package/.env" "$p/build/.env-config.js"
+        fi
     fi
 done
