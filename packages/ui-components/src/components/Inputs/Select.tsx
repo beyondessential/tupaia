@@ -78,13 +78,11 @@ export const Select = ({
     [setValue],
   );
 
-  const isControlled = onChange !== null;
-
   const changeEvent = onChange || handleChange;
 
   return (
     <SelectField
-      value={isControlled ? value : localValue}
+      value={onChange ? value : localValue}
       onChange={changeEvent}
       SelectProps={{
         displayEmpty: true,
