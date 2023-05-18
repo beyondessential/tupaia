@@ -45,7 +45,13 @@ interface ButtonProps extends MuiButtonProps {
   loadingText?: string;
 }
 
-export const Button = ({ children, isLoading, loadingText, disabled, ...props }: ButtonProps) => (
+export const Button = ({
+  children,
+  isLoading = false,
+  loadingText = 'Loading',
+  disabled = false,
+  ...props
+}: ButtonProps) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
     {isLoading ? `${loadingText}...` : children}
   </StyledButton>
