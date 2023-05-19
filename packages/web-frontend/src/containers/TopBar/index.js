@@ -18,9 +18,9 @@ import { useCustomLandingPages } from '../../screens/LandingPage/useCustomLandin
 const TopBarWrapper = styled.div`
   background-color: ${props => props.primaryColor};
   min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
-  height: ${TOP_BAR_HEIGHT_MOBILE}px;
   box-sizing: border-box;
   display: flex;
+  align-items: center;
   z-index: 1000;
   position: relative;
   padding: 0 10px;
