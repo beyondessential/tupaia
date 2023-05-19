@@ -69,7 +69,7 @@ export const LightPrimaryButton = styled(Button)`
   }
 `;
 
-export const GreyButton = styled(Button)`
+export const GreyButton = styled(Button)<OverrideableComponentProps<ButtonProps>>`
   background-color: #6f7b82;
   color: ${props => props.theme.palette.common.white};
 `;
@@ -186,7 +186,7 @@ export const LightOutlinedButton = styled(OutlinedButton)`
 /*
  * Grey Outline Button
  */
-export const GreyOutlinedButton = styled(OutlinedButton)`
+export const GreyOutlinedButton = styled(OutlinedButton)<OverrideableComponentProps<ButtonProps>>`
   color: ${props => props.theme.palette.text.secondary};
   border: 1px solid ${props => props.theme.palette.grey['400']};
   background: none;
