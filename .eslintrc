@@ -22,7 +22,10 @@
           "**/packages/web-frontend/config/**",
           "**/packages/web-frontend/scripts/**"
         ],
-        "packageDir": ["../../", "."]
+        "packageDir": [
+          "../../",
+          "."
+        ]
       }
     ],
     "jsx-a11y/href-no-hash": "off",
@@ -58,15 +61,24 @@
         "import/no-extraneous-dependencies": [
           "error",
           {
-            "devDependencies": ["jest.setup.ts", "global.d.ts"],
-            "packageDir": ["../../", "."]
+            "devDependencies": [
+              "jest.setup.ts",
+              "global.d.ts"
+            ],
+            "packageDir": [
+              "../../",
+              "."
+            ]
           }
         ]
       }
     },
     // Packages using jest
     {
-      "files": ["packages/**/__tests__/**", "packages/web-frontend/src/tests/**"],
+      "files": [
+        "packages/**/__tests__/**",
+        "packages/web-frontend/src/tests/**"
+      ],
       "extends": "@beyondessential/jest"
     },
     // Frontend packages
@@ -86,7 +98,10 @@
     },
     // Overrides per file pattern
     {
-      "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
+      "files": [
+        "**/cypress/**",
+        "packages/utils/src/cypress.js"
+      ],
       "extends": "plugin:cypress/recommended",
       "env": {
         "browser": true,
@@ -106,7 +121,12 @@
     {
       "files": "**/__tests__/**",
       "rules": {
-        "jest/valid-expect": ["error", { "maxArgs": 2 }],
+        "jest/valid-expect": [
+          "error",
+          {
+            "maxArgs": 2
+          }
+        ],
         "no-new": "off"
       }
     },
@@ -134,9 +154,19 @@
     },
     // Root folder overrides
     {
-      "files": ["jest.setup.js", "scripts/**"],
+      "files": [
+        "jest.setup.js",
+        "scripts/**"
+      ],
       "rules": {
-        "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }]
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "packageDir": [
+              "."
+            ]
+          }
+        ]
       }
     },
     // Package overrides
@@ -151,37 +181,63 @@
       }
     },
     {
-      "files": ["packages/meditrak-app/**"],
-      "plugins": ["react-native"],
+      "files": [
+        "packages/meditrak-app/**"
+      ],
+      "plugins": [
+        "react-native"
+      ],
       // "env": {
       //   "react-native/react-native": true
       // },
       "rules": {
         "react/destructuring-assignment": "off",
-        "react/prop-types": ["error", { "ignore": ["navigation"] }]
+        "react/prop-types": [
+          "error",
+          {
+            "ignore": [
+              "navigation"
+            ]
+          }
+        ]
       }
     },
     {
-      "files": ["packages/ui-components/**"],
+      "files": [
+        "packages/ui-components/**"
+      ],
+      "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "react/prop-types": "off",
+        "import/no-unresolved": 0, // Turn off linting error for imports
+        "import/extensions": 0, // Turn off linting error for imports
+        "react/require-default-props": "off",
+        "no-bitwise": "off" // Turn off linting error for bitwise operators because of generic style types using '>>'
+      }
+    },
+    {
+      "files": [
+        "packages/ui-chart-components/**"
+      ],
       "rules": {
         "import/no-extraneous-dependencies": "off"
       }
     },
     {
-      "files": ["packages/ui-chart-components/**"],
+      "files": [
+        "packages/ui-map-components/**"
+      ],
       "rules": {
         "import/no-extraneous-dependencies": "off"
       }
     },
     {
-      "files": ["packages/ui-map-components/**"],
-      "rules": {
-        "import/no-extraneous-dependencies": "off"
-      }
-    },
-    {
-      "files": ["packages/web-config-server/**"],
-      "plugins": ["module-resolver"],
+      "files": [
+        "packages/web-config-server/**"
+      ],
+      "plugins": [
+        "module-resolver"
+      ],
       "rules": {
         "import/no-absolute-path": "off",
         "module-resolver/use-alias": "warn"
@@ -193,7 +249,9 @@
       }
     },
     {
-      "files": ["packages/web-frontend/**"],
+      "files": [
+        "packages/web-frontend/**"
+      ],
       "rules": {
         "camelcase": "warn",
         "import/no-named-as-default": "off",
