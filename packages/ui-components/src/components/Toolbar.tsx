@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import Container from '@material-ui/core/Container';
-import PropTypes from 'prop-types';
+import Container, { ContainerProps } from '@material-ui/core/Container';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
 import { LightTab, LightTabs } from './Tabs';
 
@@ -22,20 +21,16 @@ const ToolbarWrapper = styled.div`
   }
 `;
 
-export const BaseToolbar = ({ children, maxWidth }) => (
+interface BaseToolbarProps {
+  maxWidth?: ContainerProps['maxWidth'];
+  children?: ReactNode;
+}
+
+export const BaseToolbar = ({ children, maxWidth = false }: BaseToolbarProps) => (
   <ToolbarWrapper>
-    <Container maxWidth={maxWidth}>{children}</Container>
+    <Container maxWidth={maxWidth}>{children!}</Container>
   </ToolbarWrapper>
 );
-
-BaseToolbar.propTypes = {
-  children: PropTypes.node.isRequired,
-  maxWidth: PropTypes.string,
-};
-
-BaseToolbar.defaultProps = {
-  maxWidth: null,
-};
 
 const ToolbarTab = styled(LightTab)`
   font-size: 1.125rem;
@@ -52,7 +47,21 @@ const ToolbarTab = styled(LightTab)`
  * TabsToolbar
  * a component for navigating to router links
  */
-export const TabsToolbar = ({ links: linkInput, maxWidth }) => {
+
+interface Link {
+  label: string;
+  to: string;
+  exact?: boolean;
+  icon?: ReactNode;
+  id?: string;
+}
+
+interface TabsToolbarProps {
+  links: Link[];
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false | undefined;
+}
+
+export const TabsToolbar = ({ links: linkInput, maxWidth }: TabsToolbarProps) => {
   const location = useLocation();
   const match = useRouteMatch();
   const links = linkInput.map(link => ({
@@ -75,13 +84,4 @@ export const TabsToolbar = ({ links: linkInput, maxWidth }) => {
       )}
     </BaseToolbar>
   );
-};
-
-TabsToolbar.propTypes = {
-  links: PropTypes.array.isRequired,
-  maxWidth: PropTypes.string,
-};
-
-TabsToolbar.defaultProps = {
-  maxWidth: null,
 };

@@ -5,7 +5,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 
 const Bar = styled.div`
@@ -41,7 +40,13 @@ const LegendValue = styled.span`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const BarMeter = ({ value, total, legend }) => (
+interface BarMeterProps {
+  value: number;
+  total: number;
+  legend?: string;
+}
+
+export const BarMeter = ({ value, total, legend = 'Value' }: BarMeterProps) => (
   <div>
     <Legend>
       {legend}: <LegendValue>{`${value}/${total}`}</LegendValue>
@@ -52,13 +57,3 @@ export const BarMeter = ({ value, total, legend }) => (
     </Bar>
   </div>
 );
-
-BarMeter.propTypes = {
-  value: PropTypes.number.isRequired,
-  total: PropTypes.number.isRequired,
-  legend: PropTypes.string,
-};
-
-BarMeter.defaultProps = {
-  legend: 'Value',
-};

@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { CSSProperties } from 'react';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
@@ -64,8 +63,14 @@ const StyledMenuIcon = styled(MoreVertIcon)`
   }
 `;
 
-export const ActionsMenu = ({ options }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+interface Option {
+  label: string;
+  action: () => void;
+  style?: CSSProperties;
+}
+
+export const ActionsMenu = ({ options }: { options: Option[] }) => {
+  const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>
       <IconButton aria-label="open" onClick={event => setAnchorEl(event.currentTarget)}>
@@ -83,7 +88,7 @@ export const ActionsMenu = ({ options }) => {
           horizontal: -85,
         }}
       >
-        {options.map(({ label, action, style }) => (
+        {options.map(({ label, action, style }: Option) => (
           <StyledMenuItem
             role="button"
             key={label}
@@ -99,8 +104,4 @@ export const ActionsMenu = ({ options }) => {
       </StyledMenu>
     </>
   );
-};
-
-ActionsMenu.propTypes = {
-  options: PropTypes.array.isRequired,
 };

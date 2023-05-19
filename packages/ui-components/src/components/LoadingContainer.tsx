@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import { SmallAlert } from './Alert';
 import { GreyOutlinedButton } from './Button';
 
@@ -56,7 +55,12 @@ const ErrorAlert = styled(SmallAlert)`
   justify-content: center;
 `;
 
-const ErrorScreen = ({ onReset, errorMessage }) => {
+interface ErrorScreenProps {
+  onReset: () => void;
+  errorMessage: string;
+}
+
+const ErrorScreen = ({ onReset, errorMessage }: ErrorScreenProps) => {
   return (
     <>
       <ErrorText>{errorMessage}</ErrorText>
@@ -65,30 +69,41 @@ const ErrorScreen = ({ onReset, errorMessage }) => {
   );
 };
 
-ErrorScreen.propTypes = {
-  onReset: PropTypes.func.isRequired,
-  errorMessage: PropTypes.string.isRequired,
-};
+interface WrapperProps {
+  children: ReactNode;
+  loadingContainerChildren: ReactNode;
+}
 
-const Wrapper = ({ children: loadingScreenChildren, loadingContainerchildren }) => (
+const Wrapper = ({ children: loadingScreenChildren, loadingContainerChildren }: WrapperProps) => (
   <Container className="loading-container">
-    {loadingContainerchildren}
+    {loadingContainerChildren}
     <LoadingScreen className="loading-screen">{loadingScreenChildren}</LoadingScreen>
   </Container>
 );
 
-Wrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-  loadingContainerchildren: PropTypes.node.isRequired,
-};
-
 /**
  * Adds a loader around the children
  */
-export const LoadingContainer = ({ isLoading, heading, text, children, errorMessage, onReset }) => {
+interface LoadingContainerProps {
+  isLoading: boolean;
+  heading?: string;
+  text?: string;
+  children: ReactNode;
+  errorMessage?: string;
+  onReset?: () => void;
+}
+
+export const LoadingContainer = ({
+  isLoading,
+  heading = 'Saving Data',
+  text = 'Please do not refresh the browser or close this page',
+  children = null,
+  errorMessage,
+  onReset,
+}: LoadingContainerProps) => {
   if (onReset && errorMessage) {
     return (
-      <Wrapper loadingContainerchildren={children}>
+      <Wrapper loadingContainerChildren={children}>
         <ErrorScreen onReset={onReset} errorMessage={errorMessage} />
       </Wrapper>
     );
@@ -96,7 +111,7 @@ export const LoadingContainer = ({ isLoading, heading, text, children, errorMess
 
   if (errorMessage) {
     return (
-      <Wrapper loadingContainerchildren={children}>
+      <Wrapper loadingContainerChildren={children}>
         <ErrorAlert severity="error" variant="standard">
           {errorMessage}
         </ErrorAlert>
@@ -106,7 +121,7 @@ export const LoadingContainer = ({ isLoading, heading, text, children, errorMess
 
   if (isLoading) {
     return (
-      <Wrapper loadingContainerchildren={children}>
+      <Wrapper loadingContainerChildren={children}>
         <Loader />
         <LoadingHeading variant="h5">{heading}</LoadingHeading>
         <LoadingText variant="body2">{text}</LoadingText>
@@ -114,19 +129,5 @@ export const LoadingContainer = ({ isLoading, heading, text, children, errorMess
     );
   }
 
-  return children;
-};
-
-LoadingContainer.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  children: PropTypes.node.isRequired,
-  heading: PropTypes.string,
-  text: PropTypes.string,
-  onReset: PropTypes.func,
-};
-
-LoadingContainer.defaultProps = {
-  heading: 'Saving Data',
-  text: 'Please do not refresh the browser or close this page',
-  onReset: null,
+  return <>{children}</>;
 };

@@ -1,12 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
-import React from 'react';
 
 const Circle = styled.div`
   position: relative;
@@ -51,7 +49,12 @@ const OuterCircle = styled.circle`
   transition: stroke-dashoffset 2s ease;
 `;
 
-export const CircleMeter = ({ value, total }) => {
+interface CircleMeterProps {
+  value: number;
+  total?: number;
+}
+
+export const CircleMeter = ({ value, total = 1 }: CircleMeterProps) => {
   let fraction = value / total;
   const percent = Math.round(fraction * 100);
 
@@ -74,13 +77,4 @@ export const CircleMeter = ({ value, total }) => {
       <PercentText>{percent}%</PercentText>
     </Circle>
   );
-};
-
-CircleMeter.propTypes = {
-  value: PropTypes.number.isRequired,
-  total: PropTypes.number,
-};
-
-CircleMeter.defaultProps = {
-  total: 1,
 };

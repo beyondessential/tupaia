@@ -3,11 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect, useState } from 'react';
-import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
-import MuiLink from '@material-ui/core/Link';
+import MuiBreadcrumbs, {
+  BreadcrumbsProps as MuiBreadcrumbsProps,
+} from '@material-ui/core/Breadcrumbs';
+import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import {
+  LinkProps as ReactRouterLinkProps,
+  Link as RouterLink,
+  useLocation,
+} from 'react-router-dom';
 import styled from 'styled-components';
 import { Home as HomeIcon } from './Icons';
 
@@ -39,14 +44,30 @@ const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   }
 `;
 
-const Link = props => <MuiLink color="inherit" {...props} component={RouterLink} />;
+/**
+ * 
+This is a workaround for a typescript error that appears because of the 'component' props on Link. It is [a known issue]{@link https://github.com/mui/material-ui/issues/16846} with MUI v4, and is supposed to be fixed in MUI v5
+
+ */
+const LinkRef = React.forwardRef<HTMLAnchorElement, ReactRouterLinkProps>((props, ref) => (
+  <RouterLink innerRef={ref} {...props} />
+));
+
+const Link = (props: MuiLinkProps & ReactRouterLinkProps) => (
+  <MuiLink color="inherit" {...props} component={LinkRef} />
+);
 
 /**
  * Breadcrumbs
  */
-export const Breadcrumbs = ({ home, ...props }) => {
+
+interface BreadcrumbsProps extends MuiBreadcrumbsProps {
+  home?: string;
+}
+
+export const Breadcrumbs = ({ home = 'Dashboard', ...props }: BreadcrumbsProps) => {
   const location = useLocation();
-  const [pathnames, setPathnames] = useState([]);
+  const [pathnames, setPathnames] = useState<string[]>([]);
 
   useEffect(() => {
     const newPathnames = location.pathname.split('/').filter(x => x);
@@ -72,14 +93,6 @@ export const Breadcrumbs = ({ home, ...props }) => {
       })}
     </StyledBreadcrumbs>
   );
-};
-
-Breadcrumbs.propTypes = {
-  home: PropTypes.string,
-};
-
-Breadcrumbs.defaultProps = {
-  home: 'Dashboard',
 };
 
 /*

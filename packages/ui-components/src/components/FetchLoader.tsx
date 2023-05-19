@@ -2,9 +2,8 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { ElementType, ReactNode } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { SmallAlert } from './Alert';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -22,15 +21,25 @@ const SpinningLoader = () => (
   </Container>
 );
 
+interface FetchLoaderProps {
+  isLoading?: boolean;
+  isError?: boolean;
+  isNoData?: boolean;
+  error?: any;
+  noDataMessage?: string;
+  Loader?: ElementType;
+  children?: ReactNode;
+}
+
 export const FetchLoader = ({
-  isLoading,
-  isError,
-  isNoData,
-  error,
+  isLoading = false,
+  isError = false,
+  isNoData = false,
+  error = null,
   noDataMessage,
-  children,
-  Loader,
-}) => {
+  children = null,
+  Loader = SpinningLoader,
+}: FetchLoaderProps) => {
   if (isLoading) {
     return <Loader />;
   }
@@ -56,24 +65,4 @@ export const FetchLoader = ({
   }
 
   return <ErrorBoundary>{children}</ErrorBoundary>;
-};
-
-FetchLoader.propTypes = {
-  children: PropTypes.node,
-  isLoading: PropTypes.bool,
-  isError: PropTypes.bool,
-  isNoData: PropTypes.bool,
-  error: PropTypes.object,
-  noDataMessage: PropTypes.string,
-  Loader: PropTypes.func,
-};
-
-FetchLoader.defaultProps = {
-  isLoading: false,
-  isError: false,
-  isNoData: false,
-  children: null,
-  error: null,
-  noDataMessage: null,
-  Loader: SpinningLoader,
 };

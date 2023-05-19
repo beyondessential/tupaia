@@ -5,11 +5,21 @@
 import React from 'react';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 
-import PropTypes from 'prop-types';
+interface FavouriteButtonProps {
+  isFavourite?: boolean;
+  onChange: () => void;
+  color?: IconButtonProps['color'];
+  isDisabled?: boolean;
+}
 
-export const FavouriteButton = ({ isFavourite, onChange, color, isDisabled }) => (
+export const FavouriteButton = ({
+  isFavourite = false,
+  onChange,
+  color = 'primary',
+  isDisabled = false,
+}: FavouriteButtonProps) => (
   <IconButton
     color={color}
     disableRipple
@@ -21,16 +31,3 @@ export const FavouriteButton = ({ isFavourite, onChange, color, isDisabled }) =>
     {isFavourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
   </IconButton>
 );
-
-FavouriteButton.propTypes = {
-  isFavourite: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
-  color: PropTypes.string,
-  isDisabled: PropTypes.bool,
-};
-
-FavouriteButton.defaultProps = {
-  isFavourite: false,
-  color: 'primary',
-  isDisabled: false,
-};
