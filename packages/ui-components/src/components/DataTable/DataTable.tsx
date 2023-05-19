@@ -1,22 +1,31 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useTable, useSortBy } from 'react-table';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TableBody from '@material-ui/core/TableBody';
-
+import {
+  TableCell,
+  TableHead,
+  TableSortLabel,
+  TableContainer,
+  TableRow,
+  TableBody,
+} from '@material-ui/core';
 import { StyledTable } from './StyledTable';
-import { FlexStart } from '../Layout';
 import { DataTableCell } from './DataTableCell';
 
-const getColumnId = ({ id, accessor, Header }) => {
+import { FlexStart } from '../Layout';
+
+const getColumnId = ({
+  id,
+  accessor,
+  Header,
+}: {
+  id: string;
+  accessor?: string | ((row: any) => any);
+  Header: string;
+}) => {
   if (id) {
     return id;
   }
@@ -28,7 +37,21 @@ const getColumnId = ({ id, accessor, Header }) => {
   return Header;
 };
 
-export const DataTable = ({ columns, data, className, rowLimit, total }) => {
+interface DataTableProps {
+  columns: any[];
+  data: object[];
+  className?: string;
+  rowLimit?: number;
+  total?: number;
+}
+
+export const DataTable = ({
+  columns,
+  data,
+  className = '',
+  rowLimit = 0,
+  total = 0,
+}: DataTableProps) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -52,7 +75,7 @@ export const DataTable = ({ columns, data, className, rowLimit, total }) => {
   );
 
   const totalRows = total || rows.length;
-  const hasLimitedRows = rowLimit !== null && totalRows > rowLimit;
+  const hasLimitedRows = rowLimit ? totalRows > rowLimit : false;
   const rowsToRender = hasLimitedRows ? rows.slice(0, rowLimit) : rows;
   const limitedRowsMessage = hasLimitedRows
     ? `Displaying ${rowLimit} of ${total || totalRows} rows`
@@ -62,11 +85,12 @@ export const DataTable = ({ columns, data, className, rowLimit, total }) => {
     <TableContainer className={className}>
       <StyledTable {...getTableProps()} style={{ minWidth: columnsData.length * 140 + 250 }}>
         <TableHead>
-          {headerGroups.map(({ getHeaderGroupProps, headers }) => (
+          {headerGroups.map(({ getHeaderGroupProps, headers }, i) => (
             <TableRow {...getHeaderGroupProps()}>
               {headers.map(
-                ({ getHeaderProps, getSortByToggleProps, isSorted, isSortedDesc, render }) => (
-                  <TableCell {...getHeaderProps(getSortByToggleProps())}>
+                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <TableCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
                     <FlexStart>
                       {render('Header')}
                       <TableSortLabel active={isSorted} direction={isSortedDesc ? 'asc' : 'desc'} />
@@ -93,18 +117,4 @@ export const DataTable = ({ columns, data, className, rowLimit, total }) => {
       {hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
     </TableContainer>
   );
-};
-
-DataTable.propTypes = {
-  columns: PropTypes.array.isRequired,
-  data: PropTypes.array.isRequired,
-  className: PropTypes.string,
-  rowLimit: PropTypes.number,
-  total: PropTypes.number,
-};
-
-DataTable.defaultProps = {
-  className: null,
-  rowLimit: null,
-  total: null,
 };

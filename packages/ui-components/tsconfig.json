@@ -3,7 +3,6 @@
   "compileOnSave": true,
   "compilerOptions": {
     "jsx": "react",
-    "target": "es5",
     "allowJs": true,
     "outDir": "dist",
     "lib": [

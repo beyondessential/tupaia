@@ -1,12 +1,16 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState, useCallback } from 'react';
-import MuiMenuItem from '@material-ui/core/MenuItem';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
-import PropTypes from 'prop-types';
+import {
+  SelectProps as MuiSelectProps,
+  SvgIconProps,
+  TextFieldProps,
+  MenuItem as MuiMenuItem,
+} from '@material-ui/core';
 import styled from 'styled-components';
 import { TextField } from './TextField';
 
@@ -27,40 +31,44 @@ const StyledTextField = styled(TextField)`
     }
   }
 `;
+type SelectFieldProps = TextFieldProps & {
+  SelectProps?: MuiSelectProps;
+};
 
-export const SelectField = ({ SelectProps, ...props }) => (
+export const SelectField = ({ SelectProps = {}, ...props }: SelectFieldProps) => (
   <StyledTextField
     SelectProps={{
-      IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
+      IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
     }}
     {...props}
     select
   />
 );
-
-SelectField.propTypes = {
-  SelectProps: PropTypes.object,
-};
-
-SelectField.defaultProps = {
-  SelectProps: null,
-};
-
 export const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;
 
+type Option = {
+  value: any;
+  label: string;
+};
+
+type SelectProps = SelectFieldProps & {
+  options: Option[];
+  showPlaceholder?: boolean;
+};
+
 export const Select = ({
-  value,
+  value = '',
   onChange,
-  options,
-  showPlaceholder,
-  placeholder,
-  defaultValue,
+  options = [],
+  showPlaceholder = true,
+  placeholder = 'Please select',
+  defaultValue = '',
   ...props
-}) => {
+}: SelectProps) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
@@ -70,12 +78,12 @@ export const Select = ({
     [setValue],
   );
 
-  const isControlled = onChange !== null;
+  const changeEvent = onChange || handleChange;
 
   return (
     <SelectField
-      value={isControlled ? value : localValue}
-      onChange={isControlled ? onChange : handleChange}
+      value={onChange ? value : localValue}
+      onChange={changeEvent}
       SelectProps={{
         displayEmpty: true,
       }}
@@ -87,7 +95,7 @@ export const Select = ({
         </MenuItem>
       )}
 
-      {options.map(option => (
+      {options.map((option: Option) => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}
         </MenuItem>
@@ -96,27 +104,14 @@ export const Select = ({
   );
 };
 
-Select.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  options: PropTypes.array.isRequired,
-  placeholder: PropTypes.string,
-  showPlaceholder: PropTypes.bool,
-  defaultValue: PropTypes.any,
-  value: PropTypes.any,
-  onChange: PropTypes.func,
-};
-
-Select.defaultProps = {
-  placeholder: 'Please select',
-  showPlaceholder: true,
-  defaultValue: '',
-  value: '',
-  label: null,
-  onChange: null,
-};
-
-export const NativeSelect = ({ value, onChange, options, placeholder, defaultValue, ...props }) => {
+export const NativeSelect = ({
+  value = null,
+  onChange,
+  options,
+  placeholder = 'Please select',
+  defaultValue = '',
+  ...props
+}: SelectProps) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
@@ -128,10 +123,12 @@ export const NativeSelect = ({ value, onChange, options, placeholder, defaultVal
 
   const isControlled = value !== null;
 
+  const changeEvent = onChange || handleChange;
+
   return (
     <SelectField
       value={isControlled ? value : localValue}
-      onChange={isControlled ? onChange : handleChange}
+      onChange={changeEvent}
       SelectProps={{
         native: true,
       }}
@@ -140,28 +137,11 @@ export const NativeSelect = ({ value, onChange, options, placeholder, defaultVal
       <option value="" disabled>
         {placeholder}
       </option>
-      {options.map(option => (
+      {options.map((option: Option) => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>
       ))}
     </SelectField>
   );
-};
-
-NativeSelect.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  placeholder: PropTypes.string,
-  defaultValue: PropTypes.any,
-  value: PropTypes.any,
-  onChange: PropTypes.func,
-};
-
-NativeSelect.defaultProps = {
-  placeholder: 'Please select',
-  defaultValue: '',
-  value: null,
-  onChange: null,
 };

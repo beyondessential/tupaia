@@ -4,7 +4,7 @@
  *
  */
 import { useEffect } from 'react';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import {
   getDefaultDates,
   DEFAULT_MIN_DATE,
@@ -18,37 +18,32 @@ import {
   roundEndDate,
   toStandardDateString,
 } from '@tupaia/utils';
+import { GranularityType, ModifierType } from '../../types';
 
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
-/**
- *
- * @param isSingleDate
- * @param granularity
- * @param startDate
- * @param endDate
- * @param {string} weekDisplayFormat one of WEEK_DISPLAY_FORMATS
- * @returns {*|string}
- */
 const getDatesAsString = (
-  isSingleDate,
-  granularity = DEFAULT_GRANULARITY,
-  startDate,
-  endDate,
-  weekDisplayFormat,
+  isSingleDate: boolean,
+  granularity: GranularityType = DEFAULT_GRANULARITY,
+  startDate: Moment,
+  endDate: Moment,
+  weekDisplayFormat?: string | number,
 ) => {
-  const { rangeFormat, modifier } =
-    [GRANULARITIES.WEEK, GRANULARITIES.SINGLE_WEEK].includes(granularity) && weekDisplayFormat
-      ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
-      : GRANULARITY_CONFIG[granularity];
+  const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
+  const { rangeFormat, modifier } = (isWeek && weekDisplayFormat
+    ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+    : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]) as {
+    rangeFormat: string;
+    modifier?: ModifierType;
+  };
 
   const formattedStartDate = momentToDateDisplayString(
     startDate,
     granularity,
     rangeFormat,
-    modifier,
+    modifier!,
   );
-  const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier);
+  const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier!);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
@@ -62,7 +57,13 @@ const getDatesAsString = (
  * @param defaultEndDate
  * @returns {{currentStartDate: (moment.Moment|*), currentEndDate: (moment.Moment|*)}}
  */
-const getCurrentDates = (granularity, startDate, endDate, defaultStartDate, defaultEndDate) => ({
+const getCurrentDates = (
+  granularity: GranularityType,
+  startDate: Moment,
+  endDate: Moment,
+  defaultStartDate: Moment,
+  defaultEndDate: Moment,
+) => ({
   currentStartDate: startDate ? roundStartDate(granularity, startDate) : defaultStartDate,
   currentEndDate: endDate ? roundEndDate(granularity, endDate) : defaultEndDate,
 });
@@ -78,6 +79,16 @@ const getCurrentDates = (granularity, startDate, endDate, defaultStartDate, defa
  * @param weekDisplayFormat
  * @returns {{handleReset: handleReset, handleDateChange: handleDateChange, nextDisabled: boolean, labelText: (*|string), isSingleDate: boolean, currentStartDate: (*|moment.Moment), currentEndDate: (*|moment.Moment), prevDisabled: boolean, changePeriod: changePeriod}}
  */
+
+interface UseDateRangePickerProps {
+  startDate?: Moment;
+  endDate?: Moment;
+  minDate?: Moment | string;
+  maxDate?: Moment | string;
+  granularity?: GranularityType;
+  onSetDates: (startDate: string, endDate: string) => void;
+  weekDisplayFormat?: string | number;
+}
 export const useDateRangePicker = ({
   startDate,
   endDate,
@@ -86,28 +97,35 @@ export const useDateRangePicker = ({
   granularity,
   onSetDates,
   weekDisplayFormat,
-}) => {
+}: UseDateRangePickerProps) => {
   /**
    * Call the on change handler prop using iso formatted date
    */
-  const handleDateChange = (newStartDate, newEndDate) => {
+  const handleDateChange = (newStartDate: Moment | string, newEndDate: Moment | string) => {
     onSetDates(toStandardDateString(newStartDate), toStandardDateString(newEndDate));
   };
 
-  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
-  const { momentShorthand } = GRANULARITY_CONFIG[granularity];
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity ?? '');
+  const {
+    momentShorthand,
+  }: {
+    momentShorthand: string;
+  } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
 
   const minMomentDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = maxDate ? moment(maxDate) : moment();
 
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates({
     periodGranularity: granularity,
-  });
+  }) as {
+    startDate: Moment;
+    endDate: Moment;
+  };
 
   const { currentStartDate, currentEndDate } = getCurrentDates(
-    granularity,
-    startDate,
-    endDate,
+    granularity!,
+    startDate!,
+    endDate!,
     defaultStartDate,
     defaultEndDate,
   );
@@ -126,20 +144,17 @@ export const useDateRangePicker = ({
    * Set the current date the specified number of periods forward or backwards
    * Use a negative number to set backwards
    */
-  const changePeriod = numberOfPeriodsToMove => {
+  const changePeriod = (numberOfPeriodsToMove: number) => {
     if (!isSingleDate) {
       console.warn('Can only change period for single unit date pickers (e.g. one month)');
     }
-
     const newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
     const newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
-
     const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
       newStartDate,
       newEndDate,
     );
-
     handleDateChange(roundedStartDate, roundedEndDate);
   };
 

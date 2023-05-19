@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { TableCell } from '@material-ui/core';
+import { TableCell, TableCellProps } from '@material-ui/core';
 
-const getDataType = value => (value === null ? 'null' : typeof value);
+const getDataType = (value: any): string => (value === null ? 'null' : typeof value);
 
-const formatValue = value => {
+const formatValue = (value: any): string => {
   const type = getDataType(value);
   switch (type) {
     case 'null':
@@ -22,22 +21,15 @@ const formatValue = value => {
   }
 };
 
-export const DataTableCell = ({ value, ...props }) => {
+export const DataTableCell = ({
+  value,
+  ...props
+}: TableCellProps & {
+  value: number | string | boolean | Object | Function;
+}) => {
   return (
     <TableCell {...props} className={`data-type-${getDataType(value)}`}>
       {formatValue(value)}
     </TableCell>
   );
 };
-
-DataTableCell.propTypes = {
-  value: PropTypes.oneOf([
-    PropTypes.number,
-    PropTypes.string,
-    PropTypes.bool,
-    PropTypes.object,
-    PropTypes.func,
-  ]).isRequired,
-};
-
-DataTableCell.defaultProps = {};

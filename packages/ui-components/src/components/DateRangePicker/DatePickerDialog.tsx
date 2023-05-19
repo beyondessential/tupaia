@@ -5,7 +5,6 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import styled from 'styled-components';
 import {
@@ -22,6 +21,7 @@ import { YearPicker } from './YearPicker';
 import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
 import { Button, OutlinedButton } from '../Button';
+import { BaseDatePickerProps, WeekPickerProps, YearPickerProps } from '../../types';
 
 const {
   DAY,
@@ -47,7 +47,10 @@ const Container = styled.div`
   }
 `;
 
-const DateRow = ({ granularity, ...props }) => {
+type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & {
+  granularity: typeof GRANULARITY_SHAPE;
+};
+const DateRow = ({ granularity, ...props }: DateRowProps) => {
   switch (granularity) {
     default:
     case DAY:
@@ -55,7 +58,7 @@ const DateRow = ({ granularity, ...props }) => {
         <Container>
           <DayPicker {...props} />
           <MonthPicker {...props} />
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
     case SINGLE_WEEK:
@@ -63,7 +66,7 @@ const DateRow = ({ granularity, ...props }) => {
       return (
         <Container>
           <WeekPicker {...props} />
-          <YearPicker {...props} isIsoYear />
+          <YearPicker {...(props as YearPickerProps)} isIsoYear />
         </Container>
       );
     case MONTH:
@@ -71,7 +74,7 @@ const DateRow = ({ granularity, ...props }) => {
       return (
         <Container>
           <MonthPicker {...props} />
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
     case QUARTER:
@@ -79,24 +82,20 @@ const DateRow = ({ granularity, ...props }) => {
       return (
         <Container>
           <QuarterPicker {...props} />
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
     case YEAR:
     case SINGLE_YEAR:
       return (
         <Container>
-          <YearPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
         </Container>
       );
   }
 };
 
-DateRow.propTypes = {
-  granularity: GRANULARITY_SHAPE.isRequired,
-};
-
-const getLabelText = granularity => {
+const getLabelText = (granularity: string) => {
   switch (granularity) {
     default:
       return 'Select Dates';
@@ -120,6 +119,18 @@ const StyledDialogContent = styled(DialogContent)`
   padding-top: 1.5rem;
 `;
 
+type DatePickerDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  granularity: typeof GRANULARITY_SHAPE;
+  startDate: string;
+  endDate: string;
+  minDate?: string;
+  maxDate?: string;
+  onSetNewDates: (startDate: string, endDate: string) => void;
+  weekDisplayFormat?: string;
+};
+
 export const DatePickerDialog = ({
   isOpen,
   onClose,
@@ -130,7 +141,7 @@ export const DatePickerDialog = ({
   maxDate,
   onSetNewDates,
   weekDisplayFormat,
-}) => {
+}: DatePickerDialogProps) => {
   const momentStartDate = moment(startDate);
   const momentEndDate = moment(endDate);
   const minMomentDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
@@ -170,7 +181,7 @@ export const DatePickerDialog = ({
   };
 
   return (
-    <Dialog modal="true" open={isOpen} maxWidth="sm">
+    <Dialog open={isOpen} maxWidth="sm">
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
         {!isSingleDate && (
@@ -201,22 +212,4 @@ export const DatePickerDialog = ({
       </DialogFooter>
     </Dialog>
   );
-};
-
-DatePickerDialog.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  granularity: GRANULARITY_SHAPE.isRequired,
-  startDate: PropTypes.string.isRequired,
-  endDate: PropTypes.string.isRequired,
-  onSetNewDates: PropTypes.func.isRequired,
-  minDate: PropTypes.string,
-  maxDate: PropTypes.string,
-  weekDisplayFormat: PropTypes.string,
-};
-
-DatePickerDialog.defaultProps = {
-  minDate: null,
-  maxDate: null,
-  weekDisplayFormat: null,
 };
