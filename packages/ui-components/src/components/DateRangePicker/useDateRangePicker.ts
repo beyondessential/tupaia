@@ -18,18 +18,10 @@ import {
   roundEndDate,
   toStandardDateString,
 } from '@tupaia/utils';
-import { GranularityType, ModifierType } from '../../types/date-picker-types';
+import { GranularityType, ModifierType } from '../../types';
 
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
-/**
- *
- * @param isSingleDate
- * @param granularity
- * @param startDate
- * @param endDate
- * @param {string} weekDisplayFormat one of WEEK_DISPLAY_FORMATS
- * @returns {*|string}
- */
+
 const getDatesAsString = (
   isSingleDate: boolean,
   granularity: GranularityType = DEFAULT_GRANULARITY,

@@ -13,7 +13,7 @@ import {
 } from '@tupaia/utils';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { ModifierType, WeekPickerProps } from '../../types/date-picker-types';
+import { ModifierType, WeekPickerProps } from '../../types';
 
 const useBoundaryWeekOrDefault = (currentDate: Moment, boundaryDate: Moment, defaultWeek: number) =>
   currentDate.isoWeekYear() === boundaryDate.isoWeekYear() ? boundaryDate.isoWeek() : defaultWeek;

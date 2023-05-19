@@ -1,5 +1,5 @@
 import { Moment } from 'moment';
-import { GRANULARITIES } from '@tupaia/utils';
+import { GRANULARITIES, WEEK_DISPLAY_FORMATS } from '@tupaia/utils';
 
 type ValueOf<T> = T[keyof T];
 
@@ -25,3 +25,5 @@ export type WeekPickerProps = BaseDatePickerProps & {
 export type GranularityType = ValueOf<typeof GRANULARITIES>;
 
 export type ModifierType = 'startOfWeek' | 'endOfWeek' | undefined;
+
+export type WeekDisplayFormatType = ValueOf<typeof WEEK_DISPLAY_FORMATS>;

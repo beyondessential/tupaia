@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { Moment } from 'moment';
 import styled from 'styled-components';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
@@ -17,7 +18,7 @@ import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
 import { useDateRangePicker } from './useDateRangePicker';
 import { DatePickerDialog } from './DatePickerDialog';
 import { FlexStart } from '../Layout';
-import { Moment } from 'moment';
+import { WeekDisplayFormatType } from '../../types';
 
 const IconButton = styled(MuiIconButton)`
   background: white;
@@ -69,7 +70,7 @@ interface DateRangePickerProps {
   granularity?: typeof GRANULARITY_SHAPE;
   onSetDates?: (startDate: string, endDate: string) => void;
   isLoading?: boolean;
-  weekDisplayFormat?: string;
+  weekDisplayFormat?: WeekDisplayFormatType;
 }
 
 export const DateRangePicker = ({
