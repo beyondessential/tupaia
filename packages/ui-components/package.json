@@ -14,7 +14,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && yarn package:build:ts",
-    "build-dev": "npm run build", 
+    "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s public -p 6006",
@@ -51,9 +51,13 @@
   },
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
+    "@mui/types": "^7.2.4",
     "@storybook/react": "^6.3.9",
-    "@types/react": "^18.2.6",
+    "@types/jest": "^29.5.1",
+    "@types/lodash.throttle": "^4.1.7",
     "@types/react-dom": "^18.2.4",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/react-table": "^7.7.14",
     "@types/styled-components": "^5.1.26",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
