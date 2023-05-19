@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { FlexCenter } from './Layout';
 
-const StyledBanner = styled(FlexCenter)`
+const StyledBanner = styled(FlexCenter)<{
+  $color: CSSStyleDeclaration['color'];
+}>`
   background: ${props => props.$color};
   color: white;
   font-size: 13px;
@@ -23,7 +24,13 @@ const StyledBanner = styled(FlexCenter)`
   }
 `;
 
-export const EnvBanner = ({ color }) => {
+export const EnvBanner = (
+  {
+    color = '#f39c12'
+  }: {
+    color?: CSSStyleDeclaration['color'];
+  }
+) => {
   const deploymentName = process.env.REACT_APP_DEPLOYMENT_NAME;
 
   if (
@@ -40,12 +47,4 @@ export const EnvBanner = ({ color }) => {
       {deploymentName}
     </StyledBanner>
   );
-};
-
-EnvBanner.propTypes = {
-  color: PropTypes.string,
-};
-
-EnvBanner.defaultProps = {
-  color: '#f39c12',
 };

@@ -2,11 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import MuiButton from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
-import MuiLink from '@material-ui/core/Link';
+import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
+import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
+import { OverrideableComponentProps } from '../types';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
@@ -40,24 +40,22 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-export const Button = ({ children, isLoading, loadingText, disabled, ...props }) => (
+interface ButtonProps extends MuiButtonProps {
+  isLoading?: boolean;
+  loadingText?: string;
+}
+
+export const Button = ({
+  children,
+  isLoading = false,
+  loadingText = 'Loading',
+  disabled = false,
+  ...props
+}: ButtonProps) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
     {isLoading ? `${loadingText}...` : children}
   </StyledButton>
 );
-
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  isLoading: PropTypes.bool,
-  loadingText: PropTypes.string,
-  disabled: PropTypes.bool,
-};
-
-Button.defaultProps = {
-  loadingText: 'Loading',
-  isLoading: false,
-  disabled: false,
-};
 
 export const LightPrimaryButton = styled(Button)`
   background-color: #dceffb;
@@ -145,7 +143,7 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-export const OutlinedButton = props => <Button {...props} variant="outlined" />;
+export const OutlinedButton = (props: MuiButtonProps) => <Button {...props} variant="outlined" />;
 
 export const ErrorOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.error.main};
@@ -208,19 +206,19 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
   }
 `;
 
-const StyledLink = styled(MuiLink)`
+const StyledLink = styled(MuiLink)<OverrideableComponentProps<MuiLinkProps>>`
   text-decoration: underline;
   font-size: 1em;
   line-height: 1.2;
 `;
 
-export const LinkButton = ({ children, onClick }) => (
-  <StyledLink component="button" onClick={onClick}>
+interface LinkProps extends MuiLinkProps {
+  onClick: () => void;
+  children: ReactNode;
+}
+
+export const LinkButton = ({ children, onClick }: LinkProps) => (
+  <StyledLink onClick={onClick} component="button">
     {children}
   </StyledLink>
 );
-
-LinkButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  children: PropTypes.any.isRequired,
-};

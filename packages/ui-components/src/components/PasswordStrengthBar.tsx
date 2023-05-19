@@ -4,12 +4,11 @@
  *
  */
 
-import React, { Suspense } from 'react';
-import PropTypes from 'prop-types';
+import React, { ElementType, Suspense } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import MuiBox from '@material-ui/core/Box';
+import MuiBox, { BoxProps } from '@material-ui/core/Box';
 
 const Container = styled(MuiBox)`
   .bar > div > div {
@@ -38,15 +37,24 @@ const PasswordStrengthBarFallback = styled.div`
   margin: 0 1rem;
 `;
 
+interface PasswordStrengthBarProps extends BoxProps {
+  StrengthBarComponent?: ElementType;
+  password?: string;
+  helperText?: string;
+  minLength?: number;
+  barColors?: string[];
+  scoreWords?: string[];
+}
+
 export const PasswordStrengthBar = ({
-  StrengthBarComponent,
-  password,
-  minLength,
+  StrengthBarComponent = PasswordStrengthBarFallback,
+  password = '',
+  minLength = 9,
   helperText,
-  barColors,
-  scoreWords,
+  barColors = ['#deded0', '#FF9811', '#FF9811', '#FF9811', '#FF9811'],
+  scoreWords = ['weak', 'okay', 'good', 'strong', 'very strong'],
   ...props
-}) => {
+}: PasswordStrengthBarProps) => {
   const theme = useTheme();
   return (
     <Container {...props}>
@@ -63,7 +71,7 @@ export const PasswordStrengthBar = ({
             top: '-1.8rem',
             right: '0',
             fontSize: '0.75rem',
-            color: theme.palette.text.tertiary,
+            color: theme.palette.text.secondary,
             textTransform: 'capitalize',
           }}
         />
@@ -71,23 +79,4 @@ export const PasswordStrengthBar = ({
       {helperText && <HelperText>{helperText}</HelperText>}
     </Container>
   );
-};
-
-PasswordStrengthBar.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  StrengthBarComponent: PropTypes.any,
-  password: PropTypes.string,
-  helperText: PropTypes.string,
-  minLength: PropTypes.number,
-  barColors: PropTypes.arrayOf(PropTypes.string),
-  scoreWords: PropTypes.arrayOf(PropTypes.string),
-};
-
-PasswordStrengthBar.defaultProps = {
-  StrengthBarComponent: null,
-  password: '',
-  minLength: 9,
-  helperText: null,
-  barColors: ['#deded0', '#FF9811', '#FF9811', '#FF9811', '#FF9811'],
-  scoreWords: ['weak', 'okay', 'good', 'strong', 'very strong'],
 };

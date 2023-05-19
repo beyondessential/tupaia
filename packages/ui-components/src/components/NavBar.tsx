@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ElementType, ReactNode } from 'react';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import { NavLink, RouteComponentProps } from 'react-router-dom';
 import { LightTab } from './Tabs';
 
 const Wrapper = styled.nav`
@@ -43,7 +42,37 @@ const StyledTab = styled(LightTab)`
   }
 `;
 
-export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth, className }) => (
+interface LinkProps {
+  label: ReactNode;
+  to: string;
+  isActive?: (
+    match: RouteComponentProps['match'],
+    location: RouteComponentProps['location'],
+  ) => boolean;
+  icon?: ReactNode;
+  id?: string;
+}
+
+interface NavBarProps {
+  HomeButton: ReactNode;
+  Profile: ElementType;
+  links: LinkProps[];
+  isTabActive?: (
+    match: RouteComponentProps['match'],
+    location: RouteComponentProps['location'],
+  ) => boolean;
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+  className?: string;
+}
+
+export const NavBar = ({
+  HomeButton,
+  Profile,
+  links,
+  isTabActive,
+  maxWidth = false,
+  className,
+}: NavBarProps) => (
   <Wrapper className={className}>
     <MuiContainer maxWidth={maxWidth}>
       <Inner>
@@ -69,24 +98,3 @@ export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth, clas
     </MuiContainer>
   </Wrapper>
 );
-
-NavBar.propTypes = {
-  HomeButton: PropTypes.node.isRequired,
-  links: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.node,
-      to: PropTypes.string,
-      isActive: PropTypes.func,
-      icon: PropTypes.node,
-      id: PropTypes.string,
-    }),
-  ).isRequired,
-  Profile: PropTypes.elementType.isRequired,
-  isTabActive: PropTypes.func,
-  maxWidth: PropTypes.string,
-};
-
-NavBar.defaultProps = {
-  isTabActive: () => {},
-  maxWidth: null,
-};

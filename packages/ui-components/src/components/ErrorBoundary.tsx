@@ -2,12 +2,20 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { Component, ReactNode } from 'react';
 import { SmallAlert } from './Alert';
 import { FlexCenter } from './Layout';
 
-export class ErrorBoundary extends React.Component {
-  constructor(props) {
+interface Props {
+  children: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+}
+
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }
@@ -18,7 +26,6 @@ export class ErrorBoundary extends React.Component {
   }
 
   render() {
-    // eslint-disable-next-line react/prop-types
     const { children } = this.props;
     const { hasError } = this.state;
 

@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import MuiTabs from '@material-ui/core/Tabs';
+import MuiTabs, { TabsProps } from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 
@@ -17,10 +17,10 @@ export const StyledTabs = styled(MuiTabs)`
   }
 `;
 
-export const Tabs = props => {
+export const Tabs = (props: TabsProps) => {
   const [value, setValue] = useState(0);
   const handleChange = useCallback(
-    (event, newValue) => {
+    (event: React.ChangeEvent<{}>, newValue: number) => {
       setValue(newValue);
     },
     [setValue],

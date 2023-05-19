@@ -71,8 +71,6 @@ export const GroupedSelect = ({
     [setValue],
   );
 
-  const isControlled = onChange !== null;
-
   // We need to flatten our tree as mui select requires group headings to be adjacent to options, rather than parents
   const flatSetOfItems = [];
   for (const [groupLabel, optionsForGroup] of Object.entries(groupedOptions)) {
@@ -84,8 +82,8 @@ export const GroupedSelect = ({
 
   return (
     <GroupedSelectField
-      value={isControlled ? value : localValue}
-      onChange={isControlled ? onChange : handleChange}
+      value={onChange ? value : localValue}
+      onChange={onChange || handleChange}
       SelectProps={{
         displayEmpty: true,
       }}
