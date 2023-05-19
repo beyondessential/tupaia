@@ -117,6 +117,10 @@
       "path": "packages/superset-api"
     },
     {
+      "name": "tupaia-web-server",
+      "path": "packages/tupaia-web-server"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },
