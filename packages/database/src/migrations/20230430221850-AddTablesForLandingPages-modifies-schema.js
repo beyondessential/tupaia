@@ -18,7 +18,7 @@ exports.up = async function (db) {
   await db.runSql(`
     CREATE TABLE landing_page (
       id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
+      name VARCHAR(40) NOT NULL,
       url_segment TEXT NOT NULL,
       image_url TEXT,
       logo_url TEXT,
