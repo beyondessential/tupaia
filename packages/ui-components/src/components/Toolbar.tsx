@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import Container from '@material-ui/core/Container';
+import Container, { ContainerProps } from '@material-ui/core/Container';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
 import { LightTab, LightTabs } from './Tabs';
 
@@ -22,13 +22,13 @@ const ToolbarWrapper = styled.div`
 `;
 
 interface BaseToolbarProps {
-  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false | undefined;
+  maxWidth?: ContainerProps['maxWidth'];
   children?: ReactNode;
 }
 
-export const BaseToolbar = ({ children, maxWidth = undefined }: BaseToolbarProps) => (
+export const BaseToolbar = ({ children, maxWidth = false }: BaseToolbarProps) => (
   <ToolbarWrapper>
-    <Container maxWidth={maxWidth}>{children || null}</Container>
+    <Container maxWidth={maxWidth}>{children!}</Container>
   </ToolbarWrapper>
 );
 

@@ -5,12 +5,12 @@
 import React from 'react';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 
 interface FavouriteButtonProps {
   isFavourite?: boolean;
   onChange: () => void;
-  color?: 'primary' | 'secondary' | 'inherit' | 'default';
+  color?: IconButtonProps['color'];
   isDisabled?: boolean;
 }
 

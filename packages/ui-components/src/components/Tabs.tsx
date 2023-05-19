@@ -20,7 +20,7 @@ export const StyledTabs = styled(MuiTabs)`
 export const Tabs = (props: TabsProps) => {
   const [value, setValue] = useState(0);
   const handleChange = useCallback(
-    (event: any, newValue: any) => {
+    (event: React.ChangeEvent<{}>, newValue: number) => {
       setValue(newValue);
     },
     [setValue],

@@ -9,7 +9,6 @@ import React, {
   useContext,
   useCallback,
   ReactNode,
-  ElementType,
   ReactElement,
 } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';

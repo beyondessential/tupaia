@@ -40,14 +40,7 @@ const HeaderLabel = styled(Typography)<TypographyProps>`
 interface CardHeaderProps {
   title: string | ReactNode;
   label?: string | ReactNode;
-  color?:
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | 'error';
+  color?: TypographyProps['color'];
 }
 
 export const CardHeader = ({ title, label, color = 'initial' }: CardHeaderProps) => (

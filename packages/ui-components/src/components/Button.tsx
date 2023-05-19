@@ -6,6 +6,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
 import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
+import { OverrideableComponentProps } from '../types';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;

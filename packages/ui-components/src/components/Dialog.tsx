@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import MuiDialog, { DialogProps as MuiDialogProps } from '@material-ui/core/Dialog';
-import Typography from '@material-ui/core/Typography';
+import Typography, { TypographyProps } from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { IconButton } from './IconButton';
@@ -61,14 +61,7 @@ const CloseButton = styled(IconButton)`
 interface DialogHeaderProps {
   title: string;
   onClose: () => void;
-  color?:
-    | 'inherit'
-    | 'initial'
-    | 'textPrimary'
-    | 'primary'
-    | 'secondary'
-    | 'textSecondary'
-    | 'error';
+  color?: TypographyProps['color'];
   children?: ReactNode;
 }
 
