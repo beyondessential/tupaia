@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { SelectField } from './Select';
 import { Checkbox } from './Checkbox';
+import { TextFieldProps, SelectProps } from '@material-ui/core';
 
 const StyledCheckbox = styled(Checkbox)`
   margin: 0;
@@ -21,20 +21,43 @@ const MenuItem = styled(MuiMenuItem)`
   padding-bottom: 0;
 `;
 
-export const MultiSelect = ({ options, placeholder, defaultValue, renderValue, ...props }) => {
-  const [selected, setSelected] = React.useState(defaultValue);
+type Option = {
+  value: any;
+  label: string;
+};
+
+type MultiSelectProps = TextFieldProps & {
+  options: Option[];
+  placeholder?: string;
+  defaultValue?: any[];
+  renderValue?: SelectProps['renderValue'];
+};
+
+export const MultiSelect = ({
+  options,
+  placeholder = 'Please select',
+  defaultValue = [],
+  renderValue,
+  ...props
+}: MultiSelectProps) => {
+  const [selected, setSelected] = useState<any[]>(defaultValue);
+  const renderSelectedValue = () => {
+    if (selected.length > 0)
+      return renderValue ? renderValue(selected) : <>{selected.join(', ')}</>;
+    return <>{placeholder}</>;
+  };
   return (
     <SelectField
       SelectProps={{
         displayEmpty: true,
         multiple: true,
-        renderValue: selected.length > 0 ? renderValue : () => placeholder,
+        renderValue: renderSelectedValue,
       }}
       value={selected}
-      onChange={event => setSelected(event.target.value)}
+      onChange={event => setSelected(event.target.value as any)}
       {...props}
     >
-      {options.map(option => (
+      {options.map((option: Option) => (
         <MenuItem key={option.value} value={option.value}>
           <StyledCheckbox
             color="primary"
@@ -45,19 +68,4 @@ export const MultiSelect = ({ options, placeholder, defaultValue, renderValue, .
       ))}
     </SelectField>
   );
-};
-
-MultiSelect.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  placeholder: PropTypes.string,
-  defaultValue: PropTypes.array,
-  renderValue: PropTypes.func,
-};
-
-MultiSelect.defaultProps = {
-  placeholder: 'Please select',
-  defaultValue: [],
-  renderValue: selected => selected.join(', '),
 };

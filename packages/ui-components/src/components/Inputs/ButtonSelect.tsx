@@ -2,14 +2,17 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import MuiMenu from '@material-ui/icons/Menu';
 import MuiChevronRight from '@material-ui/icons/ChevronRight';
 import MuiChevronLeft from '@material-ui/icons/ChevronLeft';
-import MuiInputAdornment from '@material-ui/core/InputAdornment';
-import MuiMenuItem from '@material-ui/core/MenuItem';
+import {
+  SvgIconProps,
+  TextFieldProps,
+  InputAdornment as MuiInputAdornment,
+  MenuItem as MuiMenuItem,
+} from '@material-ui/core';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { TextField } from './TextField';
 import { IconButton } from '../IconButton';
 
@@ -77,17 +80,31 @@ const Menu = styled(MuiMenu)`
   left: 1.2rem;
 `;
 
+interface ButtonSelectProps {
+  id: string;
+  label: string;
+  options: {
+    [key: string]: string;
+  }[];
+  index: number;
+  onChange: (index: number) => void;
+  labelKey?: string;
+  valueKey?: string;
+  disabled?: boolean;
+  muiProps?: TextFieldProps;
+}
+
 export const ButtonSelect = ({
   id,
   label,
   options,
-  labelKey,
-  valueKey,
+  labelKey = 'name',
+  valueKey = 'id',
   index,
   onChange,
-  disabled,
+  disabled = false,
   muiProps,
-}) => {
+}: ButtonSelectProps) => {
   const value = options[index][valueKey];
 
   const handlePrev = useCallback(() => {
@@ -118,7 +135,7 @@ export const ButtonSelect = ({
       disabled={disabled}
       SelectProps={{
         displayEmpty: true,
-        IconComponent: iconProps => <Menu {...iconProps} />,
+        IconComponent: (iconProps: SvgIconProps) => <Menu {...iconProps} />,
         MenuProps: {
           disablePortal: true,
           anchorOrigin: {
@@ -148,7 +165,7 @@ export const ButtonSelect = ({
         ),
       }}
       select
-      {...muiProps}
+      {...(muiProps as any)}
     >
       {options.map(option => (
         <MuiMenuItem key={option[valueKey]} value={option[valueKey]}>
@@ -157,24 +174,4 @@ export const ButtonSelect = ({
       ))}
     </StyledTextField>
   );
-};
-
-ButtonSelect.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  options: PropTypes.array.isRequired,
-  index: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  labelKey: PropTypes.string,
-  valueKey: PropTypes.string,
-  muiProps: PropTypes.object,
-};
-
-ButtonSelect.defaultProps = {
-  label: null,
-  labelKey: 'name',
-  valueKey: 'id',
-  disabled: false,
-  muiProps: undefined,
 };

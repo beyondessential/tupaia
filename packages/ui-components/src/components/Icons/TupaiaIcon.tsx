@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { SVGAttributes } from 'react';
 import styled from 'styled-components';
 
 const StyledSVG = styled.svg`
@@ -15,7 +15,7 @@ const StyledSVG = styled.svg`
   user-select: none;
 `;
 
-export const TupaiaIcon = props => (
+export const TupaiaIcon = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <StyledSVG {...props} viewBox="0 0 35 51" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M17.5147 34.8154C27.1762 34.8154 35.0005 27.0491 35.0005 17.5076C35.0005 7.93453 27.1762 0.199951 17.5147 0.199951C7.85308 0.199951 0.0288086 7.96623 0.0288086 17.5076C0.0288086 27.0808 7.85308 34.8154 17.5147 34.8154Z"

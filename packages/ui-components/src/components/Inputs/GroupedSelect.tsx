@@ -5,11 +5,11 @@
 
 import React, { useState, useCallback } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
+import { ListSubheader, SvgIconProps, TextFieldProps } from '@material-ui/core';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from './TextField';
-import { ListSubheader } from '@material-ui/core';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.secondary};
@@ -29,39 +29,40 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-export const GroupedSelectField = ({ SelectProps, ...props }) => (
+export const GroupedSelectField = ({ SelectProps = {}, ...props }: TextFieldProps) => (
   <StyledTextField
     SelectProps={{
-      IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
+      IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
     }}
-    {...props}
+    {...(props as any)}
     select
   />
 );
-
-GroupedSelectField.propTypes = {
-  SelectProps: PropTypes.object,
-};
-
-GroupedSelectField.defaultProps = {
-  SelectProps: null,
-};
 
 const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;
 
+type GroupedSelectProps = TextFieldProps & {
+  groupedOptions: { [key: string]: { label: string; value?: string }[] };
+  showPlaceholder?: boolean;
+  placeholder?: string;
+  defaultValue?: string;
+  value?: string;
+  onChange?: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
+};
+
 export const GroupedSelect = ({
-  value,
+  value = '',
   onChange,
   groupedOptions,
-  showPlaceholder,
-  placeholder,
-  defaultValue,
+  showPlaceholder = true,
+  placeholder = 'Please select',
+  defaultValue = '',
   ...props
-}) => {
+}: GroupedSelectProps) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
@@ -117,13 +118,4 @@ GroupedSelect.propTypes = {
   defaultValue: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
-};
-
-GroupedSelect.defaultProps = {
-  placeholder: 'Please select',
-  showPlaceholder: true,
-  defaultValue: '',
-  value: '',
-  label: null,
-  onChange: null,
 };
