@@ -3,9 +3,15 @@
   "compileOnSave": true,
   "compilerOptions": {
     "jsx": "react",
-    "target": "es5",
     "allowJs": true,
     "outDir": "dist",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
   },
   "include": [
     "src/**/*",
