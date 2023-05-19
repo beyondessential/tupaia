@@ -1,3 +1,3 @@
-# @tupaia/lesmis-server
+# @tupaia/tupaia-web-server
 
-Back end server for the LESMIS web app.
+Back end server for the Tupaia web app.
