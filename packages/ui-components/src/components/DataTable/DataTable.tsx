@@ -37,19 +37,21 @@ const getColumnId = ({
   return Header;
 };
 
+interface DataTableProps {
+  columns: any[];
+  data: any[];
+  className?: string;
+  rowLimit?: number;
+  total?: number;
+}
+
 export const DataTable = ({
   columns,
   data,
   className = '',
   rowLimit = 0,
   total = 0,
-}: {
-  columns: any[];
-  data: any[];
-  className?: string;
-  rowLimit?: number;
-  total?: number;
-}) => {
+}: DataTableProps) => {
   const {
     getTableProps,
     getTableBodyProps,
