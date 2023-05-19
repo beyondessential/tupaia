@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -14,7 +14,7 @@ const BaseTextField = (props: TextFieldProps) => (
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
 
-export const TextField = styled(BaseTextField)`
+export const TextField = styled(BaseTextField)<TextFieldProps>`
   margin-bottom: 1.2rem;
   cursor: auto;
 
