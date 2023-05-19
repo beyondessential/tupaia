@@ -6,10 +6,10 @@
 import { AuthHandler, SessionType } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 
-const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
+const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
 const DEFAULT_AUTH_HEADER = createBasicHeader(
-  MICROSERVICE_CLIENT_USERNAME,
-  MICROSERVICE_CLIENT_SECRET,
+  API_CLIENT_NAME,
+  API_CLIENT_PASSWORD,
 );
 
 // Handles switching between microservice client and user login sessions

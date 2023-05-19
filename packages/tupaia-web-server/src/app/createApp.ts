@@ -19,7 +19,7 @@ export function createApp() {
     .useSessionModel(TupaiaWebSessionModel)
     .build();
 
-  useForwardUnhandledRequests(app, WEB_CONFIG_API_URL, '');
+  useForwardUnhandledRequests(app, WEB_CONFIG_API_URL);
 
   return app;
 }
