@@ -309,7 +309,7 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.LANDING_PAGE:
       return {
-        name: [hasContent],
+        name: [hasContent, constructIsShorterThan(40)],
         website_url: [constructIsEmptyOr(isURL)],
         external_link: [constructIsEmptyOr(isURL)],
         primary_hexcode: [constructIsEmptyOr(isHexColor)],

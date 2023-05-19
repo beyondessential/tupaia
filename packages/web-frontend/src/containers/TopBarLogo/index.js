@@ -29,8 +29,13 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoImage = styled.img`
-  max-height: 80%;
+  max-height: 40px; // 80% of top bar height
   width: auto;
+  max-width: 50px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    max-width: 100%;
+    max-height: 48px; // 80% of top bar height
+  }
 `;
 
 const LogoButton = styled.button`
@@ -48,9 +53,19 @@ const LogoButton = styled.button`
 const Name = styled(Typography)`
   font-style: normal;
   font-weight: ${props => props.theme.typography.fontWeightBold};
-  font-size: 1.5rem;
+  font-size: 1rem;
   line-height: 1.4;
   letter-spacing: 0.1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    font-size: 1.2rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    font-size: 1.5rem;
+  }
+`;
+
+const NameWrapper = styled.div`
+  max-width: 100%;
   ${LogoImage} + & {
     margin-left: 1.2rem;
   }
@@ -76,7 +91,11 @@ export const TopBarLogoComponent = ({ onClickLogo }) => {
       <Logo onClick={onClickLogo} isCustomLandingPage={isCustomLandingPage}>
         <LogoImage src={logoSrc} alt="Logo" />
         {/** If a custom landing page has set to display the name in the header, display it here */}
-        {displayName && <Name variant="h1">{name}</Name>}
+        {displayName && (
+          <NameWrapper>
+            <Name variant="h1">{name}</Name>
+          </NameWrapper>
+        )}
       </Logo>
     </LogoWrapper>
   );
