@@ -5,7 +5,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/tsutils';
 import { useTheme } from '@material-ui/core/styles';
 import {
   Box,

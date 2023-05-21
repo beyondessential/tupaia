@@ -4,7 +4,7 @@
  *
  */
 import { useQuery } from 'react-query';
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/tsutils';
 import { post } from '../api';
 import { useProjectEntitiesData } from './useEntitiesData';
 import { useEntityData } from './useEntityData';
