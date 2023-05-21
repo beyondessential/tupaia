@@ -117,7 +117,7 @@ export const ImageUploadField = React.memo(
 
     const validateImageSize = async file => {
       // If no max height or width is provided, or if file is not set, we don't need to validate so can return null.
-      if (!file || (!minWidth && !minHeight && !maxWidth && !maxHeight)) return true;
+      if (!file || (!minWidth && !minHeight && !maxWidth && !maxHeight)) return null;
       // Check image is within the specified height and width, and return the appropriate message if so, else null.
       const { height, width } = await getImageSize(file);
 

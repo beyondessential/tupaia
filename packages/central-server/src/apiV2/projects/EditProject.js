@@ -29,6 +29,7 @@ export class EditProject extends BESAdminEditHandler {
       logo_url: existingLogoImage,
       code: existingCode,
     } = await this.getFields();
+    console.log('existingCode', existingCode);
 
     const code = updatedCode || existingCode;
     // check first if field is undefined, as we don't want to upload an image if the field is not being updated, since this might cause the field to be reset
