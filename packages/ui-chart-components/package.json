@@ -12,8 +12,8 @@
     "source": "src/index.js",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rm -rf dist && yarn package:build:js", 
-        "build-dev": "npm run build", 
+        "build": "rm -rf dist && yarn package:build:js",
+        "build-dev": "npm run build",
         "lint": "yarn package:lint:js",
         "lint:fix": "yarn lint --fix",
         "storybook": "start-storybook -s public -p 6006",
