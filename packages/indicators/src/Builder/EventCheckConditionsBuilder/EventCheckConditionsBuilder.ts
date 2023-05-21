@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { utcMoment } from '@tupaia/tsutils';
-import { PERIOD_TYPES, momentToPeriod } from '@tupaia/utils';
+import { PERIOD_TYPES, utcMoment } from '@tupaia/tsutils';
+import { momentToPeriod } from '@tupaia/utils';
 
 import { Builder } from '../Builder';
 import { FetchOptions, Event } from '../../types';

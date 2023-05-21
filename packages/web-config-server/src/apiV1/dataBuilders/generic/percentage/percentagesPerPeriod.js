@@ -3,7 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { PERIOD_TYPES, periodToTimestamp } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
+import { periodToTimestamp } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,

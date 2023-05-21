@@ -3,11 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import type { Moment } from 'moment';
+
 import { utcMoment } from '@tupaia/tsutils';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 
 const getAdjustedDates = (startDate?: string, endDate?: string) => {
-  const adjustMoment = (moment: any) => stripTimezoneFromDate(moment.toISOString());
+  const adjustMoment = (moment: Moment) => stripTimezoneFromDate(moment.toISOString());
 
   return {
     startDate: startDate ? adjustMoment(utcMoment(startDate).startOf('day')) : undefined,
