@@ -21,7 +21,7 @@ interface LineChartProps {
   dot?: boolean;
 }
 
-export const LineChart: React.FC<LineChartProps> = ({
+export const LineChart = ({
   dataKey,
   opacity,
   yAxisId,
@@ -33,7 +33,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   connectNulls = false,
   exportWithLabels = true,
   dot = true,
-}) => {
+}: LineChartProps) => {
   const defaultColor = isExporting ? DARK_BLUE : BLUE;
   const showDot = isExporting ? false : dot; // Always hide when exporting as it doesn't look nice
 

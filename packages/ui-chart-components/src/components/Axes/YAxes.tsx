@@ -97,13 +97,13 @@ interface YAxisProps {
   isExporting?: boolean;
 }
 
-const YAxis: React.FC<YAxisProps> = ({
+const YAxis = ({
   config = {},
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}) => {
+}: YAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
@@ -153,12 +153,12 @@ interface YAxesProps {
   isExporting?: boolean;
 }
 
-export const YAxes: React.FC<YAxesProps> = ({
+export const YAxes = ({
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}) => {
+}: YAxesProps) => {
   const { chartConfig = {} } = viewContent;
 
   const axisPropsById = {

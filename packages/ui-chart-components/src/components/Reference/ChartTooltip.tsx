@@ -72,7 +72,7 @@ interface ChartTooltipProps {
   periodGranularity?: VizPeriodGranularity;
 }
 
-const MultiValueTooltip: React.FC<ChartTooltipProps> = ({
+const MultiValueTooltip = ({
   valueType,
   chartConfig,
   presentationOptions,
@@ -80,7 +80,7 @@ const MultiValueTooltip: React.FC<ChartTooltipProps> = ({
   periodGranularity,
   labelType,
   chartType,
-}) => {
+}: ChartTooltipProps) => {
   const data = payload[0].payload;
   const { name: headline, timestamp } = data;
 
@@ -129,12 +129,12 @@ const MultiValueTooltip: React.FC<ChartTooltipProps> = ({
   );
 };
 
-const SingleValueTooltip: React.FC<ChartTooltipProps> = ({
+const SingleValueTooltip = ({
   valueType,
   payload,
   periodGranularity,
   labelType,
-}) => {
+}: ChartTooltipProps) => {
   const data = payload[0].payload;
   const { name, value, timestamp } = data;
   const metadata = data.value_metadata;
@@ -178,7 +178,7 @@ const NoDataTooltip = ({
   );
 };
 
-export const ChartTooltip: React.FC<ChartTooltipProps> = props => {
+export const ChartTooltip = (props: ChartTooltipProps) => {
   const { payload, active, presentationOptions } = props;
 
   const data = payload || []; // This is to handle when recharts overrides the payload as null

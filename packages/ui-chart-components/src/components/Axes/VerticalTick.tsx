@@ -20,7 +20,7 @@ interface VerticalTickProps {
   };
 }
 
-export const VerticalTick: React.FC<VerticalTickProps> = ({ x, y, payload }) => {
+export const VerticalTick = ({ x, y, payload }: VerticalTickProps) => {
   return (
     <g transform={`translate(${x - 5},${y + 3})`}>
       <text

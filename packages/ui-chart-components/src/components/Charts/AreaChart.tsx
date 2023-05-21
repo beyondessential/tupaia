@@ -15,13 +15,13 @@ interface AreaChartProps {
   isExporting?: boolean;
 }
 
-export const AreaChart: React.FC<AreaChartProps> = ({
+export const AreaChart = ({
   color = BLUE,
   dataKey,
   yAxisId,
   isEnlarged = false,
   isExporting = false,
-}) => (
+}: AreaChartProps) => (
   <Area
     key={dataKey}
     dataKey={dataKey}

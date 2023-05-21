@@ -43,12 +43,12 @@ const getHeight = (isExporting?: boolean, isEnlarged?: boolean) => {
   return isEnlarged && isMobile() ? 320 : undefined;
 };
 
-export const GaugeChart: React.FC<GaugeChartProps> = ({
+export const GaugeChart = ({
   viewContent,
   isExporting = false,
   isEnlarged = false,
   onItemClick = () => {},
-}) => {
+}: GaugeChartProps) => {
   const { data, color = BLUE, ...restOfConfigs } = viewContent;
 
   const generateElements = () => {

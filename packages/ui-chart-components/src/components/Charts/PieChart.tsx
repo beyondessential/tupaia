@@ -107,13 +107,13 @@ interface PieChartProps {
   onItemClick?: (item: any) => void;
   legendPosition?: LegendPosition;
 }
-export const PieChart: React.FC<PieChartProps> = ({
+export const PieChart = ({
   viewContent,
   isExporting = false,
   isEnlarged = false,
   onItemClick = () => {},
   legendPosition = 'bottom',
-}) => {
+}: PieChartProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { presentationOptions, data } = viewContent;
   // eslint-disable-next-line no-unused-vars

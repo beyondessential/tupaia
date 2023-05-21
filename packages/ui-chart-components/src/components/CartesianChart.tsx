@@ -109,12 +109,12 @@ interface CartesianChartProps {
   isExporting?: boolean;
 }
 
-export const CartesianChart: React.FC<CartesianChartProps> = ({
+export const CartesianChart = ({
   viewContent,
   isEnlarged = false,
   isExporting = false,
   legendPosition = 'bottom',
-}) => {
+}: CartesianChartProps) => {
   const [chartConfig, setChartConfig] = useState<BaseChartConfig | object>(
     viewContent.chartConfig || {},
   );

@@ -31,7 +31,7 @@ const UnknownChartContainer = styled.div`
   position: relative;
 `;
 
-const UnknownChart: React.FC = () => (
+const UnknownChart = () => (
   <UnknownChartContainer>
     <UnknownChartTitle variant="h2">New chart coming soon</UnknownChartTitle>
   </UnknownChartContainer>
@@ -88,13 +88,13 @@ interface ChartProps {
   legendPosition?: LegendPosition;
 }
 
-export const Chart: React.FC<ChartProps> = ({
+export const Chart = ({
   viewContent,
   isExporting = false,
   isEnlarged = true,
   onItemClick = () => {},
   legendPosition = 'bottom',
-}) => {
+}: ChartProps) => {
   const { chartType } = viewContent;
 
   if (!Object.values(ChartType).includes(chartType)) {

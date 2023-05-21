@@ -24,7 +24,7 @@ interface ChartTableProps {
   className?: string;
 }
 
-export const ChartTable: React.FC<ChartTableProps> = ({ viewContent, className }) => {
+export const ChartTable = ({ viewContent, className }: ChartTableProps) => {
   const { columns, data } = getChartTableData(viewContent);
 
   if (!getIsChartData(viewContent)) {

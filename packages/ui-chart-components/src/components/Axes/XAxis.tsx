@@ -68,11 +68,7 @@ interface XAxisProps {
   isExporting?: boolean;
 }
 
-export const XAxis: React.FC<XAxisProps> = ({
-  viewContent,
-  isExporting = false,
-  isEnlarged = false,
-}) => {
+export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: XAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { Bar, Composed } = ChartType;
   const { chartType, chartConfig = {}, data } = viewContent;

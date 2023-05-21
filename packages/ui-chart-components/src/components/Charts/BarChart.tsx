@@ -30,7 +30,7 @@ interface BarChartProps {
   exportWithLabels?: boolean;
 }
 
-export const BarChart: React.FC<BarChartProps> = ({
+export const BarChart = ({
   color = BLUE,
   dataKey,
   yAxisId,
@@ -41,7 +41,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   isExporting = false,
   chartConfig,
   exportWithLabels = true,
-}) => {
+}: BarChartProps) => {
   const getBarSize = () => {
     if (chartConfig.chartType === ChartType.Composed || data.length === 1) {
       return isEnlarged ? 100 : 50;

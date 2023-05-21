@@ -16,12 +16,7 @@ interface ReferenceLabelProps {
 
 const isMaxLabel = (value: string): boolean => value.toLowerCase().includes('max');
 
-export const ReferenceLabel: React.FC<ReferenceLabelProps> = ({
-  fill,
-  fontSize = 14,
-  value,
-  viewBox,
-}) => {
+export const ReferenceLabel = ({ fill, fontSize = 14, value, viewBox }: ReferenceLabelProps) => {
   const x = (viewBox?.width || 0) / 2 + 30;
   const y = isMaxLabel(value) ? (viewBox?.y || 0) - 5 : (viewBox?.y || 0) + 15;
 
