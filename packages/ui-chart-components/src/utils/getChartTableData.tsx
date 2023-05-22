@@ -43,7 +43,7 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: str
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent: ViewContent, sortByTimestamp: string) => {
+const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -75,6 +75,7 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: string) => {
       id: columnKey,
       Header: (props: LooseObject) => {
         const columnId = props.column.id;
+        // @ts-ignore
         return chartConfig[columnId]?.label || columnId;
       },
       accessor: (row: LooseObject) => {
@@ -115,6 +116,7 @@ const processData = (viewContent: ViewContent) => {
 export const getChartTableData = (viewContent: ViewContent) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
+  // @ts-ignore
   const sortByTimestamp = useMemo(() => (rowA: any, rowB: any) =>
     sortDates(rowA.original.timestamp, rowB.original.timestamp),
   );

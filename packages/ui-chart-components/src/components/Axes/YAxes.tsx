@@ -160,13 +160,20 @@ const YAxis = ({
   );
 };
 
+interface YAxesProps {
+  yAxisConfigs: any[];
+  orientation: 'left' | 'right';
+  valueType: string;
+  yName: string;
+}
+
 export const YAxes = ({
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
 }: any) => {
-  const { chartConfig = {} } = viewContent;
+  const { chartConfig }: { chartConfig: YAxesProps } = viewContent;
 
   const axisPropsById: { [p: number]: LooseObject } = {
     [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
@@ -175,7 +182,7 @@ export const YAxes = ({
 
   Object.entries(chartConfig).forEach(
     ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
-      const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+      const axisId = Y_AXIS_IDS[orientation as 'left' | 'right'] || DEFAULT_Y_AXIS.id;
       axisPropsById[axisId].dataKeys.push(dataKey);
       if (valueType) {
         axisPropsById[axisId].valueType = valueType;
