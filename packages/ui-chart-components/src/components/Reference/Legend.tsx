@@ -102,14 +102,6 @@ const Text = styled.span`
   line-height: 1.4;
 `;
 
-interface PieLegendProps {
-  chartConfig: PieChartConfig;
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-  legendPosition?: LegendPosition;
-  viewContent: ViewContent;
-}
-
 const getPieLegendDisplayValue = (
   chartConfig: PieChartConfig,
   value: string,
@@ -129,6 +121,14 @@ const getPieLegendDisplayValue = (
   // on mobile the legend will show the actual formatDataValueByType after the label value
   return isMobile() && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
+
+interface PieLegendProps {
+  chartConfig: PieChartConfig;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  legendPosition?: LegendPosition;
+  viewContent: ViewContent;
+}
 
 export const getPieLegend = ({
   chartConfig,

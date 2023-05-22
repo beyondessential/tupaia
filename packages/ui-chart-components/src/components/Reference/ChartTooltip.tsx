@@ -56,7 +56,7 @@ const Box = styled.div`
 `;
 
 interface ChartTooltipProps {
-  payload: any[];
+  payload?: any[];
   active?: boolean;
   presentationOptions?: PresentationOptions;
   valueType: ValueType;
@@ -64,6 +64,10 @@ interface ChartTooltipProps {
   chartType?: ChartType;
   labelType?: ValueType;
   periodGranularity?: VizPeriodGranularity;
+}
+
+interface ChartTooltipPropsWithData extends ChartTooltipProps {
+  payload: any[];
 }
 
 const MultiValueTooltip = ({
@@ -74,7 +78,7 @@ const MultiValueTooltip = ({
   periodGranularity,
   labelType,
   chartType,
-}: ChartTooltipProps) => {
+}: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
   const { name: headline, timestamp } = data;
 
@@ -128,7 +132,7 @@ const SingleValueTooltip = ({
   payload,
   periodGranularity,
   labelType,
-}: ChartTooltipProps) => {
+}: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
   const { name, value, timestamp } = data;
   const metadata = data.value_metadata;

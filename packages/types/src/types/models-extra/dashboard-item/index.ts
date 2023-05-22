@@ -32,6 +32,7 @@ export type {
   LineChartConfig,
   PieChartConfig,
   BaseChartConfig,
+  CartesianChartConfig,
 } from './charts';
 /**
  * The master list of viz types.

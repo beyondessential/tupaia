@@ -12,5 +12,6 @@ export type {
   LineChartConfig,
   PieChartConfig,
   BaseChartConfig,
+  CartesianChartConfig,
   ValueType,
 } from './dashboard-item';

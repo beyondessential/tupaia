@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -19,7 +20,7 @@ import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
-import { ViewContent, LegendPosition } from '../../types';
+import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -135,7 +136,7 @@ export const PieChart = ({
     setActiveIndex(-1);
   };
 
-  const getPresentationOption = (key: string, option: string) =>
+  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) =>
     !!presentationOptions &&
     presentationOptions.hasOwnProperty(key) &&
     presentationOptions[key][option];

@@ -19,6 +19,7 @@ export {
   LineChartConfig,
   PieChartConfig,
   BaseChartConfig,
+  CartesianChartConfig,
   ValueType,
 } from './models-extra';
 

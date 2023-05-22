@@ -69,8 +69,8 @@ export type PresentationOptions = {
   referenceLines?: any;
 };
 
-export interface ViewContent<T = {}> {
-  chartType: ChartType;
+export interface ViewContent<T = BaseChartConfig, CT = ChartType> {
+  chartType: CT;
   valueType?: ValueType;
   name?: string;
   xName?: string;

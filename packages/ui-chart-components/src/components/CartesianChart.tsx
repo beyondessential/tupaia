@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import get from 'lodash.get';
 import {
@@ -16,7 +16,7 @@ import {
   Tooltip,
   Brush,
 } from 'recharts';
-import { BaseChartConfig } from '@tupaia/types';
+import { CartesianChartConfig } from '@tupaia/types';
 import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
 import { ChartType, ViewContent, LegendPosition } from '../types';
 import {
@@ -70,7 +70,7 @@ const CHART_TYPE_TO_CHART = {
   [Line]: LineChartComponent,
 };
 
-const getRealDataKeys = (chartConfig: BaseChartConfig | {}) =>
+const getRealDataKeys = (chartConfig: CartesianChartConfig | {}) =>
   Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
 const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean) => {
@@ -102,8 +102,10 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
   return { left: 0, right: 0, top: 0, bottom: 0 };
 };
 
+type CartesianChartConfigWithAll = CartesianChartConfig & { [LEGEND_ALL_DATA_KEY]?: any };
+
 interface CartesianChartProps {
-  viewContent: ViewContent;
+  viewContent: ViewContent<CartesianChartConfig>;
   legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
@@ -115,7 +117,7 @@ export const CartesianChart = ({
   isExporting = false,
   legendPosition = 'bottom',
 }: CartesianChartProps) => {
-  const [chartConfig, setChartConfig] = useState<BaseChartConfig | object>(
+  const [chartConfig, setChartConfig] = useState<CartesianChartConfigWithAll | object>(
     viewContent.chartConfig || {},
   );
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>([]);
@@ -148,7 +150,7 @@ export const CartesianChart = ({
   const updateChartConfig = (hasDisabledData: boolean) => {
     const newChartConfig = { ...chartConfig };
 
-    if (hasDisabledData && !chartConfig.hasOwnProperty(LEGEND_ALL_DATA_KEY)) {
+    if (hasDisabledData && LEGEND_ALL_DATA_KEY in newChartConfig) {
       const allChartType = Object.values(chartConfig)[0].chartType || defaultChartType || 'line';
       newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
       setChartConfig(newChartConfig);
@@ -245,12 +247,13 @@ export const CartesianChart = ({
         {Object.entries(chartDataConfig)
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey, { chartType = defaultChartType }]) => {
-            const Chart = CHART_TYPE_TO_CHART[chartType];
+            const Chart = CHART_TYPE_TO_CHART[chartType as keyof typeof CHART_TYPE_TO_CONTAINER];
             const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
             const yAxisId = orientationToYAxisId(yAxisOrientation);
 
             return Chart({
               valueType,
+              // @ts-ignore
               ...chartConfig[dataKey],
               chartConfig,
               dataKey,

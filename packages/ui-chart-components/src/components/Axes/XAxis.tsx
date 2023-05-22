@@ -9,6 +9,7 @@ import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '
 import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
 import { ChartType, DataProps, ViewContent } from '../../types';
+import { CartesianChartConfig } from '@tupaia/types/src';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -63,7 +64,7 @@ const calculateXAxisHeight = (data: DataProps[], isExporting: boolean) => {
 };
 
 interface XAxisProps {
-  viewContent: ViewContent;
+  viewContent: ViewContent<CartesianChartConfig>;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }

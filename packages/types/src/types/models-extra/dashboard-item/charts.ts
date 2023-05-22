@@ -103,7 +103,7 @@ type CommonChartChartConfig = {
 /**
  * A Cartesian chart has an area with axes e.g. bar, line.
  */
-type CartesianChartConfig = {
+export type CartesianChartConfig = {
   /**
    * @description The label on the x-axis
    */

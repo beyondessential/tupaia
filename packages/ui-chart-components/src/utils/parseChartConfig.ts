@@ -16,8 +16,14 @@ export const getLayeredOpacity = (
   ascending: boolean = false,
 ) => (ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers);
 
-export const parseChartConfig = (viewContent: ViewContent) => {
-  const { chartType, chartConfig = {}, data, colorPalette: paletteName } = viewContent;
+interface ChartConfig extends BaseChartConfig {
+  [ADD_TO_ALL_KEY]?: any;
+}
+
+type ColorPalette = keyof typeof COLOR_PALETTES;
+
+export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
+  const { chartType, chartConfig, data, colorPalette: paletteName } = viewContent;
   const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = chartConfig;
 
   const baseConfig = configForAllKeys
@@ -25,14 +31,19 @@ export const parseChartConfig = (viewContent: ViewContent) => {
     : restOfConfig;
 
   const addDefaultColors = (config: BaseChartConfig) =>
-    addDefaultColorsToConfig(config, paletteName, chartType);
+    addDefaultColorsToConfig(config, paletteName as ColorPalette, chartType);
 
   const chartConfigs = [baseConfig];
 
-  return chartConfigs
-    .map(sortChartConfigByLegendOrder)
-    .map(addDefaultColors)
-    .map(setOpacityValues)[0]; // must remove from array after mapping
+  return (
+    chartConfigs
+      // @ts-ignore
+      .map(sortChartConfigByLegendOrder)
+      // @ts-ignore
+      .map(addDefaultColors)
+      // @ts-ignore
+      .map(setOpacityValues)[0]
+  ); // must remove from array after mapping
 };
 
 /**
@@ -44,19 +55,22 @@ const setOpacityValues = (chartConfig: BaseChartConfig): BaseChartConfig => {
   Object.entries(chartConfig).forEach(([key, configItem], index, array) => {
     const { opacity } = configItem;
     if (!opacity || typeof opacity === 'number') {
+      // @ts-ignore
       newConfig[key] = configItem;
       return;
     }
     const newOpacity = getLayeredOpacity(array.length, index, opacity === 'ascending');
+    // @ts-ignore
     newConfig[key] = { ...configItem, opacity: newOpacity };
   });
+  // @ts-ignore
   return newConfig;
 };
 
 // Adds default colors for every element with no color defined
 const addDefaultColorsToConfig = (
   chartConfig: BaseChartConfig,
-  paletteName?: string,
+  paletteName: ColorPalette,
   chartType: ChartType,
 ) => {
   const newConfig = {};
@@ -72,6 +86,7 @@ const addDefaultColorsToConfig = (
       colorId = (colorId + 1) % colors.length;
     }
 
+    // @ts-ignore
     newConfig[key] = { ...configItem, color };
   });
 
@@ -93,7 +108,8 @@ const CHART_SORT_ORDER = {
   [ChartType.Bar]: 1,
 };
 
-const defaultSort = (a, b) => {
+const defaultSort = (a: { chartType: string | number }[], b: { chartType: string | number }[]) => {
+  // @ts-ignore
   return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
 };
 
@@ -120,7 +136,7 @@ const createDynamicConfig = (
   chartConfig: BaseChartConfig,
   dynamicChartConfig: BaseChartConfig,
   data: DataProps[],
-): BaseChartConfig => {
+) => {
   // Just find keys. Doesn't include keys which end in _metadata.
   // @ts-ignore
   const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
@@ -129,6 +145,7 @@ const createDynamicConfig = (
   // Add config to each key
   const newChartConfig = {};
   keys.forEach(key => {
+    // @ts-ignore
     newChartConfig[key] = { ...dynamicChartConfig, ...chartConfig[key] };
   });
   return newChartConfig;
