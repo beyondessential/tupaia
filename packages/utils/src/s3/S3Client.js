@@ -126,8 +126,12 @@ export class S3Client {
    */
   async uploadImage(base64EncodedImage, fileId, allowOverwrite = false) {
     const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
+    const encodedImageString = base64EncodedImage.replace(
+      new RegExp('(data:image)(.*)(;base64,)'),
+      '',
+    );
     // remove the base64 prefix from the image. This handles svg and other image types
-    const buffer = Buffer.from(base64EncodedImage.split('base64,')[1], 'base64');
+    const buffer = Buffer.from(encodedImageString, 'base64');
 
     // use the file type from the image if it's available, otherwise default to png
     const fileType =
