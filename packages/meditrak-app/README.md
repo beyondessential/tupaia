@@ -1,4 +1,4 @@
-# meditrak
+# @tupaia/meditrak
 
 Android and iOS app for surveying medical facilities
 
