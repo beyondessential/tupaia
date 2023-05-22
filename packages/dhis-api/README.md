@@ -1,4 +1,4 @@
-## @tupaia/dhis-api
+# @tupaia/dhis-api
 
 This package contains an abstraction layer over the DHIS2 api
 
