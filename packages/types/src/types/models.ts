@@ -19,6 +19,7 @@ export {
   LineChartConfig,
   PieChartConfig,
   BaseChartConfig,
+  ValueType,
 } from './models-extra';
 
 export interface AccessRequest {

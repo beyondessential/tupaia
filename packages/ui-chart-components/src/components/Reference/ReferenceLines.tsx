@@ -7,7 +7,8 @@ import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { TUPAIA_ORANGE } from '../../constants';
-import { ChartType } from '../../types';
+import { BaseChartConfig } from '@tupaia/types';
+import { ChartType, DataProps } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 import { ViewContent } from '../../types';
 
@@ -16,7 +17,7 @@ const ReferenceLineLabel = ({
   isExporting,
 }: {
   referenceLineLabel: string;
-  isExporting: boolean;
+  isExporting?: boolean;
 }) => {
   if (referenceLineLabel === undefined) return null;
   return (
@@ -41,14 +42,20 @@ const DEFAULT_Y_AXIS = {
 const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
   Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
-interface ReferenceLineProps {
-  viewContent: ViewContent;
-  isExporting: boolean;
-  isEnlarged?: boolean;
+interface ChartConfig extends BaseChartConfig {
+  referenceValue: string | number;
+  yAxisOrientation: string | number;
+  referenceLabel: string | number;
 }
 
-const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) => {
-  const { chartConfig = {} } = viewContent;
+const ValueReferenceLine = ({
+  viewContent,
+  isExporting,
+}: {
+  viewContent: { chartConfig: ChartConfig };
+  isExporting?: boolean;
+}) => {
+  const { chartConfig } = viewContent;
 
   const referenceLines = Object.entries(chartConfig)
     .filter(([, { referenceValue }]) => referenceValue)
@@ -73,12 +80,19 @@ const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) =>
   ));
 };
 
+interface ReferenceLineProps {
+  viewContent: ViewContent<ChartConfig>;
+  isExporting?: boolean;
+  isEnlarged?: boolean;
+}
+
 const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
   const { valueType, data, presentationOptions } = viewContent;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
-  const average = data.reduce((acc, row) => acc + row.value, 0) / data.length;
+  // @ts-ignore
+  const average = data.reduce((acc: number, row: DataProps) => acc + row.value, 0) / data.length;
 
   if (!average || shouldHideReferenceLine) {
     return null;
@@ -111,5 +125,5 @@ export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }: Referen
   if (viewContent.chartType === ChartType.Bar) {
     return BarReferenceLine({ viewContent, isExporting, isEnlarged });
   }
-  return ValueReferenceLine({ viewContent, isExporting, isEnlarged });
+  return ValueReferenceLine({ viewContent, isExporting });
 };

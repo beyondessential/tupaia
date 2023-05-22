@@ -2,9 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { BaseChartConfig } from '@tupaia/types';
+import { BaseChartConfig, ValueType } from '@tupaia/types';
 import { ReferenceAreaProps } from 'recharts';
-import { ConfirmModal } from '@tupaia/ui-components';
+import { GRANULARITY_SHAPE } from '@tupaia/utils';
 
 // Todo: move some of these types to @tupaia/types and integrate
 export interface DataProps {
@@ -47,17 +47,7 @@ export type LegendPosition = 'top' | 'bottom';
  *   }
  */
 
-export type VizPeriodGranularity =
-  | 'day'
-  | 'one_day_at_a_time'
-  | 'week'
-  | 'one_week_at_a_time'
-  | 'month'
-  | 'one_month_at_a_time'
-  | 'quarter'
-  | 'one_quarter_at_a_time'
-  | 'year'
-  | 'one_year_at_a_time';
+export type VizPeriodGranularity = typeof GRANULARITY_SHAPE;
 
 type ConditionalMatrixConditionShape = {
   key: string;
@@ -76,13 +66,16 @@ export type PresentationOptions = {
   hideAverage?: boolean;
   valueFormat?: string;
   conditions?: ConditionalMatrixConditionShape[];
+  referenceLines?: any;
 };
 
-export type ViewContent = {
+export interface ViewContent<T = {}> {
   chartType: ChartType;
   valueType?: ValueType;
   name?: string;
   xName?: string;
+  yName?: string;
+  ticks?: string;
   noDataMessage?: string;
   source?: string;
   startDate?: string;
@@ -91,20 +84,8 @@ export type ViewContent = {
   periodGranularity?: VizPeriodGranularity;
   labelType?: string;
   data: DataProps[];
-  chartConfig?: BaseChartConfig;
+  chartConfig: T;
   presentationOptions?: PresentationOptions;
   renderLegendForOneItem?: boolean;
   referenceAreas?: ReferenceAreaProps[];
-};
-
-export type ValueType =
-  | 'boolean'
-  | 'fractionAndPercentage'
-  | 'percentage'
-  | 'text'
-  | 'number'
-  | 'color'
-  | 'currency'
-  | 'view'
-  | 'oneDecimalPlace'
-  | 'fraction';
+}

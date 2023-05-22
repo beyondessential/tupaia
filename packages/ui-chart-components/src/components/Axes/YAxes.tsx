@@ -5,10 +5,18 @@
 
 import React from 'react';
 import { formatDataValueByType } from '@tupaia/utils';
+import { ValueType } from '@tupaia/types';
 import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE } from '../../constants';
-import { ViewContent } from '../../types';
+import { LooseObject, ViewContent } from '../../types';
 import { getContrastTextColor } from '../../utils';
+
+interface AxisDomainProps {
+  min: number;
+  max: number;
+  value: any;
+  type: any;
+}
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -29,12 +37,12 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const parseDomainConfig = config => {
+const parseDomainConfig = (config: AxisDomainProps) => {
   switch (config.type) {
     case 'scale':
-      return dataExtreme => dataExtreme * config.value;
+      return (dataExtreme: any) => dataExtreme * config.value;
     case 'clamp':
-      return dataExtreme => {
+      return (dataExtreme: any) => {
         const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
         return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
       };
@@ -48,13 +56,19 @@ const parseDomainConfig = config => {
 const getDefaultYAxisDomain = (viewContent: ViewContent) =>
   viewContent.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
-const calculateYAxisDomain = ({ min, max }) => {
+const calculateYAxisDomain = ({ min, max }: { min: AxisDomainProps; max: AxisDomainProps }) => {
   return [parseDomainConfig(min), parseDomainConfig(max)];
 };
 
-const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
+const containsClamp = ({ min, max }: { min: AxisDomainProps; max: AxisDomainProps }) =>
+  min.type === 'clamp' || max.type === 'clamp';
 
-const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
+const renderYAxisLabel = (
+  label: string,
+  orientation: string,
+  fillColor: string,
+  isEnlarged: boolean,
+) => {
   if (label)
     return {
       value: label,
@@ -69,9 +83,10 @@ const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
 /**
  * Calculate a dynamic width for the YAxis
  */
-const getAxisWidth = (data, dataKeys, valueType) => {
+const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
   if (valueType === 'number' || valueType === undefined) {
+    // @ts-ignore
     const values = data.map(item => dataKeys.map(key => item[key])).flat();
     const maxValue = Math.max(...values);
 
@@ -89,26 +104,24 @@ const getAxisWidth = (data, dataKeys, valueType) => {
 
   return undefined;
 };
-interface YAxisProps {
-  viewContent: ViewContent;
-  config?: object;
-  chartDataConfig: object;
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-}
 
 const YAxis = ({
-  config = {},
+  config = {
+    yAxisId: DEFAULT_Y_AXIS.id,
+    orientation: DEFAULT_Y_AXIS.orientation,
+    yAxisDomain: '',
+    yName: '',
+  },
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}: YAxisProps) => {
+}: any) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
-    yAxisId = DEFAULT_Y_AXIS.id,
-    orientation = DEFAULT_Y_AXIS.orientation,
+    yAxisId,
+    orientation,
     yAxisDomain = getDefaultYAxisDomain(viewContent),
     yName: yAxisLabel,
   } = config;
@@ -119,6 +132,7 @@ const YAxis = ({
   const width = getAxisWidth(viewContent.data, dataKeys, valueType);
 
   return (
+    // @ts-ignore
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
@@ -146,22 +160,15 @@ const YAxis = ({
   );
 };
 
-interface YAxesProps {
-  viewContent: ViewContent;
-  chartDataConfig: object;
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-}
-
 export const YAxes = ({
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}: YAxesProps) => {
+}: any) => {
   const { chartConfig = {} } = viewContent;
 
-  const axisPropsById = {
+  const axisPropsById: { [p: number]: LooseObject } = {
     [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
     [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
   };

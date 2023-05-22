@@ -55,3 +55,5 @@ export type DashboardItemConfig =
   | DataDownloadViewConfig
   | SingleDateViewConfig
   | MultiValueViewConfig;
+
+export type { ValueType } from './common';

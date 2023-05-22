@@ -8,16 +8,10 @@ import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import {
-  ChartType,
-  ValueType,
-  PresentationOptions,
-  LooseObject,
-  VizPeriodGranularity,
-} from '../../types';
+import { ValueType, BaseChartConfig } from '@tupaia/types';
+import { ChartType, PresentationOptions, LooseObject, VizPeriodGranularity } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
-import { BaseChartConfig } from '@tupaia/types';
 
 function formatLabelledValue(label: string, value: any, valueType: string, metadata: LooseObject) {
   const valueText = formatDataValueByType({ value, metadata }, valueType);

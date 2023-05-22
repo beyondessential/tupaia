@@ -5,11 +5,12 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
+import { ValueType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
 import { ChartType, LooseObject, TableAccessor } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
-import { ValueType, ViewContent } from '../types';
+import { ViewContent } from '../types';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell

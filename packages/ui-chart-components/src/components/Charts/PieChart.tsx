@@ -171,6 +171,7 @@ export const PieChart = ({
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
       <BasePieChart style={offsetStyle}>
+        {/* @ts-ignore */}
         <Pie
           dataKey="value"
           data={validData}
