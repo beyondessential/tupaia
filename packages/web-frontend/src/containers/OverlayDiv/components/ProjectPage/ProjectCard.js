@@ -13,14 +13,19 @@ import { Button, Typography } from '@material-ui/core';
 const Card = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2.5rem;
+  padding: 1.6rem;
+  height: 20rem;
   border-radius: 5px;
   background: #2e2f33;
   color: white;
-  height: 24rem;
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: space-between;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    padding: 2.5rem;
+    height: 24rem;
+  }
 
   button {
     margin-top: auto;
