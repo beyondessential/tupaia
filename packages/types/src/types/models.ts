@@ -10,8 +10,6 @@
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 
-export { StandardOrCustomReportConfig } from './models-extra';
-
 export interface AccessRequest {
   'approved'?: boolean | null;
   'created_time'?: Date;

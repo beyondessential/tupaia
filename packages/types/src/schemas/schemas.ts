@@ -50,6 +50,64 @@ export const ReportConfigSchema = {
 	]
 } 
 
+export const CustomReportConfigSchema = {
+	"properties": {
+		"customReport": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"customReport"
+	]
+} 
+
+export const StandardOrCustomReportConfigSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"transform": {
+					"type": "array",
+					"items": {
+						"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+						"anyOf": [
+							{
+								"type": "object",
+								"additionalProperties": false
+							},
+							{
+								"type": "string"
+							}
+						]
+					}
+				},
+				"output": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"transform"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"customReport": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"customReport"
+			]
+		}
+	]
+} 
+
 export const BaseConfigSchema = {
 	"properties": {
 		"name": {
