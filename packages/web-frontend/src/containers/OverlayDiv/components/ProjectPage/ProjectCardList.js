@@ -62,7 +62,6 @@ ProjectCardList.propTypes = {
       names: PropTypes.arrayOf(PropTypes.string).isRequired,
     }),
   ).isRequired,
-  isLegaProjectCard: PropTypes.node,
 };
 
-ProjectCardList.defaultProps = { isLegacy: false, ProjectCard: ProjectCardComponent };
+ProjectCardList.defaultProps = { ProjectCard: ProjectCardComponent };
