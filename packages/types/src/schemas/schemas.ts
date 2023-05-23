@@ -25601,6 +25601,26 @@ export const QuestionSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		}
 	},
@@ -26177,6 +26197,30 @@ export const ServiceTypeSchema = {
 		"superset",
 		"tupaia",
 		"weather"
+	],
+	"type": "string"
+} 
+
+export const QuestionTypeSchema = {
+	"enum": [
+		"Arithmetic",
+		"Autocomplete",
+		"Binary",
+		"Checkbox",
+		"CodeGenerator",
+		"Condition",
+		"Date",
+		"DateOfData",
+		"DateTime",
+		"Entity",
+		"FreeText",
+		"Geolocate",
+		"Instruction",
+		"Number",
+		"Photo",
+		"PrimaryEntity",
+		"Radio",
+		"SubmissionDate"
 	],
 	"type": "string"
 } 
