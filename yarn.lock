@@ -5545,6 +5545,7 @@ __metadata:
     eslint: ^7.9.0
     eslint-plugin-react-native: ^3.6.0
     flow-bin: 0.38.0
+    jsc-android: ^250231.0.0
     metro-config: ^0.59.0
     metro-react-native-babel-preset: ^0.59.0
     moment: ^2.21.0
@@ -21255,6 +21256,13 @@ __metadata:
   version: 245459.0.0
   resolution: "jsc-android@npm:245459.0.0"
   checksum: 119d3157a824068756e53b97d63513b8a1431ab7c9d73bc23f7b97fed30d1625924876ad1f7e2972c49506933f11afe7a48ec88a006e12a454430003799c7aed
+  languageName: node
+  linkType: hard
+
+"jsc-android@npm:^250231.0.0":
+  version: 250231.0.0
+  resolution: "jsc-android@npm:250231.0.0"
+  checksum: 6c3f0f6f02fa37a19935b2fbe651e9d6ecc370eb30f2ecee76379337bbf084abb568a1ef1133fe622c5b76f43cf54bb7716f92a94dca010985da38edc48841e2
   languageName: node
   linkType: hard
 
