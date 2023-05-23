@@ -59,7 +59,7 @@ export const LandingPage = () => {
           {/* tupaia requires projects to work so we can assume that if there are no projects, it's just */}
           {/* because they haven't loaded yet. We can replace this with more idiomatic loading state */}
           {/* when we refactor to use react-query */}
-          {projects.length === 0 && <LoadingScreen isLoading background={null} />}
+          {projects.length === 0 && <LoadingScreen isLoading background={undefined} />}
           {projects.length === 1 && <SingleProjectLandingPage />}
           {projects.length > 1 && <MultiProjectLandingPage />}
           <LandingPageFooter />

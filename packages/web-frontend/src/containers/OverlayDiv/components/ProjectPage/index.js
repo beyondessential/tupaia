@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-
 import {
   REQUEST_PROJECT_ACCESS,
   PROJECT_LANDING,
@@ -17,6 +16,12 @@ import {
 } from '../../constants';
 import { setProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent } from '../../../../actions';
+import {
+  ProjectAllowedButton,
+  ProjectDeniedButton,
+  ProjectPendingButton,
+  LegacyProjectCard,
+} from './LegacyProjectCard';
 import { ProjectCardList } from './ProjectCardList';
 import { PROJECT_ACCESS_TYPES } from '../../../../constants';
 
@@ -67,14 +72,23 @@ const ProjectPageComponent = ({
       <Container>
         <ProjectCardList
           projects={projects}
+          ProjectCard={LegacyProjectCard}
           actions={{
-            [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
-              ? onRequestProjectAccess
-              : openLoginDialog,
-            [PROJECT_ACCESS_TYPES.ALLOWED]: onSelectProject,
-            [PROJECT_ACCESS_TYPES.PENDING]: onRequestProjectAccess,
+            [PROJECT_ACCESS_TYPES.ALLOWED]: ({ project }) => (
+              <ProjectAllowedButton onClick={() => onSelectProject(project)} />
+            ),
+            [PROJECT_ACCESS_TYPES.PENDING]: ({ project }) => (
+              <ProjectPendingButton onClick={() => onRequestProjectAccess(project)} />
+            ),
+            [PROJECT_ACCESS_TYPES.DENIED]: ({ project }) => (
+              <ProjectDeniedButton
+                isUserLoggedIn={isUserLoggedIn}
+                onClick={() =>
+                  isUserLoggedIn ? onRequestProjectAccess(project) : openLoginDialog(project)
+                }
+              />
+            ),
           }}
-          isUserLoggedIn={isUserLoggedIn}
         />
       </Container>
     </div>

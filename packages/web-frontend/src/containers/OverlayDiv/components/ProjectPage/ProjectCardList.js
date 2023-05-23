@@ -5,57 +5,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Button } from '@material-ui/core';
-import Lock from '@material-ui/icons/Lock';
-import Alarm from '@material-ui/icons/Alarm';
-import { ProjectCard } from './ProjectCard';
+import { ProjectCard as ProjectCardComponent } from './ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../../../constants';
-import { FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
 import { getProjectAccessType } from '../../../../utils';
 
 const EXPLORE_CODE = 'explore';
-const LockIcon = styled(Lock)`
-  margin-right: 5px;
-`;
 
-const AlarmIcon = styled(Alarm)`
-  margin-right: 5px;
-`;
-
-const StyledPendingButton = styled(Button)`
-  background: ${LIGHT_BLUE};
-  color: ${FORM_BLUE};
-  padding: 5px;
-`;
-// eslint-disable-next-line react/prop-types
-const ProjectDeniedButton = ({ action, isUserLoggedIn }) => (
-  <Button onClick={action} color="primary" variant="outlined">
-    <LockIcon />
-    {isUserLoggedIn ? 'Request access' : 'Log in'}
-  </Button>
-);
-
-// eslint-disable-next-line react/prop-types
-const ProjectPendingButton = ({ action }) => (
-  <StyledPendingButton onClick={action} variant="contained">
-    <AlarmIcon />
-    Approval in progress
-  </StyledPendingButton>
-);
-// eslint-disable-next-line react/prop-types
-const ProjectAllowedButton = ({ action }) => (
-  <Button onClick={action} variant="contained" color="primary">
-    View project
-  </Button>
-);
-
-export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
-  const ProjectButtons = {
-    [PROJECT_ACCESS_TYPES.PENDING]: ProjectPendingButton,
-    [PROJECT_ACCESS_TYPES.ALLOWED]: ProjectAllowedButton,
-    [PROJECT_ACCESS_TYPES.DENIED]: ProjectDeniedButton,
-  };
+export const ProjectCardList = ({ projects, actions, ProjectCard }) => {
   const sortedProjects = Object.keys(PROJECT_ACCESS_TYPES).reduce((result, accessType) => {
     const action = actions[PROJECT_ACCESS_TYPES[accessType]];
     // If there is no action passed in for this access type, then the project card is useless, so ignore it so that nothing breaks
@@ -70,13 +26,13 @@ export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
         .sort((a, b) => a.sortOrder - b.sortOrder)
         .map(project => ({
           ...project,
-          ProjectButton: ProjectButtons[accessType],
-          action: actions[accessType],
+          ActionButton: actions[accessType],
         })),
     ];
   }, []);
+
   return sortedProjects.map(project => {
-    const { name, description, logoUrl, imageUrl, ProjectButton, names, action } = project;
+    const { name, description, logoUrl, imageUrl, names, ActionButton } = project;
     return (
       <ProjectCard
         key={name}
@@ -84,9 +40,7 @@ export const ProjectCardList = ({ projects, actions, isUserLoggedIn }) => {
         description={description}
         imageUrl={imageUrl}
         logoUrl={logoUrl}
-        projectButton={
-          <ProjectButton action={() => action(project)} isUserLoggedIn={isUserLoggedIn} />
-        }
+        ProjectButton={props => <ActionButton {...props} project={project} />}
         names={names}
       />
     );
@@ -108,5 +62,7 @@ ProjectCardList.propTypes = {
       names: PropTypes.arrayOf(PropTypes.string).isRequired,
     }),
   ).isRequired,
-  isUserLoggedIn: PropTypes.bool.isRequired,
+  isLegaProjectCard: PropTypes.node,
 };
+
+ProjectCardList.defaultProps = { isLegacy: false, ProjectCard: ProjectCardComponent };
