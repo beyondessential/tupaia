@@ -8,8 +8,8 @@ import {
   handleWith,
   useForwardUnhandledRequests,
 } from '@tupaia/server-boilerplate';
+import { SessionSwitchingAuthHandler } from '@tupaia/api-client';
 import { TupaiaWebSessionModel } from '../models';
-import { SessionSwitchingAuthHandler } from '../auth';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
