@@ -37,7 +37,6 @@
     "@material-ui/styles": "^4.9.10",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/admin-panel": "1.0.0",
-    "@tupaia/tsutils": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
