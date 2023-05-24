@@ -228,7 +228,12 @@
         "packages/ui-map-components/**"
       ],
       "rules": {
-        "import/no-extraneous-dependencies": "off"
+        "import/no-extraneous-dependencies": "off",
+        "react/prop-types": "off",
+        "import/no-unresolved": 0, // Turn off linting error for imports
+        "import/extensions": 0, // Turn off linting error for imports
+        "react/require-default-props": "off",
+        "no-bitwise": "off" // Turn off linting error for bitwise operators because of generic style types using '>>'
       }
     },
     {
