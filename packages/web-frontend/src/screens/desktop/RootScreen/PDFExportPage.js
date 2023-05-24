@@ -27,7 +27,7 @@ const Divider = styled(BaseDivider)`
 `;
 
 const PDFExportPage = ({ currentGroupDashboard, viewResponses, selectedDashboardItems }) => {
-  // Once the custom landing pages are loaded, hide the tupaia app loader in index.html
+  // Hide the tupaia app loader in index.html
   useEffect(() => {
     const el = document.getElementById('tupaia-spinner');
     if (el) {
