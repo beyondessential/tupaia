@@ -99,12 +99,12 @@ export const WeeklyReportTable = React.memo(
     const { tableStatus, setTableStatus } = useContext(EditableTableContext);
     const { countryCode } = useParams();
     const { handleSubmit, ...methods } = useForm();
-    const [saveReport, saveResults] = useSaveWeeklyReport({
+    const { mutate: saveReport, ...saveResults } = useSaveWeeklyReport({
       countryCode,
       siteCode,
       week: weekNumber,
     });
-    const [deleteReport, deleteResults] = useDeleteWeeklyReport({
+    const { mutate: deleteReport, ...deleteResults } = useDeleteWeeklyReport({
       countryCode,
       week: weekNumber,
     });

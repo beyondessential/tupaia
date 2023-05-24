@@ -1,4 +1,4 @@
-## @tupaia/auth
+# @tupaia/auth
 
 Back-end authentication
 

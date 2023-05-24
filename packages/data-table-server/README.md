@@ -1,3 +1,3 @@
 # @tupaia/data-table-server
 
-Microservice for querying Tupaia Data Tables
+Micro service for querying Tupaia Data Tables

@@ -9,6 +9,7 @@ import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import MuiChip from '@material-ui/core/Chip';
 import { Autocomplete as UIAutocomplete } from '@tupaia/ui-components';
+import debounce from 'lodash.debounce';
 
 const Chip = styled(MuiChip)`
   &:first-child {
@@ -26,7 +27,6 @@ export const Autocomplete = props => {
     isLoading,
     onChangeSelection,
     onChangeSearchTerm,
-    searchTerm,
     placeholder,
     helperText,
     canCreateNewOptions,
@@ -34,6 +34,13 @@ export const Autocomplete = props => {
     optionLabelKey,
     muiProps,
   } = props;
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const debouncedSearchUpdate = React.useCallback(
+    debounce(newValue => {
+      onChangeSearchTerm(newValue);
+    }, 200),
+    [],
+  );
 
   const muiPropsForCreateNewOptions = canCreateNewOptions
     ? {
@@ -76,6 +83,10 @@ export const Autocomplete = props => {
     : {};
 
   const extraMuiProps = {
+    onOpen: () => {
+      // We don't load the option values until we open the search for the first time
+      onChangeSearchTerm(searchTerm || '');
+    },
     ...muiPropsForCreateNewOptions,
     ...muiPropsForMultipleValues,
     ...muiProps,
@@ -90,7 +101,10 @@ export const Autocomplete = props => {
       getOptionLabel={getOptionLabel}
       loading={isLoading}
       onChange={onChangeSelection}
-      onInputChange={(event, newValue) => onChangeSearchTerm(newValue)}
+      onInputChange={(event, newValue) => {
+        setSearchTerm(newValue);
+        debouncedSearchUpdate(newValue);
+      }}
       inputValue={searchTerm}
       placeholder={placeholder}
       helperText={helperText}
