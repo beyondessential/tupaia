@@ -43,7 +43,7 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-const removeNonNumericData = (data: any[]): any[] =>
+const removeNonNumericData = (data: any[]) =>
   data.map(dataSeries => {
     const filteredDataSeries: any = {};
     Object.entries(dataSeries).forEach(([key, value]) => {

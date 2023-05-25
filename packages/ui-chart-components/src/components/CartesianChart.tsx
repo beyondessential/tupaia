@@ -14,17 +14,10 @@ import {
   ResponsiveContainer,
   Tooltip,
   Brush,
-  ReferenceAreaProps,
 } from 'recharts';
 import { BaseChartConfig, CartesianChartConfig, ValueType } from '@tupaia/types';
 import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
-import {
-  ChartType,
-  ViewContent,
-  LegendPosition,
-  VizPeriodGranularity,
-  PresentationOptions,
-} from '../types';
+import { ChartType, ViewContent, LegendPosition } from '../types';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,

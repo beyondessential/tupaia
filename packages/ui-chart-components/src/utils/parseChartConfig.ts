@@ -23,7 +23,7 @@ interface ChartConfig extends BaseChartConfig {
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
 export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
-  const { chartType, chartConfig, data, colorPalette: paletteName } = viewContent;
+  const { chartType, chartConfig = {}, data, colorPalette: paletteName } = viewContent;
   const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = chartConfig;
 
   const baseConfig = configForAllKeys

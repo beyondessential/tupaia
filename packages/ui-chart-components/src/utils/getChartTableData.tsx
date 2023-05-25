@@ -17,7 +17,7 @@ import { ViewContent } from '../types';
 const sanitizeValueType = (valueType: ValueType): ValueType => {
   return valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 };
-const getFormattedValue = (value: string | undefined, valueType: ValueType): any =>
+const getFormattedValue = (value: string | undefined, valueType: ValueType) =>
   value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
 const FirstColumnCell = styled.span`

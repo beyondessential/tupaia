@@ -20,7 +20,7 @@ import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
 import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
-import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
+import { PieChartConfig } from '@tupaia/types';
 
 const Heading = styled(Typography)`
   font-weight: 500;

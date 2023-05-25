@@ -93,7 +93,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
     return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
-  const formatXAxisTick = (tickData: number) => {
+  const formatXAxisTick = (tickData: string) => {
     const { periodGranularity, presentationOptions = {} } = viewContent;
     const { periodTickFormat } = presentationOptions;
 
@@ -102,7 +102,10 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
       : tickData;
   };
 
-  const renderTickFirstAndLastLabel = (tickProps: any) => {
+  const renderTickFirstAndLastLabel = (tickProps: {
+    index: number;
+    payload: { value: string };
+  }) => {
     const { index, payload } = tickProps;
 
     // Only render first and last ticks labels, the rest just have a tick mark without text
@@ -128,6 +131,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   const getXAxisPadding = () => {
     const hasBars =
       chartType === Bar ||
+      // @ts-ignore
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
 
     if (hasBars && data.length > 1 && isTimeSeries) {
@@ -140,15 +144,14 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
     return { left: 0, right: 10 };
   };
 
-  const renderVerticalTick = (tickProps: any) => {
-    const { payload, ...restOfProps } = tickProps;
+  const renderVerticalTick = (tickProps: { payload: { value: string }; x: number; y: number }) => {
+    const { payload, x, y } = tickProps;
 
     return (
       <VerticalTick
-        {...restOfProps}
-        viewContent={viewContent}
+        x={x}
+        y={y}
         payload={{
-          ...payload,
           value: formatXAxisTick(payload.value),
         }}
       />

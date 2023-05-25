@@ -112,7 +112,6 @@ const getPieLegendDisplayValue = (
   if (chartConfig[value as keyof PieChartConfig]?.label) {
     return chartConfig[value as keyof PieChartConfig].label;
   }
-
   const metadata = item[`${value}_metadata`];
   const labelSuffix = formatDataValueByType({ value: item.value, metadata }, viewContent.valueType);
 
@@ -129,7 +128,7 @@ interface PieLegendProps {
 }
 
 export const getPieLegend = ({
-  chartConfig,
+  chartConfig = {},
   isEnlarged,
   isExporting,
   legendPosition,
