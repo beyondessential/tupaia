@@ -11,6 +11,7 @@
     "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
     "source": "src/index.js",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "rm -rf dist && yarn package:build:ts",
         "build-dev": "npm run build",

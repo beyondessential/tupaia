@@ -6,7 +6,6 @@ import { BaseChartConfig, ValueType } from '@tupaia/types';
 import { ReferenceAreaProps } from 'recharts';
 import { GRANULARITY_SHAPE } from '@tupaia/utils';
 
-// Todo: move some of these types to @tupaia/types and integrate
 export interface DataProps {
   name: string;
   value: string | number;
