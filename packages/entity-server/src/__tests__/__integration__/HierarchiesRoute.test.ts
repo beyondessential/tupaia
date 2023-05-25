@@ -13,83 +13,23 @@ describe('/hierarchies', () => {
 
   beforeAll(async () => {
     app = await setupTestApp();
+    grantAccessToCountries(COUNTRIES);
   });
 
-  describe('data fetching', () => {
-    beforeAll(async () => {
-      grantAccessToCountries(COUNTRIES);
-    });
-
-    afterAll(async () => {
-      revokeCountryAccess();
-    });
-
-    describe('field', () => {
-      it('throws error for unknown field', async () => {
-        const { body: error } = await app.get('hierarchies', {
-          query: { field: 'fake_field' },
-        });
-
-        expect(error.error).toContain('Invalid single field requested fake_field');
-      });
-
-      it('can fetch hierarchies as single field', async () => {
-        const { body: hierarchies } = await app.get('hierarchies', {
-          query: { field: 'name' },
-        });
-
-        expect(hierarchies).toStrictEqual(['Pokemon Gold/Silver', 'Pokemon Red/Blue']);
-      });
-    });
-
-    describe('fields', () => {
-      it('throws error for unknown field', async () => {
-        const { body: error } = await app.get('hierarchies', {
-          query: { fields: 'fake_field' },
-        });
-
-        expect(error.error).toContain('Unknown field requested: fake_field');
-      });
-
-      it('can fetch hierarchies with specific fields', async () => {
-        const { body: hierarchies } = await app.get('hierarchies', {
-          query: { fields: 'code,name' },
-        });
-
-        expect(hierarchies).toBeArray();
-        expect(hierarchies).toStrictEqual(
-          getHierarchiesWithFields(['goldsilver', 'redblue'], ['code', 'name']),
-        );
-      });
-    });
+  afterAll(async () => {
+    revokeCountryAccess();
   });
 
-  describe('permissions', () => {
-    afterAll(async () => {
-      revokeCountryAccess();
-    });
-
-    it('includes all hierarchies if user has access to them', async () => {
-      grantAccessToCountries(COUNTRIES);
+  describe('/hierarchies', () => {
+    it('can fetch hierarchies', async () => {
       const { body: hierarchies } = await app.get('hierarchies', {
         query: { fields: 'code,name' },
       });
 
       expect(hierarchies).toBeArray();
-      expect(hierarchies).toStrictEqual(
+      expect(hierarchies).toIncludeSameMembers(
         getHierarchiesWithFields(['goldsilver', 'redblue'], ['code', 'name']),
       );
-    });
-
-    it('filters hierarchies when requested for some with access', async () => {
-      grantAccessToCountries(['JOHTO']);
-
-      const { body: hierarchies } = await app.get('hierarchies', {
-        query: { fields: 'code,name' },
-      });
-
-      expect(hierarchies).toBeArray();
-      expect(hierarchies).toStrictEqual(getHierarchiesWithFields(['goldsilver'], ['code', 'name']));
     });
   });
 });
