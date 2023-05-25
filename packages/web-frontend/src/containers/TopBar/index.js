@@ -20,7 +20,6 @@ const TopBarWrapper = styled.div`
   min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
   box-sizing: border-box;
   display: flex;
-  align-items: center;
   z-index: 1000;
   position: relative;
   padding: 0 10px;

@@ -4,45 +4,82 @@
  */
 
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
-import Divider from '@material-ui/core/Divider';
+import {
+  FormControl as BaseFormControl,
+  FormControlLabel,
+  Card,
+  CardHeader,
+  List,
+  ListItem as BaseListItem,
+  Checkbox,
+} from '@material-ui/core';
 import styled from 'styled-components';
 import { FlexStart } from './Layout/Flexbox';
-
-const StyledRootGrid = styled(Grid)`
-  justify-content: center;
-`;
+import { Tooltip } from './Tooltip';
 
 const StyledCard = styled(Card)`
-  width: 70vw;
+  width: 100%;
   height: 50vh;
-  max-width: 60rem;
   max-height: 30rem;
   overflow: auto;
+  background-color: transparent;
+  border: 1px solid #ebebeb;
+  .MuiCheckbox-root {
+    margin: 0 1em;
+    padding: 0;
+  }
+`;
+
+const FormControl = styled(BaseFormControl)`
+  width: 100%;
+  flex-direction: row;
+  height: 100%;
 `;
 
 const StyledCardHeader = styled(CardHeader)`
   text-align: left;
+  border-bottom: 0.5px solid #ebebeb;
+  padding: 1.2em 1.7em;
+  .MuiFormControl-root {
+    align-items: center;
+  }
 `;
 
-const StyledHeader = styled.span`
-  font-size: 14px;
-  font-weight: bold;
-  color: ${props => props.theme.palette.text.primary};
-  padding-right: 20px;
-`;
-
-const StyledSubHeader = styled.span`
-  font-size: 10px;
+const StyledSubHeader = styled.p`
+  font-size: 0.6rem;
   color: ${props => props.theme.palette.text.secondary};
-  margin-top: 2px;
+  margin: 0;
+`;
+
+const ListItem = styled(BaseListItem)`
+  padding: 0;
+  .MuiFormControlLabel-root {
+    width: 100%;
+    padding: 1.2em 1em;
+    margin: 0;
+  }
+  &:not(&:last-child) {
+    .MuiFormControlLabel-label {
+      width: 100%;
+      position: relative;
+      &:before {
+        content: '';
+        position: absolute;
+        /* To reach the base of the list item  we need to make it -70% from the base */
+        bottom: -1.2em;
+        left: -0.5em;
+        height: 1px;
+        width: 100%;
+        /*  It is not possible to make a line less than 1px, so reducing the opacity of the border so as to make it appear thinner */
+        opacity: 0.4;
+        background-color: #ebebeb;
+      }
+    }
+  }
+`;
+
+const ListTitle = styled.span`
+  font-weight: bold;
 `;
 
 function not(a, b) {
@@ -57,11 +94,12 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export const CheckboxList = ({ list, title, selectedItems, setSelectedItems }) => {
+export const CheckboxList = ({ list, title = 'Choices', selectedItems, setSelectedItems }) => {
   const numberOfChecked = items => intersection(selectedItems, items).length;
+  const enabledItems = list.filter(item => !item.disabled);
 
   const handleCheckAll = items => () => {
-    if (numberOfChecked(items) === list.length) {
+    if (numberOfChecked(items) === enabledItems.length) {
       setSelectedItems(not(selectedItems, items));
     } else {
       setSelectedItems(union(selectedItems, items));
@@ -83,55 +121,72 @@ export const CheckboxList = ({ list, title, selectedItems, setSelectedItems }) =
 
   const Title = ({ title, items }) => (
     <FlexStart>
-      <StyledHeader>{title}</StyledHeader>
-      <StyledSubHeader>{`${numberOfChecked(items)}/${items.length} selected`}</StyledSubHeader>
+      <FormControl>
+        <FormControlLabel
+          label={<ListTitle>{title}</ListTitle>}
+          control={
+            <Checkbox
+              onClick={handleCheckAll(enabledItems)}
+              checked={
+                numberOfChecked(enabledItems) === enabledItems.length && enabledItems.length !== 0
+              }
+              indeterminate={
+                numberOfChecked(enabledItems) !== enabledItems.length &&
+                numberOfChecked(enabledItems) !== 0
+              }
+              disabled={enabledItems.length === 0}
+              inputProps={{ 'aria-describedby': `subtitle-select-all-${title}` }}
+            />
+          }
+        />
+        <StyledSubHeader id={`subtitle-select-all-${title}`}>{`${numberOfChecked(items)}/${
+          items.length
+        } selected`}</StyledSubHeader>
+      </FormControl>
     </FlexStart>
   );
 
-  const customList = (title, items) => (
-    <StyledCard>
-      <StyledCardHeader
-        avatar={
-          <Checkbox
-            onClick={handleCheckAll(items)}
-            checked={numberOfChecked(items) === items.length && items.length !== 0}
-            indeterminate={numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0}
-            disabled={items.length === 0}
-            inputProps={{ 'aria-label': 'all items selected' }}
-          />
-        }
-        title={<Title title={title} items={items} />}
-      />
-      <Divider />
-      <List dense component="div" role="list">
-        {items.map(item => {
-          const { name, code } = item;
-          const labelId = `transfer-list-all-item-${name}-label`;
+  // If the list item has a tooltip, wrap it in a tooltip, otherwise just return the list item
+  const CheckboxWrapper = ({ tooltip, children }) =>
+    tooltip ? (
+      <Tooltip describeChild title={tooltip} placement="bottom">
+        {children}
+      </Tooltip>
+    ) : (
+      <>{children}</>
+    );
 
+  return (
+    <StyledCard>
+      <StyledCardHeader title={<Title title={title} items={list} />} />
+      <List>
+        {list.map(item => {
+          const { name, code, disabled, tooltip } = item;
           return (
-            <ListItem key={code} role="listitem" button onClick={handleCheck(item)}>
-              <ListItemIcon>
-                <Checkbox
-                  checked={
-                    selectedItems.findIndex(selectedItem => selectedItem.code === code) !== -1
+            <ListItem key={code}>
+              <FormControl disabled={disabled}>
+                <FormControlLabel
+                  label={
+                    <CheckboxWrapper tooltip={tooltip}>
+                      <span>{name}</span>
+                    </CheckboxWrapper>
                   }
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ 'aria-labelledby': labelId }}
+                  control={
+                    <Checkbox
+                      checked={
+                        selectedItems.findIndex(selectedItem => selectedItem.code === code) !== -1
+                      }
+                      onClick={handleCheck(item)}
+                      tabIndex={-1}
+                      disableRipple
+                    />
+                  }
                 />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={name} />
+              </FormControl>
             </ListItem>
           );
         })}
-        <ListItem />
       </List>
     </StyledCard>
-  );
-
-  return (
-    <StyledRootGrid container spacing={2} alignItems="center">
-      <Grid item>{customList(title || 'Choices', list)}</Grid>
-    </StyledRootGrid>
   );
 };

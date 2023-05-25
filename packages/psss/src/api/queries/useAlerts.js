@@ -4,7 +4,7 @@
  */
 
 import orderBy from 'lodash.orderby';
-import { queryCache, useMutation } from 'react-query';
+import { useQueryClient, useMutation } from 'react-query';
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
 import { useData } from './helpers';
@@ -34,28 +34,34 @@ export const useAlerts = (period, orgUnitCodes, alertCategory) => {
   };
 };
 
-export const useArchiveAlert = alertId =>
-  useMutation(() => put(`alerts/${alertId}/archive`), {
+export const useArchiveAlert = alertId => {
+  const queryClient = useQueryClient();
+  return useMutation(() => put(`alerts/${alertId}/archive`), {
     onSuccess: () => {
-      queryCache.invalidateQueries(`alerts/active`);
-      queryCache.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries(`alerts/active`);
+      queryClient.invalidateQueries(`alerts/archive`);
     },
     throwOnError: true,
   });
+};
 
-export const useRestoreArchivedAlert = alertId =>
-  useMutation(() => put(`alerts/${alertId}/unarchive`), {
+export const useRestoreArchivedAlert = alertId => {
+  const queryClient = useQueryClient();
+  return useMutation(() => put(`alerts/${alertId}/unarchive`), {
     onSuccess: () => {
-      queryCache.invalidateQueries(`alerts/active`);
-      queryCache.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries(`alerts/active`);
+      queryClient.invalidateQueries(`alerts/archive`);
     },
     throwOnError: true,
   });
+};
 
-export const useDeleteAlert = alertId =>
-  useMutation(() => remove(`alerts/${alertId}`), {
+export const useDeleteAlert = alertId => {
+  const queryClient = useQueryClient();
+  return useMutation(() => remove(`alerts/${alertId}`), {
     onSuccess: () => {
-      queryCache.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries(`alerts/archive`);
     },
     throwOnError: true,
   });
+};
