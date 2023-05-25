@@ -7,7 +7,7 @@ import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { TUPAIA_ORANGE } from '../../constants';
-import { BaseChartConfig } from '@tupaia/types';
+import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
 import { ChartType, DataProps } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 import { ViewContent } from '../../types';
@@ -48,6 +48,10 @@ interface ChartConfig extends BaseChartConfig {
   referenceLabel: string | number;
 }
 
+function isChartConfig(config: ChartConfig | {}): config is ChartConfig {
+  return (config as ChartConfig).referenceValue !== undefined;
+}
+
 const ValueReferenceLine = ({
   viewContent,
   isExporting,
@@ -55,7 +59,11 @@ const ValueReferenceLine = ({
   viewContent: { chartConfig: ChartConfig };
   isExporting?: boolean;
 }) => {
-  const { chartConfig } = viewContent;
+  const { chartConfig = {} } = viewContent;
+
+  if (!isChartConfig(chartConfig)) {
+    return [];
+  }
 
   const referenceLines = Object.entries(chartConfig)
     .filter(([, { referenceValue }]) => referenceValue)

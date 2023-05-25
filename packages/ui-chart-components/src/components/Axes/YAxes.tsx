@@ -105,12 +105,7 @@ const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => 
 };
 
 const YAxis = ({
-  config = {
-    yAxisId: DEFAULT_Y_AXIS.id,
-    orientation: DEFAULT_Y_AXIS.orientation,
-    yAxisDomain: '',
-    yName: '',
-  },
+  config = {},
   viewContent,
   chartDataConfig,
   isExporting = false,
@@ -119,8 +114,8 @@ const YAxis = ({
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
-    yAxisId,
-    orientation,
+    yAxisId = DEFAULT_Y_AXIS.id,
+    orientation = DEFAULT_Y_AXIS.orientation,
     yAxisDomain = getDefaultYAxisDomain(viewContent),
     yName: yAxisLabel,
   } = config;
@@ -172,7 +167,7 @@ export const YAxes = ({
   isExporting = false,
   isEnlarged = false,
 }: any) => {
-  const { chartConfig }: { chartConfig: YAxesProps } = viewContent;
+  const { chartConfig = {} }: { chartConfig: YAxesProps | {} } = viewContent;
 
   const axisPropsById: { [p: number]: LooseObject } = {
     [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },

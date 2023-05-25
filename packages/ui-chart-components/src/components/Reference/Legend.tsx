@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { formatDataValueByType } from '@tupaia/utils';
-import { LegendPosition, ViewContent } from '../../types';
+import { LegendPosition, ViewContent, isPieChartConfig } from '../../types';
 import { isMobile } from '../../utils';
 import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
 
@@ -103,13 +103,13 @@ const Text = styled.span`
 `;
 
 const getPieLegendDisplayValue = (
-  chartConfig: PieChartConfig,
+  chartConfig: PieChartConfig | {},
   value: string,
   item: any,
   viewContent: ViewContent,
   isEnlarged?: boolean,
 ) => {
-  if (chartConfig[value as keyof PieChartConfig]?.label) {
+  if (isPieChartConfig(chartConfig) && chartConfig[value as keyof PieChartConfig]?.label) {
     return chartConfig[value as keyof PieChartConfig].label;
   }
   const metadata = item[`${value}_metadata`];
@@ -120,7 +120,7 @@ const getPieLegendDisplayValue = (
 };
 
 interface PieLegendProps {
-  chartConfig: PieChartConfig;
+  chartConfig: PieChartConfig | {};
   isEnlarged?: boolean;
   isExporting?: boolean;
   legendPosition?: LegendPosition;

@@ -34,7 +34,7 @@ const X_AXIS_PADDING = {
 };
 
 const renderXAxisLabel = (
-  label: string | number | undefined,
+  label: string | undefined,
   fillColor: string | undefined,
   isEnlarged: boolean,
   isExporting: boolean,

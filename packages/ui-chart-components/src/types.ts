@@ -2,9 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { BaseChartConfig, ValueType } from '@tupaia/types';
+import { BaseChartConfig, PieChartConfig, ValueType } from '@tupaia/types';
 import { ReferenceAreaProps } from 'recharts';
 import { GRANULARITY_SHAPE } from '@tupaia/utils';
+import { CartesianChartConfig } from '@tupaia/types/src';
 
 export interface DataProps {
   name: string;
@@ -88,4 +89,8 @@ export interface ViewContent<T = BaseChartConfig, CT = ChartType> {
   presentationOptions?: PresentationOptions;
   renderLegendForOneItem?: boolean;
   referenceAreas?: ReferenceAreaProps[];
+}
+
+export function isPieChartConfig(config: PieChartConfig | {}): config is PieChartConfig {
+  return (config as PieChartConfig).chartType === 'pie';
 }
