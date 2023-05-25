@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Polygon as PolygonComponent } from 'react-leaflet';
+import { Polygon as PolygonComponent, PolygonProps } from 'react-leaflet';
+import { LatLngExpression } from 'leaflet';
 import styled from 'styled-components';
 
 const BasicPolygon = styled(PolygonComponent)`
@@ -14,7 +14,9 @@ const BasicPolygon = styled(PolygonComponent)`
   stroke-width: 0;
 `;
 
-const getOuterPolygon = region => {
+type Region = LatLngExpression[];
+
+const getOuterPolygon = (region: Region): PolygonProps['positions'] => {
   return [
     [
       [90, -180],
@@ -26,7 +28,7 @@ const getOuterPolygon = region => {
   ];
 };
 
-export const InversePolygonMask = ({ region }) => {
+export const InversePolygonMask = ({ region }: { region: Region | null }) => {
   if (!Array.isArray(region)) {
     return null;
   }
@@ -34,12 +36,4 @@ export const InversePolygonMask = ({ region }) => {
   const positions = getOuterPolygon(region);
 
   return <BasicPolygon positions={positions} interactive={false} />;
-};
-
-InversePolygonMask.propTypes = {
-  region: PropTypes.array,
-};
-
-InversePolygonMask.defaultProps = {
-  region: null,
 };
