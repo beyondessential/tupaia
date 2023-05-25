@@ -5,12 +5,14 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Tooltip } from 'react-leaflet';
 import styled from 'styled-components';
 import { PopupDataItemList } from './PopupDataItemList';
+import { Series } from '../types';
 
-const Heading = styled.span`
+const Heading = styled.span<{
+  hasMeasureValue: boolean;
+}>`
   text-align: center;
   font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
 `;
@@ -19,15 +21,25 @@ const Grid = styled.div`
   display: grid;
 `;
 
+interface AreaTooltipProps {
+  permanent?: boolean;
+  sticky?: boolean;
+  orgUnitName?: string;
+  hasMeasureValue?: boolean;
+  serieses?: Series[];
+  orgUnitMeasureData?: object;
+  text?: string;
+}
+
 export const AreaTooltip = ({
-  permanent,
-  sticky,
+  permanent = false,
+  sticky = false,
   orgUnitName,
-  hasMeasureValue,
-  serieses,
-  orgUnitMeasureData,
+  hasMeasureValue = false,
+  serieses = [],
+  orgUnitMeasureData = {},
   text,
-}) => {
+}: AreaTooltipProps) => {
   return (
     <Tooltip
       pane="tooltipPane"
@@ -51,24 +63,4 @@ export const AreaTooltip = ({
       )}
     </Tooltip>
   );
-};
-
-AreaTooltip.propTypes = {
-  permanent: PropTypes.bool,
-  sticky: PropTypes.bool,
-  hasMeasureValue: PropTypes.bool,
-  serieses: PropTypes.arrayOf(PropTypes.object),
-  orgUnitMeasureData: PropTypes.object,
-  orgUnitName: PropTypes.string,
-  text: PropTypes.string,
-};
-
-AreaTooltip.defaultProps = {
-  permanent: false,
-  sticky: false,
-  hasMeasureValue: false,
-  serieses: [],
-  orgUnitMeasureData: {},
-  orgUnitName: null,
-  text: null,
 };
