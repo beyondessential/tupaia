@@ -3,14 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { InfoOutlined } from '@material-ui/icons';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { Tooltip as BaseTooltip } from '../Tooltip';
 
 /** Styled label for inputs. Handles tooltips for labels if present. */
-
 const LabelWrapper = styled.span`
   display: flex;
   align-items: center;
@@ -49,7 +47,14 @@ const Tooltip = styled(BaseTooltip)`
   }
 `;
 
-export const InputLabel = ({ label, tooltip, as, className }) => {
+interface InputLabelProps {
+  label?: string | React.ReactNode;
+  tooltip?: string;
+  as?: string | ComponentType<any>;
+  className?: string;
+}
+
+export const InputLabel = ({ label, tooltip, as = 'label', className }: InputLabelProps) => {
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
   return (
@@ -65,18 +70,4 @@ export const InputLabel = ({ label, tooltip, as, className }) => {
       )}
     </LabelWrapper>
   );
-};
-
-InputLabel.propTypes = {
-  label: PropTypes.string,
-  tooltip: PropTypes.string,
-  as: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  className: PropTypes.string,
-};
-
-InputLabel.defaultProps = {
-  label: '',
-  tooltip: '',
-  as: 'label',
-  className: null,
 };

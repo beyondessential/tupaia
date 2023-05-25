@@ -5814,8 +5814,11 @@ __metadata:
     "@material-ui/core": ^4.9.8
     "@material-ui/styles": ^4.9.10
     "@storybook/react": ^6.3.9
+    "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.get": ^4.4.7
+    "@types/recharts": ^1.8.24
     lodash.get: ^4.4.2
     moment: ^2.29.1
     prop-types: ^15.7.2
@@ -6222,6 +6225,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/d3-path@npm:^1":
+  version: 1.0.9
+  resolution: "@types/d3-path@npm:1.0.9"
+  checksum: acbf7376fd7bef61701bce915bf5a9cb5eaa9741b7919d3e644f841a65faf1aea3cf63ba949c21ddda8c9849221394856a2054805aa698d3bb5ac3fe7d029817
+  languageName: node
+  linkType: hard
+
+"@types/d3-shape@npm:^1":
+  version: 1.3.8
+  resolution: "@types/d3-shape@npm:1.3.8"
+  dependencies:
+    "@types/d3-path": ^1
+  checksum: a7f78a3f0be1215b512efb636ba381768ab4104ef9b72b7fcc2ab9810e7d6fc2ee062f3103ef99236f4462deabac60d2fd96375315ec7ad33278757918c94592
+  languageName: node
+  linkType: hard
+
 "@types/eslint-visitor-keys@npm:^1.0.0":
   version: 1.0.0
   resolution: "@types/eslint-visitor-keys@npm:1.0.0"
@@ -6508,6 +6527,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: 57256262754e9082c25ddcaa28c9e27b215a70716790f1d47550b0bab608b2ec5fd4786ba7d109161b8d4e6c8e0b4dbc2356111d3d8415e7934d8616ee64d286
+  languageName: node
+  linkType: hard
+
+"@types/lodash.get@npm:^4.4.7":
+  version: 4.4.7
+  resolution: "@types/lodash.get@npm:4.4.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0dbf1960606e4707c34e8ffbe97ffaad0e47fc5df7a6e24ea6e4fe5838d2468aa13360f38815c77b06e3c9932631ae15662b4139036a69ee16aeb54827a21405
   languageName: node
   linkType: hard
 
@@ -6912,6 +6940,16 @@ __metadata:
     "@types/prop-types": "*"
     csstype: ^2.2.0
   checksum: 1d6598e6f070013498195a1bcce3090328f5ac6e64cd99a95ebbfa6494ac187ada03af317ba1230756b9c729d853a40fca58f39b150e2da9103a454291edf37d
+  languageName: node
+  linkType: hard
+
+"@types/recharts@npm:^1.8.24":
+  version: 1.8.24
+  resolution: "@types/recharts@npm:1.8.24"
+  dependencies:
+    "@types/d3-shape": ^1
+    "@types/react": "*"
+  checksum: 1341e5472bf62a83ab98648bc5c14a9a81fba16af9255203ef12a21caa21a988fac3198d9771703394eb876d4fbefb42e818865e35ecfe0d105aee1d1164aa6e
   languageName: node
   linkType: hard
 

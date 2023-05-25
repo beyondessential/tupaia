@@ -32,7 +32,13 @@ const InputGroupHeaderWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const InputGroup = ({ title, description, fields }) => {
+interface InputGroupProps {
+  title?: string;
+  description?: string;
+  fields: React.ReactNode;
+}
+
+export const InputGroup = ({ title, description, fields }: InputGroupProps) => {
   return (
     <InputGroupWrapper>
       <InputGroupHeaderWrapper>

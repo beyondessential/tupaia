@@ -4,11 +4,10 @@
  */
 
 import React, { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FormHelperText, Box, Fab } from '@material-ui/core';
+import { FormHelperText, Box, Fab, AvatarProps } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
+import { ConfirmDeleteModal, ConfirmDeleteModalProps } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 import { Avatar } from '../Avatar';
@@ -76,36 +75,57 @@ const LabelWrapper = styled(Box)`
   flex-direction: column;
 `;
 
+interface ImageUploadFieldProps {
+  name: string;
+  imageSrc?: string;
+  avatarInitial?: string;
+  onChange?: (file: File | null) => void;
+  onDelete?: () => void;
+  label: string;
+  buttonLabel?: string;
+  deleteModal?: Omit<ConfirmDeleteModalProps, 'isOpen' | 'onConfirm' | 'onCancel'>;
+  avatarVariant?: AvatarProps['variant'];
+  maxHeight?: number;
+  maxWidth?: number;
+  minHeight?: number;
+  minWidth?: number;
+  secondaryLabel?: string;
+  tooltip?: string;
+}
+
 export const ImageUploadField = React.memo(
   ({
     name,
     imageSrc,
-    onDelete,
-    onChange,
+    onDelete = () => {},
+    onChange = () => {},
     avatarInitial,
     label,
-    buttonLabel,
-    deleteModal,
-    avatarVariant,
+    buttonLabel = 'Upload photo',
+    deleteModal = {
+      title: 'Remove Photo',
+      message: 'Are you sure you want to remove your photo?',
+    },
+    avatarVariant = 'circle',
     maxHeight,
     maxWidth,
     minHeight,
     minWidth,
     secondaryLabel,
     tooltip,
-  }) => {
+  }: ImageUploadFieldProps) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
-    const inputEl = useRef(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const inputEl = useRef<HTMLInputElement | null>(null);
 
     const handleDelete = () => {
       setConfirmModalIsOpen(false);
-      inputEl.current.value = '';
-      setErrorMessage(null);
+      if (inputEl && inputEl.current) inputEl.current.value = '';
       onDelete();
+      setErrorMessage(null);
     };
 
-    const getImageSize = async file => {
+    const getImageSize = async (file: File) => {
       const img = new Image();
       img.src = window.URL.createObjectURL(file);
       await img.decode();
@@ -115,7 +135,7 @@ export const ImageUploadField = React.memo(
       return { height, width };
     };
 
-    const validateImageSize = async file => {
+    const validateImageSize = async (file: File | null) => {
       // If no max height or width is provided, or if file is not set, we don't need to validate so can return null.
       if (!file || (!minWidth && !minHeight && !maxWidth && !maxHeight)) return null;
       // Check image is within the specified height and width, and return the appropriate message if so, else null.
@@ -129,8 +149,8 @@ export const ImageUploadField = React.memo(
       }
       return null;
     };
-    const handleFileUpload = async event => {
-      const image = event.target.files[0];
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const image = event?.target.files && event.target.files[0] ? event.target.files[0] : null;
       const newErrorMessage = await validateImageSize(image);
       setErrorMessage(newErrorMessage);
       // Only call onChange if image is validated, so the user can't upload anything invalid.
@@ -145,7 +165,7 @@ export const ImageUploadField = React.memo(
           name={name}
           type="file"
           onChange={handleFileUpload}
-          aria-describedby={secondaryLabel ? `${name}-description` : null}
+          aria-describedby={secondaryLabel ? `${name}-description` : ''}
           aria-invalid={!errorMessage}
         />
         <Box position="relative">
@@ -189,40 +209,3 @@ export const ImageUploadField = React.memo(
     );
   },
 );
-
-ImageUploadField.propTypes = {
-  name: PropTypes.string.isRequired,
-  userInitial: PropTypes.string,
-  imageSrc: PropTypes.string,
-  onChange: PropTypes.func,
-  onDelete: PropTypes.func,
-  avatarInitial: PropTypes.string,
-  label: PropTypes.string,
-  buttonLabel: PropTypes.string,
-  deleteModal: PropTypes.object,
-  avatarVariant: PropTypes.string,
-  maxHeight: PropTypes.number,
-  maxWidth: PropTypes.number,
-  minHeight: PropTypes.number,
-  minWidth: PropTypes.number,
-  secondaryLabel: PropTypes.string,
-  tooltip: PropTypes.string,
-};
-
-ImageUploadField.defaultProps = {
-  userInitial: undefined,
-  imageSrc: null,
-  onChange: () => {},
-  onDelete: () => {},
-  avatarInitial: '',
-  buttonLabel: 'Upload photo',
-  avatarVariant: 'circular',
-  tooltip: '',
-  label: '',
-  deleteModal: null,
-  maxHeight: null,
-  maxWidth: null,
-  minHeight: null,
-  minWidth: null,
-  secondaryLabel: '',
-};
