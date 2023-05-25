@@ -4,14 +4,19 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Polygon } from 'react-leaflet';
+import { Polygon, PolygonProps as LeafletPolygonProps } from 'react-leaflet';
 import styled from 'styled-components';
 import { MAP_COLORS } from '../constants';
 
 const { POLYGON_HIGHLIGHT } = MAP_COLORS;
 
-const StyledPolygon = styled(Polygon)`
+interface PolygonProps {
+  shade?: string;
+  hasChildren?: boolean;
+  hasShadedChildren?: boolean;
+}
+
+const StyledPolygon = styled(Polygon)<PolygonProps>`
   stroke: ${props => props.shade || POLYGON_HIGHLIGHT};
   opacity: 1;
   fill: ${props => props.shade || 'none'};
@@ -27,7 +32,15 @@ const StyledPolygon = styled(Polygon)`
 /**
  * ActivePolygon: The polygon that is selected on the map. This handles the style logic
  */
-const ActivePolygon = ({ coordinates, shade, hasChildren, hasShadedChildren }) => (
+interface ActivePolygonProps extends PolygonProps {
+  coordinates: LeafletPolygonProps['positions'];
+}
+const ActivePolygon = ({
+  coordinates,
+  shade,
+  hasChildren = false,
+  hasShadedChildren = false,
+}: ActivePolygonProps) => (
   <StyledPolygon
     positions={coordinates}
     shade={shade}
@@ -35,20 +48,5 @@ const ActivePolygon = ({ coordinates, shade, hasChildren, hasShadedChildren }) =
     hasShadedChildren={hasShadedChildren}
   />
 );
-
-ActivePolygon.propTypes = {
-  coordinates: PropTypes.arrayOf(
-    PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
-  ).isRequired,
-  shade: PropTypes.string,
-  hasChildren: PropTypes.bool,
-  hasShadedChildren: PropTypes.bool,
-};
-
-ActivePolygon.defaultProps = {
-  shade: null,
-  hasChildren: false,
-  hasShadedChildren: false,
-};
 
 export default ActivePolygon;
