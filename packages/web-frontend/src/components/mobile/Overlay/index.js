@@ -42,7 +42,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     animation: 'x 0.3s',
-    animationName: Radium.keyframes(modalSlideTransition, 'modalSlideTransition'),
   },
   header: {
     display: 'flex',
