@@ -74,7 +74,7 @@ export class SurveyExporter {
           const metadataRow = await this.buildMetadataRow(currentSurvey);
           if (metadataRow) rowsForExport.push(metadataRow);
 
-          const sheetName = currentSurvey.code.substring(0, 31);
+          const sheetName = currentSurvey.name.substring(0, 31);
           workbook.SheetNames.push(sheetName);
           workbook.Sheets[sheetName] = xlsx.utils.json_to_sheet(rowsForExport);
         }
