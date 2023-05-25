@@ -2,9 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { SVGAttributes } from 'react';
 
-export const Volcano = props => (
+export const Volcano = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <svg
     {...props}
     version="1.1"

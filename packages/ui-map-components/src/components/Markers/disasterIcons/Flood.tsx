@@ -2,9 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { SVGAttributes } from 'react';
 
-export const Flood = props => (
+export const Flood = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"

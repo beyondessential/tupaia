@@ -183,6 +183,8 @@ export const InteractivePolygon = React.memo(
       }
 
       // To match with the color in markerIcon.js which uses BREWER_PALETTE
+      // @ts-ignore - because technically shade can be a string that is not in the BREWER_PALETTE, so TS throws an error about type not being able to be an index
+
       const color = BREWER_PALETTE[shade] || shade;
 
       // Work around: color should go through the styled components

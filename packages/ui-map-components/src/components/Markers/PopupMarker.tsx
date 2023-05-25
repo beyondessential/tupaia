@@ -5,10 +5,10 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { Popup } from 'react-leaflet';
+import { MeasureData } from '../../types';
 
 const TOP_BAR_HEIGHT = 60;
 const DARK_BACKGROUND_COLOR = 'rgb(43,45,56)';
@@ -60,19 +60,31 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+interface PopupMarkerProps {
+  coordinates: MeasureData['coordinates'];
+  headerText: string;
+  buttonText?: string;
+  children?: React.ReactNode;
+  onDetailButtonClick?: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
+  popupRef?: React.Ref<any>;
+  sidePanelWidth?: number;
+}
+
 export const PopupMarker = React.memo(
   ({
     onDetailButtonClick,
-    onOpen,
-    onClose,
-    sidePanelWidth,
+    onOpen = () => null,
+    onClose = () => null,
+    sidePanelWidth = 0,
     buttonText,
     headerText,
     coordinates,
     children,
     popupRef,
-  }) => {
-    const displayCoordinates = coordinates.map(c => c.toFixed(5)).join(', ');
+  }: PopupMarkerProps) => {
+    const displayCoordinates = coordinates.map((c: any) => c.toFixed(5)).join(', ');
     return (
       <StyledPopup
         pane="popupPane"
@@ -98,26 +110,3 @@ export const PopupMarker = React.memo(
     );
   },
 );
-
-PopupMarker.propTypes = {
-  coordinates: PropTypes.arrayOf(PropTypes.number),
-  headerText: PropTypes.string.isRequired,
-  buttonText: PropTypes.string,
-  children: PropTypes.node,
-  onDetailButtonClick: PropTypes.func,
-  onOpen: PropTypes.func,
-  onClose: PropTypes.func,
-  popupRef: PropTypes.func,
-  sidePanelWidth: PropTypes.number,
-};
-
-PopupMarker.defaultProps = {
-  onOpen: () => null,
-  onClose: () => null,
-  popupRef: () => null,
-  onDetailButtonClick: null,
-  sidePanelWidth: 0,
-  coordinates: null,
-  children: null,
-  buttonText: null,
-};

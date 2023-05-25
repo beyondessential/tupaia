@@ -1,7 +1,8 @@
 import { PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
 import { Entity as TupaiaEntity } from '@tupaia/types';
-import { BREWER_PALETTE } from '../constants';
+import { Color } from './types';
+import { MarkerProps } from './marker-types';
 
 export type Series = {
   key: string;
@@ -12,6 +13,7 @@ export type Series = {
   organisationUnit?: string;
   sortOrder: number;
   type?: string;
+  popupHeaderFormat?: string;
 };
 
 export type Location = {
@@ -37,14 +39,14 @@ export type MeasureOrgUnit = GenericDataItem & {
   [key: string]: any;
   organisationUnitCode?: string;
   isHidden?: boolean;
-  color?: keyof typeof BREWER_PALETTE | 'transparent';
+  color?: Color;
 };
 
 export type MeasureData = MeasureOrgUnit &
-  PolygonProps & {
-    coordinates?: PolygonProps['positions'];
-    region: PolygonProps['positions'];
-    radius?: number;
+  PolygonProps &
+  MarkerProps & {
+    coordinates: PolygonProps['positions'];
+    region?: PolygonProps['positions'];
     icon?: string;
     code?: string;
     name?: string;

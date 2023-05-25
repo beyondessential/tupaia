@@ -3,10 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { IconContainer } from '../IconContainer';
 
-export const RightArrow = ({ scale }) => (
+export const RightArrow = (scale: number = 1) => (
   <IconContainer fill="#fff" scale={scale} viewBox="0 0 370.46 301.13">
     <path
       className="cls-1"
@@ -15,10 +14,3 @@ export const RightArrow = ({ scale }) => (
     />
   </IconContainer>
 );
-
-RightArrow.propTypes = {
-  scale: PropTypes.number,
-};
-RightArrow.defaultProps = {
-  scale: 1,
-};

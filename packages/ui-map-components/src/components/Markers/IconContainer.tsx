@@ -3,11 +3,15 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { SVGProps, ReactNode } from 'react';
 import { ICON_BASE_SIZE } from './constants';
 
-export const IconContainer = ({ children, scale, ...props }) => (
+interface IconContainerProps extends SVGProps<SVGSVGElement> {
+  children?: ReactNode;
+  scale?: number;
+}
+
+export const IconContainer = ({ children, scale = 1, ...props }: IconContainerProps) => (
   <svg
     width={`${ICON_BASE_SIZE * scale}px`}
     height={`${ICON_BASE_SIZE * scale}px`}
@@ -18,13 +22,3 @@ export const IconContainer = ({ children, scale, ...props }) => (
     {children}
   </svg>
 );
-
-IconContainer.propTypes = {
-  children: PropTypes.node,
-  scale: PropTypes.number,
-};
-
-IconContainer.defaultProps = {
-  children: null,
-  scale: 1,
-};

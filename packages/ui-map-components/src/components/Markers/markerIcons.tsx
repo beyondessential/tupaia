@@ -7,22 +7,27 @@
 /* eslint-disable react/prop-types */
 
 import L from 'leaflet';
-import React from 'react';
+import React, { ElementType } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import styled from 'styled-components';
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
+import { PointExpression } from 'leaflet';
 import { ICON_BASE_SIZE } from './constants';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
 import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
 import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../../constants';
 import { IconContainer } from './IconContainer';
+import { Color } from '../../types';
+import { CssColor } from '@tupaia/types';
 
 // allows passing a color to a material icon & scales it down a bit
-const wrapMaterialIcon = Base => ({ color }) => <Base htmlColor={color} viewBox="-3 -3 29 29" />;
+const wrapMaterialIcon = (Base: ElementType) => ({ color }: { color: Color }) => (
+  <Base htmlColor={color} viewBox="-3 -3 29 29" />
+);
 
 const StyledSvgWrapper = styled.span`
   * {
@@ -30,13 +35,21 @@ const StyledSvgWrapper = styled.span`
   }
 `;
 
-const wrapSvgIcon = Base => ({ color }) => (
+const wrapSvgIcon = (Base: ElementType) => ({ color }: { color: Color }) => (
   <StyledSvgWrapper color={color}>
     <Base />
   </StyledSvgWrapper>
 );
 
-const PinIcon = ({ color, scale }) => {
+interface ScaleIconProps {
+  scale?: number;
+}
+
+interface IconProps extends ScaleIconProps {
+  color: Color;
+}
+
+const PinIcon = ({ color, scale = 1 }: IconProps) => {
   return (
     <IconContainer fill={color} scale={scale} viewBox="0 0 27 39">
       <path
@@ -48,19 +61,19 @@ const PinIcon = ({ color, scale }) => {
   );
 };
 
-const UpArrowIcon = ({ scale }) => {
+const UpArrowIcon = ({ scale = 1 }: ScaleIconProps) => {
   return UpArrow(scale);
 };
 
-const RightArrowIcon = ({ scale }) => {
+const RightArrowIcon = ({ scale = 1 }: ScaleIconProps) => {
   return RightArrow(scale);
 };
 
-const DownArrowIcon = ({ scale }) => {
+const DownArrowIcon = ({ scale = 1 }: ScaleIconProps) => {
   return DownArrow(scale);
 };
 
-const HealthPinIcon = ({ color, scale }) => (
+const HealthPinIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer fill={color} scale={scale}>
     <ellipse ry="271" rx="270" id="svg_6" cy="397" cx="501" stroke="#000" fill={WHITE} />
     <g>
@@ -72,13 +85,13 @@ const HealthPinIcon = ({ color, scale }) => (
   </IconContainer>
 );
 
-const CircleIcon = ({ color, scale }) => (
+const CircleIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer scale={scale}>
     <circle cx="500" cy="500" r="400" stroke={WHITE} strokeWidth="80" fill={color} />
   </IconContainer>
 );
 
-const RadiusIcon = ({ color, scale }) => (
+const RadiusIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer scale={scale}>
     <circle
       cx="500"
@@ -92,7 +105,7 @@ const RadiusIcon = ({ color, scale }) => (
   </IconContainer>
 );
 
-const DottedCircle = ({ color, scale }) => (
+const DottedCircle = ({ color, scale = 1 }: IconProps) => (
   <IconContainer scale={scale}>
     <circle
       cx="500"
@@ -106,7 +119,13 @@ const DottedCircle = ({ color, scale }) => (
   </IconContainer>
 );
 
-const SquareIcon = ({ color, scale, stroke = color }) => (
+const SquareIcon = ({
+  color,
+  scale = 1,
+  stroke = color,
+}: IconProps & {
+  stroke?: string;
+}) => (
   <IconContainer scale={scale}>
     <rect
       width="800"
@@ -125,7 +144,7 @@ const SquareIcon = ({ color, scale, stroke = color }) => (
   </IconContainer>
 );
 
-const RingIcon = ({ color, scale }) => (
+const RingIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer scale={scale}>
     <path
       d="M 500, 500
@@ -145,7 +164,7 @@ const RingIcon = ({ color, scale }) => (
 
 // just loop around a circle dropping points at the right places
 const TAU = Math.PI * 2;
-function makePolygon(numberOfPoints, radius) {
+function makePolygon(numberOfPoints: number, radius: number): string {
   const offset = TAU * 0.5; // start pointing up
   const coords = new Array(numberOfPoints + 1)
     .fill(0)
@@ -161,20 +180,20 @@ function makePolygon(numberOfPoints, radius) {
 }
 
 const pentagonPath = makePolygon(5, 3);
-const PentagonIcon = ({ color, scale }) => (
+const PentagonIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer viewBox="-4 -4 8 8" scale={scale}>
     <path d={pentagonPath} fill={color} stroke={WHITE} strokeWidth="0.4" />
   </IconContainer>
 );
 
 const trianglePath = makePolygon(3, 3);
-const TriangleIcon = ({ color, scale }) => (
+const TriangleIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer viewBox="-4 -4 8 8" scale={scale}>
     <path d={trianglePath} fill={color} stroke={WHITE} strokeWidth="0.4" />
   </IconContainer>
 );
 
-const XIcon = ({ color, scale }) => (
+const XIcon = ({ color, scale = 1 }: IconProps) => (
   <IconContainer viewBox="-4 -4 8 8" scale={scale}>
     <g transform="rotate(45)">
       <path
@@ -187,7 +206,15 @@ const XIcon = ({ color, scale }) => (
   </IconContainer>
 );
 
-const HIcon = ({ color, h = 0.24, v = 0.2, scale }) => (
+const HIcon = ({
+  color,
+  h = 0.24,
+  v = 0.2,
+  scale = 1,
+}: IconProps & {
+  h?: number;
+  v?: number;
+}) => (
   <IconContainer viewBox="-1.5 -1.5 3 3" scale={scale}>
     <path
       d={`
@@ -202,7 +229,7 @@ const HIcon = ({ color, h = 0.24, v = 0.2, scale }) => (
   </IconContainer>
 );
 
-const FadedCircle = ({ color, scale }) => {
+const FadedCircle = ({ color, scale = 1 }: IconProps) => {
   // Each color needs its own id - even though we're defining a new svg, the
   // ids we refer to them by are in document scope, not svg scope.
   // We replace non-word characters (punctuation and spaces) with '-' so that
@@ -308,7 +335,15 @@ const icons = {
   },
 };
 
-export const ICON_VALUES = Object.keys(icons);
+type IconType = {
+  Component: ElementType;
+  iconAnchor?: number[];
+  popupAnchor?: number[];
+  [key: string]: unknown;
+};
+
+export type IconKey = keyof typeof icons;
+
 export const SPECTRUM_ICON = 'fade';
 export const UNKNOWN_ICON = 'empty';
 export const DEFAULT_ICON = 'healthPin';
@@ -317,7 +352,7 @@ export const LEGEND_SHADING_ICON = 'square';
 export const LEGEND_RADIUS_ICON = 'radius';
 export const HIDDEN_ICON = 'hidden';
 
-function toLeaflet(icon, color, scale) {
+function toLeaflet(icon: IconType, color: CssColor, scale: number = 1): L.DivIcon {
   const {
     Component,
     iconAnchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], // default to center point
@@ -330,8 +365,8 @@ function toLeaflet(icon, color, scale) {
 
   return L.divIcon({
     iconSize: [scaledIconSize, scaledIconSize],
-    iconAnchor: scaledIconAnchor,
-    popupAnchor: scaledPopupAnchor,
+    iconAnchor: scaledIconAnchor as PointExpression,
+    popupAnchor: scaledPopupAnchor as PointExpression,
     className: 'tupaia-simple',
     ...params,
     html: ReactDOMServer.renderToStaticMarkup(<Component color={color} scale={scale} />),
@@ -339,62 +374,17 @@ function toLeaflet(icon, color, scale) {
 }
 
 // Returns jsx version of marker (for Legend rendering)
-export function getMarkerForOption(iconKey, colorName, stroke) {
+export function getMarkerForOption(iconKey: IconKey, colorName: Color, stroke: CssColor) {
   const icon = icons[iconKey] || icons.pin;
+  // @ts-ignore - because technically shade can be a string that is not in the BREWER_PALETTE, so TS throws an error about type not being able to be an index
   const color = BREWER_PALETTE[colorName] || colorName;
   return <icon.Component color={color} stroke={stroke} />;
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(iconKey, colorName, scale = 1) {
+export function getMarkerForValue(iconKey: IconKey, colorName?: Color, scale: number = 1) {
   const icon = icons[iconKey] || icons.pin;
+  // @ts-ignore - because technically shade can be a string that is not in the BREWER_PALETTE, so TS throws an error about type not being able to be an index
   const color = BREWER_PALETTE[colorName] || colorName;
   return toLeaflet(icon, color, scale);
 }
-
-const iconPropTypes = {
-  color: PropTypes.string.isRequired,
-  scale: PropTypes.number,
-};
-const iconDefaultProps = {
-  scale: 1,
-};
-
-PinIcon.propTypes = iconPropTypes;
-PinIcon.defaultProps = iconDefaultProps;
-UpArrowIcon.propTypes = {
-  scale: PropTypes.number,
-};
-UpArrowIcon.defaultProps = {
-  scale: 1,
-};
-DownArrowIcon.propTypes = {
-  scale: PropTypes.number,
-};
-DownArrowIcon.defaultProps = {
-  scale: 1,
-};
-RightArrowIcon.propTypes = {
-  scale: PropTypes.number,
-};
-RightArrowIcon.defaultProps = {
-  scale: 1,
-};
-HealthPinIcon.propTypes = iconPropTypes;
-HealthPinIcon.defaultProps = iconDefaultProps;
-CircleIcon.propTypes = iconPropTypes;
-CircleIcon.defaultProps = iconDefaultProps;
-TriangleIcon.propTypes = iconPropTypes;
-TriangleIcon.defaultProps = iconDefaultProps;
-SquareIcon.propTypes = iconPropTypes;
-SquareIcon.defaultProps = iconDefaultProps;
-PentagonIcon.propTypes = iconPropTypes;
-PentagonIcon.defaultProps = iconDefaultProps;
-RingIcon.propTypes = iconPropTypes;
-RingIcon.defaultProps = iconDefaultProps;
-XIcon.propTypes = iconPropTypes;
-XIcon.defaultProps = iconDefaultProps;
-DottedCircle.propTypes = iconPropTypes;
-DottedCircle.defaultProps = iconDefaultProps;
-FadedCircle.propTypes = iconPropTypes;
-FadedCircle.defaultProps = iconDefaultProps;

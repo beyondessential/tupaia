@@ -24,7 +24,7 @@ const getTooltipText = ({ name, ...markerData }: GenericDataItem, serieses: Seri
   `${name}: ${getSingleFormattedValue(markerData, serieses)}`;
 
 // Filter hidden and invalid values and sort measure data
-const processData = (measureData: MeasureData[], serieses: Series[]) => {
+const processData = (measureData: MeasureData[], serieses: Series[]): MeasureData[] => {
   const data = measureData
     .filter(({ coordinates, region }) => region || (coordinates && coordinates.length === 2))
     .filter(({ isHidden }) => !isHidden);
@@ -42,7 +42,7 @@ interface MarkerLayerProps {
   serieses: Series[];
   multiOverlayMeasureData: GenericDataItem[];
   multiOverlaySerieses: Series[];
-  onSeeOrgUnitDashboard: (orgUnitCode: string) => void;
+  onSeeOrgUnitDashboard: (organisationUnitCode?: string) => void;
 }
 
 export const MarkerLayer = ({
@@ -58,13 +58,13 @@ export const MarkerLayer = ({
 
   return (
     <LayerGroup>
-      {data.map(({ region, organisationUnitCode, color, ...measure }) => {
+      {data.map(({ region, organisationUnitCode, color, ...measure }: MeasureData) => {
         if (measure.region) {
           return (
             <ShadedPolygon
               {...measure}
               key={organisationUnitCode}
-              positions={region}
+              positions={region!}
               pathOptions={{
                 color,
                 fillColor: color,
@@ -79,7 +79,7 @@ export const MarkerLayer = ({
           ...measure,
           ...(multiOverlayMeasureData &&
             multiOverlayMeasureData.find(
-              ({ organisationUnitCode }) => organisationUnitCode === measure.organisationUnitCode,
+              item => item.organisationUnitCode === measure.organisationUnitCode,
             )),
         };
         return (

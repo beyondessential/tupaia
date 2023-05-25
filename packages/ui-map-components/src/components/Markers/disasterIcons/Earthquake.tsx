@@ -2,9 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { SVGAttributes } from 'react';
 
-export const Earthquake = props => (
+export const Earthquake = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export const Earthquake = props => (
     y="0px"
     viewBox="0 0 100 97.629"
     enableBackground="new 0 0 100 97.629"
-    xmlSspace="preserve"
+    xmlSpace="preserve"
   >
     <g>
       <polygon points="55.866,66.478 54.167,72.63 59.723,72.63 56.944,87.908 65.277,87.908 67.328,93.003 99.981,97.629 100,97.629    100,72.63  " />

@@ -4,21 +4,21 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { IconMarker } from './IconMarker';
 import { CircleProportionMarker } from './CircleProportionMarker';
+import { MarkerProps } from '../../types';
 
-export const MeasureMarker = React.memo(props => {
-  const { icon, radius } = props;
+export const MeasureMarker = React.memo((props: MarkerProps) => {
+  const { icon, radius = 0 } = props;
 
-  if (parseInt(radius, 10) === 0) {
+  if (radius && parseInt(String(radius), 10) === 0) {
     if (icon) {
       // we have an icon, so don't render the radius at all
       return <IconMarker {...props} />;
     }
 
     // we have no icon and zero radius -- use minimum radius instead
-    return <CircleProportionMarker {...props} radius="1" />;
+    return <CircleProportionMarker {...props} radius={1} />;
   }
 
   if (radius && icon) {
@@ -36,13 +36,3 @@ export const MeasureMarker = React.memo(props => {
 
   return <IconMarker {...props} />;
 });
-
-MeasureMarker.propTypes = {
-  icon: PropTypes.string,
-  radius: PropTypes.number,
-};
-
-MeasureMarker.defaultProps = {
-  icon: null,
-  radius: null,
-};
