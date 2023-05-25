@@ -6,7 +6,7 @@
 import { createBasicHeader } from '../createBasicHeader';
 import { AuthHandler, SessionType } from '../types';
 
-const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
+const { API_CLIENT_NAME = '', API_CLIENT_PASSWORD = '' } = process.env;
 const DEFAULT_AUTH_HEADER = createBasicHeader(
   API_CLIENT_NAME,
   API_CLIENT_PASSWORD,
