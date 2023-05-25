@@ -9,3 +9,9 @@ export type ReportConfig = {
   transform: Transform[];
   output?: Record<string, unknown>;
 };
+
+type CustomReportConfig = {
+  customReport: string;
+};
+
+export type StandardOrCustomReportConfig = ReportConfig | CustomReportConfig;
