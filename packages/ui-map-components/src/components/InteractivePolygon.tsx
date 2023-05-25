@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../constants';
 import ActivePolygon from './ActivePolygon';
+import { Entity, GenericDataItem, MeasureOrgUnit, Series } from '../types';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -39,12 +39,20 @@ const TransparentShadedPolygon = styled(Polygon)`
   }
 `;
 
+type ParsedPropsResult = {
+  shade?: MeasureOrgUnit['color'];
+  isHidden?: boolean;
+  hasShadedChildren: boolean;
+  orgUnitMeasureData?: MeasureOrgUnit;
+  orgUnitMultiOverlayMeasureData?: GenericDataItem;
+};
+
 const parseProps = (
-  organisationUnitCode,
-  organisationUnitChildren,
-  measureOrgUnits,
-  multiOverlayMeasureData,
-) => {
+  organisationUnitCode: string,
+  organisationUnitChildren: GenericDataItem[],
+  measureOrgUnits: MeasureOrgUnit[],
+  multiOverlayMeasureData: GenericDataItem[],
+): ParsedPropsResult => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
@@ -79,19 +87,32 @@ const parseProps = (
   return { shade, isHidden, hasShadedChildren, orgUnitMeasureData, orgUnitMultiOverlayMeasureData };
 };
 
+interface InteractivePolygonProps {
+  isChildArea?: boolean;
+  hasMeasureData?: boolean;
+  multiOverlaySerieses?: Series[];
+  multiOverlayMeasureData?: GenericDataItem[];
+  permanentLabels?: boolean;
+  onChangeOrgUnit?: (organisationUnitCode: string) => void;
+  area: Entity;
+  isActive?: boolean;
+  measureOrgUnits?: MeasureOrgUnit[];
+  organisationUnitChildren?: GenericDataItem[];
+}
+
 export const InteractivePolygon = React.memo(
   ({
-    isChildArea,
-    hasMeasureData,
-    multiOverlaySerieses,
-    multiOverlayMeasureData,
-    permanentLabels,
-    onChangeOrgUnit,
+    isChildArea = false,
+    hasMeasureData = false,
+    multiOverlaySerieses = [],
+    multiOverlayMeasureData = [],
+    permanentLabels = true,
+    onChangeOrgUnit = () => {},
     area,
-    isActive,
-    measureOrgUnits,
-    organisationUnitChildren,
-  }) => {
+    isActive = false,
+    measureOrgUnits = [],
+    organisationUnitChildren = [],
+  }: InteractivePolygonProps) => {
     const { organisationUnitCode } = area;
     const coordinates = area.location?.region;
     const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
@@ -135,7 +156,6 @@ export const InteractivePolygon = React.memo(
       // Render all measure data even it is not selected on switch button to display.
       return (
         <AreaTooltip
-          hasMeasureData={hasMeasureData}
           permanent={permanentLabels && isChildArea && !hasMeasureValue}
           sticky={!permanentLabels}
           hasMeasureValue={hasMeasureValue}
@@ -183,33 +203,3 @@ export const InteractivePolygon = React.memo(
     return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
   },
 );
-
-InteractivePolygon.propTypes = {
-  area: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    location: PropTypes.object,
-    organisationUnitCode: PropTypes.string,
-  }).isRequired,
-  isActive: PropTypes.bool,
-  permanentLabels: PropTypes.bool,
-  isChildArea: PropTypes.bool,
-  onChangeOrgUnit: PropTypes.func,
-  hasMeasureData: PropTypes.bool,
-  multiOverlaySerieses: PropTypes.arrayOf(PropTypes.object),
-  measureOrgUnits: PropTypes.arrayOf(PropTypes.object),
-  multiOverlayMeasureData: PropTypes.arrayOf(PropTypes.object),
-  organisationUnitChildren: PropTypes.arrayOf(PropTypes.object),
-};
-
-InteractivePolygon.defaultProps = {
-  isActive: false,
-  permanentLabels: true,
-  isChildArea: false,
-  onChangeOrgUnit: () => {},
-  hasMeasureData: false,
-  multiOverlaySerieses: [],
-  organisationUnitChildren: [],
-  measureOrgUnits: [],
-  multiOverlayMeasureData: [],
-};
