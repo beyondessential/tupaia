@@ -11,7 +11,9 @@ export type Series = {
   value: string | number;
   organisationUnit?: string;
   sortOrder: number;
+  type?: string;
 };
+
 export type Location = {
   bounds: LatLngBoundsExpression;
   type?: string | null;
@@ -31,9 +33,21 @@ export type GenericDataItem = {
   organisationUnitCode?: string;
 };
 
-export type MeasureOrgUnit = {
+export type MeasureOrgUnit = GenericDataItem & {
   [key: string]: any;
   organisationUnitCode?: string;
   isHidden?: boolean;
   color?: keyof typeof BREWER_PALETTE | 'transparent';
 };
+
+export type MeasureData = MeasureOrgUnit &
+  PolygonProps & {
+    coordinates?: PolygonProps['positions'];
+    region: PolygonProps['positions'];
+    radius?: number;
+    icon?: string;
+    code?: string;
+    name?: string;
+    photoUrl?: string;
+    value?: number | string;
+  };

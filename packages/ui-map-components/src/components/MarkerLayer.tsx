@@ -10,6 +10,7 @@ import { LayerGroup, Polygon } from 'react-leaflet';
 import { MeasureMarker, MeasurePopup } from './Markers';
 import { AreaTooltip } from './AreaTooltip';
 import { getSingleFormattedValue, MEASURE_TYPE_RADIUS } from '../utils';
+import { GenericDataItem, MeasureData, Series } from '../types';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -19,11 +20,11 @@ const ShadedPolygon = styled(Polygon)`
 `;
 
 // remove name from the measure data as it's not expected in getSingleFormattedValue
-const getTooltipText = ({ name, ...markerData }, serieses) =>
+const getTooltipText = ({ name, ...markerData }: GenericDataItem, serieses: Series[]) =>
   `${name}: ${getSingleFormattedValue(markerData, serieses)}`;
 
 // Filter hidden and invalid values and sort measure data
-const processData = (measureData, serieses) => {
+const processData = (measureData: MeasureData[], serieses: Series[]) => {
   const data = measureData
     .filter(({ coordinates, region }) => region || (coordinates && coordinates.length === 2))
     .filter(({ isHidden }) => !isHidden);
@@ -36,30 +37,38 @@ const processData = (measureData, serieses) => {
   return data;
 };
 
+interface MarkerLayerProps {
+  measureData: MeasureData[];
+  serieses: Series[];
+  multiOverlayMeasureData: GenericDataItem[];
+  multiOverlaySerieses: Series[];
+  onSeeOrgUnitDashboard: (orgUnitCode: string) => void;
+}
+
 export const MarkerLayer = ({
   measureData,
   serieses,
   multiOverlayMeasureData,
   multiOverlaySerieses,
   onSeeOrgUnitDashboard,
-}) => {
+}: MarkerLayerProps) => {
   if (!measureData || !serieses) return null;
 
   const data = processData(measureData, serieses);
 
   return (
     <LayerGroup>
-      {data.map(measure => {
+      {data.map(({ region, organisationUnitCode, color, ...measure }) => {
         if (measure.region) {
           return (
             <ShadedPolygon
-              key={measure.organisationUnitCode}
-              positions={measure.region}
-              pathOptions={{
-                color: measure.color,
-                fillColor: measure.color,
-              }}
               {...measure}
+              key={organisationUnitCode}
+              positions={region}
+              pathOptions={{
+                color,
+                fillColor: color,
+              }}
             >
               <AreaTooltip text={getTooltipText(measure, serieses)} />
             </ShadedPolygon>
