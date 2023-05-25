@@ -13,6 +13,12 @@
         - name: Validate tests
           command: './packages/devops/scripts/ci/validateTests.sh'
     - type: serial
+      name: Db Validation
+      service: testing
+      steps:
+        - name: Validate types
+          command: './packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh'
+    - type: serial
       name: Test
       service: testing
       steps:
