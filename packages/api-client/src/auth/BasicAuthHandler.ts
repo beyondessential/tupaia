@@ -4,7 +4,7 @@
  */
 
 import { AuthHandler } from '../types';
-import { createBasicHeader } from '../createBasicHeader';
+import { createBasicHeader } from '@tupaia/utils';
 
 export class BasicAuthHandler implements AuthHandler {
   private readonly authHeader: string;
