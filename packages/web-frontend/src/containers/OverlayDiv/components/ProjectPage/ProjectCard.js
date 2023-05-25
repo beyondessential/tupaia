@@ -64,6 +64,10 @@ const Text = styled(Typography)`
   margin-bottom: 0.625rem;
 `;
 
+const CountryText = styled(Text)`
+  color: #9ba0a6;
+`;
+
 const Body = styled.div`
   flex: 1;
   display: flex;
@@ -146,14 +150,14 @@ export const ProjectCard = ({ name, description, logoUrl, names, ProjectButton }
   <Card>
     {logoUrl && (
       <Logo>
-        <img alt="project logo" src={logoUrl} />
+        <img alt={`${name} logo`} src={logoUrl} />
       </Logo>
     )}
     <Body>
       <Title>{name}</Title>
       <div>
         <Text>{getDescription(description)}</Text>
-        <Text style={{ color: '#9BA0A6' }}>{getCountryNames(name, names)}</Text>
+        <CountryText>{getCountryNames(name, names)}</CountryText>
       </div>
     </Body>
     <ProjectButton />
