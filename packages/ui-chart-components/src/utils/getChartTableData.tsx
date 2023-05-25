@@ -5,7 +5,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType } from '@tupaia/types';
+import { BaseChartConfig, ValueType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
 import { ChartType, LooseObject, TableAccessor } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
@@ -25,7 +25,7 @@ const FirstColumnCell = styled.span`
   text-align: left;
 `;
 
-const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: string) => {
+const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Function) => {
   const firstColumn: LooseObject = {
     Header: header,
     accessor,
@@ -75,12 +75,11 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => 
       id: columnKey,
       Header: (props: LooseObject) => {
         const columnId = props.column.id;
-        // @ts-ignore
-        return chartConfig[columnId]?.label || columnId;
+        return chartConfig[columnId as keyof BaseChartConfig]?.label || columnId;
       },
       accessor: (row: LooseObject) => {
         const rowValue = row[columnKey];
-        const columnConfig = chartConfig[columnKey];
+        const columnConfig = chartConfig[columnKey as keyof BaseChartConfig];
         const valueType = columnConfig?.valueType || viewContent.valueType;
         return getFormattedValue(rowValue, valueType);
       },
@@ -116,9 +115,9 @@ const processData = (viewContent: ViewContent) => {
 export const getChartTableData = (viewContent: ViewContent) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
-  // @ts-ignore
-  const sortByTimestamp = useMemo(() => (rowA: any, rowB: any) =>
-    sortDates(rowA.original.timestamp, rowB.original.timestamp),
+  const sortByTimestamp = useMemo(
+    () => (rowA: any, rowB: any) => sortDates(rowA.original.timestamp, rowB.original.timestamp),
+    undefined,
   );
   const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [
     JSON.stringify(viewContent),

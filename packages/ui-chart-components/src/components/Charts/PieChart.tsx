@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -21,6 +20,7 @@ import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
 import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
+import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -139,7 +139,7 @@ export const PieChart = ({
   const getPresentationOption = (key: keyof PresentationOptions | string, option: string) =>
     !!presentationOptions &&
     presentationOptions.hasOwnProperty(key) &&
-    presentationOptions[key][option];
+    presentationOptions[key as keyof PresentationOptions][option];
 
   const getValidData = () =>
     data
@@ -156,7 +156,7 @@ export const PieChart = ({
           originalItem: item,
         };
       })
-      .sort((a, b) => b.value - a.value);
+      .sort((a: any, b: any) => b.value - a.value);
 
   const chartColors = Object.values(CHART_COLOR_PALETTE);
   const validData = getValidData();
@@ -171,6 +171,7 @@ export const PieChart = ({
 
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
+      {/* @ts-ignore */}
       <BasePieChart style={offsetStyle}>
         {/* @ts-ignore */}
         <Pie
@@ -198,12 +199,13 @@ export const PieChart = ({
         <Legend
           {...getLegendAlignment(legendPosition, isExporting)}
           content={getPieLegend({
-            chartConfig: viewContent.chartConfig,
+            chartConfig: viewContent.chartConfig as PieChartConfig,
             isEnlarged,
             isExporting,
             legendPosition,
             viewContent,
           })}
+          // @ts-ignore
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseOut}
         />

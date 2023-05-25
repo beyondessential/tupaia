@@ -16,20 +16,21 @@ import {
 } from 'recharts';
 import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
+import { ViewContent } from '../../types';
+
+interface CustomViewContent extends Omit<ViewContent, 'data'> {
+  data: { value: string | number }[];
+}
 
 interface GaugeChartProps {
-  viewContent: {
-    data: { value: number }[];
-    color?: string;
-    [key: string]: any;
-  };
+  viewContent: CustomViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
 }
 
-const Text = styled(RechartText)<{ $fontSize: string | number | undefined; $isExporting: boolean }>`
-  font-size: ${({ $fontSize }) => $fontSize};
+const Text = styled(RechartText)<{ $isExporting: boolean }>`
+  font-size: ${({ fontSize }) => fontSize};
   font-weight: bold;
   fill: ${({ theme, $isExporting }) => {
     return theme.palette.type === 'light' || $isExporting ? TRANS_BLACK : WHITE;
@@ -55,6 +56,7 @@ export const GaugeChart = ({
     const denominator = 0.05;
     const elements = [...data];
     const cellComponents = [<Cell fill={color} />];
+    // @ts-ignore
     const numOfElements = Math.floor((1 - data[0].value) / denominator);
 
     for (let i = 0; i < numOfElements; i++) {
@@ -73,15 +75,15 @@ export const GaugeChart = ({
   const outerRadius = innerRadius * 1.4;
 
   const getLabelContent = ({ value, x, y, fontSize }: LabelProps) => {
-    const positioningProps = {
-      x,
-      y,
-      textAnchor: 'middle',
-      verticalAnchor: 'middle',
-    };
     return (
-      // @ts-ignore
-      <Text {...positioningProps} $fontSize={fontSize} $isExporting={isExporting}>
+      <Text
+        x={x}
+        y={y}
+        verticalAnchor="middle"
+        textAnchor="middle"
+        fontSize={fontSize}
+        $isExporting={isExporting}
+      >
         {value}
       </Text>
     );

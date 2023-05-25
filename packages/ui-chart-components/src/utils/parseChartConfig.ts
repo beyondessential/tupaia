@@ -5,7 +5,7 @@
  */
 import { BaseChartConfig } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { ChartType, DataProps, ViewContent } from '../types';
+import { ChartType, DataProps, LooseObject, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';
@@ -50,21 +50,18 @@ export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
  * Sets numeric values for each chart config opacity
  */
 const setOpacityValues = (chartConfig: BaseChartConfig): BaseChartConfig => {
-  const newConfig = {};
+  const newConfig: LooseObject = {};
 
   Object.entries(chartConfig).forEach(([key, configItem], index, array) => {
     const { opacity } = configItem;
     if (!opacity || typeof opacity === 'number') {
-      // @ts-ignore
       newConfig[key] = configItem;
       return;
     }
     const newOpacity = getLayeredOpacity(array.length, index, opacity === 'ascending');
-    // @ts-ignore
     newConfig[key] = { ...configItem, opacity: newOpacity };
   });
-  // @ts-ignore
-  return newConfig;
+  return newConfig as BaseChartConfig;
 };
 
 // Adds default colors for every element with no color defined
@@ -73,7 +70,7 @@ const addDefaultColorsToConfig = (
   paletteName: ColorPalette,
   chartType: ChartType,
 ) => {
-  const newConfig = {};
+  const newConfig: LooseObject = {};
 
   const palette = paletteName || getDefaultPaletteName(chartType, Object.keys(chartConfig).length);
   const colors = Object.values(COLOR_PALETTES[palette]);
@@ -86,7 +83,6 @@ const addDefaultColorsToConfig = (
       colorId = (colorId + 1) % colors.length;
     }
 
-    // @ts-ignore
     newConfig[key] = { ...configItem, color };
   });
 
@@ -108,8 +104,7 @@ const CHART_SORT_ORDER = {
   [ChartType.Bar]: 1,
 };
 
-const defaultSort = (a: { chartType: string | number }[], b: { chartType: string | number }[]) => {
-  // @ts-ignore
+const defaultSort = (a: { chartType: 'bar' | 'line' }[], b: { chartType: 'bar' | 'line' }[]) => {
   return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
 };
 
@@ -138,7 +133,6 @@ const createDynamicConfig = (
   data: DataProps[],
 ) => {
   // Just find keys. Doesn't include keys which end in _metadata.
-  // @ts-ignore
   const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
   const keys = new Set(dataKeys);
 

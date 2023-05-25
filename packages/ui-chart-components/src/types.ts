@@ -80,6 +80,7 @@ export interface ViewContent<T = BaseChartConfig, CT = ChartType> {
   startDate?: string;
   endDate?: string;
   colorPalette?: string;
+  color?: string;
   periodGranularity?: VizPeriodGranularity;
   labelType?: string;
   data: DataProps[];

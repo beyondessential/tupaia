@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatDataValueByType } from '@tupaia/utils';
 import { LegendPosition, ViewContent } from '../../types';
 import { isMobile } from '../../utils';
-import { PieChartConfig } from '@tupaia/types';
+import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
 
 const LegendContainer = styled.div<{
   $position?: LegendPosition;
@@ -109,10 +109,8 @@ const getPieLegendDisplayValue = (
   viewContent: ViewContent,
   isEnlarged?: boolean,
 ) => {
-  // @ts-ignore
-  if (chartConfig[value]?.label) {
-    // @ts-ignore
-    return chartConfig[value].label;
+  if (chartConfig[value as keyof PieChartConfig]?.label) {
+    return chartConfig[value as keyof PieChartConfig].label;
   }
 
   const metadata = item[`${value}_metadata`];
@@ -136,7 +134,7 @@ export const getPieLegend = ({
   isExporting,
   legendPosition,
   viewContent,
-}: PieLegendProps) => ({ payload }: { payload: any }) => (
+}: PieLegendProps) => ({ payload }: any) => (
   <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
     {payload.map(({ color, value, payload: item }: any) => {
       const displayValue = getPieLegendDisplayValue(
@@ -168,9 +166,9 @@ export const getPieLegend = ({
 );
 
 interface CartesianLegendProps {
-  chartConfig?: any;
-  onClick: any;
-  getIsActiveKey: any;
+  chartConfig: CartesianChartConfig;
+  onClick: Function;
+  getIsActiveKey: Function;
   isExporting?: boolean;
   legendPosition?: LegendPosition;
 }
@@ -181,10 +179,10 @@ export const getCartesianLegend = ({
   getIsActiveKey,
   isExporting,
   legendPosition,
-}: CartesianLegendProps) => ({ payload }: { payload: any }) => (
+}: CartesianLegendProps) => ({ payload }: any) => (
   <LegendContainer $position={legendPosition} $isExporting={isExporting}>
     {payload.map(({ color, value, dataKey }: any) => {
-      const displayValue = chartConfig[value]?.label || value;
+      const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
 
       return (
         <LegendItem

@@ -92,8 +92,7 @@ const MultiValueTooltip = ({
   }
 
   const valueLabels = payload.map(({ dataKey, value, color }) => {
-    // @ts-ignore
-    const options = chartConfig && chartConfig[dataKey];
+    const options = chartConfig && chartConfig[dataKey as keyof BaseChartConfig];
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType ||

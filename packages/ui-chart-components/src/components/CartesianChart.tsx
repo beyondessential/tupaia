@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import get from 'lodash.get';
 import {
@@ -15,10 +14,17 @@ import {
   ResponsiveContainer,
   Tooltip,
   Brush,
+  ReferenceAreaProps,
 } from 'recharts';
-import { CartesianChartConfig } from '@tupaia/types';
+import { BaseChartConfig, CartesianChartConfig, ValueType } from '@tupaia/types';
 import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
-import { ChartType, ViewContent, LegendPosition } from '../types';
+import {
+  ChartType,
+  ViewContent,
+  LegendPosition,
+  VizPeriodGranularity,
+  PresentationOptions,
+} from '../types';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,
@@ -83,7 +89,7 @@ const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getHeight = (isExporting: boolean, isEnlarged: boolean, hasLegend: boolean) => {
+const getHeight = (isExporting: boolean, isEnlarged: boolean, hasLegend?: boolean) => {
   if (isExporting) {
     return 500;
   }
@@ -104,6 +110,14 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
 
 type CartesianChartConfigWithAll = CartesianChartConfig & { [LEGEND_ALL_DATA_KEY]?: any };
 
+type CartesianChartType = keyof typeof CHART_TYPE_TO_CONTAINER;
+
+interface CustomViewContent extends Omit<ViewContent, 'chartConfig' | 'valueType' | 'labelType'> {
+  chartConfig: CartesianChartConfig;
+  valueType: ValueType;
+  labelType: ValueType;
+}
+
 interface CartesianChartProps {
   viewContent: ViewContent<CartesianChartConfig>;
   legendPosition: LegendPosition;
@@ -117,7 +131,7 @@ export const CartesianChart = ({
   isExporting = false,
   legendPosition = 'bottom',
 }: CartesianChartProps) => {
-  const [chartConfig, setChartConfig] = useState<CartesianChartConfigWithAll | object>(
+  const [chartConfig, setChartConfig] = useState<CartesianChartConfigWithAll>(
     viewContent.chartConfig || {},
   );
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>([]);
@@ -140,7 +154,7 @@ export const CartesianChart = ({
     presentationOptions,
     renderLegendForOneItem,
     referenceAreas,
-  } = viewContent;
+  } = viewContent as CustomViewContent;
 
   const getIsActiveKey = (legendDataKey: string) =>
     activeDataKeys.length === 0 ||
@@ -197,7 +211,7 @@ export const CartesianChart = ({
       : data;
   };
 
-  const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType];
+  const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType as CartesianChartType];
   const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
   const chartDataConfig =
     Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
@@ -226,13 +240,14 @@ export const CartesianChart = ({
               valueType={valueType}
               labelType={labelType}
               periodGranularity={viewContent.periodGranularity}
-              chartConfig={chartConfig}
+              chartConfig={chartConfig as BaseChartConfig}
               presentationOptions={presentationOptions}
               chartType={defaultChartType}
             />
           }
         />
         {hasLegend && isEnlarged && (
+          // @ts-ignore
           <Legend
             {...getLegendAlignment(legendPosition, isExporting)}
             content={getCartesianLegend({
@@ -253,8 +268,7 @@ export const CartesianChart = ({
 
             return Chart({
               valueType,
-              // @ts-ignore
-              ...chartConfig[dataKey],
+              ...chartConfig[dataKey as keyof CartesianChartConfig],
               chartConfig,
               dataKey,
               isExporting,
@@ -264,6 +278,7 @@ export const CartesianChart = ({
               exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
+        {/* @ts-ignore */}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
         {defaultChartType === Bar && data.length > 20 && !isExporting && isEnlarged && (
           <Brush

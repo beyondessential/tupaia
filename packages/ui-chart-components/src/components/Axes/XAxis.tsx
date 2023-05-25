@@ -128,7 +128,6 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   const getXAxisPadding = () => {
     const hasBars =
       chartType === Bar ||
-      // @ts-ignore
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
 
     if (hasBars && data.length > 1 && isTimeSeries) {

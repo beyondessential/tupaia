@@ -86,7 +86,6 @@ const renderYAxisLabel = (
 const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
   if (valueType === 'number' || valueType === undefined) {
-    // @ts-ignore
     const values = data.map(item => dataKeys.map(key => item[key])).flat();
     const maxValue = Math.max(...values);
 
