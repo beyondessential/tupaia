@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
+import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -23,6 +24,8 @@ const FileName = styled.span`
   color: ${props => props.theme.palette.text.secondary};
   margin-left: 0.8rem;
 `;
+const FileUploadWrapper = styled.div``;
+const FileUploadContainer = styled(FlexStart)``;
 
 interface FileUploadFieldProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>, fileName?: string) => void;
@@ -30,6 +33,8 @@ interface FileUploadFieldProps {
   fileName: string;
   multiple: boolean;
   textOnButton: string;
+  label?: string;
+  tooltip?: string;
 }
 
 export const FileUploadField = ({
@@ -38,6 +43,8 @@ export const FileUploadField = ({
   fileName = 'No File chosen',
   multiple = false,
   textOnButton,
+  label,
+  tooltip,
 }: FileUploadFieldProps) => {
   const inputEl = useRef<HTMLInputElement | null>(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
@@ -56,20 +63,23 @@ export const FileUploadField = ({
   };
 
   return (
-    <FlexStart as="label" htmlFor={name}>
-      <HiddenFileInput
-        ref={inputEl}
-        id={name}
-        name={name}
-        type="file"
-        onChange={handleChange}
-        value=""
-        multiple={multiple}
-      />
-      <GreyButton component="span" startIcon={<SaveAlt />}>
-        {text}
-      </GreyButton>
-      {fileName && <FileName>{fileName}</FileName>}
-    </FlexStart>
+    <FileUploadWrapper as="label" htmlFor={name}>
+      <InputLabel label={label} tooltip={tooltip} as="span" />
+      <FileUploadContainer>
+        <HiddenFileInput
+          ref={inputEl}
+          id={name}
+          name={name}
+          type="file"
+          onChange={handleChange}
+          value=""
+          multiple={multiple}
+        />
+        <GreyButton component="span" startIcon={<SaveAlt />}>
+          {text}
+        </GreyButton>
+        {fileName && <FileName>{fileName}</FileName>}
+      </FileUploadContainer>
+    </FileUploadWrapper>
   );
 };

@@ -30,6 +30,8 @@ import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
 import { MapSection } from '../../../containers/mobile/MapSection';
+import { useCustomLandingPages } from '../../LandingPage/useCustomLandingPages';
+import { LandingPage } from '../../LandingPage/LandingPage';
 
 const RootContainer = styled(StyleRoot)`
   min-height: 100vh;
@@ -109,12 +111,16 @@ const RootScreen = ({
   // overfill and become scrollable
   const headerRef = useRef();
   const [headerHeight, setHeaderHeight] = useState(0);
+  const { isCustomLandingPage } = useCustomLandingPages();
   const updateHeaderHeight = () => {
+    if (isCustomLandingPage) return;
     setHeaderHeight(headerRef.current.clientHeight);
   };
   useEffect(() => {
     updateHeaderHeight();
-  });
+  }, [isCustomLandingPage]);
+
+  if (isCustomLandingPage) return <LandingPage />;
 
   return (
     <RootContainer>

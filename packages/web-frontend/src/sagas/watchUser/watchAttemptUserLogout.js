@@ -1,5 +1,11 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { ATTEMPT_LOGOUT, fetchUserLogoutError, fetchUserLogoutSuccess } from '../../actions';
+import {
+  ATTEMPT_LANDING_PAGE_LOGOUT,
+  ATTEMPT_LOGOUT,
+  fetchUserLogoutError,
+  fetchUserLogoutSuccess,
+  fetchLandingPageLogoutSuccess,
+} from '../../actions';
 import { request } from '../../utils';
 
 /**
@@ -20,4 +26,19 @@ function* attemptUserLogout() {
 
 export function* watchAttemptUserLogout() {
   yield takeLatest(ATTEMPT_LOGOUT, attemptUserLogout);
+}
+
+// Landing pages
+
+function* attemptLandingPageLogout() {
+  const requestResourceUrl = 'logout';
+  try {
+    yield call(request, requestResourceUrl, fetchUserLogoutError);
+    yield put(fetchLandingPageLogoutSuccess());
+  } catch (error) {
+    yield put(error.errorFunction(error));
+  }
+}
+export function* watchAttemptLandingPageLogout() {
+  yield takeLatest(ATTEMPT_LANDING_PAGE_LOGOUT, attemptLandingPageLogout);
 }
