@@ -41,7 +41,7 @@
         "@mui/types": "^7.2.4",
         "@storybook/react": "^6.3.9",
         "@types/jest": "^29.5.1",
-        "@types/leaflet": "^1.9.3",
+        "@types/leaflet": "^1.7.1",
         "@types/react": "^18.2.7",
         "@types/react-dom": "^18.2.4",
         "@types/styled-components": "^5.1.26"

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
+import { LatLngBoundsLiteral } from 'leaflet';
 
 // Note: There's a little bit of a hack going on here, the bounds[0] for explore are actually [6.5, 110]
 // However in order to trigger the map to re-render we set them slightly adjusted as [6.5001, 110]
@@ -10,7 +11,7 @@
 export const DEFAULT_BOUNDS = [
   [6.5001, 110],
   [-40, 204.5],
-];
+] as LatLngBoundsLiteral;
 
 export const MAPBOX_TOKEN =
   'pk.eyJ1Ijoic3Vzc29sIiwiYSI6ImNqNHMwOW02MzFhaGIycXRjMnZ1dXFlN2gifQ.1sAg5w7hYU7e3LtJM0-hSg';

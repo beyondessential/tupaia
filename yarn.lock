@@ -5886,7 +5886,7 @@ __metadata:
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/jest": ^29.5.1
-    "@types/leaflet": ^1.9.3
+    "@types/leaflet": ^1.7.1
     "@types/react": ^18.2.7
     "@types/react-dom": ^18.2.4
     "@types/styled-components": ^5.1.26
@@ -6506,7 +6506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/leaflet@npm:^1.9.3":
+"@types/leaflet@npm:^1.7.1":
   version: 1.9.3
   resolution: "@types/leaflet@npm:1.9.3"
   dependencies:

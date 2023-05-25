@@ -16,18 +16,30 @@
  * complexity.
  */
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode } from 'react';
 import styled from 'styled-components';
-import { MapContainer as LeafletMapContainer } from 'react-leaflet';
+import { MapContainer as LeafletMapContainer, MapContainerProps } from 'react-leaflet';
+import { LatLngBoundsExpression, Map as LeafletMapInterface } from 'leaflet';
 import { LeafletStyles } from './LeafletStyles';
 import { DEFAULT_BOUNDS } from '../constants';
 
-const Map = styled(LeafletMapContainer)`
+interface LeafletMapProps extends MapContainerProps {
+  onPositionChanged?: (
+    center: MapContainerProps['center'],
+    bounds: MapContainerProps['bounds'],
+    zoom: MapContainerProps['zoom'],
+  ) => void;
+  shouldSnapToPosition?: boolean;
+}
+
+type Bounds = LeafletMapProps['bounds'];
+
+const Map = styled(LeafletMapContainer)<MapContainerProps>`
   ${LeafletStyles};
 `;
 
-function arePositionsEqual(a, b) {
+// Don't use the Leaflet 'bounds' type here as we are referring to only array type expressions
+function arePositionsEqual(a: number[], b: number[]) {
   if (a && b) {
     // if both centers are defined, equal if the position matches
     return a[0] === b[0] && a[1] === b[1];
@@ -36,7 +48,8 @@ function arePositionsEqual(a, b) {
   return a === b;
 }
 
-function areBoundsEqual(a, b) {
+// Don't use the Leaflet 'bounds' type here as we are referring to only array type expressions
+function areBoundsEqual(a: number[][], b: number[][]) {
   if (a && b) {
     return arePositionsEqual(a[0], b[0]) && arePositionsEqual(a[1], b[1]);
   }
@@ -44,12 +57,36 @@ function areBoundsEqual(a, b) {
   return a === b;
 }
 
-function areBoundsValid(b) {
+function areBoundsValid(b: Bounds) {
   return Array.isArray(b) && b.length === 2;
 }
 
-export class LeafletMap extends Component {
-  constructor(props) {
+export class LeafletMap extends Component<LeafletMapProps> {
+  map: LeafletMapInterface | null;
+
+  zooming: boolean;
+
+  moving: boolean;
+
+  lat: number;
+
+  lng: number;
+
+  zoom: number;
+
+  lastSentLat: number | undefined;
+
+  lastSentLng: number | undefined;
+
+  lastSentZoom: number | undefined;
+
+  initialCenter: LeafletMapProps['center'];
+
+  initialBounds: LeafletMapProps['bounds'];
+
+  initialZoom: LeafletMapProps['zoom'];
+
+  constructor(props: LeafletMapProps) {
     super(props);
 
     // Declare some member variables to help keep track of what's going on
@@ -90,7 +127,7 @@ export class LeafletMap extends Component {
     window.addEventListener('resize', () => this.forceUpdate());
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = (prevProps: LeafletMapProps) => {
     const { center, bounds, zoom } = this.props;
     if (this.map && this.requiresMoveAnimation(prevProps)) {
       if (bounds) {
@@ -101,17 +138,17 @@ export class LeafletMap extends Component {
     }
   };
 
-  attachEvents = map => {
-    map.on('movestart', event => {
-      this.onMoveStart(event);
+  attachEvents = (map: LeafletMapInterface) => {
+    map.on('movestart', () => {
+      this.onMoveStart();
     });
 
     map.on('moveend', event => {
       this.onMoveEnd(event);
     });
 
-    map.on('zoomstart', event => {
-      this.onZoomStart(event);
+    map.on('zoomstart', () => {
+      this.onZoomStart();
     });
 
     map.on('zoomend', event => {
@@ -119,7 +156,7 @@ export class LeafletMap extends Component {
     });
   };
 
-  captureMap = map => {
+  captureMap = (map: LeafletMapInterface) => {
     this.map = map;
     const center = this.map.getCenter();
     this.zoom = this.map.getZoom();
@@ -133,7 +170,7 @@ export class LeafletMap extends Component {
     this.zooming = true;
   };
 
-  onZoomEnd = event => {
+  onZoomEnd = (event: any) => {
     this.zoom = event.target.getZoom();
 
     this.zooming = false;
@@ -144,7 +181,7 @@ export class LeafletMap extends Component {
     this.moving = true;
   };
 
-  onMoveEnd = event => {
+  onMoveEnd = (event: any) => {
     const center = event.target.getCenter();
     this.lat = center.lat;
     this.lng = center.lng;
@@ -166,37 +203,38 @@ export class LeafletMap extends Component {
 
       const { onPositionChanged } = this.props;
       if (onPositionChanged) {
-        onPositionChanged({ lat, lng }, this.map.getBounds(), this.zoom);
+        onPositionChanged({ lat, lng }, this.map?.getBounds(), this.zoom);
       }
     }
 
     this.refreshLayers();
   };
 
-  flyToPoint = (center, zoom) => {
+  flyToPoint = (center: LeafletMapProps['center'], zoom: LeafletMapProps['zoom']) => {
     if (!center) return;
-    this.map.setView(center, zoom, { animate: true });
+    this.map?.setView(center, zoom, { animate: true });
   };
 
-  flyToBounds = bounds => {
+  flyToBounds = (bounds: LatLngBoundsExpression) => {
     if (!areBoundsValid(bounds)) return;
-    this.map.fitBounds(bounds, {
+    this.map?.fitBounds(bounds, {
       animate: true,
     });
   };
 
-  requiresMoveAnimation = prevProps => {
-    const { bounds, center, zoom, shouldSnapToPosition } = this.props;
+  requiresMoveAnimation = (prevProps: LeafletMapProps) => {
+    const { bounds, center, zoom, shouldSnapToPosition = false } = this.props;
 
     if (shouldSnapToPosition) {
       if (prevProps.zoom !== zoom) {
         return true;
       }
       if (bounds) {
-        return !areBoundsEqual(bounds, prevProps.bounds);
+        // recast to number[][] to avoid typescript error, since the functions above are only handling array
+        return !areBoundsEqual(bounds as number[][], prevProps.bounds as number[][]);
       }
       if (center) {
-        return !arePositionsEqual(center, prevProps.center);
+        return !arePositionsEqual(center as number[], prevProps.center as number[]);
       }
     }
     return false;
@@ -221,7 +259,7 @@ export class LeafletMap extends Component {
       <Map
         {...this.props} // pass props down to react-leaflet
         zoomControl={false}
-        whenCreated={map => {
+        whenCreated={(map: LeafletMapInterface) => {
           this.captureMap(map);
           this.attachEvents(map);
           if (this.props.whenCreated) {
@@ -240,24 +278,3 @@ export class LeafletMap extends Component {
     );
   };
 }
-
-LeafletMap.propTypes = {
-  bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  children: PropTypes.node.isRequired,
-  onClick: PropTypes.func,
-  onPositionChanged: PropTypes.func,
-  shouldSnapToPosition: PropTypes.bool,
-  zoom: PropTypes.number,
-  whenCreated: PropTypes.func,
-};
-
-LeafletMap.defaultProps = {
-  bounds: null,
-  center: null,
-  onClick: () => {},
-  onPositionChanged: () => {},
-  zoom: null,
-  shouldSnapToPosition: false,
-  whenCreated: null,
-};
