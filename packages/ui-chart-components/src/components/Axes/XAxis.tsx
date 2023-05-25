@@ -131,7 +131,6 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   const getXAxisPadding = () => {
     const hasBars =
       chartType === Bar ||
-      // @ts-ignore
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
 
     if (hasBars && data.length > 1 && isTimeSeries) {
@@ -161,7 +160,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   return (
     <XAxisComponent
       dataKey="name"
-      // @ts-ignore
+      // @ts-ignore recharts XAxisProps is nat handling receiving undefined as a value
       label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}

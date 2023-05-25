@@ -19,7 +19,7 @@ const ReferenceLineLabel = ({
   referenceLineLabel: string;
   isExporting?: boolean;
 }) => {
-  if (referenceLineLabel === undefined) return null;
+  if (referenceLineLabel === undefined) return undefined;
   return (
     <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />
   );
@@ -43,9 +43,9 @@ const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
   Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
 interface ChartConfig extends BaseChartConfig {
-  referenceValue: string | number;
-  yAxisOrientation: string | number;
-  referenceLabel: string | number;
+  referenceValue?: string | number;
+  yAxisOrientation?: string | number;
+  referenceLabel?: string | number;
 }
 
 function isChartConfig(config: ChartConfig | {}): config is ChartConfig {
@@ -78,7 +78,6 @@ const ValueReferenceLine = ({
     <ReferenceLine
       stroke={isExporting ? '#000000' : '#ffffff'}
       strokeDasharray="3 3"
-      // @ts-ignore
       label={ReferenceLineLabel({
         referenceLineLabel: referenceLine.referenceLineLabel,
         isExporting,
@@ -89,18 +88,17 @@ const ValueReferenceLine = ({
 };
 
 interface ReferenceLineProps {
-  viewContent: ViewContent<ChartConfig>;
+  viewContent: ViewContent;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
 
-const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
+const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
   const { valueType, data, presentationOptions } = viewContent;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
-  // @ts-ignore
-  const average = data.reduce((acc: number, row: DataProps) => acc + row.value, 0) / data.length;
+  const average = data.reduce((acc: number, row) => acc + (row.value as number), 0) / data.length;
 
   if (!average || shouldHideReferenceLine) {
     return null;
@@ -115,8 +113,6 @@ const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }: Referenc
           fill={TUPAIA_ORANGE}
         />
       }
-      // @ts-ignore
-      isAnimationActive={isEnlarged && !isExporting}
     />
   );
 };

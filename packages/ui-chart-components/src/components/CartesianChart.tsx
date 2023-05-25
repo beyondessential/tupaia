@@ -271,8 +271,7 @@ export const CartesianChart = ({
               exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
-        {/* @ts-ignore */}
-        {ReferenceLines({ viewContent, isExporting, isEnlarged })}
+        {ReferenceLines({ viewContent: viewContent as ViewContent, isExporting, isEnlarged })}
         {defaultChartType === Bar && data.length > 20 && !isExporting && isEnlarged && (
           <Brush
             dataKey="name"

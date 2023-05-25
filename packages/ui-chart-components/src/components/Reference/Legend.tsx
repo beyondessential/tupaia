@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { formatDataValueByType } from '@tupaia/utils';
-import { LegendPosition, ViewContent, isPieChartConfig } from '../../types';
+import { LegendPosition, ViewContent } from '../../types';
 import { isMobile } from '../../utils';
 import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
 
@@ -101,6 +101,10 @@ const Box = styled.span`
 const Text = styled.span`
   line-height: 1.4;
 `;
+
+function isPieChartConfig(config: PieChartConfig | {}): config is PieChartConfig {
+  return (config as PieChartConfig).chartType === 'pie';
+}
 
 const getPieLegendDisplayValue = (
   chartConfig: PieChartConfig | {},

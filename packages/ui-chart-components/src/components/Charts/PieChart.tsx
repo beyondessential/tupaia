@@ -14,6 +14,8 @@ import {
   ResponsiveContainer,
   Tooltip,
   TooltipProps,
+  LayoutType,
+  LegendProps,
 } from 'recharts';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
@@ -128,7 +130,7 @@ export const PieChart = ({
     }, 50);
   }, []);
 
-  const handleMouseEnter = (event: React.MouseEvent, index: number) => {
+  const handleMouseEnter = (event: any, index: number) => {
     setActiveIndex(index);
   };
 
@@ -169,6 +171,8 @@ export const PieChart = ({
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged);
 
+  const { layout, verticalAlign, align } = getLegendAlignment(legendPosition, isExporting);
+
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
       {/* @ts-ignore */}
@@ -197,7 +201,9 @@ export const PieChart = ({
         </Pie>
         <Tooltip content={makeCustomTooltip(viewContent)} />
         <Legend
-          {...getLegendAlignment(legendPosition, isExporting)}
+          layout={layout as LegendProps['layout']}
+          verticalAlign={verticalAlign as LegendProps['verticalAlign']}
+          align={align as LegendProps['align']}
           content={getPieLegend({
             chartConfig: viewContent.chartConfig as PieChartConfig,
             isEnlarged,
@@ -205,9 +211,8 @@ export const PieChart = ({
             legendPosition,
             viewContent,
           })}
-          // @ts-ignore
-          onMouseOver={handleMouseEnter}
-          onMouseOut={handleMouseOut}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseOut}
         />
       </BasePieChart>
     </ResponsiveContainer>
