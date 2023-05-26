@@ -6,15 +6,12 @@
 import React from 'react';
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
-
-const BaseTextField = (props: TextFieldProps) => (
-  <MuiTextField fullWidth {...props} variant="outlined" />
-);
+import { InputLabel } from './InputLabel';
 
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
 
-export const TextField = styled(BaseTextField)<TextFieldProps>`
+const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   margin-bottom: 1.2rem;
   cursor: auto;
 
@@ -90,6 +87,7 @@ export const TextField = styled(BaseTextField)<TextFieldProps>`
     font-size: 0.9375rem;
     line-height: 1.125rem;
     transform: none;
+    display: flex;
   }
 
   // Adornments
@@ -99,6 +97,9 @@ export const TextField = styled(BaseTextField)<TextFieldProps>`
 
   .MuiInputAdornment-positionStart {
     margin-right: 0;
+    .MuiTypography-body1 {
+      padding-left: 0.5rem;
+    }
   }
 
   .MuiInputBase-inputAdornedStart,
@@ -130,3 +131,18 @@ export const TextField = styled(BaseTextField)<TextFieldProps>`
     padding: 10px;
   }
 `;
+
+export const TextField = ({
+  label = '',
+  tooltip,
+  ...props
+}: TextFieldProps & {
+  tooltip?: string;
+}) => (
+  <StyledTextField
+    fullWidth
+    {...props}
+    variant="outlined"
+    label={<InputLabel label={label} tooltip={tooltip} as="span" />}
+  />
+);

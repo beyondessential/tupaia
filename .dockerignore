@@ -22,6 +22,7 @@ dump.sql
 /snapshots.js
 .idea
 packages/.vscode/settings.json
+packages/devops/docker
 **/testRequests/*.http
 *:Zone.Identifier
 

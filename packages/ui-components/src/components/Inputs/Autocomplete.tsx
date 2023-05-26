@@ -62,6 +62,7 @@ interface AutocompleteProps extends BaseAutocompleteProps {
   inputRef?: any;
   name?: string;
   defaultValue?: any;
+  tooltip?: string;
 }
 
 export const Autocomplete = ({
@@ -85,6 +86,7 @@ export const Autocomplete = ({
   inputRef,
   name,
   defaultValue,
+  tooltip,
 }: AutocompleteProps) => (
   <StyledAutocomplete
     id={id}
@@ -106,6 +108,7 @@ export const Autocomplete = ({
       <TextField
         {...(params as any)}
         label={label}
+        tooltip={tooltip}
         name={name}
         placeholder={placeholder}
         error={error}
