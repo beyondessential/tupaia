@@ -80,7 +80,7 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup }
   if (!survey) {
     throw new DatabaseError(`Survey required`);
   }
-  const { code: surveyCode } = survey;
+  const { name: surveyName } = survey;
 
   const workbook = xlsx.readFile(file.path);
 
@@ -89,9 +89,9 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup }
   }
   const [firstTab] = Object.entries(workbook.Sheets);
   const [tabName, sheet] = firstTab;
-  if (tabName !== surveyCode) {
+  if (tabName !== surveyName) {
     throw new ImportValidationError(
-      `Spreadsheet tab "${tabName}" does not match given survey code "${surveyCode}", are you sure this is the right spreadsheet?`,
+      `Spreadsheet tab "${tabName}" does not match given survey name "${surveyName}", are you sure this is the right spreadsheet?`,
     );
   }
 
