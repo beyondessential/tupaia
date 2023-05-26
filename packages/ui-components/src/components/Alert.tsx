@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { FC } from 'react';
+import React from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
@@ -26,20 +26,18 @@ const StyledAlert = styled(MuiAlert)`
   }
 `;
 
-const customIconMapping = {
-  success: <CheckCircle />,
-  error: <Warning />,
-  warning: <Warning />,
-};
-
-export const Alert: FC<AlertProps> = ({
+export const Alert = ({
   variant = 'filled',
   severity = 'success',
-  iconMapping = customIconMapping,
+  iconMapping = {
+    success: <CheckCircle />,
+    error: <Warning />,
+    warning: <Warning />,
+  },
   ...props
-}) => {
-  return <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />;
-};
+}: AlertProps) => (
+  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+);
 
 const StyledSmallAlert = styled(StyledAlert)`
   font-size: 0.875rem;
@@ -54,11 +52,17 @@ const StyledSmallAlert = styled(StyledAlert)`
   }
 `;
 
-export const SmallAlert: FC<AlertProps> = ({
+export const SmallAlert = ({
   variant = 'filled',
   severity = 'success',
-  iconMapping = customIconMapping,
+
+  iconMapping = {
+    success: <CheckCircle fontSize="inherit" />,
+    error: <Warning fontSize="inherit" />,
+    warning: <Warning fontSize="inherit" />,
+  },
+
   ...props
-}) => (
+}: AlertProps) => (
   <StyledSmallAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
 );
