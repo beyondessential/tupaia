@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { usePaginatedQuery, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { get } from '../../api';
 
 const COMMON_QUERY_OPTIONS = {
@@ -44,11 +44,12 @@ export const useReport = (endpoint, apiOptions = {}, queryOptions = {}) => {
  * @param queryOptions react-query options
  */
 export const usePaginatedReport = (endpoint, apiOptions = {}, queryOptions = {}) => {
-  const query = usePaginatedQuery([endpoint, apiOptions.params], () => get(endpoint, apiOptions), {
+  const query = useQuery([endpoint, apiOptions.params], () => get(endpoint, apiOptions), {
     ...COMMON_QUERY_OPTIONS,
     ...queryOptions,
+    keepPreviousData: true,
   });
-  const data = query?.resolvedData?.data?.results ?? [];
+  const data = query?.data?.data?.results ?? [];
 
   return { ...query, data };
 };

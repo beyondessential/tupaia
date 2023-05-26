@@ -28,6 +28,24 @@ export const Simple = () => {
         }}
         name="file-upload"
         fileName={fileName}
+        label="File Upload"
+      />
+    </Container>
+  );
+};
+
+export const SimpleWithTooltip = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+        label="File Upload"
+        tooltip=".png and .jpg files only"
       />
     </Container>
   );

@@ -13,6 +13,7 @@ import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
 import { ModalContentProvider } from '../widgets';
 import { UsedBy } from '../usedBy/UsedBy';
+import { getExplodedFields } from '../utilities';
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
@@ -48,7 +49,9 @@ export const EditModalComponent = ({
   saveButtonText,
   extraDialogProps,
 }) => {
-  const fieldsBySource = keyBy(fields, 'source');
+  // key the fields by their source so we can easily find the field to edit. Use the exploded fields so that any subfields are placed into the top level of the array
+  const fieldsBySource = keyBy(getExplodedFields(fields), 'source');
+
   // Files cannot be stored in redux (https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions)
   // So instead we keep a map of fieldKey -> File, and store only the filename in redux.
   const [files, setFiles] = useState({});

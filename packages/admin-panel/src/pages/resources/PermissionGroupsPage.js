@@ -6,11 +6,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { prettyArray } from '../../utilities';
 
 const COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
+  },
+  {
+    Header: 'Ancestors',
+    source: 'ancestors',
+    filterable: false,
+    sortable: false,
+    // eslint-disable-next-line react/prop-types
+    Cell: ({ value: ancestors }) => (ancestors.length > 0 ? prettyArray(ancestors) : <ul> - </ul>),
+    accessor: ({ ancestors }) => ancestors.map(a => a.name).reverse(),
   },
 ];
 
@@ -20,7 +30,10 @@ const CREATE_CONFIG = {
     title: 'Edit Permission Group',
     editEndpoint: 'permissionGroups',
     fields: [
-      ...COLUMNS,
+      {
+        Header: 'Name',
+        source: 'name',
+      },
       {
         Header: 'Parent',
         source: 'parent_id',

@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Assignment, InsertChart, PeopleAlt, Storage } from '@material-ui/icons';
+import { Assignment, InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
 import { TabsToolbar } from '@tupaia/ui-components';
 import {
   LogoutPage,
@@ -25,6 +25,8 @@ import {
   UsersPage,
   PermissionsPage,
   EntitiesPage,
+  ExternalDatabaseConnectionsPage,
+  DataTablesPage,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -129,6 +131,11 @@ const getRoutes = (adminUrl, translate) => {
           to: '/map-overlay-group-relations',
           component: MapOverlayGroupRelationsPage,
         },
+        {
+          label: translate('admin.dataTables'),
+          to: '/dataTables',
+          component: DataTablesPage,
+        },
       ],
     },
     {
@@ -157,6 +164,18 @@ const getRoutes = (adminUrl, translate) => {
           label: translate('admin.entities'),
           to: '',
           component: EntitiesPage,
+        },
+      ],
+    },
+    {
+      label: translate('admin.externalData'),
+      to: `${adminUrl}/external-database-connections`,
+      icon: <Language />,
+      tabs: [
+        {
+          label: translate('admin.externalDatabaseConnections'),
+          to: '',
+          component: ExternalDatabaseConnectionsPage,
         },
       ],
     },

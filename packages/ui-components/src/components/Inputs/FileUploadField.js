@@ -6,11 +6,11 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
-import MuiFormHelperText from '@material-ui/core/FormHelperText';
-import { InputLabel } from '@material-ui/core';
+import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -27,12 +27,8 @@ const FileName = styled.span`
   margin-left: 0.8rem;
 `;
 
-const StyledInputLabel = styled(InputLabel)`
-  &.MuiFormLabel-root {
-    font-size: 15px;
-    margin-bottom: 5px;
-  }
-`;
+const FileUploadWrapper = styled.div``;
+const FileUploadContainer = styled(FlexStart)``;
 
 export const FileUploadField = ({
   onChange,
@@ -41,6 +37,7 @@ export const FileUploadField = ({
   multiple,
   textOnButton,
   label,
+  tooltip,
   helperText,
   error,
 }) => {
@@ -61,9 +58,9 @@ export const FileUploadField = ({
   };
 
   return (
-    <>
-      {label && <StyledInputLabel>{label}</StyledInputLabel>}
-      <FlexStart as="label" htmlFor={name}>
+    <FileUploadWrapper as="label" htmlFor={name}>
+      <InputLabel label={label} tooltip={tooltip} as="span" />
+      <FileUploadContainer>
         <HiddenFileInput
           ref={inputEl}
           id={name}
@@ -77,29 +74,31 @@ export const FileUploadField = ({
           {text}
         </GreyButton>
         {fileName && <FileName>{fileName}</FileName>}
-      </FlexStart>
+      </FileUploadContainer>
       {helperText && <MuiFormHelperText error={error}>{helperText}</MuiFormHelperText>}
-    </>
+    </FileUploadWrapper>
   );
 };
 
 FileUploadField.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  helperText: PropTypes.string,
-  error: PropTypes.bool,
   fileName: PropTypes.string,
   textOnButton: PropTypes.string,
   multiple: PropTypes.bool,
+  label: PropTypes.string,
+  tooltip: PropTypes.string,
+  helperText: PropTypes.string,
+  error: PropTypes.bool,
 };
 
 FileUploadField.defaultProps = {
   onChange: () => {},
-  label: null,
-  helperText: null,
-  error: false,
   fileName: 'No File chosen',
   multiple: false,
   textOnButton: null,
+  label: '',
+  tooltip: '',
+  helperText: null,
+  error: false,
 };

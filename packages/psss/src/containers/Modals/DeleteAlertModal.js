@@ -20,7 +20,7 @@ const STATUS = {
 
 export const DeleteAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
-  const [deleteAlert, { error }] = useDeleteAlert(alertId);
+  const { mutate: deleteAlert, error } = useDeleteAlert(alertId);
 
   const handleDelete = useCallback(async () => {
     setStatus(STATUS.LOADING);

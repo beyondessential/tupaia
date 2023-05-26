@@ -13,7 +13,7 @@ export const registerInputField = (type, Component) => {
 };
 
 const getInputType = ({ options, optionsEndpoint, type }) => {
-  if (options) {
+  if (options && type !== 'radio') {
     return 'enum';
   }
   if (optionsEndpoint) {
