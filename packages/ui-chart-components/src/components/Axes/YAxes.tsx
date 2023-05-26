@@ -4,13 +4,19 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { YAxis as YAxisComponent } from 'recharts';
-import { DARK_BLUE, VALUE_TYPES } from '../../constants';
+import { ValueType } from '@tupaia/types';
+import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
+import { DARK_BLUE } from '../../constants';
+import { LooseObject, ViewContent } from '../../types';
 import { getContrastTextColor } from '../../utils';
 
-const { PERCENTAGE } = VALUE_TYPES;
+interface AxisDomainProps {
+  min: number;
+  max: number;
+  value: any;
+  type: any;
+}
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -31,12 +37,12 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const parseDomainConfig = config => {
+const parseDomainConfig = (config: AxisDomainProps) => {
   switch (config.type) {
     case 'scale':
-      return dataExtreme => dataExtreme * config.value;
+      return (dataExtreme: any) => dataExtreme * config.value;
     case 'clamp':
-      return dataExtreme => {
+      return (dataExtreme: any) => {
         const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
         return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
       };
@@ -47,16 +53,28 @@ const parseDomainConfig = config => {
   }
 };
 
-const getDefaultYAxisDomain = viewContent =>
-  viewContent.valueType === PERCENTAGE ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
+const getDefaultYAxisDomain = (viewContent: ViewContent) =>
+  viewContent.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
-const calculateYAxisDomain = ({ min, max }) => {
+const calculateYAxisDomain = ({
+  min,
+  max,
+}: {
+  min: AxisDomainProps;
+  max: AxisDomainProps;
+}): YAxisProps['domain'] => {
   return [parseDomainConfig(min), parseDomainConfig(max)];
 };
 
-const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
+const containsClamp = ({ min, max }: { min: AxisDomainProps; max: AxisDomainProps }) =>
+  min.type === 'clamp' || max.type === 'clamp';
 
-const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
+const renderYAxisLabel = (
+  label: string,
+  orientation: string,
+  fillColor: string,
+  isEnlarged: boolean,
+) => {
   if (label)
     return {
       value: label,
@@ -65,15 +83,15 @@ const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
       style: { textAnchor: 'middle', fontSize: isEnlarged ? '1em' : '0.8em' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
-  return null;
+  return undefined;
 };
 
 /**
  * Calculate a dynamic width for the YAxis
  */
-const getAxisWidth = (data, dataKeys, valueType) => {
+const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
-  if (valueType === VALUE_TYPES.NUMBER || valueType === undefined) {
+  if (valueType === 'number' || valueType === undefined) {
     const values = data.map(item => dataKeys.map(key => item[key])).flat();
     const maxValue = Math.max(...values);
 
@@ -92,7 +110,13 @@ const getAxisWidth = (data, dataKeys, valueType) => {
   return undefined;
 };
 
-const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlarged }) => {
+const YAxis = ({
+  config = {},
+  viewContent,
+  chartDataConfig,
+  isExporting = false,
+  isEnlarged = false,
+}: any) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
@@ -116,8 +140,9 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
-      allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
+      allowDataOverflow={valueType === 'percentage' || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
+      // @ts-ignore recharts XAxisProps is nat handling receiving undefined as a value
       label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor, isEnlarged)}
       tickFormatter={value =>
         formatDataValueByType(
@@ -135,31 +160,29 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
   );
 };
 
-YAxis.propTypes = {
-  config: PropTypes.object,
-  viewContent: PropTypes.object.isRequired,
-  chartDataConfig: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
+interface YAxesProps {
+  yAxisConfigs: any[];
+  orientation: 'left' | 'right';
+  valueType: string;
+  yName: string;
+}
 
-YAxis.defaultProps = {
-  config: {},
-  isExporting: false,
-  isEnlarged: false,
-};
+export const YAxes = ({
+  viewContent,
+  chartDataConfig,
+  isExporting = false,
+  isEnlarged = false,
+}: any) => {
+  const { chartConfig = {} }: { chartConfig: YAxesProps | {} } = viewContent;
 
-export const YAxes = ({ viewContent, chartDataConfig, isExporting, isEnlarged }) => {
-  const { chartConfig = {} } = viewContent;
-
-  const axisPropsById = {
+  const axisPropsById: { [p: number]: LooseObject } = {
     [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
     [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
   };
 
   Object.entries(chartConfig).forEach(
     ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
-      const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+      const axisId = Y_AXIS_IDS[orientation as 'left' | 'right'] || DEFAULT_Y_AXIS.id;
       axisPropsById[axisId].dataKeys.push(dataKey);
       if (valueType) {
         axisPropsById[axisId].valueType = valueType;
@@ -178,16 +201,4 @@ export const YAxes = ({ viewContent, chartDataConfig, isExporting, isEnlarged })
   return axesProps.length > 0
     ? axesProps.map(props => YAxis({ config: props, ...baseProps }))
     : YAxis(baseProps);
-};
-
-YAxes.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  chartDataConfig: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-YAxes.defaultProps = {
-  isExporting: false,
-  isEnlarged: false,
 };

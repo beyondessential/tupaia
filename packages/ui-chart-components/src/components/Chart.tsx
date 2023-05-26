@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { SmallAlert } from '@tupaia/ui-components';
@@ -17,7 +16,7 @@ import {
   getIsChartData,
   getNoDataString,
 } from '../utils';
-import { CHART_TYPES } from '../constants';
+import { ChartType, ViewContent, LegendPosition } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -44,9 +43,9 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-const removeNonNumericData = data =>
+const removeNonNumericData = (data: any[]) =>
   data.map(dataSeries => {
-    const filteredDataSeries = {};
+    const filteredDataSeries: any = {};
     Object.entries(dataSeries).forEach(([key, value]) => {
       if (!isDataKey(key) || !Number.isNaN(Number(value))) {
         filteredDataSeries[key] = value;
@@ -55,10 +54,10 @@ const removeNonNumericData = data =>
     return filteredDataSeries;
   });
 
-const sortData = data =>
+const sortData = (data: any[]): any[] =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-const getViewContent = viewContent => {
+const getViewContent = (viewContent: ChartProps['viewContent']) => {
   const { chartConfig, data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
   return chartConfig
@@ -70,25 +69,39 @@ const getViewContent = viewContent => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = chartType => {
+const getChartComponent = (chartType: ChartType) => {
   switch (chartType) {
-    case CHART_TYPES.PIE:
+    case ChartType.Pie:
       return PieChart;
-    case CHART_TYPES.GAUGE:
+    case ChartType.Gauge:
       return GaugeChart;
     default:
       return CartesianChart;
   }
 };
 
-export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
+interface ChartProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+  legendPosition?: LegendPosition;
+}
+
+export const Chart = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = true,
+  onItemClick = () => {},
+  legendPosition = 'bottom',
+}: ChartProps) => {
   const { chartType } = viewContent;
 
-  if (!Object.values(CHART_TYPES).includes(chartType)) {
+  if (!Object.values(ChartType).includes(chartType)) {
     return <UnknownChart />;
   }
 
-  if (!getIsChartData(viewContent)) {
+  if (!getIsChartData({ chartType: viewContent.chartType, data: viewContent.data })) {
     return (
       <NoData severity="info" variant="standard">
         {getNoDataString(viewContent)}
@@ -108,24 +121,4 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legen
       legendPosition={legendPosition}
     />
   );
-};
-
-Chart.propTypes = {
-  viewContent: PropTypes.shape({
-    name: PropTypes.string,
-    chartType: PropTypes.string,
-    data: PropTypes.array,
-  }),
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-  legendPosition: PropTypes.string,
-};
-
-Chart.defaultProps = {
-  viewContent: null,
-  isEnlarged: true,
-  isExporting: false,
-  legendPosition: 'bottom',
-  onItemClick: () => {},
 };

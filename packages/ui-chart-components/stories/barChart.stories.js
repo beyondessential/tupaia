@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-import { Chart } from '../src/components/Chart';
+import { Chart } from '../src';
 import { DarkThemeTemplate, LightThemeChartTemplate } from './helpers';
 import viewContent from './data/barChartViewContent.json';
 

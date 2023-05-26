@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
-import { DARK_BLUE, CHART_TYPES } from '../../constants';
+import { DARK_BLUE } from '../../constants';
+import { ChartType, DataProps, ViewContent } from '../../types';
+import { CartesianChartConfig } from '@tupaia/types/src';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -32,20 +33,26 @@ const X_AXIS_PADDING = {
   },
 };
 
-const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
-  if (label && isEnlarged && !isExporting)
+const renderXAxisLabel = (
+  label: string | undefined,
+  fillColor: string | undefined,
+  isEnlarged: boolean,
+  isExporting: boolean,
+) => {
+  if (label && isEnlarged && !isExporting) {
     return {
       value: label,
       fill: fillColor,
       offset: -5,
       position: 'insideBottom',
     };
-  return null;
+  }
+  return undefined;
 };
 
 const BASE_H = 40;
 
-const calculateXAxisHeight = (data, isExporting) => {
+const calculateXAxisHeight = (data: DataProps[], isExporting: boolean) => {
   if (getIsTimeSeries(data)) {
     return BASE_H;
   }
@@ -56,9 +63,15 @@ const calculateXAxisHeight = (data, isExporting) => {
   return BASE_H;
 };
 
-export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
+interface XAxisProps {
+  viewContent: ViewContent<CartesianChartConfig>;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+}
+
+export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: XAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
-  const { BAR, COMPOSED } = CHART_TYPES;
+  const { Bar, Composed } = ChartType;
   const { chartType, chartConfig = {}, data } = viewContent;
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);
@@ -69,7 +82,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     @see https://recharts.org/en-US/api/YAxis
   */
   const getXAxisTickInterval = () => {
-    if (chartType === BAR || chartType === COMPOSED) {
+    if (chartType === Bar || chartType === Composed) {
       if (isTimeSeries) {
         return 'preserveStartEnd';
       }
@@ -80,7 +93,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
-  const formatXAxisTick = tickData => {
+  const formatXAxisTick = (tickData: string) => {
     const { periodGranularity, presentationOptions = {} } = viewContent;
     const { periodTickFormat } = presentationOptions;
 
@@ -89,7 +102,10 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       : tickData;
   };
 
-  const renderTickFirstAndLastLabel = tickProps => {
+  const renderTickFirstAndLastLabel = (tickProps: {
+    index: number;
+    payload: { value: string };
+  }) => {
     const { index, payload } = tickProps;
 
     // Only render first and last ticks labels, the rest just have a tick mark without text
@@ -109,13 +125,13 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     if (isExporting) {
       return renderVerticalTick;
     }
-    return isEnlarged || chartType === BAR ? undefined : renderTickFirstAndLastLabel;
+    return isEnlarged || chartType === Bar ? undefined : renderTickFirstAndLastLabel;
   };
 
   const getXAxisPadding = () => {
     const hasBars =
-      chartType === BAR ||
-      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
+      chartType === Bar ||
+      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
 
     if (hasBars && data.length > 1 && isTimeSeries) {
       const paddingKey = isEnlarged ? 'enlarged' : 'preview';
@@ -127,15 +143,14 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     return { left: 0, right: 10 };
   };
 
-  const renderVerticalTick = tickProps => {
-    const { payload, ...restOfProps } = tickProps;
+  const renderVerticalTick = (tickProps: { payload: { value: string }; x: number; y: number }) => {
+    const { payload, x, y } = tickProps;
 
     return (
       <VerticalTick
-        {...restOfProps}
-        viewContent={viewContent}
+        x={x}
+        y={y}
         payload={{
-          ...payload,
           value: formatXAxisTick(payload.value),
         }}
       />
@@ -145,6 +160,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
+      // @ts-ignore recharts XAxisProps is nat handling receiving undefined as a value
       label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}
@@ -156,15 +172,4 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       {...(isTimeSeries ? AXIS_TIME_PROPS : {})}
     />
   );
-};
-
-XAxis.propTypes = {
-  viewContent: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-XAxis.defaultProps = {
-  isExporting: false,
-  isEnlarged: false,
 };

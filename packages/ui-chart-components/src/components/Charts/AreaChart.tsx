@@ -4,11 +4,24 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Area } from 'recharts';
 import { BLUE } from '../../constants';
 
-export const AreaChart = ({ color, dataKey, yAxisId, isEnlarged, isExporting }) => (
+interface AreaChartProps {
+  color?: string;
+  dataKey: string;
+  yAxisId: string | number;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+}
+
+export const AreaChart = ({
+  color = BLUE,
+  dataKey,
+  yAxisId,
+  isEnlarged = false,
+  isExporting = false,
+}: AreaChartProps) => (
   <Area
     key={dataKey}
     dataKey={dataKey}
@@ -19,17 +32,3 @@ export const AreaChart = ({ color, dataKey, yAxisId, isEnlarged, isExporting }) 
     isAnimationActive={isEnlarged && !isExporting}
   />
 );
-
-AreaChart.propTypes = {
-  dataKey: PropTypes.string.isRequired,
-  yAxisId: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-};
-
-AreaChart.defaultProps = {
-  color: BLUE,
-  isExporting: false,
-  isEnlarged: false,
-};

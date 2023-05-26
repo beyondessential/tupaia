@@ -2,30 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-/**
- * PieChart
- *
- * Renders a recharts PieChart from data provided by viewContent object
- * @prop {object} viewContent An object with the following structure
-   {
-    "type":"chart",
-    "chartType":"pie",
-    "name":"% Stock on Hand",
-    "valueType": "percentage",
-    "presentationOptions": {
-      "sectorKey1": { "color": "#111111", "label": "Satanic" },
-      "sectorKey2": { "color": "#222222", "label": "Nesting" },
-      "sectorKey3": { "color": "#333333", "label": "HelpMe" }
-    },
-    "data":[{ name: "Total value stock consumables", value:24063409.4 },
-            { name: "Total value stock medicines", value:24565440.6 },
-            ...]
-  }
- */
-
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -36,11 +13,16 @@ import {
   Legend,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
+  LayoutType,
+  LegendProps,
 } from 'recharts';
-import { OFF_WHITE, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from '../../constants';
+import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
+import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
+import { PieChartConfig } from '@tupaia/types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -69,7 +51,7 @@ const Text = styled(Typography)`
   color: #333;
 `;
 
-const getLegendAlignment = (legendPosition, isExporting) => {
+const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean) => {
   if (isExporting) {
     return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
@@ -79,7 +61,7 @@ const getLegendAlignment = (legendPosition, isExporting) => {
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getFormattedValue = (viewContent, data) => {
+const getFormattedValue = (viewContent: ViewContent, data: any) => {
   const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
   const { name, value, originalItem } = data;
@@ -88,9 +70,7 @@ const getFormattedValue = (viewContent, data) => {
   return formatDataValueByType({ value, metadata }, valueTypeForLabel);
 };
 
-const makeCustomTooltip = viewContent => props => {
-  const { active, payload } = props;
-
+const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }: TooltipProps) => {
   if (!active || !payload || !payload.length) {
     return null;
   }
@@ -109,21 +89,34 @@ const makeCustomTooltip = viewContent => props => {
   );
 };
 
-const makeLabel = viewContent => props => {
-  const { payload } = props;
+const makeLabel = (viewContent: ViewContent) => ({ payload }: any) => {
   return getFormattedValue(viewContent, payload.payload);
 };
 
-const chartColorAtIndex = (colorArray, index) => colorArray[index % colorArray.length];
+const chartColorAtIndex = (colorArray: string[], index: number) =>
+  colorArray[index % colorArray.length];
 
-const getHeight = (isExporting, isEnlarged) => {
+const getHeight = (isExporting: boolean, isEnlarged: boolean) => {
   if (isExporting) {
     return 420;
   }
   return isEnlarged && isMobile() ? 320 : undefined;
 };
 
-export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
+interface PieChartProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+  legendPosition?: LegendPosition;
+}
+export const PieChart = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = false,
+  onItemClick = () => {},
+  legendPosition = 'bottom',
+}: PieChartProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { presentationOptions, data } = viewContent;
   // eslint-disable-next-line no-unused-vars
@@ -137,7 +130,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
     }, 50);
   }, []);
 
-  const handleMouseEnter = (event, index) => {
+  const handleMouseEnter = (event: any, index: number) => {
     setActiveIndex(index);
   };
 
@@ -145,8 +138,10 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
     setActiveIndex(-1);
   };
 
-  const getPresentationOption = (key, option) =>
-    presentationOptions && presentationOptions[key] && presentationOptions[key][option];
+  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) =>
+    !!presentationOptions &&
+    presentationOptions.hasOwnProperty(key) &&
+    presentationOptions[key as keyof PresentationOptions][option];
 
   const getValidData = () =>
     data
@@ -163,7 +158,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
           originalItem: item,
         };
       })
-      .sort((a, b) => b.value - a.value);
+      .sort((a: any, b: any) => b.value - a.value);
 
   const chartColors = Object.values(CHART_COLOR_PALETTE);
   const validData = getValidData();
@@ -172,9 +167,12 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   // about 20px below the visual center when displaying in enlarged mode.
   // This makes the tooltips touch the bottom of the container
   // (and just looks a bit weird). So, bump it up by 20px.
-  const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
+  const offsetStyle =
+    isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : undefined;
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged);
+
+  const { layout, verticalAlign, align } = getLegendAlignment(legendPosition, isExporting);
 
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
@@ -182,13 +180,15 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         <Pie
           dataKey="value"
           data={validData}
-          activeIndex={isExporting ? null : activeIndex}
+          activeIndex={isExporting ? undefined : activeIndex}
           isAnimationActive={!isExporting && isEnlarged}
           onClick={item => {
             onItemClick(item.originalItem);
           }}
           label={
-            isExporting && presentationOptions?.exportWithLabels ? makeLabel(viewContent) : null
+            isExporting && presentationOptions?.exportWithLabels
+              ? makeLabel(viewContent)
+              : undefined
           }
           startAngle={360 + 90}
           endAngle={90}
@@ -202,33 +202,20 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         </Pie>
         <Tooltip content={makeCustomTooltip(viewContent)} />
         <Legend
-          {...getLegendAlignment(legendPosition, isExporting)}
+          layout={layout as LegendProps['layout']}
+          verticalAlign={verticalAlign as LegendProps['verticalAlign']}
+          align={align as LegendProps['align']}
           content={getPieLegend({
-            chartConfig: viewContent.chartConfig,
+            chartConfig: viewContent.chartConfig as PieChartConfig,
             isEnlarged,
             isExporting,
             legendPosition,
             viewContent,
           })}
-          onMouseOver={handleMouseEnter}
-          onMouseOut={handleMouseOut}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseOut}
         />
       </BasePieChart>
     </ResponsiveContainer>
   );
-};
-
-PieChart.propTypes = {
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-  legendPosition: PropTypes.string,
-};
-
-PieChart.defaultProps = {
-  isEnlarged: false,
-  isExporting: false,
-  onItemClick: () => {},
-  legendPosition: 'bottom',
 };

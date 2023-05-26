@@ -2,24 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-/**
- * GaugeChart
- *
- * Renders a recharts GaugeChart from data provided by viewContent object
- * @prop {object} viewContent An object with the following structure
-   {
-    "type":"chart",
-    "chartType":"gauge",
-    "name":"% Stock on Hand",
-    "valueType": "percentage",
-    "color": "#111111",
-    "data":[{ value:0.485 }]
-  }
- */
-
-import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import {
@@ -29,34 +12,51 @@ import {
   ResponsiveContainer,
   Label,
   Text as RechartText,
+  LabelProps,
 } from 'recharts';
-import { VIEW_CONTENT_SHAPE, BLUE, TRANS_BLACK, WHITE } from '../../constants';
+import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
+import { ViewContent } from '../../types';
 
-const Text = styled(RechartText)`
-  font-size: ${p => p.$fontSize};
+interface CustomViewContent extends Omit<ViewContent, 'data'> {
+  data: { value: string | number }[];
+}
+
+interface GaugeChartProps {
+  viewContent: CustomViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+}
+
+const Text = styled(RechartText)<{ $isExporting: boolean }>`
+  font-size: ${({ fontSize }) => fontSize};
   font-weight: bold;
   fill: ${({ theme, $isExporting }) => {
     return theme.palette.type === 'light' || $isExporting ? TRANS_BLACK : WHITE;
   }};
 `;
 
-const getHeight = (isExporting, isEnlarged) => {
+const getHeight = (isExporting?: boolean, isEnlarged?: boolean) => {
   if (isExporting) {
     return 420;
   }
   return isEnlarged && isMobile() ? 320 : undefined;
 };
 
-export const GaugeChart = props => {
-  const { viewContent, isExporting, isEnlarged, onItemClick } = props;
+export const GaugeChart = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = false,
+  onItemClick = () => {},
+}: GaugeChartProps) => {
   const { data, color = BLUE, ...restOfConfigs } = viewContent;
 
   const generateElements = () => {
     const denominator = 0.05;
     const elements = [...data];
     const cellComponents = [<Cell fill={color} />];
-    const numOfElements = Math.floor((1 - data[0].value) / denominator);
+    const numOfElements = Math.floor(1 - (data[0].value as number) / denominator);
 
     for (let i = 0; i < numOfElements; i++) {
       elements.push({ value: denominator });
@@ -73,22 +73,23 @@ export const GaugeChart = props => {
   const innerRadius = 60 * responsiveStyle;
   const outerRadius = innerRadius * 1.4;
 
-  const getLabelContent = useCallback(({ value, x, y, fontSize }) => {
-    const positioningProps = {
-      x,
-      y,
-      textAnchor: 'middle',
-      verticalAnchor: 'middle',
-    };
+  const getLabelContent = ({ value, x, y, fontSize }: LabelProps) => {
     return (
-      <Text {...positioningProps} $fontSize={fontSize} $isExporting={isExporting}>
+      <Text
+        x={x}
+        y={y}
+        verticalAnchor="middle"
+        textAnchor="middle"
+        fontSize={fontSize}
+        $isExporting={isExporting}
+      >
         {value}
       </Text>
     );
-  });
+  };
 
   return (
-    <ResponsiveContainer width="100%" height={height} aspect={isMobile() ? null : 2}>
+    <ResponsiveContainer width="100%" height={height} aspect={isMobile() ? undefined : 2}>
       <BasePieChart>
         <Pie
           cy="70%"
@@ -146,17 +147,4 @@ export const GaugeChart = props => {
       </BasePieChart>
     </ResponsiveContainer>
   );
-};
-
-GaugeChart.propTypes = {
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-};
-
-GaugeChart.defaultProps = {
-  isEnlarged: false,
-  isExporting: false,
-  onItemClick: () => {},
 };
