@@ -108,7 +108,7 @@ export class SurveyEditor {
       throw new DatabaseError('finding permission group');
     }
 
-    // TODO: merge this with EditSurvey/CreateSurvey routes
+    // TODO: merge this with surveyChecker
     const importSurveysPermissionsChecker = async accessPolicy =>
       assertCanImportSurvey(accessPolicy, transactingModels, surveyCode, country_ids);
 
