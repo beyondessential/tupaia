@@ -10,6 +10,7 @@ import {
   SET_PROJECT_DATA,
   FETCH_PROJECTS_ERROR,
   REQUEST_PROJECT_ACCESS,
+  CLEAR_CUSTOM_LANDING_PAGE_DATA,
 } from '../actions';
 
 export function setProject(projectCode) {
@@ -34,5 +35,11 @@ export function setRequestingAccess(project) {
   return {
     type: REQUEST_PROJECT_ACCESS,
     project,
+  };
+}
+
+export function clearCustomLandingPageData() {
+  return {
+    type: CLEAR_CUSTOM_LANDING_PAGE_DATA,
   };
 }

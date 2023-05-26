@@ -9,20 +9,21 @@ import MuiRadio from '@material-ui/core/Radio';
 import MuiRadioGroup from '@material-ui/core/RadioGroup';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import MuiFormControl from '@material-ui/core/FormControl';
-import MuiFormLabel from '@material-ui/core/FormLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import { InputLabel } from './InputLabel';
 
 const FormControl = styled(MuiFormControl)`
   display: block;
   margin-bottom: 1.2rem;
 `;
 
-const FormLabel = styled(MuiFormLabel)`
+const Legend = styled.legend`
   position: relative;
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-bottom: 0.25rem;
   color: ${props => props.theme.palette.text.secondary};
-
+  padding-inline-start: 0;
   &.Mui-focused {
     color: ${props => props.theme.palette.text.secondary};
   }
@@ -75,16 +76,26 @@ export const RadioGroup = ({
   className,
   labelKey,
   valueKey,
+  tooltipKey,
+  tooltip,
+  helperText,
 }) => (
   <FormControl component="fieldset" className={className} color="primary">
-    <FormLabel component="legend">{label}</FormLabel>
-    <StyledRadioGroup aria-label={name} name={name} value={value} onChange={onChange}>
+    <InputLabel as={Legend} label={label} tooltip={tooltip} />
+    {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
+    <StyledRadioGroup name={name} value={value} onChange={onChange}>
       {options.map(option => (
         <FormControlLabel
-          control={<Radio />}
+          control={
+            <Radio
+              InputProps={{
+                'aria-describedby': helperText ? `${name}-helperText` : null,
+              }}
+            />
+          }
           key={option[valueKey].toString()}
           value={option[valueKey]}
-          label={option[labelKey]}
+          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} />}
         />
       ))}
     </StyledRadioGroup>
@@ -100,6 +111,9 @@ RadioGroup.propTypes = {
   className: PropTypes.string,
   labelKey: PropTypes.string,
   valueKey: PropTypes.string,
+  tooltipKey: PropTypes.string,
+  tooltip: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 RadioGroup.defaultProps = {
@@ -107,4 +121,7 @@ RadioGroup.defaultProps = {
   className: null,
   labelKey: 'label',
   valueKey: 'value',
+  tooltipKey: 'tooltip',
+  tooltip: '',
+  helperText: '',
 };

@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
+import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -25,7 +26,18 @@ const FileName = styled.span`
   margin-left: 0.8rem;
 `;
 
-export const FileUploadField = ({ onChange, name, fileName, multiple, textOnButton }) => {
+const FileUploadWrapper = styled.div``;
+const FileUploadContainer = styled(FlexStart)``;
+
+export const FileUploadField = ({
+  onChange,
+  name,
+  fileName,
+  multiple,
+  textOnButton,
+  label,
+  tooltip,
+}) => {
   const inputEl = useRef(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
 
@@ -43,21 +55,24 @@ export const FileUploadField = ({ onChange, name, fileName, multiple, textOnButt
   };
 
   return (
-    <FlexStart as="label" htmlFor={name}>
-      <HiddenFileInput
-        ref={inputEl}
-        id={name}
-        name={name}
-        type="file"
-        onChange={handleChange}
-        value=""
-        multiple={multiple}
-      />
-      <GreyButton component="span" startIcon={<SaveAlt />}>
-        {text}
-      </GreyButton>
-      {fileName && <FileName>{fileName}</FileName>}
-    </FlexStart>
+    <FileUploadWrapper as="label" htmlFor={name}>
+      <InputLabel label={label} tooltip={tooltip} as="span" />
+      <FileUploadContainer>
+        <HiddenFileInput
+          ref={inputEl}
+          id={name}
+          name={name}
+          type="file"
+          onChange={handleChange}
+          value=""
+          multiple={multiple}
+        />
+        <GreyButton component="span" startIcon={<SaveAlt />}>
+          {text}
+        </GreyButton>
+        {fileName && <FileName>{fileName}</FileName>}
+      </FileUploadContainer>
+    </FileUploadWrapper>
   );
 };
 
@@ -67,6 +82,8 @@ FileUploadField.propTypes = {
   fileName: PropTypes.string,
   textOnButton: PropTypes.string,
   multiple: PropTypes.bool,
+  label: PropTypes.string,
+  tooltip: PropTypes.string,
 };
 
 FileUploadField.defaultProps = {
@@ -74,4 +91,6 @@ FileUploadField.defaultProps = {
   fileName: 'No File chosen',
   multiple: false,
   textOnButton: null,
+  label: '',
+  tooltip: '',
 };
