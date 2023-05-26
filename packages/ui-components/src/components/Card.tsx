@@ -7,7 +7,6 @@ import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';
 import Typography, { TypographyProps } from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Alert } from './Alert';
 
 export const Card = styled(MuiCard)`
   margin-bottom: 1rem;
@@ -46,7 +45,6 @@ interface CardHeaderProps {
 
 export const CardHeader = ({ title, label, color = 'initial' }: CardHeaderProps) => (
   <StyledDiv>
-    <Alert severity="infoa">Testing</Alert>
     <HeaderTitle color={color}>{title}</HeaderTitle>
     <HeaderLabel color={color}>{label}</HeaderLabel>
   </StyledDiv>
