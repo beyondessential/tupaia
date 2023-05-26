@@ -20,7 +20,7 @@ const EditorWrapper = styled.div`
   }
 `;
 
-export const Editor = ({ fields, recordData, onEditField, onSetFormFile  }) => {
+export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
     const { setFieldsOnChange, type } = editConfig;
     let updatedValue = inputValue;
