@@ -23,33 +23,30 @@ export type Location = {
   region: PolygonProps['positions'];
 };
 
-// Extend the base TupaiaEntity type with more details about the entity, including leaflet specific formatting
-export type Entity = TupaiaEntity & {
-  region?: PolygonProps['positions'];
-  organisationUnitCode: string;
-  location?: Location;
-};
-
 export type GenericDataItem = {
   [key: string]: any;
   organisationUnitCode?: string;
 };
 
+// Extend the base TupaiaEntity type with more details about the entity, including leaflet specific formatting
+export type Entity = TupaiaEntity &
+  GenericDataItem & {
+    region?: PolygonProps['positions'];
+    location?: Location;
+  };
+
 export type MeasureOrgUnit = GenericDataItem & {
   [key: string]: any;
-  organisationUnitCode?: string;
   isHidden?: boolean;
   color?: Color;
 };
 
 export type MeasureData = MeasureOrgUnit &
   PolygonProps &
-  MarkerProps & {
-    coordinates: PolygonProps['positions'];
-    region?: PolygonProps['positions'];
+  MarkerProps &
+  Entity & {
+    coordinates?: PolygonProps['positions'];
     icon?: string;
-    code?: string;
-    name?: string;
     photoUrl?: string;
     value?: number | string;
   };

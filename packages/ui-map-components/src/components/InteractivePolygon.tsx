@@ -48,7 +48,7 @@ type ParsedPropsResult = {
 };
 
 const parseProps = (
-  organisationUnitCode: string,
+  organisationUnitCode: string | undefined = undefined,
   organisationUnitChildren: GenericDataItem[],
   measureOrgUnits: MeasureOrgUnit[],
   multiOverlayMeasureData: GenericDataItem[],
@@ -93,7 +93,7 @@ interface InteractivePolygonProps {
   multiOverlaySerieses?: Series[];
   multiOverlayMeasureData?: GenericDataItem[];
   permanentLabels?: boolean;
-  onChangeOrgUnit?: (organisationUnitCode: string) => void;
+  onChangeOrgUnit?: (organisationUnitCode?: string) => void;
   area: Entity;
   isActive?: boolean;
   measureOrgUnits?: MeasureOrgUnit[];
