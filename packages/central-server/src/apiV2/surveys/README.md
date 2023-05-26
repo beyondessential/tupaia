@@ -1,16 +1,16 @@
 ## Surveys
 
-The /surveys routes represent a somewhat custom CRUD endpoint on the Survey resource.
+The /surveys routes represent a custom CRUD endpoint on the Survey resource.
 
-The Survey _resource_ model also includes some child _data_ models:
+The Survey _resource model_ also includes some child _data models_:
 - survey_screen
 - survey_screen_component
 - question
 
-Currently, properties of the survey data model are managed normally, and the child data models are managed by:
+Currently, properties of a survey are managed normally, and the child data is managed by:
 - GET: property `surveyQuestions` returns a string value e.g. '16 Questions'
-- PUT: property `surveyQuestions` can be a base64 encoded spreadsheet
-- POST: property `surveyQuestions` can be a base64 encoded spreadsheet
+- PUT: property `surveyQuestions` can be a file
+- POST: property `surveyQuestions` can be a file
 
 In the future we might expand surveyQuestions to actually contain the child data as json, e.g.:
 ```
