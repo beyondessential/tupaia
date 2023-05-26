@@ -204,7 +204,7 @@ const SECTIONS = {
   PROJECTS: {
     type: SECTION_FIELD_TYPE,
     title: 'Project',
-    description: 'Enter project code below. You may enter multiple codes separated by a comma.',
+    description: 'Enter project code below. You may enter multiple codes.',
     fields: [FIELDS.PROJECTS],
   },
 };

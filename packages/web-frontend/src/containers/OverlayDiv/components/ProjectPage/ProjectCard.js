@@ -14,7 +14,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.6rem;
-  height: 20rem;
+  min-height: 20rem;
   border-radius: 5px;
   background: #2e2f33;
   color: white;
