@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   Brush,
+  LegendProps,
 } from 'recharts';
 import { BaseChartConfig, CartesianChartConfig, ValueType } from '@tupaia/types';
 import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
@@ -212,6 +213,8 @@ export const CartesianChart = ({
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged, hasLegend);
 
+  const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
+
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
    * so they are called as functions below
@@ -240,9 +243,10 @@ export const CartesianChart = ({
           }
         />
         {hasLegend && isEnlarged && (
-          // @ts-ignore
           <Legend
-            {...getLegendAlignment(legendPosition, isExporting)}
+            verticalAlign={verticalAlign as LegendProps['verticalAlign']}
+            align={align as LegendProps['align']}
+            layout={layout as LegendProps['layout']}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,

@@ -56,8 +56,7 @@ export const GaugeChart = ({
     const denominator = 0.05;
     const elements = [...data];
     const cellComponents = [<Cell fill={color} />];
-    // @ts-ignore
-    const numOfElements = Math.floor((1 - data[0].value) / denominator);
+    const numOfElements = Math.floor(1 - (data[0].value as number) / denominator);
 
     for (let i = 0; i < numOfElements; i++) {
       elements.push({ value: denominator });

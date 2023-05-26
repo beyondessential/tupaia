@@ -6,7 +6,7 @@
 import React from 'react';
 import { formatDataValueByType } from '@tupaia/utils';
 import { ValueType } from '@tupaia/types';
-import { YAxis as YAxisComponent } from 'recharts';
+import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
 import { DARK_BLUE } from '../../constants';
 import { LooseObject, ViewContent } from '../../types';
 import { getContrastTextColor } from '../../utils';
@@ -56,7 +56,13 @@ const parseDomainConfig = (config: AxisDomainProps) => {
 const getDefaultYAxisDomain = (viewContent: ViewContent) =>
   viewContent.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
-const calculateYAxisDomain = ({ min, max }: { min: AxisDomainProps; max: AxisDomainProps }) => {
+const calculateYAxisDomain = ({
+  min,
+  max,
+}: {
+  min: AxisDomainProps;
+  max: AxisDomainProps;
+}): YAxisProps['domain'] => {
   return [parseDomainConfig(min), parseDomainConfig(max)];
 };
 
@@ -77,7 +83,7 @@ const renderYAxisLabel = (
       style: { textAnchor: 'middle', fontSize: isEnlarged ? '1em' : '0.8em' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
-  return null;
+  return undefined;
 };
 
 /**
@@ -126,7 +132,6 @@ const YAxis = ({
   const width = getAxisWidth(viewContent.data, dataKeys, valueType);
 
   return (
-    // @ts-ignore
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
@@ -137,6 +142,7 @@ const YAxis = ({
       domain={calculateYAxisDomain(yAxisDomain)}
       allowDataOverflow={valueType === 'percentage' || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
+      // @ts-ignore recharts XAxisProps is nat handling receiving undefined as a value
       label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor, isEnlarged)}
       tickFormatter={value =>
         formatDataValueByType(

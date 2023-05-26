@@ -167,7 +167,8 @@ export const PieChart = ({
   // about 20px below the visual center when displaying in enlarged mode.
   // This makes the tooltips touch the bottom of the container
   // (and just looks a bit weird). So, bump it up by 20px.
-  const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
+  const offsetStyle =
+    isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : undefined;
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged);
 
@@ -175,19 +176,19 @@ export const PieChart = ({
 
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
-      {/* @ts-ignore */}
       <BasePieChart style={offsetStyle}>
-        {/* @ts-ignore */}
         <Pie
           dataKey="value"
           data={validData}
-          activeIndex={isExporting ? null : activeIndex}
+          activeIndex={isExporting ? undefined : activeIndex}
           isAnimationActive={!isExporting && isEnlarged}
           onClick={item => {
             onItemClick(item.originalItem);
           }}
           label={
-            isExporting && presentationOptions?.exportWithLabels ? makeLabel(viewContent) : null
+            isExporting && presentationOptions?.exportWithLabels
+              ? makeLabel(viewContent)
+              : undefined
           }
           startAngle={360 + 90}
           endAngle={90}

@@ -35,26 +35,21 @@ export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
     ? createDynamicConfig(restOfConfig as BaseChartConfig, configForAllKeys, data)
     : restOfConfig;
 
-  const addDefaultColors = (config: BaseChartConfig) =>
+  const addDefaultColors = (config: any) =>
     addDefaultColorsToConfig(config, paletteName as ColorPalette, chartType);
 
   const chartConfigs = [baseConfig];
 
-  return (
-    chartConfigs
-      // @ts-ignore
-      .map(sortChartConfigByLegendOrder)
-      // @ts-ignore
-      .map(addDefaultColors)
-      // @ts-ignore
-      .map(setOpacityValues)[0]
-  ); // must remove from array after mapping
+  return chartConfigs
+    .map(sortChartConfigByLegendOrder)
+    .map(addDefaultColors)
+    .map(setOpacityValues)[0]; // must remove from array after mapping
 };
 
 /**
  * Sets numeric values for each chart config opacity
  */
-const setOpacityValues = (chartConfig: BaseChartConfig): BaseChartConfig => {
+const setOpacityValues = (chartConfig: LooseObject) => {
   const newConfig: LooseObject = {};
 
   Object.entries(chartConfig).forEach(([key, configItem], index, array) => {
@@ -114,7 +109,7 @@ const defaultSort = (a: { chartType: 'bar' | 'line' }[], b: { chartType: 'bar' |
 };
 
 // Bad practice to rely on object ordering: https://stackoverflow.com/questions/9179680/is-it-acceptable-style-for-node-js-libraries-to-rely-on-object-key-order
-const sortChartConfigByLegendOrder = (chartConfig: BaseChartConfig) => {
+const sortChartConfigByLegendOrder = (chartConfig: LooseObject) => {
   return Object.entries(chartConfig)
     .sort(defaultSort)
     .sort(([, cfg1], [, cfg2]) => {
@@ -142,10 +137,9 @@ const createDynamicConfig = (
   const keys = new Set(dataKeys);
 
   // Add config to each key
-  const newChartConfig = {};
+  const newChartConfig: LooseObject = {};
   keys.forEach(key => {
-    // @ts-ignore
-    newChartConfig[key] = { ...dynamicChartConfig, ...chartConfig[key] };
+    newChartConfig[key] = { ...dynamicChartConfig, ...chartConfig[key as keyof BaseChartConfig] };
   });
   return newChartConfig;
 };
