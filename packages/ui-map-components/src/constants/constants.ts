@@ -32,11 +32,21 @@ export const TILE_SETS = [
   },
 ];
 
-export const SCALE_TYPES = {
-  PERFORMANCE: 'performance',
-  PERFORMANCE_DESC: 'performanceDesc',
-  NEUTRAL: 'neutral',
-  NEUTRAL_REVERSE: 'neutralReverse',
-  TIME: 'time',
-  GPI: 'gpi',
-};
+export enum SCALE_TYPES {
+  PERFORMANCE = 'performance',
+  PERFORMANCE_DESC = 'performanceDesc',
+  NEUTRAL = 'neutral',
+  NEUTRAL_REVERSE = 'neutralReverse',
+  TIME = 'time',
+  GPI = 'gpi',
+}
+
+export enum MEASURE_TYPES {
+  ICON = 'icon',
+  COLOR = 'color',
+  RADIUS = 'radius',
+  SPECTRUM = 'spectrum',
+  SHADING = 'shading',
+  SHADED_SPECTRUM = 'shaded-spectrum',
+  POPUP_ONLY = 'popup-only',
+}

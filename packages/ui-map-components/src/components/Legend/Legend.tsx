@@ -3,21 +3,16 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import {
-  MEASURE_TYPE_COLOR,
-  MEASURE_TYPE_ICON,
-  MEASURE_TYPE_RADIUS,
-  MEASURE_TYPE_SHADED_SPECTRUM,
-  MEASURE_TYPE_SPECTRUM,
-  MEASURE_TYPE_POPUP_ONLY,
-} from '../../utils';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
+import { MEASURE_TYPES } from '../../constants';
+import { LegendProps as BaseLegendProps, LegendSeriesItem, MeasureType } from '../../types';
 
-const LegendFrame = styled.div`
+const LegendFrame = styled.div<{
+  isDisplayed: boolean;
+}>`
   display: flex;
   width: fit-content;
   padding: 0.6rem;
@@ -39,37 +34,55 @@ const LegendName = styled.div`
 `;
 
 const coloredMeasureTypes = [
-  MEASURE_TYPE_COLOR,
-  MEASURE_TYPE_SPECTRUM,
-  MEASURE_TYPE_SHADED_SPECTRUM,
+  MEASURE_TYPES.COLOR,
+  MEASURE_TYPES.SPECTRUM,
+  MEASURE_TYPES.SHADED_SPECTRUM,
 ];
+
+// This is a workaround for type errors we get when trying to use Array.includes with a subset of a union type. This solution comes from https://github.com/microsoft/TypeScript/issues/51881
+const checkMeasureType = (item: MeasureType, subset: MeasureType[]) =>
+  (subset as ReadonlyArray<MeasureType>).includes(item);
 
 const NullLegend = () => null;
 
-const getLegendComponent = measureType => {
+const getLegendComponent = (measureType: MeasureType) => {
   switch (measureType) {
-    case MEASURE_TYPE_SHADED_SPECTRUM:
-    case MEASURE_TYPE_SPECTRUM:
+    case MEASURE_TYPES.SHADED_SPECTRUM:
+    case MEASURE_TYPES.SPECTRUM:
       return SpectrumLegend;
-    case MEASURE_TYPE_RADIUS:
+    case MEASURE_TYPES.RADIUS:
       return NullLegend;
     default:
       return MarkerLegend;
   }
 };
 
+interface LegendProps extends BaseLegendProps {
+  className?: string;
+  measureInfo: {
+    [mapOverlayCode: string]: {
+      [seriesesKey: string]: LegendSeriesItem[];
+    };
+  };
+  currentMapOverlayCodes: string[];
+  displayedMapOverlayCodes?: string[];
+  seriesesKey?: string;
+  SeriesContainer?: React.ComponentType<any>;
+  SeriesDivider?: React.ComponentType<any>;
+}
+
 export const Legend = React.memo(
   ({
     className,
     measureInfo: baseMeasureInfo,
     setValueHidden,
-    hiddenValues,
+    hiddenValues = {},
     currentMapOverlayCodes,
     displayedMapOverlayCodes,
-    seriesesKey,
-    SeriesContainer,
+    seriesesKey = 'serieses',
+    SeriesContainer = LegendFrame,
     SeriesDivider,
-  }) => {
+  }: LegendProps) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
     }
@@ -78,13 +91,17 @@ export const Legend = React.memo(
       // measure info for mapOverlayCode may not exist when location changes.
       const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
       const serieses = baseSerieses.filter(
-        ({ type, hideFromLegend, values = [], min, max, noDataColour }) => {
+        ({ type, hideFromLegend, values = [], min, max, noDataColour }: LegendSeriesItem) => {
+          const seriesType = type as MeasureType;
           // if type is radius or popup-only, don't create a legend
-          if ([MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type)) return false;
+          if (checkMeasureType(seriesType, [MEASURE_TYPES.RADIUS, MEASURE_TYPES.POPUP_ONLY]))
+            return false;
+
           // if hideFromLegend is true, don't create a legend
           if (hideFromLegend) return false;
+
           // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
-          if ([MEASURE_TYPE_SHADED_SPECTRUM, MEASURE_TYPE_SPECTRUM].includes(type))
+          if (checkMeasureType(seriesType, [MEASURE_TYPES.SHADED_SPECTRUM, MEASURE_TYPES.SPECTRUM]))
             return noDataColour
               ? true
               : !(min === null || min === undefined || max === null || max === undefined);
@@ -92,7 +109,11 @@ export const Legend = React.memo(
         },
       );
       return { ...results, [mapOverlayCode]: { serieses } };
-    }, {});
+    }, {}) as {
+      [mapOverlayCode: string]: {
+        serieses: LegendSeriesItem[];
+      };
+    };
 
     const legendTypes = currentMapOverlayCodes
       .map(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
@@ -105,17 +126,19 @@ export const Legend = React.memo(
         {currentMapOverlayCodes.map(mapOverlayCode => {
           const { serieses } = measureInfo[mapOverlayCode];
           const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
-          const hasIconLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_ICON);
-          const hasRadiusLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_RADIUS);
-          const hasColorLayer = baseSerieses.some(l => coloredMeasureTypes.includes(l.type));
+          const hasIconLayer = baseSerieses.some(l => l.type === MEASURE_TYPES.ICON);
+          const hasRadiusLayer = baseSerieses.some(l => l.type === MEASURE_TYPES.RADIUS);
+          const hasColorLayer = baseSerieses.some(l =>
+            checkMeasureType(l.type as MeasureType, coloredMeasureTypes),
+          );
           const isDisplayed =
             !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
 
           return serieses
-            .sort(a => (a.type === MEASURE_TYPE_COLOR ? -1 : 1)) // color series should sit at the top
+            .sort(a => (a.type === MEASURE_TYPES.COLOR ? -1 : 1)) // color series should sit at the top
             .map((series, index) => {
               const { type } = series;
-              const LegendComponent = getLegendComponent(type);
+              const LegendComponent = getLegendComponent(type as MeasureType);
               return (
                 <>
                   <SeriesContainer key={series.key} className={className} isDisplayed={isDisplayed}>
@@ -139,25 +162,3 @@ export const Legend = React.memo(
     );
   },
 );
-
-Legend.propTypes = {
-  measureInfo: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  hiddenValues: PropTypes.object,
-  setValueHidden: PropTypes.func,
-  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
-  currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
-  seriesesKey: PropTypes.string,
-  SeriesContainer: PropTypes.node,
-  SeriesDivider: PropTypes.node,
-};
-
-Legend.defaultProps = {
-  className: null,
-  displayedMapOverlayCodes: null,
-  hiddenValues: {},
-  setValueHidden: null,
-  seriesesKey: 'serieses',
-  SeriesContainer: LegendFrame,
-  SeriesDivider: null,
-};

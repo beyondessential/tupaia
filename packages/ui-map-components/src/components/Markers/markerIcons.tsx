@@ -21,7 +21,7 @@ import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
 import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../../constants';
 import { IconContainer } from './IconContainer';
-import { Color } from '../../types';
+import { Color, ColorKey } from '../../types';
 import { CssColor } from '@tupaia/types';
 
 // allows passing a color to a material icon & scales it down a bit
@@ -352,7 +352,7 @@ export const LEGEND_SHADING_ICON = 'square';
 export const LEGEND_RADIUS_ICON = 'radius';
 export const HIDDEN_ICON = 'hidden';
 
-function toLeaflet(icon: IconType, color: CssColor, scale: number = 1): L.DivIcon {
+function toLeaflet(icon: IconType, color?: string, scale: number = 1): L.DivIcon {
   const {
     Component,
     iconAnchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], // default to center point
@@ -374,17 +374,23 @@ function toLeaflet(icon: IconType, color: CssColor, scale: number = 1): L.DivIco
 }
 
 // Returns jsx version of marker (for Legend rendering)
-export function getMarkerForOption(iconKey: IconKey, colorName: Color, stroke: CssColor) {
-  const icon = icons[iconKey] || icons.pin;
-  // @ts-ignore - because technically shade can be a string that is not in the BREWER_PALETTE, so TS throws an error about type not being able to be an index
-  const color = BREWER_PALETTE[colorName] || colorName;
+export function getMarkerForOption(
+  iconKey: IconKey | undefined,
+  colorName: Color,
+  stroke?: CssColor,
+) {
+  const icon = icons[iconKey as IconKey] || icons.pin;
+  const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
   return <icon.Component color={color} stroke={stroke} />;
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(iconKey: IconKey, colorName?: Color, scale: number = 1) {
-  const icon = icons[iconKey] || icons.pin;
-  // @ts-ignore - because technically shade can be a string that is not in the BREWER_PALETTE, so TS throws an error about type not being able to be an index
-  const color = BREWER_PALETTE[colorName] || colorName;
+export function getMarkerForValue(
+  iconKey: IconKey | undefined,
+  colorName?: Color,
+  scale: number = 1,
+) {
+  const icon = icons[iconKey as IconKey] || icons.pin;
+  const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
   return toLeaflet(icon, color, scale);
 }

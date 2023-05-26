@@ -5,7 +5,6 @@
 
 import moment from 'moment';
 import React from 'react';
-import PropTypes from 'prop-types';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -13,6 +12,7 @@ import { resolveSpectrumColour } from '../../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../../constants';
 import { LegendEntry } from './LegendEntry';
+import { ScaleType, SpectrumLegendProps, SpectrumLegendSeriesItem } from '../../types';
 
 const FlexCenter = styled(MuiBox)`
   display: flex;
@@ -20,7 +20,9 @@ const FlexCenter = styled(MuiBox)`
   justify-content: center;
 `;
 
-const SpectrumContainer = styled.div`
+const SpectrumContainer = styled.div<{
+  $hasNoData: boolean;
+}>`
   max-width: ${p => (p.$hasNoData ? '70%' : '100%')};
 `;
 
@@ -43,7 +45,15 @@ const LabelRight = styled.div`
   margin-left: 0.625rem;
 `;
 
-const getSpectrumLabels = (scaleType, min, max, valueType) => {
+const getSpectrumLabels = (
+  scaleType: ScaleType,
+  min: number,
+  max: number,
+  valueType: string,
+): {
+  left: string;
+  right: string;
+} => {
   switch (scaleType) {
     case SCALE_TYPES.GPI:
     case SCALE_TYPES.PERFORMANCE:
@@ -60,13 +70,21 @@ const getSpectrumLabels = (scaleType, min, max, valueType) => {
   }
 };
 
-const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) => {
+const renderSpectrum = ({
+  min,
+  max,
+  scaleType,
+  scaleColorScheme,
+  valueType,
+}: SpectrumLegendSeriesItem) => {
   if (min == null || max == null) return null;
 
   const spectrumDivs = [];
 
   if (min === max) {
     // There will only be a single value displayed, let's just default it to the middle color (50 % of the way from 0 to 1):
+
+    // @ts-ignore
     const colour = resolveSpectrumColour(scaleType, scaleColorScheme, 0.5, 0, 1);
     const { left: label } = getSpectrumLabels(scaleType, min, min, valueType);
 
@@ -83,6 +101,7 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
   switch (scaleType) {
     case SCALE_TYPES.TIME:
       for (let i = 0; i < 1; i += 0.01) {
+        // @ts-ignore
         const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
@@ -95,6 +114,7 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
       const increment = (max - min) / 100;
 
       for (let i = min; i < max; i += increment) {
+        // @ts-ignore
         const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
@@ -111,55 +131,43 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
   );
 };
 
-export const SpectrumLegend = React.memo(({ series, setValueHidden, hiddenValues }) => {
-  const {
-    valueMapping,
-    noDataColour,
-    min,
-    max,
-    scaleType,
-    scaleColorScheme,
-    valueType,
-    key: dataKey,
-  } = series;
+export const SpectrumLegend = React.memo(
+  ({ series, setValueHidden, hiddenValues = {} }: SpectrumLegendProps) => {
+    const {
+      valueMapping,
+      noDataColour,
+      min,
+      max,
+      scaleType,
+      scaleColorScheme,
+      valueType,
+      key: dataKey,
+    } = series;
 
-  const { value } = valueMapping.null;
+    const { value } = valueMapping.null;
 
-  return (
-    <FlexCenter>
-      <SpectrumContainer $hasNoData={!!noDataColour}>
-        {renderSpectrum({ min, max, scaleType, scaleColorScheme, valueType })}
-      </SpectrumContainer>
-      {noDataColour && (
-        <LegendEntry
-          marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour, 'none')}
-          label="No data"
-          dataKey={dataKey}
-          hiddenValues={hiddenValues}
-          onClick={setValueHidden}
-          value={value}
-        />
-      )}
-    </FlexCenter>
-  );
-});
-
-SpectrumLegend.propTypes = {
-  series: PropTypes.shape({
-    valueMapping: PropTypes.object,
-    scaleColorScheme: PropTypes.object,
-    min: PropTypes.number,
-    max: PropTypes.number,
-    scaleType: PropTypes.string,
-    valueType: PropTypes.string,
-    dataKey: PropTypes.string,
-    noDataColour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  }).isRequired,
-  setValueHidden: PropTypes.func,
-  hiddenValues: PropTypes.object,
-};
-
-SpectrumLegend.defaultProps = {
-  hiddenValues: {},
-  setValueHidden: null,
-};
+    return (
+      <FlexCenter>
+        <SpectrumContainer $hasNoData={!!noDataColour}>
+          {renderSpectrum({
+            min,
+            max,
+            scaleType,
+            scaleColorScheme,
+            valueType,
+          } as SpectrumLegendSeriesItem)}
+        </SpectrumContainer>
+        {noDataColour && (
+          <LegendEntry
+            marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour, 'none')}
+            label="No data"
+            dataKey={dataKey}
+            hiddenValues={hiddenValues}
+            onClick={setValueHidden}
+            value={value}
+          />
+        )}
+      </FlexCenter>
+    );
+  },
+);

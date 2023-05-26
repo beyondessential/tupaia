@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
+import { LegendProps, ValueType } from '../../types';
 
 const Button = styled(MuiButton)`
   display: flex;
@@ -34,9 +34,29 @@ const Label = styled.div`
   }
 `;
 
+interface LegendEntryProps {
+  marker: React.ReactNode;
+  label: string;
+  value: ValueType;
+  dataKey?: string;
+  onClick?: LegendProps['setValueHidden'];
+  hiddenValues?: LegendProps['hiddenValues'];
+  unClickable?: boolean;
+}
+
 export const LegendEntry = React.memo(
-  ({ marker, label, value, dataKey, onClick, hiddenValues, unClickable }) => {
-    const hidden = (hiddenValues[dataKey] || {})[value];
+  ({
+    marker,
+    label,
+    value,
+    dataKey,
+    onClick,
+    hiddenValues = {},
+    unClickable = false,
+  }: LegendEntryProps) => {
+    const hidden = dataKey
+      ? (hiddenValues[dataKey] || {})[value as keyof typeof hiddenValues]
+      : false;
 
     const handleClick = () => {
       if (!unClickable && onClick) {
@@ -52,21 +72,3 @@ export const LegendEntry = React.memo(
     );
   },
 );
-
-LegendEntry.propTypes = {
-  marker: PropTypes.element.isRequired,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
-  dataKey: PropTypes.string,
-  hiddenValues: PropTypes.object,
-  onClick: PropTypes.func,
-  unClickable: PropTypes.bool,
-};
-
-LegendEntry.defaultProps = {
-  hiddenValues: {},
-  unClickable: false,
-  onClick: null,
-  value: null,
-  dataKey: null,
-};

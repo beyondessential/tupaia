@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
@@ -12,6 +11,7 @@ import { UNKNOWN_COLOR } from '../../constants';
 import {
   DEFAULT_ICON,
   HIDDEN_ICON,
+  IconKey,
   LEGEND_COLOR_ICON,
   LEGEND_RADIUS_ICON,
   LEGEND_SHADING_ICON,
@@ -25,6 +25,7 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../../utils';
 import { LegendEntry } from './LegendEntry';
+import { LegendItemValue, MarkerLegendSeriesItem, MarkerLegendProps } from '../../types';
 
 const Container = styled(MuiBox)`
   display: flex;
@@ -45,11 +46,15 @@ const Container = styled(MuiBox)`
  * and hide the radius as well. But, if the hidden icon is 'other', go ahead and add it to
  * the legend and show the radius.
  */
-const isHiddenOtherIcon = ({ value, icon }) => {
+const isHiddenOtherIcon = ({ value, icon }: LegendItemValue) => {
   return value === MEASURE_VALUE_OTHER && icon === HIDDEN_ICON;
 };
 
-const getMarkerColor = (value, type, hasColorLayer) => {
+const getMarkerColor = (
+  value: LegendItemValue,
+  type: MarkerLegendSeriesItem['type'],
+  hasColorLayer: boolean,
+) => {
   const theme = useTheme();
 
   if (type === MEASURE_TYPE_COLOR) {
@@ -66,12 +71,12 @@ const getMarkerColor = (value, type, hasColorLayer) => {
 };
 
 const getLegendMarkerForValue = (
-  value,
-  type,
-  hasIconLayer,
-  hasRadiusLayer,
-  hasColorLayer,
-  defaultIcon = null,
+  value: LegendItemValue,
+  type: MarkerLegendSeriesItem['type'],
+  hasIconLayer: MarkerLegendProps['hasIconLayer'],
+  hasRadiusLayer: MarkerLegendProps['hasRadiusLayer'],
+  hasColorLayer: MarkerLegendProps['hasColorLayer'],
+  defaultIcon: IconKey | null = null,
 ) => {
   const { icon } = value;
   const color = getMarkerColor(value, type, hasColorLayer);
@@ -109,7 +114,14 @@ const getLegendMarkerForValue = (
 };
 
 export const MarkerLegend = React.memo(
-  ({ series, setValueHidden, hiddenValues, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
+  ({
+    series,
+    setValueHidden,
+    hiddenValues = {},
+    hasIconLayer,
+    hasRadiusLayer,
+    hasColorLayer,
+  }: MarkerLegendProps) => {
     const { type, values, key: dataKey, valueMapping, icon } = series;
 
     const keys = values
@@ -149,7 +161,7 @@ export const MarkerLegend = React.memo(
     });
 
     let nullKey = null;
-    const nullItem = valueMapping.null;
+    const nullItem = valueMapping?.null;
 
     if (!hasGroupedLegendIncludingNull && nullItem && !nullItem.hideFromLegend) {
       nullKey = (
@@ -179,23 +191,3 @@ export const MarkerLegend = React.memo(
     );
   },
 );
-
-MarkerLegend.propTypes = {
-  series: PropTypes.shape({
-    name: PropTypes.string,
-    key: PropTypes.string,
-    type: PropTypes.string,
-    values: PropTypes.array,
-    valueMapping: PropTypes.object,
-  }).isRequired,
-  hasIconLayer: PropTypes.bool.isRequired,
-  setValueHidden: PropTypes.func,
-  hiddenValues: PropTypes.object,
-  hasRadiusLayer: PropTypes.bool.isRequired,
-  hasColorLayer: PropTypes.bool.isRequired,
-};
-
-MarkerLegend.defaultProps = {
-  hiddenValues: {},
-  setValueHidden: null,
-};

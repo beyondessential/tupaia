@@ -5887,8 +5887,8 @@ __metadata:
     "@tupaia/utils": 1.0.0
     "@types/jest": ^29.5.1
     "@types/leaflet": ^1.7.1
-    "@types/react": ^18.2.7
-    "@types/react-dom": ^18.2.4
+    "@types/react": ^16.14.0
+    "@types/react-dom": ^16.9.18
     "@types/styled-components": ^5.1.26
     leaflet: ^1.7.1
     moment: ^2.29.1
@@ -6839,6 +6839,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:^16.9.18":
+  version: 16.9.19
+  resolution: "@types/react-dom@npm:16.9.19"
+  dependencies:
+    "@types/react": ^16
+  checksum: c696f137aba09be0ea87ad6e99a083607b4fc574857d92c264cc6518ee929ef7e94855362436c2ef5fefb70ebfc9b7413634bb3a2f3a8c2b7522521faaac7d62
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^18.2.4":
   version: 18.2.4
   resolution: "@types/react-dom@npm:18.2.4"
@@ -6937,14 +6946,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.7":
-  version: 18.2.7
-  resolution: "@types/react@npm:18.2.7"
+"@types/react@npm:^16, @types/react@npm:^16.14.0":
+  version: 16.14.42
+  resolution: "@types/react@npm:16.14.42"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: caa5da4cf929766738ec789301dc6fb6624bd48dd317d851c4c9b84b1f47cd8ebe17fe01398cadaa0bc938cd4d502d67f4b9de9ff771dc132096bdc86228efba
+  checksum: b28d101c5811907927ed5a42bde0a4b55e19d2f4303bab6a57014faace55bc3d3d58d1194c2e95bae7d36951ac27e3645cb829f7c532c554a73f606ca1e22897
   languageName: node
   linkType: hard
 
