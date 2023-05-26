@@ -54,6 +54,13 @@ export class ApiBuilder {
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
 
     /**
+     * Healthcheck
+     */
+    this.app.get('/healthcheck', (req, res) => {
+      res.status(200).send('OK').end();
+    });
+
+    /**
      * Add middleware
      */
     this.app.use(
