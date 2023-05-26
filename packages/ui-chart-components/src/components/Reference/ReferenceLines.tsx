@@ -20,9 +20,7 @@ const ReferenceLineLabel = ({
   isExporting?: boolean;
 }) => {
   if (referenceLineLabel === undefined) return undefined;
-  return (
-    <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />
-  );
+  return <ReferenceLabel value={referenceLineLabel} fill={isExporting ? '#000000' : '#ffffff'} />;
 };
 
 enum Y_AXIS_IDS {

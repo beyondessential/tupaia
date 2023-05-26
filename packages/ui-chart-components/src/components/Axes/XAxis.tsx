@@ -9,7 +9,7 @@ import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '
 import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
 import { ChartType, DataProps, ViewContent } from '../../types';
-import { CartesianChartConfig } from '@tupaia/types/src';
+import { CartesianChartConfig } from '@tupaia/types';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',

@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -14,7 +14,6 @@ import {
   ResponsiveContainer,
   Tooltip,
   TooltipProps,
-  LayoutType,
   LegendProps,
 } from 'recharts';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
@@ -130,7 +129,7 @@ export const PieChart = ({
     }, 50);
   }, []);
 
-  const handleMouseEnter = (event: any, index: number) => {
+  const handleMouseEnter = (event: MouseEvent, index: number) => {
     setActiveIndex(index);
   };
 

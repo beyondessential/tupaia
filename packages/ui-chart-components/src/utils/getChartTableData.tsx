@@ -29,7 +29,7 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
   const firstColumn: LooseObject = {
     Header: header,
     accessor,
-    Cell: ({ value }: { value: string }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
+    Cell: ({ value }: { value: any }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
   };
   if (sortRows) {
     firstColumn.sortType = sortRows;

@@ -26,7 +26,7 @@ const viewHasData = viewContent => {
   }
 
   // If all segments of a pie chart are "0", display the no data message
-  if (chartType === ChartType.PIE && data && data.every(segment => segment.value === 0)) {
+  if (chartType === ChartType.Pie && data && data.every(segment => segment.value === 0)) {
     return false;
   }
 
