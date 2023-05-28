@@ -14,7 +14,7 @@ import MuiCloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent } from '../../actions';
+import { closeUserPage, setOverlayComponent } from '../../actions';
 import { setProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { ProjectLandingPage } from './components/ProjectLandingPage';
@@ -140,6 +140,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {
     dispatch(setOverlayComponent(null));
+    dispatch(closeUserPage());
   },
 });
 
