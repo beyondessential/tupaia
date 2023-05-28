@@ -5,6 +5,7 @@
 
 import { reduceToDictionary } from '@tupaia/utils';
 import get from 'lodash.get';
+import { utcMoment } from '../datetime';
 
 type PeriodType = keyof typeof PERIOD_TYPES;
 
@@ -132,4 +133,12 @@ const checkNonNumericPeriod = (period: string, potentialType: PeriodType) => {
   });
 
   return isValidFormat;
+};
+
+/**
+ * Parse period into a moment object
+ */
+export const periodToMoment = (period: string) => {
+  const periodType = periodToType(period) as PeriodType;
+  return utcMoment(period, periodTypeToFormat(periodType));
 };
