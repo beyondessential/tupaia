@@ -5,13 +5,14 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { getFormattedInfo } from '../../utils';
+import { Series, TableMeasureData } from '../../types';
 
 const FirstColumnCell = styled.span`
   font-weight: 500;
   text-align: left;
 `;
 
-const processColumns = serieses => {
+const processColumns = (serieses: Series[]) => {
   if (!serieses) {
     return [];
   }
@@ -25,14 +26,16 @@ const processColumns = serieses => {
       Header: 'Name',
       accessor: 'name',
       // eslint-disable-next-line react/prop-types
-      Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
+      Cell: ({ value }: { value: string | number | boolean | undefined }) => (
+        <FirstColumnCell>{String(value)}</FirstColumnCell>
+      ),
     },
     ...configColumns,
     { Header: 'Most Recent Data Date', accessor: 'submissionDate' },
   ];
 };
 
-const processData = (serieses, measureData) => {
+const processData = (serieses: Series[], measureData: TableMeasureData[]) => {
   if (!measureData || !serieses) {
     return [];
   }
@@ -51,7 +54,7 @@ const processData = (serieses, measureData) => {
   });
 };
 
-export const getMapTableData = (serieses, measureData) => {
+export const getMapTableData = (serieses: Series[], measureData: TableMeasureData[]) => {
   const columns = useMemo(() => processColumns(serieses), [JSON.stringify(serieses)]);
   const data = useMemo(() => processData(serieses, measureData), [
     JSON.stringify(serieses),

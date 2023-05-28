@@ -5,8 +5,15 @@
 
 import { useDataTableExport } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
+import { Series, TableMeasureData } from '../../types';
 
-export const useMapDataExport = (serieses, measureData, title, startDate, endDate) => {
+export const useMapDataExport = (
+  serieses: Series[],
+  measureData: TableMeasureData[],
+  title: string,
+  startDate: string | Date,
+  endDate: string | Date,
+) => {
   const { columns, data } = getMapTableData(serieses, measureData);
   return useDataTableExport(columns, data, title, startDate, endDate);
 };

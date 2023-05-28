@@ -50,3 +50,10 @@ export type MeasureData = MeasureOrgUnit &
     photoUrl?: string;
     value?: number | string;
   };
+
+export type TableMeasureData = {
+  [key: string]: any;
+  name: string;
+  value: string | number;
+  submissionDate?: string | Date;
+};
