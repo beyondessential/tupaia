@@ -5,3 +5,6 @@
 
 export { ReportRequest, ReportRoute } from './ReportRoute';
 export { UserRequest, UserRoute } from './UserRoute';
+
+// TODO: Stop using get for logout, then delete this
+export { TempLogoutRequest, TempLogoutRoute } from './TempLogoutRoute';

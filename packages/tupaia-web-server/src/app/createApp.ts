@@ -15,9 +15,11 @@ import { TupaiaWebSessionModel } from '../models';
 import {
   ReportRoute,
   UserRoute,
+  TempLogoutRoute,
 
   ReportRequest,
   UserRequest,
+  TempLogoutRequest,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -28,6 +30,8 @@ export function createApp() {
     .useSessionModel(TupaiaWebSessionModel)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    // TODO: Stop using get for logout, then delete this
+    .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
 
   useForwardUnhandledRequests(app, WEB_CONFIG_API_URL);
