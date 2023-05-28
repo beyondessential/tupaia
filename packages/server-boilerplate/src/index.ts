@@ -17,6 +17,7 @@ export {
   SessionType,
   SessionCookie,
   attachSession,
+  attachSessionIfAvailable,
 } from './orchestrator';
 export * from './types';
 export * from './models';
