@@ -3,14 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { utcMoment } from '@tupaia/tsutils';
-import {
-  momentToDateString,
-  momentToPeriod,
-  periodToMoment,
-  periodToType,
-  periodTypeToMomentUnit,
-} from '@tupaia/utils';
+import { periodToType, periodTypeToMomentUnit, utcMoment } from '@tupaia/tsutils';
+import { momentToDateString, momentToPeriod, periodToMoment } from '@tupaia/utils';
 
 class RequiredConfigFieldError extends Error {
   constructor(fieldKey) {
