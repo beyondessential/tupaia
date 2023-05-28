@@ -46,13 +46,13 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
-interface Reference {
+export interface ReferenceProps {
   text?: string;
   name?: string;
   link?: string;
 }
 
-const Content = ({ text = '', name = '', link = '' }: Reference) => {
+const Content = ({ text = '', name = '', link = '' }: ReferenceProps) => {
   if (text) {
     return (
       <TextCaption variant="caption">
@@ -72,7 +72,7 @@ const Content = ({ text = '', name = '', link = '' }: Reference) => {
 
 interface ReferenceTooltipProps {
   iconStyleOption?: string;
-  reference?: Reference;
+  reference?: ReferenceProps;
 }
 
 export const ReferenceTooltip = ({

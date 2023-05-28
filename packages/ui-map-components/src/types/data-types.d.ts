@@ -1,8 +1,10 @@
 import { PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
 import { Entity as TupaiaEntity } from '@tupaia/types';
+import { ReferenceProps } from '@tupaia/ui-components';
 import { Color } from './types';
 import { MarkerProps } from './marker-types';
+import { LegendItemValue } from './legend-types';
 
 export type Series = {
   key: string;
@@ -56,4 +58,12 @@ export type TableMeasureData = {
   name: string;
   value: string | number;
   submissionDate?: string | Date;
+};
+
+export type TileSet = {
+  key: string;
+  label: string;
+  thumbnail: string;
+  reference?: ReferenceProps;
+  legendItems?: LegendItemValue[];
 };

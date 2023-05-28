@@ -11,6 +11,7 @@ export type LegendItemValue = {
   hideFromLegend?: boolean;
   icon?: IconKey;
   color: string;
+  label: string;
 };
 
 export type ValueMappingType = {

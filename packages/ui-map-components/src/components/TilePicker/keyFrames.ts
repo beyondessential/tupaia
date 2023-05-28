@@ -4,7 +4,7 @@
  *
  */
 
-function ease(v, pow = 3) {
+function ease(v: number, pow = 3) {
   return 1 - Math.pow(1 - v, pow);
 }
 

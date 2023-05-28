@@ -11,6 +11,7 @@ import { TileButton } from './TileButton';
 import { TileControl } from './TileControl';
 import { tileSetShape } from './constants';
 import { createScaleKeyFrameAnimation } from './keyFrames';
+import { TileSet } from '../../types';
 
 const Container = styled.div`
   height: 100%;
@@ -65,40 +66,38 @@ const TileList = styled.div`
   }
 `;
 
-export const TilePicker = React.memo(({ tileSets, activeTileSet, onChange, className }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <ClickAwayListener onClickAway={() => setOpen(false)}>
-      <Container className={className}>
-        <Controls>
-          <TileControl
-            isActive={open}
-            tileSet={activeTileSet}
-            onClick={() => setOpen(current => !current)}
-          />
-        </Controls>
-        <TileList className={open ? 'expanded' : 'closed'}>
-          {tileSets.map(tileSet => (
-            <TileButton
-              key={tileSet.key}
-              tileSet={tileSet}
-              onChange={onChange}
-              isActive={activeTileSet.key === tileSet.key}
+interface TilePickerProps {
+  tileSets: TileSet[];
+  activeTileSet: TileSet;
+  onChange: (tileSetKey: TileSet['key']) => void;
+  className?: string;
+}
+
+export const TilePicker = React.memo(
+  ({ tileSets, activeTileSet, onChange, className }: TilePickerProps) => {
+    const [open, setOpen] = useState(false);
+    return (
+      <ClickAwayListener onClickAway={() => setOpen(false)}>
+        <Container className={className}>
+          <Controls>
+            <TileControl
+              isActive={open}
+              tileSet={activeTileSet}
+              onClick={() => setOpen(current => !current)}
             />
-          ))}
-        </TileList>
-      </Container>
-    </ClickAwayListener>
-  );
-});
-
-TilePicker.propTypes = {
-  tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
-  activeTileSet: PropTypes.shape(tileSetShape).isRequired,
-  onChange: PropTypes.func.isRequired,
-  className: PropTypes.string,
-};
-
-TilePicker.defaultProps = {
-  className: null,
-};
+          </Controls>
+          <TileList className={open ? 'expanded' : 'closed'}>
+            {tileSets.map(tileSet => (
+              <TileButton
+                key={tileSet.key}
+                tileSet={tileSet}
+                onChange={onChange}
+                isActive={activeTileSet.key === tileSet.key}
+              />
+            ))}
+          </TileList>
+        </Container>
+      </ClickAwayListener>
+    );
+  },
+);

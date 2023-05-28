@@ -6,11 +6,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { ReferenceTooltip } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { tileSetShape } from './constants';
+import { TileSet } from '../../types';
 
 const StyledButton = styled(Button)`
   position: relative;
@@ -80,7 +79,13 @@ const TileLabel = styled(Typography)`
   padding: 0.5rem 0.75rem;
 `;
 
-export const TileButton = React.memo(({ tileSet, isActive, onChange }) => (
+interface TileButtonProps {
+  tileSet: TileSet;
+  isActive?: boolean;
+  onChange: (tileSetKey: string) => void;
+}
+
+export const TileButton = React.memo(({ tileSet, isActive = false, onChange }: TileButtonProps) => (
   <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
     <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
     <TileLabel>
@@ -91,13 +96,3 @@ export const TileButton = React.memo(({ tileSet, isActive, onChange }) => (
     </TileLabel>
   </StyledButton>
 ));
-
-TileButton.propTypes = {
-  tileSet: PropTypes.shape(tileSetShape).isRequired,
-  isActive: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
-};
-
-TileButton.defaultProps = {
-  isActive: false,
-};

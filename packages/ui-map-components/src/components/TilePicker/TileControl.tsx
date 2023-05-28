@@ -6,14 +6,15 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { tileSetShape } from './constants';
+import { TileSet } from '../../types';
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button)<{
+  active: string;
+}>`
   display: block;
   pointer-events: auto;
   box-shadow: none;
@@ -91,33 +92,32 @@ const LegendLabel = styled(Typography)`
   margin-bottom: 0.3rem;
 `;
 
-export const TileControl = React.memo(({ tileSet, isActive, ...props }) => (
-  <StyledButton variant="contained" active={isActive.toString()} {...props}>
-    <Box display="flex" alignItems="center">
-      <img src={tileSet.thumbnail} alt="tile" />
-      <Label>{tileSet.label}</Label>
-      <Divider />
-      <RightIcon />
-      <RightIcon />
-    </Box>
-    {tileSet.legendItems && (
-      <Box pt={1}>
-        {tileSet.legendItems.map(item => (
-          <Legend key={item.color}>
-            <LegendColor color={item.color} />
-            <LegendLabel>{item.label}</LegendLabel>
-          </Legend>
-        ))}
+interface TileControlProps {
+  tileSet: TileSet;
+  isActive?: boolean;
+  [key: string]: any;
+}
+
+export const TileControl = React.memo(
+  ({ tileSet, isActive = false, ...props }: TileControlProps) => (
+    <StyledButton variant="contained" active={isActive.toString()} {...props}>
+      <Box display="flex" alignItems="center">
+        <img src={tileSet.thumbnail} alt="tile" />
+        <Label>{tileSet.label}</Label>
+        <Divider />
+        <RightIcon />
+        <RightIcon />
       </Box>
-    )}
-  </StyledButton>
-));
-
-TileControl.propTypes = {
-  tileSet: PropTypes.shape(tileSetShape).isRequired,
-  isActive: PropTypes.bool,
-};
-
-TileControl.defaultProps = {
-  isActive: false,
-};
+      {tileSet.legendItems && (
+        <Box pt={1}>
+          {tileSet.legendItems.map(item => (
+            <Legend key={item.color}>
+              <LegendColor color={item.color} />
+              <LegendLabel>{item.label}</LegendLabel>
+            </Legend>
+          ))}
+        </Box>
+      )}
+    </StyledButton>
+  ),
+);
