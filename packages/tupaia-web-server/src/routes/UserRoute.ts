@@ -14,7 +14,8 @@ export class UserRoute extends Route<UserRequest> {
 
     // Avoid sending a 'me' request as the api user
     if (!session) {
-      return {};
+      // Triggers frontend login
+      return { name: 'public' };
     }
 
     return ctx.services.central.getUser();
