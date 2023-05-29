@@ -5,13 +5,13 @@
 
 type Transform = string | Record<string, unknown>;
 
-export type ReportConfig = {
+export type StandardReportConfig = {
   transform: Transform[];
   output?: Record<string, unknown>;
-};
+}
 
-type CustomReportConfig = {
+export type CustomReportConfig = {
   customReport: string;
 };
 
-export type StandardOrCustomReportConfig = ReportConfig | CustomReportConfig;
+export type ReportConfig = StandardReportConfig | CustomReportConfig;

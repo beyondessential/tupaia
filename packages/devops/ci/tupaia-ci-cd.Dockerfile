@@ -128,6 +128,7 @@ COPY packages/tsutils/. ./packages/tsutils
 COPY packages/types/. ./packages/types
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/ui-chart-components/. ./packages/ui-chart-components
+COPY packages/ui-map-components/. ./packages/ui-map-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api

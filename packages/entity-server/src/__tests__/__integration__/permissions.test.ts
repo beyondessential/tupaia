@@ -5,7 +5,7 @@
 
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
-import { getEntitiesWithFields } from './fixtures';
+import { getEntitiesWithFields, getHierarchiesWithFields } from './fixtures';
 
 describe('permissions', () => {
   let app: TestableServer;
@@ -100,6 +100,17 @@ describe('permissions', () => {
         BELL_TOWER: 'JOHTO',
         BURNED_TOWER: 'JOHTO',
       });
+    });
+
+    it('filters hierarchies when requested for some with access', async () => {
+      const { body: hierarchies } = await app.get('hierarchies', {
+        query: { fields: 'code,name' },
+      });
+
+      expect(hierarchies).toBeArray();
+      expect(hierarchies).toIncludeSameMembers(
+        getHierarchiesWithFields(['goldsilver'], ['code', 'name']),
+      );
     });
   });
 });
