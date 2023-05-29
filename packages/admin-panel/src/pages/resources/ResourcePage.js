@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
+import { getExplodedFields, usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 
 const Container = styled(PageBody)`
@@ -71,7 +71,7 @@ export const ResourcePage = ({
       {HeaderPortal}
       <Container>
         <DataFetchingTable
-          columns={columns}
+          columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
           endpoint={endpoint}
           expansionTabs={expansionTabs}
           reduxId={reduxId || endpoint}

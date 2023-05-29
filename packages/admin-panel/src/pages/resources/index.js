@@ -36,3 +36,4 @@ export { SyncGroupsPage } from './SyncGroupsPage';
 export { ExternalDatabaseConnectionsPage } from './ExternalDatabaseConnectionsPage';
 export { EntityHierarchyPage } from './EntityHierarchyPage';
 export { PermissionGroupsViewerPage } from './PermissionGroupsViewerPage';
+export { CustomLandingPagesPage } from './CustomLandingPagesPage';

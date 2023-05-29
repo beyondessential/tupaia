@@ -16,13 +16,7 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
-import {
-  createBearerHeader,
-  S3_BUCKET_NAME,
-  getS3ImageFilePath,
-  fetchWithTimeout,
-  stripTimezoneFromDate,
-} from '@tupaia/utils';
+import { createBearerHeader, stripTimezoneFromDate } from '@tupaia/utils';
 import { TestModelRegistry } from '../../types';
 import { setupDummySyncQueue, setupTestApp, setupTestUser, CentralApiMock } from '../../utilities';
 import { CAT_USER_SESSION } from '../fixtures';
@@ -54,6 +48,23 @@ const generateDummyAnswer = (questionNumber?: number) => ({
   question_id: getQuestionId(questionNumber),
 });
 
+const mockS3Bucket: Record<string, string> = {};
+const S3ClientMock = {
+  uploadImage: (data: string, id: string) => {
+    mockS3Bucket[id] = data;
+  },
+};
+
+jest.mock('@tupaia/utils', () => {
+  const original = jest.requireActual('@tupaia/utils');
+  return {
+    ...original,
+    S3Client: jest.fn().mockImplementation(() => {
+      return S3ClientMock;
+    }),
+  };
+});
+
 type Answer = Record<string, unknown>;
 
 const generateDummySurveyResponse = (extraFields = {}): RawSurveyResponseObject => {
@@ -81,8 +92,6 @@ const generateDummySurveyResponseAgainstFacility = () => {
 
   return surveyResponse;
 };
-
-const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
 describe('changes (POST)', () => {
   let app: TestableServer;
@@ -193,12 +202,10 @@ describe('changes (POST)', () => {
     });
 
     describe('Survey responses containing images', () => {
-      const imageResponseObject = { id: generateId(), data: TEST_IMAGE_DATA };
-      const IMAGE_URL = `${BUCKET_URL}/${S3_BUCKET_NAME}/${getS3ImageFilePath()}${
-        imageResponseObject.id
-      }.png`;
-
       it('correctly uploads an image', async () => {
+        const id = generateId();
+        const imageResponseObject = { id, data: TEST_IMAGE_DATA };
+
         const imageAction = {
           action: 'AddSurveyImage',
           payload: imageResponseObject,
@@ -211,9 +218,7 @@ describe('changes (POST)', () => {
         });
         expect(imagePostResponse.statusCode).toEqual(200);
 
-        const uploadedImage = await fetchWithTimeout(IMAGE_URL);
-        const imageBuffer = await uploadedImage.buffer();
-        const imageString = imageBuffer.toString('base64');
+        const imageString = mockS3Bucket[id];
         expect(imageString).toEqual(TEST_IMAGE_DATA);
       });
     });

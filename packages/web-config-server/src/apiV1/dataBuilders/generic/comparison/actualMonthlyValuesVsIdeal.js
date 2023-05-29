@@ -1,4 +1,4 @@
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/tsutils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { regexLabel } from '/apiV1/utils';
 
