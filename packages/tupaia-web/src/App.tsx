@@ -1,10 +1,16 @@
-/**
+/*
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-function App() {
-  return <h1>Tupaia web</h1>;
-}
+import { AppStyleProviders } from './AppStyleProviders';
+
+const App = () => {
+  return (
+    <AppStyleProviders>
+      <h1>Tupaia web</h1>
+    </AppStyleProviders>
+  );
+};
 
 export default App;

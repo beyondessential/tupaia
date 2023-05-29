@@ -287,7 +287,6 @@
       ],
       "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
         "plugin:react-hooks/recommended"
       ],
       "parserOptions": {
@@ -314,6 +313,7 @@
         "import/no-named-as-default": "off",
         "no-debugger": "warn",
         "import/no-cycle": "warn",
+        "import/extensions": "off",
         "jsx-a11y/click-events-have-key-events": "warn",
         "jsx-a11y/no-noninteractive-element-interactions": "warn",
         "jsx-a11y/no-static-element-interactions": "warn",
@@ -337,6 +337,7 @@
         "prettier/prettier": "warn",
         "react-refresh/only-export-components": "warn",
         "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "react/jsx-uses-react": "off",
         "react/react-in-jsx-scope": "off",
         "react/jsx-no-target-blank": "off",
