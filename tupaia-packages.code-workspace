@@ -121,9 +121,9 @@
       "path": "packages/ui-chart-components"
     },
     {
-          "name": "ui-map-components",
-          "path": "packages/ui-map-components"
-        },
+      "name": "ui-map-components",
+      "path": "packages/ui-map-components"
+    },
     {
       "name": "ui-components",
       "path": "packages/ui-components"
