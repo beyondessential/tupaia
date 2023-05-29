@@ -317,7 +317,7 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
 }
 
 export function getMeasureDisplayInfo(
-  measureData: MeasureData, // TODO: handle default becaus eof required `positions` prop
+  measureData: MeasureData = {},
   serieses: Series[],
   hiddenValues: LegendProps['hiddenValues'] = {},
   radiusScaleFactor: number = 1,
