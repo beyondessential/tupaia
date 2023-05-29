@@ -6,7 +6,15 @@
 export const MAPBOX_TOKEN =
   'pk.eyJ1Ijoic3Vzc29sIiwiYSI6ImNqNHMwOW02MzFhaGIycXRjMnZ1dXFlN2gifQ.1sAg5w7hYU7e3LtJM0-hSg';
 
-const makeMapboxStyleUrl = ({ styleId, accessKey = MAPBOX_TOKEN, username = 'sussol' }) =>
+const makeMapboxStyleUrl = ({
+  styleId,
+  accessKey = MAPBOX_TOKEN,
+  username = 'sussol',
+}: {
+  styleId: string;
+  accessKey?: string;
+  username?: string;
+}) =>
   `https://api.mapbox.com/styles/v1/${username}/${styleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${accessKey}`;
 
 const urls = {
@@ -29,31 +37,33 @@ const urls = {
   unfpaPopulation: makeMapboxStyleUrl({ styleId: 'cl5w14no4001m14qyaermcomc' }),
 };
 
-const openStreets = key => ({
+type UrlKey = keyof typeof urls;
+
+const openStreets = (key: UrlKey) => ({
   key,
   label: 'Open Streets',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/osm-tile-thumbnail.png',
   url: urls[key],
 });
-const satellite = key => ({
+const satellite = (key: UrlKey) => ({
   key,
   label: 'Satellite',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/satellite-tile-thumbnail.png',
   url: urls[key],
 });
-const waterways = key => ({
+const waterways = (key: UrlKey) => ({
   key,
   label: 'Waterways',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/waterways-tile-thumbnail.png',
   url: urls[key],
 });
-const roads = key => ({
+const roads = (key: UrlKey) => ({
   key,
   label: 'Roads',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/roads-tile-thumbnail.png',
   url: urls[key],
 });
-const ethnicity = key => ({
+const ethnicity = (key: UrlKey) => ({
   key,
   label: 'Ethnicity',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/ethnicity-tile-thumbnail.png',
@@ -142,13 +152,13 @@ const ethnicity = key => ({
       'https://data.opendevelopmentmekong.net/dataset/geo-referencing-of-ethnic-groups-of-laos?type=dataset',
   },
 });
-const terrain = key => ({
+const terrain = (key: UrlKey) => ({
   key,
   label: 'Terrain',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
   url: urls[key],
 });
-const population = key => ({
+const population = (key: UrlKey) => ({
   key,
   label: 'Population',
   thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
@@ -158,7 +168,7 @@ const population = key => ({
     link: 'https://www.worldpop.org/geodata/listing?id=69',
   },
 });
-const unfpaPopulation = key => ({
+const unfpaPopulation = (key: UrlKey) => ({
   key,
   label: 'Population per 1km',
   thumbnail:
