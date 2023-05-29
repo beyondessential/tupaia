@@ -57,17 +57,17 @@ export const MarkerLayer = ({
 
   return (
     <LayerGroup>
-      {data.map(({ region, organisationUnitCode, color, ...measure }: MeasureData) => {
+      {data.map((measure: MeasureData) => {
         if (measure.region) {
           return (
             <ShadedPolygon
-              {...measure}
-              key={organisationUnitCode}
-              positions={region!}
+              key={measure.organisationUnitCode}
+              positions={measure.region!}
               pathOptions={{
-                color,
-                fillColor: color,
+                color: measure.color,
+                fillColor: measure.color,
               }}
+              {...measure}
             >
               <AreaTooltip text={getTooltipText(measure, serieses)} />
             </ShadedPolygon>
@@ -76,14 +76,13 @@ export const MarkerLayer = ({
         // Need to show all values on tooltips even though we toggle off one map overlay
         const markerData = {
           ...measure,
-          color,
           ...(multiOverlayMeasureData &&
             multiOverlayMeasureData.find(
-              item => item.organisationUnitCode === measure.organisationUnitCode,
+              ({ organisationUnitCode }) => organisationUnitCode === measure.organisationUnitCode,
             )),
         };
         return (
-          <MeasureMarker key={measure.organisationUnitCode} color={color} {...measure}>
+          <MeasureMarker key={measure.organisationUnitCode} {...measure}>
             <MeasurePopup
               markerData={markerData}
               serieses={serieses}
