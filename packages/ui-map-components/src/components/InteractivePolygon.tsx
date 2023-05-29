@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../constants';
 import ActivePolygon from './ActivePolygon';
-import { Entity, GenericDataItem, MeasureOrgUnit, Series } from '../types';
+import { Color, Entity, GenericDataItem, MeasureData, OrgUnitCode, Series } from '../types';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -39,19 +39,23 @@ const TransparentShadedPolygon = styled(Polygon)`
   }
 `;
 
+type OrgUnit = GenericDataItem & {
+  isHidden?: boolean;
+};
+
 type ParsedPropsResult = {
-  shade?: MeasureOrgUnit['color'];
+  shade?: Color;
   isHidden?: boolean;
   hasShadedChildren: boolean;
-  orgUnitMeasureData?: MeasureOrgUnit;
+  orgUnitMeasureData?: OrgUnit;
   orgUnitMultiOverlayMeasureData?: GenericDataItem;
 };
 
 const parseProps = (
-  organisationUnitCode: string | undefined = undefined,
-  organisationUnitChildren: GenericDataItem[],
-  measureOrgUnits: MeasureOrgUnit[],
-  multiOverlayMeasureData: GenericDataItem[],
+  organisationUnitCode: OrgUnitCode = undefined,
+  organisationUnitChildren: OrgUnit[],
+  measureOrgUnits: OrgUnit[],
+  multiOverlayMeasureData: MeasureData[],
 ): ParsedPropsResult => {
   let shade;
   let isHidden;
@@ -96,7 +100,7 @@ interface InteractivePolygonProps {
   onChangeOrgUnit?: (organisationUnitCode?: string) => void;
   area: Entity;
   isActive?: boolean;
-  measureOrgUnits?: MeasureOrgUnit[];
+  measureOrgUnits?: OrgUnit[];
   organisationUnitChildren?: GenericDataItem[];
 }
 

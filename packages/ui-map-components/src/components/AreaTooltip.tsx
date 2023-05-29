@@ -8,7 +8,7 @@ import React from 'react';
 import { Tooltip } from 'react-leaflet';
 import styled from 'styled-components';
 import { PopupDataItemList } from './PopupDataItemList';
-import { GenericDataItem, Series } from '../types';
+import { MeasureData, Series } from '../types';
 
 const Heading = styled.span<{
   hasMeasureValue: boolean;
@@ -27,7 +27,7 @@ interface AreaTooltipProps {
   orgUnitName?: string;
   hasMeasureValue?: boolean;
   serieses?: Series[];
-  orgUnitMeasureData?: GenericDataItem;
+  orgUnitMeasureData?: MeasureData;
   text?: string;
 }
 
@@ -37,7 +37,7 @@ export const AreaTooltip = ({
   orgUnitName,
   hasMeasureValue = false,
   serieses = [],
-  orgUnitMeasureData = {},
+  orgUnitMeasureData = {} as MeasureData,
   text,
 }: AreaTooltipProps) => {
   return (

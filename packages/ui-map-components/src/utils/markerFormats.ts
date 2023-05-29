@@ -16,13 +16,13 @@ import {
 } from '../constants';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 import {
-  DataValue,
+  SeriesValue,
   LegendProps,
   MeasureData,
   ScaleType,
   Series,
-  ValueMappingType,
-  DataValueType,
+  SeriesValueMapping,
+  Value,
   MeasureType,
 } from '../types';
 
@@ -43,11 +43,11 @@ export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADE
 const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
 const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
 
-export function autoAssignColors(values: DataValue[]) {
+export function autoAssignColors(values: SeriesValue[]) {
   if (!values) return [];
 
   let autoIndex = 0;
-  const getColor = (valueObject: DataValue) => {
+  const getColor = (valueObject: SeriesValue) => {
     if (!valueObject.name) {
       return BREWER_AUTO[autoIndex++];
     }
@@ -68,8 +68,8 @@ export function autoAssignColors(values: DataValue[]) {
   }));
 }
 
-export function createValueMapping(valueObjects: DataValue[], type: string) {
-  const mapping = {} as ValueMappingType;
+export function createValueMapping(valueObjects: SeriesValue[], type: string) {
+  const mapping = {} as SeriesValueMapping;
 
   valueObjects.forEach(valueObject => {
     const { value } = valueObject;
@@ -98,7 +98,7 @@ const getNullValueMapping = (type: string) => {
   const baseMapping = {
     name: 'No data',
     value: MEASURE_VALUE_NULL,
-  } as DataValue;
+  } as SeriesValue;
 
   switch (type) {
     case MEASURE_TYPE_ICON:
@@ -116,12 +116,12 @@ const getNullValueMapping = (type: string) => {
 };
 
 function getFormattedValue(
-  value: DataValueType,
+  value: Value,
   type: MeasureType,
-  valueInfo: DataValue,
+  valueInfo: SeriesValue,
   scaleType: ScaleType,
   valueType: Series['valueType'],
-  submissionDate: string,
+  submissionDate: MeasureData['submissionDate'],
 ) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
@@ -258,7 +258,7 @@ const getIsHidden = (
     })
     .some(isHidden => isHidden);
 
-function getValueInfo(value: DataValueType, valueMapping: ValueMappingType) {
+function getValueInfo(value: Value, valueMapping: SeriesValueMapping) {
   // use 'no data' value if value is null and there is a null mapping defined
   if (!value && typeof value !== 'number' && valueMapping.null) {
     return {
@@ -280,13 +280,12 @@ function getValueInfo(value: DataValueType, valueMapping: ValueMappingType) {
     ...matchedValue,
   };
 }
-type MarkerData = Record<string, any>;
 // For situations where we can only show one value, just show the value
 // of the first measure.
-export const getSingleFormattedValue = (markerData: MarkerData, series: Series[]) =>
+export const getSingleFormattedValue = (markerData: MeasureData, series: Series[]) =>
   getFormattedInfo(markerData, series[0]).formattedValue;
 
-export function getFormattedInfo(markerData: MarkerData, series: Series) {
+export function getFormattedInfo(markerData: MeasureData, series: Series) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
   const value = markerData[key];
   const valueInfo = getValueInfo(value, valueMapping);
@@ -333,7 +332,7 @@ export function getMeasureDisplayInfo(
     icon?: string;
     radius?: number;
     isHidden: boolean;
-    originalValue?: DataValue['value'];
+    originalValue?: SeriesValue['value'];
   };
 
   serieses.forEach(({ color, icon, radius }: Series) => {

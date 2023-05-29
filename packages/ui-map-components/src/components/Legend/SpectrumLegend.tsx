@@ -12,7 +12,7 @@ import { resolveSpectrumColour } from '../../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../../constants';
 import { LegendEntry } from './LegendEntry';
-import { ScaleType, SpectrumLegendProps, SpectrumSeriesItem } from '../../types';
+import { ScaleType, SpectrumLegendProps, SpectrumSeries, Value } from '../../types';
 
 const FlexCenter = styled(MuiBox)`
   display: flex;
@@ -49,7 +49,7 @@ const getSpectrumLabels = (
   scaleType: ScaleType,
   min: number,
   max: number,
-  valueType: string,
+  valueType?: SpectrumSeries['valueType'],
 ): {
   left: string;
   right: string;
@@ -70,13 +70,7 @@ const getSpectrumLabels = (
   }
 };
 
-const renderSpectrum = ({
-  min,
-  max,
-  scaleType,
-  scaleColorScheme,
-  valueType,
-}: SpectrumSeriesItem) => {
+const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: SpectrumSeries) => {
   if (min == null || max == null) return null;
 
   const spectrumDivs = [];
@@ -155,7 +149,7 @@ export const SpectrumLegend = React.memo(
             scaleType,
             scaleColorScheme,
             valueType,
-          } as SpectrumSeriesItem)}
+          } as SpectrumSeries)}
         </SpectrumContainer>
         {noDataColour && (
           <LegendEntry
@@ -164,7 +158,7 @@ export const SpectrumLegend = React.memo(
             dataKey={dataKey}
             hiddenValues={hiddenValues}
             onClick={setValueHidden}
-            value={value}
+            value={value as Value}
           />
         )}
       </FlexCenter>

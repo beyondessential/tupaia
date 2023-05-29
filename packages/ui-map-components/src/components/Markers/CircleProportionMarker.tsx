@@ -18,7 +18,7 @@ const HoverCircle = styled(CircleMarker)`
 
 export const CircleProportionMarker = React.memo(
   ({ radius, children, coordinates, color }: MarkerProps) => {
-    if (coordinates?.length !== 2) return null;
+    if ((coordinates as number[])?.length !== 2) return null;
 
     const AREA_MULTIPLIER = 100; // just tuned by hand
     const numberValue = parseFloat(String(radius)) || 0;

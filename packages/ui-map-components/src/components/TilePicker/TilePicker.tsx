@@ -5,13 +5,10 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { TileButton } from './TileButton';
+import { TileButton, TileSet } from './TileButton';
 import { TileControl } from './TileControl';
-import { tileSetShape } from './constants';
 import { createScaleKeyFrameAnimation } from './keyFrames';
-import { TileSet } from '../../types';
 
 const Container = styled.div`
   height: 100%;

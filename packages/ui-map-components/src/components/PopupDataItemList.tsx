@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { getFormattedInfo } from '../utils';
-import { Series } from '../types';
+import { Series, MeasureData } from '../types';
 
 interface PopupDataItemProps {
   measureName: Series['name'];
@@ -22,10 +22,13 @@ const PopupDataItem = ({ measureName, value }: PopupDataItemProps) => (
 
 interface PopupDataItemListProps {
   serieses: Series[];
-  data?: object;
+  data?: MeasureData;
 }
 
-export const PopupDataItemList = ({ serieses, data = {} }: PopupDataItemListProps) => {
+export const PopupDataItemList = ({
+  serieses,
+  data = {} as MeasureData,
+}: PopupDataItemListProps) => {
   return (
     <>
       {serieses

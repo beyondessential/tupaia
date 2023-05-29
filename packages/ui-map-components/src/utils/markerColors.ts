@@ -35,7 +35,7 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.GPI]: GPI_COLOR_SCHEME,
 };
 
-type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
+export type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
 
 /**
  * Helper function just to point the spectrum type to the correct colours

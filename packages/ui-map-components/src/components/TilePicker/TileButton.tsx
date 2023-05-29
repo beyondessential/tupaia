@@ -6,10 +6,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ReferenceTooltip } from '@tupaia/ui-components';
+import { ReferenceProps, ReferenceTooltip } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { TileSet } from '../../types';
+import { SeriesValue } from '../../types';
 
 const StyledButton = styled(Button)`
   position: relative;
@@ -78,6 +78,15 @@ const TileLabel = styled(Typography)`
     theme.palette.type === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(43, 45, 56, 0.9)'};
   padding: 0.5rem 0.75rem;
 `;
+
+// Types for a tileset
+export type TileSet = {
+  key: string;
+  label: string;
+  thumbnail: string;
+  reference?: ReferenceProps;
+  legendItems?: SeriesValue[];
+};
 
 interface TileButtonProps {
   tileSet: TileSet;

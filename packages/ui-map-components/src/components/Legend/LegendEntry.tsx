@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
-import { LegendProps, DataValueType } from '../../types';
+import { LegendProps, Value } from '../../types';
 
 const Button = styled(MuiButton)`
   display: flex;
@@ -37,7 +37,7 @@ const Label = styled.div`
 interface LegendEntryProps {
   marker: React.ReactNode;
   label: string;
-  value: DataValueType;
+  value: Value;
   dataKey?: string;
   onClick?: LegendProps['setValueHidden'];
   hiddenValues?: LegendProps['hiddenValues'];
