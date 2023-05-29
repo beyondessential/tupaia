@@ -78,7 +78,6 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: Sp
   if (min === max) {
     // There will only be a single value displayed, let's just default it to the middle color (50 % of the way from 0 to 1):
 
-    // @ts-ignore
     const colour = resolveSpectrumColour(scaleType, scaleColorScheme, 0.5, 0, 1);
     const { left: label } = getSpectrumLabels(scaleType, min, min, valueType);
 
@@ -95,7 +94,6 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: Sp
   switch (scaleType) {
     case SCALE_TYPES.TIME:
       for (let i = 0; i < 1; i += 0.01) {
-        // @ts-ignore
         const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
@@ -108,7 +106,6 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: Sp
       const increment = (max - min) / 100;
 
       for (let i = min; i < max; i += increment) {
-        // @ts-ignore
         const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }

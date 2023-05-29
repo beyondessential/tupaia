@@ -76,12 +76,10 @@ export function createValueMapping(valueObjects: SeriesValue[], type: string) {
 
     if (Array.isArray(value)) {
       value.forEach(v => {
-        // @ts-ignore TODO: fix this
-        mapping[v] = valueObject;
+        mapping[v as string] = valueObject;
       });
     } else {
-      // @ts-ignore TODO: fix this
-      mapping[value] = valueObject;
+      mapping[value as string] = valueObject;
     }
   });
 
