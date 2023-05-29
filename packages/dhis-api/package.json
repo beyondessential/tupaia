@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "chai-as-promised": "^7.1.1",
     "lodash.groupby": "^4.6.0",

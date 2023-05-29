@@ -21,7 +21,7 @@ export const TransformSchema = {
 	]
 } 
 
-export const ReportConfigSchema = {
+export const StandardReportConfigSchema = {
 	"properties": {
 		"transform": {
 			"type": "array",
@@ -47,6 +47,64 @@ export const ReportConfigSchema = {
 	"additionalProperties": false,
 	"required": [
 		"transform"
+	]
+} 
+
+export const CustomReportConfigSchema = {
+	"properties": {
+		"customReport": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"customReport"
+	]
+} 
+
+export const ReportConfigSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"transform": {
+					"type": "array",
+					"items": {
+						"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+						"anyOf": [
+							{
+								"type": "object",
+								"additionalProperties": false
+							},
+							{
+								"type": "string"
+							}
+						]
+					}
+				},
+				"output": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"transform"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"customReport": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"customReport"
+			]
+		}
 	]
 } 
 
@@ -24667,6 +24725,7 @@ export const EntitySchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"complaint",
 				"country",
 				"disaster",
 				"district",
@@ -24692,6 +24751,7 @@ export const EntitySchema = {
 				"sub_facility",
 				"trap",
 				"village",
+				"water_sample",
 				"wish_sub_district",
 				"world"
 			],
@@ -24912,6 +24972,66 @@ export const IndicatorSchema = {
 		"builder",
 		"code",
 		"id"
+	]
+} 
+
+export const LandingPageSchema = {
+	"properties": {
+		"contact_us": {
+			"type": "string"
+		},
+		"extended_title": {
+			"type": "string"
+		},
+		"external_link": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"include_name_in_header": {
+			"type": "boolean"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"long_bio": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"phone_number": {
+			"type": "string"
+		},
+		"primary_hexcode": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"secondary_hexcode": {
+			"type": "string"
+		},
+		"url_segment": {
+			"type": "string"
+		},
+		"website_url": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name",
+		"url_segment"
 	]
 } 
 
@@ -25311,6 +25431,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"complaint",
 				"country",
 				"disaster",
 				"district",
@@ -25336,6 +25457,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"sub_facility",
 				"trap",
 				"village",
+				"water_sample",
 				"wish_sub_district",
 				"world"
 			],
@@ -25527,31 +25649,47 @@ export const ReportSchema = {
 			"type": "string"
 		},
 		"config": {
-			"type": "object",
-			"properties": {
-				"transform": {
-					"type": "array",
-					"items": {
-						"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
-						"anyOf": [
-							{
-								"type": "object",
-								"additionalProperties": false
-							},
-							{
-								"type": "string"
-							}
-						]
-					}
-				},
-				"output": {
+			"anyOf": [
+				{
 					"type": "object",
-					"additionalProperties": false
+					"properties": {
+						"transform": {
+							"type": "array",
+							"items": {
+								"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+								"anyOf": [
+									{
+										"type": "object",
+										"additionalProperties": false
+									},
+									{
+										"type": "string"
+									}
+								]
+							}
+						},
+						"output": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"transform"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"customReport": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"customReport"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"transform"
 			]
 		},
 		"id": {
@@ -26069,6 +26207,7 @@ export const EntityTypeSchema = {
 		"case_contact",
 		"catchment",
 		"city",
+		"complaint",
 		"country",
 		"disaster",
 		"district",
@@ -26094,6 +26233,7 @@ export const EntityTypeSchema = {
 		"sub_facility",
 		"trap",
 		"village",
+		"water_sample",
 		"wish_sub_district",
 		"world"
 	],
@@ -26207,6 +26347,7 @@ export const EntityCreatedSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"complaint",
 				"country",
 				"disaster",
 				"district",
@@ -26232,6 +26373,7 @@ export const EntityCreatedSchema = {
 				"sub_facility",
 				"trap",
 				"village",
+				"water_sample",
 				"wish_sub_district",
 				"world"
 			],
@@ -26374,6 +26516,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"case_contact",
 							"catchment",
 							"city",
+							"complaint",
 							"country",
 							"disaster",
 							"district",
@@ -26399,6 +26542,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"sub_facility",
 							"trap",
 							"village",
+							"water_sample",
 							"wish_sub_district",
 							"world"
 						],
