@@ -611,6 +611,7 @@ export enum QuestionType {
   'PrimaryEntity' = 'PrimaryEntity',
   'Radio' = 'Radio',
   'SubmissionDate' = 'SubmissionDate',
+  'File' = 'File',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
