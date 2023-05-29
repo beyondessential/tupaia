@@ -1,4 +1,9 @@
-import AWS from 'aws-sdk';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import { S3 } from '@aws-sdk/client-s3';
 import {
   DatabaseError,
   getS3ImageFilePath,
@@ -26,7 +31,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       } else {
         // included for backwards compatibility passing base64 strings for images
         try {
-          const s3Client = new S3Client(new AWS.S3());
+          const s3Client = new S3Client(new S3({}));
           answerDocument.text = await s3Client.uploadImage(answer.body);
         } catch (error) {
           throw new UploadError(error);

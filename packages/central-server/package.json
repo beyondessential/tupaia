@@ -26,6 +26,7 @@
     "create-meditrak-sync-view": "node dist/createMeditrakSyncView.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.341.0",
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/auth": "1.0.0",
@@ -39,7 +40,6 @@
     "adm-zip": "^0.5.5",
     "api-error-handler": "^1.0.0",
     "async": "^2.6.2",
-    "aws-sdk": "^2.451.0",
     "body-parser": "^1.18.3",
     "case": "^1.6.1",
     "cors": "^2.8.5",
