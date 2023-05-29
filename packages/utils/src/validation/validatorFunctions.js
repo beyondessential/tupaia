@@ -91,6 +91,27 @@ export const isEmail = value => {
   }
 };
 
+export const isHexColor = value => {
+  if (!validator.isHexColor(value.toString())) {
+    // Coerce to string before checking with validator
+    throw new ValidationError('Not a valid hex colour');
+  }
+};
+
+export const isURL = value => {
+  if (!validator.isURL(value.toString())) {
+    // Coerce to string before checking with validator
+    throw new ValidationError('Not a valid url');
+  }
+};
+
+export const isURLPathSegment = value => {
+  const urlSegmentRegex = /^[a-zA-Z0-9_-]+$/;
+  if (!urlSegmentRegex.test(value.toString())) {
+    throw new ValidationError('No a valid url segment');
+  }
+};
+
 export const isPlainObject = value => {
   if (!checkIsOfType(value, 'object')) {
     throw new Error('Not a plain javascript object');
@@ -191,10 +212,10 @@ export const constructRecordExistsWithField = (model, field) => async value => {
   }
 };
 
-export const constructRecordNotExistsWithField = (model, field) => async value => {
+export const constructRecordNotExistsWithField = (model, field = 'code') => async value => {
   hasContent(value);
 
-  const record = await model.findOne({ code: value });
+  const record = await model.findOne({ [field]: value });
   if (record) {
     throw new ValidationError(
       `Another ${model.databaseType} record already exists with with ${field}: ${value}`,
@@ -266,7 +287,13 @@ export const constructIsNotPresentOr = validatorFunction => (value, object, key)
 
 export const constructIsLongerThan = minLength => value => {
   if (value.length < minLength) {
-    throw new ValidationError(`Must be longer than ${value} characters`);
+    throw new ValidationError(`Must be longer than ${minLength} characters`);
+  }
+};
+
+export const constructIsShorterThan = maxLength => value => {
+  if (value && value.length > maxLength) {
+    throw new ValidationError(`Must be shorter than ${maxLength} characters`);
   }
 };
 

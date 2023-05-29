@@ -119,6 +119,7 @@ GroupedSelect.propTypes = {
   defaultValue: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
+  tooltip: PropTypes.string,
 };
 
 GroupedSelect.defaultProps = {
@@ -128,4 +129,5 @@ GroupedSelect.defaultProps = {
   value: '',
   label: null,
   onChange: null,
+  tooltip: '',
 };

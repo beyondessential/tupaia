@@ -13,7 +13,11 @@ const buildAndInsertProjectAndHierarchy = async (
   const projectEntity = await findOrCreateDummyRecord(
     models.entity,
     { code },
-    { type: 'project', name: projectProps.projectEntityName },
+    {
+      type: 'project',
+      name: projectProps.projectEntityName,
+      attributes: projectProps.projectEntityAttributes || {},
+    },
   );
   entityCodeToId[projectEntity.code] = projectEntity.id;
 

@@ -41,9 +41,12 @@ const Header = styled(FlexStart)`
   position: relative;
   background-color: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : DARK_BACKGROUND)};
   padding: 1.3rem 1.875rem 1.25rem;
-  border-bottom: 1px solid
-    ${({ theme }) =>
-      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
+  border-bottom: ${({ border, theme }) => {
+    if (!border) return 'none';
+    return `1px solid ${
+      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER
+    }`;
+  }};
 `;
 
 const DialogTitle = styled(Typography)`
@@ -57,13 +60,17 @@ const CloseButton = styled(IconButton)`
   top: 0;
   right: 0;
   color: ${props => props.theme.palette.text.primary};
+  padding: 0.5rem;
 `;
 
 export const DialogHeader = ({ title, onClose, color, children }) => (
-  <Header>
-    <DialogTitle color={color} variant="h3">
-      {title}
-    </DialogTitle>
+  // Only render a border if there is a title or children inside the header
+  <Header border={title || children}>
+    {title && (
+      <DialogTitle color={color} variant="h3">
+        {title}
+      </DialogTitle>
+    )}
     {children}
     <CloseButton onClick={onClose}>
       <CloseIcon />
@@ -72,7 +79,7 @@ export const DialogHeader = ({ title, onClose, color, children }) => (
 );
 
 DialogHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   color: PropTypes.string,
   children: PropTypes.any,
@@ -81,6 +88,7 @@ DialogHeader.propTypes = {
 DialogHeader.defaultProps = {
   color: 'textPrimary',
   children: null,
+  title: null,
 };
 
 export const DialogContent = styled.div`

@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { utcMoment, convertDateRangeToPeriods } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/tsutils';
+import { convertDateRangeToPeriods } from '@tupaia/utils';
 
 export const EARLIEST_DATA_DATE = utcMoment('2017-01-01'); // Tupaia started in 2017
 const MAXIMUM_MONTHS_TO_LOOK_BACK = 60; // Last 5 years
