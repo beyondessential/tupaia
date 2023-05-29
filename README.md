@@ -44,6 +44,7 @@ While each package type has their own structure, there are a few common standard
 ### Platform interfaces
 
 - [Tupaia](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
+- [Tupaia Web](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-web/README.md) (New version of web-frontend)
 - [Admin Panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [LESMIS](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [PSSS](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
