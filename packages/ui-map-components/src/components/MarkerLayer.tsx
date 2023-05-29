@@ -5,7 +5,6 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { LayerGroup, Polygon } from 'react-leaflet';
 import { MeasureMarker, MeasurePopup } from './Markers';
 import { AreaTooltip } from './AreaTooltip';
@@ -77,13 +76,14 @@ export const MarkerLayer = ({
         // Need to show all values on tooltips even though we toggle off one map overlay
         const markerData = {
           ...measure,
+          color,
           ...(multiOverlayMeasureData &&
             multiOverlayMeasureData.find(
               item => item.organisationUnitCode === measure.organisationUnitCode,
             )),
         };
         return (
-          <MeasureMarker key={measure.organisationUnitCode} {...measure}>
+          <MeasureMarker key={measure.organisationUnitCode} color={color} {...measure}>
             <MeasurePopup
               markerData={markerData}
               serieses={serieses}
@@ -95,25 +95,4 @@ export const MarkerLayer = ({
       })}
     </LayerGroup>
   );
-};
-
-MarkerLayer.propTypes = {
-  measureData: PropTypes.array,
-  multiOverlayMeasureData: PropTypes.array,
-  serieses: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    }),
-  ),
-  multiOverlaySerieses: PropTypes.array,
-  onSeeOrgUnitDashboard: PropTypes.func,
-};
-
-MarkerLayer.defaultProps = {
-  measureData: null,
-  multiOverlayMeasureData: null,
-  serieses: null,
-  multiOverlaySerieses: null,
-  onSeeOrgUnitDashboard: null,
 };

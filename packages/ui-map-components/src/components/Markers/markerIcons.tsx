@@ -391,6 +391,6 @@ export function getMarkerForValue(
   scale: number = 1,
 ) {
   const icon = icons[iconKey as IconKey] || icons.pin;
-  const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
+  const color = BREWER_PALETTE[colorName as ColorKey] || colorName; 
   return toLeaflet(icon, color, scale);
 }

@@ -8,7 +8,7 @@ import React from 'react';
 import { CircleMarker } from 'react-leaflet';
 import styled from 'styled-components';
 import { getColor } from '../../utils';
-import { MarkerProps } from '../../types';
+import { Color, MarkerProps } from '../../types';
 
 const HoverCircle = styled(CircleMarker)`
   &:hover {
@@ -25,7 +25,7 @@ export const CircleProportionMarker = React.memo(
     const area = Math.max(numberValue, 1) * AREA_MULTIPLIER;
 
     const displayRadius = Math.sqrt(area / Math.PI);
-    const colorValue = getColor(color!);
+    const colorValue = getColor(color as Color);
     return (
       <HoverCircle
         center={coordinates}
