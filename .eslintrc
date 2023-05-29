@@ -297,6 +297,18 @@
       "plugins": [
         "react-refresh"
       ],
+      "settings": {
+        "import/resolver": {
+          "node": {
+            "extensions": [
+              ".js",
+              ".jsx",
+              ".ts",
+              ".tsx"
+            ]
+          }
+        }
+      },
       "rules": {
         "camelcase": "warn",
         "import/no-named-as-default": "off",
