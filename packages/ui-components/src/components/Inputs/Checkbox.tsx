@@ -6,7 +6,8 @@ import React from 'react';
 import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@material-ui/core/Checkbox';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
-import styled from 'styled-components'; 
+import styled from 'styled-components';
+import { InputLabel } from './InputLabel';
 
 const StyledCheckbox = styled(MuiCheckbox)`
   &.MuiButtonBase-root:not(.MuiIconButton-colorPrimary) {
@@ -32,6 +33,7 @@ interface CheckboxProps extends MuiCheckboxProps {
   error?: boolean;
   className?: string;
   helperText?: string;
+  tooltip?: string;
 }
 
 export const Checkbox = ({
@@ -39,12 +41,16 @@ export const Checkbox = ({
   helperText,
   error = false,
   className,
+  tooltip,
   ...props
 }: CheckboxProps) => {
   if (label) {
     return (
       <Wrapper className={className}>
-        <MuiFormControlLabel control={<StyledCheckbox {...props} />} label={label} />
+        <MuiFormControlLabel
+          control={<StyledCheckbox {...props} />}
+          label={<InputLabel label={label} tooltip={tooltip} as="span" />}
+        />
         {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
       </Wrapper>
     );

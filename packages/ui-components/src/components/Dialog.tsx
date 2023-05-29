@@ -40,9 +40,12 @@ const Header = styled(FlexStart)`
   position: relative;
   background-color: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : DARK_BACKGROUND)};
   padding: 1.3rem 1.875rem 1.25rem;
-  border-bottom: 1px solid
-    ${({ theme }) =>
-      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
+  border-bottom: ${({ border, theme }) => {
+    if (!border) return 'none';
+    return `1px solid ${
+      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER
+    }`;
+  }};
 `;
 
 const DialogTitle = styled(Typography)`
@@ -56,6 +59,7 @@ const CloseButton = styled(IconButton)`
   top: 0;
   right: 0;
   color: ${props => props.theme.palette.text.primary};
+  padding: 0.5rem;
 `;
 
 interface DialogHeaderProps {
