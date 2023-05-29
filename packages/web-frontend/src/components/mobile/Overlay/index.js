@@ -8,7 +8,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
-import modalSlideTransition from 'react-animations/lib/fade-in-up';
 import Radium from 'radium';
 
 import {
