@@ -5896,6 +5896,7 @@ __metadata:
     moment: ^2.29.1
     prop-types: ^15.7.2
     react: ^16.13.1
+    react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
     react-leaflet: ^3.2.1
     react-table: ^7.7.0
