@@ -5,11 +5,11 @@
 
 import { useDataTableExport } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
-import { Series, TableMeasureData } from '../../types';
+import { Series, MeasureData } from '../../types';
 
 export const useMapDataExport = (
   serieses: Series[],
-  measureData: TableMeasureData[],
+  measureData: MeasureData[],
   title: string,
   startDate: string | Date,
   endDate: string | Date,

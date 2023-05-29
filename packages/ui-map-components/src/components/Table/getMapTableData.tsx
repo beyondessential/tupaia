@@ -5,7 +5,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { getFormattedInfo } from '../../utils';
-import { Series, TableMeasureData } from '../../types';
+import { MeasureData, Series } from '../../types';
 
 const FirstColumnCell = styled.span`
   font-weight: 500;
@@ -35,7 +35,7 @@ const processColumns = (serieses: Series[]) => {
   ];
 };
 
-const processData = (serieses: Series[], measureData: TableMeasureData[]) => {
+const processData = (serieses: Series[], measureData: MeasureData[]) => {
   if (!measureData || !serieses) {
     return [];
   }
@@ -54,7 +54,7 @@ const processData = (serieses: Series[], measureData: TableMeasureData[]) => {
   });
 };
 
-export const getMapTableData = (serieses: Series[], measureData: TableMeasureData[]) => {
+export const getMapTableData = (serieses: Series[], measureData: MeasureData[]) => {
   const columns = useMemo(() => processColumns(serieses), [JSON.stringify(serieses)]);
   const data = useMemo(() => processData(serieses, measureData), [
     JSON.stringify(serieses),

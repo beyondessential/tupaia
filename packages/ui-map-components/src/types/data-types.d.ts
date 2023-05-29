@@ -2,21 +2,77 @@ import { PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
 import { Entity as TupaiaEntity } from '@tupaia/types';
 import { ReferenceProps } from '@tupaia/ui-components';
+import { VALUE_TYPES } from '@tupaia/utils';
+import { MEASURE_TYPES, SCALE_TYPES } from '../constants';
 import { Color } from './types';
 import { MarkerProps } from './marker-types';
-import { LegendItemValue } from './legend-types';
+import { DataValue } from './legend-types';
+import { ValueOf } from './helpers';
 
-export type Series = {
-  key: string;
+const ValueTypes = { ...VALUE_TYPES } as const;
+
+type ValueTypesKeys = keyof typeof ValueTypes;
+type ValueTypeValues = typeof VALUE_TYPES[ValueTypesKeys];
+
+export type DataValueType = string | number | null | undefined;
+export type ScaleType = `${SCALE_TYPES}`;
+export type MeasureType = `${MEASURE_TYPES}`;
+
+export type DataValue = {
+  value: DataValueType | DataValueType[];
   name: string;
+  hideFromLegend?: boolean;
+  icon?: IconKey;
+  color: string;
+  label?: string;
+};
+
+export type ValueMappingType = {
+  null: DataValue;
+  [key: string]: DataValue;
+};
+
+export type BaseSeriesItem = {
+  name: string;
+  key: string;
+  values: DataValue[];
+  valueMapping: ValueMappingType;
+  hideFromLegend?: boolean;
+  type: MeasureType;
+  startDate?: string;
+  endDate?: string;
+  hideByDefault?: Record<string, boolean>;
+  displayedValueKey?: string;
+  color: string;
+  icon?: IconKey;
+  radius?: number;
+  scaleBounds?: {
+    left: number;
+    right: number;
+  };
   hideFromPopup?: boolean;
   metadata: object;
-  value: string | number;
   organisationUnit?: string;
   sortOrder: number;
-  type?: string;
   popupHeaderFormat?: string;
+  valueType?: ValueTypeValues;
 };
+
+export type MarkerSeriesItem = BaseSeriesItem & {
+  icon?: IconKey;
+};
+
+export type SpectrumSeriesItem = BaseSeriesItem & {
+  scaleColorScheme: ColorScheme;
+  min: number;
+  max: number;
+  scaleType: ScaleType;
+  valueType: string;
+  dataKey?: string;
+  noDataColour?: string;
+};
+
+export type Series = MarkerSeriesItem & SpectrumSeriesItem;
 
 export type Location = {
   bounds: LatLngBoundsExpression;
@@ -51,19 +107,13 @@ export type MeasureData = MeasureOrgUnit &
     icon?: string;
     photoUrl?: string;
     value?: number | string;
+    submissionDate?: string | Date;
   };
-
-export type TableMeasureData = {
-  [key: string]: any;
-  name: string;
-  value: string | number;
-  submissionDate?: string | Date;
-};
 
 export type TileSet = {
   key: string;
   label: string;
   thumbnail: string;
   reference?: ReferenceProps;
-  legendItems?: LegendItemValue[];
+  legendItems?: DataValue[];
 };

@@ -4,7 +4,7 @@
  *
  */
 
-import { formatDataValueByType } from '@tupaia/utils';
+import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
 import { resolveSpectrumColour } from './markerColors';
 import {
   YES_COLOR,
@@ -15,6 +15,16 @@ import {
   SCALE_TYPES,
 } from '../constants';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
+import {
+  DataValue,
+  LegendProps,
+  MeasureData,
+  ScaleType,
+  Series,
+  ValueMappingType,
+  DataValueType,
+  MeasureType,
+} from '../types';
 
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
@@ -33,11 +43,11 @@ export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADE
 const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
 const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
 
-export function autoAssignColors(values) {
+export function autoAssignColors(values: DataValue[]) {
   if (!values) return [];
 
   let autoIndex = 0;
-  const getColor = valueObject => {
+  const getColor = (valueObject: DataValue) => {
     if (!valueObject.name) {
       return BREWER_AUTO[autoIndex++];
     }
@@ -58,17 +68,19 @@ export function autoAssignColors(values) {
   }));
 }
 
-export function createValueMapping(valueObjects, type) {
-  const mapping = {};
+export function createValueMapping(valueObjects: DataValue[], type: string) {
+  const mapping = {} as ValueMappingType;
 
   valueObjects.forEach(valueObject => {
     const { value } = valueObject;
 
     if (Array.isArray(value)) {
       value.forEach(v => {
+        // @ts-ignore TODO: fix this
         mapping[v] = valueObject;
       });
     } else {
+      // @ts-ignore TODO: fix this
       mapping[value] = valueObject;
     }
   });
@@ -82,11 +94,11 @@ export function createValueMapping(valueObjects, type) {
   return mapping;
 }
 
-const getNullValueMapping = type => {
+const getNullValueMapping = (type: string) => {
   const baseMapping = {
     name: 'No data',
     value: MEASURE_VALUE_NULL,
-  };
+  } as DataValue;
 
   switch (type) {
     case MEASURE_TYPE_ICON:
@@ -103,7 +115,14 @@ const getNullValueMapping = type => {
   return baseMapping;
 };
 
-function getFormattedValue(value, type, valueInfo, scaleType, valueType, submissionDate) {
+function getFormattedValue(
+  value: DataValueType,
+  type: MeasureType,
+  valueInfo: DataValue,
+  scaleType: ScaleType,
+  valueType: Series['valueType'],
+  submissionDate: string,
+) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
@@ -124,7 +143,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
   }
 }
 
-export const getSpectrumScaleValues = (measureData, series) => {
+export const getSpectrumScaleValues = (measureData: MeasureData[], series: Series) => {
   const { key, scaleType, startDate, endDate } = series;
 
   if (scaleType === SCALE_TYPES.TIME) {
@@ -143,14 +162,20 @@ export const getSpectrumScaleValues = (measureData, series) => {
   return { min, max };
 };
 
-const clampScaleValues = (dataBounds, series) => {
-  const { valueType, scaleBounds = {} } = series;
+const clampScaleValues = (
+  dataBounds: {
+    min: number;
+    max: number;
+  },
+  series: Series,
+) => {
+  const { valueType, scaleBounds } = series;
 
   const defaultScale =
     valueType === 'percentage' ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT : SPECTRUM_SCALE_DEFAULT;
 
-  const leftBoundConfig = scaleBounds.left || defaultScale.left;
-  const rightBoundConfig = scaleBounds.right || defaultScale.right;
+  const leftBoundConfig = scaleBounds?.left || defaultScale.left;
+  const rightBoundConfig = scaleBounds?.right || defaultScale.right;
   const { min: minDataValue, max: maxDataValue } = dataBounds;
 
   return {
@@ -159,7 +184,13 @@ const clampScaleValues = (dataBounds, series) => {
   };
 };
 
-const clampValue = (value, config) => {
+const clampValue = (
+  value: number,
+  config: {
+    min?: number | 'auto';
+    max?: number | 'auto';
+  },
+) => {
   const { min, max } = config;
   let clampedValue = value;
 
@@ -169,12 +200,19 @@ const clampValue = (value, config) => {
   return clampedValue;
 };
 
-export function flattenMeasureHierarchy(mapOverlayHierarchy) {
-  const results = [];
-  const flattenGroupedMeasure = ({ children }) => {
+type Measure = {
+  children?: object[];
+};
+
+interface MapOverlayHierarchyItem {
+  children: Measure[] | MapOverlayHierarchyItem[];
+}
+export function flattenMeasureHierarchy(mapOverlayHierarchy: MapOverlayHierarchyItem[]) {
+  const results = [] as object[];
+  const flattenGroupedMeasure = ({ children }: MapOverlayHierarchyItem) => {
     children.forEach(childObject => {
       if (childObject.children && childObject.children.length) {
-        flattenGroupedMeasure(childObject);
+        flattenGroupedMeasure(childObject as MapOverlayHierarchyItem);
       } else {
         results.push(childObject);
       }
@@ -191,7 +229,11 @@ export function flattenMeasureHierarchy(mapOverlayHierarchy) {
   return results;
 }
 
-const getIsHidden = (measureData, serieses, allHiddenValues) =>
+const getIsHidden = (
+  measureData: MeasureData,
+  serieses: Series[],
+  allHiddenValues: Record<string, Record<string, boolean>>,
+) =>
   serieses
     .map(({ key, valueMapping, hideByDefault }) => {
       const value = measureData[key];
@@ -202,7 +244,7 @@ const getIsHidden = (measureData, serieses, allHiddenValues) =>
 
       // use 'no data' value if value is null and there is a null mapping defined
       if (!value && typeof value !== 'number' && valueMapping.null) {
-        return hiddenValues.null || hiddenValues[valueMapping.null.value];
+        return hiddenValues.null || hiddenValues[valueMapping.null.value as string];
       }
 
       const matchedValue = valueMapping[value];
@@ -212,11 +254,11 @@ const getIsHidden = (measureData, serieses, allHiddenValues) =>
         return hiddenValues.other;
       }
 
-      return hiddenValues[matchedValue.value];
+      return hiddenValues[matchedValue.value as string];
     })
     .some(isHidden => isHidden);
 
-function getValueInfo(value, valueMapping) {
+function getValueInfo(value: DataValueType, valueMapping: ValueMappingType) {
   // use 'no data' value if value is null and there is a null mapping defined
   if (!value && typeof value !== 'number' && valueMapping.null) {
     return {
@@ -224,7 +266,7 @@ function getValueInfo(value, valueMapping) {
     };
   }
 
-  const matchedValue = valueMapping[value];
+  const matchedValue = valueMapping[value as string];
 
   if (!matchedValue) {
     // use 'other' value
@@ -238,13 +280,13 @@ function getValueInfo(value, valueMapping) {
     ...matchedValue,
   };
 }
-
+type MarkerData = Record<string, any>;
 // For situations where we can only show one value, just show the value
 // of the first measure.
-export const getSingleFormattedValue = (markerData, series) =>
+export const getSingleFormattedValue = (markerData: MarkerData, series: Series[]) =>
   getFormattedInfo(markerData, series[0]).formattedValue;
 
-export function getFormattedInfo(markerData, series) {
+export function getFormattedInfo(markerData: MarkerData, series: Series) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
   const value = markerData[key];
   const valueInfo = getValueInfo(value, valueMapping);
@@ -278,17 +320,23 @@ export function getFormattedInfo(markerData, series) {
 }
 
 export function getMeasureDisplayInfo(
-  measureData = {},
-  serieses,
-  hiddenValues = {},
-  radiusScaleFactor = 1,
+  measureData: MeasureData, // TODO: handle default becaus eof required `positions` prop
+  serieses: Series[],
+  hiddenValues: LegendProps['hiddenValues'] = {},
+  radiusScaleFactor: number = 1,
 ) {
   const isHidden = getIsHidden(measureData, serieses, hiddenValues);
   const displayInfo = {
     isHidden,
+  } as {
+    color?: string;
+    icon?: string;
+    radius?: number;
+    isHidden: boolean;
+    originalValue?: DataValue['value'];
   };
 
-  serieses.forEach(({ color, icon, radius }) => {
+  serieses.forEach(({ color, icon, radius }: Series) => {
     if (color) {
       displayInfo.color = color;
     }
@@ -312,7 +360,7 @@ export function getMeasureDisplayInfo(
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_RADIUS:
-          displayInfo.radius = valueInfo.value * radiusScaleFactor || 0;
+          displayInfo.radius = (valueInfo.value as number) * radiusScaleFactor || 0;
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_SPECTRUM:
@@ -322,7 +370,7 @@ export function getMeasureDisplayInfo(
           displayInfo.color = resolveSpectrumColour(
             scaleType,
             scaleColorScheme,
-            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
+            (valueInfo.value as number) || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
             noDataColour,
@@ -355,19 +403,19 @@ export function getMeasureDisplayInfo(
 
 const MAX_ALLOWED_RADIUS = 1000;
 
-export const calculateRadiusScaleFactor = measureData => {
+export const calculateRadiusScaleFactor = (measureData: MeasureData[]) => {
   // Check if any of the radii in the dataset are larger than the max allowed
   // radius, and scale everything down proportionally if so.
   // (this needs to happen here instead of inside the circle marker component
   // because it needs to operate on the dataset level, not the datapoint level)
   const maxRadius = measureData
-    .map(d => parseInt(d.radius, 10) || 1)
+    .map(d => parseInt(d.radius as string, 10) || 1)
     .reduce((state, current) => Math.max(state, current), 0);
   return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
 };
 
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
-export function flattenNumericalMeasureData(measureData, key) {
+export function flattenNumericalMeasureData(measureData: MeasureData[], key: string) {
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }

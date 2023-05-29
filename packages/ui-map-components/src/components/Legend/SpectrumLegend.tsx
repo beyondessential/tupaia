@@ -12,7 +12,7 @@ import { resolveSpectrumColour } from '../../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../../constants';
 import { LegendEntry } from './LegendEntry';
-import { ScaleType, SpectrumLegendProps, SpectrumLegendSeriesItem } from '../../types';
+import { ScaleType, SpectrumLegendProps, SpectrumSeriesItem } from '../../types';
 
 const FlexCenter = styled(MuiBox)`
   display: flex;
@@ -76,7 +76,7 @@ const renderSpectrum = ({
   scaleType,
   scaleColorScheme,
   valueType,
-}: SpectrumLegendSeriesItem) => {
+}: SpectrumSeriesItem) => {
   if (min == null || max == null) return null;
 
   const spectrumDivs = [];
@@ -155,7 +155,7 @@ export const SpectrumLegend = React.memo(
             scaleType,
             scaleColorScheme,
             valueType,
-          } as SpectrumLegendSeriesItem)}
+          } as SpectrumSeriesItem)}
         </SpectrumContainer>
         {noDataColour && (
           <LegendEntry

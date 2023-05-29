@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
 import { MEASURE_TYPES } from '../../constants';
-import { LegendProps as BaseLegendProps, LegendSeriesItem, MeasureType } from '../../types';
+import { LegendProps as BaseLegendProps, Series, MeasureType } from '../../types';
 
 const LegendFrame = styled.div<{
   isDisplayed: boolean;
@@ -61,7 +61,7 @@ interface LegendProps extends BaseLegendProps {
   className?: string;
   measureInfo: {
     [mapOverlayCode: string]: {
-      [seriesesKey: string]: LegendSeriesItem[];
+      [seriesesKey: string]: Series[];
     };
   };
   currentMapOverlayCodes: string[];
@@ -91,7 +91,7 @@ export const Legend = React.memo(
       // measure info for mapOverlayCode may not exist when location changes.
       const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
       const serieses = baseSerieses.filter(
-        ({ type, hideFromLegend, values = [], min, max, noDataColour }: LegendSeriesItem) => {
+        ({ type, hideFromLegend, values = [], min, max, noDataColour }: Series) => {
           const seriesType = type as MeasureType;
           // if type is radius or popup-only, don't create a legend
           if (checkMeasureType(seriesType, [MEASURE_TYPES.RADIUS, MEASURE_TYPES.POPUP_ONLY]))
@@ -111,7 +111,7 @@ export const Legend = React.memo(
       return { ...results, [mapOverlayCode]: { serieses } };
     }, {}) as {
       [mapOverlayCode: string]: {
-        serieses: LegendSeriesItem[];
+        serieses: Series[];
       };
     };
 

@@ -5,11 +5,11 @@
 import React from 'react';
 import { DataTable } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
-import { Series, TableMeasureData } from '../../types';
+import { MeasureData, Series } from '../../types';
 
 interface MapTableProps {
   serieses: Series[];
-  measureData: TableMeasureData[];
+  measureData: MeasureData[];
   className?: string;
 }
 

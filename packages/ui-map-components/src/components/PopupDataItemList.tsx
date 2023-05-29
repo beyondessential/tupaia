@@ -10,7 +10,7 @@ import { Series } from '../types';
 
 interface PopupDataItemProps {
   measureName: Series['name'];
-  value: Series['value'];
+  value: string;
 }
 
 const PopupDataItem = ({ measureName, value }: PopupDataItemProps) => (

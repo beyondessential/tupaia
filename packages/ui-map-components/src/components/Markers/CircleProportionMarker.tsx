@@ -25,7 +25,7 @@ export const CircleProportionMarker = React.memo(
     const area = Math.max(numberValue, 1) * AREA_MULTIPLIER;
 
     const displayRadius = Math.sqrt(area / Math.PI);
-    const colorValue = getColor(color);
+    const colorValue = getColor(color!);
     return (
       <HoverCircle
         center={coordinates}

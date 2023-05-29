@@ -25,7 +25,7 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../../utils';
 import { LegendEntry } from './LegendEntry';
-import { LegendItemValue, MarkerLegendSeriesItem, MarkerLegendProps } from '../../types';
+import { DataValue, MarkerLegendProps, MarkerSeriesItem } from '../../types';
 
 const Container = styled(MuiBox)`
   display: flex;
@@ -46,13 +46,13 @@ const Container = styled(MuiBox)`
  * and hide the radius as well. But, if the hidden icon is 'other', go ahead and add it to
  * the legend and show the radius.
  */
-const isHiddenOtherIcon = ({ value, icon }: LegendItemValue) => {
+const isHiddenOtherIcon = ({ value, icon }: DataValue) => {
   return value === MEASURE_VALUE_OTHER && icon === HIDDEN_ICON;
 };
 
 const getMarkerColor = (
-  value: LegendItemValue,
-  type: MarkerLegendSeriesItem['type'],
+  value: DataValue,
+  type: MarkerSeriesItem['type'],
   hasColorLayer: boolean,
 ) => {
   const theme = useTheme();
@@ -71,8 +71,8 @@ const getMarkerColor = (
 };
 
 const getLegendMarkerForValue = (
-  value: LegendItemValue,
-  type: MarkerLegendSeriesItem['type'],
+  value: DataValue,
+  type: MarkerSeriesItem['type'],
   hasIconLayer: MarkerLegendProps['hasIconLayer'],
   hasRadiusLayer: MarkerLegendProps['hasRadiusLayer'],
   hasColorLayer: MarkerLegendProps['hasColorLayer'],
