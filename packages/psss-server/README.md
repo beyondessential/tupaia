@@ -1,3 +1,3 @@
 # @tupaia/psss-server
 
-Orchestration server for the PSSS web app.
+Back end server for the PSSS web app.

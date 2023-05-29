@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback, ChangeEvent } from 'react';
+import React, { useState, useCallback } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { ListSubheader, SvgIconProps, TextFieldProps } from '@material-ui/core';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from './TextField';
 
@@ -106,4 +107,15 @@ export const GroupedSelect = ({
       )}
     </GroupedSelectField>
   );
+};
+
+GroupedSelect.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  groupedOptions: PropTypes.object.isRequired, // map of group label => standard options array e.g. { Cats: [{ label: 'Ginger', value: 1 }] }
+  placeholder: PropTypes.string,
+  showPlaceholder: PropTypes.bool,
+  defaultValue: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
 };

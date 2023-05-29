@@ -214,7 +214,7 @@ describe('changes (POST)', () => {
         const uploadedImage = await fetchWithTimeout(IMAGE_URL);
         const imageBuffer = await uploadedImage.buffer();
         const imageString = imageBuffer.toString('base64');
-        expect(imageString).toEqual(TEST_IMAGE_DATA.replace('data:image/png;base64,', ''));
+        expect(imageString).toEqual(TEST_IMAGE_DATA);
       });
     });
 

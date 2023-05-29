@@ -356,7 +356,7 @@ describe('POST /surveyResponse', async () => {
         const imageResponse = await fetchWithTimeout(answer.text);
         const imageBuffer = await imageResponse.buffer();
         const imageString = imageBuffer.toString('base64');
-        expect(imageString).to.equal(TEST_IMAGE_DATA.replace('data:image/png;base64,', ''));
+        expect(imageString).to.equal(TEST_IMAGE_DATA);
       });
     });
 

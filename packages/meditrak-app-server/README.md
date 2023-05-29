@@ -1,3 +1,3 @@
 # @tupaia/meditrak-app-server
 
-Orchestration server for the Meditrak app.
+Back end server for the Meditrak app.

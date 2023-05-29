@@ -4,9 +4,9 @@
  */
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { GETHandler } from '../GETHandler';
-import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
-import { hasAccessToEntityForVisualisation } from '../utilities';
+import { GETHandler } from './GETHandler';
+import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
+import { hasAccessToEntityForVisualisation } from './utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -51,6 +51,7 @@ export class GETProjects extends GETHandler {
 
   async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
+
     if (!hasBESAdminAccess(this.accessPolicy)) {
       const allPermissionGroups = this.accessPolicy.getPermissionGroups();
       const countryCodesByPermissionGroup = {};

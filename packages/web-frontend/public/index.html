@@ -98,7 +98,7 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
       crossorigin="anonymous"
     />
     <link
@@ -128,16 +128,7 @@
         background: #262834;
         font-family: Roboto, sans-serif;
       }
-      #tupaia-spinner {
-          position: fixed;
-          top: 0;
-          left: 0;
-          height: 100vh;
-          width: 100vw;
-          z-index: 9999;
-          background: #262834;
-      }
-      #tupaia-spinner:before {
+      .spinner:before {
         content: '';
         box-sizing: border-box;
         position: absolute;
@@ -159,10 +150,6 @@
     <noscript>
       <p style="color: white">You need to enable JavaScript to run this app.</p>
     </noscript>
-    <!-- App wide loading spinner.
-      It is placed in the index.html file so that it displays while the react app is mounting and it
-      is outside of the root so that it still displays while we fetch essential initial app data (eg. landing pages)-->
-    <div id="tupaia-spinner"></div>
-    <div id="root"></div>
+    <div id="root"><div class="spinner"></div></div>
   </body>
 </html>

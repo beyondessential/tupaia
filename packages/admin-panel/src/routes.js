@@ -8,7 +8,6 @@ import { Assignment, InsertChart, PeopleAlt, Flag, Storage, Language } from '@ma
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
-  CustomLandingPagesPage,
   EntitiesPage,
   EntityTypesPage,
   OptionSetsPage,
@@ -223,11 +222,6 @@ export const ROUTES = [
         label: 'Entity Hierarchy',
         to: '/hierarchy',
         component: EntityHierarchyPage,
-      },
-      {
-        label: 'Landing Pages',
-        to: '/landing-pages',
-        component: CustomLandingPagesPage,
       },
     ],
   },

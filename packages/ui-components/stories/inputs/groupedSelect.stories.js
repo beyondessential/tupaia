@@ -37,17 +37,6 @@ export const select = () => (
   </Container>
 );
 
-export const TooltipLabel = () => (
-  <Container>
-    <GroupedSelect
-      label="Grouped select"
-      id="tooltip"
-      groupedOptions={groupedOptions}
-      tooltip="Select an item"
-    />
-  </Container>
-);
-
 export const Controlled = () => {
   const [value, setValue] = useState('AF');
 

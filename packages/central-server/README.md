@@ -1,9 +1,16 @@
-# @tupaia/central-server
+# central-server
 
-Central micro service for performing system operations. Primary responsibilities are:
+Backend for the MediTrak health facility survey and mapping software
 
-- Permissions based CRUD
-- Survey response management
-- Authentication
-- Running sync services
-- Executing database change handlers
+## Running Locally
+
+- Need to have the following installed
+  - Node
+  - yarn
+- Add a .env file to the root directory. The required variables are listed in `.env.example`
+- `yarn` (to install dependencies)
+- `yarn start-dev` to run in dev mode or `yarn start` to build and run production
+
+### Importing geojson
+
+Documentation for importing geojson can be found [here](doc/importingNewGeojson.md)

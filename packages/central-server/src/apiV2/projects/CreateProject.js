@@ -2,31 +2,40 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+
 import { snake } from 'case';
-import { BESAdminCreateHandler } from '../CreateHandler';
-import { uploadImage } from '../utilities';
+import { CreateHandler } from '../CreateHandler';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+
 /**
  * Handles POST endpoints:
  * - /projects
  */
 
-export class CreateProject extends BESAdminCreateHandler {
+export class CreateProject extends CreateHandler {
+  async assertUserHasAccess() {
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess], 'You need BES Admin to create new projects'),
+    );
+  }
+
   async createRecord() {
     const {
       code: rawProjectCode,
       name,
       description,
       sort_order,
+      image_url,
+      logo_url,
       permission_groups,
       countries,
       entityTypes,
       default_measure,
       dashboard_group_name,
-      image_url,
-      logo_url,
     } = this.newRecordData;
 
     const projectCode = snake(rawProjectCode);
+
     await this.models.wrapInTransaction(async transactingModels => {
       const { id: projectEntityId } = await this.createProjectEntity(
         transactingModels,
@@ -46,39 +55,20 @@ export class CreateProject extends BESAdminCreateHandler {
         dashboard_group_name,
         projectCode,
       );
-      // Add the project, and then upload the images afterward, so that if an error is caught when creating the record, the images aren't uploaded unnecessarily
-      const newProject = await transactingModels.project.create({
+
+      return transactingModels.project.create({
         code: projectCode,
         description,
         sort_order,
-        image_url: '',
-        logo_url: '',
+        image_url,
+        logo_url,
         permission_groups,
         default_measure,
         dashboard_group_name: dashboardGroupName,
         entity_id: projectEntityId,
         entity_hierarchy_id: projectEntityHierarchyId,
       });
-      await this.insertImagePaths(
-        transactingModels,
-        newProject.id,
-        projectCode,
-        image_url,
-        logo_url,
-      );
-
-      return newProject;
     });
-  }
-
-  async insertImagePaths(models, projectId, projectCode, encodedBackgroundImage, encodedLogoImage) {
-    // image_url and logo_url are currently required fields, so the validator will error before this point if either of these is falsey.
-    const updates = {
-      image_url: await uploadImage(encodedBackgroundImage, projectCode, 'project_image', true),
-      logo_url: await uploadImage(encodedLogoImage, projectCode, 'project_logo', true),
-    };
-    // The record has already been updated, so update the existing record with the new fields
-    return models.project.updateById(projectId, updates);
   }
 
   async createProjectEntity(models, projectCode, name) {

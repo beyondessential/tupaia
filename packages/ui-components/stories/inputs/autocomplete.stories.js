@@ -196,15 +196,3 @@ export const Tags = () => {
     </Container>
   );
 };
-
-export const Tooltip = () => (
-  <Container>
-    <Autocomplete
-      id="tooltip-autocomplete"
-      label="Auto Complete with tooltip label"
-      options={options.map(option => option.name)}
-      placeholder="Search..."
-      tooltip="This is a tooltip"
-    />
-  </Container>
-);

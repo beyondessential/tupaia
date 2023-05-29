@@ -67,7 +67,7 @@ export const Select = ({
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    event => {
       setValue(event.target.value);
     },
     [setValue],
@@ -110,7 +110,7 @@ export const NativeSelect = ({
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    event => {
       setValue(event.target.value);
     },
     [setValue],

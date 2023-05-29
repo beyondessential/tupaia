@@ -45,20 +45,3 @@ export const multiSelect = () => {
     </Container>
   );
 };
-
-export const multiSelectWithTooltip = () => {
-  return (
-    <Container>
-      <MultiSelect
-        label="Select Countries"
-        tooltip="You can select multiple countries"
-        defaultValue={['All']}
-        id="multi"
-        options={options}
-        renderValue={values =>
-          values.length > 1 ? `${values.length} Countries Selected` : getLabelForValue(values[0])
-        }
-      />
-    </Container>
-  );
-};

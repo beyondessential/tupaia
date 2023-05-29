@@ -1,3 +1,3 @@
 # @tupaia/lesmis-server
 
-Orchestration server for the LESMIS web app.
+Back end server for the LESMIS web app.

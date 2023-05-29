@@ -38,7 +38,6 @@ export const textField = () => (
     <TextField name="number" label="Number" type="number" />
     <TextField name="email" label="Email" type="email" />
     <TextField name="password" label="Password" type="password" />
-    <TextField name="toolTip" label="Tooltip" autoComplete="off" tooltip="This is a tooltip" />
   </Container>
 );
 

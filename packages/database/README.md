@@ -1,4 +1,4 @@
-# @tupaia/database
+# Tupaia Database
 
 This package provides common database code for use across other packages within this mono-repo.
 

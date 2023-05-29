@@ -4,26 +4,25 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import MuiRadio, { RadioProps } from '@material-ui/core/Radio';
+import MuiRadio from '@material-ui/core/Radio';
 import MuiRadioGroup from '@material-ui/core/RadioGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import MuiFormControl, { FormControlProps } from '@material-ui/core/FormControl';
+import MuiFormLabel, { FormLabelProps } from '@material-ui/core/FormLabel';
 import { OverrideableComponentProps } from '../../types';
-import { InputLabel } from './InputLabel';
 
 const FormControl = styled(MuiFormControl)<OverrideableComponentProps<FormControlProps>>`
   display: block;
   margin-bottom: 1.2rem;
 `;
 
-const Legend = styled.legend`
+const FormLabel = styled(MuiFormLabel)<OverrideableComponentProps<FormLabelProps>>`
   position: relative;
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-bottom: 0.25rem;
   color: ${props => props.theme.palette.text.secondary};
-  padding-inline-start: 0;
+
   &.Mui-focused {
     color: ${props => props.theme.palette.text.secondary};
   }
@@ -55,13 +54,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   }
 `;
 
-const Radio = styled(MuiRadio)<
-  RadioProps & {
-    InputProps: {
-      'aria-describedby': string | null;
-    };
-  }
->`
+const Radio = styled(MuiRadio)`
   color: ${props => props.theme.palette.text.tertiary};
 
   &.Mui-checked {
@@ -84,9 +77,6 @@ interface RadioGroupProps {
   className?: string;
   labelKey?: string;
   valueKey?: string;
-  tooltipKey?: string;
-  tooltip?: string;
-  helperText?: string;
 }
 
 export const RadioGroup = ({
@@ -98,26 +88,16 @@ export const RadioGroup = ({
   className,
   labelKey = 'label',
   valueKey = 'value',
-  tooltipKey = 'tooltip',
-  tooltip,
-  helperText,
 }: RadioGroupProps) => (
   <FormControl component="fieldset" className={className} color="primary">
-    <InputLabel as={Legend} label={label} tooltip={tooltip} />
-    {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
-    <StyledRadioGroup name={name} value={value} onChange={onChange}>
+    <FormLabel component="legend">{label}</FormLabel>
+    <StyledRadioGroup aria-label={name} name={name} value={value} onChange={onChange}>
       {options.map(option => (
         <FormControlLabel
-          control={
-            <Radio
-              InputProps={{
-                'aria-describedby': helperText ? `${name}-helperText` : null,
-              }}
-            />
-          }
+          control={<Radio />}
           key={option[valueKey].toString()}
           value={option[valueKey]}
-          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} />}
+          label={option[labelKey]}
         />
       ))}
     </StyledRadioGroup>

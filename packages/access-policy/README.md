@@ -1,4 +1,4 @@
-# @tupaia/access-policy
+# Tupaia Access Policy
 
 Methods for parsing the access policy that is received by Tupaia projects during authentication.
 

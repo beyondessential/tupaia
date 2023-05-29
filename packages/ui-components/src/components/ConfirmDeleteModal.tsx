@@ -24,7 +24,7 @@ const Heading = styled(Typography)`
   margin-bottom: 0.8rem;
 `;
 
-export interface ConfirmDeleteModalProps {
+interface ConfirmDeleteModalProps {
   isOpen?: boolean;
   title?: string;
   message?: string;

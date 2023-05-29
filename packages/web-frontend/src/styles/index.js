@@ -41,7 +41,6 @@ export const BLUE = '#22c7fc';
 export const LIGHT_BLUE = '#cde9ff';
 export const DARKENED_BLUE = '#0296c5';
 export const DARK_GREY = 'rgba(255, 255, 255, 0.6)';
-export const DARKEST_GREY = 'rgb(40, 42, 53)';
 export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
@@ -56,7 +55,6 @@ export const LEAFLET_Z_INDEX = 1000; // Leaflet base z-index is 400, but attribu
 export const EXPORT_CHART_PADDING = 20;
 export const DASHBOARD_META_MARGIN = 15;
 export const TOP_BAR_HEIGHT = 60;
-export const TOP_BAR_HEIGHT_MOBILE = 50;
 export const CONTROL_BAR_WIDTH = 340;
 export const CONTROL_BAR_PADDING = 10;
 export const MAP_CONTROLS_WIDTH = 166;
@@ -580,5 +578,22 @@ export const VIEW_STYLES = {
     padding: MOBILE_MARGIN_SIZE,
     color: WHITE,
     lineHeight: 1.3,
+  },
+};
+
+export const USER_BAR_STYLES = {
+  container: {
+    marginLeft: 10,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    position: 'relative',
+  },
+  userMenu: {
+    backgroundColor: TRANS_BLACK,
+    borderRadius: '8px',
+    pointerEvents: 'auto',
+    cursor: 'auto',
+    display: 'flex',
+    justifyContent: 'space-around',
   },
 };

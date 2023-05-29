@@ -5,16 +5,16 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
+
 import { LoginPage } from './LoginPage';
 import { ProjectPage } from '../ProjectPage';
 import { OVERLAY_PADDING } from '../../constants';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../../../constants';
-import { useCustomLandingPages } from '../../../../screens/LandingPage/useCustomLandingPages';
 
 const Container = styled.div`
   display: grid;
@@ -45,10 +45,9 @@ const ViewProjectsButton = styled(Button)`
 `;
 
 export const LandingPage = ({ isUserLoggedIn, isViewingProjects }) => {
-  const [isProjectsPageVisible, setIsProjectsPageVisible] = useState(isViewingProjects);
-  const showProjects = useCallback(() => setIsProjectsPageVisible(true));
-  const hideProjects = useCallback(() => setIsProjectsPageVisible(false));
-  const { isCustomLandingPage } = useCustomLandingPages();
+  const [isProjectsPageVisible, setIsProjectsPageVisible] = React.useState(isViewingProjects);
+  const showProjects = React.useCallback(() => setIsProjectsPageVisible(true));
+  const hideProjects = React.useCallback(() => setIsProjectsPageVisible(false));
 
   const isLoginPageVisible = !isUserLoggedIn && !isProjectsPageVisible;
 
@@ -59,14 +58,14 @@ export const LandingPage = ({ isUserLoggedIn, isViewingProjects }) => {
         <TagLine>
           Data aggregation, analysis, and visualisation for the most remote settings in the world
         </TagLine>
-        {!isCustomLandingPage && isLoginPageVisible && (
+        {isLoginPageVisible && (
           <ViewProjectsButton onClick={showProjects} variant="outlined">
             <ExploreIcon /> View projects
           </ViewProjectsButton>
         )}
       </div>
       {isLoginPageVisible ? (
-        <LoginPage />
+        <LoginPage isUserLoggedIn={isUserLoggedIn} />
       ) : (
         <ProjectPage openLoginDialog={hideProjects} isUserLoggedIn={isUserLoggedIn} />
       )}

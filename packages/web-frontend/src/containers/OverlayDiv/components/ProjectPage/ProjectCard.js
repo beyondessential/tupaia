@@ -8,7 +8,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { BOX_SHADOW, WHITE, LIGHT_GREY } from '../../../../styles';
+import Lock from '@material-ui/icons/Lock';
+import Alarm from '@material-ui/icons/Alarm';
+import Button from '@material-ui/core/Button';
+
+import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
 
 const Card = styled.div`
   display: grid;
@@ -37,11 +41,7 @@ const Header = styled.div`
   justify-content: center;
   margin-bottom: 15px;
   height: 120px;
-  background-color: ${LIGHT_GREY}; /* fallback color */
-  background-image: ${({ backgroundImage }) => `url(${backgroundImage})`};
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background: ${LIGHT_GREY}; /* fallback color */
 
   > img {
     width: 100%;
@@ -85,10 +85,38 @@ const Footer = styled(FullWidthRow)`
   padding: 0 16px;
 `;
 
-export const ProjectCard = ({ name, description, imageUrl, logoUrl, names, projectButton }) => {
+const LockIcon = styled(Lock)`
+  margin-right: 5px;
+`;
+
+const AlarmIcon = styled(Alarm)`
+  margin-right: 5px;
+`;
+
+const styles = {
+  pendingAccessButton: {
+    background: LIGHT_BLUE,
+    color: FORM_BLUE,
+    padding: '5px',
+  },
+  accessButton: {},
+};
+
+export const ProjectCard = ({
+  name,
+  description,
+  imageUrl,
+  logoUrl,
+  names,
+  projectAction,
+  actionText,
+  accessType,
+  hasAccessPending,
+}) => {
   return (
     <Card>
-      <Header backgroundImage={imageUrl}>
+      <Header>
+        <img alt="project background" src={imageUrl} />
         {logoUrl && (
           <Logo>
             <img alt="project logo" src={logoUrl} />
@@ -99,7 +127,16 @@ export const ProjectCard = ({ name, description, imageUrl, logoUrl, names, proje
       <FullWidthRow>{description}</FullWidthRow>
       <Footer>
         <Countries>{name === 'Disaster Response' ? 'Global' : names.sort().join(', ')}</Countries>
-        {projectButton}
+        <Button
+          onClick={projectAction}
+          color="primary"
+          style={hasAccessPending ? styles.pendingAccessButton : styles.accessButton}
+          variant={accessType || hasAccessPending ? 'contained' : 'outlined'}
+        >
+          {!accessType && !hasAccessPending && <LockIcon />}
+          {hasAccessPending && <AlarmIcon />}
+          {actionText}
+        </Button>
       </Footer>
     </Card>
   );
@@ -111,7 +148,10 @@ ProjectCard.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   logoUrl: PropTypes.string,
   names: PropTypes.arrayOf(PropTypes.string).isRequired,
-  projectButton: PropTypes.node.isRequired,
+  projectAction: PropTypes.func.isRequired,
+  actionText: PropTypes.string.isRequired,
+  accessType: PropTypes.bool.isRequired,
+  hasAccessPending: PropTypes.bool.isRequired,
 };
 
 ProjectCard.defaultProps = {

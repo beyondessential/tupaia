@@ -61,10 +61,6 @@
       "path": "packages/dhis-api"
     },
     {
-      "name": "e2e",
-      "path": "packages/e2e"
-    },
-    {
       "name": "entity-server",
       "path": "packages/entity-server"
     },

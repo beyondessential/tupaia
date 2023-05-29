@@ -11,9 +11,8 @@
     "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
     "source": "src/index.js",
     "main": "dist/index.js",
-    "types": "dist/index.d.ts",
     "scripts": {
-        "build": "rm -rf dist && yarn package:build:ts",
+        "build": "rm -rf dist && yarn package:build:js",
         "build-dev": "npm run build",
         "lint": "yarn package:lint:js",
         "lint:fix": "yarn lint --fix",
@@ -37,9 +36,6 @@
     },
     "devDependencies": {
         "@material-ui/styles": "^4.9.10",
-        "@storybook/react": "^6.3.9",
-        "@tupaia/types": "1.0.0",
-        "@types/lodash.get": "^4.4.7",
-        "@types/recharts": "^1.8.24"
+        "@storybook/react": "^6.3.9"
     }
 }

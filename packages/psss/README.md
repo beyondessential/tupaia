@@ -1,6 +1,8 @@
 # @tupaia/psss
 
-[Pacific Syndromic Surveillance System](https://psss.tupaia.org/) project.
+Pacific Syndromic Surveillance System project.
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 

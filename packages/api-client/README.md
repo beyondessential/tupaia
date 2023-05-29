@@ -1,6 +1,6 @@
-# @tupaia/api-client
+## Tupaia Client
 
-Client for connecting to Tupaia micro service APIs
+Client for connecting to Tupaia APIs
 
 ### Usage
 

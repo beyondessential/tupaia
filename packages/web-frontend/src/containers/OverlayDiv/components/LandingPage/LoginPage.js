@@ -6,20 +6,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import MuiAppBar from '@material-ui/core/AppBar';
 import MuiTabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+
 import { LoginForm } from '../../../LoginForm';
 import { SignupForm } from '../../../SignupForm';
 import { RequestResetPasswordForm } from '../../../RequestResetPasswordForm';
-import { AUTH_VIEW_STATES, OVERLAY_PADDING } from '../../constants';
+import { OVERLAY_PADDING } from '../../constants';
 import { DARK_BLUE, LIGHTENED_DARK_BLUE, PRIMARY_BLUE } from '../../../../styles';
-import { setAuthViewState } from '../../../../actions';
 
 function a11yProps(index) {
   return {
@@ -44,11 +42,6 @@ const Tabs = styled(MuiTabs)`
   }
 `;
 
-const TabContentWrapper = styled(Box)`
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    padding: 1.5em;
-  }
-`;
 const TabPanel = ({ children, value, index, ...other }) => {
   return (
     <Typography
@@ -59,16 +52,13 @@ const TabPanel = ({ children, value, index, ...other }) => {
       aria-labelledby={`wrapped-tab-${index}`}
       {...other}
     >
-      <TabContentWrapper>{children}</TabContentWrapper>
+      <Box p={3}>{children}</Box>
     </Typography>
   );
 };
 
 const LoginPanel = styled(TabPanel)`
-  margin: 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-    margin: 0 4em;
-  }
+  margin: 0 64px;
 `;
 
 const ContentContainer = styled.div`
@@ -79,7 +69,7 @@ const ContentContainer = styled.div`
   transition: height 0.4 linear;
 `;
 
-const LoginView = ({ authViewState, updateAuthViewState }) => {
+export const LoginPage = () => {
   const contentMargin = OVERLAY_PADDING.split(' ')
     .map(x => `-${x}`)
     .join(' ');
@@ -88,51 +78,35 @@ const LoginView = ({ authViewState, updateAuthViewState }) => {
   const handleCancelReset = React.useCallback(() => setIsRequestingReset(false), []);
   const handleRequestReset = React.useCallback(() => setIsRequestingReset(true), []);
 
-  const handleChange = (_, newValue) => updateAuthViewState(newValue);
-  const handleLogin = () => updateAuthViewState(AUTH_VIEW_STATES.LOGIN);
+  const [value, setValue] = React.useState(1);
+  const handleChange = React.useCallback((_, newValue) => setValue(newValue));
+  const handleLogin = React.useCallback(() => setValue(1));
 
   return (
     <ContentContainer margin={contentMargin}>
       <AppBar position="static" color="default">
         <Tabs
-          value={authViewState}
+          value={value}
           onChange={handleChange}
           variant="fullWidth"
-          aria-label="Login and register form"
+          aria-label="full width tabs example"
         >
-          <Tab label="Register" {...a11yProps(AUTH_VIEW_STATES.REGISTER)} />
+          <Tab label="Register" {...a11yProps(0)} />
           <Tab label="Log in" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={authViewState} index={AUTH_VIEW_STATES.REGISTER}>
-        <SignupForm handleLogin={handleLogin} />
-      </TabPanel>
-      <LoginPanel value={authViewState} index={AUTH_VIEW_STATES.LOGIN}>
-        {isRequestingReset ? (
-          <RequestResetPasswordForm onClickCancel={handleCancelReset} key="reset" />
-        ) : (
-          <LoginForm onClickResetPassword={handleRequestReset} />
-        )}
-      </LoginPanel>
+      <div>
+        <TabPanel value={value} index={0}>
+          <SignupForm handleLogin={handleLogin} />
+        </TabPanel>
+        <LoginPanel value={value} index={1}>
+          {isRequestingReset ? (
+            <RequestResetPasswordForm onClickCancel={handleCancelReset} key="reset" />
+          ) : (
+            <LoginForm onClickResetPassword={handleRequestReset} />
+          )}
+        </LoginPanel>
+      </div>
     </ContentContainer>
   );
 };
-
-LoginView.propTypes = {
-  authViewState: PropTypes.oneOf([AUTH_VIEW_STATES.LOGIN, AUTH_VIEW_STATES.REGISTER]).isRequired,
-  updateAuthViewState: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = state => {
-  return {
-    authViewState: state.authentication.authViewState,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    updateAuthViewState: authViewState => dispatch(setAuthViewState(authViewState)),
-  };
-};
-
-export const LoginPage = connect(mapStateToProps, mapDispatchToProps)(LoginView);

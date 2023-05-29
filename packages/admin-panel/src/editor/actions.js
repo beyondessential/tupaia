@@ -13,11 +13,7 @@ import {
   EDITOR_FIELD_EDIT,
   EDITOR_OPEN,
 } from './constants';
-import {
-  convertSearchTermToFilter,
-  makeSubstitutionsInString,
-  getExplodedFields,
-} from '../utilities';
+import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -26,8 +22,6 @@ export const openBulkEditModal = (
   recordId,
   rowData,
 ) => async (dispatch, getState, { api }) => {
-  // explode the fields from any subsections
-  const explodedFields = getExplodedFields(fields);
   if (recordId) {
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
@@ -42,7 +36,7 @@ export const openBulkEditModal = (
       const response = await api.get(makeSubstitutionsInString(bulkGetEndpoint, rowData), {
         filter: filterString.length > 0 ? filterString : undefined,
         columns: JSON.stringify(
-          explodedFields
+          fields
             .filter(field => !field.hideValue && !STATIC_FIELD_TYPES.includes(field.type)) // Ignore any that will be hidden, e.g. passwords
             .map(field => field.source),
         ), // Fetch fields based on their source
@@ -65,7 +59,7 @@ export const openBulkEditModal = (
     }
   } else {
     // set default values
-    explodedFields.forEach(field => {
+    fields.forEach(field => {
       if (field.editConfig && field.editConfig.default) {
         const {
           source: fieldKey,
@@ -93,8 +87,6 @@ export const openEditModal = (
   { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {}, isLoading = false },
   recordId,
 ) => async (dispatch, getState, { api }) => {
-  // explode the fields from any subsections
-  const explodedFields = getExplodedFields(fields);
   // Open the modal instantly
   dispatch({
     type: EDITOR_OPEN,
@@ -121,7 +113,7 @@ export const openEditModal = (
     try {
       const response = await api.get(endpoint, {
         columns: JSON.stringify(
-          explodedFields
+          fields
             .filter(field => !field.hideValue && !STATIC_FIELD_TYPES.includes(field.type)) // Ignore any that will be hidden, e.g. passwords
             .map(field => field.source),
         ), // Fetch fields based on their source
@@ -138,7 +130,7 @@ export const openEditModal = (
     }
   } else {
     // set default values
-    explodedFields.forEach(field => {
+    fields.forEach(field => {
       if (field.editConfig && field.editConfig.default) {
         const {
           source: fieldKey,

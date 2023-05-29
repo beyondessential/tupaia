@@ -17,5 +17,3 @@ export const DATA_CHANGE_ACTIONS = {
   finish: EDITOR_DATA_EDIT_SUCCESS,
   error: EDITOR_ERROR,
 };
-
-export const SECTION_FIELD_TYPE = 'section';

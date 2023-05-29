@@ -3,7 +3,6 @@ set +x # do not output commands in this script, as some would show credentials i
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-FOLDER="Shared-Tupaia Environment Variables" # Folder in LastPass when .env vars are kept
 
 # can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
@@ -20,8 +19,7 @@ for PACKAGE in $PACKAGES; do
     ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
 
     # checkout deployment specific env vars, or dev as fallback, temporarily redirecting stderr
-    lpass show --notes "${FOLDER}/${PACKAGE}.${DEPLOYMENT_NAME}.env" 2> /dev/null > ${ENV_FILE_PATH} \
-        || lpass show --notes "${FOLDER}/${PACKAGE}.dev.env" > ${ENV_FILE_PATH}
+    lpass show --notes ${PACKAGE}.${DEPLOYMENT_NAME}.env 2> /dev/null > ${ENV_FILE_PATH} || lpass show --notes ${PACKAGE}.dev.env > ${ENV_FILE_PATH}
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)

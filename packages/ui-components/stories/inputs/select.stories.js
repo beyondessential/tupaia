@@ -30,20 +30,7 @@ const options = [
 export const select = () => (
   <Container>
     <Select label="Simple select" id="simple" options={options} />
-    <Select
-      label="Tooltip label"
-      id="tooltip"
-      options={options}
-      tooltip="Please select an option"
-    />
     <Select label="Required select" id="required" options={options} required />
-    <Select
-      label="Required select with tooltip"
-      id="required"
-      options={options}
-      required
-      tooltip="Please select an option"
-    />
     <NativeSelect label="Native select" id="native" options={options} />
     <Select label="Default value" id="default-value" options={options} defaultValue="NZ" />
     <Select

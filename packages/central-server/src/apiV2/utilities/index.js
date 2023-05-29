@@ -46,4 +46,3 @@ export {
 export { translateObjectFields } from './translateObjectFields';
 export { getUserInfoInString } from './getUserInfoInString';
 export { getPermissionListWithWildcard } from './getPermissionListWithWildcard';
-export { uploadImage } from './uploadImage';

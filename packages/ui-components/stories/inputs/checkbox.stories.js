@@ -40,11 +40,6 @@ export const labels = () => (
       error
       helperText="Please tick Terms and Conditions"
     />
-    <Checkbox
-      label="Terms and Conditions"
-      color="primary"
-      tooltip="Please read the terms and conditions carefully"
-    />
   </Container>
 );
 

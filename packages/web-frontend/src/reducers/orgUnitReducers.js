@@ -13,7 +13,6 @@ import {
   FETCH_ORG_UNIT_ERROR,
   FETCH_LOGIN_SUCCESS,
   FETCH_LOGOUT_SUCCESS,
-  FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
   SET_PROJECT,
 } from '../actions';
 
@@ -27,7 +26,6 @@ function orgUnitMap(state = {}, action) {
       return updateLoading(state, action.organisationUnitCode, false);
     case FETCH_LOGIN_SUCCESS:
       return {}; // Clear org units on login incase of permission change
-    case FETCH_LANDING_PAGE_LOGOUT_SUCCESS:
     case FETCH_LOGOUT_SUCCESS:
       return {}; // Clear org units on logout incase of permission change
     case SET_PROJECT:
