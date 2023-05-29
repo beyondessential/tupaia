@@ -14,10 +14,12 @@ import {
 import { SessionSwitchingAuthHandler } from '@tupaia/api-client';
 import { TupaiaWebSessionModel } from '../models';
 import {
+  DashboardsRoute,
   ReportRoute,
   UserRoute,
   TempLogoutRoute,
 
+  DashboardsRequest,
   ReportRequest,
   UserRequest,
   TempLogoutRequest,
@@ -32,6 +34,7 @@ export function createApp() {
     .attachApiClientToContext(req => new SessionSwitchingAuthHandler(req.session))
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
