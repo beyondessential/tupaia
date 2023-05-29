@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.341.0",
+    "@aws-sdk/credential-providers": "^3.341.0",
     "@tupaia/api-client": "3.1.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",

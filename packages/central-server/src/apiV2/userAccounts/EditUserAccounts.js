@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { fromEnv } from '@aws-sdk/credential-providers';
 import { S3 } from '@aws-sdk/client-s3';
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { S3Client } from '@tupaia/utils';
@@ -47,7 +48,7 @@ export class EditUserAccounts extends EditHandler {
 
     if (profileImage) {
       if (profileImage.data && profileImage.fileId) {
-        const s3Client = new S3Client(new S3({}));
+        const s3Client = new S3Client(new S3({ credentials: fromEnv() }));
         const profileImagePath = await s3Client.uploadImage(profileImage.data, profileImage.fileId);
         updatedFields = {
           ...updatedFields,
