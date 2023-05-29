@@ -11,16 +11,16 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "source": "src/index.js",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:js",
+    "build": "rm -rf dist && yarn package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch",
-    "build-dev:watch": "yarn run package:build:js -w"
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@date-io/date-fns": "1.x",
@@ -51,10 +51,19 @@
   },
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
+    "@mui/types": "^7.2.4",
     "@storybook/react": "^6.3.9",
+    "@types/jest": "^29.5.1",
+    "@types/lodash.throttle": "^4.1.7",
+    "@types/react-dom": "^18.2.4",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/react-table": "^7.7.14",
+    "@types/styled-components": "^5.1.26",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
+    "react-docgen-typescript-plugin": "^1.0.5",
     "react-hook-form": "^6.0.6",
-    "react-password-strength-bar": "^0.3.3"
+    "react-password-strength-bar": "^0.3.3",
+    "typescript": "^5.0.4"
   }
 }

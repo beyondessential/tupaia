@@ -28,7 +28,8 @@
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
     "start-admin-panel-server": "yarn workspace @tupaia/admin-panel-server start-dev",
     "test": "echo No tests",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
+    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build -w",
     "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
     "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-admin-panel-server"
   },
@@ -42,6 +43,7 @@
     "@material-ui/styles": "^4.9.10",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/types": "1.0.0",
+    "@tupaia/ui-chart-components": "1.0",
     "@tupaia/ui-components": "1.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",

@@ -6,10 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
 import PropTypes from 'prop-types';
-import { AddCircle, RemoveCircle } from '@material-ui/icons';
 import MuiTableRow from '@material-ui/core/TableRow';
 import { tableColumnShape } from './tableColumnShape';
-import { IconButton } from '../IconButton';
 
 export const TableCell = styled(MuiTableCell)`
   height: 70px;
