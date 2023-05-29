@@ -24975,6 +24975,66 @@ export const IndicatorSchema = {
 	]
 } 
 
+export const LandingPageSchema = {
+	"properties": {
+		"contact_us": {
+			"type": "string"
+		},
+		"extended_title": {
+			"type": "string"
+		},
+		"external_link": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"include_name_in_header": {
+			"type": "boolean"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"long_bio": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"phone_number": {
+			"type": "string"
+		},
+		"primary_hexcode": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"secondary_hexcode": {
+			"type": "string"
+		},
+		"url_segment": {
+			"type": "string"
+		},
+		"website_url": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name",
+		"url_segment"
+	]
+} 
+
 export const LegacyReportSchema = {
 	"properties": {
 		"code": {
@@ -25548,7 +25608,8 @@ export const QuestionSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"text"
+		"text",
+		"type"
 	]
 } 
 
