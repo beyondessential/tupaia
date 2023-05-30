@@ -101,7 +101,7 @@ RUN mkdir -p ./packages/web-frontend
 COPY packages/web-frontend/package.json ./packages/web-frontend
 
 # run yarn without building, so we can cache node_modules without code changes invalidating this layer
-RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
+RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
@@ -132,3 +132,6 @@ RUN yarn build:internal-dependencies
 
 # copy everything else from the repo
 COPY . ./
+
+# Make sure all packages build, it is possible to break CI in Codeship if removing this
+RUN yarn build:non-internal-dependencies

@@ -18,7 +18,7 @@ import { setupTestApp, setupTestUser } from '../utilities';
 import { CAT_QUESTION, CAT_SURVEY, CAT_USER_SESSION } from './fixtures';
 
 describe('me/rewards', () => {
-  const numberOfSurveyResponses = 200;
+  const numberOfSurveyResponses = 100;
 
   let app: TestableServer;
   let authHeader: string;

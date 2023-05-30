@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { useData } from '../../hooks/useData';
 import { Column } from './Column';
 
-export const RecursiveColumn = ({ data, isLoading, error, fetchData }) => {
+export const RecursiveColumn = ({ data, isLoading, error, fetchData, readOnly }) => {
   const {
     data: children,
     isLoading: areChildrenLoading,
@@ -36,6 +36,7 @@ export const RecursiveColumn = ({ data, isLoading, error, fetchData }) => {
           fetchChildren(node);
         }}
         isExpanded={isExpanded}
+        readOnly={readOnly}
       />
       {isExpanded && (
         <RecursiveColumn
@@ -43,6 +44,7 @@ export const RecursiveColumn = ({ data, isLoading, error, fetchData }) => {
           isLoading={areChildrenLoading}
           error={childrenError}
           fetchData={fetchData}
+          readOnly={readOnly}
         />
       )}
     </>
@@ -62,6 +64,7 @@ RecursiveColumn.propTypes = {
     }),
   ),
   isLoading: PropTypes.bool,
+  readOnly: PropTypes.bool,
   error: PropTypes.shape({
     message: PropTypes.string.isRequired,
   }),
@@ -72,4 +75,5 @@ RecursiveColumn.defaultProps = {
   data: undefined,
   isLoading: false,
   error: null,
+  readOnly: false,
 };

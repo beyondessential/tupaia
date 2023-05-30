@@ -2116,7 +2116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.10.5, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.2, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.2, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.15.4
   resolution: "@babel/runtime@npm:7.15.4"
   dependencies:
@@ -5128,6 +5128,7 @@ __metadata:
   dependencies:
     "@tupaia/data-broker": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     lodash.groupby: ^4.6.0
     npm-run-all: ^4.1.5
@@ -5280,6 +5281,7 @@ __metadata:
   resolution: "@tupaia/data-lake-api@workspace:packages/data-lake-api"
   dependencies:
     "@tupaia/database": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
@@ -5352,6 +5354,7 @@ __metadata:
   resolution: "@tupaia/dhis-api@workspace:packages/dhis-api"
   dependencies:
     "@tupaia/aggregator": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     chai-as-promised: ^7.1.1
     lodash.groupby: ^4.6.0
@@ -5428,6 +5431,7 @@ __metadata:
     "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/expression-parser": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -5468,6 +5472,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/styles": ^4.9.10
+    "@tupaia/access-policy": 3.0.0
     "@tupaia/admin-panel": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -5485,7 +5490,7 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
     react-password-strength-bar: ^0.3.3
-    react-query: ^3.9.6
+    react-query: ^3.19.0
     react-redux: ^5.0.6
     react-router-dom: ^5.2.0
     styled-components: ^5.1.0
@@ -5635,8 +5640,7 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.0.0
     react-password-strength-bar: ^0.3.3
-    react-query: ^2.25.2
-    react-query-devtools: ^2.6.0
+    react-query: ^3.19.0
     react-redux: ^7.1.0
     react-router-dom: ^5.1.2
     redux: ^4.0.2
@@ -23277,16 +23281,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"match-sorter@npm:^4.1.0":
-  version: 4.2.1
-  resolution: "match-sorter@npm:4.2.1"
-  dependencies:
-    "@babel/runtime": ^7.10.5
-    remove-accents: 0.4.2
-  checksum: 7f3cd8f84cdb4567b7a81f66a095e418044f318f41b6c8a1640730c99e370af9e5054f5a1ed2dfa1287a23101d75a105da63e4d95e8ac2f7061a8f8b32367c7d
-  languageName: node
-  linkType: hard
-
 "match-sorter@npm:^6.0.2":
   version: 6.1.0
   resolution: "match-sorter@npm:6.1.0"
@@ -29742,34 +29736,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query-devtools@npm:^2.6.0":
-  version: 2.6.3
-  resolution: "react-query-devtools@npm:2.6.3"
-  dependencies:
-    match-sorter: ^4.1.0
-  peerDependencies:
-    react: ^16.6.3 || ^17.0.0
-    react-query: ^2.0.0
-  checksum: 55cd257c32af83ac33ddff32a7234922fc53dd212c8a92dbee2a5c494c08763a94f60c8f455416ee4dde8ee7d908c7762b90f11d25d86e87efff9b729a8c2cfc
-  languageName: node
-  linkType: hard
-
-"react-query@npm:^2.25.2":
-  version: 2.26.3
-  resolution: "react-query@npm:2.26.3"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: add8b76e446da0f78aa7210c38dc0c3eb788a4df18bb040c6c3feb66f5b2061e12c0a72439a416c3e0c2e7392de3ee9f22047631f2b91c02759c9145d0b60a59
-  languageName: node
-  linkType: hard
-
 "react-query@npm:^3.19.0":
   version: 3.19.0
   resolution: "react-query@npm:3.19.0"
@@ -29785,23 +29751,6 @@ __metadata:
     react-native:
       optional: true
   checksum: 4723a24b0b00e23d065328d495b714c8fdf90d399752958b06f623a5865619636a43ab52f3b89bd2c7ab36c98c916716692d7fc3d4ed9fcf758502ee0d27a9b4
-  languageName: node
-  linkType: hard
-
-"react-query@npm:^3.9.6":
-  version: 3.9.6
-  resolution: "react-query@npm:3.9.6"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    match-sorter: ^6.0.2
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 8dea21fd6b6fa1fd982363326a03e034ad11498925fb72a06405f8f625861d7a3cb8ae2eea8473067bd07f904fb1101ee43f1c4d972de030a45b40363b7b36ce
   languageName: node
   linkType: hard
 

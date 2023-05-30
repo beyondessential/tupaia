@@ -2,7 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import { convertToPeriod, periodToDisplayString, PERIOD_TYPES } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
+import { convertToPeriod, periodToDisplayString } from '@tupaia/utils';
 
 export const sumPerDataGroupPerMonth = async ({ dataBuilderConfig, query }, aggregator) => {
   const monthlySums = {};

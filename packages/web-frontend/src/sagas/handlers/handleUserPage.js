@@ -14,8 +14,6 @@ import {
 } from '../../historyNavigation/constants';
 
 export function* handleUserPage(userPage, initialComponents) {
-  yield put(setOverlayComponent(LANDING));
-
   switch (userPage) {
     case PASSWORD_RESET_PREFIX:
       yield put(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
@@ -23,9 +21,11 @@ export function* handleUserPage(userPage, initialComponents) {
       break;
     case VERIFY_EMAIL_PREFIX:
       yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
+      yield put(setOverlayComponent(LANDING));
       break;
     default:
       // eslint-disable-next-line no-console
       console.error('Unhandled user page', userPage);
+      yield put(setOverlayComponent(LANDING));
   }
 }
