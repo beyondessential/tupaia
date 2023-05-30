@@ -36,6 +36,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
+    "axios": "^1.4.0",
     "dom-to-image": "2.6.0",
     "downloadjs": "1.4.7",
     "lodash": "^4.17.21",
