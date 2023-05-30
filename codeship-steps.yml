@@ -58,6 +58,8 @@
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
             - name: Test web-frontend
               command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
+            - name: Test tupaia-web
+              command: './packages/devops/scripts/ci/testFrontend.sh tupaia-web'
         - type: parallel
           name: Test batch 3
           steps:
