@@ -18,7 +18,7 @@ const renderFilePickerButton = (onPress, label) => (
 
 const DumbFileQuestion = ({ onPressChooseFile, onPressRemoveFile, filename, errorMessage }) => (
   <View style={localStyles.container}>
-    {filename !== null && <Text>{filename}</Text>}
+    {filename !== null && <Text style={localStyles.selectedFile}>{filename}</Text>}
     {filename === null && errorMessage && <Text>{errorMessage}</Text>}
     <View style={localStyles.actions}>
       {renderFilePickerButton(onPressChooseFile, filename === null ? 'Attach file' : 'Change file')}
@@ -44,6 +44,9 @@ const BUTTON_SPACING = 5;
 const localStyles = StyleSheet.create({
   container: {
     marginTop: DEFAULT_PADDING,
+  },
+  selectedFile: {
+    marginBottom: 8,
   },
   actions: {
     flexDirection: 'row',
