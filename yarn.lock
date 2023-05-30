@@ -7080,7 +7080,10 @@ __metadata:
     "@types/material-ui": ^0.21.12
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
+    "@types/react-router": ^5.1.20
+    "@types/react-router-dom": ^5.3.3
     "@vitejs/plugin-react": ^4.0.0
+    axios: ^1.4.0
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
     lodash: ^4.17.21
@@ -7091,6 +7094,8 @@ __metadata:
     query-string: ^8.1.0
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-router: ^6.11.2
+    react-router-dom: ^6.11.2
     storybook: ^7.0.18
     styled-components: ^5.3.11
     typescript: ^5.0.2
@@ -8154,7 +8159,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router@npm:*":
+"@types/react-router@npm:*, @types/react-router@npm:^5.1.20":
   version: 5.1.20
   resolution: "@types/react-router@npm:5.1.20"
   dependencies:
@@ -10337,6 +10342,17 @@ __metadata:
   dependencies:
     follow-redirects: ^1.14.0
   checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "axios@npm:1.4.0"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 7fb6a4313bae7f45e89d62c70a800913c303df653f19eafec88e56cea2e3821066b8409bc68be1930ecca80e861c52aa787659df0ffec6ad4d451c7816b9386b
   languageName: node
   linkType: hard
 
@@ -17506,7 +17522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.15.0":
   version: 1.15.2
   resolution: "follow-redirects@npm:1.15.2"
   peerDependenciesMeta:
@@ -28941,7 +28957,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-from-env@npm:1.1.0, proxy-from-env@npm:^1.0.0":
+"proxy-from-env@npm:1.1.0, proxy-from-env@npm:^1.0.0, proxy-from-env@npm:^1.1.0":
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
   checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
@@ -30337,7 +30353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.11.2, react-router-dom@npm:^6.3.0":
   version: 6.11.2
   resolution: "react-router-dom@npm:6.11.2"
   dependencies:
@@ -30369,7 +30385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.11.2":
+"react-router@npm:6.11.2, react-router@npm:^6.11.2":
   version: 6.11.2
   resolution: "react-router@npm:6.11.2"
   dependencies:

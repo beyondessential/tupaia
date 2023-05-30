@@ -4,11 +4,13 @@
  */
 
 import { AppStyleProviders } from './AppStyleProviders';
+import { RouterProvider } from 'react-router-dom';
+import { Router } from './Router';
 
 const App = () => {
   return (
     <AppStyleProviders>
-      <h1>Tupaia web</h1>
+      <RouterProvider router={Router}></RouterProvider>
     </AppStyleProviders>
   );
 };
