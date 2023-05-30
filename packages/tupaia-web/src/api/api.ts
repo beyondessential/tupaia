@@ -31,6 +31,7 @@ const getRequestOptions = (options: RequestParametersWithMethod) => {
   };
 };
 
+// Todo: Move api request util to ui-components and allow for mapping to backend request type safety
 const request = async (endpoint: string, options: RequestParametersWithMethod) => {
   const requestOptions = getRequestOptions(options);
 
