@@ -65,7 +65,7 @@ export const GroupedSelect = ({
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
     },
     [setValue],
