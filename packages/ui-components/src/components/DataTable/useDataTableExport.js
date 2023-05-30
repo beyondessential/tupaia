@@ -4,7 +4,7 @@
  */
 
 import xlsx from 'xlsx';
-import { toFilename } from '@tupaia/utils';
+import { displayStringToMoment, toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment from 'moment';
 
@@ -28,9 +28,18 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
         ? tableData.map(row =>
             tableColumns.map(col => {
               const value = row.values[col.id];
-              const valueIsPercentageString = value.includes('%');
-              const num = valueIsPercentageString ? value : parseFloat(value);
-              // if it's a number, return in number format
+
+              // Attempt to convert to a moment object if is a string that can't be converted to a number (isNaN). If it's a date string, return in date format, otherwise continue
+              // This check will handle percentage strings as well as date strings, and any other non-numeric strings
+              if (typeof value === 'string' && isNaN(value)) {
+                const momentObj = displayStringToMoment(value);
+                // if it's a date string, return in date format
+                if (momentObj.isValid()) return momentObj.format('DD/MM/YYYY');
+                return value;
+              }
+
+              // Parse the value as a float, and if it's a number then return as a number, otherwise return the value as is. This handles cases like booleans, because isNaN(boolean) === false, but isNaN(parseFloat(boolean)) === true
+              const num = parseFloat(value);
               return isNaN(num) ? value : num;
             }),
           )
