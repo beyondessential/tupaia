@@ -10,8 +10,6 @@
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 
-export { StandardOrCustomReportConfig } from './models-extra';
-
 export interface AccessRequest {
   'approved'?: boolean | null;
   'created_time'?: Date;
@@ -290,6 +288,23 @@ export interface Indicator {
   'code': string;
   'config'?: any;
   'id': string;
+}
+export interface LandingPage {
+  'contact_us'?: string | null;
+  'extended_title'?: string | null;
+  'external_link'?: string | null;
+  'id': string;
+  'image_url'?: string | null;
+  'include_name_in_header'?: boolean | null;
+  'logo_url'?: string | null;
+  'long_bio'?: string | null;
+  'name': string;
+  'phone_number'?: string | null;
+  'primary_hexcode'?: string | null;
+  'project_codes'?: string[] | null;
+  'secondary_hexcode'?: string | null;
+  'url_segment': string;
+  'website_url'?: string | null;
 }
 export interface LegacyReport {
   'code': string;

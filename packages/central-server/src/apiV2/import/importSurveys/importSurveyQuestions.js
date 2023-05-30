@@ -197,7 +197,12 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup }
       detail,
       hook,
       options: processOptions(options, optionLabels, optionColors, type),
-      option_set_id: await processOptionSetName(models, optionSet),
+      option_set_id: await processOptionSetName(
+        models,
+        optionSet,
+        excelRowNumber,
+        tabName,
+      ),
       data_element_id: dataElement && dataElement.id,
     };
 
@@ -276,10 +281,14 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup }
   await deleteOrphanQuestions(models);
 }
 
-async function processOptionSetName(models, name) {
+async function processOptionSetName(models, name, excelRowNumber, tabName) {
   // TODO: Figure out why undefined value is returning all results.
   if (name) {
     const optionSet = await models.optionSet.findOne({ name });
+    if (!optionSet) {
+      const message = 'The Option Set listed does not exist.';
+      throw new ImportValidationError(message, excelRowNumber, 'optionSet', tabName);
+    }
     return optionSet.id;
   }
   return null;

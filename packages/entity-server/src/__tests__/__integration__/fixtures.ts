@@ -3,6 +3,12 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+type Hierarchy = {
+  code: string;
+  name: string;
+  attributes: Record<string, unknown>;
+};
+
 type Entity = {
   country_code?: string;
   code: string;
@@ -11,6 +17,26 @@ type Entity = {
   attributes: {
     type?: string;
   };
+};
+
+export const getHierarchyWithFields = (hierarchyCode: string, fields: (keyof Hierarchy)[]) => {
+  const hierarchy = ENTITIES.find(e => e.code === hierarchyCode && e.type === 'project');
+
+  if (!hierarchy) {
+    throw new Error(`No hierarchy found with code ${hierarchyCode} in test data`);
+  }
+
+  return Object.fromEntries(fields.map(field => [field, hierarchy[field]])) as {
+    [F in keyof Entity]: Entity[F];
+  };
+};
+
+export const getHierarchiesWithFields = (hierarchyCodes: string[], fields: (keyof Hierarchy)[]) => {
+  const allCodes = ENTITIES.map(e => e.code);
+
+  return hierarchyCodes
+    .filter(hierarchyCode => allCodes.includes(hierarchyCode))
+    .map(hierarchyCode => getHierarchyWithFields(hierarchyCode, fields));
 };
 
 export const getEntityWithFields = (entityCode: string, fields: (keyof Entity)[]) => {
@@ -25,21 +51,42 @@ export const getEntityWithFields = (entityCode: string, fields: (keyof Entity)[]
   };
 };
 
-export const getEntitiesWithFields = (entityCodes: string[], fields: (keyof Entity)[]) =>
-  ENTITIES.map(e => e.code)
-    .filter(entityCode => entityCodes.includes(entityCode))
+export const getEntitiesWithFields = (entityCodes: string[], fields: (keyof Entity)[]) => {
+  const allCodes = ENTITIES.map(e => e.code);
+
+  return entityCodes
+    .filter(entityCode => allCodes.includes(entityCode))
     .map(entityCode => getEntityWithFields(entityCode, fields));
+};
 
 export const PROJECTS = [
-  { code: 'redblue', projectEntityName: 'Pokemon Red/Blue' },
-  { code: 'goldsilver', projectEntityName: 'Pokemon Gold/Silver' },
+  {
+    code: 'redblue',
+    permission_groups: ['Public'],
+    projectEntityName: 'Pokemon Red/Blue',
+  },
+  {
+    code: 'goldsilver',
+    permission_groups: ['Public'],
+    projectEntityName: 'Pokemon Gold/Silver',
+  },
 ];
 
 export const COUNTRIES = ['KANTO', 'JOHTO'];
 
 export const ENTITIES: Entity[] = [
-  { code: 'redblue', name: 'Pokemon Red/Blue', type: 'project', attributes: {} },
-  { code: 'goldsilver', name: 'Pokemon Gold/Silver', type: 'project', attributes: {} },
+  {
+    code: 'redblue',
+    name: 'Pokemon Red/Blue',
+    type: 'project',
+    attributes: {},
+  },
+  {
+    code: 'goldsilver',
+    name: 'Pokemon Gold/Silver',
+    type: 'project',
+    attributes: {},
+  },
   // country -> city    -> facility
   //                    -> individual
   //         -> village -> individual

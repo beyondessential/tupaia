@@ -5128,6 +5128,7 @@ __metadata:
   dependencies:
     "@tupaia/data-broker": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     lodash.groupby: ^4.6.0
     npm-run-all: ^4.1.5
@@ -5280,6 +5281,7 @@ __metadata:
   resolution: "@tupaia/data-lake-api@workspace:packages/data-lake-api"
   dependencies:
     "@tupaia/database": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
@@ -5352,6 +5354,7 @@ __metadata:
   resolution: "@tupaia/dhis-api@workspace:packages/dhis-api"
   dependencies:
     "@tupaia/aggregator": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     chai-as-promised: ^7.1.1
     lodash.groupby: ^4.6.0
@@ -5428,6 +5431,7 @@ __metadata:
     "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/expression-parser": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
