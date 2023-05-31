@@ -13,5 +13,11 @@ export default defineConfig({
   envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
   resolve: {
     preserveSymlinks: true, // this is the fix!
+    alias: {
+      http: 'moduleMock.js',
+      winston: 'moduleMock.js',
+      jsonwebtoken: 'moduleMock.js',
+      ['node-fetch']: 'moduleMock.js',
+    },
   },
 });
