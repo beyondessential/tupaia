@@ -43,6 +43,7 @@ export function constructAnswerValidator(models, question) {
     AUTOCOMPLETE,
     PRIMARY_ENTITY,
     ENTITY,
+    FILE,
   } = ANSWER_TYPES;
   switch (question.type) {
     case BINARY:
@@ -68,6 +69,7 @@ export function constructAnswerValidator(models, question) {
     case GEOLOCATE: // TODO: Contain lat, long, accuracy
     case AUTOCOMPLETE: // TODO: Match options in option set
     case FREE_TEXT: // Ok with no validation, any text is fine
+    case FILE: // TODO: what should the validation be?
     default:
       return [];
   }
