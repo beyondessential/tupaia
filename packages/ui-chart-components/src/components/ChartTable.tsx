@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
 import { DataTable, SmallAlert } from '@tupaia/ui-components';
+import { ViewContent } from '../types';
 import { getChartTableData, getIsChartData, getNoDataString } from '../utils';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -19,7 +19,12 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-export const ChartTable = ({ viewContent, className }) => {
+interface ChartTableProps {
+  viewContent: ViewContent;
+  className?: string;
+}
+
+export const ChartTable = ({ viewContent, className }: ChartTableProps) => {
   const { columns, data } = getChartTableData(viewContent);
 
   if (!getIsChartData(viewContent)) {
@@ -35,23 +40,4 @@ export const ChartTable = ({ viewContent, className }) => {
       <DataTable columns={columns} data={data} />
     </TableContainer>
   );
-};
-
-ChartTable.propTypes = {
-  viewContent: PropTypes.shape({
-    name: PropTypes.string,
-    xName: PropTypes.string,
-    periodGranularity: PropTypes.string,
-    valueType: PropTypes.string,
-    labelType: PropTypes.string,
-    chartType: PropTypes.string,
-    data: PropTypes.array,
-    chartConfig: PropTypes.object,
-  }),
-  className: PropTypes.string,
-};
-
-ChartTable.defaultProps = {
-  viewContent: null,
-  className: null,
 };

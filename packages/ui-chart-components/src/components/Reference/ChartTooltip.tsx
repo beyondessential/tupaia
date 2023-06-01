@@ -7,13 +7,13 @@ import React from 'react';
 import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { VALUE_TYPES, PRESENTATION_OPTIONS_SHAPE, CHART_TYPES } from '../../constants';
+import { ValueType, BaseChartConfig } from '@tupaia/types';
+import { ChartType, PresentationOptions, LooseObject, VizPeriodGranularity } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
-function formatLabelledValue(label, value, valueType, metadata) {
+function formatLabelledValue(label: string, value: any, valueType: string, metadata: LooseObject) {
   const valueText = formatDataValueByType({ value, metadata }, valueType);
   if (label) {
     return `${label}: ${valueText}`;
@@ -55,6 +55,21 @@ const Box = styled.div`
   margin-right: 5px;
 `;
 
+interface ChartTooltipProps {
+  payload?: any[];
+  active?: boolean;
+  presentationOptions?: PresentationOptions;
+  valueType: ValueType;
+  chartConfig?: BaseChartConfig;
+  chartType?: ChartType;
+  labelType?: ValueType;
+  periodGranularity?: VizPeriodGranularity;
+}
+
+interface ChartTooltipPropsWithData extends ChartTooltipProps {
+  payload: any[];
+}
+
 const MultiValueTooltip = ({
   valueType,
   chartConfig,
@@ -63,21 +78,21 @@ const MultiValueTooltip = ({
   periodGranularity,
   labelType,
   chartType,
-}) => {
+}: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
   const { name: headline, timestamp } = data;
 
   if (chartType) {
-    if (chartType === CHART_TYPES.BAR) {
+    if (chartType === ChartType.Bar) {
       payload.reverse();
     }
-    if (chartType === CHART_TYPES.LINE) {
+    if (chartType === ChartType.Line) {
       payload.sort((obj1, obj2) => obj2.value - obj1.value);
     }
   }
 
   const valueLabels = payload.map(({ dataKey, value, color }) => {
-    const options = chartConfig && chartConfig[dataKey];
+    const options = chartConfig && chartConfig[dataKey as keyof BaseChartConfig];
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType ||
@@ -111,7 +126,12 @@ const MultiValueTooltip = ({
   );
 };
 
-const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }) => {
+const SingleValueTooltip = ({
+  valueType,
+  payload,
+  periodGranularity,
+  labelType,
+}: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
   const { name, value, timestamp } = data;
   const metadata = data.value_metadata;
@@ -132,7 +152,13 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   );
 };
 
-const NoDataTooltip = ({ payload, periodGranularity }) => {
+const NoDataTooltip = ({
+  payload,
+  periodGranularity,
+}: {
+  payload: any[];
+  periodGranularity?: VizPeriodGranularity;
+}) => {
   const data = payload[0]?.payload;
   const { name = undefined, timestamp = undefined } = data || {};
 
@@ -149,7 +175,7 @@ const NoDataTooltip = ({ payload, periodGranularity }) => {
   );
 };
 
-export const ChartTooltip = props => {
+export const ChartTooltip = (props: ChartTooltipProps) => {
   const { payload, active, presentationOptions } = props;
 
   const data = payload || []; // This is to handle when recharts overrides the payload as null
@@ -166,19 +192,3 @@ export const ChartTooltip = props => {
   // For no data display, pass the non-filtered data so we can pull the name
   return <NoDataTooltip {...props} payload={data} />;
 };
-
-ChartTooltip.propTypes = {
-  valueType: PropTypes.oneOf(Object.values(VALUE_TYPES)),
-  presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
-  payload: PropTypes.array,
-};
-
-ChartTooltip.defaultProps = {
-  payload: [],
-  valueType: null,
-  presentationOptions: null,
-};
-
-SingleValueTooltip.propTypes = ChartTooltip.propTypes;
-MultiValueTooltip.propTypes = ChartTooltip.propTypes;
-NoDataTooltip.propTypes = ChartTooltip.propTypes;
