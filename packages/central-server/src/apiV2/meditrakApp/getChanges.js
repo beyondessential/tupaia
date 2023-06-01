@@ -7,13 +7,13 @@ import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import { respond, DatabaseError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
+import { getColumnsForMeditrakApp } from './utilities';
 import {
   supportsPermissionsBasedSync,
   buildMeditrakSyncQuery,
   buildPermissionsBasedMeditrakSyncQuery,
-  getColumnsForMeditrakApp,
-} from './utilities';
-import { allowNoPermissions } from '../permissions';
+} from './meditrakSync';
+import { allowNoPermissions } from '../../permissions';
 
 const MAX_CHANGES_RETURNED = 100;
 

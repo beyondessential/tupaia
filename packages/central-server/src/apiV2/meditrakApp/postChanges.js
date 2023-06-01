@@ -19,16 +19,17 @@ import {
   isNumber,
   constructIsValidEntityType,
 } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
-import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
+import { updateOrCreateSurveyResponse, addSurveyImage } from "./utilities";
+import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   translateObjectFields,
   translateEntityCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
   translateQuestionCodeToId,
-} from './utilities';
+} from '../utilities';
+
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',

@@ -9,7 +9,7 @@ import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import { TestableApp, upsertEntity, upsertQuestion, upsertSurveyGroup } from '../../testUtilities';
 
-describe('GET /changes/count', async () => {
+describe.only('GET /changes/count', async () => {
   const app = new TestableApp();
   const { models } = app;
   const meditrakSyncQueue = new MeditrakSyncQueue(models);
