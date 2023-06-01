@@ -158,7 +158,7 @@ export const CartesianChart = ({
   const updateChartConfig = (hasDisabledData: boolean) => {
     const newChartConfig = { ...chartConfig };
 
-    if (hasDisabledData && LEGEND_ALL_DATA_KEY in newChartConfig) {
+    if (hasDisabledData && !(LEGEND_ALL_DATA_KEY in newChartConfig)) {
       const allChartType = Object.values(chartConfig)[0].chartType || defaultChartType || 'line';
       newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
       setChartConfig(newChartConfig);
@@ -228,7 +228,7 @@ export const CartesianChart = ({
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged })}
+        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged } as any)}
         <Tooltip
           filterNull={false}
           content={

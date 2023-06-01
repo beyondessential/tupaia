@@ -5,11 +5,11 @@
 
 import React from 'react';
 import { Text, XAxis as XAxisComponent } from 'recharts';
+import { CartesianChartConfig } from '@tupaia/types';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
 import { ChartType, DataProps, ViewContent } from '../../types';
-import { CartesianChartConfig } from '@tupaia/types';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -102,10 +102,12 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
       : tickData;
   };
 
-  const renderTickFirstAndLastLabel = (tickProps: {
+  interface TickProps {
     index: number;
     payload: { value: string };
-  }) => {
+  }
+
+  const renderTickFirstAndLastLabel = (tickProps: TickProps) => {
     const { index, payload } = tickProps;
 
     // Only render first and last ticks labels, the rest just have a tick mark without text
@@ -143,7 +145,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
     return { left: 0, right: 10 };
   };
 
-  const renderVerticalTick = (tickProps: { payload: { value: string }; x: number; y: number }) => {
+  const renderVerticalTick = (tickProps: TickProps & { x: number; y: number }) => {
     const { payload, x, y } = tickProps;
 
     return (
@@ -159,8 +161,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
 
   return (
     <XAxisComponent
-      dataKey="name"
-      // @ts-ignore recharts XAxisProps is nat handling receiving undefined as a value
+      // @ts-ignore recharts XAxisProps is not handling receiving undefined as a value
       label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}
@@ -169,7 +170,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
       tickSize={6}
-      {...(isTimeSeries ? AXIS_TIME_PROPS : {})}
+      {...(isTimeSeries ? AXIS_TIME_PROPS : { dataKey: 'name' })}
     />
   );
 };

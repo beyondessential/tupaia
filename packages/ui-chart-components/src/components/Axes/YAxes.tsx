@@ -110,13 +110,21 @@ const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => 
   return undefined;
 };
 
+interface YAxisComponentProps {
+  config: any;
+  viewContent: any;
+  chartDataConfig: any;
+  isExporting?: boolean;
+  isEnlarged?: boolean;
+}
+
 const YAxis = ({
   config = {},
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}: any) => {
+}: YAxisComponentProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
@@ -172,7 +180,7 @@ export const YAxes = ({
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}: any) => {
+}: YAxisComponentProps) => {
   const { chartConfig = {} }: { chartConfig: YAxesProps | {} } = viewContent;
 
   const axisPropsById: { [p: number]: LooseObject } = {
@@ -200,5 +208,5 @@ export const YAxes = ({
   // If no custom axes provided, render the  default y axis
   return axesProps.length > 0
     ? axesProps.map(props => YAxis({ config: props, ...baseProps }))
-    : YAxis(baseProps);
+    : YAxis(baseProps as any);
 };
