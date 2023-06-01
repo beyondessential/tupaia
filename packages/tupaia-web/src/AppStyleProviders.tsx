@@ -13,7 +13,7 @@ import { ThemeProvider } from 'styled-components';
 
 const theme = createTheme();
 
-export const AppProviders = ({ children }: { children: ReactNode }) => (
+export const AppStyleProviders = ({ children }: { children: ReactNode }) => (
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
