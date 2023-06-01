@@ -40,3 +40,7 @@ export const PROJECT_ACCESS_TYPES = {
   ALLOWED: 'ALLOWED',
   DENIED: 'DENIED',
 };
+
+export const DEFAULT_PROJECT_CODE = 'explore';
+export const DEFAULT_ENTITY_CODE = 'explore';
+export const DEFAULT_URL = `${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;

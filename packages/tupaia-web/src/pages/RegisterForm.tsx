@@ -1,6 +1,7 @@
-/**
+/*
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-export * from './LoginForm';
+export const RegisterForm = () => {
+  return <div>RegisterForm</div>;
+};
