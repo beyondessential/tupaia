@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useCallback } from 'react';
+import React, { ChangeEvent, useCallback } from 'react';
 import MuiMenu from '@material-ui/icons/Menu';
 import MuiChevronRight from '@material-ui/icons/ChevronRight';
 import MuiChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -118,7 +118,7 @@ export const ButtonSelect = ({
   }, [options, onChange, index]);
 
   const handleChange = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       const newIndex = options.findIndex(option => option[valueKey] === newValue);
       onChange(newIndex);

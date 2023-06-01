@@ -4,7 +4,7 @@
  *
  */
 
-import { parseChartConfig } from '../utils/parseChartConfig';
+import { parseChartConfig } from '../utils';
 import { CHART_COLOR_PALETTE, EXPANDED_CHART_COLOR_PALETTE } from '../constants';
 
 const testViewJson = {

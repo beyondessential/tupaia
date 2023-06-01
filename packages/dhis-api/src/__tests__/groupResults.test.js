@@ -1,11 +1,11 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 /* eslint-disable camelcase */
 
-import { PERIOD_TYPES } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
 import { groupAnalyticsByPeriod, groupEventsByOrgUnit, groupEventsByPeriod } from '../groupResults';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;

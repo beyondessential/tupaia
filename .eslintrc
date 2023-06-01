@@ -205,7 +205,7 @@
     },
     {
       "files": [
-        "packages/ui-components/**"
+        "packages/ui-components/**", "packages/ui-chart-components/**", "packages/ui-map-components/**"
       ],
       "rules": {
         "import/no-extraneous-dependencies": "off",
@@ -214,22 +214,6 @@
         "import/extensions": 0, // Turn off linting error for imports
         "react/require-default-props": "off",
         "no-bitwise": "off" // Turn off linting error for bitwise operators because of generic style types using '>>'
-      }
-    },
-    {
-      "files": [
-        "packages/ui-chart-components/**"
-      ],
-      "rules": {
-        "import/no-extraneous-dependencies": "off"
-      }
-    },
-    {
-      "files": [
-        "packages/ui-map-components/**"
-      ],
-      "rules": {
-        "import/no-extraneous-dependencies": "off"
       }
     },
     {
@@ -280,6 +264,69 @@
         "react/static-property-placement": "warn",
         "prefer-destructuring": "warn",
         "prettier/prettier": "warn"
+      }
+    },
+    {
+      "files": [
+        "packages/tupaia-web/**"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "plugin:react-hooks/recommended"
+      ],
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+      },
+      "plugins": [
+        "react-refresh"
+      ],
+      "settings": {
+        "import/resolver": {
+          "node": {
+            "extensions": [
+              ".js",
+              ".jsx",
+              ".ts",
+              ".tsx"
+            ]
+          }
+        }
+      },
+      "rules": {
+        "camelcase": "warn",
+        "import/no-named-as-default": "off",
+        "no-debugger": "warn",
+        "import/no-cycle": "warn",
+        "import/extensions": "off",
+        "jsx-a11y/click-events-have-key-events": "warn",
+        "jsx-a11y/no-noninteractive-element-interactions": "warn",
+        "jsx-a11y/no-static-element-interactions": "warn",
+        "no-dupe-keys": "warn",
+        "no-param-reassign": "warn",
+        "no-restricted-properties": "warn",
+        "no-shadow": "warn",
+        "no-unsafe-finally": "warn",
+        "no-useless-catch": "warn",
+        "no-unused-vars": "warn",
+        "react/default-props-match-prop-types": "warn",
+        "react/no-unused-prop-types": "warn",
+        "react/no-array-index-key": "warn",
+        "react/forbid-prop-types": "warn",
+        "react/prop-types": "warn",
+        "react/prefer-stateless-function": "warn",
+        "react/require-default-props": "warn",
+        "react/state-in-constructor": "warn",
+        "react/static-property-placement": "warn",
+        "prefer-destructuring": "warn",
+        "prettier/prettier": "warn",
+        "react-refresh/only-export-components": "warn",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-no-target-blank": "off",
+        "react/button-has-type": "off"
       }
     }
   ]

@@ -125,9 +125,9 @@
       "path": "packages/ui-chart-components"
     },
     {
-          "name": "ui-map-components",
-          "path": "packages/ui-map-components"
-        },
+      "name": "ui-map-components",
+      "path": "packages/ui-map-components"
+    },
     {
       "name": "ui-components",
       "path": "packages/ui-components"
@@ -135,6 +135,10 @@
     {
       "name": "utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "tupaia-web",
+      "path": "packages/tupaia-web"
     },
     {
       "name": "tsutils",
@@ -223,7 +227,10 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": ["typescript", "typescriptreact"],
+    "eslint.validate": [
+      "typescript",
+      "typescriptreact"
+    ],
     "files.exclude": {
       "packages/": true
     },

@@ -4,7 +4,7 @@
  */
 import { NextFunction, Response } from 'express';
 import { Writable } from '../../../types';
-import { extractFieldFromQuery } from '../middleware/fields';
+import { extractEntityFieldFromQuery } from '../middleware/fields';
 import { extractFilterFromQuery } from '../middleware/filter';
 import {
   RelationshipsRequest,
@@ -45,7 +45,7 @@ const getSubContext = (
 ) => {
   const { field: baseField, allowedCountries } = req.ctx;
   const { field: queryField, filter: queryFilter } = getSubQuery(req.query, from);
-  const field = (queryField ? extractFieldFromQuery(queryField) : baseField) || 'code';
+  const field = (queryField ? extractEntityFieldFromQuery(queryField) : baseField) || 'code';
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
   const { type, ...restOfFilter } = filter;
   if (typeof type !== 'string' && typeof type !== 'undefined') {

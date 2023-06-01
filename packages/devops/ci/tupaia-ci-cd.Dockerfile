@@ -85,6 +85,8 @@ RUN mkdir -p ./packages/report-server
 COPY packages/report-server/package.json ./packages/report-server
 RUN mkdir -p ./packages/server-boilerplate
 COPY packages/server-boilerplate/package.json ./packages/server-boilerplate
+RUN mkdir -p ./packages/tupaia-web
+COPY packages/tupaia-web/package.json ./packages/tupaia-web
 RUN mkdir -p ./packages/tsutils
 COPY packages/tsutils/package.json ./packages/tsutils
 RUN mkdir -p ./packages/types
@@ -128,6 +130,7 @@ COPY packages/tsutils/. ./packages/tsutils
 COPY packages/types/. ./packages/types
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/ui-chart-components/. ./packages/ui-chart-components
+COPY packages/ui-map-components/. ./packages/ui-map-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api

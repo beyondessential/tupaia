@@ -25,6 +25,15 @@ import type {
   SingleValueViewConfig,
 } from './views';
 
+export type {
+  BarChartConfig,
+  ComposedChartConfig,
+  GaugeChartConfig,
+  LineChartConfig,
+  PieChartConfig,
+  BaseChartConfig,
+  CartesianChartConfig,
+} from './charts';
 /**
  * The master list of viz types.
  * Please also keep ../../utils/vizTypes up to date when making changes
@@ -47,3 +56,5 @@ export type DashboardItemConfig =
   | DataDownloadViewConfig
   | SingleDateViewConfig
   | MultiValueViewConfig;
+
+export type { ValueType } from './common';

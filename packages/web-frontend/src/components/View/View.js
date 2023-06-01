@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import { periodToMoment } from '@tupaia/utils';
-import { CHART_TYPES } from '@tupaia/ui-chart-components';
+import { ChartType } from '@tupaia/ui-chart-components';
 import { VIEW_STYLES } from '../../styles';
 import { NoDataMessage } from './NoDataMessage';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
@@ -26,7 +26,7 @@ const viewHasData = viewContent => {
   }
 
   // If all segments of a pie chart are "0", display the no data message
-  if (chartType === CHART_TYPES.PIE && data && data.every(segment => segment.value === 0)) {
+  if (chartType === ChartType.Pie && data && data.every(segment => segment.value === 0)) {
     return false;
   }
 
