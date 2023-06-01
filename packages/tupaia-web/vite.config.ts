@@ -12,7 +12,8 @@ export default defineConfig({
   },
   envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
   resolve: {
-    preserveSymlinks: true, // this is the fix!
+    preserveSymlinks: true,
+    dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
     alias: {
       http: 'moduleMock.js',
       winston: 'moduleMock.js',
