@@ -42,11 +42,11 @@ const Routes = [
     element: <VerifyEmailForm />,
   },
   {
-    path: '/:code',
+    path: '/:landingPageUrlSegment',
     element: <LandingPage />,
   },
   {
-    path: '/:code/:entityCode/:dashboardCode?',
+    path: '/:projectCode/:entityCode/:dashboardCode?',
     element: <Project />,
   },
 ];
