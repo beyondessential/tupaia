@@ -25,7 +25,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const dashboards = await ctx.services.central.fetchResources('dashboards', { filter: { root_entity_code: entities.ancestors }});
     return Promise.all(dashboards.map(async (dash: any) => ({
       ...dash,
-      items: await ctx.services.central.fetchResources(`dashbaords/${dash.id}/dashboardRelations`)
+      items: await ctx.services.central.fetchResources(`dashboards/${dash.id}/dashboardRelations`)
     })));
   }
 }
