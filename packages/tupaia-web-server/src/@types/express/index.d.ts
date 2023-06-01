@@ -5,14 +5,9 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { SessionCookie } from '@tupaia/server-boilerplate';
 
 import { TupaiaWebSessionType, TupaiaWebSessionModel } from '../../models';
-
-interface SessionCookie {
-  id: string;
-  email: string;
-  reset?: () => void;
-}
 
 declare global {
   namespace Express {
