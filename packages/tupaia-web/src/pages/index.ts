@@ -6,5 +6,5 @@ export { Base } from './Base';
 export { LandingPage } from './LandingPage';
 export { LoginForm } from './LoginForm';
 export { PasswordResetForm } from './PasswordResetForm';
-export { Project } from './Project';
+export { Project, loader as projectPageLoader } from './Project';
 export { RequestAccessForm } from './RequestAccessForm';
