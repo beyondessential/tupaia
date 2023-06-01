@@ -38,6 +38,7 @@ export const LineChart = ({
   const showDot = isExporting ? false : dot; // Always hide when exporting as it doesn't look nice
 
   return (
+    // @ts-ignore - ts lint is complaining about the children but it is a valid prop in the Line component
     <Line
       key={dataKey}
       type="monotone"
