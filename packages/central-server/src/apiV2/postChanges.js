@@ -30,9 +30,10 @@ import {
   translateQuestionCodeToId,
 } from './utilities';
 
-// Action constants
-const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
-const ADD_SURVEY_IMAGE = 'AddSurveyImage';
+const ACTIONS = {
+  SubmitSurveyResponse: 'SubmitSurveyResponse',
+  AddSurveyImage: 'AddSurveyImage',
+}
 
 /**
  * Responds to POST requests to the /changes endpoint, integrating the data posted in the request
@@ -56,7 +57,7 @@ export async function postChanges(req, res) {
 
   // Check permissions for survey responses
   const surveyResponsePayloads = translatedChanges
-    .filter(c => c.action === SUBMIT_SURVEY_RESPONSE)
+    .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
     .map(c => c.translatedPayload.survey_response || c.translatedPayload);
   const surveyResponsePermissionsChecker = async accessPolicy => {
     await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
@@ -68,7 +69,7 @@ export async function postChanges(req, res) {
   for (const { action, translatedPayload, ...rest } of translatedChanges) {
     await ACTION_HANDLERS[action](models, translatedPayload);
 
-    if (action === SUBMIT_SURVEY_RESPONSE) {
+    if (action === ACTIONS.SubmitSurveyResponse) {
       // TODO: Rework this functionality, as directly calling an analytics refresh here is both inefficient
       // and may create duplicate records in the analytics table
       const { waitForAnalyticsRebuild } = rest;
@@ -87,9 +88,18 @@ export async function postChanges(req, res) {
  */
 const ACTION_HANDLERS = {
   // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
-  [SUBMIT_SURVEY_RESPONSE]: async (models, payload) =>
+  [ACTIONS.SubmitSurveyResponse]: async (models, payload) =>
     updateOrCreateSurveyResponse(models, payload.survey_response || payload),
-  [ADD_SURVEY_IMAGE]: addSurveyImage,
+
+  /**
+   * AddSurveyImage works in conjunction with SubmitSurveyResponse:
+   * - SurveyResponse: The answer for the photo question has an id.
+   * - AddSurveyImage: The payload is { id, data } where id matches the one in the answer.
+   *
+   * The file is uploaded to an S3 bucket to a deterministic url based on this id.
+   * The SurveyResponse action handler swaps out any photo answers for their deterministic url, assuming it has been uploaded to that url.
+   */
+  [ACTIONS.AddSurveyImage]: addSurveyImage,
 };
 
 /**
@@ -97,9 +107,9 @@ const ACTION_HANDLERS = {
  * for the relevant change action, returning true if successful and throwing an error if not
  */
 const PAYLOAD_VALIDATORS = {
-  [SUBMIT_SURVEY_RESPONSE]: async (models, payload) =>
+  [ACTIONS.SubmitSurveyResponse]: async (models, payload) =>
     validateSurveyResponseObject(models, payload.survey_response || payload), // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
-  [ADD_SURVEY_IMAGE]: async (models, payload) => {
+  [ACTIONS.AddSurveyImage]: async (models, payload) => {
     const validator = new ObjectValidator({
       id: [hasContent],
       data: [hasContent],
@@ -113,9 +123,9 @@ const PAYLOAD_VALIDATORS = {
  * for the relevant change action, returning true if successful and throwing an error if not
  */
 const PAYLOAD_TRANSLATORS = {
-  [SUBMIT_SURVEY_RESPONSE]: async (models, payload) =>
+  [ACTIONS.SubmitSurveyResponse]: async (models, payload) =>
     translateSurveyResponseObject(models, payload.survey_response || payload), // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
-  [ADD_SURVEY_IMAGE]: (models, payload) => payload, // No translation required
+  [ACTIONS.AddSurveyImage]: (models, payload) => payload, // No translation required
 };
 
 async function validateSurveyResponseObject(models, surveyResponseObject) {
