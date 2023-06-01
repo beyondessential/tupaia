@@ -10,7 +10,7 @@ import { Router } from './Router';
 const App = () => {
   return (
     <AppStyleProviders>
-      <RouterProvider router={Router}></RouterProvider>
+      <RouterProvider router={Router} />
     </AppStyleProviders>
   );
 };
