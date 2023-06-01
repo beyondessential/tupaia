@@ -27,7 +27,7 @@ export const useDataTableExport = (
     const header = headerGroups.map(({ headers }) =>
       headers.map(({ Header, id }) => {
         // If Header is a function, call it to get the header value, otherwise create a function, so that a typescript error about Header possibly not being callable is not thrown
-        const getHeader = typeof Header === 'function' ? Header : () => Header;
+        const getHeader = (typeof Header === 'function' ? Header : () => Header) as Function;
         return getHeader({ column: { id } });
       }),
     );
