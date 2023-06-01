@@ -28,7 +28,7 @@ type RouteType = 'default' | 'download';
 
 export class Route<
   Req extends ExpressRequest<Req> = Request,
-  Res extends ExpressResponse<Req> = Response<ResBody<Req>>
+  Res extends ExpressResponse<Req> = Response<ResBody<Req>>,
 > {
   protected readonly req: Req;
   protected readonly res: Res;
@@ -56,6 +56,7 @@ export class Route<
     try {
       const response = await this.buildResponse();
       if (this.type === 'download') {
+        // @ts-ignore
         this.download(response);
       } else {
         this.respond(response, 200);

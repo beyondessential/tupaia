@@ -4,16 +4,23 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const truncate = (str, num, ellipsis = false) => {
+const truncate = (str: string, num: number, ellipsis = false): string => {
   if (str.length <= num) {
     return str;
   }
   return ellipsis ? `${str.slice(0, num)}...` : str.slice(0, num);
 };
 
-export const VerticalTick = ({ x, y, payload }) => {
+interface VerticalTickProps {
+  x: number;
+  y: number;
+  payload: {
+    value: string;
+  };
+}
+
+export const VerticalTick = ({ x, y, payload }: VerticalTickProps) => {
   return (
     <g transform={`translate(${x - 5},${y + 3})`}>
       <text
@@ -27,10 +34,4 @@ export const VerticalTick = ({ x, y, payload }) => {
       </text>
     </g>
   );
-};
-
-VerticalTick.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
-  payload: PropTypes.object.isRequired,
 };

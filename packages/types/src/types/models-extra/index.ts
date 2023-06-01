@@ -4,4 +4,14 @@
  */
 
 export type { ReportConfig, StandardReportConfig, CustomReportConfig } from './report';
-export type { DashboardItemConfig } from './dashboard-item';
+export type {
+  DashboardItemConfig,
+  BarChartConfig,
+  ComposedChartConfig,
+  GaugeChartConfig,
+  LineChartConfig,
+  PieChartConfig,
+  BaseChartConfig,
+  CartesianChartConfig,
+  ValueType,
+} from './dashboard-item';
