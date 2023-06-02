@@ -19,7 +19,7 @@ import {
   isNumber,
   constructIsValidEntityType,
 } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage } from "./utilities";
+import { updateOrCreateSurveyResponse, addSurveyImage, addSurveyFile } from "./utilities";
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -34,6 +34,7 @@ import {
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',
   AddSurveyImage: 'AddSurveyImage',
+  AddSurveyFile: 'AddSurveyFile',
 }
 
 /**
@@ -101,6 +102,11 @@ const ACTION_HANDLERS = {
    * The SurveyResponse action handler swaps out any photo answers for their deterministic url, assuming it has been uploaded to that url.
    */
   [ACTIONS.AddSurveyImage]: addSurveyImage,
+
+  /**
+   * AddSurveyFile works ver much like AddSurveyImage, but links with SubmitSurveyResponse by `filename` instead of `id`
+   */
+  [ACTIONS.AddSurveyFile]: addSurveyFile,
 };
 
 /**
@@ -117,6 +123,14 @@ const PAYLOAD_VALIDATORS = {
     });
     await validator.validate(payload);
   },
+  [ACTIONS.AddSurveyFile]: async (models, payload) => {
+    const validator = new ObjectValidator({
+      id: [hasContent],
+      filename: [hasContent],
+      data: [hasContent],
+    });
+    await validator.validate(payload);
+  },
 };
 
 /**
@@ -127,6 +141,7 @@ const PAYLOAD_TRANSLATORS = {
   [ACTIONS.SubmitSurveyResponse]: async (models, payload) =>
     translateSurveyResponseObject(models, payload.survey_response || payload), // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
   [ACTIONS.AddSurveyImage]: (models, payload) => payload, // No translation required
+  [ACTIONS.AddSurveyFile]: (models, payload) => payload, // No translation required
 };
 
 async function validateSurveyResponseObject(models, surveyResponseObject) {
