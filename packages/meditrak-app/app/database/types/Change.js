@@ -21,6 +21,10 @@ export class Change extends RealmObject {
       const image = database.findOne('Image', this.recordId);
       if (!image) throw new Error('Failed to find image when syncing');
       syncJson.payload = image.toJson();
+    } else if (this.action === 'AddSurveyFile') {
+      const file = database.findOne('File', this.recordId);
+      if (!file) throw new Error('Failed to find file when syncing');
+      syncJson.payload = file.toJson();
     } else throw new Error(`Unknown change action: ${this.action}`);
     return syncJson;
   }
