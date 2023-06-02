@@ -6453,6 +6453,7 @@ __metadata:
   dependencies:
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
+    "@tupaia/utils": 1.0.0
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
     qs: ^6.10.1
@@ -7055,6 +7056,20 @@ __metadata:
     moment-timezone: ^0.5.25
     puppeteer: ^15.4.0
     yup: ^0.32.9
+  languageName: unknown
+  linkType: soft
+
+"@tupaia/tupaia-web-server@workspace:packages/tupaia-web-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/tupaia-web-server@workspace:packages/tupaia-web-server"
+  dependencies:
+    "@tupaia/access-policy": 3.0.0
+    "@tupaia/api-client": 3.1.0
+    "@tupaia/database": 1.0.0
+    "@tupaia/server-boilerplate": 1.0.0
+    dotenv: ^8.2.0
+    express: ^4.16.2
+    winston: ^3.2.1
   languageName: unknown
   linkType: soft
 
