@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { S3 } from '@aws-sdk/client-s3';
-import { S3Client } from '@tupaia/utils';
+import { S3Client, S3 } from '@tupaia/utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { uploadImage } from '../../../apiV2/utilities';

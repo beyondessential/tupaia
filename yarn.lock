@@ -6402,8 +6402,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/central-server@workspace:packages/central-server"
   dependencies:
-    "@aws-sdk/client-s3": ^3.341.0
-    "@aws-sdk/credential-providers": ^3.341.0
     "@babel/polyfill": ^7.0.0
     "@tupaia/access-policy": 3.0.0
     "@tupaia/auth": 1.0.0
@@ -6735,8 +6733,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/meditrak-app-server@workspace:packages/meditrak-app-server"
   dependencies:
-    "@aws-sdk/client-s3": ^3.341.0
-    "@aws-sdk/credential-providers": ^3.341.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0

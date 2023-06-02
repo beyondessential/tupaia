@@ -3,15 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { fromEnv } from '@aws-sdk/credential-providers';
-import { S3 } from '@aws-sdk/client-s3';
 import winston from 'winston';
-import { S3Client } from '@tupaia/utils';
+import { S3Client, S3 } from '@tupaia/utils';
 
 // Upload a surveyImage to s3
 export const addSurveyImage = async (id: string, data: string) => {
   try {
-    const s3Client = new S3Client(new S3({ credentials: fromEnv() }));
+    const s3Client = new S3Client(new S3());
     await s3Client.uploadImage(data, id);
   } catch (error: any) {
     winston.error(error.message);
