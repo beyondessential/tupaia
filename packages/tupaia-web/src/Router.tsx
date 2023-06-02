@@ -9,6 +9,8 @@ import {
   LoginForm,
   PasswordResetForm,
   Project,
+  projectLoader,
+  loginAction,
   RegisterForm,
   RequestAccessForm,
   VerifyEmailForm,
@@ -28,6 +30,7 @@ const Routes = [
   {
     path: '/login',
     element: <LoginForm />,
+    action: loginAction,
   },
   {
     path: '/reset-password',
@@ -48,6 +51,7 @@ const Routes = [
   {
     path: '/:projectCode/:entityCode/:dashboardCode?',
     element: <Project />,
+    loader: projectLoader,
   },
 ];
 

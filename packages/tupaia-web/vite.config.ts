@@ -15,6 +15,7 @@ export default defineConfig({
     global: {},
   },
   resolve: {
+    dedupe: ['@material-ui/core', 'styled-components'],
     preserveSymlinks: true, // this is the fix!
     alias: {
       http: 'moduleMock.js',
