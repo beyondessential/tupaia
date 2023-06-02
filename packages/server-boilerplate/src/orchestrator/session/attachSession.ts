@@ -29,10 +29,15 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
 };
 
 export const attachSessionIfAvailable = async (req: Request, res: Response, next: NextFunction) => {
-  // Discard errors from attach session so function succeeds even if session doesn't exist
+  // Discard authorization errors from attach session so function succeeds even if session doesn't exist
+  const UNAUTHORIZED_STATUS_CODE = 401;
   try {
-    attachSession(req, res, () => { next() });
-  } catch(error) {
-    next();
+    attachSession(req, res, next);
+  } catch(error: any) {
+    if (error.statusCode === UNAUTHORIZED_STATUS_CODE) {
+      next();
+    } else {
+      next(error);
+    }
   }
 };
