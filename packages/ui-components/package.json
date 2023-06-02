@@ -55,7 +55,7 @@
     "@storybook/react": "^6.3.9",
     "@types/jest": "^29.5.1",
     "@types/lodash.throttle": "^4.1.7",
-    "@types/react-dom": "^18.2.4",
+    "@types/react-dom": "^16.9.18",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-table": "^7.7.14",
     "@types/styled-components": "^5.1.26",
@@ -63,7 +63,6 @@
     "fast-glob": "^3.2.5",
     "react-docgen-typescript-plugin": "^1.0.5",
     "react-hook-form": "^6.0.6",
-    "react-password-strength-bar": "^0.3.3",
-    "typescript": "^5.0.4"
+    "react-password-strength-bar": "^0.3.3"
   }
 }
