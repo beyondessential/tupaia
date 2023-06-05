@@ -8714,8 +8714,6 @@ __metadata:
     "@storybook/react": ^7.0.18
     "@storybook/react-vite": ^7.0.18
     "@storybook/testing-library": ^0.0.14-next.2
-    "@types/dom-to-image": ^2.6.4
-    "@types/downloadjs": ^1.4.3
     "@types/material-ui": ^0.21.12
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
@@ -8723,6 +8721,8 @@ __metadata:
     npm-run-all: ^4.1.5
     react: ^16.13.1
     react-dom: ^16.13.1
+    react-router: 6.3.0
+    react-router-dom: 6.3.0
     storybook: ^7.0.18
     styled-components: ^5.3.11
     typescript: ^5.0.2
@@ -9197,20 +9197,6 @@ __metadata:
   version: 0.0.3
   resolution: "@types/doctrine@npm:0.0.3"
   checksum: 7ca9c8ff4d2da437785151c9eef0dd80b8fa12e0ff0fcb988458a78de4b6f0fc92727ba5bbee446e1df615a91f03053c5783b30b7c21ab6ceab6a42557e93e50
-  languageName: node
-  linkType: hard
-
-"@types/dom-to-image@npm:^2.6.4":
-  version: 2.6.4
-  resolution: "@types/dom-to-image@npm:2.6.4"
-  checksum: ddc8d74b944909040a6e6d9ca2feb246b50dc8c3ad908a90634fb6e46e4c438b47aa0a5df4994bd19c1d6f110eb90a15146d1c1a7b8762ab9d050f70e6de4050
-  languageName: node
-  linkType: hard
-
-"@types/downloadjs@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@types/downloadjs@npm:1.4.3"
-  checksum: d5b5e29399fdbb415f351fee64e7f7b3ddef0f251d2375ddaa0c16cd5c026f4a8dce1b4c76d05e019bc65c96f589d70f13512b44e54d568063fdefa0dbfd40c8
   languageName: node
   linkType: hard
 
@@ -10002,7 +9988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router@npm:*, @types/react-router@npm:^5.1.20":
+"@types/react-router@npm:*":
   version: 5.1.20
   resolution: "@types/react-router@npm:5.1.20"
   dependencies:
@@ -35339,6 +35325,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:6.3.0, react-router-dom@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "react-router-dom@npm:6.3.0"
+  dependencies:
+    history: ^5.2.0
+    react-router: 6.3.0
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 77603a654f8a8dc7f65535a2e5917a65f8d9ffcb06546d28dd297e52adcc4b8a84377e0115f48dca330b080af2da3e78f29d590c89307094d36927d2b1751ec3
+  languageName: node
+  linkType: hard
+
 "react-router-dom@npm:^5.1.2, react-router-dom@npm:^5.2.0":
   version: 5.2.0
   resolution: "react-router-dom@npm:5.2.0"
@@ -35353,19 +35352,6 @@ __metadata:
   peerDependencies:
     react: ">=15"
   checksum: 98d2d35f9540ac4a3c14dc023623fc8411a6a6338e95d726370e07b27c3bc6e854516537c8e3f9ad2483c4bbd579ba28cce9aff843a19fe8ebff663318886335
-  languageName: node
-  linkType: hard
-
-"react-router-dom@npm:^6.11.2, react-router-dom@npm:^6.3.0":
-  version: 6.11.2
-  resolution: "react-router-dom@npm:6.11.2"
-  dependencies:
-    history: ^5.2.0
-    react-router: 6.11.2
-  peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 77603a654f8a8dc7f65535a2e5917a65f8d9ffcb06546d28dd297e52adcc4b8a84377e0115f48dca330b080af2da3e78f29d590c89307094d36927d2b1751ec3
   languageName: node
   linkType: hard
 
@@ -35389,9 +35375,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.11.2, react-router@npm:^6.11.2":
-  version: 6.11.2
-  resolution: "react-router@npm:6.11.2"
+"react-router@npm:6.3.0":
+  version: 6.3.0
+  resolution: "react-router@npm:6.3.0"
   dependencies:
     history: ^5.2.0
   peerDependencies:
