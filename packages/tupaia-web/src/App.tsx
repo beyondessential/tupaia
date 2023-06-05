@@ -2,16 +2,16 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { AppStyleProviders } from './AppStyleProviders';
-import { RouterProvider } from 'react-router-dom';
-import { Router } from './Router';
+import React from 'react';
+import { Alert } from '@tupaia/ui-components';
+import { AppProviders } from './AppProviders';
 
 const App = () => {
   return (
-    <AppStyleProviders>
-      <RouterProvider router={Router} />
-    </AppStyleProviders>
+    <AppProviders>
+      <Alert>Alert</Alert>
+      <h1>Tupaia web</h1>
+    </AppProviders>
   );
 };
 

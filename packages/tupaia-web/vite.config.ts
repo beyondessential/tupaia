@@ -5,7 +5,12 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
-  plugins: [ViteEjsPlugin(), react()],
+  plugins: [
+    ViteEjsPlugin(),
+    react({
+      jsxRuntime: 'classic',
+    }),
+  ],
   server: {
     port: 8088,
     open: true,

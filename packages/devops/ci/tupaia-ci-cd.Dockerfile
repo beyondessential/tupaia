@@ -91,6 +91,8 @@ RUN mkdir -p ./packages/tsutils
 COPY packages/tsutils/package.json ./packages/tsutils
 RUN mkdir -p ./packages/types
 COPY packages/types/package.json ./packages/types
+RUN mkdir -p ./packages/tupaia-web-server
+COPY packages/tupaia-web-server/package.json ./packages/tupaia-web-server
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/ui-chart-components
