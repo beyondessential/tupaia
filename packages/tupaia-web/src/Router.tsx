@@ -15,6 +15,12 @@ import {
 } from './pages';
 import { DEFAULT_URL } from './constants';
 
+/**
+ * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
+ * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
+ *
+ * **/
+
 export const Router = () => (
   <BrowserRouter>
     <Routes>
@@ -28,7 +34,7 @@ export const Router = () => (
       <Route path="request-access" element={<RequestAccessForm />} />
       <Route path="verify-email" element={<VerifyEmailForm />} />
       <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-      {/** react-router v 6.4 an above dob't work in our setup. Which means we need to handle the routes with a base project page using splats (catchall routes), since version 6.3 doesn't support optional segments */}
+      {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
       <Route path="/:projectCode/:entityCode/*" element={<Project />} />
     </Routes>
   </BrowserRouter>
