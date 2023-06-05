@@ -4,14 +4,14 @@
  */
 import { ReactNode } from 'react';
 import {
-  createTheme,
+  createMuiTheme,
   ThemeProvider as MuiThemeProvider,
   StylesProvider,
 } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 
-const theme = createTheme();
+const theme = createMuiTheme();
 
 export const AppProviders = ({ children }: { children: ReactNode }) => (
   <StylesProvider injectFirst>
