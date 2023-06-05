@@ -2,8 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import ReactDOM from 'react-dom/client';
+import React from 'react';
+import { render as renderReactApp } from 'react-dom';
 import App from './App.tsx';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+renderReactApp(<App />, document.getElementById('root'));

@@ -2,9 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+import React from 'react'; 
+import { RouterProvider } from 'react-router';
 import { AppStyleProviders } from './AppStyleProviders';
-import { RouterProvider } from 'react-router-dom';
 import { Router } from './Router';
 
 const App = () => {
