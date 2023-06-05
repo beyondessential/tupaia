@@ -2,12 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+import React from 'react';
 import { useParams } from 'react-router-dom';
 
 export const Project = () => {
   // Use these to fetch the project and any other entity info you might need
-  const { projectCode, entityCode, dashboardCode } = useParams();
+  const { projectCode, entityCode, '*': dashboardCode } = useParams();
 
   return (
     <div>
