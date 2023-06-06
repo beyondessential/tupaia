@@ -4,14 +4,14 @@
  */
 import React from 'react';
 import { Alert } from '@tupaia/ui-components';
-import { AppStyleProviders } from './AppStyleProviders';
+import { AppProviders } from './AppProviders';
 
 const App = () => {
   return (
-    <AppStyleProviders>
+    <AppProviders>
       <Alert>Alert</Alert>
       <h1>Tupaia web</h1>
-    </AppStyleProviders>
+    </AppProviders>
   );
 };
 
