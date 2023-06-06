@@ -13,7 +13,7 @@ import DownArrow from '@material-ui/icons/ArrowDropDown';
 import { Fade, Typography, Divider } from '@material-ui/core';
 import { Content, EmptyContentText, ExpandedContent } from './Content';
 import { LastUpdated } from './LastUpdated';
-import { DropDownMenu } from '../../../components';
+import { DropDownMenu } from '../../components';
 
 const MAX_MAP_OVERLAYS = 2;
 

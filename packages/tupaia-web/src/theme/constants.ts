@@ -8,3 +8,7 @@
  */
 
 export const CONTROL_BAR_PADDING = 10;
+export const CONTROL_BAR_WIDTH = 340;
+export const MAP_CONTROLS_WIDTH = 166;
+export const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
+export const TRANSPARENT_BLACK = 'rgba(43, 45, 56, 0.94)';
