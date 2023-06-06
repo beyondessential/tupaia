@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   createMuiTheme,
   ThemeProvider as MuiThemeProvider,
@@ -12,13 +13,16 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 
 const theme = createMuiTheme();
+const queryClient = new QueryClient();
 
-export const AppStyleProviders = ({ children }: { children: ReactNode }) => (
+export const AppProviders = ({ children }: { children: ReactNode }) => (
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
+        <QueryClientProvider client={queryClient}>
+          <CssBaseline />
+          {children}
+        </QueryClientProvider>
       </ThemeProvider>
     </MuiThemeProvider>
   </StylesProvider>

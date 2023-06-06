@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
-import { AppStyleProviders } from '../src/AppStyleProviders';
+import { AppProviders } from '../src/AppProviders';
 import { DARK_BLUE, WHITE } from '../src/theme';
 
 const preview: Preview = {
@@ -23,9 +23,9 @@ const preview: Preview = {
   decorators: [
     Story => {
       return (
-        <AppStyleProviders>
+        <AppProviders>
           <Story />
-        </AppStyleProviders>
+        </AppProviders>
       );
     },
   ],
