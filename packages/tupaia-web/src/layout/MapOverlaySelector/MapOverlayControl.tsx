@@ -118,7 +118,7 @@ const DatePickerWrapper = styled.div<{
 interface MapOverlayControlProps {
   emptyMessage: string;
   selectedMapOverlays: any[];
-  children: ReactNode | null;
+  children?: ReactNode | null;
   hasOverlays: boolean;
   maxSelectedOverlays: number;
   changeMaxSelectedOverlays: (maxSelectedOverlays: number) => void;
@@ -136,6 +136,7 @@ export const MapOverlayControl = ({
   pinnedOverlay,
   setPinnedOverlay,
 }: MapOverlayControlProps) => {
+  /** This is a direct copy from the existing web-frontend. It will likely be refactored as this logic is brought in */
   const [isExpanded, setIsExpanded] = useState(false);
   const isMapOverlaySelected = selectedMapOverlays.length > 0;
 
