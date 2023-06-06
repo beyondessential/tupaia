@@ -6,6 +6,7 @@
 import {
   DatabaseError,
   getS3ImageFilePath,
+  getS3UploadFilePath,
   S3Client,
   S3,
   S3_BUCKET_PATH,
@@ -37,6 +38,8 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
           throw new UploadError(error);
         }
       }
+    } else if (answer.type === 'File') {
+      answerDocument.text = `${S3_BUCKET_PATH}${getS3UploadFilePath()}${answer.body}`;
     } else {
       answerDocument.text = answer.body;
     }
