@@ -3,71 +3,72 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
+import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { TextField } from '../components/forms/TextField.tsx';
-
-const Container = styled.div`
-  background: #2e2f33;
-  margin: 1rem auto;
-  max-width: 1000px;
-  height: 600px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+import { TextField } from '../components/TextField.tsx';
+import { Modal, ModalButton } from '../components/Modal.tsx';
 
 const StyledImg = styled.img`
   height: 2.6rem;
   width: auto;
-  margin-bottom: 2.5rem;
+  margin-bottom: 5rem;
 `;
 const Logo = () => <StyledImg src="/tupaia-logo-light.svg" alt="psss-logo" />;
 
-const Title = styled.h1`
+const Title = styled(Typography)`
   font-weight: 500;
   font-size: 32px;
   line-height: 13px;
+  margin-bottom: 1.6rem;
 `;
 
-const Text = styled.h2`
+const Text = styled(Typography)`
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
 `;
 
-const LinkText = styled.div`
+const LinkText = styled(Typography)`
   font-weight: 400;
   font-size: 11px;
   line-height: 15px;
+  color: white;
+
+  a {
+    color: white;
+  }
+`;
+
+const ForgotPasswordText = styled(LinkText)`
+  display: block;
+  margin-top: -0.6rem;
+  text-align: right;
 `;
 
 const StyledForm = styled.form`
   margin-top: 1rem;
   width: 340px;
   max-width: 100%;
-
-  button {
-    width: 100%;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    text-transform: none;
-  }
 `;
 
-export const LoginForm = () => {
+export const Login = () => {
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
   const { mutate: login, isLoading } = useLogin();
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate(-1);
+  };
 
   return (
-    <Container>
+    <Modal open onClose={handleClose}>
       <Logo />
       <Title>Log in</Title>
       <Text>Enter your details below to log in</Text>
@@ -96,12 +97,16 @@ export const LoginForm = () => {
             required: 'Required',
           })}
         />
-        <LinkText>Forgot password?</LinkText>
-        <Button type="submit" isLoading={isLoading}>
+        <ForgotPasswordText align="right" as={Link} to="/reset-password">
+          Forgot password?
+        </ForgotPasswordText>
+        <ModalButton type="submit" isLoading={isLoading}>
           Log in
-        </Button>
-        <LinkText>Don't have an account? Register here</LinkText>
+        </ModalButton>
+        <LinkText align="center">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </LinkText>
       </StyledForm>
-    </Container>
+    </Modal>
   );
 };

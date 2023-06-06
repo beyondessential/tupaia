@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
@@ -9,7 +9,7 @@ import styled from 'styled-components';
 const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   display: flex;
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 
   .MuiFormLabel-root {
     color: #9ba0a6 !important;
