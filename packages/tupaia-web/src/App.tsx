@@ -3,15 +3,16 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { AppProviders } from './AppProviders.tsx';
 import { Router } from './Router';
+import { useUser } from './api/queries/useUser.ts';
+import { useProjects } from './api/queries';
 
 const App = () => {
-  return (
-    <AppProviders>
-      <Router />
-    </AppProviders>
-  );
+  const useQ = useUser();
+  const projectQ = useProjects();
+  console.log('useQ', useQ);
+  console.log('projectQ', projectQ);
+  return <Router />;
 };
 
 export default App;

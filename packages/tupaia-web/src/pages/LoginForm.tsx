@@ -3,11 +3,11 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { TextField, Button } from '@tupaia/ui-components';
-import { post } from '../api';
+import { Button } from '@tupaia/ui-components';
+import { useLogin } from '../api/mutations';
+import { TextField } from '../components/forms/TextField.tsx';
 
 const Container = styled.div`
   background: #2e2f33;
@@ -39,78 +39,69 @@ const Text = styled.h2`
   line-height: 18px;
 `;
 
-const FormContainer = styled.div`
-  margin-top: 1rem;
+const LinkText = styled.div`
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 15px;
 `;
 
-const useLogin = () => {
-  const queryClient = useQueryClient();
+const StyledForm = styled.form`
+  margin-top: 1rem;
+  width: 340px;
+  max-width: 100%;
 
-  const query = useMutation(
-    data => {
-      console.log('data', data);
-      return post('login', {
-        data: {
-          emailAddress: data.email,
-          password: data.password,
-          deviceName: window.navigator.userAgent,
-        },
-      });
-    },
-    {
-      onSuccess: () => {
-        queryClient.clear();
-      },
-    },
-  );
+  button {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-transform: none;
+  }
+`;
 
-  return query;
-};
 export const LoginForm = () => {
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
-  const { mutate: login } = useLogin();
-
-  console.log('errors', errors);
+  const { mutate: login, isLoading } = useLogin();
 
   return (
     <Container>
       <Logo />
       <Title>Log in</Title>
       <Text>Enter your details below to log in</Text>
-      <FormContainer>
-        <form onSubmit={handleSubmit(login)} noValidate>
-          <TextField
-            name="email"
-            label="email"
-            type="email"
-            error={!!errors.email}
-            helperText={errors.email && errors.email.message}
-            inputProps={register('email', {
-              required: 'Required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'invalid email address',
-              },
-            })}
-          />
-
-          <TextField
-            name="password"
-            label="password"
-            type="password"
-            error={!!errors.password}
-            helperText={errors.password && errors.password.message}
-            inputProps={register('password', {
-              required: 'Required',
-            })}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </FormContainer>
+      <StyledForm onSubmit={handleSubmit(login)} noValidate>
+        <TextField
+          name="email"
+          label="Email *"
+          type="email"
+          error={!!errors.email}
+          helperText={errors.email && errors.email.message}
+          inputProps={register('email', {
+            required: 'Required',
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'invalid email address',
+            },
+          })}
+        />
+        <TextField
+          name="password"
+          label="Password *"
+          type="password"
+          error={!!errors.password}
+          helperText={errors.password && errors.password.message}
+          inputProps={register('password', {
+            required: 'Required',
+          })}
+        />
+        <LinkText>Forgot password?</LinkText>
+        <Button type="submit" isLoading={isLoading}>
+          Log in
+        </Button>
+        <LinkText>Don't have an account? Register here</LinkText>
+      </StyledForm>
     </Container>
   );
 };

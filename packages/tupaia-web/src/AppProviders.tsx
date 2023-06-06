@@ -13,7 +13,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 
 const theme = createMuiTheme();
-const queryClient = new QueryClient();
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+});
 
 export const AppProviders = ({ children }: { children: ReactNode }) => (
   <StylesProvider injectFirst>
