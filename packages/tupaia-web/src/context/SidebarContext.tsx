@@ -12,27 +12,31 @@ const defaultState = {
   contractedWidth: 300,
 };
 
-// This is the sidebar state context
-export const SidebarContext = createContext(defaultState);
+type SidebarStateType = typeof defaultState;
 
-export const SIDEBAR_ACTION_TYPES = {
-  TOGGLE: 'toggle',
-  RESIZE: 'resize',
-};
+// This is the sidebar state context
+export const SidebarContext = createContext<SidebarStateType>(defaultState);
+
+export enum SIDEBAR_ACTION_TYPES {
+  TOGGLE = 'toggle',
+  RESIZE = 'resize',
+}
 
 // This is the reducer for the sidebar state context
 export const sidebarReducer = (
   state: typeof defaultState,
   action: {
-    type: keyof typeof SIDEBAR_ACTION_TYPES;
-    payload: typeof defaultState;
+    type: `${SIDEBAR_ACTION_TYPES}`;
+    payload: Partial<SidebarStateType>;
   },
-) => {
+): SidebarStateType => {
   switch (action.type) {
     case SIDEBAR_ACTION_TYPES.TOGGLE:
-      return { ...state, isExpanded: action.payload.isExpanded };
+      return { ...state, isExpanded: action.payload.isExpanded === true };
     case SIDEBAR_ACTION_TYPES.RESIZE: {
-      const { expandedWidth, contractedWidth } = action.payload;
+      // handle default values in case of undefined payload values
+      const { expandedWidth = state.expandedWidth, contractedWidth = state.contractedWidth } =
+        action.payload;
       return { ...state, expandedWidth, contractedWidth };
     }
     default:
@@ -47,9 +51,9 @@ export const SidebarDispatchContext = createContext<Dispatch<ReducerAction<typeo
 
 // This is the provider for the sidebar contexts. It exposes the state and dispatch contexts to anything within it (needed for Map and Sidebar components)
 export const SidebarProviders = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(sidebarReducer, defaultState);
+  const [value, dispatch] = useReducer(sidebarReducer, defaultState);
   return (
-    <SidebarContext.Provider value={state}>
+    <SidebarContext.Provider value={value}>
       <SidebarDispatchContext.Provider value={dispatch}>{children}</SidebarDispatchContext.Provider>
     </SidebarContext.Provider>
   );
