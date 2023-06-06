@@ -20,8 +20,8 @@ export default defineConfig({
     global: {},
   },
   resolve: {
-    dedupe: ['@material-ui/core', 'styled-components'],
-    preserveSymlinks: true, // this is the fix!
+    preserveSymlinks: true,
+    dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
     alias: {
       http: 'moduleMock.js',
       winston: 'moduleMock.js',
