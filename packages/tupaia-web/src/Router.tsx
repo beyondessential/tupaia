@@ -39,7 +39,7 @@ export const Router = () => {
         <Route path="verify-email" element={<VerifyEmailForm />} />
         <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
         {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
-        <Route path="/:projectCode/:entityCode/*" element={<Project></Project>} />
+        <Route path="/:projectCode/:entityCode/*" element={<Project />} />
       </Routes>
       {state?.backgroundLocation && (
         <Routes>

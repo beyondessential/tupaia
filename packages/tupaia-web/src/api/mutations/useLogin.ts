@@ -5,7 +5,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
-import { post } from '../api.ts';
+import { post } from '../api';
 
 export const useLogin = () => {
   const navigate = useNavigate();

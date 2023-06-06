@@ -5,7 +5,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Router } from './Router';
-import { useUser } from './api/queries/useUser.ts';
+import { useUser } from './api/queries/useUser';
 import { useProjects } from './api/queries';
 
 const App = () => {

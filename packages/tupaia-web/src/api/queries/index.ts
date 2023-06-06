@@ -4,5 +4,5 @@
  *
  */
 
-export * from './useProjects.ts';
-export * from './useUser.ts';
+export * from './useProjects';
+export * from './useUser';

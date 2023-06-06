@@ -4,8 +4,8 @@
  */
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
-import App from './App.tsx';
-import { AppProviders } from './AppProviders.tsx';
+import App from './App';
+import { AppProviders } from './AppProviders';
 
 renderReactApp(
   <AppProviders>

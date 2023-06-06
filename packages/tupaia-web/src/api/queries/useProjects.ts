@@ -4,7 +4,7 @@
  */
 
 import { useQuery } from 'react-query';
-import { get } from '../api.ts';
+import { get } from '../api';
 
 export const useProjects = () => {
   return useQuery('projects', () => get('projects'));

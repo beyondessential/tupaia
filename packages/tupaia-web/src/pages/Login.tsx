@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { TextField } from '../components/TextField.tsx';
-import { Modal, ModalButton } from '../components/Modal.tsx';
+import { TextField } from '../components/TextField';
+import { Modal, ModalButton } from '../components/Modal';
 
 const StyledImg = styled.img`
   height: 2.6rem;
