@@ -39,17 +39,45 @@ const Watermark = styled(MapWatermark)`
   margin-bottom: 16px;
 `;
 
-export const MapLayout = () => {
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+`;
+
+const MapContainer = styled.div<{
+  $rightOffset: number;
+}>`
+  height: 100vh;
+  width: calc(100vw - ${p => p.$rightOffset}px);
+  transition: width 0.5s ease;
+  position: absolute;
+  z-index: -1; // make this appear underneath the map overlay selector and the top bar
+`;
+
+interface MapLayoutProps {
+  sidePanelWidth?: number;
+}
+export const MapLayout = ({ sidePanelWidth = 300 }: MapLayoutProps) => {
   return (
-    <FlexDiv>
-      <LeftCol>
-        <TopRow>
-          <MapOverlaySelector />
-        </TopRow>
-        <BottomRow>{/** This is where the map legend would go */}</BottomRow>
-      </LeftCol>
-      {/** This is where the tilepicker would go */}
-      <Watermark />
-    </FlexDiv>
+    <>
+      <div>
+        <ContentContainer>
+          <FlexDiv>
+            <LeftCol>
+              <TopRow>
+                <MapOverlaySelector />
+              </TopRow>
+              <BottomRow>{/** This is where the map legend would go */}</BottomRow>
+            </LeftCol>
+            {/** This is where the tilepicker would go */}
+            <Watermark />
+          </FlexDiv>
+        </ContentContainer>
+        {/** This is where SessionExpiredDialog and any other overlays would go, as well as loading screen */}
+      </div>
+      <MapContainer $rightOffset={sidePanelWidth}>{/* <Map /> */}</MapContainer>
+    </>
   );
 };
