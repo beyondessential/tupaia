@@ -329,7 +329,10 @@ export const constructForSingle = (models, recordType) => {
               'request-access',
               'verify-email',
             ];
-            return !forbiddenRoutes.includes(urlSegment);
+            if (forbiddenRoutes.includes(urlSegment)) {
+              throw new Error('This url segment is not allowed');
+            }
+            return true;
           },
         ],
         project_codes: [
