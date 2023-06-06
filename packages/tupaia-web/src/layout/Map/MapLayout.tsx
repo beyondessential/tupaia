@@ -57,27 +57,27 @@ const MapContainer = styled.div<{
 `;
 
 interface MapLayoutProps {
-  sidePanelWidth?: number;
+  sidePanelWidth?: number; // This will come from redux, based on whether the side panel is expanded or not
 }
 export const MapLayout = ({ sidePanelWidth = 300 }: MapLayoutProps) => {
   return (
     <>
-      <div>
-        <ContentContainer>
-          <FlexDiv>
-            <LeftCol>
-              <TopRow>
-                <MapOverlaySelector />
-              </TopRow>
-              <BottomRow>{/** This is where the map legend would go */}</BottomRow>
-            </LeftCol>
-            {/** This is where the tilepicker would go */}
-            <Watermark />
-          </FlexDiv>
-        </ContentContainer>
-        {/** This is where SessionExpiredDialog and any other overlays would go, as well as loading screen */}
-      </div>
-      <MapContainer $rightOffset={sidePanelWidth}>{/* <Map /> */}</MapContainer>
+      <ContentContainer>
+        <FlexDiv>
+          <LeftCol>
+            <TopRow>
+              <MapOverlaySelector />
+            </TopRow>
+            <BottomRow>{/** This is where the map legend would go */}</BottomRow>
+          </LeftCol>
+          {/** This is where the tilepicker would go */}
+          <Watermark />
+        </FlexDiv>
+      </ContentContainer>
+      {/** This is where SessionExpiredDialog and any other overlays would go, as well as loading screen */}
+      <MapContainer $rightOffset={sidePanelWidth}>
+        {/* This is where the Map component will go */}
+      </MapContainer>
     </>
   );
 };
