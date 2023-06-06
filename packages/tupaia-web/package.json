@@ -40,6 +40,7 @@
     "material-ui": "^0.18.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^7.44.3",
     "styled-components": "^5.3.11",
     "vite-plugin-ejs": "^1.6.4",
     "vite-plugin-env-compatible": "^1.1.1"
