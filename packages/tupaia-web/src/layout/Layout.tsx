@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { TopBar } from '.';
+import { TopBar } from './TopBar';
 
 const Wrapper = styled.div``;
 

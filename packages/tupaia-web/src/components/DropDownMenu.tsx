@@ -1,0 +1,160 @@
+/**
+ * Tupaia Web
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+import React, { ElementType, SyntheticEvent, useState } from 'react';
+import styled from 'styled-components';
+import {
+  List as MuiList,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Menu,
+  Typography,
+  PopoverOrigin,
+} from '@material-ui/core';
+import DropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { ComponentType } from 'react';
+import { ListProps } from 'material-ui';
+
+const List = styled(MuiList)<
+  ListProps & {
+    as?: ComponentType | ElementType;
+  }
+>`
+  color: ${({ theme }) => theme.palette.text.primary};
+`;
+
+interface ListComponentProps {
+  primaryTitle: string;
+  options: string[];
+  iconStyle: object;
+  PrimaryComponent: ComponentType;
+  disableGutters: boolean;
+  handleOpenMenu: (event: SyntheticEvent) => void;
+}
+
+const ListComponent = ({
+  primaryTitle,
+  options,
+  iconStyle,
+  PrimaryComponent,
+  disableGutters,
+  handleOpenMenu,
+}: ListComponentProps) => {
+  return (
+    <List as="nav">
+      <ListItem disableGutters={disableGutters} onClick={handleOpenMenu} button>
+        <ListItemText primary={<PrimaryComponent>{primaryTitle}</PrimaryComponent>} />
+        {options.length > 1 && <DropDownIcon style={iconStyle} />}
+      </ListItem>
+    </List>
+  );
+};
+
+interface MenuComponentProps {
+  options: string[];
+  anchorEl: SyntheticEvent['currentTarget'] | null;
+  anchorOrigin?: PopoverOrigin;
+  menuListStyle: object;
+  selectedOptionIndex: number;
+  handleCloseMenu: () => void;
+  handleChangeSelection: (index: number) => void;
+  OptionComponent: ComponentType;
+}
+
+const MenuComponent = ({
+  options = [],
+  anchorEl,
+  anchorOrigin,
+  menuListStyle,
+  selectedOptionIndex,
+  handleCloseMenu,
+  handleChangeSelection,
+  OptionComponent,
+}: MenuComponentProps) => {
+  return options.length > 1 ? (
+    <Menu
+      open={!!anchorEl}
+      anchorEl={anchorEl}
+      getContentAnchorEl={null}
+      anchorOrigin={anchorOrigin}
+      onClose={handleCloseMenu}
+      MenuListProps={{ style: menuListStyle }}
+    >
+      {options.map((option, index) => (
+        <MenuItem
+          key={option}
+          onClick={() => handleChangeSelection(index)}
+          selected={index === selectedOptionIndex}
+        >
+          <OptionComponent>{option}</OptionComponent>
+        </MenuItem>
+      ))}
+    </Menu>
+  ) : null;
+};
+
+interface DropDownMenuProps {
+  title?: string;
+  options?: string[];
+  selectedOptionIndex: number;
+  iconStyle?: object;
+  disableGutters?: boolean;
+  onChange: (index: number) => void;
+  menuListStyle?: object;
+  anchorOrigin?: PopoverOrigin;
+  StyledPrimaryComponent?: ComponentType;
+  StyledOptionComponent?: ComponentType;
+}
+
+export const DropDownMenu = ({
+  title = '',
+  options = [],
+  selectedOptionIndex,
+  iconStyle = {},
+  disableGutters = false,
+  onChange,
+  menuListStyle = {},
+  anchorOrigin,
+  StyledPrimaryComponent = Typography,
+  StyledOptionComponent = Typography,
+}: DropDownMenuProps) => {
+  const [anchorEl, setAnchorEl] = useState<SyntheticEvent['currentTarget'] | null>(null);
+
+  const primaryTitle = title || options[selectedOptionIndex];
+
+  const handleOpenMenu = (event: SyntheticEvent) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleChangeSelection = (index: number) => {
+    onChange(index);
+    setAnchorEl(null);
+  };
+  return (
+    <div>
+      <ListComponent
+        PrimaryComponent={StyledPrimaryComponent}
+        primaryTitle={primaryTitle}
+        options={options}
+        iconStyle={iconStyle}
+        disableGutters={disableGutters}
+        handleOpenMenu={handleOpenMenu}
+      />
+      <MenuComponent
+        options={options}
+        anchorEl={anchorEl}
+        anchorOrigin={anchorOrigin}
+        menuListStyle={menuListStyle}
+        selectedOptionIndex={selectedOptionIndex}
+        handleCloseMenu={() => setAnchorEl(null)}
+        handleChangeSelection={handleChangeSelection}
+        OptionComponent={StyledOptionComponent}
+      />
+    </div>
+  );
+};
