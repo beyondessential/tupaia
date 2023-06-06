@@ -39,6 +39,8 @@
               command: './packages/devops/scripts/ci/testBackend.sh psss-server'
             - name: Test report-server
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
+            - name: Test tupaia-web-server
+              command: './packages/devops/scripts/ci/testBackend.sh tupaia-web-server'
             - name: Test web-config-server
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
         - type: parallel
