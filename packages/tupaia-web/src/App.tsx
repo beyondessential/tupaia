@@ -12,6 +12,7 @@ const App = () => {
   return (
     <AppStyleProviders>
       <BrowserRouter>
+        {/** The Layout component needs to be inside BrowserRouter so that Link component from react-router-dom can be used (in menu etc.) */}
         <Layout>
           <Routes />
         </Layout>
