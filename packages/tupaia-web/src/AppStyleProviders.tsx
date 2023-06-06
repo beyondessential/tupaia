@@ -27,7 +27,7 @@ const theme = createMuiTheme({
   },
 });
 
-export const AppProviders = ({ children }: { children: ReactNode }) => (
+export const AppStyleProviders = ({ children }: { children: ReactNode }) => (
   <StylesProvider injectFirst>
     <ThemeProvider theme={theme}>
       <MuiThemeProvider theme={theme}>

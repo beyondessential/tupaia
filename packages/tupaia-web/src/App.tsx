@@ -3,15 +3,14 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Alert } from '@tupaia/ui-components';
-import { AppProviders } from './AppProviders';
+import { AppStyleProviders } from './AppStyleProviders';
+import { Router } from './Router';
 
 const App = () => {
   return (
-    <AppProviders>
-      <Alert>Alert</Alert>
-      <h1>Tupaia web</h1>
-    </AppProviders>
+    <AppStyleProviders>
+      <Router />
+    </AppStyleProviders>
   );
 };
 
