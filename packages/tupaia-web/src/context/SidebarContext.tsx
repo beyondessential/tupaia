@@ -20,9 +20,14 @@ export const SIDEBAR_ACTION_TYPES = {
   RESIZE: 'resize',
 };
 
-// TODO: Add types here
 // This is the reducer for the sidebar state context
-export const sidebarReducer = (state: any, action: any) => {
+export const sidebarReducer = (
+  state: typeof defaultState,
+  action: {
+    type: keyof typeof SIDEBAR_ACTION_TYPES;
+    payload: typeof defaultState;
+  },
+) => {
   switch (action.type) {
     case SIDEBAR_ACTION_TYPES.TOGGLE:
       return { ...state, isExpanded: action.payload.isExpanded };
