@@ -20,7 +20,7 @@
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
-    "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev", 
+    "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
     "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-data-table-server",
     "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
     "storybook": "storybook dev -p 6006",
@@ -40,7 +40,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router": "6.3.0",
-    "react-router-dom": "6.3.0", 
+    "react-router-dom": "6.3.0",
     "styled-components": "^5.1.0",
     "vite-plugin-ejs": "^1.6.4",
     "vite-plugin-env-compatible": "^1.1.1"

@@ -8698,6 +8698,7 @@ __metadata:
     "@storybook/react": ^7.0.18
     "@storybook/react-vite": ^7.0.18
     "@storybook/testing-library": ^0.0.14-next.2
+    "@tupaia/types": 1.0.0
     "@types/material-ui": ^0.21.12
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
