@@ -90,20 +90,9 @@ export class S3Client {
   async deleteFile(filePath) {
     const fileName = filePath.split(getS3ImageFilePath())[1];
     if (!(await this.checkIfFileExists(fileName))) return null;
-    return new Promise((resolve, reject) => {
-      this.s3.deleteObject(
-        {
-          Bucket: S3_BUCKET_NAME,
-          Key: fileName,
-        },
-        (error, data) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(data);
-          }
-        },
-      );
+    return this.s3.deleteObject({
+      Bucket: S3_BUCKET_NAME,
+      Key: fileName,
     });
   }
 
