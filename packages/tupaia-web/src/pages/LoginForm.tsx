@@ -7,7 +7,14 @@ import { AuthModal } from '../layout';
 
 export const LoginForm = () => {
   return (
-    <AuthModal title="Login" subtitle="Enter your details to login">
+    <AuthModal
+      title="Login"
+      subtitle="Enter your details to login"
+      primaryButton={{
+        onClick: () => {},
+        text: 'Login',
+      }}
+    >
       <p>Login form goes here</p>
     </AuthModal>
   );
