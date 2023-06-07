@@ -18,7 +18,8 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   border-radius: 5px;
   background: #2e2f33;
-  padding: 2rem 2rem 7rem;
+  color: white;
+  padding: 2rem 2rem 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,6 +35,7 @@ const Container = styled.div`
     }
   }
 `;
+
 export const Modal = ({ onClose, open, children }) => {
   return (
     <BaseModal onClose={onClose} open={open}>

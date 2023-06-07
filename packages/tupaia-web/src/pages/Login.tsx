@@ -29,6 +29,7 @@ const Text = styled(Typography)`
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
+  margin-bottom: 0.5rem;
 `;
 
 const LinkText = styled(Typography)`
@@ -49,7 +50,7 @@ const ForgotPasswordText = styled(LinkText)`
 `;
 
 const StyledForm = styled.form`
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   width: 340px;
   max-width: 100%;
 `;
@@ -60,7 +61,7 @@ export const Login = () => {
     register,
     formState: { errors },
   } = useForm();
-  const { mutate: login, isLoading } = useLogin();
+  const { mutate: login, isLoading, isError, error } = useLogin();
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -70,8 +71,9 @@ export const Login = () => {
   return (
     <Modal open onClose={handleClose}>
       <Logo />
-      <Title>Log in</Title>
+      <Title variant="h1">Log in</Title>
       <Text>Enter your details below to log in</Text>
+      {isError && <Typography color="error">{error.message}</Typography>}
       <StyledForm onSubmit={handleSubmit(login)} noValidate>
         <TextField
           name="email"

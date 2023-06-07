@@ -1,15 +1,14 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
 import { AppProviders } from '../src/AppProviders';
-import { DARK_BLUE, WHITE } from '../src/theme';
 
 const preview: Preview = {
   parameters: {
     backgrounds: {
       default: 'Dark',
       values: [
-        { name: 'Dark', value: DARK_BLUE },
-        { name: 'Light', value: WHITE },
+        { name: 'Dark', value: '#262834' },
+        { name: 'Light', value: '#ffffff' },
       ],
     },
     actions: { argTypesRegex: '^on[A-Z].*' },

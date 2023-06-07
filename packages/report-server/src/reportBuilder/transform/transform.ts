@@ -49,7 +49,6 @@ const transform = async (table: TransformTable, transformSteps: BuiltTransformPa
       }
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
       const errorMessagePrefix = `Error in transform[${i + 1}]${titlePart}: `;
-      // @ts-ignore
       e.message = `${errorMessagePrefix}${(e as Error).message}`;
       throw e;
     }
