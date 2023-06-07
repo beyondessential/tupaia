@@ -5,7 +5,7 @@
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable';
+type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable' | 'webConfig';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
 const productionSubdomains = [
@@ -52,6 +52,11 @@ const SERVICES = {
     version: 'v1',
     localPort: '8010',
   },
+  webConfig: {
+    subdomain: 'config',
+    version: 'v1',
+    localPort: '8000',
+  },
 };
 
 const getLocalUrl = (service: ServiceName): string =>
@@ -62,6 +67,7 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   central: getLocalUrl('central'),
   report: getLocalUrl('report'),
   dataTable: getLocalUrl('dataTable'),
+  webConfig: getLocalUrl('webConfig'),
 };
 
 const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
@@ -76,6 +82,7 @@ export const DEV_BASE_URLS: ServiceBaseUrlSet = {
   central: getServiceUrl('central', 'dev'),
   report: getServiceUrl('report', 'dev'),
   dataTable: getServiceUrl('dataTable', 'dev'),
+  webConfig: getServiceUrl('webConfig', 'dev'),
 };
 
 export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
@@ -84,6 +91,7 @@ export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
   central: getServiceUrl('central'),
   report: getServiceUrl('report'),
   dataTable: getServiceUrl('dataTable'),
+  webConfig: getServiceUrl('webConfig'),
 };
 
 const getServiceUrlForSubdomain = (service: ServiceName, originalSubdomain: string): string => {
@@ -122,16 +130,18 @@ const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
     central: getServiceUrlForSubdomain('central', subdomain),
     report: getServiceUrlForSubdomain('report', subdomain),
     dataTable: getServiceUrlForSubdomain('dataTable', subdomain),
+    webConfig: getServiceUrlForSubdomain('webConfig', subdomain),
   };
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { auth, entity, central, report, dataTable } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report, dataTable, webConfig } = getDefaultBaseUrls(hostname);
   return {
     auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,
     central: process.env.CENTRAL_API_URL || central,
     report: process.env.REPORT_API_URL || report,
     dataTable: process.env.DATA_TABLE_API_URL || dataTable,
+    webConfig: process.env.WEB_CONFIG_API_URL || webConfig,
   };
 };
