@@ -17,7 +17,7 @@ interface ModalProps {
 const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
-  padding: 2em;
+  padding: 0;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`

@@ -4,3 +4,4 @@
  */
 
 export { MapLayout } from './MapLayout';
+export { MapWatermark } from './MapWatermark';

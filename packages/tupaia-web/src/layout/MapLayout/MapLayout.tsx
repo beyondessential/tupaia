@@ -6,7 +6,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MapWatermark } from './MapWatermark';
-import { MapDiv } from './MapDiv';
+
+const MapContainer = styled.div`
+  height: 100vh;
+  transition: width 0.5s ease;
+  width: 100%;
+`;
+
+export const Map = () => {
+  return <MapContainer>{/* <Map /> */}</MapContainer>;
+};
 
 const Wrapper = styled.div`
   flex: 1;
@@ -54,7 +63,7 @@ export const MapLayout = () => {
         <MapOverlaySelector />
         <MapLegendWrapper>{/** This is where the map legend would go */}</MapLegendWrapper>
       </MapControlsContainer>
-      <MapDiv />
+      <Map />
       {/** This is where the tilepicker would go */}
       <Watermark />
     </Wrapper>
