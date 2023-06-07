@@ -6,7 +6,7 @@ import React, { ReactNode } from 'react';
 import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
+import { IconButton } from '@tupaia/ui-components';
 
 interface ModalProps {
   children?: ReactNode;
@@ -25,18 +25,13 @@ const CloseIcon = styled(MuiCloseIcon)`
   height: 1.2em;
 `;
 
-const CloseButton = styled(Button)`
+const CloseButton = styled(IconButton)`
   background-color: transparent;
   min-width: initial;
   padding: 0;
   position: absolute;
   top: 0.6em;
   right: 0.6em;
-  &:hover,
-  &:focus {
-    background-color: transparent;
-    border: 1px solid ${({ theme }) => theme.palette.text.primary};
-  }
 `;
 
 const Paper = styled(MuiPaper)`
@@ -57,7 +52,7 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   return (
     <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
       <Wrapper id="overlay-wrapper">
-        <CloseButton onClick={onClose}>
+        <CloseButton onClick={onClose} color="default">
           <CloseIcon />
         </CloseButton>
         {children}

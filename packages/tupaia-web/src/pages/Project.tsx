@@ -4,9 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Main, Sidebar, Map } from '../layout';
-
-import { SidebarProviders } from '../context/SidebarContext';
+import { MapLayout, Sidebar } from '../layout';
 
 const Container = styled.div`
   display: flex;
@@ -23,13 +21,10 @@ export const Project = () => {
   // const { projectCode, entityCode, '*': dashboardCode } = useParams();
 
   return (
-    <SidebarProviders>
-      <Container>
-        <Main />
-        <Sidebar />
-      </Container>
+    <Container>
+      <MapLayout />
+      <Sidebar />
       {/** This is where SessionExpiredDialog and any other overlays would go, as well as loading screen */}
-      <Map />
-    </SidebarProviders>
+    </Container>
   );
 };

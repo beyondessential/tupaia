@@ -13,14 +13,12 @@ import { TopBar } from './TopBar';
  */
 const Container = styled.div`
   position: fixed;
-  z-index: 1299; // MUI popover index - 1
   flex-direction: column;
   flex-wrap: nowrap;
   width: 100%;
   height: 100%;
-  pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
   pointer-events: none;
-  display: flex; /* Took me ages to find this, is the magic touch */
+  display: flex;
   align-items: stretch;
   align-content: stretch;
   overflow-y: hidden;

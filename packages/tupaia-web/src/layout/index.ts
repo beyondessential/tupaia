@@ -4,6 +4,5 @@
  */
 export { AuthModal } from './AuthModal';
 export { Layout } from './Layout';
-export { Main } from './Main';
-export { Map } from './Map';
+export { MapLayout } from './MapLayout';
 export { Sidebar } from './Sidebar';

@@ -3,11 +3,10 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { TRANSPARENT_BLACK } from '../../theme';
-import { SIDEBAR_ACTION_TYPES, SidebarContext, SidebarDispatchContext } from '../../context';
+import { TRANSPARENT_BLACK } from '../../constants';
 
 const SemiCircle = styled.div`
   position: absolute;
@@ -33,18 +32,12 @@ const OpenArrowIcon = styled(KeyboardArrowLeft)`
   margin-left: 5px;
 `;
 
-export const ExpandButton = () => {
-  const { isExpanded } = useContext(SidebarContext);
-  const dispatch = useContext(SidebarDispatchContext);
+interface ExpandButtonProps {
+  isExpanded: boolean;
+  setIsExpanded: () => void;
+}
 
-  const toggleExpanded = () => {
-    dispatch({
-      type: SIDEBAR_ACTION_TYPES.TOGGLE,
-      payload: {
-        isExpanded: !isExpanded,
-      },
-    });
-  };
+export const ExpandButton = ({ isExpanded, setIsExpanded }: ExpandButtonProps) => {
   const arrowIcon = isExpanded ? <CloseArrowIcon /> : <OpenArrowIcon />;
-  return <SemiCircle onClick={toggleExpanded}>{arrowIcon}</SemiCircle>;
+  return <SemiCircle onClick={setIsExpanded}>{arrowIcon}</SemiCircle>;
 };

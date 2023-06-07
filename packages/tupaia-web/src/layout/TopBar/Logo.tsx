@@ -11,7 +11,6 @@ import { DEFAULT_URL, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 const LogoWrapper = styled.div`
   flex-grow: 1;
   height: 100%;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
 `;

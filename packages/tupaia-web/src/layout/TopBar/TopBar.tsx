@@ -17,7 +17,6 @@ const Header = styled.header<{
     $primaryColor || theme.palette.background.default};
   height: ${({ theme }) => theme.topBarHeight.mobile}px;
   min-height: ${({ theme }) => theme.topBarHeight.mobile}px;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
   z-index: 1000;

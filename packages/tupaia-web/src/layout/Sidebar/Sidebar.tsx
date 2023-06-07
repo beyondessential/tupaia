@@ -3,30 +3,21 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import {
-  MAX_SIDEBAR_EXPANDED_WIDTH,
-  TRANSPARENT_BLACK,
-  CONTROL_BAR_PADDING,
-  CONTROL_BAR_WIDTH,
-  MAP_CONTROLS_WIDTH,
-} from '../../theme';
+import { TRANSPARENT_BLACK } from '../../constants';
 import { ExpandButton } from './ExpandButton';
-import { SIDEBAR_ACTION_TYPES, SidebarContext, SidebarDispatchContext } from '../../context';
 
-const MIN_DEFAULT_WIDTH = 350;
-const MAX_DEFAULT_WIDTH = 500;
-const DEFAULT_WIDTH_RATIO = 0.2;
+const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
+const MAX_SIDEBAR_COLLAPSED_WIDTH = 350;
 
 const Panel = styled.div<{
-  $width: number;
+  $isExpanded: boolean;
 }>`
   display: flex;
   align-items: stretch;
   flex-direction: column;
   align-content: stretch;
-  max-width: ${MAX_SIDEBAR_EXPANDED_WIDTH}px;
   position: relative;
   overflow: visible;
   background-color: ${TRANSPARENT_BLACK};
@@ -34,43 +25,21 @@ const Panel = styled.div<{
   height: 100%;
   cursor: auto;
   transition: width 0.5s ease;
-  width: ${({ $width }) => $width}px;
+  width: ${({ $isExpanded }) => ($isExpanded ? 45 : 30)}%;
+  max-width: ${({ $isExpanded }) =>
+    $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
 `;
 
 export const Sidebar = () => {
-  const { isExpanded, expandedWidth, contractedWidth } = useContext(SidebarContext);
-  const dispatch = useContext(SidebarDispatchContext);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  // Update the sidebar widths when the window is resized
-  const updateDimensions = () => {
-    let dashboardDefaultWidth = window.innerWidth * DEFAULT_WIDTH_RATIO;
-    dashboardDefaultWidth = Math.min(dashboardDefaultWidth, MAX_DEFAULT_WIDTH);
-    dashboardDefaultWidth = Math.max(dashboardDefaultWidth, MIN_DEFAULT_WIDTH);
-
-    let dashboardExpandedWidth =
-      window.innerWidth - CONTROL_BAR_WIDTH - MAP_CONTROLS_WIDTH - CONTROL_BAR_PADDING * 2;
-    dashboardExpandedWidth = Math.min(dashboardExpandedWidth, MAX_SIDEBAR_EXPANDED_WIDTH);
-
-    dispatch({
-      type: SIDEBAR_ACTION_TYPES.RESIZE,
-      payload: {
-        contractedWidth: dashboardDefaultWidth,
-        expandedWidth: dashboardExpandedWidth,
-      },
-    });
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
   };
 
-  useEffect(() => {
-    window.addEventListener('resize', updateDimensions);
-    updateDimensions();
-
-    return () => {
-      window.removeEventListener('resize', updateDimensions);
-    };
-  }, []);
   return (
-    <Panel $width={isExpanded ? expandedWidth : contractedWidth}>
-      <ExpandButton />
+    <Panel $isExpanded={isExpanded}>
+      <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
     </Panel>
   );
 };
