@@ -1,15 +1,14 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
 import { AppStyleProviders } from '../src/AppStyleProviders';
-import { DARK_BLUE, WHITE } from '../src/theme';
-
+import ReactRouterDecorator from './ReactRouterDecorator';
 const preview: Preview = {
   parameters: {
     backgrounds: {
       default: 'Dark',
       values: [
-        { name: 'Dark', value: DARK_BLUE },
-        { name: 'Light', value: WHITE },
+        { name: 'Dark', value: '#135D8F' },
+        { name: 'Light', value: '#ffffff' },
       ],
     },
     actions: { argTypesRegex: '^on[A-Z].*' },
@@ -21,6 +20,7 @@ const preview: Preview = {
     },
   },
   decorators: [
+    ReactRouterDecorator,
     Story => {
       return (
         <AppStyleProviders>

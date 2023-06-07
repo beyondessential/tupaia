@@ -27,3 +27,16 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const attachSessionIfAvailable = async (req: Request, res: Response, next: NextFunction) => {
+  // Discard authorization errors from attach session so function succeeds even if session doesn't exist
+  try {
+    attachSession(req, res, () => { next() });
+  } catch(error: any) {
+    if (error instanceof UnauthenticatedError) {
+      next();
+    } else {
+      throw error;
+    }
+  }
+};

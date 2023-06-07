@@ -3,14 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, getEnvVarOrDefault } from '@tupaia/utils';
 import { AuthHandler, SessionType } from '../types';
-
-const { API_CLIENT_NAME = '', API_CLIENT_PASSWORD = '' } = process.env;
-const DEFAULT_AUTH_HEADER = createBasicHeader(
-  API_CLIENT_NAME,
-  API_CLIENT_PASSWORD,
-);
 
 // Handles switching between microservice client and user login sessions
 export class SessionSwitchingAuthHandler implements AuthHandler {
@@ -29,6 +23,9 @@ export class SessionSwitchingAuthHandler implements AuthHandler {
       return this.session.getAuthHeader();
     }
 
-    return DEFAULT_AUTH_HEADER;
+    return createBasicHeader(
+      getEnvVarOrDefault('API_CLIENT_NAME', ''),
+      getEnvVarOrDefault('API_CLIENT_PASSWORD', ''),
+    );
   }
 }

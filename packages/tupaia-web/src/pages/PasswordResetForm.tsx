@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { AuthModal } from '../layout';
 
 export const PasswordResetForm = () => {
-  return <div>PasswordResetForm</div>;
+  return <AuthModal>PasswordResetForm</AuthModal>;
 };
