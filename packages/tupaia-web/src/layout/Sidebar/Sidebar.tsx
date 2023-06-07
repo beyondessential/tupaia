@@ -24,7 +24,7 @@ const Panel = styled.div<{
   pointer-events: auto;
   height: 100%;
   cursor: auto;
-  transition: width 0.5s ease;
+  transition: width 0.5s ease, max-width 0.5s ease;
   width: ${({ $isExpanded }) => ($isExpanded ? 45 : 30)}%;
   max-width: ${({ $isExpanded }) =>
     $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
