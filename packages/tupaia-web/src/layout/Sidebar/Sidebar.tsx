@@ -26,6 +26,7 @@ const Panel = styled.div<{
   cursor: auto;
   transition: width 0.5s ease, max-width 0.5s ease;
   width: ${({ $isExpanded }) => ($isExpanded ? 45 : 30)}%;
+  min-width: 335px;
   max-width: ${({ $isExpanded }) =>
     $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
 `;
