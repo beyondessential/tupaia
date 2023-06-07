@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { Upload } from '@aws-sdk/lib-storage';
 import fs from 'fs';
 import path from 'path';
 import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
@@ -39,21 +40,16 @@ export class S3Client {
    * @private
    */
   async upload(config) {
-    return new Promise((resolve, reject) => {
-      this.s3.upload(
-        {
-          Bucket: S3_BUCKET_NAME,
-          ...config,
-        },
-        (error, data) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(data.Location);
-          }
-        },
-      );
+    const uploader = new Upload({
+      client: this.s3,
+      params: {
+        Bucket: S3_BUCKET_NAME,
+        ...config,
+      },
     });
+
+    const result = await uploader.done();
+    return result.Location;
   }
 
   /**
