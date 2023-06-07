@@ -9,7 +9,11 @@ import { useTable } from 'react-table';
 import moment from 'moment';
 
 export const useDataTableExport = (columns, data, title, startDate, endDate) => {
-  const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
+  const {
+    headerGroups,
+    rows: tableData,
+    columns: tableColumns,
+  } = useTable({
     columns,
     data,
   });
@@ -33,8 +37,11 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
               // This check will handle percentage strings as well as date strings, and any other non-numeric strings
               if (typeof value === 'string' && isNaN(value)) {
                 const momentObj = displayStringToMoment(value);
-                // if it's a date string, return in date format
-                if (momentObj.isValid()) return momentObj.format('DD/MM/YYYY');
+                if (momentObj.isValid()) {
+                  // check the format of the date string. If it includes 'D' it means it is a day date, so we want to reformat these as 'DD/MM/YYYY'. Everything else should be returned as they are
+                  const { _f: format } = momentObj;
+                  if (format && format.includes('D')) return momentObj.format('DD/MM/YYYY');
+                }
                 return value;
               }
 
