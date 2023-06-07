@@ -24,9 +24,6 @@ import { DEFAULT_URL } from './constants';
 export const Routes = () => (
   <RouterRoutes>
     <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-    {/**
-     *  The below user pages will actually be modals, which will be done when each view is created. There is an example at: https://github.com/remix-run/react-router/tree/dev/examples/modal
-     */}
     <Route path="login" element={<LoginForm />} />
     <Route path="register" element={<RegisterForm />} />
     <Route path="reset-password" element={<PasswordResetForm />} />
