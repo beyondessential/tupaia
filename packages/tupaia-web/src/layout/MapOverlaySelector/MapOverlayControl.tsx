@@ -156,7 +156,7 @@ export const MapOverlayControl = ({
       <Header>
         <DropDownMenu
           title="MAP OVERLAYS"
-          selectedOptionIndex={maxSelectedOverlays - 1}
+          selectedOptionIndex={maxSelectedOverlays}
           options={options}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           onChange={changeMaxSelectedOverlays}

@@ -8707,6 +8707,7 @@ __metadata:
     react-router: 6.3.0
     react-router-dom: 6.3.0
     storybook: ^7.0.18
+    storybook-react-router: ^1.0.8
     styled-components: ^5.1.0
     typescript: ^5.0.2
     vite: ^4.3.2
@@ -38531,6 +38532,20 @@ __metadata:
   version: 2.14.2
   resolution: "store2@npm:2.14.2"
   checksum: 6f270fc5bab99b63f45fcc7bd8b99c2714b4adf880f557ed7ffb5ed3987131251165bccde425a00928aaf044870aee79ddeef548576d093c68703ed2edec45d7
+  languageName: node
+  linkType: hard
+
+"storybook-react-router@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "storybook-react-router@npm:1.0.8"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    "@storybook/addon-actions": ^4.0.0||^5.0.0||5.2.0-beta.13
+    react: "*"
+    react-dom: "*"
+    react-router: ^4.0.0||^5.0.0
+  checksum: cfa3a782ec1433b109d5012186f796238898b83cb57200eaa7201c603688b1254d9fffd27cbf7fc48041bbacf5287d674d38384ef833413b6dec25dc00f96b1b
   languageName: node
   linkType: hard
 

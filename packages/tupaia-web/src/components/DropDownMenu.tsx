@@ -27,7 +27,8 @@ const List = styled(MuiList)<
 `;
 
 interface ListComponentProps {
-  primaryTitle: string;
+  title?: string;
+  selectedOptionIndex: number;
   options: string[];
   iconStyle: object;
   PrimaryComponent: ComponentType;
@@ -36,7 +37,8 @@ interface ListComponentProps {
 }
 
 const ListComponent = ({
-  primaryTitle,
+  title,
+  selectedOptionIndex,
   options,
   iconStyle,
   PrimaryComponent,
@@ -46,7 +48,9 @@ const ListComponent = ({
   return (
     <List as="nav">
       <ListItem disableGutters={disableGutters} onClick={handleOpenMenu} button>
-        <ListItemText primary={<PrimaryComponent>{primaryTitle}</PrimaryComponent>} />
+        <ListItemText
+          primary={<PrimaryComponent>{title || options[selectedOptionIndex]}</PrimaryComponent>}
+        />
         {options.length > 1 && <DropDownIcon style={iconStyle} />}
       </ListItem>
     </List>
@@ -123,8 +127,6 @@ export const DropDownMenu = ({
 }: DropDownMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<SyntheticEvent['currentTarget'] | null>(null);
 
-  const primaryTitle = title || options[selectedOptionIndex];
-
   const handleOpenMenu = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
@@ -137,7 +139,8 @@ export const DropDownMenu = ({
     <div>
       <ListComponent
         PrimaryComponent={StyledPrimaryComponent}
-        primaryTitle={primaryTitle}
+        title={title}
+        selectedOptionIndex={selectedOptionIndex}
         options={options}
         iconStyle={iconStyle}
         disableGutters={disableGutters}

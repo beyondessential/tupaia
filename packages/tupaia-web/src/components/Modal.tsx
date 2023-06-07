@@ -3,14 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactNode } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  Typography,
-  Paper as MuiPaper,
-  useTheme,
-  useMediaQuery,
-} from '@material-ui/core';
+import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
@@ -19,7 +12,6 @@ interface ModalProps {
   children?: ReactNode;
   onClose: () => void;
   isOpen: boolean;
-  title?: string;
 }
 
 const Wrapper = styled.div`
