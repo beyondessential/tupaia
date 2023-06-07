@@ -12,3 +12,4 @@ export { getImageSourceFromData, getFileInDocumentsPath, imageDataIsFileName } f
 export { objectToArrayWithIds } from './objectToArrayWithIds';
 export { snakeToCamelCase } from './snakeToCamelCase';
 export { generateShortId, generateMongoId, SHORT_ID, MONGO_ID } from './generateId';
+export { getFilenameFromUri } from './getFilenameFromUri';

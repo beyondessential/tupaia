@@ -449,7 +449,7 @@ export interface Question {
   'option_set_id'?: string | null;
   'options'?: string[] | null;
   'text': string;
-  'type': string;
+  'type': QuestionType;
 }
 export interface RefreshToken {
   'device'?: string | null;
@@ -591,6 +591,27 @@ export enum ServiceType {
   'kobo' = 'kobo',
   'data-lake' = 'data-lake',
   'superset' = 'superset',
+}
+export enum QuestionType {
+  'Arithmetic' = 'Arithmetic',
+  'Autocomplete' = 'Autocomplete',
+  'Binary' = 'Binary',
+  'Checkbox' = 'Checkbox',
+  'CodeGenerator' = 'CodeGenerator',
+  'Condition' = 'Condition',
+  'Date' = 'Date',
+  'DateOfData' = 'DateOfData',
+  'DateTime' = 'DateTime',
+  'Entity' = 'Entity',
+  'FreeText' = 'FreeText',
+  'Geolocate' = 'Geolocate',
+  'Instruction' = 'Instruction',
+  'Number' = 'Number',
+  'Photo' = 'Photo',
+  'PrimaryEntity' = 'PrimaryEntity',
+  'Radio' = 'Radio',
+  'SubmissionDate' = 'SubmissionDate',
+  'File' = 'File',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',

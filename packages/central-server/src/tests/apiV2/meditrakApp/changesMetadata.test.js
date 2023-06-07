@@ -8,7 +8,7 @@ import { expect } from 'chai';
 import { oneSecondSleep } from '@tupaia/utils';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import { TestableApp } from '../../testUtilities';
-import { PERMISSIONS_BASED_SYNC_MIN_APP_VERSION } from '../../../apiV2/utilities/meditrakSync';
+import { PERMISSIONS_BASED_SYNC_MIN_APP_VERSION } from '../../../apiV2/meditrakApp/meditrakSync';
 import {
   insertPermissionsBasedSyncTestData,
   PERM_SYNC_COUNTRY_1,
