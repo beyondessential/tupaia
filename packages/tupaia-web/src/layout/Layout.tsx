@@ -16,7 +16,6 @@ const Container = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   width: 100%;
-  height: 100%;
   pointer-events: none;
   display: flex;
   align-items: stretch;
