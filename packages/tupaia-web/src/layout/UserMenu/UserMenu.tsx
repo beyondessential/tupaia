@@ -5,7 +5,7 @@
 
 import React, { ReactNode, useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import { Button, MenuList } from '@material-ui/core';
+import { Button, MenuList, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
@@ -42,24 +42,35 @@ export const UserMenu = () => {
     setMenuOpen(false);
   };
 
-  // Here will be the menu items logic
+  // Here will be the menu items logic. These will probably come from a context somewhere that handles when a user is logged in, and when it is a custom landing page
   const menuItems = [] as ReactNode[];
+
+  const theme = useTheme();
+
+  // these will later be updated to handle custom landing pages
+  const primaryColor = theme.palette.background.default;
+  const secondaryColor = theme.palette.text.primary;
 
   return (
     <UserMenuContainer>
       <MenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
         <MenuIcon />
       </MenuButton>
-      {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes */}
-      <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu}>
+      {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
+      <PopoverMenu
+        menuOpen={menuOpen}
+        onCloseMenu={onCloseMenu}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+      >
         {menuItems}
       </PopoverMenu>
       <DrawerMenu
         menuOpen={menuOpen}
         onCloseMenu={onCloseMenu}
-        onClickRegister={() => {}}
-        onClickSignIn={() => {}}
         isUserLoggedIn={false}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
       >
         {menuItems}
       </DrawerMenu>

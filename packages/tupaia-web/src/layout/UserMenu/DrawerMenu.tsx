@@ -79,8 +79,6 @@ interface DrawerMenuProps {
   onCloseMenu: () => void;
   primaryColor?: string;
   secondaryColor?: string;
-  onClickSignIn: () => void;
-  onClickRegister: () => void;
   isUserLoggedIn: boolean;
   currentUserUsername?: string;
 }
@@ -91,8 +89,6 @@ export const DrawerMenu = ({
   onCloseMenu,
   primaryColor,
   secondaryColor,
-  onClickSignIn,
-  onClickRegister,
   isUserLoggedIn,
   currentUserUsername,
 }: DrawerMenuProps) => {
