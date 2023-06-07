@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 
+const TOP_BAR_HEIGHT = 60;
+const TOP_BAR_HEIGHT_MOBILE = 50;
 /* Both min height and height must be specified due to bugs in Firefox flexbox, that means that topbar height will be ignored even if using flex-basis. */
 const Header = styled.header<{
   $primaryColor?: string;
@@ -15,8 +17,8 @@ const Header = styled.header<{
 }>`
   background-color: ${({ $primaryColor, theme }) =>
     $primaryColor || theme.palette.background.default};
-  height: ${({ theme }) => theme.topBarHeight.mobile}px;
-  min-height: ${({ theme }) => theme.topBarHeight.mobile}px;
+  height: ${TOP_BAR_HEIGHT_MOBILE}px;
+  min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
   display: flex;
   align-items: center;
   z-index: 1000;
@@ -35,8 +37,8 @@ const Header = styled.header<{
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    height: ${({ theme }) => theme.topBarHeight.default}px;
-    min-height: ${({ theme }) => theme.topBarHeight.default}px;
+    height: ${TOP_BAR_HEIGHT}px;
+    min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;
   }
 `;
