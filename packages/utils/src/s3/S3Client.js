@@ -20,20 +20,13 @@ export class S3Client {
    * @returns {Promise<boolean>} whether file exists
    */
   async checkIfFileExists(fileName) {
-    return new Promise(resolve => {
-      this.s3
-        .headObject({
-          Bucket: S3_BUCKET_NAME,
-          Key: fileName,
-        })
-        .on('success', () => {
-          resolve(true);
-        })
-        .on('error', () => {
-          resolve(false);
-        })
-        .send();
-    });
+    return this.s3
+      .headObject({
+        Bucket: S3_BUCKET_NAME,
+        Key: fileName,
+      })
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
