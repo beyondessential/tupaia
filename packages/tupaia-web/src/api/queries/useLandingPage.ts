@@ -10,11 +10,9 @@ import { useValidatedQuery } from './useValidatedQuery';
 
 export const useLandingPage = (urlSegment: string) => {
   return useValidatedQuery(
-    useQuery(['landingPage', urlSegment], () =>
-      get(`landingPage/${urlSegment}`, {
-        staleTime: 1000 * 60 * 60 * 1,
-        refetchOnWindowFocus: false,
-      }),
-    ),
+    useQuery(['landingPage', urlSegment], () => get(`landingPage/${urlSegment}`, {}), {
+      staleTime: 1000 * 60 * 60 * 1,
+      refetchOnWindowFocus: false,
+    }),
   );
 };

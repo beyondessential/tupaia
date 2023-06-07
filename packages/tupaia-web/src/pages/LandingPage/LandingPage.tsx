@@ -45,7 +45,7 @@ export const LandingPage = () => {
   // If found, render landing page. If not, render a default landing page
   return (
     <Wrapper $backgroundImage={imageUrl || DEFAULT_LANDING_IMAGE_URL}>
-      <Container></Container>
+      <Container maxWidth={false}>Hi</Container>
     </Wrapper>
   );
 };
