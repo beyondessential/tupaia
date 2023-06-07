@@ -5,9 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { MapOverlaySelector } from '../MapOverlaySelector';
-import { MapWatermark } from '../MapWatermark';
-import { CONTROL_BAR_PADDING } from '../../theme';
+import { MapOverlaySelector } from './MapOverlaySelector';
+import { MapWatermark } from './MapWatermark';
+import { CONTROL_BAR_PADDING } from '../theme';
 
 const FlexDiv = styled.div`
   flex: 1;
