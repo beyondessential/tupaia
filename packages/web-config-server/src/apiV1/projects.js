@@ -22,14 +22,22 @@ const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
   return accessRequests.length > 0;
 };
 // work out the entity to zoom to and open the dashboard of when this project is selected
-function getHomeEntityCode(project, entitiesWithAccess) {
+function getHomeEntity(project, entitiesWithAccess, allEntities) {
   if (entitiesWithAccess.length === 1) {
     // only one entity (country) inside, return that code
-    return entitiesWithAccess[0].code;
+    return entitiesWithAccess[0];
   }
   // more than one child entity, return the code of the project entity, which should have bounds
   // encompassing all children
-  return project.entity_code;
+  return allEntities.find(e => e.id === project.entity_ids);
+}
+
+// Fetch the project's default dashboard code using the dashboardGroupName, or the first dashboard code if the default dashboard can't be found
+async function fetchDefaultDashboardCode(dashboardGroupName, entityHierachyId, homeEntity, req) {
+  const dashboards = await req.models.dashboard.getDashboards(homeEntity, entityHierachyId);
+  if (!dashboards.length) return 'General';
+  const defaultDashboard = dashboards.find(d => d.name === dashboardGroupName);
+  return defaultDashboard ? defaultDashboard.code : dashboards[0].code;
 }
 
 export async function buildProjectDataForFrontend(project, req) {
@@ -45,6 +53,7 @@ export async function buildProjectDataForFrontend(project, req) {
     entity_ids: entityIds,
     dashboard_group_name: dashboardGroupName,
     default_measure: defaultMeasure,
+    entity_hierachy_id: entityHierachyId,
     config,
   } = project;
 
@@ -56,7 +65,13 @@ export async function buildProjectDataForFrontend(project, req) {
   // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
   // If a single entity is available, zoom to that, otherwise show the project entity
   const hasAccess = entitiesWithAccess.length > 0;
-  const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
+  const homeEntity = getHomeEntity(project, entitiesWithAccess, entities);
+  const defaultDashboard = await fetchDefaultDashboardCode(
+    dashboardGroupName,
+    entityHierachyId,
+    homeEntity,
+    req,
+  );
 
   // Only want to check pending if no access
   const { userId } = req.userJson;
@@ -75,10 +90,11 @@ export async function buildProjectDataForFrontend(project, req) {
     names,
     hasAccess,
     hasPendingAccess,
-    homeEntityCode,
+    homeEntityCode: homeEntity.code,
     dashboardGroupName,
     defaultMeasure,
     config,
+    defaultDashboard,
   };
 }
 
