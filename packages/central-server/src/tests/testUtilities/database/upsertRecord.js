@@ -37,6 +37,7 @@ export const upsertQuestion = async (data = {}) => {
     code,
   });
   return upsertDummyRecord(models.question, {
+    type: 'FreeText',
     ...data,
     code: dataElement.code,
     data_element_id: dataElement.id,
