@@ -1,13 +1,13 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
-import { AppProviders } from '../src/AppProviders';
-
+import { AppStyleProviders } from '../src/AppStyleProviders';
+import ReactRouterDecorator from './ReactRouterDecorator';
 const preview: Preview = {
   parameters: {
     backgrounds: {
       default: 'Dark',
       values: [
-        { name: 'Dark', value: '#262834' },
+        { name: 'Dark', value: '#135D8F' },
         { name: 'Light', value: '#ffffff' },
       ],
     },
@@ -20,11 +20,12 @@ const preview: Preview = {
     },
   },
   decorators: [
+    ReactRouterDecorator,
     Story => {
       return (
-        <AppProviders>
+        <AppStyleProviders>
           <Story />
-        </AppProviders>
+        </AppStyleProviders>
       );
     },
   ],

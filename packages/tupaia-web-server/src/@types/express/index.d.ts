@@ -5,13 +5,16 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { SessionCookie } from '@tupaia/server-boilerplate';
 
-import { TupaiaWebSessionType } from '../../models';
+import { TupaiaWebSessionType, TupaiaWebSessionModel } from '../../models';
 
 declare global {
   namespace Express {
     export interface Request {
       accessPolicy: AccessPolicy;
+      sessionModel: TupaiaWebSessionModel;
+      sessionCookie?: SessionCookie;
       session: TupaiaWebSessionType;
       ctx: {
         services: TupaiaApiClient;

@@ -1,57 +1,61 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
-import { Button } from '@tupaia/ui-components';
-import BaseModal from '@material-ui/core/Modal';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
+import React, { ReactNode } from 'react';
+import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery } from '@material-ui/core';
+import MuiCloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
+import { IconButton } from '@tupaia/ui-components';
 
-const Container = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 660px;
-  max-width: 100%;
-  transform: translate(-50%, -50%);
-  border-radius: 5px;
-  background: #2e2f33;
-  color: white;
-  padding: 2rem 2rem 5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+interface ModalProps {
+  children?: ReactNode;
+  onClose: () => void;
+  isOpen: boolean;
+}
 
-  .MuiIconButton-root {
-    position: absolute;
-    top: 2px;
-    right: 4px;
-    color: white;
-
-    svg {
-      font-size: 2rem;
-    }
-  }
+const Wrapper = styled.div`
+  text-align: center;
+  overflow-x: hidden;
+  padding: 2em;
 `;
 
-export const Modal = ({ onClose, open, children }) => {
+const CloseIcon = styled(MuiCloseIcon)`
+  width: 1.2em;
+  height: 1.2em;
+`;
+
+const CloseButton = styled(IconButton)`
+  background-color: transparent;
+  min-width: initial;
+  position: absolute;
+  top: 0.6em;
+  right: 0.6em;
+`;
+
+const Paper = styled(MuiPaper)`
+  background-color: ${({ theme }) => theme.palette.background.default};
+  padding: 0;
+  color: rgba(255, 255, 255, 0.9);
+  overflow-y: auto;
+  max-width: 920px;
+  min-width: 300px;
+  // Prevent width from animating.
+  transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+`;
+
+export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
+  // make the modal full screen at small screen sizes
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   return (
-    <BaseModal onClose={onClose} open={open}>
-      <Container>
-        <IconButton aria-label="close" onClick={onClose}>
+    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
+      <Wrapper id="overlay-wrapper">
+        <CloseButton onClick={onClose} color="default">
           <CloseIcon />
-        </IconButton>
+        </CloseButton>
         {children}
-      </Container>
-    </BaseModal>
+      </Wrapper>
+    </Dialog>
   );
 };
-
-export const ModalButton = styled(Button)`
-  width: 100%;
-  margin-top: 2rem;
-  margin-bottom: 1.2rem;
-  text-transform: none;
-`;
