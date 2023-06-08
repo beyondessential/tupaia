@@ -5,11 +5,5 @@
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
 import App from './App';
-import { AppProviders } from './AppProviders';
 
-renderReactApp(
-  <AppProviders>
-    <App />
-  </AppProviders>,
-  document.getElementById('root'),
-);
+renderReactApp(<App />, document.getElementById('root'));
