@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { TextField } from '../components/TextField';
-import { Modal } from '../components/Modal';
+import { AuthModal, ModalButton } from '../layout';
 
 const StyledImg = styled.img`
   height: 2.6rem;
@@ -64,23 +64,21 @@ export const Login = () => {
   const { mutate: login, isLoading, isError, error } = useLogin();
   const navigate = useNavigate();
 
-  const handleClose = () => {
+  const onClose = () => {
     navigate(-1);
   };
 
+  const onSubmit = data => console.log(data);
+
   return (
-    <Modal open onClose={handleClose}>
-      <Logo />
-      <Title variant="h1">Log in</Title>
-      <Text>Enter your details below to log in</Text>
-      {isError && <Typography color="error">{error.message}</Typography>}
-      <StyledForm onSubmit={handleSubmit(login)} noValidate>
+    <AuthModal title="Login" subtitle="Enter your details below to log in" onClose={onClose}>
+      <StyledForm onSubmit={handleSubmit(onSubmit)} noValidate>
         <TextField
           name="email"
           label="Email *"
           type="email"
-          error={!!errors.email}
-          helperText={errors.email && errors.email.message}
+          error={!!errors?.email}
+          helperText={errors?.email && errors?.email.message}
           inputProps={register('email', {
             required: 'Required',
             pattern: {
@@ -93,8 +91,8 @@ export const Login = () => {
           name="password"
           label="Password *"
           type="password"
-          error={!!errors.password}
-          helperText={errors.password && errors.password.message}
+          error={!!errors?.password}
+          helperText={errors?.password && errors?.password.message}
           inputProps={register('password', {
             required: 'Required',
           })}
@@ -109,6 +107,6 @@ export const Login = () => {
           Don't have an account? <Link to="/register">Register here</Link>
         </LinkText>
       </StyledForm>
-    </Modal>
+    </AuthModal>
   );
 };

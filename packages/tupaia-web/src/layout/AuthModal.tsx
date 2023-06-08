@@ -28,10 +28,7 @@ const Subtitle = styled(Typography)`
   margin-top: 1.4em;
 `;
 
-const PrimaryButton = styled(Button).attrs({
-  variant: 'contained',
-  color: 'primary',
-})`
+export const ModalButton = styled(Button)`
   text-transform: none;
   font-size: 1em;
   width: 100%;
@@ -39,7 +36,7 @@ const PrimaryButton = styled(Button).attrs({
   margin-top: 2em;
 `;
 
-const SecondaryButton = styled(OutlinedButton).attrs({
+export const ModalCancelButton = styled(OutlinedButton).attrs({
   color: 'default',
 })`
   text-transform: none;
@@ -48,53 +45,25 @@ const SecondaryButton = styled(OutlinedButton).attrs({
   margin-left: 0 !important;
   padding: 0.375em 1em; // to match the height of the primary button
   border-color: ${({ theme }) => theme.palette.text.secondary};
-  ${PrimaryButton} + & {
+  ${ModalButton} + & {
     margin-top: 1.3em;
   }
 `;
 
-type ButtonProps = {
-  onClick: () => void;
-  text: string;
-};
 interface AuthModalProps {
   children?: ReactNode;
   onClose?: () => void;
   title?: string;
   subtitle?: string;
-  navigateTo?: To | number; // the path to navigate to on close, if set. Numbers are acceptable for e.g. -1 meaning back 1 route
-  primaryButton?: ButtonProps;
-  secondaryButton?: ButtonProps;
 }
 
-export const AuthModal = ({
-  children,
-  onClose,
-  navigateTo = -1,
-  title,
-  subtitle,
-  primaryButton,
-  secondaryButton,
-}: AuthModalProps) => {
-  const navigate = useNavigate();
-  const onCloseModal = () => {
-    // navigate back to the previous route on close if no path is provided
-    navigate(navigateTo as To);
-    if (onClose) onClose();
-  };
-  // This modal will always be open in this case, because these are only visible on certain routes
+export const AuthModal = ({ children, title, subtitle, onClose }: AuthModalProps) => {
   return (
-    <Modal isOpen={true} onClose={onCloseModal}>
+    <Modal isOpen={true} onClose={onClose}>
       <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
       <Title variant="h2">{title}</Title>
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
       {children}
-      {primaryButton && (
-        <PrimaryButton onClick={primaryButton.onClick}>{primaryButton.text}</PrimaryButton>
-      )}
-      {secondaryButton && (
-        <SecondaryButton onClick={secondaryButton.onClick}>{secondaryButton.text}</SecondaryButton>
-      )}
     </Modal>
   );
 };
