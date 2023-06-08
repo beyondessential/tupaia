@@ -12,6 +12,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   width: 100%;
   margin-bottom: 0.7rem;
 
+  // Todo Fix nested material ui themes
   .MuiFormLabel-root.MuiInputLabel-root {
     color: ${FORM_COLORS.BORDER};
   }
@@ -25,8 +26,8 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
 
   .MuiInputBase-input {
     color: white;
-    font-size: 14px;
-    line-height: 18px;
+    font-size: 0.875rem;
+    line-height: 1.3;
   }
 
   .MuiFormHelperText-root:not(.Mui-error) {

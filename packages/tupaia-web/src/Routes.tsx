@@ -33,11 +33,14 @@ export const Routes = () => {
         <Route path="reset-password" element={<PasswordResetForm />} />
         <Route path="request-access" element={<RequestAccessForm />} />
         <Route path="verify-email" element={<VerifyEmailForm />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
         {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
         <Route path="/:projectCode/:entityCode/*" element={<Project />} />
       </RouterRoutes>
 
+      {/* The `backgroundLocation` state is the location that we were at when one of the gallery links was clicked. If it's there, use it as the location for
+      the <Routes> so we show the gallery in the background, behind the modal. See react router docs [here]{@Link https://github.com/remix-run/react-router/tree/dev/examples/modal} */}
       {state?.backgroundLocation && (
         <RouterRoutes>
           <Route path="/login" element={<Login />} />
