@@ -6,10 +6,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container as MuiContainer } from '@material-ui/core';
-import { LandingPageResponse } from '@tupaia/types';
 import { useLandingPage } from '../../api/queries';
 import { LoadingScreen } from '../../components';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
+import { LandingPageFooter } from './LandingPageFooter';
+import { SingleLandingPage } from '../../types';
 
 const DEFAULT_LANDING_IMAGE_URL = '/images/custom-landing-page-default.png';
 
@@ -45,8 +46,13 @@ export const LandingPage = () => {
     imageUrl,
     projects = [],
     extendedTitle,
-    includeNameInHeader,
-  } = (data || {}) as LandingPageResponse;
+    longBio,
+    name,
+    includeNameInHeader = false,
+    externalLink,
+    phoneNumber,
+    websiteUrl,
+  } = (data || {}) as SingleLandingPage;
   const isUserLoggedIn = true;
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
@@ -62,6 +68,14 @@ export const LandingPage = () => {
             isUserLoggedIn={isUserLoggedIn}
           />
         ) : null}
+        <LandingPageFooter
+          includeNameInHeader={includeNameInHeader}
+          websiteUrl={websiteUrl}
+          name={name}
+          externalLink={externalLink}
+          longBio={longBio}
+          phoneNumber={phoneNumber}
+        />
       </Container>
     </Wrapper>
   );

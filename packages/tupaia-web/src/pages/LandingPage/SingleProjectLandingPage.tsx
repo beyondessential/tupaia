@@ -76,7 +76,6 @@ export function SingleProjectLandingPage({
 
   const { homeEntityCode, code } = project;
 
-  // TODO: get project default dashboard code from API
   const urls = {
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
