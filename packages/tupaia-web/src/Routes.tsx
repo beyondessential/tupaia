@@ -26,7 +26,7 @@ export const Routes = () => {
   const state = location.state as { backgroundLocation?: Location };
 
   return (
-    <div>
+    <>
       <RouterRoutes location={state?.backgroundLocation || location}>
         <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
         <Route path="register" element={<RegisterForm />} />
@@ -43,6 +43,6 @@ export const Routes = () => {
           <Route path="/login" element={<Login />} />
         </RouterRoutes>
       )}
-    </div>
+    </>
   );
 };

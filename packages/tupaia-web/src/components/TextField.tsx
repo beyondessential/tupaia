@@ -5,6 +5,7 @@
 import React from 'react';
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
+import { FORM_COLORS } from '../constants';
 
 const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   display: flex;
@@ -12,13 +13,13 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   margin-bottom: 0.7rem;
 
   .MuiFormLabel-root.MuiInputLabel-root {
-    color: #9ba0a6;
+    color: ${FORM_COLORS.BORDER};
   }
 
   .MuiInputBase-root.MuiInput-root.MuiInput-underline.MuiInputBase-formControl.MuiInput-formControl {
     &:before,
     &:after {
-      border-bottom: 1px solid #9ba0a6;
+      border-bottom: 1px solid ${FORM_COLORS.BORDER};
     }
   }
 
@@ -29,7 +30,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   .MuiFormHelperText-root:not(.Mui-error) {
-    color: #9ba0a6;
+    color: ${FORM_COLORS.BORDER};
   }
 `;
 export const TextField = (props: TextFieldProps) => <StyledTextField {...props} />;
