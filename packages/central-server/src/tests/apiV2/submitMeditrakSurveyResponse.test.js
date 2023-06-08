@@ -4,12 +4,13 @@
  */
 
 import { expect, assert } from 'chai';
+import sinon from 'sinon';
 import {
-  fetchWithTimeout,
   oneSecondSleep,
   randomIntBetween,
   getS3ImageFilePath,
   S3_BUCKET_NAME,
+  S3Client,
 } from '@tupaia/utils';
 import {
   generateId,
@@ -82,6 +83,8 @@ function expectEqualStrings(a, b) {
   }
 }
 
+const mockS3Bucket = {};
+
 describe('POST /surveyResponse', async () => {
   const app = new TestableApp();
   const { models } = app;
@@ -89,6 +92,15 @@ describe('POST /surveyResponse', async () => {
 
   before(async () => {
     defaultTimezone = (await models.database.getTimezone()).TimeZone;
+    sinon.stub(S3Client.prototype, 'uploadImage').callsFake(data => {
+      const id = generateId();
+      mockS3Bucket[id] = data;
+      return id;
+    });
+  });
+
+  after(() => {
+    S3Client.prototype.uploadImage.restore();
   });
 
   describe('SubmitSurveyResponse', () => {
@@ -353,10 +365,8 @@ describe('POST /surveyResponse', async () => {
         expect(numberOfAnswersAdded).to.equal(1);
         const answer = await models.answer.findById(imageAnswerObject.id);
         expect(answer.text).to.exist;
-        const imageResponse = await fetchWithTimeout(answer.text);
-        const imageBuffer = await imageResponse.buffer();
-        const imageString = imageBuffer.toString('base64');
-        expect(imageString).to.equal(TEST_IMAGE_DATA.replace('data:image/png;base64,', ''));
+        const image = mockS3Bucket[answer.text];
+        expect(image).to.equal(TEST_IMAGE_DATA);
       });
     });
 
