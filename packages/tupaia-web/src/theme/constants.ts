@@ -6,7 +6,3 @@
 /**
  * Theme constants that don't require being in the entire theme object, ie. things that won't change if a custom theme was applied
  */
-
-export const FONT_SIZES = {
-  viewTitle: '2em',
-};

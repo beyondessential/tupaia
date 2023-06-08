@@ -7,12 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
 
+type LoginCredentials = {
+  email: string;
+  password: string;
+};
 export const useLogin = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  return useMutation(
-    ({ email, password }) => {
+  return useMutation<any, Error, LoginCredentials, unknown>(
+    ({ email, password }: LoginCredentials) => {
       return post('login', {
         data: {
           emailAddress: email,

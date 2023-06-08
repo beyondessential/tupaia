@@ -6,5 +6,5 @@ import React from 'react';
 import { AuthModal } from '../layout';
 
 export const RegisterForm = () => {
-  return <AuthModal>RegisterForm</AuthModal>;
+  return <AuthModal onClose={() => {}}>RegisterForm</AuthModal>;
 };

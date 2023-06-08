@@ -32,4 +32,4 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
     color: #9ba0a6;
   }
 `;
-export const TextField = props => <StyledTextField {...props} />;
+export const TextField = (props: TextFieldProps) => <StyledTextField {...props} />;

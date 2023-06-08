@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { AuthModal } from '../../src/layout/AuthModal';
+import { AuthModal, ModalButton, ModalCancelButton } from '../../src/layout/AuthModal';
 
 const meta: Meta<typeof AuthModal> = {
   title: 'layout/AuthModal',
@@ -15,7 +15,7 @@ export default meta;
 
 export const Simple = () => {
   return (
-    <AuthModal title="Login" subtitle="Login here" navigateTo={window.location.pathname}>
+    <AuthModal title="Login" subtitle="Login here" onClose={() => {}}>
       Hi, I am an auth modal
     </AuthModal>
   );
@@ -23,36 +23,19 @@ export const Simple = () => {
 
 export const PrimaryButton = () => {
   return (
-    <AuthModal
-      title="Login"
-      subtitle="Login here"
-      navigateTo={window.location.pathname}
-      primaryButton={{
-        text: 'Login',
-        onClick: () => {},
-      }}
-    >
+    <AuthModal title="Login" subtitle="Login here" onClose={() => {}}>
       Hi, I am an auth modal
+      <ModalButton>Login</ModalButton>
     </AuthModal>
   );
 };
 
 export const SecondaryButton = () => {
   return (
-    <AuthModal
-      title="Login"
-      subtitle="Login here"
-      navigateTo={window.location.pathname}
-      primaryButton={{
-        text: 'Login',
-        onClick: () => {},
-      }}
-      secondaryButton={{
-        text: 'Cancel',
-        onClick: () => {},
-      }}
-    >
+    <AuthModal title="Login" subtitle="Login here" onClose={() => {}}>
       Hi, I am an auth modal
+      <ModalButton>Login</ModalButton>
+      <ModalCancelButton>Login</ModalCancelButton>
     </AuthModal>
   );
 };

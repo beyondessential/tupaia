@@ -4,32 +4,17 @@
  */
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { TextField } from '../components/TextField';
 import { AuthModal, ModalButton } from '../layout';
 
-const StyledImg = styled.img`
-  height: 2.6rem;
-  width: auto;
-  margin-bottom: 5rem;
-`;
-const Logo = () => <StyledImg src="/tupaia-logo-light.svg" alt="tupaia-logo" />;
-
-const Title = styled(Typography)`
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 13px;
-  margin-bottom: 1.6rem;
-`;
-
-const Text = styled(Typography)`
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 18px;
-  margin-bottom: 0.5rem;
+const StyledForm = styled.form`
+  margin-top: 1rem;
+  width: 340px;
+  max-width: 100%;
 `;
 
 const LinkText = styled(Typography)`
@@ -41,18 +26,16 @@ const LinkText = styled(Typography)`
   a {
     color: white;
   }
+
+  ${ModalButton} + & {
+    margin-top: 1.3rem;
+  }
 `;
 
 const ForgotPasswordText = styled(LinkText)`
   display: block;
   margin-top: -0.6rem;
   text-align: right;
-`;
-
-const StyledForm = styled.form`
-  margin-top: 0.5rem;
-  width: 340px;
-  max-width: 100%;
 `;
 
 export const Login = () => {
@@ -68,11 +51,10 @@ export const Login = () => {
     navigate(-1);
   };
 
-  const onSubmit = data => console.log(data);
-
   return (
-    <AuthModal title="Login" subtitle="Enter your details below to log in" onClose={onClose}>
-      <StyledForm onSubmit={handleSubmit(onSubmit)} noValidate>
+    <AuthModal title="Log in" subtitle="Enter your details below to log in" onClose={onClose}>
+      {isError && <Typography color="error">{error.message}</Typography>}
+      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
         <TextField
           name="email"
           label="Email *"
@@ -97,7 +79,7 @@ export const Login = () => {
             required: 'Required',
           })}
         />
-        <ForgotPasswordText align="right" as={Link} to="/reset-password">
+        <ForgotPasswordText as={Link} to="/reset-password">
           Forgot password?
         </ForgotPasswordText>
         <ModalButton type="submit" isLoading={isLoading}>

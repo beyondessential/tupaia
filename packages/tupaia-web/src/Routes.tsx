@@ -23,24 +23,26 @@ import { DEFAULT_URL } from './constants';
 
 export const Routes = () => {
   let location = useLocation();
-  let state = location.state as { backgroundLocation?: Location };
+  const state = location.state as { backgroundLocation?: Location };
+
   return (
-    <RouterRoutes>
-      <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<RegisterForm />} />
-      <Route path="reset-password" element={<PasswordResetForm />} />
-      <Route path="request-access" element={<RequestAccessForm />} />
-      <Route path="verify-email" element={<VerifyEmailForm />} />
-      <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-      {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
-      <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+    <div>
+      <RouterRoutes location={state?.backgroundLocation || location}>
+        <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
+        <Route path="register" element={<RegisterForm />} />
+        <Route path="reset-password" element={<PasswordResetForm />} />
+        <Route path="request-access" element={<RequestAccessForm />} />
+        <Route path="verify-email" element={<VerifyEmailForm />} />
+        <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
+        {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
+        <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+      </RouterRoutes>
 
       {state?.backgroundLocation && (
         <RouterRoutes>
-          <Route path="login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
         </RouterRoutes>
       )}
-    </RouterRoutes>
+    </div>
   );
 };

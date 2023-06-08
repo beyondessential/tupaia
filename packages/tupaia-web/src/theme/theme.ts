@@ -13,4 +13,7 @@ export const theme = createMuiTheme({
       default: '#262834', // Dark blue background
     },
   },
+  shape: {
+    borderRadius: 3,
+  },
 });

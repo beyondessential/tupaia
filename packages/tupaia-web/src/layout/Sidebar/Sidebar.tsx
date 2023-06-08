@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { TRANSPARENT_BLACK } from '../../constants';
 import { ExpandButton } from './ExpandButton';
@@ -34,16 +33,12 @@ const Panel = styled.div<{
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
   return (
     <Panel $isExpanded={isExpanded}>
-      <Link to="/login" state={{ backgroundLocation: location }}>
-        Login
-      </Link>
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
     </Panel>
   );
