@@ -14,6 +14,9 @@ const baseConfig = {
     port: 8088,
     open: true,
   },
+  define: {
+    'process.env': process.env, // to stop errors when libraries use 'process.env'
+  },
   envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
   resolve: {
     preserveSymlinks: true,
@@ -34,6 +37,7 @@ export default defineConfig(({ command }) => {
     return {
       ...baseConfig,
       define: {
+        ...baseConfig.define,
         global: {},
       },
     };
