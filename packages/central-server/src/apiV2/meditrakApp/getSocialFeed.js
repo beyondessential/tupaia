@@ -5,8 +5,8 @@
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
-import { getLeaderboard } from '../social';
-import { allowNoPermissions } from '../permissions';
+import { getLeaderboard } from '../../social';
+import { allowNoPermissions } from '../../permissions';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 

@@ -6875,6 +6875,7 @@ __metadata:
     eslint: ^7.9.0
     eslint-plugin-react-native: ^3.6.0
     flow-bin: 0.38.0
+    jsc-android: ^250231.0.0
     metro-config: ^0.59.0
     metro-react-native-babel-preset: ^0.59.0
     moment: ^2.21.0
@@ -6885,6 +6886,7 @@ __metadata:
     react-native: ^0.63.5
     react-native-database: ^0.1.7
     react-native-device-info: ^7.2.1
+    react-native-document-picker: ^8.2.1
     react-native-dotenv: ^0.2.0
     react-native-fs: ^2.16.6
     react-native-gesture-handler: ~1.7.0
@@ -22633,6 +22635,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsc-android@npm:^250231.0.0":
+  version: 250231.0.0
+  resolution: "jsc-android@npm:250231.0.0"
+  checksum: 6c3f0f6f02fa37a19935b2fbe651e9d6ecc370eb30f2ecee76379337bbf084abb568a1ef1133fe622c5b76f43cf54bb7716f92a94dca010985da38edc48841e2
+  languageName: node
+  linkType: hard
+
 "jsdom@npm:^16.4.0, jsdom@npm:^16.6.0":
   version: 16.7.0
   resolution: "jsdom@npm:16.7.0"
@@ -30703,6 +30712,22 @@ __metadata:
   peerDependencies:
     react-native: "*"
   checksum: 84461424d1049ce13ac88dc64655c1e8e50b7d70b81a34978ce0c6ed3a4f11af51a150cfe1f9225f698d2c966d61c82b77a0a6726bf52e9823a7d8c17aca1160
+  languageName: node
+  linkType: hard
+
+"react-native-document-picker@npm:^8.2.1":
+  version: 8.2.1
+  resolution: "react-native-document-picker@npm:8.2.1"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 575d3bec391044fdaf8d4d740a115a0b3e5cbafdb893ce19157b0c5fefb052c208b9db6d352e171d358c723612e47fe67cda4634a60d3a245a30ff103b1cb84c
   languageName: node
   linkType: hard
 

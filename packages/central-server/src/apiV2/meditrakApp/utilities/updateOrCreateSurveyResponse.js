@@ -10,8 +10,8 @@ import {
   reformatDateStringWithoutTz,
   ValidationError,
 } from '@tupaia/utils';
-import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
-import { upsertAnswers } from './upsertAnswers';
+import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
+import { upsertAnswers } from '../../../dataAccessors/upsertAnswers';
 
 /**
  * Creates or updates survey responses from passed changes

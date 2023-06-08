@@ -10,20 +10,14 @@ export {
   fetchCountryIdsByPermissionGroupId,
   fetchCountryCodesByPermissionGroupId,
 } from './fetchCountriesByPermissionGroup';
-export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
+export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchRequestingMeditrakDevice';
 export {
   getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
 } from './getAdminPanelAllowedCountries';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
-export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
-export {
-  buildMeditrakSyncQuery,
-  buildPermissionsBasedMeditrakSyncQuery,
-  supportsPermissionsBasedSync,
-} from './meditrakSync';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';

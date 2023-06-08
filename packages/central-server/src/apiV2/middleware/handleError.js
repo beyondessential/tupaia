@@ -5,6 +5,10 @@
 import { InternalServerError } from '@tupaia/utils';
 
 export const handleError = (err, req, res, next) => {
+  if (process.env.NODE_ENV === 'test') {
+    console.error(err);
+  }
+
   const { database, apiRequestLogId } = req;
   let error = err;
   if (!error.respond) {

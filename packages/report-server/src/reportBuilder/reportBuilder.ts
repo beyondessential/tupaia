@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { StandardOrCustomReportConfig } from '@tupaia/types';
+import type { Report } from '@tupaia/types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildTransform, TransformTable } from './transform';
@@ -18,7 +18,7 @@ export interface BuiltReport {
 
 export class ReportBuilder {
   private readonly reqContext: ReqContext;
-  private config?: StandardOrCustomReportConfig;
+  private config?: Report['config'];
   private testData?: Row[];
 
   public constructor(reqContext: ReqContext) {
