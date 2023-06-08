@@ -4,15 +4,10 @@
  */
 import React, { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import {
-  createMuiTheme,
-  ThemeProvider as MuiThemeProvider,
-  StylesProvider,
-} from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
-
-const theme = createMuiTheme();
+import { theme } from './theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -9,14 +9,14 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { TextField } from '../components/TextField';
-import { Modal, ModalButton } from '../components/Modal';
+import { Modal } from '../components/Modal';
 
 const StyledImg = styled.img`
   height: 2.6rem;
   width: auto;
   margin-bottom: 5rem;
 `;
-const Logo = () => <StyledImg src="/tupaia-logo-light.svg" alt="psss-logo" />;
+const Logo = () => <StyledImg src="/tupaia-logo-light.svg" alt="tupaia-logo" />;
 
 const Title = styled(Typography)`
   font-weight: 500;

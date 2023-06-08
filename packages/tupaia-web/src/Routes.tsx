@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
+import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import {
   LandingPage,
-  LoginForm,
+  Login,
   PasswordResetForm,
   Project,
   RegisterForm,
@@ -21,16 +21,26 @@ import { DEFAULT_URL } from './constants';
  *
  * **/
 
-export const Routes = () => (
-  <RouterRoutes>
-    <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-    <Route path="login" element={<LoginForm />} />
-    <Route path="register" element={<RegisterForm />} />
-    <Route path="reset-password" element={<PasswordResetForm />} />
-    <Route path="request-access" element={<RequestAccessForm />} />
-    <Route path="verify-email" element={<VerifyEmailForm />} />
-    <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-    {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
-    <Route path="/:projectCode/:entityCode/*" element={<Project />} />
-  </RouterRoutes>
-);
+export const Routes = () => {
+  let location = useLocation();
+  let state = location.state as { backgroundLocation?: Location };
+  return (
+    <RouterRoutes>
+      <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<RegisterForm />} />
+      <Route path="reset-password" element={<PasswordResetForm />} />
+      <Route path="request-access" element={<RequestAccessForm />} />
+      <Route path="verify-email" element={<VerifyEmailForm />} />
+      <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
+      {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
+      <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+
+      {state?.backgroundLocation && (
+        <RouterRoutes>
+          <Route path="login" element={<Login />} />
+        </RouterRoutes>
+      )}
+    </RouterRoutes>
+  );
+};
