@@ -59,10 +59,9 @@ const ActionLink = styled(Button)`
   }
 `;
 
-interface SingleProjectLandingPageProps {
+interface SingleProjectLandingPageProps
+  extends Pick<SingleLandingPage, 'extendedTitle' | 'includeNameInHeader'> {
   project: SingleProject;
-  extendedTitle?: SingleLandingPage['extendedTitle'];
-  includeNameInHeader?: SingleLandingPage['includeNameInHeader'];
   isUserLoggedIn: boolean;
 }
 

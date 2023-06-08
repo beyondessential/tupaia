@@ -11,6 +11,7 @@ import { LoadingScreen } from '../../components';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { LandingPageFooter } from './LandingPageFooter';
 import { SingleLandingPage } from '../../types';
+import { MultiProjectLandingPage } from './MultiProjectLandingPage';
 
 const DEFAULT_LANDING_IMAGE_URL = '/images/custom-landing-page-default.png';
 
@@ -41,7 +42,7 @@ const Container = styled(MuiContainer)`
 
 export const LandingPage = () => {
   const { landingPageUrlSegment } = useParams();
-  const { data } = useLandingPage(landingPageUrlSegment!);
+  const { landingPage, isLoading } = useLandingPage(landingPageUrlSegment!);
   const {
     imageUrl,
     projects = [],
@@ -52,16 +53,18 @@ export const LandingPage = () => {
     externalLink,
     phoneNumber,
     websiteUrl,
-  } = (data || {}) as SingleLandingPage;
+    primaryHexcode,
+  } = landingPage as SingleLandingPage;
 
   // This will come from actual login state once merged in
   const isUserLoggedIn = true;
+
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
   return (
     <Wrapper $backgroundImage={imageUrl || DEFAULT_LANDING_IMAGE_URL}>
       <Container maxWidth={false}>
-        {!data && <LoadingScreen isLoading />}
+        {isLoading && <LoadingScreen isLoading />}
         {projects.length === 1 ? (
           <SingleProjectLandingPage
             project={projects[0]}
@@ -69,7 +72,13 @@ export const LandingPage = () => {
             includeNameInHeader={includeNameInHeader}
             isUserLoggedIn={isUserLoggedIn}
           />
-        ) : null}
+        ) : (
+          <MultiProjectLandingPage
+            projects={projects}
+            isUserLoggedIn={isUserLoggedIn}
+            includeNameInHeader={includeNameInHeader}
+          />
+        )}
         <LandingPageFooter
           includeNameInHeader={includeNameInHeader}
           websiteUrl={websiteUrl}

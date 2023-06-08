@@ -5,4 +5,5 @@
 export { AuthModal } from './AuthModal';
 export { Layout } from './Layout';
 export { MapLayout } from './MapLayout';
+export * from './ProjectCardList';
 export { Sidebar } from './Sidebar';

@@ -6,6 +6,8 @@ export type SingleProject = KeysToCamelCase<Project> & {
   hasPendingAccess: boolean;
   homeEntityCode: string;
   defaultDashboard: string;
+  name: string;
+  names: string[];
 };
 
 export type SingleLandingPage = KeysToCamelCase<Omit<LandingPage, 'project_codes'>> & {
