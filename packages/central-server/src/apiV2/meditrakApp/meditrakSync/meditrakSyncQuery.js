@@ -8,7 +8,7 @@ import semverCompare from 'semver-compare';
 
 import { getHighestPossibleIdForGivenTime, SqlQuery } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
-import { fetchRequestingMeditrakDevice } from '../fetchRequestingMeditrakDevice';
+import { fetchRequestingMeditrakDevice } from '../utilities';
 
 const isAppVersionGreaterThanMin = (version, minVersion) => semverCompare(version, minVersion) >= 0;
 

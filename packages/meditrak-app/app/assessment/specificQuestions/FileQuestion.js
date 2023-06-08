@@ -11,6 +11,7 @@ import RNFS from 'react-native-fs';
 
 import { DEFAULT_PADDING } from '../../globalStyles';
 import { Button, Text } from '../../widgets';
+import { getFilenameFromUri } from '../../utilities';
 
 const renderFilePickerButton = (onPress, label) => (
   <Button title={label} onPress={onPress} style={localStyles.button} />
@@ -61,7 +62,7 @@ const localStyles = StyleSheet.create({
 });
 
 export const FileQuestion = ({ answer, extraProps, onChangeAnswer }) => {
-  const filename = answer ? answer.substring(answer.lastIndexOf('/') + 1) : null;
+  const filename = getFilenameFromUri(answer);
 
   const handleOpenFilePicker = async () => {
     try {
