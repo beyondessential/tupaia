@@ -33,6 +33,7 @@ const Panel = styled.div<{
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };

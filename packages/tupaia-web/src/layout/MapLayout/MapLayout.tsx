@@ -18,7 +18,6 @@ export const Map = () => {
 };
 
 const Wrapper = styled.div`
-  background: lightgrey;
   flex: 1;
   display: flex;
   position: relative;
