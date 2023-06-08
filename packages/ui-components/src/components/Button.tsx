@@ -51,7 +51,7 @@ export const Button = ({
   loadingText = 'Loading',
   disabled = false,
   ...props
-}: ButtonProps) => (
+}: OverrideableComponentProps<ButtonProps>) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
     {isLoading ? `${loadingText}...` : children}
   </StyledButton>

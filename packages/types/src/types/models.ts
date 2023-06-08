@@ -686,5 +686,3 @@ export interface LandingPage {
     url_segment: string;
     website_url?: string;
 }
-
-export type LandingPageResponse = Omit<KeysToCamelCase<LandingPage>, 'project_codes'> & { projects: KeysToCamelCase<Project>[] };

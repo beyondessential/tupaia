@@ -6,9 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { LandingPageResponse } from '@tupaia/types';
 import { Link } from 'react-router-dom';
+import { Button } from '@tupaia/ui-components';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
+import { getProjectAccessType } from '../../utils';
+import { SingleLandingPage, SingleProject } from '../../types';
+import { USER_ROUTES } from '../../Routes';
 
 /**
  * This is the template for the content of a landing page if there is only one project
@@ -32,13 +35,14 @@ const ExtendedTitle = styled(Typography)`
   }
 `;
 
-const ActionLink = styled(Link)`
+const ActionLink = styled(Button)`
+  text-align: center;
   width: 75%;
   min-width: 10rem;
   background-color: ${props => props.theme.palette.common.white};
   color: ${props => props.theme.palette.common.black};
   text-transform: none;
-  font-size: 0.975em;
+  font-size: 0.975rem;
   line-height: 1.5;
   padding: 1em;
   border-radius: 0.6em;
@@ -46,16 +50,19 @@ const ActionLink = styled(Link)`
   ${ExtendedTitle} + & {
     margin-top: 2em;
   }
+  &:hover {
+    color: ${props => props.theme.palette.common.white};
+  }
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
-    font-size: 1em;
+    font-size: 1rem;
   }
 `;
 
 interface SingleProjectLandingPageProps {
-  project: LandingPageResponse['projects'][0];
-  extendedTitle?: string;
-  includeNameInHeader?: boolean;
+  project: SingleProject;
+  extendedTitle?: SingleLandingPage['extendedTitle'];
+  includeNameInHeader?: SingleLandingPage['includeNameInHeader'];
   isUserLoggedIn: boolean;
 }
 
@@ -65,17 +72,17 @@ export function SingleProjectLandingPage({
   includeNameInHeader,
   isUserLoggedIn,
 }: SingleProjectLandingPageProps) {
-  //TODO: get this from project
-  const accessType = PROJECT_ACCESS_TYPES.PENDING;
-  //   const onClickActionButton = () => {
-  //     const action = actions[accessType];
-  //     if (!action) return;
-  //     action(project);
-  //   };
+  const accessType = getProjectAccessType(project);
+
+  const { homeEntityCode, code } = project;
+
+  // TODO: get project default dashboard code from API
   const urls = {
-    [PROJECT_ACCESS_TYPES.PENDING]: `/project/${project.code}`,
-    [PROJECT_ACCESS_TYPES.ALLOWED]: `/project/${project.code}`,
-    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn ? `/request-access/${project.code}` : '/login',
+    [PROJECT_ACCESS_TYPES.PENDING]: '',
+    [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
+    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
+      ? `${USER_ROUTES.REQUEST_ACCESS}/${code}`
+      : USER_ROUTES.LOGIN,
   };
 
   const actionTexts = {
@@ -89,13 +96,13 @@ export function SingleProjectLandingPage({
       {extendedTitle && (
         <ExtendedTitle variant={includeNameInHeader ? 'h2' : 'h1'}>{extendedTitle}</ExtendedTitle>
       )}
-      {/* Only display a button if access type is set, and button is disabled if access has not yet been granted */}
+      {/* Only display a link if access type is set, and link is disabled if access has not yet been granted */}
       {accessType && (
         <ActionLink
+          variant="contained"
+          component={Link}
           to={urls[accessType]}
-          //   disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}
-          //   disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}
-          //   onClick={onClickActionButton}
+          disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}
         >
           {actionTexts[accessType]}
         </ActionLink>
