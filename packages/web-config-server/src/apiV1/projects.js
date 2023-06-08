@@ -29,7 +29,7 @@ function getHomeEntity(project, entitiesWithAccess, allEntities) {
   }
   // more than one child entity, return the code of the project entity, which should have bounds
   // encompassing all children
-  return allEntities.find(e => e.id === project.entity_ids);
+  return allEntities.find(e => e.id === project.entity_id);
 }
 
 // Fetch the project's default dashboard code using the dashboardGroupName, or the first dashboard code if the default dashboard can't be found
