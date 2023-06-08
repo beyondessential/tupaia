@@ -32,7 +32,7 @@ function getHomeEntityCode(project, entitiesWithAccess) {
   return project.entity_code;
 }
 
-async function buildProjectDataForFrontend(project, req) {
+export async function buildProjectDataForFrontend(project, req) {
   const {
     id: projectId,
     name,
