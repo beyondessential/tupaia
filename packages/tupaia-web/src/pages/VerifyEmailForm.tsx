@@ -6,5 +6,5 @@ import React from 'react';
 import { AuthModal } from '../layout';
 
 export const VerifyEmailForm = () => {
-  return <AuthModal onClose={() => {}}>VerifyEmailForm</AuthModal>;
+  return <AuthModal>VerifyEmailForm</AuthModal>;
 };

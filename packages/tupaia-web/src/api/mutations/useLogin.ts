@@ -1,19 +1,19 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
+import { useNavigateBack } from '../../utils/useNavigateBack.ts';
 
 type LoginCredentials = {
   email: string;
   password: string;
 };
 export const useLogin = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const navigateBack = useNavigateBack();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -28,7 +28,7 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries();
-        navigate(-1);
+        navigateBack();
       },
     },
   );

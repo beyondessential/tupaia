@@ -15,7 +15,7 @@ export default meta;
 
 export const Simple = () => {
   return (
-    <AuthModal title="Login" subtitle="Login here" onClose={() => {}}>
+    <AuthModal title="Login" subtitle="Login here">
       Hi, I am an auth modal
     </AuthModal>
   );
@@ -23,7 +23,7 @@ export const Simple = () => {
 
 export const PrimaryButton = () => {
   return (
-    <AuthModal title="Login" subtitle="Login here" onClose={() => {}}>
+    <AuthModal title="Login" subtitle="Login here">
       Hi, I am an auth modal
       <ModalButton>Login</ModalButton>
     </AuthModal>
@@ -32,7 +32,7 @@ export const PrimaryButton = () => {
 
 export const SecondaryButton = () => {
   return (
-    <AuthModal title="Login" subtitle="Login here" onClose={() => {}}>
+    <AuthModal title="Login" subtitle="Login here">
       Hi, I am an auth modal
       <ModalButton>Login</ModalButton>
       <ModalCancelButton>Login</ModalCancelButton>

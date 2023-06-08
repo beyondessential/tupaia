@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
@@ -20,7 +20,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiInputBase-root.MuiInput-root.MuiInput-underline.MuiInputBase-formControl.MuiInput-formControl {
     &:before,
     &:after {
-      border-bottom: 1px solid ${FORM_COLORS.BORDER};
+      border-width: 1px;
     }
   }
 

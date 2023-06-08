@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../constants';
 import { Typography } from '@material-ui/core';
 import { Button, OutlinedButton } from '@tupaia/ui-components';
+import { useNavigateBack } from '../utils/useNavigateBack.ts';
 
 const Logo = styled.img`
   min-width: 110px;
@@ -50,14 +51,14 @@ export const ModalCancelButton = styled(OutlinedButton).attrs({
 
 interface AuthModalProps {
   children?: ReactNode;
-  onClose: () => void;
   title?: string;
   subtitle?: string;
 }
 
-export const AuthModal = ({ children, title, subtitle, onClose }: AuthModalProps) => {
+export const AuthModal = ({ children, title, subtitle }: AuthModalProps) => {
+  const navigateBack = useNavigateBack();
   return (
-    <Modal isOpen={true} onClose={onClose}>
+    <Modal isOpen={true} onClose={navigateBack}>
       <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
       <Title variant="h2">{title}</Title>
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}

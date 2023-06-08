@@ -1,9 +1,9 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -45,14 +45,9 @@ export const Login = () => {
     formState: { errors },
   } = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
-  const navigate = useNavigate();
-
-  const onClose = () => {
-    navigate(-1);
-  };
 
   return (
-    <AuthModal title="Log in" subtitle="Enter your details below to log in" onClose={onClose}>
+    <AuthModal title="Log in" subtitle="Enter your details below to log in">
       {isError && <Typography color="error">{error.message}</Typography>}
       <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
         <TextField

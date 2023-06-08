@@ -6,5 +6,5 @@ import React from 'react';
 import { AuthModal } from '../layout';
 
 export const PasswordResetForm = () => {
-  return <AuthModal onClose={() => {}}>PasswordResetForm</AuthModal>;
+  return <AuthModal>PasswordResetForm</AuthModal>;
 };
