@@ -53,6 +53,8 @@ export const LandingPage = () => {
     phoneNumber,
     websiteUrl,
   } = (data || {}) as SingleLandingPage;
+
+  // This will come from actual login state once merged in
   const isUserLoggedIn = true;
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
