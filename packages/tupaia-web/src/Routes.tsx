@@ -27,7 +27,7 @@ export const Routes = () => (
     <Route path="login" element={<LoginForm />} />
     <Route path="register" element={<RegisterForm />} />
     <Route path="reset-password" element={<PasswordResetForm />} />
-    <Route path="request-access" element={<RequestAccessForm />} />
+    <Route path="request-access/:projectCode" element={<RequestAccessForm />} />
     <Route path="verify-email" element={<VerifyEmailForm />} />
     <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
     {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}

@@ -5,7 +5,7 @@
 
 import React, { ReactNode, useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import { Button, MenuList, useTheme } from '@material-ui/core';
+import { Button, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';

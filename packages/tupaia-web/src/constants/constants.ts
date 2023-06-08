@@ -8,3 +8,9 @@ export const DEFAULT_ENTITY_CODE = 'explore';
 export const DEFAULT_URL = `${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;
 
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
+
+export const PROJECT_ACCESS_TYPES = {
+  PENDING: 'PENDING',
+  ALLOWED: 'ALLOWED',
+  DENIED: 'DENIED',
+};

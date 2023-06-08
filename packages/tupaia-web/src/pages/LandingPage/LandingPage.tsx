@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { Container as MuiContainer } from '@material-ui/core';
 import { LandingPageResponse } from '@tupaia/types';
 import { useLandingPage } from '../../api/queries';
+import { LoadingScreen } from '../../components';
+import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 
 const DEFAULT_LANDING_IMAGE_URL = '/images/custom-landing-page-default.png';
 
@@ -19,6 +21,7 @@ const Wrapper = styled.div<{
   background-position: center;
   background-color: #262834;
   background-image: ${({ $backgroundImage }) => `url(${$backgroundImage})`};
+  height: 100%;
 `;
 
 const Container = styled(MuiContainer)`
@@ -27,25 +30,39 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: calc(100vh - ${({ theme }) => theme.topBarHeight.mobile}px);
   overflow-y: auto;
+  height: 100%;
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
     padding: 2em 3.5em;
-    min-height: calc(100vh - ${({ theme }) => theme.topBarHeight.default}px);
   }
 `;
 
 export const LandingPage = () => {
   const { landingPageUrlSegment } = useParams();
-  const { data = {} } = useLandingPage(landingPageUrlSegment!);
-  const { imageUrl } = data as LandingPageResponse;
-
+  const { data } = useLandingPage(landingPageUrlSegment!);
+  const {
+    imageUrl,
+    projects = [],
+    extendedTitle,
+    includeNameInHeader,
+  } = (data || {}) as LandingPageResponse;
+  const isUserLoggedIn = true;
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
   return (
     <Wrapper $backgroundImage={imageUrl || DEFAULT_LANDING_IMAGE_URL}>
-      <Container maxWidth={false}>Hi</Container>
+      <Container maxWidth={false}>
+        {!data && <LoadingScreen isLoading />}
+        {projects.length === 1 ? (
+          <SingleProjectLandingPage
+            project={projects[0]}
+            extendedTitle={extendedTitle}
+            includeNameInHeader={includeNameInHeader}
+            isUserLoggedIn={isUserLoggedIn}
+          />
+        ) : null}
+      </Container>
     </Wrapper>
   );
 };
