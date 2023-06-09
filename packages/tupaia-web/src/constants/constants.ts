@@ -8,3 +8,7 @@ export const DEFAULT_ENTITY_CODE = 'explore';
 export const DEFAULT_URL = `${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;
 
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
+
+export enum MODAL_TYPES {
+  PROJECTS = 'projects',
+}

@@ -7,6 +7,7 @@ import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
 import {
   LandingPage,
   LoginForm,
+  ModalRoute,
   PasswordResetForm,
   Project,
   RegisterForm,
@@ -23,14 +24,16 @@ import { DEFAULT_URL } from './constants';
 
 export const Routes = () => (
   <RouterRoutes>
-    <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-    <Route path="login" element={<LoginForm />} />
-    <Route path="register" element={<RegisterForm />} />
-    <Route path="reset-password" element={<PasswordResetForm />} />
-    <Route path="request-access" element={<RequestAccessForm />} />
-    <Route path="verify-email" element={<VerifyEmailForm />} />
-    <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-    {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
-    <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+    <Route element={<ModalRoute />}>
+      <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
+      <Route path="login" element={<LoginForm />} />
+      <Route path="register" element={<RegisterForm />} />
+      <Route path="reset-password" element={<PasswordResetForm />} />
+      <Route path="request-access" element={<RequestAccessForm />} />
+      <Route path="verify-email" element={<VerifyEmailForm />} />
+      <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
+      {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
+      <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+    </Route>
   </RouterRoutes>
 );
