@@ -7,6 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
+import { useLandingPage } from '../../api/queries';
+import { useParams } from 'react-router';
+import { SingleLandingPage } from '../../types';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -44,10 +48,19 @@ const Header = styled.header<{
 `;
 
 export const TopBar = () => {
-  // When handing custom landing pages, pass the primary and secondary colors to the Header component
+  const { landingPageUrlSegment } = useParams();
+  // gets landing page data if landing page url segment is present, otherwise will return {}
+  const { landingPage } = useLandingPage(landingPageUrlSegment);
+
+  // use the landing page settings if found, else the defaults
+  const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
   return (
-    <Header>
-      <Logo />
+    <Header $primaryColor={primaryHexcode} $secondaryColor={secondaryHexcode}>
+      <Logo
+        logoSrc={logoUrl || TUPAIA_LIGHT_LOGO_SRC}
+        displayName={includeNameInHeader}
+        name={name}
+      />
       <UserMenu />
     </Header>
   );

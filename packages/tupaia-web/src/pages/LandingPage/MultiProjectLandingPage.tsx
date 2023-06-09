@@ -30,7 +30,7 @@ const ProjectsContainer = styled.div`
   row-gap: 1.2em;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
     column-gap: 3.2em;
     row-gap: 3.2em;
   }

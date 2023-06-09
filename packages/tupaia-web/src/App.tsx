@@ -6,17 +6,13 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './AppProviders';
 import { Routes } from './Routes';
-import { Layout } from './layout';
-
 
 const App = () => {
   return (
     <AppProviders>
       <BrowserRouter>
         {/** The Layout component needs to be inside BrowserRouter so that Link component from react-router-dom can be used (in menu etc.) */}
-        <Layout>
-          <Routes />
-        </Layout>
+        <Routes />
       </BrowserRouter>
     </AppProviders>
   );

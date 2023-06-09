@@ -14,6 +14,7 @@ import {
   VerifyEmailForm,
 } from './pages';
 import { DEFAULT_URL } from './constants';
+import { Layout } from './layout';
 
 export const USER_ROUTES = {
   LOGIN: '/login',
@@ -31,14 +32,16 @@ export const USER_ROUTES = {
 
 export const Routes = () => (
   <RouterRoutes>
-    <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-    <Route path={USER_ROUTES.LOGIN} element={<LoginForm />} />
-    <Route path={USER_ROUTES.REGISTER} element={<RegisterForm />} />
-    <Route path={USER_ROUTES.RESET_PASSWORD} element={<PasswordResetForm />} />
-    <Route path={`${USER_ROUTES.REQUEST_ACCESS}/:projectCode`} element={<RequestAccessForm />} />
-    <Route path={USER_ROUTES.VERIFY_EMAIL} element={<VerifyEmailForm />} />
-    <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-    {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
-    <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+    <Route element={<Layout />}>
+      <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
+      <Route path={USER_ROUTES.LOGIN} element={<LoginForm />} />
+      <Route path={USER_ROUTES.REGISTER} element={<RegisterForm />} />
+      <Route path={USER_ROUTES.RESET_PASSWORD} element={<PasswordResetForm />} />
+      <Route path={`${USER_ROUTES.REQUEST_ACCESS}/:projectCode`} element={<RequestAccessForm />} />
+      <Route path={USER_ROUTES.VERIFY_EMAIL} element={<VerifyEmailForm />} />
+      <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
+      {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
+      <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+    </Route>
   </RouterRoutes>
 );

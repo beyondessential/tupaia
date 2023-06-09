@@ -22,7 +22,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
+  margin: auto 0; // centre the content in the remaining page space
+  min-height: 300px; // handle landscape mobile screens
 `;
 
 const ExtendedTitle = styled(Typography)`

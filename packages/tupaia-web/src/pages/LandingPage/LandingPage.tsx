@@ -24,6 +24,7 @@ const Wrapper = styled.div<{
   background-color: #262834;
   background-image: ${({ $backgroundImage }) => `url(${$backgroundImage})`};
   height: 100%;
+  overflow-y: auto;
 `;
 
 const Container = styled(MuiContainer)`
@@ -32,8 +33,7 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow-y: auto;
-  height: 100%;
+  min-height: 100%;
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
     padding: 2em 3.5em;
@@ -53,7 +53,6 @@ export const LandingPage = () => {
     externalLink,
     phoneNumber,
     websiteUrl,
-    primaryHexcode,
   } = landingPage as SingleLandingPage;
 
   // This will come from actual login state once merged in
