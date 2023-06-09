@@ -23,13 +23,12 @@ const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
 };
 // work out the entity to zoom to and open the dashboard of when this project is selected
 function getHomeEntity(project, entitiesWithAccess, allEntities) {
-  if (entitiesWithAccess.length === 1) {
-    // only one entity (country) inside, return that code
-    return entitiesWithAccess[0];
-  }
   // more than one child entity, return the code of the project entity, which should have bounds
-  // encompassing all children
-  return allEntities.find(e => e.id === project.entity_id);
+  const homeEntityCode =
+    entitiesWithAccess.length === 1 ? entitiesWithAccess[0].code : project.entity_id;
+
+  // return the entire entity object
+  return allEntities.find(e => e.code === homeEntityCode);
 }
 
 // Fetch the project's default dashboard code using the dashboardGroupName, or the first dashboard code if the default dashboard can't be found
@@ -57,7 +56,7 @@ export async function buildProjectDataForFrontend(project, req) {
     config,
   } = project;
 
-  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id)));
+  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id))); // the return value of these is different to entitiesWithAccess
   const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, permissionGroups);
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
