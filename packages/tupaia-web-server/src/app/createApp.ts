@@ -9,8 +9,8 @@ import {
   handleWith,
   useForwardUnhandledRequests,
   attachSessionIfAvailable,
+  SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
-import { SessionSwitchingAuthHandler } from '@tupaia/api-client';
 import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
@@ -30,7 +30,7 @@ export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
-    .attachApiClientToContext(req => new SessionSwitchingAuthHandler(req.session))
+    .attachApiClientToContext(req => new SessionSwitchingAuthHandler(req))
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
