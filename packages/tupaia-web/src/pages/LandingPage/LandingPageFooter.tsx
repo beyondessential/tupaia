@@ -84,17 +84,8 @@ const FooterPoweredByWrapper = styled.div`
   }
 `;
 
-export const LandingPageFooter = ({
-  longBio,
-  name,
-  includeNameInHeader,
-  externalLink,
-  phoneNumber,
-  websiteUrl,
-}: Pick<
-  SingleLandingPage,
-  'longBio' | 'name' | 'includeNameInHeader' | 'externalLink' | 'phoneNumber' | 'websiteUrl'
->) => {
+export const LandingPageFooter = ({ landingPage }: { landingPage: SingleLandingPage }) => {
+  const { longBio, name, includeNameInHeader, externalLink, phoneNumber, websiteUrl } = landingPage;
   // use h3 for footer item headers if there is already an h2 in the page (i.e. the name is h1, and the extended title is h2, else h2)
   const footerHeaderVariant = includeNameInHeader ? 'h3' : 'h2';
 

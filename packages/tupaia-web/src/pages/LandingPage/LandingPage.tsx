@@ -40,20 +40,37 @@ const Container = styled(MuiContainer)`
   }
 `;
 
+const ProjectScreen = ({
+  landingPage,
+  isUserLoggedIn,
+}: {
+  landingPage: SingleLandingPage;
+  isUserLoggedIn: boolean;
+}) => {
+  const { projects = [], extendedTitle, includeNameInHeader } = landingPage;
+
+  if (projects.length === 1)
+    return (
+      <SingleProjectLandingPage
+        project={projects[0]}
+        extendedTitle={extendedTitle}
+        isUserLoggedIn={isUserLoggedIn}
+        includeNameInHeader={includeNameInHeader}
+      />
+    );
+  return (
+    <MultiProjectLandingPage
+      projects={projects}
+      isUserLoggedIn={isUserLoggedIn}
+      includeNameInHeader={includeNameInHeader}
+    />
+  );
+};
+
 export const LandingPage = () => {
   const { landingPageUrlSegment } = useParams();
   const { landingPage, isLoading } = useLandingPage(landingPageUrlSegment!);
-  const {
-    imageUrl,
-    projects = [],
-    extendedTitle,
-    longBio,
-    name,
-    includeNameInHeader = false,
-    externalLink,
-    phoneNumber,
-    websiteUrl,
-  } = landingPage as SingleLandingPage;
+  const { imageUrl } = landingPage;
 
   // This will come from actual login state once merged in
   const isUserLoggedIn = true;
@@ -63,29 +80,12 @@ export const LandingPage = () => {
   return (
     <Wrapper $backgroundImage={imageUrl || DEFAULT_LANDING_IMAGE_URL}>
       <Container maxWidth={false}>
-        {isLoading && <LoadingScreen isLoading />}
-        {projects.length === 1 ? (
-          <SingleProjectLandingPage
-            project={projects[0]}
-            extendedTitle={extendedTitle}
-            includeNameInHeader={includeNameInHeader}
-            isUserLoggedIn={isUserLoggedIn}
-          />
+        {isLoading ? (
+          <LoadingScreen isLoading />
         ) : (
-          <MultiProjectLandingPage
-            projects={projects}
-            isUserLoggedIn={isUserLoggedIn}
-            includeNameInHeader={includeNameInHeader}
-          />
+          <ProjectScreen landingPage={landingPage} isUserLoggedIn={isUserLoggedIn} />
         )}
-        <LandingPageFooter
-          includeNameInHeader={includeNameInHeader}
-          websiteUrl={websiteUrl}
-          name={name}
-          externalLink={externalLink}
-          longBio={longBio}
-          phoneNumber={phoneNumber}
-        />
+        <LandingPageFooter landingPage={landingPage} />
       </Container>
     </Wrapper>
   );

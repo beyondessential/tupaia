@@ -32,6 +32,7 @@ export const USER_ROUTES = {
 
 export const Routes = () => (
   <RouterRoutes>
+    {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
     <Route element={<Layout />}>
       <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
       <Route path={USER_ROUTES.LOGIN} element={<LoginForm />} />
