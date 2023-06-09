@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link, LinkProps } from 'react-router-dom';
-import { Button, OutlinedButton, TextButton } from '@tupaia/ui-components';
+import { OutlinedButton, TextButton } from '@tupaia/ui-components';
 import { USER_ROUTES } from '../../Routes';
 
 /**
@@ -66,6 +66,9 @@ interface UserInfoProps {
   isUserLoggedIn?: boolean;
 }
 
+/**
+ * This is the username OR user buttons. These are only visible in desktop
+ */
 export const UserInfo = ({
   currentUserUsername,
   isLandingPage,
