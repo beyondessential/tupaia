@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
-import { RouterButton } from '../../components/RouterButton.tsx';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -64,18 +63,6 @@ const SearchBar = styled.div`
   }
 `;
 
-const RegisterButton = styled(RouterButton)`
-  color: white;
-  text-transform: none;
-  margin-right: 1rem;
-  border-radius: 2.5rem;
-  padding: 0.3125rem 1.25rem;
-`;
-
-const LoginButton = styled(RegisterButton).attrs({ variant: 'outlined' })`
-  border: 1px solid white;
-`;
-
 export const TopBar = () => {
   // When handing custom landing pages, pass the primary and secondary colors to the Header component
   return (
@@ -83,8 +70,6 @@ export const TopBar = () => {
       <Logo />
       <Inner>
         <SearchBar />
-        <RegisterButton to="/register">Register</RegisterButton>
-        <LoginButton to="/login">Log in</LoginButton>
       </Inner>
       <UserMenu />
     </Header>
