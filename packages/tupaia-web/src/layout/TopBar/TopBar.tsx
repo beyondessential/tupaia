@@ -7,9 +7,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
-import { useLandingPage } from '../../api/queries';
+import { useLandingPage } from '../../api';
 import { useParams } from 'react-router';
-import { SingleLandingPage } from '../../types';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 
 const TOP_BAR_HEIGHT = 60;

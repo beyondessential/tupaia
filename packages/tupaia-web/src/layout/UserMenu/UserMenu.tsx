@@ -9,7 +9,7 @@ import { Button } from '@material-ui/core';
 import styled from 'styled-components';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
-import { useLandingPage } from '../../api/queries';
+import { useLandingPage } from '../../api';
 import { useParams } from 'react-router';
 import { useTheme } from '@material-ui/core';
 import { MenuItem } from './MenuList';

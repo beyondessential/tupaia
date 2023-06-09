@@ -1,10 +1,7 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';

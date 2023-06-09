@@ -19,7 +19,7 @@ const Card = styled.div`
   padding: 1.6rem;
   min-height: 20rem;
   border-radius: 5px;
-  background: #2e2f33;
+  background: ${({ theme }) => theme.projectCard.background};
   color: white;
   box-sizing: border-box;
   align-items: flex-start;
@@ -68,7 +68,7 @@ const Text = styled(Typography)`
 `;
 
 const CountryText = styled(Text)`
-  color: #9ba0a6;
+  color: ${({ theme }) => theme.projectCard.subText};
 `;
 
 const Body = styled.div`
@@ -138,14 +138,7 @@ interface ProjectCardProps extends Partial<SingleProject> {
   ProjectButton: ComponentType;
 }
 
-function getCountryNames(
-  projectName: ProjectCardProps['name'],
-  countryNames: ProjectCardProps['names'],
-) {
-  if (projectName === 'Disaster Response') {
-    return 'Global';
-  }
-
+function getCountryNames(countryNames: ProjectCardProps['names']) {
   if (countryNames && countryNames.length < 3) {
     return countryNames.sort().join(', ');
   }
@@ -174,7 +167,7 @@ export const ProjectCard = ({
       <Title>{name}</Title>
       <div>
         <Text>{getDescription(description)}</Text>
-        <CountryText>{getCountryNames(name, names)}</CountryText>
+        <CountryText>{getCountryNames(names)}</CountryText>
       </div>
     </Body>
     <ProjectButton />
