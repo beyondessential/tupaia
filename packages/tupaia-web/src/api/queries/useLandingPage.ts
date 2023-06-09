@@ -20,6 +20,7 @@ export const useLandingPage = (urlSegment?: string) => {
   // handle default landing page value as empty object
   return {
     ...landingPageResponse,
+    isLandingPage: !!landingPageResponse.data,
     landingPage: (landingPageResponse.data || {}) as SingleLandingPage,
   };
 };

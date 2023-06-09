@@ -143,7 +143,9 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-export const OutlinedButton = (props: MuiButtonProps) => <Button {...props} variant="outlined" />;
+export const OutlinedButton = (props: OverrideableComponentProps<ButtonProps>) => (
+  <Button {...props} variant="outlined" />
+);
 
 export const ErrorOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.error.main};
