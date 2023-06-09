@@ -28,8 +28,8 @@ export const Routes = () => {
   return (
     <>
       <RouterRoutes location={state?.backgroundLocation || location}>
-        <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-        <Route path="register" element={<RegisterForm />} />
+        <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
+        <Route path="/register" element={<RegisterForm />} />
         <Route path="reset-password" element={<PasswordResetForm />} />
         <Route path="request-access" element={<RequestAccessForm />} />
         <Route path="verify-email" element={<VerifyEmailForm />} />
@@ -43,6 +43,7 @@ export const Routes = () => {
       the <Routes> so we show the gallery in the background, behind the modal. See react router docs [here]{@Link https://github.com/remix-run/react-router/tree/dev/examples/modal} */}
       {state?.backgroundLocation && (
         <RouterRoutes>
+          <Route path="/register" element={<RegisterForm />} />
           <Route path="/login" element={<Login />} />
         </RouterRoutes>
       )}

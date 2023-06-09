@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import { Popover as MuiPopover } from '@material-ui/core';
-import { MenuItem, MenuList } from './MenuList';
+import { MenuList } from './MenuList';
 import styled from 'styled-components';
 
 /**
@@ -24,7 +24,6 @@ interface PopoverMenuProps {
   menuOpen: boolean;
   onCloseMenu: () => void;
   secondaryColor?: string;
-  isUserLoggedIn: boolean;
 }
 export const PopoverMenu = ({
   children,
@@ -32,7 +31,6 @@ export const PopoverMenu = ({
   menuOpen,
   onCloseMenu,
   secondaryColor,
-  isUserLoggedIn,
 }: PopoverMenuProps) => {
   return (
     <Popover
@@ -49,20 +47,7 @@ export const PopoverMenu = ({
         horizontal: 'right',
       }}
     >
-      <MenuList secondaryColor={secondaryColor}>
-        {/** If the user is not logged in, show the register and login buttons */}
-        {!isUserLoggedIn && (
-          <>
-            <MenuItem href="/login" onCloseMenu={onCloseMenu}>
-              Log in
-            </MenuItem>
-            <MenuItem href="/register" onCloseMenu={onCloseMenu}>
-              Register
-            </MenuItem>
-          </>
-        )}
-        {children}
-      </MenuList>
+      <MenuList secondaryColor={secondaryColor}>{children}</MenuList>
     </Popover>
   );
 };

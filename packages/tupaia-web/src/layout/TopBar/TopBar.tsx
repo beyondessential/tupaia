@@ -2,11 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
+import { RouterButton } from '../../components/RouterButton.tsx';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -20,6 +20,7 @@ const Header = styled.header<{
   height: ${TOP_BAR_HEIGHT_MOBILE}px;
   min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   z-index: 1000;
   position: relative;
@@ -43,11 +44,48 @@ const Header = styled.header<{
   }
 `;
 
+const Inner = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SearchBar = styled.div`
+  display: none;
+  width: 300px;
+  height: 40px;
+  left: 1010px;
+  top: 15px;
+  background: #202124;
+  border-radius: 43px;
+  margin-right: 30px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    display: block;
+  }
+`;
+
+const RegisterButton = styled(RouterButton)`
+  color: white;
+  text-transform: none;
+  margin-right: 1rem;
+  border-radius: 2.5rem;
+  padding: 0.3125rem 1.25rem;
+`;
+
+const LoginButton = styled(RegisterButton).attrs({ variant: 'outlined' })`
+  border: 1px solid white;
+`;
+
 export const TopBar = () => {
   // When handing custom landing pages, pass the primary and secondary colors to the Header component
   return (
     <Header>
       <Logo />
+      <Inner>
+        <SearchBar />
+        <RegisterButton to="/register">Register</RegisterButton>
+        <LoginButton to="/login">Log in</LoginButton>
+      </Inner>
       <UserMenu />
     </Header>
   );

@@ -24,7 +24,6 @@ const MenuButton = styled(Button)`
   height: 2em;
   text-align: right;
   padding: 0;
-  pointer-events: auto;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
@@ -60,7 +59,6 @@ export const UserMenu = () => {
       <PopoverMenu
         menuOpen={menuOpen}
         onCloseMenu={onCloseMenu}
-        isUserLoggedIn={false}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
       >
