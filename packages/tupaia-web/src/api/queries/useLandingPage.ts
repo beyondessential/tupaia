@@ -12,7 +12,7 @@ import { SingleLandingPage } from '../../types';
 export const useLandingPage = (urlSegment?: string) => {
   const landingPageResponse = useValidatedQuery(
     useQuery(['landingPage', urlSegment], () => get(`landingPage/${urlSegment}`, {}), {
-      staleTime: 1000 * 60 * 60 * 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
       refetchOnWindowFocus: false,
       enabled: !!urlSegment,
     }),
