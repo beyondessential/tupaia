@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
-import { AppStyleProviders } from '../src/AppStyleProviders';
+import { AppProviders } from '../src/AppProviders';
 import ReactRouterDecorator from './ReactRouterDecorator';
 const preview: Preview = {
   parameters: {
@@ -23,9 +23,9 @@ const preview: Preview = {
     ReactRouterDecorator,
     Story => {
       return (
-        <AppStyleProviders>
+        <AppProviders>
           <Story />
-        </AppStyleProviders>
+        </AppProviders>
       );
     },
   ],
