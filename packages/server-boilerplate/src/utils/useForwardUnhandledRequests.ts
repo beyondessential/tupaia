@@ -8,17 +8,26 @@ import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { handleError } from './handleError';
 import { attachSession as defaultAttachSession } from '../orchestrator';
+import { AuthHandler } from '@tupaia/api-client';
 
-const attachAuthorizationHeader = async (req: Request, res: Response, next: NextFunction) => {
+type AuthHandlerProvider = (req: Request) => AuthHandler;
+
+// Create a middleware function using the given authHandler
+const attachAuthorizationHeader = (authHandlerProvider: AuthHandlerProvider) => async (req: Request, res: Response, next: NextFunction) => {
+  const authHandler = authHandlerProvider(req);
+  req.headers.authorization = await authHandler.getAuthHeader();
+  next();
+};
+
+const defaultAuthHandlerProvider = (req: Request) => {
   const { session } = req;
 
   if (!session) {
     throw new UnauthenticatedError('Session is not attached');
   }
 
-  req.headers.authorization = await session.getAuthHeader();
-
-  next();
+  // Session already has a getAuthHeader function so can act as an AuthHandler
+  return session;
 };
 
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
@@ -28,6 +37,7 @@ export const useForwardUnhandledRequests = (
   target: string,
   prefix?: string,
   attachSession: Middleware = defaultAttachSession,
+  authHandlerProvider: AuthHandlerProvider = defaultAuthHandlerProvider,
 ) => {
   const options = {
     target,
@@ -55,5 +65,5 @@ export const useForwardUnhandledRequests = (
   };
 
   // Forward any unhandled request to central-server
-  app.use(attachSession, attachAuthorizationHeader, createProxyMiddleware(options), handleError);
+  app.use(attachSession, attachAuthorizationHeader(authHandlerProvider), createProxyMiddleware(options), handleError);
 };
