@@ -6,7 +6,8 @@
 import axios from 'axios';
 import FetchError from './fetchError';
 
-export const API_URL = process.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8100/api/v1/';
+export const API_URL =
+  import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8100/api/v1/';
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
@@ -20,20 +21,20 @@ type RequestParameters = Record<string, any> & {
 type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';
 };
-const getRequestOptions = (options: RequestParametersWithMethod) => {
+const getRequestOptions = (options?: RequestParametersWithMethod) => {
   const locale = window.location.pathname.split('/')[1];
   return {
     ...options,
     timeout,
     params: {
-      ...options.params,
+      ...options?.params,
       locale,
     },
   };
 };
 
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety
-const request = async (endpoint: string, options: RequestParametersWithMethod) => {
+const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
   const requestOptions = getRequestOptions(options);
 
   try {
@@ -61,13 +62,13 @@ const request = async (endpoint: string, options: RequestParametersWithMethod) =
   }
 };
 
-export const get = (endpoint: string, options: RequestParameters) =>
+export const get = (endpoint: string, options?: RequestParameters) =>
   request(endpoint, { method: 'get', ...options });
 
-export const post = (endpoint: string, options: RequestParameters) =>
+export const post = (endpoint: string, options?: RequestParameters) =>
   request(endpoint, { method: 'post', ...options });
 
-export const put = (endpoint: string, options: RequestParameters) =>
+export const put = (endpoint: string, options?: RequestParameters) =>
   request(endpoint, { method: 'put', ...options });
 
 export const remove = (endpoint: string) => request(endpoint, { method: 'delete' });
