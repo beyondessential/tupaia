@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 export { LandingPage } from './LandingPage';
-export { Login } from './Login';
+export { LoginModal } from './LoginModal.tsx';
 export { PasswordResetForm } from './PasswordResetForm';
 export { Project } from './Project';
-export { RegisterForm } from './RegisterForm';
+export { RegisterModal } from './RegisterModal.tsx';
 export { RequestAccessForm } from './RequestAccessForm';
 export { VerifyEmailForm } from './VerifyEmailForm';

@@ -38,7 +38,7 @@ const ForgotPasswordText = styled(LinkText)`
   text-align: right;
 `;
 
-export const Login = () => {
+export const LoginModal = () => {
   const {
     handleSubmit,
     register,
