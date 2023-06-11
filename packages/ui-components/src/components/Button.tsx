@@ -77,7 +77,7 @@ export const GreyButton = styled(Button)<OverrideableComponentProps<ButtonProps>
 /*
  * Text Button
  */
-export const TextButton = styled(MuiButton)`
+export const TextButton = styled(MuiButton)<OverrideableComponentProps<ButtonProps>>`
   font-size: 0.8125rem;
   font-weight: 400;
 `;

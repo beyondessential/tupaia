@@ -21,7 +21,7 @@ const Wrapper = styled.div<{
   position: relative;
   background-size: cover;
   background-position: center;
-  background-color: #262834;
+  background-color: ${({ theme }) => theme.palette.background.default};
   background-image: ${({ $backgroundImage }) => `url(${$backgroundImage})`};
   height: 100%;
   overflow-y: auto;

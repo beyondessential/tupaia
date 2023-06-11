@@ -13,12 +13,14 @@ export const theme = createMuiTheme(
       background: {
         default: '#262834', // Dark blue background
       },
+      text: {
+        secondary: '#9ba0a6',
+      },
     },
   },
   {
     projectCard: {
       background: '#2e2f33',
-      subText: '#9ba0a6',
     },
     shape: {
       borderRadius: 3,

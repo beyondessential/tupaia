@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 const UsernameContainer = styled.p<{
   $isLandingPage?: boolean;
 }>`
-  padding-right: 1.5rem;
   padding-right: ${({ $isLandingPage }) => ($isLandingPage ? '1.5rem' : '5px')};
   margin: 0;
   font-weight: ${({ $isLandingPage, theme }) =>

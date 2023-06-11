@@ -8,9 +8,9 @@ import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { darken } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { SingleProject } from '../../types';
 import { Link } from 'react-router-dom';
-import { Button } from '@tupaia/ui-components';
+import { Button, OutlinedButton } from '@tupaia/ui-components';
+import { SingleProject } from '../../types';
 import { USER_ROUTES } from '../../Routes';
 
 const Card = styled.div`
@@ -68,7 +68,7 @@ const Text = styled(Typography)`
 `;
 
 const CountryText = styled(Text)`
-  color: ${({ theme }) => theme.projectCard.subText};
+  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const Body = styled.div`
@@ -101,7 +101,7 @@ const BaseLink = styled(Button).attrs({
   }
 `;
 
-const OutlineLink = styled(Button).attrs({
+const OutlineLink = styled(OutlinedButton).attrs({
   component: Link,
 })`
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
