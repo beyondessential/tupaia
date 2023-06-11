@@ -6,7 +6,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container as MuiContainer } from '@material-ui/core';
-import { useLandingPage } from '../../api';
+import { useLandingPage } from '../../api/queries';
 import { LoadingScreen } from '../../components';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { LandingPageFooter } from './LandingPageFooter';
