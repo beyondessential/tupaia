@@ -21,7 +21,6 @@ const Panel = styled.div<{
   position: relative;
   overflow: visible;
   background-color: ${TRANSPARENT_BLACK};
-  pointer-events: auto;
   height: 100%;
   cursor: auto;
   transition: width 0.5s ease, max-width 0.5s ease;

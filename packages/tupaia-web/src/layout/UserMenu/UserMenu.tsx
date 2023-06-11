@@ -5,7 +5,7 @@
 
 import React, { ReactNode, useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import { Button, MenuList, useTheme } from '@material-ui/core';
+import { Button, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
@@ -24,7 +24,6 @@ const MenuButton = styled(Button)`
   height: 2em;
   text-align: right;
   padding: 0;
-  pointer-events: auto;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`

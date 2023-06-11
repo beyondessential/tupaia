@@ -15,30 +15,35 @@ interface ModalProps {
 }
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   overflow-x: hidden;
-  padding: 2em;
+  padding: 2rem 2rem 4rem;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
-  width: 1.2em;
-  height: 1.2em;
+  width: 2rem;
+  height: 2rem;
 `;
 
 const CloseButton = styled(IconButton)`
   background-color: transparent;
   min-width: initial;
   position: absolute;
-  top: 0.6em;
-  right: 0.6em;
+  top: 0.1rem;
+  right: 0.1rem;
 `;
 
 const Paper = styled(MuiPaper)`
   background-color: ${({ theme }) => theme.palette.background.default};
   padding: 0;
+  border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
-  max-width: 920px;
+  width: 660px;
+  max-width: 100%;
   min-width: 300px;
   // Prevent width from animating.
   transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
