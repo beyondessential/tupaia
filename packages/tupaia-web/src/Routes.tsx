@@ -59,8 +59,8 @@ export const Routes = () => {
       {state?.backgroundLocation && (
         <RouterRoutes>
           <Route element={<Layout />}>
-            <Route path="/register" element={<RegisterForm />} />
-            <Route path="/login" element={<Login />} />
+            <Route path={USER_ROUTES.REGISTER} element={<RegisterForm />} />
+            <Route path={USER_ROUTES.LOGIN} element={<Login />} />
           </Route>
         </RouterRoutes>
       )}
