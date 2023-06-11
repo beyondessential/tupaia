@@ -16,7 +16,7 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoImage = styled.img`
-  max-height: 80%;
+  max-height: 75%;
   width: auto;
   max-width: 50px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
@@ -26,7 +26,6 @@ const LogoImage = styled.img`
 
 const LogoLink = styled(Link)`
   cursor: pointer;
-  pointer-events: auto;
   padding: 0.5em;
   height: 100%;
   display: flex;

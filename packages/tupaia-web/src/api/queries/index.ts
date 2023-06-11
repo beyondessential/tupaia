@@ -6,3 +6,5 @@
 
 export { useLandingPage } from './useLandingPage';
 export { useValidatedQuery } from './useValidatedQuery';
+export * from './useProjects';
+export * from './useUser';

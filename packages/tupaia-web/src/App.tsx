@@ -11,7 +11,6 @@ const App = () => {
   return (
     <AppProviders>
       <BrowserRouter>
-        {/** The Layout component needs to be inside BrowserRouter so that Link component from react-router-dom can be used (in menu etc.) */}
         <Routes />
       </BrowserRouter>
     </AppProviders>

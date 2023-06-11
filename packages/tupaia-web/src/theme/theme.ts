@@ -20,5 +20,8 @@ export const theme = createMuiTheme(
       background: '#2e2f33',
       subText: '#9ba0a6',
     },
+    shape: {
+      borderRadius: 3,
+    },
   },
 );

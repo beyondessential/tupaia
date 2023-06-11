@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
+import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import {
   LandingPage,
-  LoginForm,
+  Login,
   PasswordResetForm,
   Project,
   RegisterForm,
@@ -30,19 +30,40 @@ export const USER_ROUTES = {
  *
  * **/
 
-export const Routes = () => (
-  <RouterRoutes>
-    {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
-    <Route element={<Layout />}>
-      <Route path="/" element={<Navigate to={`/${DEFAULT_URL}`} replace />} />
-      <Route path={USER_ROUTES.LOGIN} element={<LoginForm />} />
-      <Route path={USER_ROUTES.REGISTER} element={<RegisterForm />} />
-      <Route path={USER_ROUTES.RESET_PASSWORD} element={<PasswordResetForm />} />
-      <Route path={`${USER_ROUTES.REQUEST_ACCESS}/:projectCode`} element={<RequestAccessForm />} />
-      <Route path={USER_ROUTES.VERIFY_EMAIL} element={<VerifyEmailForm />} />
-      <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-      {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
-      <Route path="/:projectCode/:entityCode/*" element={<Project />} />
-    </Route>
-  </RouterRoutes>
-);
+export const Routes = () => {
+  let location = useLocation();
+  const state = location.state as { backgroundLocation?: Location };
+
+  return (
+    <>
+      <RouterRoutes location={state?.backgroundLocation || location}>
+        {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
+        <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
+          <Route path={USER_ROUTES.REGISTER} element={<RegisterForm />} />
+          <Route path={USER_ROUTES.RESET_PASSWORD} element={<PasswordResetForm />} />
+          <Route
+            path={`${USER_ROUTES.REQUEST_ACCESS}/:projectCode`}
+            element={<RequestAccessForm />}
+          />
+          <Route path={USER_ROUTES.VERIFY_EMAIL} element={<VerifyEmailForm />} />
+          <Route path={USER_ROUTES.LOGIN} element={<Login />} />
+          <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
+          {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
+          <Route path="/:projectCode/:entityCode/*" element={<Project />} />
+        </Route>
+      </RouterRoutes>
+
+      {/* The `backgroundLocation` state is the location that we were at when the modal links was clicked. If it's there, use it as the location for
+      the <Routes> and we show the main page in the background, behind the modal. See react router docs [here]{@Link https://github.com/remix-run/react-router/tree/dev/examples/modal} */}
+      {state?.backgroundLocation && (
+        <RouterRoutes>
+          <Route element={<Layout />}>
+            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
+        </RouterRoutes>
+      )}
+    </>
+  );
+};
