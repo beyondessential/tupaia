@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import { Button } from '@tupaia/ui-components';
-import { Modal } from '../../components';
 import { DEFAULT_URL, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { useProjects } from '../../api/queries';
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,23 +55,25 @@ const Logo = styled.img`
 `;
 
 export const Projects = () => {
-  // TODO: add in navigateBack functionality for onClose once Tom's work is merged in
+  const { data } = useProjects();
+
+  const projects = data?.projects ?? [];
   return (
-    <Modal isOpen={true} onClose={() => {}}>
-      <Wrapper>
-        <div>
-          <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
-          <TagLine>
-            Data aggregation, analysis, and visualisation for the most remote settings in the world
-          </TagLine>
-        </div>
-        <div>
-          <ExploreButton>
-            <ExploreIcon />I just want to explore
-          </ExploreButton>
-          <ProjectsGrid>Hi</ProjectsGrid>
-        </div>
-      </Wrapper>
-    </Modal>
+    <Wrapper>
+      <div>
+        <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
+        <TagLine>
+          Data aggregation, analysis, and visualisation for the most remote settings in the world
+        </TagLine>
+      </div>
+      <div>
+        <ExploreButton>
+          <ExploreIcon />I just want to explore
+        </ExploreButton>
+        <ProjectsGrid>
+          Hi. This is where we put the project cards once merged in from landing pages
+        </ProjectsGrid>
+      </div>
+    </Wrapper>
   );
 };

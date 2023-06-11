@@ -46,8 +46,10 @@ export const Routes = () => {
       the <Routes> and we show the main page in the background, behind the modal. See react router docs [here]{@Link https://github.com/remix-run/react-router/tree/dev/examples/modal} */}
       {state?.backgroundLocation && (
         <RouterRoutes>
-          <Route path="/register" element={<RegisterForm />} />
-          <Route path="/login" element={<Login />} />
+          <Route element={<ModalRoute />}>
+            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
         </RouterRoutes>
       )}
     </>
