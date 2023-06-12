@@ -17,7 +17,6 @@ import CheckBox from '@material-ui/icons/CheckBox';
 import { PointExpression } from 'leaflet';
 import { ICON_BASE_SIZE } from './constants';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import { Cyclone, Earthquake, Tsunami, Volcano, Flood } from './disasterIcons';
 import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../../constants';
 import { IconContainer } from './IconContainer';
@@ -315,21 +314,6 @@ const icons = {
   checkbox: {
     Component: wrapMaterialIcon(CheckBox),
   },
-  earthquake: {
-    Component: wrapSvgIcon(Earthquake),
-  },
-  tsunami: {
-    Component: wrapSvgIcon(Tsunami),
-  },
-  eruption: {
-    Component: wrapSvgIcon(Volcano),
-  },
-  cyclone: {
-    Component: wrapSvgIcon(Cyclone),
-  },
-  flood: {
-    Component: wrapSvgIcon(Flood),
-  },
   hidden: {
     Component: () => null,
   },
@@ -391,6 +375,6 @@ export function getMarkerForValue(
   scale: number = 1,
 ) {
   const icon = icons[iconKey as IconKey] || icons.pin;
-  const color = BREWER_PALETTE[colorName as ColorKey] || colorName; 
+  const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
   return toLeaflet(icon, color, scale);
 }
