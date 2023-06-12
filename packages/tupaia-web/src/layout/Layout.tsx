@@ -7,6 +7,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { EnvBanner } from '@tupaia/ui-components';
 import { TopBar } from './TopBar';
+import { Outlet } from 'react-router';
 
 /**
  * This is the layout for the entire app, which contains the top bar and the main content. This is used to wrap the entire app content
@@ -27,12 +28,12 @@ const Container = styled.div`
   }
 `;
 
-export const Layout = ({ children }: { children: ReactNode }) => {
+export const Layout = () => {
   return (
     <Container>
       <EnvBanner />
       <TopBar />
-      {children}
+      <Outlet />
     </Container>
   );
 };

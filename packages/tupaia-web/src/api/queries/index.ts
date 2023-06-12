@@ -4,5 +4,6 @@
  *
  */
 
+export { useLandingPage } from './useLandingPage';
 export * from './useProjects';
 export * from './useUser';

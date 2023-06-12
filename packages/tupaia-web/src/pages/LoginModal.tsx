@@ -38,25 +38,21 @@ const ForgotPasswordText = styled(LinkText)`
   text-align: right;
 `;
 
-export const LoginModal = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm();
+export const Login = () => {
+  const { handleSubmit, register, errors } = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
     <AuthModal title="Log in" subtitle="Enter your details below to log in">
       {isError && <Typography color="error">{error.message}</Typography>}
-      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
+      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)}>
         <TextField
           name="email"
           label="Email *"
           type="email"
           error={!!errors?.email}
           helperText={errors?.email && errors?.email.message}
-          inputProps={register('email', {
+          inputRef={register({
             required: 'Required',
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -70,7 +66,7 @@ export const LoginModal = () => {
           type="password"
           error={!!errors?.password}
           helperText={errors?.password && errors?.password.message}
-          inputProps={register('password', {
+          inputRef={register({
             required: 'Required',
           })}
         />
