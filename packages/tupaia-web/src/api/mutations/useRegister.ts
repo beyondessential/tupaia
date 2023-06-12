@@ -5,7 +5,6 @@
 
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
-import { useNavigateBack } from '../../utils/useNavigateBack';
 
 // Todo: replace with request body type from backend
 type RegisterUserBody = {
@@ -20,7 +19,6 @@ type RegisterUserBody = {
 };
 export const useRegister = () => {
   const queryClient = useQueryClient();
-  const navigateBack = useNavigateBack();
 
   return useMutation<any, Error, RegisterUserBody, unknown>(
     (data: RegisterUserBody) => {
@@ -29,7 +27,6 @@ export const useRegister = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries();
-        navigateBack();
       },
     },
   );

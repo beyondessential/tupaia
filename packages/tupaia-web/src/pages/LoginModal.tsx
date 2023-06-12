@@ -12,7 +12,7 @@ import { TextField } from '../components';
 import { AuthModal, ModalButton } from '../layout';
 import { FORM_FIELD_VALIDATION } from '../constants';
 import { USER_ROUTES } from '../Routes.tsx';
-import { VerifyEmail } from './VerifyEmail';
+import { EmailVerification } from './EmailVerification.tsx';
 
 const StyledForm = styled.form`
   margin-top: 1rem;
@@ -45,11 +45,9 @@ export const LoginModal = () => {
   const { handleSubmit, register, errors } = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
-  console.log(errors);
-
   return (
     <AuthModal title="Log in" subtitle="Enter your details below to log in">
-      {isError ? <Typography color="error">{error.message}</Typography> : <VerifyEmail />}
+      {isError ? <Typography color="error">{error.message}</Typography> : <EmailVerification />}
       <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
         <TextField
           name="email"

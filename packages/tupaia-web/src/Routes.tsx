@@ -45,6 +45,7 @@ export const Routes = () => {
             path={`${USER_ROUTES.REQUEST_ACCESS}/:projectCode`}
             element={<RequestAccessForm />}
           />
+          {/* Email verification links redirect to the login page where the verification happens */}
           <Route
             path={USER_ROUTES.VERIFY_EMAIL}
             element={<Navigate to={{ ...location, pathname: USER_ROUTES.LOGIN }} replace />}

@@ -3,16 +3,18 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
+import Typography from '@material-ui/core/Typography';
+import { useRegister } from '../../api/mutations';
+import { AuthModal, ModalButton } from '../../layout';
+import { SignupComplete } from './SignUpComplete';
+import { SubmitHandler } from 'react-hook-form';
+import { TextField } from '../../components';
+import { FORM_FIELD_VALIDATION } from '../../constants';
 import { Checkbox } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import { useRegister } from '../api/mutations';
-import { TextField } from '../components';
-import { FORM_FIELD_VALIDATION } from '../constants';
-import { AuthModal, ModalButton } from '../layout';
-import { USER_ROUTES } from '../Routes.tsx';
+import { USER_ROUTES } from '../../Routes.tsx';
 
 const StyledAuthModal = styled(AuthModal)`
   .MuiDialog-paper {
@@ -53,8 +55,12 @@ const FullWidthColumn = styled.div`
 `;
 
 export const RegisterModal = () => {
-  const { handleSubmit, register, errors, getValues } = useForm();
-  const { mutate: onSubmit, isLoading, isError, error } = useRegister();
+  const { mutate: onSubmit, isLoading, isSuccess, isError, error } = useRegister();
+  const { errors, handleSubmit, getValues, register } = useForm();
+
+  if (isSuccess) {
+    return <SignupComplete />;
+  }
 
   return (
     <StyledAuthModal title="Register" subtitle="Enter your details below to create an account">
