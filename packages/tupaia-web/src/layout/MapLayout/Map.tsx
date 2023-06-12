@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { TRANSPARENT_BLACK } from '../../constants';
 
 const MapContainer = styled.div`
@@ -42,13 +42,15 @@ const StyledMap = styled(LeafletMap)`
 export const Map = () => {
   return (
     <MapContainer>
-      <StyledMap zoom={13} scrollWheelZoom={false}>
+      <StyledMap>
         <TileLayer
           tileSetUrl={'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
           showAttribution={false}
         />
         <ZoomControl position="bottomright" />
       </StyledMap>
+      {/* <TilePicker 
+      /> */}
     </MapContainer>
   );
 };
