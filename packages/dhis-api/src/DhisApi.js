@@ -5,7 +5,8 @@
 
 import winston from 'winston';
 import { aggregateAnalytics } from '@tupaia/aggregator';
-import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/tsutils';
+import { CustomError, getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import {

@@ -12,8 +12,8 @@ export const useDataTableExport = (
   columns: any[],
   data: any[],
   title: string,
-  startDate: Moment | string | Date,
-  endDate: Moment | string | Date,
+  startDate: Moment | string | Date | undefined,
+  endDate: Moment | string | Date | undefined,
 ) => {
   const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
     columns,
@@ -27,7 +27,7 @@ export const useDataTableExport = (
     const header = headerGroups.map(({ headers }) =>
       headers.map(({ Header, id }) => {
         // If Header is a function, call it to get the header value, otherwise create a function, so that a typescript error about Header possibly not being callable is not thrown
-        const getHeader = typeof Header === 'function' ? Header : () => Header;
+        const getHeader = (typeof Header === 'function' ? Header : () => Header) as Function;
         return getHeader({ column: { id } });
       }),
     );

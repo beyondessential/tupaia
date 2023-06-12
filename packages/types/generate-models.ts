@@ -27,8 +27,20 @@ const db = Knex({
 });
 
 const run = async () => {
+  const failOnChanges = process.argv[2] === '--failOnChanges';
+
   // @ts-ignore
   const tsString = await sqlts.toTypeScript(config, db);
+
+  if (failOnChanges) {
+    const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });
+    if (currentTsString !== tsString) {
+      console.log("❌ There are changes in the db schema which are not reflected in @tupaia/types.")
+      console.log("Run 'yarn workspace @tupaia/types generate' to fix")
+      process.exit(1);
+    }
+  }
+
   fs.writeFile(config.filename, tsString, () => {
     console.log(`File written: ${config.filename}`);
     process.exit(0);

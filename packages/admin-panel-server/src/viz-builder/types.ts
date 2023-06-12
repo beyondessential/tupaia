@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import type { StandardOrCustomReportConfig } from '@tupaia/types';
-import { Report as BaseReportType } from '@tupaia/types';
+import { Report as BaseReportType, StandardReportConfig } from '@tupaia/types';
 
 export type VizData = {
-  transform: BaseReportType['config']['transform'];
+  transform: StandardReportConfig['transform'];
 };
 
 export enum PreviewMode {
@@ -18,7 +17,7 @@ export enum PreviewMode {
 export type Report = {
   code: string;
   permissionGroup: string;
-  config: StandardOrCustomReportConfig;
+  config: BaseReportType['config'];
 };
 
 export type LegacyReport = {

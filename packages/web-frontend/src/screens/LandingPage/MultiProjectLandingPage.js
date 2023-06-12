@@ -2,6 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { ProjectCardList } from '../../containers/OverlayDiv/components/ProjectPage/ProjectCardList';
+import {
+  ProjectAllowedButton,
+  ProjectDeniedButton,
+  ProjectLoginButton,
+  ProjectPendingButton,
+} from '../../containers/OverlayDiv/components/ProjectPage/ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { useNavigation } from './useNavigation';
 import { useCustomLandingPages } from './useCustomLandingPages';
@@ -19,19 +25,11 @@ const ProjectsContainer = styled.div`
   grid-template-columns: 1fr;
   column-gap: 1.2em;
   row-gap: 1.2em;
-  > div {
-    border: 1.1em solid ${props => props.primaryColor};
-    border-radius: 4px;
-  }
+
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
     column-gap: 3.2em;
     row-gap: 3.2em;
-  }
-  @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-    > div {
-      border-width: 1.5em;
-    }
   }
 `;
 
@@ -81,13 +79,21 @@ export function MultiProjectLandingPage() {
           <ProjectCardList
             projects={projects}
             actions={{
-              [PROJECT_ACCESS_TYPES.ALLOWED]: navigateToProject,
-              [PROJECT_ACCESS_TYPES.PENDING]: navigateToRequestProjectAccess,
-              [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
-                ? navigateToRequestProjectAccess
-                : navigateToLogin,
+              [PROJECT_ACCESS_TYPES.ALLOWED]: ({ project }) => (
+                <ProjectAllowedButton onClick={() => navigateToProject(project)} />
+              ),
+              [PROJECT_ACCESS_TYPES.PENDING]: ({ project }) => (
+                <ProjectPendingButton onClick={() => navigateToRequestProjectAccess(project)} />
+              ),
+              [PROJECT_ACCESS_TYPES.DENIED]: ({ project }) => {
+                if (isUserLoggedIn) {
+                  return (
+                    <ProjectDeniedButton onClick={() => navigateToRequestProjectAccess(project)} />
+                  );
+                }
+                return <ProjectLoginButton onClick={navigateToLogin} />;
+              },
             }}
-            isUserLoggedIn={isUserLoggedIn}
           />
         </ProjectsContainer>
       </ProjectsWrapper>

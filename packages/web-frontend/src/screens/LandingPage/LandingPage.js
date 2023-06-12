@@ -37,12 +37,10 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE}px);
   overflow-y: auto;
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
     padding: 2em 3.5em;
-    min-height: calc(100vh - ${TOP_BAR_HEIGHT}px);
   }
 `;
 
@@ -59,7 +57,7 @@ export const LandingPage = () => {
           {/* tupaia requires projects to work so we can assume that if there are no projects, it's just */}
           {/* because they haven't loaded yet. We can replace this with more idiomatic loading state */}
           {/* when we refactor to use react-query */}
-          {projects.length === 0 && <LoadingScreen isLoading background={null} />}
+          {projects.length === 0 && <LoadingScreen isLoading background={undefined} />}
           {projects.length === 1 && <SingleProjectLandingPage />}
           {projects.length > 1 && <MultiProjectLandingPage />}
           <LandingPageFooter />

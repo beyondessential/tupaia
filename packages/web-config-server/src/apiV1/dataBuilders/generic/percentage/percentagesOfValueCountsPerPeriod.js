@@ -7,7 +7,8 @@ import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
-import { PERIOD_TYPES, parsePeriodType, reduceToDictionary, sortFields } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
+import { parsePeriodType, reduceToDictionary, sortFields } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';

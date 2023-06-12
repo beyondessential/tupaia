@@ -4,11 +4,31 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Bar, LabelList } from 'recharts';
+import { BarChartConfig, ComposedChartConfig } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BLUE, CHART_TYPES } from '../../constants';
+import { BLUE } from '../../constants';
+import { ChartType } from '../../types';
 import { getIsTimeSeries } from '../../utils';
+
+interface DataProps {
+  name: string;
+  value: string;
+  timestamp?: string;
+}
+
+interface BarChartProps {
+  dataKey: string;
+  yAxisId: string | number;
+  stackId: string;
+  valueType: string;
+  color?: string;
+  data: DataProps[];
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  chartConfig: BarChartConfig | ComposedChartConfig;
+  exportWithLabels?: boolean;
+}
 
 export const BarChart = ({
   color = BLUE,
@@ -17,13 +37,13 @@ export const BarChart = ({
   stackId,
   valueType,
   data,
-  isEnlarged,
-  isExporting,
+  isEnlarged = false,
+  isExporting = false,
   chartConfig,
-  exportWithLabels,
-}) => {
+  exportWithLabels = true,
+}: BarChartProps) => {
   const getBarSize = () => {
-    if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
+    if (chartConfig.chartType === ChartType.Composed || data.length === 1) {
       return isEnlarged ? 100 : 50;
     }
     // Too many stacks will automatically set bar size to 0.
@@ -70,24 +90,4 @@ export const BarChart = ({
       )}
     </Bar>
   );
-};
-
-BarChart.propTypes = {
-  dataKey: PropTypes.string.isRequired,
-  yAxisId: PropTypes.string.isRequired,
-  stackId: PropTypes.string.isRequired,
-  valueType: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  chartConfig: PropTypes.object.isRequired,
-  isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-  data: PropTypes.array.isRequired,
-  exportWithLabels: PropTypes.bool,
-};
-
-BarChart.defaultProps = {
-  color: BLUE,
-  exportWithLabels: true,
-  isExporting: false,
-  isEnlarged: false,
 };

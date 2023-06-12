@@ -7,10 +7,16 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import { TooltipPayload } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { LegendPosition, ViewContent } from '../../types';
 import { isMobile } from '../../utils';
+import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
 
-const LegendContainer = styled.div`
+const LegendContainer = styled.div<{
+  $position?: LegendPosition;
+  $isExporting?: boolean;
+}>`
   display: flex;
   flex-wrap: ${props => (props.$isExporting ? 'nowrap' : 'wrap')};
   justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
@@ -28,7 +34,7 @@ const PieLegendContainer = styled(LegendContainer)`
   padding: 0;
 `;
 
-const getLegendTextColor = (theme, isExporting) => {
+const getLegendTextColor = (theme: any, isExporting: boolean) => {
   if (isExporting) {
     return '#2c3236';
   }
@@ -97,11 +103,20 @@ const Text = styled.span`
   line-height: 1.4;
 `;
 
-const getPieLegendDisplayValue = (chartConfig, value, item, isEnlarged, viewContent) => {
-  if (chartConfig[value]?.label) {
-    return chartConfig[value].label;
-  }
+function isPieChartConfig(config: PieChartConfig | {}): config is PieChartConfig {
+  return (config as PieChartConfig).chartType === 'pie';
+}
 
+const getPieLegendDisplayValue = (
+  chartConfig: PieChartConfig | {},
+  value: string,
+  item: any,
+  viewContent: ViewContent,
+  isEnlarged?: boolean,
+) => {
+  if (isPieChartConfig(chartConfig) && chartConfig[value as keyof PieChartConfig]?.label) {
+    return chartConfig[value as keyof PieChartConfig].label;
+  }
   const metadata = item[`${value}_metadata`];
   const labelSuffix = formatDataValueByType({ value: item.value, metadata }, viewContent.valueType);
 
@@ -109,26 +124,34 @@ const getPieLegendDisplayValue = (chartConfig, value, item, isEnlarged, viewCont
   return isMobile() && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
 
+interface PieLegendProps {
+  chartConfig: PieChartConfig | {};
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  legendPosition?: LegendPosition;
+  viewContent: ViewContent;
+}
+
 export const getPieLegend = ({
   chartConfig = {},
   isEnlarged,
   isExporting,
   legendPosition,
   viewContent,
-}) => ({ payload }) => (
+}: PieLegendProps) => ({ payload }: any) => (
   <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, payload: item }) => {
+    {payload.map(({ color, value, payload: item }: TooltipPayload) => {
       const displayValue = getPieLegendDisplayValue(
         chartConfig,
-        value,
+        value as string,
         item,
-        isEnlarged,
         viewContent,
+        isEnlarged,
       );
 
       return (
         <LegendItem
-          key={value}
+          key={value as string}
           isExporting={isExporting}
           className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
           disabled
@@ -146,20 +169,28 @@ export const getPieLegend = ({
   </PieLegendContainer>
 );
 
+interface CartesianLegendProps {
+  chartConfig: CartesianChartConfig;
+  onClick: Function;
+  getIsActiveKey: Function;
+  isExporting?: boolean;
+  legendPosition?: LegendPosition;
+}
+
 export const getCartesianLegend = ({
   chartConfig,
   onClick,
   getIsActiveKey,
   isExporting,
   legendPosition,
-}) => ({ payload }) => (
+}: CartesianLegendProps) => ({ payload }: any) => (
   <LegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, dataKey }) => {
-      const displayValue = chartConfig[value]?.label || value;
+    {payload.map(({ color, value, dataKey }: TooltipPayload) => {
+      const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
 
       return (
         <LegendItem
-          key={value}
+          key={value as string}
           onClick={() => onClick(dataKey)}
           isExporting={isExporting}
           className={isMobile() ? 'small' : 'enlarged'}
