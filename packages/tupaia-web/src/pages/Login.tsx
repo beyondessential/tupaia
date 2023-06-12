@@ -43,7 +43,7 @@ export const Login = () => {
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
-    <AuthModal title="Log in" subtitle="Enter your details below to log in">
+    <AuthModal title="Log in" subtitle="Enter your details below to log in" className="login">
       {isError && <Typography color="error">{error.message}</Typography>}
       <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)}>
         <TextField

@@ -63,14 +63,14 @@ const ActionLink = styled(Button)`
 interface SingleProjectLandingPageProps
   extends Pick<SingleLandingPage, 'extendedTitle' | 'includeNameInHeader'> {
   project: SingleProject;
-  isUserLoggedIn: boolean;
+  isLoggedIn: boolean;
 }
 
 export function SingleProjectLandingPage({
   project,
   extendedTitle,
   includeNameInHeader,
-  isUserLoggedIn,
+  isLoggedIn,
 }: SingleProjectLandingPageProps) {
   const accessType = getProjectAccessType(project);
 
@@ -79,7 +79,7 @@ export function SingleProjectLandingPage({
   const urls = {
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
-    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn
+    [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
       ? `${USER_ROUTES.REQUEST_ACCESS}/${code}`
       : USER_ROUTES.LOGIN,
   };
@@ -87,7 +87,7 @@ export function SingleProjectLandingPage({
   const actionTexts = {
     [PROJECT_ACCESS_TYPES.PENDING]: 'Approval in progress',
     [PROJECT_ACCESS_TYPES.ALLOWED]: 'View data',
-    [PROJECT_ACCESS_TYPES.DENIED]: isUserLoggedIn ? 'Request access' : 'Log in to view data',
+    [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn ? 'Request access' : 'Log in to view data',
   };
 
   return (

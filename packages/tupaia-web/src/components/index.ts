@@ -4,3 +4,4 @@
  */
 export { LoadingScreen } from './LoadingScreen';
 export { Modal } from './Modal';
+export { RouterButton } from './RouterButton';
