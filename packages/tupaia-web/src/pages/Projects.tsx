@@ -7,17 +7,17 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-import { Button } from '@tupaia/ui-components';
-import { DEFAULT_URL, PROJECT_ACCESS_TYPES, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
-import { useProjects, useUser } from '../../api/queries';
-import { USER_ROUTES } from '../../Routes';
+import { DEFAULT_URL, PROJECT_ACCESS_TYPES, TUPAIA_LIGHT_LOGO_SRC } from '../constants';
+import { useProjects, useUser } from '../api/queries';
+import { USER_ROUTES } from '../Routes';
 import {
   LegacyProjectCard,
   LegacyProjectAllowedLink,
   LegacyProjectDeniedLink,
   LegacyProjectPendingLink,
   ProjectCardList,
-} from '../../layout';
+} from '../layout';
+import { RouterButton } from '../components';
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,8 +42,7 @@ const ProjectsGrid = styled.div`
   }
 `;
 
-const ExploreButton = styled(Button).attrs({
-  component: Link,
+const ExploreButton = styled(RouterButton).attrs({
   variant: 'outlined',
   color: 'default',
   to: DEFAULT_URL,
@@ -64,6 +63,9 @@ const Logo = styled.img`
   height: 85px;
 `;
 
+/**
+ * This is the projects view that is shown when the projects modal is open
+ */
 export const Projects = () => {
   const {
     data: { projects },

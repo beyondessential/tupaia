@@ -9,11 +9,11 @@ import { TRANSPARENT_BLACK } from '../../constants';
 import { SingleLandingPage } from '../../types';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import {
-  LegacyProjectAllowedLink,
   ProjectCardList,
-  LegacyProjectDeniedLink,
   ProjectLoginLink,
-  LegacyProjectPendingLink,
+  ProjectDeniedLink,
+  ProjectAllowedLink,
+  ProjectPendingLink,
 } from '../../layout';
 import { USER_ROUTES } from '../../Routes';
 
@@ -86,16 +86,16 @@ export function MultiProjectLandingPage({
               [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                 project: { code, homeEntityCode, defaultDashboardCode },
               }) => (
-                <LegacyProjectAllowedLink
+                <ProjectAllowedLink
                   url={`/${code}/${homeEntityCode}${
                     defaultDashboardCode ? `/${defaultDashboardCode}` : ''
                   }`}
                 />
               ),
-              [PROJECT_ACCESS_TYPES.PENDING]: () => <LegacyProjectPendingLink />,
+              [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 if (isLoggedIn) {
-                  return <LegacyProjectDeniedLink url={`/${USER_ROUTES.REQUEST_ACCESS}/${code}`} />;
+                  return <ProjectDeniedLink url={`/${USER_ROUTES.REQUEST_ACCESS}/${code}`} />;
                 }
                 return <ProjectLoginLink />;
               },

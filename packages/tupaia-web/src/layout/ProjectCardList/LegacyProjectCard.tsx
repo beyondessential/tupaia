@@ -7,8 +7,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
-import { Link } from 'react-router-dom';
-import { Button } from '@tupaia/ui-components';
+import { RouterButton } from '../../components';
 
 const Card = styled.div`
   display: grid;
@@ -95,13 +94,10 @@ const AlarmIcon = styled(Alarm)`
   margin-right: 5px;
 `;
 
-const BaseLink = styled(Button).attrs({
-  component: Link,
-})``;
-
-const StyledPendingButton = styled(BaseLink).attrs({
+const StyledPendingButton = styled(RouterButton).attrs({
   variant: 'outlined',
   disabled: true,
+  to: '',
 })`
   background: #cde9ff;
   color: ${({ theme }) => theme.palette.primary.main};
@@ -115,23 +111,23 @@ export const LegacyProjectDeniedLink = ({
   url: string;
   children: ReactNode;
 }) => (
-  <BaseLink to={url} color="primary" variant="outlined">
+  <RouterButton to={url} color="primary" variant="outlined">
     <LockIcon />
     {children}
-  </BaseLink>
+  </RouterButton>
 );
 
 export const LegacyProjectPendingLink = () => (
-  <StyledPendingButton to="" disabled>
+  <StyledPendingButton>
     <AlarmIcon />
     Approval in progress
   </StyledPendingButton>
 );
 
 export const LegacyProjectAllowedLink = ({ url }: { url: string }) => (
-  <BaseLink to={url} variant="contained" color="primary">
+  <RouterButton to={url} variant="contained" color="primary">
     View project
-  </BaseLink>
+  </RouterButton>
 );
 
 interface LegacyProjectCardProps {

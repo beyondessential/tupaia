@@ -3,17 +3,18 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { Button, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
+import { useLandingPage, useUser } from '../../api/queries';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
-import { useLandingPage, useUser } from '../../api/queries';
-import { useParams } from 'react-router';
 import { MenuItem } from './MenuList';
 import { USER_ROUTES } from '../../Routes';
 import { UserInfo } from './UserInfo';
+import { MODAL_TYPES } from '../../constants';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -53,7 +54,7 @@ export const UserMenu = () => {
     landingPage: { primaryHexcode, secondaryHexcode },
   } = useLandingPage(landingPageUrlSegment);
 
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn, data } = useUser();
 
   // Create the menu items
   const BaseMenuItem = ({ children, ...props }: any) => (
@@ -68,13 +69,17 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const ViewProjects = (
+    <BaseMenuItem href={`?modal=${MODAL_TYPES.PROJECTS}`}>View projects</BaseMenuItem>
+  );
+
   const ChangePassword = (
-    <BaseMenuItem onClick={USER_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
+    <BaseMenuItem href={USER_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
   );
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn ? [VisitMainSite, ChangePassword] : [VisitMainSite];
 
-  const baseMenuItems = [] as ReactNode[];
+  const baseMenuItems = [ViewProjects];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
@@ -84,7 +89,7 @@ export const UserMenu = () => {
   return (
     <UserMenuContainer>
       <UserInfo
-        currentUserUsername={''}
+        currentUserUsername={data?.name}
         isLoggedIn={isLoggedIn}
         isLandingPage={isLandingPage}
         secondaryColor={menuSecondaryColor}
