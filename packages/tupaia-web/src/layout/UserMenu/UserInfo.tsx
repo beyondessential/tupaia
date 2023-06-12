@@ -5,9 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Link, LinkProps } from 'react-router-dom';
-import { OutlinedButton, TextButton } from '@tupaia/ui-components';
+import { LinkProps } from 'react-router-dom';
 import { USER_ROUTES } from '../../Routes';
+import { RouterButton } from '../../components';
 
 /**
  * UserInfo is a component that displays the user's name if user is logged in, or a register and sign in button if not set
@@ -32,16 +32,16 @@ const UsernameContainer = styled.p<{
   }
 `;
 
-const Register = styled(TextButton).attrs({
-  component: Link,
+const Register = styled(RouterButton).attrs({
+  variant: 'text',
 })`
   text-transform: none;
-  margin-right: 1.3rem;
   font-size: 0.875rem;
 `;
 
-const SignInButton = styled(OutlinedButton).attrs({
-  component: Link,
+const SignInButton = styled(RouterButton).attrs({
+  variant: 'outlined',
+  color: 'default',
 })<
   LinkProps & {
     $secondaryColor?: string;
@@ -49,6 +49,7 @@ const SignInButton = styled(OutlinedButton).attrs({
 >`
   font-size: 0.875rem;
   text-transform: none;
+  background: none;
   border: 1px solid ${({ $secondaryColor }) => $secondaryColor};
   border-radius: 18px;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
@@ -62,7 +63,7 @@ interface UserInfoProps {
   currentUserUsername?: string;
   isLandingPage?: boolean;
   secondaryColor?: string;
-  isUserLoggedIn?: boolean;
+  isLoggedIn?: boolean;
 }
 
 /**
@@ -72,16 +73,16 @@ export const UserInfo = ({
   currentUserUsername,
   isLandingPage,
   secondaryColor,
-  isUserLoggedIn,
+  isLoggedIn,
 }: UserInfoProps) => {
-  if (isUserLoggedIn)
+  if (isLoggedIn)
     return (
       <UsernameContainer $isLandingPage={isLandingPage}>{currentUserUsername}</UsernameContainer>
     );
   return (
     <Wrapper>
-      {isLandingPage && <Register to={USER_ROUTES.REGISTER}>Register</Register>}
-      <SignInButton to={USER_ROUTES.LOGIN} $secondaryColor={secondaryColor} color="default">
+      <Register to={USER_ROUTES.REGISTER}>Register</Register>
+      <SignInButton to={USER_ROUTES.LOGIN} $secondaryColor={secondaryColor}>
         Log in
       </SignInButton>
     </Wrapper>
