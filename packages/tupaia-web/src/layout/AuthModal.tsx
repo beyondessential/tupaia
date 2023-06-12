@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../constants';
 import { Typography } from '@material-ui/core';
 import { Button, OutlinedButton } from '@tupaia/ui-components';
-import { useNavigateBack } from '../utils/useNavigateBack.ts';
+import { useNavigateBack } from '../utils/useNavigateBack';
 
 const Logo = styled.img`
   min-width: 110px;
@@ -30,7 +30,8 @@ const Subtitle = styled(Typography)`
 export const ModalButton = styled(Button)`
   text-transform: none;
   font-size: 1rem;
-  width: 100%;
+  width: 22rem;
+  max-width: 100%;
   margin-left: 0 !important;
   margin-top: 2rem;
 `;
@@ -40,7 +41,8 @@ export const ModalCancelButton = styled(OutlinedButton).attrs({
 })`
   text-transform: none;
   font-size: 1rem;
-  width: 100%;
+  width: 22rem;
+  max-width: 100%;
   margin-left: 0 !important;
   padding: 0.375rem 1rem; // to match the height of the primary button
   border-color: ${({ theme }) => theme.palette.text.secondary};
@@ -53,12 +55,13 @@ interface AuthModalProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
+  className?: string;
 }
 
-export const AuthModal = ({ children, title, subtitle }: AuthModalProps) => {
+export const AuthModal = ({ children, title, subtitle, className }: AuthModalProps) => {
   const navigateBack = useNavigateBack();
   return (
-    <Modal isOpen={true} onClose={navigateBack}>
+    <Modal isOpen={true} onClose={navigateBack} className={className}>
       <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
       <Title variant="h2">{title}</Title>
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}

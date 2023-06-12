@@ -15,6 +15,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   // Todo Fix nested material ui themes
   .MuiFormLabel-root.MuiInputLabel-root {
     color: ${FORM_COLORS.BORDER};
+    font-size: 0.875rem;
   }
 
   .MuiInputBase-root.MuiInput-root.MuiInput-underline.MuiInputBase-formControl.MuiInput-formControl {

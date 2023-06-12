@@ -5,7 +5,7 @@
 
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
-import { useNavigateBack } from '../../utils/useNavigateBack.ts';
+import { useNavigateBack } from '../../utils/useNavigateBack';
 
 type LoginCredentials = {
   email: string;

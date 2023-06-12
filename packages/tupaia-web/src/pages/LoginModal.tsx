@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { TextField } from '../components/TextField';
+import { TextField } from '../components';
 import { AuthModal, ModalButton } from '../layout';
 
 const StyledForm = styled.form`
@@ -38,21 +38,25 @@ const ForgotPasswordText = styled(LinkText)`
   text-align: right;
 `;
 
-export const Login = () => {
-  const { handleSubmit, register, errors } = useForm();
+export const LoginModal = () => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
     <AuthModal title="Log in" subtitle="Enter your details below to log in">
       {isError && <Typography color="error">{error.message}</Typography>}
-      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)}>
+      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
         <TextField
           name="email"
           label="Email *"
           type="email"
           error={!!errors?.email}
           helperText={errors?.email && errors?.email.message}
-          inputRef={register({
+          inputProps={register('email', {
             required: 'Required',
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -66,7 +70,7 @@ export const Login = () => {
           type="password"
           error={!!errors?.password}
           helperText={errors?.password && errors?.password.message}
-          inputRef={register({
+          inputProps={register('password', {
             required: 'Required',
           })}
         />

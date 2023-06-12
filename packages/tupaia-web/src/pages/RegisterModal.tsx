@@ -3,18 +3,35 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { Checkbox } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { useLogin } from '../api/mutations';
+import { useRegister } from '../api/mutations';
 import { TextField } from '../components';
 import { AuthModal, ModalButton } from '../layout';
 
+const StyledAuthModal = styled(AuthModal)`
+  .MuiDialog-paper {
+    width: 53rem;
+  }
+`;
+
 const StyledForm = styled.form`
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 1rem;
+  row-gap: 0.5rem;
   margin-top: 1rem;
-  width: 340px;
+  width: 42rem;
   max-width: 100%;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+    row-gap: 0;
+  }
 `;
 
 const LinkText = styled(Typography)`
@@ -32,42 +49,107 @@ const LinkText = styled(Typography)`
   }
 `;
 
-const ForgotPasswordText = styled(LinkText)`
-  display: block;
-  margin-top: -0.6rem;
-  text-align: right;
+const FullWidthColumn = styled.div`
+  grid-column: 1/-1;
 `;
 
 export const RegisterModal = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm();
-  const { mutate: login, isLoading, isError, error } = useLogin();
+  const { handleSubmit, register, errors } = useForm();
+  const { mutate: onSubmit, isLoading, isError, error } = useRegister();
 
   return (
-    <AuthModal title="Log in" subtitle="Enter your details below to log in">
+    <StyledAuthModal title="Register" subtitle="Enter your details below to create an account">
       {isError && <Typography color="error">{error.message}</Typography>}
-      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
+      <StyledForm onSubmit={handleSubmit(onSubmit as SubmitHandler<any>)} noValidate>
         <TextField
           name="firstName"
-          label="First name "
-          required
-          errors={errors}
-          register={register}
+          label="First name *"
+          error={!!errors?.firstName}
+          helperText={errors?.firstName && errors?.firstName.message}
+          inputRef={register({
+            required: 'Required',
+          })}
         />
-        <EmailField />
-        <ForgotPasswordText as={Link} to="/reset-password">
-          Forgot password?
-        </ForgotPasswordText>
-        <ModalButton type="submit" isLoading={isLoading}>
-          Log in
-        </ModalButton>
-        <LinkText align="center">
-          Don't have an account? <Link to="/register">Register here</Link>
-        </LinkText>
+        <TextField
+          name="lastName"
+          label="Last name *"
+          error={!!errors?.lastName}
+          helperText={errors?.firstNalastNameme && errors?.lastName.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <TextField
+          name="email"
+          label="Email *"
+          error={!!errors?.email}
+          helperText={errors?.email && errors?.email.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <TextField
+          name="contactNumber"
+          label="Contact number (optional)"
+          error={!!errors?.contactNumber}
+          helperText={errors?.contactNumber && errors?.contactNumber.message}
+          inputRef={register()}
+        />
+        <TextField
+          name="password"
+          label="Password *"
+          error={!!errors?.password}
+          helperText={errors?.password && errors?.password.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <TextField
+          name="passwordConfirm"
+          label="Confirm password *"
+          error={!!errors?.passwordConfirm}
+          helperText={errors?.passwordConfirm && errors?.passwordConfirm.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <TextField
+          name="employer"
+          label="Employer *"
+          error={!!errors?.employer}
+          helperText={errors?.employer && errors?.employer.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <TextField
+          name="position"
+          label="Position *"
+          error={!!errors?.position}
+          helperText={errors?.position && errors?.position.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <Checkbox
+          name="terms"
+          color="primary"
+          label="I agree to the terms and conditions"
+          error={!!errors.terms}
+          helperText={errors?.terms?.message}
+          inputRef={register({
+            required: 'Required',
+          })}
+        />
+        <FullWidthColumn>
+          <ModalButton type="submit" isLoading={isLoading}>
+            Register account
+          </ModalButton>
+          <LinkText align="center">
+            Already have an account? <Link to="/login">Log in here</Link>
+          </LinkText>
+        </FullWidthColumn>
       </StyledForm>
-    </AuthModal>
+    </StyledAuthModal>
   );
 };

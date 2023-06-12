@@ -5,4 +5,4 @@
  */
 
 export * from './useLogin';
-export * from './useRegister.ts';
+export * from './useRegister';
