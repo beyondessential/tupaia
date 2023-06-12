@@ -24,11 +24,10 @@ const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
 // work out the entity to zoom to and open the dashboard of when this project is selected
 function getHomeEntity(project, entitiesWithAccess, allEntities) {
   // more than one child entity, return the code of the project entity, which should have bounds
-  const homeEntityCode =
-    entitiesWithAccess.length === 1 ? entitiesWithAccess[0].code : project.entity_id;
-
+  const homeEntityId =
+    entitiesWithAccess.length === 1 ? entitiesWithAccess[0].id : project.entity_ids[0];
   // return the entire entity object
-  return allEntities.find(e => e.code === homeEntityCode);
+  return allEntities.find(e => e.id === homeEntityId);
 }
 
 // Fetch the project's default dashboard code using the dashboardGroupName, or the first dashboard code if the default dashboard can't be found
@@ -65,6 +64,7 @@ export async function buildProjectDataForFrontend(project, req) {
   // If a single entity is available, zoom to that, otherwise show the project entity
   const hasAccess = entitiesWithAccess.length > 0;
   const homeEntity = getHomeEntity(project, entitiesWithAccess, entities);
+
   const defaultDashboard = await fetchDefaultDashboardCode(
     dashboardGroupName,
     entityHierachyId,

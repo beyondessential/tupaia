@@ -2,11 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
+import { useLandingPage } from '../../api/queries';
+import { useParams } from 'react-router';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -20,6 +22,7 @@ const Header = styled.header<{
   height: ${TOP_BAR_HEIGHT_MOBILE}px;
   min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   z-index: 1000;
   position: relative;
@@ -43,11 +46,43 @@ const Header = styled.header<{
   }
 `;
 
+const Inner = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SearchBar = styled.div`
+  display: none;
+  width: 300px;
+  height: 40px;
+  left: 1010px;
+  top: 15px;
+  background: #202124;
+  border-radius: 43px;
+  margin-right: 30px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    display: block;
+  }
+`;
+
 export const TopBar = () => {
-  // When handing custom landing pages, pass the primary and secondary colors to the Header component
+  const { landingPageUrlSegment } = useParams();
+  // gets landing page data if landing page url segment is present, otherwise will return {}
+  const { landingPage } = useLandingPage(landingPageUrlSegment);
+
+  // use the landing page settings if found, else the defaults
+  const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
   return (
-    <Header>
-      <Logo />
+    <Header $primaryColor={primaryHexcode} $secondaryColor={secondaryHexcode}>
+      <Logo
+        logoSrc={logoUrl || TUPAIA_LIGHT_LOGO_SRC}
+        displayName={includeNameInHeader}
+        name={name}
+      />
+      <Inner>
+        <SearchBar />
+      </Inner>
       <UserMenu />
     </Header>
   );

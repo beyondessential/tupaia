@@ -21,6 +21,7 @@ const Wrapper = styled.div`
   flex: 1;
   display: flex;
   position: relative;
+  pointer-events: none;
 `;
 
 const MapControlsContainer = styled.div`
@@ -46,10 +47,12 @@ const Watermark = styled(MapWatermark)`
 
 // Placeholder for MapOverlaySelector component
 const MapOverlaySelector = styled.div`
-  width: 25%;
-  margin: 2em;
-  height: 200px;
-  background-color: rgba(255, 255, 255, 0.2);
+  width: 300px;
+  margin: 1em;
+  height: 40px;
+  border-radius: 5px;
+  background: #ff7428;
+  opacity: 0.6;
 `;
 
 /**

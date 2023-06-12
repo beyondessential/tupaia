@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "target": "ESNext",
     "lib": [
       "DOM",
       "DOM.Iterable",
       "ESNext"
     ],
+    "rootDirs": ["src", "stories", ".storybook"],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
@@ -22,7 +24,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src"
+    "src","stories", ".storybook"
   ],
   "references": [
     {
