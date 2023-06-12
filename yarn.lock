@@ -8769,10 +8769,10 @@ __metadata:
     "@tupaia/utils": 1.0.0
     "@types/jest": ^29.5.1
     "@types/lodash.throttle": ^4.1.7
-    "@types/react-dom": ^18.2.4
+    "@types/react-dom": ^16.9.18
     "@types/react-router-dom": ^5.3.3
     "@types/react-table": ^7.7.14
-    "@types/styled-components": ^5.1.26
+    "@types/styled-components": ^5.0.0
     ace-builds: ^1.4.13
     date-fns: ^2.12.0
     faker: ^4.1.0
@@ -8808,13 +8808,19 @@ __metadata:
     "@material-ui/core": ^4.9.8
     "@material-ui/icons": ^4.9.1
     "@material-ui/styles": ^4.9.10
+    "@mui/types": ^7.2.4
     "@storybook/react": ^6.3.9
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/jest": ^29.5.1
+    "@types/leaflet": ^1.7.1
+    "@types/react-dom": ^16.9.18
+    "@types/styled-components": ^5.1.26
     leaflet: ^1.7.1
     moment: ^2.29.1
     prop-types: ^15.7.2
     react: ^16.13.1
+    react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
     react-leaflet: ^3.2.1
     react-table: ^7.7.0
@@ -9304,6 +9310,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:*":
+  version: 7946.0.10
+  resolution: "@types/geojson@npm:7946.0.10"
+  checksum: 12c407c2dc93ecb26c08af533ee732f1506a9b29456616ba7ba1d525df96206c28ddf44a528f6a5415d7d22893e9d967420940a9c095ee5e539c1eba5fefc1f4
+  languageName: node
+  linkType: hard
+
 "@types/glob-base@npm:^0.3.0":
   version: 0.3.0
   resolution: "@types/glob-base@npm:0.3.0"
@@ -9535,6 +9548,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: e009a2bfb50e90ca9b7c6e8f648f8464067271fd99116f881073fa6fa76dc8d0133181dd65e6614d5fb1220d671d67b0124aef7d97dc02d7e342ab143a47779d
+  languageName: node
+  linkType: hard
+
+"@types/leaflet@npm:^1.7.1":
+  version: 1.9.3
+  resolution: "@types/leaflet@npm:1.9.3"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: d12042edc3a043d074b4fd3b4c4800f479dfb01db3980d8c1151edbc70b23ca9e84ab7da72ce0d1c36c040f89ba1421bd36d9d9796ec3704a0d3c942985a87ae
   languageName: node
   linkType: hard
 
@@ -9932,12 +9954,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.4":
-  version: 18.2.4
-  resolution: "@types/react-dom@npm:18.2.4"
+"@types/react-dom@npm:^16.9.18":
+  version: 16.9.19
+  resolution: "@types/react-dom@npm:16.9.19"
   dependencies:
-    "@types/react": "*"
-  checksum: 8301f35cf1cbfec8c723e9477aecf87774e3c168bd457d353b23c45064737213d3e8008b067c6767b7b08e4f2b3823ee239242a6c225fc91e7f8725ef8734124
+    "@types/react": ^16
+  checksum: c696f137aba09be0ea87ad6e99a083607b4fc574857d92c264cc6518ee929ef7e94855362436c2ef5fefb70ebfc9b7413634bb3a2f3a8c2b7522521faaac7d62
   languageName: node
   linkType: hard
 
@@ -10038,6 +10060,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 351fe2450d30bff2ceb6aa84788e948317555e5ea22cb44f6778e08c977aab1878a0119bd94bc3d1bec5f5af4a75ffaa2ce111df5cd9d4ce26bfd719e4d971c2
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^16":
+  version: 16.14.43
+  resolution: "@types/react@npm:16.14.43"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 10ce3f8b80eadd66178a53845bddf264fa109fcfe0a615a0dce7e027dc426768573e87aee3eba7c53a2a867e159bba928bd86cac92ba93c5bd0152a63a49ccad
   languageName: node
   linkType: hard
 
@@ -10145,7 +10178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/styled-components@npm:^5.1.26":
+"@types/styled-components@npm:^5.0.0, @types/styled-components@npm:^5.1.26":
   version: 5.1.26
   resolution: "@types/styled-components@npm:5.1.26"
   dependencies:
