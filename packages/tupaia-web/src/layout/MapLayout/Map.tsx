@@ -5,8 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-map-components';
 import { TRANSPARENT_BLACK } from '../../constants';
+import { TILE_SETS } from '../../constants';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -38,19 +39,16 @@ const StyledMap = styled(LeafletMap)`
     }
   }
 `;
-
-export const Map = () => {
+interface MapProps {
+  activeTileSet: typeof TILE_SETS[0];
+}
+export const Map = ({ activeTileSet }: MapProps) => {
   return (
     <MapContainer>
       <StyledMap>
-        <TileLayer
-          tileSetUrl={'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
-          showAttribution={false}
-        />
+        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <ZoomControl position="bottomright" />
       </StyledMap>
-      {/* <TilePicker 
-      /> */}
     </MapContainer>
   );
 };
