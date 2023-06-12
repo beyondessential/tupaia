@@ -6,7 +6,7 @@ import React, { ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { DEFAULT_URL, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { DEFAULT_URL } from '../../constants';
 
 const LogoWrapper = styled.div`
   flex-grow: 1;
@@ -65,13 +65,13 @@ const LogoComponent = ({
   children: ReactNode[];
 }) => (isCustomLandingPage ? <>{children}</> : <LogoLink to={DEFAULT_URL}>{children}</LogoLink>);
 
-export const Logo = () => {
-  // Here is where we should swap out the logo for the custom landing page logo if applicable
-  const logoSrc = TUPAIA_LIGHT_LOGO_SRC;
+interface LogoProps {
+  logoSrc?: string;
+  displayName?: boolean;
+  name?: string;
+}
 
-  // These will later come from custom landing pages, where applicable
-  const displayName = false;
-  const name = '';
+export const Logo = ({ logoSrc, displayName = false, name = '' }: LogoProps) => {
   return (
     <LogoWrapper>
       <LogoComponent isCustomLandingPage={false}>

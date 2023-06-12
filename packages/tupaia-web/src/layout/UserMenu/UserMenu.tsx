@@ -9,6 +9,11 @@ import { Button, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
+import { useLandingPage } from '../../api/queries';
+import { useParams } from 'react-router';
+import { MenuItem } from './MenuList';
+import { USER_ROUTES } from '../../Routes';
+import { UserInfo } from './UserInfo';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -41,17 +46,52 @@ export const UserMenu = () => {
     setMenuOpen(false);
   };
 
-  // Here will be the menu items logic. These will probably come from a context somewhere that handles when a user is logged in, and when it is a custom landing page
-  const menuItems = [] as ReactNode[];
-
+  const { landingPageUrlSegment } = useParams();
   const theme = useTheme();
+  const {
+    isLandingPage,
+    landingPage: { primaryHexcode, secondaryHexcode },
+  } = useLandingPage(landingPageUrlSegment);
 
-  // these will later be updated to handle custom landing pages
-  const primaryColor = theme.palette.background.default;
-  const secondaryColor = theme.palette.text.primary;
+  // this will come from login state
+  const isUserLoggedIn = false;
+
+  // Create the menu items
+  const BaseMenuItem = ({ children, ...props }: any) => (
+    <MenuItem onCloseMenu={onCloseMenu} {...props} secondaryColor={secondaryHexcode}>
+      {children}
+    </MenuItem>
+  );
+
+  const VisitMainSite = (
+    <BaseMenuItem href="https://www.tupaia.org">
+      Visit&nbsp;<span>tupaia.org</span>
+    </BaseMenuItem>
+  );
+
+  const ChangePassword = (
+    <BaseMenuItem onClick={USER_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
+  );
+  // The custom landing pages need different menu items to the other views
+  const customLandingPageMenuItems = isUserLoggedIn
+    ? [VisitMainSite, ChangePassword]
+    : [VisitMainSite];
+
+  const baseMenuItems = [] as ReactNode[];
+
+  const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
+
+  const menuPrimaryColor = primaryHexcode || theme.palette.background.default;
+  const menuSecondaryColor = secondaryHexcode || theme.palette.text.primary;
 
   return (
     <UserMenuContainer>
+      <UserInfo
+        currentUserUsername={''}
+        isUserLoggedIn={isUserLoggedIn}
+        isLandingPage={isLandingPage}
+        secondaryColor={menuSecondaryColor}
+      />
       <MenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
         <MenuIcon />
       </MenuButton>
@@ -59,17 +99,18 @@ export const UserMenu = () => {
       <PopoverMenu
         menuOpen={menuOpen}
         onCloseMenu={onCloseMenu}
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
+        primaryColor={menuPrimaryColor}
+        secondaryColor={menuSecondaryColor}
       >
         {menuItems}
       </PopoverMenu>
       <DrawerMenu
         menuOpen={menuOpen}
         onCloseMenu={onCloseMenu}
-        isUserLoggedIn={false}
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
+        isUserLoggedIn={isUserLoggedIn}
+        primaryColor={menuPrimaryColor}
+        secondaryColor={menuSecondaryColor}
+        currentUserUsername={''}
       >
         {menuItems}
       </DrawerMenu>
