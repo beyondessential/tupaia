@@ -2,16 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { ComponentType } from 'react';
+import React, { ComponentType, ReactNode } from 'react';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { darken } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { Button, OutlinedButton } from '@tupaia/ui-components';
 import { SingleProject } from '../../types';
 import { USER_ROUTES } from '../../Routes';
+import { RouterButton } from '../../components';
 
 const Card = styled.div`
   display: flex;
@@ -78,9 +77,7 @@ const Body = styled.div`
   justify-content: space-evenly;
 `;
 
-const BaseLink = styled(Button).attrs({
-  component: Link,
-})`
+const BaseLink = styled(RouterButton)`
   background: ${({ theme }) => theme.palette.primary.main};
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: white;
@@ -101,8 +98,8 @@ const BaseLink = styled(Button).attrs({
   }
 `;
 
-const OutlineLink = styled(OutlinedButton).attrs({
-  component: Link,
+const OutlineLink = styled(RouterButton).attrs({
+  variant: 'outlined',
 })`
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: ${({ theme }) => theme.palette.primary.main};

@@ -14,6 +14,7 @@ import {
 } from './pages';
 import { DEFAULT_URL } from './constants';
 import { Layout } from './layout';
+import { ModalRoute } from './pages/ModalRoute';
 
 export const USER_ROUTES = {
   LOGIN: '/login',
@@ -35,6 +36,7 @@ export const Routes = () => {
 
   return (
     <>
+      <ModalRoute />
       <RouterRoutes location={state?.backgroundLocation || location}>
         {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
         <Route element={<Layout />}>

@@ -7,5 +7,10 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 
 export const useUser = () => {
-  return useQuery('getUser', () => get('getUser'));
+  const userResponse = useQuery('getUser', () => get('getUser'));
+  const { data } = userResponse;
+  return {
+    ...userResponse,
+    isLoggedIn: data?.name !== 'public',
+  };
 };

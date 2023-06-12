@@ -23,6 +23,15 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem 2rem 4rem;
+  width: 100%;
+  &.project {
+    max-width: 920px;
+  }
+  &.login {
+    @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+      width: 42rem;
+    }
+  }
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
@@ -44,7 +53,6 @@ const Paper = styled(MuiPaper)`
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
-  width: 660px;
   max-width: 100%;
   min-width: 300px;
   // Prevent width from animating.
@@ -54,16 +62,10 @@ const Paper = styled(MuiPaper)`
 export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
   // make the modal full screen at small screen sizes
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      PaperComponent={Paper}
-      fullScreen={fullScreen}
-      className={className}
-    >
-      <Wrapper id="overlay-wrapper">
+    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen} className={className}>
+      <Wrapper id="overlay-wrapper" className={className}>
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />
         </CloseButton>
