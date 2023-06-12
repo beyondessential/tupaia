@@ -6,9 +6,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { Button } from '@tupaia/ui-components';
 import { TRANSPARENT_BLACK } from '../../constants';
 
-const SemiCircle = styled.div`
+const SemiCircle = styled(Button)`
   position: absolute;
   top: 50%;
   left: -30px;
@@ -21,7 +22,7 @@ const SemiCircle = styled.div`
   border-top-left-radius: 60px;
   border-bottom-left-radius: 60px;
   cursor: pointer;
-  z-index: 400; // to show over the map
+  padding: 0;
 `;
 
 const CloseArrowIcon = styled(KeyboardArrowRight)`

@@ -16,20 +16,19 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const MapControlsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  position: absolute; // make this absolutely positioned so that it lays over the map
-  width: 100%;
-  height: 100%;
-`;
-
+// Placeholder for legend
 const MapLegendWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
+  position: absolute;
+  background-color: grey;
+  width: 300px;
+  height: 50px;
+  bottom: 1em;
+  left: calc(50% - 150px);
+  border-radius: 5px;
 `;
 
 const Watermark = styled(MapWatermark)`
@@ -45,14 +44,15 @@ const MapOverlaySelector = styled.div`
   border-radius: 5px;
   background: #ff7428;
   opacity: 0.6;
+  position: absolute;
 `;
 
+// Position this absolutely so it can be placed over the map
 const TilePickerWrapper = styled.div`
   position: absolute;
   right: 0;
   bottom: 0;
   height: 100%;
-  z-index: 400;
 `;
 
 /**
@@ -67,11 +67,10 @@ export const MapLayout = () => {
   };
   return (
     <Wrapper>
-      <MapControlsContainer>
-        <MapOverlaySelector />
-        <MapLegendWrapper>{/** This is where the map legend would go */}</MapLegendWrapper>
-      </MapControlsContainer>
+      {/** order here matters - Map needs to be first so any controls can go over the top of it */}
       <Map activeTileSet={activeTileSet} />
+      <MapOverlaySelector />
+      <MapLegendWrapper />
       <TilePickerWrapper>
         <TilePicker tileSets={TILE_SETS} activeTileSet={activeTileSet} onChange={onTileSetChange} />
       </TilePickerWrapper>
