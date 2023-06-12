@@ -21,7 +21,7 @@ const SemiCircle = styled.div`
   border-top-left-radius: 60px;
   border-bottom-left-radius: 60px;
   cursor: pointer;
-  pointer-events: auto;
+  z-index: 400; // to show over the map
 `;
 
 const CloseArrowIcon = styled(KeyboardArrowRight)`

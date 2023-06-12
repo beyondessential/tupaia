@@ -6,22 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MapWatermark } from './MapWatermark';
-
-const MapContainer = styled.div`
-  height: 100vh;
-  transition: width 0.5s ease;
-  width: 100%;
-`;
-
-export const Map = () => {
-  return <MapContainer>{/* <Map /> */}</MapContainer>;
-};
+import { Map } from './Map';
 
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
   position: relative;
-  pointer-events: none;
 `;
 
 const MapControlsContainer = styled.div`
