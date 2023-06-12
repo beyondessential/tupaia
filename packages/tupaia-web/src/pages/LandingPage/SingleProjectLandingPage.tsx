@@ -8,10 +8,9 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { PROJECT_ACCESS_TYPES } from '../../constants';
+import { PROJECT_ACCESS_TYPES, USER_ROUTES } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleLandingPage, SingleProject } from '../../types';
-import { USER_ROUTES } from '../../Routes';
 
 /**
  * This is the template for the content of a landing page if there is only one project
@@ -81,7 +80,7 @@ export function SingleProjectLandingPage({
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
     [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
       ? `${USER_ROUTES.REQUEST_ACCESS}/${code}`
-      : USER_ROUTES.LOGIN,
+      : `?modal=${USER_ROUTES.LOGIN}`,
   };
 
   const actionTexts = {

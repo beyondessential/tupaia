@@ -7,19 +7,16 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
 import { useRegister } from '../../api/mutations';
-import { AuthModal, ModalButton } from '../../layout';
 import { SignupComplete } from './SignUpComplete';
 import { SubmitHandler } from 'react-hook-form';
-import { TextField } from '../../components';
+import { TextField, AuthModalBody, AuthModalButton } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { Checkbox } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
-import { USER_ROUTES } from '../../Routes.tsx';
+import { USER_ROUTES } from '../../constants';
 
-const StyledAuthModal = styled(AuthModal)`
-  .MuiDialog-paper {
-    width: 53rem;
-  }
+const Container = styled(AuthModalBody)`
+  width: 53rem;
 `;
 
 const StyledForm = styled.form`
@@ -45,7 +42,7 @@ const LinkText = styled(Typography)`
     color: white;
   }
 
-  ${ModalButton} + & {
+  ${AuthModalButton} + & {
     margin-top: 1.3rem;
   }
 `;
@@ -59,7 +56,7 @@ export const RegisterModal = () => {
   const { errors, handleSubmit, getValues, register } = useForm();
 
   return (
-    <StyledAuthModal
+    <Container
       title="Register"
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
     >
@@ -157,16 +154,16 @@ export const RegisterModal = () => {
               })}
             />
             <FullWidthColumn>
-              <ModalButton type="submit" isLoading={isLoading}>
+              <AuthModalButton type="submit" isLoading={isLoading}>
                 Register account
-              </ModalButton>
+              </AuthModalButton>
               <LinkText align="center">
-                Already have an account? <Link to={USER_ROUTES.LOGIN}>Log in here</Link>
+                Already have an account? <Link to={`?modal=${USER_ROUTES.LOGIN}`}>Log in here</Link>
               </LinkText>
             </FullWidthColumn>
           </StyledForm>
         </>
       )}
-    </StyledAuthModal>
+    </Container>
   );
 };

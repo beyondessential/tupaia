@@ -2,14 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { ComponentType, ReactNode } from 'react';
+import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { darken } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
-import { USER_ROUTES } from '../../Routes';
+import { USER_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 
 const Card = styled.div`
@@ -120,7 +120,9 @@ export const ProjectDeniedLink = ({ url }: LinkProps) => (
   </OutlineLink>
 );
 
-export const ProjectLoginLink = () => <OutlineLink to={USER_ROUTES.LOGIN}>Log in</OutlineLink>;
+export const ProjectLoginLink = () => (
+  <OutlineLink to={`?modal=${USER_ROUTES.LOGIN}`}>Log in</OutlineLink>
+);
 
 export const ProjectPendingLink = () => (
   <OutlineLink to={''} disabled={true} startIcon={<Alarm />}>

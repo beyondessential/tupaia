@@ -7,7 +7,7 @@ import React from 'react';
 import { RouterButton } from '../../components';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { USER_ROUTES } from '../../Routes';
+import { USER_ROUTES } from '../../constants';
 
 const Container = styled.div`
   margin: 1rem;
@@ -51,7 +51,7 @@ export const SignupComplete = () => {
           &nbsp;Android&nbsp;.
         </FormLink>
       </Typography>
-      <RouterButton to={USER_ROUTES.LOGIN}>Re-send verification email</RouterButton>
+      <RouterButton to={`?modal=${USER_ROUTES.LOGIN}`}>Re-send verification email</RouterButton>
     </Container>
   );
 };

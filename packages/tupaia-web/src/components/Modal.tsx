@@ -23,15 +23,7 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem 2rem 4rem;
-  width: 100%;
-  &.project {
-    max-width: 920px;
-  }
-  &.login {
-    @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-      width: 42rem;
-    }
-  }
+  max-width: 100%;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
@@ -64,7 +56,13 @@ export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen} className={className}>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperComponent={Paper}
+      fullScreen={fullScreen}
+      className={className}
+    >
       <Wrapper id="overlay-wrapper" className={className}>
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />

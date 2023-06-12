@@ -9,8 +9,13 @@ export const DEFAULT_URL = `/${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;
 
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
 
-export enum MODAL_TYPES {
+export enum USER_ROUTES {
   PROJECTS = 'projects',
+  LOGIN = 'login',
+  REGISTER = 'register',
+  RESET_PASSWORD = 'reset-password',
+  REQUEST_ACCESS = 'request-access',
+  VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 export const PROJECT_ACCESS_TYPES = {
   PENDING: 'PENDING',

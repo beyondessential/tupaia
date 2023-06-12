@@ -12,9 +12,8 @@ import { useLandingPage, useUser } from '../../api/queries';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
-import { USER_ROUTES } from '../../Routes';
+import { USER_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
-import { MODAL_TYPES } from '../../constants';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -70,7 +69,9 @@ export const UserMenu = () => {
   );
 
   const ViewProjects = (
-    <BaseMenuItem href={`?modal=${MODAL_TYPES.PROJECTS}`}>View projects</BaseMenuItem>
+    <BaseMenuItem key="projects" href={`?modal=${USER_ROUTES.PROJECTS}`}>
+      View projects
+    </BaseMenuItem>
   );
 
   const ChangePassword = (

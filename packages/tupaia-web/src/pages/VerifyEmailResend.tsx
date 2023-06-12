@@ -5,13 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { TextField } from '../components';
-import { AuthModal, ModalButton } from '../layout';
+import { AuthModalBody, AuthModalButton, TextField } from '../components';
 import { FORM_FIELD_VALIDATION } from '../constants';
 import { useForm } from 'react-hook-form';
 import { useLogin } from '../api/mutations';
 
-const StyledAuthModal = styled(AuthModal)`
+const Container = styled(AuthModalBody)`
   .MuiDialog-paper {
     width: 53rem;
   }
@@ -39,7 +38,7 @@ export const VerifyEmailResend = () => {
   const { mutate: login, isSuccess, isLoading, isError, error } = useLogin();
 
   return (
-    <StyledAuthModal title="Register" subtitle="Enter your details below to create an account">
+    <Container title="Register" subtitle="Enter your details below to create an account">
       {isSuccess ? (
         <CheckEmailMessage>
           Please check your email for further instructions on how to verify your account.
@@ -57,9 +56,9 @@ export const VerifyEmailResend = () => {
               ...FORM_FIELD_VALIDATION.EMAIL,
             })}
           />
-          <ModalButton type="submit">Submit</ModalButton>
+          <AuthModalButton type="submit">Submit</AuthModalButton>
         </StyledForm>
       )}
-    </StyledAuthModal>
+    </Container>
   );
 };

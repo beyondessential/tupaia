@@ -8,11 +8,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { TextField } from '../components';
-import { AuthModal, ModalButton } from '../layout';
-import { FORM_FIELD_VALIDATION } from '../constants';
-import { USER_ROUTES } from '../Routes.tsx';
+import { AuthModalBody, AuthModalButton, TextField } from '../components';
+import { FORM_FIELD_VALIDATION, USER_ROUTES } from '../constants';
 import { EmailVerification } from './EmailVerification.tsx';
+
+const Container = styled(AuthModalBody)`
+  width: 42rem;
+`;
 
 const StyledForm = styled.form`
   margin-top: 1rem;
@@ -30,7 +32,7 @@ const LinkText = styled(Typography)`
     color: white;
   }
 
-  ${ModalButton} + & {
+  ${AuthModalButton} + & {
     margin-top: 1.3rem;
   }
 `;
@@ -46,7 +48,7 @@ export const LoginModal = () => {
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
-    <AuthModal title="Log in" subtitle="Enter your details below to log in" className="login">
+    <Container title="Log in" subtitle="Enter your details below to log in">
       {isError ? <Typography color="error">{error.message}</Typography> : <EmailVerification />}
       <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
         <TextField
@@ -74,13 +76,13 @@ export const LoginModal = () => {
         <ForgotPasswordText as={Link} to="/reset-password">
           Forgot password?
         </ForgotPasswordText>
-        <ModalButton type="submit" isLoading={isLoading}>
+        <AuthModalButton type="submit" isLoading={isLoading}>
           Log in
-        </ModalButton>
+        </AuthModalButton>
         <LinkText align="center">
-          Don't have an account? <Link to={USER_ROUTES.REGISTER}>Register here</Link>
+          Don't have an account? <Link to={`?modal=${USER_ROUTES.REGISTER}`}>Register here</Link>
         </LinkText>
       </StyledForm>
-    </AuthModal>
+    </Container>
   );
 };

@@ -4,5 +4,6 @@
  */
 export { LoadingScreen } from './LoadingScreen';
 export { Modal } from './Modal';
+export { AuthModalBody, AuthModalButton, AuthModalCancelButton } from './AuthModal';
 export { TextField } from './TextField';
 export { RouterButton } from './RouterButton';

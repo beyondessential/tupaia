@@ -5,8 +5,8 @@
 
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MODAL_TYPES } from '../constants';
-import { Projects } from '.';
+import { USER_ROUTES } from '../constants';
+import { Projects, LoginModal, RegisterModal } from '.';
 import { Modal } from '../components';
 
 /**
@@ -14,14 +14,20 @@ import { Modal } from '../components';
  */
 
 const modalViews = {
-  [MODAL_TYPES.PROJECTS]: Projects,
+  [USER_ROUTES.PROJECTS]: Projects,
+  [USER_ROUTES.LOGIN]: LoginModal,
+  [USER_ROUTES.REGISTER]: RegisterModal,
+  [USER_ROUTES.RESET_PASSWORD]: Projects,
+  [USER_ROUTES.REQUEST_ACCESS]: Projects,
+  [USER_ROUTES.VERIFY_EMAIL_RESEND]: Projects,
 };
 
 export const ModalRoute = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const modal = searchParams.get('modal') as typeof MODAL_TYPES[keyof typeof MODAL_TYPES];
+  const modal = searchParams.get('modal') as typeof USER_ROUTES[keyof typeof USER_ROUTES];
+
   // If no modal param or invalid modal param, return null
-  if (!modal || !Object.values(MODAL_TYPES).includes(modal)) return null;
+  if (!modal || !Object.values(USER_ROUTES).includes(modal)) return null;
 
   const onCloseModal = () => {
     // remove the modal param from URLSearchParams
@@ -31,7 +37,7 @@ export const ModalRoute = () => {
 
   const ModalView = modalViews[modal];
   return (
-    <Modal isOpen={true} onClose={onCloseModal} className="project">
+    <Modal isOpen={true} onClose={onCloseModal}>
       <ModalView />
     </Modal>
   );
