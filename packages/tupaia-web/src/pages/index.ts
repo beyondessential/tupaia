@@ -8,4 +8,4 @@ export { PasswordResetForm } from './PasswordResetForm';
 export { Project } from './Project';
 export { RegisterModal } from './RegisterModal';
 export { RequestAccessForm } from './RequestAccessForm';
-export { VerifyEmailForm } from './VerifyEmailForm';
+export { VerifyEmail } from './VerifyEmail.tsx';

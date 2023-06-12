@@ -12,6 +12,7 @@ import { useRegister } from '../api/mutations';
 import { TextField } from '../components';
 import { FORM_FIELD_VALIDATION } from '../constants';
 import { AuthModal, ModalButton } from '../layout';
+import { USER_ROUTES } from '../Routes.tsx';
 
 const StyledAuthModal = styled(AuthModal)`
   .MuiDialog-paper {
@@ -20,15 +21,12 @@ const StyledAuthModal = styled(AuthModal)`
 `;
 
 const StyledForm = styled.form`
-  display: grid;
-  grid-template-columns: 1fr;
-  column-gap: 1rem;
-  row-gap: 0.5rem;
   margin-top: 1rem;
   width: 42rem;
   max-width: 100%;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 2rem;
     row-gap: 0;
@@ -153,7 +151,7 @@ export const RegisterModal = () => {
             Register account
           </ModalButton>
           <LinkText align="center">
-            Already have an account? <Link to="/login">Log in here</Link>
+            Already have an account? <Link to={USER_ROUTES.LOGIN}>Log in here</Link>
           </LinkText>
         </FullWidthColumn>
       </StyledForm>

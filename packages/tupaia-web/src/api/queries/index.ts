@@ -5,5 +5,6 @@
  */
 
 export { useLandingPage } from './useLandingPage';
-export * from './useProjects';
-export * from './useUser';
+export { useProjects } from './useProjects';
+export { useUser } from './useUser';
+export { useEmailVerification } from './useEmailVerification';

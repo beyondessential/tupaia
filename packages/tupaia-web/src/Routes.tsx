@@ -11,7 +11,6 @@ import {
   Project,
   RegisterModal,
   RequestAccessForm,
-  VerifyEmailForm,
 } from './pages';
 import { DEFAULT_URL } from './constants';
 import { Layout } from './layout';
@@ -46,7 +45,10 @@ export const Routes = () => {
             path={`${USER_ROUTES.REQUEST_ACCESS}/:projectCode`}
             element={<RequestAccessForm />}
           />
-          <Route path={USER_ROUTES.VERIFY_EMAIL} element={<VerifyEmailForm />} />
+          <Route
+            path={USER_ROUTES.VERIFY_EMAIL}
+            element={<Navigate to={{ ...location, pathname: USER_ROUTES.LOGIN }} replace />}
+          />
           <Route path={USER_ROUTES.LOGIN} element={<LoginModal />} />
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
           {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
