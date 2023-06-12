@@ -1,5 +1,4 @@
 import React from 'react';
-import { Outlet } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { MODAL_TYPES } from '../constants';
 import { Projects } from '.';
@@ -8,7 +7,7 @@ import { Modal } from '../components';
 export const ModalRoute = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const modal = searchParams.get('modal') as typeof MODAL_TYPES[keyof typeof MODAL_TYPES];
-  if (!modal || !Object.values(MODAL_TYPES).includes(modal)) return <Outlet />;
+  if (!modal || !Object.values(MODAL_TYPES).includes(modal)) return null;
 
   const modalViews = {
     [MODAL_TYPES.PROJECTS]: Projects,
@@ -22,11 +21,8 @@ export const ModalRoute = () => {
 
   const ModalView = modalViews[modal];
   return (
-    <>
-      <Modal isOpen={true} onClose={onCloseModal}>
-        <ModalView />
-      </Modal>
-      <Outlet />
-    </>
+    <Modal isOpen={true} onClose={onCloseModal}>
+      <ModalView />
+    </Modal>
   );
 };

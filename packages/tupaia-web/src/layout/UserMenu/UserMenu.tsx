@@ -9,7 +9,7 @@ import { Button, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
-import { useLandingPage } from '../../api/queries';
+import { useLandingPage, useUser } from '../../api/queries';
 import { useParams } from 'react-router';
 import { MenuItem } from './MenuList';
 import { USER_ROUTES } from '../../Routes';
@@ -53,8 +53,7 @@ export const UserMenu = () => {
     landingPage: { primaryHexcode, secondaryHexcode },
   } = useLandingPage(landingPageUrlSegment);
 
-  // this will come from login state
-  const isUserLoggedIn = false;
+  const { isLoggedIn } = useUser();
 
   // Create the menu items
   const BaseMenuItem = ({ children, ...props }: any) => (
@@ -73,9 +72,7 @@ export const UserMenu = () => {
     <BaseMenuItem onClick={USER_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
   );
   // The custom landing pages need different menu items to the other views
-  const customLandingPageMenuItems = isUserLoggedIn
-    ? [VisitMainSite, ChangePassword]
-    : [VisitMainSite];
+  const customLandingPageMenuItems = isLoggedIn ? [VisitMainSite, ChangePassword] : [VisitMainSite];
 
   const baseMenuItems = [] as ReactNode[];
 
@@ -88,7 +85,7 @@ export const UserMenu = () => {
     <UserMenuContainer>
       <UserInfo
         currentUserUsername={''}
-        isUserLoggedIn={isUserLoggedIn}
+        isLoggedIn={isLoggedIn}
         isLandingPage={isLandingPage}
         secondaryColor={menuSecondaryColor}
       />
@@ -107,7 +104,7 @@ export const UserMenu = () => {
       <DrawerMenu
         menuOpen={menuOpen}
         onCloseMenu={onCloseMenu}
-        isUserLoggedIn={isUserLoggedIn}
+        isLoggedIn={isLoggedIn}
         primaryColor={menuPrimaryColor}
         secondaryColor={menuSecondaryColor}
         currentUserUsername={''}

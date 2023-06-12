@@ -6,7 +6,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container as MuiContainer } from '@material-ui/core';
-import { useLandingPage } from '../../api/queries';
+import { useLandingPage, useUser } from '../../api/queries';
 import { LoadingScreen } from '../../components';
 import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { LandingPageFooter } from './LandingPageFooter';
@@ -42,10 +42,10 @@ const Container = styled(MuiContainer)`
 
 const ProjectScreen = ({
   landingPage,
-  isUserLoggedIn,
+  isLoggedIn,
 }: {
   landingPage: SingleLandingPage;
-  isUserLoggedIn: boolean;
+  isLoggedIn: boolean;
 }) => {
   const { projects = [], extendedTitle, includeNameInHeader } = landingPage;
 
@@ -54,14 +54,14 @@ const ProjectScreen = ({
       <SingleProjectLandingPage
         project={projects[0]}
         extendedTitle={extendedTitle}
-        isUserLoggedIn={isUserLoggedIn}
+        isLoggedIn={isLoggedIn}
         includeNameInHeader={includeNameInHeader}
       />
     );
   return (
     <MultiProjectLandingPage
       projects={projects}
-      isUserLoggedIn={isUserLoggedIn}
+      isLoggedIn={isLoggedIn}
       includeNameInHeader={includeNameInHeader}
     />
   );
@@ -72,8 +72,7 @@ export const LandingPage = () => {
   const { landingPage, isLoading } = useLandingPage(landingPageUrlSegment!);
   const { imageUrl } = landingPage;
 
-  // This will come from actual login state once merged in
-  const isUserLoggedIn = true;
+  const { isLoggedIn } = useUser();
 
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
@@ -83,7 +82,7 @@ export const LandingPage = () => {
         {isLoading ? (
           <LoadingScreen isLoading />
         ) : (
-          <ProjectScreen landingPage={landingPage} isUserLoggedIn={isUserLoggedIn} />
+          <ProjectScreen landingPage={landingPage} isLoggedIn={isLoggedIn} />
         )}
         <LandingPageFooter landingPage={landingPage} />
       </Container>

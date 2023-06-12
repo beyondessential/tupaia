@@ -62,7 +62,7 @@ interface UserInfoProps {
   currentUserUsername?: string;
   isLandingPage?: boolean;
   secondaryColor?: string;
-  isUserLoggedIn?: boolean;
+  isLoggedIn?: boolean;
 }
 
 /**
@@ -72,9 +72,9 @@ export const UserInfo = ({
   currentUserUsername,
   isLandingPage,
   secondaryColor,
-  isUserLoggedIn,
+  isLoggedIn,
 }: UserInfoProps) => {
-  if (isUserLoggedIn)
+  if (isLoggedIn)
     return (
       <UsernameContainer $isLandingPage={isLandingPage}>{currentUserUsername}</UsernameContainer>
     );

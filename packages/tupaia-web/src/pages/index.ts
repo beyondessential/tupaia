@@ -4,7 +4,6 @@
  */
 export { LandingPage } from './LandingPage';
 export { Login } from './Login';
-export { ModalRoute } from './ModalRoute';
 export { PasswordResetForm } from './PasswordResetForm';
 export { Project } from './Project';
 export { Projects } from './Projects';

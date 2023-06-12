@@ -21,6 +21,7 @@ export const theme = createMuiTheme(
   {
     projectCard: {
       background: '#2e2f33',
+      fallBack: '#EFEFF0',
     },
     shape: {
       borderRadius: 3,
