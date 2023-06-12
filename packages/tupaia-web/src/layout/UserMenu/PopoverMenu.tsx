@@ -21,9 +21,9 @@ const Popover = styled(MuiPopover)`
 interface PopoverMenuProps {
   children: ReactNode;
   primaryColor?: string;
+  secondaryColor?: string;
   menuOpen: boolean;
   onCloseMenu: () => void;
-  secondaryColor?: string;
 }
 export const PopoverMenu = ({
   children,

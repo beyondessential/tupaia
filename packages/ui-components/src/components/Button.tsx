@@ -51,7 +51,7 @@ export const Button = ({
   loadingText = 'Loading',
   disabled = false,
   ...props
-}: ButtonProps) => (
+}: OverrideableComponentProps<ButtonProps>) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
     {isLoading ? `${loadingText}...` : children}
   </StyledButton>
@@ -77,7 +77,7 @@ export const GreyButton = styled(Button)<OverrideableComponentProps<ButtonProps>
 /*
  * Text Button
  */
-export const TextButton = styled(MuiButton)`
+export const TextButton = styled(MuiButton)<OverrideableComponentProps<ButtonProps>>`
   font-size: 0.8125rem;
   font-weight: 400;
 `;
@@ -143,7 +143,9 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-export const OutlinedButton = (props: MuiButtonProps) => <Button {...props} variant="outlined" />;
+export const OutlinedButton = (props: OverrideableComponentProps<ButtonProps>) => (
+  <Button {...props} variant="outlined" />
+);
 
 export const ErrorOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.error.main};

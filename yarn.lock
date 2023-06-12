@@ -8698,13 +8698,14 @@ __metadata:
     "@storybook/react": ^7.0.18
     "@storybook/react-vite": ^7.0.18
     "@storybook/testing-library": ^0.0.14-next.2
+    "@tupaia/types": 1.0.0
     "@types/material-ui": ^0.21.12
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
     npm-run-all: ^4.1.5
     react: ^16.13.1
     react-dom: ^16.13.1
-    react-hook-form: ^7.44.3
+    react-hook-form: ^6.15.1
     react-query: ^3.39.3
     react-router: 6.3.0
     react-router-dom: 6.3.0
@@ -34646,15 +34647,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0
   checksum: 5c8837ddc65e1481d8364dc7d595313c8ff96467f0ea10b4a95a2ec0ffda9de5d476f78b1f523f129a6b5f41de51ec6152be5eeae05086ad33b83e6d7a8bf030
-  languageName: node
-  linkType: hard
-
-"react-hook-form@npm:^7.44.3":
-  version: 7.44.3
-  resolution: "react-hook-form@npm:7.44.3"
-  peerDependencies:
-    react: ^16.8.0 || ^17 || ^18
-  checksum: 8dc97e705d28d842c60fd79b0f07b8b045c458c234e3bf422baab87a844d0ebecbdf3e349538eaaa5c12366cd85169f60a52ed84dd31cdd99729899e424548bf
   languageName: node
   linkType: hard
 
