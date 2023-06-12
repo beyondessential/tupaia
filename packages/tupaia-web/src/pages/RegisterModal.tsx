@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useRegister } from '../api/mutations';
 import { TextField } from '../components';
+import { FORM_FIELD_VALIDATION } from '../constants';
 import { AuthModal, ModalButton } from '../layout';
 
 const StyledAuthModal = styled(AuthModal)`
@@ -54,7 +55,7 @@ const FullWidthColumn = styled.div`
 `;
 
 export const RegisterModal = () => {
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors, getValues } = useForm();
   const { mutate: onSubmit, isLoading, isError, error } = useRegister();
 
   return (
@@ -80,10 +81,11 @@ export const RegisterModal = () => {
           })}
         />
         <TextField
-          name="email"
+          name="emailAddress"
+          type="email"
           label="Email *"
-          error={!!errors?.email}
-          helperText={errors?.email && errors?.email.message}
+          error={!!errors?.emailAddress}
+          helperText={errors?.emailAddress && errors?.emailAddress.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -98,19 +100,24 @@ export const RegisterModal = () => {
         <TextField
           name="password"
           label="Password *"
+          type="password"
           error={!!errors?.password}
           helperText={errors?.password && errors?.password.message}
           inputRef={register({
             required: 'Required',
+            ...FORM_FIELD_VALIDATION.PASSWORD,
           })}
         />
         <TextField
           name="passwordConfirm"
           label="Confirm password *"
+          type="password"
           error={!!errors?.passwordConfirm}
           helperText={errors?.passwordConfirm && errors?.passwordConfirm.message}
           inputRef={register({
             required: 'Required',
+            validate: value => value === getValues('password') || 'Passwords do not match.',
+            ...FORM_FIELD_VALIDATION.PASSWORD,
           })}
         />
         <TextField
@@ -132,11 +139,11 @@ export const RegisterModal = () => {
           })}
         />
         <Checkbox
-          name="terms"
+          name="hasAgreed"
           color="primary"
           label="I agree to the terms and conditions"
-          error={!!errors.terms}
-          helperText={errors?.terms?.message}
+          error={!!errors.hasAgreed}
+          helperText={errors?.hasAgreed?.message}
           inputRef={register({
             required: 'Required',
           })}

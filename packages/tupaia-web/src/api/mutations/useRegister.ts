@@ -7,23 +7,24 @@ import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
 import { useNavigateBack } from '../../utils/useNavigateBack';
 
-type LoginCredentials = {
-  email: string;
+// Todo: replace with request body type from backend
+type RegisterUserBody = {
+  contactNumber?: string;
+  emailAddress: string;
+  employer: string;
+  firstName: string;
+  lastName: string;
+  passwordConfirm: string;
   password: string;
+  position: string;
 };
 export const useRegister = () => {
   const queryClient = useQueryClient();
   const navigateBack = useNavigateBack();
 
-  return useMutation<any, Error, LoginCredentials, unknown>(
-    ({ email, password }: LoginCredentials) => {
-      return post('login', {
-        data: {
-          emailAddress: email,
-          password,
-          deviceName: window.navigator.userAgent,
-        },
-      });
+  return useMutation<any, Error, RegisterUserBody, unknown>(
+    (data: RegisterUserBody) => {
+      return post('signup', { data });
     },
     {
       onSuccess: () => {

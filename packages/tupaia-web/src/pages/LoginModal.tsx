@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { TextField } from '../components';
 import { AuthModal, ModalButton } from '../layout';
+import { FORM_FIELD_VALIDATION } from '../constants';
 
 const StyledForm = styled.form`
   margin-top: 1rem;
@@ -39,12 +40,10 @@ const ForgotPasswordText = styled(LinkText)`
 `;
 
 export const LoginModal = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit, register, errors } = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
+
+  console.log(errors);
 
   return (
     <AuthModal title="Log in" subtitle="Enter your details below to log in">
@@ -56,12 +55,9 @@ export const LoginModal = () => {
           type="email"
           error={!!errors?.email}
           helperText={errors?.email && errors?.email.message}
-          inputProps={register('email', {
+          inputRef={register({
             required: 'Required',
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'invalid email address',
-            },
+            ...FORM_FIELD_VALIDATION.EMAIL,
           })}
         />
         <TextField
@@ -70,8 +66,9 @@ export const LoginModal = () => {
           type="password"
           error={!!errors?.password}
           helperText={errors?.password && errors?.password.message}
-          inputProps={register('password', {
+          inputRef={register({
             required: 'Required',
+            ...FORM_FIELD_VALIDATION.PASSWORD,
           })}
         />
         <ForgotPasswordText as={Link} to="/reset-password">

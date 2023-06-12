@@ -14,3 +14,13 @@ export const PROJECT_ACCESS_TYPES = {
   ALLOWED: 'ALLOWED',
   DENIED: 'DENIED',
 };
+
+export const FORM_FIELD_VALIDATION = {
+  EMAIL: {
+    pattern: {
+      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      message: 'invalid email address',
+    },
+  },
+  PASSWORD: { minLength: { value: 9, message: 'Must be at over 8 characters long' } },
+};
