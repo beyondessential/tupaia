@@ -28,7 +28,6 @@ const Subtitle = styled(Typography)`
 `;
 
 const Wrapper = styled.div`
-  width: 660px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,12 +59,13 @@ interface AuthModalProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
+  className?: string;
 }
 
-export const AuthModal = ({ children, title, subtitle }: AuthModalProps) => {
+export const AuthModal = ({ children, title, subtitle, className }: AuthModalProps) => {
   const navigateBack = useNavigateBack();
   return (
-    <Modal isOpen={true} onClose={navigateBack}>
+    <Modal isOpen={true} onClose={navigateBack} className={className}>
       <Wrapper>
         <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
         <Title variant="h2">{title}</Title>

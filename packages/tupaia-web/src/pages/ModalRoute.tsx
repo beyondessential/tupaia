@@ -12,15 +12,16 @@ import { Modal } from '../components';
 /**
  * This is the wrapper to handle any search param routes that should be modals
  */
+
+const modalViews = {
+  [MODAL_TYPES.PROJECTS]: Projects,
+};
+
 export const ModalRoute = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const modal = searchParams.get('modal') as typeof MODAL_TYPES[keyof typeof MODAL_TYPES];
   // If no modal param or invalid modal param, return null
   if (!modal || !Object.values(MODAL_TYPES).includes(modal)) return null;
-
-  const modalViews = {
-    [MODAL_TYPES.PROJECTS]: Projects,
-  };
 
   const onCloseModal = () => {
     // remove the modal param from URLSearchParams
@@ -30,7 +31,7 @@ export const ModalRoute = () => {
 
   const ModalView = modalViews[modal];
   return (
-    <Modal isOpen={true} onClose={onCloseModal}>
+    <Modal isOpen={true} onClose={onCloseModal} className="project">
       <ModalView />
     </Modal>
   );

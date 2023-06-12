@@ -5,7 +5,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import { DEFAULT_URL, PROJECT_ACCESS_TYPES, TUPAIA_LIGHT_LOGO_SRC } from '../constants';
 import { useProjects, useUser } from '../api/queries';
@@ -24,7 +23,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding: 0.2rem 2rem 0;
   width: 100%;
-  max-width: 920px;
 `;
 
 const TagLine = styled.p`
