@@ -27,6 +27,12 @@ const Subtitle = styled(Typography)`
   margin-top: 1rem;
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const ModalButton = styled(Button)`
   text-transform: none;
   font-size: 1rem;
@@ -53,16 +59,19 @@ interface AuthModalProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
+  className?: string;
 }
 
-export const AuthModal = ({ children, title, subtitle }: AuthModalProps) => {
+export const AuthModal = ({ children, title, subtitle, className }: AuthModalProps) => {
   const navigateBack = useNavigateBack();
   return (
-    <Modal isOpen={true} onClose={navigateBack}>
-      <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
-      <Title variant="h2">{title}</Title>
-      {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
-      {children}
+    <Modal isOpen={true} onClose={navigateBack} className={className}>
+      <Wrapper>
+        <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
+        <Title variant="h2">{title}</Title>
+        {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
+        {children}
+      </Wrapper>
     </Modal>
   );
 };

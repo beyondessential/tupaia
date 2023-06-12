@@ -79,7 +79,7 @@ interface DrawerMenuProps {
   onCloseMenu: () => void;
   primaryColor?: string;
   secondaryColor?: string;
-  isUserLoggedIn: boolean;
+  isLoggedIn: boolean;
   currentUserUsername?: string;
 }
 
@@ -89,7 +89,7 @@ export const DrawerMenu = ({
   onCloseMenu,
   primaryColor,
   secondaryColor,
-  isUserLoggedIn,
+  isLoggedIn,
   currentUserUsername,
 }: DrawerMenuProps) => {
   return (
@@ -110,7 +110,7 @@ export const DrawerMenu = ({
         </MenuHeaderWrapper>
         <MenuList secondaryColor={secondaryColor}>
           {/** If the user is not logged in, show the register and login buttons */}
-          {!isUserLoggedIn && (
+          {!isLoggedIn && (
             <>
               <MenuItem href="/login" onCloseMenu={onCloseMenu}>
                 Log in

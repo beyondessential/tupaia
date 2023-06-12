@@ -65,7 +65,7 @@ export async function buildProjectDataForFrontend(project, req) {
   const hasAccess = entitiesWithAccess.length > 0;
   const homeEntity = getHomeEntity(project, entitiesWithAccess, entities);
 
-  const defaultDashboard = await fetchDefaultDashboardCode(
+  const defaultDashboardCode = await fetchDefaultDashboardCode(
     dashboardGroupName,
     entityHierachyId,
     homeEntity,
@@ -93,7 +93,7 @@ export async function buildProjectDataForFrontend(project, req) {
     dashboardGroupName,
     defaultMeasure,
     config,
-    defaultDashboard,
+    defaultDashboardCode,
   };
 }
 

@@ -7,5 +7,9 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 
 export const useProjects = () => {
-  return useQuery('projects', () => get('projects'));
+  return useQuery('projects', () => get('projects'), {
+    placeholderData: {
+      projects: [],
+    },
+  });
 };

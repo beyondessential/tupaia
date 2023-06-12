@@ -9,10 +9,10 @@ import { TRANSPARENT_BLACK } from '../../constants';
 import { SingleLandingPage } from '../../types';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import {
-  ProjectAllowedLink,
   ProjectCardList,
-  ProjectDeniedLink,
   ProjectLoginLink,
+  ProjectDeniedLink,
+  ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
 import { USER_ROUTES } from '../../Routes';
@@ -67,11 +67,11 @@ const Wrapper = styled.div`
 
 interface MultiProjectLandingPageProps
   extends Pick<SingleLandingPage, 'projects' | 'includeNameInHeader'> {
-  isUserLoggedIn: boolean;
+  isLoggedIn: boolean;
 }
 
 export function MultiProjectLandingPage({
-  isUserLoggedIn,
+  isLoggedIn,
   projects,
   includeNameInHeader,
 }: MultiProjectLandingPageProps) {
@@ -94,7 +94,7 @@ export function MultiProjectLandingPage({
               ),
               [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
-                if (isUserLoggedIn) {
+                if (isLoggedIn) {
                   return <ProjectDeniedLink url={`/${USER_ROUTES.REQUEST_ACCESS}/${code}`} />;
                 }
                 return <ProjectLoginLink />;

@@ -5,5 +5,4 @@
 
 export * from './BasicAuthHandler';
 export * from './ForwardingAuthHandler';
-export * from './SessionSwitchingAuthHandler';
 export * from './TokenAuthHandler';
