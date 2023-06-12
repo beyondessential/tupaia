@@ -12,8 +12,3 @@ export type QueryParameters = Record<string, string>;
 export interface AuthHandler {
   getAuthHeader: () => Promise<string>;
 }
-
-// Minimum definition for use in SessionSwitchingAuthHandler
-export interface SessionType {
-  getAuthHeader: () => Promise<string>;
-}

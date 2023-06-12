@@ -3,14 +3,15 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
   handleWith,
   useForwardUnhandledRequests,
   attachSessionIfAvailable,
+  SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
-import { SessionSwitchingAuthHandler } from '@tupaia/api-client';
 import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
@@ -26,11 +27,13 @@ import {
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
+const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
+
 export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
-    .attachApiClientToContext(req => new SessionSwitchingAuthHandler(req.session))
+    .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
@@ -38,7 +41,7 @@ export function createApp() {
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
 
-  useForwardUnhandledRequests(app, WEB_CONFIG_API_URL);
+  useForwardUnhandledRequests(app, WEB_CONFIG_API_URL, '', attachSessionIfAvailable, authHandlerProvider);
 
   return app;
 }
