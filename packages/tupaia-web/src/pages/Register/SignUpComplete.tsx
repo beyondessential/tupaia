@@ -4,31 +4,34 @@
  */
 
 import React from 'react';
-import { RouterButton } from '../../components/RouterButton';
+import { RouterButton } from '../../components';
+import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { USER_ROUTES } from '../../Routes.tsx';
+import { USER_ROUTES } from '../../Routes';
+
+const Container = styled.div`
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  width: 36rem;
+
+  a {
+    margin-top: 2rem;
+    width: 50%;
+  }
+`;
 
 const FormLink = styled.a`
   color: white;
   font-weight: 500;
 `;
 
-const Container = styled.div`
-  margin: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  button {
-    margin-top: 20px;
-    width: 50%;
-  }
-`;
-
 export const SignupComplete = () => {
   return (
     <Container>
-      <div>
+      <Typography>
         Congratulations, you have successfully signed up to Tupaia. To activate your account please{' '}
         <b>click the verification link in your email.</b> Once activated, you can use your new
         account to log in to tupaia.org as well as our app, Tupaia Meditrak on{' '}
@@ -47,7 +50,7 @@ export const SignupComplete = () => {
         >
           &nbsp;Android&nbsp;.
         </FormLink>
-      </div>
+      </Typography>
       <RouterButton to={USER_ROUTES.LOGIN}>Re-send verification email</RouterButton>
     </Container>
   );

@@ -15,6 +15,7 @@ import {
 import { DEFAULT_URL } from './constants';
 import { Layout } from './layout';
 import { ModalRoute } from './pages/ModalRoute';
+import { VerifyEmailResend } from './pages/VerifyEmailResend.tsx';
 
 export const USER_ROUTES = {
   LOGIN: '/login',
@@ -22,6 +23,7 @@ export const USER_ROUTES = {
   RESET_PASSWORD: '/reset-password',
   REQUEST_ACCESS: '/request-access',
   VERIFY_EMAIL: '/verify-email',
+  VERIFY_EMAIL_RESEND: '/verify-email-resend',
 };
 
 /**
@@ -66,6 +68,7 @@ export const Routes = () => {
           <Route element={<Layout />}>
             <Route path={USER_ROUTES.REGISTER} element={<RegisterModal />} />
             <Route path={USER_ROUTES.LOGIN} element={<LoginModal />} />
+            <Route path={USER_ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResend />} />
           </Route>
         </RouterRoutes>
       )}
