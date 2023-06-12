@@ -20,7 +20,7 @@ import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/m
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
 import { getExportPathForUser } from '../getExportPathForUser';
-import { zipMultipleFiles } from '../zipMultipleFiles';
+import { zipMultipleFiles } from '../../utilities';
 
 const FILE_PREFIX = 'survey_response_export';
 const MAX_RESPONSES_PER_FILE = 10000; // exporting too many responses in one file ends up out of memory
@@ -326,7 +326,10 @@ export async function exportResponsesToFile(
   }
 
   // Note: in the typical case of a single survey with normal amount of responses, files.length will be 0 at this point
-  return files.length > 0
-    ? zipMultipleFiles(getExportPathForUser(userId), files)
-    : saveCurrentWorkbook();
+  if (files.length === 0) {
+    return saveCurrentWorkbook();
+  }
+
+  const exportFilePath = `${getExportPathForUser(userId)}/tupaia_export_${Date.now()}.zip`;
+  return zipMultipleFiles(exportFilePath, files);
 }

@@ -1,0 +1,31 @@
+@hostname = localhost
+@port = 8090
+@host = {{hostname}}:{{port}}
+@version = v2
+
+@contentType = application/json
+
+### Login
+# @name login
+POST http://{{host}}/{{version}}/auth HTTP/2.0
+Authorization: Basic meditrak_client:{{meditrak-app-secret}}
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}",
+    "deviceName": "test",
+    "devicePlatform": "android",
+    "installId": "1234"
+}
+
+### Set tokens
+
+@accessToken = {{login.response.body.accessToken}}
+@user-authorization = Bearer {{accessToken}}
+
+### Download files
+
+GET http://{{host}}/{{version}}/downloadFiles?files=cat_pic.pdf HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
