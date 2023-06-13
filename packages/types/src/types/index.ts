@@ -5,6 +5,18 @@
  */
 
 export * from './models';
-export { StandardReportConfig, CustomReportConfig } from './models-extra';
+export {
+  StandardReportConfig,
+  CustomReportConfig,
+  DashboardItemConfig,
+  BarChartConfig,
+  ComposedChartConfig,
+  GaugeChartConfig,
+  LineChartConfig,
+  PieChartConfig,
+  BaseChartConfig,
+  CartesianChartConfig,
+  ValueType,
+} from './models-extra';
 export * from './requests';
 export * from './css';
