@@ -27,7 +27,8 @@ const MapLegendWrapper = styled.div`
   width: 300px;
   height: 50px;
   bottom: 1em;
-  left: calc(50% - 150px);
+  left: 50%;
+  transform: translateX(-50%);
   border-radius: 5px;
 `;
 
