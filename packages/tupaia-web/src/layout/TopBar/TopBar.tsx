@@ -9,6 +9,7 @@ import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
 import { useParams } from 'react-router';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { EntitySearch } from '../EntitySearch';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -46,26 +47,6 @@ const Header = styled.header<{
   }
 `;
 
-const Inner = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const SearchBar = styled.div`
-  display: none;
-  width: 300px;
-  height: 40px;
-  left: 1010px;
-  top: 15px;
-  background: #202124;
-  border-radius: 43px;
-  margin-right: 30px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-    display: block;
-  }
-`;
-
 export const TopBar = () => {
   const { landingPageUrlSegment } = useParams();
   // gets landing page data if landing page url segment is present, otherwise will return {}
@@ -80,9 +61,7 @@ export const TopBar = () => {
         displayName={includeNameInHeader}
         name={name}
       />
-      <Inner>
-        <SearchBar />
-      </Inner>
+      <EntitySearch />
       <UserMenu />
     </Header>
   );

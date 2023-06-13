@@ -5,5 +5,6 @@
  */
 
 export { useLandingPage } from './useLandingPage';
+export * from './useEntityData';
 export * from './useProjects';
 export * from './useUser';

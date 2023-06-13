@@ -143,6 +143,6 @@ export const TextField = ({
     fullWidth
     {...props}
     variant="outlined"
-    label={<InputLabel label={label} tooltip={tooltip} as="span" />}
+    label={label ? <InputLabel label={label} tooltip={tooltip} as="span" /> : null}
   />
 );

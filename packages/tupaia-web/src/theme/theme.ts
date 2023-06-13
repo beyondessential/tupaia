@@ -26,5 +26,8 @@ export const theme = createMuiTheme(
     shape: {
       borderRadius: 3,
     },
+    searchBar: {
+      background: '#202124',
+    },
   },
 );

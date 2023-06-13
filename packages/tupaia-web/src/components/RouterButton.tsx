@@ -9,9 +9,10 @@ import { Button } from '@tupaia/ui-components';
 interface RouterButtonProps extends Record<string, any> {
   to: LinkProps['to'];
   children?: ReactNode;
+  relative?: boolean;
 }
 
-export const RouterButton = ({ to, children, ...props }: RouterButtonProps) => {
+export const RouterButton = ({ to, relative, children, ...props }: RouterButtonProps) => {
   const location = useLocation();
 
   return (
