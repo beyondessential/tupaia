@@ -11,11 +11,13 @@ interface RouterButtonProps extends Record<string, any> {
   children?: ReactNode;
 }
 
-export const RouterButton = ({ to, children, ...props }: RouterButtonProps) => {
+export const RouterButton = ({ to, modal, children, ...props }: RouterButtonProps) => {
   const location = useLocation();
 
+  const link = modal ? { pathname: location.pathname, hash: modal } : to;
+
   return (
-    <Button to={to} component={Link} state={{ backgroundLocation: location }} {...props}>
+    <Button to={link} component={Link} state={{ backgroundLocation: location }} {...props}>
       {children}
     </Button>
   );

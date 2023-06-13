@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
 import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
+import { useHash } from '../../utils';
 
 /**
  * UserInfo is a component that displays the user's name if user is logged in, or a register and sign in button if not set
@@ -81,8 +82,8 @@ export const UserInfo = ({
     );
   return (
     <Wrapper>
-      <Register to={`?modal=${MODAL_ROUTES.REGISTER}`}>Register</Register>
-      <SignInButton to={`?modal=${MODAL_ROUTES.LOGIN}`} $secondaryColor={secondaryColor}>
+      <Register modal={MODAL_ROUTES.REGISTER}>Register</Register>
+      <SignInButton modal={MODAL_ROUTES.LOGIN} $secondaryColor={secondaryColor}>
         Log in
       </SignInButton>
     </Wrapper>

@@ -15,6 +15,7 @@ import {
   RequestAccessForm,
 } from '.';
 import { Modal } from '../components';
+import { useHash } from '../utils/useHash.ts';
 
 /**
  * This is the wrapper to handle any search param routes that should be modals
@@ -30,18 +31,19 @@ const modalViews = {
 };
 
 export const ModalRoutes = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const modal = searchParams.get('modal') as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
+  const { hash, clearHash } = useHash();
+  console.log('hash', hash);
 
-  console.log('modal', modal);
+  const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
 
   // If no modal param or invalid modal param, return null
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
   const onCloseModal = () => {
     // remove the modal param from URLSearchParams
-    searchParams.delete('modal');
-    setSearchParams(searchParams);
+    // searchParams.delete('modal');
+    // setSearchParams(searchParams);
+    clearHash();
   };
 
   const ModalView = modalViews[modal];
