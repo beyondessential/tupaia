@@ -21,20 +21,7 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
   overflow-x: hidden;
-  padding: 2rem 2rem 4rem;
-  max-width: 100%;
-  width: 41rem;
-
-  .projects {
-    width: 920px;
-  }
-  .login {
-    width: 41rem;
-  }
-
-  .register {
-    width: 41rem;
-  }
+  padding: 2rem 0 4rem;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`

@@ -12,7 +12,7 @@ import { AuthModalBody, AuthModalButton, TextField } from '../components';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
 import { EmailVerification } from './EmailVerification.tsx';
 
-const Container = styled(AuthModalBody)`
+const ModalBody = styled(AuthModalBody)`
   width: 42rem;
 `;
 
@@ -43,12 +43,12 @@ const ForgotPasswordText = styled(LinkText)`
   text-align: right;
 `;
 
-export const LoginModal = () => {
+export const Login = () => {
   const { handleSubmit, register, errors } = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
-    <Container title="Log in" subtitle="Enter your details below to log in">
+    <ModalBody title="Log in" subtitle="Enter your details below to log in">
       {isError ? <Typography color="error">{error.message}</Typography> : <EmailVerification />}
       <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)} noValidate>
         <TextField
@@ -83,6 +83,6 @@ export const LoginModal = () => {
           Don't have an account? <Link to={`?modal=${MODAL_ROUTES.REGISTER}`}>Register here</Link>
         </LinkText>
       </StyledForm>
-    </Container>
+    </ModalBody>
   );
 };

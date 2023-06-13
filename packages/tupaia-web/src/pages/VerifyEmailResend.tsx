@@ -5,14 +5,16 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import { AuthModalBody, AuthModalButton, TextField } from '../components';
 import { FORM_FIELD_VALIDATION } from '../constants';
-import { useForm } from 'react-hook-form';
-import { useLogin } from '../api/mutations';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useResendVerificationEmail } from '../api/mutations';
 
-const Container = styled(AuthModalBody)`
+const ModalBody = styled(AuthModalBody)`
   width: 53rem;
 `;
+
 const CheckEmailMessage = styled.p`
   text-align: center;
   padding: 0 15px;
@@ -20,29 +22,26 @@ const CheckEmailMessage = styled.p`
 
 const StyledForm = styled.form`
   margin-top: 1rem;
-  width: 42rem;
+  width: 21rem;
   max-width: 100%;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 2rem;
-    row-gap: 0;
-  }
 `;
 
 export const VerifyEmailResend = () => {
   const { handleSubmit, register, errors } = useForm();
-  const { mutate: login, isSuccess, isLoading, isError, error } = useLogin();
+  const { mutate: submit, isSuccess, isLoading, isError, error } = useResendVerificationEmail();
 
   return (
-    <Container title="Register" subtitle="Enter your details below to create an account">
+    <ModalBody
+      title="Resend verification email"
+      subtitle="Enter your email below to resend verification email"
+    >
+      {isError && <Typography color="error">{error.message}</Typography>}
       {isSuccess ? (
         <CheckEmailMessage>
           Please check your email for further instructions on how to verify your account.
         </CheckEmailMessage>
       ) : (
-        <StyledForm>
+        <StyledForm onSubmit={handleSubmit(submit as SubmitHandler<any>)} noValidate>
           <TextField
             name="email"
             label="Email *"
@@ -54,9 +53,11 @@ export const VerifyEmailResend = () => {
               ...FORM_FIELD_VALIDATION.EMAIL,
             })}
           />
-          <AuthModalButton type="submit">Submit</AuthModalButton>
+          <AuthModalButton type="submit" isLoading={isLoading}>
+            Resend verification email
+          </AuthModalButton>
         </StyledForm>
       )}
-    </Container>
+    </ModalBody>
   );
 };

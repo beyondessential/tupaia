@@ -15,7 +15,7 @@ import { Checkbox } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
 import { MODAL_ROUTES } from '../../constants';
 
-const Container = styled(AuthModalBody)`
+const ModalBody = styled(AuthModalBody)`
   width: 53rem;
 `;
 
@@ -30,6 +30,10 @@ const StyledForm = styled.form`
     column-gap: 2rem;
     row-gap: 0;
   }
+`;
+
+const StyledCheckbox = styled(Checkbox)`
+  display: flex;
 `;
 
 const LinkText = styled(Typography)`
@@ -51,12 +55,12 @@ const FullWidthColumn = styled.div`
   grid-column: 1/-1;
 `;
 
-export const RegisterModal = () => {
+export const Register = () => {
   const { mutate: onSubmit, isLoading, isSuccess, isError, error } = useRegister();
   const { errors, handleSubmit, getValues, register } = useForm();
 
   return (
-    <Container
+    <ModalBody
       title="Register"
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
     >
@@ -143,7 +147,7 @@ export const RegisterModal = () => {
                 required: 'Required',
               })}
             />
-            <Checkbox
+            <StyledCheckbox
               name="hasAgreed"
               color="primary"
               label="I agree to the terms and conditions"
@@ -165,6 +169,6 @@ export const RegisterModal = () => {
           </StyledForm>
         </>
       )}
-    </Container>
+    </ModalBody>
   );
 };

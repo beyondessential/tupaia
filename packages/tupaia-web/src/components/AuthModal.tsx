@@ -61,9 +61,9 @@ interface AuthModalProps {
   subtitle?: string;
 }
 
-export const AuthModalBody = ({ children, title, subtitle }: AuthModalProps) => {
+export const AuthModalBody = ({ children, title, subtitle, className }: AuthModalProps) => {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
       <Title variant="h2">{title}</Title>
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}

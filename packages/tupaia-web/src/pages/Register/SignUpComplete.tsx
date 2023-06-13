@@ -51,7 +51,9 @@ export const SignupComplete = () => {
           &nbsp;Android&nbsp;.
         </FormLink>
       </Typography>
-      <RouterButton to={`?modal=${MODAL_ROUTES.LOGIN}`}>Re-send verification email</RouterButton>
+      <RouterButton to={`?modal=${MODAL_ROUTES.VERIFY_EMAIL_RESEND}`}>
+        Re-send verification email
+      </RouterButton>
     </Container>
   );
 };

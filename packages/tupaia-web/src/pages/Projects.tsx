@@ -26,6 +26,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.2rem 2rem 0;
+  width: 58rem;
 `;
 
 const TagLine = styled.p`
@@ -73,7 +74,7 @@ export const Projects = () => {
   } = useProjects();
   const { isLoggedIn } = useUser();
   return (
-    <Wrapper className="projects">
+    <Wrapper>
       <div>
         <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
         <TagLine>
