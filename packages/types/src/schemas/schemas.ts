@@ -24730,9 +24730,6 @@ export const EntitySchema = {
 				"disaster",
 				"district",
 				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -25439,9 +25436,6 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"disaster",
 				"district",
 				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -25607,27 +25601,6 @@ export const QuestionSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate"
-			],
 			"type": "string"
 		}
 	},
@@ -26239,31 +26212,6 @@ export const ServiceTypeSchema = {
 	"type": "string"
 } 
 
-export const QuestionTypeSchema = {
-	"enum": [
-		"Arithmetic",
-		"Autocomplete",
-		"Binary",
-		"Checkbox",
-		"CodeGenerator",
-		"Condition",
-		"Date",
-		"DateOfData",
-		"DateTime",
-		"Entity",
-		"File",
-		"FreeText",
-		"Geolocate",
-		"Instruction",
-		"Number",
-		"Photo",
-		"PrimaryEntity",
-		"Radio",
-		"SubmissionDate"
-	],
-	"type": "string"
-} 
-
 export const PrimaryPlatformSchema = {
 	"enum": [
 		"lesmis",
@@ -26295,9 +26243,6 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"facility",
-		"facility_building",
-		"facility_division",
-		"facility_section",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
@@ -26438,9 +26383,6 @@ export const EntityCreatedSchema = {
 				"disaster",
 				"district",
 				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -26610,9 +26552,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"disaster",
 							"district",
 							"facility",
-							"facility_building",
-							"facility_division",
-							"facility_section",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",

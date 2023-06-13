@@ -449,7 +449,7 @@ export interface Question {
   'option_set_id'?: string | null;
   'options'?: string[] | null;
   'text': string;
-  'type': QuestionType;
+  'type': string;
 }
 export interface RefreshToken {
   'device'?: string | null;
@@ -600,27 +600,6 @@ export enum ServiceType {
   'data-lake' = 'data-lake',
   'superset' = 'superset',
 }
-export enum QuestionType {
-  'Arithmetic' = 'Arithmetic',
-  'Autocomplete' = 'Autocomplete',
-  'Binary' = 'Binary',
-  'Checkbox' = 'Checkbox',
-  'CodeGenerator' = 'CodeGenerator',
-  'Condition' = 'Condition',
-  'Date' = 'Date',
-  'DateOfData' = 'DateOfData',
-  'DateTime' = 'DateTime',
-  'Entity' = 'Entity',
-  'FreeText' = 'FreeText',
-  'Geolocate' = 'Geolocate',
-  'Instruction' = 'Instruction',
-  'Number' = 'Number',
-  'Photo' = 'Photo',
-  'PrimaryEntity' = 'PrimaryEntity',
-  'Radio' = 'Radio',
-  'SubmissionDate' = 'SubmissionDate',
-  'File' = 'File',
-}
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
   'lesmis' = 'lesmis',
@@ -667,9 +646,6 @@ export enum EntityType {
   'msupply_store' = 'msupply_store',
   'complaint' = 'complaint',
   'water_sample' = 'water_sample',
-  'facility_building' = 'facility_building',
-  'facility_division' = 'facility_division',
-  'facility_section' = 'facility_section',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
