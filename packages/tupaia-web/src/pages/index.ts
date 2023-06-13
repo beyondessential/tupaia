@@ -9,5 +9,6 @@ export { Project } from './Project';
 export { Register } from './Register';
 export { Projects } from './Projects';
 export { RequestAccessForm } from './RequestAccessForm';
-export { EmailVerification } from './EmailVerification.tsx';
-export { VerifyEmailResend } from './VerifyEmailResend.tsx';
+export { EmailVerification } from './EmailVerification';
+export { VerifyEmailResend } from './VerifyEmailResend';
+export { ModalRoutes } from './ModalRoutes';

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { post } from '../api';
 
 // Todo: replace with request body type from backend
@@ -18,16 +18,7 @@ type RegisterUserBody = {
   position: string;
 };
 export const useRegister = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation<any, Error, RegisterUserBody, unknown>(
-    (data: RegisterUserBody) => {
-      return post('signup', { data });
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries();
-      },
-    },
-  );
+  return useMutation<any, Error, RegisterUserBody, unknown>((data: RegisterUserBody) => {
+    return post('signup', { data });
+  });
 };

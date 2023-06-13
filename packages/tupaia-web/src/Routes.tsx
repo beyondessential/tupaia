@@ -4,10 +4,9 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { LandingPage, Project } from './pages';
+import { ModalRoutes, LandingPage, Project } from './pages';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { Layout } from './layout';
-import { ModalRoutes } from './pages/ModalRoutes.tsx';
 
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
@@ -29,7 +28,29 @@ export const Routes = () => {
           <Route
             path="/verify-email"
             element={
-              <Navigate to={{ ...location, pathname: `?modal=${MODAL_ROUTES.LOGIN}` }} replace />
+              <Navigate
+                to={{ ...location, pathname: `${DEFAULT_URL}?modal=${MODAL_ROUTES.LOGIN}` }}
+                replace
+              />
+            }
+          />
+          {/* Redirect /login and /register to the correct routes just in case */}
+          <Route
+            path="/login"
+            element={
+              <Navigate
+                to={{ ...location, pathname: `${DEFAULT_URL}?modal=${MODAL_ROUTES.LOGIN}` }}
+                replace
+              />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Navigate
+                to={{ ...location, pathname: `${DEFAULT_URL}?modal=${MODAL_ROUTES.REGISTER}` }}
+                replace
+              />
             }
           />
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
