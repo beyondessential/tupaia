@@ -37,6 +37,9 @@ export enum {{convertedName}} {
 {{#each custom.imports as |import|}}
 import { {{@key}} } from '{{this}}';
 {{/each}}
+{{#each custom.exports as |export|}}
+export { {{@key}} } from '{{this}}';
+{{/each}}
 
 {{#if config.schemaAsNamespace}}
 {{#each grouped as |group key|}}

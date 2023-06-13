@@ -25,6 +25,18 @@
     "imports": {
       "ReportConfig": "./models-extra",
       "DashboardItemConfig": "./models-extra"
+    },
+    "exports": {
+      "DashboardItemConfig": "./models-extra",
+      "StandardReportConfig": "./models-extra",
+      "BarChartConfig": "./models-extra",
+      "ComposedChartConfig": "./models-extra",
+      "GaugeChartConfig": "./models-extra",
+      "LineChartConfig": "./models-extra",
+      "PieChartConfig": "./models-extra",
+      "BaseChartConfig": "./models-extra",
+      "CartesianChartConfig": "./models-extra",
+      "ValueType": "./models-extra"
     }
   }
 }
