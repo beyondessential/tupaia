@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import AWS from 'aws-sdk';
 import winston from 'winston';
-import { S3Client } from '@tupaia/utils';
+import { S3Client, S3 } from '@tupaia/utils';
 
 /**
  *  action object e.g.
@@ -21,7 +20,7 @@ import { S3Client } from '@tupaia/utils';
 
 export const addSurveyFile = async (models, { filename, data }) => {
   try {
-    const s3Client = new S3Client(new AWS.S3());
+    const s3Client = new S3Client(new S3());
     await s3Client.uploadFileFromBase64(filename, data);
   } catch (error) {
     winston.error(error.message);
