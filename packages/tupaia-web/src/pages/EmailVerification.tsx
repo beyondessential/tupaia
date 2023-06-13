@@ -20,12 +20,9 @@ const Error = styled(Typography)`
 export const EmailVerification = () => {
   const { isSuccess, isError } = useEmailVerification();
 
-  return (
-    <>
-      {isSuccess && <Success>Your e-mail was successfully verified</Success>}
-      {isError && <Error>Your email address could not be verified</Error>}
-    </>
-  );
+  if (isSuccess) return <Success>Your e-mail was successfully verified</Success>;
+  if (isError) return <Error>Your email address could not be verified</Error>;
+  return null;
 };
 
 /*

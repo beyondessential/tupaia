@@ -75,7 +75,7 @@ export const UserMenu = () => {
   );
 
   const ChangePassword = (
-    <BaseMenuItem href={MODAL_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
+    <BaseMenuItem href={`?modal=${MODAL_ROUTES.RESET_PASSWORD}`}>Change password</BaseMenuItem>
   );
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn ? [VisitMainSite, ChangePassword] : [VisitMainSite];

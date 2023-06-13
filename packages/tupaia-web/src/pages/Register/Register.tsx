@@ -38,12 +38,12 @@ const StyledCheckbox = styled(Checkbox)`
 
 const LinkText = styled(Typography)`
   font-weight: 400;
-  font-size: 11px;
-  line-height: 15px;
-  color: white;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: ${props => props.theme.palette.common.white};
 
   a {
-    color: white;
+    color: ${props => props.theme.palette.common.white};
   }
 
   ${AuthModalButton} + & {
@@ -83,7 +83,7 @@ export const Register = () => {
               name="lastName"
               label="Last name *"
               error={!!errors?.lastName}
-              helperText={errors?.firstNalastNameme && errors?.lastName.message}
+              helperText={errors?.lastName && errors?.lastName.message}
               inputRef={register({
                 required: 'Required',
               })}
@@ -95,7 +95,6 @@ export const Register = () => {
               error={!!errors?.emailAddress}
               helperText={errors?.emailAddress && errors?.emailAddress.message}
               inputRef={register({
-                required: 'Required',
                 ...FORM_FIELD_VALIDATION.EMAIL,
               })}
             />
@@ -113,7 +112,6 @@ export const Register = () => {
               error={!!errors?.password}
               helperText={errors?.password && errors?.password.message}
               inputRef={register({
-                required: 'Required',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
               })}
             />
@@ -124,7 +122,6 @@ export const Register = () => {
               error={!!errors?.passwordConfirm}
               helperText={errors?.passwordConfirm && errors?.passwordConfirm.message}
               inputRef={register({
-                required: 'Required',
                 validate: value => value === getValues('password') || 'Passwords do not match.',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
               })}

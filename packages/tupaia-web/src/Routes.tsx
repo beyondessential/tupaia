@@ -27,7 +27,7 @@ export const Routes = () => {
           <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
           {/* Email verification links redirect to the login page where the verification happens */}
           <Route path="/verify-email" element={<EmailVerificationRoute />} />
-          {/* Redirect /login and /register to the correct routes just in case */}
+          {/* Redirect modal routes to the correct routes just in case */}
           <Route
             path="/login"
             element={
@@ -49,6 +49,19 @@ export const Routes = () => {
                   ...location,
                   pathname: DEFAULT_URL,
                   search: `modal=${MODAL_ROUTES.REGISTER}`,
+                }}
+                replace
+              />
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <Navigate
+                to={{
+                  ...location,
+                  pathname: DEFAULT_URL,
+                  search: `modal=${MODAL_ROUTES.PROJECTS}`,
                 }}
                 replace
               />

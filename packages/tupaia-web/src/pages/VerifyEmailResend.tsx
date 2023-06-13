@@ -17,7 +17,7 @@ const ModalBody = styled(AuthModalBody)`
 
 const CheckEmailMessage = styled.p`
   text-align: center;
-  padding: 0 15px;
+  padding: 0 0.9375rem;
 `;
 
 const StyledForm = styled.form`
@@ -49,7 +49,6 @@ export const VerifyEmailResend = () => {
             error={!!errors?.email}
             helperText={errors?.email && errors?.email.message}
             inputRef={register({
-              required: 'Required',
               ...FORM_FIELD_VALIDATION.EMAIL,
             })}
           />

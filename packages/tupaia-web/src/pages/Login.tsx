@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { AuthModalBody, AuthModalButton, TextField } from '../components';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
-import { EmailVerification } from './EmailVerification.tsx';
+import { EmailVerification } from './EmailVerification';
 
 const ModalBody = styled(AuthModalBody)`
   width: 42rem;
@@ -58,7 +58,6 @@ export const Login = () => {
           error={!!errors?.email}
           helperText={errors?.email && errors?.email.message}
           inputRef={register({
-            required: 'Required',
             ...FORM_FIELD_VALIDATION.EMAIL,
           })}
         />
@@ -69,11 +68,10 @@ export const Login = () => {
           error={!!errors?.password}
           helperText={errors?.password && errors?.password.message}
           inputRef={register({
-            required: 'Required',
             ...FORM_FIELD_VALIDATION.PASSWORD,
           })}
         />
-        <ForgotPasswordText as={Link} to="/reset-password">
+        <ForgotPasswordText as={Link} to={`?modal=${MODAL_ROUTES.RESET_PASSWORD}`}>
           Forgot password?
         </ForgotPasswordText>
         <AuthModalButton type="submit" isLoading={isLoading}>

@@ -3,4 +3,4 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export { Register } from './Register.tsx';
+export { Register } from './Register';
