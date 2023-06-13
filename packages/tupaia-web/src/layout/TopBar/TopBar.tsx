@@ -14,8 +14,8 @@ const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
 /* Both min height and height must be specified due to bugs in Firefox flexbox, that means that topbar height will be ignored even if using flex-basis. */
 const Header = styled.header<{
-  $primaryColor?: string;
-  $secondaryColor?: string;
+  $primaryColor?: string | null;
+  $secondaryColor?: string | null;
 }>`
   background-color: ${({ $primaryColor, theme }) =>
     $primaryColor || theme.palette.background.default};

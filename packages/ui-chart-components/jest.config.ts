@@ -3,7 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import baseConfig from '../../jest.config-ts.json';
+
 module.exports = {
+  ...baseConfig,
   moduleDirectories: ['node_modules'],
   collectCoverageFrom: ['**/src/components/**/*.js'],
   // handle static assets @see https://jestjs.io/docs/webpack#handling-static-assets
