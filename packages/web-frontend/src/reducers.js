@@ -21,7 +21,7 @@ import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
 import { isMobile, getUniqueViewId } from './utils';
-import { LANDING } from './containers/OverlayDiv/constants';
+import { LANDING, AUTH_VIEW_STATES } from './containers/OverlayDiv/constants';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
 
@@ -58,6 +58,7 @@ import {
   SHOW_UNVERIFIED_LOGIN,
   FETCH_LOGOUT_ERROR,
   FETCH_LOGOUT_SUCCESS,
+  FETCH_LANDING_PAGE_LOGOUT_SUCCESS,
   FETCH_MEASURES_ERROR,
   FETCH_MEASURES_SUCCESS,
   CHANGE_ORG_UNIT_ERROR,
@@ -98,6 +99,7 @@ import {
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_OVERLAY_CONFIGS,
+  SET_AUTH_VIEW_STATE,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import { updateOverlayConfigs } from './utils/mapOverlays';
@@ -116,6 +118,7 @@ function authentication(
     successMessage: '',
     emailVerified: EMAIL_VERIFIED_STATUS.VERIFIED,
     errors: [],
+    authViewState: AUTH_VIEW_STATES.LOGIN,
   },
   action,
 ) {
@@ -212,6 +215,7 @@ function authentication(
         isRequestingLogin: false,
       };
     case FETCH_LOGOUT_SUCCESS:
+    case FETCH_LANDING_PAGE_LOGOUT_SUCCESS:
       return {
         ...state,
         currentUserUsername: 'Public User',
@@ -241,6 +245,8 @@ function authentication(
       };
     case SHOW_SESSION_EXPIRED_ERROR:
       return { ...state, showSessionExpireDialog: true };
+    case SET_AUTH_VIEW_STATE:
+      return { ...state, authViewState: action.authViewState };
     default:
       return state;
   }
@@ -558,6 +564,7 @@ function searchBar(
         searchString: '',
       };
     case FETCH_LOGOUT_SUCCESS:
+    case FETCH_LANDING_PAGE_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
       return {
         ...state,

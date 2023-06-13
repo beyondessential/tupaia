@@ -46,7 +46,12 @@ export enum QueryConjunctions {
  * }
  */
 type ConjunctionCriteria<T> = {
-  [field in QueryConjunctions]?: DbFilterCriteria<T>;
+  [QueryConjunctions.AND]?: DbFilterCriteria<T>;
+  [QueryConjunctions.OR]?: DbFilterCriteria<T>;
+  [QueryConjunctions.RAW]?: {
+    sql: string;
+    parameters: string[];
+  };
 };
 
 type DbFilterCriteria<T> = FilterCriteria<T> & ConjunctionCriteria<T>;
@@ -68,6 +73,8 @@ export type QueryOptions = {
   limit?: number;
   offset?: number;
   sort?: string[];
+  joinWith?: string;
+  joinCondition?: [string, string];
 };
 
 type BaseModelOverrides<Fields = unknown, Type = unknown> = {
