@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 100%;
 `;
 
 const Logo = styled.img`
@@ -60,12 +59,11 @@ interface AuthModalProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
-  className?: string;
 }
 
-export const AuthModalBody = ({ children, title, subtitle, className }: AuthModalProps) => {
+export const AuthModalBody = ({ children, title, subtitle }: AuthModalProps) => {
   return (
-    <Wrapper className={className}>
+    <Wrapper>
       <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
       <Title variant="h2">{title}</Title>
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}

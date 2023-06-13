@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { AuthModalBody, AuthModalButton, TextField } from '../components';
-import { FORM_FIELD_VALIDATION, USER_ROUTES } from '../constants';
+import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
 import { EmailVerification } from './EmailVerification.tsx';
 
 const Container = styled(AuthModalBody)`
@@ -80,7 +80,7 @@ export const LoginModal = () => {
           Log in
         </AuthModalButton>
         <LinkText align="center">
-          Don't have an account? <Link to={`?modal=${USER_ROUTES.REGISTER}`}>Register here</Link>
+          Don't have an account? <Link to={`?modal=${MODAL_ROUTES.REGISTER}`}>Register here</Link>
         </LinkText>
       </StyledForm>
     </Container>

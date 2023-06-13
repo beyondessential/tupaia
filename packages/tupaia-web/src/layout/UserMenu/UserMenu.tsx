@@ -12,7 +12,7 @@ import { useLandingPage, useUser } from '../../api/queries';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
-import { USER_ROUTES } from '../../constants';
+import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
 
 const UserMenuContainer = styled.div<{
@@ -69,13 +69,13 @@ export const UserMenu = () => {
   );
 
   const ViewProjects = (
-    <BaseMenuItem key="projects" href={`?modal=${USER_ROUTES.PROJECTS}`}>
+    <BaseMenuItem key="projects" href={`?modal=${MODAL_ROUTES.PROJECTS}`}>
       View projects
     </BaseMenuItem>
   );
 
   const ChangePassword = (
-    <BaseMenuItem href={USER_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
+    <BaseMenuItem href={MODAL_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
   );
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn ? [VisitMainSite, ChangePassword] : [VisitMainSite];

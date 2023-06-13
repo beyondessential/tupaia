@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import {
-  USER_ROUTES,
+  MODAL_ROUTES,
   DEFAULT_URL,
   PROJECT_ACCESS_TYPES,
   TUPAIA_LIGHT_LOGO_SRC,
@@ -26,7 +26,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.2rem 2rem 0;
-  width: 58rem;
 `;
 
 const TagLine = styled.p`
@@ -74,7 +73,7 @@ export const Projects = () => {
   } = useProjects();
   const { isLoggedIn } = useUser();
   return (
-    <Wrapper>
+    <Wrapper className="projects">
       <div>
         <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
         <TagLine>
@@ -103,11 +102,11 @@ export const Projects = () => {
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 const LINK = {
                   TEXT: 'Log in',
-                  URL: `?modal=${USER_ROUTES.LOGIN}`,
+                  URL: `?modal=${MODAL_ROUTES.LOGIN}`,
                 };
                 if (isLoggedIn) {
                   LINK.TEXT = 'Request Access';
-                  LINK.URL = `/${USER_ROUTES.REQUEST_ACCESS}/${code}`;
+                  LINK.URL = `/${MODAL_ROUTES.REQUEST_ACCESS}/${code}`;
                 }
                 return (
                   <LegacyProjectDeniedLink url={LINK.URL}>{LINK.TEXT}</LegacyProjectDeniedLink>

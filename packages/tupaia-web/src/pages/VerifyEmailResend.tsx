@@ -11,9 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useLogin } from '../api/mutations';
 
 const Container = styled(AuthModalBody)`
-  .MuiDialog-paper {
-    width: 53rem;
-  }
+  width: 53rem;
 `;
 const CheckEmailMessage = styled.p`
   text-align: center;

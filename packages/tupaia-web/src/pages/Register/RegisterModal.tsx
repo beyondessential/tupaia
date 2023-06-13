@@ -13,7 +13,7 @@ import { TextField, AuthModalBody, AuthModalButton } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { Checkbox } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
-import { USER_ROUTES } from '../../constants';
+import { MODAL_ROUTES } from '../../constants';
 
 const Container = styled(AuthModalBody)`
   width: 53rem;
@@ -158,7 +158,8 @@ export const RegisterModal = () => {
                 Register account
               </AuthModalButton>
               <LinkText align="center">
-                Already have an account? <Link to={`?modal=${USER_ROUTES.LOGIN}`}>Log in here</Link>
+                Already have an account?{' '}
+                <Link to={`?modal=${MODAL_ROUTES.LOGIN}`}>Log in here</Link>
               </LinkText>
             </FullWidthColumn>
           </StyledForm>

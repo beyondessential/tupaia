@@ -9,7 +9,7 @@ export const DEFAULT_URL = `/${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;
 
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
 
-export enum USER_ROUTES {
+export enum MODAL_ROUTES {
   PROJECTS = 'projects',
   LOGIN = 'login',
   REGISTER = 'register',

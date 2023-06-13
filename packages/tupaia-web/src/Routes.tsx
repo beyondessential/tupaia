@@ -5,9 +5,9 @@
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import { LandingPage, Project } from './pages';
-import { USER_ROUTES, DEFAULT_URL } from './constants';
+import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { Layout } from './layout';
-import { ModalRoute } from './pages/ModalRoute';
+import { ModalRoutes } from './pages/ModalRoutes.tsx';
 
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
@@ -20,7 +20,7 @@ export const Routes = () => {
 
   return (
     <>
-      <ModalRoute />
+      <ModalRoutes />
       <RouterRoutes location={state?.backgroundLocation || location}>
         {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
         <Route element={<Layout />}>
@@ -29,7 +29,7 @@ export const Routes = () => {
           <Route
             path="/verify-email"
             element={
-              <Navigate to={{ ...location, pathname: `?modal=${USER_ROUTES.LOGIN}` }} replace />
+              <Navigate to={{ ...location, pathname: `?modal=${MODAL_ROUTES.LOGIN}` }} replace />
             }
           />
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
