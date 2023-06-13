@@ -6,7 +6,14 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MODAL_ROUTES } from '../constants';
-import { Projects, Login, Register, VerifyEmailResend } from '.';
+import {
+  Projects,
+  Login,
+  Register,
+  VerifyEmailResend,
+  PasswordResetForm,
+  RequestAccessForm,
+} from '.';
 import { Modal } from '../components';
 
 /**
@@ -17,8 +24,8 @@ const modalViews = {
   [MODAL_ROUTES.PROJECTS]: Projects,
   [MODAL_ROUTES.LOGIN]: Login,
   [MODAL_ROUTES.REGISTER]: Register,
-  // [MODAL_ROUTES.RESET_PASSWORD]: Projects,
-  // [MODAL_ROUTES.REQUEST_ACCESS]: Projects,
+  [MODAL_ROUTES.RESET_PASSWORD]: PasswordResetForm,
+  [MODAL_ROUTES.REQUEST_ACCESS]: RequestAccessForm,
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
 };
 

@@ -59,6 +59,7 @@ interface AuthModalProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
+  className?: string;
 }
 
 export const AuthModalBody = ({ children, title, subtitle, className }: AuthModalProps) => {
