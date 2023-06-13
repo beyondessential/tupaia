@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { ModalRoutes, LandingPage, Project } from './pages';
+import { ModalRoutes, LandingPage, Project, EmailVerificationRoute } from './pages';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { Layout } from './layout';
 
@@ -13,6 +13,7 @@ import { Layout } from './layout';
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
  *
  * **/
+
 export const Routes = () => {
   let location = useLocation();
   const state = location.state as { backgroundLocation?: Location };
@@ -25,21 +26,17 @@ export const Routes = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
           {/* Email verification links redirect to the login page where the verification happens */}
-          <Route
-            path="/verify-email"
-            element={
-              <Navigate
-                to={{ ...location, pathname: `${DEFAULT_URL}?modal=${MODAL_ROUTES.LOGIN}` }}
-                replace
-              />
-            }
-          />
+          <Route path="/verify-email" element={<EmailVerificationRoute />} />
           {/* Redirect /login and /register to the correct routes just in case */}
           <Route
             path="/login"
             element={
               <Navigate
-                to={{ ...location, pathname: `${DEFAULT_URL}?modal=${MODAL_ROUTES.LOGIN}` }}
+                to={{
+                  ...location,
+                  pathname: DEFAULT_URL,
+                  search: `modal=${MODAL_ROUTES.LOGIN}`,
+                }}
                 replace
               />
             }
@@ -48,7 +45,11 @@ export const Routes = () => {
             path="/register"
             element={
               <Navigate
-                to={{ ...location, pathname: `${DEFAULT_URL}?modal=${MODAL_ROUTES.REGISTER}` }}
+                to={{
+                  ...location,
+                  pathname: DEFAULT_URL,
+                  search: `modal=${MODAL_ROUTES.REGISTER}`,
+                }}
                 replace
               />
             }

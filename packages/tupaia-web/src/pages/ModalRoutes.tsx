@@ -33,6 +33,8 @@ export const ModalRoutes = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const modal = searchParams.get('modal') as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
 
+  console.log('modal', modal);
+
   // If no modal param or invalid modal param, return null
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
