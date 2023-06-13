@@ -7,6 +7,7 @@ export * from './Chart';
 export * from './DataLibrary';
 export * from './DataTable';
 export * from './DateRangePicker';
+export * from './DownloadFilesVisual';
 export * from './HorizontalTree';
 export * from './Icons';
 export * from './Inputs';
