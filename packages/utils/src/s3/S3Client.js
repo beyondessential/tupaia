@@ -70,10 +70,10 @@ export class S3Client {
   /**
    * @public
    * @param {string} fileName
-   * @param {*} base64EncodedFile
+   * @param {*} file
    * @returns
    */
-  async uploadFileFromBase64(fileName, base64EncodedFile) {
+  async uploadFile(fileName, file) {
     const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
 
     const alreadyExists = await this.checkIfFileExists(s3FilePath);
@@ -81,7 +81,7 @@ export class S3Client {
       throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPrivateFile(s3FilePath, base64EncodedFile);
+    return this.uploadPrivateFile(s3FilePath, file);
   }
 
   async deleteFile(filePath) {

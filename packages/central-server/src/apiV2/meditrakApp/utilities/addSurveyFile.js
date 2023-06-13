@@ -21,7 +21,7 @@ import { S3Client, S3 } from '@tupaia/utils';
 export const addSurveyFile = async (models, { filename, data }) => {
   try {
     const s3Client = new S3Client(new S3());
-    await s3Client.uploadFileFromBase64(filename, data);
+    await s3Client.uploadFile(filename, data);
   } catch (error) {
     winston.error(error.message);
   }
