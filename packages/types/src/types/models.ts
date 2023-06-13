@@ -9,16 +9,6 @@
  */
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
-export { DashboardItemConfig } from './models-extra';
-export { StandardReportConfig } from './models-extra';
-export { BarChartConfig } from './models-extra';
-export { ComposedChartConfig } from './models-extra';
-export { GaugeChartConfig } from './models-extra';
-export { LineChartConfig } from './models-extra';
-export { PieChartConfig } from './models-extra';
-export { BaseChartConfig } from './models-extra';
-export { CartesianChartConfig } from './models-extra';
-export { ValueType } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
