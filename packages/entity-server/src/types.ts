@@ -18,6 +18,16 @@ export interface EntityServerModelRegistry extends ModelRegistry {
   readonly project: ProjectModel;
 }
 
+// Extracts keys that have object-like values from type T
+export type ObjectLikeKeys<T> = {
+  [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;
+}[keyof T];
+
+// Extracts keys that have numeric values from type T
+export type NumericKeys<T> = {
+  [K in keyof T]: T[K] extends number ? K : never;
+}[keyof T];
+
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
 type SimpleKeys<T> = {
