@@ -67,7 +67,7 @@ const LogoComponent = ({
 
 interface LogoProps {
   logoSrc?: string;
-  displayName?: boolean;
+  displayName?: boolean | null;
   name?: string;
 }
 
