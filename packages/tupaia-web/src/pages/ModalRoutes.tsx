@@ -37,13 +37,9 @@ export const ModalRoutes = () => {
   // If no modal param or invalid modal param, return null
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
-  const onCloseModal = () => {
-    closeModal();
-  };
-
   const ModalView = modalViews[modal];
   return (
-    <Modal isOpen={true} onClose={onCloseModal}>
+    <Modal isOpen={true} onClose={closeModal}>
       <ModalView />
     </Modal>
   );

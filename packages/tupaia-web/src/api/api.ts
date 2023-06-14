@@ -6,8 +6,7 @@
 import axios from 'axios';
 import FetchError from './fetchError';
 
-export const API_URL =
-  import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8100/api/v1/';
+export const API_URL = import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8100';
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
@@ -22,14 +21,9 @@ type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';
 };
 const getRequestOptions = (options?: RequestParametersWithMethod) => {
-  const locale = window.location.pathname.split('/')[1];
   return {
     ...options,
     timeout,
-    params: {
-      ...options?.params,
-      locale,
-    },
   };
 };
 
@@ -47,7 +41,7 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
 
       // logout the user out if we get a 401 response
       if (error.response.status === 401 || data.code === 401) {
-        request('logout', { method: 'post' });
+        await request('logout', { method: 'post' });
       }
 
       if (data.error) {
