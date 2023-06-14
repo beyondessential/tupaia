@@ -8,7 +8,7 @@ import { COLOR_PALETTES } from '../constants';
 import { ChartType, DataProps, LooseObject, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
-const ADD_TO_ALL_KEY = '$all';
+export const ADD_TO_ALL_KEY = '$all';
 
 export const getLayeredOpacity = (
   numberOfLayers: number,
@@ -25,11 +25,11 @@ type ColorPalette = keyof typeof COLOR_PALETTES;
 export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
   const {
     chartType,
-    chartConfig = { [ADD_TO_ALL_KEY]: {} },
+    chartConfig = { [ADD_TO_ALL_KEY]: {}, name: '' },
     data,
     colorPalette: paletteName,
   } = viewContent;
-  const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = chartConfig;
+  const { [ADD_TO_ALL_KEY]: configForAllKeys, name, ...restOfConfig } = chartConfig;
 
   const baseConfig = configForAllKeys
     ? createDynamicConfig(restOfConfig as BaseChartConfig, configForAllKeys, data)
