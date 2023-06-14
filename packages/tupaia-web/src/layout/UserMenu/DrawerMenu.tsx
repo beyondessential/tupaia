@@ -113,10 +113,10 @@ export const DrawerMenu = ({
           {/** If the user is not logged in, show the register and login buttons */}
           {!isLoggedIn && (
             <>
-              <MenuItem href={`?modal=${MODAL_ROUTES.LOGIN}`} onCloseMenu={onCloseMenu}>
+              <MenuItem modal={MODAL_ROUTES.LOGIN} onCloseMenu={onCloseMenu}>
                 Log in
               </MenuItem>
-              <MenuItem href={`?modal=${MODAL_ROUTES.REGISTER}`} onCloseMenu={onCloseMenu}>
+              <MenuItem modal={MODAL_ROUTES.REGISTER} onCloseMenu={onCloseMenu}>
                 Register
               </MenuItem>
             </>

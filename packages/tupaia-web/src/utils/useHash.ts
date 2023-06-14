@@ -9,11 +9,11 @@ export const useHash = () => {
   const navigate = useNavigate();
   const { hash, ...location } = useLocation();
 
-  function hashLink(hashKey) {
+  function navigateToHash(hashKey: string) {
     navigate({ ...location, hash: hashKey });
   }
   function clearHash() {
     navigate(location);
   }
-  return { hash: hash.substring(1), clearHash };
+  return { hash: hash.substring(1), clearHash, navigateToHash };
 };

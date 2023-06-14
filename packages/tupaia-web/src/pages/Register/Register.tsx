@@ -12,7 +12,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { TextField, AuthModalBody, AuthModalButton } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { Checkbox } from '@tupaia/ui-components';
-import { Link } from 'react-router-dom';
+import { RouterLink } from '../../components/RouterButton';
 import { MODAL_ROUTES } from '../../constants';
 
 const ModalBody = styled(AuthModalBody)`
@@ -160,7 +160,7 @@ export const Register = () => {
               </AuthModalButton>
               <LinkText align="center">
                 Already have an account?{' '}
-                <Link to={`?modal=${MODAL_ROUTES.LOGIN}`}>Log in here</Link>
+                <RouterLink to={MODAL_ROUTES.LOGIN}>Log in here</RouterLink>
               </LinkText>
             </FullWidthColumn>
           </StyledForm>

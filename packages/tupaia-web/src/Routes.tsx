@@ -16,12 +16,11 @@ import { Layout } from './layout';
 
 export const Routes = () => {
   let location = useLocation();
-  const state = location.state as { backgroundLocation?: Location };
 
   return (
     <>
       <ModalRoutes />
-      <RouterRoutes location={state?.backgroundLocation || location}>
+      <RouterRoutes>
         {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
@@ -34,8 +33,7 @@ export const Routes = () => {
               <Navigate
                 to={{
                   ...location,
-                  pathname: DEFAULT_URL,
-                  search: `modal=${MODAL_ROUTES.LOGIN}`,
+                  pathname: `${DEFAULT_URL}#${MODAL_ROUTES.LOGIN}`,
                 }}
                 replace
               />
@@ -47,8 +45,7 @@ export const Routes = () => {
               <Navigate
                 to={{
                   ...location,
-                  pathname: DEFAULT_URL,
-                  search: `modal=${MODAL_ROUTES.REGISTER}`,
+                  pathname: `${DEFAULT_URL}#${MODAL_ROUTES.REGISTER}`,
                 }}
                 replace
               />
@@ -60,8 +57,7 @@ export const Routes = () => {
               <Navigate
                 to={{
                   ...location,
-                  pathname: DEFAULT_URL,
-                  search: `modal=${MODAL_ROUTES.PROJECTS}`,
+                  pathname: `${DEFAULT_URL}#${MODAL_ROUTES.PROJECTS}`,
                 }}
                 replace
               />

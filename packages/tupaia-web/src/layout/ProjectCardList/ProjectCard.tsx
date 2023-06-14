@@ -120,9 +120,7 @@ export const ProjectDeniedLink = ({ url }: LinkProps) => (
   </OutlineLink>
 );
 
-export const ProjectLoginLink = () => (
-  <OutlineLink to={`?modal=${MODAL_ROUTES.LOGIN}`}>Log in</OutlineLink>
-);
+export const ProjectLoginLink = () => <OutlineLink modal={MODAL_ROUTES.LOGIN}>Log in</OutlineLink>;
 
 export const ProjectPendingLink = () => (
   <OutlineLink to={''} disabled={true} startIcon={<Alarm />}>

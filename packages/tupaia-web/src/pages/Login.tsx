@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -11,6 +10,7 @@ import { useLogin } from '../api/mutations';
 import { AuthModalBody, AuthModalButton, TextField } from '../components';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
 import { EmailVerification } from './EmailVerification';
+import { RouterLink } from '../components/RouterButton';
 
 const ModalBody = styled(AuthModalBody)`
   width: 42rem;
@@ -71,14 +71,14 @@ export const Login = () => {
             ...FORM_FIELD_VALIDATION.PASSWORD,
           })}
         />
-        <ForgotPasswordText as={Link} to={`?modal=${MODAL_ROUTES.RESET_PASSWORD}`}>
+        <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.RESET_PASSWORD}>
           Forgot password?
         </ForgotPasswordText>
         <AuthModalButton type="submit" isLoading={isLoading}>
           Log in
         </AuthModalButton>
         <LinkText align="center">
-          Don't have an account? <Link to={`?modal=${MODAL_ROUTES.REGISTER}`}>Register here</Link>
+          Don't have an account? <RouterLink to={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
         </LinkText>
       </StyledForm>
     </ModalBody>

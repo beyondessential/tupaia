@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { MODAL_ROUTES } from '../constants';
 import {
   Projects,
@@ -15,7 +14,7 @@ import {
   RequestAccessForm,
 } from '.';
 import { Modal } from '../components';
-import { useHash } from '../utils/useHash.ts';
+import { useHash } from '../utils';
 
 /**
  * This is the wrapper to handle any search param routes that should be modals
@@ -32,7 +31,6 @@ const modalViews = {
 
 export const ModalRoutes = () => {
   const { hash, clearHash } = useHash();
-  console.log('hash', hash);
 
   const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
 

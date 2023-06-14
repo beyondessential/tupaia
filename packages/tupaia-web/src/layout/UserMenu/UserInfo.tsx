@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
 import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
-import { useHash } from '../../utils';
 
 /**
  * UserInfo is a component that displays the user's name if user is logged in, or a register and sign in button if not set
