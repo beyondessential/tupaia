@@ -3,41 +3,33 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MapWatermark } from './MapWatermark';
-
-const MapContainer = styled.div`
-  height: 100vh;
-  transition: width 0.5s ease;
-  width: 100%;
-`;
-
-export const Map = () => {
-  return <MapContainer>{/* <Map /> */}</MapContainer>;
-};
+import { Map } from './Map';
+import { TILE_SETS } from '../../constants';
+import { TilePicker } from '@tupaia/ui-map-components';
 
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
   position: relative;
-  pointer-events: none;
 `;
 
-const MapControlsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  position: absolute; // make this absolutely positioned so that it lays over the map
-  width: 100%;
-  height: 100%;
-`;
-
+// Placeholder for legend
 const MapLegendWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
+  position: absolute;
+  background-color: grey;
+  width: 300px;
+  height: 50px;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px;
 `;
 
 const Watermark = styled(MapWatermark)`
@@ -53,6 +45,15 @@ const MapOverlaySelector = styled.div`
   border-radius: 5px;
   background: #ff7428;
   opacity: 0.6;
+  position: absolute;
+`;
+
+// Position this absolutely so it can be placed over the map
+const TilePickerWrapper = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 100%;
 `;
 
 /**
@@ -60,14 +61,20 @@ const MapOverlaySelector = styled.div`
  */
 
 export const MapLayout = () => {
+  const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
+
+  const onTileSetChange = (tileSetKey: string) => {
+    setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
+  };
   return (
     <Wrapper>
-      <MapControlsContainer>
-        <MapOverlaySelector />
-        <MapLegendWrapper>{/** This is where the map legend would go */}</MapLegendWrapper>
-      </MapControlsContainer>
-      <Map />
-      {/** This is where the tilepicker would go */}
+      {/** order here matters - Map needs to be first so any controls can go over the top of it */}
+      <Map activeTileSet={activeTileSet} />
+      <MapOverlaySelector />
+      <MapLegendWrapper />
+      <TilePickerWrapper>
+        <TilePicker tileSets={TILE_SETS} activeTileSet={activeTileSet} onChange={onTileSetChange} />
+      </TilePickerWrapper>
       <Watermark />
     </Wrapper>
   );

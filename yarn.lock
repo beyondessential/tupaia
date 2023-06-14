@@ -5176,6 +5176,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mapbox/polyline@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@mapbox/polyline@npm:1.2.0"
+  dependencies:
+    meow: ^6.1.1
+  bin:
+    polyline: bin/polyline.bin.js
+  checksum: d67489aab515bbdd7c6294748965fd54f7c45629b9b7bb7ba0d06b13a118ae335e7be8b7aabe7e05777776e1a271ca6a298a0239983df452d08063f2aa986205
+  languageName: node
+  linkType: hard
+
 "@material-ui/core@npm:^4.9.11, @material-ui/core@npm:^4.9.8":
   version: 4.11.0
   resolution: "@material-ui/core@npm:4.11.0"
@@ -8685,6 +8696,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/tupaia-web@workspace:packages/tupaia-web"
   dependencies:
+    "@mapbox/polyline": ^1.2.0
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
@@ -8699,6 +8711,8 @@ __metadata:
     "@storybook/react-vite": ^7.0.18
     "@storybook/testing-library": ^0.0.14-next.2
     "@tupaia/types": 1.0.0
+    "@tupaia/ui-components": 1.0.0
+    "@tupaia/ui-map-components": 1.0.0
     "@types/material-ui": ^0.21.12
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
@@ -28545,7 +28559,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"meow@npm:^6.1.0":
+"meow@npm:^6.1.0, meow@npm:^6.1.1":
   version: 6.1.1
   resolution: "meow@npm:6.1.1"
   dependencies:
