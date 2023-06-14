@@ -4,4 +4,4 @@
  */
 
 export { getProjectAccessType } from './getProjectAccessType';
-export { useHash } from './useHash';
+export { useModal } from './useModal';

@@ -4,7 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useHash } from '../../utils';
+import { useModal } from '../../utils';
 import { post } from '../api';
 
 type LoginCredentials = {
@@ -13,7 +13,7 @@ type LoginCredentials = {
 };
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const { clearHash } = useHash();
+  const { closeModal } = useModal();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -28,7 +28,7 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries();
-        clearHash();
+        closeModal();
       },
     },
   );

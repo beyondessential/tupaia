@@ -79,7 +79,7 @@ export function SingleProjectLandingPage({
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
     [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
-      ? `${MODAL_ROUTES.REQUEST_ACCESS}/${code}`
+      ? `?project=${code}#${MODAL_ROUTES.REQUEST_ACCESS}`
       : `#${MODAL_ROUTES.LOGIN}`,
   };
 

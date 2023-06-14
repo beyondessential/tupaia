@@ -14,7 +14,7 @@ import {
   RequestAccessForm,
 } from '.';
 import { Modal } from '../components';
-import { useHash } from '../utils';
+import { useModal } from '../utils';
 
 /**
  * This is the wrapper to handle any search param routes that should be modals
@@ -30,7 +30,7 @@ const modalViews = {
 };
 
 export const ModalRoutes = () => {
-  const { hash, clearHash } = useHash();
+  const { hash, closeModal } = useModal();
 
   const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
 
@@ -38,7 +38,7 @@ export const ModalRoutes = () => {
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
   const onCloseModal = () => {
-    clearHash();
+    closeModal();
   };
 
   const ModalView = modalViews[modal];
