@@ -104,11 +104,11 @@ export const Projects = () => {
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 const LINK = {
                   TEXT: 'Log in',
-                  URL: `?modal=${MODAL_ROUTES.LOGIN}`,
+                  URL: `#${MODAL_ROUTES.LOGIN}`,
                 };
                 if (isLoggedIn) {
                   LINK.TEXT = 'Request Access';
-                  LINK.URL = `?modal=${MODAL_ROUTES.REQUEST_ACCESS}&project${code}`;
+                  LINK.URL = `?project=${code}#${MODAL_ROUTES.REQUEST_ACCESS}`;
                 }
                 return (
                   <LegacyProjectDeniedLink url={LINK.URL}>{LINK.TEXT}</LegacyProjectDeniedLink>

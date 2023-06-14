@@ -80,7 +80,7 @@ export function SingleProjectLandingPage({
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
     [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
       ? `${MODAL_ROUTES.REQUEST_ACCESS}/${code}`
-      : `?modal=${MODAL_ROUTES.LOGIN}`,
+      : `#${MODAL_ROUTES.LOGIN}`,
   };
 
   const actionTexts = {

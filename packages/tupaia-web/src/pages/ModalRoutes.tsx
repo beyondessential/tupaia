@@ -38,9 +38,6 @@ export const ModalRoutes = () => {
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
   const onCloseModal = () => {
-    // remove the modal param from URLSearchParams
-    // searchParams.delete('modal');
-    // setSearchParams(searchParams);
     clearHash();
   };
 

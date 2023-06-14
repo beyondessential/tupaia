@@ -13,6 +13,10 @@ interface FormProps {
   className?: string;
 }
 
+/**
+ * A wrapper around react-hook-form's FormProvider and form element. Needed for custom form fields
+ * such as TextField and CheckboxField to be able to self register and validate with react-hook-form.
+ */
 export const Form = ({ formContext, onSubmit, children, className }: FormProps) => {
   return (
     <FormProvider {...formContext}>

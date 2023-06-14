@@ -4,7 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useSearchParams } from 'react-router-dom';
+import { useHash } from '../../utils';
 import { post } from '../api';
 
 type LoginCredentials = {
@@ -12,8 +12,8 @@ type LoginCredentials = {
   password: string;
 };
 export const useLogin = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const { clearHash } = useHash();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -28,8 +28,7 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries();
-        searchParams.delete('modal');
-        setSearchParams(searchParams);
+        clearHash();
       },
     },
   );

@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { ModalRoutes, LandingPage, Project, EmailVerificationRoute } from './pages';
+import { ModalRoutes, LandingPage, Project } from './pages';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { Layout } from './layout';
 
@@ -25,42 +25,34 @@ export const Routes = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
           {/* Email verification links redirect to the login page where the verification happens */}
-          <Route path="/verify-email" element={<EmailVerificationRoute />} />
-          {/* Redirect modal routes to the correct routes just in case */}
           <Route
-            path="/login"
+            path="/verify-email"
             element={
               <Navigate
                 to={{
                   ...location,
-                  pathname: `${DEFAULT_URL}#${MODAL_ROUTES.LOGIN}`,
+                  hash: MODAL_ROUTES.LOGIN,
+                  pathname: DEFAULT_URL,
                 }}
                 replace
               />
             }
           />
+          {/* Redirect modal routes to the correct routes just in case */}
+          <Route
+            path="/login"
+            element={<Navigate to={{ pathname: DEFAULT_URL, hash: MODAL_ROUTES.LOGIN }} replace />}
+          />
           <Route
             path="/register"
             element={
-              <Navigate
-                to={{
-                  ...location,
-                  pathname: `${DEFAULT_URL}#${MODAL_ROUTES.REGISTER}`,
-                }}
-                replace
-              />
+              <Navigate to={{ pathname: DEFAULT_URL, hash: MODAL_ROUTES.REGISTER }} replace />
             }
           />
           <Route
             path="/projects"
             element={
-              <Navigate
-                to={{
-                  ...location,
-                  pathname: `${DEFAULT_URL}#${MODAL_ROUTES.PROJECTS}`,
-                }}
-                replace
-              />
+              <Navigate to={{ pathname: DEFAULT_URL, hash: MODAL_ROUTES.PROJECTS }} replace />
             }
           />
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
