@@ -9,31 +9,19 @@ import Typography from '@material-ui/core/Typography';
 import { useRegister } from '../../api/mutations';
 import { SignupComplete } from './SignUpComplete';
 import { SubmitHandler } from 'react-hook-form';
-import { TextField, AuthModalBody, AuthModalButton } from '../../components';
+import {
+  TextField,
+  CheckboxField,
+  AuthModalBody,
+  AuthModalButton,
+  RouterLink,
+  Form,
+} from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
-import { Checkbox } from '@tupaia/ui-components';
-import { RouterLink } from '../../components/RouterButton';
 import { MODAL_ROUTES } from '../../constants';
 
 const ModalBody = styled(AuthModalBody)`
   width: 49rem;
-`;
-
-const StyledForm = styled.form`
-  margin-top: 1rem;
-  width: 42rem;
-  max-width: 100%;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 2rem;
-    row-gap: 0;
-  }
-`;
-
-const StyledCheckbox = styled(Checkbox)`
-  display: flex;
 `;
 
 const LinkText = styled(Typography)`
@@ -55,9 +43,22 @@ const FullWidthColumn = styled.div`
   grid-column: 1/-1;
 `;
 
+const StyledForm = styled(Form)`
+  margin-top: 1rem;
+  width: 42rem;
+  max-width: 100%;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+    row-gap: 0;
+  }
+`;
+
 export const Register = () => {
   const { mutate: onSubmit, isLoading, isSuccess, isError, error } = useRegister();
-  const { errors, handleSubmit, getValues, register } = useForm();
+  const formContext = useForm();
 
   return (
     <ModalBody
@@ -69,91 +70,38 @@ export const Register = () => {
       ) : (
         <>
           {isError && <Typography color="error">{error.message}</Typography>}
-          <StyledForm onSubmit={handleSubmit(onSubmit as SubmitHandler<any>)} noValidate>
-            <TextField
-              name="firstName"
-              label="First name *"
-              error={!!errors?.firstName}
-              helperText={errors?.firstName && errors?.firstName.message}
-              inputRef={register({
-                required: 'Required',
-              })}
-            />
-            <TextField
-              name="lastName"
-              label="Last name *"
-              error={!!errors?.lastName}
-              helperText={errors?.lastName && errors?.lastName.message}
-              inputRef={register({
-                required: 'Required',
-              })}
-            />
+          <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
+            <TextField name="firstName" label="First name" required />
+            <TextField name="lastName" label="Last name" required />
             <TextField
               name="emailAddress"
+              label="Email"
               type="email"
-              label="Email *"
-              error={!!errors?.emailAddress}
-              helperText={errors?.emailAddress && errors?.emailAddress.message}
-              inputRef={register({
-                ...FORM_FIELD_VALIDATION.EMAIL,
-              })}
+              required
+              options={FORM_FIELD_VALIDATION.EMAIL}
             />
-            <TextField
-              name="contactNumber"
-              label="Contact number (optional)"
-              error={!!errors?.contactNumber}
-              helperText={errors?.contactNumber && errors?.contactNumber.message}
-              inputRef={register()}
-            />
+            <TextField name="contactNumber" label="Contact number (optional)" />
             <TextField
               name="password"
-              label="Password *"
+              label="Password"
               type="password"
-              error={!!errors?.password}
-              helperText={errors?.password && errors?.password.message}
-              inputRef={register({
-                ...FORM_FIELD_VALIDATION.PASSWORD,
-              })}
+              required
+              options={FORM_FIELD_VALIDATION.PASSWORD}
             />
             <TextField
               name="passwordConfirm"
-              label="Confirm password *"
+              label="Confirm password"
               type="password"
-              error={!!errors?.passwordConfirm}
-              helperText={errors?.passwordConfirm && errors?.passwordConfirm.message}
-              inputRef={register({
-                validate: value => value === getValues('password') || 'Passwords do not match.',
+              required
+              options={{
+                validate: (value: string) =>
+                  value === formContext.getValues('password') || 'Passwords do not match.',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
-              })}
+              }}
             />
-            <TextField
-              name="employer"
-              label="Employer *"
-              error={!!errors?.employer}
-              helperText={errors?.employer && errors?.employer.message}
-              inputRef={register({
-                required: 'Required',
-              })}
-            />
-            <TextField
-              name="position"
-              label="Position *"
-              error={!!errors?.position}
-              helperText={errors?.position && errors?.position.message}
-              inputRef={register({
-                required: 'Required',
-              })}
-            />
-            <StyledCheckbox
-              name="hasAgreed"
-              color="primary"
-              label="I agree to the terms and conditions"
-              error={!!errors.hasAgreed}
-              helperText={errors?.hasAgreed?.message}
-              inputRef={register({
-                required: 'Required',
-              })}
-            />
+            <TextField name="employer" label="Employer" required />
+            <TextField name="position" label="Position" required />
+            <CheckboxField name="hasAgreed" label="I agree to the terms and conditions" required />
             <FullWidthColumn>
               <AuthModalButton type="submit" isLoading={isLoading}>
                 Register account
