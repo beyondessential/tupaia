@@ -7,3 +7,4 @@ export { ApiBuilder } from './api';
 export { SessionModel, SessionType } from './models';
 export { SessionCookie } from './types';
 export { attachSession, attachSessionIfAvailable } from './session';
+export { SessionSwitchingAuthHandler } from './auth';
