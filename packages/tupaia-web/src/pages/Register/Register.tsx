@@ -16,7 +16,7 @@ import { RouterLink } from '../../components/RouterButton';
 import { MODAL_ROUTES } from '../../constants';
 
 const ModalBody = styled(AuthModalBody)`
-  width: 53rem;
+  width: 49rem;
 `;
 
 const StyledForm = styled.form`

@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100%;
 `;
 
 const Logo = styled.img`

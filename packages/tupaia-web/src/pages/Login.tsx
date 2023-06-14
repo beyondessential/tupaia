@@ -13,12 +13,12 @@ import { EmailVerification } from './EmailVerification';
 import { RouterLink } from '../components/RouterButton';
 
 const ModalBody = styled(AuthModalBody)`
-  width: 42rem;
+  width: 38rem;
 `;
 
 const StyledForm = styled.form`
   margin-top: 1rem;
-  width: 340px;
+  width: 22rem;
   max-width: 100%;
 `;
 
