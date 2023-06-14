@@ -7,4 +7,5 @@
 export * from './useLogin';
 export * from './useRegister';
 export * from './useResendVerificationEmail';
+export * from './useResetPassword';
 export * from './useRequestResetPassword';

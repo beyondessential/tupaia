@@ -14,6 +14,7 @@ export enum MODAL_ROUTES {
   LOGIN = 'login',
   REGISTER = 'register',
   FORGOT_PASSWORD = 'forgot-password',
+  RESET_PASSWORD = 'reset-password',
   REQUEST_ACCESS = 'request-access',
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
@@ -34,3 +35,5 @@ export const FORM_FIELD_VALIDATION = {
     minLength: { value: 9, message: 'Must be at over 8 characters long' },
   },
 };
+
+export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';

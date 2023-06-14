@@ -4,11 +4,11 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { AuthModalBody, AuthModalButton, Form, RouterButton, TextField } from '../components';
 import { useRequestResetPassword } from '../api/mutations';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
-import { Typography } from '@material-ui/core';
 
 const ModalBody = styled(AuthModalBody)`
   width: 38rem;

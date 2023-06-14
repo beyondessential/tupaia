@@ -4,7 +4,7 @@
  */
 export { LandingPage } from './LandingPage';
 export { Login } from './Login';
-export { PasswordResetForm } from './PasswordResetForm';
+export { ResetPassword } from './ResetPassword';
 export { Project } from './Project';
 export { Register } from './Register';
 export { Projects } from './Projects';
