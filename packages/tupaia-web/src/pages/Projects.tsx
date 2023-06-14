@@ -25,8 +25,9 @@ import { RouterButton } from '../components';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.2rem 2rem 0;
+  padding: 0.2rem 0 0;
   width: 54rem;
+  max-width: 100%;
 `;
 
 const TagLine = styled.p`
