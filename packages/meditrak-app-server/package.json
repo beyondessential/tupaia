@@ -32,7 +32,6 @@
     "@tupaia/tsutils": "1.0.0",
     "@tupaia/types": "1.0.0",
     "@tupaia/utils": "1.0.0",
-    "aws-sdk": "^2.451.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "lodash.clonedeep": "^4.5.0",
