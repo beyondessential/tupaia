@@ -4,12 +4,13 @@
  */
 
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MODAL_ROUTES } from '../constants';
 
 export const useModal = () => {
   const navigate = useNavigate();
   const { hash, ...location } = useLocation();
 
-  function navigateToModal(hashKey: string) {
+  function navigateToModal(hashKey: `${MODAL_ROUTES}`) {
     navigate({ ...location, hash: hashKey });
   }
   function closeModal() {
