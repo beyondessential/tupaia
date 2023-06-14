@@ -9,8 +9,9 @@ import { get } from '../api';
 export const useUser = () => {
   const userResponse = useQuery('getUser', () => get('getUser'));
   const { data } = userResponse;
+
   return {
     ...userResponse,
-    isLoggedIn: data?.name !== 'public',
+    isLoggedIn: data?.name !== undefined,
   };
 };

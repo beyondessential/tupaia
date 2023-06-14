@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
-import { USER_ROUTES } from '../../Routes';
+import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 
 /**
@@ -81,8 +81,8 @@ export const UserInfo = ({
     );
   return (
     <Wrapper>
-      <Register to={USER_ROUTES.REGISTER}>Register</Register>
-      <SignInButton to={USER_ROUTES.LOGIN} $secondaryColor={secondaryColor}>
+      <Register modal={MODAL_ROUTES.REGISTER}>Register</Register>
+      <SignInButton modal={MODAL_ROUTES.LOGIN} $secondaryColor={secondaryColor}>
         Log in
       </SignInButton>
     </Wrapper>

@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
+import { useModal } from '../../utils';
 import { post } from '../api';
-import { useNavigateBack } from '../../utils/useNavigateBack.ts';
 
 type LoginCredentials = {
   email: string;
@@ -13,7 +13,7 @@ type LoginCredentials = {
 };
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const navigateBack = useNavigateBack();
+  const { closeModal } = useModal();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -28,7 +28,7 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries();
-        navigateBack();
+        closeModal();
       },
     },
   );

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { TRANSPARENT_BLACK } from '../../constants';
 import { SingleLandingPage } from '../../types';
-import { PROJECT_ACCESS_TYPES } from '../../constants';
+import { PROJECT_ACCESS_TYPES, MODAL_ROUTES } from '../../constants';
 import {
   ProjectCardList,
   ProjectLoginLink,
@@ -15,7 +15,6 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
-import { USER_ROUTES } from '../../Routes';
 
 const ProjectsWrapper = styled.div`
   width: 100%;
@@ -95,7 +94,9 @@ export function MultiProjectLandingPage({
               [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 if (isLoggedIn) {
-                  return <ProjectDeniedLink url={`/${USER_ROUTES.REQUEST_ACCESS}/${code}`} />;
+                  return (
+                    <ProjectDeniedLink url={`?project=${code}#${MODAL_ROUTES.REQUEST_ACCESS}`} />
+                  );
                 }
                 return <ProjectLoginLink />;
               },
