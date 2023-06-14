@@ -17,7 +17,7 @@ const modalViews = {
   [MODAL_ROUTES.PROJECTS]: Projects,
   [MODAL_ROUTES.LOGIN]: Login,
   [MODAL_ROUTES.REGISTER]: Register,
-  [MODAL_ROUTES.RESET_PASSWORD]: ForgotPassword,
+  [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPassword,
   [MODAL_ROUTES.REQUEST_ACCESS]: RequestAccessForm,
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
 };

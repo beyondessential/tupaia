@@ -13,7 +13,7 @@ export enum MODAL_ROUTES {
   PROJECTS = 'projects',
   LOGIN = 'login',
   REGISTER = 'register',
-  RESET_PASSWORD = 'reset-password',
+  FORGOT_PASSWORD = 'forgot-password',
   REQUEST_ACCESS = 'request-access',
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
