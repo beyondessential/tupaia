@@ -44,6 +44,11 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
         await request('logout', { method: 'post' });
       }
 
+      // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
+      if (data.details) {
+        throw new FetchError(data.details, error.response.status);
+      }
+
       if (data.error) {
         throw new FetchError(data.error, error.response.status);
       }

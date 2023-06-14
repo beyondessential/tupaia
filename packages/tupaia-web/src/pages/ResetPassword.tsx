@@ -32,6 +32,7 @@ export const ResetPassword = () => {
   });
   const { isValid } = formContext.formState;
   const { mutate: resetPassword, isLoading, isError, error, isSuccess } = useResetPassword();
+
   const hasResetToken = urlParams.has(PASSWORD_RESET_TOKEN_PARAM);
   return (
     <ModalBody title="Change password">
