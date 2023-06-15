@@ -6,6 +6,7 @@
   },
   "ignorePatterns": [
     "dist/",
+    "build/",
     "node_modules/",
     ".eslintrc.js"
   ],

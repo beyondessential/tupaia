@@ -31,7 +31,6 @@ module.exports = {
   },
   ignorePatterns: [
     '.vscode/',
-    '.build/',
     'node_modules/',
     'public/',
     'scripts/',
