@@ -15,8 +15,7 @@ import {
   FormGroup,
 } from '@material-ui/core';
 import CheckboxIcon from '@material-ui/icons/CheckBox';
-import { getNoDataString } from '../Chart';
-import { SmallAlert } from '../Alert';
+import { NoData } from '../NoData';
 
 const Container = styled.div`
   display: flex;
@@ -41,12 +40,6 @@ const Error = styled.div`
   color: ${props => props.theme.palette.error.main};
   margin-top: 10px;
   text-align: center;
-`;
-
-const NoData = styled(SmallAlert)`
-  align-self: center;
-  margin-left: auto;
-  margin-right: auto;
 `;
 
 export const DownloadFilesVisual = ({
@@ -95,9 +88,7 @@ export const DownloadFilesVisual = ({
   if (!isLoading && data.length === 0) {
     return (
       <Container className={className}>
-        <NoData severity="info" variant="standard">
-          {getNoDataString(viewContent)}
-        </NoData>
+        <NoData viewContent={viewContent} />
       </Container>
     );
   }
