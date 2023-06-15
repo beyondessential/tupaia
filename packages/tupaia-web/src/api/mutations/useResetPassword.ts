@@ -26,7 +26,6 @@ export const useResetPassword = () => {
           newPassword,
           passwordConfirm,
           oneTimeLoginToken,
-          deviceName: window.navigator.userAgent,
         },
       });
     },

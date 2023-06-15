@@ -17,7 +17,6 @@ export const useRequestResetPassword = () => {
       return post('resetPassword', {
         data: {
           emailAddress,
-          deviceName: window.navigator.userAgent,
         },
       });
     },
