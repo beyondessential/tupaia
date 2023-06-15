@@ -13,7 +13,7 @@
   "scripts": {
     "build": "npm run --prefix ../../ package:build:react-scripts",
     "eject": "yarn package:eject",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-dev": "PORT=3003 yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
