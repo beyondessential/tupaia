@@ -1,0 +1,44 @@
+{
+  "extends": "@beyondessential/js",
+  "parser": "babel-eslint",
+  "rules": {
+    "import/no-extraneous-dependencies": "error"
+  },
+  "ignorePatterns": [
+    "dist/",
+    "node_modules/",
+    ".eslintrc.js"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "src/__tests__/**/*.js"
+      ],
+      "extends": "@beyondessential/jest",
+      "rules": {
+        "jest/valid-expect": [
+          "error",
+          {
+            "maxArgs": 2
+          }
+        ],
+        "no-new": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": ["src/__tests__/**/*.js"]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "jest.setup.js",
+        "jest.config.js"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
