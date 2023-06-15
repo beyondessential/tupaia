@@ -39,11 +39,6 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
     if (error.response) {
       const { data } = error.response;
 
-      // logout the user out if we get a 401 response
-      if (error.response.status === 401 || data.code === 401) {
-        await request('logout', { method: 'post' });
-      }
-
       // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
       if (data.details) {
         throw new FetchError(data.details, error.response.status);

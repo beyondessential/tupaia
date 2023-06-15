@@ -30,9 +30,7 @@ export const CancelButton = styled(RouterButton).attrs({
   margin-left: 0 !important;
   padding: 0.375rem 1rem; // to match the height of the primary button
   border-color: ${({ theme }) => theme.palette.text.secondary};
-  ${AuthModalButton} + & {
-    margin-top: 1.3rem;
-  }
+  margin-top: 1.3rem;
 `;
 const CheckEmailMessage = styled.p`
   text-align: center;

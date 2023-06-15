@@ -28,7 +28,7 @@ export const requestPasswordReset = async (req, res) => {
     user_id: user.id,
   });
 
-  const passwordResetUrl = `${process.env.TUPAIA_FRONT_END_URL}?passwordResetToken={token}#reset-password`;
+  const passwordResetUrl = `${process.env.TUPAIA_FRONT_END_URL}/reset-password?passwordResetToken={token}`;
   const resetUrl = passwordResetUrl.replace('{token}', token);
   const emailText = `Dear ${user.fullName},
 

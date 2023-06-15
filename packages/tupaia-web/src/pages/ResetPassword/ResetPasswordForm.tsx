@@ -6,14 +6,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
-import { AuthModalBody, AuthModalButton, Form, TextField } from '../components';
-import { useResetPassword } from '../api/mutations';
-import { FORM_FIELD_VALIDATION, PASSWORD_RESET_TOKEN_PARAM } from '../constants';
+import { AuthModalButton, Form, TextField } from '../../components';
+import { useResetPassword } from '../../api/mutations';
+import { FORM_FIELD_VALIDATION, PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
 import { useSearchParams } from 'react-router-dom';
+import { OneTimeLogin } from './OneTimeLogin';
 
-const ModalBody = styled(AuthModalBody)`
-  width: 38rem;
-`;
 const StyledForm = styled(Form)`
   margin-top: 1rem;
   width: 22rem;
@@ -25,24 +23,24 @@ const SuccessMessage = styled.p`
   padding: 0 0.9375rem;
 `;
 
-export const ResetPassword = () => {
+export const ResetPasswordForm = () => {
   const [urlParams] = useSearchParams();
   const formContext = useForm({
     mode: 'onChange',
   });
   const { isValid } = formContext.formState;
   const { mutate: resetPassword, isLoading, isError, error, isSuccess } = useResetPassword();
+  const passwordResetToken = urlParams.get(PASSWORD_RESET_TOKEN_PARAM);
 
-  const hasResetToken = urlParams.has(PASSWORD_RESET_TOKEN_PARAM);
   return (
-    <ModalBody title="Change password">
+    <>
       {isError && <Typography color="error">{error.message}</Typography>}
       {isSuccess ? (
         <SuccessMessage>Your password has been updated</SuccessMessage>
       ) : (
         <StyledForm onSubmit={resetPassword as SubmitHandler<any>} formContext={formContext}>
           {/** Only display the 'current password' input if there is no reset token in the url */}
-          {!hasResetToken && (
+          {!passwordResetToken && (
             <TextField
               name="oldPassword"
               label="Current password"
@@ -76,6 +74,6 @@ export const ResetPassword = () => {
           </AuthModalButton>
         </StyledForm>
       )}
-    </ModalBody>
+    </>
   );
 };

@@ -5,6 +5,7 @@
  */
 
 export * from './useLogin';
+export * from './useOneTimeLogin';
 export * from './useRegister';
 export * from './useResendVerificationEmail';
 export * from './useResetPassword';
