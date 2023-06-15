@@ -16,7 +16,7 @@
     "cypress:run": "cross-env NODE_ENV=test cypress run",
     "cypress:config": "NODE_ENV=development  babel-node cypress/scripts/generateConfig --config-file \"../../babel.config.json\"",
     "eject": "yarn package:eject",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-dev": "yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
