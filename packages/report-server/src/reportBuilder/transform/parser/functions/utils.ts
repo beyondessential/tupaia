@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { periodToMoment as basePeriodToMoment } from '@tupaia/tsutils';
 import {
   convertToPeriod as baseConvertToPeriod,
   dateStringToPeriod as baseDateStringToPeriod,
   periodToTimestamp as basePeriodToTimestamp,
   periodToDisplayString as basePeriodToDisplayString,
   formatDataValueByType as baseFormatDataValueByType,
-  periodToMoment as basePeriodToMoment,
 } from '@tupaia/utils';
 
 export const convertToPeriod = (period: string, targetType: string): string => {

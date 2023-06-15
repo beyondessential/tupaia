@@ -5,7 +5,8 @@
 
 import { formatLayeredDataElementCode, layerYearOnYear } from '../../../utils/layerYearOnYear';
 import { AnalyticsPerPeriodBuilder } from './analyticsPerPeriod';
-import { periodToMoment, reduceToDictionary } from '@tupaia/utils';
+import { periodToMoment } from '@tupaia/tsutils';
+import { reduceToDictionary } from '@tupaia/utils';
 import moment from 'moment';
 
 class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
