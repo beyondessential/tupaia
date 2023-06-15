@@ -80,7 +80,7 @@ export const UserMenu = () => {
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn ? [VisitMainSite, ChangePassword] : [VisitMainSite];
 
-  const baseMenuItems = [ViewProjects];
+  const baseMenuItems = isLoggedIn ? [ViewProjects, ChangePassword] : [ViewProjects];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
