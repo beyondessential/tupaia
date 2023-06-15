@@ -8,6 +8,9 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { TRANSPARENT_BLACK } from '../../constants';
 import { ExpandButton } from './ExpandButton';
+import { Photo } from './Photo';
+import { Breadcrumbs } from './Breadcrumbs';
+import { StaticMap } from './StaticMap';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 350;
@@ -29,21 +32,6 @@ const ScrollBody = styled.div`
   position: relative;
   height: 100%;
   overflow: auto;
-`;
-
-const Breadcrumbs = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  background: #efefef;
-  height: 30px;
-`;
-
-const Image = styled.div`
-  background: #62698d;
-  width: 100%;
-  height: 200px;
 `;
 
 const Button = styled.div`
@@ -87,6 +75,8 @@ const Chart = styled.div`
   height: 200px;
 `;
 
+const test = false;
+
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -98,8 +88,8 @@ export const Sidebar = () => {
     <Panel $isExpanded={isExpanded}>
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
       <ScrollBody>
-        <Breadcrumbs />
-        <Image />
+        {/*<Breadcrumbs />*/}
+        {test ? <Photo /> : <StaticMap />}
         <Title variant="h5">Northern</Title>
         <Dropdown>General</Dropdown>
         <ChartsContainer $isExpanded={isExpanded}>
