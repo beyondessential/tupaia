@@ -9,6 +9,7 @@ import { Button, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useLandingPage, useUser } from '../../api/queries';
+import { useLogout } from '../../api/mutations';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
@@ -37,6 +38,7 @@ const MenuIcon = styled(MuiMenuIcon)`
 `;
 
 export const UserMenu = () => {
+  const { mutate: logout } = useLogout();
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleUserMenu = () => {
     setMenuOpen(!menuOpen);
@@ -68,6 +70,12 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const Logout = (
+    <BaseMenuItem key="logout" onClick={logout}>
+      Logout
+    </BaseMenuItem>
+  );
+
   const ViewProjects = (
     <BaseMenuItem key="projects" modal={MODAL_ROUTES.PROJECTS}>
       View projects
@@ -78,9 +86,11 @@ export const UserMenu = () => {
     <BaseMenuItem modal={MODAL_ROUTES.RESET_PASSWORD}>Change password</BaseMenuItem>
   );
   // The custom landing pages need different menu items to the other views
-  const customLandingPageMenuItems = isLoggedIn ? [VisitMainSite, ChangePassword] : [VisitMainSite];
+  const customLandingPageMenuItems = isLoggedIn
+    ? [VisitMainSite, ChangePassword, Logout]
+    : [VisitMainSite];
 
-  const baseMenuItems = [ViewProjects];
+  const baseMenuItems = isLoggedIn ? [ViewProjects, Logout] : [ViewProjects];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 

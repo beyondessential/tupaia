@@ -4,6 +4,7 @@
  *
  */
 
-export * from './useLogin';
+export { useLogin } from './useLogin';
+export { useLogout } from './useLogout';
 export * from './useRegister';
 export * from './useResendVerificationEmail';
