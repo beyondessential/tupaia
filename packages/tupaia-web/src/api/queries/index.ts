@@ -5,6 +5,7 @@
  */
 export { useCountryAccessList } from './useCountryAccessList';
 export { useLandingPage } from './useLandingPage';
+export { useProject } from './useProject';
 export { useProjects } from './useProjects';
 export { useUser } from './useUser';
 export { useEmailVerification } from './useEmailVerification';

@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { PROJECT_ACCESS_TYPES, MODAL_ROUTES } from '../../constants';
+import { PROJECT_ACCESS_TYPES, MODAL_ROUTES, PROJECT_PARAM } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleLandingPage, SingleProject } from '../../types';
 
@@ -79,7 +79,7 @@ export function SingleProjectLandingPage({
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
     [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
-      ? `?project=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`
+      ? `?${PROJECT_PARAM}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`
       : `#${MODAL_ROUTES.LOGIN}`,
   };
 

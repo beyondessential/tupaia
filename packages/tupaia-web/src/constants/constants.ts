@@ -35,3 +35,5 @@ export const FORM_FIELD_VALIDATION = {
     minLength: { value: 9, message: 'Must be at over 8 characters long' },
   },
 };
+
+export const PROJECT_PARAM = 'project';
