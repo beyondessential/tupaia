@@ -6,9 +6,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-import { DEFAULT_URL, PROJECT_ACCESS_TYPES, TUPAIA_LIGHT_LOGO_SRC } from '../constants';
+import {
+  MODAL_ROUTES,
+  DEFAULT_URL,
+  PROJECT_ACCESS_TYPES,
+  TUPAIA_LIGHT_LOGO_SRC,
+} from '../constants';
 import { useProjects, useUser } from '../api/queries';
-import { USER_ROUTES } from '../Routes';
 import {
   LegacyProjectCard,
   LegacyProjectAllowedLink,
@@ -21,8 +25,9 @@ import { RouterButton } from '../components';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.2rem 2rem 0;
-  width: 100%;
+  padding: 0.2rem 0 0;
+  width: 54rem;
+  max-width: 100%;
 `;
 
 const TagLine = styled.p`
@@ -99,11 +104,11 @@ export const Projects = () => {
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 const LINK = {
                   TEXT: 'Log in',
-                  URL: USER_ROUTES.LOGIN,
+                  URL: `#${MODAL_ROUTES.LOGIN}`,
                 };
                 if (isLoggedIn) {
                   LINK.TEXT = 'Request Access';
-                  LINK.URL = `/${USER_ROUTES.REQUEST_ACCESS}/${code}`;
+                  LINK.URL = `?project=${code}#${MODAL_ROUTES.REQUEST_ACCESS}`;
                 }
                 return (
                   <LegacyProjectDeniedLink url={LINK.URL}>{LINK.TEXT}</LegacyProjectDeniedLink>

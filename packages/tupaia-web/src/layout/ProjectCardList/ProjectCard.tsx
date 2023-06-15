@@ -9,7 +9,7 @@ import Alarm from '@material-ui/icons/Alarm';
 import { darken } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
-import { USER_ROUTES } from '../../Routes';
+import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 
 const Card = styled.div`
@@ -120,7 +120,7 @@ export const ProjectDeniedLink = ({ url }: LinkProps) => (
   </OutlineLink>
 );
 
-export const ProjectLoginLink = () => <OutlineLink to={USER_ROUTES.LOGIN}>Log in</OutlineLink>;
+export const ProjectLoginLink = () => <OutlineLink modal={MODAL_ROUTES.LOGIN}>Log in</OutlineLink>;
 
 export const ProjectPendingLink = () => (
   <OutlineLink to={''} disabled={true} startIcon={<Alarm />}>

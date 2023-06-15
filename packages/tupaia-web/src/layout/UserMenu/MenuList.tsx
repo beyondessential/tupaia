@@ -6,7 +6,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Button, ListItem, ListItemProps } from '@material-ui/core';
-import { Link, useLocation } from 'react-router-dom';
+import { RouterLink } from '../../components/RouterButton';
 
 /**
  * Menulist is a component that displays a list of menu items for the hamburger menu
@@ -33,7 +33,7 @@ const MenuItemButton = styled(Button)`
   justify-content: flex-start;
 `;
 
-const MenuItemLink = styled(Link)`
+const MenuItemLink = styled(RouterLink)`
   font-size: 1rem;
   padding: 0.4em 1em;
   line-height: 1.4;
@@ -64,6 +64,7 @@ interface MenuItemProps {
   onCloseMenu: () => void;
   secondaryColor?: string;
   target?: string;
+  modal?: string;
 }
 
 // If is a link, use a link component, else a button so that we have correct semantic HTML
@@ -74,21 +75,16 @@ export const MenuItem = ({
   onCloseMenu,
   secondaryColor,
   target,
+  modal,
 }: MenuItemProps) => {
-  const location = useLocation();
   const handleClickMenuItem = () => {
     if (onClick) onClick();
     onCloseMenu();
   };
   return (
     <MenuListItem $secondaryColor={secondaryColor}>
-      {href ? (
-        <MenuItemLink
-          to={href}
-          target={target}
-          onClick={handleClickMenuItem}
-          state={{ backgroundLocation: location }}
-        >
+      {modal || href ? (
+        <MenuItemLink to={href} modal={modal} target={target} onClick={handleClickMenuItem}>
           {children}
         </MenuItemLink>
       ) : (

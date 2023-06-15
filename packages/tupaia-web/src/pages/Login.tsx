@@ -3,17 +3,21 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { TextField } from '../components/TextField';
-import { AuthModal, ModalButton } from '../layout';
+import { AuthModalBody, AuthModalButton, TextField, RouterLink, Form } from '../components';
+import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
+import { EmailVerification } from './EmailVerification';
 
-const StyledForm = styled.form`
+const ModalBody = styled(AuthModalBody)`
+  width: 38rem;
+`;
+
+const StyledForm = styled(Form)`
   margin-top: 1rem;
-  width: 340px;
+  width: 22rem;
   max-width: 100%;
 `;
 
@@ -27,7 +31,7 @@ const LinkText = styled(Typography)`
     color: white;
   }
 
-  ${ModalButton} + & {
+  ${AuthModalButton} + & {
     margin-top: 1.3rem;
   }
 `;
@@ -39,47 +43,30 @@ const ForgotPasswordText = styled(LinkText)`
 `;
 
 export const Login = () => {
-  const { handleSubmit, register, errors } = useForm();
+  const formContext = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
-    <AuthModal title="Log in" subtitle="Enter your details below to log in" className="login">
-      {isError && <Typography color="error">{error.message}</Typography>}
-      <StyledForm onSubmit={handleSubmit(login as SubmitHandler<any>)}>
-        <TextField
-          name="email"
-          label="Email *"
-          type="email"
-          error={!!errors?.email}
-          helperText={errors?.email && errors?.email.message}
-          inputRef={register({
-            required: 'Required',
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'invalid email address',
-            },
-          })}
-        />
+    <ModalBody title="Log in" subtitle="Enter your details below to log in">
+      {isError ? <Typography color="error">{error.message}</Typography> : <EmailVerification />}
+      <StyledForm onSubmit={login as SubmitHandler<any>} formContext={formContext}>
+        <TextField name="email" label="Email" type="email" options={FORM_FIELD_VALIDATION.EMAIL} />
         <TextField
           name="password"
-          label="Password *"
+          label="Password"
           type="password"
-          error={!!errors?.password}
-          helperText={errors?.password && errors?.password.message}
-          inputRef={register({
-            required: 'Required',
-          })}
+          options={FORM_FIELD_VALIDATION.PASSWORD}
         />
-        <ForgotPasswordText as={Link} to="/reset-password">
+        <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.RESET_PASSWORD}>
           Forgot password?
         </ForgotPasswordText>
-        <ModalButton type="submit" isLoading={isLoading}>
+        <AuthModalButton type="submit" isLoading={isLoading}>
           Log in
-        </ModalButton>
+        </AuthModalButton>
         <LinkText align="center">
-          Don't have an account? <Link to="/register">Register here</Link>
+          Don't have an account? <RouterLink to={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
         </LinkText>
       </StyledForm>
-    </AuthModal>
+    </ModalBody>
   );
 };

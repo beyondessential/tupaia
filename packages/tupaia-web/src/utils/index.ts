@@ -4,3 +4,4 @@
  */
 
 export { getProjectAccessType } from './getProjectAccessType';
+export { useModal } from './useModal';

@@ -125,9 +125,7 @@ export const LegacyProjectPendingLink = () => (
 );
 
 export const LegacyProjectAllowedLink = ({ url }: { url: string }) => (
-  <RouterButton to={url} variant="contained" color="primary">
-    View project
-  </RouterButton>
+  <RouterButton to={url}>View project</RouterButton>
 );
 
 interface LegacyProjectCardProps {

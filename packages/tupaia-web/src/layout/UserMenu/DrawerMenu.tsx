@@ -9,6 +9,7 @@ import { Drawer as MuiDrawer } from '@material-ui/core';
 import { IconButton } from '@tupaia/ui-components';
 import CloseIcon from '@material-ui/icons/Close';
 import { MenuItem, MenuList } from './MenuList';
+import { MODAL_ROUTES } from '../../constants';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
@@ -112,10 +113,10 @@ export const DrawerMenu = ({
           {/** If the user is not logged in, show the register and login buttons */}
           {!isLoggedIn && (
             <>
-              <MenuItem href="/login" onCloseMenu={onCloseMenu}>
+              <MenuItem modal={MODAL_ROUTES.LOGIN} onCloseMenu={onCloseMenu}>
                 Log in
               </MenuItem>
-              <MenuItem href="/register" onCloseMenu={onCloseMenu}>
+              <MenuItem modal={MODAL_ROUTES.REGISTER} onCloseMenu={onCloseMenu}>
                 Register
               </MenuItem>
             </>

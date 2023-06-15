@@ -12,25 +12,16 @@ interface ModalProps {
   children?: ReactNode;
   onClose: () => void;
   isOpen: boolean;
-  className?: string;
 }
 
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   overflow-x: hidden;
   padding: 2rem 2rem 4rem;
-  width: 100%;
-  &.project {
-    max-width: 920px;
-  }
-  &.login {
-    @media (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-      width: 42rem;
-    }
-  }
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
@@ -58,13 +49,13 @@ const Paper = styled(MuiPaper)`
   transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 `;
 
-export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
+export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   // make the modal full screen at small screen sizes
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
-      <Wrapper id="overlay-wrapper" className={className}>
+      <Wrapper id="overlay-wrapper">
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />
         </CloseButton>
