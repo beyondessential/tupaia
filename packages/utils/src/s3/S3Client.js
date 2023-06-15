@@ -11,6 +11,11 @@ import { getUniqueFileName } from './getUniqueFileName';
 
 export class S3Client {
   constructor(s3Instance) {
+    /**
+     * AWS aggregated s3 client
+     * @type {import('./S3.js').S3}
+     * @private
+     */
     this.s3 = s3Instance;
   }
 
@@ -43,6 +48,18 @@ export class S3Client {
 
     const result = await uploader.done();
     return result.Location;
+  }
+
+  /**
+   * @private
+   */
+  async download(config) {
+    const response = await this.s3.getObject({
+      Bucket: S3_BUCKET_NAME,
+      ...config,
+    });
+
+    return response.Body;
   }
 
   /**
@@ -132,5 +149,14 @@ export class S3Client {
         throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
     }
     return this.uploadPublicImage(fileName, buffer, fileType);
+  }
+
+  /**
+   * @public
+   * @param {string} [fileName]
+   */
+  async downloadFile(fileName) {
+    const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
+    return this.download({ Key: s3FilePath });
   }
 }
