@@ -95,7 +95,9 @@ export function MultiProjectLandingPage({
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 if (isLoggedIn) {
                   return (
-                    <ProjectDeniedLink url={`?project=${code}#${MODAL_ROUTES.REQUEST_ACCESS}`} />
+                    <ProjectDeniedLink
+                      url={`?project=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                    />
                   );
                 }
                 return <ProjectLoginLink />;

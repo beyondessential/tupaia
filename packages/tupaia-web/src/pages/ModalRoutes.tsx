@@ -11,7 +11,8 @@ import {
   Register,
   VerifyEmailResend,
   PasswordResetForm,
-  RequestAccessForm,
+  RequestProjectAccess,
+  RequestCountryAccess,
 } from '.';
 import { Modal } from '../components';
 import { useModal } from '../utils';
@@ -25,7 +26,8 @@ const modalViews = {
   [MODAL_ROUTES.LOGIN]: Login,
   [MODAL_ROUTES.REGISTER]: Register,
   [MODAL_ROUTES.RESET_PASSWORD]: PasswordResetForm,
-  [MODAL_ROUTES.REQUEST_ACCESS]: RequestAccessForm,
+  [MODAL_ROUTES.REQUEST_COUNTRY_ACCESS]: RequestCountryAccess,
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
 };
 

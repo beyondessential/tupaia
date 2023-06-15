@@ -108,7 +108,7 @@ export const Projects = () => {
                 };
                 if (isLoggedIn) {
                   LINK.TEXT = 'Request Access';
-                  LINK.URL = `?project=${code}#${MODAL_ROUTES.REQUEST_ACCESS}`;
+                  LINK.URL = `?project=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`;
                 }
                 return (
                   <LegacyProjectDeniedLink url={LINK.URL}>{LINK.TEXT}</LegacyProjectDeniedLink>

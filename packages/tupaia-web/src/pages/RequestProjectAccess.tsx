@@ -5,6 +5,6 @@
 import React from 'react';
 import { AuthModalBody } from '../components';
 
-export const RequestAccessForm = () => {
+export const RequestProjectAccess = () => {
   return <AuthModalBody>RequestAccessForm</AuthModalBody>;
 };

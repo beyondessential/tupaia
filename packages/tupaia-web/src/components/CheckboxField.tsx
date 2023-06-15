@@ -11,6 +11,9 @@ import { useFormContext } from 'react-hook-form';
 const StyledCheckbox = styled(Checkbox)`
   display: flex;
   flex-direction: column;
+  .MuiFormControlLabel-root {
+    margin-right: 0;
+  }
 `;
 
 interface CheckboxProps extends MuiCheckboxProps {

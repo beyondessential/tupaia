@@ -14,7 +14,8 @@ export enum MODAL_ROUTES {
   LOGIN = 'login',
   REGISTER = 'register',
   RESET_PASSWORD = 'reset-password',
-  REQUEST_ACCESS = 'request-access',
+  REQUEST_PROJECT_ACCESS = 'request-project-access',
+  REQUEST_COUNTRY_ACCESS = 'request-country-access',
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 export const PROJECT_ACCESS_TYPES = {
