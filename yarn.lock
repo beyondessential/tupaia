@@ -6547,6 +6547,7 @@ __metadata:
     react-native-uuid: ^1.4.9
     s3urls: ^1.5.2
     semver-compare: ^1.0.0
+    sinon: ^9.0.2
     sinon-chai: ^3.3.0
     sinon-test: ^3.0.0
     string-similarity: ^1.2.2
