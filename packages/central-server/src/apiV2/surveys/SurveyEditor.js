@@ -152,7 +152,7 @@ export class SurveyEditor {
       {
         // If no survey with that name is found, give it a code and public permissions
         code: surveyCode,
-        name: name,
+        name,
         permission_group_id: permissionGroup.id,
         data_group_id: dataGroup.id,
       },
@@ -209,6 +209,7 @@ export class SurveyEditor {
         file: surveyQuestions,
         survey,
         dataGroup,
+        permissionGroup,
       });
     }
   }

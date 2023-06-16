@@ -19,9 +19,14 @@ import { useRouteHandler } from './RouteHandler';
 import { exportRoutes } from './export';
 import { importRoutes } from './import';
 import { authenticate } from './authenticate';
-import { changesMetadata } from './changesMetadata';
-import { countChanges } from './countChanges';
-import { getChanges } from './getChanges';
+import {
+  countChanges,
+  changesMetadata,
+  getChanges,
+  getSocialFeed,
+  getUserRewards,
+  postChanges,
+} from './meditrakApp';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
@@ -92,13 +97,10 @@ import {
 import { EditEntity, GETEntities, DeleteEntity } from './entities';
 import { GetEntityTypes } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
-import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
 import { deleteAccount } from './deleteAccount';
 import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
-import { getSocialFeed } from './getSocialFeed';
-import { getUserRewards } from './getUserRewards';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
@@ -125,6 +127,7 @@ import {
   TestExternalDatabaseConnection,
 } from './externalDatabaseConnections';
 import { CreateLandingPage, EditLandingPage } from './landingPages';
+import { DownloadFiles } from './DownloadFiles';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -163,6 +166,7 @@ apiV2.use('/import', importRoutes);
 apiV2.get('/changes/count', catchAsyncErrors(countChanges));
 apiV2.get('/changes/metadata', catchAsyncErrors(changesMetadata));
 apiV2.get('/changes', catchAsyncErrors(getChanges));
+apiV2.get('/downloadFiles', useRouteHandler(DownloadFiles));
 apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
 apiV2.get('/me/rewards', allowAnyone(getUserRewards));

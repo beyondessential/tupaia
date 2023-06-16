@@ -30,7 +30,12 @@ const validateQuestionExistence = rows => {
   return true;
 };
 
-const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
+const updateOrCreateDataElementInGroup = async (
+  models,
+  dataElementCode,
+  dataGroup,
+  surveyPermissionGroup,
+) => {
   const { service_type: serviceType, config } = dataGroup;
 
   await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, {
@@ -46,6 +51,8 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
       code: dataElementCode,
       service_type: serviceType,
       config,
+      // Use the permission group of the survey as the default for the data element
+      permission_groups: [surveyPermissionGroup.name],
     });
     dataElement.sanitizeConfig();
     await dataElement.save();
@@ -71,9 +78,10 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
  * @param {File} file
  * @param {Survey} survey
  * @param {DataGroup} dataGroup
+ * @param {PermissionGroup} permissionGroup
  * @return {Promise<void>}
  */
-export async function importSurveysQuestions({ models, file, survey, dataGroup }) {
+export async function importSurveysQuestions({ models, file, survey, dataGroup, permissionGroup }) {
   if (!file) {
     throw new UploadError();
   }
@@ -185,7 +193,12 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup }
 
     let dataElement;
     if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
-      dataElement = await updateOrCreateDataElementInGroup(models, code, dataGroup);
+      dataElement = await updateOrCreateDataElementInGroup(
+        models,
+        code,
+        dataGroup,
+        permissionGroup,
+      );
     }
 
     // Compose question based on details from spreadsheet
@@ -197,12 +210,7 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup }
       detail,
       hook,
       options: processOptions(options, optionLabels, optionColors, type),
-      option_set_id: await processOptionSetName(
-        models,
-        optionSet,
-        excelRowNumber,
-        tabName,
-      ),
+      option_set_id: await processOptionSetName(models, optionSet, excelRowNumber, tabName),
       data_element_id: dataElement && dataElement.id,
     };
 

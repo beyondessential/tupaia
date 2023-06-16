@@ -15,7 +15,7 @@ const buildAndInsertQuestion = async (
   const question = await findOrCreateDummyRecord(
     models.question,
     { code },
-    { ...questionFields, data_element_id: dataElement.id },
+    { type: 'FreeText', ...questionFields, data_element_id: dataElement.id },
   );
   const surveyScreenComponent = await findOrCreateDummyRecord(
     models.surveyScreenComponent,

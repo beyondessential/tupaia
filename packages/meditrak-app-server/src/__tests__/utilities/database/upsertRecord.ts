@@ -30,6 +30,7 @@ export const upsertQuestion = async (models: TestModelRegistry, data = { id: '',
     ...data,
     code: dataElement.code,
     data_element_id: dataElement.id,
+    type: 'FreeText',
   });
 };
 
