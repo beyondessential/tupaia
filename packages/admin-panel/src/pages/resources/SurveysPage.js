@@ -50,7 +50,8 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel: 'Select the permission group this survey should be available for',
+      secondaryLabel:
+        'Select the permission group this survey should be available for, or select Public for all',
     },
   },
   survey_group_id: {
@@ -223,7 +224,13 @@ const CREATE_CONFIG = {
   actionConfig: {
     editEndpoint: 'surveys',
     fields: [...Object.values(SURVEY_FIELDS)],
-    title: 'New Survey',
+    initialValues: {
+      can_repeat: false,
+      requires_approval: false,
+      'data_group.service_type': 'tupaia',
+      'data_group.config': {},
+    },
+    title: 'New Surveyz',
   },
 };
 

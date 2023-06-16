@@ -176,7 +176,14 @@ const processRecordData = (recordData, fields) => {
 };
 
 const mergeProps = (
-  { endpoint, editedFields, recordData, usedByConfig: usedByConfigInMapStateProps, ...stateProps },
+  {
+    endpoint,
+    editedFields,
+    recordData,
+    usedByConfig: usedByConfigInMapStateProps,
+    initialValues,
+    ...stateProps
+  },
   { dispatch, ...dispatchProps },
   { onProcessDataForSave, usedByConfig: usedByConfigInOwnProps, ...ownProps },
 ) => {
@@ -187,11 +194,15 @@ const mergeProps = (
     ...stateProps,
     ...dispatchProps,
     editedFields,
-    recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
+    recordData: {
+      ...processRecordData(recordData, stateProps.fields),
+      ...initialValues,
+      ...editedFields,
+    }, // Include edits in visible record data
     onSave: files => {
       // If there is no record data, this is a new record
       const isNew = Object.keys(recordData).length === 0;
-      let fieldValuesToSave = { ...editedFields };
+      let fieldValuesToSave = isNew ? { ...initialValues, ...editedFields } : { ...editedFields };
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }

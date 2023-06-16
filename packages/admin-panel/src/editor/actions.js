@@ -90,7 +90,15 @@ export const openBulkEditModal = (
 };
 
 export const openEditModal = (
-  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {}, isLoading = false },
+  {
+    editEndpoint,
+    title,
+    fields,
+    FieldsComponent,
+    extraDialogProps = {},
+    isLoading = false,
+    initialValues = {},
+  },
   recordId,
 ) => async (dispatch, getState, { api }) => {
   // explode the fields from any subsections
@@ -105,6 +113,7 @@ export const openEditModal = (
     endpoint: editEndpoint,
     extraDialogProps,
     isLoading,
+    initialValues,
   });
 
   // And then fetch data / set default field values for edit/new respectively
