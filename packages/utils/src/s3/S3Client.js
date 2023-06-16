@@ -4,8 +4,6 @@
  */
 
 import { Upload } from '@aws-sdk/lib-storage';
-import fs from 'fs';
-import path from 'path';
 import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 
@@ -88,20 +86,19 @@ export class S3Client {
 
   /**
    * @public
-   * @param {string} filePath
+   * @param {string} fileName
+   * @param {*} file
    * @returns
    */
-  async uploadFile(filePath) {
-    const fileName = path.basename(filePath);
-    const s3FilePath = `${getS3UploadFilePath()}${getUniqueFileName(fileName)}`;
+  async uploadFile(fileName, file) {
+    const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
 
     const alreadyExists = await this.checkIfFileExists(s3FilePath);
     if (alreadyExists) {
       throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
     }
 
-    const fileStream = fs.createReadStream(filePath);
-    return this.uploadPrivateFile(s3FilePath, fileStream);
+    return this.uploadPrivateFile(s3FilePath, file);
   }
 
   async deleteFile(filePath) {
