@@ -6,7 +6,7 @@
 import React from 'react';
 import polyline from '@mapbox/polyline';
 import { Position } from 'geojson';
-import { DEFAULT_BOUNDS } from '../../constants';
+import { DEFAULT_BOUNDS, TRANSPARENT_BLACK } from '../../constants';
 import styled from 'styled-components';
 
 const areBoundsValid = (b: Position[]) => {
@@ -71,9 +71,10 @@ const StyledImage = styled.div<{
   background-image: ${({ $backgroundImage }) => `url("${$backgroundImage}")`};
   background-size: cover;
   background-position: center;
+  background-color: ${TRANSPARENT_BLACK};
 `;
 
-export const StaticMap = ({ polygonBounds = DEFAULT_BOUNDS }) => {
+export const StaticMap = ({ polygonBounds }: { polygonBounds: Position[] }) => {
   if (!areBoundsValid(polygonBounds)) {
     return null;
   }

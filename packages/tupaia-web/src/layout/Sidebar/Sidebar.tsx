@@ -5,7 +5,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { TRANSPARENT_BLACK } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -15,6 +16,8 @@ import { useEntity } from '../../api/queries';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
+const MIN_SIDEBAR_WIDTH = 335;
+const PANEL_GREY = '#4a4b55';
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -23,7 +26,7 @@ const Panel = styled.div<{
   background-color: ${TRANSPARENT_BLACK};
   transition: width 0.5s ease, max-width 0.5s ease;
   width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
-  min-width: 335px;
+  min-width: ${MIN_SIDEBAR_WIDTH}px;
   max-width: ${({ $isExpanded }) =>
     $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
   overflow: visible;
@@ -35,24 +38,30 @@ const ScrollBody = styled.div`
   overflow: auto;
 `;
 
-const Button = styled.div`
-  background: #efefef;
-  width: 100%;
-  height: 300px;
-`;
-
-const Title = styled(Typography)`
+const TitleBar = styled.div`
   position: sticky;
   top: 0;
-  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
   background-color: ${TRANSPARENT_BLACK};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 `;
 
+const ExportButton = styled(Button).attrs({
+  variant: 'outlined',
+})`
+  font-size: 0.6875rem;
+`;
+
+const Title = styled(Typography)`
+  color: white;
+`;
+
 const Dropdown = styled.div`
-  background: #4a4b55;
+  background: ${PANEL_GREY};
   width: 100%;
   padding: 1rem;
   font-size: 1rem;
@@ -62,8 +71,8 @@ const ChartsContainer = styled.div<{
   $isExpanded: boolean;
 }>`
   display: grid;
-  background-color: #4a4b55;
-  grid-template-columns: repeat(auto-fill, minmax(300px, auto));
+  background-color: ${PANEL_GREY};
+  grid-template-columns: repeat(auto-fill, minmax(${MIN_SIDEBAR_WIDTH}px, auto));
   column-gap: 0.5rem;
   row-gap: 0.5rem;
 
@@ -72,20 +81,14 @@ const ChartsContainer = styled.div<{
 
 const Chart = styled.div`
   position: relative;
-  background: #272832;
-  height: 200px;
+  background-color: ${TRANSPARENT_BLACK};
+  // Use padding to maintain aspect ratio
+  padding-bottom: 80%;
 `;
-
-const MapOrPhoto = ({ isLoading, bounds }) => {
-  if (isLoading) {
-    return <div style={{ height: 200 }}>Loading...</div>;
-  }
-  return bounds ? <StaticMap polygonBounds={bounds} /> : <Photo />;
-};
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data, isLoading } = useEntity('fiji');
+  const { data } = useEntity('fiji');
   const bounds = data?.location?.bounds;
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -96,8 +99,11 @@ export const Sidebar = () => {
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
       <ScrollBody>
         <Breadcrumbs />
-        <MapOrPhoto isLoading={isLoading} bounds={bounds} />
-        <Title variant="h5">Northern</Title>
+        {bounds ? <StaticMap polygonBounds={bounds} /> : <Photo />}
+        <TitleBar>
+          <Title variant="h5">Northern</Title>
+          <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
+        </TitleBar>
         <Dropdown>General</Dropdown>
         <ChartsContainer $isExpanded={isExpanded}>
           <Chart />
