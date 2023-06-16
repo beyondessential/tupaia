@@ -30,10 +30,10 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
               const value = row.values[col.id];
               // check for strings that are not stringified numbers, including dates and percentages
               if (typeof value === 'string' && isNaN(value)) return value;
-              // attempt to parse the rest of the values
-              const num = parseFloat(value);
-              // if isNaN returns true, the value is not a number, so return the original value (e.g. booleans), otherwise return the parsed value
-              return isNaN(num) ? value : num;
+              // only parse the value if it is not a boolean (as this means it is definitely meant to be a number)
+              const num = value && typeof value !== 'boolean' ? Number(value) : value;
+  
+              return num;
             }),
           )
         : [['There is no available data for the selected time period.']];
