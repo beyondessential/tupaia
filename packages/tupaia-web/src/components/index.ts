@@ -4,7 +4,7 @@
  */
 export { LoadingScreen } from './LoadingScreen';
 export { Modal } from './Modal';
-export { AuthModalBody, AuthModalButton, AuthModalCancelButton } from './AuthModal';
+export { AuthModalBody, AuthModalButton } from './AuthModal';
 export { TextField } from './TextField';
 export { CheckboxField } from './CheckboxField';
 export { RouterButton, RouterLink } from './RouterButton';

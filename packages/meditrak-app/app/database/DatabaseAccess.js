@@ -59,6 +59,17 @@ export class DatabaseAccess extends SyncingDatabase {
     });
   }
 
+  saveFile(fileId, filename, data) {
+    this.write(() => {
+      const file = this.create('File', {
+        id: fileId,
+        filename,
+        data,
+      });
+      this.addChangeToSync('AddSurveyFile', fileId);
+    });
+  }
+
   saveOptionObjects(optionObjects) {
     return optionObjects.map(optionObject => this.create('Option', optionObject));
   }

@@ -15,13 +15,13 @@ const SURVEYS = [
     id: GENERIC_SURVEY_ID,
     code: 'test-generic-hook',
     questions: [
-      { code: 'TEST_test', type: 'Text', hook: 'testHook' },
+      { code: 'TEST_test', type: 'FreeText', hook: 'testHook' },
       { code: 'TEST_geo', type: 'Geolocate', hook: 'entityCoordinates' },
-      { code: 'TEST_image', type: 'Text', hook: 'entityImage' },
-      { code: 'TEST_backdate-test', type: 'Text', hook: 'backdateTestHook' },
-      { code: 'TEST_whole-survey-a', type: 'Text', hook: 'wholeSurvey' },
-      { code: 'TEST_whole-survey-b', type: 'Text' },
-      { code: 'TEST_attribute', type: 'Text', hook: 'entityAttributeBananaPopulation' },
+      { code: 'TEST_image', type: 'FreeText', hook: 'entityImage' },
+      { code: 'TEST_backdate-test', type: 'FreeText', hook: 'backdateTestHook' },
+      { code: 'TEST_whole-survey-a', type: 'FreeText', hook: 'wholeSurvey' },
+      { code: 'TEST_whole-survey-b', type: 'FreeText' },
+      { code: 'TEST_attribute', type: 'FreeText', hook: 'entityAttributeBananaPopulation' },
     ],
   },
   {
@@ -29,11 +29,11 @@ const SURVEYS = [
     code: 'test-entity-creation-hook',
     questions: [
       // Hooks already registered by the app
-      { code: 'TEST_create-code', type: 'Text', hook: 'entityCreate' },
+      { code: 'TEST_create-code', type: 'FreeText', hook: 'entityCreate' },
       { code: 'TEST_create-geo', type: 'Geolocate', hook: 'entityCreate_location' },
-      { code: 'TEST_create-name', type: 'Text', hook: 'entityCreate_name' },
-      { code: 'TEST_create-image-url', type: 'Text', hook: 'entityCreate_image_url' },
-      { code: 'TEST_create-type', type: 'Text', hook: 'entityCreate_type' },
+      { code: 'TEST_create-name', type: 'FreeText', hook: 'entityCreate_name' },
+      { code: 'TEST_create-image-url', type: 'FreeText', hook: 'entityCreate_image_url' },
+      { code: 'TEST_create-type', type: 'FreeText', hook: 'entityCreate_type' },
     ],
   },
 ];

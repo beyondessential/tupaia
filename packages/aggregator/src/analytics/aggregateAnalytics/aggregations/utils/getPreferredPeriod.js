@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { findCoarsestPeriodType, periodToType } from '@tupaia/utils';
+import { findCoarsestPeriodType } from '@tupaia/utils';
+import { periodToType } from '@tupaia/tsutils';
 
 /**
  * Returns which one of two periods is preferred for data aggregation

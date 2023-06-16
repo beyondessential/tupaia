@@ -38,6 +38,19 @@ export const Routes = () => {
               />
             }
           />
+          <Route
+            path="/reset-password"
+            element={
+              <Navigate
+                to={{
+                  ...location,
+                  pathname: DEFAULT_URL,
+                  hash: MODAL_ROUTES.RESET_PASSWORD,
+                }}
+                replace
+              />
+            }
+          />
           {/* Redirect modal routes to the correct routes just in case */}
           <Route
             path="/login"
