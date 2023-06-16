@@ -68,7 +68,7 @@ export const legacy_getDhisConfig = ({
   isDataRegional = true,
 } = {}) => {
   const serverName = legacy_getDhisServerName({
-    serverName,
+    serverNameInput,
     entityCode,
     entityCodes,
     isDataRegional,
