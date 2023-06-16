@@ -1,0 +1,18 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import styled from 'styled-components';
+
+export const Media = styled.div<{
+  $backgroundImage?: string;
+}>`
+  position: relative;
+  min-height: 200px;
+  width: 100%;
+  padding-bottom: 25%;
+  background-image: ${({ $backgroundImage }) => `url("${$backgroundImage}")`};
+  background-size: cover;
+  background-position: center;
+`;

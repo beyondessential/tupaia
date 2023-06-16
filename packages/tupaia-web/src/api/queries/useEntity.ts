@@ -14,10 +14,7 @@ const response = {
   location: {
     type: 'area',
     point: null,
-    bounds: [
-      [-24.1625706, 180.604802],
-      [-15.3655722, 186.4704542],
-    ],
+    bounds: null,
     region: [],
   },
   photoUrl:

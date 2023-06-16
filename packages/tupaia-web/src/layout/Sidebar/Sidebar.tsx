@@ -75,7 +75,6 @@ const ChartsContainer = styled.div<{
   grid-template-columns: repeat(auto-fill, minmax(${MIN_SIDEBAR_WIDTH}px, auto));
   column-gap: 0.5rem;
   row-gap: 0.5rem;
-
   padding: ${({ $isExpanded }) => ($isExpanded ? '0 0.5rem 0.5rem' : '0 0 0.5rem 0')};
 `;
 
@@ -88,8 +87,8 @@ const Chart = styled.div`
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data } = useEntity('fiji');
-  const bounds = data?.location?.bounds;
+  const { data: entityData } = useEntity('fiji');
+  const bounds = entityData?.location?.bounds;
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
@@ -99,7 +98,11 @@ export const Sidebar = () => {
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
       <ScrollBody>
         <Breadcrumbs />
-        {bounds ? <StaticMap polygonBounds={bounds} /> : <Photo />}
+        {bounds ? (
+          <StaticMap polygonBounds={bounds} />
+        ) : (
+          <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
+        )}
         <TitleBar>
           <Title variant="h5">Northern</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>

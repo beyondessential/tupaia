@@ -6,8 +6,8 @@
 import React from 'react';
 import polyline from '@mapbox/polyline';
 import { Position } from 'geojson';
-import { DEFAULT_BOUNDS, TRANSPARENT_BLACK } from '../../constants';
-import styled from 'styled-components';
+import { DEFAULT_BOUNDS } from '../../constants';
+import { Media } from './Media';
 
 const areBoundsValid = (b: Position[]) => {
   return Array.isArray(b) && b.length === 2;
@@ -63,22 +63,11 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
   return `${MAPBOX_BASE_URL}${polygonParams}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
 };
 
-const StyledImage = styled.div<{
-  $backgroundImage?: string;
-}>`
-  min-height: 200px;
-  padding-bottom: 25%;
-  background-image: ${({ $backgroundImage }) => `url("${$backgroundImage}")`};
-  background-size: cover;
-  background-position: center;
-  background-color: ${TRANSPARENT_BLACK};
-`;
-
 export const StaticMap = ({ polygonBounds }: { polygonBounds: Position[] }) => {
   if (!areBoundsValid(polygonBounds)) {
     return null;
   }
 
   const url = makeStaticMapUrl(polygonBounds);
-  return <StyledImage $backgroundImage={url} />;
+  return <Media $backgroundImage={url} />;
 };
