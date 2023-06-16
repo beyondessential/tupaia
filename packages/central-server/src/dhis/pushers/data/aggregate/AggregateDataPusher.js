@@ -8,10 +8,10 @@ import { DHIS2_RESOURCE_TYPES, dhisToTupaiaPeriodType, combineDiagnostics } from
 import {
   DEFAULT_PERIOD_TYPE,
   periodToType,
-  periodTypeToMomentUnit,
   periodTypeToFormat,
-  stripTimezoneFromDate,
-} from '@tupaia/utils';
+  periodTypeToMomentUnit,
+} from '@tupaia/tsutils';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
 

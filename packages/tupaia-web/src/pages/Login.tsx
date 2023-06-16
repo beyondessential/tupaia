@@ -57,7 +57,7 @@ export const Login = () => {
           type="password"
           options={FORM_FIELD_VALIDATION.PASSWORD}
         />
-        <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.RESET_PASSWORD}>
+        <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.FORGOT_PASSWORD}>
           Forgot password?
         </ForgotPasswordText>
         <AuthModalButton type="submit" isLoading={isLoading}>

@@ -90,7 +90,7 @@ export const UserMenu = () => {
     ? [VisitMainSite, ChangePassword, Logout]
     : [VisitMainSite];
 
-  const baseMenuItems = isLoggedIn ? [ViewProjects, Logout] : [ViewProjects];
+  const baseMenuItems = isLoggedIn ? [ViewProjects, ChangePassword, Logout] : [ViewProjects];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 

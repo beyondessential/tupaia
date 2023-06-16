@@ -33,6 +33,7 @@ export const ANSWER_TYPES = {
   YEARS_SINCE: 'YearsSince',
   ARITHMETIC: 'Arithmetic',
   CONDITION: 'Condition',
+  FILE: 'File',
   // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 

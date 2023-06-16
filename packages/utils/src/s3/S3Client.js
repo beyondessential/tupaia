@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { Upload } from '@aws-sdk/lib-storage';
 import fs from 'fs';
 import path from 'path';
 import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
@@ -10,6 +11,11 @@ import { getUniqueFileName } from './getUniqueFileName';
 
 export class S3Client {
   constructor(s3Instance) {
+    /**
+     * AWS aggregated s3 client
+     * @type {import('./S3.js').S3}
+     * @private
+     */
     this.s3 = s3Instance;
   }
 
@@ -19,41 +25,41 @@ export class S3Client {
    * @returns {Promise<boolean>} whether file exists
    */
   async checkIfFileExists(fileName) {
-    return new Promise(resolve => {
-      this.s3
-        .headObject({
-          Bucket: S3_BUCKET_NAME,
-          Key: fileName,
-        })
-        .on('success', () => {
-          resolve(true);
-        })
-        .on('error', () => {
-          resolve(false);
-        })
-        .send();
-    });
+    return this.s3
+      .headObject({
+        Bucket: S3_BUCKET_NAME,
+        Key: fileName,
+      })
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
    * @private
    */
   async upload(config) {
-    return new Promise((resolve, reject) => {
-      this.s3.upload(
-        {
-          Bucket: S3_BUCKET_NAME,
-          ...config,
-        },
-        (error, data) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(data.Location);
-          }
-        },
-      );
+    const uploader = new Upload({
+      client: this.s3,
+      params: {
+        Bucket: S3_BUCKET_NAME,
+        ...config,
+      },
     });
+
+    const result = await uploader.done();
+    return result.Location;
+  }
+
+  /**
+   * @private
+   */
+  async download(config) {
+    const response = await this.s3.getObject({
+      Bucket: S3_BUCKET_NAME,
+      ...config,
+    });
+
+    return response.Body;
   }
 
   /**
@@ -101,20 +107,9 @@ export class S3Client {
   async deleteFile(filePath) {
     const fileName = filePath.split(getS3ImageFilePath())[1];
     if (!(await this.checkIfFileExists(fileName))) return null;
-    return new Promise((resolve, reject) => {
-      this.s3.deleteObject(
-        {
-          Bucket: S3_BUCKET_NAME,
-          Key: fileName,
-        },
-        (error, data) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(data);
-          }
-        },
-      );
+    return this.s3.deleteObject({
+      Bucket: S3_BUCKET_NAME,
+      Key: fileName,
     });
   }
 
@@ -154,5 +149,14 @@ export class S3Client {
         throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
     }
     return this.uploadPublicImage(fileName, buffer, fileType);
+  }
+
+  /**
+   * @public
+   * @param {string} [fileName]
+   */
+  async downloadFile(fileName) {
+    const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
+    return this.download({ Key: s3FilePath });
   }
 }

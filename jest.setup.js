@@ -6,6 +6,9 @@
 /* eslint-env jest */
 
 require('jest-extended');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 /**
  * Note: Due to incompatibility with jest-expected-message and jest 27+ we are disabling

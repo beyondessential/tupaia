@@ -10,8 +10,9 @@ import {
   Login,
   Register,
   VerifyEmailResend,
-  PasswordResetForm,
   RequestAccessForm,
+  ForgotPassword,
+  ResetPassword,
 } from '.';
 import { Modal } from '../components';
 import { useModal } from '../utils';
@@ -24,7 +25,8 @@ const modalViews = {
   [MODAL_ROUTES.PROJECTS]: Projects,
   [MODAL_ROUTES.LOGIN]: Login,
   [MODAL_ROUTES.REGISTER]: Register,
-  [MODAL_ROUTES.RESET_PASSWORD]: PasswordResetForm,
+  [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPassword,
+  [MODAL_ROUTES.RESET_PASSWORD]: ResetPassword,
   [MODAL_ROUTES.REQUEST_ACCESS]: RequestAccessForm,
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
 };
