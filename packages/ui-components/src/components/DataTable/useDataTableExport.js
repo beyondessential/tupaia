@@ -4,16 +4,12 @@
  */
 
 import xlsx from 'xlsx';
-import { displayStringToMoment, toFilename } from '@tupaia/utils';
+import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment from 'moment';
 
 export const useDataTableExport = (columns, data, title, startDate, endDate) => {
-  const {
-    headerGroups,
-    rows: tableData,
-    columns: tableColumns,
-  } = useTable({
+  const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
     columns,
     data,
   });
@@ -32,21 +28,11 @@ export const useDataTableExport = (columns, data, title, startDate, endDate) => 
         ? tableData.map(row =>
             tableColumns.map(col => {
               const value = row.values[col.id];
-
-              // Attempt to convert to a moment object if is a string that can't be converted to a number (isNaN). If it's a date string, return in date format, otherwise continue
-              // This check will handle percentage strings as well as date strings, and any other non-numeric strings
-              if (typeof value === 'string' && isNaN(value)) {
-                const momentObj = displayStringToMoment(value);
-                if (momentObj.isValid()) {
-                  // check the format of the date string. If it includes 'D' it means it is a day date, so we want to reformat these as 'DD/MM/YYYY'. Everything else should be returned as they are
-                  const { _f: format } = momentObj;
-                  if (format && format.includes('D')) return momentObj.format('DD/MM/YYYY');
-                }
-                return value;
-              }
-
-              // Parse the value as a float, and if it's a number then return as a number, otherwise return the value as is. This handles cases like booleans, because isNaN(boolean) === false, but isNaN(parseFloat(boolean)) === true
+              // check for strings that are not stringified numbers, including dates and percentages
+              if (typeof value === 'string' && isNaN(value)) return value;
+              // attempt to parse the rest of the values
               const num = parseFloat(value);
+              // if isNaN returns true, the value is not a number, so return the original value (e.g. booleans), otherwise return the parsed value
               return isNaN(num) ? value : num;
             }),
           )
