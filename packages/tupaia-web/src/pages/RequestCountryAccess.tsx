@@ -4,7 +4,14 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { AuthModalButton, CheckboxField, Form, LoadingScreen, TextField } from '../components';
+import {
+  AuthModalButton,
+  CheckboxField,
+  CheckboxList,
+  Form,
+  LoadingScreen,
+  TextField,
+} from '../components';
 import { useCountryAccessList } from '../api/queries';
 import { useRequestCountryAccess } from '../api/mutations';
 import styled from 'styled-components';
@@ -33,21 +40,10 @@ const Container = styled.div`
   max-width: 100%;
 `;
 
-const CountryList = styled.fieldset`
-  border: none;
-  padding: 0;
-`;
-
 const Title = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-`;
-
-export const Legend = styled.legend`
-  font-size: 1.2rem;
   font-weight: 500;
   margin-bottom: 1rem;
 `;
@@ -100,12 +96,14 @@ export const RequestCountryAccess = () => {
             </AccessRequestWrapper>
           )}
           <Form formContext={formContext} onSubmit={requestCountryAccess as SubmitHandler<any>}>
-            <CountryList>
-              <Legend>Which countries would you like access to?</Legend>
-              {countriesWithoutAccess.map(({ name, id }) => (
-                <CheckboxField key={id} name="entityIds" label={name} value={id} />
-              ))}
-            </CountryList>
+            <CheckboxList
+              legend="Which countries would you like access to?"
+              options={countriesWithoutAccess.map(({ name, id }) => ({
+                value: id,
+                label: name,
+              }))}
+              name="entityIds"
+            />
             <TextField name="message" label="Why would you like access?" type="text" />
             <AuthModalButton type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
               Request access

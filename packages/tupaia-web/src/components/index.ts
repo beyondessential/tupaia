@@ -7,5 +7,6 @@ export { Modal } from './Modal';
 export { AuthModalBody, AuthModalButton } from './AuthModal';
 export { TextField } from './TextField';
 export { CheckboxField } from './CheckboxField';
+export { CheckboxList } from './CheckboxList';
 export { RouterButton, RouterLink } from './RouterButton';
 export { Form } from './Form';

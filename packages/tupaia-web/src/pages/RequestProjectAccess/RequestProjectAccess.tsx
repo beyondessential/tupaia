@@ -1,0 +1,52 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { PROJECT_PARAM } from '../../constants';
+import { LoadingScreen } from '../../components';
+import { useCountryAccessList, useProject } from '../../api/queries';
+import { ModalHeader } from './ModalHeader';
+import { ProjectHero } from './ProjectHero';
+import { ProjectDetails } from './ProjectDetails';
+import { ProjectAccessForm } from './ProjectAccessForm';
+
+const ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0.2rem 0 0;
+  width: 30rem;
+  max-width: 100%;
+`;
+
+export const RequestProjectAccess = () => {
+  const [urlParams] = useSearchParams();
+
+  const projectCode = urlParams.get(PROJECT_PARAM);
+
+  const { data: project, isLoading } = useProject(projectCode!);
+
+  const { data: countries } = useCountryAccessList();
+  // the countries that are applicable to this project
+  const projectCountries = countries.filter(c => project?.names?.includes(c.name));
+
+  // the countries that have already got a request
+  const requestedCountries = projectCountries.filter(c => c.accessRequests.includes(projectCode!));
+
+  // the countries that are available to request
+  const availableCountries = projectCountries.filter(c => !c.accessRequests.includes(projectCode!));
+
+  return (
+    <ModalBody>
+      <LoadingScreen isLoading={isLoading} />
+      <ModalHeader />
+      <ProjectHero project={project} />
+      <ProjectDetails project={project} />
+      {requestedCountries.length > 0 ? null : (
+        <ProjectAccessForm availableCountries={availableCountries} />
+      )}
+    </ModalBody>
+  );
+};
