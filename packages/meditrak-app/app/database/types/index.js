@@ -22,3 +22,4 @@ export { SurveyScreenComponent } from './SurveyScreenComponent';
 export { Option } from './Option';
 export { OptionSet } from './OptionSet';
 export { User } from './User';
+export { File } from './File';

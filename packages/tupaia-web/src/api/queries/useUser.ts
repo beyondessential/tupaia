@@ -12,6 +12,6 @@ export const useUser = () => {
 
   return {
     ...userResponse,
-    isLoggedIn: data?.name !== undefined,
+    isLoggedIn: !!data?.email,
   };
 };

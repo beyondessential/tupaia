@@ -6,7 +6,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button, OutlinedButton } from '@tupaia/ui-components';
+import { Button } from '@tupaia/ui-components';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../constants';
 
 const Wrapper = styled.div`
@@ -39,21 +39,6 @@ export const AuthModalButton = styled(Button)`
   max-width: 100%;
   margin-left: 0 !important;
   margin-top: 2rem;
-`;
-
-export const AuthModalCancelButton = styled(OutlinedButton).attrs({
-  color: 'default',
-})`
-  text-transform: none;
-  font-size: 1rem;
-  width: 22rem;
-  max-width: 100%;
-  margin-left: 0 !important;
-  padding: 0.375rem 1rem; // to match the height of the primary button
-  border-color: ${({ theme }) => theme.palette.text.secondary};
-  ${AuthModalButton} + & {
-    margin-top: 1.3rem;
-  }
 `;
 
 interface AuthModalProps {

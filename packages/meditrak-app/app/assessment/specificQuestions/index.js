@@ -15,7 +15,8 @@ export { PhotoQuestion } from './PhotoQuestion';
 export { RadioQuestion } from './RadioQuestion';
 export { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 export { ArithmeticQuestion, ConditionQuestion } from './CalculatedQuestion';
-export { EntityQuestion, PrimaryEntityQuestion } from './EntityQuestion';
+export { EntityQuestion } from './EntityQuestion';
+export { FileQuestion } from './FileQuestion';
 export { UnsupportedQuestion } from './UnsupportedQuestion';
 
 export { DaysSinceQuestion } from './TimeSinceQuestion';

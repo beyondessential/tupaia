@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { utcMoment } from '@tupaia/tsutils';
-import { EARLIEST_DATA_DATE_STRING, getPeriodsInRange, periodToMoment, yup } from '@tupaia/utils';
+import { periodToMoment, utcMoment } from '@tupaia/tsutils';
+import { EARLIEST_DATA_DATE_STRING, getPeriodsInRange, yup } from '@tupaia/utils';
 
 export const HIERARCHY = 'explore';
 
