@@ -9,7 +9,8 @@ export const Breadcrumbs = styled.div`
   position: absolute;
   top: 10px;
   left: 10px;
-  right: 10px;
-  background: #efefef;
-  height: 30px;
+  width: 100%;
+  max-width: 220px;
+  background: #efefefaa;
+  height: 15px;
 `;

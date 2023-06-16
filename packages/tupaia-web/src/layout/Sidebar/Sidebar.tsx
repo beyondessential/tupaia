@@ -11,9 +11,10 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
+import { useEntity } from '../../api/queries';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 350;
+const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -75,11 +76,17 @@ const Chart = styled.div`
   height: 200px;
 `;
 
-const test = false;
+const MapOrPhoto = ({ isLoading, bounds }) => {
+  if (isLoading) {
+    return <div style={{ height: 200 }}>Loading...</div>;
+  }
+  return bounds ? <StaticMap polygonBounds={bounds} /> : <Photo />;
+};
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const { data, isLoading } = useEntity('fiji');
+  const bounds = data?.location?.bounds;
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
@@ -88,8 +95,8 @@ export const Sidebar = () => {
     <Panel $isExpanded={isExpanded}>
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
       <ScrollBody>
-        {/*<Breadcrumbs />*/}
-        {test ? <Photo /> : <StaticMap />}
+        <Breadcrumbs />
+        <MapOrPhoto isLoading={isLoading} bounds={bounds} />
         <Title variant="h5">Northern</Title>
         <Dropdown>General</Dropdown>
         <ChartsContainer $isExpanded={isExpanded}>

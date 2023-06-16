@@ -5,17 +5,15 @@
 
 import React from 'react';
 import polyline from '@mapbox/polyline';
+import { Position } from 'geojson';
 import { DEFAULT_BOUNDS } from '../../constants';
+import styled from 'styled-components';
 
-const MAPBOX_TOKEN = import.meta.env.REACT_APP_MAPBOX_TOKEN;
-
-const mapboxBaseUrl = 'https://api.mapbox.com/styles/v1/sussol/cj64gthqq297z2so13qljil5n/static';
-
-function areBoundsValid(b) {
+const areBoundsValid = (b: Position[]) => {
   return Array.isArray(b) && b.length === 2;
-}
+};
 
-const getLatLongForBounds = bounds => {
+const getLatLongForBounds = (bounds: Position[]) => {
   const lats = bounds.map(latLong => latLong[0]);
   const longs = bounds.map(latLong => latLong[1]);
   const minLat = Math.min(...lats);
@@ -33,11 +31,10 @@ const getLatLongForBounds = bounds => {
   return { latitude, longitude };
 };
 
-export const StaticMap = ({ polygonBounds = DEFAULT_BOUNDS }) => {
-  if (!areBoundsValid(polygonBounds)) return null;
+const MAPBOX_TOKEN = import.meta.env.REACT_APP_MAPBOX_TOKEN;
+const MAPBOX_BASE_URL = 'https://api.mapbox.com/styles/v1/sussol/cj64gthqq297z2so13qljil5n/static';
 
-  const showBox = polygonBounds !== DEFAULT_BOUNDS;
-
+const makeStaticMapUrl = (polygonBounds: Position[]) => {
   const polygonPoints = [
     [polygonBounds[1][0], polygonBounds[1][1]],
     [polygonBounds[1][0], polygonBounds[0][1]],
@@ -46,20 +43,41 @@ export const StaticMap = ({ polygonBounds = DEFAULT_BOUNDS }) => {
     [polygonBounds[1][0], polygonBounds[1][1]],
   ];
 
-  const encodedPolyline = encodeURIComponent(polyline.encode(polygonPoints));
+  const encodedPolyline = encodeURIComponent(
+    polyline.encode(polygonPoints as Array<[number, number]>),
+  );
 
-  const polygonParams = showBox ? `/path-5+ed6338-1(${encodedPolyline})` : '';
-  const width = 300;
-  const height = 160;
+  const showBox = polygonBounds !== DEFAULT_BOUNDS;
+  const polygonParams = showBox ? `/path-4+ed6338-1(${encodedPolyline})` : '';
+
+  // Render map at 2x for retina screens and also render at a larger size to allow for responsive screen widths.
+  const width = 660;
+  const height = 400;
   const size = `${width}x${height}`;
 
   // Cannot use auto center and bounds for mapbox as it doesn't work over 160 degrees.
   const { latitude, longitude } = getLatLongForBounds(polygonPoints);
 
-  const zoomLevel = longitude === 180 ? 1 : 1;
-  const position = `${longitude},${latitude},${zoomLevel}`;
+  const zoomLevel = longitude === 180 ? 1 : 2;
 
-  const url = `${mapboxBaseUrl}${polygonParams}/${position}/${size}?access_token=${MAPBOX_TOKEN}&attribution=false`;
+  return `${MAPBOX_BASE_URL}${polygonParams}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
+};
 
-  return <img src={url} alt="static-map" width={width} height={height} />;
+const StyledImage = styled.div<{
+  $backgroundImage?: string;
+}>`
+  min-height: 200px;
+  padding-bottom: 25%;
+  background-image: ${({ $backgroundImage }) => `url("${$backgroundImage}")`};
+  background-size: cover;
+  background-position: center;
+`;
+
+export const StaticMap = ({ polygonBounds = DEFAULT_BOUNDS }) => {
+  if (!areBoundsValid(polygonBounds)) {
+    return null;
+  }
+
+  const url = makeStaticMapUrl(polygonBounds);
+  return <StyledImage $backgroundImage={url} />;
 };
