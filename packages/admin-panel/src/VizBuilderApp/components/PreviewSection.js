@@ -7,13 +7,13 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { Chart, FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
+import { Chart, FlexSpaceBetween, FetchLoader, DataTable, JsonEditor } from '@tupaia/ui-components';
 
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
-import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
+import { getColumns } from '../../utilities';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -106,46 +106,21 @@ const TABS = {
 
 const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 
-const convertValueToPrimitive = val => {
-  if (val === null) return val;
-  switch (typeof val) {
-    case 'object':
-      return JSON.stringify(val);
-    case 'function':
-      return '[Function]';
-    default:
-      return val;
-  }
-};
-
-const getColumns = ({ columns: columnKeys = [] }) => {
-  const indexColumn = {
-    Header: '#',
-    id: 'index',
-    accessor: (_row, i) => i + 1,
-  };
-  const columns = columnKeys.map(columnKey => {
-    return {
-      Header: columnKey,
-      accessor: row => convertValueToPrimitive(row[columnKey]),
-    };
-  });
-
-  return [indexColumn, ...columns];
-};
-
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [{ project, location, testData }, { setPresentation }] = useVizConfig();
-  const { visualisationForFetchingData: visualisation } = useVisualisation();
+  const [
+    { project, location, startDate, endDate, testData, visualisation },
+    { setPresentation },
+  ] = useVizConfig();
+  const { visualisationForFetchingData } = useVisualisation();
 
   const [viewContent, setViewContent] = useState(null);
 
-  const { vizType } = useParams();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const {
     data: reportData = { columns: [], rows: [] },
@@ -154,15 +129,17 @@ export const PreviewSection = () => {
     isError,
     error,
   } = useReportPreview({
-    visualisation,
+    visualisation: visualisationForFetchingData,
     project,
     location,
+    startDate,
+    endDate,
     testData,
     enabled: fetchEnabled,
     onSettled: () => {
       setFetchEnabled(false);
     },
-    vizType,
+    dashboardItemOrMapOverlay,
     previewMode: getTab(tab).previewMode,
   });
 
@@ -235,6 +212,8 @@ export const PreviewSection = () => {
               value={visualisation.presentation}
               onChange={setPresentationValue}
               onInvalidChange={handleInvalidPresentationChange}
+              mode="code"
+              mainMenuBar={false}
             />
           </EditorContainer>
         </Container>

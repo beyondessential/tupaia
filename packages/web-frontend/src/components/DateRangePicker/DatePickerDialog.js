@@ -109,6 +109,7 @@ const DatePickerDialog = ({
   minMomentDate,
   maxMomentDate,
   onSetNewDates,
+  weekDisplayFormat,
 }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
   const [selectedEndDate, setSelectedEndDate] = useState(endDate);
@@ -158,6 +159,7 @@ const DatePickerDialog = ({
               minMomentDate={minMomentDate}
               maxMomentDate={maxMomentDate}
               onChange={setSelectedStartDate}
+              weekDisplayFormat={weekDisplayFormat}
             />
           </StyledDateRow>
         )}
@@ -168,6 +170,7 @@ const DatePickerDialog = ({
             minMomentDate={minMomentDate}
             maxMomentDate={maxMomentDate}
             onChange={setSelectedEndDate}
+            weekDisplayFormat={weekDisplayFormat}
           />
         </StyledDateRow>
         {errorMessage ? <Error>{errorMessage}</Error> : null}
@@ -191,6 +194,11 @@ DatePickerDialog.propTypes = {
   minMomentDate: PropTypes.object.isRequired,
   maxMomentDate: PropTypes.object.isRequired,
   onSetNewDates: PropTypes.func.isRequired,
+  weekDisplayFormat: PropTypes.string,
+};
+
+DatePickerDialog.defaultProps = {
+  weekDisplayFormat: null,
 };
 
 export default DatePickerDialog;

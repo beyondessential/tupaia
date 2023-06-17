@@ -4,9 +4,9 @@
  */
 
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
+import { NumericKeys, ObjectLikeKeys, Flatten } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
-
-import { Writable, NumericKeys, ObjectLikeKeys, Flatten } from '../../../types';
+import { Writable } from '../../../types';
 import { EntityFilter, EntityQueryFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
@@ -117,6 +117,7 @@ const convertValueToAdvancedCriteria = (
 const toFilterClause = (queryClause: string) => {
   const [operator] = filterOperators
     .filter(o => queryClause.includes(o))
+    // Keep the longest matching operator, e.g. >= instead of >
     .sort(getSortByKey('length', { ascending: false }));
 
   if (!operator) {

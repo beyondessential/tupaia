@@ -78,7 +78,12 @@ const updateOrCreateDataGroup = async (models, { surveyCode, serviceType, dhisIn
   return dataGroup;
 };
 
-const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
+const updateOrCreateDataElementInGroup = async (
+  models,
+  dataElementCode,
+  dataGroup,
+  surveyPermissionGroup,
+) => {
   const { service_type: serviceType, config } = dataGroup;
 
   await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, {
@@ -94,6 +99,8 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
       code: dataElementCode,
       service_type: serviceType,
       config,
+      // Use the permission group of the survey as the default for the data element
+      permission_groups: [surveyPermissionGroup.name],
     });
     dataElement.sanitizeConfig();
     await dataElement.save();
@@ -308,6 +315,7 @@ export async function importSurveys(req, res) {
             visibilityCriteria,
             validationCriteria,
             optionSet,
+            hook,
           } = questionObject;
 
           let dataElement;
@@ -316,6 +324,7 @@ export async function importSurveys(req, res) {
               transactingModels,
               code,
               dataGroup,
+              permissionGroup,
             );
           }
 
@@ -326,8 +335,14 @@ export async function importSurveys(req, res) {
             name,
             text,
             detail,
+            hook,
             options: processOptions(options, optionLabels, optionColors, type),
-            option_set_id: await processOptionSetName(transactingModels, optionSet),
+            option_set_id: await processOptionSetName(
+              transactingModels,
+              optionSet,
+              excelRowNumber,
+              tabName,
+            ),
             data_element_id: dataElement && dataElement.id,
           };
 
@@ -415,10 +430,14 @@ export async function importSurveys(req, res) {
   respond(res, { message: 'Imported surveys' });
 }
 
-async function processOptionSetName(models, name) {
+async function processOptionSetName(models, name, excelRowNumber, tabName) {
   // TODO: Figure out why undefined value is returning all results.
   if (name) {
     const optionSet = await models.optionSet.findOne({ name });
+    if (!optionSet) {
+      const message = 'The Option Set listed does not exist.';
+      throw new ImportValidationError(message, excelRowNumber, 'optionSet', tabName);
+    }
     return optionSet.id;
   }
   return null;

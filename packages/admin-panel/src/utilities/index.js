@@ -12,3 +12,5 @@ export * from './pretty';
 export * from './useDebounce';
 export { checkVisibilityCriteriaAreMet } from './visibilityCriteria';
 export { labelToId } from './labelToId';
+export { getColumns } from './getColumns';
+export { getExplodedFields } from './getFields';

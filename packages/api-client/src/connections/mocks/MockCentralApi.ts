@@ -4,9 +4,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { CentralApiInterface } from '..';
 import { RequestBody } from '../ApiConnection';
-import { SurveyResponse } from '../CentralApi';
 
 export class MockCentralApi implements CentralApiInterface {
   public getUser(): Promise<any> {
@@ -22,7 +22,7 @@ export class MockCentralApi implements CentralApiInterface {
   ): Promise<{ message: string }> {
     throw new Error('Method not implemented.');
   }
-  public createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
+  public createSurveyResponses(responses: MeditrakSurveyResponseRequest[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
   public fetchResources(

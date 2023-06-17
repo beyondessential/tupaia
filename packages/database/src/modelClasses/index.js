@@ -29,6 +29,7 @@ import { FacilityModel } from './Facility';
 import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
+import { LandingPageModel } from './LandingPage';
 import { LegacyReportModel } from './LegacyReport';
 import { UserFavouriteDashboardItemModel } from './UserFavouriteDashboardItem';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
@@ -90,6 +91,7 @@ export const modelClasses = {
   FeedItem: FeedItemModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
+  LandingPage: LandingPageModel,
   LegacyReport: LegacyReportModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
@@ -124,6 +126,7 @@ export {
   AncestorDescendantRelationModel,
   AncestorDescendantRelationType,
 } from './AncestorDescendantRelation';
+export { APIClientModel } from './APIClient';
 export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
@@ -148,10 +151,13 @@ export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQue
 export { OptionModel } from './Option';
 export { OptionSetModel } from './OptionSet';
 export { PermissionGroupModel } from './PermissionGroup';
-export { ProjectModel } from './Project';
+export { ProjectModel, ProjectType } from './Project';
+export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
+export { SurveyModel } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
+export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';

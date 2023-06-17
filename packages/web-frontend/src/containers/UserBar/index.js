@@ -12,11 +12,11 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
 import {
   closeUserPage,
   openUserPage,
@@ -29,6 +29,8 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   DIALOG_PAGE_VERIFICATION_PAGE,
   DIALOG_PAGE_ONE_TIME_LOGIN,
+  setAuthViewState,
+  goHome,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
 import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
@@ -37,10 +39,25 @@ import { SignupForm } from '../SignupForm';
 import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
-import { LANDING, VIEW_PROJECTS } from '../OverlayDiv/constants';
-import { USER_BAR_STYLES, DARK_BLUE, WHITE } from '../../styles';
+import { LANDING, AUTH_VIEW_STATES } from '../OverlayDiv/constants';
+import { DARK_BLUE, WHITE } from '../../styles';
 import { OneTimeLoginForm } from '../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../styles/LightThemeProvider';
+
+const UserBarWrapper = styled.div`
+  margin-left: 10px;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+`;
+
+const UserBarContainer = styled.div`
+  border-radius: 8px;
+  pointer-events: auto;
+  cursor: auto;
+  display: flex;
+  justify-content: space-around;
+`;
 
 export class UserBar extends Component {
   getDialogTitle() {
@@ -91,15 +108,27 @@ export class UserBar extends Component {
     }
   }
 
+   /* Don't let the user close a dialog if it is a password reset form as the one time login token is used to load the form and so they need to do the password reset now */
+  handleCloseDialog = () => {
+    const { dialogPage, onCloseUserDialog, resetToHome } = this.props;
+    if (dialogPage === DIALOG_PAGE_RESET_PASSWORD) return;
+    if (dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN) {
+      resetToHome();
+    }
+    onCloseUserDialog();
+  };
+
   renderDialog() {
-    const { isDialogVisible, onCloseUserDialog } = this.props;
+    const { isDialogVisible } = this.props;
     const width = this.getWidth();
+    // Don't let the user close a dialog if it is a password reset form as the one time login token
+    // is used to load the form and so they need to do the password reset now */
     return (
       <Dialog
         open={isDialogVisible}
         style={{ zIndex: 1301 }}
         PaperProps={{ style: { ...styles.dialogBody, width, maxWidth: width } }}
-        onClose={() => onCloseUserDialog()}
+        onClose={this.handleCloseDialog}
         ref={dialog => {
           this.dialog = dialog;
         }}
@@ -111,7 +140,12 @@ export class UserBar extends Component {
   }
 
   renderDialogContent() {
-    const { dialogPage, onOpenUserPage, onCloseUserDialog, onOpenLandingPage } = this.props;
+    const {
+      dialogPage,
+      onOpenUserPage,
+      onCloseUserDialog,
+      onNavigateToRequestPasswordReset,
+    } = this.props;
 
     switch (dialogPage) {
       case DIALOG_PAGE_LOGIN:
@@ -125,13 +159,7 @@ export class UserBar extends Component {
       case DIALOG_PAGE_ONE_TIME_LOGIN:
         return (
           <LightThemeProvider>
-            <OneTimeLoginForm
-              onNavigateToRequestPasswordReset={() => {
-                // This prop can be changed to a simple link/removed after url based routing implemented in #770
-                onCloseUserDialog();
-                onOpenLandingPage();
-              }}
-            />
+            <OneTimeLoginForm onNavigateToRequestPasswordReset={onNavigateToRequestPasswordReset} />
           </LightThemeProvider>
         );
 
@@ -177,24 +205,20 @@ export class UserBar extends Component {
     const form = this.renderDialog();
 
     return (
-      <div style={USER_BAR_STYLES.container}>
-        <div style={USER_BAR_STYLES.userMenu}>
-          <UserMenu
-            openLandingPage={this.props.onOpenLandingPage}
-            openViewProjects={this.props.onOpenViewProjects}
-          />
+      <UserBarWrapper>
+        <UserBarContainer>
+          <UserMenu />
           <EmailVerifyNag />
-        </div>
+        </UserBarContainer>
         {form}
-      </div>
+      </UserBarWrapper>
     );
   }
 }
 
 UserBar.propTypes = {
   onOpenUserPage: PropTypes.func.isRequired,
-  onOpenLandingPage: PropTypes.func.isRequired,
-  onOpenViewProjects: PropTypes.func.isRequired,
+  onNavigateToRequestPasswordReset: PropTypes.func.isRequired,
   onCloseUserDialog: PropTypes.func.isRequired,
   isDialogVisible: PropTypes.bool.isRequired,
   dialogPage: PropTypes.oneOf([
@@ -208,6 +232,7 @@ UserBar.propTypes = {
     DIALOG_PAGE_VERIFICATION_PAGE,
     '',
   ]).isRequired,
+  resetToHome: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -239,9 +264,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onCloseUserDialog: () => dispatch(closeUserPage()),
-    onOpenLandingPage: () => dispatch(setOverlayComponent(LANDING)),
-    onOpenViewProjects: () => dispatch(setOverlayComponent(VIEW_PROJECTS)),
+    onNavigateToRequestPasswordReset: () => {
+      dispatch(setOverlayComponent(LANDING));
+      dispatch(setAuthViewState(AUTH_VIEW_STATES.LOGIN));
+      dispatch(closeUserPage());
+    },
     onOpenUserPage: userPage => dispatch(openUserPage(userPage)),
+    resetToHome: () => dispatch(goHome()),
   };
 };
 

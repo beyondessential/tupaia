@@ -10,10 +10,12 @@ export const useReportPreview = ({
   visualisation,
   project,
   location,
+  startDate,
+  endDate,
   testData,
   enabled,
   onSettled,
-  vizType,
+  dashboardItemOrMapOverlay,
   previewMode,
 }) =>
   useQuery(
@@ -23,7 +25,9 @@ export const useReportPreview = ({
         params: {
           entityCode: location,
           hierarchy: project,
-          vizType,
+          startDate,
+          endDate,
+          dashboardItemOrMapOverlay,
           previewMode,
           permissionGroup: visualisation.permissionGroup || visualisation.reportPermissionGroup,
         },

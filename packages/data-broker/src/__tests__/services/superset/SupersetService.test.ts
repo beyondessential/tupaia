@@ -13,7 +13,7 @@ import {
   stubGetSupersetApi,
   SUPERSET_CHART_DATA_RESPONSE,
 } from './SupersetService.stubs';
-import { SupersetService } from '../../../services/superset/SupersetService';
+import { SupersetService } from '../../../services/superset';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import { getSupersetApiInstance } from '../../../services/superset/getSupersetApi';
 
@@ -187,7 +187,11 @@ describe('SupersetService', () => {
   });
 
   describe('pullMetadata()', () => {
-    it('throws an error', () =>
-      expect(supersetService.pullMetadata()).toBeRejectedWith('not supported'));
+    it('default implementation', () =>
+      expect(
+        supersetService.pullMetadata([], 'dataElement', {
+          dataServiceMapping: new DataServiceMapping(),
+        }),
+      ).resolves.toEqual([]));
   });
 });

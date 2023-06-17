@@ -8,6 +8,7 @@ import { Router } from 'express';
 import {
   appSignup,
   appChangePassword,
+  appDownloadFiles,
   appRequestResetPassword,
   appGetCountryAccessList,
   appRequestCountryAccess,
@@ -31,6 +32,7 @@ import { ReportHandler } from './report';
 import { disasters } from './disasters';
 
 import { getProjects } from './projects';
+import { getLandingPage } from './landingPages';
 
 const handleWith = Handler =>
   catchAsyncErrors((...params) => new Handler(...params).handleRequest());
@@ -45,6 +47,7 @@ export const getRoutesForApiV1 = () => {
   api.post('/signup', catchAsyncErrors(appSignup()));
   api.post('/changePassword', catchAsyncErrors(appChangePassword()));
   api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword()));
+  api.get('/downloadFiles', catchAsyncErrors(appDownloadFiles()));
   api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList()));
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
@@ -60,6 +63,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/projects', catchAsyncErrors(getProjects));
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
   api.get('/report/:reportCode', handleWith(ReportHandler));
+  api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage));
   api.post('/pdf', catchAsyncErrors(PDFExportHandler));
 
   return api;

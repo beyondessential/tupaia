@@ -64,9 +64,4 @@ export class IndicatorService extends Service {
       metadata: { dataElementCodeToName: {} },
     };
   }
-
-  public async pullMetadata(dataSources: DataSource[]) {
-    // TODO: Implement properly in #tupaia-backlog/issues/2137
-    return dataSources.map(dataSource => ({ code: dataSource.code, name: undefined }));
-  }
 }

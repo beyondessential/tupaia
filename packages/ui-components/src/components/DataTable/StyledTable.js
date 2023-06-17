@@ -58,4 +58,17 @@ export const StyledTable = styled(MuiTable)`
       border-right: none;
     }
   }
+
+  td.data-type-number {
+    color: #0f0f87;
+  }
+
+  td.data-type-boolean {
+    color: #630000;
+  }
+
+  td.data-type-null {
+    color: #8f8e8e;
+    font-style: italic;
+  }
 `;

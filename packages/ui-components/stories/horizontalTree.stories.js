@@ -55,7 +55,18 @@ export const horizontalTree = () => (
     />
   </Container>
 );
-
+export const horizontalTreeReadOnly = () => (
+  <Container>
+    <HorizontalTree
+      data={getEntityDescendants()}
+      readOnly
+      fetchData={async (rootNode, node) => {
+        await sleep(randomIntBetween(200, 1200));
+        return getEntityDescendants(rootNode?.code, node?.code);
+      }}
+    />
+  </Container>
+);
 export const horizontalTreeRootError = () => (
   <Container>
     <HorizontalTree

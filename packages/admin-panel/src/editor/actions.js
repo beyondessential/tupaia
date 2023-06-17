@@ -13,7 +13,11 @@ import {
   EDITOR_FIELD_EDIT,
   EDITOR_OPEN,
 } from './constants';
-import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
+import {
+  convertSearchTermToFilter,
+  makeSubstitutionsInString,
+  getExplodedFields,
+} from '../utilities';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -22,6 +26,8 @@ export const openBulkEditModal = (
   recordId,
   rowData,
 ) => async (dispatch, getState, { api }) => {
+  // explode the fields from any subsections
+  const explodedFields = getExplodedFields(fields);
   if (recordId) {
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
@@ -36,7 +42,7 @@ export const openBulkEditModal = (
       const response = await api.get(makeSubstitutionsInString(bulkGetEndpoint, rowData), {
         filter: filterString.length > 0 ? filterString : undefined,
         columns: JSON.stringify(
-          fields
+          explodedFields
             .filter(field => !field.hideValue && !STATIC_FIELD_TYPES.includes(field.type)) // Ignore any that will be hidden, e.g. passwords
             .map(field => field.source),
         ), // Fetch fields based on their source
@@ -44,6 +50,12 @@ export const openBulkEditModal = (
       dispatch({
         type: EDITOR_DATA_FETCH_SUCCESS,
         recordData: response.body,
+      });
+      dispatch({
+        type: EDITOR_OPEN,
+        fields,
+        recordData: response.body,
+        endpoint: bulkUpdateEndpoint,
       });
     } catch (error) {
       dispatch({
@@ -53,7 +65,7 @@ export const openBulkEditModal = (
     }
   } else {
     // set default values
-    fields.forEach(field => {
+    explodedFields.forEach(field => {
       if (field.editConfig && field.editConfig.default) {
         const {
           source: fieldKey,
@@ -77,11 +89,25 @@ export const openBulkEditModal = (
   }
 };
 
-export const openEditModal = ({ editEndpoint, title, fields }, recordId) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
+export const openEditModal = (
+  { editEndpoint, title, fields, FieldsComponent, extraDialogProps = {}, isLoading = false },
+  recordId,
+) => async (dispatch, getState, { api }) => {
+  // explode the fields from any subsections
+  const explodedFields = getExplodedFields(fields);
+  // Open the modal instantly
+  dispatch({
+    type: EDITOR_OPEN,
+    fields,
+    FieldsComponent,
+    title,
+    recordData: {},
+    endpoint: editEndpoint,
+    extraDialogProps,
+    isLoading,
+  });
+
+  // And then fetch data / set default field values for edit/new respectively
   if (recordId) {
     const endpoint = `${editEndpoint}/${recordId}`;
     dispatch({
@@ -95,7 +121,7 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
     try {
       const response = await api.get(endpoint, {
         columns: JSON.stringify(
-          fields
+          explodedFields
             .filter(field => !field.hideValue && !STATIC_FIELD_TYPES.includes(field.type)) // Ignore any that will be hidden, e.g. passwords
             .map(field => field.source),
         ), // Fetch fields based on their source
@@ -112,7 +138,7 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
     }
   } else {
     // set default values
-    fields.forEach(field => {
+    explodedFields.forEach(field => {
       if (field.editConfig && field.editConfig.default) {
         const {
           source: fieldKey,
@@ -125,14 +151,6 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
           newValue,
         });
       }
-    });
-
-    dispatch({
-      type: EDITOR_OPEN,
-      fields,
-      title,
-      recordData: {},
-      endpoint: editEndpoint,
     });
   }
 };

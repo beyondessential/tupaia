@@ -7,7 +7,7 @@ import { Aggregator } from '@tupaia/aggregator';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 import { ReportBuilder } from '../reportBuilder';
-import { ReqContext } from '../reportBuilder/context/buildContext';
+import { ReqContext } from '../reportBuilder/context';
 import { ReportServerAggregator } from '../aggregator';
 
 describe('ReportBuilder', () => {
@@ -44,6 +44,14 @@ describe('ReportBuilder', () => {
     ],
   };
 
+  const reportQuery = {
+    organisationUnitCodes: ['TO'],
+    hierarchy: 'explore',
+    period: '2020',
+    startDate: '2020-01-01',
+    endDate: '2020-12-31',
+  };
+  const reportServerAggregator = new ReportServerAggregator(aggregator);
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
     permissionGroup: 'Public',
@@ -51,6 +59,8 @@ describe('ReportBuilder', () => {
       entity: new MockEntityApi(ENTITIES, RELATIONS),
     }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
+    query: reportQuery,
+    aggregator: reportServerAggregator,
   };
 
   it('creates an instance', () => {
@@ -58,18 +68,8 @@ describe('ReportBuilder', () => {
   });
 
   it('returns an error without a config being set', async () => {
-    const reportQuery = {
-      organisationUnitCodes: ['TO'],
-      hierarchy: 'explore',
-      period: '2020',
-      startDate: '2020-01-01',
-      endDate: '2020-12-31',
-    };
-    const reportServerAggregator = new ReportServerAggregator(aggregator);
     const reportBuilder = new ReportBuilder(reqContext);
-    await expect(reportBuilder.build(reportServerAggregator, reportQuery)).rejects.toThrow(
-      'Report requires a config be set',
-    );
+    await expect(reportBuilder.build()).rejects.toThrow('Report requires a config be set');
   });
 
   it('returns test data if test data is provided without orgunit or hierarchy', async () => {
@@ -78,17 +78,8 @@ describe('ReportBuilder', () => {
       { dataElement: 'TEST001', value: 4, organisationUnit: 'TO', period: '20220101' },
     ];
 
-    const reportQuery = {
-      organisationUnitCodes: [],
-      hierarchy: '',
-      period: '2020',
-      startDate: '2020-01-01',
-      endDate: '2020-12-31',
-    };
-
-    const reportServerAggregator = new ReportServerAggregator(aggregator);
     const reportBuilder = new ReportBuilder(reqContext).setConfig(testConfig).setTestData(testData);
-    const results = await reportBuilder.build(reportServerAggregator, reportQuery);
+    const results = await reportBuilder.build();
     expect(results).toStrictEqual({ results: testData });
   });
 });

@@ -5,3 +5,4 @@
 
 export { CountChangesRequest, CountChangesRoute } from './CountChangesRoute';
 export { PullChangesRequest, PullChangesRoute } from './PullChangesRoute';
+export { PushChangesRequest, PushChangesRoute } from './PushChangesRoute';

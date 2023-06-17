@@ -4,9 +4,10 @@
  */
 
 import { Request } from 'express';
-import { Resolved } from '@tupaia/tsutils';
+import { Resolved } from '@tupaia/types';
 import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
+import { Flattable, Flattened } from '../../types';
 
 export interface SingleEntityRequestParams {
   hierarchyName: string;
@@ -20,7 +21,20 @@ export interface MultiEntityRequestParams {
 export type RequestBody = Record<string, never>;
 
 export type MultiEntityRequestBody = RequestBody & {
-  entities: string[] | undefined;
+  entities: string[];
+};
+
+export const MultiEntityRequestBodySchema = {
+  type: 'object',
+  properties: {
+    entities: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+    },
+  },
+  required: ['entities'],
 };
 
 export interface EntityRequestQuery {
@@ -37,12 +51,7 @@ export type ExtendedFieldFunctions = Readonly<
   }
 >;
 
-type SimpleFieldKeys<T> = {
-  [K in keyof T]: T[K] extends string | number | symbol ? K : never;
-}[keyof T];
-
-export type FlattableEntityFields = Pick<EntityFields, SimpleFieldKeys<EntityFields>>;
-export type FlattableEntityFieldName = keyof FlattableEntityFields;
+export type FlattableEntityFieldName = keyof Flattable<EntityFields>;
 
 type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
 
@@ -54,7 +63,7 @@ export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]?: ExtendedEntityFields[field];
 };
 
-export type FlattenedEntity = FlattableEntityFields[FlattableEntityFieldName];
+export type FlattenedEntity = Flattened<EntityFields>;
 
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 

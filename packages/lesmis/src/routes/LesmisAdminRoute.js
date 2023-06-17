@@ -7,8 +7,8 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 
-export const LesmisAdminRoute = ({ isBESAdmin = false, ...props }) => {
-  if (!isBESAdmin) {
+export const LesmisAdminRoute = ({ isLESMISAdmin = false, ...props }) => {
+  if (!isLESMISAdmin) {
     return <NotAuthorisedView />;
   }
 

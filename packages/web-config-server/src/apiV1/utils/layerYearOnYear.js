@@ -11,7 +11,8 @@
  * @returns {Array}
  */
 
-import { momentToPeriod, periodToMoment, periodToType } from '@tupaia/utils';
+import { periodToMoment, periodToType } from '@tupaia/tsutils';
+import { momentToPeriod } from '@tupaia/utils';
 
 export const layerYearOnYear = analytics => {
   const latestYear = Math.max(...analytics.map(analytic => periodToMoment(analytic.period).year()));

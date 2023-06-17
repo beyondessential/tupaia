@@ -10,6 +10,7 @@ import {
   DataSourceType,
   Diagnostics,
   EventResults,
+  Metadata,
   SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES } from '../utils';
@@ -27,6 +28,7 @@ export type DeleteOptions = {
 
 export type PullOptions = {
   dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
 };
 
 export type PullMetadataOptions = {
@@ -66,9 +68,14 @@ export abstract class Service {
     options: PullOptions,
   ): Promise<AnalyticResults | EventResults | SyncGroupResults> | never;
 
-  public abstract pullMetadata(
+  /**
+   * The default pullMetadata behaviour is to return no metadata
+   */
+  public async pullMetadata(
     dataSources: DataSource[],
     type: DataSourceType,
     options: PullMetadataOptions,
-  ): Promise<unknown>;
+  ): Promise<Metadata[]> {
+    return dataSources.map(ds => ({ code: ds.code }));
+  }
 }

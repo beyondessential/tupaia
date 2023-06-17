@@ -1,4 +1,4 @@
-## @tupaia/utils
+# @tupaia/utils
 
 Utility functions that are helpful across multiple packages
 

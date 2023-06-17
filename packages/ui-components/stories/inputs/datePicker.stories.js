@@ -33,6 +33,12 @@ export const SimpleDatePicker = () => {
           required: 'Required',
         })}
       />
+      <DatePicker
+        label="Basic example with tooltip"
+        onChange={setValue}
+        value={value}
+        tooltip="Please select a date"
+      />
     </Container>
   );
 };
@@ -52,6 +58,12 @@ export const SimpleDateTimePicker = () => {
         inputRef={register({
           required: 'Required',
         })}
+      />
+      <DateTimePicker
+        label="Basic example with tooltip"
+        onChange={setValue}
+        value={value}
+        tooltip="Please select a date and time"
       />
     </Container>
   );

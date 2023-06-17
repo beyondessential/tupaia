@@ -13,16 +13,19 @@
   "scripts": {
     "build": "npm run --prefix ../../ package:build:react-scripts",
     "eject": "yarn package:eject",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-dev": "PORT=3003 yarn package:start:react-scripts",
-    "start-fullstack": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-lesmis-server start-dev",
+    "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
     "start-lesmis-server": "yarn workspace @tupaia/lesmis-server start-dev",
-    "test": "yarn package:test"
+    "test": "yarn package:test",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
+    "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
+    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-lesmis-server"
   },
   "browserslist": [
     "defaults"
@@ -32,6 +35,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/admin-panel": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
@@ -48,7 +52,7 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
     "react-password-strength-bar": "^0.3.3",
-    "react-query": "^3.9.6",
+    "react-query": "^3.19.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^5.2.0",
     "styled-components": "^5.1.0"

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import nodemailer from 'nodemailer';
-import { getIsProductionEnvironment } from '../devops';
+import { getIsProductionEnvironment } from '@tupaia/utils';
 
 const DEFAULT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
 

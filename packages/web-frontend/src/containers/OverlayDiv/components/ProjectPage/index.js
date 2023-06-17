@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-
 import {
   REQUEST_PROJECT_ACCESS,
   PROJECT_LANDING,
@@ -17,7 +16,14 @@ import {
 } from '../../constants';
 import { setProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent } from '../../../../actions';
-import { ProjectCard } from './ProjectCard';
+import {
+  ProjectAllowedButton,
+  ProjectDeniedButton,
+  ProjectPendingButton,
+  LegacyProjectCard,
+} from './LegacyProjectCard';
+import { ProjectCardList } from './ProjectCardList';
+import { PROJECT_ACCESS_TYPES } from '../../../../constants';
 
 // code for general explore mode project.
 const EXPLORE_CODE = 'explore';
@@ -45,27 +51,6 @@ const ExploreButton = styled(Button)`
   }
 `;
 
-const renderProjectsWithFilter = (projects, accessType, action, actionText) => {
-  const hasPendingType = accessType === 'pending';
-  const hasAccessType = hasPendingType ? false : accessType;
-  return projects
-    .filter(
-      ({ code, hasAccess, hasPendingAccess = false }) =>
-        code !== EXPLORE_CODE && hasAccess === hasAccessType && hasPendingAccess === hasPendingType,
-    )
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map(project => (
-      <ProjectCard
-        key={project.name}
-        projectAction={() => action(project)}
-        actionText={actionText}
-        accessType={hasAccessType}
-        hasAccessPending={hasPendingType}
-        {...project}
-      />
-    ));
-};
-
 const ProjectPageComponent = ({
   onSelectProject,
   onRequestProjectAccess,
@@ -79,38 +64,32 @@ const ProjectPageComponent = ({
     exploreProject,
   ]);
 
-  const projectsWithAccess = renderProjectsWithFilter(
-    projects,
-    true,
-    onSelectProject,
-    'View project',
-  );
-
-  const projectsPendingAccess = renderProjectsWithFilter(
-    projects,
-    'pending',
-    onRequestProjectAccess,
-    'Approval in progress',
-  );
-
-  const noAccessAction = isUserLoggedIn ? onRequestProjectAccess : openLoginDialog;
-  const noAccessText = isUserLoggedIn ? 'Request access' : 'Log in';
-  const projectsWithoutAccess = renderProjectsWithFilter(
-    projects,
-    false,
-    noAccessAction,
-    noAccessText,
-  );
-
   return (
     <div>
       <ExploreButton onClick={selectExploreProject} variant="outlined">
         <ExploreIcon /> I just want to explore
       </ExploreButton>
       <Container>
-        {projectsWithAccess}
-        {projectsPendingAccess}
-        {projectsWithoutAccess}
+        <ProjectCardList
+          projects={projects}
+          ProjectCard={LegacyProjectCard}
+          actions={{
+            [PROJECT_ACCESS_TYPES.ALLOWED]: ({ project }) => (
+              <ProjectAllowedButton onClick={() => onSelectProject(project)} />
+            ),
+            [PROJECT_ACCESS_TYPES.PENDING]: ({ project }) => (
+              <ProjectPendingButton onClick={() => onRequestProjectAccess(project)} />
+            ),
+            [PROJECT_ACCESS_TYPES.DENIED]: ({ project }) => (
+              <ProjectDeniedButton
+                isUserLoggedIn={isUserLoggedIn}
+                onClick={() =>
+                  isUserLoggedIn ? onRequestProjectAccess(project) : openLoginDialog(project)
+                }
+              />
+            ),
+          }}
+        />
       </Container>
     </div>
   );

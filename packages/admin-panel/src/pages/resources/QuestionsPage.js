@@ -41,6 +41,11 @@ const QUESTION_FIELDS = [
     type: 'tooltip',
   },
   {
+    Header: 'Hook',
+    source: 'hook',
+    type: 'tooltip',
+  },
+  {
     Header: 'Option Set Id',
     source: 'option_set_id',
     show: false,

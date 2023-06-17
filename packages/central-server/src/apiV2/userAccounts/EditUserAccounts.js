@@ -4,6 +4,7 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { S3Client, S3 } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
@@ -11,7 +12,6 @@ import {
   assertAdminPanelAccess,
 } from '../../permissions';
 import { assertUserAccountPermissions } from './assertUserAccountPermissions';
-import { uploadImage } from '../../s3';
 
 /**
  * Handles PUT endpoints:
@@ -46,7 +46,8 @@ export class EditUserAccounts extends EditHandler {
 
     if (profileImage) {
       if (profileImage.data && profileImage.fileId) {
-        const profileImagePath = await uploadImage(profileImage.data, profileImage.fileId);
+        const s3Client = new S3Client(new S3());
+        const profileImagePath = await s3Client.uploadImage(profileImage.data, profileImage.fileId);
         updatedFields = {
           ...updatedFields,
           profile_image: profileImagePath,

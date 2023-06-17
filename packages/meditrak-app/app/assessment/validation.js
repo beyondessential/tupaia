@@ -16,10 +16,10 @@ export const validateAnswer = (validationCriteria, answer) => {
   if (!validationCriteria) {
     return null;
   }
-  if (validationCriteria.mandatory && (!answer || answer === '')) {
+  if (validationCriteria.mandatory && (!answer && answer !== 0)) {
     return 'This is a required field';
   }
-  if (!answer || answer === '') {
+  if (!answer && answer !== 0) {
     return null;
   }
   const validationCriteriaArray = Object.entries(validationCriteria);

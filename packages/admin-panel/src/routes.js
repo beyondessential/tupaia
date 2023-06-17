@@ -8,11 +8,13 @@ import { Assignment, InsertChart, PeopleAlt, Flag, Storage, Language } from '@ma
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
+  CustomLandingPagesPage,
   EntitiesPage,
   EntityRelationsPage,
   EntityTypesPage,
   OptionSetsPage,
   PermissionGroupsPage,
+  PermissionGroupsViewerPage,
   PermissionsPage,
   SocialFeedPage,
   SurveyResponsesPage,
@@ -165,6 +167,11 @@ export const ROUTES = [
         component: PermissionGroupsPage,
       },
       {
+        label: 'Permission Groups Viewer',
+        to: '/permission-groups-viewer',
+        component: PermissionGroupsViewerPage,
+      },
+      {
         label: 'Access Requests',
         to: '/access-requests',
         component: AccessRequestsPage,
@@ -222,6 +229,11 @@ export const ROUTES = [
         label: 'Entity Hierarchy',
         to: '/hierarchy',
         component: EntityHierarchyPage,
+      },
+      {
+        label: 'Landing Pages',
+        to: '/landing-pages',
+        component: CustomLandingPagesPage,
       },
     ],
   },

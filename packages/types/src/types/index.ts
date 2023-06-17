@@ -5,4 +5,6 @@
  */
 
 export * from './models';
+export { StandardReportConfig, CustomReportConfig } from './models-extra';
 export * from './requests';
+export * from './css';

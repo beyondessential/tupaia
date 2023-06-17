@@ -11,13 +11,14 @@ import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 import { DATA_SOURCE_TYPES } from '../../../utils';
 import { DataElement, DataSource, DhisAnalytics, DhisEventAnalytics, ValueType } from '../types';
-import { DataBrokerModelRegistry, DataElementMetadata, Event, OutboundEvent } from '../../../types';
-
-interface DhisMetadataObject {
-  id: string;
-  code: string;
-  name: string;
-}
+import {
+  DataBrokerModelRegistry,
+  DataElementMetadata,
+  DhisMetadataObject,
+  Event,
+  OutboundEvent,
+} from '../../../types';
+import { formatInboundDataElementName } from './formatDataElementName';
 
 interface OutboundDataValue {
   code: string;
@@ -43,12 +44,10 @@ export interface DataElementDescriptor {
 export class DhisTranslator {
   private readonly models: DataBrokerModelRegistry;
   private readonly inboundAnalyticsTranslator: InboundAnalyticsTranslator;
-  private readonly dataElementsByCode: Record<string, unknown>;
 
   public constructor(models: DataBrokerModelRegistry) {
     this.models = models;
     this.inboundAnalyticsTranslator = new InboundAnalyticsTranslator();
-    this.dataElementsByCode = {};
   }
 
   private get dataSourceTypes() {
@@ -207,19 +206,49 @@ export class DhisTranslator {
     return translateElementKeysInEventAnalytics(eventAnalytics, dataElementToSourceCode);
   };
 
+  // Override metadata code by data element code
   public translateInboundDataElements = (
-    dataElements: DhisMetadataObject[],
-    dataSources: DataElement[],
+    metadata: DhisMetadataObject[],
+    categoryOptionCombos: DhisMetadataObject[],
+    dataElements: DataElement[],
   ) => {
-    const dataElementToSourceCode = reduceToDictionary(dataSources, 'dataElementCode', 'code');
+    const metadataGroupedByCode = Object.fromEntries(
+      metadata.map(dataElement => [dataElement.code, dataElement]),
+    );
 
-    return dataElements.map(({ code, ...restOfDataElement }) => {
-      const translatedDataElement: Partial<DhisMetadataObject> = { ...restOfDataElement };
-      if (code) {
-        translatedDataElement.code = dataElementToSourceCode[code];
+    let results: DhisMetadataObject[] = [];
+
+    metadata.forEach(mData => {
+      const translatedMetadata = dataElements
+        .filter(dataSource => dataSource.dataElementCode === mData.code)
+        .map(({ code, dataElementCode, config }) => {
+          const { id, name, options } = metadataGroupedByCode[dataElementCode];
+          const { categoryOptionCombo: categoryOptionComboCode } = config;
+          const categoryOptionCombo = categoryOptionCombos.find(
+            item => item.code === categoryOptionComboCode,
+          );
+          const dataElementName = formatInboundDataElementName(name, categoryOptionCombo?.name);
+          const metadataResults: DhisMetadataObject = {
+            id,
+            name: dataElementName,
+            code,
+          };
+
+          if (options) {
+            metadataResults.options = options;
+          }
+
+          return metadataResults;
+        });
+
+      if (translatedMetadata.length > 0) {
+        results = results.concat(translatedMetadata);
+      } else {
+        results.push(mData);
       }
-      return translatedDataElement as DataElementMetadata;
     });
+
+    return results;
   };
 
   public translateInboundIndicators = (

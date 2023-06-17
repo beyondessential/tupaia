@@ -14,12 +14,13 @@
   "scripts": {
     "build": "rm -rf dist && npm run --prefix ../../ package:build:js",
     "build-dev": "npm run build",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "build-dev:watch": "yarn run package:build:js -w"
   },
   "dependencies": {
     "@date-io/date-fns": "1.x",
@@ -30,13 +31,15 @@
     "@tupaia/utils": "1.0.0",
     "ace-builds": "^1.4.13",
     "date-fns": "^2.12.0",
-    "jsoneditor": "^9.0.0",
+    "js-sql-parser": "^1.4.1",
+    "jsoneditor": "^9.9.0",
     "leaflet": "^1.7.1",
     "lodash.get": "^4.4.2",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react-ace": "^10.1.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^16.13.1",
     "react-leaflet": "^3.2.1",

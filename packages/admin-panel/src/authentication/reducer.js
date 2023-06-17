@@ -6,7 +6,6 @@ import { createTransform } from 'redux-persist';
 import { createReducer } from '../utilities';
 import {
   EMAIL_ADDRESS_CHANGE,
-  PASSWORD_CHANGE,
   LOGIN_MODAL_TOGGLE,
   REMEMBER_ME_CHANGE,
   LOGIN_REQUEST,
@@ -18,7 +17,6 @@ import {
 
 const defaultState = {
   emailAddress: '',
-  password: '',
   user: null,
   isLoading: false,
   rememberMe: false,
@@ -43,7 +41,6 @@ const logoutStateUpdater = (payload, currentState) => ({
 const stateChanges = {
   [LOGIN_MODAL_TOGGLE]: payload => payload,
   [EMAIL_ADDRESS_CHANGE]: payload => payload,
-  [PASSWORD_CHANGE]: payload => payload,
   [REMEMBER_ME_CHANGE]: payload => payload,
   [LOGIN_SUCCESS]: (payload, currentState) => {
     return {
@@ -51,7 +48,6 @@ const stateChanges = {
       ...payload,
       rememberMe: currentState.rememberMe,
       emailAddress: currentState.emailAddress,
-      password: currentState.password,
     };
   },
   [LOGIN_REQUEST]: () => ({ isLoading: true }),

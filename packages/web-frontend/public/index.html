@@ -18,28 +18,6 @@
     process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
     'production') { %>
     <!-- Google Analytics -->
-    <!-- legacy (TODO: Remove in MDEV-115) -->
-    <script>
-      (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        (i[r] =
-          i[r] ||
-          function () {
-            (i[r].q = i[r].q || []).push(arguments);
-          }),
-          (i[r].l = 1 * new Date());
-        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-      ga('create', 'UA-100824457-2', 'auto');
-      ga('send', 'pageview');
-    </script>
-    <!-- end legacy -->
-
-    <!-- GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GH96FJFLWQ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -50,7 +28,6 @@
 
       gtag('config', 'G-GH96FJFLWQ');
     </script>
-    <!-- end GA4 -->
     <!-- End Google Analytics -->
 
     <!-- Microsoft Clarity Tracking Code for https://tupaia.org -->
@@ -121,7 +98,7 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
       crossorigin="anonymous"
     />
     <link
@@ -151,7 +128,16 @@
         background: #262834;
         font-family: Roboto, sans-serif;
       }
-      .spinner:before {
+      #tupaia-spinner {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          width: 100vw;
+          z-index: 9999;
+          background: #262834;
+      }
+      #tupaia-spinner:before {
         content: '';
         box-sizing: border-box;
         position: absolute;
@@ -173,6 +159,10 @@
     <noscript>
       <p style="color: white">You need to enable JavaScript to run this app.</p>
     </noscript>
-    <div id="root"><div class="spinner"></div></div>
+    <!-- App wide loading spinner.
+      It is placed in the index.html file so that it displays while the react app is mounting and it
+      is outside of the root so that it still displays while we fetch essential initial app data (eg. landing pages)-->
+    <div id="tupaia-spinner"></div>
+    <div id="root"></div>
   </body>
 </html>

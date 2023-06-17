@@ -17,13 +17,16 @@ import {
 
 const defaultState = {
   errorMessage: '',
+  isOpen: false,
   isLoading: false,
   endpoint: null,
   recordId: null,
   recordData: null,
-  fields: null,
+  fields: [],
+  FieldsComponent: null,
   title: 'Edit',
   editedFields: {},
+  extraDialogProps: {},
 };
 
 const stateChanges = {
@@ -53,7 +56,7 @@ const stateChanges = {
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
-  [EDITOR_OPEN]: payload => payload,
+  [EDITOR_OPEN]: payload => ({ ...payload, isOpen: true }),
   [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
     editedFields: {
       ...editedFields,

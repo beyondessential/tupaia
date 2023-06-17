@@ -5,12 +5,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import debounce from 'lodash.debounce';
 import MuiPaper from '@material-ui/core/Paper';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 import {
   Autocomplete as AutocompleteComponent,
+  DatePicker as DatePickerComponent,
   FlexEnd,
   FlexSpaceBetween,
   FlexStart,
@@ -26,11 +26,27 @@ const Container = styled(FlexSpaceBetween)`
 `;
 
 const Autocomplete = styled(AutocompleteComponent)`
-  flex: 1;
+  flex: 1 1 0px;
   margin: 0 15px 0 0;
   max-width: 30%;
 
   input.MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input {
+    font-size: 14px;
+    line-height: 1;
+    padding: 10px;
+  }
+
+  .MuiFormControl-root {
+    margin: 0;
+  }
+`;
+
+const DatePicker = styled(DatePickerComponent)`
+  flex: 1 1 0px;
+  margin: 0 15px 0 0;
+  max-width: 30%;
+
+  input.MuiInputBase-input.MuiOutlinedInput-input {
     font-size: 14px;
     line-height: 1;
     padding: 10px;
@@ -100,12 +116,9 @@ const LocationField = ({
     value={location}
     options={locations}
     loading={isLoadingLocations}
-    onInputChange={debounce(
-      (event, newValue) => {
-        setLocationSearch(newValue);
-      },
-      [200],
-    )}
+    onInputChange={(event, newValue) => {
+      setLocationSearch(newValue);
+    }}
     getOptionLabel={option => option.name}
     renderOption={option => <span>{option.name}</span>}
     onChange={onChange}
@@ -132,9 +145,14 @@ export const PreviewOptions = () => {
   const [locationSearch, setLocationSearch] = useState('');
   const [selectedProjectOption, setSelectedProjectOption] = useState(null);
   const [selectedLocationOption, setSelectedLocationOption] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [{ project, location }, { setProject, setLocation, setTestData }] = useVizConfig();
+  const [
+    { project, location },
+    { setProject, setLocation, setStartDate, setEndDate, setTestData },
+  ] = useVizConfig();
   const { mutateAsync: uploadTestData } = useUploadTestData();
 
   const handleSelectProject = (event, value) => {
@@ -153,6 +171,18 @@ export const PreviewOptions = () => {
 
     setSelectedLocationOption(value);
     setLocation(value.code);
+  };
+
+  const handleChangeStartDate = date => {
+    const newDate = date ? date.toISOString() : null;
+    setSelectedStartDate(newDate);
+    setStartDate(newDate);
+  };
+
+  const handleChangeEndDate = date => {
+    const newDate = date ? date.toISOString() : null;
+    setSelectedEndDate(newDate);
+    setEndDate(newDate);
   };
 
   const handleUploadData = async file => {
@@ -202,6 +232,16 @@ export const PreviewOptions = () => {
               isLoadingLocations={isLoadingLocations}
               setLocationSearch={setLocationSearch}
               onChange={handleSelectLocation}
+            />
+            <DatePicker
+              placeholder="Select Start Date"
+              value={selectedStartDate}
+              onChange={handleChangeStartDate}
+            />
+            <DatePicker
+              placeholder="Select End Date"
+              value={selectedEndDate}
+              onChange={handleChangeEndDate}
             />
             <LinkButton
               onClick={() => {

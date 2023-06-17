@@ -7,7 +7,8 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
-import { getSortByKey, utcMoment, stripFromString } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/tsutils';
+import { getSortByKey, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {

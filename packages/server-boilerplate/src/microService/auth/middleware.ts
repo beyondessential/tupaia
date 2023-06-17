@@ -8,7 +8,7 @@ import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getUserAndPassFromBasicAuth, getJwtToken } from '@tupaia/auth';
 
-import { AccessPolicyObject } from '../../types';
+import { AccessPolicyObject, ServerBoilerplateModelRegistry } from '../../types';
 import { UserType } from '../../models';
 
 const getBearerAccessPolicy = async (authenticator: Authenticator, authHeader: string) => {
@@ -19,23 +19,22 @@ const getBearerAccessPolicy = async (authenticator: Authenticator, authHeader: s
 };
 
 const getBasicAccessPolicy = async (
+  models: ServerBoilerplateModelRegistry,
   authenticator: Authenticator,
   authHeader: string,
   apiName: string,
 ) => {
   const { username, password } = getUserAndPassFromBasicAuth(authHeader);
 
-  // first attempt to authenticate as an api client, in case a secret key was used in the auth header
-  try {
-    return await authenticator.authenticateApiClient({
+  const apiClient = await models.apiClient.findOne({ username });
+  if (apiClient) {
+    return authenticator.authenticateApiClient({
       username,
       secretKey: password,
     });
-  } catch (error) {
-    // attempting to authenticate as api client failed
   }
 
-  // api client auth failed, attempt to authenticate as a regular user
+  // not an api client, attempt to authenticate as a regular user
   const { user, accessPolicy } = await authenticator.authenticatePassword({
     emailAddress: username,
     password,
@@ -68,7 +67,12 @@ export const buildBasicBearerAuthMiddleware = (
       userObject = user;
       accessPolicyObject = accessPolicy;
     } else if (authHeader.startsWith('Basic')) {
-      const { user, accessPolicy } = await getBasicAccessPolicy(authenticator, authHeader, apiName);
+      const { user, accessPolicy } = await getBasicAccessPolicy(
+        req.models,
+        authenticator,
+        authHeader,
+        apiName,
+      );
       userObject = user;
       accessPolicyObject = accessPolicy;
     } else {

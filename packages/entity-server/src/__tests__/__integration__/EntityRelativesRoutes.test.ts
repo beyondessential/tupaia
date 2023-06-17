@@ -20,7 +20,7 @@ describe('relatives', () => {
   });
 
   describe('/hierarchy/:hierarchyName/:entityCode/relatives', () => {
-    it('can fetch relatives an entity', async () => {
+    it('can fetch relatives of an entity', async () => {
       const { body: entities } = await app.get('hierarchy/redblue/LAVENDER/relatives', {
         query: { fields: 'code,name,type' },
       });

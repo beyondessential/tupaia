@@ -7,7 +7,7 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { Resolved } from '@tupaia/tsutils';
+import { Resolved } from '@tupaia/types';
 
 export type ChangePasswordRequest = Request<
   Record<string, never>,

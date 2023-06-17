@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { periodToMoment as basePeriodToMoment } from '@tupaia/tsutils';
 import {
   convertToPeriod as baseConvertToPeriod,
   dateStringToPeriod as baseDateStringToPeriod,
@@ -43,4 +44,8 @@ export const formatAsFractionAndPercentage = (numerator: number, denominator: nu
     { value: numerator / denominator, metadata: { numerator, denominator } },
     'fractionAndPercentage',
   );
+};
+
+export const periodToMoment = (period: string): any => {
+  return basePeriodToMoment(period);
 };

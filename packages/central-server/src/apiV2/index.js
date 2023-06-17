@@ -18,13 +18,18 @@ import { useRouteHandler } from './RouteHandler';
 import { exportRoutes } from './export';
 import { importRoutes } from './import';
 import { authenticate } from './authenticate';
-import { changesMetadata } from './changesMetadata';
-import { countChanges } from './countChanges';
-import { getChanges } from './getChanges';
+import {
+  countChanges,
+  changesMetadata,
+  getChanges,
+  getSocialFeed,
+  getUserRewards,
+  postChanges,
+} from './meditrakApp';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
-import { BESAdminGETHandler } from './GETHandler';
+import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
@@ -40,10 +45,9 @@ import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
-import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
-import { CreateProject } from './projects';
+import { CreateProject, EditProject, GETProjects } from './projects';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
@@ -92,13 +96,10 @@ import {
 import { EditEntity, GETEntities, DeleteEntity } from './entities';
 import { GetEntityTypes } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
-import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
 import { deleteAccount } from './deleteAccount';
 import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
-import { getSocialFeed } from './getSocialFeed';
-import { getUserRewards } from './getUserRewards';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
@@ -120,7 +121,13 @@ import {
   ManuallySyncSyncGroup,
 } from './syncGroups';
 import { POSTUpdateUserFavouriteDashboardItem } from './userFavouriteDashboardItem';
-import { TestExternalDatabaseConnection } from './externalDatabaseConnections';
+import {
+  GETExternalDatabaseConnections,
+  TestExternalDatabaseConnection,
+} from './externalDatabaseConnections';
+import { CreateLandingPage, EditLandingPage } from './landingPages';
+import { DownloadFiles } from './DownloadFiles';
+
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
@@ -158,6 +165,7 @@ apiV2.use('/import', importRoutes);
 apiV2.get('/changes/count', catchAsyncErrors(countChanges));
 apiV2.get('/changes/metadata', catchAsyncErrors(changesMetadata));
 apiV2.get('/changes', catchAsyncErrors(getChanges));
+apiV2.get('/downloadFiles', useRouteHandler(DownloadFiles));
 apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
 apiV2.get('/me/rewards', allowAnyone(getUserRewards));
@@ -227,17 +235,21 @@ apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
-apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/dhisInstances/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
 apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
-apiV2.get('/externalDatabaseConnections/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get(
+  '/externalDatabaseConnections/:recordId?',
+  useRouteHandler(GETExternalDatabaseConnections),
+);
 apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
 );
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/landingPages/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes
@@ -258,6 +270,7 @@ apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
@@ -274,6 +287,7 @@ apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 
 /**
  * PUT routes
@@ -288,6 +302,7 @@ apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
+apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
@@ -303,13 +318,14 @@ apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
 apiV2.put('/mapOverlayGroups/:recordId', useRouteHandler(EditMapOverlayGroups));
 apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayGroupRelations));
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
 apiV2.put('/me', catchAsyncErrors(editUser));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 
 /**
  * DELETE routes
@@ -322,6 +338,7 @@ apiV2.delete('/answers/:recordId', useRouteHandler(DeleteAnswers));
 apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(DeleteAnswers));
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
+apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
@@ -342,6 +359,7 @@ apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/landingPages/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 

@@ -10,7 +10,7 @@ export const MODAL_STATUS = {
   SUCCESS: 'success',
 };
 
-export const VIZ_TYPE_PARAM = {
+export const DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM = {
   DASHBOARD_ITEM: 'dashboard-item',
   MAP_OVERLAY: 'map-overlay',
 };

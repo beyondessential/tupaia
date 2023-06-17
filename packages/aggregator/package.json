@@ -16,7 +16,7 @@
     "build:src": "npm run --prefix ../../ package:build:js",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage"
@@ -24,6 +24,7 @@
   "dependencies": {
     "@tupaia/data-broker": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",
     "winston": "^3.3.3"

@@ -46,9 +46,4 @@ describe('KoBoService', () => {
         ).resolves.toHaveProperty('xyz', [TRANSLATED_DATA]));
     });
   });
-
-  describe('pullMetadata()', () => {
-    it('throws an error', () =>
-      expect(koboService.pullMetadata()).toBeRejectedWith('not supported'));
-  });
 });

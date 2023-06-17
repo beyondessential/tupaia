@@ -25,7 +25,7 @@ import {
   MonthsSinceQuestion,
   YearsSinceQuestion,
   EntityQuestion,
-  PrimaryEntityQuestion,
+  FileQuestion,
   ArithmeticQuestion,
   ConditionQuestion,
   CodeGeneratorQuestion,
@@ -53,6 +53,7 @@ const QUESTION_TYPES = {
   CodeGenerator: CodeGeneratorQuestion,
   Arithmetic: ArithmeticQuestion,
   Condition: ConditionQuestion,
+  File: FileQuestion,
 };
 
 const TYPES_CONTROLLING_QUESTION_TEXT = ['Instruction', 'Checkbox'];

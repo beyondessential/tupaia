@@ -5,6 +5,8 @@ import * as TJS from 'typescript-json-schema';
 // @ts-ignore
 import config from './config/schemas/config.json';
 
+const failOnChanges = process.argv[2] === '--failOnChanges';
+
 const customAsyncValidationKeys = ['checkIdExists'];
 
 const settings: TJS.PartialArgs = {
@@ -12,6 +14,7 @@ const settings: TJS.PartialArgs = {
   required: true,
   ignoreErrors: true,
   validationKeywords: customAsyncValidationKeys,
+  noExtraProps: true,
 };
 
 interface SchemaWithProperties {
@@ -61,8 +64,7 @@ const program = TJS.getProgramFromFiles([resolve(typesPath)]);
 const schemas = TJS.generateSchema(program, '*', settings);
 
 if (schemas?.definitions) {
-  fs.writeFileSync(filename, HEADER);
-  console.log(`Created file: ${filename}`);
+  let fileContents = HEADER;
 
   Object.entries(schemas.definitions || {}).forEach(([typeName, schema]) => {
     if (typeof schema !== 'boolean') {
@@ -71,8 +73,19 @@ if (schemas?.definitions) {
         null,
         '\t',
       )} \n\n`;
-      fs.appendFileSync(filename, finalisedSchema);
-      console.log(`Added schema: ${typeName}`);
+      fileContents += finalisedSchema;
     }
   });
+
+  if (failOnChanges) {
+    const currentFileContents = fs.readFileSync(filename, { encoding: 'utf8' });
+    if (currentFileContents !== fileContents) {
+      console.log("❌ There are changes in the types which are not reflected in the json schema.")
+      console.log("Run 'yarn workspace @tupaia/types generate' to fix")
+      process.exit(1);
+    }
+  }
+
+  fs.writeFileSync(filename, fileContents);
+  console.log(`Created file: ${filename}`);
 }
