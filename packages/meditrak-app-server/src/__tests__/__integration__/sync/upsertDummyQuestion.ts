@@ -13,5 +13,6 @@ export const upsertDummyQuestion = async (models: TestModelRegistry) => {
   return upsertDummyRecord(models.question, {
     code: dataElement.code,
     data_element_id: dataElement.id,
+    type: 'FreeText',
   });
 };

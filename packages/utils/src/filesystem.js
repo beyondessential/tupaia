@@ -51,3 +51,11 @@ export const toFilename = (string, stripSpecialAndLowercase = false) => {
 
   return sanitized.length <= maxLength ? sanitized : sanitized.slice(0, maxLength);
 };
+
+export const writeStreamToFile = async (filePath, stream) =>
+  new Promise((resolve, reject) => {
+    const fileStream = fs.createWriteStream(filePath);
+    stream.pipe(fileStream);
+    fileStream.on('finish', () => resolve(filePath));
+    fileStream.on('error', error => reject(error));
+  });

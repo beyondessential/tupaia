@@ -4,6 +4,10 @@
  *
  */
 
-export * from './useLogin';
+export * from './useOneTimeLogin';
+export { useLogin } from './useLogin';
+export { useLogout } from './useLogout';
 export * from './useRegister';
 export * from './useResendVerificationEmail';
+export * from './useResetPassword';
+export * from './useRequestResetPassword';

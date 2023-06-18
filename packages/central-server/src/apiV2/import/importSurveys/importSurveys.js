@@ -78,7 +78,12 @@ const updateOrCreateDataGroup = async (models, { surveyCode, serviceType, dhisIn
   return dataGroup;
 };
 
-const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
+const updateOrCreateDataElementInGroup = async (
+  models,
+  dataElementCode,
+  dataGroup,
+  surveyPermissionGroup,
+) => {
   const { service_type: serviceType, config } = dataGroup;
 
   await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, {
@@ -94,6 +99,8 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
       code: dataElementCode,
       service_type: serviceType,
       config,
+      // Use the permission group of the survey as the default for the data element
+      permission_groups: [surveyPermissionGroup.name],
     });
     dataElement.sanitizeConfig();
     await dataElement.save();
@@ -317,6 +324,7 @@ export async function importSurveys(req, res) {
               transactingModels,
               code,
               dataGroup,
+              permissionGroup,
             );
           }
 

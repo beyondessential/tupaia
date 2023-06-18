@@ -33,8 +33,6 @@
               command: './packages/devops/scripts/ci/testBackend.sh data-table-server'
             - name: Test lesmis-server
               command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
-            - name: Test meditrak-app-server
-              command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
             - name: Test psss-server
               command: './packages/devops/scripts/ci/testBackend.sh psss-server'
             - name: Test report-server
@@ -58,15 +56,15 @@
               command: './packages/devops/scripts/ci/testBackend.sh indicators'
             - name: Test internal-dependencies
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
-            - name: Test web-frontend
-              command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
             - name: Test tupaia-web
               command: './packages/devops/scripts/ci/testFrontend.sh tupaia-web'
         - type: parallel
           name: Test batch 3
           steps:
             - name: Test entity-server
-              command: "./packages/devops/scripts/ci/testBackend.sh entity-server"
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
+            - name: Test meditrak-app-server
+              command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
 
 - name: Deploy changes
   service: deployment

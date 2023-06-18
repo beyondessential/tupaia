@@ -4,7 +4,7 @@
  */
 
 import { inspect } from 'util';
-import { periodToMoment } from '@tupaia/utils';
+import { periodToMoment } from '@tupaia/tsutils';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { getMeasureBuilder } from './getMeasureBuilder';
 

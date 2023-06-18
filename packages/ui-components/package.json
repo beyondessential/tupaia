@@ -14,7 +14,7 @@
   "scripts": {
     "build": "rm -rf dist && yarn package:build:ts",
     "build-dev": "npm run build",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",

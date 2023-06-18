@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
-import { AuthModalBody, AuthModalButton, AuthModalCancelButton, Modal } from '../../src/components';
+import { AuthModalBody, AuthModalButton, Modal } from '../../src/components';
 
 const meta: Meta<typeof Modal> = {
   title: 'components/Modal',
@@ -40,7 +40,6 @@ export const AuthModal = () => {
         <ModalBody title="Login" subtitle="Login here">
           Hi, I am an auth modal
           <AuthModalButton>Login</AuthModalButton>
-          <AuthModalCancelButton>Cancel</AuthModalCancelButton>
         </ModalBody>
       </Modal>
     </>

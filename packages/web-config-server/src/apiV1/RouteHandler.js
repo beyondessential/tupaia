@@ -99,7 +99,7 @@ export class RouteHandler {
         const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups(
           allCountryCodes,
         );
-        const userHasAccessToExcludedTypes = permissionGroups.every(permissionGroup =>
+        const userHasAccessToExcludedTypes = permissionGroups.some(permissionGroup =>
           userPermissionGroups.includes(permissionGroup),
         );
 
