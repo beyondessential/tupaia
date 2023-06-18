@@ -8,10 +8,13 @@ import { get } from '../api';
 
 export const useUser = () => {
   const userResponse = useQuery('getUser', () => get('getUser'));
-  const { data } = userResponse;
+  const { data: user } = userResponse;
+
+  const name = `${user?.first_name} ${user?.last_name}`;
 
   return {
     ...userResponse,
-    isLoggedIn: !!data?.email,
+    data: { ...user, name },
+    isLoggedIn: !!user?.email,
   };
 };
