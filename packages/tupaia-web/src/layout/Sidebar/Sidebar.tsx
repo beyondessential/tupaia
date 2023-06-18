@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { TRANSPARENT_BLACK } from '../../constants';
@@ -58,6 +59,9 @@ const ExportButton = styled(Button).attrs({
 
 const Title = styled(Typography)`
   color: white;
+  font-weight: 400;
+  font-size: 1.625rem;
+  line-height: 1.4;
 `;
 
 const Dropdown = styled.div`
@@ -87,7 +91,8 @@ const Chart = styled.div`
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: entityData } = useEntity('fiji');
+  const { entityCode } = useParams();
+  const { data: entityData } = useEntity(entityCode);
   const bounds = entityData?.location?.bounds;
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -104,7 +109,7 @@ export const Sidebar = () => {
           <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
         )}
         <TitleBar>
-          <Title variant="h5">Northern</Title>
+          <Title variant="h3">Northern</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
         <Dropdown>General</Dropdown>

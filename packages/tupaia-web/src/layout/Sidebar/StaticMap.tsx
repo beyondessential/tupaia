@@ -13,17 +13,18 @@ const areBoundsValid = (b: Position[]) => {
   return Array.isArray(b) && b.length === 2;
 };
 
-const getLatLongForBounds = (bounds: Position[]) => {
-  const lats = bounds.map(latLong => latLong[0]);
-  const longs = bounds.map(latLong => latLong[1]);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const minLong = Math.min(...longs);
-  const maxLong = Math.max(...longs);
+const getBoundingPoint = (coords: Position) => {
+  const min = Math.min(...coords);
+  const max = Math.max(...coords);
+  return min + (max - min) / 2;
+};
 
-  const latitude = minLat + (maxLat - minLat) / 2;
+const getLatLongForBounds = (polygonPoints: Position[]) => {
+  const lats = polygonPoints.map(latLong => latLong[0]);
+  const longs = polygonPoints.map(latLong => latLong[1]);
 
-  let longitude = minLong + (maxLong - minLong) / 2;
+  const latitude = getBoundingPoint(lats);
+  let longitude = getBoundingPoint(longs);
 
   // Mapbox static api throws errors with anything over 180.
   longitude = longitude > 180 ? 180 : longitude;
@@ -47,8 +48,8 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
     polyline.encode(polygonPoints as Array<[number, number]>),
   );
 
-  const showBox = polygonBounds !== DEFAULT_BOUNDS;
-  const polygonParams = showBox ? `/path-4+ed6338-1(${encodedPolyline})` : '';
+  const hideBox = JSON.stringify(polygonBounds) === JSON.stringify(DEFAULT_BOUNDS);
+  const boundingBoxPath = hideBox ? '' : `/path-4+ed6338-1(${encodedPolyline})`;
 
   // Render map at 2x for retina screens and also render at a larger size to allow for responsive screen widths.
   const width = 660;
@@ -60,7 +61,7 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
 
   const zoomLevel = longitude === 180 ? 1 : 2;
 
-  return `${MAPBOX_BASE_URL}${polygonParams}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
+  return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
 };
 
 export const StaticMap = ({ polygonBounds }: { polygonBounds: Position[] }) => {

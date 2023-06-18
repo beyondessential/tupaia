@@ -14,7 +14,10 @@ const response = {
   location: {
     type: 'area',
     point: null,
-    bounds: null,
+    bounds: [
+      [-24.1625706, 180.604802],
+      [-15.3655722, 186.4704542],
+    ],
     region: [],
   },
   photoUrl:
@@ -22,9 +25,13 @@ const response = {
   countryHierarchy: [],
 };
 
-export const useEntity = (entityCode: string) => {
-  return useQuery(['entity', entityCode], async () => {
-    await sleep(1000);
-    return response;
-  });
+export const useEntity = (entityCode?: string) => {
+  return useQuery(
+    ['entity', entityCode],
+    async () => {
+      await sleep(1000);
+      return response;
+    },
+    { enabled: !!entityCode },
+  );
 };
