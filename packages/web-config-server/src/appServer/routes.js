@@ -4,6 +4,7 @@ import { changePassword } from './handlers/changePassword';
 import { requestResetPassword } from './handlers/requestResetPassword';
 import { getCountryAccessList } from './handlers/getCountryAccessList';
 import { requestCountryAccess } from './handlers/requestCountryAccess';
+import { downloadFiles } from './handlers/downloadFiles';
 
 /**
  * /signup
@@ -43,6 +44,18 @@ export const appResendEmail = () => async (req, res) => {
 export const appGetCountryAccessList = () => async (req, res) => {
   const result = await getCountryAccessList(req);
   res.send(result);
+};
+
+/**
+ * /downloadFiles
+ *
+ */
+export const appDownloadFiles = () => async (req, res) => {
+  const result = await downloadFiles(req);
+  res.setHeader('content-type', result.headers.get('content-type'));
+  res.setHeader('content-disposition', result.headers.get('content-disposition'));
+  res.setHeader('content-length', result.headers.get('content-length'));
+  result.body.pipe(res);
 };
 
 /**

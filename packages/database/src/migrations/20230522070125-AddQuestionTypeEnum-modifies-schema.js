@@ -36,6 +36,10 @@ const QUESTION_TYPES = [
 ];
 
 exports.up = async function(db) {
+  // Disable triggers as no data changes in derived table
+  await db.runSql(`ALTER TABLE question DISABLE TRIGGER "trig$_question"`);
+  await db.runSql(`ALTER TABLE question DISABLE TRIGGER "question_trigger"`);
+
   // Simply casting type to question_type fails for some reason, have to do it in this roundabout way
   await db.runSql(`
     CREATE TYPE question_type AS ENUM ('${QUESTION_TYPES.join('\', \'')}');
@@ -45,11 +49,21 @@ exports.up = async function(db) {
     ALTER TABLE question RENAME COLUMN type2 TO type;
     ALTER TABLE question ALTER COLUMN type SET NOT NULL;
   `);
+
+  await db.runSql(`ALTER TABLE question ENABLE TRIGGER "trig$_question"`);
+  await db.runSql(`ALTER TABLE question ENABLE TRIGGER "question_trigger"`);
 };
 
 exports.down = async function(db) {
+  // Disable triggers as no data changes in derived table
+  await db.runSql(`ALTER TABLE question DISABLE TRIGGER "trig$_question"`);
+  await db.runSql(`ALTER TABLE question DISABLE TRIGGER "question_trigger"`);
+
   await db.runSql(`ALTER TABLE question ALTER COLUMN "type" TYPE TEXT, ALTER COLUMN "type" SET NOT NULL;`);
   await db.runSql(`DROP TYPE question_type;`);
+
+  await db.runSql(`ALTER TABLE question ENABLE TRIGGER "trig$_question"`);
+  await db.runSql(`ALTER TABLE question ENABLE TRIGGER "question_trigger"`);
 };
 
 exports._meta = {

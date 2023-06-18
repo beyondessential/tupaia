@@ -6,8 +6,7 @@
 import fs from 'fs';
 import AdmZip from 'adm-zip';
 
-export function zipMultipleFiles(exportPath, files) {
-  const filePath = `${exportPath}/tupaia_export_${Date.now()}.zip`;
+export function zipMultipleFiles(filePath, files) {
   const zip = new AdmZip();
   files.forEach(file => zip.addLocalFile(file));
   zip.writeZip(filePath);

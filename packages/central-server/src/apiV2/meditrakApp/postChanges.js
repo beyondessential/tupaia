@@ -19,7 +19,7 @@ import {
   isNumber,
   constructIsValidEntityType,
 } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage, addSurveyFile } from "./utilities";
+import { updateOrCreateSurveyResponse, addSurveyImage, addSurveyFile } from './utilities';
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -30,12 +30,11 @@ import {
   translateQuestionCodeToId,
 } from '../utilities';
 
-
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',
   AddSurveyImage: 'AddSurveyImage',
   AddSurveyFile: 'AddSurveyFile',
-}
+};
 
 /**
  * Responds to POST requests to the /changes endpoint, integrating the data posted in the request
