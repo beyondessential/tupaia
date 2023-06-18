@@ -10097,6 +10097,7 @@ __metadata:
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
+    "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
@@ -11078,6 +11079,15 @@ __metadata:
   version: 4.14.191
   resolution: "@types/lodash@npm:4.14.191"
   checksum: ba0d5434e10690869f32d5ea49095250157cae502f10d57de0a723fd72229ce6c6a4979576f0f13e0aa9fbe3ce2457bfb9fa7d4ec3d6daba56730a51906d1491
+  languageName: node
+  linkType: hard
+
+"@types/mapbox__polyline@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@types/mapbox__polyline@npm:1.0.2"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: 23f5f8c0d930664bc9e194432423bf2debb86dda698edc387d498c437c6af229b9c220e1c649f018638ea9970006cc00bae9f578b6f5375b02d759ea5ab43ea4
   languageName: node
   linkType: hard
 
