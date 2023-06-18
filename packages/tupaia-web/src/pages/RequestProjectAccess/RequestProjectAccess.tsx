@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { PROJECT_PARAM } from '../../constants';
@@ -12,6 +12,7 @@ import { ModalHeader } from './ModalHeader';
 import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
 import { ProjectAccessForm } from './ProjectAccessForm';
+import { RequestedCountries } from './RequestedCountries';
 
 const ModalBody = styled.div`
   display: flex;
@@ -23,6 +24,7 @@ const ModalBody = styled.div`
 
 export const RequestProjectAccess = () => {
   const [urlParams] = useSearchParams();
+  const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
 
   const projectCode = urlParams.get(PROJECT_PARAM);
 
@@ -38,14 +40,29 @@ export const RequestProjectAccess = () => {
   // the countries that are available to request
   const availableCountries = projectCountries.filter(c => !c.accessRequests.includes(projectCode!));
 
+  // Show the form if there are available countries, or if there are requested countries and the user has opted to request additional countries
+  const showForm = requestedCountries.length
+    ? requestAdditionalCountries && availableCountries.length > 0
+    : availableCountries.length > 0;
+
+  // Show the requested countries if there are any, and the user has not opted to request additional countries
+  const showRequestedCountries = requestedCountries.length > 0 && !requestAdditionalCountries;
+
   return (
     <ModalBody>
       <LoadingScreen isLoading={isLoading} />
       <ModalHeader />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
-      {requestedCountries.length > 0 ? null : (
-        <ProjectAccessForm availableCountries={availableCountries} />
+      {showRequestedCountries && (
+        <RequestedCountries
+          requestedCountries={requestedCountries}
+          hasAdditionalCountries={availableCountries.length > 0}
+          onShowForm={() => setRequestAdditionalCountries(true)}
+        />
+      )}
+      {showForm && (
+        <ProjectAccessForm availableCountries={availableCountries} projectName={project?.name} />
       )}
     </ModalBody>
   );

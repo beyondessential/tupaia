@@ -5,8 +5,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { LoadingScreen, RouterLink } from '../../components';
-import { useOneTimeLogin } from '../../api/mutations';
+import { RouterLink } from '../../components';
 import { MODAL_ROUTES, PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
 import { useSearchParams } from 'react-router-dom';
 import { Alert as MuiAlert } from '@material-ui/lab';

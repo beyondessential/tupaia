@@ -102,10 +102,11 @@ export const RequestCountryAccess = () => {
                 value: id,
                 label: name,
               }))}
+              required
               name="entityIds"
             />
             <TextField name="message" label="Why would you like access?" type="text" />
-            <AuthModalButton type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
+            <AuthModalButton type="submit" disabled={isSubmitting}>
               Request access
             </AuthModalButton>
           </Form>

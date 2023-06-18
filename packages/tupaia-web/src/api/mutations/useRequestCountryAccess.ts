@@ -5,19 +5,22 @@
 
 import { useMutation } from 'react-query';
 import { post } from '../api';
-import { Country } from '@tupaia/types';
+import { useSearchParams } from 'react-router-dom';
+import { PROJECT_PARAM } from '../../constants';
+import { CountryAccessListItem } from '../../types';
 
 type RequestCountryAccessParams = {
-  entityIds: Country['id'][];
+  entityIds: CountryAccessListItem['id'][];
   message?: string;
-  projectCode?: string;
 };
 export const useRequestCountryAccess = () => {
+  const [urlParams] = useSearchParams();
+  const projectCode = urlParams.get(PROJECT_PARAM);
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
-    ({ entityIds, message, projectCode }: RequestCountryAccessParams) => {
+    ({ entityIds, message }: RequestCountryAccessParams) => {
       return post('requestCountryAccess', {
         data: {
-          entityIds,
+          entityIds: Array.isArray(entityIds) ? entityIds : [entityIds], // Ensure entityIds is an array, as when there is only one option in a checkbox list, react-hook-form formats this as a single value string
           message,
           projectCode,
         },

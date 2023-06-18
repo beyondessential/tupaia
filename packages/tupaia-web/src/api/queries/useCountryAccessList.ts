@@ -4,7 +4,7 @@
  */
 
 import { UseQueryResult, useQuery } from 'react-query';
-import { get } from '../api';
+// import { get } from '../api';
 import { CountryAccessListItem } from '../../types';
 
 const testData = [
@@ -219,7 +219,7 @@ export const useCountryAccessList = () => {
     'countryAccessList',
     () => {
       // get('countryAccessList')
-      return Promise.resolve(testData);
+      return Promise.resolve(testData); // TODO: remove this once the endpoints are working
     },
     {
       placeholderData: [],

@@ -4,11 +4,14 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { useFormContext } from 'react-hook-form';
 import { CheckboxField } from '.';
+import { Typography } from '@material-ui/core';
 
-const CountryList = styled.fieldset`
+const Fieldset = styled.fieldset`
   border: none;
   padding: 0;
+  margin: 0;
 `;
 
 const Legend = styled.legend`
@@ -17,19 +20,37 @@ const Legend = styled.legend`
   margin-bottom: 1rem;
 `;
 
+const Error = styled(Typography).attrs({
+  color: 'error',
+})`
+  text-align: left;
+  margin-bottom: 0.5rem;
+`;
+
 interface CheckboxListProps {
   options: { value: string; label: string }[];
   legend: string;
   name: string;
+  required?: boolean;
 }
 
-export const CheckboxList = ({ options, legend, name }: CheckboxListProps) => {
+export const CheckboxList = ({ options, legend, name, required }: CheckboxListProps) => {
+  const { errors = {} } = useFormContext();
+
   return (
-    <CountryList>
+    <Fieldset>
       <Legend>{legend}</Legend>
       {options.map(({ value, label }) => (
-        <CheckboxField key={value} value={value} label={label} name={name} />
+        <CheckboxField
+          key={value}
+          value={value}
+          label={label}
+          name={name}
+          required={required}
+          isArray
+        />
       ))}
-    </CountryList>
+      {errors[name] && <Error>{errors[name].message}</Error>}
+    </Fieldset>
   );
 };

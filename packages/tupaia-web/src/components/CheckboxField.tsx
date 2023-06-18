@@ -20,9 +20,17 @@ interface CheckboxProps extends MuiCheckboxProps {
   options?: any; // options is type RegisterOptions from react-hook-form, but ts-lint can not find that export
   name: string;
   label?: string;
+  isArray?: boolean; // should be true if is one checkbox in a set of checkboxes
 }
 
-export const CheckboxField = ({ name, label, required, options = {}, ...props }: CheckboxProps) => {
+export const CheckboxField = ({
+  name,
+  label,
+  required,
+  isArray,
+  options = {},
+  ...props
+}: CheckboxProps) => {
   const { register, errors = {} } = useFormContext();
   const requiredConfig = required ? { required: 'Required' } : {};
   const registerOptions = { ...options, ...requiredConfig };
@@ -34,7 +42,7 @@ export const CheckboxField = ({ name, label, required, options = {}, ...props }:
       required={required}
       color="primary"
       error={!!errors[name]}
-      helperText={errors[name]?.message}
+      helperText={isArray ? '' : errors[name]?.message}
       inputRef={register(registerOptions) as any}
       {...props}
     />
