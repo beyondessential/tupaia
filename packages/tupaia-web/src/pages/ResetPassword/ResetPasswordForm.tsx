@@ -10,7 +10,6 @@ import { AuthModalButton, Form, TextField } from '../../components';
 import { useResetPassword } from '../../api/mutations';
 import { FORM_FIELD_VALIDATION, PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
 import { useSearchParams } from 'react-router-dom';
-import { OneTimeLogin } from './OneTimeLogin';
 
 const StyledForm = styled(Form)`
   margin-top: 1rem;
