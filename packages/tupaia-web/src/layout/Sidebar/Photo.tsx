@@ -4,9 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Typography, ButtonBase } from '@material-ui/core';
-import { Modal } from '../../components';
+import { ButtonBase, Dialog } from '@material-ui/core';
 import { Media } from './Media';
 
 const getOrgUnitPhotoUrl = (photoUrl?: string) => {
@@ -19,10 +17,6 @@ const getOrgUnitPhotoUrl = (photoUrl?: string) => {
   return photoUrl.replace(`/${dir}/`, `/thumbnails/${dir}/`).replace('.png', '.jpg');
 };
 
-export const ModalImage = styled.img`
-  margin: 3rem;
-`;
-
 interface PhotoProps {
   title?: string;
   photoUrl?: string;
@@ -34,10 +28,9 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
   return (
     <>
       {isEnlarged && (
-        <Modal isOpen={isEnlarged} onClose={() => setIsEnlarged(false)}>
-          <Typography variant="h3">{title}</Typography>
-          <ModalImage src={imageSrc} alt={title} />
-        </Modal>
+        <Dialog open={isEnlarged} onClose={() => setIsEnlarged(false)}>
+          <img src={imageSrc} alt={title} />
+        </Dialog>
       )}
       <Media $backgroundImage={imageSrc} onClick={() => setIsEnlarged(true)} as={ButtonBase} />
     </>
