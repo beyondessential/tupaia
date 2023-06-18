@@ -15,10 +15,12 @@ import {
 import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
+  EntitiesRoute,
   ReportRoute,
   UserRoute,
   TempLogoutRoute,
   DashboardsRequest,
+  EntitiesRequest,
   ReportRequest,
   UserRequest,
   TempLogoutRequest,
@@ -39,6 +41,7 @@ export function createApp() {
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
+    .get<EntitiesRequest>('entities/:hierarchyName/:rootEntityCode', handleWith(EntitiesRoute))
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
