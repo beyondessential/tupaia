@@ -11,6 +11,9 @@ export class WebConfigApi extends BaseApi {
   public async fetchReport(reportCode: string, query?: QueryParameters | null) {
     return this.connection.get(`report/${reportCode}`, query);
   }
+  public async fetchProjects() {
+    return this.connection.get('projects');
+  }
 }
 
-export interface WebConfigApiInterface extends PublicInterface<WebConfigApi> {};
+export interface WebConfigApiInterface extends PublicInterface<WebConfigApi> {}
