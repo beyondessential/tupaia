@@ -8,23 +8,22 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { TRANSPARENT_BLACK } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useEntity } from '../../api/queries';
+import { useDashboards, useEntity } from '../../api/queries';
+import { DashboardMenu } from './DashboardMenu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
 const MIN_SIDEBAR_WIDTH = 335;
-const PANEL_GREY = '#4a4b55';
 
 const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
   position: relative;
-  background-color: ${TRANSPARENT_BLACK};
+  background-color: ${({ theme }) => theme.panel.background};
   transition: width 0.5s ease, max-width 0.5s ease;
   width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
   min-width: ${MIN_SIDEBAR_WIDTH}px;
@@ -46,7 +45,7 @@ const TitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: ${TRANSPARENT_BLACK};
+  background-color: ${({ theme }) => theme.panel.background};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 `;
@@ -64,18 +63,11 @@ const Title = styled(Typography)`
   line-height: 1.4;
 `;
 
-const Dropdown = styled.div`
-  background: ${PANEL_GREY};
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-`;
-
 const ChartsContainer = styled.div<{
   $isExpanded: boolean;
 }>`
   display: grid;
-  background-color: ${PANEL_GREY};
+  background-color: ${({ theme }) => theme.panel.secondaryBackground};
   grid-template-columns: repeat(auto-fill, minmax(${MIN_SIDEBAR_WIDTH}px, auto));
   column-gap: 0.5rem;
   row-gap: 0.5rem;
@@ -84,16 +76,21 @@ const ChartsContainer = styled.div<{
 
 const Chart = styled.div`
   position: relative;
-  background-color: ${TRANSPARENT_BLACK};
+  text-align: center;
+  background-color: ${({ theme }) => theme.panel.background};
   // Use padding to maintain aspect ratio
-  padding-bottom: 80%;
+  padding: 1rem 1rem 75%;
 `;
 
 export const Sidebar = () => {
+  const { projectCode, entityCode, '*': dashboardCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { entityCode } = useParams();
   const { data: entityData } = useEntity(entityCode);
   const bounds = entityData?.location?.bounds;
+
+  const { data: dashboardData } = useDashboards(projectCode, entityCode);
+  const activeDashboard = dashboardData?.find(dashboard => dashboard.code === dashboardCode);
+
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
@@ -109,21 +106,14 @@ export const Sidebar = () => {
           <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
         )}
         <TitleBar>
-          <Title variant="h3">Northern</Title>
+          <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-        <Dropdown>General</Dropdown>
+        <DashboardMenu />
         <ChartsContainer $isExpanded={isExpanded}>
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
+          {activeDashboard?.items.map(({ childId }) => {
+            return <Chart key={childId}>DashboardId: {childId}</Chart>;
+          })}
         </ChartsContainer>
       </ScrollBody>
     </Panel>

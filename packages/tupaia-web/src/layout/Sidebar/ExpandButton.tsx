@@ -7,7 +7,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
-import { TRANSPARENT_BLACK } from '../../constants';
 
 const SemiCircle = styled(Button)`
   position: absolute;
@@ -16,7 +15,7 @@ const SemiCircle = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${TRANSPARENT_BLACK};
+  background-color: ${({ theme }) => theme.panel.background};
   min-height: 60px;
   min-width: 30px;
   border-top-left-radius: 60px;
