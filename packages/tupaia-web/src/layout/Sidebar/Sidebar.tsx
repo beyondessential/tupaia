@@ -96,8 +96,6 @@ export const Sidebar = () => {
     setIsExpanded(!isExpanded);
   };
 
-  console.log('entityData', entityData);
-
   return (
     <Panel $isExpanded={isExpanded}>
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
