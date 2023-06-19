@@ -34,11 +34,22 @@ export const RequestProjectAccess = () => {
   // the countries that are applicable to this project
   const projectCountries = countries.filter(c => project?.names?.includes(c.name));
 
+  const getCountriesByAccess = (hasRequests: boolean) => {
+    return projectCountries?.filter(({ hasAccess, accessRequests }) => {
+      return (
+        !hasAccess &&
+        (hasRequests
+          ? accessRequests.includes(projectCode!)
+          : !accessRequests.includes(projectCode!))
+      );
+    });
+  };
+
   // the countries that have already got a request
-  const requestedCountries = projectCountries.filter(c => c.accessRequests.includes(projectCode!));
+  const requestedCountries = getCountriesByAccess(true);
 
   // the countries that are available to request
-  const availableCountries = projectCountries.filter(c => !c.accessRequests.includes(projectCode!));
+  const availableCountries = getCountriesByAccess(false);
 
   // Show the form if there are available countries, or if there are requested countries and the user has opted to request additional countries
   const showForm = requestedCountries.length
