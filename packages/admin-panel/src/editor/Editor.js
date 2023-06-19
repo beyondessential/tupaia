@@ -21,6 +21,10 @@ const EditorWrapper = styled.div`
 `;
 
 export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
+  if (!fields || fields.length === 0) {
+    return false;
+  }
+
   const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
     const { setFieldsOnChange, type } = editConfig;
     let updatedValue = inputValue;

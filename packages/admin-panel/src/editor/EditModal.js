@@ -67,35 +67,23 @@ export const EditModalComponent = ({
     setFiles({});
   }, [fields]);
 
+  const FieldsComponentResolved = FieldsComponent ?? Editor;
+
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
       <DialogHeader onClose={onDismiss} title={title} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-        <>
-          {!FieldsComponent && fields.length > 0 && (
-            <Editor
-              fields={fields}
-              recordData={recordData}
-              onEditField={(fieldSource, newValue) => {
-                const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-                return onEditField(fieldSourceToEdit, newValue);
-              }}
-              onSetFormFile={handleSetFormFile}
-            />
-          )}
-          {FieldsComponent && (
-            <FieldsComponent
-              isLoading={isLoading}
-              recordData={recordData}
-              onEditField={(fieldSource, newValue) => {
-                const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-                return onEditField(fieldSourceToEdit, newValue);
-              }}
-              onSetFormFile={handleSetFormFile}
-            />
-          )}
-          {displayUsedBy && <UsedBy {...usedByConfig} />}
-        </>
+        <FieldsComponentResolved
+          fields={fields}
+          isLoading={isLoading}
+          recordData={recordData}
+          onEditField={(fieldSource, newValue) => {
+            const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+            return onEditField(fieldSourceToEdit, newValue);
+          }}
+          onSetFormFile={handleSetFormFile}
+        />
+        {displayUsedBy && <UsedBy {...usedByConfig} />}
       </ModalContentProvider>
       <DialogFooter>
         <Button id="form-button-cancel" variant="outlined" onClick={onDismiss} disabled={isLoading}>
