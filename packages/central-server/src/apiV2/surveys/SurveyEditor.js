@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, ImportValidationError } from '@tupaia/utils';
+import { DatabaseError, ValidationError } from '@tupaia/utils';
 import { validateSurveyFields } from '../../dataAccessors';
 import { getArrayQueryParameter } from '../utilities';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
@@ -18,8 +18,8 @@ const validateSurveyServiceType = async (models, surveyId, serviceType) => {
   const existingDataGroup = await models.dataGroup.findOne({ code: survey.code });
   if (existingDataGroup !== null) {
     if (serviceType !== existingDataGroup.service_type) {
-      throw new ImportValidationError(
-        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to import with Data service: ${serviceType}.`,
+      throw new ValidationError(
+        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to change to Data service: ${serviceType}.`,
       );
     }
   }
