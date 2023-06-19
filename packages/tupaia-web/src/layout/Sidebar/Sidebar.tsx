@@ -14,7 +14,7 @@ import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
-import { DashboardDropdown } from './DashboardDropdown.tsx';
+import { DashboardMenu } from './DashboardMenu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -96,6 +96,8 @@ export const Sidebar = () => {
     setIsExpanded(!isExpanded);
   };
 
+  console.log('entityData', entityData);
+
   return (
     <Panel $isExpanded={isExpanded}>
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
@@ -107,10 +109,10 @@ export const Sidebar = () => {
           <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
         )}
         <TitleBar>
-          <Title variant="h3">Northern</Title>
+          <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-        <DashboardDropdown />
+        <DashboardMenu />
         <ChartsContainer $isExpanded={isExpanded}>
           {activeDashboard?.items.map(({ childId }) => {
             return <Chart key={childId}>DashboardId: {childId}</Chart>;
