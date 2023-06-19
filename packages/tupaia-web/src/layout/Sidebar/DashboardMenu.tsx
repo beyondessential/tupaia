@@ -8,7 +8,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import { Dashboard } from '@tupaia/types';
 import styled from 'styled-components';
-import { PANEL_GREY } from '../../constants';
 import { useDashboards } from '../../api/queries';
 import { DashboardCode } from '../../types';
 
@@ -16,7 +15,7 @@ const MenuButton = styled(ButtonBase)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: ${PANEL_GREY};
+  background-color: ${({ theme }) => theme.panel.secondaryBackground};
   width: 100%;
   padding: 1rem;
   font-size: 1rem;

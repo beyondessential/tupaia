@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { TRANSPARENT_BLACK, PANEL_GREY } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
@@ -24,7 +23,7 @@ const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
   position: relative;
-  background-color: ${TRANSPARENT_BLACK};
+  background-color: ${({ theme }) => theme.panel.background};
   transition: width 0.5s ease, max-width 0.5s ease;
   width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
   min-width: ${MIN_SIDEBAR_WIDTH}px;
@@ -46,7 +45,7 @@ const TitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: ${TRANSPARENT_BLACK};
+  background-color: ${({ theme }) => theme.panel.background};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 `;
@@ -68,7 +67,7 @@ const ChartsContainer = styled.div<{
   $isExpanded: boolean;
 }>`
   display: grid;
-  background-color: ${PANEL_GREY};
+  background-color: ${({ theme }) => theme.panel.secondaryBackground};
   grid-template-columns: repeat(auto-fill, minmax(${MIN_SIDEBAR_WIDTH}px, auto));
   column-gap: 0.5rem;
   row-gap: 0.5rem;
@@ -78,7 +77,7 @@ const ChartsContainer = styled.div<{
 const Chart = styled.div`
   position: relative;
   text-align: center;
-  background-color: ${TRANSPARENT_BLACK};
+  background-color: ${({ theme }) => theme.panel.background};
   // Use padding to maintain aspect ratio
   padding: 1rem 1rem 75%;
 `;

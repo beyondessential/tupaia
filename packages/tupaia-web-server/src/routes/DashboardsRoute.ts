@@ -12,7 +12,7 @@ export type DashboardsRequest = Request<any, any, any, any>;
 export class DashboardsRoute extends Route<DashboardsRequest> {
   public async buildResponse() {
     const { query, ctx } = this.req;
-    const { organisationUnitCode, projectCode } = query;
+    const { entityCode, projectCode } = query;
 
     const project = (
       await ctx.services.central.fetchResources('projects', {
@@ -22,7 +22,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     )[0];
     const baseEntity = await ctx.services.entity.getEntity(
       project['entity_hierarchy.name'],
-      organisationUnitCode,
+      entityCode,
     );
 
     const dashboards = await ctx.services.central.fetchResources('dashboards', {

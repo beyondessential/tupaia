@@ -16,7 +16,7 @@ export const useDashboards = (projectCode?: string, entityCode?: string) => {
     ['dashboards', projectCode, entityCode],
     async (): Promise<DashboardsResponse> => {
       return await get('dashboards', {
-        params: { organisationUnitCode: entityCode, projectCode },
+        params: { entityCode, projectCode },
       });
     },
     { enabled: !!entityCode && !!projectCode },

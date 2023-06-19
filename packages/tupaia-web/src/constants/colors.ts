@@ -5,8 +5,6 @@
 
 export const TRANSPARENT_BLACK = 'rgba(43, 45, 56, 0.94)';
 
-export const PANEL_GREY = '#4a4b55';
-
 export const FORM_COLORS = {
   BORDER: '#d9d9d9',
 };
