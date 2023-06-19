@@ -25,7 +25,7 @@ const Container = styled.div`
   svg.recharts-surface {
     overflow: visible;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     overflow-y: hidden;
   }
 `;

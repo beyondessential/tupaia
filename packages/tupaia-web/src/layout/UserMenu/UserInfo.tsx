@@ -13,7 +13,7 @@ import { RouterButton } from '../../components';
  * UserInfo is a component that displays the user's name if user is logged in, or a register and sign in button if not set
  */
 const Wrapper = styled.div`
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;
@@ -27,7 +27,7 @@ const UsernameContainer = styled.p<{
     $isLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
   font-size: 0.875rem;
   text-transform: ${({ $isLandingPage }) => ($isLandingPage ? 'uppercase' : 'none')};
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

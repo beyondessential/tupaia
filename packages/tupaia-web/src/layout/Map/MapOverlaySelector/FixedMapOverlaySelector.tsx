@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   opacity: 0.6;
   position: absolute;
   top: 0;
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

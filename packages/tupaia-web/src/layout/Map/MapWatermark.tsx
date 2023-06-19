@@ -33,7 +33,7 @@ const StyledLink = styled.a`
 
 const InfoWrapper = styled.div`
   display: flex;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

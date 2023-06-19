@@ -20,7 +20,7 @@ const FixedMapLegendWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   border-radius: 5px;
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

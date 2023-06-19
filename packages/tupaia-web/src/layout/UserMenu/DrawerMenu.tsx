@@ -16,7 +16,7 @@ import { MODAL_ROUTES } from '../../constants';
  */
 
 const Drawer = styled(MuiDrawer)`
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${props => props.theme.mobile.threshold}) {
     display: none;
   }
 `;

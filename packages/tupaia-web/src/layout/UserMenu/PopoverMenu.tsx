@@ -13,7 +13,7 @@ import styled from 'styled-components';
  */
 
 const Popover = styled(MuiPopover)`
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

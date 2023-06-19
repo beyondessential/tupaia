@@ -29,7 +29,7 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
@@ -41,7 +41,7 @@ const Panel = styled.div<{
 const ScrollBody = styled.div`
   position: relative;
   height: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     overflow: auto;
   }
 `;
@@ -56,7 +56,7 @@ const TitleBar = styled.div`
   background-color: ${TRANSPARENT_BLACK};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;
@@ -93,7 +93,7 @@ const ChartsContainer = styled.div<{
 `;
 
 const DashboardImageContainer = styled.div`
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

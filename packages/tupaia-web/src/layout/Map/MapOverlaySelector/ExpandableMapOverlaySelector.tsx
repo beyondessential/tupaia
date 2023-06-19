@@ -10,7 +10,7 @@ import { Button } from '@tupaia/ui-components';
 // Placeholder for MapOverlaySelector component
 const Wrapper = styled.div`
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

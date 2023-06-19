@@ -28,6 +28,7 @@ export const theme = createMuiTheme(
     },
     mobile: {
       background: '#313236', // Dark grey used on mobile
+      threshold: '900px',
     },
     overlaySelector: {
       menuBackground: '#203e5c', // Dark blue used for button and header background in mobile overlay selector, as well as the background of the menu list on desktop

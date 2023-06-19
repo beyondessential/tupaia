@@ -46,7 +46,7 @@ const StyledMap = styled(LeafletMap)`
         box-shadow: none;
       }
     }
-    @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
       display: none;
     }
   }
@@ -57,7 +57,7 @@ const TilePickerWrapper = styled.div`
   right: 0;
   bottom: 0;
   height: 100%;
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

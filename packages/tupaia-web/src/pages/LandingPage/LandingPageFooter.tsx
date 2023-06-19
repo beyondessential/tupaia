@@ -18,7 +18,7 @@ const Footer = styled.footer`
 const FooterContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${props => props.theme.mobile.threshold}) {
     flex-direction: row;
   }
 `;
@@ -47,7 +47,7 @@ const FooterContentContainer = styled.div`
   & + & {
     margin-top: 1em;
   }
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${props => props.theme.mobile.threshold}) {
     width: 30%;
     & + & {
       margin-left: 4em;

@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

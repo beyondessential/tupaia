@@ -11,7 +11,7 @@ const ExpandableMapLegendWrapper = styled.div`
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     display: none;
   }
 `;

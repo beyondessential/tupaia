@@ -11,7 +11,7 @@ const Container = styled.div`
   flex-direction: row;
   flex: 1;
   overflow: hidden;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     display: flex;
   }
 `;

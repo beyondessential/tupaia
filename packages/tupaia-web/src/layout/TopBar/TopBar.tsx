@@ -39,7 +39,7 @@ const Header = styled.header<{
   li {
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     height: ${TOP_BAR_HEIGHT}px;
     min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;

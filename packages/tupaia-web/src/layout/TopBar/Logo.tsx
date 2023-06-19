@@ -44,7 +44,7 @@ const Name = styled(Typography)`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     font-size: 1.2rem;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
     font-size: 1.5rem;
   }
 `;
