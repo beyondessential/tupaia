@@ -37,3 +37,10 @@ export const FORM_FIELD_VALIDATION = {
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
+
+export enum TABS {
+  MAP = 'map',
+  DASHBOARD = 'dashboard',
+}
+
+export const TAB_PARAM = 'tab';

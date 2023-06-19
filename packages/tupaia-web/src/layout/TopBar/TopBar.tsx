@@ -27,7 +27,7 @@ const Header = styled.header<{
   z-index: 1000;
   position: relative;
   padding: 0 0.625em;
-  border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+
   > * {
     background-color: ${({ $primaryColor, theme }) =>
       $primaryColor || theme.palette.background.default};
@@ -39,10 +39,11 @@ const Header = styled.header<{
   li {
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
     height: ${TOP_BAR_HEIGHT}px;
     min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;
+    border-bottom: 1px solid rgba(151, 151, 151, 0.3);
   }
 `;
 
