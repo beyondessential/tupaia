@@ -4,6 +4,7 @@
  */
 
 import styled from 'styled-components';
+import { MOBILE_THRESHOLD } from '../../constants';
 
 export const Breadcrumbs = styled.div`
   position: absolute;
@@ -13,7 +14,7 @@ export const Breadcrumbs = styled.div`
   max-width: 220px;
   background: #efefefaa;
   height: 15px;
-  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;

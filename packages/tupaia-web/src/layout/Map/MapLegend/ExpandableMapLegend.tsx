@@ -6,12 +6,13 @@ import React, { useState } from 'react';
 import { Close, ExpandLess } from '@material-ui/icons';
 import { Button, IconButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { MOBILE_THRESHOLD } from '../../../constants';
 
 const ExpandableMapLegendWrapper = styled.div`
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;

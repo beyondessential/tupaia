@@ -44,3 +44,5 @@ export enum TABS {
 }
 
 export const TAB_PARAM = 'tab';
+
+export const MOBILE_THRESHOLD = '900px';

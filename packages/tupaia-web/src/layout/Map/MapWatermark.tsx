@@ -10,6 +10,7 @@ import { IconButton } from '@tupaia/ui-components';
 import CopyrightIcon from '@material-ui/icons/Copyright';
 import CloseIcon from '@material-ui/icons/Close';
 import { Link } from '@material-ui/core';
+import { MOBILE_THRESHOLD } from '../../constants';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -33,7 +34,7 @@ const StyledLink = styled.a`
 
 const InfoWrapper = styled.div`
   display: flex;
-  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;

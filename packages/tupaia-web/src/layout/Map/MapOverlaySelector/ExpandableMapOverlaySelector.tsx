@@ -6,11 +6,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
+import { MOBILE_THRESHOLD } from '../../../constants';
 
 // Placeholder for MapOverlaySelector component
 const Wrapper = styled.div`
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;

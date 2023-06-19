@@ -10,7 +10,7 @@ import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
-import { TABS, TAB_PARAM } from '../../constants';
+import { MOBILE_THRESHOLD, TABS, TAB_PARAM } from '../../constants';
 import { Map } from '../Map';
 import { Sidebar } from '..';
 import { Footer } from './Footer';
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;

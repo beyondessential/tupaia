@@ -6,14 +6,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
-import { MODAL_ROUTES } from '../../constants';
+import { MOBILE_THRESHOLD, MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 
 /**
  * UserInfo is a component that displays the user's name if user is logged in, or a register and sign in button if not set
  */
 const Wrapper = styled.div`
-  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;
@@ -27,7 +27,7 @@ const UsernameContainer = styled.p<{
     $isLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
   font-size: 0.875rem;
   text-transform: ${({ $isLandingPage }) => ($isLandingPage ? 'uppercase' : 'none')};
-  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;

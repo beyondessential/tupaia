@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { MOBILE_THRESHOLD } from '../../../constants';
 
 // Placeholder for MapOverlaySelector component
 const Wrapper = styled.div`
@@ -16,7 +17,7 @@ const Wrapper = styled.div`
   opacity: 0.6;
   position: absolute;
   top: 0;
-  @media screen and (max-width: ${({ theme }) => theme.mobile.threshold}) {
+  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
 `;
