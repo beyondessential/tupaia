@@ -227,6 +227,21 @@ const SURVEY_COLUMNS = [
 const CREATE_CONFIG = {
   actionConfig: {
     editEndpoint: 'surveys',
+    // All fields except Integration Metadata
+    // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
+    fields: [
+      SURVEY_FIELDS.name,
+      SURVEY_FIELDS.code,
+      SURVEY_FIELDS.country_ids,
+      SURVEY_FIELDS.permission_group_id,
+      SURVEY_FIELDS.survey_group_id,
+      SURVEY_FIELDS.can_repeat,
+      SURVEY_FIELDS.period_granularity,
+      SURVEY_FIELDS.requires_approval,
+      SURVEY_FIELDS['data_group.service_type'],
+      SURVEY_FIELDS['data_group.config'],
+      SURVEY_FIELDS.surveyQuestions,
+    ],
     // Custom component needed because on create we suggest the code
     FieldsComponent: SurveyEditFields,
     initialValues: {
