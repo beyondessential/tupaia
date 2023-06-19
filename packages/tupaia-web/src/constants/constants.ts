@@ -43,6 +43,9 @@ export enum TABS {
   DASHBOARD = 'dashboard',
 }
 
-export const TAB_PARAM = 'tab';
-
 export const MOBILE_THRESHOLD = '900px';
+
+export const URL_SEARCH_PARAMS = {
+  PROJECT: 'project',
+  TAB: 'tab',
+};

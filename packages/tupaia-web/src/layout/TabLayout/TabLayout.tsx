@@ -10,7 +10,7 @@ import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
-import { MOBILE_THRESHOLD, TABS, TAB_PARAM } from '../../constants';
+import { MOBILE_THRESHOLD, TABS, URL_SEARCH_PARAMS } from '../../constants';
 import { Map } from '../Map';
 import { Sidebar } from '..';
 import { Footer } from './Footer';
@@ -70,10 +70,10 @@ export const TabLayout = () => {
 
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
-  const selectedTab = urlSearchParams.get(TAB_PARAM) || TABS.DASHBOARD;
+  const selectedTab = urlSearchParams.get(URL_SEARCH_PARAMS.TAB) || TABS.DASHBOARD;
 
   const setSelectedTab = (e: ChangeEvent<{}>, value: `${TABS}`) => {
-    urlSearchParams.set(TAB_PARAM, value);
+    urlSearchParams.set(URL_SEARCH_PARAMS.TAB, value);
     setUrlSearchParams(urlSearchParams);
   };
 
