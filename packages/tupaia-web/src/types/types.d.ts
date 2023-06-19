@@ -1,4 +1,4 @@
-import { LandingPage, Project, Country } from '@tupaia/types';
+import { LandingPage, Project, Country, Entity, Dashboard } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
 
 export type SingleProject = KeysToCamelCase<Project> & {
@@ -17,4 +17,16 @@ export type SingleLandingPage = KeysToCamelCase<Omit<LandingPage, 'project_codes
 export type CountryAccessListItem = Country & {
   hasAccess: boolean;
   accessRequests: string[];
+};
+
+export type ProjectCode = Project['code'];
+
+export type EntityCode = Entity['code'];
+
+export type DashboardCode = Dashboard['code'];
+
+export type TupaiaUrlParams = {
+  projectCode?: ProjectCode;
+  entityCode?: EntityCode;
+  dashboardCode?: DashboardCode;
 };

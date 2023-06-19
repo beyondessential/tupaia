@@ -64,7 +64,8 @@ export const Login = () => {
           Log in
         </AuthModalButton>
         <LinkText align="center">
-          Don't have an account? <RouterLink to={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
+          Don't have an account?{' '}
+          <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
         </LinkText>
       </StyledForm>
     </ModalBody>

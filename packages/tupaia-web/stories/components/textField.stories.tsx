@@ -3,18 +3,28 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import type { Meta, StoryObj } from '@storybook/react';
-import { TextField } from '../../src/components/TextField';
+import { Form, TextField } from '../../src/components';
 
 const meta: Meta<typeof TextField> = {
   title: 'components/TextField',
   component: TextField,
   decorators: [
-    Story => (
-      <div style={{ margin: '1rem', maxWidth: '20rem' }}>
-        <Story />
-      </div>
-    ),
+    Story => {
+      const formContext = useForm();
+      const onSubmit = (data: any) => {
+        console.log(data);
+      };
+
+      return (
+        <div style={{ margin: '1rem', maxWidth: '20rem' }}>
+          <Form formContext={formContext} onSubmit={onSubmit}>
+            <Story />
+          </Form>
+        </div>
+      );
+    },
   ],
 };
 
