@@ -33,7 +33,7 @@ export const RequestProjectAccess = () => {
 
   const { data: countries } = useCountryAccessList();
   // the countries that are applicable to this project
-  const projectCountries = countries.filter(c => project?.names?.includes(c.name));
+  const projectCountries = countries?.filter(c => project?.names?.includes(c.name));
 
   const getCountriesByAccess = (hasRequests: boolean) => {
     return projectCountries?.filter(({ hasAccess, accessRequests }) => {
@@ -53,12 +53,12 @@ export const RequestProjectAccess = () => {
   const availableCountries = getCountriesByAccess(false);
 
   // Show the form if there are available countries, or if there are requested countries and the user has opted to request additional countries
-  const showForm = requestedCountries.length
-    ? requestAdditionalCountries && availableCountries.length > 0
-    : availableCountries.length > 0;
+  const showForm = requestedCountries?.length
+    ? requestAdditionalCountries && availableCountries?.length > 0
+    : availableCountries?.length > 0;
 
   // Show the requested countries if there are any, and the user has not opted to request additional countries
-  const showRequestedCountries = requestedCountries.length > 0 && !requestAdditionalCountries;
+  const showRequestedCountries = requestedCountries?.length > 0 && !requestAdditionalCountries;
 
   return (
     <ModalBody>
@@ -66,7 +66,7 @@ export const RequestProjectAccess = () => {
       <ModalHeader />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
-      {!availableCountries.length && !requestedCountries.length && (
+      {!availableCountries?.length && !requestedCountries?.length && (
         <Typography>You already have access to this project</Typography>
       )}
       {showRequestedCountries && (
