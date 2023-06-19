@@ -163,7 +163,7 @@ export class SurveyEditor {
 
     // Work out what fields of the survey should be updated based on query params
     const fieldsToForceUpdate = {};
-    if (country_ids) {
+    if (country_ids !== undefined) {
       // Set the countries this survey is available in
       fieldsToForceUpdate.country_ids = getArrayQueryParameter(country_ids);
     }
@@ -182,19 +182,20 @@ export class SurveyEditor {
         fieldsToForceUpdate.permission_group_id = permissionGroup.id;
       }
     }
-    if (name) {
+    if (name !== undefined) {
       fieldsToForceUpdate.name = name;
     }
-    if (period_granularity) {
-      fieldsToForceUpdate.period_granularity = period_granularity;
+    if (period_granularity !== undefined) {
+      fieldsToForceUpdate.period_granularity =
+        period_granularity === '' ? null : period_granularity;
     }
-    if (requires_approval) {
+    if (requires_approval !== undefined) {
       fieldsToForceUpdate.requires_approval = requires_approval;
     }
-    if (can_repeat) {
+    if (can_repeat !== undefined) {
       fieldsToForceUpdate.can_repeat = can_repeat;
     }
-    if (integration_metadata) {
+    if (integration_metadata !== undefined) {
       fieldsToForceUpdate.integration_metadata = integration_metadata;
     }
     // Update the survey based on the fields to force update
