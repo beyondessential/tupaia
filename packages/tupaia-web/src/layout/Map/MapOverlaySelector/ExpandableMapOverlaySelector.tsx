@@ -33,6 +33,15 @@ const ArrowWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+const OverlayLibraryHeaderButton = styled(ExpandButton)`
+  font-size: 1.125rem;
+  text-align: center;
+  padding: 1rem;
+`;
+
+const OverlayLibraryHeader = styled.span`
+  width: 100%;
+`;
 
 const OverlayMenu = styled.div<{
   $expanded: boolean;
@@ -43,16 +52,9 @@ const OverlayMenu = styled.div<{
   position: absolute;
   bottom: 0;
   background-color: ${({ theme }) => theme.mobile.background};
-`;
-
-const OverlayLibraryHeaderButton = styled(ExpandButton)`
-  font-size: 1.125rem;
-  text-align: center;
-  padding: 1rem;
-`;
-
-const OverlayLibraryHeader = styled.span`
-  width: 100%;
+  ${OverlayLibraryHeaderButton} {
+    display: ${({ $expanded }) => ($expanded ? 'block' : 'none')};
+  }
 `;
 
 export const ExpandableMapOverlaySelector = () => {

@@ -13,6 +13,7 @@ import { useEntity } from '../../api/queries';
 import { TABS, TAB_PARAM } from '../../constants';
 import { Map } from '../Map';
 import { Sidebar } from '..';
+import { Footer } from './Footer';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -58,6 +59,11 @@ const TabPanel = styled(MuiTabPanel)`
   padding: 0;
 `;
 
+const DashboardPanel = styled(TabPanel)`
+  height: auto;
+  min-height: 100%;
+`;
+
 export const TabLayout = () => {
   const { entityCode } = useParams();
   const { data } = useEntity(entityCode);
@@ -79,9 +85,10 @@ export const TabLayout = () => {
           <Tab label="Map" value={TABS.MAP} />
         </TabWrapper>
         {data && <EntityName>{data.name}</EntityName>}
-        <TabPanel value={TABS.DASHBOARD}>
+        <DashboardPanel value={TABS.DASHBOARD}>
           <Sidebar />
-        </TabPanel>
+          <Footer />
+        </DashboardPanel>
         <TabPanel value={TABS.MAP}>
           <Map />
         </TabPanel>

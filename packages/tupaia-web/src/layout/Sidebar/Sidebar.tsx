@@ -28,9 +28,10 @@ const Panel = styled.div<{
   transition: width 0.5s ease, max-width 0.5s ease;
   width: 100%;
   overflow: visible;
-  height: 100%;
+  min-height: 100%;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
     width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
+    height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
       $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
