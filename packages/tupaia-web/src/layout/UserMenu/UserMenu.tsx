@@ -98,6 +98,7 @@ export const UserMenu = () => {
         <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
           Request country access
         </BaseMenuItem>,
+        Logout,
       ]
     : [ViewProjects];
 

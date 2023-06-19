@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { PROJECT_PARAM, TRANSPARENT_BLACK } from '../../constants';
+import { URL_SEARCH_PARAMS, TRANSPARENT_BLACK } from '../../constants';
 import { SingleLandingPage } from '../../types';
 import { PROJECT_ACCESS_TYPES, MODAL_ROUTES } from '../../constants';
 import {
@@ -96,7 +96,7 @@ export function MultiProjectLandingPage({
                 if (isLoggedIn) {
                   return (
                     <ProjectDeniedLink
-                      url={`?${PROJECT_PARAM}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                      url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
                     />
                   );
                 }

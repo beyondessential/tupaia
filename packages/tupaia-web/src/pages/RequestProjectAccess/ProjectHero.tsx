@@ -40,7 +40,7 @@ const LogoImage = styled.div<{
   width: 8.2rem;
   height: 4.7rem;
   background-color: ${({ theme }) => theme.palette.common.white};
-  background-image: ${({ src }) => `url(${src})`};
+  background-image: ${({ src }) => (src ? `url(${src})` : 'none')};
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -61,7 +61,7 @@ export const ProjectHero = ({ project }: ProjectHeroProps) => {
       <HeadingWrapper>
         <Heading>Requesting Project Access</Heading>
       </HeadingWrapper>
-      <HeroImage src={project?.imageUrl} aria-hidden={true}>
+      <HeroImage src={project?.imageUrl || ''} aria-hidden={true}>
         {project?.logoUrl && <LogoImage src={project.logoUrl} />}
       </HeroImage>
     </FullWidth>

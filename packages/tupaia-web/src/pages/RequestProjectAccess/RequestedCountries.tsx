@@ -8,8 +8,7 @@ import { Link, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { List } from '@material-ui/core';
 import { AuthModalButton, RouterButton } from '../../components';
-import { MODAL_ROUTES, PROJECT_PARAM } from '../../constants';
-import { TextButton } from '@tupaia/ui-components';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 
 const Text = styled(Typography)`
   margin-bottom: 1rem;
@@ -63,7 +62,7 @@ export const RequestedCountries = ({
       <AuthModalButton
         component={RouterButton}
         modal={MODAL_ROUTES.PROJECTS}
-        removeParams={[PROJECT_PARAM]}
+        searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
       >
         Back to projects
       </AuthModalButton>

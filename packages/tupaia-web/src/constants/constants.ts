@@ -37,5 +37,7 @@ export const FORM_FIELD_VALIDATION = {
   },
 };
 
-export const PROJECT_PARAM = 'project';
-export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
+export const URL_SEARCH_PARAMS = {
+  PROJECT: 'project',
+  PASSWORD_RESET_TOKEN: 'passwordResetToken',
+};

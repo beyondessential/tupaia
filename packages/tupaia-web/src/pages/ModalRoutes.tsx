@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { MODAL_ROUTES, PASSWORD_RESET_TOKEN_PARAM, PROJECT_PARAM } from '../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../constants';
 import {
   Projects,
   Login,
@@ -34,8 +34,8 @@ const modalViews = {
 };
 
 const modalParams = {
-  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: [PROJECT_PARAM],
-  [MODAL_ROUTES.RESET_PASSWORD]: [PASSWORD_RESET_TOKEN_PARAM],
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: [URL_SEARCH_PARAMS.PROJECT],
+  [MODAL_ROUTES.RESET_PASSWORD]: [URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN],
 };
 
 export const ModalRoutes = () => {

@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { PROJECT_PARAM } from '../../constants';
+import { URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen } from '../../components';
 import { useCountryAccessList, useProject } from '../../api/queries';
 import { ModalHeader } from './ModalHeader';
@@ -24,10 +24,10 @@ const ModalBody = styled.div`
 `;
 
 export const RequestProjectAccess = () => {
-  const [urlParams] = useSearchParams();
+  const [urlSearchParams] = useSearchParams();
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
 
-  const projectCode = urlParams.get(PROJECT_PARAM);
+  const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
 
   const { data: project, isLoading } = useProject(projectCode!);
 

@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-import { MODAL_ROUTES, PROJECT_PARAM, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 import { RouterButton } from '../../components';
 
 const Header = styled.div`
@@ -57,7 +57,10 @@ export const ModalHeader = () => {
         </TagLine>
       </HeaderContainer>
       <HeaderContainer>
-        <ProjectsButton modal={MODAL_ROUTES.PROJECTS} removeParams={[PROJECT_PARAM]}>
+        <ProjectsButton
+          modal={MODAL_ROUTES.PROJECTS}
+          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
+        >
           <ExploreIcon />
           View other projects
         </ProjectsButton>

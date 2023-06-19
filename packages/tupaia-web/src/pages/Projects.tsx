@@ -11,7 +11,7 @@ import {
   DEFAULT_URL,
   PROJECT_ACCESS_TYPES,
   TUPAIA_LIGHT_LOGO_SRC,
-  PROJECT_PARAM,
+  URL_SEARCH_PARAMS,
 } from '../constants';
 import { useProjects, useUser } from '../api/queries';
 import {
@@ -109,7 +109,7 @@ export const Projects = () => {
                 };
                 if (isLoggedIn) {
                   LINK.TEXT = 'Request Access';
-                  LINK.URL = `?${PROJECT_PARAM}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`;
+                  LINK.URL = `?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`;
                 }
                 return (
                   <LegacyProjectDeniedLink url={LINK.URL}>{LINK.TEXT}</LegacyProjectDeniedLink>

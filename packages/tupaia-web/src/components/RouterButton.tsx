@@ -5,7 +5,7 @@
 import React, { ReactNode } from 'react';
 import { Link, useLocation, LinkProps } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { useRemoveParams } from '../utils';
+import { removeUrlSearchParams } from '../utils';
 
 interface RouterLinkProps extends Record<string, any> {
   to: LinkProps['to'];
@@ -15,7 +15,7 @@ interface RouterLinkProps extends Record<string, any> {
 interface ModalButtonProps extends Record<string, any> {
   modal: string;
   children?: ReactNode;
-  removeParams?: string[]; // search params to remove from url when navigating to modal hash route
+  searchParamsToRemove?: string[]; // search params to remove from url when navigating to modal hash route
 }
 
 type RouterButtonProps = RouterLinkProps | ModalButtonProps;
@@ -23,12 +23,14 @@ type RouterButtonProps = RouterLinkProps | ModalButtonProps;
 export const RouterButton = ({
   to,
   modal,
-  removeParams,
+  searchParamsToRemove,
   children,
   ...props
 }: RouterButtonProps) => {
   const location = useLocation();
-  const link = modal ? { ...location, hash: modal, search: useRemoveParams(removeParams) } : to;
+  const link = modal
+    ? { ...location, hash: modal, search: removeUrlSearchParams(searchParamsToRemove) }
+    : to;
 
   return (
     <Button to={link} component={Link} {...props}>

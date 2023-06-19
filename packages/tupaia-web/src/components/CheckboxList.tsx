@@ -47,7 +47,7 @@ export const CheckboxList = ({ options, legend, name, required }: CheckboxListPr
           label={label}
           name={name}
           required={required}
-          isArray
+          helperText={null}
         />
       ))}
       {errors[name] && <Error>{errors[name].message}</Error>}

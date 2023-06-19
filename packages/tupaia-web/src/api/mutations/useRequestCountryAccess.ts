@@ -6,7 +6,7 @@
 import { useMutation } from 'react-query';
 import { post } from '../api';
 import { useSearchParams } from 'react-router-dom';
-import { PROJECT_PARAM } from '../../constants';
+import { URL_SEARCH_PARAMS } from '../../constants';
 import { CountryAccessListItem } from '../../types';
 
 type RequestCountryAccessParams = {
@@ -14,8 +14,8 @@ type RequestCountryAccessParams = {
   message?: string;
 };
 export const useRequestCountryAccess = () => {
-  const [urlParams] = useSearchParams();
-  const projectCode = urlParams.get(PROJECT_PARAM);
+  const [urlSearchParams] = useSearchParams();
+  const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
     ({ entityIds, message }: RequestCountryAccessParams) => {
       return post('requestCountryAccess', {

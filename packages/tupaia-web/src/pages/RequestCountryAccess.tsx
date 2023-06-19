@@ -4,14 +4,7 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  AuthModalButton,
-  CheckboxField,
-  CheckboxList,
-  Form,
-  LoadingScreen,
-  TextField,
-} from '../components';
+import { AuthModalButton, CheckboxList, Form, LoadingScreen, TextField } from '../components';
 import { useCountryAccessList } from '../api/queries';
 import { useRequestCountryAccess } from '../api/mutations';
 import styled from 'styled-components';

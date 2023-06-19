@@ -5,6 +5,8 @@
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
+import { Alert } from '@tupaia/ui-components';
 import { CountryAccessListItem, SingleProject } from '../../types';
 import {
   CheckboxList,
@@ -13,11 +15,9 @@ import {
   TextField,
   AuthModalButton,
   RouterButton,
-  Alert,
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
-import styled from 'styled-components';
-import { MODAL_ROUTES, PROJECT_PARAM } from '../../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 
 const Note = styled.p`
   text-align: left;
@@ -79,7 +79,7 @@ export const ProjectAccessForm = ({ availableCountries, projectName }: ProjectCo
         <AuthModalButton
           component={RouterButton}
           modal={MODAL_ROUTES.PROJECTS}
-          removeParams={[PROJECT_PARAM]}
+          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
         >
           Back to Projects
         </AuthModalButton>
