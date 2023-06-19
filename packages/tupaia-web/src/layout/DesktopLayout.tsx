@@ -4,8 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MapLayout } from './MapLayout';
-import { Sidebar } from '..';
+import { Sidebar, Map } from '.';
 
 const Container = styled.div`
   display: none;
@@ -18,15 +17,12 @@ const Container = styled.div`
 `;
 
 /**
- * This is the layout for the project/* view. This contains the map and the sidebar, as well as any overlays that are not auth overlays (i.e. not needed in landing pages)
+ * This is the layout Desktop map and dashboard. This contains the map and the sidebar, as well as any overlays that are not auth overlays (i.e. not needed in landing pages)
  */
 export const DesktopLayout = () => {
-  // Use these to fetch the project and any other entity info you might need
-  // const { projectCode, entityCode, '*': dashboardCode } = useParams();
-
   return (
     <Container>
-      <MapLayout />
+      <Map />
       <Sidebar />
     </Container>
   );

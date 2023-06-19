@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { ExpandableMapLegend, FixedMapLegend } from '.';
+import { ExpandableMapLegend } from './ExpandableMapLegend';
+import { FixedMapLegend } from './FixedMapLegend';
 
 export const MapLegend = () => {
   return (

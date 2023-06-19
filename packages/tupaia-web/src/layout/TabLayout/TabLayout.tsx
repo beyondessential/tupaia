@@ -10,7 +10,7 @@ import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
-import { TABS, TAB_PARAM, TILE_SETS } from '../../constants';
+import { TABS, TAB_PARAM } from '../../constants';
 import { Map } from '../Map';
 
 const Wrapper = styled.div`
@@ -80,7 +80,7 @@ export const TabLayout = () => {
         {data && <EntityName>{data.name}</EntityName>}
         <TabPanel value={TABS.DASHBOARD}>Dashboard</TabPanel>
         <TabPanel value={TABS.MAP}>
-          <Map activeTileSet={TILE_SETS[1]} />
+          <Map />
         </TabPanel>
       </TabContext>
     </Wrapper>

@@ -4,7 +4,7 @@
  */
 export { DesktopLayout } from './DesktopLayout';
 export { Layout } from './Layout';
-export { MapLayout } from './Map';
+export { Map } from './Map';
 export * from './ProjectCardList';
 export { Sidebar } from './Sidebar';
 export { TabLayout } from './TabLayout';
