@@ -86,11 +86,6 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   }
   const [firstTab] = Object.entries(workbook.Sheets);
   const [tabName, sheet] = firstTab;
-  if (tabName !== surveyName) {
-    throw new ImportValidationError(
-      `Spreadsheet tab "${tabName}" does not match given survey name "${surveyName}", are you sure this is the right spreadsheet?`,
-    );
-  }
 
   // Clear all existing data element/data group associations
   // We will re-create the ones required by the survey while processing its questions
