@@ -26,5 +26,8 @@ export const theme = createMuiTheme(
     shape: {
       borderRadius: 3,
     },
+    mobile: {
+      background: '#313236',
+    },
   },
 );

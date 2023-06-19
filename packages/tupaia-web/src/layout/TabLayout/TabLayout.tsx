@@ -11,7 +11,7 @@ import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
 import { TABS, TAB_PARAM, TILE_SETS } from '../../constants';
-import { Map } from '../Map/Map';
+import { Map } from '../Map';
 
 const Wrapper = styled.div`
   height: 100%;

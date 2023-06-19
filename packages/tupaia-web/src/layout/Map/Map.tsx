@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-map-components';
-import { TRANSPARENT_BLACK } from '../../constants';
-import { TILE_SETS } from '../../constants';
-import { MapWatermark } from '.';
+import { TRANSPARENT_BLACK, TILE_SETS } from '../../constants';
+import { MapWatermark } from './MapWatermark';
+import { MapLegend } from './MapLegend';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -58,6 +58,7 @@ export const Map = ({ activeTileSet }: MapProps) => {
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <ZoomControl position="bottomright" />
       </StyledMap>
+      <MapLegend />
       <MapWatermark />
     </MapContainer>
   );

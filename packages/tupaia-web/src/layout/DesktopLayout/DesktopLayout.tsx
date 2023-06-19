@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MapLayout, Sidebar } from '..';
+import { MapLayout } from './MapLayout';
+import { Sidebar } from '..';
 
 const Container = styled.div`
   display: none;

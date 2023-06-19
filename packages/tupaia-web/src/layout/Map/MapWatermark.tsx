@@ -14,7 +14,6 @@ import { Link } from '@material-ui/core';
 const Wrapper = styled.div`
   position: absolute;
   padding: 0 0 0.5rem 0.5rem;
-  width: 100%;
   bottom: 0;
   display: flex;
   align-items: center;
