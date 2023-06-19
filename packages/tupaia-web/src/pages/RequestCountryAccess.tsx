@@ -73,11 +73,11 @@ export const RequestCountryAccess = () => {
         </Typography>
       ) : (
         <Container>
-          {countriesWithAccessRequests.length > 0 && (
+          {countriesWithAccessRequests?.length > 0 && (
             <AccessRequestWrapper>
               <Typography>You have already requested access to the following countries:</Typography>
               <AccessRequestList>
-                {countriesWithAccessRequests.map(({ name }) => (
+                {countriesWithAccessRequests?.map(({ name }) => (
                   <li key={name}>{name}</li>
                 ))}
               </AccessRequestList>
@@ -89,15 +89,17 @@ export const RequestCountryAccess = () => {
             </AccessRequestWrapper>
           )}
           <Form formContext={formContext} onSubmit={requestCountryAccess as SubmitHandler<any>}>
-            <CheckboxList
-              legend="Which countries would you like access to?"
-              options={countriesWithoutAccess.map(({ name, id }) => ({
-                value: id,
-                label: name,
-              }))}
-              required
-              name="entityIds"
-            />
+            {countriesWithoutAccess?.length > 0 && (
+              <CheckboxList
+                legend="Which countries would you like access to?"
+                options={countriesWithoutAccess?.map(({ name, id }) => ({
+                  value: id,
+                  label: name,
+                }))}
+                required
+                name="entityIds"
+              />
+            )}
             <TextField name="message" label="Why would you like access?" type="text" />
             <AuthModalButton type="submit" disabled={isSubmitting}>
               Request access
