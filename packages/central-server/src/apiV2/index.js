@@ -128,6 +128,7 @@ import {
 } from './externalDatabaseConnections';
 import { CreateLandingPage, EditLandingPage } from './landingPages';
 import { DownloadFiles } from './DownloadFiles';
+import { suggestSurveyCode } from './suggestSurveyCode';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -251,6 +252,7 @@ apiV2.get(
 );
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 
 /**
  * POST routes

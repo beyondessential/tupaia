@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
@@ -29,6 +30,9 @@ const SURVEY_FIELDS = {
   code: {
     Header: 'Code',
     source: 'code',
+    editConfig: {
+      secondaryLabel: 'A short unique code. Suggestions appear when you enter a name.',
+    },
   },
   country_ids: {
     Header: 'Countries',
@@ -223,7 +227,8 @@ const SURVEY_COLUMNS = [
 const CREATE_CONFIG = {
   actionConfig: {
     editEndpoint: 'surveys',
-    fields: [...Object.values(SURVEY_FIELDS)],
+    // Custom component needed because on create we suggest the code
+    FieldsComponent: SurveyEditFields,
     initialValues: {
       can_repeat: false,
       requires_approval: false,
