@@ -50,21 +50,19 @@ const Header = styled.header<{
 const Inner = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 18.75rem;
+  height: 100%; ;
 `;
 
+// Placeholder for search bar
 const SearchBar = styled.div`
-  display: none;
-  width: 300px;
-  height: 40px;
-  left: 1010px;
-  top: 15px;
+  width: 100%;
+  height: 55%;
   background: #202124;
   border-radius: 43px;
-  margin-right: 30px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-    display: block;
-  }
+  margin-right: 1.2rem;
+  margin-left: 1.2rem;
 `;
 
 export const TopBar = () => {
