@@ -67,7 +67,7 @@ export const RequestProjectAccess = () => {
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
       {!availableCountries.length && !requestedCountries.length && (
-        <Typography>You already have access to this project.</Typography>
+        <Typography>You already have access to this project</Typography>
       )}
       {showRequestedCountries && (
         <RequestedCountries

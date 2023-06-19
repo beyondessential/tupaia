@@ -2,6 +2,8 @@ import React from 'react';
 import type { Preview } from '@storybook/react';
 import { AppProviders } from '../src/AppProviders';
 import ReactRouterDecorator from './ReactRouterDecorator';
+import ReactHookFormDecorator from './ReactHookFormDecorator';
+
 const preview: Preview = {
   parameters: {
     backgrounds: {
@@ -21,6 +23,7 @@ const preview: Preview = {
   },
   decorators: [
     ReactRouterDecorator,
+    ReactHookFormDecorator,
     Story => {
       return (
         <AppProviders>
