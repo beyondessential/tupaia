@@ -13,6 +13,7 @@ import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
 import { ProjectAccessForm } from './ProjectAccessForm';
 import { RequestedCountries } from './RequestedCountries';
+import { Typography } from '@material-ui/core';
 
 const ModalBody = styled.div`
   display: flex;
@@ -65,6 +66,9 @@ export const RequestProjectAccess = () => {
       <ModalHeader />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
+      {!availableCountries.length && !requestedCountries.length && (
+        <Typography>You already have access to this project.</Typography>
+      )}
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}
