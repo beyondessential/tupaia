@@ -3,14 +3,20 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';
+import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams } from 'react-router';
-import { Tabs } from './Tabs';
+import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
+import { TABS, TAB_PARAM, TILE_SETS } from '../../constants';
+import { Map } from '../Map/Map';
 
 const Wrapper = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
     display: none;
   }
@@ -25,13 +31,58 @@ const EntityName = styled(Typography).attrs({
   text-align: center;
 `;
 
+const TabWrapper = styled(MuiTabs).attrs({
+  variant: 'fullWidth',
+})`
+  .MuiTabs-indicator {
+    display: none;
+  }
+`;
+
+const Tab = styled(MuiTab).attrs({
+  disableRipple: true,
+})`
+  flex: 1;
+  color: ${({ theme }) => theme.palette.text.primary};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.palette.secondary.main : 'transparent'};
+  border: ${({ selected, theme }) =>
+    selected ? 'none' : `1px ${theme.palette.secondary.main} solid`};
+  text-transform: none;
+  opacity: 1;
+`;
+
+const TabPanel = styled(MuiTabPanel)`
+  height: 100%;
+  padding: 0;
+`;
+
 export const TabLayout = () => {
   const { entityCode } = useParams();
   const { data } = useEntity(entityCode);
+
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+
+  const selectedTab = urlSearchParams.get(TAB_PARAM) || TABS.DASHBOARD;
+
+  const setSelectedTab = (e: ChangeEvent<{}>, value: `${TABS}`) => {
+    urlSearchParams.set(TAB_PARAM, value);
+    setUrlSearchParams(urlSearchParams);
+  };
+
   return (
     <Wrapper>
-      {data && <EntityName>{data.name}</EntityName>}
-      <Tabs />
+      <TabContext value={selectedTab}>
+        <TabWrapper value={selectedTab} onChange={setSelectedTab}>
+          <Tab label="Dashboard" value={TABS.DASHBOARD} />
+          <Tab label="Map" value={TABS.MAP} />
+        </TabWrapper>
+        {data && <EntityName>{data.name}</EntityName>}
+        <TabPanel value={TABS.DASHBOARD}>Dashboard</TabPanel>
+        <TabPanel value={TABS.MAP}>
+          <Map activeTileSet={TILE_SETS[1]} />
+        </TabPanel>
+      </TabContext>
     </Wrapper>
   );
 };

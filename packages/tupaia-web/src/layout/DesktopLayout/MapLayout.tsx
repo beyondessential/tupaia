@@ -5,8 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { MapWatermark } from './MapWatermark';
-import { Map } from './Map';
+import { Map } from '../Map/Map';
 import { TILE_SETS } from '../../constants';
 import { TilePicker } from '@tupaia/ui-map-components';
 
@@ -30,11 +29,6 @@ const MapLegendWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   border-radius: 5px;
-`;
-
-const Watermark = styled(MapWatermark)`
-  margin-left: 2px;
-  margin-bottom: 16px;
 `;
 
 // Placeholder for MapOverlaySelector component
@@ -75,7 +69,6 @@ export const MapLayout = () => {
       <TilePickerWrapper>
         <TilePicker tileSets={TILE_SETS} activeTileSet={activeTileSet} onChange={onTileSetChange} />
       </TilePickerWrapper>
-      <Watermark />
     </Wrapper>
   );
 };

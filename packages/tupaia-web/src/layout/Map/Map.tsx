@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-map-components';
 import { TRANSPARENT_BLACK } from '../../constants';
 import { TILE_SETS } from '../../constants';
+import { MapWatermark } from '.';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -30,7 +31,6 @@ const StyledMap = styled(LeafletMap)`
     border: none;
     top: -50px;
     right: 3px;
-
     a {
       background: rgba(43, 45, 56, 0.8);
       box-shadow: none;
@@ -42,8 +42,12 @@ const StyledMap = styled(LeafletMap)`
         box-shadow: none;
       }
     }
+    @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+      display: none;
+    }
   }
 `;
+
 interface MapProps {
   activeTileSet: typeof TILE_SETS[0];
 }
@@ -54,6 +58,7 @@ export const Map = ({ activeTileSet }: MapProps) => {
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <ZoomControl position="bottomright" />
       </StyledMap>
+      <MapWatermark />
     </MapContainer>
   );
 };

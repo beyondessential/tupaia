@@ -18,7 +18,7 @@ const LogoWrapper = styled.div`
 const LogoImage = styled.img`
   max-height: 75%;
   width: auto;
-  max-width: 50px;
+  max-width: 70px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     max-width: 100%;
   }
