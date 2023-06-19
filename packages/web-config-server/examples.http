@@ -35,9 +35,4 @@ content-type: {{contentType}}
 ### Fetch Flutracking LGA % participants with fever and cough map overlay
 GET {{host}}/api/v1/measureData?endDate=2021-11-14&mapOverlayCode=AU_FLUTRACKING_LGA_Fever_And_Cough&organisationUnitCode=AU&projectCode=covidau&shouldShowAllParentCountryResults=true&startDate=2021-11-08
 content-type: {{contentType}}
-
-### Fetch country access list
-GET {{host}}/api/v1/countryAccessList
-content-type: {{contentType}}
-
-
+ 
