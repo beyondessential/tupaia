@@ -16,14 +16,17 @@ import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
   ReportRoute,
+  LegacyDashboardReportRoute,
   UserRoute,
   TempLogoutRoute,
+  ProjectRoute,
+
   DashboardsRequest,
   ReportRequest,
+  LegacyDashboardReportRequest,
   UserRequest,
   TempLogoutRequest,
   ProjectRequest,
-  ProjectRoute,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -36,6 +39,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
+    .get<LegacyDashboardReportRequest>('legacyDashboardReport/:reportCode', handleWith(LegacyDashboardReportRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))

@@ -5,6 +5,7 @@
 
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';
+export { LegacyDashboardReportRequest, LegacyDashboardReportRoute } from './LegacyDashboardReportRoute';
 export { UserRequest, UserRoute } from './UserRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 
