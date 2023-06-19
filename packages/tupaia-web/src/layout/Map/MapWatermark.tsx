@@ -51,14 +51,18 @@ const AttributionsWrapper = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 100%;
+  width: 100vw;
+  max-width: 100vw;
   padding: 0.5rem;
+  display: flex;
+  justify-content: center;
 `;
 
 const AttributionsContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 30rem;
   border-radius: 5px;
   background: white;
   opacity: 0.92;
