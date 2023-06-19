@@ -8,18 +8,18 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { TRANSPARENT_BLACK } from '../../constants';
+import { TRANSPARENT_BLACK, PANEL_GREY } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardDropdown } from './DashboardDropdown.tsx';
+import { DashboardCode, EntityCode, ProjectCode } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
 const MIN_SIDEBAR_WIDTH = 335;
-const PANEL_GREY = '#4a4b55';
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -84,14 +84,13 @@ const Chart = styled.div`
   padding: 1rem 1rem 75%;
 `;
 
-const useDashboardDropdown = (projectCode, entityCode) => {
+const useDashboardDropdown = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const { data: dashboardData, isLoading } = useDashboards(projectCode, entityCode);
-
-  const [selectedDashboardCode, setSelectedDashboardCode] = useState(null);
+  const [selectedDashboardCode, setSelectedDashboardCode] = useState<null | DashboardCode>(null);
 
   const dashboardOptions = dashboardData?.map(({ code, name }) => ({ value: code, label: name }));
 
-  const onChangeDashboard = code => {
+  const onChangeDashboard = (code: DashboardCode) => {
     setSelectedDashboardCode(code);
   };
 

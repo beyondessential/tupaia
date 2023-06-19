@@ -6,8 +6,7 @@ import React, { useState, useEffect } from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
-
-const PANEL_GREY = '#4a4b55';
+import { PANEL_GREY } from '../../constants';
 
 const Dropdown = styled(ButtonBase)`
   display: flex;
@@ -20,19 +19,25 @@ const Dropdown = styled(ButtonBase)`
   text-align: left;
 `;
 
-export const DashboardDropdown = ({ options = [], onChange, value }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+interface DashboardDropdownProps {
+  options?: { label: string; value: string }[];
+  onChange: (value: string) => void;
+  value: string | null;
+}
+
+export const DashboardDropdown = ({ options = [], onChange, value }: DashboardDropdownProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     if (options.length > 0) {
       onChange(options[0].value);
     }
   }, [JSON.stringify(options)]);
-  const handleClickListItem = event => {
+  const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (event, value) => {
+  const handleMenuItemClick = (_event: React.MouseEvent, value: string) => {
     setAnchorEl(null);
     onChange(value);
   };
