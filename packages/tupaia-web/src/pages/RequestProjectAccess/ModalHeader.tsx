@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import { MODAL_ROUTES, PROJECT_PARAM, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
@@ -49,13 +48,6 @@ const ProjectsButton = styled(RouterButton).attrs({
 `;
 
 export const ModalHeader = () => {
-  const [urlParams] = useSearchParams();
-  const remainingParams = [...urlParams.entries()].filter(e => e[0] !== PROJECT_PARAM);
-  const newUrlParams = new URLSearchParams(remainingParams);
-  const projectsUrl = `${MODAL_ROUTES.PROJECTS}${
-    remainingParams.length ? `?${newUrlParams.toString()}` : ''
-  }`;
-
   return (
     <Header>
       <HeaderContainer>
@@ -65,7 +57,7 @@ export const ModalHeader = () => {
         </TagLine>
       </HeaderContainer>
       <HeaderContainer>
-        <ProjectsButton to={projectsUrl}>
+        <ProjectsButton modal={MODAL_ROUTES.PROJECTS} removeParams={[PROJECT_PARAM]}>
           <ExploreIcon />
           View other projects
         </ProjectsButton>

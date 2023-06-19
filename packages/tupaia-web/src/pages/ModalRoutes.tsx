@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { MODAL_ROUTES } from '../constants';
+import { MODAL_ROUTES, PASSWORD_RESET_TOKEN_PARAM, PROJECT_PARAM } from '../constants';
 import {
   Projects,
   Login,
@@ -33,6 +33,11 @@ const modalViews = {
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
 };
 
+const modalParams = {
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: [PROJECT_PARAM],
+  [MODAL_ROUTES.RESET_PASSWORD]: [PASSWORD_RESET_TOKEN_PARAM],
+};
+
 export const ModalRoutes = () => {
   const { hash, closeModal } = useModal();
 
@@ -42,8 +47,12 @@ export const ModalRoutes = () => {
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
   const ModalView = modalViews[modal];
+
+  const onCloseModal = () => {
+    closeModal(modalParams[modal]);
+  };
   return (
-    <Modal isOpen={true} onClose={closeModal}>
+    <Modal isOpen={true} onClose={onCloseModal}>
       <ModalView />
     </Modal>
   );
