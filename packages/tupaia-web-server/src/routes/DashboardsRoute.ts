@@ -4,6 +4,7 @@
  */
 
 import { Request } from 'express';
+import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 
 export type DashboardsRequest = Request<any, any, any, any>;
@@ -28,7 +29,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       filter: { root_entity_code: baseEntity.code },
     });
 
-    return Promise.all(
+    const response = await Promise.all(
       dashboards.map(async (dash: any) => ({
         ...dash,
         items: await ctx.services.central.fetchResources(
@@ -36,5 +37,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         ),
       })),
     );
+
+    return camelcaseKeys(response, { deep: true });
   }
 }
