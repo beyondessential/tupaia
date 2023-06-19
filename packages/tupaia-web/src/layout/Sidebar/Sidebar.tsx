@@ -13,7 +13,7 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useEntity } from '../../api/queries';
+import { useDashboards, useEntity } from '../../api/queries';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -91,9 +91,12 @@ const Chart = styled.div`
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { entityCode } = useParams();
+  const { projectCode, entityCode } = useParams();
   const { data: entityData } = useEntity(entityCode);
+  const { data } = useDashboards(projectCode, entityCode);
   const bounds = entityData?.location?.bounds;
+
+  console.log('data', data);
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
