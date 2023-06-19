@@ -14,6 +14,7 @@ import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
+import { DashboardDropdown } from './DashboardDropdown.tsx';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -64,13 +65,6 @@ const Title = styled(Typography)`
   line-height: 1.4;
 `;
 
-const Dropdown = styled.div`
-  background: ${PANEL_GREY};
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-`;
-
 const ChartsContainer = styled.div<{
   $isExpanded: boolean;
 }>`
@@ -84,19 +78,42 @@ const ChartsContainer = styled.div<{
 
 const Chart = styled.div`
   position: relative;
+  text-align: center;
   background-color: ${TRANSPARENT_BLACK};
   // Use padding to maintain aspect ratio
-  padding-bottom: 80%;
+  padding: 1rem 1rem 75%;
 `;
 
+const useDashboardDropdown = (projectCode, entityCode) => {
+  const { data: dashboardData, isLoading } = useDashboards(projectCode, entityCode);
+
+  const [selectedDashboardCode, setSelectedDashboardCode] = useState(null);
+
+  const dashboardOptions = dashboardData?.map(({ code, name }) => ({ value: code, label: name }));
+
+  const onChangeDashboard = code => {
+    setSelectedDashboardCode(code);
+  };
+
+  const activeDashboard = dashboardData?.find(
+    dashboard => dashboard.code === selectedDashboardCode,
+  );
+
+  return { isLoading, dashboardOptions, onChangeDashboard, activeDashboard, selectedDashboardCode };
+};
+
 export const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const { projectCode, entityCode } = useParams();
+  const [isExpanded, setIsExpanded] = useState(false);
   const { data: entityData } = useEntity(entityCode);
-  const { data } = useDashboards(projectCode, entityCode);
+  const {
+    dashboardOptions,
+    onChangeDashboard,
+    activeDashboard,
+    selectedDashboardCode,
+  } = useDashboardDropdown(projectCode, entityCode);
   const bounds = entityData?.location?.bounds;
 
-  console.log('data', data);
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
@@ -115,18 +132,15 @@ export const Sidebar = () => {
           <Title variant="h3">Northern</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-        <Dropdown>General</Dropdown>
+        <DashboardDropdown
+          options={dashboardOptions}
+          value={selectedDashboardCode}
+          onChange={onChangeDashboard}
+        />
         <ChartsContainer $isExpanded={isExpanded}>
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
-          <Chart />
+          {activeDashboard?.items.map(({ childId }) => {
+            return <Chart key={childId}>DashboardId: {childId}</Chart>;
+          })}
         </ChartsContainer>
       </ScrollBody>
     </Panel>

@@ -23,24 +23,11 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       project['entity_hierarchy.name'],
       organisationUnitCode,
     );
-    // TODO: Add a better getAncestors function to the EntityApi
-    const entities = await ctx.services.entity.getRelationshipsOfEntity(
-      project['entity_hierarchy.name'],
-      project['entity.code'],
-      'descendant',
-      {},
-      {},
-      { filter: { type: baseEntity.type } },
-    );
-    console.log('entities', entities);
+
     const dashboards = await ctx.services.central.fetchResources('dashboards', {
-      filter: { root_entity_code: entities.ancestors },
+      filter: { root_entity_code: baseEntity.code },
     });
 
-    console.log('organisationUnitCode', organisationUnitCode);
-    console.log('projectCode', projectCode);
-    console.log('project', project);
-    console.log('baseEntity', baseEntity);
     return Promise.all(
       dashboards.map(async (dash: any) => ({
         ...dash,
