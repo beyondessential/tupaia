@@ -20,7 +20,7 @@ const Container = styled.div`
   display: flex;
   align-items: stretch;
   align-content: stretch;
-  overflow-y: auto;
+  overflow-y: auto; // allows scroll at mobile size
   height: 100%;
   svg.recharts-surface {
     overflow: visible;
