@@ -10,8 +10,11 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertCanImportSurvey } from './assertCanImportSurvey';
 import { importSurveysQuestions } from '../import/importSurveys';
 
-const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
-  const existingDataGroup = await models.dataGroup.findOne({ code: surveyCode });
+const validateSurveyServiceType = async (models, surveyId, serviceType) => {
+  if (!surveyId) return;
+  const survey = await models.survey.findById(surveyId);
+
+  const existingDataGroup = await models.dataGroup.findOne({ code: survey.code });
   if (existingDataGroup !== null) {
     if (serviceType !== existingDataGroup.service_type) {
       throw new ImportValidationError(
@@ -21,9 +24,17 @@ const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
   }
 };
 
-const updateOrCreateDataGroup = async (models, { surveyCode, serviceType, dhisInstanceCode }) => {
-  let dataGroup = await models.dataGroup.findOne({ code: surveyCode });
-  if (dataGroup !== null) {
+const updateOrCreateDataGroup = async (
+  models,
+  surveyId,
+  { surveyCode, serviceType, dhisInstanceCode },
+) => {
+  const survey = surveyId ? await models.survey.findById(surveyId) : null;
+  const existingDataGroup = survey ? await models.dataGroup.findOne({ code: survey.code }) : null;
+
+  let dataGroup = existingDataGroup;
+  if (existingDataGroup !== null) {
+    dataGroup.code = surveyCode;
     if (serviceType) dataGroup.service_type = serviceType;
     if (dhisInstanceCode) {
       dataGroup.config = { dhisInstanceCode };
@@ -110,7 +121,7 @@ export class SurveyEditor {
 
     // TODO: merge this with surveyChecker
     const importSurveysPermissionsChecker = async accessPolicy =>
-      assertCanImportSurvey(accessPolicy, transactingModels, surveyCode, country_ids);
+      assertCanImportSurvey(accessPolicy, transactingModels, surveyId, country_ids);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
@@ -124,11 +135,11 @@ export class SurveyEditor {
     const { dhisInstanceCode = '' } = dataGroupConfig;
 
     if (serviceType) {
-      await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+      await validateSurveyServiceType(transactingModels, surveyId, serviceType);
     }
 
     try {
-      await validateSurveyFields(transactingModels, {
+      await validateSurveyFields(transactingModels, surveyId, {
         code: surveyCode,
         serviceType,
         periodGranularity: period_granularity,
@@ -138,31 +149,28 @@ export class SurveyEditor {
       throw new ImportValidationError(error.message);
     }
 
-    const dataGroup = await updateOrCreateDataGroup(transactingModels, {
+    const dataGroup = await updateOrCreateDataGroup(transactingModels, surveyId, {
       surveyCode,
       serviceType,
       dhisInstanceCode,
     });
 
-    // Get/Create the survey
-    const survey = await transactingModels.survey.findOrCreate(
-      {
-        code: surveyCode,
-      },
-      {
-        // If no survey with that name is found, give it a code and public permissions
+    // Create the survey if it doesn't exist
+    const survey =
+      existingSurvey ??
+      (await transactingModels.survey.create({
         code: surveyCode,
         name,
         permission_group_id: permissionGroup.id,
         data_group_id: dataGroup.id,
-      },
-    );
-    if (!survey) {
-      throw new DatabaseError('Failed to find/create survey');
-    }
+      }));
 
     // Work out what fields of the survey should be updated based on query params
     const fieldsToForceUpdate = {};
+    if (surveyCode !== undefined) {
+      // Set the countries this survey is available in
+      fieldsToForceUpdate.code = surveyCode;
+    }
     if (country_ids !== undefined) {
       // Set the countries this survey is available in
       fieldsToForceUpdate.country_ids = getArrayQueryParameter(country_ids);

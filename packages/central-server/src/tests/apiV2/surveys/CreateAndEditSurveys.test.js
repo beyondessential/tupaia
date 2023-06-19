@@ -9,6 +9,7 @@ import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
+import path from 'path';
 import {
   resetTestData,
   upsertQuestion,
@@ -20,7 +21,6 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
-import path from 'path';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
