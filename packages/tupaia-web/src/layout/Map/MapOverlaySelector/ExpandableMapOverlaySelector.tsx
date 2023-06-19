@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
-import { Button } from '@tupaia/ui-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
+import { Button } from '@tupaia/ui-components';
 
 // Placeholder for MapOverlaySelector component
 const Wrapper = styled.div`
