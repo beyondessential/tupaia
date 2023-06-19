@@ -17,7 +17,6 @@ import {
   SURVEY_METADATA,
 } from './processSurveyMetadata';
 import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
-import { assertCanAddDataElementInGroup } from '../../../database';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
@@ -36,26 +35,16 @@ const updateOrCreateDataElementInGroup = async (
   dataGroup,
   surveyPermissionGroup,
 ) => {
-  const { service_type: serviceType, config } = dataGroup;
-
-  await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, {
-    service_type: serviceType,
-    config,
-  });
-
   let dataElement = await models.dataElement.findOne({ code: dataElementCode });
 
   if (dataElement === null) {
     // Data Element doesn't exist, create it
     dataElement = await models.dataElement.create({
       code: dataElementCode,
-      service_type: serviceType,
-      config,
-      // Use the permission group of the survey as the default for the data element
-      permission_groups: [surveyPermissionGroup.name],
+      service_type: 'tupaia', // set a default value for now, will update in a second pass in updateDataElementsConfig()
+      config: {}, // set a default value for now, will update in a second pass in updateDataElementsConfig()
+      permission_groups: [surveyPermissionGroup.name], // Use the permission group of the survey as the default for the data element
     });
-    dataElement.sanitizeConfig();
-    await dataElement.save();
 
     await models.dataElementDataGroup.findOrCreate({
       data_element_id: dataElement.id,

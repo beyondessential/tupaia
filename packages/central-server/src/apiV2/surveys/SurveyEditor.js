@@ -9,6 +9,7 @@ import { getArrayQueryParameter } from '../utilities';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertCanImportSurvey } from './assertCanImportSurvey';
 import { importSurveysQuestions } from '../import/importSurveys';
+import { assertCanAddDataElementInGroup } from './assertCanAddDataElementInGroup';
 
 const validateSurveyServiceType = async (models, surveyId, serviceType) => {
   if (!surveyId) return;
@@ -21,6 +22,32 @@ const validateSurveyServiceType = async (models, surveyId, serviceType) => {
         `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to import with Data service: ${serviceType}.`,
       );
     }
+  }
+};
+
+/**
+ * Given a data group, sets the config for those data elements to match (service type / dhis instance code etc).
+ */
+const updateDataElementsConfig = async (models, dataGroup) => {
+  const { service_type: serviceType, config } = dataGroup;
+
+  const dataElementIds = (
+    await models.dataElementDataGroup.find({ data_group_id: dataGroup.id })
+  ).map(row => row.data_element_id);
+
+  for (const dataElementId of dataElementIds) {
+    const dataElement = await models.dataElement.findById(dataElementId);
+
+    await assertCanAddDataElementInGroup(models, dataElement.code, dataGroup.code, {
+      service_type: serviceType,
+      config,
+    });
+
+    dataElement.service_type = serviceType;
+    dataElement.config = config;
+
+    dataElement.sanitizeConfig();
+    await dataElement.save();
   }
 };
 
@@ -221,5 +248,14 @@ export class SurveyEditor {
         permissionGroup,
       });
     }
+
+    /*
+     * importSurveyQuestions() will upsert data elements with default config (tupaia data service).
+     * We will then need to update these data elements to have the correct config.
+     *   - The responsibility lays on SurveyEditor rather than importSurveyQuestions because
+     *     importSurveyQuestions only really cares about survey screens and questions, and runs when these change,
+     *     whereas SurveyEditor can persist a change to the data service without changing the questions of the survey.
+     */
+    await updateDataElementsConfig(transactingModels, dataGroup);
   }
 }
