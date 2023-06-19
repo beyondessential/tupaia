@@ -5,7 +5,7 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MODAL_ROUTES } from '../constants';
-import { removeParamsFromSearch } from '.';
+import { useRemoveParams } from '.';
 
 export const useModal = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export const useModal = () => {
   function closeModal(urlParamsToRemove?: string[]) {
     navigate({
       ...location,
-      search: removeParamsFromSearch(urlParamsToRemove),
+      search: useRemoveParams(urlParamsToRemove),
     });
   }
   return { hash: hash.substring(1), closeModal, navigateToModal };

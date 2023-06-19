@@ -49,7 +49,7 @@ export const ModalRoutes = () => {
   const ModalView = modalViews[modal];
 
   const onCloseModal = () => {
-    closeModal(modalParams[modal]);
+    closeModal(modalParams[modal as keyof typeof modalParams]);
   };
   return (
     <Modal isOpen={true} onClose={onCloseModal}>
