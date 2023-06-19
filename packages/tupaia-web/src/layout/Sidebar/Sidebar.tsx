@@ -15,7 +15,6 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardDropdown } from './DashboardDropdown.tsx';
-import { DashboardCode, EntityCode, ProjectCode } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -84,34 +83,14 @@ const Chart = styled.div`
   padding: 1rem 1rem 75%;
 `;
 
-const useDashboardDropdown = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
-  const { data: dashboardData, isLoading } = useDashboards(projectCode, entityCode);
-  const [selectedDashboardCode, setSelectedDashboardCode] = useState<null | DashboardCode>(null);
-
-  const dashboardOptions = dashboardData?.map(({ code, name }) => ({ value: code, label: name }));
-
-  const onChangeDashboard = (code: DashboardCode) => {
-    setSelectedDashboardCode(code);
-  };
-
-  const activeDashboard = dashboardData?.find(
-    dashboard => dashboard.code === selectedDashboardCode,
-  );
-
-  return { isLoading, dashboardOptions, onChangeDashboard, activeDashboard, selectedDashboardCode };
-};
-
 export const Sidebar = () => {
-  const { projectCode, entityCode } = useParams();
+  const { projectCode, entityCode, '*': dashboardCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: entityData } = useEntity(entityCode);
-  const {
-    dashboardOptions,
-    onChangeDashboard,
-    activeDashboard,
-    selectedDashboardCode,
-  } = useDashboardDropdown(projectCode, entityCode);
   const bounds = entityData?.location?.bounds;
+
+  const { data: dashboardData } = useDashboards(projectCode, entityCode);
+  const activeDashboard = dashboardData?.find(dashboard => dashboard.code === dashboardCode);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -131,11 +110,7 @@ export const Sidebar = () => {
           <Title variant="h3">Northern</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-        <DashboardDropdown
-          options={dashboardOptions}
-          value={selectedDashboardCode}
-          onChange={onChangeDashboard}
-        />
+        <DashboardDropdown />
         <ChartsContainer $isExpanded={isExpanded}>
           {activeDashboard?.items.map(({ childId }) => {
             return <Chart key={childId}>DashboardId: {childId}</Chart>;

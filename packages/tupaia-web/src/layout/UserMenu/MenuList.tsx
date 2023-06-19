@@ -6,7 +6,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Button, ListItem, ListItemProps } from '@material-ui/core';
-import { RouterLink } from '../../components/RouterButton';
+import { RouterLink } from '../../components';
 
 /**
  * Menulist is a component that displays a list of menu items for the hamburger menu

@@ -2,11 +2,14 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useLocation, Link, useParams } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { PANEL_GREY } from '../../constants';
+import { useDashboards } from '../../api/queries';
+import { DashboardCode } from '../../types';
 
 const Dropdown = styled(ButtonBase)`
   display: flex;
@@ -19,34 +22,30 @@ const Dropdown = styled(ButtonBase)`
   text-align: left;
 `;
 
-interface DashboardDropdownProps {
-  options?: { label: string; value: string }[];
-  onChange: (value: string) => void;
-  value: string | null;
-}
-
-export const DashboardDropdown = ({ options = [], onChange, value }: DashboardDropdownProps) => {
+export const DashboardDropdown = () => {
+  const location = useLocation();
+  const { projectCode, entityCode, '*': dashboardCode } = useParams();
+  const { data: dashboardData } = useDashboards(projectCode, entityCode);
+  const options = dashboardData?.map(({ code, name }) => ({ value: code, label: name }));
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  useEffect(() => {
-    if (options.length > 0) {
-      onChange(options[0].value);
-    }
-  }, [JSON.stringify(options)]);
+  const getLink = (code: DashboardCode) => {
+    return { ...location, pathname: `/${projectCode}/${entityCode}/${code}` };
+  };
+
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (_event: React.MouseEvent, value: string) => {
+  const handleMenuItemClick = () => {
     setAnchorEl(null);
-    onChange(value);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const selectedOption = options.find(({ value: optionValue }) => optionValue === value);
+  const selectedOption = options?.find(({ value: optionValue }) => optionValue === dashboardCode);
   return (
     <div>
       <Dropdown onClick={handleClickListItem}>
@@ -60,11 +59,12 @@ export const DashboardDropdown = ({ options = [], onChange, value }: DashboardDr
         onClose={handleClose}
         variant="menu"
       >
-        {options.map(({ label, value: optionValue }) => (
+        {options?.map(({ label, value: optionValue }) => (
           <MenuItem
             key={optionValue}
-            selected={optionValue === value}
-            onClick={event => handleMenuItemClick(event, optionValue)}
+            to={getLink(optionValue)}
+            onClick={handleMenuItemClick}
+            component={Link}
           >
             {label}
           </MenuItem>
