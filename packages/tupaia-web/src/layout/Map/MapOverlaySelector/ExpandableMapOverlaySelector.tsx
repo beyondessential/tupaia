@@ -62,15 +62,15 @@ export const ExpandableMapOverlaySelector = () => {
   return (
     <Wrapper>
       {!expanded && (
-        <ExpandButton onClick={toggleExpanded}>
+        <ExpandButton onClick={toggleExpanded} aria-controls="overlay-selector">
           Map Overlay
           <ArrowWrapper>
             <ArrowForwardIos />
           </ArrowWrapper>
         </ExpandButton>
       )}
-      <OverlayMenu $expanded={expanded}>
-        <OverlayLibraryHeaderButton onClick={toggleExpanded}>
+      <OverlayMenu $expanded={expanded} aria-expanded={expanded} id="overlay-selector">
+        <OverlayLibraryHeaderButton onClick={toggleExpanded} aria-controls="overlay-selector">
           <ArrowWrapper>
             <ArrowBackIos />
           </ArrowWrapper>
