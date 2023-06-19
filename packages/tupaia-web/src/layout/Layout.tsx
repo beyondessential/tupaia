@@ -20,11 +20,13 @@ const Container = styled.div`
   display: flex;
   align-items: stretch;
   align-content: stretch;
-  overflow-y: hidden;
+  overflow-y: auto;
   height: 100%;
-
   svg.recharts-surface {
     overflow: visible;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    overflow-y: hidden;
   }
 `;
 

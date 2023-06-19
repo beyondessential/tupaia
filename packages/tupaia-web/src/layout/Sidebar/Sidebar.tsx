@@ -26,17 +26,23 @@ const Panel = styled.div<{
   position: relative;
   background-color: ${TRANSPARENT_BLACK};
   transition: width 0.5s ease, max-width 0.5s ease;
-  width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
-  min-width: ${MIN_SIDEBAR_WIDTH}px;
-  max-width: ${({ $isExpanded }) =>
-    $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+  width: 100%;
   overflow: visible;
+  height: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
+    min-width: ${MIN_SIDEBAR_WIDTH}px;
+    max-width: ${({ $isExpanded }) =>
+      $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+  }
 `;
 
 const ScrollBody = styled.div`
   position: relative;
   height: 100%;
-  overflow: auto;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    overflow: auto;
+  }
 `;
 
 const TitleBar = styled.div`
@@ -49,6 +55,9 @@ const TitleBar = styled.div`
   background-color: ${TRANSPARENT_BLACK};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    display: none;
+  }
 `;
 
 const ExportButton = styled(Button).attrs({
@@ -82,6 +91,12 @@ const ChartsContainer = styled.div<{
   padding: ${({ $isExpanded }) => ($isExpanded ? '0 0.5rem 0.5rem' : '0 0 0.5rem 0')};
 `;
 
+const DashboardImageContainer = styled.div`
+  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    display: none;
+  }
+`;
+
 const Chart = styled.div`
   position: relative;
   background-color: ${TRANSPARENT_BLACK};
@@ -103,11 +118,13 @@ export const Sidebar = () => {
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
       <ScrollBody>
         <Breadcrumbs />
-        {bounds ? (
-          <StaticMap polygonBounds={bounds} />
-        ) : (
-          <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
-        )}
+        <DashboardImageContainer>
+          {bounds ? (
+            <StaticMap polygonBounds={bounds} />
+          ) : (
+            <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
+          )}
+        </DashboardImageContainer>
         <TitleBar>
           <Title variant="h3">Northern</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>

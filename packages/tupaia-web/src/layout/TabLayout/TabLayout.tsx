@@ -12,6 +12,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
 import { TABS, TAB_PARAM } from '../../constants';
 import { Map } from '../Map';
+import { Sidebar } from '..';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -78,7 +79,9 @@ export const TabLayout = () => {
           <Tab label="Map" value={TABS.MAP} />
         </TabWrapper>
         {data && <EntityName>{data.name}</EntityName>}
-        <TabPanel value={TABS.DASHBOARD}>Dashboard</TabPanel>
+        <TabPanel value={TABS.DASHBOARD}>
+          <Sidebar />
+        </TabPanel>
         <TabPanel value={TABS.MAP}>
           <Map />
         </TabPanel>

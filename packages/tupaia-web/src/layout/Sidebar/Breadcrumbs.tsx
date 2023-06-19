@@ -13,4 +13,7 @@ export const Breadcrumbs = styled.div`
   max-width: 220px;
   background: #efefefaa;
   height: 15px;
+  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+    display: none;
+  }
 `;
