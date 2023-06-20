@@ -58,7 +58,12 @@ const onChangeUpdateDataElement = async (
   switch (changeType) {
     case 'update': {
       const { code, data_element_id: dataElementId } = newRecord;
-      return models.dataElement.updateById(dataElementId, { code });
+      const { code: oldCode } = oldRecord;
+      // if the code has changed, update the associated data element (if any)
+      if (code !== oldCode && dataElementId) {
+        return models.dataElement.updateById(dataElementId, { code });
+      }
+      return null;
     }
     case 'delete': {
       const { data_element_id: dataElementId } = oldRecord;
