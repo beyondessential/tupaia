@@ -2,9 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { MapLayout, Sidebar } from '../layout';
+import { useUser } from '../api/queries';
+import { useModal } from '../utils';
+import { MODAL_ROUTES } from '../constants';
 
 const Container = styled.div`
   display: flex;
@@ -17,9 +20,18 @@ const Container = styled.div`
  * This is the layout for the project/* view. This contains the map and the sidebar, as well as any overlays that are not auth overlays (i.e. not needed in landing pages)
  */
 export const Project = () => {
-  // Use these to fetch the project and any other entity info you might need
-  // const { projectCode, entityCode, '*': dashboardCode } = useParams();
+  const { navigateToModal } = useModal();
+  const { isLoggedIn } = useUser();
 
+  // on first load, if user is not logged in, show the login modal
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      if (!isLoggedIn) {
+        navigateToModal(MODAL_ROUTES.LOGIN);
+      }
+    };
+    checkLoginStatus();
+  }, []);
   return (
     <Container>
       <MapLayout />
