@@ -4,6 +4,7 @@
  */
 
 import styled from 'styled-components';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 export const Breadcrumbs = styled.div`
   position: absolute;
@@ -14,4 +15,7 @@ export const Breadcrumbs = styled.div`
   background: #efefefaa;
   height: 15px;
   z-index: 1;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
 `;

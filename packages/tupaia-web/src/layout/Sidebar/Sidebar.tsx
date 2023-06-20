@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
@@ -25,17 +26,24 @@ const Panel = styled.div<{
   position: relative;
   background-color: ${({ theme }) => theme.panel.background};
   transition: width 0.5s ease, max-width 0.5s ease;
-  width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
-  min-width: ${MIN_SIDEBAR_WIDTH}px;
-  max-width: ${({ $isExpanded }) =>
-    $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+  width: 100%;
   overflow: visible;
+  min-height: 100%;
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
+    height: 100%;
+    min-width: ${MIN_SIDEBAR_WIDTH}px;
+    max-width: ${({ $isExpanded }) =>
+      $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+  }
 `;
 
 const ScrollBody = styled.div`
   position: relative;
   height: 100%;
-  overflow: auto;
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    overflow: auto;
+  }
 `;
 
 const TitleBar = styled.div`
@@ -48,6 +56,9 @@ const TitleBar = styled.div`
   background-color: ${({ theme }) => theme.panel.background};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
 `;
 
 const ExportButton = styled(Button).attrs({
@@ -72,6 +83,12 @@ const ChartsContainer = styled.div<{
   column-gap: 0.5rem;
   row-gap: 0.5rem;
   padding: ${({ $isExpanded }) => ($isExpanded ? '0 0.5rem 0.5rem' : '0 0 0.5rem 0')};
+`;
+
+const DashboardImageContainer = styled.div`
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
 `;
 
 const Chart = styled.div`
@@ -100,11 +117,13 @@ export const Sidebar = () => {
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
       <ScrollBody>
         <Breadcrumbs />
-        {bounds ? (
-          <StaticMap polygonBounds={bounds} />
-        ) : (
-          <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
-        )}
+        <DashboardImageContainer>
+          {bounds ? (
+            <StaticMap polygonBounds={bounds} />
+          ) : (
+            <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
+          )}
+        </DashboardImageContainer>
         <TitleBar>
           <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>

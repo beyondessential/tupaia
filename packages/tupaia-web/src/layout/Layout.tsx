@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { EnvBanner } from '@tupaia/ui-components';
 import { TopBar } from './TopBar';
+import { MOBILE_BREAKPOINT } from '../constants';
 
 /**
  * This is the layout for the entire app, which contains the top bar and the main content. This is used to wrap the entire app content
@@ -20,11 +21,13 @@ const Container = styled.div`
   display: flex;
   align-items: stretch;
   align-content: stretch;
-  overflow-y: hidden;
+  overflow-y: auto; // allows scroll at mobile size
   height: 100%;
-
   svg.recharts-surface {
     overflow: visible;
+  }
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    overflow-y: hidden;
   }
 `;
 

@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link, Typography, List } from '@material-ui/core';
 import { SingleLandingPage } from '../../types';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Footer = styled.footer`
   margin-top: auto;
@@ -18,7 +19,7 @@ const Footer = styled.footer`
 const FooterContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     flex-direction: row;
   }
 `;
@@ -47,7 +48,7 @@ const FooterContentContainer = styled.div`
   & + & {
     margin-top: 1em;
   }
-  @media screen and (min-width: ${props => props.theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: 30%;
     & + & {
       margin-left: 4em;
