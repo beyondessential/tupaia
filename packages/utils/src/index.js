@@ -7,7 +7,6 @@ export * from './array';
 export { DEFAULT_BINARY_OPTIONS, DEFAULT_BINARY_OPTIONS_OBJECT } from './constant';
 export * from './compare';
 export * from './authHeaderBuilders';
-export * from './cypress';
 export { utcMoment } from './datetime';
 export * from './legacyDhis';
 export * from './errors';
