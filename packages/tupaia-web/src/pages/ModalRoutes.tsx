@@ -4,13 +4,14 @@
  */
 
 import React from 'react';
-import { MODAL_ROUTES } from '../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../constants';
 import {
   Projects,
   Login,
   Register,
   VerifyEmailResend,
-  RequestAccessForm,
+  RequestProjectAccess,
+  RequestCountryAccess,
   ForgotPassword,
   ResetPassword,
 } from '.';
@@ -25,10 +26,16 @@ const modalViews = {
   [MODAL_ROUTES.PROJECTS]: Projects,
   [MODAL_ROUTES.LOGIN]: Login,
   [MODAL_ROUTES.REGISTER]: Register,
+  [MODAL_ROUTES.REQUEST_COUNTRY_ACCESS]: RequestCountryAccess,
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
   [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPassword,
   [MODAL_ROUTES.RESET_PASSWORD]: ResetPassword,
-  [MODAL_ROUTES.REQUEST_ACCESS]: RequestAccessForm,
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
+};
+
+const modalParams = {
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: [URL_SEARCH_PARAMS.PROJECT],
+  [MODAL_ROUTES.RESET_PASSWORD]: [URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN],
 };
 
 export const ModalRoutes = () => {
@@ -40,8 +47,12 @@ export const ModalRoutes = () => {
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
   const ModalView = modalViews[modal];
+
+  const onCloseModal = () => {
+    closeModal(modalParams[modal as keyof typeof modalParams]);
+  };
   return (
-    <Modal isOpen={true} onClose={closeModal}>
+    <Modal isOpen={true} onClose={onCloseModal}>
       <ModalView />
     </Modal>
   );

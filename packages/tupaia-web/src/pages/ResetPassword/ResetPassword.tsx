@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { AuthModalBody, LoadingScreen } from '../../components';
 import { OneTimeLogin } from './OneTimeLogin';
 import { ResetPasswordForm } from './ResetPasswordForm';
-import { PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
+import { URL_SEARCH_PARAMS } from '../../constants';
 import { useOneTimeLogin } from '../../api/mutations';
 
 const ModalBody = styled(AuthModalBody)`
@@ -16,9 +16,9 @@ const ModalBody = styled(AuthModalBody)`
 `;
 
 export const ResetPassword = () => {
-  const [urlParams] = useSearchParams();
+  const [urlSearchParams] = useSearchParams();
   const { mutate: attemptLogin, isError, isLoading, isSuccess } = useOneTimeLogin();
-  const token = urlParams.get(PASSWORD_RESET_TOKEN_PARAM);
+  const token = urlSearchParams.get(URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN);
 
   const handleLogin = () => {
     attemptLogin({ token } as {

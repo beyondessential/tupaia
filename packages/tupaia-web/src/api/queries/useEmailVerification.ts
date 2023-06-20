@@ -7,8 +7,8 @@ import { get } from '../api';
 import { useSearchParams } from 'react-router-dom';
 
 export const useEmailVerification = () => {
-  const [urlParams] = useSearchParams();
-  const verifyEmailToken = urlParams.get('verifyEmailToken');
+  const [urlSearchParams] = useSearchParams();
+  const verifyEmailToken = urlSearchParams.get('verifyEmailToken');
 
   return useQuery(
     ['user', verifyEmailToken],

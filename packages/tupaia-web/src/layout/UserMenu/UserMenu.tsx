@@ -87,12 +87,22 @@ export const UserMenu = () => {
       Change password
     </BaseMenuItem>
   );
+
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn
     ? [VisitMainSite, ChangePassword, Logout]
     : [VisitMainSite];
 
-  const baseMenuItems = isLoggedIn ? [ViewProjects, ChangePassword, Logout] : [ViewProjects];
+  const baseMenuItems = isLoggedIn
+    ? [
+        ViewProjects,
+        ChangePassword,
+        <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
+          Request country access
+        </BaseMenuItem>,
+        Logout,
+      ]
+    : [ViewProjects];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 

@@ -3,4 +3,4 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export { ResetPassword } from './ResetPassword';
+export { RequestProjectAccess } from './RequestProjectAccess';

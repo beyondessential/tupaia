@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
 import { AuthModalButton, Form, TextField } from '../../components';
 import { useResetPassword } from '../../api/mutations';
-import { FORM_FIELD_VALIDATION, PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
+import { FORM_FIELD_VALIDATION, URL_SEARCH_PARAMS } from '../../constants';
 import { useSearchParams } from 'react-router-dom';
 
 const StyledForm = styled(Form)`
@@ -23,13 +23,13 @@ const SuccessMessage = styled.p`
 `;
 
 export const ResetPasswordForm = () => {
-  const [urlParams] = useSearchParams();
+  const [urlSearchParams] = useSearchParams();
   const formContext = useForm({
     mode: 'onChange',
   });
   const { isValid } = formContext.formState;
   const { mutate: resetPassword, isLoading, isError, error, isSuccess } = useResetPassword();
-  const passwordResetToken = urlParams.get(PASSWORD_RESET_TOKEN_PARAM);
+  const passwordResetToken = urlSearchParams.get(URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN);
 
   return (
     <>
