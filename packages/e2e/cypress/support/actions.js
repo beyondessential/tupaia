@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { requireCyEnv } from '@tupaia/utils';
+import { requireCyEnv } from './utils';
 
 export const submitLoginForm = () => {
   // eslint-disable-next-line cypress/no-force
