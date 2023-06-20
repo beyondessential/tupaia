@@ -33,3 +33,8 @@ content-type: {{contentType}}
 # @name dashboards
 GET {{host}}/dashboards HTTP/1.1
 content-type: {{contentType}}
+
+
+### Fetch country access list
+GET {{host}}/countryAccessList
+content-type: {{contentType}}

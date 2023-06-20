@@ -4,4 +4,5 @@
  */
 
 export { getProjectAccessType } from './getProjectAccessType';
+export { removeUrlSearchParams } from './removeUrlSearchParams';
 export { useModal } from './useModal';

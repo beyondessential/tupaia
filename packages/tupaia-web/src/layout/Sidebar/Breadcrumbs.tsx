@@ -14,6 +14,7 @@ export const Breadcrumbs = styled.div`
   max-width: 220px;
   background: #efefefaa;
   height: 15px;
+  z-index: 1;
   @media screen and (max-width: ${MOBILE_THRESHOLD}) {
     display: none;
   }
