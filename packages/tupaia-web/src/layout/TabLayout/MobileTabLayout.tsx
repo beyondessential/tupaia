@@ -10,7 +10,7 @@ import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../api/queries';
-import { MOBILE_THRESHOLD, TABS, URL_SEARCH_PARAMS } from '../../constants';
+import { MOBILE_BREAKPOINT, TABS, URL_SEARCH_PARAMS } from '../../constants';
 import { Map } from '../Map';
 import { Sidebar } from '..';
 import { Footer } from './Footer';
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
@@ -64,7 +64,7 @@ const DashboardPanel = styled(TabPanel)`
   min-height: 100%;
 `;
 
-export const TabLayout = () => {
+export const MobileTabLayout = () => {
   const { entityCode } = useParams();
   const { data } = useEntity(entityCode);
 

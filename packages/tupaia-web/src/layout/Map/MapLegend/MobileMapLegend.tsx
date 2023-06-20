@@ -6,13 +6,13 @@ import React, { useState } from 'react';
 import { Close, ExpandLess } from '@material-ui/icons';
 import { Button, IconButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import { MOBILE_THRESHOLD } from '../../../constants';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 
-const ExpandableMapLegendWrapper = styled.div`
+const Wrapper = styled.div`
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
@@ -44,13 +44,13 @@ const CloseButton = styled(IconButton).attrs({
   right: 0;
 `;
 
-export const ExpandableMapLegend = () => {
+export const MobileMapLegend = () => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
   return (
-    <ExpandableMapLegendWrapper>
+    <Wrapper>
       {expanded ? (
         <ExpandedLegend>
           <CloseButton onClick={toggleExpanded} aria-label="Close legend">
@@ -63,6 +63,6 @@ export const ExpandableMapLegend = () => {
           Map Legend
         </MapLegendExpandButton>
       )}
-    </ExpandableMapLegendWrapper>
+    </Wrapper>
   );
 };

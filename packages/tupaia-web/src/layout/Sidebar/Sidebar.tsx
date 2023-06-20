@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { MOBILE_THRESHOLD } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
@@ -29,7 +29,7 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
@@ -41,7 +41,7 @@ const Panel = styled.div<{
 const ScrollBody = styled.div`
   position: relative;
   height: 100%;
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     overflow: auto;
   }
 `;
@@ -56,7 +56,7 @@ const TitleBar = styled.div`
   background-color: ${({ theme }) => theme.panel.background};
   z-index: 1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
@@ -86,7 +86,7 @@ const ChartsContainer = styled.div<{
 `;
 
 const DashboardImageContainer = styled.div`
-  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;

@@ -4,14 +4,14 @@
  */
 
 import React from 'react';
-import { FixedMapOverlaySelector } from './FixedMapOverlaySelector';
-import { ExpandableMapOverlaySelector } from './ExpandableMapOverlaySelector';
+import { DesktopMapOverlaySelector } from './DesktopMapOverlaySelector';
+import { MobileMapOverlaySelector } from './MobileMapOverlaySelector';
 
 export const MapOverlaySelector = () => {
   return (
     <>
-      <ExpandableMapOverlaySelector />
-      <FixedMapOverlaySelector />
+      <MobileMapOverlaySelector />
+      <DesktopMapOverlaySelector />
     </>
   );
 };

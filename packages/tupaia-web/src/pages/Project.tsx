@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { DesktopLayout, TabLayout } from '../layout';
+import { DesktopLayout, MobileTabLayout } from '../layout';
 
 /**
  * This is the layout for the project/* view. This contains the map and the sidebar, as well as any overlays that are not auth overlays (i.e. not needed in landing pages)
@@ -14,7 +14,7 @@ export const Project = () => {
 
   return (
     <>
-      <TabLayout />
+      <MobileTabLayout />
       <DesktopLayout />
       {/** This is where SessionExpiredDialog and any other overlays would go, as well as loading screen */}
     </>

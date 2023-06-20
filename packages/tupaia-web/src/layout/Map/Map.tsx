@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
-import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_THRESHOLD } from '../../constants';
+import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
@@ -46,7 +46,7 @@ const StyledMap = styled(LeafletMap)`
         box-shadow: none;
       }
     }
-    @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+    @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
       display: none;
     }
   }
@@ -57,7 +57,7 @@ const TilePickerWrapper = styled.div`
   right: 0;
   bottom: 0;
   height: 100%;
-  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;

@@ -8,7 +8,7 @@ import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
 import { useParams } from 'react-router';
-import { MOBILE_THRESHOLD, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { MOBILE_BREAKPOINT, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -39,7 +39,7 @@ const Header = styled.header<{
   li {
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${TOP_BAR_HEIGHT}px;
     min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;

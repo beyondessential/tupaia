@@ -7,14 +7,14 @@ import React, { ReactNode } from 'react';
 import { Popover as MuiPopover } from '@material-ui/core';
 import { MenuList } from './MenuList';
 import styled from 'styled-components';
-import { MOBILE_THRESHOLD } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 /**
  * PopoverMenu is a popover menu used when the user is on a desktop device
  */
 
 const Popover = styled(MuiPopover)`
-  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;

@@ -9,14 +9,14 @@ import { Drawer as MuiDrawer } from '@material-ui/core';
 import { IconButton } from '@tupaia/ui-components';
 import CloseIcon from '@material-ui/icons/Close';
 import { MenuItem, MenuList } from './MenuList';
-import { MOBILE_THRESHOLD, MODAL_ROUTES } from '../../constants';
+import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
  */
 
 const Drawer = styled(MuiDrawer)`
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;

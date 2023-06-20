@@ -5,20 +5,9 @@
 
 export const DEFAULT_PROJECT_CODE = 'explore';
 export const DEFAULT_ENTITY_CODE = 'explore';
-export const DEFAULT_URL = `/${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;
 
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
 
-export enum MODAL_ROUTES {
-  PROJECTS = 'projects',
-  LOGIN = 'login',
-  REGISTER = 'register',
-  FORGOT_PASSWORD = 'forgot-password',
-  RESET_PASSWORD = 'reset-password',
-  REQUEST_PROJECT_ACCESS = 'request-project-access',
-  REQUEST_COUNTRY_ACCESS = 'request-country-access',
-  VERIFY_EMAIL_RESEND = 'verify-email-resend',
-}
 export const PROJECT_ACCESS_TYPES = {
   PENDING: 'PENDING',
   ALLOWED: 'ALLOWED',
@@ -42,10 +31,4 @@ export enum TABS {
   DASHBOARD = 'dashboard',
 }
 
-export const MOBILE_THRESHOLD = '900px';
-
-export const URL_SEARCH_PARAMS = {
-  PROJECT: 'project',
-  TAB: 'tab',
-  PASSWORD_RESET_TOKEN: 'passwordResetToken',
-};
+export const MOBILE_BREAKPOINT = '900px';

@@ -5,14 +5,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Sidebar, Map } from '.';
-import { MOBILE_THRESHOLD } from '../constants';
+import { MOBILE_BREAKPOINT } from '../constants';
 
 const Container = styled.div`
   display: none;
   flex-direction: row;
   flex: 1;
   overflow: hidden;
-  @media screen and (min-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: flex;
   }
 `;

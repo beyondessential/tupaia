@@ -4,14 +4,14 @@
  */
 
 import React from 'react';
-import { ExpandableMapLegend } from './ExpandableMapLegend';
-import { FixedMapLegend } from './FixedMapLegend';
+import { MobileMapLegend } from './MobileMapLegend';
+import { DesktopMapLegend } from './DesktopMapLegend';
 
 export const MapLegend = () => {
   return (
     <>
-      <ExpandableMapLegend />
-      <FixedMapLegend />
+      <MobileMapLegend />
+      <DesktopMapLegend />
     </>
   );
 };

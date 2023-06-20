@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { MOBILE_THRESHOLD } from '../../../constants';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 
 // Placeholder for MapOverlaySelector component
 const Wrapper = styled.div`
@@ -17,11 +17,11 @@ const Wrapper = styled.div`
   opacity: 0.6;
   position: absolute;
   top: 0;
-  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
 
-export const FixedMapOverlaySelector = () => {
+export const DesktopMapOverlaySelector = () => {
   return <Wrapper />;
 };

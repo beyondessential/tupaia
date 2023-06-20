@@ -5,10 +5,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { MOBILE_THRESHOLD } from '../../../constants';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 
 // Placeholder for legend
-const FixedMapLegendWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
@@ -21,11 +21,11 @@ const FixedMapLegendWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   border-radius: 5px;
-  @media screen and (max-width: ${MOBILE_THRESHOLD}) {
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
 
-export const FixedMapLegend = () => {
-  return <FixedMapLegendWrapper />;
+export const DesktopMapLegend = () => {
+  return <Wrapper />;
 };
