@@ -24,6 +24,8 @@ import {
   TempLogoutRequest,
   ProjectRequest,
   ProjectRoute,
+  CountryAccessListRoute,
+  CountryAccessListRequest,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -39,6 +41,7 @@ export function createApp() {
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
+    .get<CountryAccessListRequest>('countryAccessList', handleWith(CountryAccessListRoute))
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
