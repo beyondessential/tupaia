@@ -7,4 +7,4 @@ export { Layout } from './Layout';
 export { Map } from './Map';
 export * from './ProjectCardList';
 export { Sidebar } from './Sidebar';
-export { TabLayout } from './TabLayout';
+export { MobileTabLayout } from './MobileTabLayout';
