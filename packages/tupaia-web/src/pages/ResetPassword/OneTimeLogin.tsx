@@ -5,17 +5,16 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { Alert as BaseAlert } from '@tupaia/ui-components';
 import { RouterLink } from '../../components';
-import { MODAL_ROUTES, PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
-import { useSearchParams } from 'react-router-dom';
-import { Alert as MuiAlert } from '@material-ui/lab';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 
 const Link = styled(RouterLink)`
   font-size: 1rem;
   color: ${props => props.theme.palette.primary.main};
 `;
 
-const Alert = styled(MuiAlert)`
+const Alert = styled(BaseAlert)`
   margin-top: 1rem;
 `;
 
@@ -25,13 +24,6 @@ interface OneTimeLoginProps {
 }
 
 export const OneTimeLogin = ({ attemptLogin, isError }: OneTimeLoginProps) => {
-  const [urlParams] = useSearchParams();
-
-  urlParams.delete(PASSWORD_RESET_TOKEN_PARAM);
-  const urlParamsValues = [...urlParams.values()];
-  const forgotPasswordUrl = `#${MODAL_ROUTES.FORGOT_PASSWORD}${
-    urlParamsValues.length ? `?${urlParams.toString()}` : ''
-  }`;
   // Do one time login
   useEffect(() => {
     attemptLogin();
@@ -42,7 +34,12 @@ export const OneTimeLogin = ({ attemptLogin, isError }: OneTimeLoginProps) => {
       {isError && (
         <Alert severity="warning">
           <Typography>The email link has expired or already been used.</Typography>
-          <Link to={forgotPasswordUrl}>Click here to request a new reset password link.</Link>
+          <Link
+            modal={MODAL_ROUTES.FORGOT_PASSWORD}
+            searchParamsToRemove={[URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN]}
+          >
+            Click here to request a new reset password link.
+          </Link>
         </Alert>
       )}
     </>

@@ -15,7 +15,8 @@ export enum MODAL_ROUTES {
   REGISTER = 'register',
   FORGOT_PASSWORD = 'forgot-password',
   RESET_PASSWORD = 'reset-password',
-  REQUEST_ACCESS = 'request-access',
+  REQUEST_PROJECT_ACCESS = 'request-project-access',
+  REQUEST_COUNTRY_ACCESS = 'request-country-access',
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 export const PROJECT_ACCESS_TYPES = {
@@ -36,4 +37,7 @@ export const FORM_FIELD_VALIDATION = {
   },
 };
 
-export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
+export const URL_SEARCH_PARAMS = {
+  PROJECT: 'project',
+  PASSWORD_RESET_TOKEN: 'passwordResetToken',
+};
