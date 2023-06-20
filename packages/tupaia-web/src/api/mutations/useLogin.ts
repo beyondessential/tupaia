@@ -4,6 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
+import { useLocation, useNavigate } from 'react-router';
 import { useModal } from '../../utils';
 import { post } from '../api';
 
@@ -13,6 +14,9 @@ type LoginCredentials = {
 };
 export const useLogin = () => {
   const queryClient = useQueryClient();
+  const location = useLocation() as { state: { backgroundLocation?: string } };
+  const navigate = useNavigate();
+
   const { closeModal } = useModal();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
@@ -28,7 +32,12 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries();
-        closeModal();
+        // if the user was redirected to the login page, redirect them back to the page they were on
+        if (location.state?.backgroundLocation)
+          navigate(location.state.backgroundLocation, {
+            state: null,
+          });
+        else closeModal();
       },
     },
   );

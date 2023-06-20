@@ -4,10 +4,12 @@
  */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import { MapLayout, Sidebar } from '../layout';
-import { useUser } from '../api/queries';
+import { useProject, useUser } from '../api/queries';
 import { useModal } from '../utils';
 import { MODAL_ROUTES } from '../constants';
+import { LoadingScreen } from '../components';
 
 const Container = styled.div`
   display: flex;
@@ -20,19 +22,22 @@ const Container = styled.div`
  * This is the layout for the project/* view. This contains the map and the sidebar, as well as any overlays that are not auth overlays (i.e. not needed in landing pages)
  */
 export const Project = () => {
+  const { projectCode } = useParams();
+  const { data: project, isLoading } = useProject(projectCode);
+  const { isLoggedIn } = useUser();
   const { navigateToModal } = useModal();
-  const { isLoggedIn, isLoading } = useUser();
 
-  // on first load, if user is not logged in, show the login modal
+  // check if the user is logged in. If they are not logged in and the project requires login, direct first to the login modal
   useEffect(() => {
-    const checkLoginStatus = () => {
-      if (isLoading || isLoggedIn) return;
+    const checkLogin = () => {
+      if (isLoggedIn || isLoading || (project && project.hasAccess)) return;
       navigateToModal(MODAL_ROUTES.LOGIN);
     };
-    checkLoginStatus();
-  }, [isLoading]);
+    checkLogin();
+  }, [project, isLoggedIn, isLoading]);
   return (
     <Container>
+      <LoadingScreen isLoading={isLoading} />
       <MapLayout />
       <Sidebar />
       {/** This is where SessionExpiredDialog and any other overlays would go, as well as loading screen */}

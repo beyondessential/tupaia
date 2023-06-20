@@ -7,15 +7,26 @@ import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-rout
 import { ModalRoutes, LandingPage, Project } from './pages';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { Layout } from './layout';
+import { useUser } from './api/queries';
+import { LoadingScreen } from './components';
 
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
  *
- * **/
+ *
+ * * */
 
 export const Routes = () => {
-  let location = useLocation();
+  const location = useLocation();
+  const { isLoggedIn, isLoading } = useUser();
+  // if the user is loading, show a loading screen, so that we can handle redirects when this is done
+  if (isLoading)
+    return (
+      <RouterRoutes>
+        <Route path="*" element={<LoadingScreen isLoading />} />
+      </RouterRoutes>
+    );
 
   return (
     <>
@@ -23,7 +34,15 @@ export const Routes = () => {
       <RouterRoutes>
         {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
         <Route element={<Layout />}>
-          <Route path="/" element={<Navigate to={`${DEFAULT_URL}`} replace />} />
+          <Route
+            path="/"
+            element={
+              <Navigate
+                to={`${DEFAULT_URL}#${isLoggedIn ? MODAL_ROUTES.PROJECTS : MODAL_ROUTES.LOGIN}`}
+                replace
+              />
+            }
+          />
           {/* Email verification links redirect to the login page where the verification happens */}
           <Route
             path="/verify-email"
