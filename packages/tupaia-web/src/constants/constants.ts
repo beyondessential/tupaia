@@ -26,9 +26,4 @@ export const FORM_FIELD_VALIDATION = {
   },
 };
 
-export enum TABS {
-  MAP = 'map',
-  DASHBOARD = 'dashboard',
-}
-
 export const MOBILE_BREAKPOINT = '900px';
