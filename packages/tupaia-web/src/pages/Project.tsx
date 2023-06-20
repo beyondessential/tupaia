@@ -21,17 +21,16 @@ const Container = styled.div`
  */
 export const Project = () => {
   const { navigateToModal } = useModal();
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn, isLoading } = useUser();
 
   // on first load, if user is not logged in, show the login modal
   useEffect(() => {
     const checkLoginStatus = () => {
-      if (!isLoggedIn) {
-        navigateToModal(MODAL_ROUTES.LOGIN);
-      }
+      if (isLoading || isLoggedIn) return;
+      navigateToModal(MODAL_ROUTES.LOGIN);
     };
     checkLoginStatus();
-  }, []);
+  }, [isLoading]);
   return (
     <Container>
       <MapLayout />
