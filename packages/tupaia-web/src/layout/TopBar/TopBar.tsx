@@ -8,7 +8,7 @@ import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
 import { useParams } from 'react-router';
-import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { MOBILE_BREAKPOINT, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -27,7 +27,7 @@ const Header = styled.header<{
   z-index: 1000;
   position: relative;
   padding: 0 0.625em;
-  border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+
   > * {
     background-color: ${({ $primaryColor, theme }) =>
       $primaryColor || theme.palette.background.default};
@@ -39,31 +39,30 @@ const Header = styled.header<{
   li {
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${TOP_BAR_HEIGHT}px;
     min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;
+    border-bottom: 1px solid rgba(151, 151, 151, 0.3);
   }
 `;
 
 const Inner = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 18.75rem;
+  height: 100%; ;
 `;
 
+// Placeholder for search bar
 const SearchBar = styled.div`
-  display: none;
-  width: 300px;
-  height: 40px;
-  left: 1010px;
-  top: 15px;
+  width: 100%;
+  height: 55%;
   background: #202124;
   border-radius: 43px;
-  margin-right: 30px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-    display: block;
-  }
+  margin-right: 1.2rem;
+  margin-left: 1.2rem;
 `;
 
 export const TopBar = () => {

@@ -8,6 +8,10 @@ export { ReportRequest, ReportRoute } from './ReportRoute';
 export { LegacyDashboardReportRequest, LegacyDashboardReportRoute } from './LegacyDashboardReportRoute';
 export { UserRequest, UserRoute } from './UserRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
-
+export { CountryAccessListRequest, CountryAccessListRoute } from './CountryAccessListRoute';
+export {
+  RequestCountryAccessRequest,
+  RequestCountryAccessRoute,
+} from './RequestCountryAccessRoute';
 // TODO: Stop using get for logout, then delete this
 export { TempLogoutRequest, TempLogoutRoute } from './TempLogoutRoute';

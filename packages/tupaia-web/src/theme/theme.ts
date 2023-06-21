@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core';
+import { TRANSPARENT_BLACK } from '../constants';
 
 export const theme = createMuiTheme(
   {
@@ -19,12 +20,22 @@ export const theme = createMuiTheme(
     },
   },
   {
+    panel: {
+      background: TRANSPARENT_BLACK,
+      secondaryBackground: '#4a4b55',
+    },
     projectCard: {
       background: '#2e2f33',
       fallBack: '#EFEFF0',
     },
     shape: {
       borderRadius: 3,
+    },
+    mobile: {
+      background: '#313236', // Dark grey used on mobile
+    },
+    overlaySelector: {
+      menuBackground: '#203e5c', // Dark blue used for button and header background in mobile overlay selector, as well as the background of the menu list on desktop
     },
   },
 );

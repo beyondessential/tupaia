@@ -11,12 +11,16 @@ import { useFormContext } from 'react-hook-form';
 const StyledCheckbox = styled(Checkbox)`
   display: flex;
   flex-direction: column;
+  .MuiFormControlLabel-root {
+    margin-right: 0;
+  }
 `;
 
 interface CheckboxProps extends MuiCheckboxProps {
   options?: any; // options is type RegisterOptions from react-hook-form, but ts-lint can not find that export
   name: string;
   label?: string;
+  helperText?: string | null;
 }
 
 export const CheckboxField = ({ name, label, required, options = {}, ...props }: CheckboxProps) => {

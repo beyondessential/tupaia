@@ -6,7 +6,7 @@
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { post } from '../api';
-import { PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
+import { URL_SEARCH_PARAMS } from '../../constants';
 
 type ResetPasswordParams = {
   oldPassword: string;
@@ -14,10 +14,10 @@ type ResetPasswordParams = {
   passwordConfirm: string;
 };
 export const useResetPassword = () => {
-  const [urlParams] = useSearchParams();
+  const [urlSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const oneTimeLoginToken = urlParams.get(PASSWORD_RESET_TOKEN_PARAM);
+  const oneTimeLoginToken = urlSearchParams.get(URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN);
 
   return useMutation<any, Error, ResetPasswordParams, unknown>(
     ({ oldPassword, newPassword, passwordConfirm }: ResetPasswordParams) => {
@@ -33,10 +33,10 @@ export const useResetPassword = () => {
     {
       onSuccess: () => {
         // manually navigate to the removed token - using setUrlParams seems to remove the hash as well in this one case
-        urlParams.delete(PASSWORD_RESET_TOKEN_PARAM);
+        urlSearchParams.delete(URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN);
         navigate({
           ...location,
-          search: urlParams.toString(),
+          search: urlSearchParams.toString(),
         });
       },
     },
