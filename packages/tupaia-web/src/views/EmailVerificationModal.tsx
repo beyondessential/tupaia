@@ -15,7 +15,7 @@ const Error = styled(Typography)`
   color: ${({ theme }) => theme.palette.error.main};
 `;
 
-export const EmailVerification = () => {
+export const EmailVerificationModal = () => {
   const { isSuccess, isError } = useEmailVerification();
 
   if (isSuccess) return <Success>Your e-mail was successfully verified</Success>;

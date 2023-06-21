@@ -15,7 +15,7 @@ const ModalBody = styled(AuthModalBody)`
   width: 38rem;
 `;
 
-export const ResetPassword = () => {
+export const ResetPasswordModal = () => {
   const [urlSearchParams] = useSearchParams();
   const { mutate: attemptLogin, isError, isLoading, isSuccess } = useOneTimeLogin();
   const token = urlSearchParams.get(URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN);

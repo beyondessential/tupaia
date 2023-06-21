@@ -70,7 +70,7 @@ const Logo = styled.img`
 /**
  * This is the projects view that is shown when the projects modal is open
  */
-export const Projects = () => {
+export const ProjectsModal = () => {
   const {
     data: { projects },
   } = useProjects();

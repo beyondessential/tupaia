@@ -99,7 +99,7 @@ const Chart = styled.div`
   padding: 1rem 1rem 75%;
 `;
 
-export const Sidebar = () => {
+export const Dashboard = () => {
   const { projectCode, entityCode, '*': dashboardCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: entityData } = useEntity(entityCode);
