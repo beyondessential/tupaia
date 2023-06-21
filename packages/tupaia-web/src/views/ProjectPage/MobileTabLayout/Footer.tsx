@@ -71,7 +71,7 @@ const SRLinkText = styled.span`
   left: -10000px;
   top: auto;
   width: 1px;
-  height: 1px;
+  height: 1px;œœœœ
   overflow: hidden;
 `;
 

@@ -37,7 +37,7 @@ const CheckEmailMessage = styled.p`
   padding: 0 0.9375rem;
 `;
 
-export const ForgotPassword = () => {
+export const ForgotPasswordModal = () => {
   const formContext = useForm({
     mode: 'onChange',
   });

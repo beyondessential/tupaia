@@ -26,7 +26,7 @@ const StyledForm = styled(Form)`
   max-width: 100%;
 `;
 
-export const VerifyEmailResend = () => {
+export const VerifyEmailResendModal = () => {
   const formContext = useForm();
   const { mutate: submit, isSuccess, isLoading, isError, error } = useResendVerificationEmail();
 

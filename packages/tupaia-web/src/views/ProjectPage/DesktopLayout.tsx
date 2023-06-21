@@ -1,11 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Sidebar, Map } from '.';
-import { MOBILE_BREAKPOINT } from '../constants';
+import { Dashboard, Map } from '../../features';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Container = styled.div`
   display: none;
@@ -24,7 +24,7 @@ export const DesktopLayout = () => {
   return (
     <Container>
       <Map />
-      <Sidebar />
+      <Dashboard />
     </Container>
   );
 };

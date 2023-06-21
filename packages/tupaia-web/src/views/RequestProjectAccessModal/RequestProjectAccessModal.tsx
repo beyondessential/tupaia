@@ -23,7 +23,7 @@ const ModalBody = styled.div`
   max-width: 100%;
 `;
 
-export const RequestProjectAccess = () => {
+export const RequestProjectAccessModal = () => {
   const [urlSearchParams] = useSearchParams();
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
 

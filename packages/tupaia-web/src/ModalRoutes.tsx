@@ -1,36 +1,36 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
-import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from './constants';
 import {
-  Projects,
-  Login,
-  Register,
-  VerifyEmailResend,
-  RequestProjectAccess,
-  RequestCountryAccess,
-  ForgotPassword,
-  ResetPassword,
-} from '.';
-import { Modal } from '../components';
-import { useModal } from '../utils';
+  ProjectsModal,
+  LoginModal,
+  RegisterModal,
+  VerifyEmailResendModal,
+  RequestProjectAccessModal,
+  RequestCountryAccessModal,
+  ForgotPasswordModal,
+  ResetPasswordModal,
+} from './views';
+import { Modal } from './components';
+import { useModal } from './utils';
 
 /**
  * This is the wrapper to handle any search param routes that should be modals
  */
 
 const modalViews = {
-  [MODAL_ROUTES.PROJECTS]: Projects,
-  [MODAL_ROUTES.LOGIN]: Login,
-  [MODAL_ROUTES.REGISTER]: Register,
-  [MODAL_ROUTES.REQUEST_COUNTRY_ACCESS]: RequestCountryAccess,
-  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
-  [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPassword,
-  [MODAL_ROUTES.RESET_PASSWORD]: ResetPassword,
-  [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResend,
+  [MODAL_ROUTES.PROJECTS]: ProjectsModal,
+  [MODAL_ROUTES.LOGIN]: LoginModal,
+  [MODAL_ROUTES.REGISTER]: RegisterModal,
+  [MODAL_ROUTES.REQUEST_COUNTRY_ACCESS]: RequestCountryAccessModal,
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccessModal,
+  [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPasswordModal,
+  [MODAL_ROUTES.RESET_PASSWORD]: ResetPasswordModal,
+  [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResendModal,
 };
 
 const modalParams = {
