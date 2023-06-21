@@ -9,10 +9,9 @@ import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';
 import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { useEntity } from '../../api/queries';
-import { MOBILE_BREAKPOINT, TABS, URL_SEARCH_PARAMS } from '../../constants';
-import { Map } from '../Map';
-import { Sidebar } from '..';
+import { useEntity } from '../../../api/queries';
+import { MOBILE_BREAKPOINT, TABS, URL_SEARCH_PARAMS } from '../../../constants';
+import { Dashboard, Map } from '../../../features';
 import { Footer } from './Footer';
 
 const Wrapper = styled.div`
@@ -72,7 +71,7 @@ export const MobileTabLayout = () => {
 
   const selectedTab = urlSearchParams.get(URL_SEARCH_PARAMS.TAB) || TABS.DASHBOARD;
 
-  const setSelectedTab = (e: ChangeEvent<{}>, value: `${TABS}`) => {
+  const setSelectedTab = (_event: ChangeEvent<{}>, value: `${TABS}`) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.TAB, value);
     setUrlSearchParams(urlSearchParams);
   };
@@ -86,7 +85,7 @@ export const MobileTabLayout = () => {
         </TabWrapper>
         {data && <EntityName>{data.name}</EntityName>}
         <DashboardPanel value={TABS.DASHBOARD}>
-          <Sidebar />
+          <Dashboard />
           <Footer />
         </DashboardPanel>
         <TabPanel value={TABS.MAP}>

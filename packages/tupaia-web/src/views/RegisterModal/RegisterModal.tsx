@@ -56,7 +56,7 @@ const StyledForm = styled(Form)`
   }
 `;
 
-export const Register = () => {
+export const RegisterModal = () => {
   const { mutate: onSubmit, isLoading, isSuccess, isError, error } = useRegister();
   const formContext = useForm();
 
