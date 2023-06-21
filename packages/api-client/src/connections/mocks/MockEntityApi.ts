@@ -162,6 +162,25 @@ export class MockEntityApi implements EntityApiInterface {
     return this.getDescendants(hierarchyName, entityCodes, queryOptions);
   }
 
+  public getAncestorsOfEntity(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?:
+      | { field?: string | undefined; fields?: string[] | undefined; filter?: any }
+      | undefined,
+    includeRootEntity?: boolean,
+  ): Promise<any> {
+    return this.getAncestorsOfEntities(hierarchyName, [entityCode], queryOptions);
+  }
+
+  public async getAncestorsOfEntities(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions: { fields?: string[]; filter?: { type: string } } = {},
+  ) {
+    return this.getAncestors(hierarchyName, entityCodes, queryOptions);
+  }
+
   public getRelativesOfEntity(
     hierarchyName: string,
     entityCode: string,

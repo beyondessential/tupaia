@@ -183,6 +183,44 @@ export class EntityApi extends BaseApi {
     );
   }
 
+  public async getAncestorsOfEntity(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      field?: string;
+      fields?: string[];
+      filter?: any;
+    },
+    includeRootEntity = false,
+  ) {
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/ancestors`, {
+      ...this.stringifyQueryParameters(queryOptions),
+      includeRootEntity: `${includeRootEntity}`,
+    });
+  }
+
+  public async getAncestorsOfEntities(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      field?: string;
+      fields?: string[];
+      filter?: any;
+    },
+    includeRootEntity = false,
+  ) {
+    return this.connection.post(
+      `hierarchy/${hierarchyName}/ancestors`,
+      {
+        ...this.stringifyQueryParameters(queryOptions),
+        includeRootEntity: `${includeRootEntity}`,
+      },
+      {
+        entities: entityCodes,
+      },
+    );
+  }
+
   public async getRelativesOfEntity(
     hierarchyName: string,
     entityCode: string,
