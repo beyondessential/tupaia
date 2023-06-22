@@ -11,8 +11,9 @@ export type DashboardsRequest = Request<any, any, any, any>;
 
 export class DashboardsRoute extends Route<DashboardsRequest> {
   public async buildResponse() {
-    const { query, ctx } = this.req;
-    const { entityCode, projectCode } = query;
+    const { query, params, ctx } = this.req;
+    const { projectCode } = query;
+    const { entityCode } = params;
 
     const project = (
       await ctx.services.central.fetchResources('projects', {

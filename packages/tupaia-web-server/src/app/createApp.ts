@@ -46,7 +46,7 @@ export function createApp() {
     .get<LegacyDashboardReportRequest>('legacyDashboardReport/:reportCode', handleWith(LegacyDashboardReportRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
+    .get<DashboardsRequest>('dashboards/:entityCode', handleWith(DashboardsRoute))
     .get<CountryAccessListRequest>('countryAccessList', handleWith(CountryAccessListRoute))
     .post<RequestCountryAccessRequest>(
       'requestCountryAccess',
