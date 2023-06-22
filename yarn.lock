@@ -9407,7 +9407,7 @@ __metadata:
     lodash.throttle: ^4.1.1
     moment: ^2.22.2
     npm-run-all: ^4.1.5
-    parse-link-header: ^1.0.1
+    parse-link-header: ^2.0.0
     prop-types: ^15.6.0
     query-string: ^5.1.1
     react: ^16.13.1
@@ -33083,12 +33083,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-link-header@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "parse-link-header@npm:1.0.1"
+"parse-link-header@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "parse-link-header@npm:2.0.0"
   dependencies:
     xtend: ~4.0.1
-  checksum: daccaf9168b4117dcbf9488360a4d855348062b537431aac01e5fa158038b958130186dd711d331b2d7690c3baae4ddc2bc0b1bd45685413cc2ed3cf4dca5f0c
+  checksum: 0e96c6af9910e8f92084b49b8dc6a10dd58db470847d1499f562576180c1ac5e49d18007697f0d538e5f3efdc8ce1d8777641f3ae225302b74af0dd0578b628e
   languageName: node
   linkType: hard
 
