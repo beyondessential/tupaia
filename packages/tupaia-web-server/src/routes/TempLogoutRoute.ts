@@ -3,12 +3,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
-export type TempLogoutRequest = Request<
-  any,
-  { loggedOut: boolean },
-  any,
-  any
->;
+export type TempLogoutRequest = Request<any, { loggedOut: boolean }, any, any>;
 
 export class TempLogoutRoute extends Route<TempLogoutRequest> {
   public async buildResponse() {
