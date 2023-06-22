@@ -4,3 +4,4 @@
  */
 export { Map } from './Map';
 export { Dashboard } from './Dashboard';
+export { EntitySearch } from './EntitySearch';

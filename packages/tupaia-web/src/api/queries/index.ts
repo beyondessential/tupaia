@@ -9,6 +9,7 @@ export { useProject } from './useProject';
 export { useProjects } from './useProjects';
 export { useUser } from './useUser';
 export { useEntity } from './useEntity';
+export { useEntities } from './useEntities';
 export { useEntityAncestors } from './useEntityAncestors';
 export { useEmailVerification } from './useEmailVerification';
 export { useDashboards } from './useDashboards';

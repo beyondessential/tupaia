@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
-import { useParams } from 'react-router';
 import { MOBILE_BREAKPOINT, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { EntitySearch } from '../../features';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -48,21 +49,12 @@ const Header = styled.header<{
 `;
 
 const Inner = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
   max-width: 18.75rem;
   height: 100%; ;
-`;
-
-// Placeholder for search bar
-const SearchBar = styled.div`
-  width: 100%;
-  height: 55%;
-  background: #202124;
-  border-radius: 43px;
-  margin-right: 1.2rem;
-  margin-left: 1.2rem;
 `;
 
 export const TopBar = () => {
@@ -79,9 +71,7 @@ export const TopBar = () => {
         displayName={includeNameInHeader}
         name={name}
       />
-      <Inner>
-        <SearchBar />
-      </Inner>
+      <EntitySearch />
       <UserMenu />
     </Header>
   );
