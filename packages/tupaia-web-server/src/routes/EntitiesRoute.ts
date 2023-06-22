@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { Entity } from '@tupaia/types';
+import groupBy from 'lodash.groupby';
 
 export type EntitiesRequest = Request<any, any, any, any>;
 
@@ -42,16 +43,17 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const nestChildrenEntities = (
       entitiesByParent: Record<string, NestedEntity[]>,
       parentEntity: NestedEntity,
-    ) => {
-      parentEntity.children = entitiesByParent[parentEntity.code] || [];
-      parentEntity.children.forEach((childEntity: NestedEntity) => {
-        nestChildrenEntities(entitiesByParent, childEntity);
-      });
-      return parentEntity;
+    ): NestedEntity => {
+      const children = entitiesByParent[parentEntity.code] || [];
+      const nestedChildren = children.map((childEntity: NestedEntity) =>
+        nestChildrenEntities(entitiesByParent, childEntity),
+      );
+      return { ...parentEntity, children: nestedChildren };
     };
 
+    const entitiesByParent = groupBy(flatEntities, (e: NestedEntity) => e.parent_code);
     const rootEntity = flatEntities.find((entity: NestedEntity) => entity.code === rootEntityCode);
-    const nestedEntities = nestChildrenEntities(flatEntities, rootEntity);
+    const nestedEntities = nestChildrenEntities(entitiesByParent, rootEntity);
 
     return nestedEntities;
   }
