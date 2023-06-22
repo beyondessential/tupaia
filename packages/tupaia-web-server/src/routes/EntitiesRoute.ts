@@ -7,39 +7,52 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { Entity } from '@tupaia/types';
 
-export type EntitiesRequest = Request<
-  any,
-  any,
-  any,
-  any
->;
+export type EntitiesRequest = Request<any, any, any, any>;
 
 interface NestedEntity extends Entity {
   parent_code?: string | null;
   children?: NestedEntity[] | null;
 }
 
+const DEFAULT_FILTER = {
+  generational_distance: {
+    comparator: '<=',
+    comparisonValue: 2,
+  },
+};
+const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
+
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
     const { params, query, ctx } = this.req;
     const { rootEntityCode, hierarchyName } = params;
+    const { filter, ...restOfQuery } = query;
 
-    // TODO: Allow filtering by generational distance in entity server
-    const flatEntities = await ctx.services.entity.getDescendantsOfEntity(hierarchyName, rootEntityCode, {}, true);
+    // Apply the generational_distance filter even if the user specifies other filters
+    // Only override it if the user specifically requests to override
+    const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
+      hierarchyName,
+      rootEntityCode,
+      { filter: { ...DEFAULT_FILTER, ...filter }, fields: DEFAULT_FIELDS, ...restOfQuery },
+      true,
+    );
 
     // Entity server returns a flat list of entities
     // Convert that to a nested object
-    const nestChildrenEntities = (allEntities: NestedEntity[], parentEntity: NestedEntity) => {
-      parentEntity.children = allEntities.filter((entity: NestedEntity) => entity.parent_code === parentEntity.code);
+    const nestChildrenEntities = (
+      entitiesByParent: Record<string, NestedEntity[]>,
+      parentEntity: NestedEntity,
+    ) => {
+      parentEntity.children = entitiesByParent[parentEntity.code] || [];
       parentEntity.children.forEach((childEntity: NestedEntity) => {
-        nestChildrenEntities(allEntities, childEntity);
+        nestChildrenEntities(entitiesByParent, childEntity);
       });
       return parentEntity;
     };
 
     const rootEntity = flatEntities.find((entity: NestedEntity) => entity.code === rootEntityCode);
     const nestedEntities = nestChildrenEntities(flatEntities, rootEntity);
-    
+
     return nestedEntities;
   }
 }
