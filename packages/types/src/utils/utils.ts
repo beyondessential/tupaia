@@ -35,6 +35,13 @@ export type RecursivePartial<T> = {
 };
 
 /**
+ * Extracts keys that have numeric values from type T
+ */
+export type NumericKeys<T> = {
+  [K in keyof T]: T[K] extends number ? K : never;
+}[keyof T];
+
+/**
  * Extracts keys that have object-like values from type T
  */
 export type ObjectLikeKeys<T> = {
