@@ -7,12 +7,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
-export type ReportRequest = Request<
-  { reportCode: string },
-  any,
-  any,
-  any
->;
+export type ReportRequest = Request<{ reportCode: string }, any, any, any>;
 
 export class ReportRoute extends Route<ReportRequest> {
   public async buildResponse() {

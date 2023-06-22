@@ -11,7 +11,7 @@ import { MobileTabLayout } from './MobileTabLayout';
  */
 export const ProjectPage = () => {
   // Use these to fetch the project and any other entity info you might need
-  // const { projectCode, entityCode, '*': dashboardCode } = useParams();
+  // const { projectCode, entityCode, '*': dashboardName } = useParams();
 
   return (
     <>

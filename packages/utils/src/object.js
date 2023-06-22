@@ -33,7 +33,7 @@ export const getKeysSortedByValues = (object, options = {}) => {
  *
  * @param {string} key
  * @param {{ ascending: boolean }} [options]
- * @returns { (a: Object<string, any>, b: Object<string, any> ) => number }
+ * @returns { (a: any, b: any ) => number }
  */
 export function getSortByKey(key, options) {
   return getSortByExtractedValue(o => o[key], options);
