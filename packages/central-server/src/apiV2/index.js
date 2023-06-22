@@ -288,6 +288,7 @@ apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySync
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
+apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 
 /**
  * PUT routes
@@ -326,6 +327,7 @@ apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHand
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
+apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 
 /**
  * DELETE routes
@@ -360,6 +362,7 @@ apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroup
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/landingPages/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/dhisInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 

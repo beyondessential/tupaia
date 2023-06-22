@@ -37,8 +37,9 @@ import {
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
   EntityHierarchyPage,
+  DataElementDataServicesPage,
+  DhisInstancesPage,
 } from './pages/resources';
-import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
 export const ROUTES = [
   {
@@ -240,6 +241,11 @@ export const ROUTES = [
         label: 'External Database Connections',
         to: '',
         component: ExternalDatabaseConnectionsPage,
+      },
+      {
+        label: 'DHIS Instances',
+        to: '/dhis-instances',
+        component: DhisInstancesPage,
       },
     ],
   },
