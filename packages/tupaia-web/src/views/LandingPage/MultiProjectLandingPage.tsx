@@ -83,11 +83,11 @@ export function MultiProjectLandingPage({
             projects={projects}
             actions={{
               [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                project: { code, homeEntityCode, defaultDashboardCode },
+                project: { code, homeEntityCode, dashboardGroupName },
               }) => (
                 <ProjectAllowedLink
                   url={`/${code}/${homeEntityCode}${
-                    defaultDashboardCode ? `/${defaultDashboardCode}` : ''
+                    dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
                 />
               ),
