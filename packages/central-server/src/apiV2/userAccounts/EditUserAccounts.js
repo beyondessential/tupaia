@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import AWS from 'aws-sdk';
 import { hashAndSaltPassword } from '@tupaia/auth';
-import { S3Client } from '@tupaia/utils';
+import { S3Client, S3 } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
@@ -47,7 +46,7 @@ export class EditUserAccounts extends EditHandler {
 
     if (profileImage) {
       if (profileImage.data && profileImage.fileId) {
-        const s3Client = new S3Client(new AWS.S3());
+        const s3Client = new S3Client(new S3());
         const profileImagePath = await s3Client.uploadImage(profileImage.data, profileImage.fileId);
         updatedFields = {
           ...updatedFields,

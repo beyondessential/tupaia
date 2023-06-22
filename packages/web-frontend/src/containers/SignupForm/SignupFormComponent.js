@@ -62,7 +62,7 @@ const TermsLabel = () => (
   <TermsAndConditions>
     I agree to the&nbsp;
     <TermsLink
-      href="https://info.tupaia.org/terms-and-privacy/"
+      href="https://www.bes.au/terms-and-conditions/"
       target="_blank"
       rel="noreferrer noopener"
     >

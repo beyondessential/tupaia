@@ -4,7 +4,8 @@
  */
 
 import { Moment } from 'moment';
-import { displayStringToMoment, periodToMoment, isInvalidMoment } from '@tupaia/utils';
+import { periodToMoment } from '@tupaia/tsutils';
+import { displayStringToMoment, isInvalidMoment } from '@tupaia/utils';
 
 const alphabetic = (column1: string, column2: string) => column1.localeCompare(column2);
 
