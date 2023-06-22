@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { VIEW_STYLES } from '../../styles';
+import { DownloadFilesVisual } from './DownloadFilesVisual';
 import { ChartWrapper } from './ChartWrapper';
 import { ColorListWrapper } from './ColorListWrapper';
 import { DataDownloadWrapper } from './DataDownloadWrapper';
@@ -30,6 +30,7 @@ const SINGLE_VALUE_COMPONENTS = {
 };
 
 const VIEW_TYPES = {
+  filesDownload: DownloadFilesVisual,
   dataDownload: DataDownloadWrapper,
   multiValue: MultiValueWrapper,
   multiValueRow: MultiValueRowWrapper,

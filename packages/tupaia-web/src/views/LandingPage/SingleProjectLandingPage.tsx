@@ -73,11 +73,13 @@ export function SingleProjectLandingPage({
 }: SingleProjectLandingPageProps) {
   const accessType = getProjectAccessType(project);
 
-  const { homeEntityCode, code } = project;
+  const { homeEntityCode, code, dashboardGroupName } = project;
 
   const urls = {
     [PROJECT_ACCESS_TYPES.PENDING]: '',
-    [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}`,
+    [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}${
+      dashboardGroupName ? `/${dashboardGroupName}` : ''
+    }`,
     [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
       ? `?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`
       : `#${MODAL_ROUTES.LOGIN}`,

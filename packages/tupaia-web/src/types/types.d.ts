@@ -23,10 +23,4 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardCode = Dashboard['code'];
-
-export type TupaiaUrlParams = {
-  projectCode?: ProjectCode;
-  entityCode?: EntityCode;
-  dashboardCode?: DashboardCode;
-};
+export type DashboardName = Dashboard['name'];
