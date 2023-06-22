@@ -105,7 +105,8 @@ export class View extends Component {
       viewContent.periodGranularity ||
       viewContent.type === 'chart' ||
       getIsMatrix(viewContent) ||
-      viewContent.viewType === 'dataDownload'
+      viewContent.viewType === 'dataDownload' ||
+      viewContent.viewType === 'filesDownload'
     );
   }
 
