@@ -15,8 +15,8 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardItem } from '../../features';
-import { Dashboard, DashboardItemType } from '../../types';
+import { DashboardItem } from './DashboardItem';
+import { DashboardType, DashboardItemType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -104,7 +104,7 @@ export const Dashboard = () => {
   const bounds = entityData?.location?.bounds;
 
   const { data: dashboardData } = useDashboards(projectCode, entityCode) as {
-    data: Dashboard[];
+    data: DashboardType[];
   };
 
   const activeDashboard = dashboardData?.find(dashboard => dashboard.code === dashboardCode);

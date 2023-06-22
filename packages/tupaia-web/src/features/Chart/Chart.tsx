@@ -5,8 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Chart as ChartComponent } from '@tupaia/ui-chart-components';
-import { DashboardItemType } from '../../types';
+import { Chart as ChartComponent, ViewContent } from '@tupaia/ui-chart-components';
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,16 +23,14 @@ const Wrapper = styled.div`
 `;
 
 interface ChartProps {
-  viewContent: DashboardItemType & {
-    data: Record<string, unknown>[];
-    periodGranularity: any;
-  };
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
 }
 
-export const Chart = ({ viewContent }: ChartProps) => {
+export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
   return (
     <Wrapper>
-      <ChartComponent viewContent={viewContent} isEnlarged={false} isExporting={false} />
+      <ChartComponent viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
     </Wrapper>
   );
 };

@@ -8,6 +8,7 @@ import {
   DashboardItemConfig,
 } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
+import { ViewContent } from '@tupaia/ui-chart-components';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -37,14 +38,16 @@ export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config
     viewType?: string;
   };
 
-export type Dashboard = KeysToCamelCase<BaseDashboard> & {
+export type DashboardType = KeysToCamelCase<BaseDashboard> & {
   items: DashboardItemType[];
 };
 
-export type DashboardCode = Dashboard['code'];
+export type DashboardCode = DashboardType['code'];
 
 export type TupaiaUrlParams = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
   dashboardCode?: DashboardCode;
 };
+
+export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
