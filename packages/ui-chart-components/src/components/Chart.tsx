@@ -95,23 +95,3 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legen
     />
   );
 };
-
-Chart.propTypes = {
-  viewContent: PropTypes.shape({
-    name: PropTypes.string,
-    chartType: PropTypes.string,
-    data: PropTypes.array,
-  }),
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
-  legendPosition: PropTypes.string,
-};
-
-Chart.defaultProps = {
-  viewContent: null,
-  isEnlarged: true,
-  isExporting: false,
-  legendPosition: 'bottom',
-  onItemClick: () => {},
-};
