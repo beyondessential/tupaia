@@ -41,7 +41,7 @@ const Title = styled(Typography).attrs({
   margin-bottom: 1rem;
 `;
 
-export const RequestCountryAccess = () => {
+export const RequestCountryAccessModal = () => {
   const formContext = useForm();
   const { data, isLoading: isLoadingList } = useCountryAccessList();
 

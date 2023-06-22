@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
 import { AuthModalBody, AuthModalButton, TextField, RouterLink, Form } from '../components';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
-import { EmailVerification } from './EmailVerification';
+import { EmailVerificationModal } from './EmailVerificationModal';
 
 const ModalBody = styled(AuthModalBody)`
   width: 38rem;
@@ -42,13 +42,17 @@ const ForgotPasswordText = styled(LinkText)`
   text-align: right;
 `;
 
-export const Login = () => {
+export const LoginModal = () => {
   const formContext = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
     <ModalBody title="Log in" subtitle="Enter your details below to log in">
-      {isError ? <Typography color="error">{error.message}</Typography> : <EmailVerification />}
+      {isError ? (
+        <Typography color="error">{error.message}</Typography>
+      ) : (
+        <EmailVerificationModal />
+      )}
       <StyledForm onSubmit={login as SubmitHandler<any>} formContext={formContext}>
         <TextField name="email" label="Email" type="email" options={FORM_FIELD_VALIDATION.EMAIL} />
         <TextField

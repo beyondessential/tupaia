@@ -31,7 +31,7 @@ const Container = styled.div`
   }
 `;
 
-export const Layout = () => {
+export const MainLayout = () => {
   return (
     <Container>
       <EnvBanner />

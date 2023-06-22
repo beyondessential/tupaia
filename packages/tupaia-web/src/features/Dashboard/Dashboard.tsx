@@ -97,7 +97,7 @@ const DashboardImageContainer = styled.div`
   }
 `;
 
-export const Sidebar = () => {
+export const Dashboard = () => {
   const { projectCode, entityCode, '*': dashboardCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: entityData } = useEntity(entityCode);

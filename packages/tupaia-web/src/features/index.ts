@@ -4,3 +4,5 @@
  */
 export { Chart } from './Chart';
 export { DashboardItem } from './DashboardItem';
+export { Map } from './Map';
+export { Dashboard } from './Dashboard';
