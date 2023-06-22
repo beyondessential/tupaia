@@ -340,6 +340,11 @@ export const constructForSingle = (models, recordType) => {
         readonly: [hasContent, isBoolean],
         config: [hasContent],
       };
+    case TYPES.SUPERSET_INSTANCE:
+      return {
+        code: [isAString],
+        config: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

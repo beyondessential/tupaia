@@ -39,3 +39,4 @@ export { PermissionGroupsViewerPage } from './PermissionGroupsViewerPage';
 export { CustomLandingPagesPage } from './CustomLandingPagesPage';
 export { DataElementDataServicesPage } from './DataElementDataServicesPage';
 export { DhisInstancesPage } from './DhisInstancesPage';
+export { SupersetInstancesPage } from './SupersetInstancesPage';

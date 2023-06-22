@@ -39,6 +39,7 @@ import {
   EntityHierarchyPage,
   DataElementDataServicesPage,
   DhisInstancesPage,
+  SupersetInstancesPage,
 } from './pages/resources';
 
 export const ROUTES = [
@@ -246,6 +247,11 @@ export const ROUTES = [
         label: 'DHIS Instances',
         to: '/dhis-instances',
         component: DhisInstancesPage,
+      },
+      {
+        label: 'Superset Instances',
+        to: '/superset-instances',
+        component: SupersetInstancesPage,
       },
     ],
   },
