@@ -1,22 +1,19 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { SmallAlert } from '@tupaia/ui-components';
+import { NoData } from '../NoData';
 import { CartesianChart } from './CartesianChart';
-import { PieChart, GaugeChart } from './Charts';
-import {
-  getIsTimeSeries,
-  isDataKey,
-  parseChartConfig,
-  getIsChartData,
-  getNoDataString,
-} from '../utils';
-import { ChartType, ViewContent, LegendPosition } from '../types';
+import { PieChart } from './PieChart';
+import { GaugeChart } from './GaugeChart';
+import { CHART_TYPES } from './constants';
+import { parseChartConfig } from './parseChartConfig';
+import { getIsTimeSeries, isDataKey, getIsChartData } from './utils';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -37,15 +34,9 @@ const UnknownChart = () => (
   </UnknownChartContainer>
 );
 
-const NoData = styled(SmallAlert)`
-  align-self: center;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const removeNonNumericData = (data: any[]) =>
+const removeNonNumericData = data =>
   data.map(dataSeries => {
-    const filteredDataSeries: any = {};
+    const filteredDataSeries = {};
     Object.entries(dataSeries).forEach(([key, value]) => {
       if (!isDataKey(key) || !Number.isNaN(Number(value))) {
         filteredDataSeries[key] = value;
@@ -54,10 +45,10 @@ const removeNonNumericData = (data: any[]) =>
     return filteredDataSeries;
   });
 
-const sortData = (data: any[]): any[] =>
+const sortData = data =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-const getViewContent = (viewContent: ChartProps['viewContent']) => {
+const getViewContent = viewContent => {
   const { chartConfig, data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
   return chartConfig
@@ -69,44 +60,26 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = (chartType: ChartType) => {
+const getChartComponent = chartType => {
   switch (chartType) {
-    case ChartType.Pie:
+    case CHART_TYPES.PIE:
       return PieChart;
-    case ChartType.Gauge:
+    case CHART_TYPES.GAUGE:
       return GaugeChart;
     default:
       return CartesianChart;
   }
 };
 
-interface ChartProps {
-  viewContent: ViewContent;
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-  onItemClick?: (item: any) => void;
-  legendPosition?: LegendPosition;
-}
-
-export const Chart = ({
-  viewContent,
-  isExporting = false,
-  isEnlarged = true,
-  onItemClick = () => {},
-  legendPosition = 'bottom',
-}: ChartProps) => {
+export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const { chartType } = viewContent;
 
-  if (!Object.values(ChartType).includes(chartType)) {
+  if (!Object.values(CHART_TYPES).includes(chartType)) {
     return <UnknownChart />;
   }
 
-  if (!getIsChartData({ chartType: viewContent.chartType, data: viewContent.data })) {
-    return (
-      <NoData severity="info" variant="standard">
-        {getNoDataString(viewContent)}
-      </NoData>
-    );
+  if (!getIsChartData(viewContent)) {
+    return <NoData viewContent={viewContent} />;
   }
 
   const viewContentConfig = getViewContent(viewContent);
@@ -121,4 +94,24 @@ export const Chart = ({
       legendPosition={legendPosition}
     />
   );
+};
+
+Chart.propTypes = {
+  viewContent: PropTypes.shape({
+    name: PropTypes.string,
+    chartType: PropTypes.string,
+    data: PropTypes.array,
+  }),
+  isEnlarged: PropTypes.bool,
+  isExporting: PropTypes.bool,
+  onItemClick: PropTypes.func,
+  legendPosition: PropTypes.string,
+};
+
+Chart.defaultProps = {
+  viewContent: null,
+  isEnlarged: true,
+  isExporting: false,
+  legendPosition: 'bottom',
+  onItemClick: () => {},
 };
