@@ -16,10 +16,12 @@ import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
   ReportRoute,
+  LegacyMapOverlayReportRoute,
   UserRoute,
   TempLogoutRoute,
   DashboardsRequest,
   ReportRequest,
+  LegacyMapOverlayReportRequest,
   UserRequest,
   TempLogoutRequest,
   ProjectRequest,
@@ -40,6 +42,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
+    .get<LegacyMapOverlayReportRequest>('legacyMapOverlayReport/:reportCode', handleWith(LegacyMapOverlayReportRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))

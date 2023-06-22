@@ -5,6 +5,7 @@
 
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';
+export { LegacyMapOverlayReportRequest, LegacyMapOverlayReportRoute } from './LegacyMapOverlayReportRoute';
 export { UserRequest, UserRoute } from './UserRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export { CountryAccessListRequest, CountryAccessListRoute } from './CountryAccessListRoute';
