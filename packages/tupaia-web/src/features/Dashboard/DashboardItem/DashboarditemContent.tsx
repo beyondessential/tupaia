@@ -97,13 +97,13 @@ export const DashboardItemContent = ({
 
   return (
     <>
-      {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
       {name && (
         <Title $isEnlarged={isEnlarged} variant={isEnlarged ? 'h2' : 'h3'}>
           {name}
         </Title>
       )}
       <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />
+      {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>
   );
 };

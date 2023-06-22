@@ -11,6 +11,7 @@ import { DashboardItemType } from '../../../types';
 
 const Wrapper = styled.div`
   width: 48rem;
+  max-width: 100%;
 `;
 
 const Container = styled.div`
