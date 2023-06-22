@@ -70,7 +70,7 @@ export const Routes = () => {
             }
           />
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-          {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardCode with a splat/catch-all instead */}
+          {/** Because react-router v 6.3 doesn't support optional url segments, we need to handle dashboardName with a splat/catch-all instead */}
           <Route path="/:projectCode/:entityCode/*" element={<ProjectPage />} />
         </Route>
       </RouterRoutes>
