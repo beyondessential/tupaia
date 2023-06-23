@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -89,7 +89,7 @@ const OLD_DATA_BUILDER_CONFIG = {
 
 const NEW_DATA_BUILDER_CONFIG = {
   dataClasses: {
-    //Update heading
+    // Update heading
     'Access to clean water': {
       numerator: {
         dataValues: ['BCD29_event'],
@@ -100,7 +100,7 @@ const NEW_DATA_BUILDER_CONFIG = {
         valueOfInterest: '*',
       },
     },
-    //Keep the same
+    // Keep the same
     'Electricity available in school': {
       numerator: {
         dataValues: ['SchFF001'],
@@ -111,7 +111,7 @@ const NEW_DATA_BUILDER_CONFIG = {
         valueOfInterest: '*',
       },
     },
-    //Update heading
+    // Update heading
     'Functioning hand washing facilities': {
       numerator: {
         dataValues: ['SchFF004'],
@@ -122,7 +122,7 @@ const NEW_DATA_BUILDER_CONFIG = {
         valueOfInterest: '*',
       },
     },
-    //Update heading
+    // Update heading
     'Functioning toilets': {
       numerator: {
         dataValues: ['BCD32_event'],
@@ -133,7 +133,7 @@ const NEW_DATA_BUILDER_CONFIG = {
         valueOfInterest: '*',
       },
     },
-    //Update heading
+    // Update heading
     'Internet connection available': {
       numerator: {
         dataValues: ['SchFF002'],
@@ -144,7 +144,7 @@ const NEW_DATA_BUILDER_CONFIG = {
         valueOfInterest: '*',
       },
     },
-    //New data code
+    // New data code
     'Functioning water filters': {
       numerator: {
         dataValues: ['SchCVD009'],
@@ -167,7 +167,7 @@ const OLD_REPORT_DESCRIPTION =
 const NEW_REPORT_DESCRIPTION =
   "This report is calculated based on the number of \\'School COVID-19 Response Laos\\' survey responses";
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     DASHBOARD_REPORTS.map(dashboardReport => {
       const { id, schoolType } = dashboardReport;
@@ -190,7 +190,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await Promise.all(
     DASHBOARD_REPORTS.map(dashboardReport => {
       const { id, schoolType } = dashboardReport;

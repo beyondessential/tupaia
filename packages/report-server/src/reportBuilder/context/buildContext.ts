@@ -30,8 +30,6 @@ const buildOrgUnits = async (reqContext: ReqContext, data: Row[]) => {
   });
 };
 
-
-
 const contextBuilders: Record<ContextDependency, ContextBuilder<ContextDependency>> = {
   orgUnits: buildOrgUnits,
 };

@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -33,7 +33,7 @@ const removeProjectCodesColumn = async (db, tableName) =>
     ALTER TABLE "${tableName}" DROP COLUMN "projectCodes";
   `);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const projectRecords = (await db.runSql(`SELECT code FROM project;`)).rows;
   const projectCodesExceptLaos = projectRecords
     .map(r => r.code)
@@ -42,7 +42,7 @@ exports.up = async function(db) {
   await addProjectCodesColumn(db, 'dashboardGroup', projectCodesExceptLaos);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await removeProjectCodesColumn(db, 'mapOverlay');
   await removeProjectCodesColumn(db, 'dashboardGroup');
 };

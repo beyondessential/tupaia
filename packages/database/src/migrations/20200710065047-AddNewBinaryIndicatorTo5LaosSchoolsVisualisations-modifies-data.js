@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -45,7 +45,7 @@ const BASIC_LAOS_SCHOOL_MAP_OVERLAY_OBJECT = {
 
 const TO_INSERT = [
   {
-    //issue: 597,
+    // issue: 597,
     object: {
       ...BASIC_LAOS_SCHOOL_MAP_OVERLAY_OBJECT,
       id: 'Laos_Schools_Telephone_Available',
@@ -70,7 +70,7 @@ const TO_INSERT = [
     tableName: 'mapOverlay',
   },
   {
-    //issue: 599 : Province,
+    // issue: 599 : Province,
     object: {
       ...BASIC_LAOS_SCHOOL_MAP_OVERLAY_OBJECT,
       dataElementCode: 'value',
@@ -139,7 +139,7 @@ const TO_INSERT = [
     tableName: 'mapOverlay',
   },
   {
-    //issue: 599 : District,
+    // issue: 599 : District,
     object: {
       ...BASIC_LAOS_SCHOOL_MAP_OVERLAY_OBJECT,
       dataElementCode: 'value',
@@ -227,7 +227,7 @@ const BAR_CHART_CONFIG = {
   },
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   // Issues 597, 599
   await Promise.all(TO_INSERT.map(({ tableName, object }) => insertObject(db, tableName, object)));
   // Issue 618
@@ -245,7 +245,7 @@ exports.up = async function(db) {
   // Issue 611 - Card not merged yet so will make changes there
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   // Issues 597, 599
   await db.runSql(`	
     DELETE FROM "mapOverlay" 

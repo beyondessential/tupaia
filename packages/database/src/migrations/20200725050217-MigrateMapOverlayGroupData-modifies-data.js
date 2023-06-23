@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -20,15 +20,15 @@ const selectAllMapOverlays = async db => db.runSql('SELECT * FROM "mapOverlay";'
 
 const generateMapOverlayGroupCode = groupName => {
   const splittedGroupNames = groupName
-    .replace(/[^\w\s]/gi, '') //Retain only alphanumeric characters, underscores and spaces.
+    .replace(/[^\w\s]/gi, '') // Retain only alphanumeric characters, underscores and spaces.
     .trim()
     .split(' ');
 
-  //remove empty elements
+  // remove empty elements
   return splittedGroupNames.filter(name => name !== '').join('_');
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const mapOverlays = await selectAllMapOverlays(db);
 
   const mapOverlayGroupNameToId = {};
@@ -61,7 +61,7 @@ exports.up = async function(db) {
   }
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     TRUNCATE TABLE map_overlay_group;
     TRUNCATE TABLE map_overlay_group_relation;

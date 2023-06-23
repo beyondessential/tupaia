@@ -8,10 +8,10 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -217,7 +217,7 @@ const OLD_COUNT_PRESENTATION_OPTIONS = {
   measureLevel: 'Facility',
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', NEW_TOTAL_SAMPLES_MAP_OVERLAY);
   await insertObject(db, 'map_overlay_group_relation', GROUP_RELATION_FOR_TOTAL_SAMPLES_OVERLAY);
   await db.runSql(`
@@ -242,7 +242,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM "mapOverlay"
     WHERE "id" = '${NEW_TOTAL_SAMPLES_MAP_OVERLAY.id}';
@@ -273,5 +273,5 @@ exports.down = async function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

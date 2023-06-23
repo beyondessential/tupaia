@@ -11,7 +11,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -88,7 +88,7 @@ const REPORTS = {
   },
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     // Does the whole inner loop twice, once for each level
     [true, false].map(isProvinceLevel =>
@@ -147,7 +147,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   return Promise.all(
     [true, false].map(isProvinceLevel =>
       Object.entries(REPORTS).map(([baseReportId, _]) => {

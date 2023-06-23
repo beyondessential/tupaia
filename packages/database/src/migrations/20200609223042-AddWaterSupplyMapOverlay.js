@@ -5,10 +5,10 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -22,21 +22,26 @@ const OLD_NAME = 'Functioning water supply';
 
 const FILTER = {
   value: {
-    in: ['Rainwater harvesting', 'Water borehole', 'Water connection from community gravity-fed water system', 'No']
+    in: [
+      'Rainwater harvesting',
+      'Water borehole',
+      'Water connection from community gravity-fed water system',
+      'No',
+    ],
   },
 };
 
 const NEW_MEASURE_BUILDER_CONFIG = {
   entityAggregation: {
-    dataSourceEntityType: 'school'
+    dataSourceEntityType: 'school',
   },
   dataElementCodes: ['BCD29_event', 'SchCVD010'],
-  filter: FILTER
+  filter: FILTER,
 };
 
 const OLD_MEASURE_BUILDER_CONFIG = {
   dataSourceEntityType: 'school',
-  aggregationEntityType: 'school'
+  aggregationEntityType: 'school',
 };
 
 const NEW_DATA_ELEMENT_CODE = 'value';
@@ -47,36 +52,36 @@ const NEW_VALUES = [
   {
     name: 'Rainwater harvesting',
     color: 'yellow',
-    value: 'Rainwater harvesting'
+    value: 'Rainwater harvesting',
   },
   {
     name: 'Water borehole',
     color: 'teal',
-    value: 'Water borehole'
+    value: 'Water borehole',
   },
   {
     name: 'Water connection from community gravity-fed water system',
     color: 'green',
-    value: 'Water connection from community gravity-fed water system'
+    value: 'Water connection from community gravity-fed water system',
   },
   {
     name: 'No',
     color: 'red',
-    value: 'No'
-  }
+    value: 'No',
+  },
 ];
 
 const OLD_VALUES = [
   {
     name: 'Yes',
     color: 'green',
-    value: 'Yes'
+    value: 'Yes',
   },
   {
     name: 'No',
     color: 'red',
-    value: 'No'
-  }
+    value: 'No',
+  },
 ];
 
 const MAP_OVERLAY = {
@@ -88,10 +93,10 @@ const MAP_OVERLAY = {
   newDataElementCode: NEW_DATA_ELEMENT_CODE,
   oldDataElementCode: OLD_DATA_ELEMENT_CODE,
   newValues: NEW_VALUES,
-  oldValues: OLD_VALUES
+  oldValues: OLD_VALUES,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await db.runSql(`
     UPDATE "mapOverlay"
     SET "measureBuilderConfig" = '${JSON.stringify(MAP_OVERLAY.newMeasureBuilderConfig)}',
@@ -103,7 +108,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`
     UPDATE "mapOverlay"
     SET "measureBuilderConfig" = '${JSON.stringify(MAP_OVERLAY.oldMeasureBuilderConfig)}',
@@ -116,5 +121,5 @@ exports.down = async function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

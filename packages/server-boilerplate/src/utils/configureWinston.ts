@@ -17,6 +17,7 @@ import winston from 'winston';
 const enumerateErrorFormat = winston.format(info => {
   const msg = info.message as any;
   if (msg instanceof Error) {
+    // eslint-disable-next-line prefer-object-spread, no-param-reassign
     info.message = Object.assign(
       {
         message: msg.message,
@@ -27,6 +28,7 @@ const enumerateErrorFormat = winston.format(info => {
   }
 
   if (info instanceof Error) {
+    // eslint-disable-next-line prefer-object-spread
     return Object.assign(
       {
         message: info.message,

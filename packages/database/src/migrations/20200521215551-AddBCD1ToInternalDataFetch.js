@@ -1,4 +1,5 @@
 'use strict';
+
 import { generateId } from '../utilities';
 
 var dbm;
@@ -9,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -35,7 +36,7 @@ const newValues = [
 
 const mapOverlayId = 126;
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     INSERT INTO data_source (id, code, type, service_type)
     VALUES ('${generateId()}', 'BCD1', 'dataElement', 'tupaia');
@@ -48,7 +49,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     DELETE FROM data_source
     WHERE code = 'BCD1'

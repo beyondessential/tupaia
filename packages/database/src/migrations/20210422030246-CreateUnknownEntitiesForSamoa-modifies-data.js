@@ -8,10 +8,10 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -49,7 +49,7 @@ const NEW_UNKNOWN_VILLAGE_ENTITY = {
   attributes: '{}',
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const selectExploreEntityHierarchy = await db.runSql(`
     SELECT id FROM entity_hierarchy WHERE name = 'explore';
   `);
@@ -76,7 +76,7 @@ exports.up = async function(db) {
   });
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   const selectExploreEntityHierarchy = await db.runSql(`
     SELECT id FROM entity_hierarchy WHERE name = 'explore';
   `);
@@ -110,5 +110,5 @@ exports.down = async function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
