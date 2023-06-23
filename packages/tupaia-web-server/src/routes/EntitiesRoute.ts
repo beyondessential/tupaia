@@ -48,7 +48,8 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       const nestedChildren = children.map((childEntity: NestedEntity) =>
         nestChildrenEntities(entitiesByParent, childEntity),
       );
-      return { ...parentEntity, children: nestedChildren };
+      // If the entity has no children, do not attach an empty array
+      return { ...parentEntity, children: nestedChildren.length ? nestedChildren : undefined };
     };
 
     const entitiesByParent = groupBy(flatEntities, (e: NestedEntity) => e.parent_code);
