@@ -6,7 +6,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Container, { ContainerProps } from '@material-ui/core/Container';
-import { Link as RouterLink, useLocation, useMatch } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { LightTab, LightTabs } from './Tabs';
 
 const toolbarHeight = '65px';
@@ -59,14 +59,14 @@ interface Link {
 interface TabsToolbarProps {
   links: Link[];
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false | undefined;
+  baseRoute: string;
 }
 
-export const TabsToolbar = ({ links: linkInput, maxWidth }: TabsToolbarProps) => {
+export const TabsToolbar = ({ links: linkInput, maxWidth, baseRoute }: TabsToolbarProps) => {
   const location = useLocation();
-  const match = useMatch();
   const links = linkInput.map(link => ({
     ...link,
-    target: link.exact ? link.to : `${match.url}${link.to}`,
+    target: link.exact ? link.to : `${baseRoute}${link.to}`,
   }));
   const { target: value } = links.find(link => location.pathname === link.target) || links[0];
 
