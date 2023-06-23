@@ -7,8 +7,8 @@ import {
   DashboardItem as BaseDashboardItem,
   DashboardItemConfig,
 } from '@tupaia/types';
-import { KeysToCamelCase } from './helpers';
 import { ViewContent } from '@tupaia/ui-chart-components';
+import { KeysToCamelCase } from './helpers';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -51,3 +51,4 @@ export type TupaiaUrlParams = {
 };
 
 export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
+export type DashboardName = BaseDashboard['name'];

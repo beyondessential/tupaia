@@ -98,16 +98,13 @@ const DashboardImageContainer = styled.div`
 `;
 
 export const Dashboard = () => {
-  const { projectCode, entityCode, '*': dashboardCode } = useParams();
+  const { projectCode, entityCode, '*': dashboardName } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: entityData } = useEntity(entityCode);
   const bounds = entityData?.location?.bounds;
 
-  const { data: dashboardData } = useDashboards(projectCode, entityCode) as {
-    data: DashboardType[];
-  };
-
-  const activeDashboard = dashboardData?.find(dashboard => dashboard.code === dashboardCode);
+  const { data: dashboardData } = useDashboards(projectCode, entityCode);
+  const activeDashboard = dashboardData?.find(dashboard => dashboard.name === dashboardName);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
