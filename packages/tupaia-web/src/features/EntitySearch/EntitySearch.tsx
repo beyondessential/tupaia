@@ -27,10 +27,10 @@ const ResultsWrapper = styled.div`
   top: 100%;
   left: 0;
   background: ${({ theme }) => theme.palette.background.default};
-  padding: 0 0.875rem 0.625rem;
+  padding: 0 0.3rem 0.625rem;
   width: calc(100% + 5px);
   border-radius: 8px;
-  max-height: calc(80vh - 200px);
+  max-height: calc(80vh - 12rem);
   overflow-y: auto;
 `;
 
@@ -38,8 +38,7 @@ export const EntitySearch = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const listIsVisible = true;
-  // searchValue || isSearchFocused;
+  const listIsVisible = searchValue || isSearchFocused;
 
   return (
     <Wrapper>

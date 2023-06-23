@@ -4,7 +4,6 @@
  */
 
 import { useQuery } from 'react-query';
-import { sleep } from '@tupaia/utils';
 import { get } from '../api';
 
 export const useEntities = (projectCode: string, entityCode: string, options?: any) => {

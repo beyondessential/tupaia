@@ -48,15 +48,6 @@ const Header = styled.header<{
   }
 `;
 
-const Inner = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 18.75rem;
-  height: 100%; ;
-`;
-
 export const TopBar = () => {
   const { landingPageUrlSegment } = useParams();
   // gets landing page data if landing page url segment is present, otherwise will return {}
