@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { MultiSelect } from '../../src';
+import { MultiSelect } from '../../src/components';
 
 export default {
   title: 'Inputs/MultiSelect',

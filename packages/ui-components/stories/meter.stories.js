@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';
-import { BarMeter, CircleMeter } from '../src';
+import { BarMeter, CircleMeter } from '../src/components';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
