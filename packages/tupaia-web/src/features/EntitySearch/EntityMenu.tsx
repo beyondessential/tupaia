@@ -85,8 +85,10 @@ const EntityMenuItem = ({
     setIsExpanded(!isExpanded);
   };
 
-  // Pre-populate the next layer of the menu with children that came from the previous layer of entity data
-  // then replace them with the children from the API response when it arrives
+  /*
+    Pre-populate the next layer of the menu with children that came from the previous layer of entity
+    data then replace them with the children from the API response when it arrives
+  */
   const nextChildren = data?.children || entity.children;
 
   return (
