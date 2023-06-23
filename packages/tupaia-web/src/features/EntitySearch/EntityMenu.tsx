@@ -5,9 +5,9 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import ExpandIcon from '@material-ui/icons/ExpandMore';
 import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
 import { useEntities } from '../../api/queries';
-import ExpandIcon from '@material-ui/icons/ExpandMore';
 
 const FlexRow = styled.div`
   display: flex;
@@ -17,6 +17,10 @@ const FlexRow = styled.div`
 
 const List = styled(MuiList)`
   margin-left: 10px;
+
+  .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
+    color: transparent;
+  }
 `;
 
 const MenuLink = styled(Button).attrs({
@@ -29,44 +33,70 @@ const MenuLink = styled(Button).attrs({
   font-size: 0.875rem;
 `;
 
-const ExpandedList = ({ listItems }) => {
-  const sortedItems = listItems.sort((a, b) => a.name.localeCompare(b.name));
+const ExpandedList = ({ projectCode, children, isLoading }) => {
+  const entityList = children.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <List>
-      {sortedItems.map(({ code: entityCode, name: entityName, children }) => (
-        <EntityMenuItem key={entityCode} entityName={entityName} listItems={children} />
+      {entityList.map(entity => (
+        <EntityMenuItem
+          key={entity.code}
+          projectCode={projectCode}
+          entityName={entity.name}
+          entityCode={entity.code}
+          children={entity.children}
+          parentIsLoading={isLoading}
+        />
       ))}
     </List>
   );
 };
 
-export const EntityMenuItem = ({ entityName, listItems }) => {
+export const EntityMenuItem = ({
+  projectCode,
+  entityName,
+  entityCode,
+  children,
+  parentIsLoading = false,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { data, isLoading } = useEntities(projectCode!, entityCode!, { enabled: isExpanded });
+
   const onExpand = () => {
-    console.log('Expand');
     setIsExpanded(!isExpanded);
   };
+
+  const nextChildren = data?.children || children;
+  const showButton = parentIsLoading || nextChildren;
 
   return (
     <div>
       <FlexRow>
         <MenuLink to={entityName}>{entityName}</MenuLink>
-        {listItems.length > 0 && (
-          <IconButton onClick={onExpand}>
+        {showButton && (
+          <IconButton onClick={onExpand} disabled={parentIsLoading}>
             <ExpandIcon />
           </IconButton>
         )}
       </FlexRow>
-      {isExpanded && <ExpandedList listItems={listItems} />}
+      {isExpanded && (
+        <ExpandedList children={nextChildren} projectCode={projectCode} isLoading={isLoading} />
+      )}
     </div>
   );
 };
 
+/*
+ * Todo:
+ *  Facility type icons
+ *  Remove Australian state numbers
+ *  Typescript
+ *  Show on focus
+ *  Expand button style
+ *
+ *
+ *  */
 export const EntityMenu = () => {
   const { projectCode, entityCode } = useParams();
-  const { data, isLoading } = useEntities(projectCode!, entityCode!);
-  if (isLoading) return <p>Loading...</p>;
-
-  const listItems = data?.children || [];
-  return <ExpandedList listItems={listItems} />;
+  const { data } = useEntities(projectCode!, entityCode!);
+  return <ExpandedList projectCode={projectCode} children={data?.children || []} />;
 };
