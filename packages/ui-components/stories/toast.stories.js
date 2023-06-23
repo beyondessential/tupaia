@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { Toast } from '../src';
+import { Toast } from '../src/components';
 
 export default {
   title: 'Toast',

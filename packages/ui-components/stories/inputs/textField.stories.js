@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import { CalendarToday, KeyboardArrowDown, Visibility, Room } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
-import { Checkbox, TextField, Button } from '../../src';
+import { Checkbox, TextField, Button } from '../../src/components';
 
 export default {
   title: 'Inputs/TextField',
