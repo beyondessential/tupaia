@@ -1,4 +1,5 @@
 'use strict';
+
 import { generateId } from '@tupaia/database';
 
 var dbm;

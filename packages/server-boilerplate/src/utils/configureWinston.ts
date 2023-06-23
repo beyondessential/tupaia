@@ -17,23 +17,19 @@ import winston from 'winston';
 const enumerateErrorFormat = winston.format(info => {
   const msg = info.message as any;
   if (msg instanceof Error) {
-    info.message = Object.assign(
-      {
-        message: msg.message,
-        stack: msg.stack,
-      },
-      info.message,
-    );
+    info.message = {
+      message: msg.message,
+      stack: msg.stack,
+      ...info.message,
+    };
   }
 
   if (info instanceof Error) {
-    return Object.assign(
-      {
-        message: info.message,
-        stack: info.stack,
-      },
-      info,
-    );
+    return {
+      message: info.message,
+      stack: info.stack,
+      ...info,
+    };
   }
 
   return info;

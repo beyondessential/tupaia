@@ -76,4 +76,3 @@ const localStyles = StyleSheet.create({
     borderColor: getThemeColorOneFaded(0.4),
   },
 });
-

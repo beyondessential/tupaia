@@ -17,4 +17,3 @@ export interface FetchConfig {
   headers: FetchHeaders;
   body?: string;
 }
-

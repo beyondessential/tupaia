@@ -12,7 +12,7 @@ export const DATA_ELEMENTS = dataElements({
   POP01: { code: 'POP01', dataElementCode: 'POP01', service_type: 'dhis' },
   POP02: { code: 'POP02', dataElementCode: 'POP02', service_type: 'dhis' },
   DIF01: { code: 'DIF01', dataElementCode: 'DIF01_DHIS', service_type: 'dhis' },
-  NON_DHIS_1: { code: 'NON_DHIS_1', service_type: 'superset' }
+  NON_DHIS_1: { code: 'NON_DHIS_1', service_type: 'superset' },
 });
 
 export const DATA_GROUPS = dataGroups({

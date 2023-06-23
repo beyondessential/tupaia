@@ -35,10 +35,10 @@ const BASE_OVERLAY = {
 
 const BASE_CONFIG = {
   groups: {
-    '0': { value: 0, operator: '=' },
-    '1': { value: [0, 1], operator: 'rangeExclusive' },
-    '2': { value: [1, 2], operator: 'range' },
-    '3': { value: 2, operator: '>' },
+    0: { value: 0, operator: '=' },
+    1: { value: [0, 1], operator: 'rangeExclusive' },
+    2: { value: [1, 2], operator: 'range' },
+    3: { value: 2, operator: '>' },
   },
   aggregationEntityType: 'facility',
 };
@@ -99,13 +99,13 @@ const OVERLAYS = [
   },
 ];
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     OVERLAYS.map((overlay, index) => {
       const { name, id, dataElementCodes } = overlay;
@@ -120,7 +120,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(
     `	
     DELETE FROM "mapOverlay" WHERE "id" in (${arrayToDbString(OVERLAYS.map(o => o.id))});	

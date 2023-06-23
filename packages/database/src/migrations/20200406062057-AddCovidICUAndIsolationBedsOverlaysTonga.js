@@ -43,13 +43,13 @@ const OVERLAY_2 = {
   },
 };
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return Promise.all([
     insertObject(db, 'mapOverlay', {
       ...BASE_OVERLAY,
@@ -62,7 +62,7 @@ exports.up = function(db) {
   ]);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(
     `	
     DELETE FROM "mapOverlay" WHERE "id" in ('${OVERLAY_1.id}', '${OVERLAY_2.id}');	

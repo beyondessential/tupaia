@@ -1,22 +1,22 @@
-'use strict';
+import { AGGREGATION_TYPES } from '@tupaia/aggregator/src/aggregationTypes';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
 
-import { AGGREGATION_TYPES } from '@tupaia/aggregator/src/aggregationTypes';
-
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     insert into "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson")
     values (
@@ -72,7 +72,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     delete from "dashboardReport" where id = 'COVID_Tests_Per_Capita';
 

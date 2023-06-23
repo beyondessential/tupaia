@@ -8,7 +8,12 @@ import moment from 'moment';
 import RNFS from 'react-native-fs';
 
 import { synchroniseDatabase } from '../../sync';
-import { getFileInDocumentsPath, imageDataIsFileName, generateMongoId, getFilenameFromUri } from "../../utilities";
+import {
+  getFileInDocumentsPath,
+  imageDataIsFileName,
+  generateMongoId,
+  getFilenameFromUri,
+} from '../../utilities';
 import { getCurrentUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
 import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
 import { addMessage } from '../../messages';

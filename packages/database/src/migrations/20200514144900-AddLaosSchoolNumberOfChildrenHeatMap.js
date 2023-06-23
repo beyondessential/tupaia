@@ -7,10 +7,10 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -24,7 +24,8 @@ const LAOS_SCHOOLS_CHILDREN_MAP_OVERLAYS = [
   },
   {
     id: 'Laos_Schools_Children_Supported_With_Learning_Materials',
-    name: 'Number of children supported with Learning materials made available on MoES website in their lessons',
+    name:
+      'Number of children supported with Learning materials made available on MoES website in their lessons',
     dataElementCode: 'SchFF007',
   },
   {
@@ -32,7 +33,7 @@ const LAOS_SCHOOLS_CHILDREN_MAP_OVERLAYS = [
     name: 'Number of children provided with psychosocial support',
     dataElementCode: 'SchFF017',
   },
-]
+];
 
 const GROUP_NAME = 'Number of Children';
 
@@ -42,9 +43,9 @@ const DISPLAY_TYPE = 'spectrum';
 
 const MEASURE_BUILDER = 'valueForOrgGroup';
 
-const MEASURE_BUILDER_CONFIG =  {
+const MEASURE_BUILDER_CONFIG = {
   dataSourceEntityType: 'school',
-  aggregationEntityType: 'school'
+  aggregationEntityType: 'school',
 };
 
 const COUNTRY_CODES = '{"LA"}';
@@ -56,10 +57,10 @@ const VALUES = [
 
 const PRESENTATION_OPTIONS = {
   scaleMin: 0,
-  scaleType: "population",
+  scaleType: 'population',
   displayOnLevel: 'District',
   hideByDefault: {
-    "null": true
+    null: true,
   },
 };
 
@@ -75,7 +76,7 @@ const BASIC_CHILDREN_MAP_OVERLAY_OBJECT = {
   countryCodes: COUNTRY_CODES,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     LAOS_SCHOOLS_CHILDREN_MAP_OVERLAYS.map((overlay, index) => {
       const { name, id, dataElementCode } = overlay;
@@ -90,7 +91,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`	
     DELETE FROM "mapOverlay" 
     WHERE "id" in (${arrayToDbString(LAOS_SCHOOLS_CHILDREN_MAP_OVERLAYS.map(o => o.id))});	
@@ -98,5 +99,5 @@ exports.down = function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

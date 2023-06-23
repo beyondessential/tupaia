@@ -75,5 +75,5 @@ export const sortByColumns = ({ columns, rows }, columnsToSortBy = []) => {
     })
     .filter(key => key !== '');
   const sortedRows = rows.sort(getRecursiveRowsOnKeysSorter(columnKeysToSortBy));
-  return { columns, rows: [ ...sortedRows] };
+  return { columns, rows: [...sortedRows] };
 };
