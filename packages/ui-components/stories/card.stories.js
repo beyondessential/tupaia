@@ -21,7 +21,7 @@ import {
   CardTabPanel,
   CardTabPanels,
   CardTabs,
-} from '../src';
+} from '../src/components';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {

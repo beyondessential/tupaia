@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { RadioGroup } from '../../src';
+import { RadioGroup } from '../../src/components';
 
 export default {
   title: 'Inputs/RadioGroup',

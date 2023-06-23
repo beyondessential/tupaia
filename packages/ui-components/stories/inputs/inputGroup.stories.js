@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { InputGroup, TextField } from '../../src';
+import { InputGroup, TextField } from '../../src/components';
 
 export default {
   title: 'Inputs/InputGroup',

@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { Alert, SmallAlert } from '../src';
+import { Alert, SmallAlert } from '../src/components/Alert';
 
 export default {
   title: 'Alert',

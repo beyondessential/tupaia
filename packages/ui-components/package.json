@@ -11,6 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "source": "src/index.js",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && yarn package:build:ts",
     "build-dev": "npm run build",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
+    "@storybook/addon-essentials": "6.3.9",
     "@storybook/react": "^6.3.9",
     "@types/jest": "^29.5.1",
     "@types/lodash.throttle": "^4.1.7",

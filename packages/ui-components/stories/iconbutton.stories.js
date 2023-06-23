@@ -11,7 +11,7 @@ import {
   ChevronRight,
   ChevronLeft,
 } from '@material-ui/icons';
-import { IconButton, LightIconButton } from '../src';
+import { IconButton, LightIconButton } from '../src/components';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
