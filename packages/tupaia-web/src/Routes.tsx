@@ -17,16 +17,22 @@ import { LoadingScreen } from './components';
  *
  * * */
 
+const HomeRedirect = () => {
+  const { isLoading, isLoggedIn } = useUser();
+
+  if (isLoading) {
+    return <LoadingScreen isLoading />;
+  }
+  return (
+    <Navigate
+      to={`${DEFAULT_URL}#${isLoggedIn ? MODAL_ROUTES.PROJECTS : MODAL_ROUTES.LOGIN}`}
+      replace
+    />
+  );
+};
 export const Routes = () => {
   const location = useLocation();
-  const { isLoggedIn, isLoading } = useUser();
   // if the user is loading, show a loading screen, so that we can handle redirects when this is done
-  if (isLoading)
-    return (
-      <RouterRoutes>
-        <Route path="*" element={<LoadingScreen isLoading />} />
-      </RouterRoutes>
-    );
 
   return (
     <>
@@ -34,15 +40,7 @@ export const Routes = () => {
       <RouterRoutes>
         {/* This is the layout for the entire app, so needs to be wrapped around the rest of the routes so that we can access params in top bar etc */}
         <Route element={<Layout />}>
-          <Route
-            path="/"
-            element={
-              <Navigate
-                to={`${DEFAULT_URL}#${isLoggedIn ? MODAL_ROUTES.PROJECTS : MODAL_ROUTES.LOGIN}`}
-                replace
-              />
-            }
-          />
+          <Route path="/" element={<HomeRedirect />} />
           {/* Email verification links redirect to the login page where the verification happens */}
           <Route
             path="/verify-email"

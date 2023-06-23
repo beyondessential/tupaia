@@ -14,7 +14,7 @@ type LoginCredentials = {
 };
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const location = useLocation() as { state: { backgroundLocation?: string } };
+  const location = useLocation() as { state: { referrer?: string } };
   const navigate = useNavigate();
 
   const { closeModal } = useModal();
@@ -33,8 +33,8 @@ export const useLogin = () => {
       onSuccess: () => {
         queryClient.invalidateQueries();
         // if the user was redirected to the login page, redirect them back to the page they were on
-        if (location.state?.backgroundLocation)
-          navigate(location.state.backgroundLocation, {
+        if (location.state?.referrer)
+          navigate(location.state.referrer, {
             state: null,
           });
         else closeModal();

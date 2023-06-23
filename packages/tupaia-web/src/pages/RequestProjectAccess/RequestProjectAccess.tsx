@@ -47,7 +47,7 @@ export const RequestProjectAccess = () => {
         },
         {
           state: {
-            backgroundLocation: location,
+            referrer: location,
           },
         },
       );

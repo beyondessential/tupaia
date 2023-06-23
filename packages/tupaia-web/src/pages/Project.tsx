@@ -8,7 +8,6 @@ import { useParams } from 'react-router';
 import { MapLayout, Sidebar } from '../layout';
 import { useProject, useUser } from '../api/queries';
 import { useModal } from '../utils';
-import { MODAL_ROUTES } from '../constants';
 import { LoadingScreen } from '../components';
 
 const Container = styled.div`
@@ -25,13 +24,13 @@ export const Project = () => {
   const { projectCode } = useParams();
   const { data: project, isLoading } = useProject(projectCode);
   const { isLoggedIn } = useUser();
-  const { navigateToModal } = useModal();
+  const { navigateToLogin } = useModal();
 
   // check if the user is logged in. If they are not logged in and the project requires login, direct first to the login modal
   useEffect(() => {
     const checkLogin = () => {
       if (isLoggedIn || isLoading || (project && project.hasAccess)) return;
-      navigateToModal(MODAL_ROUTES.LOGIN);
+      navigateToLogin();
     };
     checkLogin();
   }, [project, isLoggedIn, isLoading]);
