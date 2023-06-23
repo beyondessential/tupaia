@@ -6,7 +6,7 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
-export const useEntities = (projectCode: string, entityCode: string, options?: any) => {
+export const useEntities = (projectCode: string, entityCode?: string, options?: any) => {
   return useQuery(
     ['entities', projectCode, entityCode],
     async () => {

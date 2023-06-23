@@ -9,7 +9,7 @@ import { ClickAwayListener } from '@material-ui/core';
 import { SearchBar } from './SearchBar';
 import { EntityMenu } from './EntityMenu';
 import { useParams } from 'react-router-dom';
-import { useEntities } from '../../api/queries';
+import { useEntities, useProject } from '../../api/queries';
 
 const Wrapper = styled.div`
   position: relative;
@@ -43,8 +43,11 @@ const SearchResults = styled.div`
 `;
 
 export const EntitySearch = () => {
-  const { projectCode, entityCode } = useParams();
-  const { data, isLoading } = useEntities(projectCode!, entityCode!);
+  const { projectCode } = useParams();
+  const { data: project } = useProject(projectCode!);
+  const { data: entity, isLoading } = useEntities(projectCode!, project?.entityCode, {
+    enabled: !!project?.entityCode,
+  });
   const [searchValue, setSearchValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
@@ -63,7 +66,7 @@ export const EntitySearch = () => {
             ) : (
               <EntityMenu
                 projectCode={projectCode!}
-                children={data?.children || []}
+                children={entity?.children || []}
                 isLoading={isLoading}
               />
             )}
