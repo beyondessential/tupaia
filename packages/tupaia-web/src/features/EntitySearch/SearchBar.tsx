@@ -19,14 +19,20 @@ const SearchInput = styled(TextField).attrs({
   .MuiInputBase-root {
     background: ${({ theme }) => theme.searchBar.background};
     border-radius: 2.7rem;
-    border-color: transparent;
-    &:hover {
-      border-color: ${({ theme }) => theme.palette.text.primary};
-    }
   }
+
   .MuiOutlinedInput-notchedOutline {
-    // border-color: transparent;
+    border: 2px transparent solid;
   }
+
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border: 2px ${({ theme }) => theme.form.border} solid;
+  }
+
+  .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border: 2px ${({ theme }) => theme.palette.primary.main} solid;
+  }
+
   .MuiInputBase-input {
     padding: 0.6em;
   }
@@ -42,12 +48,8 @@ export const SearchBar = ({ value = '', onChange, onFocusChange }: SearchBarProp
   const onChangeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
+
   return (
-    <SearchInput
-      value={value}
-      onChange={onChangeInputValue}
-      onFocus={() => onFocusChange(true)}
-      onBlur={() => onFocusChange(false)}
-    />
+    <SearchInput value={value} onChange={onChangeInputValue} onFocus={() => onFocusChange(true)} />
   );
 };

@@ -24,6 +24,9 @@ export const theme = createMuiTheme(
       background: TRANSPARENT_BLACK,
       secondaryBackground: '#4a4b55',
     },
+    form: {
+      border: '#d9d9d9',
+    },
     projectCard: {
       background: '#2e2f33',
       fallBack: '#EFEFF0',

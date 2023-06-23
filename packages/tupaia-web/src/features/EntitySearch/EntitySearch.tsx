@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { ClickAwayListener } from '@material-ui/core';
 import { SearchBar } from './SearchBar';
 import { EntityMenu } from './EntityMenu';
 
@@ -34,16 +35,29 @@ const ResultsWrapper = styled.div`
   overflow-y: auto;
 `;
 
+const SearchResults = styled.div`
+  padding: 1rem;
+  display: flex;
+`;
+
 export const EntitySearch = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const listIsVisible = searchValue || isSearchFocused;
-
   return (
-    <Wrapper>
-      <SearchBar value={searchValue} onChange={setSearchValue} onFocusChange={setIsSearchFocused} />
-      {listIsVisible && <ResultsWrapper>{searchValue ? null : <EntityMenu />}</ResultsWrapper>}
-    </Wrapper>
+    <ClickAwayListener onClickAway={() => setIsSearchFocused(false)}>
+      <Wrapper>
+        <SearchBar
+          value={searchValue}
+          onChange={setSearchValue}
+          onFocusChange={setIsSearchFocused}
+        />
+        {isSearchFocused && (
+          <ResultsWrapper>
+            {searchValue ? <SearchResults>{searchValue}</SearchResults> : <EntityMenu />}
+          </ResultsWrapper>
+        )}
+      </Wrapper>
+    </ClickAwayListener>
   );
 };
