@@ -26,10 +26,6 @@
     "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
     "storybook": "storybook dev -p 6006",
     "test": "yarn package:test --env=jsdom",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
-    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build -w",
-    "start-ui-map-components": "yarn workspace @tupaia/ui-map-components build -w",
-    "start-frontend": "npm-run-all -c -l -p start-ui-components start-ui-chart-components start-ui-map-components start-dev",
     "build-storybook": "storybook build"
   },
   "dependencies": {
