@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Entity } from '@tupaia/types';
 import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
@@ -45,7 +45,7 @@ type EntityWithChildren = Entity & { children?: Entity[] };
  * ExpandedList is a recursive component that renders a list of entities and their children to
  * display an expandable entity menu.
  */
-const ExpandedList = ({
+export const EntityMenu = ({
   projectCode,
   children,
   isLoading,
@@ -78,6 +78,7 @@ const EntityMenuItem = ({
   entity: EntityWithChildren;
   parentIsLoading?: boolean;
 }) => {
+  const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
   const { data, isLoading } = useEntities(projectCode!, entity.code!, { enabled: isExpanded });
 
@@ -91,10 +92,12 @@ const EntityMenuItem = ({
   */
   const nextChildren = data?.children || entity.children;
 
+  const link = { ...location, pathname: `/${projectCode}/${entity.code}` };
+
   return (
     <div>
       <FlexRow>
-        <MenuLink to={entity.name}>
+        <MenuLink to={link}>
           {entity.name} {entity.type === 'facility' && <HospitalIcon />}
         </MenuLink>
         <IconButton onClick={onExpand} disabled={parentIsLoading || !nextChildren}>
@@ -102,21 +105,8 @@ const EntityMenuItem = ({
         </IconButton>
       </FlexRow>
       {isExpanded && (
-        <ExpandedList children={nextChildren} projectCode={projectCode} isLoading={isLoading} />
+        <EntityMenu children={nextChildren} projectCode={projectCode} isLoading={isLoading} />
       )}
     </div>
-  );
-};
-
-export const EntityMenu = () => {
-  const { projectCode, entityCode } = useParams();
-  const { data, isLoading } = useEntities(projectCode!, entityCode!);
-
-  return (
-    <ExpandedList
-      projectCode={projectCode!}
-      children={data?.children || []}
-      isLoading={isLoading}
-    />
   );
 };

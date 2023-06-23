@@ -51,7 +51,7 @@ const Header = styled.header<{
 export const TopBar = () => {
   const { landingPageUrlSegment } = useParams();
   // gets landing page data if landing page url segment is present, otherwise will return {}
-  const { landingPage } = useLandingPage(landingPageUrlSegment);
+  const { landingPage, isLandingPage } = useLandingPage(landingPageUrlSegment);
 
   // use the landing page settings if found, else the defaults
   const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
@@ -62,7 +62,7 @@ export const TopBar = () => {
         displayName={includeNameInHeader}
         name={name}
       />
-      <EntitySearch />
+      {!isLandingPage && <EntitySearch />}
       <UserMenu />
     </Header>
   );
