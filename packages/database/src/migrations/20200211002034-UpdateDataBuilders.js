@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -40,7 +40,7 @@ const updateViewJson = async (db, id, newViewJson, { drillDownLevel } = {}) =>
     WHERE ${buildWhereCondition(id, drillDownLevel)}`,
   );
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     DATA_BUILDER_CONFIGS.map(({ id, drillDownLevel, new: dataBuilderConfig }) =>
       replaceDataBuilderConfig(db, { id, drillDownLevel, dataBuilderConfig }),
@@ -53,7 +53,7 @@ exports.up = async function(db) {
   await replaceDataBuilderName(db, 'TO_RH_D07.1', 'sumPerDataGroupPerMonth');
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await Promise.all(
     DATA_BUILDER_CONFIGS.map(({ id, drillDownLevel, old: dataBuilderConfig }) =>
       replaceDataBuilderConfig(db, { id, drillDownLevel, dataBuilderConfig }),

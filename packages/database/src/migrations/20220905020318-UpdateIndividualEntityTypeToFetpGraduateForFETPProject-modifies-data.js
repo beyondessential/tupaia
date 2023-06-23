@@ -23,14 +23,13 @@ const PROJECT_CODE = 'fetp';
 exports.up = async function (db) {
   for (const entity of ENTITIES) {
     const parentId = await codeToId(db, 'entity', entity.parent_code);
-    const { id } = await findSingleRecord(db, 'entity', {code: entity.code,
-      parent_id: parentId})
+    const { id } = await findSingleRecord(db, 'entity', { code: entity.code, parent_id: parentId });
     await updateValues(
       db,
       'entity',
       { type: 'fetp_graduate' },
       {
-        id
+        id,
       },
     );
   }
@@ -45,14 +44,13 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   for (const entity of ENTITIES) {
     const parentId = await codeToId(db, 'entity', entity.parent_code);
-    const { id } = await findSingleRecord(db, 'entity', {code: entity.code,
-      parent_id: parentId})
+    const { id } = await findSingleRecord(db, 'entity', { code: entity.code, parent_id: parentId });
     await updateValues(
       db,
       'entity',
       { type: 'individual' },
       {
-        id
+        id,
       },
     );
   }

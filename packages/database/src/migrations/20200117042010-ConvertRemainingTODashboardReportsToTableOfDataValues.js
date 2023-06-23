@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 
-'use strict';
-
-var dbm;
-var type;
-var seed;
-
 import {
   buildSingleColumnTableCells,
   build2DTableCells,
   build2dTableStringFormatCells,
 } from '../utilities/migration';
+
+('use strict');
+
+var dbm;
+var type;
+var seed;
 
 const convertToTableOfDataValuesSql = table => {
   return `
@@ -251,7 +251,7 @@ const tHPU_Validation_HP_01Cols = [
 
 const HPU_Validation_MaleFemaleFormatFunctionBuilder = (start, prefix = 'HP') => {
   return (row, col) => {
-    const genderIndexOffset = row % 2; //Female rows are always 2nd and have an offset of 1
+    const genderIndexOffset = row % 2; // Female rows are always 2nd and have an offset of 1
     const rowBaseIndex = start + Math.floor(row / 2) * 2 * tHPU_Validation_HP_01Cols.length;
     const index = rowBaseIndex + col * 2 + genderIndexOffset;
 
@@ -562,9 +562,11 @@ const tHPU_Validation_HP_08CellFormatFunctionBuilder = start => {
   return (row, col) => {
     if (row < 3) {
       return `HP${start + row}${col < 1 ? 'a' : 'b'}`;
-    } else if (row < 4) {
+    }
+    if (row < 4) {
       return `HP${start + row}a_${col < 1 ? 'm' : 'f'}`;
-    } else if (row < 5) {
+    }
+    if (row < 5) {
       return `HP${start + (row - 1)}b_${col < 1 ? 'm' : 'f'}`;
     }
 
@@ -680,13 +682,13 @@ const tableHPU_Validation_HP_09 = {
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     ${convertToTableOfDataValuesSql(tableHPU_Validation_HP_04_New_Calls)}
     ${convertToTableOfDataValuesSql(tableHPU_Validation_HP_05)}
@@ -705,7 +707,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

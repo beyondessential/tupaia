@@ -1,4 +1,5 @@
 'use strict';
+
 import { generateId } from '@tupaia/database';
 
 var dbm;
@@ -9,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -18,7 +19,7 @@ exports.setup = function(options, seedLink) {
 const QUESTION_CODE = 'CD3b_014b_C19_9';
 const CONFIG = { isDataRegional: false };
 
-exports.up = function(db) {
+exports.up = function (db) {
   const id = generateId();
   return db.runSql(`
     INSERT INTO data_source (id, code, type, service_type, config) VALUES
@@ -30,7 +31,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

@@ -88,18 +88,18 @@ const SHOWN_OVERLAY = {
   linkedMeasures: '{"STRIVE_WTF_mRDT_Tests_Radius"}',
 };
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', RADIUS_OVERLAY);
   await insertObject(db, 'mapOverlay', SHOWN_OVERLAY);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(
     `	
     DELETE FROM "mapOverlay" WHERE "id" = '${RADIUS_OVERLAY.id}';	

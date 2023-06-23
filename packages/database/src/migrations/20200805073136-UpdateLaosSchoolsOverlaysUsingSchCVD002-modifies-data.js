@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -74,7 +74,7 @@ const NEW_PRESENTATION_OPTIONS = {
 
 const OVERLAY_ID = 'Laos_Schools_Used_As_Quarantine_Centre';
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE "mapOverlay"
     SET "presentationOptions" = '${JSON.stringify(NEW_PRESENTATION_OPTIONS)}',
@@ -83,7 +83,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE "mapOverlay"
     SET "presentationOptions" = '${JSON.stringify(OLD_PRESENTATION_OPTIONS)}',

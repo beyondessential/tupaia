@@ -7,11 +7,7 @@ export const latestSurveyDownloadLink = async (
   aggregator,
   dhisApi,
 ) => {
-  const dateJson = await latestDataValueDate(
-    { dataBuilderConfig, entity },
-    aggregator,
-    dhisApi,
-  );
+  const dateJson = await latestDataValueDate({ dataBuilderConfig, entity }, aggregator, dhisApi);
 
   if (dateJson.data[0].value) {
     const downloadLinkBuiltData = await latestDownloadLink({ dataBuilderConfig, query, req });

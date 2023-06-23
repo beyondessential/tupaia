@@ -7,15 +7,14 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
-
 
 const DASHBOARD_GROUP_CODE = 'TO_Health_Promotion_Unit_Country';
 
@@ -31,12 +30,14 @@ const REPORT = {
     viewType: 'singleValue',
     periodGranularity: 'one_year_at_a_time',
   },
-  dataServices: [{
-    isDataRegional: false,
-  }],
+  dataServices: [
+    {
+      isDataRegional: false,
+    },
+  ],
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
 
   return db.runSql(`
@@ -49,7 +50,7 @@ exports.up = async function(db) {
    `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
      DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
      UPDATE
@@ -62,5 +63,5 @@ exports.down = function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

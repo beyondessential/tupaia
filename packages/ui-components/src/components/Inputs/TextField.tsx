@@ -1,17 +1,19 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
-import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
+import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { InputAdornment } from '@material-ui/core';
 import { InputLabel } from './InputLabel';
 
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
 
-const StyledTextField = styled(MuiTextField)<TextFieldProps>`
+const StyledTextField = styled(MuiTextField)`
   margin-bottom: 1.2rem;
   cursor: auto;
 
@@ -132,13 +134,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   }
 `;
 
-export const TextField = ({
-  label = '',
-  tooltip,
-  ...props
-}: TextFieldProps & {
-  tooltip?: string;
-}) => (
+export const TextField = ({ label, tooltip, ...props }) => (
   <StyledTextField
     fullWidth
     {...props}
@@ -146,3 +142,13 @@ export const TextField = ({
     label={<InputLabel label={label} tooltip={tooltip} as="span" />}
   />
 );
+
+TextField.propTypes = {
+  label: PropTypes.string,
+  tooltip: PropTypes.string,
+};
+
+TextField.defaultProps = {
+  label: '',
+  tooltip: '',
+};

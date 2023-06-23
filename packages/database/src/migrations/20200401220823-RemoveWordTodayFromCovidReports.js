@@ -11,13 +11,13 @@ var seed;
 
 const REPORT_ID = 'COVID_Daily_Cases_By_Type';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     update "dashboardReport"
     set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{labels,dailysurvey003}', '"New confirmed cases"')
@@ -29,7 +29,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     update "dashboardReport"
     set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{labels,dailysurvey003}', '"New confirmed cases today"')

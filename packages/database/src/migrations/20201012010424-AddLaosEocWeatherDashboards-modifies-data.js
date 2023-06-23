@@ -11,7 +11,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -84,18 +84,27 @@ const HISTORIC_DASHBOARD_REPORT = {
 
 const FORECAST_DASHBOARD_REPORT = cloneDeep(HISTORIC_DASHBOARD_REPORT);
 FORECAST_DASHBOARD_REPORT.id = 'LA_EOC_Forecast_Daily_Rainfall_And_Temperature';
-FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.precip.dataBuilderConfig.dataClasses.value.codes = ['WTHR_FORECAST_PRECIP'];
-FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.max_temp.dataBuilderConfig.dataClasses.value.codes = ['WTHR_FORECAST_MAX_TEMP'];
-FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.min_temp.dataBuilderConfig.dataClasses.value.codes = ['WTHR_FORECAST_MIN_TEMP'];
+FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.precip.dataBuilderConfig.dataClasses.value.codes = [
+  'WTHR_FORECAST_PRECIP',
+];
+FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.max_temp.dataBuilderConfig.dataClasses.value.codes = [
+  'WTHR_FORECAST_MAX_TEMP',
+];
+FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.min_temp.dataBuilderConfig.dataClasses.value.codes = [
+  'WTHR_FORECAST_MIN_TEMP',
+];
 FORECAST_DASHBOARD_REPORT.viewJson.name = 'Forecast Daily Rainfall (mm) and Temperature (°C)';
 FORECAST_DASHBOARD_REPORT.viewJson.chartConfig.precip.label = 'Forecast rainfall (mm)';
 FORECAST_DASHBOARD_REPORT.viewJson.chartConfig.max_temp.label = 'Forecast maximum temperature (°C)';
 FORECAST_DASHBOARD_REPORT.viewJson.chartConfig.min_temp.label = 'Forecast minimum temperature (°C)';
-FORECAST_DASHBOARD_REPORT.viewJson.defaultTimePeriod = { start: { unit: 'day', offset: 0 }, end: { unit: 'day', offset: 15 } };
-FORECAST_DASHBOARD_REPORT.viewJson.datePickerLimits = { start: { unit: 'day', offset: 0 }, end: { unit: 'day', offset: 15 } };
-
-
-
+FORECAST_DASHBOARD_REPORT.viewJson.defaultTimePeriod = {
+  start: { unit: 'day', offset: 0 },
+  end: { unit: 'day', offset: 15 },
+};
+FORECAST_DASHBOARD_REPORT.viewJson.datePickerLimits = {
+  start: { unit: 'day', offset: 0 },
+  end: { unit: 'day', offset: 15 },
+};
 
 const DASHBOARD_GROUP = {
   organisationLevel: 'City',
@@ -107,7 +116,7 @@ const DASHBOARD_GROUP = {
   projectCodes: `{laos_eoc}`,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
 
   await insertObject(db, 'dashboardReport', HISTORIC_DASHBOARD_REPORT);
@@ -116,7 +125,7 @@ exports.up = async function(db) {
   return null;
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`DELETE FROM "dashboardGroup" WHERE code = '${DASHBOARD_GROUP.code}';`);
 
   await db.runSql(`DELETE FROM "dashboardReport" WHERE id = '${HISTORIC_DASHBOARD_REPORT.id}';`);

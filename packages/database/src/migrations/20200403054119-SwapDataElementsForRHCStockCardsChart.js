@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -71,7 +71,7 @@ const dataBuilderConfig = {
   },
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE "dashboardReport"
     SET "dataBuilderConfig" = "dataBuilderConfig" || '${JSON.stringify(dataBuilderConfig)}'
@@ -79,7 +79,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

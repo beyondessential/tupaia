@@ -137,8 +137,8 @@ const REPORTS = [
 const REPORTS_OTHER = [
   'LESMIS_lowersecondary_repetition_rate_district_map',
   'LESMIS_primary_repetition_rate_district_map',
-  'LESMIS_uppersecondary_repetition_rate_district_map'
-]
+  'LESMIS_uppersecondary_repetition_rate_district_map',
+];
 
 exports.up = async function (db) {
   // insert overlay relation records for overlays to district group
@@ -181,7 +181,6 @@ exports.up = async function (db) {
       UPDATE "report" SET "config" = jsonb_set("config", '{transform, 0,insert, value}','"=divide($value,100)"') WHERE "code" = '${code}';
     `);
   });
-
 };
 
 exports.down = async function (db) {
