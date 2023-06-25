@@ -55,7 +55,7 @@ interface EntityMenuProps {
 export const EntityMenu = ({ projectCode, children, isLoading }: EntityMenuProps) => {
   const entityList = children.sort((a, b) => a.name.localeCompare(b.name));
   return (
-    <List>
+    <List aria-expanded>
       {entityList.map(entity => (
         <EntityMenuItem
           key={entity.code}
@@ -102,18 +102,13 @@ const EntityMenuItem = ({
         <IconButton
           onClick={toggleExpanded}
           disabled={parentIsLoading || !nextChildren}
-          aria-controls="entity-expand-button"
+          aria-label="toggle menu for this entity"
         >
           <ExpandIcon />
         </IconButton>
       </FlexRow>
       {isExpanded && (
-        <EntityMenu
-          children={nextChildren}
-          projectCode={projectCode}
-          isLoading={isLoading}
-          aria-expanded={isExpanded}
-        />
+        <EntityMenu children={nextChildren} projectCode={projectCode} isLoading={isLoading} />
       )}
     </div>
   );
