@@ -11,6 +11,7 @@ import { DataProps, ChartType, ViewContent, VizPeriodGranularity } from '../type
 // tupaia-web uses a responsive approach, so we need to check the window width
 export const isMobile = () =>
   process.env.REACT_APP_APP_TYPE === 'mobile' || window.innerWidth < 900;
+//|| window.innerWidth < 900;
 
 const granularityConfig = GRANULARITY_CONFIG as VizPeriodGranularity;
 

@@ -60,6 +60,7 @@ interface DashboardItemContentProps {
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
   onRetryFetch: UseQueryResult['refetch'];
+  isExpandable: boolean;
 }
 
 export const DashboardItemContent = ({
@@ -68,12 +69,9 @@ export const DashboardItemContent = ({
   isLoading,
   error,
   onRetryFetch,
+  isExpandable,
 }: DashboardItemContentProps) => {
-  const { periodGranularity, viewType, type, name, reportCode } = viewContent;
-
-  const isExpandable =
-    !isEnlarged &&
-    (periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload');
+  const { name, reportCode, type, viewType } = viewContent;
 
   const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
 

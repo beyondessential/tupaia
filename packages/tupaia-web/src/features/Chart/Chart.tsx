@@ -7,18 +7,27 @@ import React from 'react';
 import styled from 'styled-components';
 import { Chart as ChartComponent, ViewContent } from '@tupaia/ui-chart-components';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{
+  $isEnlarged: boolean;
+}>`
   display: flex;
   position: relative;
-  flex: 1 1 100%;
   align-content: stretch;
   -webkit-box-align: stretch;
   align-items: stretch;
-  flex-direction: column;
-  min-height: 12rem;
+  height: ${({ $isEnlarged }) => ($isEnlarged ? '31.25rem' : '12rem')};
   position: relative;
+  flex-direction: column;
   .recharts-responsive-container {
     min-width: 0px;
+  }
+  .recharts-wrapper,
+  svg {
+    height: 100% !important;
+    width: 100%;
+  }
+  li.recharts-legend-item {
+    white-space: nowrap; // ensure there are no line breaks on the export legends
   }
 `;
 
@@ -29,7 +38,7 @@ interface ChartProps {
 
 export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
   return (
-    <Wrapper>
+    <Wrapper $isEnlarged={isEnlarged}>
       <ChartComponent viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
     </Wrapper>
   );

@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { DashboardItemType } from '../../../types';
+import { DashboardCode, DashboardItemType } from '../../../types';
 import { EnlargedDashboardItem } from './EnlargedDashboardItem';
-import { DashboardItemContent } from './DashboarditemContent';
+import { DashboardItemContent } from './DashboardItemContent';
 import { useReport } from '../../../api/queries';
 
 const Wrapper = styled.div`
@@ -31,9 +31,17 @@ const Container = styled.div`
   align-items: stretch;
 `;
 
-export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemType }) => {
-  const { projectCode, entityCode, '*': dashboardCode } = useParams();
-  const { legacy, code, reportCode } = dashboardItem;
+interface DashboardItemProps {
+  dashboardItem: DashboardItemType;
+  dashboardCode: DashboardCode;
+}
+
+/**
+ * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal
+ */
+export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemProps) => {
+  const { projectCode, entityCode } = useParams();
+  const { legacy, code, reportCode, viewType, type } = dashboardItem;
   // query for the report data
   const { data: reportData, isLoading, error, isError, refetch } = useReport(
     projectCode,
@@ -49,7 +57,11 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     ...reportData,
   };
 
-  // eslint-disable-next-line react/require-default-props
+  const { periodGranularity } = viewContent;
+
+  const isExpandable =
+    periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
+
   const Content = ({ isEnlarged = false }: { isEnlarged?: boolean }) => (
     <DashboardItemContent
       viewContent={viewContent}
@@ -57,6 +69,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
       isLoading={isLoading}
       error={isError ? error : null}
       onRetryFetch={refetch}
+      isExpandable={isExpandable && !isEnlarged}
     />
   );
 
@@ -66,10 +79,12 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
       <Container>
         <Content />
       </Container>
-      {/** render modal for enlarged item */}
-      <EnlargedDashboardItem reportCode={reportCode}>
-        <Content isEnlarged />
-      </EnlargedDashboardItem>
+      {/** render modal for enlarged item, if is expandable */}
+      {isExpandable && (
+        <EnlargedDashboardItem reportCode={reportCode}>
+          <Content isEnlarged />
+        </EnlargedDashboardItem>
+      )}
     </Wrapper>
   );
 };

@@ -27,6 +27,22 @@ const testData = [
         viewType: '',
         periodGranularity: null,
       },
+      {
+        code: '8',
+        legacy: true,
+        reportCode: '8',
+        name: 'Number of Healthcare Workers',
+        type: 'chart',
+        chartType: 'pie',
+        valueType: 'text',
+        defaultTimePeriod: {
+          start: {
+            unit: 'year',
+            offset: -1,
+          },
+        },
+        isFavourite: null,
+      },
     ],
   },
 ];

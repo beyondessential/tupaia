@@ -129,7 +129,13 @@ export const Dashboard = () => {
         <DashboardMenu />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
           {activeDashboard?.items.map((dashboardItem: DashboardItemType) => {
-            return <DashboardItem key={dashboardItem.id} dashboardItem={dashboardItem} />;
+            return (
+              <DashboardItem
+                key={dashboardItem.id}
+                dashboardItem={dashboardItem}
+                dashboardCode={activeDashboard?.code}
+              />
+            );
           })}
         </DashboardItemsWrapper>
       </ScrollBody>

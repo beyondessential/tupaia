@@ -113,6 +113,7 @@ const getPieLegendDisplayValue = (
   item: any,
   viewContent: ViewContent,
   isEnlarged?: boolean,
+  isMobileSize?: boolean,
 ) => {
   if (isPieChartConfig(chartConfig) && chartConfig[value as keyof PieChartConfig]?.label) {
     return chartConfig[value as keyof PieChartConfig].label;
@@ -121,7 +122,7 @@ const getPieLegendDisplayValue = (
   const labelSuffix = formatDataValueByType({ value: item.value, metadata }, viewContent.valueType);
 
   // on mobile the legend will show the actual formatDataValueByType after the label value
-  return isMobile() && isEnlarged ? `${value} ${labelSuffix}` : value;
+  return isMobileSize && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
 
 interface PieLegendProps {
@@ -138,36 +139,40 @@ export const getPieLegend = ({
   isExporting,
   legendPosition,
   viewContent,
-}: PieLegendProps) => ({ payload }: any) => (
-  <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, payload: item }: TooltipPayload) => {
-      const displayValue = getPieLegendDisplayValue(
-        chartConfig,
-        value as string,
-        item,
-        viewContent,
-        isEnlarged,
-      );
+}: PieLegendProps) => ({ payload }: any) => {
+  const isMobileSize = isMobile();
+  return (
+    <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
+      {payload.map(({ color, value, payload: item }: TooltipPayload) => {
+        const displayValue = getPieLegendDisplayValue(
+          chartConfig,
+          value as string,
+          item,
+          viewContent,
+          isEnlarged,
+          isMobileSize,
+        );
 
-      return (
-        <LegendItem
-          key={value as string}
-          isExporting={isExporting}
-          className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
-          disabled
-        >
-          <TooltipContainer>
-            <Box
-              className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
-              style={{ background: color }}
-            />
-            <Text>{displayValue}</Text>
-          </TooltipContainer>
-        </LegendItem>
-      );
-    })}
-  </PieLegendContainer>
-);
+        return (
+          <LegendItem
+            key={value as string}
+            isExporting={isExporting}
+            className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
+            disabled
+          >
+            <TooltipContainer>
+              <Box
+                className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
+                style={{ background: color }}
+              />
+              <Text>{displayValue}</Text>
+            </TooltipContainer>
+          </LegendItem>
+        );
+      })}
+    </PieLegendContainer>
+  );
+};
 
 interface CartesianLegendProps {
   chartConfig: CartesianChartConfig;
@@ -183,27 +188,33 @@ export const getCartesianLegend = ({
   getIsActiveKey,
   isExporting,
   legendPosition,
-}: CartesianLegendProps) => ({ payload }: any) => (
-  <LegendContainer $position={legendPosition} $isExporting={isExporting}>
-    {payload.map(({ color, value, dataKey }: TooltipPayload) => {
-      const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
+}: CartesianLegendProps) => ({ payload }: any) => {
+  const isMobileSize = isMobile();
+  return (
+    <LegendContainer $position={legendPosition} $isExporting={isExporting}>
+      {payload.map(({ color, value, dataKey }: TooltipPayload) => {
+        const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
 
-      return (
-        <LegendItem
-          key={value as string}
-          onClick={() => onClick(dataKey)}
-          isExporting={isExporting}
-          className={isMobile() ? 'small' : 'enlarged'}
-          style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
-        >
-          <Tooltip title="Click to filter data" placement="top" arrow>
-            <TooltipContainer>
-              <Box className={isMobile() ? 'small' : 'enlarged'} style={{ background: color }} />
-              <Text>{displayValue}</Text>
-            </TooltipContainer>
-          </Tooltip>
-        </LegendItem>
-      );
-    })}
-  </LegendContainer>
-);
+        return (
+          <LegendItem
+            key={value as string}
+            onClick={() => onClick(dataKey)}
+            isExporting={isExporting}
+            className={isMobileSize ? 'small' : 'enlarged'}
+            style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
+          >
+            <Tooltip title="Click to filter data" placement="top" arrow>
+              <TooltipContainer>
+                <Box
+                  className={isMobileSize ? 'small' : 'enlarged'}
+                  style={{ background: color }}
+                />
+                <Text>{displayValue}</Text>
+              </TooltipContainer>
+            </Tooltip>
+          </LegendItem>
+        );
+      })}
+    </LegendContainer>
+  );
+};
