@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { MapOverlay, MapOverlayGroup, MapOverlayGroupRelation } from '@tupaia/types';
 import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyby';
 
 // TODO: WAITP-1278 split request types to types package
 // (And actually define it)
@@ -113,7 +114,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     };
 
     const relationsByParentId = groupBy(mapOverlayRelations, 'map_overlay_group_id');
-    const entriesById = groupBy([...mapOverlays, ...mapOverlayGroups], 'id');
+    const entriesById = keyBy([...mapOverlays, ...mapOverlayGroups], 'id');
     const rootOverlayGroup = mapOverlayGroups.find(
       (group: MapOverlayGroup) => group.code === 'Root',
     );
