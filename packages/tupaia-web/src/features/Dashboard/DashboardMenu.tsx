@@ -6,8 +6,8 @@ import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
-import { Dashboard } from '@tupaia/types';
 import styled from 'styled-components';
+import { DashboardType } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -20,7 +20,7 @@ const MenuButton = styled(ButtonBase)`
 `;
 
 interface DashboardMenuItemProps {
-  dashboardName: Dashboard['name'];
+  dashboardName: DashboardType['name'];
   onClose: () => void;
 }
 
@@ -41,8 +41,8 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
 }: {
-  activeDashboard: Dashboard | null;
-  dashboards: Dashboard[];
+  activeDashboard: DashboardType | null;
+  dashboards: DashboardType[];
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 

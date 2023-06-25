@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
+import { DashboardType } from '../../types';
 // import { get } from '../api';
 
 const testData = [
@@ -51,7 +52,7 @@ export const useDashboards = (projectCode?: string, entityCode?: string) => {
   return useQuery(
     ['dashboards', projectCode, entityCode],
     () => {
-      return Promise.resolve(() => testData);
+      return Promise.resolve(() => testData as DashboardType[]);
     },
     // get('dashboards', {
     //   params: { entityCode, projectCode },
