@@ -99,6 +99,11 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       parentEntry: MapOverlayGroup | MapOverlay,
     ): OverlayChild => {
       const childRelations = relationsByParentId[parentEntry.id as string] || [];
+      // groupBy does not guarantee order, so we can't sort before this
+      childRelations.sort(
+        (a: MapOverlayGroupRelation, b: MapOverlayGroupRelation) =>
+          (a.sort_order || 0) - (b.sort_order || 0),
+      );
       const nestedChildren: OverlayChild[] = childRelations.map(
         (relation: MapOverlayGroupRelation) => {
           if (relation.child_type === 'mapOverlay') {
