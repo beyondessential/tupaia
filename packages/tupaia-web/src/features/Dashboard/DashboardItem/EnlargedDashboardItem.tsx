@@ -22,18 +22,18 @@ const Container = styled.div`
   .recharts-responsive-container {
     min-height: 22.5rem;
   }
-  // recharts components doesn't pass nested styles so they need to be added on a wrapping component
-  li.recharts-legend-item {
-    white-space: nowrap; // ensure there are no line breaks on the export legends
-  }
 `;
 
 interface EnlargedDashboardItemProps {
   children: ReactNode;
   reportCode: DashboardItemType['reportCode'];
 }
+/**
+ * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
+ */
 export const EnlargedDashboardItem = ({ children, reportCode }: EnlargedDashboardItemProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  // On close, remove the report search param from the url
   const handleCloseModal = () => {
     urlSearchParams.delete('report');
     setUrlSearchParams(urlSearchParams.toString());

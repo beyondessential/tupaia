@@ -50,6 +50,7 @@ const LoadingContainer = styled.div`
   padding: 1rem;
 `;
 
+// Eventually matrix etc will be added here
 const DisplayComponents = {
   chart: Chart,
 };
@@ -63,6 +64,9 @@ interface DashboardItemContentProps {
   isExpandable: boolean;
 }
 
+/**
+ * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
+ */
 export const DashboardItemContent = ({
   viewContent,
   isEnlarged,

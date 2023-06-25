@@ -7,9 +7,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { DashboardCode, DashboardItemType } from '../../../types';
+import { useReport } from '../../../api/queries';
 import { EnlargedDashboardItem } from './EnlargedDashboardItem';
 import { DashboardItemContent } from './DashboardItemContent';
-import { useReport } from '../../../api/queries';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,7 +37,7 @@ interface DashboardItemProps {
 }
 
 /**
- * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal
+ * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
 export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemProps) => {
   const { projectCode, entityCode } = useParams();

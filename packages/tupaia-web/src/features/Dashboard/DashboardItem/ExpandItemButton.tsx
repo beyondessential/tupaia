@@ -65,6 +65,9 @@ interface ExpandItemButtonProps {
   viewType: DashboardItemType['viewType'];
 }
 
+/**
+ * ExpandItemButton handles the 'expand' button for the dashboard item in both mobile and desktop sizes
+ */
 export const ExpandItemButton = ({ reportCode, viewType }: ExpandItemButtonProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const handleExpandDashboardItem = () => {
