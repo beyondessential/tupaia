@@ -18,12 +18,14 @@ import {
   EntitiesRoute,
   ReportRoute,
   LegacyMapOverlayReportRoute,
+  MapOverlaysRoute,
   UserRoute,
   TempLogoutRoute,
   DashboardsRequest,
   EntitiesRequest,
   ReportRequest,
   LegacyMapOverlayReportRequest,
+  MapOverlaysRequest,
   UserRequest,
   TempLogoutRequest,
   ProjectRequest,
@@ -44,7 +46,11 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
-    .get<LegacyMapOverlayReportRequest>('legacyMapOverlayReport/:reportCode', handleWith(LegacyMapOverlayReportRoute))
+    .get<LegacyMapOverlayReportRequest>(
+      'legacyMapOverlayReport/:reportCode',
+      handleWith(LegacyMapOverlayReportRoute),
+    )
+    .get<MapOverlaysRequest>('mapOverlays/:projectCode/:entityCode', handleWith(MapOverlaysRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
