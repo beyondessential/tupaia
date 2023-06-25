@@ -6,9 +6,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 import { SearchBar } from './SearchBar';
 import { EntityMenu } from './EntityMenu';
-import { useParams } from 'react-router-dom';
 import { useEntities, useProject } from '../../api/queries';
 
 const Wrapper = styled.div`

@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { HexcodeField } from '../../src';
+import { HexcodeField } from '../../src/components';
 
 export default {
   title: 'Inputs/HexcodeField',

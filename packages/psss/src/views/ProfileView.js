@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
+import { useRouteMatch } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
 import { Header, HeaderTitle } from '../components';
 import { ProfileRoutes } from '../routes/ProfileRoutes';
@@ -26,13 +27,16 @@ const links = [
   },
 ];
 
-export const ProfileViewComponent = ({ userName }) => (
-  <>
-    <Header Title={<HeaderTitle title={userName} />} />
-    <TabsToolbar links={links} />
-    <ProfileRoutes />
-  </>
-);
+export const ProfileViewComponent = ({ userName }) => {
+  const match = useRouteMatch();
+  return (
+    <>
+      <Header Title={<HeaderTitle title={userName} />} />
+      <TabsToolbar links={links} baseRoute={match.url} />
+      <ProfileRoutes />
+    </>
+  );
+};
 
 ProfileViewComponent.propTypes = {
   userName: PropTypes.string.isRequired,

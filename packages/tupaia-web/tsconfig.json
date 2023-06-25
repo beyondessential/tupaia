@@ -7,7 +7,11 @@
       "DOM.Iterable",
       "ESNext"
     ],
-    "rootDirs": ["src", "stories", ".storybook"],
+    "rootDirs": [
+      "src",
+      "stories",
+      ".storybook"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
@@ -24,7 +28,9 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src","stories", ".storybook"
+    "src",
+    "stories",
+    ".storybook"
   ],
   "references": [
     {

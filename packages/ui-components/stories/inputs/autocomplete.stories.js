@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import styled from 'styled-components';
-import { Autocomplete } from '../../src';
+import { Autocomplete } from '../../src/components';
 
 export default {
   title: 'Inputs/Autocomplete',
