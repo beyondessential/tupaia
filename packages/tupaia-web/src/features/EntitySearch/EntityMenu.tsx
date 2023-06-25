@@ -79,7 +79,7 @@ const EntityMenuItem = ({
 }) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data, isLoading } = useEntities(projectCode!, entity.code!, { enabled: isExpanded });
+  const { data, isLoading } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
