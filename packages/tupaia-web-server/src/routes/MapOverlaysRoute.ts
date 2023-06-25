@@ -48,7 +48,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
 
     // Map overlay groups can be nested so we need to keep
     // searching until we find the root groups
-    const mapOverlayRelations = await ctx.services.central.fetchResources(
+    let mapOverlayRelations = await ctx.services.central.fetchResources(
       'mapOverlayGroupRelations',
       {
         filter: {
@@ -70,13 +70,13 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     );
     while (parentMapOverlayRelations.length) {
       // Save the previous relations and fetch another layer
-      mapOverlayRelations.concat(parentMapOverlayRelations);
+      mapOverlayRelations = mapOverlayRelations.concat(parentMapOverlayRelations);
       parentMapOverlayRelations = await ctx.services.central.fetchResources(
         'mapOverlayGroupRelations',
         {
           filter: {
             child_type: 'mapOverlayGroup',
-            child_id: mapOverlayRelations.map(
+            child_id: parentMapOverlayRelations.map(
               (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
             ),
           },
@@ -84,6 +84,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       );
     }
 
+    // Fetch all the groups we've used
     const mapOverlayGroups = await ctx.services.central.fetchResources('mapOverlayGroups', {
       filter: {
         id: mapOverlayRelations.map(
