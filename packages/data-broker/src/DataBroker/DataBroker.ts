@@ -131,9 +131,7 @@ export class DataBroker {
   };
 
   private fetchFromSyncGroupTable = async (dataSourceSpec: FetchConditions) => {
-    // Add 'type' field to output to keep object layout consistent between tables
-    const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
-    return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
+    return this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
   };
 
   private getOrganisationUnitsByCountry = async (organisationUnitCodes: string[]) => {
