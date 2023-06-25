@@ -17,11 +17,12 @@ export const useReport = (
   itemCode?: DashboardItemType['code'],
   legacy?: DashboardItemType['legacy'],
 ) => {
+  const timeZone = getBrowserTimeZone();
   return useQuery(
     ['report', reportCode, dashboardCode, projectCode, entityCode, itemCode],
     () =>
       get(
-        `report/${reportCode}?dashboardCode=${dashboardCode}&legacy=${legacy}&itemCode=${itemCode}&projectCode=${projectCode}&organisationUnitCode=${entityCode}&timeZone=${getBrowserTimeZone()}`,
+        `report/${reportCode}?dashboardCode=${dashboardCode}&legacy=${legacy}&itemCode=${itemCode}&projectCode=${projectCode}&organisationUnitCode=${entityCode}&timeZone=${timeZone}`,
         {},
       ),
     {
