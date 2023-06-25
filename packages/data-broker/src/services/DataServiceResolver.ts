@@ -27,9 +27,19 @@ export class DataServiceResolver {
     dataSources: DataSourceTypeInstance[],
     orgUnit?: Entity,
   ): Promise<DataServiceMapping> {
-    const dataElements = dataSources.filter(ds => ds.databaseType === TYPES.DATA_ELEMENT);
-    const dataGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_GROUP);
-    const syncGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_SERVICE_SYNC_GROUP);
+    const dataElements: DataSourceTypeInstance[] = [];
+    const dataGroups: DataSourceTypeInstance[] = [];
+    const syncGroups: DataSourceTypeInstance[] = [];
+    dataSources.forEach(ds => {
+      const type = ds.databaseType;
+      if (!type) {
+        throw new Error('Missing databaseType for data source');
+      }
+
+      if (type === TYPES.DATA_ELEMENT) dataElements.push(ds);
+      if (type === TYPES.DATA_GROUP) dataGroups.push(ds);
+      if (type === TYPES.DATA_SERVICE_SYNC_GROUP) syncGroups.push(ds);
+    });
 
     const mapping = new DataServiceMapping();
     mapping.dataElementMapping = await this.resolveDataElements(dataElements, orgUnit);
