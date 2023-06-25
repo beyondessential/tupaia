@@ -21,6 +21,7 @@ const Wrapper = styled.div<{
   .recharts-responsive-container {
     min-width: 0px;
   }
+  // Make the charts conform to the parent container's size
   .recharts-wrapper,
   svg {
     height: 100% !important;
