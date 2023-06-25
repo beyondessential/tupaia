@@ -13,7 +13,7 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards, useEntity } from '../../api/queries';
+import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
@@ -99,9 +99,9 @@ const Chart = styled.div`
   padding: 1rem 1rem 75%;
 `;
 
-const useDashboardOptions = () => {
+const useDashboards = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: dashboards = [] } = useDashboards(projectCode, entityCode);
+  const { data: dashboards = [] } = useDashboardData(projectCode, entityCode);
 
   let activeDashboard = null;
 
@@ -116,7 +116,7 @@ const useDashboardOptions = () => {
 export const Dashboard = () => {
   const { entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { dashboards, activeDashboard } = useDashboardOptions();
+  const { dashboards, activeDashboard } = useDashboards();
   const { data: entityData } = useEntity(entityCode);
   const bounds = entityData?.location?.bounds;
 
