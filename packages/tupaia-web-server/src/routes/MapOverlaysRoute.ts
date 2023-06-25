@@ -26,7 +26,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const project = (
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
-        columns: JSON.stringify(['entity_hierarchy.name']),
+        columns: ['entity_hierarchy.name'],
       })
     )[0];
     const entityHierarchyName = project['entity_hierarchy.name'];
