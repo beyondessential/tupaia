@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Alert, TextButton } from '@tupaia/ui-components';
+import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
 import { DashboardItemDisplayProps } from '../../../types';
 import { Chart } from '../../Chart';
@@ -38,6 +38,16 @@ const RetryButton = styled(TextButton)`
   line-height: inherit;
   vertical-align: inherit;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+`;
+
+const Alert = styled(BaseAlert)`
+  .MuiAlert-message {
+    max-width: 100%;
+  }
+  p {
+    max-width: 90%;
+    word-wrap: break-word;
+  }
 `;
 
 const LoadingContainer = styled.div`

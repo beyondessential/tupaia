@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   width: 100%;
   max-width: 100%;
   position: relative;
-  padding: 1rem 1rem 0.6rem;
+  padding: 1rem 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
 `;
 

@@ -8,7 +8,7 @@ import { DashboardType } from '../../types';
 
 const testData = [
   {
-    id: '60de99cc61f76a1b83000558',
+    id: 'test',
     code: 'explore_General',
     name: 'General',
     rootEntityCode: 'explore',
@@ -42,7 +42,6 @@ const testData = [
             offset: -1,
           },
         },
-        isFavourite: null,
       },
     ],
   },
@@ -52,7 +51,7 @@ export const useDashboards = (projectCode?: string, entityCode?: string) => {
   return useQuery(
     ['dashboards', projectCode, entityCode],
     () => {
-      return Promise.resolve(() => testData as DashboardType[]);
+      return Promise.resolve(() => testData as DashboardType[]); // TODO: replace this with actual data fetching
     },
     // get('dashboards', {
     //   params: { entityCode, projectCode },

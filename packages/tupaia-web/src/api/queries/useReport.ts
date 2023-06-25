@@ -7,6 +7,7 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DashboardType, DashboardItemType, EntityCode, ProjectCode } from '../../types';
+import { getBrowserTimeZone } from '@tupaia/utils';
 
 export const useReport = (
   projectCode?: ProjectCode,
@@ -16,12 +17,11 @@ export const useReport = (
   itemCode?: DashboardItemType['code'],
   legacy?: DashboardItemType['legacy'],
 ) => {
-  const timeZone = 'Pacific/Auckland'; // TODO: get from user
   return useQuery(
     ['report', reportCode, dashboardCode, projectCode, entityCode, itemCode],
     () =>
       get(
-        `report/${reportCode}?dashboardCode=${dashboardCode}&legacy=${legacy}&itemCode=${itemCode}&projectCode=${projectCode}&organisationUnitCode=${entityCode}&timeZone=${timeZone}`,
+        `report/${reportCode}?dashboardCode=${dashboardCode}&legacy=${legacy}&itemCode=${itemCode}&projectCode=${projectCode}&organisationUnitCode=${entityCode}&timeZone=${getBrowserTimeZone()}`,
         {},
       ),
     {

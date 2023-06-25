@@ -15,7 +15,7 @@ const Wrapper = styled.div<{
   align-content: stretch;
   -webkit-box-align: stretch;
   align-items: stretch;
-  height: ${({ $isEnlarged }) => ($isEnlarged ? '31.25rem' : '12rem')};
+  height: ${({ $isEnlarged }) => ($isEnlarged ? '22.5rem' : '12rem')};
   position: relative;
   flex-direction: column;
   .recharts-responsive-container {
