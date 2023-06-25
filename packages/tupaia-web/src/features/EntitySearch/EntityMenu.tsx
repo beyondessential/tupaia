@@ -41,19 +41,18 @@ const MenuLink = styled(Button).attrs({
 `;
 
 type EntityWithChildren = Entity & { children?: Entity[] };
+
+interface EntityMenuProps {
+  projectCode: string;
+  children: EntityWithChildren[];
+  isLoading: boolean;
+}
+
 /*
  * ExpandedList is a recursive component that renders a list of entities and their children to
  * display an expandable entity menu.
  */
-export const EntityMenu = ({
-  projectCode,
-  children,
-  isLoading,
-}: {
-  projectCode: string;
-  children: EntityWithChildren[];
-  isLoading: boolean;
-}) => {
+export const EntityMenu = ({ projectCode, children, isLoading }: EntityMenuProps) => {
   const entityList = children.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <List>
@@ -82,7 +81,7 @@ const EntityMenuItem = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const { data, isLoading } = useEntities(projectCode!, entity.code!, { enabled: isExpanded });
 
-  const onExpand = () => {
+  const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
@@ -100,12 +99,21 @@ const EntityMenuItem = ({
         <MenuLink to={link}>
           {entity.name} {entity.type === 'facility' && <HospitalIcon />}
         </MenuLink>
-        <IconButton onClick={onExpand} disabled={parentIsLoading || !nextChildren}>
+        <IconButton
+          onClick={toggleExpanded}
+          disabled={parentIsLoading || !nextChildren}
+          aria-controls="entity-expand-button"
+        >
           <ExpandIcon />
         </IconButton>
       </FlexRow>
       {isExpanded && (
-        <EntityMenu children={nextChildren} projectCode={projectCode} isLoading={isLoading} />
+        <EntityMenu
+          children={nextChildren}
+          projectCode={projectCode}
+          isLoading={isLoading}
+          aria-expanded={isExpanded}
+        />
       )}
     </div>
   );
