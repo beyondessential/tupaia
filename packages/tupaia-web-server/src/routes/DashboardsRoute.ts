@@ -17,9 +17,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const project = (
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
-        columns: JSON.stringify(['entity.code', 'entity_hierarchy.name']),
+        columns: ['entity.code', 'entity_hierarchy.name'],
       })
     )[0];
+
     const baseEntity = await ctx.services.entity.getEntity(
       project['entity_hierarchy.name'],
       entityCode,

@@ -8,7 +8,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import { Dashboard } from '@tupaia/types';
 import styled from 'styled-components';
-import { useDashboards } from '../../api/queries';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -38,10 +37,14 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   );
 };
 
-export const DashboardMenu = () => {
+export const DashboardMenu = ({
+  activeDashboard,
+  dashboards,
+}: {
+  activeDashboard: Dashboard | null;
+  dashboards: Dashboard[];
+}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const { projectCode, entityCode, '*': dashboardName } = useParams();
-  const { data: dashboards } = useDashboards(projectCode, entityCode);
 
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -51,12 +54,10 @@ export const DashboardMenu = () => {
     setAnchorEl(null);
   };
 
-  const selectedOption = dashboards?.find(({ name }) => name === dashboardName);
-
   return (
     <>
       <MenuButton onClick={handleClickListItem}>
-        {selectedOption?.name}
+        {activeDashboard?.name}
         <ArrowDropDownIcon />
       </MenuButton>
       <Menu
@@ -66,7 +67,7 @@ export const DashboardMenu = () => {
         onClose={handleClose}
         variant="menu"
       >
-        {dashboards?.map(({ name, code }) => (
+        {dashboards.map(({ name, code }) => (
           <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
       </Menu>

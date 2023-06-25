@@ -13,7 +13,7 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards, useEntity } from '../../api/queries';
+import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
@@ -99,14 +99,26 @@ const Chart = styled.div`
   padding: 1rem 1rem 75%;
 `;
 
+const useDashboards = () => {
+  const { projectCode, entityCode, dashboardName } = useParams();
+  const { data: dashboards = [] } = useDashboardData(projectCode, entityCode);
+
+  let activeDashboard = null;
+
+  if (dashboards.length > 0) {
+    activeDashboard =
+      dashboards.find(dashboard => dashboard.name === dashboardName) || dashboards[0];
+  }
+
+  return { dashboards, activeDashboard };
+};
+
 export const Dashboard = () => {
-  const { projectCode, entityCode, '*': dashboardName } = useParams();
+  const { entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
+  const { dashboards, activeDashboard } = useDashboards();
   const { data: entityData } = useEntity(entityCode);
   const bounds = entityData?.location?.bounds;
-
-  const { data: dashboardData } = useDashboards(projectCode, entityCode);
-  const activeDashboard = dashboardData?.find(dashboard => dashboard.name === dashboardName);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -128,7 +140,7 @@ export const Dashboard = () => {
           <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-        <DashboardMenu />
+        <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <ChartsContainer $isExpanded={isExpanded}>
           {activeDashboard?.items.map(({ childId }) => {
             return <Chart key={childId}>DashboardId: {childId}</Chart>;
