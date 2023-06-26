@@ -10600,6 +10600,7 @@ __metadata:
     "@tupaia/ui-map-components": 1.0.0
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
+    "@types/react": 16.8.6
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
     npm-run-all: ^4.1.5
@@ -11962,6 +11963,16 @@ __metadata:
     "@types/prop-types": "*"
     csstype: ^2.2.0
   checksum: 1d6598e6f070013498195a1bcce3090328f5ac6e64cd99a95ebbfa6494ac187ada03af317ba1230756b9c729d853a40fca58f39b150e2da9103a454291edf37d
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:16.8.6":
+  version: 16.8.6
+  resolution: "@types/react@npm:16.8.6"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^2.2.0
+  checksum: 09e04a51e3265b16b297f5e4c0ec05761c58c827fe506f9e4c735e809d6b5959b38b0e4adff286d239911c984455d3e6062e5548d83164c74d277feda2b15a72
   languageName: node
   linkType: hard
 
