@@ -43,12 +43,6 @@ const Panel = styled.div<{
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
       $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
-    .recharts-wrapper {
-      font-size: ${({ $isExpanded }) =>
-        $isExpanded
-          ? '1rem'
-          : '1.2rem'} !important; // this is to set the font size of the chart overall, including the axis labels, because the library uses ems, so shrinks the text relative to the font size of the parent
-    }
   }
 `;
 
