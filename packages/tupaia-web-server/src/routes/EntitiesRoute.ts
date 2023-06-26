@@ -5,6 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import camelcaseKeys from 'camelcase-keys';
 import { Entity } from '@tupaia/types';
 import groupBy from 'lodash.groupby';
 
@@ -56,6 +57,6 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const rootEntity = flatEntities.find((entity: NestedEntity) => entity.code === rootEntityCode);
     const nestedEntities = nestChildrenEntities(entitiesByParent, rootEntity);
 
-    return nestedEntities;
+    return camelcaseKeys(nestedEntities, { deep: true });
   }
 }

@@ -24,3 +24,4 @@ export * from './PopupDataItemList';
 export * from './Table';
 export * from './TileLayer';
 export * from './TilePicker';
+export * from './InteractivePolygon';

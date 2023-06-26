@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes, useLocation, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import { LandingPage, ProjectPage } from './views';
 import { Dashboard } from './features';
 import { ModalRoutes } from './ModalRoutes';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
-import { useProject, useUser } from './api/queries';
+import { useUser } from './api/queries';
 import { LoadingScreen } from './components';
+import { useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoading, isLoggedIn } = useUser();
@@ -29,13 +30,7 @@ const HomeRedirect = () => {
  * Redirect to the dashboardGroupName of the project if a dashboard name is not provided
  */
 const ProjectPageDashboardRedirect = () => {
-  const location = useLocation();
-  const { projectCode, entityCode } = useParams();
-  const { data: project, isLoading } = useProject(projectCode);
-
-  const newDashboardName = isLoading ? '' : project.dashboardGroupName;
-  const url = { ...location, pathname: `/${projectCode}/${entityCode}/${newDashboardName}` };
-
+  const url = useEntityLink();
   return <Navigate to={url} replace />;
 };
 

@@ -30,7 +30,7 @@ const ResultsWrapper = styled.div`
   padding: 0 0.3rem 0.625rem;
   width: calc(100% + 5px);
   border-radius: 8px;
-  max-height: calc(80vh - 12rem);
+  max-height: calc(100vh - 9rem);
   overflow-y: auto;
 
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
