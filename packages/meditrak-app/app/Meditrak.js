@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 import { database } from './database';
 import { MessageOverlay } from './messages/MessageOverlay';
-import { isBeta, betaBranch } from './version';
+import { isBeta, betaBranch, centralApiUrl } from './version';
 import { NavigationMenuContainer, goBack } from './navigation';
 import { DEFAULT_PADDING, THEME_COLOR_THREE, THEME_COLOR_ONE } from './globalStyles';
 
@@ -44,7 +44,7 @@ class MeditrakContainer extends React.Component {
   renderBetaBanner() {
     return (
       <View style={localStyles.betaBanner} pointerEvents="none">
-        <Text style={localStyles.betaBannerText}>{betaBranch.toUpperCase()}</Text>
+        <Text style={localStyles.betaBannerText}>{betaBranch.toUpperCase() || centralApiUrl}</Text>
       </View>
     );
   }
@@ -54,7 +54,7 @@ class MeditrakContainer extends React.Component {
       <View style={localStyles.container}>
         <NavigationMenuContainer>{this.props.children}</NavigationMenuContainer>
         <MessageOverlay />
-        {isBeta ? this.renderBetaBanner() : null}
+        {isBeta || centralApiUrl ? this.renderBetaBanner() : null}
       </View>
     );
   }
