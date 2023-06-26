@@ -129,7 +129,8 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   componentDidUpdate = (prevProps: LeafletMapProps) => {
     const { center, bounds, zoom } = this.props;
-    if (this.map && this.requiresMoveAnimation(prevProps)) {
+    console.log('update', this.requiresMoveAnimation(prevProps));
+    if (this.map) {
       if (bounds) {
         this.flyToBounds(bounds);
       } else if (center) {
@@ -254,6 +255,7 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   render = () => {
     const { onClick, children } = this.props;
+    console.log('map render');
 
     return (
       <Map

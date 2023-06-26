@@ -79,10 +79,9 @@ export const Map = () => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
 
-  console.log('map data', entityData);
   return (
     <MapContainer>
-      <StyledMap>
+      <StyledMap bounds={entityData?.bounds}>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <PolygonLayer entity={entityData} />
         <ZoomControl position="bottomright" />
