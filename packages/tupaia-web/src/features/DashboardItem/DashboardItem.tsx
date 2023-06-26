@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { DashboardCode, DashboardItemType } from '../../../types';
-import { useReport } from '../../../api/queries';
+import { DashboardCode, DashboardItemType } from '../../types';
+import { useReport } from '../../api/queries';
 import { EnlargedDashboardItem } from './EnlargedDashboardItem';
 import { DashboardItemContent } from './DashboardItemContent';
 

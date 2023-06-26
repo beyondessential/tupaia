@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { DashboardItemType } from '../../../types';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { DashboardItemType } from '../../types';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const ExpandableButton = styled(Button).attrs({
   variant: 'outlined',

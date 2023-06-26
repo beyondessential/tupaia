@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
 import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { DashboardItemDisplayProps } from '../../../types';
-import { Chart } from '../../Chart';
+import { DashboardItemDisplayProps } from '../../types';
+import { Chart } from '../Chart';
 import { ExpandItemButton } from './ExpandItemButton';
 
 const Title = styled(Typography)<{

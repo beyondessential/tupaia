@@ -6,8 +6,8 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
-import { Modal } from '../../../components';
-import { DashboardItemType } from '../../../types';
+import { Modal } from '../../components';
+import { DashboardItemType } from '../../types';
 
 const Wrapper = styled.div`
   width: 48rem;

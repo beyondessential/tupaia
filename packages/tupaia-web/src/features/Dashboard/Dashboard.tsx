@@ -15,8 +15,8 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardItem } from './DashboardItem';
-import { DashboardType, DashboardItemType } from '../../types';
+import { DashboardItem } from '../DashboardItem';
+import { DashboardItemType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -34,7 +34,7 @@ const Panel = styled.div<{
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) =>
       $isExpanded
-        ? 100
+        ? 50
         : 30}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
@@ -87,7 +87,7 @@ const DashboardItemsWrapper = styled.div<{
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
   background-color: ${({ theme }) => theme.panel.secondaryBackground};
-  grid-template-columns: repeat(${({ $isExpanded }) => ($isExpanded ? 2 : 1)}, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 0.5rem;
 `;
 

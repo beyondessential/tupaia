@@ -22,8 +22,17 @@ export const useReport = (
     ['report', reportCode, dashboardCode, projectCode, entityCode, itemCode],
     () =>
       get(
-        `report/${reportCode}?dashboardCode=${dashboardCode}&legacy=${legacy}&itemCode=${itemCode}&projectCode=${projectCode}&organisationUnitCode=${entityCode}&timeZone=${timeZone}`,
-        {},
+        `report/${reportCode}`,
+        {
+          params: {
+            dashboardCode,
+            legacy,
+            itemCode,
+            projectCode,
+            organisationUnitCode: entityCode,
+            timeZone
+          }
+        },
       ),
     {
       enabled: !!reportCode && !!dashboardCode && !!projectCode && !!entityCode,
