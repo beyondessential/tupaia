@@ -24,6 +24,9 @@ const Wrapper = styled.div<{
   .recharts-responsive-container {
     min-width: 0px;
   }
+  .recharts-wrapper {
+    font-size: 1rem !important; // this is to make sure the labels on the charts are relative to the base font size
+  }
   // Make the charts conform to the parent container's size
   .recharts-wrapper,
   .recharts-wrapper svg {
