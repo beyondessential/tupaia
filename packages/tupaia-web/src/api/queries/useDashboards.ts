@@ -258,7 +258,7 @@ export const useDashboards = (projectCode?: string, entityCode?: string) => {
       if (projectCode === 'explore') testData = exploreData;
       else if (projectCode === 'fanafana') testData = fanafanaOla;
       // @ts-ignore - just for testData
-      return Promise.resolve(() => testData as DashboardType[]); // TODO: replace this with actual data fetching
+      return testData as DashboardType[]; // TODO: replace this with actual data fetching
     },
     // get('dashboards', {
     //   params: { entityCode, projectCode },
