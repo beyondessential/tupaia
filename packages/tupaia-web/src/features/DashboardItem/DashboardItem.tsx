@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { getDefaultDates } from '@tupaia/utils';
 import { DashboardCode, DashboardItemType } from '../../types';
 import { useReport } from '../../api/queries';
 import { EnlargedDashboardItem } from './EnlargedDashboardItem';
@@ -42,6 +43,12 @@ interface DashboardItemProps {
 export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemProps) => {
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode, viewType, type } = dashboardItem;
+
+  // get dates from the dashboard config, where applicable
+  const { startDate, endDate } = getDefaultDates(dashboardItem) as {
+    startDate?: string | null;
+    endDate?: string | null;
+  };
   // query for the report data
   const { data: reportData, isLoading, error, isError, refetch } = useReport(
     projectCode,
@@ -50,6 +57,8 @@ export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemPro
     reportCode,
     code,
     legacy,
+    startDate,
+    endDate,
   );
 
   const viewContent = {

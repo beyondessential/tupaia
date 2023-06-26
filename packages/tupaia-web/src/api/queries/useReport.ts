@@ -7,7 +7,7 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DashboardType, DashboardItemType, EntityCode, ProjectCode } from '../../types';
-import { getBrowserTimeZone } from '@tupaia/utils';
+import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
 
 export const useReport = (
   projectCode?: ProjectCode,
@@ -16,24 +16,36 @@ export const useReport = (
   reportCode?: DashboardItemType['reportCode'],
   itemCode?: DashboardItemType['code'],
   legacy?: DashboardItemType['legacy'],
+  startDate?: string | null,
+  endDate?: string | null,
 ) => {
   const timeZone = getBrowserTimeZone();
+  const formattedStartDate = formatDateForApi(startDate, null);
+  const formattedEndDate = formatDateForApi(endDate, null);
   return useQuery(
-    ['report', reportCode, dashboardCode, projectCode, entityCode, itemCode],
+    [
+      'report',
+      reportCode,
+      dashboardCode,
+      projectCode,
+      entityCode,
+      itemCode,
+      formattedStartDate,
+      formattedEndDate,
+    ],
     () =>
-      get(
-        `report/${reportCode}`,
-        {
-          params: {
-            dashboardCode,
-            legacy,
-            itemCode,
-            projectCode,
-            organisationUnitCode: entityCode,
-            timeZone
-          }
+      get(`report/${reportCode}`, {
+        params: {
+          dashboardCode,
+          legacy,
+          itemCode,
+          projectCode,
+          organisationUnitCode: entityCode,
+          timeZone,
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
         },
-      ),
+      }),
     {
       enabled: !!reportCode && !!dashboardCode && !!projectCode && !!entityCode,
     },
