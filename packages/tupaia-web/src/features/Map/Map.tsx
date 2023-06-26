@@ -81,7 +81,7 @@ export const Map = () => {
 
   return (
     <MapContainer>
-      <StyledMap bounds={entityData?.bounds}>
+      <StyledMap bounds={entityData?.bounds} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <PolygonLayer entity={entityData} />
         <ZoomControl position="bottomright" />

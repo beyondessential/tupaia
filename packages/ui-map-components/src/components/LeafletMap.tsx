@@ -16,7 +16,7 @@
  * complexity.
  */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { MapContainer as LeafletMapContainer, MapContainerProps } from 'react-leaflet';
 import { LatLngBoundsExpression, Map as LeafletMapInterface } from 'leaflet';
@@ -129,8 +129,7 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   componentDidUpdate = (prevProps: LeafletMapProps) => {
     const { center, bounds, zoom } = this.props;
-    console.log('update', this.requiresMoveAnimation(prevProps));
-    if (this.map) {
+    if (this.map && this.requiresMoveAnimation(prevProps)) {
       if (bounds) {
         this.flyToBounds(bounds);
       } else if (center) {
@@ -218,9 +217,7 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   flyToBounds = (bounds: LatLngBoundsExpression) => {
     if (!areBoundsValid(bounds)) return;
-    this.map?.fitBounds(bounds, {
-      animate: true,
-    });
+    this.map?.flyToBounds(bounds, { animate: true });
   };
 
   requiresMoveAnimation = (prevProps: LeafletMapProps) => {
@@ -255,7 +252,6 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   render = () => {
     const { onClick, children } = this.props;
-    console.log('map render');
 
     return (
       <Map

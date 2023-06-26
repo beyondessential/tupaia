@@ -10,6 +10,9 @@ import { useEntities } from '../../api/queries';
 import { useParams } from 'react-router-dom';
 
 const ChildEntities = ({ entities }) => {
+  if (!entities) {
+    return null;
+  }
   return entities.map(entity => <InteractivePolygon key={entity.code} entity={entity} />);
 };
 
@@ -24,11 +27,10 @@ const SiblingEntities = ({ entity }) => {
   if (isLoading || !siblingEntities) {
     return null;
   }
-  console.log('siblingEntities', siblingEntities);
 
-  return siblingEntities?.children?.map(entity => (
-    <InteractivePolygon key={entity.code} entity={entity} />
-  ));
+  const children = siblingEntities?.children || [];
+
+  return children.map(entity => <InteractivePolygon key={entity.code} entity={entity} />);
 };
 
 const ACTIVE_SHADE = '#EE6230';

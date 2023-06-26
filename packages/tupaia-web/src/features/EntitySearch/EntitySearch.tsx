@@ -49,6 +49,10 @@ const SearchResults = styled.div`
   display: flex;
 `;
 
+const isMobile = () => {
+  return window.innerWidth < parseInt(MOBILE_BREAKPOINT, 10);
+};
+
 export const EntitySearch = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode!);
@@ -56,17 +60,19 @@ export const EntitySearch = () => {
     enabled: !!project?.entityCode,
   });
   const [searchValue, setSearchValue] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onClose = () => {
+    if (isMobile()) {
+      setIsOpen(false);
+    }
+  };
 
   return (
-    <ClickAwayListener onClickAway={() => setIsSearchFocused(false)}>
+    <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <Wrapper>
-        <SearchBar
-          value={searchValue}
-          onChange={setSearchValue}
-          onFocusChange={setIsSearchFocused}
-        />
-        {isSearchFocused && (
+        <SearchBar value={searchValue} onChange={setSearchValue} onFocusChange={setIsOpen} />
+        {isOpen && (
           <ResultsWrapper>
             {searchValue ? (
               <SearchResults>{searchValue}</SearchResults>
@@ -75,6 +81,7 @@ export const EntitySearch = () => {
                 projectCode={projectCode!}
                 children={entity?.children || []}
                 isLoading={isLoading}
+                onClose={onClose}
               />
             )}
           </ResultsWrapper>
