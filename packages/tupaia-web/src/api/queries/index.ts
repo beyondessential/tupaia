@@ -12,3 +12,4 @@ export { useEntity } from './useEntity';
 export { useEntities } from './useEntities';
 export { useEmailVerification } from './useEmailVerification';
 export { useDashboards } from './useDashboards';
+export { useReport } from './useReport';
