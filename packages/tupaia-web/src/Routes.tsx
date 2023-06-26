@@ -77,7 +77,6 @@ export const Routes = () => {
           <Route path="/register" element={<UserPageRedirect modal={MODAL_ROUTES.REGISTER} />} />
           <Route path="/projects" element={<UserPageRedirect modal={MODAL_ROUTES.PROJECTS} />} />
           <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
-
           <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
         </Route>
       </RouterRoutes>

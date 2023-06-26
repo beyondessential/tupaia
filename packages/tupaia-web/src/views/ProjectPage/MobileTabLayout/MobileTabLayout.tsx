@@ -9,7 +9,7 @@ import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';
 import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
 import { useParams, Outlet } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { useEntity } from '../../../api/queries';
+import { useEntities } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, TABS, URL_SEARCH_PARAMS } from '../../../constants';
 import { Map } from '../../../features';
 import { Footer } from './Footer';
@@ -66,7 +66,7 @@ const DashboardPanel = styled(TabPanel)`
 export const MobileTabLayout = () => {
   const { projectCode, entityCode } = useParams();
   console.log('entityCode', entityCode);
-  const { data } = useEntity(projectCode, entityCode);
+  const { data } = useEntities(projectCode, entityCode);
 
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
