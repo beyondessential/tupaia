@@ -18,7 +18,7 @@ const Wrapper = styled.div<{
   align-items: stretch;
   height: ${({ $isEnlarged, $hasData }) => {
     if (!$hasData) return 'auto';
-    return $isEnlarged ? '22.5rem' : '12rem';
+    return $isEnlarged ? '22.5rem' : '14rem';
   }};
   flex-direction: column;
   .recharts-responsive-container {

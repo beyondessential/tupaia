@@ -50,16 +50,15 @@ export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemPro
     endDate?: string | null;
   };
   // query for the report data
-  const { data: reportData, isLoading, error, isError, refetch } = useReport(
+  const { data: reportData, isLoading, error, isError, refetch } = useReport(reportCode, {
     projectCode,
     entityCode,
     dashboardCode,
-    reportCode,
-    code,
+    itemCode: code,
     legacy,
     startDate,
     endDate,
-  );
+  });
 
   const viewContent = {
     ...dashboardItem,
