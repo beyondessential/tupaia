@@ -112,7 +112,7 @@ export class EntityList extends PureComponent {
     const primarySearchResults = this.baseEntities.filter(entity => entity.name.toLowerCase().startsWith(lowerSearch));
     const secondarySearchResults = this.baseEntities.filter(entity => !entity.name.toLowerCase().startsWith(lowerSearch)
                                                             && (entity.name.toLowerCase().includes(lowerSearch)
-                                                            ||  entity.parent?.name.toLowerCase().includes(lowerSearch)));
+                                                            ||  entity.parent?.name.toLowerCase().startsWith(lowerSearch)));
     this.setState({
       searchTerm,
       primarySearchResults,
