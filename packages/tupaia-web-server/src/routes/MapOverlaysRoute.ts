@@ -13,10 +13,23 @@ import keyBy from 'lodash.keyby';
 // (And actually define it)
 export type MapOverlaysRequest = Request<any, any, any, any>;
 
-interface NestedMapOverlayGroup extends MapOverlayGroup {
-  children?: OverlayChild[];
+// TODO: Can these be moved into types?
+const ROOT_MAP_OVERLAY_CODE = 'Root';
+const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
+
+// We return a simplified version of data to the frontend
+interface TranslatedMapOverlay {
+  code: string;
+  name: string;
+  reportCode: string;
+  legacy: boolean;
+  // ...config
 }
-type OverlayChild = NestedMapOverlayGroup | MapOverlay;
+interface TranslatedMapOverlayGroup {
+  name: string;
+  children: OverlayChild[];
+}
+type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
@@ -93,11 +106,13 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       },
     });
 
+    // Convert our multiple flat lists into a single nested object
     const nestOverlayGroups = (
       relationsByParentId: Record<string, MapOverlayGroupRelation[]>,
-      entriesById: Record<string, MapOverlayGroup | MapOverlay>,
-      parentEntry: MapOverlayGroup | MapOverlay,
-    ): OverlayChild => {
+      groupsById: Record<string, MapOverlayGroup>,
+      overlaysById: Record<string, MapOverlay>,
+      parentEntry: MapOverlayGroup,
+    ): TranslatedMapOverlayGroup => {
       const childRelations = relationsByParentId[parentEntry.id as string] || [];
       // groupBy does not guarantee order, so we can't sort before this
       childRelations.sort(
@@ -106,27 +121,52 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       );
       const nestedChildren: OverlayChild[] = childRelations.map(
         (relation: MapOverlayGroupRelation) => {
-          if (relation.child_type === 'mapOverlay') {
-            return entriesById[relation.child_id];
+          if (relation.child_type === MAP_OVERLAY_CHILD_TYPE) {
+            const overlay = overlaysById[relation.child_id];
+            // Translate Map Overlay
+            return {
+              name: overlay.name,
+              code: overlay.code,
+              reportCode: overlay.report_code,
+              legacy: overlay.legacy,
+              ...overlay.config,
+            };
           }
           return nestOverlayGroups(
             relationsByParentId,
-            entriesById,
-            entriesById[relation.child_id],
+            groupsById,
+            overlaysById,
+            groupsById[relation.child_id],
           );
         },
       );
-      return { ...parentEntry, children: nestedChildren.length ? nestedChildren : undefined };
+      // Translate Map Overlay Group
+      return {
+        name: parentEntry.name,
+        children: nestedChildren,
+      };
     };
 
     const relationsByParentId = groupBy(mapOverlayRelations, 'map_overlay_group_id');
-    const entriesById = keyBy([...mapOverlays, ...mapOverlayGroups], 'id');
+    const groupsById = keyBy(mapOverlayGroups, 'id');
+    const overlaysById = keyBy(mapOverlays, 'id');
     const rootOverlayGroup = mapOverlayGroups.find(
-      (group: MapOverlayGroup) => group.code === 'Root',
+      (group: MapOverlayGroup) => group.code === ROOT_MAP_OVERLAY_CODE,
     );
 
-    const nestedGroups = nestOverlayGroups(relationsByParentId, entriesById, rootOverlayGroup);
+    const nestedGroups = nestOverlayGroups(
+      relationsByParentId,
+      groupsById,
+      overlaysById,
+      rootOverlayGroup,
+    );
 
-    return nestedGroups;
+    return {
+      name: entity.name,
+      entityCode: entity.code,
+      entityType: entity.type,
+      // We know the first layer is 'root', so return the second
+      mapOverlays: nestedGroups.children,
+    };
   }
 }
