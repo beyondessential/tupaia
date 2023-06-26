@@ -76,7 +76,6 @@ export const Map = () => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
   const { data: mapOverlaysResponse } = useMapOverlays(projectCode, entityCode);
-  const { mapOverlays } = mapOverlaysResponse;
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
@@ -88,7 +87,7 @@ export const Map = () => {
       let selectedOverlayPeriod =
         urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY_PERIOD) || 'DEFAULT_PERIOD';
 
-      const flattenedOverlays = flattenMapOverlays(mapOverlays);
+      const flattenedOverlays = flattenMapOverlays(mapOverlaysResponse?.mapOverlays || []);
       if (
         !selectedOverlayCode ||
         !flattenedOverlays.find(mapOverlay => mapOverlay.code === selectedOverlayCode)
@@ -105,7 +104,7 @@ export const Map = () => {
       });
     };
     updateMapOverlaySearchParams();
-  }, [projectCode, entityCode, mapOverlays]);
+  }, [projectCode, entityCode, mapOverlaysResponse]);
 
   return (
     <MapContainer>
