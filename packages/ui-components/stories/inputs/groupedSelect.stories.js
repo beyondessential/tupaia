@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { GroupedSelect } from '../../src';
+import { GroupedSelect } from '../../src/components';
 
 export default {
   title: 'Inputs/GroupedSelect',

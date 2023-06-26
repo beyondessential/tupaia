@@ -6,10 +6,8 @@ import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
-import { Dashboard } from '@tupaia/types';
 import styled from 'styled-components';
-import { useDashboards } from '../../api/queries';
-import { DashboardCode } from '../../types';
+import { DashboardType } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -22,16 +20,15 @@ const MenuButton = styled(ButtonBase)`
 `;
 
 interface DashboardMenuItemProps {
-  dashboardName: Dashboard['name'];
-  dashboardCode: DashboardCode;
+  dashboardName: DashboardType['name'];
   onClose: () => void;
 }
 
-const DashboardMenuItem = ({ dashboardName, dashboardCode, onClose }: DashboardMenuItemProps) => {
+const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) => {
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
 
-  const link = { ...location, pathname: `/${projectCode}/${entityCode}/${dashboardCode}` };
+  const link = { ...location, pathname: `/${projectCode}/${entityCode}/${dashboardName}` };
 
   return (
     <MenuItem to={link} onClick={onClose} component={Link}>
@@ -40,10 +37,14 @@ const DashboardMenuItem = ({ dashboardName, dashboardCode, onClose }: DashboardM
   );
 };
 
-export const DashboardMenu = () => {
+export const DashboardMenu = ({
+  activeDashboard,
+  dashboards,
+}: {
+  activeDashboard: DashboardType | null;
+  dashboards: DashboardType[];
+}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const { projectCode, entityCode, '*': dashboardCode } = useParams();
-  const { data: dashboards } = useDashboards(projectCode, entityCode);
 
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -53,12 +54,10 @@ export const DashboardMenu = () => {
     setAnchorEl(null);
   };
 
-  const selectedOption = dashboards?.find(({ code }) => code === dashboardCode);
-
   return (
     <>
       <MenuButton onClick={handleClickListItem}>
-        {selectedOption?.name}
+        {activeDashboard?.name}
         <ArrowDropDownIcon />
       </MenuButton>
       <Menu
@@ -68,13 +67,8 @@ export const DashboardMenu = () => {
         onClose={handleClose}
         variant="menu"
       >
-        {dashboards?.map(({ name, code }) => (
-          <DashboardMenuItem
-            key={code}
-            dashboardName={name}
-            dashboardCode={code}
-            onClose={handleClose}
-          />
+        {dashboards.map(({ name, code }) => (
+          <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
       </Menu>
     </>

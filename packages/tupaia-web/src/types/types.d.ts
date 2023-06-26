@@ -1,4 +1,13 @@
-import { LandingPage, Project, Country, Entity, Dashboard } from '@tupaia/types';
+import {
+  LandingPage,
+  Project,
+  Country,
+  Entity,
+  Dashboard as BaseDashboard,
+  DashboardItem as BaseDashboardItem,
+  DashboardItemConfig,
+} from '@tupaia/types';
+import { ViewContent } from '@tupaia/ui-chart-components';
 import { KeysToCamelCase } from './helpers';
 
 export type SingleProject = KeysToCamelCase<Project> & {
@@ -23,10 +32,23 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardCode = Dashboard['code'];
+export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
+  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType'> & {
+    chartType?: string;
+    viewType?: string;
+  };
+
+export type DashboardType = KeysToCamelCase<BaseDashboard> & {
+  items: DashboardItemType[];
+};
+
+export type DashboardCode = DashboardType['code'];
 
 export type TupaiaUrlParams = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
   dashboardCode?: DashboardCode;
 };
+
+export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
+export type DashboardName = BaseDashboard['name'];

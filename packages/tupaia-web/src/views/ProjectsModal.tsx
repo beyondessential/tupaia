@@ -93,11 +93,11 @@ export const ProjectsModal = () => {
             ProjectCard={LegacyProjectCard}
             actions={{
               [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                project: { code, homeEntityCode, defaultDashboardCode },
+                project: { code, homeEntityCode, dashboardGroupName },
               }) => (
                 <LegacyProjectAllowedLink
                   url={`/${code}/${homeEntityCode}${
-                    defaultDashboardCode ? `/${defaultDashboardCode}` : ''
+                    dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
                 />
               ),

@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useRouteMatch} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { TabsToolbar } from '@tupaia/ui-components';
+import { TabsToolbar } from '@tupaia/ui-components'; 
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
@@ -17,6 +17,7 @@ import { labelToId } from './utilities';
 
 export const App = ({ user }) => {
   const headerEl = React.useRef(null);
+  const match = useRouteMatch()
 
   const getHeaderEl = () => {
     return headerEl;
@@ -45,6 +46,7 @@ export const App = ({ user }) => {
                   id: `app-subTab-${labelToId(tab.label)}`,
                 }))}
                 maxWidth="xl"
+                baseRoute={match.url}
               />
               <Switch>
                 {route.tabs.map(tab => (
