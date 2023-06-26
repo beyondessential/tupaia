@@ -5,10 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Outlet } from 'react-router';
 import { EnvBanner } from '@tupaia/ui-components';
 import { TopBar } from './TopBar';
 import { MOBILE_BREAKPOINT } from '../constants';
+import { MobileTabLayout } from '../views/ProjectPage/MobileTabLayout';
+import { DesktopLayout } from '../views/ProjectPage/DesktopLayout';
 
 /**
  * This is the layout for the entire app, which contains the top bar and the main content. This is used to wrap the entire app content
@@ -36,7 +37,8 @@ export const MainLayout = () => {
     <Container>
       <EnvBanner />
       <TopBar />
-      <Outlet />
+      <DesktopLayout />
+      <MobileTabLayout />
     </Container>
   );
 };

@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation, useParams } from 'react-router-dom';
-import { LandingPage, ProjectPage } from './views';
+import { LandingPage } from './views';
+import { Dashboard } from './features';
 import { ModalRoutes } from './ModalRoutes';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { MainLayout } from './layout';
@@ -85,7 +86,7 @@ export const Routes = () => {
           />
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
           <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
-          <Route path="/:projectCode/:entityCode/:dashboardName" element={<ProjectPage />} />
+          <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
         </Route>
       </RouterRoutes>
     </>

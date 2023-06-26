@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Dashboard, Map } from '../../features';
+import { Outlet } from 'react-router';
+import { Map } from '../../features';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Container = styled.div`
@@ -24,7 +25,7 @@ export const DesktopLayout = () => {
   return (
     <Container>
       <Map />
-      <Dashboard />
+      <Outlet />
     </Container>
   );
 };
