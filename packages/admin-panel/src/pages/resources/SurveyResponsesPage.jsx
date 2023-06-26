@@ -7,16 +7,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { ApprovalStatus } from '@tupaia/types';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
+import { SurveyResponseEditFields } from '../../surveyResponse/SurveyResponseEditFields';
 
 // Don't include not_required as an editable option because it can lead to
 // mis-matches between surveys and survey responses
-export const APPROVAL_STATUS_TYPES = [
-  { label: 'Pending', value: 'pending' },
-  { label: 'Rejected', value: 'rejected' },
-  { label: 'Approved', value: 'approved' },
-];
+export const APPROVAL_STATUS_TYPES = Object.values(ApprovalStatus).map(type => ({
+  label: type,
+  value: type,
+}));
 
 const surveyName = {
   Header: 'Survey',
@@ -25,6 +26,12 @@ const surveyName = {
   type: 'tooltip',
 };
 
+const surveyId = {
+  Header: 'Survey Id',
+  source: 'survey.id',
+  editable: false,
+  type: 'tooltip',
+};
 const assessorName = {
   Header: 'Assessor',
   source: 'assessor_name',
@@ -73,6 +80,7 @@ const entityName = {
 };
 
 export const SURVEY_RESPONSE_COLUMNS = [
+  surveyId,
   surveyName,
   assessorName,
   date,
@@ -103,19 +111,20 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
       title: 'Edit Survey Response',
       editEndpoint: 'surveyResponses',
       fields: [
+        surveyId,
         entityName,
         surveyName,
         assessorName,
         date,
         dateOfData,
-        {
-          Header: 'Approval Status',
-          source: 'approval_status',
-          editConfig: {
-            options: APPROVAL_STATUS_TYPES,
-          },
-        },
+        outdated,
+        approvalStatus,
       ],
+      FieldsComponent: SurveyResponseEditFields,
+      extraDialogProps: {
+        fullWidth: true,
+        maxWidth: 'xl',
+      },
     },
   },
   {
