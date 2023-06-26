@@ -219,7 +219,6 @@ export const CartesianChart = ({
   const hasLegend = hasDataSeries || renderLegendForOneItem;
   const aspect = !isEnlarged && !isMobileSize && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged, hasLegend, isMobileSize);
-  console.log(height);
 
   const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
 

@@ -9,20 +9,24 @@ import { Chart as ChartComponent, ViewContent } from '@tupaia/ui-chart-component
 
 const Wrapper = styled.div<{
   $isEnlarged: boolean;
+  $hasData: boolean;
 }>`
   display: flex;
   position: relative;
   align-content: stretch;
   -webkit-box-align: stretch;
   align-items: stretch;
-  height: ${({ $isEnlarged }) => ($isEnlarged ? '22.5rem' : '12rem')};
+  height: ${({ $isEnlarged, $hasData }) => {
+    if (!$hasData) return 'auto';
+    return $isEnlarged ? '22.5rem' : '14rem';
+  }};
   flex-direction: column;
   .recharts-responsive-container {
     min-width: 0px;
   }
   // Make the charts conform to the parent container's size
   .recharts-wrapper,
-  svg {
+  .recharts-wrapper svg {
     height: 100% !important;
     width: 100%;
   }
@@ -37,8 +41,9 @@ interface ChartProps {
 }
 
 export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
+  const hasData = viewContent.data && viewContent.data.length > 0 ? true : false;
   return (
-    <Wrapper $isEnlarged={isEnlarged}>
+    <Wrapper $isEnlarged={isEnlarged} $hasData={hasData}>
       <ChartComponent viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
     </Wrapper>
   );
