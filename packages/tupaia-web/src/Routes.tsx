@@ -7,10 +7,9 @@ import { Navigate, Route, Routes as RouterRoutes, useLocation, useParams } from 
 import { LandingPage, ProjectPage } from './views';
 import { ModalRoutes } from './ModalRoutes';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
-import { useUser } from './api/queries';
+import { useUser, useProject } from './api/queries';
 import { LoadingScreen } from './components';
 import { MainLayout } from './layout';
-import { useProject } from './api/queries';
 
 /*
  * Redirect to the dashboardGroupName of the project if a dashboard name is not provided
@@ -21,7 +20,10 @@ const ProjectPageDashboardRedirect = () => {
   const { data: project, isLoading } = useProject(projectCode);
 
   const newDashboardName = isLoading ? '' : project.dashboardGroupName;
-  const url = { ...location, pathname: `/${projectCode}/${entityCode}/${newDashboardName}` };
+  const url = {
+    ...location,
+    pathname: `/${projectCode}/${entityCode}/${newDashboardName}`,
+  };
 
   return <Navigate to={url} replace />;
 };

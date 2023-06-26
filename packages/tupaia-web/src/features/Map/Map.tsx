@@ -3,13 +3,22 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
-import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
+import {
+  TRANSPARENT_BLACK,
+  TILE_SETS,
+  MOBILE_BREAKPOINT,
+  URL_SEARCH_PARAMS,
+} from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
+import { useMapOverlays } from '../../api/queries';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import { flattenMapOverlays } from '../../utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -62,13 +71,42 @@ const TilePickerWrapper = styled.div`
     display: none;
   }
 `;
-
 export const Map = () => {
+  const { projectCode, entityCode } = useParams();
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
+  const { data: mapOverlaysResponse } = useMapOverlays(projectCode, entityCode);
+  const { mapOverlays } = mapOverlaysResponse;
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
+
+  useEffect(() => {
+    const updateMapOverlaySearchParams = () => {
+      let selectedOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
+      let selectedOverlayPeriod =
+        urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY_PERIOD) || 'DEFAULT_PERIOD';
+
+      const flattenedOverlays = flattenMapOverlays(mapOverlays);
+      if (
+        !selectedOverlayCode ||
+        !flattenedOverlays.find(mapOverlay => mapOverlay.code === selectedOverlayCode)
+      ) {
+        selectedOverlayCode = flattenedOverlays[0]?.code || '';
+        urlSearchParams.set(URL_SEARCH_PARAMS.OVERLAY, selectedOverlayCode);
+        urlSearchParams.set(URL_SEARCH_PARAMS.OVERLAY_PERIOD, selectedOverlayPeriod);
+      }
+
+      urlSearchParams.set(URL_SEARCH_PARAMS.OVERLAY, selectedOverlayCode);
+      urlSearchParams.set(URL_SEARCH_PARAMS.OVERLAY_PERIOD, selectedOverlayPeriod);
+      setUrlSearchParams(urlSearchParams.toString(), {
+        replace: true,
+      });
+    };
+    updateMapOverlaySearchParams();
+  }, [projectCode, entityCode, mapOverlays]);
+
   return (
     <MapContainer>
       <StyledMap>

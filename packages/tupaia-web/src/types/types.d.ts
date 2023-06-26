@@ -52,3 +52,16 @@ export type TupaiaUrlParams = {
 
 export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
 export type DashboardName = BaseDashboard['name'];
+
+export type MapOverlayType = {
+  code: string;
+  name: string;
+  reportCode: string;
+  displayType: string;
+  legacy: boolean;
+  measureLevel: string;
+};
+export type MapOverlayGroup = {
+  name: string;
+  children: MapOverlayType[];
+};

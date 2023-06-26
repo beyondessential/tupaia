@@ -104,6 +104,7 @@ const useDashboards = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: dashboards = [] } = useDashboardData(projectCode, entityCode);
 
+
   let activeDashboard = null;
 
   if (dashboards.length > 0) {
