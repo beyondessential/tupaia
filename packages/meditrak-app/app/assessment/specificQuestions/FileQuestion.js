@@ -6,7 +6,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import DocumentPicker from 'react-native-document-picker'
+import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
 import { DEFAULT_PADDING } from '../../globalStyles';
@@ -73,7 +73,7 @@ export const FileQuestion = ({ answer, extraProps, onChangeAnswer }) => {
       // Finally, we must delete files after we sync them up, or the app will just take up disk space unnecessarily.
       // See https://github.com/rnmods/react-native-document-picker/tree/v8.2.1
       const filePickerResponse = await DocumentPicker.pickSingle({
-        copyTo: 'documentDirectory'
+        copyTo: 'documentDirectory',
       });
 
       // If we previously picked a file (stored a copy in app documents) and now picked a new one, we need to delete the old copy
@@ -88,22 +88,23 @@ export const FileQuestion = ({ answer, extraProps, onChangeAnswer }) => {
       const { fileCopyUri } = filePickerResponse;
 
       onChangeAnswer(fileCopyUri);
-
     } catch (e) {
       onChangeAnswer(null);
     }
-  }
+  };
 
   const handleRemoveFile = () => {
     onChangeAnswer(null);
-  }
+  };
 
-  return (<DumbFileQuestion
-    filename={filename}
-    errorMessage={extraProps.errorMessage}
-    onPressChooseFile={handleOpenFilePicker}
-    onPressRemoveFile={handleRemoveFile}
-  />);
+  return (
+    <DumbFileQuestion
+      filename={filename}
+      errorMessage={extraProps.errorMessage}
+      onPressChooseFile={handleOpenFilePicker}
+      onPressRemoveFile={handleRemoveFile}
+    />
+  );
 };
 
 FileQuestion.propTypes = {

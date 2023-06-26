@@ -3,11 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { formatLayeredDataElementCode, layerYearOnYear } from '../../../utils/layerYearOnYear';
-import { AnalyticsPerPeriodBuilder } from './analyticsPerPeriod';
 import { periodToMoment } from '@tupaia/tsutils';
 import { reduceToDictionary } from '@tupaia/utils';
 import moment from 'moment';
+import { AnalyticsPerPeriodBuilder } from './analyticsPerPeriod';
+import { formatLayeredDataElementCode, layerYearOnYear } from '../../../utils/layerYearOnYear';
 
 class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
   async fetchAnalytics(

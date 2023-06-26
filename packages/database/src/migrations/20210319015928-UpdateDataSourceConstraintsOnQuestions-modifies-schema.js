@@ -16,11 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const OLD_NON_DATA_ELEMENT_QUESTION_TYPES = [
-  'Instruction',
-  'PrimaryEntity',
-  'SubmissionDate',
-];
+const OLD_NON_DATA_ELEMENT_QUESTION_TYPES = ['Instruction', 'PrimaryEntity', 'SubmissionDate'];
 
 const NON_DATA_ELEMENT_QUESTION_TYPES = [
   'DateOfData',

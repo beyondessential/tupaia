@@ -16,7 +16,7 @@ export const validateAnswer = (validationCriteria, answer) => {
   if (!validationCriteria) {
     return null;
   }
-  if (validationCriteria.mandatory && (!answer && answer !== 0)) {
+  if (validationCriteria.mandatory && !answer && answer !== 0) {
     return 'This is a required field';
   }
   if (!answer && answer !== 0) {

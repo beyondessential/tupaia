@@ -9,8 +9,8 @@ import { useLocation } from 'react-router-dom';
 import { ColorCircle } from './ColorCircle';
 import { HeaderRow, SubHeaderRow, StandardRow, LinkRow } from './Rows';
 import { FetchLoader } from '../FetchLoader';
-import { getIsChartData, getNoDataString } from '../Chart';
-import { SmallAlert } from '../Alert';
+import { getIsChartData } from '../Chart';
+import { NoData } from '../NoData';
 
 const Container = styled.div`
   position: relative;
@@ -102,13 +102,6 @@ const DrillDownLink = ({ pathname, reportCode, children }) => {
   );
 };
 
-const NoData = styled(SmallAlert)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
 export const ListVisual = React.memo(
   ({ viewContent, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
     const { data, ...config } = viewContent;
@@ -118,9 +111,7 @@ export const ListVisual = React.memo(
     if (!isLoading && !getIsChartData(viewContent)) {
       return (
         <Container>
-          <NoData severity="info" variant="standard">
-            {getNoDataString(viewContent)}
-          </NoData>
+          <NoData viewContent={viewContent} />
         </Container>
       );
     }

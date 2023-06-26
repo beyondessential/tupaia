@@ -8,14 +8,14 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
 // eslint-disable-next-line func-names
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
   INSERT INTO public."dashboardReport" (id,"drillDownLevel","dataBuilder","dataBuilderConfig","viewJson","dataServices") VALUES
     ('WHO_SURVEY',NULL,'simpleTableOfEvents', '{"dataElementCode": "WHOSPAR", "programCode": "WSRS"}',
@@ -23,7 +23,7 @@ exports.up = function(db) {
     `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     delete from "dashboardReport" where id = 'WHO_SURVEY'; 
 

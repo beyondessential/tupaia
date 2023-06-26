@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, BackHandler } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { BackHandler } from 'react-native';
+
 import { database } from './database';
 import { MessageOverlay } from './messages/MessageOverlay';
 import { isBeta, betaBranch } from './version';

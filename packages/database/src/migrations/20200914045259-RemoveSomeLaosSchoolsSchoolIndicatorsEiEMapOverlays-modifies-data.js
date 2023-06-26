@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -26,7 +26,7 @@ const MAP_OVERLAY_IDS = [
   'Laos_Schools_Functioning_Water_Filters',
   'Laos_Schools_Telephone_Available',
 ];
-exports.up = async function(db) {
+exports.up = async function (db) {
   await db.runSql(`
     DELETE FROM "mapOverlay"
     WHERE id IN (${arrayToDbString(MAP_OVERLAY_IDS)});
@@ -36,8 +36,8 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = function(db) {
-  //No migration down
+exports.down = function (db) {
+  // No migration down
   return null;
 };
 

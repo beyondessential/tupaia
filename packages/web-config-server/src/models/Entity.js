@@ -1,7 +1,7 @@
 /**
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- **/
+ * */
 
 import { pascal } from 'case';
 import { EntityType as CommonEntityType, EntityModel as CommonEntityModel } from '@tupaia/database';

@@ -11,14 +11,14 @@ var seed;
 const REPORT_ID = 'COVID_Daily_Cases_By_Type';
 const DASHBOARD_GROUP = 'AU_Covid_Province';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
-  //First delete the old entry, then create a new one
+exports.up = function (db) {
+  // First delete the old entry, then create a new one
   return db.runSql(`
     DELETE FROM 
       "dashboardReport"
@@ -69,7 +69,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
   DELETE FROM 
     "dashboardReport"

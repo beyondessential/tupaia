@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -141,7 +141,7 @@ const NEW_MEASURE_BUILDER_CONFIG = {
       value: 'UNICEF',
       operator: '=',
     },
-    /*--- Add 'Other' response ---*/
+    /* --- Add 'Other' response ---*/
     SchCVD022l: {
       value: 'Other',
       operator: '=',
@@ -165,7 +165,7 @@ const NEW_MEASURE_BUILDER_CONFIG = {
       SchDP_AEAL: 'Aide et Action Laos (AEAL)',
       SchDP_Plan: 'Plan International',
       SchDP_UNICEF: 'UNICEF',
-      /*--- Add 'Other' response ---*/
+      /* --- Add 'Other' response ---*/
       SchCVD022l: 'Other',
       /*----------------------------*/
     },
@@ -305,7 +305,7 @@ const NEW_PRESENTATION_OPTIONS = {
       color: 'saddleBrown',
       value: 'SchDP_WV',
     },
-    /*--- Add 'Other' response ---*/
+    /* --- Add 'Other' response ---*/
     {
       name: 'Other',
       color: 'navy',
@@ -331,7 +331,7 @@ const NEW_PRESENTATION_OPTIONS = {
   disableRenameLegend: true,
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE "mapOverlay"
     SET name = '${NEW_NAME}',
@@ -341,7 +341,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE "mapOverlay"
     SET name = '${OLD_NAME}',

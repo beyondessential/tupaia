@@ -5,18 +5,18 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-const DEFAULT_TIME_PERIOD_JSONPATH ='{defaultTimePeriod}';
-const DEFAULT_TIME_PERIOD_FORMAT_JSONPATH ='{defaultTimePeriod,format}';
-const DEFAULT_TIME_PERIOD_UNIT_JSONPATH ='{defaultTimePeriod,unit}';
+const DEFAULT_TIME_PERIOD_JSONPATH = '{defaultTimePeriod}';
+const DEFAULT_TIME_PERIOD_FORMAT_JSONPATH = '{defaultTimePeriod,format}';
+const DEFAULT_TIME_PERIOD_UNIT_JSONPATH = '{defaultTimePeriod,unit}';
 
 const NEW_DEFAULT_TIME_PERIOD_FORMAT_VALUE_DAY = 'day';
 const OLD_DEFAULT_TIME_PERIOD_FORMAT_VALUE_DAY = 'days';
@@ -27,8 +27,8 @@ const OLD_DEFAULT_TIME_PERIOD_FORMAT_VALUE_MONTH = 'months';
 const NEW_DEFAULT_TIME_PERIOD_FORMAT_VALUE_YEAR = 'year';
 const OLD_DEFAULT_TIME_PERIOD_FORMAT_VALUE_YEAR = 'years';
 
-exports.up = async function(db) {
-  //Update unit from plural to singular. Eg: 'months' -> 'month', 'years' -> 'year
+exports.up = async function (db) {
+  // Update unit from plural to singular. Eg: 'months' -> 'month', 'years' -> 'year
   await db.runSql(`
     UPDATE "dashboardReport"
     SET "viewJson" = jsonb_set("viewJson", '${DEFAULT_TIME_PERIOD_FORMAT_JSONPATH}', '"${NEW_DEFAULT_TIME_PERIOD_FORMAT_VALUE_DAY}"')
@@ -43,7 +43,7 @@ exports.up = async function(db) {
     WHERE "viewJson"->'defaultTimePeriod' @> '{"format": "years"}';
   `);
 
-  //Update keys in defaultTimePeriod. value -> offset, format -> unit
+  // Update keys in defaultTimePeriod. value -> offset, format -> unit
   await db.runSql(`
     UPDATE "dashboardReport"
     SET "viewJson" = jsonb_set("viewJson", '${DEFAULT_TIME_PERIOD_JSONPATH}', "viewJson"->'defaultTimePeriod' || jsonb_build_object('unit', "viewJson"->'defaultTimePeriod'->'format') #- '{format}')
@@ -55,8 +55,8 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
-  //Update unit from plural to singular. Eg: 'months' -> 'month', 'years' -> 'year
+exports.down = async function (db) {
+  // Update unit from plural to singular. Eg: 'months' -> 'month', 'years' -> 'year
   await db.runSql(`
     UPDATE "dashboardReport"
     SET "viewJson" = jsonb_set("viewJson", '${DEFAULT_TIME_PERIOD_UNIT_JSONPATH}', '"${OLD_DEFAULT_TIME_PERIOD_FORMAT_VALUE_DAY}"')
@@ -71,7 +71,7 @@ exports.down = async function(db) {
     WHERE "viewJson"->'defaultTimePeriod' @> '{"unit": "year"}';
   `);
 
-  //Update keys in defaultTimePeriod. value -> offset, format -> unit
+  // Update keys in defaultTimePeriod. value -> offset, format -> unit
   await db.runSql(`
     UPDATE "dashboardReport"
     SET "viewJson" = jsonb_set("viewJson", '${DEFAULT_TIME_PERIOD_JSONPATH}', "viewJson"->'defaultTimePeriod' || jsonb_build_object('format', "viewJson"->'defaultTimePeriod'->'unit') #- '{unit}')
@@ -84,5 +84,5 @@ exports.down = async function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
