@@ -144,15 +144,15 @@ export const Dashboard = () => {
         </TitleBar>
 
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
-            <DashboardItem
-              key={dashboardItem.id}
-              dashboardItem={dashboardItem}
-              dashboardCode={activeDashboard?.code}
-            />
-          ))}
-        </DashboardItemsWrapper>
+        {/*<DashboardItemsWrapper $isExpanded={isExpanded}>*/}
+        {/*  {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (*/}
+        {/*    <DashboardItem*/}
+        {/*      key={dashboardItem.id}*/}
+        {/*      dashboardItem={dashboardItem}*/}
+        {/*      dashboardCode={activeDashboard?.code}*/}
+        {/*    />*/}
+        {/*  ))}*/}
+        {/*</DashboardItemsWrapper>*/}
       </ScrollBody>
     </Panel>
   );

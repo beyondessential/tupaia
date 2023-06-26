@@ -11,7 +11,7 @@ export const useModal = () => {
   const navigate = useNavigate();
   const { hash, ...location } = useLocation();
 
-  function navigateToModal(hashKey: `${MODAL_ROUTES}`) {
+  function navigateToModal(hashKey: MODAL_ROUTES) {
     navigate({ ...location, hash: hashKey });
   }
   function closeModal(urlSearchParamsToRemove?: string[]) {
