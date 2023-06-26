@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
-import { DatePicker, DateTimePicker } from '../../src';
+import { DatePicker, DateTimePicker } from '../../src/components';
 
 export default {
   title: 'Inputs/DatePicker',

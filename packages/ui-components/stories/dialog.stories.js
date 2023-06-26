@@ -7,7 +7,14 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import { Dialog, DialogHeader, DialogContent, DialogFooter, Button, OutlinedButton } from '../src';
+import {
+  Dialog,
+  DialogHeader,
+  DialogContent,
+  DialogFooter,
+  Button,
+  OutlinedButton,
+} from '../src/components';
 
 export default {
   title: 'Modal',

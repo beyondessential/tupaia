@@ -6,7 +6,7 @@ import React, { ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { DEFAULT_URL } from '../../constants';
+import { DEFAULT_URL, MOBILE_BREAKPOINT } from '../../constants';
 
 const LogoWrapper = styled.div`
   flex-grow: 1;
@@ -18,7 +18,7 @@ const LogoWrapper = styled.div`
 const LogoImage = styled.img`
   max-height: 75%;
   width: auto;
-  max-width: 50px;
+  max-width: 70px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     max-width: 100%;
   }
@@ -44,7 +44,7 @@ const Name = styled(Typography)`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     font-size: 1.2rem;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     font-size: 1.5rem;
   }
 `;

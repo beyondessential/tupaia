@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
-import { useParams } from 'react-router';
-import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { MOBILE_BREAKPOINT, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import { EntitySearch } from '../../features';
 
 const TOP_BAR_HEIGHT = 60;
 const TOP_BAR_HEIGHT_MOBILE = 50;
@@ -27,7 +28,7 @@ const Header = styled.header<{
   z-index: 1000;
   position: relative;
   padding: 0 0.625em;
-  border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+
   > * {
     background-color: ${({ $primaryColor, theme }) =>
       $primaryColor || theme.palette.background.default};
@@ -39,37 +40,18 @@ const Header = styled.header<{
   li {
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${TOP_BAR_HEIGHT}px;
     min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;
-  }
-`;
-
-const Inner = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const SearchBar = styled.div`
-  display: none;
-  width: 300px;
-  height: 40px;
-  left: 1010px;
-  top: 15px;
-  background: #202124;
-  border-radius: 43px;
-  margin-right: 30px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.md}px) {
-    display: block;
+    border-bottom: 1px solid rgba(151, 151, 151, 0.3);
   }
 `;
 
 export const TopBar = () => {
   const { landingPageUrlSegment } = useParams();
   // gets landing page data if landing page url segment is present, otherwise will return {}
-  const { landingPage } = useLandingPage(landingPageUrlSegment);
+  const { landingPage, isLandingPage } = useLandingPage(landingPageUrlSegment);
 
   // use the landing page settings if found, else the defaults
   const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
@@ -80,9 +62,7 @@ export const TopBar = () => {
         displayName={includeNameInHeader}
         name={name}
       />
-      <Inner>
-        <SearchBar />
-      </Inner>
+      {!isLandingPage && <EntitySearch />}
       <UserMenu />
     </Header>
   );

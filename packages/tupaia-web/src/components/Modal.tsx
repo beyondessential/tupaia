@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
   overflow-x: hidden;
-  padding: 2rem 2rem 4rem;
+  padding: 2rem;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`

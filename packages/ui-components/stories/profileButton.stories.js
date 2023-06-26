@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import { RouterProvider } from '../helpers/RouterProvider';
-import { ProfileButton, ProfileButtonItem } from '../src';
+import { ProfileButton, ProfileButtonItem } from '../src/components';
 
 const Container = styled(MuiBox)`
   display: flex;
