@@ -15,6 +15,8 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards as useDashboardData, useEntities } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
+import { DashboardItem } from '../DashboardItem';
+import { DashboardItemType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -25,12 +27,15 @@ const Panel = styled.div<{
 }>`
   position: relative;
   background-color: ${({ theme }) => theme.panel.background};
-  transition: width 0.5s ease, max-width 0.5s ease;
+  transition: width 0.3s ease, max-width 0.3s ease;
   width: 100%;
   overflow: visible;
   min-height: 100%;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 55 : 30)}%;
+    width: ${({ $isExpanded }) =>
+      $isExpanded
+        ? 50
+        : 30}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
@@ -74,29 +79,22 @@ const Title = styled(Typography)`
   line-height: 1.4;
 `;
 
-const ChartsContainer = styled.div<{
+const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
-  display: grid;
+  display: ${({ $isExpanded }) =>
+    $isExpanded
+      ? 'grid'
+      : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
   background-color: ${({ theme }) => theme.panel.secondaryBackground};
-  grid-template-columns: repeat(auto-fill, minmax(${MIN_SIDEBAR_WIDTH}px, auto));
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 0.5rem;
-  row-gap: 0.5rem;
-  padding: ${({ $isExpanded }) => ($isExpanded ? '0 0.5rem 0.5rem' : '0 0 0.5rem 0')};
 `;
 
 const DashboardImageContainer = styled.div`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
-`;
-
-const Chart = styled.div`
-  position: relative;
-  text-align: center;
-  background-color: ${({ theme }) => theme.panel.background};
-  // Use padding to maintain aspect ratio
-  padding: 1rem 1rem 75%;
 `;
 
 const useDashboards = () => {
@@ -144,12 +142,17 @@ export const Dashboard = () => {
           <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
+
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <ChartsContainer $isExpanded={isExpanded}>
-          {activeDashboard?.items.map(({ childId }) => {
-            return <Chart key={childId}>DashboardId: {childId}</Chart>;
-          })}
-        </ChartsContainer>
+        <DashboardItemsWrapper $isExpanded={isExpanded}>
+          {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
+            <DashboardItem
+              key={dashboardItem.id}
+              dashboardItem={dashboardItem}
+              dashboardCode={activeDashboard?.code}
+            />
+          ))}
+        </DashboardItemsWrapper>
       </ScrollBody>
     </Panel>
   );

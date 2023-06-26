@@ -18,6 +18,7 @@ const MapContainer = styled.div`
   height: 100%;
   transition: width 0.5s ease;
   width: 100%;
+  flex: 1;
   position: relative;
   display: flex;
   flex-direction: column;

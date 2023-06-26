@@ -37,11 +37,11 @@ const Text = styled(RechartText)<{ $isExporting: boolean }>`
   }};
 `;
 
-const getHeight = (isExporting?: boolean, isEnlarged?: boolean) => {
+const getHeight = (isExporting?: boolean, isEnlarged?: boolean, isMobileSize?: boolean) => {
   if (isExporting) {
     return 420;
   }
-  return isEnlarged && isMobile() ? 320 : undefined;
+  return isEnlarged && isMobileSize ? 320 : undefined;
 };
 
 export const GaugeChart = ({
@@ -51,6 +51,7 @@ export const GaugeChart = ({
   onItemClick = () => {},
 }: GaugeChartProps) => {
   const { data, color = BLUE, ...restOfConfigs } = viewContent;
+  const isMobileSize = isMobile();
 
   const generateElements = () => {
     const denominator = 0.05;
@@ -67,9 +68,13 @@ export const GaugeChart = ({
   };
 
   const { elements, cellComponents } = useMemo(() => generateElements(), [data]);
-  const height = useMemo(() => getHeight(isExporting, isEnlarged), [isExporting, isEnlarged]);
+  const height = useMemo(() => getHeight(isExporting, isEnlarged, isMobileSize), [
+    isExporting,
+    isEnlarged,
+    isMobileSize,
+  ]);
 
-  const responsiveStyle = isEnlarged || isMobile() || isExporting ? 1.5 : 1;
+  const responsiveStyle = isEnlarged || isMobileSize || isExporting ? 1.5 : 1;
   const innerRadius = 60 * responsiveStyle;
   const outerRadius = innerRadius * 1.4;
 
@@ -89,7 +94,7 @@ export const GaugeChart = ({
   };
 
   return (
-    <ResponsiveContainer width="100%" height={height} aspect={isMobile() ? undefined : 2}>
+    <ResponsiveContainer width="100%" height={height} aspect={isMobileSize ? undefined : 2}>
       <BasePieChart>
         <Pie
           cy="70%"

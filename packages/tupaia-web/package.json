@@ -61,6 +61,7 @@
     "@tupaia/types": "1.0.0",
     "@types/mapbox__polyline": "^1.0.2",
     "@types/material-ui": "^0.21.12",
+    "@types/react": "16.8.6",
     "@vitejs/plugin-react": "^4.0.0",
     "npm-run-all": "^4.1.5",
     "storybook": "^7.0.18",
