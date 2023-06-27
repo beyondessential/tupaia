@@ -35,7 +35,7 @@ const StyledPolygon = styled(Polygon)<PolygonProps>`
 interface ActivePolygonProps extends PolygonProps {
   coordinates: LeafletPolygonProps['positions'];
 }
-export const ActivePolygon = ({
+const ActivePolygon = ({
   coordinates,
   shade,
   hasChildren = false,
@@ -48,3 +48,5 @@ export const ActivePolygon = ({
     hasShadedChildren={hasShadedChildren}
   />
 );
+
+export default ActivePolygon;
