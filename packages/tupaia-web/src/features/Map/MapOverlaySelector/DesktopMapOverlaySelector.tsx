@@ -3,25 +3,211 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
+import { ExpandMore, Layers } from '@material-ui/icons';
+import { Skeleton as MuiSkeleton } from '@material-ui/lab';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
+import { Entity, SingleMapOverlayItem } from '../../../types';
+import { useMapOverlayData } from '../../../api/queries';
+import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import { periodToMoment } from '@tupaia/utils';
 
-// Placeholder for MapOverlaySelector component
-const Wrapper = styled.div`
-  width: 18.75rem;
-  margin: 1em;
-  height: 2.5rem;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.palette.secondary.main};
-  opacity: 0.6;
-  position: absolute;
-  top: 0;
+const MaxHeightContainer = styled.div`
+  flex: 1;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled(MaxHeightContainer)`
+  max-width: 21.25rem;
+  margin: 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
 
-export const DesktopMapOverlaySelector = () => {
-  return <Wrapper />;
+const Header = styled.div`
+  padding: 0.9rem 1rem;
+  background-color: ${({ theme }) => theme.palette.secondary.main};
+  border-radius: 5px 5px 0 0;
+`;
+
+const Heading = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const Container = styled(MaxHeightContainer)`
+  border-radius: 0 0 5px 5px;
+`;
+
+const MapOverlayNameContainer = styled.div`
+  padding: 1.3rem 1rem 1rem 1.125rem;
+  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+`;
+
+const MapOverlayName = styled.span`
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const Skeleton = styled(MuiSkeleton)`
+  transform: scale(1, 1);
+  ::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  }
+`;
+
+const OverlayLibraryAccordion = styled(Accordion)`
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  border-radius: 0 0 5px 5px;
+  &:before {
+    display: none;
+  }
+  &.MuiPaper-root.Mui-expanded {
+    height: 100%;
+    overflow: hidden; // make the accordion conform to the max-height of the parent container, regardless of how much content is present
+    > .MuiCollapse-container.MuiCollapse-entered {
+      max-height: 100%;
+      overflow-y: auto; // scrollable content when accordion is expanded;
+    }
+  }
+`;
+
+const OverlayLibraryIcon = styled(Layers)`
+  margin-right: 0.5rem;
+  .Mui-expanded & {
+    fill: ${({ theme }) => theme.palette.secondary.main};
+  }
+`;
+
+const OverlayLibraryTitle = styled(Typography)`
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const OverlayLibraryHeader = styled(AccordionSummary)`
+  margin: 0 !important;
+  min-height: unset !important;
+  color: rgba(255, 255, 255, 0.6);
+  .MuiAccordionSummary-content {
+    margin: 0 !important;
+    align-items: center;
+  }
+
+  &:hover,
+  &.Mui-expanded,
+  &:focus-visible {
+    color: ${({ theme }) => theme.palette.text.primary};
+  }
+`;
+
+const OverlayLibraryContentWrapper = styled(AccordionDetails)`
+  padding: 0 1rem 1rem;
+`;
+
+const OverlayLibraryContentContainer = styled.div`
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  width: 100%;
+  padding-top: 1rem;
+`;
+
+const LatestDataContainer = styled.div`
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 0.3rem 0.5rem 0.2rem;
+  margin-top: 0.5rem;
+`;
+
+const LatestDataText = styled(Typography)`
+  font-size: 0.875rem;
+  line-height: 1.3;
+`;
+
+interface DesktopMapOverlaySelectorProps {
+  hasMapOverlays?: boolean;
+  isLoading: boolean;
+  entityName?: Entity['name'];
+  mapOverlayName?: SingleMapOverlayItem['name'];
+  children?: ReactNode;
+  overlayLibraryOpen: boolean;
+  toggleOverlayLibrary: () => void;
+}
+
+export const DesktopMapOverlaySelector = ({
+  hasMapOverlays,
+  isLoading,
+  entityName,
+  mapOverlayName,
+  children,
+  overlayLibraryOpen,
+  toggleOverlayLibrary,
+}: DesktopMapOverlaySelectorProps) => {
+  const [urlSearchParams] = useSearchParams();
+  const { projectCode, entityCode } = useParams();
+  const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
+  const { data: mapOverlayData } = useMapOverlayData(projectCode, entityCode, mapOverlayCode);
+
+  return (
+    <Wrapper>
+      <Header>
+        <Heading>Map Overlays</Heading>
+      </Header>
+      <Container>
+        <MapOverlayNameContainer>
+          {isLoading ? (
+            <Skeleton animation="wave" width={200} height={20} />
+          ) : (
+            <Typography>
+              {hasMapOverlays ? (
+                <MapOverlayName>{mapOverlayName}</MapOverlayName>
+              ) : (
+                `Select an area with valid data. ${
+                  entityName && `${entityName} has no map overlays available.`
+                }`
+              )}
+            </Typography>
+          )}
+        </MapOverlayNameContainer>
+        {hasMapOverlays && (
+          <OverlayLibraryAccordion
+            expanded={overlayLibraryOpen}
+            onChange={toggleOverlayLibrary}
+            square
+          >
+            <OverlayLibraryHeader
+              expandIcon={<ExpandMore />}
+              aria-controls="overlay-library-content"
+              id="overlay-library-header"
+            >
+              <OverlayLibraryIcon />
+              <OverlayLibraryTitle>Overlay library</OverlayLibraryTitle>
+            </OverlayLibraryHeader>
+            <OverlayLibraryContentWrapper>
+              <OverlayLibraryContentContainer>{children}</OverlayLibraryContentContainer>
+            </OverlayLibraryContentWrapper>
+          </OverlayLibraryAccordion>
+        )}
+        {mapOverlayData?.period?.latestAvailable && (
+          <LatestDataContainer>
+            <LatestDataText>
+              Latest overlay data:{' '}
+              {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
+            </LatestDataText>
+          </LatestDataContainer>
+        )}
+      </Container>
+    </Wrapper>
+  );
 };
