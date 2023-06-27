@@ -9,6 +9,9 @@ export class MockWebConfigApi implements WebConfigApiInterface {
   public fetchReport(): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public fetchMeasureData(): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
   public fetchProjects(): Promise<any> {
     throw new Error('Method not implemented.');
   }

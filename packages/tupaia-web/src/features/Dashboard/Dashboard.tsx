@@ -16,7 +16,7 @@ import { StaticMap } from './StaticMap';
 import { useDashboards as useDashboardData, useEntities } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
-import { DashboardItemType } from '../../types';
+import { DashboardItemType, DashboardType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -31,6 +31,9 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
+  .recharts-wrapper {
+    font-size: 1rem !important;
+  }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) =>
       $isExpanded
@@ -105,7 +108,8 @@ const useDashboards = () => {
 
   if (dashboards.length > 0) {
     activeDashboard =
-      dashboards.find(dashboard => dashboard.name === dashboardName) || dashboards[0];
+      dashboards.find((dashboard: DashboardType) => dashboard.name === dashboardName) ||
+      dashboards[0];
   }
 
   return { dashboards, activeDashboard };
