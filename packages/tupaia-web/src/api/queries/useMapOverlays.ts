@@ -5,8 +5,9 @@
 
 import { useQuery } from 'react-query';
 import { get } from '../api';
+import { EntityCode, ProjectCode } from '../../types';
 
-export const useMapOverlays = (projectCode?: string, entityCode?: string) => {
+export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   return useQuery(
     ['mapOverlays', projectCode, entityCode],
     async () => {
