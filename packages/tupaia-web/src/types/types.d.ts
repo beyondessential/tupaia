@@ -56,4 +56,8 @@ export type DashboardName = BaseDashboard['name'];
 /* Response Types */
 // Todo: replace with types from @tupaia/types
 
-export type EntityResponse = Entity & { parentCode: Entity['code']; children?: Entity[] };
+export type EntityResponse = Entity & {
+  parentCode: Entity['code'];
+  photoUrl?: string;
+  children?: Entity[];
+};

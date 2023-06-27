@@ -4,10 +4,8 @@
  */
 import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
-import { Entity } from '@tupaia/types';
+import { EntityResponse } from '../../types';
 import { get } from '../api';
-
-type EntityResponse = Entity & { children?: Entity[]; photoUrl?: string };
 
 export const useEntities = (
   projectCode?: string,

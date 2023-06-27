@@ -44,7 +44,7 @@ export const InteractivePolygon = ({ entity, isChildArea = false }: InteractiveP
 
   if (!region) return null;
 
-  // Todo: find out what this is for
+  // Todo: Polygon overlays waitp-1221
   const hasMeasureValue = false;
 
   return (

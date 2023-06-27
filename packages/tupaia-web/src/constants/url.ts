@@ -4,7 +4,6 @@
  */
 export const URL_SEARCH_PARAMS = {
   PROJECT: 'project',
-  OVERLAY: 'overlay',
   TAB: 'tab',
   PASSWORD_RESET_TOKEN: 'passwordResetToken',
 };
