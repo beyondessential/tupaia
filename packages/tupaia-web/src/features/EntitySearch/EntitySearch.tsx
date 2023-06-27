@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
@@ -45,11 +45,15 @@ const SearchResults = styled.div`
 export const EntitySearch = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode!);
-  const { data: entity, isLoading } = useEntities(projectCode!, project?.entityCode, {
+  const { data: entity, isLoading, cancel } = useEntities(projectCode!, project?.entityCode, {
     enabled: !!project?.entityCode,
   });
   const [searchValue, setSearchValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  useEffect(() => {
+    return cancel;
+  }, [projectCode, project?.entityCode]);
 
   return (
     <ClickAwayListener onClickAway={() => setIsSearchFocused(false)}>

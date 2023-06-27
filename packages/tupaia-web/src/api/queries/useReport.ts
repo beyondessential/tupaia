@@ -4,11 +4,10 @@
  *
  */
 
-import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DashboardType, DashboardItemType, EntityCode, ProjectCode } from '../../types';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
-
+import { useCancellableQuery } from './useCancellableQuery'; 
 type QueryParams = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
@@ -24,7 +23,8 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
   const timeZone = getBrowserTimeZone();
   const formattedStartDate = formatDateForApi(startDate, null);
   const formattedEndDate = formatDateForApi(endDate, null);
-  return useQuery(
+
+  return useCancellableQuery(
     [
       'report',
       reportCode,
@@ -35,7 +35,7 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
       formattedStartDate,
       formattedEndDate,
     ],
-    () =>
+    ({ signal }: { signal: AbortSignal }) =>
       get(`report/${reportCode}`, {
         params: {
           dashboardCode,
@@ -47,6 +47,7 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
           startDate: formattedStartDate,
           endDate: formattedEndDate,
         },
+        signal,
       }),
     {
       enabled: !!reportCode && !!dashboardCode && !!projectCode && !!entityCode,

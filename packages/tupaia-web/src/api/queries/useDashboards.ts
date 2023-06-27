@@ -2,8 +2,8 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { useQuery } from 'react-query';
 import { DashboardType } from '../../types';
+import { useCancellableQuery } from './useCancellableQuery';
 // import { get } from '../api';
 
 const exploreData = [
@@ -250,7 +250,7 @@ const fanafanaOla = [
 ];
 
 export const useDashboards = (projectCode?: string, entityCode?: string) => {
-  return useQuery(
+  return useCancellableQuery(
     ['dashboards', projectCode, entityCode],
     () => {
       // @ts-ignore - just for testData

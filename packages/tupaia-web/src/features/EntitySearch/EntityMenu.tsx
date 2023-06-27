@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Entity } from '@tupaia/types';
@@ -79,11 +79,15 @@ const EntityMenuItem = ({
 }) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data, isLoading } = useEntities(projectCode!, entity.code!, { enabled: isExpanded });
+  const { data, isLoading, cancel } = useEntities(projectCode!, entity.code!, { enabled: isExpanded });
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    return cancel
+  }, [])
 
   /*
     Pre-populate the next layer of the menu with children that came from the previous layer of entity

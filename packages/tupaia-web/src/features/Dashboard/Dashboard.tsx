@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
@@ -102,7 +102,7 @@ const DashboardImageContainer = styled.div`
 
 const useDashboards = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: dashboards = [] } = useDashboardData(projectCode, entityCode);
+  const { data: dashboards = [], cancel } = useDashboardData(projectCode, entityCode);
 
   let activeDashboard = null;
 
@@ -112,19 +112,23 @@ const useDashboards = () => {
       dashboards[0];
   }
 
-  return { dashboards, activeDashboard };
+  return { dashboards, activeDashboard, cancel };
 };
 
 export const Dashboard = () => {
   const { entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { dashboards, activeDashboard } = useDashboards();
+  const { dashboards, activeDashboard, cancel } = useDashboards();
   const { data: entityData } = useEntity(entityCode);
   const bounds = entityData?.location?.bounds;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    return cancel;
+  }, [entityCode]);
 
   return (
     <Panel $isExpanded={isExpanded}>

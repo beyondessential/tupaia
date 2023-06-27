@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { getDefaultDates } from '@tupaia/utils';
@@ -11,6 +11,7 @@ import { DashboardCode, DashboardItemType } from '../../types';
 import { useReport } from '../../api/queries';
 import { EnlargedDashboardItem } from './EnlargedDashboardItem';
 import { DashboardItemContent } from './DashboardItemContent';
+import { useQueryClient } from 'react-query';
 
 const Wrapper = styled.div`
   display: flex;
@@ -50,7 +51,7 @@ export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemPro
     endDate?: string | null;
   };
   // query for the report data
-  const { data: reportData, isLoading, error, isError, refetch } = useReport(reportCode, {
+  const { data: reportData, isLoading, error, isError, refetch, cancel } = useReport(reportCode, {
     projectCode,
     entityCode,
     dashboardCode,
@@ -80,6 +81,12 @@ export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemPro
       isExpandable={isExpandable && !isEnlarged}
     />
   );
+
+  useEffect(() => {
+    return () => {
+      cancel();
+    };
+  }, [projectCode, entityCode, reportCode]);
 
   return (
     <Wrapper>

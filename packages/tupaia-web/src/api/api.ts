@@ -21,20 +21,22 @@ type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';
 };
 const getRequestOptions = (options?: RequestParametersWithMethod) => {
+ 
   return {
     ...options,
-    timeout,
+    timeout, 
   };
 };
 
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety
 const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
   const requestOptions = getRequestOptions(options);
-
   try {
     const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
     return response.data;
   } catch (error: any) {
+    // don't throw when is cancelled
+    if (axios.isCancel(error)) return
     // normalise errors using fetch error class
     if (error.response) {
       const { data } = error.response;

@@ -3,11 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useQuery } from 'react-query';
 import { get } from '../api';
+import { useCancellableQuery } from './useCancellableQuery';
 
 export const useEntities = (projectCode: string, entityCode?: string, options?: any) => {
-  return useQuery(
+  return useCancellableQuery(
     ['entities', projectCode, entityCode],
     async () => {
       return get(`entities/${projectCode}/${entityCode}`);
