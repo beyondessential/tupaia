@@ -85,6 +85,7 @@ export const MobileTabLayout = () => {
         </TabWrapper>
         {data && <EntityName>{data.name}</EntityName>}
         <DashboardPanel value={TABS.DASHBOARD}>
+          {/* Ensure the dashboard outlet is not rendered above the Map, otherwise the map will re-mount on route changes */}
           <Outlet />
           <Footer />
         </DashboardPanel>

@@ -35,7 +35,7 @@ const Container = styled.div`
 export const ProjectPage = () => {
   return (
     <Container>
-      {/*<EnvBanner />*/}
+      <EnvBanner />
       <TopBar />
       <DesktopLayout />
       <MobileTabLayout />
