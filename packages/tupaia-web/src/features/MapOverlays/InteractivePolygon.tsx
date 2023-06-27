@@ -7,6 +7,7 @@ import React from 'react';
 import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Entity } from '@tupaia/types';
 import { AreaTooltip, MAP_COLORS } from '@tupaia/ui-map-components';
 import { useEntityLink } from '../../utils';
 import { useProject } from '../../api/queries';
@@ -30,7 +31,12 @@ const useProjectConfig = () => {
   return { permanentLabels: project?.config?.permanentRegionLabels, isLoading };
 };
 
-export const InteractivePolygon = ({ entity, isChildArea = false }) => {
+interface InteractivePolygonProps {
+  entity: Entity;
+  isChildArea?: boolean;
+}
+
+export const InteractivePolygon = ({ entity, isChildArea = false }: InteractivePolygonProps) => {
   const link = useEntityLink(entity.code);
   const { permanentLabels } = useProjectConfig();
   const navigate = useNavigate();

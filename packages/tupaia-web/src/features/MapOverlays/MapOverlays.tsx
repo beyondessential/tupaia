@@ -3,23 +3,14 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { PolygonLayer } from './PolygonLayer';
-import { URL_SEARCH_PARAMS } from '../../constants';
-import { useEntitiesWithLocation, useLegacyMapOverlay } from '../../api/queries';
+import { EntityResponse } from '../../types';
+import { useEntitiesWithLocation } from '../../api/queries';
 
 export const MapOverlays = () => {
   const { projectCode, entityCode } = useParams();
   const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
-  const [urlSearchParams] = useSearchParams();
-  const overlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
-  const { data: mapOverlayData } = useLegacyMapOverlay(overlayCode, {
-    params: {
-      organisationUnitCode: entityCode,
-      projectCode,
-      shouldShowAllParentCountryResults: true,
-    },
-  });
-  console.log('mapOverlayData', mapOverlayData);
-  return <PolygonLayer entityData={entityData} mapOverlayData={mapOverlayData} />;
+
+  return <PolygonLayer entityData={entityData as EntityResponse} />;
 };

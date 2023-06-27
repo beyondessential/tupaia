@@ -115,8 +115,6 @@ const useDashboards = () => {
   return { dashboards, activeDashboard };
 };
 
-const ENTITY_FIELDS = ['parent_code', 'code', 'name', 'type', 'bounds'];
-
 export const Dashboard = () => {
   const { projectCode, entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -148,7 +146,7 @@ export const Dashboard = () => {
         <DashboardItemsWrapper $isExpanded={isExpanded}>
           {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
             <DashboardItem
-              key={dashboardItem.id}
+              key={dashboardItem.code}
               dashboardItem={dashboardItem}
               dashboardCode={activeDashboard?.code}
             />

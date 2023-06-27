@@ -4,21 +4,26 @@
  */
 
 import React from 'react';
-import { InteractivePolygon } from './InteractivePolygon';
 import { ActivePolygon } from '@tupaia/ui-map-components';
-import { useEntitiesWithLocation } from '../../api/queries';
 import { useParams } from 'react-router-dom';
+import { EntityResponse } from '../../types';
+import { InteractivePolygon } from './InteractivePolygon';
+import { useEntitiesWithLocation } from '../../api/queries';
 
-const ChildEntities = ({ entities }) => {
-  if (!entities) {
+const ChildEntities = ({ entities }: { entities: EntityResponse['children'] }) => {
+  if (!entities || entities.length === 0) {
     return null;
   }
-  return entities.map(entity => (
-    <InteractivePolygon key={entity.code} entity={entity} isChildArea />
-  ));
+  return (
+    <>
+      {entities.map(entity => (
+        <InteractivePolygon key={entity.code} entity={entity} isChildArea />
+      ))}
+    </>
+  );
 };
 
-const SiblingEntities = ({ entity }) => {
+const SiblingEntities = ({ entity }: { entity: EntityResponse }) => {
   const { projectCode } = useParams();
   const { data: siblingEntities, isLoading } = useEntitiesWithLocation(
     projectCode,
@@ -29,21 +34,20 @@ const SiblingEntities = ({ entity }) => {
     return null;
   }
 
-  const children = siblingEntities?.children.filter(e => e.code !== entity.code) || [];
+  const children = siblingEntities?.children?.filter(e => e.code !== entity.code) || [];
 
-  return children.map(entity => <InteractivePolygon key={entity.code} entity={entity} />);
+  return (
+    <>
+      {children.map(entity => (
+        <InteractivePolygon key={entity.code} entity={entity} />
+      ))}
+    </>
+  );
 };
 
-const ActiveEntity = ({ entity }) => {
-  const { code, region, children } = entity;
-  const hasChildren = children?.length > 0;
-
-  // orgUnitMeasureData
-  const isHidden = false;
-  const shade = false;
-  const hasShadedChildren = false;
-
-  // const hasShadedChildren = children?.some(child => measureOrgUnitCodes.has(child.code));
+const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
+  const { region, children } = entity;
+  const hasChildren = children && children.length > 0;
 
   if (!region) return null;
 
@@ -59,14 +63,14 @@ const ActiveEntity = ({ entity }) => {
   );
 };
 
-export const PolygonLayer = ({ entityData }) => {
+export const PolygonLayer = ({ entityData }: { entityData: EntityResponse }) => {
   if (!entityData) {
     return null;
   }
 
   return (
     <>
-      <ActiveEntity entity={entityData} />
+      <ActiveEntity entity={entityData as EntityResponse} />
       <ChildEntities entities={entityData?.children} />
       <SiblingEntities entity={entityData} />
     </>
