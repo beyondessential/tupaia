@@ -60,16 +60,16 @@ const ActiveEntity = ({ entity }) => {
   );
 };
 
-export const PolygonLayer = ({ entity, mapOverlayData }) => {
-  if (!entity) {
+export const PolygonLayer = ({ entityData }) => {
+  if (!entityData) {
     return null;
   }
 
   return (
     <>
-      <ActiveEntity entity={entity} />
-      <ChildEntities entities={entity?.children} />
-      <SiblingEntities entity={entity} />
+      <ActiveEntity entity={entityData} />
+      <ChildEntities entities={entityData?.children} />
+      <SiblingEntities entity={entityData} />
     </>
   );
 };
