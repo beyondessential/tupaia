@@ -190,7 +190,6 @@ export const InteractivePolygon = React.memo(
     };
 
     if (shade) {
-      console.log('shade', shade);
       if (shade === 'transparent') {
         return <TransparentShadedPolygon {...defaultProps}>{tooltip}</TransparentShadedPolygon>;
       }
