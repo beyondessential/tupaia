@@ -6,7 +6,7 @@
 import React from 'react';
 import { InteractivePolygon } from './InteractivePolygon';
 import { ActivePolygon } from '@tupaia/ui-map-components';
-import { useEntities } from '../../api/queries';
+import { useEntitiesWithLocation } from '../../api/queries';
 import { useParams } from 'react-router-dom';
 
 const ChildEntities = ({ entities }) => {
@@ -18,13 +18,12 @@ const ChildEntities = ({ entities }) => {
   ));
 };
 
-const ENTITY_FIELDS = ['parent_code', 'code', 'name', 'type', 'bounds', 'region'];
-
 const SiblingEntities = ({ entity }) => {
   const { projectCode } = useParams();
-  const { data: siblingEntities, isLoading } = useEntities(projectCode, entity.parentCode, {
-    params: { fields: ENTITY_FIELDS },
-  });
+  const { data: siblingEntities, isLoading } = useEntitiesWithLocation(
+    projectCode,
+    entity.parentCode,
+  );
 
   if (isLoading || !siblingEntities) {
     return null;

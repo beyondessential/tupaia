@@ -12,7 +12,7 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntities } from '../../api/queries';
+import { useEntitiesWithLocation } from '../../api/queries';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -70,9 +70,7 @@ export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
 
-  const { data: entityData } = useEntities(projectCode, entityCode, {
-    params: { fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region'] },
-  });
+  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);

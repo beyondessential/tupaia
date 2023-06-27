@@ -6,13 +6,11 @@ import React from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { PolygonLayer } from './PolygonLayer';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { useEntities, useLegacyMapOverlay } from '../../api/queries';
+import { useEntitiesWithLocation, useLegacyMapOverlay } from '../../api/queries';
 
 export const MapOverlays = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entityData } = useEntities(projectCode, entityCode, {
-    params: { fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region'] },
-  });
+  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
   const [urlSearchParams] = useSearchParams();
   const overlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
   const { data: mapOverlayData } = useLegacyMapOverlay(overlayCode, {

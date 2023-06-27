@@ -26,3 +26,8 @@ export const useEntities = (
     } as QueryOptions,
   );
 };
+
+export const useEntitiesWithLocation = (projectCode?: string, entityCode?: string) =>
+  useEntities(projectCode, entityCode, {
+    params: { fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region'] },
+  });
