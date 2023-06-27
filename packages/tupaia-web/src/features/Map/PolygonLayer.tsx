@@ -54,6 +54,12 @@ const ActiveEntity = ({ entity }) => {
   );
 };
 
+/**
+ *
+ * Todo:
+ * - Shading
+ * - Active Layer conditions
+ */
 export const PolygonLayer = ({ entity }) => {
   if (!entity) {
     return null;

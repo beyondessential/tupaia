@@ -35,7 +35,7 @@ const Panel = styled.div<{
     width: ${({ $isExpanded }) =>
       $isExpanded
         ? 50
-        : 30}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
+        : 25}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
@@ -120,7 +120,7 @@ export const Dashboard = () => {
   const { data: entityData } = useEntities(projectCode, entityCode, {
     params: { fields: ENTITY_FIELDS },
   });
-  const bounds = entityData?.location?.bounds;
+  const bounds = entityData?.bounds;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);

@@ -217,7 +217,7 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   flyToBounds = (bounds: LatLngBoundsExpression) => {
     if (!areBoundsValid(bounds)) return;
-    this.map?.flyToBounds(bounds, { animate: true });
+    this.map?.fitBounds(bounds, { animate: true });
   };
 
   requiresMoveAnimation = (prevProps: LeafletMapProps) => {
