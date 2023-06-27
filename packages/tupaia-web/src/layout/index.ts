@@ -4,3 +4,4 @@
  */
 export * from './ProjectCardList';
 export * from './TopBar';
+export * from './MainLayout';
