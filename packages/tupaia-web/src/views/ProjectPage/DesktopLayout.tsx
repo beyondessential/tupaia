@@ -25,6 +25,7 @@ export const DesktopLayout = () => {
   return (
     <Container>
       <Map />
+      {/* Ensure the dashboard outlet is not rendered above the Map, otherwise the map will re-mount on route changes */}
       <Outlet />
     </Container>
   );
