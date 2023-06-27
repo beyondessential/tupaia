@@ -13,7 +13,9 @@ const ChildEntities = ({ entities }) => {
   if (!entities) {
     return null;
   }
-  return entities.map(entity => <InteractivePolygon key={entity.code} entity={entity} />);
+  return entities.map(entity => (
+    <InteractivePolygon key={entity.code} entity={entity} isChildArea />
+  ));
 };
 
 const ENTITY_FIELDS = ['parent_code', 'code', 'name', 'type', 'bounds', 'region'];
@@ -28,39 +30,37 @@ const SiblingEntities = ({ entity }) => {
     return null;
   }
 
-  const children = siblingEntities?.children || [];
+  const children = siblingEntities?.children.filter(e => e.code !== entity.code) || [];
 
   return children.map(entity => <InteractivePolygon key={entity.code} entity={entity} />);
 };
-
-const ACTIVE_SHADE = '#EE6230';
 
 const ActiveEntity = ({ entity }) => {
   const { code, region, children } = entity;
   const hasChildren = children?.length > 0;
 
+  // orgUnitMeasureData
+  const isHidden = false;
+  const shade = false;
+  const hasShadedChildren = false;
+
+  // const hasShadedChildren = children?.some(child => measureOrgUnitCodes.has(child.code));
+
   if (!region) return null;
 
   return (
     <ActivePolygon
-      shade={ACTIVE_SHADE}
       hasChildren={hasChildren}
       coordinates={region}
       // Randomize key to ensure polygon appears at top. This is still important even
       // though the polygon is in a LayerGroup due to issues with react-leaflet that
       // maintainer says are out of scope for the module.
-      key={code}
+      key={`currentOrgUnitPolygon${Math.random()}`}
     />
   );
 };
 
-/**
- *
- * Todo:
- * - Shading
- * - Active Layer conditions
- */
-export const PolygonLayer = ({ entity }) => {
+export const PolygonLayer = ({ entity, mapOverlayData }) => {
   if (!entity) {
     return null;
   }

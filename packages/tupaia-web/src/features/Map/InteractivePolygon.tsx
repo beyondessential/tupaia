@@ -30,19 +30,16 @@ const useProjectConfig = () => {
   return { permanentLabels: project?.config?.permanentRegionLabels, isLoading };
 };
 
-export const InteractivePolygon = ({ entity }) => {
+export const InteractivePolygon = ({ entity, isChildArea = false }) => {
   const link = useEntityLink(entity.code);
   const { permanentLabels } = useProjectConfig();
-
   const navigate = useNavigate();
-
-  const { code, name, region, bounds, children } = entity;
+  const { name, region } = entity;
 
   if (!region) return null;
 
   // Todo: find out what this is for
   const hasMeasureValue = false;
-  const isChildArea = true;
 
   return (
     <BasicPolygon positions={region} eventHandlers={{ click: () => navigate(link) }}>

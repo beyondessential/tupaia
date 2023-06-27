@@ -6,13 +6,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
-import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
+import {
+  TRANSPARENT_BLACK,
+  TILE_SETS,
+  MOBILE_BREAKPOINT,
+  URL_SEARCH_PARAMS,
+} from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { PolygonLayer } from './PolygonLayer';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntities } from '../../api/queries';
-import { useParams } from 'react-router-dom';
+import { useEntities, useLegacyMapOverlay } from '../../api/queries';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -71,6 +76,16 @@ const ENTITY_FIELDS = ['parent_code', 'code', 'name', 'type', 'bounds', 'region'
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
+
+  const [urlSearchParams] = useSearchParams();
+  const overlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
+  const { data: mapOverlayData } = useLegacyMapOverlay(overlayCode, {
+    params: {
+      organisationUnitCode: entityCode,
+      projectCode,
+      shouldShowAllParentCountryResults: true,
+    },
+  });
   const { data: entityData } = useEntities(projectCode, entityCode, {
     params: { fields: ENTITY_FIELDS },
   });
@@ -83,7 +98,7 @@ export const Map = () => {
     <MapContainer>
       <StyledMap bounds={entityData?.bounds} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <PolygonLayer entity={entityData} />
+        <PolygonLayer entity={entityData} mapOverlayData={mapOverlayData} />
         <ZoomControl position="bottomright" />
         <MapLegend />
         <MapWatermark />
