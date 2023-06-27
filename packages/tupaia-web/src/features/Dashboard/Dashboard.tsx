@@ -146,17 +146,16 @@ export const Dashboard = () => {
           <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        {/*<DashboardItemsWrapper $isExpanded={isExpanded}>*/}
-        {/*  {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (*/}
-        {/*    <DashboardItem*/}
-        {/*      key={dashboardItem.id}*/}
-        {/*      dashboardItem={dashboardItem}*/}
-        {/*      dashboardCode={activeDashboard?.code}*/}
-        {/*    />*/}
-        {/*  ))}*/}
-        {/*</DashboardItemsWrapper>*/}
+        <DashboardItemsWrapper $isExpanded={isExpanded}>
+          {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
+            <DashboardItem
+              key={dashboardItem.id}
+              dashboardItem={dashboardItem}
+              dashboardCode={activeDashboard?.code}
+            />
+          ))}
+        </DashboardItemsWrapper>
       </ScrollBody>
     </Panel>
   );
