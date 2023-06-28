@@ -83,23 +83,3 @@ export type EntityResponse = Entity & {
   photoUrl?: string;
   children?: Entity[];
 };
-
-export type SingleMapOverlayItem = KeysToCamelCase<
-  Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
-> & {
-  measureLevel?: string;
-  displayType: string;
-};
-
-export type MapOverlayGroup = {
-  name: MapOverlay['name'];
-  children: SingleMapOverlayItem[] | MapOverlayGroup[];
-};
-export type MapOverlays = {
-  entityCode: EntityCode;
-  entityType: EntityType;
-  name: string;
-  mapOverlays: MapOverlayGroup[];
-};
-
-export type Entity = KeysToCamelCase<BaseEntity>;
