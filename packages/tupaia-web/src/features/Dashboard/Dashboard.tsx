@@ -13,7 +13,7 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards as useDashboardData, useEntities } from '../../api/queries';
+import { useDashboards as useDashboardData, useEntitiesWithLocation } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { DashboardItemType, DashboardType } from '../../types';
@@ -115,15 +115,11 @@ const useDashboards = () => {
   return { dashboards, activeDashboard };
 };
 
-const ENTITY_FIELDS = ['parent_code', 'code', 'name', 'type', 'bounds'];
-
 export const Dashboard = () => {
   const { projectCode, entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { dashboards, activeDashboard } = useDashboards();
-  const { data: entityData } = useEntities(projectCode, entityCode, {
-    params: { fields: ENTITY_FIELDS },
-  });
+  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
   const bounds = entityData?.bounds;
 
   const toggleExpanded = () => {
@@ -150,7 +146,7 @@ export const Dashboard = () => {
         <DashboardItemsWrapper $isExpanded={isExpanded}>
           {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
             <DashboardItem
-              key={dashboardItem.id}
+              key={dashboardItem.code}
               dashboardItem={dashboardItem}
               dashboardCode={activeDashboard?.code}
             />

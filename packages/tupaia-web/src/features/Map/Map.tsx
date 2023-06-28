@@ -5,14 +5,14 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
-import { PolygonLayer } from './PolygonLayer';
+import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntities } from '../../api/queries';
-import { useParams } from 'react-router-dom';
+import { useEntitiesWithLocation } from '../../api/queries';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -66,14 +66,11 @@ const TilePickerWrapper = styled.div`
   }
 `;
 
-const ENTITY_FIELDS = ['parent_code', 'code', 'name', 'type', 'bounds', 'region'];
-
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
-  const { data: entityData } = useEntities(projectCode, entityCode, {
-    params: { fields: ENTITY_FIELDS },
-  });
+
+  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
@@ -83,7 +80,7 @@ export const Map = () => {
     <MapContainer>
       <StyledMap bounds={entityData?.bounds} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <PolygonLayer entity={entityData} />
+        <MapOverlays />
         <ZoomControl position="bottomright" />
         <MapLegend />
         <MapWatermark />
