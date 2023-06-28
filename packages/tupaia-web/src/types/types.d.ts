@@ -75,3 +75,11 @@ export type MapOverlays = {
 };
 
 export type Entity = KeysToCamelCase<BaseEntity>;
+/* Response Types */
+// Todo: replace with types from @tupaia/types
+
+export type EntityResponse = Entity & {
+  parentCode: Entity['code'];
+  photoUrl?: string;
+  children?: Entity[];
+};

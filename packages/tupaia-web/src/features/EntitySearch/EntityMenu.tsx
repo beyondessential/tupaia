@@ -115,7 +115,7 @@ const EntityMenuItem = ({
       </FlexRow>
       {isExpanded && (
         <EntityMenu
-          children={nextChildren}
+          children={nextChildren!}
           projectCode={projectCode}
           onClose={onClose}
           isLoading={isLoading}
