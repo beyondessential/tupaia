@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Entity } from '@tupaia/types';
+import { ProjectCode } from '../../types';
 import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
 import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
 import { useEntities } from '../../api/queries';
@@ -43,16 +44,17 @@ const MenuLink = styled(Button).attrs({
 type EntityWithChildren = Entity & { children?: Entity[] };
 
 interface EntityMenuProps {
-  projectCode: string;
+  projectCode: ProjectCode;
   children: EntityWithChildren[];
   isLoading: boolean;
+  onClose: () => void;
 }
 
 /*
  * ExpandedList is a recursive component that renders a list of entities and their children to
  * display an expandable entity menu.
  */
-export const EntityMenu = ({ projectCode, children, isLoading }: EntityMenuProps) => {
+export const EntityMenu = ({ projectCode, children, isLoading, onClose }: EntityMenuProps) => {
   const entityList = children.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <List aria-expanded>
@@ -62,24 +64,28 @@ export const EntityMenu = ({ projectCode, children, isLoading }: EntityMenuProps
           projectCode={projectCode}
           entity={entity}
           parentIsLoading={isLoading}
+          onClose={onClose}
         />
       ))}
     </List>
   );
 };
 
+interface EntityMenuItemProps {
+  projectCode: ProjectCode;
+  entity: EntityWithChildren;
+  parentIsLoading?: boolean;
+  onClose: () => void;
+}
 const EntityMenuItem = ({
   projectCode,
   entity,
   parentIsLoading = false,
-}: {
-  projectCode: string;
-  entity: EntityWithChildren;
-  parentIsLoading?: boolean;
-}) => {
+  onClose,
+}: EntityMenuItemProps) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data, isLoading } = useEntities(projectCode!, entity.code!, { enabled: isExpanded });
+  const { data, isLoading } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -96,7 +102,7 @@ const EntityMenuItem = ({
   return (
     <div>
       <FlexRow>
-        <MenuLink to={link}>
+        <MenuLink to={link} onClick={onClose}>
           {entity.name} {entity.type === 'facility' && <HospitalIcon />}
         </MenuLink>
         <IconButton
@@ -108,7 +114,12 @@ const EntityMenuItem = ({
         </IconButton>
       </FlexRow>
       {isExpanded && (
-        <EntityMenu children={nextChildren} projectCode={projectCode} isLoading={isLoading} />
+        <EntityMenu
+          children={nextChildren!}
+          projectCode={projectCode}
+          onClose={onClose}
+          isLoading={isLoading}
+        />
       )}
     </div>
   );

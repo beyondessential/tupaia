@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect, useState } from 'react';
-import { To, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen } from '../../components';
@@ -14,7 +14,6 @@ import { ProjectDetails } from './ProjectDetails';
 import { ProjectAccessForm } from './ProjectAccessForm';
 import { RequestedCountries } from './RequestedCountries';
 import { Typography } from '@material-ui/core';
-import { useModal } from '../../utils';
 import { CountryAccessListItem } from '../../types';
 
 const ModalBody = styled.div`

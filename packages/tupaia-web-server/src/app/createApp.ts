@@ -15,24 +15,27 @@ import {
 import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
-  EntitiesRoute,
-  ReportRoute,
-  LegacyDashboardReportRoute,
-  UserRoute,
-  TempLogoutRoute,
-  ProjectRoute,
-
   DashboardsRequest,
+  EntitiesRoute,
   EntitiesRequest,
+  ReportRoute,
   ReportRequest,
+  LegacyDashboardReportRoute,
   LegacyDashboardReportRequest,
+  LegacyMapOverlayReportRoute,
+  LegacyMapOverlayReportRequest,
+  MapOverlaysRoute,
+  MapOverlaysRequest,
+  UserRoute,
   UserRequest,
+  TempLogoutRoute,
   TempLogoutRequest,
+  ProjectRoute,
   ProjectRequest,
-  CountryAccessListRequest,
   CountryAccessListRoute,
-  RequestCountryAccessRequest,
+  CountryAccessListRequest,
   RequestCountryAccessRoute,
+  RequestCountryAccessRequest,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -45,7 +48,15 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
-    .get<LegacyDashboardReportRequest>('legacyDashboardReport/:reportCode', handleWith(LegacyDashboardReportRoute))
+    .get<LegacyDashboardReportRequest>(
+      'legacyDashboardReport/:reportCode',
+      handleWith(LegacyDashboardReportRoute),
+    )
+    .get<LegacyMapOverlayReportRequest>(
+      'legacyMapOverlayReport/:reportCode',
+      handleWith(LegacyMapOverlayReportRoute),
+    )
+    .get<MapOverlaysRequest>('mapOverlays/:projectCode/:entityCode', handleWith(MapOverlaysRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<DashboardsRequest>('dashboards/:projectCode/:entityCode', handleWith(DashboardsRoute))

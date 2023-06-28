@@ -13,10 +13,10 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
+import { useDashboards as useDashboardData, useEntitiesWithLocation } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
-import { DashboardItemType } from '../../types';
+import { DashboardItemType, DashboardType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -38,17 +38,11 @@ const Panel = styled.div<{
     width: ${({ $isExpanded }) =>
       $isExpanded
         ? 50
-        : 30}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
+        : 25}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
       $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
-    .recharts-wrapper {
-      font-size: ${({ $isExpanded }) =>
-        $isExpanded
-          ? '1rem'
-          : '1.2rem'} !important; // this is to set the font size of the chart overall, including the axis labels, because the library uses ems, so shrinks the text relative to the font size of the parent
-    }
   }
 `;
 
@@ -114,18 +108,19 @@ const useDashboards = () => {
 
   if (dashboards.length > 0) {
     activeDashboard =
-      dashboards.find(dashboard => dashboard.name === dashboardName) || dashboards[0];
+      dashboards.find((dashboard: DashboardType) => dashboard.name === dashboardName) ||
+      dashboards[0];
   }
 
   return { dashboards, activeDashboard };
 };
 
 export const Dashboard = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { dashboards, activeDashboard } = useDashboards();
-  const { data: entityData } = useEntity(entityCode);
-  const bounds = entityData?.location?.bounds;
+  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
+  const bounds = entityData?.bounds;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -147,12 +142,11 @@ export const Dashboard = () => {
           <Title variant="h3">{entityData?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
           {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
             <DashboardItem
-              key={dashboardItem.id}
+              key={dashboardItem.code}
               dashboardItem={dashboardItem}
               dashboardCode={activeDashboard?.code}
             />

@@ -16,3 +16,5 @@ export type KeysToCamelCase<T> = {
     ? KeysToCamelCase<T[K][number]>[]
     : ObjectToCamel<T[K]>;
 };
+
+export type ValueOf<T> = T[keyof T];
