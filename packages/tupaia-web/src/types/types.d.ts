@@ -2,10 +2,13 @@ import {
   LandingPage,
   Project,
   Country,
-  Entity,
+  Entity as BaseEntity,
   Dashboard as BaseDashboard,
   DashboardItem as BaseDashboardItem,
   DashboardItemConfig,
+  MapOverlay,
+  MapOverlayGroupRelation,
+  EntityType,
 } from '@tupaia/types';
 import { ViewContent } from '@tupaia/ui-chart-components';
 import { KeysToCamelCase } from './helpers';
@@ -53,6 +56,25 @@ export type TupaiaUrlParams = {
 export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
 export type DashboardName = BaseDashboard['name'];
 
+export type SingleMapOverlayItem = KeysToCamelCase<
+  Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
+> & {
+  measureLevel?: string;
+  displayType: string;
+};
+
+export type MapOverlayGroup = {
+  name: MapOverlay['name'];
+  children: SingleMapOverlayItem[] | MapOverlayGroup[];
+};
+export type MapOverlays = {
+  entityCode: EntityCode;
+  entityType: EntityType;
+  name: string;
+  mapOverlays: MapOverlayGroup[];
+};
+
+export type Entity = KeysToCamelCase<BaseEntity>;
 /* Response Types */
 // Todo: replace with types from @tupaia/types
 
