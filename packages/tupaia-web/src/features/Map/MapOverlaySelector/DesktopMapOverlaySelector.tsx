@@ -25,11 +25,8 @@ const MaxHeightContainer = styled.div`
 `;
 
 const Wrapper = styled(MaxHeightContainer)`
-  position: absolute;
-  top: 0;
-  left: 0;
+  pointer-events: auto;
   max-width: 21.25rem;
-  min-width: 21.25rem;
   margin: 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
