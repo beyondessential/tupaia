@@ -7,7 +7,7 @@ import { PolygonLayer } from './PolygonLayer';
 import { EntityResponse } from '../../types';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { useMapOverlays as useMapOverlaysData, useLegacyMapOverlay } from '../../api/queries';
+import { useMapOverlayReport } from '../../api/queries';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useEntitiesWithLocation } from '../../api/queries';
 import { MarkerLayer } from './MarkerLayer';
@@ -18,15 +18,12 @@ export const MapOverlays = () => {
   const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
 
   const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
-
-  const { mapOverlayGroups, selectedOverlay } = useMapOverlaysData();
-
-  const { data } = useLegacyMapOverlay(projectCode, entityCode, mapOverlayCode);
+  const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, mapOverlayCode);
 
   return (
     <>
       <PolygonLayer entityData={entityData as EntityResponse} />
-      {/*<MarkerLayer measureData={data} serieses={selectedOverlay} />*/}
+      <MarkerLayer entityData={entityData as EntityResponse} mapOverlayData={mapOverlayData} />
     </>
   );
 };

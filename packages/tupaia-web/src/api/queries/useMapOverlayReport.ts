@@ -8,13 +8,12 @@ import { get } from '../api';
 import { EntityCode, ProjectCode } from '../../types';
 import { MapOverlay } from '@tupaia/types';
 
-// Todo: include new reports in this query and rename to useMapOverlayReport
-export const useLegacyMapOverlay = (
+export const useMapOverlayReport = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
   mapOverlayCode?: MapOverlay['code'] | null,
 ) => {
-  return useQuery(
+  const query = useQuery(
     ['legacyMapOverlayReport', projectCode, entityCode, mapOverlayCode],
     async () => {
       return get(`legacyMapOverlayReport/${mapOverlayCode}`, {
@@ -29,4 +28,6 @@ export const useLegacyMapOverlay = (
       enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
     },
   );
+
+  return { ...query };
 };

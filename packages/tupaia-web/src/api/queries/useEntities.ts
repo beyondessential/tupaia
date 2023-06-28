@@ -38,5 +38,19 @@ export const useEntities = (
 
 export const useEntitiesWithLocation = (projectCode?: string, entityCode?: string) =>
   useEntities(projectCode, entityCode, {
-    params: { fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region'] },
+    params: {
+      fields: [
+        'parent_code',
+        'code',
+        'name',
+        'type',
+        'bounds',
+        'region',
+        'point',
+        'location_type',
+        'image_url',
+        'attributes',
+        'child_codes',
+      ],
+    },
   });

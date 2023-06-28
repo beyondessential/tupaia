@@ -15,4 +15,4 @@ export { useDashboards } from './useDashboards';
 export { useReport } from './useReport';
 export { useMapOverlayData } from './useMapOverlayData';
 export { useMapOverlays } from './useMapOverlays';
-export { useLegacyMapOverlay } from './useLegacyMapOverlay';
+export { useMapOverlayReport } from './useMapOverlayReport.ts';
