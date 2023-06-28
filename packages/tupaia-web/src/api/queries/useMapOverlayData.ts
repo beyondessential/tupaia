@@ -15,11 +15,14 @@ export const useMapOverlayData = (
   return useQuery(
     ['mapOverlayData', projectCode, entityCode, mapOverlayCode],
     async () => {
-      return get(
-        `measureData?mapOverlayCode=${mapOverlayCode}&organisationUnitCode=${entityCode}&projectCode=${projectCode}&shouldShowAllParentCountryResults=${
-          projectCode !== entityCode
-        }`, // TODO: figure out the logic here for shouldShowAllParentCountryResults
-      );
+      return get('measureData', {
+        params: {
+          mapOverlayCode,
+          organisationUnitCode: entityCode,
+          projectCode,
+          shouldShowAllParentCountryResults: projectCode !== entityCode, // TODO: figure out the logic here for shouldShowAllParentCountryResults
+        },
+      });
     },
     {
       enabled: !!projectCode && !!entityCode && !!mapOverlayCode,

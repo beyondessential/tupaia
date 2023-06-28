@@ -5,15 +5,15 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { ExpandMore, Layers } from '@material-ui/icons';
 import { Skeleton as MuiSkeleton } from '@material-ui/lab';
+import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
-import { useMapOverlayData } from '../../../api/queries';
-import { useParams } from 'react-router';
-import { periodToMoment } from '@tupaia/utils';
-import { useMapOverlays } from '../../../utils';
+import { useMapOverlayData, useMapOverlays } from '../../../api/queries';
+
 import { MapOverlayList } from './MapOverlayList';
 
 const MaxHeightContainer = styled.div`

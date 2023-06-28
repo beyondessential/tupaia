@@ -15,7 +15,7 @@ import {
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
-import { useMapOverlays } from '../../../utils';
+import { useMapOverlays } from '../../../api/queries';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;

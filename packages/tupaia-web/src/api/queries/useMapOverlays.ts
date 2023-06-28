@@ -2,22 +2,30 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import { ChangeEvent } from 'react';
-import { useSearchParams, useParams } from 'react-router-dom';
-import { UseQueryResult } from 'react-query';
-import { useFetchMapOverlays } from '../api/queries';
-import { URL_SEARCH_PARAMS } from '../constants';
-import { MapOverlayGroup, SingleMapOverlayItem } from '../types';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { useQuery, UseQueryResult } from 'react-query';
+import { get } from '../api';
+import { MapOverlayGroup, SingleMapOverlayItem } from '../../types';
+import { URL_SEARCH_PARAMS } from '../../constants';
 
-const flattenMapOverlays = (mapOverlayGroups: MapOverlayGroup[] = []): SingleMapOverlayItem[] => {
+const mapOverlayByCode = (
+  mapOverlayGroups: MapOverlayGroup[] = [],
+): Record<SingleMapOverlayItem['code'], SingleMapOverlayItem> => {
   return mapOverlayGroups.reduce(
-    (mapOverlays: SingleMapOverlayItem[], mapOverlayGroup: MapOverlayGroup) => {
-      if (mapOverlayGroup.children)
-        return [...mapOverlays, ...flattenMapOverlays(mapOverlayGroup.children)];
-      return [...mapOverlays, mapOverlayGroup];
+    (
+      result: Record<string, SingleMapOverlayItem>,
+      mapOverlay: MapOverlayGroup | SingleMapOverlayItem,
+    ) => {
+      if (mapOverlay.children) {
+        return { ...result, ...mapOverlayByCode(mapOverlay.children) };
+      }
+      return {
+        ...result,
+        [mapOverlay.code]: mapOverlay,
+      };
     },
-    [],
+    {},
   );
 };
 
@@ -27,7 +35,6 @@ interface UseMapOverlaysResult {
   isLoadingMapOverlays: boolean;
   errorLoadingMapOverlays: UseQueryResult['error'];
   selectedOverlayCode: string | null;
-  flattenedOverlays: SingleMapOverlayItem[];
   selectedOverlay?: SingleMapOverlayItem;
   updateSelectedMapOverlay: (e: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -38,12 +45,20 @@ interface UseMapOverlaysResult {
 export const useMapOverlays = (): UseMapOverlaysResult => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
-  const { data, isLoading, error } = useFetchMapOverlays(projectCode, entityCode);
+  const { data, isLoading, error } = useQuery(
+    ['mapOverlays', projectCode, entityCode],
+    async () => {
+      return get(`mapOverlays/${projectCode}/${entityCode}`);
+    },
+    {
+      enabled: !!projectCode && !!entityCode,
+    },
+  );
 
   const selectedOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
-  const flattenedOverlays = flattenMapOverlays(data?.mapOverlays);
+  const codedOverlays = mapOverlayByCode(data?.mapOverlays);
 
-  const selectedOverlay = flattenedOverlays.find(overlay => overlay.code === selectedOverlayCode);
+  const selectedOverlay = codedOverlays[selectedOverlayCode!];
 
   const updateSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
@@ -56,7 +71,6 @@ export const useMapOverlays = (): UseMapOverlaysResult => {
     isLoadingMapOverlays: isLoading,
     errorLoadingMapOverlays: error,
     selectedOverlayCode,
-    flattenedOverlays,
     selectedOverlay,
     updateSelectedMapOverlay,
   };
