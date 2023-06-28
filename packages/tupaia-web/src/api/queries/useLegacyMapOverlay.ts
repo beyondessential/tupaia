@@ -17,12 +17,13 @@ export const useLegacyMapOverlay = (
   return useQuery(
     ['legacyMapOverlayReport', projectCode, entityCode, mapOverlayCode],
     async () => {
-      // shouldShowAllParentCountryResults should be false if the current country code is the same as the project code. This will really only ever happen if the entityCode and the projectCode are the same
-      return get(
-        `legacyMapOverlayReport?mapOverlayCode=${mapOverlayCode}&organisationUnitCode=${entityCode}&projectCode=${projectCode}&shouldShowAllParentCountryResults=${
-          projectCode !== entityCode
-        }`,
-      );
+      return get(`legacyMapOverlayReport/${mapOverlayCode}`, {
+        params: {
+          organisationUnitCode: entityCode,
+          projectCode,
+          shouldShowAllParentCountryResults: projectCode !== entityCode,
+        },
+      });
     },
     {
       enabled: !!projectCode && !!entityCode && !!mapOverlayCode,

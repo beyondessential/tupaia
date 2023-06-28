@@ -5,21 +5,50 @@
 
 import { useQuery } from 'react-query';
 import { get } from '../api';
-import { EntityCode, ProjectCode } from '../../types';
+import {
+  MapOverlayGroup,
+  EntityCode,
+  ProjectCode,
+  DashboardCode,
+  SingleMapOverlayItem,
+} from '../../types';
 
-export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
-  return useQuery(
+const flattenMapOverlays = (mapOverlayGroups: MapOverlayGroup[] = []): SingleMapOverlayItem[] => {
+  return mapOverlayGroups.reduce(
+    (mapOverlays: SingleMapOverlayItem[], mapOverlayGroup: MapOverlayGroup) => {
+      if (mapOverlayGroup.children)
+        return [...mapOverlays, ...flattenMapOverlays(mapOverlayGroup.children)];
+      return [...mapOverlays, mapOverlayGroup];
+    },
+    [],
+  );
+};
+
+export const useMapOverlays = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+  mapOverlayCode?: DashboardCode | null,
+) => {
+  const { data, ...query } = useQuery(
     ['mapOverlays', projectCode, entityCode],
     async () => {
-      // shouldShowAllParentCountryResults should be false if the current country code is the same
-      // as the project code. This will really only ever happen if the entityCode and the projectCode
-      // are the same
-      return get(`mapOverlays/${projectCode}/${entityCode}`, {
-        params: {},
-      });
+      return get(`mapOverlays/${projectCode}/${entityCode}`);
     },
     {
       enabled: !!projectCode && !!entityCode,
     },
   );
+
+  const flattenedOverlays = flattenMapOverlays(data?.mapOverlays);
+
+  const selectedOverlay = mapOverlayCode
+    ? flattenedOverlays.find(overlay => overlay.code === mapOverlayCode)
+    : {};
+
+  return {
+    hasMapOverlays: !!data?.mapOverlays?.length,
+    mapOverlays: data?.mapOverlays,
+    selectedOverlay,
+    ...query,
+  };
 };

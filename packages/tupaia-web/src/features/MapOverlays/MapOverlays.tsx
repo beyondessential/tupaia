@@ -9,7 +9,6 @@ import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useMapOverlays as useMapOverlaysData, useLegacyMapOverlay } from '../../api/queries';
 import { URL_SEARCH_PARAMS } from '../../constants';
-// import { flattenMapOverlays } from '../../utils';
 import { useEntitiesWithLocation } from '../../api/queries';
 
 const useMapOverlays = () => {
@@ -17,7 +16,11 @@ const useMapOverlays = () => {
   const [urlSearchParams] = useSearchParams();
   const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
 
-  const { data: mapOverlaysData, isLoading } = useMapOverlaysData(projectCode, entityCode);
+  const { selectedOverlay, isLoading } = useMapOverlaysData(
+    projectCode,
+    entityCode,
+    mapOverlayCode,
+  );
 
   const { data: mapOverlayReportData, isLoading: isLoadingReport } = useLegacyMapOverlay(
     projectCode,
@@ -25,11 +28,11 @@ const useMapOverlays = () => {
     mapOverlayCode,
   );
 
-  console.log('mapOverlaysData', mapOverlaysData);
+  console.log('selectedOverlay', selectedOverlay);
   console.log('mapOverlayReportData', mapOverlayReportData);
 
   return {
-    mapOverlaysData,
+    selectedOverlay,
     mapOverlayReportData,
     isLoading: isLoading || isLoadingReport,
     // selectedOverlay: flattenedOverlays.find(mapOverlay => mapOverlay.code === mapOverlayCode),

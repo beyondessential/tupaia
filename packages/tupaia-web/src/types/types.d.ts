@@ -62,15 +62,22 @@ export type EntityResponse = Entity & {
   children?: Entity[];
 };
 
-export type MapOverlayType = {
-  code: string;
-  name: string;
-  reportCode: string;
+export type SingleMapOverlayItem = KeysToCamelCase<
+  Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
+> & {
+  measureLevel?: string;
   displayType: string;
-  legacy: boolean;
-  measureLevel: string;
 };
+
 export type MapOverlayGroup = {
-  name: string;
-  children: MapOverlayType[];
+  name: MapOverlay['name'];
+  children: SingleMapOverlayItem[] | MapOverlayGroup[];
 };
+export type MapOverlays = {
+  entityCode: EntityCode;
+  entityType: EntityType;
+  name: string;
+  mapOverlays: MapOverlayGroup[];
+};
+
+export type Entity = KeysToCamelCase<BaseEntity>;

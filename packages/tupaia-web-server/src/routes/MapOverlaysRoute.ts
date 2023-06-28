@@ -60,8 +60,6 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       },
     });
 
-    console.log('mapOverlays', mapOverlays);
-
     // Map overlay groups can be nested so we need to keep
     // searching until we find the root groups
     let mapOverlayRelations = await ctx.services.central.fetchResources(
