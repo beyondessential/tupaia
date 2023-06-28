@@ -59,6 +59,10 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       },
     });
 
+    if (mapOverlays.length === 0) {
+      return [];
+    }
+
     // Map overlay groups can be nested so we need to keep
     // searching until we find the root groups
     let mapOverlayRelations = await ctx.services.central.fetchResources(
