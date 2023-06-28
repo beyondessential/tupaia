@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -25,7 +25,7 @@ const REPORT = {
       'Electricity available',
       'Internet connection available',
       'Telephone available',
-      //'Dormitory school',
+      // 'Dormitory school',
       'Access to clean water',
       'Functioning hand washing facilities',
       // 'Learning materials for communities',
@@ -35,7 +35,7 @@ const REPORT = {
       'Remedial support provided to students',
       // 'Provided psychosocial support',
 
-      //New (order is important here)
+      // New (order is important here)
       'Functioning water filters',
       'Textbooks and additional learning material received',
       'COVID-19 posters and materials received',
@@ -53,7 +53,7 @@ const REPORT = {
       'SchFF001',
       'SchFF002',
       'SchCVD026a',
-      //'SchFF003',
+      // 'SchFF003',
       'BCD29_event',
       'SchFF004',
       // 'SchFF008',
@@ -63,7 +63,7 @@ const REPORT = {
       'SchFF011',
       // 'SchFF016',
 
-      //New
+      // New
       'SchCVD009',
       'SchCVD004',
       'SchCVD006',
@@ -101,7 +101,7 @@ const REPORT = {
   },
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
   await db.runSql(`	
     UPDATE "dashboardGroup"
@@ -110,7 +110,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
      DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
 

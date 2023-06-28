@@ -7,29 +7,19 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
 import { DataTable } from '../../DataTable';
-import { getIsChartData, getNoDataString } from '../utils';
-import { SmallAlert } from '../../Alert';
+import { NoData } from '../../NoData';
+import { getIsChartData } from '../utils';
 import { getChartTableData } from './getChartTableData';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
 `;
 
-const NoData = styled(SmallAlert)`
-  align-self: center;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
 export const ChartTable = ({ viewContent, className }) => {
   const { columns, data } = getChartTableData(viewContent);
 
   if (!getIsChartData(viewContent)) {
-    return (
-      <NoData severity="info" variant="standard">
-        {getNoDataString(viewContent)}
-      </NoData>
-    );
+    return <NoData viewContent={viewContent} />;
   }
 
   return (

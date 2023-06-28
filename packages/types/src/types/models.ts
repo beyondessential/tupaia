@@ -10,8 +10,6 @@
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 
-export { StandardOrCustomReportConfig } from './models-extra';
-
 export interface AccessRequest {
   'approved'?: boolean | null;
   'created_time'?: Date;
@@ -291,6 +289,23 @@ export interface Indicator {
   'config'?: any;
   'id': string;
 }
+export interface LandingPage {
+  'contact_us'?: string | null;
+  'extended_title'?: string | null;
+  'external_link'?: string | null;
+  'id': string;
+  'image_url'?: string | null;
+  'include_name_in_header'?: boolean | null;
+  'logo_url'?: string | null;
+  'long_bio'?: string | null;
+  'name': string;
+  'phone_number'?: string | null;
+  'primary_hexcode'?: string | null;
+  'project_codes'?: string[] | null;
+  'secondary_hexcode'?: string | null;
+  'url_segment': string;
+  'website_url'?: string | null;
+}
 export interface LegacyReport {
   'code': string;
   'data_builder'?: string | null;
@@ -434,7 +449,7 @@ export interface Question {
   'option_set_id'?: string | null;
   'options'?: string[] | null;
   'text': string;
-  'type': string;
+  'type': QuestionType;
 }
 export interface RefreshToken {
   'device'?: string | null;
@@ -576,6 +591,27 @@ export enum ServiceType {
   'kobo' = 'kobo',
   'data-lake' = 'data-lake',
   'superset' = 'superset',
+}
+export enum QuestionType {
+  'Arithmetic' = 'Arithmetic',
+  'Autocomplete' = 'Autocomplete',
+  'Binary' = 'Binary',
+  'Checkbox' = 'Checkbox',
+  'CodeGenerator' = 'CodeGenerator',
+  'Condition' = 'Condition',
+  'Date' = 'Date',
+  'DateOfData' = 'DateOfData',
+  'DateTime' = 'DateTime',
+  'Entity' = 'Entity',
+  'FreeText' = 'FreeText',
+  'Geolocate' = 'Geolocate',
+  'Instruction' = 'Instruction',
+  'Number' = 'Number',
+  'Photo' = 'Photo',
+  'PrimaryEntity' = 'PrimaryEntity',
+  'Radio' = 'Radio',
+  'SubmissionDate' = 'SubmissionDate',
+  'File' = 'File',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',

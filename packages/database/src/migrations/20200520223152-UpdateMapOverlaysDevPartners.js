@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -58,7 +58,7 @@ const NEW_VALUES = [
   },
 ];
 const OLD_HIDE_BY_DEFAULT = {
-  '0': true,
+  0: true,
   null: true,
 };
 const NEW_HIDE_BY_DEFAULT = {
@@ -88,7 +88,7 @@ const doDowndate = (db, overLayId, dataElementCode) => {
 `);
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     DEV_PARTNERS_OVERLAYS.map(dataElementCode => {
       return doUpdate(db, `${MAP_OVERLAY_ID_PREFIX}${dataElementCode}`);
@@ -96,7 +96,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await Promise.all(
     DEV_PARTNERS_OVERLAYS.map(dataElementCode => {
       return doDowndate(db, `${MAP_OVERLAY_ID_PREFIX}${dataElementCode}`, dataElementCode);

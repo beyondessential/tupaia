@@ -116,9 +116,9 @@ const renderLeaderboardFeedItem = templateVariables => (
 
 const getCountryFooter = (countryName, creationDate) => (
   <View style={localStyles.feedItemFooter}>
-    <Text style={localStyles.countryFooterText}>{`${countryName}, ${formatDateAgo(
-      creationDate,
-    )}`}</Text>
+    <Text style={localStyles.countryFooterText}>
+      {`${countryName}, ${formatDateAgo(creationDate)}`}
+    </Text>
   </View>
 );
 

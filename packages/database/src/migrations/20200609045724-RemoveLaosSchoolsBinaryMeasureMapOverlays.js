@@ -1,16 +1,16 @@
-'use strict';
+import { arrayToDbString } from '../utilities';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
 
-import { arrayToDbString } from '../utilities';
-
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -24,18 +24,18 @@ const LAOS_SCHOOL_BINARY_MEASURE_MAP_OVERLAYS = [
   'Laos_Schools_Schools_Provided_With_Psychosocial_Support',
 ];
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await db.runSql(`
     DELETE FROM "mapOverlay" 
     WHERE "id" in (${arrayToDbString(LAOS_SCHOOL_BINARY_MEASURE_MAP_OVERLAYS)});
   `);
 };
 
-exports.down = function(db) {
-  //No down migration;
+exports.down = function (db) {
+  // No down migration;
   return null;
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

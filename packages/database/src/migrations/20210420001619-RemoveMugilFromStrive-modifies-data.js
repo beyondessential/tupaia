@@ -33,7 +33,9 @@ const getEntityIdByCode = async (db, code) => {
 };
 
 const getEntityIdsByParentId = async (db, parentId, type) => {
-  const results = await db.runSql(`SELECT id FROM entity WHERE parent_id = '${parentId}' AND type = '${type}';`);
+  const results = await db.runSql(
+    `SELECT id FROM entity WHERE parent_id = '${parentId}' AND type = '${type}';`,
+  );
   return results.rows.map(row => row.id);
 };
 

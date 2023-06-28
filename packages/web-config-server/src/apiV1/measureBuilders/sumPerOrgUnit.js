@@ -37,9 +37,9 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
         dataElementCodes,
         this.query,
         entityAggregation,
-        hierarchyId
+        hierarchyId,
       );
-  
+
       return result;
     }
     return this.fetchAnalytics(dataElementCodes, {

@@ -34,15 +34,16 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
     Object.entries(analyticsByOrgUnit).forEach(([organisationUnitCode, analytics]) => {
-      const [displayValue] = Object.entries(conditions).find(([_, conditionConfig]) => {
-        const { conditionType = 'AND', condition: conditionValues } = conditionConfig;
-        return Object.entries(conditionValues)[CONDITION_TYPE[conditionType]](
-          ([dataElement, condition]) => {
-            const analytic = analytics.find(a => a.dataElement === dataElement);
-            return analytic ? checkValueSatisfiesCondition(analytic.value, condition) : false;
-          },
-        );
-      }) || [];
+      const [displayValue] =
+        Object.entries(conditions).find(([_, conditionConfig]) => {
+          const { conditionType = 'AND', condition: conditionValues } = conditionConfig;
+          return Object.entries(conditionValues)[CONDITION_TYPE[conditionType]](
+            ([dataElement, condition]) => {
+              const analytic = analytics.find(a => a.dataElement === dataElement);
+              return analytic ? checkValueSatisfiesCondition(analytic.value, condition) : false;
+            },
+          );
+        }) || [];
 
       if (displayValue) {
         measureData.push({ organisationUnitCode, value: displayValue });

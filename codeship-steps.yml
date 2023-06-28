@@ -13,6 +13,12 @@
         - name: Validate tests
           command: './packages/devops/scripts/ci/validateTests.sh'
     - type: serial
+      name: Db Validation
+      service: testing
+      steps:
+        - name: Validate types
+          command: './packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh'
+    - type: serial
       name: Test
       service: testing
       steps:
@@ -27,8 +33,6 @@
               command: './packages/devops/scripts/ci/testBackend.sh data-table-server'
             - name: Test lesmis-server
               command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
-            - name: Test meditrak-app-server
-              command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
             - name: Test psss-server
               command: './packages/devops/scripts/ci/testBackend.sh psss-server'
             - name: Test report-server
@@ -56,7 +60,9 @@
           name: Test batch 3
           steps:
             - name: Test entity-server
-              command: "./packages/devops/scripts/ci/testBackend.sh entity-server"
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
+            - name: Test meditrak-app-server
+              command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
 
 - name: Deploy changes
   service: deployment

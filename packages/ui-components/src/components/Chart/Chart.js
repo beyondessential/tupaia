@@ -7,13 +7,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
+import { NoData } from '../NoData';
 import { CartesianChart } from './CartesianChart';
 import { PieChart } from './PieChart';
 import { GaugeChart } from './GaugeChart';
 import { CHART_TYPES } from './constants';
 import { parseChartConfig } from './parseChartConfig';
-import { getIsTimeSeries, isDataKey, getIsChartData, getNoDataString } from './utils';
-import { SmallAlert } from '../Alert';
+import { getIsTimeSeries, isDataKey, getIsChartData } from './utils';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -33,12 +33,6 @@ const UnknownChart = () => (
     <UnknownChartTitle variant="h2">New chart coming soon</UnknownChartTitle>
   </UnknownChartContainer>
 );
-
-const NoData = styled(SmallAlert)`
-  align-self: center;
-  margin-left: auto;
-  margin-right: auto;
-`;
 
 const removeNonNumericData = data =>
   data.map(dataSeries => {
@@ -85,11 +79,7 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legen
   }
 
   if (!getIsChartData(viewContent)) {
-    return (
-      <NoData severity="info" variant="standard">
-        {getNoDataString(viewContent)}
-      </NoData>
-    );
+    return <NoData viewContent={viewContent} />;
   }
 
   const viewContentConfig = getViewContent(viewContent);

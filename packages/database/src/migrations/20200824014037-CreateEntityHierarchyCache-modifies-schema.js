@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 
 const TABLE_NAME = 'ancestor_descendant_relation';
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await db.createTable(TABLE_NAME, {
     columns: {
       id: { type: 'text', primaryKey: true },
@@ -44,7 +44,7 @@ exports.up = async function(db) {
   await db.addIndex(TABLE_NAME, `${TABLE_NAME}_descendant_id_idx`, ['descendant_id']);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.dropTable(TABLE_NAME);
 };
 

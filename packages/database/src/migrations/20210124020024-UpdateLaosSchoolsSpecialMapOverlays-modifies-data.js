@@ -4,8 +4,8 @@ var dbm;
 var type;
 var seed;
 
-// These overlays have quite tricky config that it is hard to update Yes/No to 1/0 using regex in a generalised way. 
-// So this migration is to custom update each of them 
+// These overlays have quite tricky config that it is hard to update Yes/No to 1/0 using regex in a generalised way.
+// So this migration is to custom update each of them
 const OVERLAYS = [
   {
     id: 'Laos_Schools_Functioning_TV_Satellite',

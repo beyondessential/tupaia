@@ -7,8 +7,8 @@ import React from 'react';
 import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { InputLabel } from './InputLabel';
 import { InputAdornment } from '@material-ui/core';
+import { InputLabel } from './InputLabel';
 
 const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';

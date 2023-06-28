@@ -4,7 +4,8 @@
  */
 
 import groupBy from 'lodash.groupby';
-import { min, max, findCoarsestPeriodType, periodToType } from '@tupaia/utils';
+import { periodToType } from '@tupaia/tsutils';
+import { min, max, findCoarsestPeriodType } from '@tupaia/utils';
 
 export const periodFromAnalytics = (analytics, { period: requestedPeriod }) => {
   return {

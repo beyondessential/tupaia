@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -179,7 +179,7 @@ const dashboardConfig = {
   rowDataSourceEntityType: 'school',
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     insert into "dashboardReport" ("id","dataBuilder","dataBuilderConfig","viewJson")
     values (
@@ -212,7 +212,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     update "dashboardGroup"
     set "dashboardReports" = array_remove("dashboardReports", 'SchDP_Partner_Assistance_Types')

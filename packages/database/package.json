@@ -17,7 +17,7 @@
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
     "dump-database": "./scripts/dumpDatabase.sh",
-    "lint": "yarn package:lint:js",
+    "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "migrate-create": "scripts/migrateCreate.sh",
