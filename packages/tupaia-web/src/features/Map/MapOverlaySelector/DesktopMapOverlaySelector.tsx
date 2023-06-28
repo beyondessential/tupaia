@@ -47,7 +47,9 @@ const Heading = styled(Typography).attrs({
 `;
 
 const Container = styled(MaxHeightContainer)`
-  border-radius: 0 0 5px 5px;
+  > div:last-child {
+    border-radius: 0 0 5px 5px;
+  }
 `;
 
 const MapOverlayNameContainer = styled.div`
