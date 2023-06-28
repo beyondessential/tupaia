@@ -56,9 +56,7 @@ const isMobile = () => {
 export const EntitySearch = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode!);
-  const { data: entity, isLoading } = useEntities(projectCode!, project?.entityCode, {
-    enabled: !!project?.entityCode,
-  });
+  const { data: entity, isLoading } = useEntities(projectCode!, project?.entityCode);
   const [searchValue, setSearchValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
