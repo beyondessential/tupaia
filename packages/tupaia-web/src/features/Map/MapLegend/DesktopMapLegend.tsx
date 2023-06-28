@@ -9,12 +9,17 @@ import { MOBILE_BREAKPOINT } from '../../../constants';
 
 // Placeholder for legend
 const Wrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
   width: 100%;
   padding: 1rem;
+
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }

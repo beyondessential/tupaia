@@ -75,6 +75,7 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
+
   return (
     <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
       <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
@@ -84,7 +85,12 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
           mapOverlay.children ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
-            <FormControlLabel value={mapOverlay.code} control={<Radio />} label={mapOverlay.name} />
+            <FormControlLabel
+              value={mapOverlay.code}
+              control={<Radio />}
+              label={mapOverlay.name}
+              key={mapOverlay.name}
+            />
           ),
         )}
       </AccordionContent>

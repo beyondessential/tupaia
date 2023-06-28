@@ -19,14 +19,14 @@ export const MapOverlays = () => {
 
   const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
 
-  const { mapOverlays } = useMapOverlaysData(projectCode, entityCode, mapOverlayCode);
+  const { mapOverlayGroups, selectedOverlay } = useMapOverlaysData();
 
   const { data } = useLegacyMapOverlay(projectCode, entityCode, mapOverlayCode);
 
   return (
     <>
-      <MarkerLayer measureData={data} serieses={mapOverlays} />
       <PolygonLayer entityData={entityData as EntityResponse} />
+      {/*<MarkerLayer measureData={data} serieses={selectedOverlay} />*/}
     </>
   );
 };

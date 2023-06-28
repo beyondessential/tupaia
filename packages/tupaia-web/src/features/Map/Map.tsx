@@ -14,20 +14,12 @@ import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntitiesWithLocation } from '../../api/queries';
 
-const MapContainer = styled.div`
-  height: 100%;
-  transition: width 0.5s ease;
-  width: 100%;
-  flex: 1;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-`;
-
 const StyledMap = styled(LeafletMap)`
+  position: relative;
   height: 100%;
   width: 100%;
   flex: 1;
+
   .leaflet-pane {
     // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
     z-index: 0;
@@ -55,27 +47,17 @@ const StyledMap = styled(LeafletMap)`
     }
   }
 `;
-// Position this absolutely so it can be placed over the map
-const TilePickerWrapper = styled.div`
+
+const StyledTilePicker = styled(TilePicker)`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
-
-// This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
-const MapControlWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: relative;
-`;
-
-const MapControlColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-`;
-
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
@@ -87,26 +69,20 @@ export const Map = () => {
   };
 
   return (
-    <MapContainer>
-      <StyledMap bounds={entityData?.bounds} shouldSnapToPosition>
-        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <MapOverlays />
-        <ZoomControl position="bottomright" />
-        <MapControlWrapper>
-          <MapControlColumn>
-            <MapOverlaySelector />
-            <MapLegend />
-          </MapControlColumn>
-          <TilePickerWrapper>
-            <TilePicker
-              tileSets={TILE_SETS}
-              activeTileSet={activeTileSet}
-              onChange={onTileSetChange}
-            />
-          </TilePickerWrapper>
-        </MapControlWrapper>
-        <MapWatermark />
-      </StyledMap>
-    </MapContainer>
+    // <MapContainer>
+    <StyledMap bounds={entityData?.bounds} shouldSnapToPosition>
+      <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+      <MapOverlays />
+      <ZoomControl position="bottomright" />
+      <MapOverlaySelector />
+      <MapLegend />
+      <StyledTilePicker
+        tileSets={TILE_SETS}
+        activeTileSet={activeTileSet}
+        onChange={onTileSetChange}
+      />
+      <MapWatermark />
+    </StyledMap>
+    // </MapContainer>
   );
 };
