@@ -47,7 +47,7 @@ export function createApp() {
     .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
     .get<LegacyMapOverlayReportRequest>(
-      'legacyMapOverlayReport/:reportCode',
+      'legacyMapOverlayReport/:mapOverlayCode',
       handleWith(LegacyMapOverlayReportRoute),
     )
     .get<MapOverlaysRequest>('mapOverlays/:projectCode/:entityCode', handleWith(MapOverlaysRoute))
