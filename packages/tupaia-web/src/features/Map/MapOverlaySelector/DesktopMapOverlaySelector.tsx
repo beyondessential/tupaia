@@ -47,14 +47,15 @@ const Heading = styled(Typography).attrs({
 `;
 
 const Container = styled(MaxHeightContainer)`
-  > div:last-child {
-    border-radius: 0 0 5px 5px;
-  }
+  border-radius: 0 0 5px 5px;
 `;
 
-const MapOverlayNameContainer = styled.div`
+const MapOverlayNameContainer = styled.div<{
+  $hasMapOverlays: boolean;
+}>`
   padding: 1.3rem 1rem 1rem 1.125rem;
   background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+  border-radius: ${({ $hasMapOverlays }) => ($hasMapOverlays ? '0' : '0 0 5px 5px')};
 `;
 
 const MapOverlayName = styled.span`
@@ -165,7 +166,7 @@ export const DesktopMapOverlaySelector = ({
         <Heading>Map Overlays</Heading>
       </Header>
       <Container>
-        <MapOverlayNameContainer>
+        <MapOverlayNameContainer $hasMapOverlays={hasMapOverlays}>
           {isLoadingMapOverlays ? (
             <Skeleton animation="wave" width={200} height={20} />
           ) : (
