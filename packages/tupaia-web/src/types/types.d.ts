@@ -61,3 +61,16 @@ export type EntityResponse = Entity & {
   photoUrl?: string;
   children?: Entity[];
 };
+
+export type MapOverlayType = {
+  code: string;
+  name: string;
+  reportCode: string;
+  displayType: string;
+  legacy: boolean;
+  measureLevel: string;
+};
+export type MapOverlayGroup = {
+  name: string;
+  children: MapOverlayType[];
+};

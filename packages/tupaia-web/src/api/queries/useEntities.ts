@@ -6,6 +6,7 @@ import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
 import { EntityResponse } from '../../types';
 import { get } from '../api';
+import { DEFAULT_BOUNDS } from '../../constants';
 
 export const useEntities = (
   projectCode?: string,
@@ -19,7 +20,15 @@ export const useEntities = (
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
     async (): Promise<EntityResponse> => {
-      return get(`entities/${projectCode}/${entityCode}`, axiosConfig);
+      const entityData = await get(`entities/${projectCode}/${entityCode}`, axiosConfig);
+
+      // Manually overwrite explore bounds. If we're looking at the explore page, we want to set the
+      // default bounds as explore bounds include
+      if (entityCode === 'explore') {
+        return { ...entityData, bounds: DEFAULT_BOUNDS };
+      }
+
+      return entityData;
     },
     {
       enabled,

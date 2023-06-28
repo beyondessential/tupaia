@@ -45,6 +45,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const entityHierarchyName = project['entity_hierarchy.name'];
 
     const entity = await ctx.services.entity.getEntity(entityHierarchyName, entityCode);
+
     const mapOverlays = await ctx.services.central.fetchResources('mapOverlays', {
       filter: {
         country_codes: {
@@ -58,6 +59,8 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         },
       },
     });
+
+    console.log('mapOverlays', mapOverlays);
 
     // Map overlay groups can be nested so we need to keep
     // searching until we find the root groups

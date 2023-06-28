@@ -6,6 +6,7 @@ export const URL_SEARCH_PARAMS = {
   PROJECT: 'project',
   TAB: 'tab',
   PASSWORD_RESET_TOKEN: 'passwordResetToken',
+  OVERLAY: 'overlay',
 };
 
 export enum MODAL_ROUTES {
