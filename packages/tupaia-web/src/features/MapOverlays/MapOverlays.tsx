@@ -10,61 +10,23 @@ import { useSearchParams } from 'react-router-dom';
 import { useMapOverlays as useMapOverlaysData, useLegacyMapOverlay } from '../../api/queries';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useEntitiesWithLocation } from '../../api/queries';
+import { MarkerLayer } from './MarkerLayer';
 
-const useMapOverlays = () => {
+export const MapOverlays = () => {
   const { projectCode, entityCode } = useParams();
   const [urlSearchParams] = useSearchParams();
   const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY);
 
-  const { selectedOverlay, isLoading } = useMapOverlaysData(
-    projectCode,
-    entityCode,
-    mapOverlayCode,
-  );
-
-  const { data: mapOverlayReportData, isLoading: isLoadingReport } = useLegacyMapOverlay(
-    projectCode,
-    entityCode,
-    mapOverlayCode,
-  );
-
-  console.log('selectedOverlay', selectedOverlay);
-  console.log('mapOverlayReportData', mapOverlayReportData);
-
-  return {
-    selectedOverlay,
-    mapOverlayReportData,
-    isLoading: isLoading || isLoadingReport,
-    // selectedOverlay: flattenedOverlays.find(mapOverlay => mapOverlay.code === mapOverlayCode),
-  };
-};
-
-export const MapOverlays = () => {
-  const { projectCode, entityCode } = useParams();
   const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
-  const query = useMapOverlays();
 
-  return <PolygonLayer entityData={entityData as EntityResponse} />;
+  const { mapOverlays } = useMapOverlaysData(projectCode, entityCode, mapOverlayCode);
+
+  const { data } = useLegacyMapOverlay(projectCode, entityCode, mapOverlayCode);
+
+  return (
+    <>
+      <MarkerLayer measureData={data} serieses={mapOverlays} />
+      <PolygonLayer entityData={entityData as EntityResponse} />
+    </>
+  );
 };
-
-// const mapOverlayPeriod =
-//   urlSearchParams.get(URL_SEARCH_PARAMS.OVERLAY_PERIOD) || 'DEFAULT_PERIOD';
-// const flattenedOverlays = flattenMapOverlays(mapOverlaysResponse?.mapOverlays);
-
-// useEffect(() => {
-//   const updateMapOverlaySearchParams = () => {
-//     if (isLoading || !flattenedOverlays || !mapOverlayCode) return;
-//
-//     const selectedOverlay = flattenedOverlays.find(
-//       mapOverlay => mapOverlay.code === mapOverlayCode,
-//     );
-//     if (selectedOverlay) return;
-//     // whenever the project or entity changes, and the available map overlays changes, update the map overlay search params to either the first available overlay, or the previously selected overlay if it still applies
-//     urlSearchParams.set(URL_SEARCH_PARAMS.OVERLAY, flattenedOverlays[0]?.code || '');
-//     urlSearchParams.set(URL_SEARCH_PARAMS.OVERLAY_PERIOD, mapOverlayPeriod);
-//     setUrlSearchParams(urlSearchParams.toString(), {
-//       replace: true,
-//     });
-//   };
-//   updateMapOverlaySearchParams();
-// }, [projectCode, entityCode, flattenedOverlays, mapOverlayCode, isLoading]);
