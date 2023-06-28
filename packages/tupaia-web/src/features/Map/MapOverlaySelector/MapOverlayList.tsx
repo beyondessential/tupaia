@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -14,9 +14,8 @@ import {
 } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
-import { URL_SEARCH_PARAMS } from '../../../constants';
 import { MapOverlayGroup } from '../../../types';
+import { useMapOverlays } from '../../../utils';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -96,21 +95,15 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
 /**
  * This is the parent list of all the map overlays available to pick from
  */
-export const MapOverlayList = ({ mapOverlayGroups }: { mapOverlayGroups: MapOverlayGroup[] }) => {
-  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
+export const MapOverlayList = () => {
+  const { mapOverlayGroups, selectedOverlayCode, updateSelectedMapOverlay } = useMapOverlays();
 
-  // On change of the radio input, update the url search params with the overlay code
-  const updateSelectedOverlay = (e: ChangeEvent<HTMLInputElement>) => {
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
-    setUrlSearchParams(urlSearchParams.toString());
-  };
   return (
     <RadioGroup
       aria-label="Map overlays"
       name="map-overlays"
-      value={selectedMapOverlay}
-      onChange={updateSelectedOverlay}
+      value={selectedOverlayCode}
+      onChange={updateSelectedMapOverlay}
     >
       {mapOverlayGroups
         .filter(item => item.name)

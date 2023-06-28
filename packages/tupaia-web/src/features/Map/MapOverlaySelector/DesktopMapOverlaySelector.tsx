@@ -3,17 +3,18 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { ExpandMore, Layers } from '@material-ui/icons';
 import { Skeleton as MuiSkeleton } from '@material-ui/lab';
-import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
-import { Entity, SingleMapOverlayItem } from '../../../types';
+import { MOBILE_BREAKPOINT } from '../../../constants';
+import { Entity } from '../../../types';
 import { useMapOverlayData } from '../../../api/queries';
 import { useParams } from 'react-router';
-import { useSearchParams } from 'react-router-dom';
 import { periodToMoment } from '@tupaia/utils';
+import { useMapOverlays } from '../../../utils';
+import { MapOverlayList } from './MapOverlayList';
 
 const MaxHeightContainer = styled.div`
   flex: 1;
@@ -136,28 +137,25 @@ const LatestDataText = styled(Typography)`
 `;
 
 interface DesktopMapOverlaySelectorProps {
-  hasMapOverlays?: boolean;
-  isLoading: boolean;
   entityName?: Entity['name'];
-  mapOverlayName?: SingleMapOverlayItem['name'];
-  children?: ReactNode;
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
 }
 
 export const DesktopMapOverlaySelector = ({
-  hasMapOverlays,
-  isLoading,
   entityName,
-  mapOverlayName,
-  children,
   overlayLibraryOpen,
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
-  const [urlSearchParams] = useSearchParams();
+  const {
+    hasMapOverlays,
+    isLoadingMapOverlays,
+    selectedOverlayCode,
+    selectedOverlay,
+  } = useMapOverlays();
+
   const { projectCode, entityCode } = useParams();
-  const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
-  const { data: mapOverlayData } = useMapOverlayData(projectCode, entityCode, mapOverlayCode);
+  const { data: mapOverlayData } = useMapOverlayData(projectCode, entityCode, selectedOverlayCode);
 
   return (
     <Wrapper>
@@ -166,12 +164,12 @@ export const DesktopMapOverlaySelector = ({
       </Header>
       <Container>
         <MapOverlayNameContainer>
-          {isLoading ? (
+          {isLoadingMapOverlays ? (
             <Skeleton animation="wave" width={200} height={20} />
           ) : (
             <Typography>
               {hasMapOverlays ? (
-                <MapOverlayName>{mapOverlayName}</MapOverlayName>
+                <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
               ) : (
                 `Select an area with valid data. ${
                   entityName && `${entityName} has no map overlays available.`
@@ -195,7 +193,9 @@ export const DesktopMapOverlaySelector = ({
               <OverlayLibraryTitle>Overlay library</OverlayLibraryTitle>
             </OverlayLibraryHeader>
             <OverlayLibraryContentWrapper>
-              <OverlayLibraryContentContainer>{children}</OverlayLibraryContentContainer>
+              <OverlayLibraryContentContainer>
+                <MapOverlayList />
+              </OverlayLibraryContentContainer>
             </OverlayLibraryContentWrapper>
           </OverlayLibraryAccordion>
         )}
