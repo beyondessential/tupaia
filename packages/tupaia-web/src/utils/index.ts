@@ -7,3 +7,4 @@ export { getProjectAccessType } from './getProjectAccessType';
 export { removeUrlSearchParams } from './removeUrlSearchParams';
 export { useModal } from './useModal';
 export { useMapOverlays } from './useMapOverlays';
+export { useEntityLink } from './useEntityLink';

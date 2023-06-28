@@ -2,16 +2,27 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { useQuery } from 'react-query';
+import { AxiosRequestConfig } from 'axios';
+import { useQuery, QueryObserverOptions, QueryOptions } from 'react-query';
+import { Entity } from '@tupaia/types';
 import { get } from '../api';
 
-export const useEntities = (projectCode: string, entityCode?: string, options?: any) => {
+type EntityResponse = Entity & { children?: Entity[] };
+
+export const useEntities = (
+  projectCode?: string,
+  entityCode?: string,
+  axiosConfig?: AxiosRequestConfig,
+  queryOptions?: QueryObserverOptions,
+) => {
   return useQuery(
-    ['entities', projectCode, entityCode],
-    async () => {
-      return get(`entities/${projectCode}/${entityCode}`);
+    ['entities', projectCode, entityCode, axiosConfig, queryOptions],
+    async (): Promise<EntityResponse> => {
+      return get(`entities/${projectCode}/${entityCode}`, axiosConfig);
     },
-    options,
+    {
+      enabled: !!projectCode && !!entityCode,
+      ...queryOptions,
+    } as QueryOptions,
   );
 };
