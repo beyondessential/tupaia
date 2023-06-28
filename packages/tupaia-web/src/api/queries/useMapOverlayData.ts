@@ -13,11 +13,10 @@ export const useMapOverlayData = (
   mapOverlayCode?: SingleMapOverlayItem['code'],
 ) => {
   return useQuery(
-    ['mapOverlayData', projectCode, entityCode, mapOverlayCode],
+    ['legacyMapOverlayReport', projectCode, entityCode, mapOverlayCode],
     async () => {
-      return get('measureData', {
+      return get(`legacyMapOverlayReport/${mapOverlayCode}`, {
         params: {
-          mapOverlayCode,
           organisationUnitCode: entityCode,
           projectCode,
           shouldShowAllParentCountryResults: projectCode !== entityCode, // TODO: figure out the logic here for shouldShowAllParentCountryResults
