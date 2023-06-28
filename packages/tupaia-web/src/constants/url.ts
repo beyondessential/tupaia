@@ -7,6 +7,7 @@ export const URL_SEARCH_PARAMS = {
   TAB: 'tab',
   PASSWORD_RESET_TOKEN: 'passwordResetToken',
   OVERLAY: 'overlay',
+  MAP_OVERLAY: 'overlay',
 };
 
 export enum MODAL_ROUTES {

@@ -57,13 +57,23 @@ const StyledMap = styled(LeafletMap)`
 `;
 // Position this absolutely so it can be placed over the map
 const TilePickerWrapper = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 100%;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
+`;
+
+// This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
+const MapControlWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+`;
+
+const MapControlColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
 
 export const Map = () => {
@@ -82,13 +92,21 @@ export const Map = () => {
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <MapOverlays />
         <ZoomControl position="bottomright" />
-        <MapLegend />
+        <MapControlWrapper>
+          <MapControlColumn>
+            <MapOverlaySelector />
+            <MapLegend />
+          </MapControlColumn>
+          <TilePickerWrapper>
+            <TilePicker
+              tileSets={TILE_SETS}
+              activeTileSet={activeTileSet}
+              onChange={onTileSetChange}
+            />
+          </TilePickerWrapper>
+        </MapControlWrapper>
         <MapWatermark />
       </StyledMap>
-      <MapOverlaySelector />
-      <TilePickerWrapper>
-        <TilePicker tileSets={TILE_SETS} activeTileSet={activeTileSet} onChange={onTileSetChange} />
-      </TilePickerWrapper>
     </MapContainer>
   );
 };
