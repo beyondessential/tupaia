@@ -22,5 +22,8 @@ export const GlobalStyle = createGlobalStyle<{
     .MuiInputBase-root {
       background-color: transparent;
     }
+    button {
+      text-transform: none;
+    }
   }
 `;

@@ -51,9 +51,6 @@ const Container = styled.div`
       background-color: transparent;
     }
   }
-  .MuiInputBase-root {
-    background-color: transparent;
-  }
 `;
 
 type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & {

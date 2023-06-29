@@ -66,9 +66,12 @@ const Label = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
   font-size: 1rem;
   background-color: white;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
   border-left-width: 2px;
   cursor: auto;
+  margin-left: 0 !important;
+  button + & {
+    border: 1px solid ${props => props.theme.palette.grey['400']};
+  }
 `;
 
 interface DateRangePickerProps {
