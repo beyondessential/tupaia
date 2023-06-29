@@ -8,13 +8,13 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { ExpandMore, Layers } from '@material-ui/icons';
-import { Skeleton as MuiSkeleton } from '@material-ui/lab';
 import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
 import { useMapOverlayData, useMapOverlays } from '../../../api/queries';
-
 import { MapOverlayList } from './MapOverlayList';
+import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
+import { useMapOverlayDates } from '../../../utils';
 
 const MaxHeightContainer = styled.div`
   flex: 1;
@@ -49,25 +49,6 @@ const Heading = styled(Typography).attrs({
 
 const Container = styled(MaxHeightContainer)`
   border-radius: 0 0 5px 5px;
-`;
-
-const MapOverlayNameContainer = styled.div<{
-  $hasMapOverlays: boolean;
-}>`
-  padding: 1.3rem 1rem 1rem 1.125rem;
-  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
-  border-radius: ${({ $hasMapOverlays }) => ($hasMapOverlays ? '0' : '0 0 5px 5px')};
-`;
-
-const MapOverlayName = styled.span`
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-`;
-
-const Skeleton = styled(MuiSkeleton)`
-  transform: scale(1, 1);
-  ::after {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  }
 `;
 
 const OverlayLibraryAccordion = styled(Accordion)`
@@ -147,19 +128,25 @@ interface DesktopMapOverlaySelectorProps {
 }
 
 export const DesktopMapOverlaySelector = ({
-  entityName,
   overlayLibraryOpen,
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
-  const {
-    hasMapOverlays,
-    isLoadingMapOverlays,
-    selectedOverlayCode,
-    selectedOverlay,
-  } = useMapOverlays();
-
   const { projectCode, entityCode } = useParams();
-  const { data: mapOverlayData } = useMapOverlayData(projectCode, entityCode, selectedOverlayCode);
+  const { hasMapOverlays, selectedOverlayCode, selectedOverlay } = useMapOverlays(
+    projectCode,
+    entityCode,
+  );
+  const { startDate, endDate } = useMapOverlayDates(selectedOverlay);
+  const { data: mapOverlayData } = useMapOverlayData(
+    projectCode,
+    entityCode,
+    selectedOverlayCode,
+    selectedOverlay?.legacy,
+    {
+      startDate,
+      endDate,
+    },
+  );
 
   return (
     <Wrapper>
@@ -167,21 +154,7 @@ export const DesktopMapOverlaySelector = ({
         <Heading>Map Overlays</Heading>
       </Header>
       <Container>
-        <MapOverlayNameContainer $hasMapOverlays={hasMapOverlays}>
-          {isLoadingMapOverlays ? (
-            <Skeleton animation="wave" width={200} height={20} />
-          ) : (
-            <Typography>
-              {hasMapOverlays ? (
-                <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
-              ) : (
-                `Select an area with valid data. ${
-                  entityName && `${entityName} has no map overlays available.`
-                }`
-              )}
-            </Typography>
-          )}
-        </MapOverlayNameContainer>
+        <MapOverlaySelectorTitle />
         {hasMapOverlays && (
           <OverlayLibraryAccordion
             expanded={overlayLibraryOpen}

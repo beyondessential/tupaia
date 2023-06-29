@@ -3,11 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { ChangeEvent } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, UseQueryResult } from 'react-query';
 import { get } from '../api';
-import { MapOverlayGroup, SingleMapOverlayItem } from '../../types';
-import { URL_SEARCH_PARAMS } from '../../constants';
+import { EntityCode, MapOverlayGroup, ProjectCode, SingleMapOverlayItem } from '../../types';
+import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../constants';
 
 const mapOverlayByCode = (
   mapOverlayGroups: MapOverlayGroup[] = [],
@@ -42,9 +42,11 @@ interface UseMapOverlaysResult {
 /**
  * Gets the map overlays and returns useful utils and values associated with these
  */
-export const useMapOverlays = (): UseMapOverlaysResult => {
+export const useMapOverlays = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+): UseMapOverlaysResult => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
-  const { projectCode, entityCode } = useParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
     async () => {
@@ -62,6 +64,8 @@ export const useMapOverlays = (): UseMapOverlaysResult => {
 
   const updateSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
+    // when overlay changes, reset period to default
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
     setUrlParams(urlSearchParams);
   };
 

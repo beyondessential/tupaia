@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useParams } from 'react-router';
 import {
   Accordion,
   AccordionDetails,
@@ -96,7 +97,11 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
  * This is the parent list of all the map overlays available to pick from
  */
 export const MapOverlayList = () => {
-  const { mapOverlayGroups, selectedOverlayCode, updateSelectedMapOverlay } = useMapOverlays();
+  const { projectCode, entityCode } = useParams();
+  const { mapOverlayGroups, selectedOverlayCode, updateSelectedMapOverlay } = useMapOverlays(
+    projectCode,
+    entityCode,
+  );
 
   return (
     <RadioGroup

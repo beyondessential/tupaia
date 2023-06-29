@@ -6,7 +6,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
+import {
+  TileLayer,
+  LeafletMap,
+  ZoomControl,
+  TilePicker,
+  LeafletMapProps,
+} from '@tupaia/ui-map-components';
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
@@ -91,7 +97,7 @@ export const Map = () => {
 
   return (
     <MapContainer>
-      <StyledMap bounds={entity?.bounds} shouldSnapToPosition>
+      <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <MapOverlays />
         <ZoomControl position="bottomright" />

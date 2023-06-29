@@ -7,6 +7,7 @@ export const URL_SEARCH_PARAMS = {
   TAB: 'tab',
   PASSWORD_RESET_TOKEN: 'passwordResetToken',
   MAP_OVERLAY: 'overlay',
+  MAP_OVERLAY_PERIOD: 'overlayPeriod',
 };
 
 export enum MODAL_ROUTES {
@@ -26,3 +27,4 @@ export enum TABS {
   MAP = 'map',
   DASHBOARD = 'dashboard',
 }
+export const DEFAULT_PERIOD_PARAM_STRING = 'DEFAULT_PERIOD';

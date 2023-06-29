@@ -12,6 +12,7 @@ import {
 } from '@tupaia/types';
 import { ViewContent } from '@tupaia/ui-chart-components';
 import { KeysToCamelCase } from './helpers';
+import { GRANULARITY_CONFIG } from '@tupaia/utils';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -61,6 +62,9 @@ export type SingleMapOverlayItem = KeysToCamelCase<
 > & {
   measureLevel?: string;
   displayType: string;
+  periodGranularity?: keyof typeof GRANULARITY_CONFIG;
+  startDate?: string;
+  endDate?: string;
 };
 
 export type MapOverlayGroup = {
