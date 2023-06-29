@@ -5,7 +5,7 @@
 
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Entity } from '../../types';
+import { EntityResponse } from '../../types';
 import { get } from '../api';
 import { DEFAULT_BOUNDS } from '../../constants';
 
@@ -15,7 +15,7 @@ export const useEntity = (entityCode?: string) => {
 
   return useQuery(
     ['entities', projectCode, entityCode],
-    async (): Promise<Entity> => {
+    async (): Promise<EntityResponse> => {
       const entities = await get(`entities/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,

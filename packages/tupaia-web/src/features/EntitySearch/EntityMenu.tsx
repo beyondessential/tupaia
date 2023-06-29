@@ -83,9 +83,15 @@ const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuIt
     setIsExpanded(!isExpanded);
   };
 
+  /*
+   Pre-populate the next layer of the menu with children that came from the previous layer of entity
+   data then replace them with the children from the API response when it arrives
+ */
   const nextChildren =
     data?.filter(childEntity => childEntity.parentCode === entity.code) || children;
+
   const grandChildren = data.filter(childEntity => childEntity.parentCode !== entity.code);
+
   const link = { ...location, pathname: `/${projectCode}/${entity.code}` };
 
   return (
