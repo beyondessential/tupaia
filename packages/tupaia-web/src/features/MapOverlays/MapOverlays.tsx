@@ -10,7 +10,7 @@ import { useEntitiesWithLocation } from '../../api/queries';
 
 export const MapOverlays = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
+  const { data } = useEntitiesWithLocation(projectCode, entityCode);
 
-  return <PolygonLayer entityData={entityData as EntityResponse} />;
+  return <PolygonLayer entities={data as EntityResponse[]} entityCode={entityCode!} />;
 };

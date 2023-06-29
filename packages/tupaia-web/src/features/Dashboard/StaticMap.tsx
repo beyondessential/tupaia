@@ -64,11 +64,11 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
   return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
 };
 
-export const StaticMap = ({ polygonBounds }: { polygonBounds: Position[] }) => {
-  if (!areBoundsValid(polygonBounds)) {
+export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
+  if (!areBoundsValid(bounds)) {
     return null;
   }
 
-  const url = makeStaticMapUrl(polygonBounds);
+  const url = makeStaticMapUrl(bounds);
   return <Media $backgroundImage={url} />;
 };
