@@ -80,6 +80,7 @@ export type Entity = KeysToCamelCase<BaseEntity>;
 
 export type EntityResponse = Entity & {
   parentCode: Entity['code'];
+  childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
 };

@@ -5,8 +5,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Entity } from '@tupaia/types';
-import { ProjectCode } from '../../types';
+import { EntityResponse, ProjectCode } from '../../types';
 import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
 import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
 import { useEntities } from '../../api/queries';
@@ -41,12 +40,10 @@ const MenuLink = styled(Button).attrs({
   }
 `;
 
-type EntityWithChildren = Entity & { children?: Entity[] };
-
 interface EntityMenuProps {
   projectCode: ProjectCode;
-  children: Entity[];
-  grandChildren: Entity[];
+  children: EntityResponse[];
+  grandChildren: EntityResponse[];
   onClose: () => void;
 }
 
@@ -62,7 +59,7 @@ export const EntityMenu = ({ projectCode, children, grandChildren, onClose }: En
         <EntityMenuItem
           key={entity.code}
           projectCode={projectCode}
-          children={grandChildren?.filter(child => child.parentCode === entity.code)}
+          children={grandChildren.filter(child => child.parentCode === entity.code)}
           entity={entity}
           onClose={onClose}
         />
@@ -73,15 +70,14 @@ export const EntityMenu = ({ projectCode, children, grandChildren, onClose }: En
 
 interface EntityMenuItemProps {
   projectCode: ProjectCode;
-  entity: EntityWithChildren;
-  parentIsLoading?: boolean;
+  entity: EntityResponse;
   onClose: () => void;
-  children: Entity[];
+  children?: EntityResponse[];
 }
 const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuItemProps) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
+  const { data = [] } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -89,7 +85,7 @@ const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuIt
 
   const nextChildren =
     data?.filter(childEntity => childEntity.parentCode === entity.code) || children;
-  const grandChildren = data?.filter(childEntity => childEntity.parentCode !== entity.code);
+  const grandChildren = data.filter(childEntity => childEntity.parentCode !== entity.code);
   const link = { ...location, pathname: `/${projectCode}/${entity.code}` };
 
   return (

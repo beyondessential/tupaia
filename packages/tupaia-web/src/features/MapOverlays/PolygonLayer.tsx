@@ -6,6 +6,7 @@
 import React from 'react';
 import { ActivePolygon } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
+import { Entity } from '@tupaia/types';
 import { EntityResponse } from '../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation } from '../../api/queries';
@@ -23,22 +24,30 @@ const ChildEntities = ({ entities }: { entities: EntityResponse['children'] }) =
   );
 };
 
-const SiblingEntities = ({ entity }: { entity: EntityResponse }) => {
+const SiblingEntities = ({
+  parentEntityCode,
+  activeEntityCode,
+}: {
+  parentEntityCode: Entity['code'];
+  activeEntityCode: Entity['code'];
+}) => {
   const { projectCode } = useParams();
   const { data: siblingEntities, isLoading } = useEntitiesWithLocation(
     projectCode,
-    entity.parentCode,
+    parentEntityCode,
   );
 
-  if (isLoading || !siblingEntities) {
+  if (isLoading || !siblingEntities || siblingEntities.length === 0) {
     return null;
   }
 
-  const children = siblingEntities?.children?.filter(e => e.code !== entity.code) || [];
+  const children = siblingEntities.filter(
+    (entity: EntityResponse) => entity.code !== activeEntityCode,
+  );
 
   return (
     <>
-      {children.map(entity => (
+      {children.map((entity: EntityResponse) => (
         <InteractivePolygon key={entity.code} entity={entity} />
       ))}
     </>
@@ -63,16 +72,32 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
   );
 };
 
-export const PolygonLayer = ({ entityData }: { entityData: EntityResponse }) => {
-  if (!entityData) {
+export const PolygonLayer = ({
+  entities,
+  entityCode,
+}: {
+  entities: EntityResponse[];
+  entityCode: string;
+}) => {
+  if (!entities || entities.length === 0) {
     return null;
   }
 
+  const activeEntity = entities.find(entity => entity.code === entityCode);
+  const childEntities = entities.filter(entity => entity.parentCode === entityCode);
+
   return (
     <>
-      <ActiveEntity entity={entityData as EntityResponse} />
-      <ChildEntities entities={entityData?.children} />
-      <SiblingEntities entity={entityData} />
+      {activeEntity && (
+        <>
+          <ActiveEntity entity={activeEntity} />
+          <SiblingEntities
+            activeEntityCode={activeEntity.code}
+            parentEntityCode={activeEntity.parentCode}
+          />
+        </>
+      )}
+      <ChildEntities entities={childEntities} />
     </>
   );
 };
