@@ -30,6 +30,8 @@ import {
   CountryAccessListRoute,
   RequestCountryAccessRequest,
   RequestCountryAccessRoute,
+  EntitySearchRoute,
+  EntitySearchRequest,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -51,6 +53,7 @@ export function createApp() {
       handleWith(RequestCountryAccessRoute),
     )
     .get<EntitiesRequest>('entities/:hierarchyName/:rootEntityCode', handleWith(EntitiesRoute))
+    .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
