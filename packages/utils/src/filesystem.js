@@ -4,7 +4,7 @@
  */
 import sanitize from 'sanitize-filename';
 import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 
 /**
  *  @template T the type of expected file contents
@@ -59,3 +59,48 @@ export const writeStreamToFile = async (filePath, stream) =>
     fileStream.on('finish', () => resolve(filePath));
     fileStream.on('error', error => reject(error));
   });
+
+/**
+ * "Unique Filenames" e.g. "5da02ed278d10e8695530688_Report.pdf" are used to be able to work with uploaded files without
+ * worrying about name clashes. The actual fileName is prefixed with a unique string. The delimiter is '_'.
+ *
+ * @param uniqueFileName
+ * @return {{fileName: string, uniqueId: string}}
+ */
+export const getUniqueFileNameParts = uniqueFileName => {
+  const indexOfFirstUnderscore = uniqueFileName.indexOf('_');
+  if (indexOfFirstUnderscore === -1) throw new Error('Incorrect uniqueFileName format');
+  return {
+    uniqueId: uniqueFileName.substring(0, indexOfFirstUnderscore), // the "5da02ed278d10e8695530688" part of "5da02ed278d10e8695530688_Report.pdf"
+    fileName: uniqueFileName.substring(indexOfFirstUnderscore + 1), // the "Report.pdf" part of "5da02ed278d10e8695530688_Report.pdf"
+  };
+};
+
+/**
+ * Returns Certificate.pdf, Certificate(1).pdf, Certificate(2).pdf etc.
+ * @param {string} inputFileName
+ * @param {string[]} allFileNames
+ * @param {number} [attempt]
+ * @return {string}
+ */
+export const getDeDuplicatedFileName = (inputFileName, allFileNames, attempt = 0) => {
+  if (allFileNames.length === 0) return inputFileName;
+
+  if (attempt === 0) {
+    if (!allFileNames.includes(inputFileName)) {
+      return inputFileName;
+    }
+    return getDeDuplicatedFileName(inputFileName, allFileNames, 1);
+  }
+
+  const [nameWithoutExtension, extension] = [
+    path.parse(inputFileName).name,
+    path.parse(inputFileName).ext,
+  ];
+  const numberedFileName = `${nameWithoutExtension}(${attempt})${extension}`;
+
+  if (!allFileNames.includes(numberedFileName)) {
+    return numberedFileName;
+  }
+  return getDeDuplicatedFileName(inputFileName, allFileNames, attempt + 1);
+};

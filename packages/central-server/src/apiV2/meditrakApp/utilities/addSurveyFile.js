@@ -11,17 +11,16 @@ import { S3Client, S3 } from '@tupaia/utils';
  * {
  *    "action": "AddSurveyFile",
  *    "payload": {
- *         "id": "5da02ed278d10e8695530688",
- *         "filename": "report.pdf",
+ *         "uniqueFileName": "5da02ed278d10e8695530688_report.pdf",
  *         "data": "ASDFJASD..." // etc very long base64 data
  *    }
  *  }
  * */
 
-export const addSurveyFile = async (models, { filename, data }) => {
+export const addSurveyFile = async (models, { uniqueFileName, data }) => {
   try {
     const s3Client = new S3Client(new S3());
-    await s3Client.uploadFile(filename, data);
+    await s3Client.uploadFile(uniqueFileName, decodedFileBuffer);
   } catch (error) {
     winston.error(error.message);
   }
