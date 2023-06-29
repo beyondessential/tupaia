@@ -54,7 +54,7 @@ const CREATE_CONFIG = {
 
 export const SupersetInstancesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="Superset Instances"
+    title="mSupply Superset Instances"
     endpoint="supersetInstances"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

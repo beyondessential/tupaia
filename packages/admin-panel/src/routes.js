@@ -249,7 +249,7 @@ export const ROUTES = [
         component: DhisInstancesPage,
       },
       {
-        label: 'Superset Instances',
+        label: 'mSupply Superset Instances',
         to: '/superset-instances',
         component: SupersetInstancesPage,
       },
