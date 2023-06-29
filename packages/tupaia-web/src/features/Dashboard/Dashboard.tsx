@@ -108,7 +108,7 @@ const useDashboards = () => {
 
   if (dashboards.length > 0) {
     activeDashboard =
-      dashboards.find((dashboard: DashboardType) => dashboard.name === dashboardName) ||
+      dashboards.find((dashboard: DashboardType) => dashboard.dashboardName === dashboardName) ||
       dashboards[0];
   }
 

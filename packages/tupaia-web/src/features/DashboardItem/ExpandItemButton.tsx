@@ -9,7 +9,7 @@ import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
 import { DashboardItemType } from '../../types';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
 
 const ExpandableButton = styled(Button).attrs({
   variant: 'outlined',
@@ -71,7 +71,7 @@ interface ExpandItemButtonProps {
 export const ExpandItemButton = ({ reportCode, viewType }: ExpandItemButtonProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const handleExpandDashboardItem = () => {
-    urlSearchParams.set('report', String(reportCode));
+    urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, String(reportCode));
     setUrlSearchParams(urlSearchParams.toString());
   };
 
