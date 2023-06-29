@@ -16,7 +16,7 @@ import { StaticMap } from './StaticMap';
 import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
-import { DashboardItemType, DashboardType } from '../../types';
+import { DashboardItemType, DashboardType, DashboardsResponse } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -144,11 +144,11 @@ export const Dashboard = () => {
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
+          {activeDashboard?.items.map(dashboardItem => (
             <DashboardItem
               key={dashboardItem.code}
               dashboardItem={dashboardItem}
-              dashboardCode={activeDashboard?.code}
+              dashboardCode={activeDashboard?.dashboardCode}
             />
           ))}
         </DashboardItemsWrapper>
