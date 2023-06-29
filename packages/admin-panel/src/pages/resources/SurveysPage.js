@@ -54,8 +54,7 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel:
-        'Select the permission group this survey should be available for, or select Public for all',
+      secondaryLabel: 'Select the permission group this survey should be available for',
     },
   },
   survey_group_id: {
