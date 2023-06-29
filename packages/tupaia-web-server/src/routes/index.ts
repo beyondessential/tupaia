@@ -6,6 +6,7 @@
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';
+export { LegacyDashboardReportRequest, LegacyDashboardReportRoute } from './LegacyDashboardReportRoute';
 export { LegacyMapOverlayReportRequest, LegacyMapOverlayReportRoute } from './LegacyMapOverlayReportRoute';
 export { MapOverlaysRequest, MapOverlaysRoute } from './MapOverlaysRoute';
 export { UserRequest, UserRoute } from './UserRoute';
