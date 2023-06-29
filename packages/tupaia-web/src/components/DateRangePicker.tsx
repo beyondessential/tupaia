@@ -8,6 +8,7 @@ import { Moment } from 'moment';
 import { GRANULARITIES } from '@tupaia/utils';
 import { DateRangePicker as DateRangePickerComponent, TextButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { ValueOf } from '../types';
 
 const Wrapper = styled.div`
   margin-top: 0.5rem;
@@ -61,7 +62,7 @@ const ResetButton = styled(TextButton)`
 interface DateRangePickerProps {
   startDate?: Moment;
   endDate?: Moment;
-  granularity?: keyof typeof GRANULARITIES;
+  granularity?: ValueOf<typeof GRANULARITIES>;
   onSetDates?: (startDate: string, endDate: string) => void;
   minDate?: string;
   maxDate?: string;
