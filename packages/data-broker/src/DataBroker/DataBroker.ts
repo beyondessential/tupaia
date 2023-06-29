@@ -57,6 +57,11 @@ type PermissionChecker = (
   organisationUnitCodes?: string[],
 ) => Promise<string[] | undefined>;
 
+interface PullOptions {
+  organisationUnitCode?: string;
+  organisationUnitCodes?: string[];
+}
+
 type ValidatedOptions = { organisationUnitCodes?: string[] } & Record<string, unknown>;
 
 let modelRegistry: DataBrokerModelRegistry;
@@ -77,12 +82,7 @@ const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes
   return ['*', ...userPermissionGroups];
 };
 
-const setOrganisationUnitCodes = (
-  options: Record<string, unknown> & {
-    organisationUnitCode?: string;
-    organisationUnitCodes?: string[];
-  },
-) => {
+const setOrganisationUnitCodes = (options: PullOptions) => {
   const { organisationUnitCode, organisationUnitCodes, ...restOfOptions } = options;
   const orgUnitCodes =
     organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : undefined);
@@ -313,7 +313,7 @@ export class DataBroker {
 
   public async pullAnalytics(
     dataElementCodes: string[],
-    options: Record<string, unknown>,
+    options: PullOptions,
   ): Promise<AnalyticResults> {
     const dataElements = await fetchDataElements(this.models, dataElementCodes);
     const validatedOptions = setOrganisationUnitCodes(options);
@@ -338,10 +338,7 @@ export class DataBroker {
     );
   }
 
-  public async pullEvents(
-    dataGroupCodes: string[],
-    options: Record<string, unknown>,
-  ): Promise<EventResults> {
+  public async pullEvents(dataGroupCodes: string[], options: PullOptions): Promise<EventResults> {
     const dataGroups = await fetchDataGroups(this.models, dataGroupCodes);
     const validatedOptions = setOrganisationUnitCodes(options);
 
@@ -364,7 +361,7 @@ export class DataBroker {
 
   public async pullSyncGroupsResults(
     syncGroupCodes: string[],
-    options: Record<string, unknown>,
+    options: PullOptions,
   ): Promise<SyncGroupResults> {
     const syncGroups = await fetchSyncGroups(this.models, syncGroupCodes);
     const validatedOptions = setOrganisationUnitCodes(options);
