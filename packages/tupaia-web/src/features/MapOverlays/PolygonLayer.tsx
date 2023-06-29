@@ -6,7 +6,7 @@
 import React from 'react';
 import { ActivePolygon } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityResponse } from '../../types';
+import { EntityResponse, EntityCode } from '../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation } from '../../api/queries';
 
@@ -23,18 +23,24 @@ const ChildEntities = ({ entities }: { entities: EntityResponse['children'] }) =
   );
 };
 
-const SiblingEntities = ({ entity }: { entity: EntityResponse }) => {
+const SiblingEntities = ({
+  parentEntityCode,
+  activeEntityCode,
+}: {
+  parentEntityCode: EntityCode;
+  activeEntityCode: EntityCode;
+}) => {
   const { projectCode } = useParams();
   const { data: siblingEntities, isLoading } = useEntitiesWithLocation(
     projectCode,
-    entity.parentCode,
+    parentEntityCode,
   );
 
-  if (isLoading || !siblingEntities) {
+  if (isLoading || !siblingEntities || siblingEntities.length === 0) {
     return null;
   }
 
-  const children = siblingEntities?.children?.filter(e => e.code !== entity.code) || [];
+  const children = siblingEntities.filter(entity => entity.code !== activeEntityCode);
 
   return (
     <>
@@ -63,16 +69,31 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
   );
 };
 
-export const PolygonLayer = ({ entityData }: { entityData: EntityResponse }) => {
-  if (!entityData) {
+interface PolygonLayerProps {
+  entities: EntityResponse[];
+  entityCode: EntityCode;
+}
+
+export const PolygonLayer = ({ entities, entityCode }: PolygonLayerProps) => {
+  if (!entities || entities.length === 0) {
     return null;
   }
 
+  const activeEntity = entities.find(entity => entity.code === entityCode);
+  const childEntities = entities.filter(entity => entity.parentCode === entityCode);
+
   return (
     <>
-      <ActiveEntity entity={entityData as EntityResponse} />
-      <ChildEntities entities={entityData?.children} />
-      <SiblingEntities entity={entityData} />
+      {activeEntity && (
+        <>
+          <ActiveEntity entity={activeEntity} />
+          <SiblingEntities
+            activeEntityCode={activeEntity.code}
+            parentEntityCode={activeEntity.parentCode}
+          />
+        </>
+      )}
+      <ChildEntities entities={childEntities} />
     </>
   );
 };

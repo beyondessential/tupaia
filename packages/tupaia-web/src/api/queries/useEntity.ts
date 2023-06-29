@@ -4,34 +4,32 @@
  */
 
 import { useQuery } from 'react-query';
-import { sleep } from '@tupaia/utils';
-
-const response = {
-  type: 'Country',
-  organisationUnitCode: 'TO',
-  countryCode: 'TO',
-  name: 'Tonga',
-  location: {
-    type: 'area',
-    point: null,
-    bounds: [
-      [-24.1625706, 180.604802],
-      [-15.3655722, 186.4704542],
-    ],
-    region: [],
-  },
-  photoUrl:
-    'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/images/1499489588784_647646.png',
-  countryHierarchy: [],
-};
+import { useParams } from 'react-router-dom';
+import { EntityResponse } from '../../types';
+import { get } from '../api';
+import { DEFAULT_BOUNDS } from '../../constants';
 
 export const useEntity = (entityCode?: string) => {
+  //  Todo: use entity endpoint when it's done and remove project code
+  const { projectCode } = useParams();
+
   return useQuery(
-    ['entity', entityCode],
-    async () => {
-      await sleep(1000);
-      return response;
+    ['entities', projectCode, entityCode],
+    async (): Promise<EntityResponse> => {
+      const entities = await get(`entities/${projectCode}/${entityCode}`, {
+        params: {
+          includeRoot: true,
+          fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region', 'image_url'],
+        },
+      });
+      // @ts-ignore
+      const entity = entities.find(e => e.code === entityCode);
+
+      if (entity.code === 'explore') {
+        return { ...entity, bounds: DEFAULT_BOUNDS };
+      }
+
+      return entity;
     },
-    { enabled: !!entityCode },
   );
 };
