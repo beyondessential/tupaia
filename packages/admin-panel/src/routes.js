@@ -37,8 +37,10 @@ import {
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
   EntityHierarchyPage,
+  DataElementDataServicesPage,
+  DhisInstancesPage,
+  SupersetInstancesPage,
 } from './pages/resources';
-import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
 export const ROUTES = [
   {
@@ -240,6 +242,16 @@ export const ROUTES = [
         label: 'External Database Connections',
         to: '',
         component: ExternalDatabaseConnectionsPage,
+      },
+      {
+        label: 'DHIS Instances',
+        to: '/dhis-instances',
+        component: DhisInstancesPage,
+      },
+      {
+        label: 'mSupply Superset Instances',
+        to: '/superset-instances',
+        component: SupersetInstancesPage,
       },
     ],
   },
