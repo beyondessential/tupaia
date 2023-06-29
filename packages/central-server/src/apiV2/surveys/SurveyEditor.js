@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, ValidationError } from '@tupaia/utils';
+import { DatabaseError, ImportValidationError, ValidationError } from '@tupaia/utils';
 import { validateSurveyFields } from '../../dataAccessors';
 import { getArrayQueryParameter } from '../utilities';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
