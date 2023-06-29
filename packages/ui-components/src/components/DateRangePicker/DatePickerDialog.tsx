@@ -45,6 +45,15 @@ const Container = styled.div`
       margin-right: 0;
     }
   }
+  .MuiSelect-root {
+    color: ${props => props.theme.palette.text.primary};
+    &:focus {
+      background-color: transparent;
+    }
+  }
+  .MuiInputBase-root {
+    background-color: transparent;
+  }
 `;
 
 type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & {
@@ -155,6 +164,9 @@ export const DatePickerDialog = ({
   const onCancelDateSelection = () => {
     onClose();
     setErrorMessage('');
+    // reset the date values to the original values
+    setSelectedStartDate(momentStartDate);
+    setSelectedEndDate(momentEndDate);
   };
 
   const onSubmit = () => {
@@ -181,7 +193,7 @@ export const DatePickerDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} maxWidth="sm">
+    <Dialog open={isOpen} maxWidth="sm" id="date-picker-dialog">
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
         {!isSingleDate && (

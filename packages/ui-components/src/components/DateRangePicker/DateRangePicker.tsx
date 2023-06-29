@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
@@ -55,11 +56,19 @@ const Button = styled(MuiButton)`
   }
 `;
 
-const Label = styled(Button)`
+const Label = styled(Typography)`
   padding-left: 1rem;
   padding-right: 1rem;
   min-width: 8rem;
-  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-left-width: 2px;
+  cursor: auto;
 `;
 
 interface DateRangePickerProps {
