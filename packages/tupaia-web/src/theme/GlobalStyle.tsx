@@ -13,9 +13,6 @@ export const GlobalStyle = createGlobalStyle<{
   theme: Theme;
 }>` 
   #date-picker-dialog {
-    h3 {
-      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
-    }
     .MuiSelect-root {
       color: ${({ theme }) => theme.palette.text.primary};
       &:focus {
@@ -24,9 +21,6 @@ export const GlobalStyle = createGlobalStyle<{
     }
     .MuiInputBase-root {
       background-color: transparent;
-    }
-    button {
-      text-transform: none;
     }
   }
 `;

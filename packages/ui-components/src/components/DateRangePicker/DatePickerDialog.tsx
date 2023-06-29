@@ -7,7 +7,6 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,
@@ -36,34 +35,18 @@ const {
   SINGLE_YEAR,
 } = GRANULARITIES;
 
-const Container = styled.fieldset`
+const Container = styled.div`
   display: flex;
   margin-top: 1rem;
-  padding: 0;
-  border: none;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
-  padding-block-start: 0;
-  padding-inline-start: 0;
-  padding-inline-end: 0;
-  padding-block-end: 0;
-  justify-content: space-between;
 
   .MuiFormControl-root {
-    margin-right: 0.4rem;
-    flex: 1;
+    margin-right: 1rem;
     &:last-child {
       margin-right: 0;
     }
   }
-  .MuiFormLabel-root {
-    font-size: 0.875rem;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    margin-bottom: 0.4rem;
-  }
   .MuiSelect-root {
     color: ${props => props.theme.palette.text.primary};
-    font-size: 0.875rem;
     &:focus {
       background-color: transparent;
     }
@@ -73,88 +56,64 @@ const Container = styled.fieldset`
   }
 `;
 
-const RowLegendWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-right: 0.5rem;
-  width: 15%;
-`;
-const RowLegend = styled(Typography).attrs({
-  component: 'legend',
-})`
-  padding-inline-end: 0;
-  padding-inline-start: 0;
-  font-size: 0.875rem;
-`;
-
 type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & {
   granularity: typeof GRANULARITY_SHAPE;
-  title?: string;
 };
-
-const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
-  const getDatePickerComponent = () => {
-    switch (granularity) {
-      default:
-      case DAY:
-        return (
-          <>
-            <DayPicker {...props} />
-            <MonthPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} />
-          </>
-        );
-      case SINGLE_WEEK:
-      case WEEK:
-        return (
-          <>
-            <WeekPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} isIsoYear />
-          </>
-        );
-      case MONTH:
-      case SINGLE_MONTH:
-        return (
-          <>
-            <MonthPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} />
-          </>
-        );
-      case QUARTER:
-      case SINGLE_QUARTER:
-        return (
-          <>
-            <QuarterPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} />
-          </>
-        );
-      case YEAR:
-      case SINGLE_YEAR:
-        return <YearPicker {...(props as YearPickerProps)} />;
-    }
-  };
-  return (
-    <Container>
-      {title && (
-        <RowLegendWrapper>
-          <RowLegend>{title}</RowLegend>
-        </RowLegendWrapper>
-      )}
-      {getDatePickerComponent()}
-    </Container>
-  );
+const DateRow = ({ granularity, ...props }: DateRowProps) => {
+  switch (granularity) {
+    default:
+    case DAY:
+      return (
+        <Container>
+          <DayPicker {...props} />
+          <MonthPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
+        </Container>
+      );
+    case SINGLE_WEEK:
+    case WEEK:
+      return (
+        <Container>
+          <WeekPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} isIsoYear />
+        </Container>
+      );
+    case MONTH:
+    case SINGLE_MONTH:
+      return (
+        <Container>
+          <MonthPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
+        </Container>
+      );
+    case QUARTER:
+    case SINGLE_QUARTER:
+      return (
+        <Container>
+          <QuarterPicker {...props} />
+          <YearPicker {...(props as YearPickerProps)} />
+        </Container>
+      );
+    case YEAR:
+    case SINGLE_YEAR:
+      return (
+        <Container>
+          <YearPicker {...(props as YearPickerProps)} />
+        </Container>
+      );
+  }
 };
 
 const getLabelText = (granularity: string) => {
   switch (granularity) {
     default:
-      return 'Select dates';
+      return 'Select Dates';
     case SINGLE_WEEK:
-      return 'Select week';
+      return 'Select Week';
     case SINGLE_MONTH:
-      return 'Select month';
+      return 'Select Month';
     case SINGLE_YEAR:
-      return 'Select year';
+      return 'Select Year';
   }
 };
 
@@ -245,7 +204,6 @@ export const DatePickerDialog = ({
             maxMomentDate={maxMomentDate}
             onChange={setSelectedStartDate}
             weekDisplayFormat={weekDisplayFormat}
-            title="Start date"
           />
         )}
         <DateRow
@@ -255,7 +213,6 @@ export const DatePickerDialog = ({
           maxMomentDate={maxMomentDate}
           onChange={setSelectedEndDate}
           weekDisplayFormat={weekDisplayFormat}
-          title={isSingleDate ? '' : 'End date'}
         />
         {errorMessage ? <Error>{errorMessage}</Error> : null}
       </StyledDialogContent>
