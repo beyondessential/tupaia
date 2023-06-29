@@ -250,7 +250,7 @@ const CREATE_CONFIG = {
       'data_group.service_type': 'tupaia',
       'data_group.config': {},
     },
-    title: 'New Surveyz',
+    title: 'New Survey',
   },
 };
 
