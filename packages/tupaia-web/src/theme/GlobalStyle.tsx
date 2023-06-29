@@ -13,6 +13,9 @@ export const GlobalStyle = createGlobalStyle<{
   theme: Theme;
 }>` 
   #date-picker-dialog {
+    h3 {
+      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+    }
     .MuiSelect-root {
       color: ${({ theme }) => theme.palette.text.primary};
       &:focus {
