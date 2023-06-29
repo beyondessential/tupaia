@@ -2,13 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { DEFAULT_ENTITY_CODE, DEFAULT_PROJECT_CODE } from './constants';
-
 export const URL_SEARCH_PARAMS = {
   PROJECT: 'project',
   TAB: 'tab',
   PASSWORD_RESET_TOKEN: 'passwordResetToken',
+  MAP_OVERLAY: 'overlay',
 };
 
 export enum MODAL_ROUTES {
@@ -22,7 +20,7 @@ export enum MODAL_ROUTES {
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 
-export const DEFAULT_URL = `/${DEFAULT_PROJECT_CODE}/${DEFAULT_ENTITY_CODE}`;
+export const DEFAULT_URL = `/explore/explore/General`;
 
 export enum TABS {
   MAP = 'map',

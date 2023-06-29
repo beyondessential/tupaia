@@ -83,11 +83,16 @@ const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getHeight = (isExporting: boolean, isEnlarged: boolean, hasLegend?: boolean) => {
+const getHeight = (
+  isExporting: boolean,
+  isEnlarged: boolean,
+  hasLegend?: boolean,
+  isMobileSize?: boolean,
+) => {
   if (isExporting) {
     return 500;
   }
-  return isEnlarged && hasLegend && isMobile() ? 320 : undefined;
+  return isEnlarged && hasLegend && isMobileSize ? 320 : undefined;
 };
 
 const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
@@ -139,6 +144,8 @@ export const CartesianChart = ({
       setLoaded(true);
     }, 50);
   }, []);
+
+  const isMobileSize = isMobile();
 
   const {
     chartType: defaultChartType,
@@ -210,8 +217,8 @@ export const CartesianChart = ({
   const chartDataConfig =
     Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
   const hasLegend = hasDataSeries || renderLegendForOneItem;
-  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const height = getHeight(isExporting, isEnlarged, hasLegend);
+  const aspect = !isEnlarged && !isMobileSize && !isExporting ? 1.6 : undefined;
+  const height = getHeight(isExporting, isEnlarged, hasLegend, isMobileSize);
 
   const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
 

@@ -15,21 +15,29 @@ import {
 import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
-  EntitiesRoute,
-  ReportRoute,
-  UserRoute,
-  TempLogoutRoute,
   DashboardsRequest,
+  EntitiesRoute,
   EntitiesRequest,
+  EntityAncestorsRoute,
+  EntityAncestorsRequest,
+  ReportRoute,
   ReportRequest,
+  LegacyDashboardReportRoute,
+  LegacyDashboardReportRequest,
+  LegacyMapOverlayReportRoute,
+  LegacyMapOverlayReportRequest,
+  MapOverlaysRoute,
+  MapOverlaysRequest,
+  UserRoute,
   UserRequest,
+  TempLogoutRoute,
   TempLogoutRequest,
-  ProjectRequest,
   ProjectRoute,
-  CountryAccessListRequest,
+  ProjectRequest,
   CountryAccessListRoute,
-  RequestCountryAccessRequest,
+  CountryAccessListRequest,
   RequestCountryAccessRoute,
+  RequestCountryAccessRequest,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -42,15 +50,28 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
+    .get<LegacyDashboardReportRequest>(
+      'legacyDashboardReport/:reportCode',
+      handleWith(LegacyDashboardReportRoute),
+    )
+    .get<LegacyMapOverlayReportRequest>(
+      'legacyMapOverlayReport/:mapOverlayCode',
+      handleWith(LegacyMapOverlayReportRoute),
+    )
+    .get<MapOverlaysRequest>('mapOverlays/:projectCode/:entityCode', handleWith(MapOverlaysRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<DashboardsRequest>('dashboards', handleWith(DashboardsRoute))
+    .get<DashboardsRequest>('dashboards/:projectCode/:entityCode', handleWith(DashboardsRoute))
     .get<CountryAccessListRequest>('countryAccessList', handleWith(CountryAccessListRoute))
     .post<RequestCountryAccessRequest>(
       'requestCountryAccess',
       handleWith(RequestCountryAccessRoute),
     )
-    .get<EntitiesRequest>('entities/:hierarchyName/:rootEntityCode', handleWith(EntitiesRoute))
+    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
+    .get<EntityAncestorsRequest>(
+      'entityAncestors/:projectCode/:entityCode',
+      handleWith(EntityAncestorsRoute),
+    )
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();

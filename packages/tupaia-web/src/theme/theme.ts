@@ -24,6 +24,9 @@ export const theme = createMuiTheme(
       background: TRANSPARENT_BLACK,
       secondaryBackground: '#4a4b55',
     },
+    form: {
+      border: '#d9d9d9',
+    },
     projectCard: {
       background: '#2e2f33',
       fallBack: '#EFEFF0',
@@ -34,7 +37,11 @@ export const theme = createMuiTheme(
     mobile: {
       background: '#313236', // Dark grey used on mobile
     },
+    searchBar: {
+      background: '#202124',
+    },
     overlaySelector: {
+      overlayNameBackground: '#072849',
       menuBackground: '#203e5c', // Dark blue used for button and header background in mobile overlay selector, as well as the background of the menu list on desktop
     },
   },

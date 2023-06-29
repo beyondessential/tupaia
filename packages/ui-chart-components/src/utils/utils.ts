@@ -8,7 +8,11 @@ import { useTheme } from '@material-ui/core/styles';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
 import { DataProps, ChartType, ViewContent, VizPeriodGranularity } from '../types';
 
-export const isMobile = () => process.env.REACT_APP_APP_TYPE === 'mobile';
+// tupaia-web uses a responsive approach, so we need to check the window width
+export const isMobile = () => {
+  const appType = process.env.REACT_APP_APP_TYPE;
+  return appType === 'mobile' || window.innerWidth < 900;
+};
 
 const granularityConfig = GRANULARITY_CONFIG as VizPeriodGranularity;
 

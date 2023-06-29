@@ -185,7 +185,7 @@ const getRoutes = (adminUrl, translate) => {
 const AdminPanelApp = ({ user }) => {
   const { translate } = useI18n();
   const headerEl = React.useRef(null);
-  const { path } = useRouteMatch();
+  const { path, url } = useRouteMatch();
   const adminUrl = useAdminPanelUrl();
   const userIsLesmisAdmin = isLesmisAdmin(user);
 
@@ -214,7 +214,7 @@ const AdminPanelApp = ({ user }) => {
         <Switch>
           {[...routes].map(route => (
             <LesmisAdminRoute key={route.to} path={`${route.to}`} isLESMISAdmin={userIsLesmisAdmin}>
-              <TabsToolbar links={route.tabs} maxWidth="xl" />
+              <TabsToolbar links={route.tabs} maxWidth="xl" baseRoute={url} />
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>

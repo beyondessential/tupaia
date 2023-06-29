@@ -95,11 +95,11 @@ const makeLabel = (viewContent: ViewContent) => ({ payload }: any) => {
 const chartColorAtIndex = (colorArray: string[], index: number) =>
   colorArray[index % colorArray.length];
 
-const getHeight = (isExporting: boolean, isEnlarged: boolean) => {
+const getHeight = (isExporting: boolean, isEnlarged: boolean, isMobileSize: boolean) => {
   if (isExporting) {
     return 420;
   }
-  return isEnlarged && isMobile() ? 320 : undefined;
+  return isEnlarged && isMobileSize ? 320 : undefined;
 };
 
 interface PieChartProps {
@@ -120,6 +120,8 @@ export const PieChart = ({
   const { presentationOptions, data } = viewContent;
   // eslint-disable-next-line no-unused-vars
   const [_, setLoaded] = useState(false);
+
+  const isMobileSize = isMobile();
 
   // Trigger rendering of the chart to fix an issue with the legend overlapping the chart.
   // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
@@ -167,9 +169,9 @@ export const PieChart = ({
   // This makes the tooltips touch the bottom of the container
   // (and just looks a bit weird). So, bump it up by 20px.
   const offsetStyle =
-    isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : undefined;
-  const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const height = getHeight(isExporting, isEnlarged);
+    isEnlarged && !isMobileSize && !isExporting ? { position: 'relative' } : undefined;
+  const responsiveStyle = !isEnlarged && !isMobileSize && !isExporting ? 1.6 : undefined;
+  const height = getHeight(isExporting, isEnlarged, isMobileSize);
 
   const { layout, verticalAlign, align } = getLegendAlignment(legendPosition, isExporting);
 

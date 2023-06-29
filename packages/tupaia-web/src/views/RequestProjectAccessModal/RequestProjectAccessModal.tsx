@@ -2,18 +2,19 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { URL_SEARCH_PARAMS } from '../../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen } from '../../components';
-import { useCountryAccessList, useProject } from '../../api/queries';
+import { useCountryAccessList, useProject, useUser } from '../../api/queries';
 import { ModalHeader } from './ModalHeader';
 import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
 import { ProjectAccessForm } from './ProjectAccessForm';
 import { RequestedCountries } from './RequestedCountries';
 import { Typography } from '@material-ui/core';
+import { CountryAccessListItem } from '../../types';
 
 const ModalBody = styled.div`
   display: flex;
@@ -26,14 +27,38 @@ const ModalBody = styled.div`
 export const RequestProjectAccessModal = () => {
   const [urlSearchParams] = useSearchParams();
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isLoggedIn, isLoading: isLoadingUser, isFetching } = useUser();
 
   const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
 
   const { data: project, isLoading } = useProject(projectCode!);
 
+  useEffect(() => {
+    // if user is not already logged in, redirect to login page first, and then redirect back to this page
+    const checkLogin = () => {
+      if (isLoadingUser || isLoggedIn || isFetching) return;
+      navigate(
+        {
+          ...location,
+          hash: MODAL_ROUTES.LOGIN,
+        },
+        {
+          state: {
+            referrer: location,
+          },
+        },
+      );
+    };
+    checkLogin();
+  }, [isLoggedIn, isLoadingUser, isFetching, project]);
+
   const { data: countries } = useCountryAccessList();
   // the countries that are applicable to this project
-  const projectCountries = countries?.filter(c => project?.names?.includes(c.name));
+  const projectCountries = countries?.filter((c: CountryAccessListItem) =>
+    project?.names?.includes(c.name),
+  );
 
   const getCountriesByAccess = (hasRequests: boolean) => {
     return projectCountries?.filter(({ hasAccess, accessRequests }) => {

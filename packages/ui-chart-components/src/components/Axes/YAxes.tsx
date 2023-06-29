@@ -83,6 +83,7 @@ const renderYAxisLabel = (
       style: { textAnchor: 'middle', fontSize: isEnlarged ? '1em' : '0.8em' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
+
   return undefined;
 };
 

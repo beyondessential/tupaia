@@ -1,4 +1,16 @@
-import { LandingPage, Project, Country, Entity, Dashboard } from '@tupaia/types';
+import {
+  LandingPage,
+  Project,
+  Country,
+  Entity as BaseEntity,
+  Dashboard as BaseDashboard,
+  DashboardItem as BaseDashboardItem,
+  DashboardItemConfig,
+  MapOverlay,
+  MapOverlayGroupRelation,
+  EntityType,
+} from '@tupaia/types';
+import { ViewContent } from '@tupaia/ui-chart-components';
 import { KeysToCamelCase } from './helpers';
 
 export type SingleProject = KeysToCamelCase<Project> & {
@@ -23,4 +35,52 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardName = Dashboard['name'];
+export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
+  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType'> & {
+    chartType?: string;
+    viewType?: string;
+  };
+
+export type DashboardType = KeysToCamelCase<BaseDashboard> & {
+  items: DashboardItemType[];
+};
+
+export type DashboardCode = DashboardType['code'];
+
+export type TupaiaUrlParams = {
+  projectCode?: ProjectCode;
+  entityCode?: EntityCode;
+  dashboardCode?: DashboardCode;
+};
+
+export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
+export type DashboardName = BaseDashboard['name'];
+
+export type SingleMapOverlayItem = KeysToCamelCase<
+  Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
+> & {
+  measureLevel?: string;
+  displayType: string;
+};
+
+export type MapOverlayGroup = {
+  name: MapOverlay['name'];
+  children: SingleMapOverlayItem[] | MapOverlayGroup[];
+};
+export type MapOverlays = {
+  entityCode: EntityCode;
+  entityType: EntityType;
+  name: string;
+  mapOverlays: MapOverlayGroup[];
+};
+
+export type Entity = KeysToCamelCase<BaseEntity>;
+/* Response Types */
+// Todo: replace with types from @tupaia/types
+
+export type EntityResponse = Entity & {
+  parentCode: Entity['code'];
+  childCodes: Entity['code'][];
+  photoUrl?: string;
+  children?: Entity[];
+};

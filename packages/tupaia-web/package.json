@@ -26,10 +26,6 @@
     "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
     "storybook": "storybook dev -p 6006",
     "test": "yarn package:test --env=jsdom",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
-    "start-ui-chart-components": "yarn workspace @tupaia/ui-chart-components build -w",
-    "start-ui-map-components": "yarn workspace @tupaia/ui-map-components build -w",
-    "start-frontend": "npm-run-all -c -l -p start-ui-components start-ui-chart-components start-ui-map-components start-dev",
     "build-storybook": "storybook build"
   },
   "dependencies": {
@@ -38,6 +34,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
+    "@tupaia/ui-chart-components": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/ui-map-components": "1.0.0",
     "axios": "^1.4.0",
@@ -64,6 +61,7 @@
     "@tupaia/types": "1.0.0",
     "@types/mapbox__polyline": "^1.0.2",
     "@types/material-ui": "^0.21.12",
+    "@types/react": "16.8.6",
     "@vitejs/plugin-react": "^4.0.0",
     "npm-run-all": "^4.1.5",
     "storybook": "^7.0.18",

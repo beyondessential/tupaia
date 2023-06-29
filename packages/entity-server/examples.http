@@ -32,6 +32,35 @@ Authorization: {{authorization}}
     "entities" : ["TO","PG"]
 }
 
+### Fetch ancestors of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_Eua_Tongamamao/ancestors?field=code&includeRootEntity=true HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered ancestors of an entity that are district or facility type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_Eua_Tongamamao/ancestors?fields=type,code&filter=type==district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered ancestors of an entity that are not country type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_Eua_Tongamamao/ancestors?fields=type,code&filter=type!=country HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered ancestors of an entity that have names contain string 'Hos'
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_Eua_Tongamamao/ancestors?fields=type,code&filter=name=@Hos HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch ancestors of multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore/ancestors?field=code&includeRootEntity=true HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities" : ["TO_Eua_Tongamamao","TO_Eua_Esia"]
+}
+
 ### Fetch descendants of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&includeRootEntity=true HTTP/1.1
 content-type: {{contentType}}

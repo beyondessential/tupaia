@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { WEEK_DISPLAY_FORMATS, GRANULARITIES } from '@tupaia/utils';
-import { DateRangePicker } from '../src';
+import { DateRangePicker } from '../src/components';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 
 const Container = styled.div`

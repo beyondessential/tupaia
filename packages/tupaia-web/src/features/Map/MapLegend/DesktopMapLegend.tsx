@@ -9,23 +9,29 @@ import { MOBILE_BREAKPOINT } from '../../../constants';
 
 // Placeholder for legend
 const Wrapper = styled.div`
+  pointer-events: auto;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  position: absolute;
-  background-color: grey;
-  width: 300px;
-  height: 50px;
-  bottom: 1em;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 5px;
+  width: 100%;
+  padding: 1rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
 
+const Legend = styled.div`
+  height: 50px;
+  width: 300px;
+  background-color: grey;
+  border-radius: 5px;
+`;
+
 export const DesktopMapLegend = () => {
-  return <Wrapper />;
+  return (
+    <Wrapper>
+      <Legend />
+    </Wrapper>
+  );
 };

@@ -5,16 +5,20 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
+import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
+import { useEntity } from '../../api/queries';
 
 const MapContainer = styled.div`
   height: 100%;
   transition: width 0.5s ease;
   width: 100%;
+  flex: 1;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -53,33 +57,59 @@ const StyledMap = styled(LeafletMap)`
 `;
 // Position this absolutely so it can be placed over the map
 const TilePickerWrapper = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 100%;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
 
+// This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
+const MapControlWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  // This is to prevent the wrapper div from blocking clicks on the map overlays
+  pointer-events: none;
+`;
+
+const MapControlColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
 export const Map = () => {
+  const { entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
+
+  const { data: entity } = useEntity(entityCode);
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
+
   return (
     <MapContainer>
-      <StyledMap>
+      <StyledMap bounds={entity?.bounds} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+        <MapOverlays />
         <ZoomControl position="bottomright" />
-        <MapLegend />
+        <MapControlWrapper>
+          <MapControlColumn>
+            <MapOverlaySelector />
+            <MapLegend />
+          </MapControlColumn>
+          <TilePickerWrapper>
+            <TilePicker
+              tileSets={TILE_SETS}
+              activeTileSet={activeTileSet}
+              onChange={onTileSetChange}
+            />
+          </TilePickerWrapper>
+        </MapControlWrapper>
         <MapWatermark />
       </StyledMap>
-      <MapOverlaySelector />
-      <TilePickerWrapper>
-        <TilePicker tileSets={TILE_SETS} activeTileSet={activeTileSet} onChange={onTileSetChange} />
-      </TilePickerWrapper>
     </MapContainer>
   );
 };

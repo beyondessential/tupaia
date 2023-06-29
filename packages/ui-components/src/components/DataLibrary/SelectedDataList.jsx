@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
-import { SelectedDataCard } from './options';
 import styled from 'styled-components';
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
+import { SelectedDataCard } from './options';
 
 const StyledSelectedDataList = styled.div`
   padding-top: 10px;
