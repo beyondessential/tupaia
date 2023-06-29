@@ -124,15 +124,9 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
 
     // Pull data from KoBo
     const koboData =
-      (await dataBroker.pull(
-        {
-          code: syncGroupCode,
-          type: dataBroker.getDataSourceTypes().SYNC_GROUP,
-        },
-        {
-          startSubmissionTime: dataServiceSyncGroup.sync_cursor,
-        },
-      )) || [];
+      (await dataBroker.pullSyncGroupResults(syncGroupCode, {
+        startSubmissionTime: dataServiceSyncGroup.sync_cursor,
+      })) || [];
 
     await models.wrapInTransaction(async transactingModels => {
       // Create new survey_responses in Tupaia

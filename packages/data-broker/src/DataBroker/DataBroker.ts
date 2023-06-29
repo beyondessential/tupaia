@@ -349,7 +349,7 @@ export class DataBroker {
     return (nestedResults as EventResults[]).flat();
   }
 
-  public async pullSyncGroupsResults(
+  public async pullSyncGroupResults(
     syncGroupCodes: string[],
     options: PullOptions,
   ): Promise<SyncGroupResults> {
