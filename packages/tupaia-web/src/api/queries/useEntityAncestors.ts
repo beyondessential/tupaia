@@ -4,7 +4,8 @@
  */
 
 import { useQuery } from 'react-query';
-import { sleep } from '@tupaia/utils';
+import { EntityCode, ProjectCode } from '../../types';
+import { get } from '../api';
 
 const response = [
   {
@@ -23,15 +24,13 @@ const response = [
     parentEntityCode: 'TO',
   },
 ];
-export const useEntityAncestors = (rootEntityCode?: string, hierarchyName?: string) => {
+export const useEntityAncestors = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   return useQuery(
-    ['entityAncestors', hierarchyName, rootEntityCode],
-    async () => {
-      await sleep(1000);
-      return response;
-    },
+    ['entityAncestors', projectCode, entityCode],
+    () =>
+      get(`entityAncestors/${projectCode}/${entityCode}`, { params: { includeRootEntity: true } }),
     {
-      enabled: !!hierarchyName && !!rootEntityCode,
+      enabled: !!projectCode && !!entityCode,
     },
   );
 };

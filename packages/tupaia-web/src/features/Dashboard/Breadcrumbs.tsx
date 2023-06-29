@@ -5,10 +5,9 @@
 import React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { MOBILE_BREAKPOINT } from '../../constants';
-import Skeleton from '@material-ui/lab/Skeleton';
-import { Breadcrumbs as MuiBreadcrumbs, Link as MuiLink } from '@material-ui/core';
+import { Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { useEntityAncestors } from '../../api/queries';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
@@ -34,12 +33,12 @@ const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
 `;
 
 const ActiveCrumb = styled.span`
-  color: #efefef;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const Crumb = styled(Link)`
   cursor: pointer;
-  color: #efefef;
+  color: ${({ theme }) => theme.palette.text.primary};
   text-decoration: none;
 
   &:hover {
@@ -47,34 +46,24 @@ const Crumb = styled(Link)`
   }
 `;
 
-const Loader = () => (
-  <Skeleton animation="wave">
-    <MuiLink>breadcrumbsLoading</MuiLink>
-  </Skeleton>
-);
-
 export const Breadcrumbs = () => {
   const location = useLocation();
-  const { projectCode } = useParams();
-  const { isLoading, data } = useEntityAncestors('explore', 'explore');
-  const breadcrumbs = data?.map(({ code, name }) => ({ code, name })) || [];
+  const { projectCode, entityCode } = useParams();
+  const { data = [] } = useEntityAncestors(projectCode, entityCode);
+  const breadcrumbs = data.map(({ code, name }) => ({ code, name })).reverse();
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        breadcrumbs.map(({ code: entityCode, name: entityName }, index) => {
-          const last = index === breadcrumbs.length - 1;
-          return last ? (
-            <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
-          ) : (
-            <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
-              {entityName}
-            </Crumb>
-          );
-        })
-      )}
+      {breadcrumbs.map(({ code: entityCode, name: entityName }, index) => {
+        const last = index === breadcrumbs.length - 1;
+        return last ? (
+          <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
+        ) : (
+          <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
+            {entityName}
+          </Crumb>
+        );
+      })}
     </StyledBreadcrumbs>
   );
 };
