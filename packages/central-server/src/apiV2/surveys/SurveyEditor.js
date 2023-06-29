@@ -139,9 +139,18 @@ export class SurveyEditor {
     const defaultPermissionGroup = await transactingModels.permissionGroup.findOne({
       name: 'Public',
     });
-    const permissionGroup = permission_group_id
-      ? await transactingModels.permissionGroup.findById(permission_group_id)
-      : defaultPermissionGroup;
+
+    let permissionGroup;
+    if (permission_group_id) {
+      permissionGroup = await transactingModels.permissionGroup.findById(permission_group_id);
+    } else if (existingSurvey) {
+      permissionGroup = await transactingModels.permissionGroup.findById(
+        existingSurvey.permission_group_id,
+      );
+    } else if (!existingSurvey) {
+      // Must be a create, and no permission group specified, use Public
+      permissionGroup = defaultPermissionGroup;
+    }
     if (!permissionGroup) {
       throw new DatabaseError('finding permission group');
     }
