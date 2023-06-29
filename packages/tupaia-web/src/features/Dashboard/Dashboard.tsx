@@ -13,7 +13,7 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards as useDashboardData, useEntitiesWithLocation } from '../../api/queries';
+import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { DashboardItemType, DashboardType } from '../../types';
@@ -116,11 +116,11 @@ const useDashboards = () => {
 };
 
 export const Dashboard = () => {
-  const { projectCode, entityCode } = useParams();
+  const { entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { dashboards, activeDashboard } = useDashboards();
-  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
-  const bounds = entityData?.bounds;
+  const { data: entity } = useEntity(entityCode);
+  const bounds = entity?.bounds;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -133,13 +133,13 @@ export const Dashboard = () => {
         <Breadcrumbs />
         <DashboardImageContainer>
           {bounds ? (
-            <StaticMap polygonBounds={bounds} />
+            <StaticMap bounds={bounds} />
           ) : (
-            <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
+            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
           )}
         </DashboardImageContainer>
         <TitleBar>
-          <Title variant="h3">{entityData?.name}</Title>
+          <Title variant="h3">{entity?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />

@@ -12,7 +12,7 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntitiesWithLocation } from '../../api/queries';
+import { useEntity } from '../../api/queries';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -77,10 +77,10 @@ const MapControlColumn = styled.div`
 `;
 
 export const Map = () => {
-  const { projectCode, entityCode } = useParams();
+  const { entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
 
-  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
+  const { data: entity } = useEntity(entityCode);
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
@@ -88,7 +88,7 @@ export const Map = () => {
 
   return (
     <MapContainer>
-      <StyledMap bounds={entityData?.bounds} shouldSnapToPosition>
+      <StyledMap bounds={entity?.bounds} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <MapOverlays />
         <ZoomControl position="bottomright" />

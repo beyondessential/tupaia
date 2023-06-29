@@ -45,8 +45,8 @@ type EntityWithChildren = Entity & { children?: Entity[] };
 
 interface EntityMenuProps {
   projectCode: ProjectCode;
-  children: EntityWithChildren[];
-  isLoading: boolean;
+  children: Entity[];
+  grandChildren: Entity[];
   onClose: () => void;
 }
 
@@ -54,16 +54,16 @@ interface EntityMenuProps {
  * ExpandedList is a recursive component that renders a list of entities and their children to
  * display an expandable entity menu.
  */
-export const EntityMenu = ({ projectCode, children, isLoading, onClose }: EntityMenuProps) => {
-  const entityList = children.sort((a, b) => a.name.localeCompare(b.name));
+export const EntityMenu = ({ projectCode, children, grandChildren, onClose }: EntityMenuProps) => {
+  const sortedChildren = children.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <List aria-expanded>
-      {entityList.map(entity => (
+      {sortedChildren.map(entity => (
         <EntityMenuItem
           key={entity.code}
           projectCode={projectCode}
+          children={grandChildren?.filter(child => child.parentCode === entity.code)}
           entity={entity}
-          parentIsLoading={isLoading}
           onClose={onClose}
         />
       ))}
@@ -76,27 +76,20 @@ interface EntityMenuItemProps {
   entity: EntityWithChildren;
   parentIsLoading?: boolean;
   onClose: () => void;
+  children: Entity[];
 }
-const EntityMenuItem = ({
-  projectCode,
-  entity,
-  parentIsLoading = false,
-  onClose,
-}: EntityMenuItemProps) => {
+const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuItemProps) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data, isLoading } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
+  const { data } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
-  /*
-    Pre-populate the next layer of the menu with children that came from the previous layer of entity
-    data then replace them with the children from the API response when it arrives
-  */
-  const nextChildren = data?.children || entity.children;
-
+  const nextChildren =
+    data?.filter(childEntity => childEntity.parentCode === entity.code) || children;
+  const grandChildren = data?.filter(childEntity => childEntity.parentCode !== entity.code);
   const link = { ...location, pathname: `/${projectCode}/${entity.code}` };
 
   return (
@@ -107,7 +100,7 @@ const EntityMenuItem = ({
         </MenuLink>
         <IconButton
           onClick={toggleExpanded}
-          disabled={parentIsLoading || !nextChildren}
+          disabled={!entity.childCodes}
           aria-label="toggle menu for this entity"
         >
           <ExpandIcon />
@@ -116,9 +109,9 @@ const EntityMenuItem = ({
       {isExpanded && (
         <EntityMenu
           children={nextChildren!}
+          grandChildren={grandChildren}
           projectCode={projectCode}
           onClose={onClose}
-          isLoading={isLoading}
         />
       )}
     </div>
