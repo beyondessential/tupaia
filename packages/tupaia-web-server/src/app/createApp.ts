@@ -18,6 +18,8 @@ import {
   DashboardsRequest,
   EntitiesRoute,
   EntitiesRequest,
+  EntityAncestorsRoute,
+  EntityAncestorsRequest,
   ReportRoute,
   ReportRequest,
   LegacyDashboardReportRoute,
@@ -65,7 +67,11 @@ export function createApp() {
       'requestCountryAccess',
       handleWith(RequestCountryAccessRoute),
     )
-    .get<EntitiesRequest>('entities/:hierarchyName/:rootEntityCode', handleWith(EntitiesRoute))
+    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
+    .get<EntityAncestorsRequest>(
+      'entityAncestors/:projectCode/:entityCode',
+      handleWith(EntityAncestorsRoute),
+    )
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();

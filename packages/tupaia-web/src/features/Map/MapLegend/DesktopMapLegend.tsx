@@ -9,6 +9,7 @@ import { MOBILE_BREAKPOINT } from '../../../constants';
 
 // Placeholder for legend
 const Wrapper = styled.div`
+  pointer-events: auto;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
