@@ -12,7 +12,6 @@ import { toArray } from '@tupaia/utils';
 import { createService } from '../services';
 import { DataServiceResolver } from '../services/DataServiceResolver';
 import {
-  Analytic,
   AnalyticResults as RawAnalyticResults,
   DataBrokerModelRegistry,
   DataSource,
@@ -26,6 +25,7 @@ import {
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
 import { DataServiceMapping } from '../services/DataServiceMapping';
 import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
+import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -39,16 +39,6 @@ export interface DataSourceSpec<T extends DataSourceType = DataSourceType> {
 }
 
 type FetchConditions = { code: string | string[] };
-
-interface AnalyticResults {
-  results: {
-    analytics: Analytic[];
-    numAggregationsProcessed: number;
-  }[];
-  metadata: {
-    dataElementCodeToName: Record<string, string>;
-  };
-}
 
 type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
@@ -333,7 +323,7 @@ export class DataBroker {
     );
 
     return (nestedResults as RawAnalyticResults[]).reduce(
-      (results, resultsForService) => this.mergeAnalytics(results, resultsForService),
+      (results, resultsForService) => mergeAnalytics(results, resultsForService),
       EMPTY_ANALYTICS_RESULTS as AnalyticResults,
     );
   }
@@ -409,49 +399,6 @@ export class DataBroker {
       dataServiceMapping,
       organisationUnitCodes: organisationUnitCodesWithAccess,
     });
-  };
-
-  private mergeAnalytics = (
-    target: AnalyticResults,
-    source: RawAnalyticResults,
-  ): AnalyticResults => {
-    const sourceNumAggregationsProcessed = source.numAggregationsProcessed || 0;
-    const targetResults = target.results;
-
-    // Result analytics can be combined if they've processed aggregations to the same level
-    const matchingResultIndex = targetResults.findIndex(
-      ({ numAggregationsProcessed }) => numAggregationsProcessed === sourceNumAggregationsProcessed,
-    );
-
-    let newResults;
-    if (matchingResultIndex >= 0) {
-      // Found a matching result, combine the matching result analytics and the new analytics
-      const matchingResult = targetResults[matchingResultIndex];
-      newResults = targetResults
-        .slice(0, matchingResultIndex)
-        .concat([
-          {
-            ...matchingResult,
-            analytics: matchingResult.analytics.concat(source.results),
-          },
-        ])
-        .concat(targetResults.slice(matchingResultIndex + 1, targetResults.length - 1));
-    } else {
-      // No matching result, just append this result to previous results
-      newResults = targetResults.concat([
-        { analytics: source.results, numAggregationsProcessed: sourceNumAggregationsProcessed },
-      ]);
-    }
-
-    return {
-      results: newResults,
-      metadata: {
-        dataElementCodeToName: {
-          ...target.metadata.dataElementCodeToName,
-          ...source.metadata.dataElementCodeToName,
-        },
-      },
-    };
   };
 
   public async pullMetadata(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
