@@ -6,8 +6,7 @@
 import React from 'react';
 import { ActivePolygon } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { Entity } from '@tupaia/types';
-import { EntityResponse } from '../../types';
+import { EntityResponse, EntityCode } from '../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation } from '../../api/queries';
 
@@ -28,8 +27,8 @@ const SiblingEntities = ({
   parentEntityCode,
   activeEntityCode,
 }: {
-  parentEntityCode: Entity['code'];
-  activeEntityCode: Entity['code'];
+  parentEntityCode: EntityCode;
+  activeEntityCode: EntityCode;
 }) => {
   const { projectCode } = useParams();
   const { data: siblingEntities, isLoading } = useEntitiesWithLocation(
@@ -41,13 +40,11 @@ const SiblingEntities = ({
     return null;
   }
 
-  const children = siblingEntities.filter(
-    (entity: EntityResponse) => entity.code !== activeEntityCode,
-  );
+  const children = siblingEntities.filter(entity => entity.code !== activeEntityCode);
 
   return (
     <>
-      {children.map((entity: EntityResponse) => (
+      {children.map(entity => (
         <InteractivePolygon key={entity.code} entity={entity} />
       ))}
     </>
@@ -72,13 +69,12 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
   );
 };
 
-export const PolygonLayer = ({
-  entities,
-  entityCode,
-}: {
+interface PolygonLayerProps {
   entities: EntityResponse[];
-  entityCode: string;
-}) => {
+  entityCode: EntityCode;
+}
+
+export const PolygonLayer = ({ entities, entityCode }: PolygonLayerProps) => {
   if (!entities || entities.length === 0) {
     return null;
   }
