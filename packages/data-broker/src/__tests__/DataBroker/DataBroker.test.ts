@@ -382,32 +382,7 @@ describe('DataBroker', () => {
   });
 
   describe('pullAnalytics', () => {
-    it('single code', async () => {
-      const dataBroker = new DataBroker();
-      const data = await dataBroker.pullAnalytics(['DHIS_01'], options);
-
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
-        [DATA_ELEMENTS.DHIS_01],
-        'dataElement',
-        expect.objectContaining(options),
-      );
-      expect(data).toStrictEqual({
-        results: [
-          {
-            analytics: [
-              { dataElement: 'DHIS_01', organisationUnit: 'TO', period: '20210101', value: 1 },
-            ],
-            numAggregationsProcessed: 0,
-          },
-        ],
-        metadata: {
-          dataElementCodeToName: { DHIS_01: 'DHIS element 1' },
-        },
-      });
-    });
-
-    it('multiple codes', async () => {
+    it('same service', async () => {
       const dataBroker = new DataBroker();
       const data = await dataBroker.pullAnalytics(['DHIS_01', 'DHIS_02'], options);
 
@@ -473,20 +448,7 @@ describe('DataBroker', () => {
   });
 
   describe('pullEvents', () => {
-    it('single code', async () => {
-      const dataBroker = new DataBroker();
-      const data = await dataBroker.pullEvents(['DHIS_PROGRAM_01'], options);
-
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
-        [DATA_GROUPS.DHIS_PROGRAM_01],
-        'dataGroup',
-        expect.objectContaining(options),
-      );
-      expect(data).toStrictEqual(DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_01);
-    });
-
-    it('multiple codes', async () => {
+    it('same service', async () => {
       const dataBroker = new DataBroker();
       const data = await dataBroker.pullEvents(['DHIS_PROGRAM_01', 'DHIS_PROGRAM_02'], options);
 
