@@ -42,6 +42,16 @@ export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config
     viewType?: string;
   };
 
+export type DashboardsResponse = {
+  dashboardName: string;
+  dashboardCode: string;
+  dashboardId: string;
+  entityCode: string;
+  entityName: string;
+  entityType: string;
+  items: DashboardItemType[];
+};
+
 export type DashboardType = KeysToCamelCase<BaseDashboard> & {
   items: DashboardItemType[];
 };

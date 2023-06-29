@@ -7,7 +7,7 @@ import { useLocation, Link, useParams } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
-import { DashboardType } from '../../types';
+import { DashboardType, DashboardsResponse } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -41,7 +41,7 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
 }: {
-  activeDashboard: DashboardType | null;
+  activeDashboard: DashboardsResponse | null;
   dashboards: DashboardType[];
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -57,7 +57,7 @@ export const DashboardMenu = ({
   return (
     <>
       <MenuButton onClick={handleClickListItem}>
-        {activeDashboard?.name}
+        {activeDashboard?.dashboardName}
         <ArrowDropDownIcon />
       </MenuButton>
       <Menu
@@ -67,8 +67,12 @@ export const DashboardMenu = ({
         onClose={handleClose}
         variant="menu"
       >
-        {dashboards.map(({ name, code }) => (
-          <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
+        {dashboards.map(({ dashboardName, dashboardCode }) => (
+          <DashboardMenuItem
+            key={dashboardCode}
+            dashboardName={dashboardName}
+            onClose={handleClose}
+          />
         ))}
       </Menu>
     </>
