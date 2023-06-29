@@ -4,7 +4,12 @@
  */
 
 import { Analytic, DataElementDataService, DataElementMetadata, Event } from '../../types';
-import { dataElementTypes, dataGroupTypes, entities } from '../testUtils';
+import {
+  dataElementTypes,
+  dataGroupTypes,
+  dataServiceSyncGroupTypes,
+  entities,
+} from '../testUtils';
 
 // Data elements and groups share the same codes on purpose, to assert that
 // `DataBroker` can still distinguish them using their type
@@ -24,6 +29,11 @@ export const DATA_GROUPS = dataGroupTypes({
   DHIS_PROGRAM_01: { code: 'DHIS_PROGRAM_01', service_type: 'dhis' },
   DHIS_PROGRAM_02: { code: 'DHIS_PROGRAM_02', service_type: 'dhis' },
   TUPAIA_PROGRAM_01: { code: 'TUPAIA_PROGRAM_01', service_type: 'tupaia' },
+});
+
+export const SYNC_GROUPS = dataServiceSyncGroupTypes({
+  SYNC_GROUP_01: { code: 'SYNC_GROUP_01', data_group_code: 'SYNC_GROUP_01', service_type: 'dhis' },
+  SYNC_GROUP_02: { code: 'SYNC_GROUP_02', data_group_code: 'SYNC_GROUP_02', service_type: 'dhis' },
 });
 
 export interface MockServiceData {

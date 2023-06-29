@@ -9,8 +9,8 @@ import groupBy from 'lodash.groupby';
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { toArray } from '@tupaia/utils';
-import { createService } from './services';
-import { DataServiceResolver } from './services/DataServiceResolver';
+import { createService } from '../services';
+import { DataServiceResolver } from '../services/DataServiceResolver';
 import {
   Analytic,
   AnalyticResults as RawAnalyticResults,
@@ -22,9 +22,10 @@ import {
   ServiceType,
   SyncGroupResults,
   DataElement,
-} from './types';
-import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from './utils';
-import { DataServiceMapping } from './services/DataServiceMapping';
+} from '../types';
+import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
+import { DataServiceMapping } from '../services/DataServiceMapping';
+import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -48,13 +49,6 @@ interface AnalyticResults {
     dataElementCodeToName: Record<string, string>;
   };
 }
-
-type Merger<T, S = T> = (target: T | undefined, source: S) => T;
-
-type ResultMerger =
-  | Merger<AnalyticResults, RawAnalyticResults>
-  | Merger<EventResults>
-  | Merger<SyncGroupResults>;
 
 type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
@@ -100,7 +94,6 @@ export class DataBroker {
 
   private readonly models: DataBrokerModelRegistry;
   private readonly dataServiceResolver: DataServiceResolver;
-  private readonly resultMergers: Record<DataSourceType, ResultMerger>;
   private readonly fetchers: Record<DataSourceType, Fetcher>;
   private readonly permissionCheckers: Record<DataSourceType, PermissionChecker>;
 
@@ -108,11 +101,6 @@ export class DataBroker {
     this.context = context;
     this.models = getModelRegistry();
     this.dataServiceResolver = new DataServiceResolver(this.models);
-    this.resultMergers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
-      [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
-      [this.getDataSourceTypes().SYNC_GROUP]: this.mergeSyncGroups,
-    };
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
@@ -323,24 +311,15 @@ export class DataBroker {
     });
   }
 
-  public async pull(
-    dataSourceSpec: DataSourceSpec<'dataElement'>,
+  public async pullAnalytics(
+    dataElementCodes: string[],
     options: Record<string, unknown>,
-  ): Promise<RawAnalyticResults>;
-  public async pull(
-    dataSourceSpec: DataSourceSpec<'dataGroup'>,
-    options: Record<string, unknown>,
-  ): Promise<EventResults>;
-  public async pull(
-    dataSourceSpec: DataSourceSpec<'syncGroup'>,
-    options: Record<string, unknown>,
-  ): Promise<SyncGroupResults>;
-  public async pull(dataSourceSpec: DataSourceSpec, options: Record<string, unknown> = {}) {
-    const dataSources = await this.fetchDataSources(dataSourceSpec);
-    const { type } = dataSourceSpec;
+  ): Promise<AnalyticResults> {
+    const dataElements = await fetchDataElements(this.models, dataElementCodes);
     const validatedOptions = setOrganisationUnitCodes(options);
 
-    const pulls = await this.getPulls(dataSources, validatedOptions.organisationUnitCodes);
+    const pulls = await this.getPulls(dataElements, validatedOptions.organisationUnitCodes);
+    const type = this.getDataSourceTypes().DATA_ELEMENT;
     const nestedResults = await Promise.all(
       pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
         return this.pullForServiceAndType(
@@ -352,12 +331,64 @@ export class DataBroker {
         );
       }),
     );
-    const mergeResults = this.resultMergers[type];
 
-    return nestedResults.reduce(
-      // @ts-expect-error Current implementation is too dynamic to fit into elegant TS types
-      (results, resultsForService) => mergeResults(results, resultsForService),
-      undefined,
+    return (nestedResults as RawAnalyticResults[]).reduce(
+      (results, resultsForService) => this.mergeAnalytics(results, resultsForService),
+      EMPTY_ANALYTICS_RESULTS as AnalyticResults,
+    );
+  }
+
+  public async pullEvents(
+    dataGroupCodes: string[],
+    options: Record<string, unknown>,
+  ): Promise<EventResults> {
+    const dataGroups = await fetchDataGroups(this.models, dataGroupCodes);
+    const validatedOptions = setOrganisationUnitCodes(options);
+
+    const pulls = await this.getPulls(dataGroups, validatedOptions.organisationUnitCodes);
+    const type = this.getDataSourceTypes().DATA_GROUP;
+    const nestedResults = await Promise.all(
+      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
+        return this.pullForServiceAndType(
+          dataSourcesForThisPull,
+          validatedOptions,
+          type,
+          serviceType,
+          dataServiceMapping,
+        );
+      }),
+    );
+
+    return (nestedResults as EventResults[]).flat();
+  }
+
+  public async pullSyncGroupsResults(
+    syncGroupCodes: string[],
+    options: Record<string, unknown>,
+  ): Promise<SyncGroupResults> {
+    const syncGroups = await fetchSyncGroups(this.models, syncGroupCodes);
+    const validatedOptions = setOrganisationUnitCodes(options);
+
+    const pulls = await this.getPulls(syncGroups, validatedOptions.organisationUnitCodes);
+    const type = this.getDataSourceTypes().SYNC_GROUP;
+    const nestedResults = await Promise.all(
+      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
+        return this.pullForServiceAndType(
+          dataSourcesForThisPull,
+          validatedOptions,
+          type,
+          serviceType,
+          dataServiceMapping,
+        );
+      }),
+    );
+
+    return (nestedResults as SyncGroupResults[]).reduce(
+      (results, resultsForService) => ({
+        ...results,
+        ...resultsForService,
+      }),
+      {},
     );
   }
 
@@ -384,9 +415,9 @@ export class DataBroker {
   };
 
   private mergeAnalytics = (
-    target: AnalyticResults = EMPTY_ANALYTICS_RESULTS,
+    target: AnalyticResults,
     source: RawAnalyticResults,
-  ) => {
+  ): AnalyticResults => {
     const sourceNumAggregationsProcessed = source.numAggregationsProcessed || 0;
     const targetResults = target.results;
 
@@ -425,13 +456,6 @@ export class DataBroker {
       },
     };
   };
-
-  private mergeEvents = (target: EventResults = [], source: EventResults) => target.concat(source);
-
-  private mergeSyncGroups = (target: SyncGroupResults = {}, source: SyncGroupResults) => ({
-    ...target,
-    ...source,
-  });
 
   public async pullMetadata(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);

@@ -13,6 +13,7 @@ import {
   DATA_GROUPS,
   ENTITIES,
   MockServiceData,
+  SYNC_GROUPS,
 } from './DataBroker.fixtures';
 import { DataBrokerModelRegistry, DataSource, DataSourceType } from '../../types';
 
@@ -110,6 +111,9 @@ export const createModelsStub = () => {
       extraMethods: {
         getDataElementsInDataGroup: () => [],
       },
+    },
+    dataServiceSyncGroup: {
+      records: Object.values(SYNC_GROUPS),
     },
     entity: {
       records: Object.values(ENTITIES),
