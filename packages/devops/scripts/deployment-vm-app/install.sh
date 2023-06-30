@@ -11,13 +11,7 @@ cd "$SCRIPT_DIR"
 
 set -x
 
-# configure nginx
-DOMAIN_REGEX_ESCAPED=$(printf '%s\n' "$DOMAIN" | sed -e 's/[]\/$*.^[]/\\&/g');
-DOMAIN_REGEX_DOUBLE_ESCAPED=$(printf '%s\n' "$DOMAIN_REGEX_ESCAPED" | sed -e 's/[]\/$*.^[]/\\&/g');
-sed "s/__DOMAIN__/$DOMAIN/g" $HOME_DIR/configs/servers.template.conf > $HOME_DIR/configs/servers.conf
-sed -i "s/__DOMAIN_REGEX_ESCAPED__/$DOMAIN_REGEX_DOUBLE_ESCAPED/g" $HOME_DIR/configs/servers.conf
-sudo cp $HOME_DIR/configs/nginx.conf /etc/nginx/nginx.conf
-sudo cp $HOME_DIR/configs/servers.conf /etc/nginx/conf.d/servers.conf
+../deployment-common/configureNginx.sh
 
 # clone our repo
 mkdir -p $TUPAIA_DIR
@@ -30,7 +24,7 @@ git checkout ${GIT_BRANCH}
 git reset --hard origin/${GIT_BRANCH}
 
 # Yarn install
-yarn install --frozen-lockfile
+yarn install --immutable
 
 # Fetch env vars
 echo "Note: if lastpass fails, check email account $LASTPASS_EMAIL for a verification check"
