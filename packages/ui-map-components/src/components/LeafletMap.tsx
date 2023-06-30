@@ -23,7 +23,7 @@ import { LatLngBoundsExpression, Map as LeafletMapInterface } from 'leaflet';
 import { LeafletStyles } from './LeafletStyles';
 import { DEFAULT_BOUNDS } from '../constants';
 
-interface LeafletMapProps extends MapContainerProps {
+export interface LeafletMapProps extends MapContainerProps {
   onPositionChanged?: (
     center: MapContainerProps['center'],
     bounds: MapContainerProps['bounds'],

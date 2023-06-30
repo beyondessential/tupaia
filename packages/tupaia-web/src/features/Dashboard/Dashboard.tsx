@@ -16,7 +16,6 @@ import { StaticMap } from './StaticMap';
 import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
-import { DashboardItemType, DashboardType, DashboardsResponse } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -108,8 +107,7 @@ const useDashboards = () => {
 
   if (dashboards.length > 0) {
     activeDashboard =
-      dashboards.find((dashboard: DashboardType) => dashboard.dashboardName === dashboardName) ||
-      dashboards[0];
+      dashboards.find(dashboard => dashboard.dashboardName === dashboardName) || dashboards[0];
   }
 
   return { dashboards, activeDashboard };
