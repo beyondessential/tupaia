@@ -13,6 +13,6 @@ DB_SERVER_SSH_KEY=${2?Argument 2 - DB_SERVER_SSH_KEY required.}
 ssh -i $DB_SERVER_SSH_KEY ubuntu@$DB_SERVER_HOST 'mkdir -p /home/ubuntu/logs'
 
 # Setup machine
-ssh -i $DB_SERVER_SSH_KEY ubuntu@$DB_SERVER_HOST 'bash -l /home/ubuntu/deployment/setup.sh'
+ssh -i $DB_SERVER_SSH_KEY ubuntu@$DB_SERVER_HOST 'bash -l /home/ubuntu/deployment-vm-db/setup.sh'
 
 echo "Deployed"
