@@ -8,7 +8,7 @@
  * Rerun generate:models to recreate this file.
  */
 import { ReportConfig } from './models-extra';
-import { DashboardItemConfig } from './models-extra';
+import { DashboardReportConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -114,9 +114,9 @@ export interface Dashboard {
   'root_entity_code': string;
   'sort_order'?: number | null;
 }
-export interface DashboardItem {
+export interface DashboardReport {
   'code': string;
-  'config'?: DashboardItemConfig;
+  'config'?: DashboardReportConfig;
   'id': string;
   'legacy'?: boolean;
   'permission_group_ids'?: string[] | null;
@@ -568,7 +568,7 @@ export interface UserEntityPermission {
   'permission_group_id'?: string | null;
   'user_id'?: string | null;
 }
-export interface UserFavouriteDashboardItem {
+export interface UserFavouriteDashboardReport {
   'dashboard_item_id': string;
   'id': string;
   'user_id': string;

@@ -9,12 +9,12 @@ import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { ExpandMore, Layers } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { Entity } from '../../../types';
 import { useMapOverlayData, useMapOverlays } from '../../../api/queries';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
-import { useMapOverlayDates } from '../../../utils';
+import { useDateRanges } from '../../../utils';
 
 const MaxHeightContainer = styled.div`
   flex: 1;
@@ -136,7 +136,10 @@ export const DesktopMapOverlaySelector = ({
     projectCode,
     entityCode,
   );
-  const { startDate, endDate } = useMapOverlayDates(selectedOverlay);
+  const { startDate, endDate } = useDateRanges(
+    URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
+    selectedOverlay,
+  );
   const { data: mapOverlayData } = useMapOverlayData(
     projectCode,
     entityCode,

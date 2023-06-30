@@ -1,17 +1,16 @@
 import { useSearchParams } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import {
-  GRANULARITIES,
-  GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
+  GRANULARITIES,
   getDefaultDates,
   getLimits,
   momentToDateDisplayString,
+  GRANULARITIES_WITH_ONE_DATE,
   roundStartEndDates,
 } from '@tupaia/utils';
-import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
-
-import { SingleMapOverlayItem } from '../types';
+import { DashboardReportType, SingleMapOverlayItem } from '../types';
+import { DEFAULT_PERIOD_PARAM_STRING } from '../constants';
 
 // converts the date range to a URL period string
 const convertDateRangeToUrlPeriodString = (
@@ -74,27 +73,31 @@ const convertUrlPeriodStringToDateRange = (
 };
 
 /**
- * This handles the logic for setting and getting the dates for the dates with map overlays, including updating the URLSearchParams with the overlay period
+ * This handles the logic for setting and getting the dates for the dates with map overlays and reports, including updating the URLSearchParams
  */
-export const useMapOverlayDates = (selectedOverlay?: SingleMapOverlayItem) => {
+export const useDateRanges = (
+  urlParam: string,
+  selectedItem?: SingleMapOverlayItem | DashboardReportType,
+) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
-  if (!selectedOverlay) {
+  if (!selectedItem) {
     return {};
   }
 
-  const currentPeriodString = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
+  const currentPeriodString = urlSearchParams.get(urlParam) || '';
 
   const {
     periodGranularity,
     isTimePeriodEditable = true,
-    startDate: mapOverlayStartDate,
-    endDate: mapOverlayEndDate,
+    startDate: itemStartDate,
+    endDate: itemEndDate,
     datePickerLimits,
-  } = selectedOverlay;
+    weekDisplayFormat,
+  } = selectedItem;
 
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-    selectedOverlay,
+    selectedItem,
   ) as {
     startDate: Moment;
     endDate: Moment;
@@ -108,13 +111,12 @@ export const useMapOverlayDates = (selectedOverlay?: SingleMapOverlayItem) => {
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
 
   const { startDate: urlStartDate, endDate: urlEndDate } = convertUrlPeriodStringToDateRange(
-    currentPeriodString!,
+    currentPeriodString,
     periodGranularity,
   );
-  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
-  // and uses those rather than calculating it's own defaults
-  const startDate = urlStartDate || mapOverlayStartDate || defaultStartDate;
-  const endDate = urlEndDate || mapOverlayEndDate || defaultEndDate;
+
+  const startDate = urlStartDate || itemStartDate || defaultStartDate;
+  const endDate = urlEndDate || itemEndDate || defaultEndDate;
 
   const setDates = (_startDate: string, _endDate: string) => {
     const period = GRANULARITY_CONFIG[periodGranularity as keyof typeof GRANULARITY_CONFIG]
@@ -125,7 +127,12 @@ export const useMapOverlayDates = (selectedOverlay?: SingleMapOverlayItem) => {
       { startDate, endDate },
       periodGranularity,
     );
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, urlPeriodString);
+    urlSearchParams.set(urlParam, urlPeriodString);
+    setUrlSearchParams(urlSearchParams);
+  };
+
+  const onResetDate = () => {
+    urlSearchParams.delete(urlParam);
     setUrlSearchParams(urlSearchParams);
   };
 
@@ -137,5 +144,7 @@ export const useMapOverlayDates = (selectedOverlay?: SingleMapOverlayItem) => {
     maxEndDate,
     setDates,
     periodGranularity,
+    weekDisplayFormat,
+    onResetDate,
   };
 };

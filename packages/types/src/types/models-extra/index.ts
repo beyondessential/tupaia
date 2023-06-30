@@ -5,7 +5,7 @@
 
 export type { ReportConfig, StandardReportConfig, CustomReportConfig } from './report';
 export type {
-  DashboardItemConfig,
+  DashboardReportConfig,
   BarChartConfig,
   ComposedChartConfig,
   GaugeChartConfig,

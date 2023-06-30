@@ -4,8 +4,8 @@ import {
   Country,
   Entity as BaseEntity,
   Dashboard as BaseDashboard,
-  DashboardItem as BaseDashboardItem,
-  DashboardItemConfig,
+  DashboardReport as BaseDashboardReport,
+  DashboardReportConfig,
   MapOverlay,
   MapOverlayGroupRelation,
   EntityType,
@@ -36,10 +36,11 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
-  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType'> & {
+export type DashboardReportType = Omit<KeysToCamelCase<BaseDashboardReport>, 'config'> &
+  Omit<KeysToCamelCase<DashboardReportConfig>, 'viewType' | 'chartType', 'entityheader'> & {
     chartType?: string;
     viewType?: string;
+    entityHeader?: string;
   };
 
 export type DashboardsResponse = {
@@ -49,14 +50,10 @@ export type DashboardsResponse = {
   entityCode: string;
   entityName: string;
   entityType: string;
-  items: DashboardItemType[];
+  items: DashboardReportType[];
 };
 
-export type DashboardType = KeysToCamelCase<BaseDashboard> & {
-  items: DashboardItemType[];
-};
-
-export type DashboardCode = DashboardType['code'];
+export type DashboardCode = DashboardsResponse['dashboardCode'];
 
 export type TupaiaUrlParams = {
   projectCode?: ProjectCode;
@@ -64,8 +61,8 @@ export type TupaiaUrlParams = {
   dashboardCode?: DashboardCode;
 };
 
-export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
-export type DashboardName = BaseDashboard['name'];
+export type ReportDisplayProps = ViewContent & DashboardReportType;
+export type DashboardName = DashboardResponse['dashboardName'];
 
 export type SingleMapOverlayItem = KeysToCamelCase<
   Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>

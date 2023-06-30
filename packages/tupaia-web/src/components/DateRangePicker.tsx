@@ -22,7 +22,7 @@ const Wrapper = styled.div`
       margin: 0;
       padding: 0.2rem;
       text-transform: none;
-      font-size: inherit;
+      font-size: 0.875rem;
       color: ${({ theme }) => theme.palette.text.primary};
       svg {
         height: 1.3rem;
@@ -67,6 +67,7 @@ interface DateRangePickerProps {
   minDate?: string;
   maxDate?: string;
   onResetDate?: () => void;
+  weekDisplayFormat?: string;
 }
 
 export const DateRangePicker = ({
@@ -77,6 +78,7 @@ export const DateRangePicker = ({
   maxDate,
   onSetDates,
   onResetDate,
+  weekDisplayFormat,
 }: DateRangePickerProps) => {
   return (
     <Wrapper>
@@ -87,6 +89,7 @@ export const DateRangePicker = ({
         minDate={minDate}
         maxDate={maxDate}
         onSetDates={onSetDates}
+        weekDisplayFormat={weekDisplayFormat}
       />
       <ResetButton onClick={onResetDate}>Reset to default</ResetButton>
     </Wrapper>

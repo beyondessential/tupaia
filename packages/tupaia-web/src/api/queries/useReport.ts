@@ -3,23 +3,23 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-
+import { Moment } from 'moment';
 import { useQuery } from 'react-query';
 import { get } from '../api';
-import { DashboardType, DashboardItemType, EntityCode, ProjectCode } from '../../types';
+import { DashboardReportType, EntityCode, ProjectCode, DashboardsResponse } from '../../types';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
 
 type QueryParams = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
-  dashboardCode?: DashboardType['code'];
-  itemCode?: DashboardItemType['code'];
-  legacy?: DashboardItemType['legacy'];
-  startDate?: string | null;
-  endDate?: string | null;
+  dashboardCode?: DashboardsResponse['dashboardCode'];
+  itemCode?: DashboardReportType['code'];
+  legacy?: DashboardReportType['legacy'];
+  startDate?: Moment | string | null;
+  endDate?: Moment | string | null;
 };
 
-export const useReport = (reportCode: DashboardItemType['reportCode'], params: QueryParams) => {
+export const useReport = (reportCode: DashboardReportType['reportCode'], params: QueryParams) => {
   const { dashboardCode, projectCode, entityCode, itemCode, startDate, endDate, legacy } = params;
   const timeZone = getBrowserTimeZone();
   const formattedStartDate = formatDateForApi(startDate, null);

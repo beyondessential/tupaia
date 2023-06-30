@@ -9381,7 +9381,7 @@ export const MultiValueViewConfigSchema = {
 	]
 } 
 
-export const DashboardItemConfigSchema = {
+export const DashboardReportConfigSchema = {
 	"description": "The master list of viz types.\nPlease also keep ../../utils/vizTypes up to date when making changes",
 	"anyOf": [
 		{
@@ -16971,7 +16971,7 @@ export const DashboardSchema = {
 	]
 } 
 
-export const DashboardItemSchema = {
+export const DashboardReportSchema = {
 	"properties": {
 		"code": {
 			"type": "string"
@@ -26153,7 +26153,7 @@ export const UserEntityPermissionSchema = {
 	]
 } 
 
-export const UserFavouriteDashboardItemSchema = {
+export const UserFavouriteDashboardReportSchema = {
 	"properties": {
 		"dashboard_item_id": {
 			"type": "string"

@@ -7,7 +7,8 @@ import { useParams } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
 import { useMapOverlayData, useMapOverlays } from '../../../api/queries';
 import { DateRangePicker } from '../../../components';
-import { useMapOverlayDates } from '../../../utils';
+import { useDateRanges } from '../../../utils';
+import { URL_SEARCH_PARAMS } from '../../../constants';
 
 export const MapOverlayDatePicker = () => {
   const { projectCode, entityCode } = useParams();
@@ -20,7 +21,7 @@ export const MapOverlayDatePicker = () => {
     maxEndDate,
     setDates,
     periodGranularity,
-  } = useMapOverlayDates(selectedOverlay);
+  } = useDateRanges(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, selectedOverlay);
 
   const { isLoading: isLoadingMapOverlayData } = useMapOverlayData(
     projectCode,
