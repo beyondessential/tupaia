@@ -7,7 +7,7 @@ set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
 LOGS_DIR=$HOME_DIR/logs
-DEPLOYMENT_SCRIPTS=${TUPAIA_DIR}/packages/devops/scripts/deployment
+DEPLOYMENT_SCRIPTS=${TUPAIA_DIR}/packages/devops/scripts/deployment-aws
 
 # Add tag for CI/CD to use as a health check
 INSTANCE_ID=$(ec2metadata --instance-id)

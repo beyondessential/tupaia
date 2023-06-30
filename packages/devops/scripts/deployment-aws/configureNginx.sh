@@ -7,8 +7,9 @@ TUPAIA_DIR=$DIR/../../../..
 service nginx stop
 
 # Copy servers.conf to proper nginx location
-cp ${TUPAIA_DIR}/packages/devops/configs/nginx.conf /etc/nginx/nginx.conf
-cp ${TUPAIA_DIR}/packages/devops/configs/servers.conf /etc/nginx/conf.d/servers.conf
+DEFAULT_FRONTEND=tupaia-web
+USE_SSL=false
+${TUPAIA_DIR}/packages/devops/scripts/deployment-common/configureNginx.sh
 
 cp ${TUPAIA_DIR}/packages/devops/misc/error_page.html ${TUPAIA_DIR}/error_page.html
 
