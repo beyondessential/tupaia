@@ -94,7 +94,6 @@ export class DataBroker {
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
-      // @ts-ignore
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
     // Run permission checks in data broker so we only expose data the user is allowed to see
