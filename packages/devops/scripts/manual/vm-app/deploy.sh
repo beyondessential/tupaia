@@ -10,12 +10,12 @@ APP_SERVER_SSH_KEY=${2?Argument 2 - APP_SERVER_SSH_KEY required.}
 ./upload-vm-app.sh $APP_SERVER_HOST $APP_SERVER_SSH_KEY
 
 # Setup machine
-ssh -i $APP_SERVER_SSH_KEY ubuntu@$APP_SERVER_HOST 'bash -l /home/ubuntu/deployment/setup.sh > "/home/ubuntu/logs/setup_"$(date +"%Y-%m-%d:%H-%M-%S")".log"'
+ssh -i $APP_SERVER_SSH_KEY ubuntu@$APP_SERVER_HOST 'bash -l /home/ubuntu/deployment-vm-app/setup.sh > "/home/ubuntu/logs/setup_"$(date +"%Y-%m-%d:%H-%M-%S")".log"'
 
 # Install tupaia
-ssh -i $APP_SERVER_SSH_KEY ubuntu@$APP_SERVER_HOST 'bash -l /home/ubuntu/deployment/install.sh > "/home/ubuntu/logs/install_"$(date +"%Y-%m-%d:%H-%M-%S")".log"'
+ssh -i $APP_SERVER_SSH_KEY ubuntu@$APP_SERVER_HOST 'bash -l /home/ubuntu/deployment-vm-app/install.sh > "/home/ubuntu/logs/install_"$(date +"%Y-%m-%d:%H-%M-%S")".log"'
 
 # Start tupaia
-# ssh -i $APP_SERVER_SSH_KEY ubuntu@$APP_SERVER_HOST 'bash -l /home/ubuntu/deployment/start.sh > "/home/ubuntu/logs/start_"$(date +"%Y-%m-%d:%H-%M-%S")".log"'
+# ssh -i $APP_SERVER_SSH_KEY ubuntu@$APP_SERVER_HOST 'bash -l /home/ubuntu/deployment-vm-app/start.sh > "/home/ubuntu/logs/start_"$(date +"%Y-%m-%d:%H-%M-%S")".log"'
 
 echo "Deployed"
