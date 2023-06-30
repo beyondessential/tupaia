@@ -10,7 +10,7 @@ import { Typography } from '@material-ui/core';
 import { DateRangePicker, Modal } from '../../components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards } from '../../api/queries';
-import { DashboardReportContent } from './DashboardReportContent';
+import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
 import { useReport } from '../../api/queries/useReport';
 
@@ -52,9 +52,9 @@ const TitleWrapper = styled.div`
 `;
 
 /**
- * EnlargedDashboardReport is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
+ * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
  */
-export const EnlargedDashboardReport = () => {
+export const EnlargedDashboardItem = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
@@ -129,7 +129,7 @@ export const EnlargedDashboardReport = () => {
               />
             )}
           </TitleWrapper>
-          <DashboardReportContent
+          <DashboardItemContent
             viewContent={viewContent}
             isLoading={isLoadingReportData}
             error={isError ? error : null}

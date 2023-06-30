@@ -10,7 +10,7 @@ import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
 import { ReportDisplayProps } from '../../types';
 import { Chart } from '../Chart';
-import { ExpandReportButton } from './ExpandReportButton';
+import { ExpandItemButton } from './ExpandItemButton';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -54,7 +54,7 @@ const DisplayComponents = {
   chart: Chart,
 };
 
-interface DashboardReportContentProps {
+interface DashboardItemContentProps {
   viewContent: ReportDisplayProps;
   isEnlarged?: boolean;
   isLoading: boolean;
@@ -64,16 +64,16 @@ interface DashboardReportContentProps {
 }
 
 /**
- * DashboardReportContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
+ * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
-export const DashboardReportContent = ({
+export const DashboardItemContent = ({
   viewContent,
   isEnlarged,
   isLoading,
   error,
   onRetryFetch,
   isExpandable,
-}: DashboardReportContentProps) => {
+}: DashboardItemContentProps) => {
   const { name, reportCode, type, viewType } = viewContent;
 
   const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
@@ -99,7 +99,7 @@ export const DashboardReportContent = ({
   return (
     <>
       {DisplayComponent && <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />}
-      {isExpandable && <ExpandReportButton viewType={viewType} reportCode={reportCode} />}
+      {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>
   );
 };

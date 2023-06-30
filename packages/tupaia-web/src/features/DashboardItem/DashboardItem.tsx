@@ -9,9 +9,9 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { DashboardReportType } from '../../types';
+import { DashboardItemType } from '../../types';
 import { useDashboards, useReport } from '../../api/queries';
-import { DashboardReportContent } from './DashboardReportContent';
+import { DashboardItemContent } from './DashboardItemContent';
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,7 +47,7 @@ const Title = styled(Typography).attrs({
 /**
  * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
-export const DashboardReport = ({ report }: { report: DashboardReportType }) => {
+export const DashboardItem = ({ report }: { report: DashboardItemType }) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(report) as {
@@ -79,7 +79,7 @@ export const DashboardReport = ({ report }: { report: DashboardReportType }) => 
       {/** render the item in the dashboard */}
       <Container>
         {name && <Title>{name}</Title>}
-        <DashboardReportContent
+        <DashboardItemContent
           viewContent={viewContent}
           isLoading={isLoading}
           error={isError ? error : null}

@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { DashboardReportType } from '../../types';
+import { DashboardItemType } from '../../types';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
 
 const ExpandableButton = styled(Button).attrs({
@@ -60,23 +60,23 @@ const ZoomInIcon = styled(MuiZoomIcon)`
   }
 `;
 
-interface ExpandReportButtonProps {
-  reportCode: DashboardReportType['reportCode'];
-  viewType: DashboardReportType['viewType'];
+interface ExpandItemButtonProps {
+  reportCode: DashboardItemType['reportCode'];
+  viewType: DashboardItemType['viewType'];
 }
 
 /**
- * ExpandReportButton handles the 'expand' button for the dashboard item in both mobile and desktop sizes
+ * ExpandItemButton handles the 'expand' button for the dashboard item in both mobile and desktop sizes
  */
-export const ExpandReportButton = ({ reportCode, viewType }: ExpandReportButtonProps) => {
+export const ExpandItemButton = ({ reportCode, viewType }: ExpandItemButtonProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const handleExpandDashboardReport = () => {
+  const handleExpandDashboardItem = () => {
     urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, String(reportCode));
     setUrlSearchParams(urlSearchParams.toString());
   };
 
   return (
-    <ExpandableButton onClick={handleExpandDashboardReport}>
+    <ExpandableButton onClick={handleExpandDashboardItem}>
       <ZoomInIcon />
       <ExpandButtonText>
         {viewType === 'dataDownload' ? 'Expand to download data' : 'Expand chart'}

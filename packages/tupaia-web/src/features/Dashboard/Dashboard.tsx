@@ -15,7 +15,7 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardReport, EnlargedDashboardReport } from '../DashboardReport';
+import { DashboardItem, EnlargedDashboardItem } from '../DashboardItem';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -81,7 +81,7 @@ const Title = styled(Typography)`
   line-height: 1.4;
 `;
 
-const DashboardReportsWrapper = styled.div<{
+const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
   display: ${({ $isExpanded }) =>
@@ -127,13 +127,13 @@ export const Dashboard = () => {
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <DashboardReportsWrapper $isExpanded={isExpanded}>
+        <DashboardItemsWrapper $isExpanded={isExpanded}>
           {activeDashboard?.items.map(report => (
-            <DashboardReport key={report.code} report={report} />
+            <DashboardItem key={report.code} report={report} />
           ))}
-        </DashboardReportsWrapper>
+        </DashboardItemsWrapper>
       </ScrollBody>
-      <EnlargedDashboardReport />
+      <EnlargedDashboardItem />
     </Panel>
   );
 };
