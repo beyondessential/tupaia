@@ -7,7 +7,7 @@ import { useLocation, Link, useParams } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
-import { DashboardType, DashboardsResponse } from '../../types';
+import { DashboardsResponse } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -20,7 +20,7 @@ const MenuButton = styled(ButtonBase)`
 `;
 
 interface DashboardMenuItemProps {
-  dashboardName: DashboardType['name'];
+  dashboardName: DashboardsResponse['dashboardName'];
   onClose: () => void;
 }
 
@@ -42,7 +42,7 @@ export const DashboardMenu = ({
   dashboards,
 }: {
   activeDashboard: DashboardsResponse | null;
-  dashboards: DashboardType[];
+  dashboards: DashboardsResponse[];
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
