@@ -176,7 +176,7 @@ export const DesktopMapOverlaySelector = ({
                 <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
               ) : (
                 `Select an area with valid data. ${
-                  entityName && `${entityName} has no map overlays available.`
+                  entityName ? `${entityName} has no map overlays available.` : ''
                 }`
               )}
             </Typography>
