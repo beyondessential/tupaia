@@ -4,7 +4,11 @@
  */
 import { Express, NextFunction, Request, Response } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
-import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
+import {
+  createProxyMiddleware,
+  fixRequestBody,
+  Options as ProxyOptions,
+} from 'http-proxy-middleware';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { handleError } from './handleError';
 import { attachSession as defaultAttachSession } from '../orchestrator';
@@ -28,9 +32,11 @@ export const useForwardUnhandledRequests = (
   target: string,
   prefix?: string,
   attachSession: Middleware = defaultAttachSession,
+  router?: ProxyOptions['router'],
 ) => {
   const options = {
     target,
+    router,
     changeOrigin: true,
     pathRewrite: (path: string) => {
       if (prefix && path.startsWith(prefix)) {

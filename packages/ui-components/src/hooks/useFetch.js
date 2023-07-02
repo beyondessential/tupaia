@@ -5,10 +5,11 @@
 
 import { useCallback, useState } from 'react';
 
-export const useData = fetcher => {
+export const useFetch = fetcher => {
   const [data, setData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const isTriggered = data !== undefined || isLoading || error;
 
   const fetchData = useCallback(
     async (...args) => {
@@ -33,5 +34,5 @@ export const useData = fetcher => {
     setIsLoading(false);
   }, []);
 
-  return { data, isLoading, error, clearData, fetchData };
+  return { data, isLoading, error, isTriggered, clearData, fetchData };
 };
