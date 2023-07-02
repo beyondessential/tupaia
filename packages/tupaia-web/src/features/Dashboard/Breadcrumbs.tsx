@@ -12,8 +12,8 @@ import { useEntityAncestors } from '../../api/queries';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   position: absolute;
-  top: 5px;
-  left: 10px;
+  top: 0.3125rem;
+  left: 0.625rem;
   z-index: 1;
   font-size: 0.8rem;
   line-height: 1.2rem;
