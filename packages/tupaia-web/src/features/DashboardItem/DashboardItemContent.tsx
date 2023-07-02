@@ -114,7 +114,7 @@ export const DashboardItemContent = ({
           {name}
         </Title>
       )}
-      <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />
+      {DisplayComponent && <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>
   );

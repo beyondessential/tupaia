@@ -10,7 +10,9 @@ import {
   MapOverlayGroupRelation,
   EntityType,
 } from '@tupaia/types';
+import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
 import { ViewContent } from '@tupaia/ui-chart-components';
+import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 
 export type SingleProject = KeysToCamelCase<Project> & {
@@ -40,6 +42,16 @@ export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config
     chartType?: string;
     viewType?: string;
   };
+
+export type DashboardsResponse = {
+  dashboardName: string;
+  dashboardCode: string;
+  dashboardId: string;
+  entityCode: string;
+  entityName: string;
+  entityType: string;
+  items: DashboardItemType[];
+};
 
 export type DashboardType = KeysToCamelCase<BaseDashboard> & {
   items: DashboardItemType[];
@@ -74,12 +86,17 @@ export type MapOverlays = {
   mapOverlays: MapOverlayGroup[];
 };
 
-export type Entity = KeysToCamelCase<BaseEntity>;
+// re-type the coordinates to be what the ui-map-components expect, because in the types package they are any | null
+export type Entity = KeysToCamelCase<Omit<BaseEntity, 'region' | 'bounds'>> & {
+  region?: ActivePolygonProps['coordinates'];
+  bounds?: Position[];
+};
 /* Response Types */
 // Todo: replace with types from @tupaia/types
 
 export type EntityResponse = Entity & {
   parentCode: Entity['code'];
+  childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
 };

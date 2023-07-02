@@ -6,13 +6,13 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
-export type LegacyMapOverlayReportRequest = Request<{ reportCode: string }, any, any, any>;
+export type LegacyMapOverlayReportRequest = Request<{ mapOverlayCode: string }, any, any, any>;
 
 export class LegacyMapOverlayReportRoute extends Route<LegacyMapOverlayReportRequest> {
   public async buildResponse() {
     const { query, ctx } = this.req;
-    const { reportCode } = this.req.params;
+    const { mapOverlayCode } = this.req.params;
 
-    return ctx.services.webConfig.fetchMeasureData({ ...query, mapOverlayCode: reportCode });
+    return ctx.services.webConfig.fetchMeasureData(mapOverlayCode, query);
   }
 }

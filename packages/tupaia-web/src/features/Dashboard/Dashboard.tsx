@@ -13,10 +13,9 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards as useDashboardData, useEntitiesWithLocation } from '../../api/queries';
+import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
-import { DashboardItemType, DashboardType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -108,19 +107,18 @@ const useDashboards = () => {
 
   if (dashboards.length > 0) {
     activeDashboard =
-      dashboards.find((dashboard: DashboardType) => dashboard.name === dashboardName) ||
-      dashboards[0];
+      dashboards.find(dashboard => dashboard.dashboardName === dashboardName) || dashboards[0];
   }
 
   return { dashboards, activeDashboard };
 };
 
 export const Dashboard = () => {
-  const { projectCode, entityCode } = useParams();
+  const { entityCode } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const { dashboards, activeDashboard } = useDashboards();
-  const { data: entityData } = useEntitiesWithLocation(projectCode, entityCode);
-  const bounds = entityData?.bounds;
+  const { data: entity } = useEntity(entityCode);
+  const bounds = entity?.bounds;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -133,24 +131,24 @@ export const Dashboard = () => {
         <Breadcrumbs />
         <DashboardImageContainer>
           {bounds ? (
-            <StaticMap polygonBounds={bounds} />
+            <StaticMap bounds={bounds} />
           ) : (
-            <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
+            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
           )}
         </DashboardImageContainer>
         <TitleBar>
-          <Title variant="h3">{entityData?.name}</Title>
+          <Title variant="h3">{entity?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {/*{activeDashboard?.items.map((dashboardItem: DashboardItemType) => (*/}
-          {/*  <DashboardItem*/}
-          {/*    key={dashboardItem.code}*/}
-          {/*    dashboardItem={dashboardItem}*/}
-          {/*    dashboardCode={activeDashboard?.code}*/}
-          {/*  />*/}
-          {/*))}*/}
+          {activeDashboard?.items.map(dashboardItem => (
+            <DashboardItem
+              key={dashboardItem.code}
+              dashboardItem={dashboardItem}
+              dashboardCode={activeDashboard?.dashboardCode}
+            />
+          ))}
         </DashboardItemsWrapper>
       </ScrollBody>
     </Panel>
