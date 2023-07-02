@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Modal } from '../../components';
 import { DashboardItemType } from '../../types';
+import { URL_SEARCH_PARAMS } from '../../constants';
 
 const Wrapper = styled.div`
   width: 48rem;
@@ -35,10 +36,10 @@ export const EnlargedDashboardItem = ({ children, reportCode }: EnlargedDashboar
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   // On close, remove the report search param from the url
   const handleCloseModal = () => {
-    urlSearchParams.delete('report');
+    urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT);
     setUrlSearchParams(urlSearchParams.toString());
   };
-  const isOpen = urlSearchParams.get('report') === reportCode;
+  const isOpen = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT) === reportCode;
 
   return (
     <Modal isOpen={isOpen} onClose={handleCloseModal}>

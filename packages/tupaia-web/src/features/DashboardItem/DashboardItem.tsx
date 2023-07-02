@@ -19,6 +19,7 @@ const Wrapper = styled.div`
   margin-bottom: 0.5rem;
   width: 100%;
   max-width: 100%;
+  min-height: 6.25rem;
   position: relative;
   padding: 1rem 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
@@ -85,7 +86,7 @@ export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemPro
     <Wrapper>
       {/** render the item in the dashboard */}
       <Container>
-        <Content />
+        <Content isEnlarged={false} />
       </Container>
       {/** render modal for enlarged item, if is expandable */}
       {isExpandable && (
