@@ -16971,7 +16971,7 @@ export const DashboardSchema = {
 	]
 } 
 
-export const DashboardReportSchema = {
+export const DashboardItemSchema = {
 	"properties": {
 		"code": {
 			"type": "string"
@@ -26153,7 +26153,7 @@ export const UserEntityPermissionSchema = {
 	]
 } 
 
-export const UserFavouriteDashboardReportSchema = {
+export const UserFavouriteDashboardItemSchema = {
 	"properties": {
 		"dashboard_item_id": {
 			"type": "string"
