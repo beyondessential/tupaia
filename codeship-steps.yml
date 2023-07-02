@@ -35,12 +35,6 @@
               command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
             - name: Test psss-server
               command: './packages/devops/scripts/ci/testBackend.sh psss-server'
-            - name: Test report-server
-              command: './packages/devops/scripts/ci/testBackend.sh report-server'
-            - name: Test tupaia-web-server
-              command: './packages/devops/scripts/ci/testBackend.sh tupaia-web-server'
-            - name: Test web-config-server
-              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
         - type: parallel
           name: Test batch 2
           steps:
@@ -65,6 +59,12 @@
               command: './packages/devops/scripts/ci/testBackend.sh entity-server'
             - name: Test meditrak-app-server
               command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
+            - name: Test report-server
+              command: './packages/devops/scripts/ci/testBackend.sh report-server'
+            - name: Test tupaia-web-server
+              command: './packages/devops/scripts/ci/testBackend.sh tupaia-web-server'
+            - name: Test web-config-server
+              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
 
 - name: Deploy changes
   service: deployment
