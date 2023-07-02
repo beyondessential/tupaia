@@ -38,7 +38,7 @@ export type {
  * The master list of viz types.
  * Please also keep ../../utils/vizTypes up to date when making changes
  */
-export type DashboardReportConfig =
+export type DashboardItemConfig =
   | GaugeChartConfig
   | ComposedChartConfig
   | BarChartConfig

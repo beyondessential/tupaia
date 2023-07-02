@@ -18,13 +18,13 @@
   "enumNameCasing": "pascal",
   "typeOverrides": {
     "public.report.config": "ReportConfig",
-    "public.dashboard_item.config": "DashboardReportConfig"
+    "public.dashboard_item.config": "DashboardItemConfig"
   },
   "template": "config/models/template.handlebars",
   "custom": {
     "imports": {
       "ReportConfig": "./models-extra",
-      "DashboardReportConfig": "./models-extra"
+      "DashboardItemConfig": "./models-extra"
     }
   }
 }

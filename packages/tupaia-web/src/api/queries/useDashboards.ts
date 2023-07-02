@@ -23,7 +23,7 @@ export const useDashboards = (
 
   let activeDashboard = null;
 
-  if (dashboards.length > 0) {
+  if (dashboards.length > 0 && dashboardName) {
     activeDashboard =
       dashboards.find(
         (dashboard: DashboardsResponse) => dashboard.dashboardName === dashboardName,

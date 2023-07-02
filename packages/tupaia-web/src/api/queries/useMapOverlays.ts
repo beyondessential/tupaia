@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery, UseQueryResult } from 'react-query';
 import { get } from '../api';
 import { EntityCode, MapOverlayGroup, ProjectCode, SingleMapOverlayItem } from '../../types';
-import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../constants';
+import { URL_SEARCH_PARAMS } from '../../constants';
 
 const mapOverlayByCode = (
   mapOverlayGroups: MapOverlayGroup[] = [],
@@ -36,7 +36,6 @@ interface UseMapOverlaysResult {
   errorLoadingMapOverlays: UseQueryResult['error'];
   selectedOverlayCode: string | null;
   selectedOverlay?: SingleMapOverlayItem;
-  updateSelectedMapOverlay: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -46,7 +45,7 @@ export const useMapOverlays = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
 ): UseMapOverlaysResult => {
-  const [urlSearchParams, setUrlParams] = useSearchParams();
+  const [urlSearchParams] = useSearchParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
     async () => {
@@ -62,13 +61,6 @@ export const useMapOverlays = (
 
   const selectedOverlay = codedOverlays[selectedOverlayCode!];
 
-  const updateSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
-    // when overlay changes, reset period to default
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
-    setUrlParams(urlSearchParams);
-  };
-
   return {
     hasMapOverlays: !!data?.mapOverlays?.length,
     mapOverlayGroups: data?.mapOverlays,
@@ -76,6 +68,5 @@ export const useMapOverlays = (
     errorLoadingMapOverlays: error,
     selectedOverlayCode,
     selectedOverlay,
-    updateSelectedMapOverlay,
   };
 };

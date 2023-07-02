@@ -9381,7 +9381,7 @@ export const MultiValueViewConfigSchema = {
 	]
 } 
 
-export const DashboardReportConfigSchema = {
+export const DashboardItemConfigSchema = {
 	"description": "The master list of viz types.\nPlease also keep ../../utils/vizTypes up to date when making changes",
 	"anyOf": [
 		{

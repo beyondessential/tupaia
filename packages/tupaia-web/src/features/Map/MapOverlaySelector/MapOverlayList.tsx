@@ -17,6 +17,7 @@ import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
+import { updateSelectedMapOverlay } from '../../../utils';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -98,10 +99,7 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
  */
 export const MapOverlayList = () => {
   const { projectCode, entityCode } = useParams();
-  const { mapOverlayGroups, selectedOverlayCode, updateSelectedMapOverlay } = useMapOverlays(
-    projectCode,
-    entityCode,
-  );
+  const { mapOverlayGroups, selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
 
   return (
     <RadioGroup

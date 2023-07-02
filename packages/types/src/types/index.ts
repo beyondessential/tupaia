@@ -8,7 +8,7 @@ export * from './models';
 export {
   StandardReportConfig,
   CustomReportConfig,
-  DashboardReportConfig,
+  DashboardItemConfig,
   BarChartConfig,
   ComposedChartConfig,
   GaugeChartConfig,

@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import { FlexColumn } from '@tupaia/ui-components';
 import { DateRangePicker, Modal } from '../../components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards } from '../../api/queries';
@@ -22,9 +23,7 @@ const Wrapper = styled.div<{
   width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '48rem')};
 `;
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
+const Container = styled(FlexColumn)`
   width: 100%;
   height: 100%;
   .recharts-responsive-container {
@@ -45,9 +44,7 @@ const Title = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-const TitleWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+const TitleWrapper = styled(FlexColumn)`
   align-items: center;
 `;
 
