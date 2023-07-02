@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { createModelsStub } from '@tupaia/database';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 import { ENTITIES } from './fixtures';
 import { DataTableServerModelRegistry } from '../../../types';
-import { createModelsStub } from '@tupaia/database';
 
 const modelsStub = createModelsStub({
   entity: { records: ENTITIES },

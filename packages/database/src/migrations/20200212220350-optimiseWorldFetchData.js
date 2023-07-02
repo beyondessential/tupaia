@@ -8,13 +8,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     update entity set region = (select st_simplify(region::geometry, 0.01) as region from entity where code = 'FJ') where code = 'FJ';
     update entity set region = (select st_simplify(region::geometry, 0.01) as region from entity where code = 'NR') where code = 'NR';
@@ -36,7 +36,7 @@ exports.up = function(db) {
 `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

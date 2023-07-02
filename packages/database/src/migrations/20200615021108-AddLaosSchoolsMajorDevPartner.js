@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -37,17 +37,17 @@ const VALUES = [
 ];
 
 const GROUPS = {
-  'SchDP_AEAL': { value: 'SchDP_AEAL', operator: '=' },
-  'SchDP_CRS': { value: 'SchDP_CRS', operator: '=' },
-  'SchDP_HII': { value: 'SchDP_HII', operator: '=' },
-  'SchDP_Plan': { value: 'SchDP_Plan', operator: '=' },
-  'SchDP_RtR': { value: 'SchDP_RtR', operator: '=' },
-  'SchDP_UNIC': { value: 'SchDP_UNIC', operator: '=' },
-  'SchDP_WB': { value: 'SchDP_WB', operator: '=' },
-  'SchDP_WC': { value: 'SchDP_WC', operator: '=' },
-  'SchDP_WFP': { value: 'SchDP_WFP', operator: '=' },
-  'SchDP_WR': { value: 'SchDP_WR', operator: '=' },
-  'SchDP_WV': { value: 'SchDP_WV', operator: '=' },
+  SchDP_AEAL: { value: 'SchDP_AEAL', operator: '=' },
+  SchDP_CRS: { value: 'SchDP_CRS', operator: '=' },
+  SchDP_HII: { value: 'SchDP_HII', operator: '=' },
+  SchDP_Plan: { value: 'SchDP_Plan', operator: '=' },
+  SchDP_RtR: { value: 'SchDP_RtR', operator: '=' },
+  SchDP_UNIC: { value: 'SchDP_UNIC', operator: '=' },
+  SchDP_WB: { value: 'SchDP_WB', operator: '=' },
+  SchDP_WC: { value: 'SchDP_WC', operator: '=' },
+  SchDP_WFP: { value: 'SchDP_WFP', operator: '=' },
+  SchDP_WR: { value: 'SchDP_WR', operator: '=' },
+  SchDP_WV: { value: 'SchDP_WV', operator: '=' },
 };
 
 const DATA_ELEMENTS = {
@@ -142,12 +142,12 @@ const insertOverlay = (db, isDistrictLevel) => {
   });
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const provinceOverlay = await insertOverlay(db, false);
   const districtOverlay = await insertOverlay(db, true);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(
     `DELETE FROM "mapOverlay" WHERE "id" IN ('${MAP_OVERLAY_ID_PROVINCE}', '${MAP_OVERLAY_ID_DISTRICT}')`,
   );

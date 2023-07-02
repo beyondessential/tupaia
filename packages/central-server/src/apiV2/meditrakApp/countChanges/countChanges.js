@@ -6,7 +6,7 @@
 import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 import { allowNoPermissions } from '../../../permissions';
-import { buildMeditrakSyncQuery } from "../meditrakSync";
+import { buildMeditrakSyncQuery } from '../meditrakSync';
 
 const handleNonLegacyRequest = async (req, res) => {
   const { models } = req;

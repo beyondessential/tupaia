@@ -14,7 +14,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const createConfig = (prefix) => ({
+const createConfig = prefix => ({
   rows: [
     {
       category: `Priority Medicines for Women`,

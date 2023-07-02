@@ -32,19 +32,3 @@ export const getIsChartData = ({ chartType, data }) => {
 
   return data && data.length > 0;
 };
-
-export const getNoDataString = ({ noDataMessage, source, startDate, endDate }) => {
-  if (noDataMessage) {
-    return noDataMessage;
-  }
-
-  if (source === 'mSupply') {
-    return 'Requires mSupply';
-  }
-
-  if (startDate && endDate) {
-    return `No data for ${startDate} to ${endDate}`;
-  }
-
-  return 'No data for selected dates';
-};

@@ -94,7 +94,7 @@ export class ApiResultTranslator {
         event: `weather_${entity.code}_${entry.datetime}`,
         orgUnit: entity.code,
         orgUnitName: entity.name,
-        eventDate: eventDate,
+        eventDate,
         dataValues: {},
       };
 

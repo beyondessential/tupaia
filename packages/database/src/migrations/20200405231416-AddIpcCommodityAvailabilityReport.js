@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -54,12 +54,12 @@ const DASHBOARD_GROUP = {
   code: 'TO_Covid_Facility',
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
   await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';`);
   await db.runSql(`DELETE FROM "dashboardGroup" WHERE code = '${DASHBOARD_GROUP.code}';`);
 };

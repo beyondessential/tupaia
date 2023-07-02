@@ -15,8 +15,6 @@
     "build:src": "npm run --prefix ../../ package:build:react-scripts",
     "build:library": "rm -rf dist && npm run --prefix ../../ package:build:js",
     "build-dev": "npm run build:library",
-    "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
-    "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -27,10 +25,11 @@
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
     "start-admin-panel-server": "yarn workspace @tupaia/admin-panel-server start-dev",
+    "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
     "test": "echo No tests",
     "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
     "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
-    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-admin-panel-server"
+    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-admin-panel-server start-data-table-server"
   },
   "browserslist": [
     "defaults"
@@ -80,7 +79,6 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "cypress-file-upload": "^5.0.8",
     "npm-run-all": "^4.1.5"
   }
 }

@@ -72,7 +72,7 @@ export const sumValuesPerQuarterByOrgUnit = async (queryConfig, aggregator, dhis
     aggregator.aggregationTypes.SUM_EACH_QUARTER,
   );
 
-  export const finalValuesPerQuarterByOrgUnit = async (queryConfig, aggregator, dhisApi) =>
+export const finalValuesPerQuarterByOrgUnit = async (queryConfig, aggregator, dhisApi) =>
   valuesPerPeriodByOrgUnit(
     queryConfig,
     aggregator,

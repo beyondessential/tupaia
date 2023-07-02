@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -102,7 +102,7 @@ const deleteDataSources = async (db, surveyCode) => {
 
 const LAOS_SCHOOLS_SURVEY_GROUP = 'School Surveys';
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const surveys = await selectSurveysBySurveyGroup(db, LAOS_SCHOOLS_SURVEY_GROUP);
   for (let i = 0; i < surveys.length; i++) {
     const surveyCode = surveys[i].code;
@@ -111,7 +111,7 @@ exports.up = async function(db) {
   }
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   // Down migration does NOT take it back to previous state
   // instead deletes entries for all Laos School surveys
   const surveys = await selectSurveysBySurveyGroup(db, LAOS_SCHOOLS_SURVEY_GROUP);

@@ -108,7 +108,7 @@ export class UserBar extends Component {
     }
   }
 
-   /* Don't let the user close a dialog if it is a password reset form as the one time login token is used to load the form and so they need to do the password reset now */
+  /* Don't let the user close a dialog if it is a password reset form as the one time login token is used to load the form and so they need to do the password reset now */
   handleCloseDialog = () => {
     const { dialogPage, onCloseUserDialog, resetToHome } = this.props;
     if (dialogPage === DIALOG_PAGE_RESET_PASSWORD) return;
