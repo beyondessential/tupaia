@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
@@ -11,13 +11,13 @@ import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import * as COLORS from '../../theme/colors';
-import { useApi } from '../../utilities/ApiProvider';
 
 const Container = styled(PageBody)`
   overflow: auto;
 `;
 
 const StyledHorizontalTree = styled(HorizontalTree)`
+  height: 930px;
   margin-top: 40px;
   margin-bottom: 40px;
   max-height: 870px;
@@ -28,24 +28,14 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   }
 `;
 
-export const TreeResourcePage = ({ endpoint, nodeKey, title, getHeaderEl }) => {
-  const api = useApi();
+export const TreeResourcePage = ({ title, getHeaderEl, fetchRoot, fetchBranch }) => {
   const HeaderPortal = usePortalWithCallback(<Header title={title} />, getHeaderEl);
-
-  const fetchData = useCallback(
-    async (rootNode, node) => {
-      const url = rootNode ? `${endpoint}/${rootNode[nodeKey]}/${node[nodeKey]}` : endpoint;
-      const { body } = await api.get(url);
-      return body;
-    },
-    [api],
-  );
 
   return (
     <>
       {HeaderPortal}
       <Container>
-        <StyledHorizontalTree fetchData={fetchData} />
+        <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
       </Container>
       <LogsModal />
     </>
@@ -54,11 +44,7 @@ export const TreeResourcePage = ({ endpoint, nodeKey, title, getHeaderEl }) => {
 
 TreeResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  endpoint: PropTypes.func.isRequired,
-  nodeKey: PropTypes.string,
   title: PropTypes.string.isRequired,
-};
-
-TreeResourcePage.defaultProps = {
-  nodeKey: 'id',
+  fetchRoot: PropTypes.func.isRequired,
+  fetchBranch: PropTypes.func.isRequired,
 };

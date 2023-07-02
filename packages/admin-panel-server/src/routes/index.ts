@@ -6,7 +6,6 @@
 
 export * from './dashboardVisualisations';
 export * from './mapOverlayVisualisations';
-export * from './FetchEntityHierarchyTreeRoute';
 export * from './FetchHierarchyEntitiesRoute';
 export * from './FetchReportPreviewDataRoute';
 export * from './FetchReportSchemasRoute';

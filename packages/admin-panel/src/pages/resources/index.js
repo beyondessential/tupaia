@@ -6,7 +6,7 @@
 export { CountriesPage } from './CountriesPage';
 export { EntitiesPage } from './EntitiesPage';
 export { EntityTypesPage } from './EntityTypesPage';
-export { EntityRelationsPage } from './EntityRelationsPage';
+export { EntityHierarchiesPage } from './EntityHierarchiesPage';
 export { PermissionsPage } from './PermissionsPage';
 export { PermissionGroupsPage } from './PermissionGroupsPage';
 export {

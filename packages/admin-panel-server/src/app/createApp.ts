@@ -11,7 +11,7 @@ import {
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
-import { upload, verifyBESAdminAccess } from '../middleware';
+import { upload } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
@@ -19,8 +19,6 @@ import {
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
-  FetchEntityHierarchyTreeRequest,
-  FetchEntityHierarchyTreeRoute,
   FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
   FetchMapOverlayVisualisationRequest,
@@ -47,7 +45,10 @@ import {
 } from '../routes';
 import { authHandlerProvider } from '../auth';
 
-const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
+const {
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
+  ENTITY_API_URL = 'http://localhost:8050/v1',
+} = process.env;
 
 /**
  * Set up express server with middleware,
@@ -58,16 +59,6 @@ export function createApp() {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('user', handleWith(UserRoute))
-    .get<FetchEntityHierarchyTreeRequest>(
-      'entityHierarchyTree',
-      verifyBESAdminAccess,
-      handleWith(FetchEntityHierarchyTreeRoute),
-    )
-    .get<FetchEntityHierarchyTreeRequest>(
-      'entityHierarchyTree/:hierarchyName/:entityCode',
-      verifyBESAdminAccess,
-      handleWith(FetchEntityHierarchyTreeRoute),
-    )
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
       handleWith(FetchHierarchyEntitiesRoute),
@@ -145,7 +136,10 @@ export function createApp() {
     )
     .build();
 
-  useForwardUnhandledRequests(app, CENTRAL_API_URL);
+  useForwardUnhandledRequests(app, CENTRAL_API_URL, undefined, undefined, {
+    '/hierarchy': ENTITY_API_URL,
+    '/hierarchies': ENTITY_API_URL,
+  });
 
   return app;
 }
