@@ -101,12 +101,17 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
   );
 };
 
-const useSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
+const useSelectedMapOverlay = () => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
-  urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
-  // when overlay changes, reset period to default
-  urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
-  setUrlParams(urlSearchParams);
+
+  const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
+    // when overlay changes, reset period to default
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+    setUrlParams(urlSearchParams);
+  };
+
+  return { onChangeMapOverlay };
 };
 
 /**
@@ -115,13 +120,14 @@ const useSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
 export const MapOverlayList = () => {
   const { projectCode, entityCode } = useParams();
   const { mapOverlayGroups, selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
+  const { onChangeMapOverlay } = useSelectedMapOverlay();
 
   return (
     <RadioGroup
       aria-label="Map overlays"
       name="map-overlays"
       value={selectedOverlayCode}
-      onChange={useSelectedMapOverlay}
+      onChange={onChangeMapOverlay}
     >
       {mapOverlayGroups
         .filter(item => item.name)
