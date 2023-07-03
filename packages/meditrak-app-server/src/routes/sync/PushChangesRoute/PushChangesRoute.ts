@@ -10,15 +10,22 @@ import { addSurveyImage } from './addSurveyImage';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
 import { translateSurveyResponseObject } from './translateInboundSurveyResponse';
 import { populateData } from './populateData';
+import { addSurveyFile } from './addSurveyFile';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
 const ADD_SURVEY_IMAGE = 'AddSurveyImage';
+const ADD_SURVEY_FILE = 'AddSurveyFile';
 
 const VALID_ACTIONS = [SUBMIT_SURVEY_RESPONSE, ADD_SURVEY_IMAGE];
 
 const addSurveyImageValidator = yup.object().shape({
   id: yup.string().required(),
+  data: yup.string().required(),
+});
+
+const addSurveyFileValidator = yup.object().shape({
+  fileName: yup.string().required(),
   data: yup.string().required(),
 });
 
@@ -66,6 +73,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
             const { id, data } = surveyImage;
             await addSurveyImage(id, data);
           }
+          break;
+        }
+        case ADD_SURVEY_FILE: {
+          const { fileName, data } = addSurveyFileValidator.validateSync(payload);
+          await addSurveyFile(fileName, data);
           break;
         }
         default:

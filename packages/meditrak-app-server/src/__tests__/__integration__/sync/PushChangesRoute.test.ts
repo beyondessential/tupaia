@@ -48,10 +48,17 @@ const generateDummyAnswer = (questionNumber?: number) => ({
   question_id: getQuestionId(questionNumber),
 });
 
-const mockS3Bucket: Record<string, string> = {};
+const mockS3Bucket: { images: Record<string, string>; files: Record<string, string> } = {
+  images: {},
+  files: {},
+};
+
 const S3ClientMock = {
   uploadImage: (data: string, id: string) => {
-    mockS3Bucket[id] = data;
+    mockS3Bucket.images[id] = data;
+  },
+  uploadFile: (fileName: string, data: string) => {
+    mockS3Bucket.files[fileName] = data;
   },
 };
 
@@ -214,12 +221,34 @@ describe('changes (POST)', () => {
           headers: {
             Authorization: authHeader,
           },
-          body: [imageAction],
+          body: [imageAction, imageAction],
         });
         expect(imagePostResponse.statusCode).toEqual(200);
 
-        const imageString = mockS3Bucket[id];
+        const imageString = mockS3Bucket.images[id];
         expect(imageString).toEqual(TEST_IMAGE_DATA);
+      });
+    });
+
+    describe('Survey responses containing files', () => {
+      it('correctly uploads a file', async () => {
+        const fileName = `${generateId()}_file.png`;
+        const fileResponseObject = { fileName, data: TEST_IMAGE_DATA };
+
+        const fileAction = {
+          action: 'AddSurveyFile',
+          payload: fileResponseObject,
+        };
+        const filePostResponse = await app.post('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          body: [fileAction],
+        });
+        expect(filePostResponse.statusCode).toEqual(200);
+
+        const fileString = mockS3Bucket.files[fileName];
+        expect(fileString).toEqual(TEST_IMAGE_DATA);
       });
     });
 
