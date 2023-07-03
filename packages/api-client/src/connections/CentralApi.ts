@@ -10,12 +10,9 @@ import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
 const stringifyParams = (queryParameters: Record<string, unknown> = {}) => {
-  const { fields, filter, columns, sort, ...restOfParameters } = queryParameters;
+  const { filter, columns, sort, ...restOfParameters } = queryParameters;
 
   const translatedParams = restOfParameters;
-  if (fields) {
-    translatedParams.fields = JSON.stringify(fields);
-  }
   if (filter) {
     translatedParams.filter = JSON.stringify(filter);
   }
