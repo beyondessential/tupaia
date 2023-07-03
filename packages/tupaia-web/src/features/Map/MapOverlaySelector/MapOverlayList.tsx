@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useParams } from 'react-router';
 import {
   Accordion,
   AccordionDetails,
@@ -16,6 +17,7 @@ import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
+import { updateSelectedMapOverlay } from '../../../utils';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -102,7 +104,8 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
  * This is the parent list of all the map overlays available to pick from
  */
 export const MapOverlayList = () => {
-  const { mapOverlayGroups, selectedOverlayCode, updateSelectedMapOverlay } = useMapOverlays();
+  const { projectCode, entityCode } = useParams();
+  const { mapOverlayGroups, selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
 
   return (
     <RadioGroup

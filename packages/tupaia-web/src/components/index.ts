@@ -10,3 +10,4 @@ export { CheckboxField } from './CheckboxField';
 export { CheckboxList } from './CheckboxList';
 export { RouterButton, RouterLink } from './RouterButton';
 export { Form } from './Form';
+export { DateRangePicker } from './DateRangePicker';

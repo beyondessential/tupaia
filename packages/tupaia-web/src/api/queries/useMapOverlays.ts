@@ -3,10 +3,10 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { ChangeEvent } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, UseQueryResult } from 'react-query';
 import { get } from '../api';
-import { MapOverlayGroup, SingleMapOverlayItem } from '../../types';
+import { EntityCode, MapOverlayGroup, ProjectCode, SingleMapOverlayItem } from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
 const mapOverlayByCode = (
@@ -36,15 +36,16 @@ interface UseMapOverlaysResult {
   errorLoadingMapOverlays: UseQueryResult['error'];
   selectedOverlayCode: string | null;
   selectedOverlay?: SingleMapOverlayItem;
-  updateSelectedMapOverlay: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 /**
  * Gets the map overlays and returns useful utils and values associated with these
  */
-export const useMapOverlays = (): UseMapOverlaysResult => {
-  const [urlSearchParams, setUrlParams] = useSearchParams();
-  const { projectCode, entityCode } = useParams();
+export const useMapOverlays = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+): UseMapOverlaysResult => {
+  const [urlSearchParams] = useSearchParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
     async () => {
@@ -60,11 +61,6 @@ export const useMapOverlays = (): UseMapOverlaysResult => {
 
   const selectedOverlay = codedOverlays[selectedOverlayCode!];
 
-  const updateSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
-    setUrlParams(urlSearchParams);
-  };
-
   return {
     hasMapOverlays: !!data?.mapOverlays?.length,
     mapOverlayGroups: data?.mapOverlays,
@@ -72,6 +68,5 @@ export const useMapOverlays = (): UseMapOverlaysResult => {
     errorLoadingMapOverlays: error,
     selectedOverlayCode,
     selectedOverlay,
-    updateSelectedMapOverlay,
   };
 };
