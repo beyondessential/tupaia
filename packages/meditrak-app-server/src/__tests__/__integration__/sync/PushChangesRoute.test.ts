@@ -55,9 +55,16 @@ const mockS3Bucket: { images: Record<string, string>; files: Record<string, stri
 
 const S3ClientMock = {
   uploadImage: (data: string, id: string) => {
+    if (mockS3Bucket.images[id]) {
+      throw new Error(`Image ${id} already exists`);
+    }
+
     mockS3Bucket.images[id] = data;
   },
   uploadFile: (fileName: string, data: string) => {
+    if (mockS3Bucket.files[fileName]) {
+      throw new Error(`File ${fileName} already exists`);
+    }
     mockS3Bucket.files[fileName] = data;
   },
 };
@@ -221,7 +228,7 @@ describe('changes (POST)', () => {
           headers: {
             Authorization: authHeader,
           },
-          body: [imageAction, imageAction],
+          body: [imageAction],
         });
         expect(imagePostResponse.statusCode).toEqual(200);
 

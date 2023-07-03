@@ -46,7 +46,6 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
     const changes = this.req.body;
 
     const surveyResponses = [];
-    const surveyImages: { id: string; data: string }[] = [];
 
     for (const { action, payload } of changes) {
       switch (action) {
@@ -61,18 +60,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
             validatedSurveyResponse,
           );
           surveyResponses.push(surveyResponseWithPopulatedData);
-          // Submit survey responses
-          await this.req.ctx.services.central.createSurveyResponses(surveyResponses);
           break;
         }
         case ADD_SURVEY_IMAGE: {
-          const validatedPayload = addSurveyImageValidator.validateSync(payload);
-          surveyImages.push(validatedPayload);
-          // Add survey images
-          for (const surveyImage of surveyImages) {
-            const { id, data } = surveyImage;
-            await addSurveyImage(id, data);
-          }
+          const { id, data } = addSurveyImageValidator.validateSync(payload);
+          await addSurveyImage(id, data);
           break;
         }
         case ADD_SURVEY_FILE: {
@@ -84,6 +76,9 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           throw new ValidationError(`${action} is not a supported change action`);
       }
     }
+
+    // Submit survey responses
+    await this.req.ctx.services.central.createSurveyResponses(surveyResponses);
 
     return { message: 'Successfully integrated changes into server database' };
   }
