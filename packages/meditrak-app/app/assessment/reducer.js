@@ -59,7 +59,7 @@ const stateChanges = {
     }),
   [EXTRA_PROPS_CHANGE]: ({ componentIndex, newProps }, state) =>
     updateComponentState(state, state.currentScreenIndex, componentIndex, component => {
-      return { ...component, extraProps: { ...component.extraProps, ...newProps } };
+      return { ...component, extraProps: { ...newProps } };
     }),
   [ASSESSMENT_RESET]: () => defaultState,
   [SURVEY_SCREEN_ERROR_MESSAGE_CHANGE]: ({ message, screenIndex }, state) => {
