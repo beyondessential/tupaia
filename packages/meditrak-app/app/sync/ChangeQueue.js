@@ -48,12 +48,12 @@ export class ChangeQueue {
    * @return {array}     An array of the top changes in the queue within that threshold
    *                     or with one record in excess.
    */
-  nextWithinThreshold(threshold) {
+  async nextWithinThreshold(threshold) {
     const allChanges = this.database.objects('Change').sorted('timestamp');
     const changesWithinThreshold = [];
     let size = 0;
     for (const change of allChanges) {
-      const record = change.generateSyncJson(this.database);
+      const record = await change.generateSyncJson(this.database);
       const currentRecordSize = JSON.stringify(record).length;
       if (size + currentRecordSize > threshold && changesWithinThreshold.length > 0) {
         // threshold is breached and at least one record
@@ -61,6 +61,13 @@ export class ChangeQueue {
       }
       size += currentRecordSize;
       changesWithinThreshold.push({ change, payload: record });
+      const { action } = change;
+      if (action === 'AddSurveyFile') {
+        // If our files are quite large, and we load another one to see if it crosses our threshold,
+        // the Android app might run out of memory and crash. The workaround is to only ever
+        // upload one file at a time.
+        return changesWithinThreshold;
+      }
     }
     return changesWithinThreshold;
   }

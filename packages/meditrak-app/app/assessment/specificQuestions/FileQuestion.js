@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import DocumentPicker from 'react-native-document-picker';
@@ -13,13 +13,36 @@ import { DEFAULT_PADDING } from '../../globalStyles';
 import { Button, Text } from '../../widgets';
 import { getFilenameFromUri } from '../../utilities';
 
+/*
+ * Limit the max file size to:
+ * - Tupaia max request size configured in nginx
+ * - A reasonable limit for Android to avoid out of memory issues (around 20 MB as a guess)
+ */
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+const MAX_FILE_SIZE_HUMAN = '20 MB';
+
+const humanFileSize = sizeInBytes => {
+  const i = sizeInBytes === 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+  return `${(sizeInBytes / 1024 ** i).toFixed(2) * 1} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
+};
+
 const renderFilePickerButton = (onPress, label) => (
   <Button title={label} onPress={onPress} style={localStyles.button} />
 );
 
-const DumbFileQuestion = ({ onPressChooseFile, onPressRemoveFile, filename, errorMessage }) => (
+const DumbFileQuestion = ({
+  onPressChooseFile,
+  onPressRemoveFile,
+  filename,
+  errorMessage,
+  sizeInBytes,
+}) => (
   <View style={localStyles.container}>
-    {filename !== null && <Text style={localStyles.selectedFile}>{filename}</Text>}
+    {filename !== null && (
+      <Text style={localStyles.selectedFile}>
+        {filename} ({humanFileSize(sizeInBytes)})
+      </Text>
+    )}
     {filename === null && errorMessage && <Text>{errorMessage}</Text>}
     <View style={localStyles.actions}>
       {renderFilePickerButton(onPressChooseFile, filename === null ? 'Attach file' : 'Change file')}
@@ -33,11 +56,13 @@ DumbFileQuestion.propTypes = {
   onPressRemoveFile: PropTypes.func.isRequired,
   filename: PropTypes.string,
   errorMessage: PropTypes.string,
+  sizeInBytes: PropTypes.number,
 };
 
 DumbFileQuestion.defaultProps = {
   filename: null,
   errorMessage: null,
+  sizeInBytes: null,
 };
 
 const BUTTON_SPACING = 5;
@@ -61,8 +86,11 @@ const localStyles = StyleSheet.create({
   },
 });
 
-export const FileQuestion = ({ answer, extraProps, onChangeAnswer }) => {
+export const FileQuestion = ({ answer, onChangeAnswer }) => {
   const filename = getFilenameFromUri(answer);
+
+  const [error, setError] = useState(null);
+  const [sizeInBytes, setSizeInBytes] = useState(null);
 
   const handleOpenFilePicker = async () => {
     try {
@@ -87,20 +115,40 @@ export const FileQuestion = ({ answer, extraProps, onChangeAnswer }) => {
 
       const { fileCopyUri } = filePickerResponse;
 
+      // Check file size
+      // Note: from DocumentPicker docs: android does not guarantee the name or size will be present or accurate on the file picker response, so we read the newly copied file in the app documents which is a normal file
+      const { size: newSizeInBytes } = await RNFS.stat(fileCopyUri);
+      if (newSizeInBytes > MAX_FILE_SIZE_BYTES) {
+        setSizeInBytes(null);
+        setError(
+          `Error: file is too large: ${humanFileSize(
+            newSizeInBytes,
+          )}. Max file size: ${MAX_FILE_SIZE_HUMAN}`,
+        );
+        onChangeAnswer(null);
+        return;
+      }
+
       onChangeAnswer(fileCopyUri);
+      setSizeInBytes(newSizeInBytes);
     } catch (e) {
       onChangeAnswer(null);
+      setSizeInBytes(null);
+      setError(null);
     }
   };
 
   const handleRemoveFile = () => {
     onChangeAnswer(null);
+    setError(null);
+    setSizeInBytes(null);
   };
 
   return (
     <DumbFileQuestion
       filename={filename}
-      errorMessage={extraProps.errorMessage}
+      errorMessage={error}
+      sizeInBytes={sizeInBytes}
       onPressChooseFile={handleOpenFilePicker}
       onPressRemoveFile={handleRemoveFile}
     />
@@ -110,10 +158,8 @@ export const FileQuestion = ({ answer, extraProps, onChangeAnswer }) => {
 FileQuestion.propTypes = {
   answer: PropTypes.string,
   onChangeAnswer: PropTypes.func.isRequired,
-  extraProps: PropTypes.object,
 };
 
 FileQuestion.defaultProps = {
   answer: null,
-  extraProps: {},
 };
