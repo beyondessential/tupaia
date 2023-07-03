@@ -22,3 +22,4 @@ export {
   MultiEntityRelationshipsRoute,
   MultiEntityRelationshipsRequest,
 } from './relationships';
+export { EntitySearchRoute, EntitySearchRequest } from './EntitySearchRoute';

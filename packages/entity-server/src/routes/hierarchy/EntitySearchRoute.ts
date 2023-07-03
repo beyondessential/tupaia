@@ -13,20 +13,33 @@ import {
   EntityResponse,
 } from './types';
 
-export type MultiEntityDescendantsRequest = MultiEntityRequest<
+export type EntitySearchRequest = MultiEntityRequest<
   MultiEntityRequestParams,
   EntityResponse[],
   MultiEntityRequestBody,
   EntityRequestQuery & { searchString: string }
 >;
-export class MultiEntityDescendantsRoute extends Route<MultiEntityDescendantsRequest> {
+export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
-    // const { hierarchyId, entities, fields, field, filter } = this.req.ctx;
+    const { /* hierarchyId, */ fields, field /* filter */ } = this.req.ctx;
+    const { searchString: rawString } = this.req.query;
+    const searchString = rawString.toLowerCase();
+    const entities = await this.req.models.entity.find(
+      {
+        name: {
+          comparator: 'ilike',
+          comparisonValue: `%${searchString}%`,
+        },
+        // TODO: Add filter for "in hierarchy"
+      },
+      {
+        // Put names that begin with the search string first
+        // Then sort alphabetically within the two groups
+        rawSort: `STARTS_WITH(LOWER(name),'${searchString}') DESC, name ASC`,
+        // TODO: Limit and offset
+      },
+    );
 
-    // SELECT * FROM entity WHERE POSITION('hau' IN LOWER(name)) > 0 ORDER BY POSITION('hau' IN LOWER(name)) = 1 DESC, name ASC;
-    // LOWER works to ignore case, remove that if we're doing a case sensitive search
-
-    return [];
-    // return formatEntitiesForResponse(this.req.models, this.req.ctx, entitiesToUse, field || fields);
+    return formatEntitiesForResponse(this.req.models, this.req.ctx, entities, field || fields);
   }
 }
