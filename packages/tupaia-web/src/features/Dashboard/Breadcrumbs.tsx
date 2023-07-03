@@ -50,11 +50,11 @@ export const Breadcrumbs = () => {
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
-  const breadcrumbs = data.map(({ code, name }) => ({ code, name })).reverse();
+  const breadcrumbs = data.map(({ code, name }: { code: string, name: string }) => ({ code, name })).reverse();
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      {breadcrumbs.map(({ code: entityCode, name: entityName }, index) => {
+      {breadcrumbs.map(({ code: entityCode, name: entityName }: { code: string, name: string }, index: number) => {
         const last = index === breadcrumbs.length - 1;
         return last ? (
           <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
