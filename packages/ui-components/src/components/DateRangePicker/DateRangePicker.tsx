@@ -7,14 +7,15 @@
 import React, { useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import MuiButton from '@material-ui/core/Button';
-import MuiButtonGroup from '@material-ui/core/ButtonGroup';
-import MuiIconButton from '@material-ui/core/IconButton';
+import {
+  DialogProps,
+  Typography,
+  CircularProgress,
+  Button as MuiButton,
+  ButtonGroup as MuiButtonGroup,
+  IconButton as MuiIconButton,
+} from '@material-ui/core';
+import { DateRange, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
 import { useDateRangePicker } from './useDateRangePicker';
 import { DatePickerDialog } from './DatePickerDialog';
@@ -68,9 +69,11 @@ const Label = styled(Typography)`
   background-color: white;
   border-left-width: 2px;
   cursor: auto;
-  margin-left: 0 !important;
   button + & {
     border: 1px solid ${props => props.theme.palette.grey['400']};
+  }
+  &.MuiButtonGroup-groupedOutlinedHorizontal {
+    margin-left: 0;
   }
 `;
 
@@ -83,6 +86,7 @@ interface DateRangePickerProps {
   onSetDates?: (startDate: string, endDate: string) => void;
   isLoading?: boolean;
   weekDisplayFormat?: WeekDisplayFormatType;
+  dialogProps?: DialogProps;
 }
 
 export const DateRangePicker = ({
@@ -94,6 +98,7 @@ export const DateRangePicker = ({
   onSetDates = () => {},
   isLoading = false,
   weekDisplayFormat,
+  dialogProps,
 }: DateRangePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -133,7 +138,7 @@ export const DateRangePicker = ({
               onClick={() => changePeriod(-1)}
               disabled={isLoading || prevDisabled}
             >
-              <KeyboardArrowLeftIcon />
+              <KeyboardArrowLeft />
             </Button>
           )}
           <Label aria-label="active-date">{labelText}</Label>
@@ -144,12 +149,12 @@ export const DateRangePicker = ({
               onClick={() => changePeriod(1)}
               disabled={isLoading || nextDisabled}
             >
-              <KeyboardArrowRightIcon />
+              <KeyboardArrowRight />
             </Button>
           )}
         </MuiButtonGroup>
         <IconButton onClick={handleOpen}>
-          {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
+          {isLoading ? <CircularProgress size={21} /> : <DateRange />}
         </IconButton>
       </FlexStart>
       <DatePickerDialog
@@ -162,6 +167,7 @@ export const DateRangePicker = ({
         onClose={handleClose}
         onSetNewDates={handleDateChange}
         weekDisplayFormat={weekDisplayFormat}
+        muiDialogProps={dialogProps}
       />
     </>
   );

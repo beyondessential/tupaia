@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { DialogProps, Typography } from '@material-ui/core';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,
@@ -176,6 +176,7 @@ type DatePickerDialogProps = {
   maxDate?: string;
   onSetNewDates: (startDate: string, endDate: string) => void;
   weekDisplayFormat?: string;
+  muiDialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
 };
 
 export const DatePickerDialog = ({
@@ -188,6 +189,7 @@ export const DatePickerDialog = ({
   maxDate,
   onSetNewDates,
   weekDisplayFormat,
+  muiDialogProps = {},
 }: DatePickerDialogProps) => {
   const momentStartDate = moment(startDate);
   const momentEndDate = moment(endDate);
@@ -231,7 +233,7 @@ export const DatePickerDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} maxWidth="sm" id="date-picker-dialog">
+    <Dialog open={isOpen} maxWidth="sm" id="date-picker-dialog" {...muiDialogProps}>
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
         {!isSingleDate && (
