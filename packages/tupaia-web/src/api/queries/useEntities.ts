@@ -6,7 +6,8 @@ import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
 import { EntityResponse } from '../../types';
 import { get } from '../api';
-import { DEFAULT_BOUNDS } from '../../constants';
+
+type EntitiesResponse = EntityResponse[];
 
 export const useEntities = (
   projectCode?: string,
@@ -19,7 +20,7 @@ export const useEntities = (
 
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
-    async (): Promise<EntityResponse> => {
+    async (): Promise<EntitiesResponse> => {
       return get(`entities/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,

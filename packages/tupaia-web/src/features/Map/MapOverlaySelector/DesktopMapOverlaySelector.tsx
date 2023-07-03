@@ -11,7 +11,7 @@ import { ExpandMore, Layers } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { Entity } from '../../../types';
-import { useMapOverlayData, useMapOverlays } from '../../../api/queries';
+import { useMapOverlayReport, useMapOverlays } from '../../../api/queries';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
 import { useDateRanges } from '../../../utils';
@@ -140,10 +140,10 @@ export const DesktopMapOverlaySelector = ({
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
   );
-  const { data: mapOverlayData } = useMapOverlayData(
+  const { data: mapOverlayData } = useMapOverlayReport(
     projectCode,
     entityCode,
-    selectedOverlayCode,
+    selectedOverlay?.code,
     selectedOverlay?.legacy,
     {
       startDate,

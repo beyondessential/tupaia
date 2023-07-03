@@ -2,25 +2,35 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import { useQuery } from 'react-query';
+import { momentToDateString } from '@tupaia/utils';
 import { get } from '../api';
-import { EntityCode, ProjectCode } from '../../types';
-import { MapOverlay } from '@tupaia/types';
+import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
 
 export const useMapOverlayReport = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
-  mapOverlayCode?: MapOverlay['code'] | null,
+  mapOverlayCode?: SingleMapOverlayItem['code'],
+  legacy?: boolean,
+  params?: {
+    startDate?: string;
+    endDate?: string;
+  },
 ) => {
-  const query = useQuery(
-    ['legacyMapOverlayReport', projectCode, entityCode, mapOverlayCode],
+  // convert moment dates to date strings for the endpoint to use
+  const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
+  const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
+  const endpoint = legacy ? 'legacyMapOverlayReport' : 'report';
+  return useQuery(
+    [endpoint, projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
-      return get(`legacyMapOverlayReport/${mapOverlayCode}`, {
+      return get(`${endpoint}/${mapOverlayCode}`, {
         params: {
           organisationUnitCode: entityCode,
           projectCode,
-          shouldShowAllParentCountryResults: projectCode !== entityCode,
+          shouldShowAllParentCountryResults: projectCode !== entityCode, // TODO: figure out the logic here for shouldShowAllParentCountryResults
+          startDate,
+          endDate,
         },
       });
     },
@@ -28,6 +38,4 @@ export const useMapOverlayReport = (
       enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
     },
   );
-
-  return { ...query };
 };

@@ -69,12 +69,10 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
   );
 };
 
-interface PolygonLayerProps {
-  entities: EntityResponse[];
-  entityCode: EntityCode;
-}
+export const PolygonLayer = () => {
+  const { projectCode, entityCode } = useParams();
+  const { data: entities = [] } = useEntitiesWithLocation(projectCode, entityCode);
 
-export const PolygonLayer = ({ entities, entityCode }: PolygonLayerProps) => {
   if (!entities || entities.length === 0) {
     return null;
   }
