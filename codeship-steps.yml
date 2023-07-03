@@ -27,8 +27,6 @@
           steps:
             - name: Test admin-panel-server
               command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
-            - name: Test central-server
-              command: './packages/devops/scripts/ci/testBackend.sh central-server'
             - name: Test data-table-server
               command: './packages/devops/scripts/ci/testBackend.sh data-table-server'
             - name: Test lesmis-server
@@ -65,6 +63,8 @@
               command: './packages/devops/scripts/ci/testFrontend.sh tupaia-web'
             - name: Test web-config-server
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: Test central-server
+              command: './packages/devops/scripts/ci/testBackend.sh central-server'
 
 - name: Deploy changes
   service: deployment
