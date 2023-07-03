@@ -86,7 +86,7 @@ interface DateRangePickerProps {
   onSetDates?: (startDate: string, endDate: string) => void;
   isLoading?: boolean;
   weekDisplayFormat?: WeekDisplayFormatType;
-  dialogProps?: DialogProps;
+  dialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
 }
 
 export const DateRangePicker = ({
