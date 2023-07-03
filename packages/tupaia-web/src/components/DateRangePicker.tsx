@@ -59,6 +59,24 @@ const ResetButton = styled(TextButton)`
   }
 `;
 
+const DialogPaperComponent = styled.div`
+  h3 {
+    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  }
+  .MuiSelect-root {
+    color: ${({ theme }) => theme.palette.text.primary};
+    &:focus {
+      background-color: transparent;
+    }
+  }
+  .MuiInputBase-root {
+    background-color: transparent;
+  }
+  button {
+    text-transform: none;
+  }
+`;
+
 interface DateRangePickerProps {
   startDate?: Moment;
   endDate?: Moment;
@@ -90,6 +108,9 @@ export const DateRangePicker = ({
         maxDate={maxDate}
         onSetDates={onSetDates}
         weekDisplayFormat={weekDisplayFormat}
+        dialogProps={{
+          PaperComponent: DialogPaperComponent,
+        }}
       />
       <ResetButton onClick={onResetDate}>Reset to default</ResetButton>
     </Wrapper>

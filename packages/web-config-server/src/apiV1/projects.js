@@ -22,12 +22,14 @@ const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
   return accessRequests.length > 0;
 };
 // work out the entity to zoom to and open the dashboard of when this project is selected
-function getHomeEntity(project, entitiesWithAccess, allEntities) {
+function getHomeEntityCode(project, entitiesWithAccess) {
+  if (entitiesWithAccess.length === 1) {
+    // only one entity (country) inside, return that code
+    return entitiesWithAccess[0].code;
+  }
   // more than one child entity, return the code of the project entity, which should have bounds
-  const homeEntityId =
-    entitiesWithAccess.length === 1 ? entitiesWithAccess[0].id : project.entity_ids[0];
-  // return the entire entity object
-  return allEntities.find(e => e.id === homeEntityId);
+  // encompassing all children
+  return project.entity_code;
 }
 
 export async function buildProjectDataForFrontend(project, req) {
@@ -55,7 +57,7 @@ export async function buildProjectDataForFrontend(project, req) {
   // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
   // If a single entity is available, zoom to that, otherwise show the project entity
   const hasAccess = entitiesWithAccess.length > 0;
-  const homeEntity = getHomeEntity(project, entitiesWithAccess, entities);
+  const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
 
   // Only want to check pending if no access
   const { userId } = req.userJson;
@@ -75,7 +77,7 @@ export async function buildProjectDataForFrontend(project, req) {
     names,
     hasAccess,
     hasPendingAccess,
-    homeEntityCode: homeEntity.code,
+    homeEntityCode,
     dashboardGroupName,
     defaultMeasure,
     config,
