@@ -20,7 +20,7 @@ export const useEntities = (
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
     async (): Promise<EntityResponse> => {
-      const entityData = await get(`entities/${projectCode}/${entityCode}`, {
+      return get(`entities/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,
           fields: [
@@ -36,14 +36,6 @@ export const useEntities = (
         },
         ...axiosConfig,
       });
-
-      // Manually overwrite explore bounds. If we're looking at the explore page, we want to set the
-      // default bounds as explore bounds include
-      if (entityCode === 'explore') {
-        return { ...entityData, bounds: DEFAULT_BOUNDS };
-      }
-
-      return entityData;
     },
     {
       enabled,
