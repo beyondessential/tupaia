@@ -13,6 +13,7 @@ export const theme = createMuiTheme(
       },
       background: {
         default: '#262834', // Dark blue background
+        paper: '#262834', // Dark blue to match background
       },
       text: {
         secondary: '#9ba0a6',
