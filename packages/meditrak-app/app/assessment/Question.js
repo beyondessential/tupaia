@@ -93,7 +93,7 @@ const mergeProps = ({ hasValidationErrorMessage, ...restOfStateProps }, { dispat
         dispatch(validateComponent(screenIndex, componentIndex, validationCriteria, newAnswer));
       }
     },
-    onChangeExtraProps: newProps => dispatch(changeExtraProps(id, newProps)),
+    onChangeExtraProps: newProps => dispatch(changeExtraProps(componentIndex, newProps)),
   };
 };
 
