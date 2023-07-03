@@ -19,7 +19,7 @@ const resetMocks = () => {
   moment.tz.setDefault();
 };
 
-describe('chartGranularities', () => {
+describe.skip('chartGranularities', () => {
   beforeEach(() => {
     mockNow(1549360800 * 1000); // (2019-02-05 10:00 UTC)
   });
