@@ -3,20 +3,20 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-
+import { Moment } from 'moment';
 import { useQuery } from 'react-query';
 import { get } from '../api';
-import { DashboardType, DashboardItemType, EntityCode, ProjectCode } from '../../types';
+import { DashboardItemType, EntityCode, ProjectCode, DashboardsResponse } from '../../types';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
 
 type QueryParams = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
-  dashboardCode?: DashboardType['code'];
+  dashboardCode?: DashboardsResponse['dashboardCode'];
   itemCode?: DashboardItemType['code'];
   legacy?: DashboardItemType['legacy'];
-  startDate?: string | null;
-  endDate?: string | null;
+  startDate?: Moment | string | null;
+  endDate?: Moment | string | null;
 };
 
 export const useReport = (reportCode: DashboardItemType['reportCode'], params: QueryParams) => {

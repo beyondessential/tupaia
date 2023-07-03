@@ -14,6 +14,7 @@ import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
 import { ViewContent } from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
+import { GRANULARITY_CONFIG } from '@tupaia/utils';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -38,9 +39,10 @@ export type ProjectCode = Project['code'];
 export type EntityCode = Entity['code'];
 
 export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
-  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType'> & {
+  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType', 'entityheader'> & {
     chartType?: string;
     viewType?: string;
+    entityHeader?: string;
   };
 
 export type DashboardsResponse = {
@@ -53,11 +55,7 @@ export type DashboardsResponse = {
   items: DashboardItemType[];
 };
 
-export type DashboardType = KeysToCamelCase<BaseDashboard> & {
-  items: DashboardItemType[];
-};
-
-export type DashboardCode = DashboardType['code'];
+export type DashboardCode = DashboardsResponse['dashboardCode'];
 
 export type TupaiaUrlParams = {
   projectCode?: ProjectCode;
@@ -65,14 +63,17 @@ export type TupaiaUrlParams = {
   dashboardCode?: DashboardCode;
 };
 
-export type DashboardItemDisplayProps = ViewContent & DashboardItemType;
-export type DashboardName = BaseDashboard['name'];
+export type ReportDisplayProps = ViewContent & DashboardItemType;
+export type DashboardName = DashboardResponse['dashboardName'];
 
 export type SingleMapOverlayItem = KeysToCamelCase<
   Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
 > & {
   measureLevel?: string;
   displayType: string;
+  periodGranularity?: keyof typeof GRANULARITY_CONFIG;
+  startDate?: string;
+  endDate?: string;
 };
 
 export type MapOverlayGroup = {

@@ -13,9 +13,9 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
+import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardItem } from '../DashboardItem';
+import { DashboardItem, EnlargedDashboardItem } from '../DashboardItem';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -99,24 +99,10 @@ const DashboardImageContainer = styled.div`
   }
 `;
 
-const useDashboards = () => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: dashboards = [] } = useDashboardData(projectCode, entityCode);
-
-  let activeDashboard = null;
-
-  if (dashboards.length > 0) {
-    activeDashboard =
-      dashboards.find(dashboard => dashboard.dashboardName === dashboardName) || dashboards[0];
-  }
-
-  return { dashboards, activeDashboard };
-};
-
 export const Dashboard = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode, dashboardName } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { dashboards, activeDashboard } = useDashboards();
+  const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { data: entity } = useEntity(entityCode);
   const bounds = entity?.bounds;
 
@@ -142,15 +128,12 @@ export const Dashboard = () => {
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map(dashboardItem => (
-            <DashboardItem
-              key={dashboardItem.code}
-              dashboardItem={dashboardItem}
-              dashboardCode={activeDashboard?.dashboardCode}
-            />
+          {activeDashboard?.items.map(report => (
+            <DashboardItem key={report.code} report={report} />
           ))}
         </DashboardItemsWrapper>
       </ScrollBody>
+      <EnlargedDashboardItem />
     </Panel>
   );
 };

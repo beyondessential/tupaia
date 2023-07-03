@@ -5,11 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Moment } from 'moment';
 import { useParams } from 'react-router';
+import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { DashboardCode, DashboardItemType } from '../../types';
-import { useReport } from '../../api/queries';
-import { EnlargedDashboardItem } from './EnlargedDashboardItem';
+import { DashboardItemType } from '../../types';
+import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 
 const Wrapper = styled.div`
@@ -33,67 +34,59 @@ const Container = styled.div`
   align-items: stretch;
 `;
 
-interface DashboardItemProps {
-  dashboardItem: DashboardItemType;
-  dashboardCode: DashboardCode;
-}
+const Title = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  font-size: 1rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  text-align: center;
+  margin: 0.3rem 0 1rem 0;
+  line-height: 1.4;
+`;
 
 /**
  * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
-export const DashboardItem = ({ dashboardItem, dashboardCode }: DashboardItemProps) => {
-  const { projectCode, entityCode } = useParams();
-  const { legacy, code, reportCode, viewType, type } = dashboardItem;
-
-  // get dates from the dashboard config, where applicable
-  const { startDate, endDate } = getDefaultDates(dashboardItem) as {
-    startDate?: string | null;
-    endDate?: string | null;
+export const DashboardItem = ({ report }: { report: DashboardItemType }) => {
+  const { projectCode, entityCode, dashboardName } = useParams();
+  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(report) as {
+    startDate?: Moment;
+    endDate?: Moment;
   };
-  // query for the report data
-  const { data: reportData, isLoading, error, isError, refetch } = useReport(reportCode, {
+  const { data: reportData, isLoading, isError, error, refetch } = useReport(report.reportCode, {
     projectCode,
     entityCode,
-    dashboardCode,
-    itemCode: code,
-    legacy,
-    startDate,
-    endDate,
+    dashboardCode: activeDashboard?.dashboardCode,
+    itemCode: report.code,
+    startDate: defaultStartDate,
+    endDate: defaultEndDate,
+    legacy: report.legacy,
   });
 
   const viewContent = {
-    ...dashboardItem,
+    ...report,
     ...reportData,
   };
 
-  const { periodGranularity } = viewContent;
+  const { periodGranularity, type, viewType, name } = report;
 
   const isExpandable =
     periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
-
-  const Content = ({ isEnlarged = false }: { isEnlarged?: boolean }) => (
-    <DashboardItemContent
-      viewContent={viewContent}
-      isEnlarged={isEnlarged}
-      isLoading={isLoading}
-      error={isError ? error : null}
-      onRetryFetch={refetch}
-      isExpandable={isExpandable && !isEnlarged}
-    />
-  );
 
   return (
     <Wrapper>
       {/** render the item in the dashboard */}
       <Container>
-        <Content isEnlarged={false} />
+        {name && <Title>{name}</Title>}
+        <DashboardItemContent
+          viewContent={viewContent}
+          isLoading={isLoading}
+          error={isError ? error : null}
+          onRetryFetch={refetch}
+          isExpandable={isExpandable}
+        />
       </Container>
-      {/** render modal for enlarged item, if is expandable */}
-      {isExpandable && (
-        <EnlargedDashboardItem reportCode={reportCode}>
-          <Content isEnlarged />
-        </EnlargedDashboardItem>
-      )}
     </Wrapper>
   );
 };
