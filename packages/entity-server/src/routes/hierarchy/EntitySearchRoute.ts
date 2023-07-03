@@ -14,15 +14,16 @@ import {
 } from './types';
 
 export type EntitySearchRequest = MultiEntityRequest<
-  MultiEntityRequestParams,
+  MultiEntityRequestParams & { searchString: string },
   EntityResponse[],
   MultiEntityRequestBody,
-  EntityRequestQuery & { searchString: string }
+  EntityRequestQuery & { pageSize?: number; page?: number }
 >;
 export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
     const { /* hierarchyId, */ fields, field /* filter */ } = this.req.ctx;
-    const { searchString: rawString } = this.req.query;
+    const { searchString: rawString } = this.req.params;
+    const { pageSize, page } = this.req.query;
     const searchString = rawString.toLowerCase();
     const entities = await this.req.models.entity.find(
       {
@@ -36,7 +37,8 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
         // Put names that begin with the search string first
         // Then sort alphabetically within the two groups
         rawSort: `STARTS_WITH(LOWER(name),'${searchString}') DESC, name ASC`,
-        // TODO: Limit and offset
+        limit: pageSize,
+        offset: page && pageSize ? page * pageSize : undefined,
       },
     );
 

@@ -72,7 +72,7 @@ export function createApp(db = new TupaiaDatabase()) {
         handleWith(MultiEntityRelationshipsRoute),
       )
       .post<EntitySearchRequest>(
-        'hierarchy/:hierarchyName/entitySearch',
+        'hierarchy/:hierarchyName/entitySearch/:searchString',
         attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(EntitySearchRoute),
