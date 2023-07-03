@@ -132,10 +132,7 @@ export const DesktopMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
-  const { hasMapOverlays, selectedOverlayCode, selectedOverlay } = useMapOverlays(
-    projectCode,
-    entityCode,
-  );
+  const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,

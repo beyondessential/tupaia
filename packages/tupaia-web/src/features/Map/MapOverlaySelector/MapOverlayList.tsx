@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
 import {
   Accordion,
@@ -13,11 +13,12 @@ import {
   Radio,
   RadioGroup,
 } from '@material-ui/core';
+import { useSearchParams } from 'react-router-dom';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { updateSelectedMapOverlay } from '../../../utils';
+import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -100,6 +101,14 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
   );
 };
 
+const useSelectedMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
+  const [urlSearchParams, setUrlParams] = useSearchParams();
+  urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
+  // when overlay changes, reset period to default
+  urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+  setUrlParams(urlSearchParams);
+};
+
 /**
  * This is the parent list of all the map overlays available to pick from
  */
@@ -112,7 +121,7 @@ export const MapOverlayList = () => {
       aria-label="Map overlays"
       name="map-overlays"
       value={selectedOverlayCode}
-      onChange={updateSelectedMapOverlay}
+      onChange={useSelectedMapOverlay}
     >
       {mapOverlayGroups
         .filter(item => item.name)

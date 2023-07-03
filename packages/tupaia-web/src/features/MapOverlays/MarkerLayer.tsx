@@ -176,7 +176,5 @@ export const MarkerLayer = () => {
     return null;
   }
 
-  console.log('measureData', measureData);
-
   return <UIMarkerLayer measureData={measureData} serieses={serieses} />;
 };
