@@ -31,7 +31,7 @@ const useDefaultMapOverlay = () => {
     }
 
     if (!selectedMapOverlay || !isValidMapOverlayId) {
-      const defaultMapOverlayId = project.defaultMeasure || DEFAULT_MAP_OVERLAY_ID;
+      const defaultMapOverlayId = project?.defaultMeasure || DEFAULT_MAP_OVERLAY_ID;
       urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultMapOverlayId);
     }
 

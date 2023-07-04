@@ -6,6 +6,7 @@
 import React from 'react';
 import camelCase from 'camelcase';
 import { useParams } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   autoAssignColors,
   calculateRadiusScaleFactor,
@@ -15,7 +16,13 @@ import {
   MarkerLayer as UIMarkerLayer,
   SPECTRUM_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
-import { useEntitiesWithLocation, useMapOverlayReport, useMapOverlays } from '../../api/queries';
+import {
+  useEntitiesWithLocation,
+  useMapOverlayReport,
+  useMapOverlays,
+  useProject,
+} from '../../api/queries';
+import { EntityCode } from '../../types';
 
 const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
   // Legacy overlays have the config returned in the data response, return directly
@@ -107,8 +114,6 @@ const processMeasureData = ({
         radiusScaleFactor,
       );
 
-      console.log('radius', radius);
-
       return {
         ...entity,
         ...measure,
@@ -150,7 +155,7 @@ const useMarkerData = () => {
   const processedMeasureData =
     measureData && entitiesData
       ? processMeasureData({
-          entityType: 'country',
+          entityType: 'country', // Todo: add entity type
           measureLevel: measureData.measureLevel,
           measureData: measureData.measureData,
           entitiesData,
@@ -163,15 +168,38 @@ const useMarkerData = () => {
     serieses: processedSerieses,
     measureData: processedMeasureData,
     selectedOverlay,
+    isLoading: !processedMeasureData,
+  };
+};
+
+const useNavigateToDashboard = () => {
+  const { projectCode } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { data: project } = useProject(projectCode);
+
+  return (entityCode: EntityCode) => {
+    const link = {
+      ...location,
+      pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
+    };
+    navigate(link);
   };
 };
 
 export const MarkerLayer = () => {
   const { measureData, serieses, isLoading } = useMarkerData();
+  const navigateToDashboard = useNavigateToDashboard();
 
   if (isLoading) {
     return null;
   }
 
-  return <UIMarkerLayer measureData={measureData} serieses={serieses} />;
+  return (
+    <UIMarkerLayer
+      measureData={measureData}
+      serieses={serieses}
+      onSeeOrgUnitDashboard={navigateToDashboard}
+    />
+  );
 };

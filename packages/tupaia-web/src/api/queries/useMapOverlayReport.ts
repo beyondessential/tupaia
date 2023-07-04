@@ -24,7 +24,7 @@ export const useMapOverlayReport = (
   return useQuery(
     [endpoint, projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
-      return get(`${endpoint}/${mapOverlayCode}`, {
+      const response = await get(`${endpoint}/${mapOverlayCode}`, {
         params: {
           organisationUnitCode: entityCode,
           projectCode,
@@ -33,6 +33,12 @@ export const useMapOverlayReport = (
           endDate,
         },
       });
+
+      if (legacy) {
+        return response;
+      }
+
+      return response.data;
     },
     {
       enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
