@@ -17,7 +17,6 @@ import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
 import { useDateRanges } from '../../../utils';
 
 const MaxHeightContainer = styled.div`
-  flex: 1;
   max-height: 100%;
   overflow: hidden;
   display: flex;
@@ -25,7 +24,7 @@ const MaxHeightContainer = styled.div`
 `;
 
 const Wrapper = styled(MaxHeightContainer)`
-  pointer-events: auto;
+  flex: 1;
   max-width: 21.25rem;
   margin: 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
@@ -37,6 +36,7 @@ const Header = styled.div`
   padding: 0.9rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
+  pointer-events: auto;
 `;
 
 const Heading = styled(Typography).attrs({
@@ -49,6 +49,7 @@ const Heading = styled(Typography).attrs({
 
 const Container = styled(MaxHeightContainer)`
   border-radius: 0 0 5px 5px;
+  pointer-events: auto;
 `;
 
 const OverlayLibraryAccordion = styled(Accordion)`

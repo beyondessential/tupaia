@@ -70,7 +70,9 @@ const TilePickerWrapper = styled.div`
 
 // This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
 const MapControlWrapper = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -101,21 +103,22 @@ export const Map = () => {
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <MapOverlays />
         <ZoomControl position="bottomright" />
-        <MapControlWrapper>
-          <MapControlColumn>
-            <MapOverlaySelector />
-            <MapLegend />
-          </MapControlColumn>
-          <TilePickerWrapper>
-            <TilePicker
-              tileSets={TILE_SETS}
-              activeTileSet={activeTileSet}
-              onChange={onTileSetChange}
-            />
-          </TilePickerWrapper>
-        </MapControlWrapper>
         <MapWatermark />
       </StyledMap>
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't inter wit the map */}
+      <MapControlWrapper>
+        <MapControlColumn>
+          <MapOverlaySelector />
+          <MapLegend />
+        </MapControlColumn>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={TILE_SETS}
+            activeTileSet={activeTileSet}
+            onChange={onTileSetChange}
+          />
+        </TilePickerWrapper>
+      </MapControlWrapper>
     </MapContainer>
   );
 };
