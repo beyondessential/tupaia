@@ -18,15 +18,15 @@ import { useMapOverlays, useProject } from '../../../api/queries';
 const useDefaultMapOverlay = () => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: project } = useProject(projectCode);
-  const { mapOverlaysByCode } = useMapOverlays(projectCode);
+  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const { mapOverlaysByCode, isLoadingMapOverlays } = useMapOverlays(projectCode, entityCode);
 
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
   const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay];
 
   useEffect(() => {
-    if (!project) {
+    if (isLoadingProject || isLoadingMapOverlays) {
       return;
     }
 

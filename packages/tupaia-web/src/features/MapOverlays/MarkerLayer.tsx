@@ -5,6 +5,7 @@
 
 import React from 'react';
 import camelCase from 'camelcase';
+import { useParams } from 'react-router';
 import {
   autoAssignColors,
   calculateRadiusScaleFactor,
@@ -15,7 +16,6 @@ import {
   SPECTRUM_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 import { useEntitiesWithLocation, useMapOverlayReport, useMapOverlays } from '../../api/queries';
-import { useParams } from 'react-router';
 
 const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
   // Legacy overlays have the config returned in the data response, return directly
@@ -69,7 +69,6 @@ const processSerieses = (serieses, measureData) =>
     if (series.type !== 'radius' && !series.icon) {
       return {
         ...series,
-        icon: 'pin',
         values,
         valueMapping,
       };
@@ -91,11 +90,7 @@ const processMeasureData = ({
   measureLevel,
 }) => {
   const displayOnLevel = serieses.find(series => series.displayOnLevel);
-  if (
-    camelCase(entityType) === 'country' &&
-    displayOnLevel &&
-    camelCase(entityType) !== camelCase(displayOnLevel.displayOnLevel)
-  ) {
+  if (displayOnLevel && camelCase(entityType) !== camelCase(displayOnLevel.displayOnLevel)) {
     return [];
   }
 
@@ -111,6 +106,8 @@ const processMeasureData = ({
         hiddenValues,
         radiusScaleFactor,
       );
+
+      console.log('radius', radius);
 
       return {
         ...entity,
