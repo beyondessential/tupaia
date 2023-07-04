@@ -52,40 +52,47 @@ export const DownloadFilesVisual = ({
   error,
 }) => {
   const { data = [] } = viewContent;
-  const fileNames = data.map(({ name }) => name);
-  const noneSelected = Object.fromEntries(fileNames.map(fileName => [fileName, false]));
+
+  // This mapping does nothing, just commenting some typing for future conversion to ts
+  const options = data.map(({ uniqueFileName, label }) => ({
+    uniqueFileName, // string e.g. 5da02ed278d10e8695530688_report.pdf
+    label, // string e.g. 'Instruction Manual' or 'report.pdf'
+  }));
+
+
+  // selectedFiles: Map of uniqueFileName: string => isSelected: bool
+  const noneSelected = Object.fromEntries(
+    options.map(({ uniqueFileName }) => [uniqueFileName, false]),
+  );
   const [selectedFiles, setSelectedFiles] = useState(noneSelected);
-  const toggleSelectFile = fileName =>
-    setSelectedFiles({ ...selectedFiles, [fileName]: !selectedFiles[fileName] });
+
+  const toggleSelectFile = uniqueFileName =>
+    setSelectedFiles({ ...selectedFiles, [uniqueFileName]: !selectedFiles[uniqueFileName] });
+
   const [isDownloading, setIsDownloading] = useState(false);
 
   const downloadSelectedFiles = async () => {
     setIsDownloading(true);
-    const selectedFileNames = Object.entries(selectedFiles)
+    const selectedUniqueFilenames = Object.entries(selectedFiles)
       .filter(([, isSelected]) => isSelected)
       .map(([name]) => name);
-
-    const selectedFilePaths = selectedFileNames
-      .map(fileName => data.find(({ name }) => name === fileName))
-      .map(({ value }) => value);
-
-    await downloadFiles(selectedFilePaths);
+    await downloadFiles(selectedUniqueFilenames);
     setIsDownloading(false);
   };
 
   if (!isEnlarged) {
     return (
       <Container className={className}>
-        {data.map(({ name: fileName }) => (
-          <FileName className="filename" key={fileName}>
-            {fileName}
+        {options.map(({ label, value }) => (
+          <FileName className="filename" key={value}>
+            {label}
           </FileName>
         ))}
       </Container>
     );
   }
 
-  if (!isLoading && data.length === 0) {
+  if (!isLoading && options.length === 0) {
     return (
       <Container className={className}>
         <NoData viewContent={viewContent} />
@@ -109,18 +116,18 @@ export const DownloadFilesVisual = ({
       <FormContainer>
         <FormControl>
           <FormGroup>
-            {data.map(({ value: surveyCode, name: fileName }) => (
+            {options.map(({ uniqueFileName, label }) => (
               <FormControlLabel
-                key={surveyCode}
+                key={uniqueFileName}
                 control={
                   <Checkbox
-                    checked={selectedFiles[fileName]}
+                    checked={selectedFiles[uniqueFileName]}
                     checkedIcon={<CheckboxIcon className="checkbox-icon" />}
-                    onChange={() => toggleSelectFile(fileName)}
-                    value={surveyCode}
+                    onChange={() => toggleSelectFile(uniqueFileName)}
+                    value={uniqueFileName}
                   />
                 }
-                label={fileName}
+                label={label}
               />
             ))}
           </FormGroup>
