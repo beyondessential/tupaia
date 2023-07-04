@@ -48,10 +48,10 @@ const processAnswerForDatabase = async (database, questionId, type, answer) => {
   }
 
   if (type === 'File' && answer) {
-    const filename = getFilenameFromUri(answer);
     const fileId = generateUUID().toString();
+    const uniqueFileName = `${fileId}_${getFilenameFromUri(answer)}`;
     const data = await RNFS.readFile(answer, 'base64');
-    database.saveFile(fileId, filename, data);
+    database.saveFile(fileId, uniqueFileName, data);
 
     // Delete local file copy
     try {
@@ -60,7 +60,7 @@ const processAnswerForDatabase = async (database, questionId, type, answer) => {
       console.warn(`Failed to unlink file: ${answer}`);
     }
 
-    processedAnswer = filename;
+    processedAnswer = uniqueFileName;
   }
 
   // Some question types work off raw data, but display and store a processed version.
