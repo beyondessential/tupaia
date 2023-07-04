@@ -138,16 +138,10 @@ export const DesktopMapOverlaySelector = ({
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
   );
-  const { data: mapOverlayData } = useMapOverlayReport(
-    projectCode,
-    entityCode,
-    selectedOverlay?.code,
-    selectedOverlay?.legacy,
-    {
-      startDate,
-      endDate,
-    },
-  );
+  const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay, {
+    startDate,
+    endDate,
+  });
 
   return (
     <Wrapper>

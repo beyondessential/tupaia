@@ -26,8 +26,7 @@ export const MapOverlayDatePicker = () => {
   const { isLoading: isLoadingMapOverlayData } = useMapOverlayReport(
     projectCode,
     entityCode,
-    selectedOverlay?.code,
-    selectedOverlay?.legacy,
+    selectedOverlay,
     {
       startDate,
       endDate,

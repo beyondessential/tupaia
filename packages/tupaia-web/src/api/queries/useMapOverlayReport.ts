@@ -2,33 +2,103 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { QueryObserverOptions, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { momentToDateString } from '@tupaia/utils';
 import { get } from '../api';
 import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
+import {
+  autoAssignColors,
+  createValueMapping,
+  getSpectrumScaleValues,
+  SPECTRUM_MEASURE_TYPES,
+} from '@tupaia/ui-map-components';
+
+// make the response from the new endpoint look like the response from the legacy endpoint
+const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayItem) => {
+  const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
+
+  const measureOptions = [
+    {
+      measureLevel,
+      type: displayType,
+      key: dataElementCode || 'value',
+      ...restOfOverlay,
+    },
+  ];
+
+  return {
+    measureCode,
+    measureLevel,
+    measureOptions,
+    serieses: measureOptions,
+    measureData: measureDataResponse,
+  };
+};
+
+const formatMapOverlayData = data => {
+  const { serieses, measureData } = data;
+
+  const processedSerieses = serieses.map(series => {
+    const { values: mapOptionValues, type } = series;
+    const values = autoAssignColors(mapOptionValues);
+    const valueMapping = createValueMapping(values, type);
+
+    if (SPECTRUM_MEASURE_TYPES.includes(type)) {
+      // for each spectrum, include the minimum and maximum values for
+      // use in the legend scale labels.
+      const { min, max } = getSpectrumScaleValues(measureData, series);
+      const noDataColour = '#c7c7c7';
+
+      return {
+        ...series,
+        values,
+        valueMapping,
+        min,
+        max,
+        noDataColour,
+      };
+    }
+
+    // If it is not a radius series and there is no icon set a default
+    if (series.type !== 'radius' && !series.icon) {
+      return {
+        ...series,
+        values,
+        valueMapping,
+      };
+    }
+
+    return {
+      ...series,
+      values,
+      valueMapping,
+    };
+  });
+
+  return {
+    ...data,
+    serieses: processedSerieses,
+  };
+};
 
 export const useMapOverlayReport = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
-  mapOverlayCode?: SingleMapOverlayItem['code'],
-  legacy?: boolean,
+  mapOverlay?: SingleMapOverlayItem,
   params?: {
     startDate?: string;
     endDate?: string;
   },
-  queryOptions?: QueryObserverOptions,
 ) => {
-  let enabled = !!projectCode && !!entityCode && !!mapOverlayCode;
-
-  if (queryOptions?.enabled !== undefined) {
-    enabled = enabled && queryOptions.enabled;
-  }
   // convert moment dates to date strings for the endpoint to use
   const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
   const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
-  const endpoint = legacy ? 'legacyMapOverlayReport' : 'report';
+  const mapOverlayCode = mapOverlay?.code;
+  const isLegacy = mapOverlay?.legacy;
+  const endpoint = isLegacy ? 'legacyMapOverlayReport' : 'report';
+
   return useQuery(
-    [endpoint, projectCode, entityCode, mapOverlayCode, startDate, endDate],
+    [projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
       const response = await get(`${endpoint}/${mapOverlayCode}`, {
         params: {
@@ -40,14 +110,11 @@ export const useMapOverlayReport = (
         },
       });
 
-      if (legacy) {
-        return response;
-      }
-
-      return response.data;
+      const responseData = isLegacy ? response : normaliseResponse(response.data, mapOverlay);
+      return formatMapOverlayData(responseData);
     },
     {
-      enabled,
+      enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
     },
   );
 };
