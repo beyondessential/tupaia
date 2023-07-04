@@ -15,8 +15,11 @@ export const useEntities = (
   axiosConfig?: AxiosRequestConfig,
   queryOptions?: QueryObserverOptions,
 ) => {
-  const enabled =
-    queryOptions?.enabled === undefined ? !!projectCode && !!entityCode : queryOptions.enabled;
+  let enabled = !!projectCode && !!entityCode;
+
+  if (queryOptions?.enabled !== undefined) {
+    enabled = enabled && queryOptions.enabled;
+  }
 
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
@@ -44,22 +47,33 @@ export const useEntities = (
   );
 };
 
-export const useEntitiesWithLocation = (projectCode?: string, entityCode?: string) =>
-  useEntities(projectCode, entityCode, {
-    params: {
-      includeRoot: true,
-      fields: [
-        'parent_code',
-        'code',
-        'name',
-        'type',
-        'bounds',
-        'region',
-        'point',
-        'location_type',
-        'image_url',
-        'attributes',
-        'child_codes',
-      ],
+export const useEntitiesWithLocation = (
+  projectCode?: string,
+  entityCode?: string,
+  axiosConfig?: AxiosRequestConfig,
+  queryOptions?: QueryObserverOptions,
+) =>
+  useEntities(
+    projectCode,
+    entityCode,
+    {
+      params: {
+        ...{ ...axiosConfig?.params },
+        includeRoot: true,
+        fields: [
+          'parent_code',
+          'code',
+          'name',
+          'type',
+          'bounds',
+          'region',
+          'point',
+          'location_type',
+          'image_url',
+          'attributes',
+          'child_codes',
+        ],
+      },
     },
-  });
+    queryOptions,
+  );

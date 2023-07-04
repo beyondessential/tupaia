@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -131,13 +131,28 @@ const processMeasureData = ({
 
 const useMarkerData = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entitiesData = [] } = useEntitiesWithLocation(projectCode, entityCode);
   const { selectedOverlayCode, selectedOverlay } = useMapOverlays(projectCode, entityCode);
+
+  const measureLevel = selectedOverlay?.measureLevel
+    .split(/\.?(?=[A-Z])/)
+    .join('_')
+    .toLowerCase();
+
+  const { data: entitiesData = [] } = useEntitiesWithLocation(
+    projectCode,
+    entityCode,
+    {
+      params: { filter: { type: measureLevel } },
+    },
+    { enabled: !!measureLevel },
+  );
   const { data: mapOverlayData } = useMapOverlayReport(
     projectCode,
     entityCode,
     selectedOverlayCode,
     selectedOverlay?.legacy,
+    {},
+    { enabled: !!selectedOverlay },
   );
 
   if (!entitiesData || !selectedOverlay || !mapOverlayData) {

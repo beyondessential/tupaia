@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { useQuery } from 'react-query';
+import { QueryObserverOptions, useQuery } from 'react-query';
 import { momentToDateString } from '@tupaia/utils';
 import { get } from '../api';
 import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
@@ -16,7 +16,13 @@ export const useMapOverlayReport = (
     startDate?: string;
     endDate?: string;
   },
+  queryOptions?: QueryObserverOptions,
 ) => {
+  let enabled = !!projectCode && !!entityCode && !!mapOverlayCode;
+
+  if (queryOptions?.enabled !== undefined) {
+    enabled = enabled && queryOptions.enabled;
+  }
   // convert moment dates to date strings for the endpoint to use
   const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
   const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
@@ -41,7 +47,7 @@ export const useMapOverlayReport = (
       return response.data;
     },
     {
-      enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
+      enabled,
     },
   );
 };

@@ -12,7 +12,7 @@ import { URL_SEARCH_PARAMS } from '../../../constants';
 
 export const MapOverlayDatePicker = () => {
   const { projectCode, entityCode } = useParams();
-  const { selectedOverlay, selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
+  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const {
     showDatePicker,
     startDate,

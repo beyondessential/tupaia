@@ -16,9 +16,10 @@ import {
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
-import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity } from '../../api/queries';
+import { PolygonLayer } from './PolygonLayer';
+import { MarkerLayer } from './MarkerLayer';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -101,7 +102,8 @@ export const Map = () => {
     <MapContainer>
       <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <MapOverlays />
+        <PolygonLayer />
+        <MarkerLayer />
         <ZoomControl position="bottomright" />
         <MapWatermark />
       </StyledMap>
