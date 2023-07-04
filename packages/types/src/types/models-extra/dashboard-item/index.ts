@@ -3,7 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { MatrixConfig } from './matricies';
+import type {
+  MatrixConfig,
+  PresentationOptionCondition,
+  PresentationOptions,
+  ConditionValue,
+  ConditionType,
+} from './matricies';
 import type { ComponentConfig } from './components';
 import type {
   BarChartConfig,
@@ -58,3 +64,10 @@ export type DashboardItemConfig =
   | MultiValueViewConfig;
 
 export type { ValueType } from './common';
+export type {
+  MatrixConfig,
+  PresentationOptionCondition,
+  PresentationOptions,
+  ConditionValue,
+  ConditionType,
+};

@@ -33,7 +33,7 @@ export type MatrixConfig = BaseConfig & {
   categoryPresentationOptions?: any;
 };
 
-type PresentationOptions = {
+export type PresentationOptions = {
   type?: 'condition'; // optional key it seems like
   conditions?: PresentationOptionCondition[];
   /**
@@ -52,7 +52,7 @@ type PresentationOptions = {
   };
 };
 
-type PresentationOptionCondition = {
+export type PresentationOptionCondition = {
   key: string;
   color?: CssColor;
   label?: string;
@@ -64,9 +64,9 @@ type PresentationOptionCondition = {
   legendLabel?: string;
 };
 
-type ConditionValue = string | number;
+export type ConditionValue = string | number;
 
-enum ConditionType {
+export enum ConditionType {
   '=' = '=',
   '>' = '>',
   '<' = '<',

@@ -17,6 +17,11 @@ export {
   BaseChartConfig,
   CartesianChartConfig,
   ValueType,
+  MatrixConfig,
+  PresentationOptionCondition,
+  PresentationOptions,
+  ConditionValue,
+  ConditionType,
 } from './models-extra';
 export * from './requests';
 export * from './css';
