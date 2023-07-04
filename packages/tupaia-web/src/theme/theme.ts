@@ -13,6 +13,7 @@ export const theme = createMuiTheme(
       },
       background: {
         default: '#262834', // Dark blue background
+        paper: '#262834', // Dark blue to match background
       },
       text: {
         secondary: '#9ba0a6',
@@ -41,6 +42,7 @@ export const theme = createMuiTheme(
       background: '#202124',
     },
     overlaySelector: {
+      overlayNameBackground: '#072849',
       menuBackground: '#203e5c', // Dark blue used for button and header background in mobile overlay selector, as well as the background of the menu list on desktop
     },
   },

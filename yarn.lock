@@ -10572,6 +10572,7 @@ __metadata:
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.groupby: ^4.6.0
+    lodash.keyby: ^4.6.0
     winston: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -10603,6 +10604,7 @@ __metadata:
     "@types/react": 16.8.6
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
+    moment: ^2.29.1
     npm-run-all: ^4.1.5
     react: ^16.13.1
     react-dom: ^16.13.1

@@ -32,10 +32,10 @@ const StyledPolygon = styled(Polygon)<PolygonProps>`
 /**
  * ActivePolygon: The polygon that is selected on the map. This handles the style logic
  */
-interface ActivePolygonProps extends PolygonProps {
+export interface ActivePolygonProps extends PolygonProps {
   coordinates: LeafletPolygonProps['positions'];
 }
-const ActivePolygon = ({
+export const ActivePolygon = ({
   coordinates,
   shade,
   hasChildren = false,
@@ -48,5 +48,3 @@ const ActivePolygon = ({
     hasShadedChildren={hasShadedChildren}
   />
 );
-
-export default ActivePolygon;

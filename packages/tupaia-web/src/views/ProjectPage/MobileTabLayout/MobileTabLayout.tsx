@@ -7,11 +7,11 @@ import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';
 import { TabContext, TabPanel as MuiTabPanel } from '@material-ui/lab';
-import { useParams } from 'react-router';
+import { useParams, Outlet } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { useEntity } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, TABS, URL_SEARCH_PARAMS } from '../../../constants';
-import { Dashboard, Map } from '../../../features';
+import { Map } from '../../../features';
 import { Footer } from './Footer';
 
 const Wrapper = styled.div`
@@ -85,7 +85,8 @@ export const MobileTabLayout = () => {
         </TabWrapper>
         {data && <EntityName>{data.name}</EntityName>}
         <DashboardPanel value={TABS.DASHBOARD}>
-          <Dashboard />
+          {/* Ensure the dashboard outlet is not rendered above the Map, otherwise the map will re-mount on route changes */}
+          <Outlet />
           <Footer />
         </DashboardPanel>
         <TabPanel value={TABS.MAP}>

@@ -22,4 +22,8 @@ export {
   MultiEntityRelationshipsRequest,
   EntitySearchRoute,
   EntitySearchRequest,
+  EntityAncestorsRoute,
+  AncestorsRequest,
+  MultiEntityAncestorsRoute,
+  MultiEntityAncestorsRequest,
 } from './hierarchy';

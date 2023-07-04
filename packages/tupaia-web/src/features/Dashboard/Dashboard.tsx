@@ -13,10 +13,9 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards as useDashboardData, useEntity } from '../../api/queries';
+import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardItem } from '../DashboardItem';
-import { DashboardItemType } from '../../types';
+import { DashboardItem, EnlargedDashboardItem } from '../DashboardItem';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -31,11 +30,14 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
+  .recharts-wrapper {
+    font-size: 1rem !important;
+  }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) =>
       $isExpanded
         ? 50
-        : 30}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
+        : 25}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
@@ -97,26 +99,12 @@ const DashboardImageContainer = styled.div`
   }
 `;
 
-const useDashboards = () => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: dashboards = [] } = useDashboardData(projectCode, entityCode);
-
-  let activeDashboard = null;
-
-  if (dashboards.length > 0) {
-    activeDashboard =
-      dashboards.find(dashboard => dashboard.name === dashboardName) || dashboards[0];
-  }
-
-  return { dashboards, activeDashboard };
-};
-
 export const Dashboard = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode, dashboardName } = useParams();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { dashboards, activeDashboard } = useDashboards();
-  const { data: entityData } = useEntity(entityCode);
-  const bounds = entityData?.location?.bounds;
+  const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { data: entity } = useEntity(entityCode);
+  const bounds = entity?.bounds;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -129,27 +117,23 @@ export const Dashboard = () => {
         <Breadcrumbs />
         <DashboardImageContainer>
           {bounds ? (
-            <StaticMap polygonBounds={bounds} />
+            <StaticMap bounds={bounds} />
           ) : (
-            <Photo title={entityData?.name} photoUrl={entityData?.photoUrl} />
+            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
           )}
         </DashboardImageContainer>
         <TitleBar>
-          <Title variant="h3">{entityData?.name}</Title>
+          <Title variant="h3">{entity?.name}</Title>
           <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
         </TitleBar>
-
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map((dashboardItem: DashboardItemType) => (
-            <DashboardItem
-              key={dashboardItem.id}
-              dashboardItem={dashboardItem}
-              dashboardCode={activeDashboard?.code}
-            />
+          {activeDashboard?.items.map(report => (
+            <DashboardItem key={report.code} report={report} />
           ))}
         </DashboardItemsWrapper>
       </ScrollBody>
+      <EnlargedDashboardItem />
     </Panel>
   );
 };

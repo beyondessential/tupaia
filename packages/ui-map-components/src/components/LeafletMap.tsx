@@ -16,14 +16,14 @@
  * complexity.
  */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { MapContainer as LeafletMapContainer, MapContainerProps } from 'react-leaflet';
 import { LatLngBoundsExpression, Map as LeafletMapInterface } from 'leaflet';
 import { LeafletStyles } from './LeafletStyles';
 import { DEFAULT_BOUNDS } from '../constants';
 
-interface LeafletMapProps extends MapContainerProps {
+export interface LeafletMapProps extends MapContainerProps {
   onPositionChanged?: (
     center: MapContainerProps['center'],
     bounds: MapContainerProps['bounds'],
@@ -74,6 +74,8 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   zoom: number;
 
+  minZoom: number;
+
   lastSentLat: number | undefined;
 
   lastSentLng: number | undefined;
@@ -117,7 +119,9 @@ export class LeafletMap extends Component<LeafletMapProps> {
     // initial state of the element -- we keep sending these to leaflet so
     // that it doesn't snap to new coordinates (allowing us to animate them
     // instead)
-    const { center, bounds, zoom } = this.props;
+    const { center, bounds, zoom, minZoom } = this.props;
+    // set minZoom default to 3
+    this.minZoom = minZoom || 3;
     this.initialCenter = center;
     this.initialBounds = areBoundsValid(bounds) ? bounds : DEFAULT_BOUNDS;
     this.initialZoom = zoom || 0;
@@ -217,9 +221,7 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   flyToBounds = (bounds: LatLngBoundsExpression) => {
     if (!areBoundsValid(bounds)) return;
-    this.map?.fitBounds(bounds, {
-      animate: true,
-    });
+    this.map?.fitBounds(bounds, { animate: true });
   };
 
   requiresMoveAnimation = (prevProps: LeafletMapProps) => {
@@ -270,6 +272,7 @@ export class LeafletMap extends Component<LeafletMapProps> {
         // these must be frozen to initial values as updates to them will
         // snap the map into place instead of animating it nicely
         zoom={this.initialZoom}
+        minZoom={this.minZoom}
         center={this.initialCenter}
         bounds={this.initialBounds}
       >

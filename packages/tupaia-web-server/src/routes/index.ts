@@ -6,7 +6,17 @@
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { EntitySearchRequest, EntitySearchRoute } from './EntitySearchRoute';
+export { EntityAncestorsRequest, EntityAncestorsRoute } from './EntityAncestorsRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';
+export {
+  LegacyDashboardReportRequest,
+  LegacyDashboardReportRoute,
+} from './LegacyDashboardReportRoute';
+export {
+  LegacyMapOverlayReportRequest,
+  LegacyMapOverlayReportRoute,
+} from './LegacyMapOverlayReportRoute';
+export { MapOverlaysRequest, MapOverlaysRoute } from './MapOverlaysRoute';
 export { UserRequest, UserRoute } from './UserRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export { CountryAccessListRequest, CountryAccessListRoute } from './CountryAccessListRoute';

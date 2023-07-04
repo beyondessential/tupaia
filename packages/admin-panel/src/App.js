@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch, Redirect, useRouteMatch} from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { TabsToolbar } from '@tupaia/ui-components'; 
+import { TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
@@ -17,7 +17,6 @@ import { labelToId } from './utilities';
 
 export const App = ({ user }) => {
   const headerEl = React.useRef(null);
-  const match = useRouteMatch()
 
   const getHeaderEl = () => {
     return headerEl;
@@ -39,24 +38,32 @@ export const App = ({ user }) => {
         <div ref={headerEl} />
         <Switch>
           {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-            <Route key={route.to} path={route.to}>
-              <TabsToolbar
-                links={route.tabs.map(tab => ({
-                  ...tab,
-                  id: `app-subTab-${labelToId(tab.label)}`,
-                }))}
-                maxWidth="xl"
-                baseRoute={match.url}
-              />
-              <Switch>
-                {route.tabs.map(tab => (
-                  <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} />
-                  </Route>
-                ))}
-                <Redirect to={route.to} />
-              </Switch>
-            </Route>
+            <Route
+              key={route.to}
+              path={route.to}
+              render={({ match }) => {
+                return (
+                  <>
+                    <TabsToolbar
+                      links={route.tabs.map(tab => ({
+                        ...tab,
+                        id: `app-subTab-${labelToId(tab.label)}`,
+                      }))}
+                      maxWidth="xl"
+                      baseRoute={match.url}
+                    />
+                    <Switch>
+                      {route.tabs.map(tab => (
+                        <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
+                          <tab.component getHeaderEl={getHeaderEl} />
+                        </Route>
+                      ))}
+                      <Redirect to={route.to} />
+                    </Switch>
+                  </>
+                );
+              }}
+            />
           ))}
           <Redirect to="surveys" />
         </Switch>

@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Dashboard, Map } from '../../features';
+import { Outlet } from 'react-router';
+import { Map } from '../../features';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Container = styled.div`
@@ -24,7 +25,8 @@ export const DesktopLayout = () => {
   return (
     <Container>
       <Map />
-      <Dashboard />
+      {/* Ensure the dashboard outlet is not rendered above the Map, otherwise the map will re-mount on route changes */}
+      <Outlet />
     </Container>
   );
 };

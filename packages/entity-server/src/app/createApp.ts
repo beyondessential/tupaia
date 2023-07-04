@@ -24,6 +24,10 @@ import {
   MultiEntityRelationshipsRoute,
   EntitySearchRequest,
   EntitySearchRoute,
+  AncestorsRequest,
+  EntityAncestorsRoute,
+  MultiEntityAncestorsRequest,
+  MultiEntityAncestorsRoute,
 } from '../routes';
 import {
   attachCommonEntityContext,
@@ -77,6 +81,12 @@ export function createApp(db = new TupaiaDatabase()) {
         attachMultiEntityContext,
         handleWith(EntitySearchRoute),
       )
+      .post<MultiEntityAncestorsRequest>(
+        'hierarchy/:hierarchyName/ancestors',
+        attachCommonEntityContext,
+        attachMultiEntityContext,
+        handleWith(MultiEntityAncestorsRoute),
+      )
 
       // SingleEntity routes
       .get<SingleEntityRequest>(
@@ -103,6 +113,12 @@ export function createApp(db = new TupaiaDatabase()) {
         attachSingleEntityContext,
         attachRelationshipsContext,
         handleWith(EntityRelationshipsRoute),
+      )
+      .get<AncestorsRequest>(
+        'hierarchy/:hierarchyName/:entityCode/ancestors',
+        attachCommonEntityContext,
+        attachSingleEntityContext,
+        handleWith(EntityAncestorsRoute),
       )
       .build()
   );

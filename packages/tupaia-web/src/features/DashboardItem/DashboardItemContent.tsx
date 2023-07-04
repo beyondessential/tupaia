@@ -8,20 +8,9 @@ import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
 import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { DashboardItemDisplayProps } from '../../types';
+import { ReportDisplayProps } from '../../types';
 import { Chart } from '../Chart';
 import { ExpandItemButton } from './ExpandItemButton';
-
-const Title = styled(Typography)<{
-  $isEnlarged?: boolean;
-}>`
-  font-size: ${({ $isEnlarged }) => ($isEnlarged ? '1.2rem' : '1rem')};
-  font-weight: ${({ $isEnlarged, theme }) =>
-    $isEnlarged ? theme.typography.fontWeightBold : theme.typography.fontWeightRegular};
-  text-align: center;
-  margin: 0.3rem 0 1rem 0;
-  line-height: 1.4;
-`;
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -66,7 +55,7 @@ const DisplayComponents = {
 };
 
 interface DashboardItemContentProps {
-  viewContent: DashboardItemDisplayProps;
+  viewContent: ReportDisplayProps;
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
@@ -109,12 +98,7 @@ export const DashboardItemContent = ({
 
   return (
     <>
-      {name && (
-        <Title $isEnlarged={isEnlarged} variant={isEnlarged ? 'h2' : 'h3'}>
-          {name}
-        </Title>
-      )}
-      <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />
+      {DisplayComponent && <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>
   );
