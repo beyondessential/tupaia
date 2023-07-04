@@ -2,7 +2,6 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { ChangeEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery, UseQueryResult } from 'react-query';
 import { get } from '../api';
@@ -32,6 +31,7 @@ const mapOverlayByCode = (
 interface UseMapOverlaysResult {
   hasMapOverlays: boolean;
   mapOverlayGroups: MapOverlayGroup[];
+  mapOverlaysByCode: any;
   isLoadingMapOverlays: boolean;
   errorLoadingMapOverlays: UseQueryResult['error'];
   selectedOverlayCode: string | null;
@@ -62,6 +62,7 @@ export const useMapOverlays = (
   const selectedOverlay = codedOverlays[selectedOverlayCode!];
 
   return {
+    mapOverlaysByCode: codedOverlays,
     hasMapOverlays: !!data?.mapOverlays?.length,
     mapOverlayGroups: data?.mapOverlays,
     isLoadingMapOverlays: isLoading,

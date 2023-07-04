@@ -101,9 +101,8 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
   );
 };
 
-const useSelectedMapOverlay = () => {
+const useOnChangeMapOverlay = () => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
-
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
     // when overlay changes, reset period to default
@@ -120,7 +119,7 @@ const useSelectedMapOverlay = () => {
 export const MapOverlayList = () => {
   const { projectCode, entityCode } = useParams();
   const { mapOverlayGroups, selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
-  const { onChangeMapOverlay } = useSelectedMapOverlay();
+  const { onChangeMapOverlay } = useOnChangeMapOverlay();
 
   return (
     <RadioGroup
