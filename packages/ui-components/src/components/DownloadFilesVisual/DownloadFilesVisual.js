@@ -59,7 +59,6 @@ export const DownloadFilesVisual = ({
     label, // string e.g. 'Instruction Manual' or 'report.pdf'
   }));
 
-  console.log('options', options);
 
   // selectedFiles: Map of uniqueFileName: string => isSelected: bool
   const noneSelected = Object.fromEntries(
