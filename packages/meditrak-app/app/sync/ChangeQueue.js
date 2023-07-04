@@ -66,7 +66,7 @@ export class ChangeQueue {
         // If our files are quite large, and we load another one to see if it crosses our threshold,
         // the Android app might run out of memory and crash. The workaround is to only ever
         // upload one file at a time.
-        return changesWithinThreshold;
+        break;
       }
     }
     return changesWithinThreshold;
