@@ -80,7 +80,7 @@ const reports = [
           dataSourceEntityType: 'individual',
         },
       },
-    },  
+    },
   },
 ];
 

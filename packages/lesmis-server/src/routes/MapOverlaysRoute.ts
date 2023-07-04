@@ -47,7 +47,7 @@ export class MapOverlaysRoute extends TranslatableRoute<
                     items: {
                       type: 'object',
                       keysToTranslate: ['name', 'value'],
-                    }
+                    },
                   },
                 },
               },

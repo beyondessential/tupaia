@@ -12,13 +12,13 @@ const REPORT_IDS = ['COVID_New_Cases_By_State', 'COVID_Daily_Cases_By_Type'];
 
 const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE
       "dashboardReport"
@@ -32,7 +32,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE
       "dashboardReport"

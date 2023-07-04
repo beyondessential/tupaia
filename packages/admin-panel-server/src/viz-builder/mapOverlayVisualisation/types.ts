@@ -82,4 +82,4 @@ export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: 
 // };
 //
 export type MapOverlayVizResource = MapOverlayVisualisationResource;
-//| LegacyMapOverlayVisualisationResource;
+// | LegacyMapOverlayVisualisationResource;

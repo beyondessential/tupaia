@@ -1,15 +1,15 @@
-'use strict';
+import { insertObject, arrayToDbString } from '../utilities';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
 
-import { insertObject, arrayToDbString } from '../utilities';
-
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -29,7 +29,7 @@ const POSSIBLE_ANSWERS = [
   'Specialist Team Visit',
   'Tobacco Enforcement',
   'Malimali',
-  'Other'
+  'Other',
 ];
 
 const COLORS = [
@@ -45,22 +45,22 @@ const COLORS = [
   '#8C5AFB',
   '#FD6AC4',
   '#D9D9D9',
-  '#7B6AFD'
-]
+  '#7B6AFD',
+];
 
 const REPORT_ID = 'TO_HPU_Number_Of_Broadcasts_By_Theme';
 
-const generatePresentationOptionsFromPossibleAnswers = function() {
+const generatePresentationOptionsFromPossibleAnswers = function () {
   const presentationOptions = {};
 
   POSSIBLE_ANSWERS.forEach((possibleAnswer, index) => {
     presentationOptions[possibleAnswer] = {
-      color: COLORS[index]
-    }
+      color: COLORS[index],
+    };
   });
 
   return presentationOptions;
-}
+};
 
 const VIEW_JSON_CONFIG = {
   name: 'Number of broadcasts by theme',
@@ -68,25 +68,25 @@ const VIEW_JSON_CONFIG = {
   chartType: 'pie',
   periodGranularity: 'one_year_at_a_time',
   valueType: 'fractionAndPercentage',
-  presentationOptions: generatePresentationOptionsFromPossibleAnswers()
+  presentationOptions: generatePresentationOptionsFromPossibleAnswers(),
 };
 
-const generateDataClassesFromPossibleAnswers = function() {
+const generateDataClassesFromPossibleAnswers = function () {
   const dataClasses = {};
 
   POSSIBLE_ANSWERS.forEach(possibleAnswer => {
     dataClasses[possibleAnswer] = {
       numerator: {
         dataValues: {
-          HP209: possibleAnswer
-        }
+          HP209: possibleAnswer,
+        },
       },
       denominator: {
         dataValues: {
-          HP209: '*'
-        }
-      }
-    }
+          HP209: '*',
+        },
+      },
+    };
   });
 
   return dataClasses;
@@ -94,17 +94,17 @@ const generateDataClassesFromPossibleAnswers = function() {
 
 const DATA_BUILDER_CONFIG = {
   dataClasses: generateDataClassesFromPossibleAnswers(),
-  programCode: 'HP03'
-}
+  programCode: 'HP03',
+};
 
-const DATA_SERVICES = [{isDataRegional: false}];
+const DATA_SERVICES = [{ isDataRegional: false }];
 
 const DASHBOARD_REPORT = {
   id: REPORT_ID,
   dataBuilder: 'percentagesOfEventCounts',
   dataBuilderConfig: DATA_BUILDER_CONFIG,
   viewJson: VIEW_JSON_CONFIG,
-  dataServices: DATA_SERVICES
+  dataServices: DATA_SERVICES,
 };
 
 const DASHBOARD_GROUPS = ['TO_Health_Promotion_Unit_Country'];
@@ -130,5 +130,5 @@ exports.down = async function (db) {
 };
 
 exports._meta = {
-  'version': 1
+  version: 1,
 };

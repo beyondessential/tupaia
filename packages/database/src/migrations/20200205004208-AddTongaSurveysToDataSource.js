@@ -1,4 +1,5 @@
 'use strict';
+
 import { generateId } from '@tupaia/database';
 
 var dbm;
@@ -9,13 +10,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const tongaSurveys = (
     await db.runSql(`
     SELECT code FROM survey WHERE integration_metadata::text LIKE '%isDataRegional": false%';
@@ -31,7 +32,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     DELETE FROM data_source WHERE type = 'dataGroup';
   `);

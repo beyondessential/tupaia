@@ -1,10 +1,10 @@
-'use strict';
+import { arrayToDbString } from '../utilities';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
-
-import { arrayToDbString } from '../utilities';
 
 const DEMO_LAND_COUNTRY_ID = '59085f2dfc6a0715dae508f0';
 
@@ -58,13 +58,13 @@ const SURVEY_IDS = [
   '5b88a0e1f013d654c476c376',
   '5b88c76af013d654c4fca54e',
   '5b88a20cf013d654c4299bb6',
-  '5b88a20cf013d654c42d848c'
+  '5b88a20cf013d654c42d848c',
 ];
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -88,5 +88,5 @@ exports.down = async function (db) {
 };
 
 exports._meta = {
-  'version': 1
+  version: 1,
 };

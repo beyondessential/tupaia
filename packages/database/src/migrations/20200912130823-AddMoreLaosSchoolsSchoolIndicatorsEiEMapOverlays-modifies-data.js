@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -176,7 +176,7 @@ const getLargestSortOrderInOverlayGroup = async (db, groupCode) => {
   return results.rows[0].sortOrder;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const maxSortOrder = await getLargestSortOrderInOverlayGroup(
     db,
     SCHOOL_INDICATORS_EIE_GROUP_CODE,
@@ -213,7 +213,7 @@ exports.up = async function(db) {
   }
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(
     `	
     DELETE FROM "mapOverlay" 

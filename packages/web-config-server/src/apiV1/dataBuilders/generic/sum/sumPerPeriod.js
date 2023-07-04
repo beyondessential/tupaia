@@ -104,9 +104,9 @@ class SumPerPeriodBuilder extends DataBuilder {
         dataElementCodes,
         this.query,
         entityAggregation,
-        hierarchyId
+        hierarchyId,
       );
-  
+
       return result;
     }
     return this.fetchAnalytics(dataElementCodes);

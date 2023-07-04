@@ -64,7 +64,7 @@ const DASHBOARD_GROUP_CODES = ['TO_Health_Promotion_Unit_Country'];
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -86,7 +86,7 @@ const REPORT = {
   dataServices: [{ isDataRegional: false }],
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
 
   return db.runSql(`
@@ -99,7 +99,7 @@ exports.up = async function(db) {
     `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
 

@@ -126,13 +126,13 @@ const OVERLAYS = [
   },
 ];
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     OVERLAYS.map((overlay, index) => {
       const { name, id, scaleMax, dataElementCodes, scaleType, denominatorCodes } = overlay;
@@ -151,7 +151,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(
     `	
     DELETE FROM "mapOverlay" WHERE "id" in (${arrayToDbString(OVERLAYS.map(o => o.id))});	

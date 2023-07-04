@@ -72,7 +72,7 @@ const restoreStriveToExplore = db =>
 
   `);
 
-// need to remove trailing space from Milne Bay district to 
+// need to remove trailing space from Milne Bay district to
 // stop double up in district imports #1671
 const trimMilneBay = db =>
   db.runSql(`

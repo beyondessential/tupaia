@@ -102,13 +102,13 @@ const OVERLAY_4 = {
 
 const OVERLAYS = [OVERLAY_1, OVERLAY_2, OVERLAY_3, OVERLAY_4];
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     OVERLAYS.map(({ value, ...overlay }) => {
       const newOverlay = { ...BASE_OVERLAY, ...overlay };
@@ -119,7 +119,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(
     `	
     DELETE FROM "mapOverlay" WHERE "id" = '${OVERLAY_1.id}';	

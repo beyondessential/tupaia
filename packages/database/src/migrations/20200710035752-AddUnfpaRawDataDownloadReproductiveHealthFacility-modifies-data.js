@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -40,7 +40,7 @@ const DASHBOARD_REPORT = {
   viewJson: VIEW_JSON,
 };
 
-//Tonga, Kiribati, Fiji, Marshall Islands, FSM, Solomon Islands, Vanuatu, Samoa
+// Tonga, Kiribati, Fiji, Marshall Islands, FSM, Solomon Islands, Vanuatu, Samoa
 const COUNTRY_ORG_UNITS = ['TO', 'KI', 'FJ', 'SB', 'VU', 'WS', 'MH', 'FM'];
 
 const BASE_CODE = '_UNFPA_Raw_Data_Downloads_Country';
@@ -53,7 +53,7 @@ const DASHBOARD_GROUP_CONFIG = {
   projectCodes: '{unfpa}',
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', DASHBOARD_REPORT);
 
   await Promise.all(
@@ -67,7 +67,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = '${REPORT_ID}';
 

@@ -5,7 +5,6 @@
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-
 export class LatestDataValueBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes } = this.config;
@@ -18,7 +17,11 @@ export class LatestDataValueBuilder extends DataBuilder {
   }
 }
 
-export const latestDataValue = async ({ models, dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const latestDataValue = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new LatestDataValueBuilder(
     models,
     aggregator,

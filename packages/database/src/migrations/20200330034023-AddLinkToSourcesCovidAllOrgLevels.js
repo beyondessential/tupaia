@@ -15,13 +15,13 @@ const DASHBOARD_GROUP_CODES = ['AU_Covid_Country', 'AU_Covid_Province', 'AU_Covi
 
 const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
   INSERT INTO "dashboardReport" (
     "id",
@@ -52,7 +52,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
   delete from "dashboardReport"
   where "id" = '${REPORT_ID}';
