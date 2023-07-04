@@ -16,7 +16,8 @@ export type MapOverlaysRequest = Request<any, any, any, any>;
 // TODO: Can these be moved into types?
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
-const PAGE_SIZE = 200;
+// Central server defaults to 100 record limit, this overrides that
+const PAGE_SIZE = 'ALL';
 
 // We return a simplified version of data to the frontend
 interface TranslatedMapOverlay {
@@ -34,7 +35,7 @@ type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
-    const { params, ctx } = this.req;
+    const { query, params, ctx } = this.req;
     const { projectCode, entityCode } = params;
 
     const project = (
@@ -59,6 +60,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         },
       },
       pageSize: PAGE_SIZE,
+      ...query,
     });
 
     if (mapOverlays.length === 0) {
