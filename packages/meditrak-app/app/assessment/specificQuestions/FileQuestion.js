@@ -143,7 +143,7 @@ export const FileQuestion = ({ answer, onChangeAnswer }) => {
       await unlink(answer);
       onChangeAnswer(null);
       setSizeInBytes(null);
-      setError(null);
+      setError(`Error: ${e.message}`);
     }
   };
 
