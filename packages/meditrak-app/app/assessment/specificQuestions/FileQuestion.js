@@ -86,6 +86,19 @@ const localStyles = StyleSheet.create({
   },
 });
 
+const unlink = async path => {
+  if (!path) {
+    console.log('Nothing to unlink, no path');
+    return;
+  }
+  try {
+    await RNFS.unlink(path);
+    console.log(`Unlinked old file ${path}`);
+  } catch (e) {
+    console.log(`Failed to unlink previously picked file: ${path}: ${e}`);
+  }
+};
+
 export const FileQuestion = ({ answer, onChangeAnswer }) => {
   const filename = getFilenameFromUri(answer);
 
@@ -105,13 +118,7 @@ export const FileQuestion = ({ answer, onChangeAnswer }) => {
       });
 
       // If we previously picked a file (stored a copy in app documents) and now picked a new one, we need to delete the old copy
-      if (answer) {
-        try {
-          await RNFS.unlink(answer);
-        } catch (e) {
-          console.warn(`Failed to unlink previously picked file: ${answer}`);
-        }
-      }
+      await unlink(answer);
 
       const { fileCopyUri } = filePickerResponse;
 
@@ -119,6 +126,7 @@ export const FileQuestion = ({ answer, onChangeAnswer }) => {
       // Note: from DocumentPicker docs: android does not guarantee the name or size will be present or accurate on the file picker response, so we read the newly copied file in the app documents which is a normal file
       const { size: newSizeInBytes } = await RNFS.stat(fileCopyUri);
       if (newSizeInBytes > MAX_FILE_SIZE_BYTES) {
+        await unlink(fileCopyUri);
         setSizeInBytes(null);
         setError(
           `Error: file is too large: ${humanFileSize(
@@ -132,13 +140,16 @@ export const FileQuestion = ({ answer, onChangeAnswer }) => {
       onChangeAnswer(fileCopyUri);
       setSizeInBytes(newSizeInBytes);
     } catch (e) {
+      await unlink(answer);
       onChangeAnswer(null);
       setSizeInBytes(null);
       setError(null);
     }
   };
 
-  const handleRemoveFile = () => {
+  const handleRemoveFile = async () => {
+    // Unlink first before we lose previous path (answer)
+    await unlink(answer);
     onChangeAnswer(null);
     setError(null);
     setSizeInBytes(null);
