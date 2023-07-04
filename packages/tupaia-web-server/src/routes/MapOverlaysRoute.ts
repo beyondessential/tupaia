@@ -17,7 +17,7 @@ export type MapOverlaysRequest = Request<any, any, any, any>;
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 // Central server defaults to 100 record limit, this overrides that
-const PAGE_SIZE = 'ALL';
+const DEFAULT_PAGE_SIZE = 'ALL';
 
 // We return a simplified version of data to the frontend
 interface TranslatedMapOverlay {
@@ -37,6 +37,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
     const { query, params, ctx } = this.req;
     const { projectCode, entityCode } = params;
+    const { pageSize } = query;
 
     const project = (
       await ctx.services.central.fetchResources('projects', {
@@ -59,8 +60,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
-      pageSize: PAGE_SIZE,
-      ...query,
+      pageSize: pageSize || DEFAULT_PAGE_SIZE,
     });
 
     if (mapOverlays.length === 0) {
@@ -76,7 +76,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           child_type: 'mapOverlay',
           child_id: mapOverlays.map((overlay: MapOverlay) => overlay.id),
         },
-        pageSize: PAGE_SIZE,
+        pageSize: DEFAULT_PAGE_SIZE,
       },
     );
     let parentMapOverlayRelations = await ctx.services.central.fetchResources(
@@ -88,7 +88,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
             (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
           ),
         },
-        pageSize: PAGE_SIZE,
+        pageSize: DEFAULT_PAGE_SIZE,
       },
     );
     while (parentMapOverlayRelations.length) {
@@ -103,7 +103,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
             ),
           },
-          pageSize: PAGE_SIZE,
+          pageSize: DEFAULT_PAGE_SIZE,
         },
       );
     }
