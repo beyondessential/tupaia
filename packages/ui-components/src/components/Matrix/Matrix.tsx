@@ -22,6 +22,7 @@ export const CELL_WIDTH_PER_CHARACTER = 10;
 
 const MatrixTable = styled(Table)`
   overflow: hidden;
+  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
   border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
   color: ${({ theme }) => theme.palette.text.primary};
   td,
@@ -152,7 +153,6 @@ export const Matrix = ({
               expanded={expandedRows}
               toggleExpanded={toggleExpandedRows}
               presentationOptions={presentationOptions}
-              isNested={false}
               parents={[]}
             />
           ))}

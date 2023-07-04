@@ -4,15 +4,25 @@
  */
 
 import React from 'react';
-import { Matrix } from '../src/components/Matrix/Matrix.tsx';
 import { Box } from '@material-ui/core';
 import styled from 'styled-components';
+import { Matrix } from '../src/components/Matrix/Matrix.tsx';
 
 const Container = styled(Box)`
   background: ${({ theme }) => theme.palette.background.default};
 `;
 export default {
   title: 'Matrix',
+  decorators: [
+    Story => (
+      <Container>
+        <Story />
+      </Container>
+    ),
+  ],
+  parameters: {
+    theme: 'dark',
+  },
 };
 
 const nestedRows = [
@@ -21,39 +31,39 @@ const nestedRows = [
     children: [
       {
         title: 'Sub item 1',
-        Col4: 59.32075471698,
-        Col2: 43.54081468363,
+        Col4: 59.5,
+        Col2: 43.4,
       },
       {
         title: 'Sub item 2',
-        Col1: 66.6071008699741,
-        Col4: 74.25454545455,
-        Col3: 44.99863076221,
+        Col1: 6.76,
+        Col4: 74.2,
+        Col3: 44.998,
       },
       {
         title: 'Sub item 3',
-        Col1: 33.9575045207981,
-        Col4: 11.74904942966,
-        Col2: 6.340206185567,
-        Col3: 35.97642436149,
+        Col1: 33.9,
+        Col4: 11.749,
+        Col2: 6.347,
+        Col3: 35.9,
       },
       {
         title: 'Sub item 4',
-        Col1: 0.0550911756384881,
-        Col4: 32.11627906977,
+        Col1: 0.05,
+        Col4: 32.11,
         Col2: 0,
-        Col3: 7.122375991292,
+        Col3: 7.1,
       },
       {
         title: 'Sub item 5',
-        Col1: 320.368110914891,
-        Col4: 17.08296943231,
-        Col2: 69.32551319648,
-        Col3: 142.686774942,
+        Col1: 320,
+        Col4: 17,
+        Col2: 69.325,
+        Col3: 142.68,
       },
       {
         title: 'Sub item 6',
-        Col1: 534.72335025378,
+        Col1: 534,
         Col3: 0,
       },
     ],
@@ -63,26 +73,26 @@ const nestedRows = [
     children: [
       {
         title: 'Sub item 7',
-        Col1: 661.724529503852,
+        Col1: 661,
         Col4: 0,
-        Col2: 3.78441031585,
+        Col2: 3.78,
         Col3: 0,
       },
       {
         title: 'Sub item 8',
-        Col4: 24.34458672875,
-        Col3: 53.43045112782,
+        Col4: 24,
+        Col3: 53.4,
       },
       {
         title: 'Sub item 9',
         Col4: 0,
-        Col2: 7.928045789043,
+        Col2: 7.92,
       },
       {
         title: 'Sub item 10',
-        Col1: 46.2214562688536,
-        Col4: 2.355140186916,
-        Col3: 1.621621621622,
+        Col1: 46.22,
+        Col4: 2.35,
+        Col3: 1.62,
       },
       {
         title: 'Sub item 11',
@@ -97,15 +107,15 @@ const nestedRows = [
         children: [
           {
             title: 'Sub item 13',
-            Col1: 661.724529503852,
+            Col1: 661.7,
             Col4: 0,
-            Col2: 3.78441031585,
+            Col2: 3.78,
             Col3: 0,
           },
           {
             title: 'Sub item 14',
-            Col4: 24.34458672875,
-            Col3: 53.43045112782,
+            Col4: 24.34,
+            Col3: 53.43,
           },
         ],
       },
@@ -114,14 +124,14 @@ const nestedRows = [
         children: [
           {
             title: 'Sub item 16',
-            Col4: 22.86995515695,
-            Col2: 19.24965517241,
-            Col3: 1.532066508314,
+            Col4: 22.86,
+            Col2: 19.24,
+            Col3: 1.532,
           },
           {
             title: 'Sub item 17',
             Col4: 0,
-            Col2: 7.928045789043,
+            Col2: 7.92,
           },
         ],
       },
@@ -195,18 +205,15 @@ const dotPresentationOptions = {
   showRawValue: true,
 };
 
-const Template = args => (
-  <Container>
-    <Matrix {...args} columns={columns} />
-  </Container>
-);
+const Template = args => <Matrix {...args} columns={columns} />;
 
 export const NestedWithDots = Template.bind({});
 NestedWithDots.args = {
   rows: nestedRows,
-  columns,
   presentationOptions: dotPresentationOptions,
 };
-NestedWithDots.parameters = {
-  theme: 'dark',
+
+export const NestedWithBasicData = Template.bind({});
+NestedWithBasicData.args = {
+  rows: nestedRows,
 };

@@ -4,11 +4,13 @@
  */
 
 import React from 'react';
-import { IconButton, TableRow, TableCell, lighten } from '@material-ui/core';
+import { IconButton, TableRow as MuiTableRow, TableCell, lighten, Button } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
+import { PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { getIsUsingDots, getPresentationOption, hexToRgba } from './utils';
+import { MatrixCell } from './MatrixCell';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded: boolean;
@@ -29,11 +31,13 @@ const Dot = styled.div<{ $color?: string }>`
   margin: 0 auto;
 `;
 
-const Cell = styled(TableCell)`
+const DataCell = styled(TableCell)`
   vertical-align: middle;
   text-align: center;
   position: relative;
   z-index: 1;
+  padding: 0;
+  height: 100%;
   &:hover {
     &:before,
     &:after {
@@ -63,16 +67,15 @@ const Cell = styled(TableCell)`
   }
 `;
 
-const BaseRow = styled(TableRow)<{
+const DataCellContent = styled.div``;
+const TableRow = styled(MuiTableRow)<{
   $highlighted?: boolean;
   $visible?: boolean;
 }>`
+  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
+  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
   background-color: ${({ theme, $highlighted }) =>
     $highlighted ? lighten(theme.palette.background.default, 0.1) : 'transparent'};
-`;
-
-const CollapsibleTableRow = styled(BaseRow)`
-  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
 `;
 
 const RowHeaderCell = styled(TableCell).attrs({
@@ -96,79 +99,108 @@ const NonGroupedRowHeaderCell = styled(RowHeaderCell)`
   padding-left: ${({ $depth }) => `${1.5 + $depth * 1.5}rem`};
 `;
 
+const ExpandCellButton = styled(Button)`
+  width: 100%;
+  height: 100%;
+  padding: 0;
+`;
+
 type MatrixRowTitle = MatrixRowType['title'];
+interface MatrixRowProps {
+  row: MatrixRowType;
+  displayedColumns: MatrixColumnType[];
+  expanded: MatrixRowTitle[];
+  toggleExpanded: (title: MatrixRowTitle) => void;
+  parents: MatrixRowTitle[];
+  presentationOptions: PresentationOptions;
+}
+
+export const MatrixRowGroup = ({
+  row,
+  displayedColumns,
+  expanded,
+  toggleExpanded,
+  parents = [],
+  presentationOptions,
+}: MatrixRowProps) => {
+  const { children, title } = row;
+  const isExpanded = expanded.includes(title);
+  const isVisible = parents.every(parent => expanded.includes(parent));
+  const depth = parents.length;
+  return (
+    <>
+      <TableRow $visible={isVisible} $highlighted={depth ? isVisible : isExpanded}>
+        <RowHeaderCell $depth={parents.length}>
+          <RowHeaderCellContent>
+            <IconButton
+              aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
+              size="small"
+              onClick={() => toggleExpanded(title)}
+            >
+              <ExpandIcon $expanded={isExpanded} />
+            </IconButton>
+            {title}
+          </RowHeaderCellContent>
+        </RowHeaderCell>
+        {/** render empty cells for the rest of the row */}
+        {Array(displayedColumns.length)
+          .fill(0)
+          .map(() => (
+            <TableCell />
+          ))}
+      </TableRow>
+      {children?.map(child => (
+        <MatrixRow
+          key={child.title}
+          row={child}
+          displayedColumns={displayedColumns}
+          expanded={expanded}
+          toggleExpanded={toggleExpanded}
+          parents={[...parents, title]}
+          presentationOptions={presentationOptions}
+        />
+      ))}
+    </>
+  );
+};
 
 export const MatrixRow = ({
   row,
   displayedColumns,
   expanded,
   toggleExpanded,
-  isNested = false,
   parents = [],
-  presentationOptions,
-}: {
-  row: MatrixRowType;
-  displayedColumns: MatrixColumnType[];
-  expanded: MatrixRowTitle[];
-  toggleExpanded: (title: MatrixRowTitle) => void;
-  isNested: boolean;
-  parents: MatrixRowTitle[];
-  presentationOptions: any;
-}) => {
+  presentationOptions = {},
+}: MatrixRowProps) => {
   const { children, title } = row;
-  const isExpanded = expanded.includes(title);
   const isVisible = parents.every(parent => expanded.includes(parent));
-  const Component = isNested ? CollapsibleTableRow : BaseRow;
   const depth = parents.length;
+
+  // if is nested render a group
   if (children)
     return (
-      <>
-        <Component $visible={isVisible} $highlighted={depth ? isVisible : isExpanded}>
-          <RowHeaderCell $depth={parents.length}>
-            <RowHeaderCellContent>
-              <IconButton
-                aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
-                size="small"
-                onClick={() => toggleExpanded(title)}
-              >
-                <ExpandIcon $expanded={isExpanded} />
-              </IconButton>
-              {title}
-            </RowHeaderCellContent>
-          </RowHeaderCell>
-          {/** render empty cells for the rest of the row */}
-          {Array(displayedColumns.length)
-            .fill(0)
-            .map(() => (
-              <TableCell />
-            ))}
-        </Component>
-        {children.map(child => (
-          <MatrixRow
-            row={child}
-            displayedColumns={displayedColumns}
-            expanded={expanded}
-            toggleExpanded={toggleExpanded}
-            isNested
-            parents={[...parents, title]}
-            presentationOptions={presentationOptions}
-          />
-        ))}
-      </>
+      <MatrixRowGroup
+        row={row}
+        displayedColumns={displayedColumns}
+        expanded={expanded}
+        toggleExpanded={toggleExpanded}
+        parents={parents}
+        presentationOptions={presentationOptions}
+      />
     );
-  const displayValues = displayedColumns.map(({ key }) => {
-    const value = row[key];
-    if (!getIsUsingDots(presentationOptions)) return value;
-    const presentation = getPresentationOption(presentationOptions, value);
-    const color = presentation?.color;
-    return <Dot $color={color} aria-label={value} />;
-  });
+
+  // render a regular row with the title cell and the values
   return (
-    <Component $visible={isVisible} $highlighted={depth > 0}>
+    <TableRow $visible={isVisible} $highlighted={depth > 0}>
       <NonGroupedRowHeaderCell $depth={parents.length}>{title}</NonGroupedRowHeaderCell>
-      {displayValues.map(item => (
-        <Cell>{item}</Cell>
+      {displayedColumns.map(({ key }) => (
+        // TODO: find a better way to handle presentation options - see if can be a context or something
+        <MatrixCell
+          key={`column-${key}-row-${row.title}-value`}
+          value={row[key]}
+          presentationOptions={presentationOptions}
+        />
       ))}
-    </Component>
+    </TableRow>
   );
 };

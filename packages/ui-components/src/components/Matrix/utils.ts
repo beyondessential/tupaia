@@ -83,10 +83,10 @@ export const getPresentationOption = (options: PresentationOptions, value: any) 
   }
 };
 
-export function getIsUsingDots(presentationOptions: PresentationOptions) {
+export function getIsUsingDots(presentationOptions: PresentationOptions = {}) {
   return Object.keys(presentationOptions).length > 0;
 }
 
-export function checkIfApplyDotStyle(presentationOptions: PresentationOptions) {
+export function checkIfApplyDotStyle(presentationOptions: PresentationOptions = {}) {
   return presentationOptions?.applyLocation?.columnIndexes;
 }
