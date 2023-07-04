@@ -16,6 +16,7 @@ export type MapOverlaysRequest = Request<any, any, any, any>;
 // TODO: Can these be moved into types?
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
+const PAGE_SIZE = 200;
 
 // We return a simplified version of data to the frontend
 interface TranslatedMapOverlay {
@@ -57,6 +58,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
+      pageSize: PAGE_SIZE,
     });
 
     if (mapOverlays.length === 0) {
@@ -72,6 +74,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           child_type: 'mapOverlay',
           child_id: mapOverlays.map((overlay: MapOverlay) => overlay.id),
         },
+        pageSize: PAGE_SIZE,
       },
     );
     let parentMapOverlayRelations = await ctx.services.central.fetchResources(
@@ -83,6 +86,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
             (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
           ),
         },
+        pageSize: PAGE_SIZE,
       },
     );
     while (parentMapOverlayRelations.length) {
@@ -97,6 +101,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
             ),
           },
+          pageSize: PAGE_SIZE,
         },
       );
     }
