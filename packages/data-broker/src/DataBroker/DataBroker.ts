@@ -19,13 +19,17 @@ import {
   EventResults,
   ServiceType,
   SyncGroupResults,
-  DataElement,
 } from '../types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
 import { DataServiceMapping } from '../services/DataServiceMapping';
 import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
 import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
+import {
+  checkDataElementPermissions,
+  checkDataGroupPermissions,
+  checkSyncGroupPermissions,
+} from './checkPermissions';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -43,7 +47,9 @@ type FetchConditions = { code: string | string[] };
 type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
 type PermissionChecker = (
+  models: DataBrokerModelRegistry,
   dataSources: DataSource[],
+  accessPolicy?: AccessPolicy,
   organisationUnitCodes?: string[],
 ) => Promise<string[] | undefined>;
 
@@ -61,15 +67,6 @@ const getModelRegistry = () => {
     modelRegistry = new ModelRegistry(new TupaiaDatabase()) as DataBrokerModelRegistry;
   }
   return modelRegistry;
-};
-
-const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes?: string[]) => {
-  // Get the users permission groups as a list of codes
-  if (!accessPolicy) {
-    return ['*'];
-  }
-  const userPermissionGroups = accessPolicy.getPermissionGroups(countryCodes);
-  return ['*', ...userPermissionGroups];
 };
 
 const setOrganisationUnitCodes = (options: PullOptions) => {
@@ -100,14 +97,10 @@ export class DataBroker {
     // Run permission checks in data broker so we only expose data the user is allowed to see
     // It's a good centralised place for it
     this.permissionCheckers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: this.checkDataElementPermissions,
-      [this.getDataSourceTypes().DATA_GROUP]: this.checkDataGroupPermissions,
-      [this.getDataSourceTypes().SYNC_GROUP]: this.checkSyncGroupPermissions,
+      [this.getDataSourceTypes().DATA_ELEMENT]: checkDataElementPermissions,
+      [this.getDataSourceTypes().DATA_GROUP]: checkDataGroupPermissions,
+      [this.getDataSourceTypes().SYNC_GROUP]: checkSyncGroupPermissions,
     };
-  }
-
-  private getUserPermissions(countryCodes?: string[]) {
-    return getPermissionListWithWildcard(this.context.accessPolicy, countryCodes);
   }
 
   public async close() {
@@ -134,92 +127,6 @@ export class DataBroker {
     // Add 'type' field to output to keep object layout consistent between tables
     const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
-  };
-
-  private checkDataElementPermissions = async (
-    dataElements: DataSource[],
-    organisationUnitCodes?: string[],
-  ) => {
-    const allUserPermissions = this.getUserPermissions();
-    if (allUserPermissions.includes(BES_ADMIN_PERMISSION_GROUP)) {
-      return organisationUnitCodes;
-    }
-
-    const getDataElementsWithMissingPermissions = (permissions: string[]) =>
-      (dataElements as DataElement[])
-        .filter(element => element.permission_groups.length > 0)
-        .filter(element => !element.permission_groups.some(group => permissions.includes(group)))
-        .map(element => element.code);
-
-    if (!organisationUnitCodes) {
-      const missingPermissions = getDataElementsWithMissingPermissions(allUserPermissions);
-      if (missingPermissions.length > 0) {
-        throw new Error(
-          `Missing permissions to the following data elements: ${missingPermissions}`,
-        );
-      }
-
-      return organisationUnitCodes;
-    }
-
-    const orgUnitsByCountry = await fetchOrgUnitsByCountry(this.models, organisationUnitCodes);
-    const countryCodes = Object.keys(orgUnitsByCountry);
-
-    let allowedOrgUnits: string[] = [];
-    const countriesMissingPermission = Object.fromEntries(
-      dataElements.map(({ code }) => [code, [] as string[]]),
-    );
-    countryCodes.forEach(country => {
-      const missingPermissions = getDataElementsWithMissingPermissions(
-        this.getUserPermissions([country]),
-      );
-      if (missingPermissions.length === 0) {
-        // Have access to all data elements for country
-        allowedOrgUnits = allowedOrgUnits.concat(orgUnitsByCountry[country]);
-      }
-
-      missingPermissions.forEach(dataElement =>
-        countriesMissingPermission[dataElement].push(country),
-      );
-    });
-
-    if (allowedOrgUnits.length === 0) {
-      const dataElementsWithNoAccess = Object.entries(countriesMissingPermission)
-        .filter(([, countries]) => countries.length === countryCodes.length)
-        .map(([dataElement]) => dataElement);
-      throw new Error(
-        `Missing permissions to the following data elements:\n${dataElementsWithNoAccess}`,
-      );
-    }
-
-    return allowedOrgUnits;
-  };
-
-  private checkDataGroupPermissions = async (
-    dataGroups: DataSource[],
-    organisationUnitCodes?: string[],
-  ) => {
-    const missingPermissions = [];
-    for (const group of dataGroups) {
-      const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(group.code);
-      try {
-        await this.checkDataElementPermissions(dataElements, organisationUnitCodes);
-      } catch {
-        missingPermissions.push(group.code);
-      }
-    }
-    if (missingPermissions.length === 0) {
-      return organisationUnitCodes;
-    }
-    throw new Error(`Missing permissions to the following data groups: ${missingPermissions}`);
-  };
-
-  // No check for syncGroups currently
-  private checkSyncGroupPermissions = async (
-    syncGroups: DataSource[],
-    organisationUnitCodes?: string[],
-  ) => {
-    return organisationUnitCodes;
   };
 
   private async fetchDataSources(dataSourceSpec: DataSourceSpec) {
@@ -375,7 +282,9 @@ export class DataBroker {
     const permissionChecker = this.permissionCheckers[type];
     // Permission checkers will throw if no access to any organisationUnits
     const organisationUnitCodesWithAccess = await permissionChecker(
+      this.models,
       dataSources,
+      this.context.accessPolicy,
       organisationUnitCodes,
     );
     const service = this.createService(serviceType);
