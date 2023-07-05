@@ -9,10 +9,6 @@ import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
-const getUserPermissions = (accessPolicy?: AccessPolicy, countryCodes?: string[]) => {
-  return getPermissionListWithWildcard(accessPolicy, countryCodes);
-};
-
 const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes?: string[]) => {
   // Get the users permission groups as a list of codes
   if (!accessPolicy) {
@@ -28,7 +24,7 @@ export const checkDataElementPermissions = async (
   accessPolicy?: AccessPolicy,
   organisationUnitCodes?: string[],
 ) => {
-  const allUserPermissions = getUserPermissions(accessPolicy);
+  const allUserPermissions = getPermissionListWithWildcard(accessPolicy);
   if (allUserPermissions.includes(BES_ADMIN_PERMISSION_GROUP)) {
     return organisationUnitCodes;
   }
@@ -57,7 +53,7 @@ export const checkDataElementPermissions = async (
   );
   countryCodes.forEach(country => {
     const missingPermissions = getDataElementsWithMissingPermissions(
-      getUserPermissions(accessPolicy, [country]),
+      getPermissionListWithWildcard(accessPolicy, [country]),
     );
     if (missingPermissions.length === 0) {
       // Have access to all data elements for country
