@@ -20,7 +20,7 @@ export const DESCRIPTION_CELL_WIDTH = 300;
 export const CATEGORY_INDENT = 20;
 export const CELL_WIDTH_PER_CHARACTER = 10;
 
-const MatrixTable = styled(Table)`
+const MatrixTable = styled.table`
   overflow: hidden;
   height: 100%; // this is so the modal button for the cell fills the whole height of the cell
   border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
@@ -142,7 +142,7 @@ export const Matrix = ({
         </TableMoveButtonWrapper>
       )}
 
-      <MatrixTable component="table" ref={tableEl}>
+      <Table component={MatrixTable} ref={tableEl}>
         <MatrixHeaderRow columns={displayedColumns} />
         <TableBody>
           {rows.map(row => (
@@ -157,7 +157,7 @@ export const Matrix = ({
             />
           ))}
         </TableBody>
-      </MatrixTable>
+      </Table>
     </Wrapper>
   );
 };
