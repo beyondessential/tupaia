@@ -81,7 +81,7 @@ const TableRow = styled(MuiTableRow)<{
     $highlighted ? lighten(theme.palette.background.default, 0.1) : 'transparent'};
 `;
 
-const RowHeaderCell = styled(TableCell).attrs({
+const BaseRowHeaderCell = styled(TableCell).attrs({
   component: 'th',
 })<{
   $depth: number;
@@ -98,7 +98,7 @@ const RowHeaderCellContent = styled.div`
   }
 `;
 
-const NonGroupedRowHeaderCell = styled(RowHeaderCell)`
+const NonGroupedRowHeaderCell = styled(BaseRowHeaderCell)`
   padding-left: ${({ $depth }) => `${1.5 + $depth * 1.5}rem`};
 `;
 
@@ -108,7 +108,7 @@ interface MatrixRowProps {
   parents: MatrixRowTitle[];
 }
 
-const MatrixRowGroup = ({ row, parents = [] }: MatrixRowProps) => {
+const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
   const expandedRows = useContext(MatrixExpandedRowsContext);
   const dispatch = useContext(MatrixExpandedRowsDispatchContext)!;
@@ -127,7 +127,7 @@ const MatrixRowGroup = ({ row, parents = [] }: MatrixRowProps) => {
   return (
     <>
       <TableRow $visible={isVisible} $highlighted={depth ? isVisible : isExpanded}>
-        <RowHeaderCell $depth={parents.length}>
+        <BaseRowHeaderCell $depth={parents.length}>
           <RowHeaderCellContent>
             <IconButton
               aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
@@ -138,7 +138,7 @@ const MatrixRowGroup = ({ row, parents = [] }: MatrixRowProps) => {
             </IconButton>
             {title}
           </RowHeaderCellContent>
-        </RowHeaderCell>
+        </BaseRowHeaderCell>
         {/** render empty cells for the rest of the row */}
         {Array(numberOfColumnsPerPage)
           .fill(0)
@@ -161,7 +161,7 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const depth = parents.length;
 
   // if is nested render a group
-  if (children) return <MatrixRowGroup row={row} parents={parents} />;
+  if (children) return <ExpandableRow row={row} parents={parents} />;
 
   const displayedColumns = columns.slice(startColumn, startColumn + numberOfColumnsPerPage);
   // render a regular row with the title cell and the values

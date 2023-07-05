@@ -71,7 +71,7 @@ interface MatrixRowProps {
 }
 
 export const MatrixCell = ({ value }: MatrixRowProps) => {
-  const { presentationOptions } = useContext(MatrixContext);
+  const { presentationOptions = {} } = useContext(MatrixContext);
   const isDots = getIsUsingDots(presentationOptions);
   const { showRawValue } = presentationOptions;
   const presentation = getPresentationOption(presentationOptions, value);
