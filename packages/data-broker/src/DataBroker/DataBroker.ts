@@ -4,7 +4,6 @@
  */
 
 import { lower } from 'case';
-import groupBy from 'lodash.groupby';
 
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
@@ -26,6 +25,7 @@ import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
 import { DataServiceMapping } from '../services/DataServiceMapping';
 import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
 import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
+import { getOrganisationUnitsByCountry } from './getOrganisationUnitsByCountry';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -136,17 +136,6 @@ export class DataBroker {
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
   };
 
-  private getOrganisationUnitsByCountry = async (organisationUnitCodes: string[]) => {
-    const orgUnits = await this.models.entity.find({ code: organisationUnitCodes });
-    const organisationUnitCodesByCountryCodes = Object.fromEntries(
-      Object.entries(groupBy(orgUnits, 'country_code')).map(([countryCode, orgUnitsInCountry]) => [
-        countryCode,
-        orgUnitsInCountry.map(({ code }) => code),
-      ]),
-    );
-    return organisationUnitCodesByCountryCodes;
-  };
-
   private checkDataElementPermissions = async (
     dataElements: DataSource[],
     organisationUnitCodes?: string[],
@@ -173,7 +162,8 @@ export class DataBroker {
       return organisationUnitCodes;
     }
 
-    const organisationUnitsByCountry = await this.getOrganisationUnitsByCountry(
+    const organisationUnitsByCountry = await getOrganisationUnitsByCountry(
+      this.models,
       organisationUnitCodes,
     );
     const countryCodes = Object.keys(organisationUnitsByCountry);
@@ -472,7 +462,9 @@ export class DataBroker {
 
     // First we get the mapping for each country, then if any two countries have the
     // exact same mapping we simply combine them
-    const countryCodes = Object.keys(await this.getOrganisationUnitsByCountry(orgUnitCodes));
+    const countryCodes = Object.keys(
+      await getOrganisationUnitsByCountry(this.models, orgUnitCodes),
+    );
 
     if (countryCodes.length === 1) {
       // No special logic needed, exit early
