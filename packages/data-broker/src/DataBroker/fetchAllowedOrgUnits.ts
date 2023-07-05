@@ -4,7 +4,7 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { DataBrokerModelRegistry, DataElement, DataGroup, DataSource } from '../types';
+import { DataBrokerModelRegistry, DataElement, DataGroup } from '../types';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -18,7 +18,7 @@ const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes
   return ['*', ...userPermissionGroups];
 };
 
-export const getAllowedOrgUnitsForDataElements = async (
+export const fetchAllowedOrgUnitsForDataElements = async (
   models: DataBrokerModelRegistry,
   dataElements: DataElement[],
   accessPolicy?: AccessPolicy,
@@ -77,7 +77,7 @@ export const getAllowedOrgUnitsForDataElements = async (
   return allowedOrgUnits;
 };
 
-export const getAllowedOrgUnitsForDataGroups = async (
+export const fetchAllowedOrgUnitsForDataGroups = async (
   models: DataBrokerModelRegistry,
   dataGroups: DataGroup[],
   accessPolicy?: AccessPolicy,
@@ -87,7 +87,7 @@ export const getAllowedOrgUnitsForDataGroups = async (
   for (const group of dataGroups) {
     const dataElements = await models.dataGroup.getDataElementsInDataGroup(group.code);
     try {
-      await getAllowedOrgUnitsForDataElements(models, dataElements, accessPolicy, orgUnitCodes);
+      await fetchAllowedOrgUnitsForDataElements(models, dataElements, accessPolicy, orgUnitCodes);
     } catch {
       missingPermissions.push(group.code);
     }

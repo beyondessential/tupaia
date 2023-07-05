@@ -26,9 +26,9 @@ import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchData
 import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 import {
-  getAllowedOrgUnitsForDataElements,
-  getAllowedOrgUnitsForDataGroups,
-} from './getAllowedOrgUnits';
+  fetchAllowedOrgUnitsForDataElements,
+  fetchAllowedOrgUnitsForDataGroups,
+} from './fetchAllowedOrgUnits';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -180,7 +180,7 @@ export class DataBroker {
     const dataElements = await fetchDataElements(this.models, dataElementCodes);
     const organisationUnitCodes = getOrganisationUnitCodes(options);
     const pulls = await this.getPulls(dataElements, organisationUnitCodes);
-    const allowedOrgUnits = await getAllowedOrgUnitsForDataElements(
+    const allowedOrgUnits = await fetchAllowedOrgUnitsForDataElements(
       this.models,
       dataElements,
       this.context.accessPolicy,
@@ -208,7 +208,7 @@ export class DataBroker {
     const dataGroups = await fetchDataGroups(this.models, dataGroupCodes);
     const organisationUnitCodes = getOrganisationUnitCodes(options);
     const pulls = await this.getPulls(dataGroups, organisationUnitCodes);
-    const allowedOrgUnits = await getAllowedOrgUnitsForDataGroups(
+    const allowedOrgUnits = await fetchAllowedOrgUnitsForDataGroups(
       this.models,
       dataGroups,
       this.context.accessPolicy,
