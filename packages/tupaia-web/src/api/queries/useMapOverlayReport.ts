@@ -4,14 +4,14 @@
  */
 import { useQuery } from 'react-query';
 import { momentToDateString } from '@tupaia/utils';
-import { get } from '../api';
-import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
 import {
   autoAssignColors,
   createValueMapping,
   getSpectrumScaleValues,
   SPECTRUM_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
+import { get } from '../api';
+import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
 
 // make the response from the new endpoint look like the response from the legacy endpoint
 const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayItem) => {
@@ -35,10 +35,10 @@ const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayIt
   };
 };
 
-const formatMapOverlayData = data => {
+const formatMapOverlayData = (data: any) => {
   const { serieses, measureData } = data;
 
-  const processedSerieses = serieses.map(series => {
+  const processedSerieses = serieses.map((series: any) => {
     const { values: mapOptionValues, type } = series;
     const values = autoAssignColors(mapOptionValues);
     const valueMapping = createValueMapping(values, type);

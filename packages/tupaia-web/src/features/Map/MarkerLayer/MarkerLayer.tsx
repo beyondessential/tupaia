@@ -5,10 +5,12 @@
 
 import React from 'react';
 import { useParams } from 'react-router';
+import camelCase from 'camelcase';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-map-components';
 import {
   useEntitiesWithLocation,
+  useEntity,
   useMapOverlayReport,
   useMapOverlays,
   useProject,
@@ -32,7 +34,7 @@ const useNavigateToDashboard = () => {
   };
 };
 
-const getSnakeCase = measureLevel => {
+const getSnakeCase = (measureLevel: string) => {
   return measureLevel
     ?.split(/\.?(?=[A-Z])/)
     .join('_')
@@ -46,6 +48,7 @@ export const MarkerLayer = () => {
   const navigateToDashboard = useNavigateToDashboard();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { data: entity } = useEntity(entityCode);
   const { data: entitiesData } = useEntitiesWithLocation(
     projectCode,
     entityCode,
@@ -56,12 +59,17 @@ export const MarkerLayer = () => {
   );
   const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay);
 
-  if (!entitiesData || !mapOverlayData) {
+  if (!entitiesData || !mapOverlayData || !entity) {
+    return null;
+  }
+
+  // todo: move to mapOverlays route
+  const displayOnLevel = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
+  if (displayOnLevel && camelCase(entity.type!) !== camelCase(displayOnLevel.displayOnLevel)) {
     return null;
   }
 
   const processedMeasureData = processMeasureData({
-    entityType: 'country', // Todo: add entity type
     entitiesData,
     measureData: mapOverlayData.measureData,
     serieses: mapOverlayData.serieses,
@@ -72,6 +80,7 @@ export const MarkerLayer = () => {
     <UIMarkerLayer
       measureData={processedMeasureData}
       serieses={mapOverlayData.serieses}
+      // @ts-ignore - ui-components types refer to organisation unit instead of entity so there is a mismatch
       onSeeOrgUnitDashboard={navigateToDashboard}
     />
   );

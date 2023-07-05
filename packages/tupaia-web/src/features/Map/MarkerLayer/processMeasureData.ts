@@ -2,26 +2,27 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import camelCase from 'camelcase';
 import { calculateRadiusScaleFactor, getMeasureDisplayInfo } from '@tupaia/ui-map-components';
+import { Entity } from '@tupaia/types';
 
+interface processMeasureData {
+  measureData: any;
+  entitiesData: any;
+  serieses: any;
+  hiddenValues: any;
+}
 export const processMeasureData = ({
-  entityType,
   measureData,
   entitiesData,
   serieses,
   hiddenValues,
-}) => {
-  const displayOnLevel = serieses.find(series => series.displayOnLevel);
-  if (displayOnLevel && camelCase(entityType) !== camelCase(displayOnLevel.displayOnLevel)) {
-    return null;
-  }
-
+}: processMeasureData) => {
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
-  return entitiesData.map(entity => {
-    const measure = measureData.find(e => e.organisationUnitCode === entity.code);
+  return entitiesData.map((entity: Entity) => {
+    const measure = measureData.find(
+      (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
+    );
     const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
       measure,
       serieses,

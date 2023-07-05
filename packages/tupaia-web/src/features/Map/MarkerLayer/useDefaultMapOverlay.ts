@@ -21,7 +21,7 @@ export const useDefaultMapOverlay = () => {
 
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
-  const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay];
+  const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
   const defaultMapOverlayId = project?.defaultMeasure || DEFAULT_MAP_OVERLAY_ID;
 
   useEffect(() => {
