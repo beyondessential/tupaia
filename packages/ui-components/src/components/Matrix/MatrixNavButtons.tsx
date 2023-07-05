@@ -7,7 +7,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Button } from '../Button';
-import { MatrixContext, MatrixStartColumnDispatchContext } from './MatrixContext';
+import { MatrixContext, MatrixDispatchContext } from './MatrixContext';
 
 const TableMoveButtonWrapper = styled.div`
   display: flex;
@@ -37,16 +37,16 @@ const TableMoveButton = styled(Button).attrs({
 
 export const MatrixNavButtons = () => {
   const { startColumn, columns, numberOfColumnsPerPage } = useContext(MatrixContext);
-  const dispatch = useContext(MatrixStartColumnDispatchContext)!;
+  const dispatch = useContext(MatrixDispatchContext)!;
   // Show the previous button when the first column is not visible
   const showButtons = columns.length > numberOfColumnsPerPage;
 
   const handleMoveColumnLeft = () => {
-    dispatch({ type: 'DECREASE' });
+    dispatch({ type: 'DECREASE_START_COLUMN' });
   };
 
   const handleMoveColumnRight = () => {
-    dispatch({ type: 'INCREASE' });
+    dispatch({ type: 'INCREASE_START_COLUMN' });
   };
 
   if (!showButtons) return null;

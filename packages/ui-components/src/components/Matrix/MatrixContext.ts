@@ -2,63 +2,61 @@ import { Dispatch, createContext } from 'react';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { PresentationOptions } from '@tupaia/types';
 
-const defaultContext = {
+const defaultContextValue = {
   rows: [],
   columns: [],
   presentationOptions: {},
   startColumn: 0,
   numberOfColumnsPerPage: 0,
+  expandedRows: [],
 } as {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
   presentationOptions: PresentationOptions;
   startColumn: number;
   numberOfColumnsPerPage: number;
+  expandedRows: MatrixRowType['title'][];
 };
+
 // This is the context for the rows, columns and presentation options of the matrix
-export const MatrixContext = createContext(defaultContext);
+export const MatrixContext = createContext(defaultContextValue);
 
-interface SetStartColumnAction {
-  type: 'INCREASE' | 'DECREASE';
+interface MatrixAction {
+  type: 'EXPAND_ROW' | 'COLLAPSE_ROW' | 'INCREASE_START_COLUMN' | 'DECREASE_START_COLUMN';
+  payload: MatrixRowType['title'] | undefined;
 }
 
-export const MatrixStartColumnDispatchContext = createContext<Dispatch<SetStartColumnAction> | null>(
-  null,
-);
+// This is the context for the dispatch function of the matrix
+export const MatrixDispatchContext = createContext<Dispatch<MatrixAction> | null>(null);
 
-export const matrixStartColumnReducer = (startColumn: number, action: SetStartColumnAction) => {
-  switch (action.type) {
-    case 'INCREASE':
-      return startColumn + 1;
-    case 'DECREASE':
-      return startColumn - 1;
-    default:
-      return startColumn;
-  }
-};
+type MatrixReducerState = Pick<typeof defaultContextValue, 'startColumn' | 'expandedRows'>;
 
-interface ExpandRowAction {
-  type: 'EXPAND_ROW' | 'COLLAPSE_ROW';
-  payload: MatrixRowType['title'];
-}
-
-// This is the context for the expanded rows of the matrix
-export const MatrixExpandedRowsContext = createContext<MatrixRowType['title'][]>([]);
-// This is the context for the dispatch function for the expanded rows of the matrix
-export const MatrixExpandedRowsDispatchContext = createContext<Dispatch<ExpandRowAction> | null>(
-  null,
-);
-
-export const matrixExpandedRowsReducer = (
-  expandedRows: MatrixRowType['title'][],
-  action: ExpandRowAction,
-) => {
+export const matrixReducer = (
+  state: MatrixReducerState,
+  action: MatrixAction,
+): MatrixReducerState => {
   switch (action.type) {
     case 'EXPAND_ROW':
-      return [...expandedRows, action.payload];
+      return {
+        ...state,
+        expandedRows: [...state.expandedRows, action.payload!],
+      };
     case 'COLLAPSE_ROW':
-      return expandedRows.filter(rowTitle => rowTitle !== action.payload);
+      return {
+        ...state,
+        expandedRows: state.expandedRows.filter(row => row !== action.payload),
+      };
+    case 'INCREASE_START_COLUMN':
+      return {
+        ...state,
+        startColumn: state.startColumn + 1,
+      };
+    case 'DECREASE_START_COLUMN':
+      return {
+        ...state,
+        startColumn: state.startColumn - 1,
+      };
     default:
-      return expandedRows;
+      return state;
   }
 };

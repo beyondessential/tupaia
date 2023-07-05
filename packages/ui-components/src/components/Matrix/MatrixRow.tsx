@@ -8,67 +8,14 @@ import { IconButton, TableRow as MuiTableRow, TableCell, lighten } from '@materi
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
-import { hexToRgba } from './utils';
 import { MatrixCell } from './MatrixCell';
-import {
-  MatrixContext,
-  MatrixExpandedRowsContext,
-  MatrixExpandedRowsDispatchContext,
-} from './MatrixContext';
+import { MatrixContext, MatrixDispatchContext } from './MatrixContext';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded: boolean;
 }>`
   transform: ${({ $expanded }) => ($expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease-in-out;
-`;
-const Dot = styled.div<{ $color?: string }>`
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: ${({ $color }) => $color};
-  border: 0.375rem solid
-    ${({ theme, $color }) =>
-      theme.palette.background.default === 'transparent'
-        ? 'transparent'
-        : hexToRgba(theme.palette.background.default, 0.8)};
-  margin: 0 auto;
-`;
-
-const DataCell = styled(TableCell)`
-  vertical-align: middle;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  padding: 0;
-  height: 100%;
-  &:hover {
-    &:before,
-    &:after {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      pointer-events: none;
-    }
-    &:before {
-      // do a highlight effect for the column when hovering over a cell
-      // fill with transparent black, and go extra tall to cover the whole column. Table overflow:hidden handles overflows
-      background-color: rgba(0, 0, 0, 0.2);
-      left: 0;
-      top: -5000px;
-      height: 10000px;
-      width: 100%;
-    }
-    &:after {
-      // do a highlight effect for the row when hovering over a cell
-      // fill with transparent white, and go extra wide to cover the whole width. Table overflow:hidden handles overflows
-      background-color: rgba(255, 255, 2555, 0.1);
-      top: 0;
-      left: -5000px;
-      width: 10000px;
-      height: 100%;
-    }
-  }
 `;
 
 const TableRow = styled(MuiTableRow)<{
@@ -110,9 +57,8 @@ interface MatrixRowProps {
 
 const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
-  const expandedRows = useContext(MatrixExpandedRowsContext);
-  const dispatch = useContext(MatrixExpandedRowsDispatchContext)!;
-  const { numberOfColumnsPerPage } = useContext(MatrixContext);
+  const dispatch = useContext(MatrixDispatchContext)!;
+  const { numberOfColumnsPerPage, expandedRows } = useContext(MatrixContext);
 
   const toggleExpandedRows = (rowTitle: string) => {
     if (expandedRows.includes(rowTitle)) {
@@ -155,8 +101,7 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
 
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
-  const expandedRows = useContext(MatrixExpandedRowsContext);
-  const { columns, startColumn, numberOfColumnsPerPage } = useContext(MatrixContext);
+  const { columns, startColumn, numberOfColumnsPerPage, expandedRows } = useContext(MatrixContext);
   const isVisible = parents.every(parent => expandedRows.includes(parent));
   const depth = parents.length;
 

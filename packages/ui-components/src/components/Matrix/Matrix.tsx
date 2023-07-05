@@ -5,17 +5,13 @@
 
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Table } from '@material-ui/core';
+import { Table, TableBody } from '@material-ui/core';
 import { MatrixHeaderRow } from './MatrixHeaderRow';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { hexToRgba } from './utils';
-import {
-  MatrixContext,
-  MatrixStartColumnDispatchContext,
-  matrixStartColumnReducer,
-} from './MatrixContext';
-import { MatrixBody } from './MatrixBody';
+import { MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
+import { MatrixRow } from './MatrixRow';
 
 export const MINIMUM_CELL_WIDTH = 55;
 
@@ -38,7 +34,10 @@ interface MatrixProps {
 }
 
 export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixProps) => {
-  const [startColumn, dispatch] = useReducer(matrixStartColumnReducer, 0);
+  const [{ startColumn, expandedRows }, dispatch] = useReducer(matrixReducer, {
+    startColumn: 0,
+    expandedRows: [],
+  });
   const [numberOfColumnsPerPage, setNumberOfColumnsPerPage] = useState(0);
   const tableEl = useRef<HTMLTableElement | null>(null);
 
@@ -63,15 +62,20 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
         rows,
         startColumn,
         numberOfColumnsPerPage,
+        expandedRows,
       }}
     >
-      <MatrixStartColumnDispatchContext.Provider value={dispatch}>
+      <MatrixDispatchContext.Provider value={dispatch}>
         <MatrixNavButtons />
         <Table component={MatrixTable} ref={tableEl}>
           <MatrixHeaderRow />
-          <MatrixBody />
+          <TableBody>
+            {rows.map(row => (
+              <MatrixRow row={row} key={row.title} parents={[]} />
+            ))}
+          </TableBody>
         </Table>
-      </MatrixStartColumnDispatchContext.Provider>
+      </MatrixDispatchContext.Provider>
     </MatrixContext.Provider>
   );
 };
