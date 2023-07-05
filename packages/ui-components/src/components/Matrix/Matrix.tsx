@@ -84,7 +84,7 @@ export const Matrix = ({
   );
 
   useEffect(() => {
-    // Update the number of columns per page when the table width changes, e.g. the table is resized
+    // Update the number of columns per page when the table width changes, e.g. the table is resized. Mostly important for onmount
     const updateNumberOfColumnsPerPage = () => {
       if (!tableEl || !tableEl?.current || !tableEl?.current?.offsetWidth) return;
       const { offsetWidth } = tableEl?.current;
