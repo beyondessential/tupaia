@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { TableCell, lighten, Button } from '@material-ui/core';
+import React, { useContext } from 'react';
+import { TableCell, Button } from '@material-ui/core';
 import styled from 'styled-components';
-import { PresentationOptions } from '@tupaia/types';
 import { getIsUsingDots, getPresentationOption, hexToRgba } from './utils';
+import { MatrixContext } from './MatrixContext';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;
@@ -15,7 +15,7 @@ export const Dot = styled.div<{ $color?: string }>`
   border-radius: 50%;
   background-color: ${({ $color }) => $color};
   border: 0.375rem solid
-    ${({ theme, $color }) =>
+    ${({ theme }) =>
       theme.palette.background.default === 'transparent'
         ? 'transparent'
         : hexToRgba(theme.palette.background.default, 0.8)};
@@ -68,10 +68,10 @@ const ExpandCellButton = styled(Button)`
 
 interface MatrixRowProps {
   value: any;
-  presentationOptions: PresentationOptions;
 }
 
-export const MatrixCell = ({ value, presentationOptions = {} }: MatrixRowProps) => {
+export const MatrixCell = ({ value }: MatrixRowProps) => {
+  const { presentationOptions } = useContext(MatrixContext);
   const isDots = getIsUsingDots(presentationOptions);
   const { showRawValue } = presentationOptions;
   const presentation = getPresentationOption(presentationOptions, value);

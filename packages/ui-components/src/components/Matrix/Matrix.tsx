@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
@@ -12,6 +12,8 @@ import { Button } from '../Button';
 import { MatrixRow } from './MatrixRow';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { hexToRgba } from './utils';
+import { MatrixContext } from './MatrixContext';
+import { MatrixBody } from './MatrixBody';
 
 export const MINIMUM_CELL_WIDTH = 55;
 export const MAXIMUM_CELL_WIDTH = 200;
@@ -75,7 +77,6 @@ export const Matrix = ({
 }: MatrixProps) => {
   const [startColumn, setStartColumn] = useState(0);
   const [numberOfColumnsPerPage, setNumberOfColumnsPerPage] = useState(0);
-  const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const tableEl = useRef<HTMLTableElement | null>(null);
 
   const maximumColumnWidth = Math.min(
@@ -111,12 +112,6 @@ export const Matrix = ({
     setStartColumn(startColumn + 1);
   };
 
-  const toggleExpandedRows = (category: string) => {
-    const isExpanded = expandedRows.includes(category);
-    setExpandedRows(
-      isExpanded ? expandedRows.filter(row => row !== category) : [...expandedRows, category],
-    );
-  };
   return (
     <Wrapper>
       {showButtons && (
@@ -142,22 +137,18 @@ export const Matrix = ({
         </TableMoveButtonWrapper>
       )}
 
-      <Table component={MatrixTable} ref={tableEl}>
-        <MatrixHeaderRow columns={displayedColumns} />
-        <TableBody>
-          {rows.map(row => (
-            <MatrixRow
-              key={row.title}
-              row={row}
-              displayedColumns={displayedColumns}
-              expanded={expandedRows}
-              toggleExpanded={toggleExpandedRows}
-              presentationOptions={presentationOptions}
-              parents={[]}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <MatrixContext.Provider
+        value={{
+          presentationOptions,
+          columns: displayedColumns,
+          rows,
+        }}
+      >
+        <Table component={MatrixTable} ref={tableEl}>
+          <MatrixHeaderRow />
+          <MatrixBody />
+        </Table>
+      </MatrixContext.Provider>
     </Wrapper>
   );
 };

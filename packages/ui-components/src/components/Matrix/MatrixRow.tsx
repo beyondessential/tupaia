@@ -3,14 +3,18 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { IconButton, TableRow as MuiTableRow, TableCell, lighten, Button } from '@material-ui/core';
+import React, { useContext } from 'react';
+import { IconButton, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
-import { PresentationOptions } from '@tupaia/types';
-import { MatrixColumnType, MatrixRowType } from '../../types';
-import { getIsUsingDots, getPresentationOption, hexToRgba } from './utils';
+import { MatrixRowType } from '../../types';
+import { hexToRgba } from './utils';
 import { MatrixCell } from './MatrixCell';
+import {
+  MatrixContext,
+  MatrixExpandedRowsContext,
+  MatrixExpandedRowsDispatchContext,
+} from './MatrixContext';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded: boolean;
@@ -67,7 +71,6 @@ const DataCell = styled(TableCell)`
   }
 `;
 
-const DataCellContent = styled.div``;
 const TableRow = styled(MuiTableRow)<{
   $highlighted?: boolean;
   $visible?: boolean;
@@ -99,33 +102,27 @@ const NonGroupedRowHeaderCell = styled(RowHeaderCell)`
   padding-left: ${({ $depth }) => `${1.5 + $depth * 1.5}rem`};
 `;
 
-const ExpandCellButton = styled(Button)`
-  width: 100%;
-  height: 100%;
-  padding: 0;
-`;
-
 type MatrixRowTitle = MatrixRowType['title'];
 interface MatrixRowProps {
   row: MatrixRowType;
-  displayedColumns: MatrixColumnType[];
-  expanded: MatrixRowTitle[];
-  toggleExpanded: (title: MatrixRowTitle) => void;
   parents: MatrixRowTitle[];
-  presentationOptions: PresentationOptions;
 }
 
-export const MatrixRowGroup = ({
-  row,
-  displayedColumns,
-  expanded,
-  toggleExpanded,
-  parents = [],
-  presentationOptions,
-}: MatrixRowProps) => {
+const MatrixRowGroup = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
-  const isExpanded = expanded.includes(title);
-  const isVisible = parents.every(parent => expanded.includes(parent));
+  const expandedRows = useContext(MatrixExpandedRowsContext);
+  const dispatch = useContext(MatrixExpandedRowsDispatchContext)!;
+  const { columns } = useContext(MatrixContext);
+
+  const toggleExpandedRows = (rowTitle: string) => {
+    if (expandedRows.includes(rowTitle)) {
+      dispatch({ type: 'COLLAPSE_ROW', payload: rowTitle });
+    } else {
+      dispatch({ type: 'EXPAND_ROW', payload: rowTitle });
+    }
+  };
+  const isExpanded = expandedRows.includes(title);
+  const isVisible = parents.every(parent => expandedRows.includes(parent));
   const depth = parents.length;
   return (
     <>
@@ -135,7 +132,7 @@ export const MatrixRowGroup = ({
             <IconButton
               aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
               size="small"
-              onClick={() => toggleExpanded(title)}
+              onClick={() => toggleExpandedRows(title)}
             >
               <ExpandIcon $expanded={isExpanded} />
             </IconButton>
@@ -143,63 +140,35 @@ export const MatrixRowGroup = ({
           </RowHeaderCellContent>
         </RowHeaderCell>
         {/** render empty cells for the rest of the row */}
-        {Array(displayedColumns.length)
+        {Array(columns.length)
           .fill(0)
           .map(() => (
             <TableCell />
           ))}
       </TableRow>
       {children?.map(child => (
-        <MatrixRow
-          key={child.title}
-          row={child}
-          displayedColumns={displayedColumns}
-          expanded={expanded}
-          toggleExpanded={toggleExpanded}
-          parents={[...parents, title]}
-          presentationOptions={presentationOptions}
-        />
+        <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
       ))}
     </>
   );
 };
 
-export const MatrixRow = ({
-  row,
-  displayedColumns,
-  expanded,
-  toggleExpanded,
-  parents = [],
-  presentationOptions = {},
-}: MatrixRowProps) => {
+export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
-  const isVisible = parents.every(parent => expanded.includes(parent));
+  const expandedRows = useContext(MatrixExpandedRowsContext);
+  const { columns } = useContext(MatrixContext);
+  const isVisible = parents.every(parent => expandedRows.includes(parent));
   const depth = parents.length;
 
   // if is nested render a group
-  if (children)
-    return (
-      <MatrixRowGroup
-        row={row}
-        displayedColumns={displayedColumns}
-        expanded={expanded}
-        toggleExpanded={toggleExpanded}
-        parents={parents}
-        presentationOptions={presentationOptions}
-      />
-    );
+  if (children) return <MatrixRowGroup row={row} parents={parents} />;
 
   // render a regular row with the title cell and the values
   return (
     <TableRow $visible={isVisible} $highlighted={depth > 0}>
       <NonGroupedRowHeaderCell $depth={parents.length}>{title}</NonGroupedRowHeaderCell>
-      {displayedColumns.map(({ key }) => (
-        // TODO: find a better way to handle presentation options - see if can be a context or something
-        <MatrixCell
-          key={`column-${key}-row-${row.title}-value`}
-          value={row[key]}
-          presentationOptions={presentationOptions}
-        />
+      {columns.map(({ key }) => (
+        <MatrixCell key={`column-${key}-row-${row.title}-value`} value={row[key]} />
       ))}
     </TableRow>
   );
