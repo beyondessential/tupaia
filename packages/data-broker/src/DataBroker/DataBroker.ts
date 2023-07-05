@@ -69,11 +69,9 @@ const getModelRegistry = () => {
   return modelRegistry;
 };
 
-const setOrganisationUnitCodes = (options: PullOptions) => {
-  const { organisationUnitCode, organisationUnitCodes, ...restOfOptions } = options;
-  const orgUnitCodes =
-    organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : undefined);
-  return { ...restOfOptions, organisationUnitCodes: orgUnitCodes };
+const getOrganisationUnitCodes = (options: PullOptions) => {
+  const { organisationUnitCode, organisationUnitCodes } = options;
+  return organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : undefined);
 };
 
 export class DataBroker {
@@ -198,15 +196,15 @@ export class DataBroker {
     options: PullOptions,
   ): Promise<AnalyticResults> {
     const dataElements = await fetchDataElements(this.models, dataElementCodes);
-    const validatedOptions = setOrganisationUnitCodes(options);
-
-    const pulls = await this.getPulls(dataElements, validatedOptions.organisationUnitCodes);
+    const organisationUnitCodes = getOrganisationUnitCodes(options);
+    const pulls = await this.getPulls(dataElements, organisationUnitCodes);
     const type = this.getDataSourceTypes().DATA_ELEMENT;
+
     const nestedResults = await Promise.all(
       pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
         return this.pullForServiceAndType(
           dataSourcesForThisPull,
-          validatedOptions,
+          { ...options, organisationUnitCodes },
           type,
           serviceType,
           dataServiceMapping,
@@ -222,15 +220,15 @@ export class DataBroker {
 
   public async pullEvents(dataGroupCodes: string[], options: PullOptions): Promise<EventResults> {
     const dataGroups = await fetchDataGroups(this.models, dataGroupCodes);
-    const validatedOptions = setOrganisationUnitCodes(options);
-
-    const pulls = await this.getPulls(dataGroups, validatedOptions.organisationUnitCodes);
+    const organisationUnitCodes = getOrganisationUnitCodes(options);
+    const pulls = await this.getPulls(dataGroups, organisationUnitCodes);
     const type = this.getDataSourceTypes().DATA_GROUP;
+
     const nestedResults = await Promise.all(
       pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
         return this.pullForServiceAndType(
           dataSourcesForThisPull,
-          validatedOptions,
+          { ...options, organisationUnitCodes },
           type,
           serviceType,
           dataServiceMapping,
@@ -246,15 +244,15 @@ export class DataBroker {
     options: PullOptions,
   ): Promise<SyncGroupResults> {
     const syncGroups = await fetchSyncGroups(this.models, syncGroupCodes);
-    const validatedOptions = setOrganisationUnitCodes(options);
-
-    const pulls = await this.getPulls(syncGroups, validatedOptions.organisationUnitCodes);
+    const organisationUnitCodes = getOrganisationUnitCodes(options);
+    const pulls = await this.getPulls(syncGroups, organisationUnitCodes);
     const type = this.getDataSourceTypes().SYNC_GROUP;
+
     const nestedResults = await Promise.all(
       pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
         return this.pullForServiceAndType(
           dataSourcesForThisPull,
-          validatedOptions,
+          { ...options, organisationUnitCodes },
           type,
           serviceType,
           dataServiceMapping,
