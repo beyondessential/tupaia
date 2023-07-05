@@ -5,20 +5,17 @@
 
 import React from 'react';
 import { useParams } from 'react-router';
-import camelCase from 'camelcase';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  calculateRadiusScaleFactor,
-  getMeasureDisplayInfo,
-  MarkerLayer as UIMarkerLayer,
-} from '@tupaia/ui-map-components';
+import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-map-components';
 import {
   useEntitiesWithLocation,
   useMapOverlayReport,
   useMapOverlays,
   useProject,
-} from '../../api/queries';
-import { EntityCode } from '../../types';
+} from '../../../api/queries';
+import { EntityCode } from '../../../types';
+import { processMeasureData } from './processMeasureData';
+import { useDefaultMapOverlay } from './useDefaultMapOverlay';
 
 const useNavigateToDashboard = () => {
   const { projectCode } = useParams();
@@ -42,39 +39,10 @@ const getSnakeCase = measureLevel => {
     .toLowerCase();
 };
 
-const processMeasureData = ({ entityType, measureData, entitiesData, serieses, hiddenValues }) => {
-  const displayOnLevel = serieses.find(series => series.displayOnLevel);
-  if (displayOnLevel && camelCase(entityType) !== camelCase(displayOnLevel.displayOnLevel)) {
-    return null;
-  }
-
-  const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
-
-  return entitiesData.map(entity => {
-    const measure = measureData.find(e => e.organisationUnitCode === entity.code);
-    const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
-      measure,
-      serieses,
-      hiddenValues,
-      radiusScaleFactor,
-    );
-
-    return {
-      ...entity,
-      ...measure,
-      isHidden,
-      radius,
-      organisationUnitCode: entity.code,
-      coordinates: entity.point,
-      region: entity.region,
-      color,
-      icon,
-      originalValue,
-    };
-  });
-};
-
 export const MarkerLayer = () => {
+  // set the map default overlay if there isn't one selected
+  useDefaultMapOverlay();
+
   const navigateToDashboard = useNavigateToDashboard();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
