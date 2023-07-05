@@ -4,7 +4,7 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { DataBrokerModelRegistry, DataElement, DataSource } from '../types';
+import { DataBrokerModelRegistry, DataElement, DataGroup, DataSource } from '../types';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -20,7 +20,7 @@ const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes
 
 export const getAllowedOrgUnitsForDataElements = async (
   models: DataBrokerModelRegistry,
-  dataElements: DataSource[],
+  dataElements: DataElement[],
   accessPolicy?: AccessPolicy,
   orgUnitCodes?: string[],
 ) => {
@@ -79,7 +79,7 @@ export const getAllowedOrgUnitsForDataElements = async (
 
 export const getAllowedOrgUnitsForDataGroups = async (
   models: DataBrokerModelRegistry,
-  dataGroups: DataSource[],
+  dataGroups: DataGroup[],
   accessPolicy?: AccessPolicy,
   orgUnitCodes?: string[],
 ) => {
@@ -96,14 +96,4 @@ export const getAllowedOrgUnitsForDataGroups = async (
     return orgUnitCodes;
   }
   throw new Error(`Missing permissions to the following data groups: ${missingPermissions}`);
-};
-
-// No check for syncGroups currently
-export const getAllowedOrgUnitsForSyncGroups = async (
-  models: DataBrokerModelRegistry,
-  syncGroups: DataSource[],
-  accessPolicy?: AccessPolicy,
-  orgUnitCodes?: string[],
-) => {
-  return orgUnitCodes;
 };

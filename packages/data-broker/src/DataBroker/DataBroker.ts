@@ -28,7 +28,6 @@ import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 import {
   getAllowedOrgUnitsForDataElements,
   getAllowedOrgUnitsForDataGroups,
-  getAllowedOrgUnitsForSyncGroups,
 } from './getAllowedOrgUnits';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -46,19 +45,10 @@ type FetchConditions = { code: string | string[] };
 
 type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
-type PermissionChecker = (
-  models: DataBrokerModelRegistry,
-  dataSources: DataSource[],
-  accessPolicy?: AccessPolicy,
-  organisationUnitCodes?: string[],
-) => Promise<string[] | undefined>;
-
 interface PullOptions {
   organisationUnitCode?: string;
   organisationUnitCodes?: string[];
 }
-
-type ValidatedOptions = { organisationUnitCodes?: string[] } & Record<string, unknown>;
 
 let modelRegistry: DataBrokerModelRegistry;
 
@@ -80,7 +70,6 @@ export class DataBroker {
   private readonly models: DataBrokerModelRegistry;
   private readonly dataServiceResolver: DataServiceResolver;
   private readonly fetchers: Record<DataSourceType, Fetcher>;
-  private readonly permissionCheckers: Record<DataSourceType, PermissionChecker>;
 
   public constructor(context = {}) {
     this.context = context;
@@ -91,13 +80,6 @@ export class DataBroker {
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
       // @ts-ignore
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
-    };
-    // Run permission checks in data broker so we only expose data the user is allowed to see
-    // It's a good centralised place for it
-    this.permissionCheckers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: getAllowedOrgUnitsForDataElements,
-      [this.getDataSourceTypes().DATA_GROUP]: getAllowedOrgUnitsForDataGroups,
-      [this.getDataSourceTypes().SYNC_GROUP]: getAllowedOrgUnitsForSyncGroups,
     };
   }
 
@@ -198,17 +180,21 @@ export class DataBroker {
     const dataElements = await fetchDataElements(this.models, dataElementCodes);
     const organisationUnitCodes = getOrganisationUnitCodes(options);
     const pulls = await this.getPulls(dataElements, organisationUnitCodes);
-    const type = this.getDataSourceTypes().DATA_ELEMENT;
+    const allowedOrgUnits = await getAllowedOrgUnitsForDataElements(
+      this.models,
+      dataElements,
+      this.context.accessPolicy,
+      organisationUnitCodes,
+    );
 
     const nestedResults = await Promise.all(
-      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
-        return this.pullForServiceAndType(
-          dataSourcesForThisPull,
-          { ...options, organisationUnitCodes },
-          type,
-          serviceType,
+      pulls.map(({ dataSources: dataElementsForThisPull, serviceType, dataServiceMapping }) => {
+        const service = this.createService(serviceType);
+        return service.pull(dataElementsForThisPull, this.getDataSourceTypes().DATA_ELEMENT, {
+          ...options,
           dataServiceMapping,
-        );
+          organisationUnitCodes: allowedOrgUnits,
+        });
       }),
     );
 
@@ -222,17 +208,21 @@ export class DataBroker {
     const dataGroups = await fetchDataGroups(this.models, dataGroupCodes);
     const organisationUnitCodes = getOrganisationUnitCodes(options);
     const pulls = await this.getPulls(dataGroups, organisationUnitCodes);
-    const type = this.getDataSourceTypes().DATA_GROUP;
+    const allowedOrgUnits = await getAllowedOrgUnitsForDataGroups(
+      this.models,
+      dataGroups,
+      this.context.accessPolicy,
+      organisationUnitCodes,
+    );
 
     const nestedResults = await Promise.all(
-      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
-        return this.pullForServiceAndType(
-          dataSourcesForThisPull,
-          { ...options, organisationUnitCodes },
-          type,
-          serviceType,
+      pulls.map(({ dataSources: dataGroupsForThisPull, serviceType, dataServiceMapping }) => {
+        const service = this.createService(serviceType);
+        return service.pull(dataGroupsForThisPull, this.getDataSourceTypes().DATA_GROUP, {
+          ...options,
           dataServiceMapping,
-        );
+          organisationUnitCodes: allowedOrgUnits,
+        });
       }),
     );
 
@@ -246,17 +236,15 @@ export class DataBroker {
     const syncGroups = await fetchSyncGroups(this.models, syncGroupCodes);
     const organisationUnitCodes = getOrganisationUnitCodes(options);
     const pulls = await this.getPulls(syncGroups, organisationUnitCodes);
-    const type = this.getDataSourceTypes().SYNC_GROUP;
 
     const nestedResults = await Promise.all(
-      pulls.map(({ dataSources: dataSourcesForThisPull, serviceType, dataServiceMapping }) => {
-        return this.pullForServiceAndType(
-          dataSourcesForThisPull,
-          { ...options, organisationUnitCodes },
-          type,
-          serviceType,
+      pulls.map(({ dataSources: dataGroupsForThisPull, serviceType, dataServiceMapping }) => {
+        const service = this.createService(serviceType);
+        return service.pull(dataGroupsForThisPull, this.getDataSourceTypes().SYNC_GROUP, {
+          ...options,
           dataServiceMapping,
-        );
+          organisationUnitCodes,
+        });
       }),
     );
 
@@ -268,30 +256,6 @@ export class DataBroker {
       {},
     );
   }
-
-  private pullForServiceAndType = async (
-    dataSources: DataSource[],
-    options: ValidatedOptions,
-    type: DataSourceType,
-    serviceType: ServiceType,
-    dataServiceMapping: DataServiceMapping,
-  ) => {
-    const { organisationUnitCodes } = options;
-    const permissionChecker = this.permissionCheckers[type];
-    // Permission checkers will throw if no access to any organisationUnits
-    const organisationUnitCodesWithAccess = await permissionChecker(
-      this.models,
-      dataSources,
-      this.context.accessPolicy,
-      organisationUnitCodes,
-    );
-    const service = this.createService(serviceType);
-    return service.pull(dataSources, type, {
-      ...options,
-      dataServiceMapping,
-      organisationUnitCodes: organisationUnitCodesWithAccess,
-    });
-  };
 
   public async pullMetadata(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
