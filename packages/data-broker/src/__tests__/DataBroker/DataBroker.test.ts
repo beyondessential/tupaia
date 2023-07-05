@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import assert from 'assert';
+
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DataBroker } from '../../DataBroker/DataBroker';
 import { Service } from '../../services/Service';
@@ -29,12 +31,24 @@ jest.mock('@tupaia/server-boilerplate', () => ({
 }));
 
 jest.mock('../../DataBroker/fetchDataSources', () => ({
-  fetchDataElements: async (models: DataBrokerModelRegistry, codes: string[]) =>
-    Object.values(DATA_ELEMENTS).filter(({ code }) => codes.includes(code)),
-  fetchDataGroups: async (models: DataBrokerModelRegistry, codes: string[]) =>
-    Object.values(DATA_GROUPS).filter(({ code }) => codes.includes(code)),
-  fetchSyncGroups: async (models: DataBrokerModelRegistry, codes: string[]) =>
-    Object.values(SYNC_GROUPS).filter(({ code }) => codes.includes(code)),
+  fetchDataElements: async (models: DataBrokerModelRegistry, codes: string[]) => {
+    assert(codes.length > 0);
+    const results = Object.values(DATA_ELEMENTS).filter(({ code }) => codes.includes(code));
+    assert(results.length > 0);
+    return results;
+  },
+  fetchDataGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+    assert(codes.length > 0);
+    const results = Object.values(DATA_GROUPS).filter(({ code }) => codes.includes(code));
+    assert(results.length > 0);
+    return results;
+  },
+  fetchSyncGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+    assert(codes.length > 0);
+    const results = Object.values(SYNC_GROUPS).filter(({ code }) => codes.includes(code));
+    assert(results.length > 0);
+    return results;
+  },
 }));
 
 describe('DataBroker', () => {
@@ -489,6 +503,54 @@ describe('DataBroker', () => {
         ...DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_PROGRAM_02,
         ...DATA_BY_SERVICE.tupaia.eventsByProgram.TUPAIA_PROGRAM_01,
       ]);
+    });
+  });
+
+  describe('pullSyncGroupResults', () => {
+    it('same service', async () => {
+      const dataBroker = new DataBroker();
+      const data = await dataBroker.pullSyncGroupResults(
+        ['DHIS_SYNC_GROUP_01', 'DHIS_SYNC_GROUP_02'],
+        options,
+      );
+
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
+      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+        [SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02],
+        'syncGroup',
+        expect.objectContaining(options),
+      );
+      expect(data).toStrictEqual({
+        DHIS_SYNC_GROUP_01: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_01,
+        DHIS_SYNC_GROUP_02: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_02,
+      });
+    });
+
+    it('multiple services', async () => {
+      const dataBroker = new DataBroker();
+      const data = await dataBroker.pullSyncGroupResults(
+        ['DHIS_SYNC_GROUP_01', 'TUPAIA_SYNC_GROUP_01', 'DHIS_SYNC_GROUP_02'],
+        options,
+      );
+
+      expect(createServiceMock).toHaveBeenCalledTimes(2);
+      expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
+      expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
+      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+        [SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02],
+        'syncGroup',
+        expect.objectContaining(options),
+      );
+      expect(SERVICES.tupaia.pull).toHaveBeenCalledOnceWith(
+        [SYNC_GROUPS.TUPAIA_SYNC_GROUP_01],
+        'syncGroup',
+        expect.objectContaining(options),
+      );
+      expect(data).toStrictEqual({
+        DHIS_SYNC_GROUP_01: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_01,
+        DHIS_SYNC_GROUP_02: DATA_BY_SERVICE.dhis.eventsByProgram.DHIS_SYNC_GROUP_02,
+        TUPAIA_SYNC_GROUP_01: DATA_BY_SERVICE.tupaia.eventsByProgram.TUPAIA_SYNC_GROUP_01,
+      });
     });
   });
 

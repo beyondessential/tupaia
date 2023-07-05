@@ -4,7 +4,6 @@
  */
 
 import { DataBrokerModelRegistry } from '../types';
-import { DATA_SOURCE_TYPES } from '../utils';
 
 const checkRequestedVsFound = (requested: string[], found: string[], description: string) => {
   if (found.length === 0) {

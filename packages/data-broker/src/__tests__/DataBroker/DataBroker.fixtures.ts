@@ -32,8 +32,21 @@ export const DATA_GROUPS = dataGroupTypes({
 });
 
 export const SYNC_GROUPS = dataServiceSyncGroupTypes({
-  SYNC_GROUP_01: { code: 'SYNC_GROUP_01', data_group_code: 'SYNC_GROUP_01', service_type: 'dhis' },
-  SYNC_GROUP_02: { code: 'SYNC_GROUP_02', data_group_code: 'SYNC_GROUP_02', service_type: 'dhis' },
+  DHIS_SYNC_GROUP_01: {
+    code: 'DHIS_SYNC_GROUP_01',
+    data_group_code: 'DHIS_SYNC_GROUP_01',
+    service_type: 'dhis',
+  },
+  DHIS_SYNC_GROUP_02: {
+    code: 'DHIS_SYNC_GROUP_02',
+    data_group_code: 'DHIS_SYNC_GROUP_02',
+    service_type: 'dhis',
+  },
+  TUPAIA_SYNC_GROUP_01: {
+    code: 'TUPAIA_SYNC_GROUP_01',
+    data_group_code: 'TUPAIA_SYNC_GROUP_01',
+    service_type: 'tupaia',
+  },
 });
 
 export interface MockServiceData {
@@ -51,7 +64,7 @@ export const DATA_BY_SERVICE = {
     eventsByProgram: {
       DHIS_PROGRAM_01: [
         {
-          event: 'eventId',
+          event: 'dhisEventId1',
           eventDate: '2020-02-06T10:18:00.000',
           orgUnit: 'TO',
           orgUnitName: 'Tonga',
@@ -60,11 +73,29 @@ export const DATA_BY_SERVICE = {
       ],
       DHIS_PROGRAM_02: [
         {
-          event: 'eventId',
+          event: 'dhisEventId2',
           eventDate: '2020-02-06T10:18:00.000',
           orgUnit: 'TO',
           orgUnitName: 'Tonga',
           dataValues: { DHIS_02: 20 },
+        },
+      ],
+      DHIS_SYNC_GROUP_01: [
+        {
+          event: 'dhisEventId3',
+          eventDate: '2021-02-06T10:18:00.000',
+          orgUnit: 'TO',
+          orgUnitName: 'Tonga',
+          dataValues: { DHIS_01: 30 },
+        },
+      ],
+      DHIS_SYNC_GROUP_02: [
+        {
+          event: 'dhisEventId4',
+          eventDate: '2021-01-06T10:18:00.000',
+          orgUnit: 'TO',
+          orgUnitName: 'Tonga',
+          dataValues: { DHIS_02: 40 },
         },
       ],
     },
@@ -82,11 +113,20 @@ export const DATA_BY_SERVICE = {
     eventsByProgram: {
       TUPAIA_PROGRAM_01: [
         {
-          event: 'eventId',
+          event: 'tupaiaEventId1',
           eventDate: '2020-02-06T10:18:00.000',
           orgUnit: 'TO',
           orgUnitName: 'Tonga',
-          dataValues: { TUPAIA_01: 30 },
+          dataValues: { TUPAIA_01: 50 },
+        },
+      ],
+      TUPAIA_SYNC_GROUP_01: [
+        {
+          event: 'tupaiaEventId2',
+          eventDate: '2020-02-06T10:18:00.000',
+          orgUnit: 'TO',
+          orgUnitName: 'Tonga',
+          dataValues: { TUPAIA_01: 60 },
         },
       ],
     },

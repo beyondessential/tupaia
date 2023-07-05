@@ -16,6 +16,7 @@ import {
   SYNC_GROUPS,
 } from './DataBroker.fixtures';
 import { DataBrokerModelRegistry, DataSource, DataSourceType } from '../../types';
+import pickBy from 'lodash.pickby';
 
 export const stubCreateService = (services: Record<string, Service>) =>
   jest.spyOn(CreateService, 'createService').mockImplementation((_, type) => {
@@ -80,6 +81,11 @@ export class MockService extends Service {
             return Object.entries(eventsByProgram)
               .filter(([program]) => dataSourceCodes.includes(program))
               .flatMap(([, events]) => events);
+          }
+          case 'syncGroup': {
+            return pickBy(eventsByProgram, (_, programCode) =>
+              dataSourceCodes.includes(programCode),
+            );
           }
           default:
             throw new Error(`Invalid data source type: ${type}`);

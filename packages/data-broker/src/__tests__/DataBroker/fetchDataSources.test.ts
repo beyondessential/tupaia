@@ -70,10 +70,10 @@ describe('fetchSyncGroups', () => {
 
   it('returns all found sync groups', async () => {
     const results = await fetchSyncGroups(models, [
-      'SYNC_GROUP_01',
-      'SYNC_GROUP_02',
+      'DHIS_SYNC_GROUP_01',
+      'DHIS_SYNC_GROUP_02',
       'NON_EXISTING',
     ]);
-    expect(results).toStrictEqual([SYNC_GROUPS.SYNC_GROUP_01, SYNC_GROUPS.SYNC_GROUP_02]);
+    expect(results).toStrictEqual([SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02]);
   });
 });
