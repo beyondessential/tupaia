@@ -11,10 +11,18 @@ const DARKENED_BLUE = '#262834';
 export const darkTheme = createMuiTheme({
   palette: {
     type: 'dark',
-    primary: { main: DARKENED_BLUE },
-    contrastText: 'white',
+    primary: {
+      main: '#1978D4', // Main blue (as seen on primary buttons)
+    },
+    secondary: {
+      main: '#ee6230',
+    },
     background: {
-      default: DARKENED_BLUE,
+      default: '#262834', // Dark blue background
+      paper: '#262834', // Dark blue to match background
+    },
+    text: {
+      secondary: '#9ba0a6',
     },
   },
 });

@@ -6,18 +6,25 @@ import React, { useContext } from 'react';
 import { TableCell, TableHead, TableRow } from '@material-ui/core';
 import styled from 'styled-components';
 import { MatrixContext } from './MatrixContext';
+import { MatrixColumnType } from '../../types';
 
 const HeaderCell = styled(TableCell)`
   text-align: center;
+  max-width: 12.5rem;
 `;
 
 export const MatrixHeaderRow = () => {
-  const { columns } = useContext(MatrixContext);
+  const { columns, startColumn, numberOfColumnsPerPage } = useContext(MatrixContext);
+
+  const displayedColumns = columns.slice(
+    startColumn,
+    startColumn + numberOfColumnsPerPage,
+  ) as MatrixColumnType[];
   return (
     <TableHead>
       <TableRow>
         <TableCell />
-        {columns.map(({ title }) => (
+        {displayedColumns.map(({ title }) => (
           <HeaderCell key={title}>{title}</HeaderCell>
         ))}
       </TableRow>

@@ -6,26 +6,52 @@ const defaultContext = {
   rows: [],
   columns: [],
   presentationOptions: {},
+  startColumn: 0,
+  numberOfColumnsPerPage: 0,
 } as {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
   presentationOptions: PresentationOptions;
+  startColumn: number;
+  numberOfColumnsPerPage: number;
 };
 // This is the context for the rows, columns and presentation options of the matrix
 export const MatrixContext = createContext(defaultContext);
 
-// This is the context for the expanded rows of the matrix
-export const MatrixExpandedRowsContext = createContext<MatrixRowType['title'][]>([]);
-// This is the context for the dispatch function for the expanded rows of the matrix
-export const MatrixExpandedRowsDispatchContext = createContext<Dispatch<Action> | null>(null);
+interface SetStartColumnAction {
+  type: 'INCREASE' | 'DECREASE';
+}
 
-interface Action {
+export const MatrixStartColumnDispatchContext = createContext<Dispatch<SetStartColumnAction> | null>(
+  null,
+);
+
+export const matrixStartColumnReducer = (startColumn: number, action: SetStartColumnAction) => {
+  switch (action.type) {
+    case 'INCREASE':
+      return startColumn + 1;
+    case 'DECREASE':
+      return startColumn - 1;
+    default:
+      return startColumn;
+  }
+};
+
+interface ExpandRowAction {
   type: 'EXPAND_ROW' | 'COLLAPSE_ROW';
   payload: MatrixRowType['title'];
 }
+
+// This is the context for the expanded rows of the matrix
+export const MatrixExpandedRowsContext = createContext<MatrixRowType['title'][]>([]);
+// This is the context for the dispatch function for the expanded rows of the matrix
+export const MatrixExpandedRowsDispatchContext = createContext<Dispatch<ExpandRowAction> | null>(
+  null,
+);
+
 export const matrixExpandedRowsReducer = (
   expandedRows: MatrixRowType['title'][],
-  action: Action,
+  action: ExpandRowAction,
 ) => {
   switch (action.type) {
     case 'EXPAND_ROW':
