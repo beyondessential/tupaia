@@ -26,10 +26,10 @@ import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchData
 import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 import {
-  checkDataElementPermissions,
-  checkDataGroupPermissions,
-  checkSyncGroupPermissions,
-} from './checkPermissions';
+  getAllowedOrgUnitsForDataElements,
+  getAllowedOrgUnitsForDataGroups,
+  getAllowedOrgUnitsForSyncGroups,
+} from './getAllowedOrgUnits';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -97,9 +97,9 @@ export class DataBroker {
     // Run permission checks in data broker so we only expose data the user is allowed to see
     // It's a good centralised place for it
     this.permissionCheckers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: checkDataElementPermissions,
-      [this.getDataSourceTypes().DATA_GROUP]: checkDataGroupPermissions,
-      [this.getDataSourceTypes().SYNC_GROUP]: checkSyncGroupPermissions,
+      [this.getDataSourceTypes().DATA_ELEMENT]: getAllowedOrgUnitsForDataElements,
+      [this.getDataSourceTypes().DATA_GROUP]: getAllowedOrgUnitsForDataGroups,
+      [this.getDataSourceTypes().SYNC_GROUP]: getAllowedOrgUnitsForSyncGroups,
     };
   }
 

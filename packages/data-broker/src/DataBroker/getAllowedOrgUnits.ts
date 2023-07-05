@@ -18,15 +18,15 @@ const getPermissionListWithWildcard = (accessPolicy?: AccessPolicy, countryCodes
   return ['*', ...userPermissionGroups];
 };
 
-export const checkDataElementPermissions = async (
+export const getAllowedOrgUnitsForDataElements = async (
   models: DataBrokerModelRegistry,
   dataElements: DataSource[],
   accessPolicy?: AccessPolicy,
-  organisationUnitCodes?: string[],
+  orgUnitCodes?: string[],
 ) => {
   const allUserPermissions = getPermissionListWithWildcard(accessPolicy);
   if (allUserPermissions.includes(BES_ADMIN_PERMISSION_GROUP)) {
-    return organisationUnitCodes;
+    return orgUnitCodes;
   }
 
   const getDataElementsWithMissingPermissions = (permissions: string[]) =>
@@ -35,19 +35,19 @@ export const checkDataElementPermissions = async (
       .filter(element => !element.permission_groups.some(group => permissions.includes(group)))
       .map(element => element.code);
 
-  if (!organisationUnitCodes) {
+  if (!orgUnitCodes) {
     const missingPermissions = getDataElementsWithMissingPermissions(allUserPermissions);
     if (missingPermissions.length > 0) {
       throw new Error(`Missing permissions to the following data elements: ${missingPermissions}`);
     }
 
-    return organisationUnitCodes;
+    return orgUnitCodes;
   }
 
-  const organisationUnitsByCountry = await fetchOrgUnitsByCountry(models, organisationUnitCodes);
-  const countryCodes = Object.keys(organisationUnitsByCountry);
+  const orgUnitsByCountry = await fetchOrgUnitsByCountry(models, orgUnitCodes);
+  const countryCodes = Object.keys(orgUnitsByCountry);
 
-  let organisationUnitsWithPermission: string[] = [];
+  let allowedOrgUnits: string[] = [];
   const countriesMissingPermission = Object.fromEntries(
     dataElements.map(({ code }) => [code, [] as string[]]),
   );
@@ -57,9 +57,7 @@ export const checkDataElementPermissions = async (
     );
     if (missingPermissions.length === 0) {
       // Have access to all data elements for country
-      organisationUnitsWithPermission = organisationUnitsWithPermission.concat(
-        organisationUnitsByCountry[country],
-      );
+      allowedOrgUnits = allowedOrgUnits.concat(orgUnitsByCountry[country]);
     }
 
     missingPermissions.forEach(dataElement =>
@@ -67,7 +65,7 @@ export const checkDataElementPermissions = async (
     );
   });
 
-  if (organisationUnitsWithPermission.length === 0) {
+  if (allowedOrgUnits.length === 0) {
     const dataElementsWithNoAccess = Object.entries(countriesMissingPermission)
       .filter(([, countries]) => countries.length === countryCodes.length)
       .map(([dataElement]) => dataElement);
@@ -76,36 +74,36 @@ export const checkDataElementPermissions = async (
     );
   }
 
-  return organisationUnitsWithPermission;
+  return allowedOrgUnits;
 };
 
-export const checkDataGroupPermissions = async (
+export const getAllowedOrgUnitsForDataGroups = async (
   models: DataBrokerModelRegistry,
   dataGroups: DataSource[],
   accessPolicy?: AccessPolicy,
-  organisationUnitCodes?: string[],
+  orgUnitCodes?: string[],
 ) => {
   const missingPermissions = [];
   for (const group of dataGroups) {
     const dataElements = await models.dataGroup.getDataElementsInDataGroup(group.code);
     try {
-      await checkDataElementPermissions(models, dataElements, accessPolicy, organisationUnitCodes);
+      await getAllowedOrgUnitsForDataElements(models, dataElements, accessPolicy, orgUnitCodes);
     } catch {
       missingPermissions.push(group.code);
     }
   }
   if (missingPermissions.length === 0) {
-    return organisationUnitCodes;
+    return orgUnitCodes;
   }
   throw new Error(`Missing permissions to the following data groups: ${missingPermissions}`);
 };
 
 // No check for syncGroups currently
-export const checkSyncGroupPermissions = async (
+export const getAllowedOrgUnitsForSyncGroups = async (
   models: DataBrokerModelRegistry,
   syncGroups: DataSource[],
   accessPolicy?: AccessPolicy,
-  organisationUnitCodes?: string[],
+  orgUnitCodes?: string[],
 ) => {
-  return organisationUnitCodes;
+  return orgUnitCodes;
 };
