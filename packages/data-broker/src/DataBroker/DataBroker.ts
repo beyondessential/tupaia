@@ -25,7 +25,7 @@ import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
 import { DataServiceMapping } from '../services/DataServiceMapping';
 import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
 import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
-import { getOrganisationUnitsByCountry } from './getOrganisationUnitsByCountry';
+import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -162,13 +162,10 @@ export class DataBroker {
       return organisationUnitCodes;
     }
 
-    const organisationUnitsByCountry = await getOrganisationUnitsByCountry(
-      this.models,
-      organisationUnitCodes,
-    );
-    const countryCodes = Object.keys(organisationUnitsByCountry);
+    const orgUnitsByCountry = await fetchOrgUnitsByCountry(this.models, organisationUnitCodes);
+    const countryCodes = Object.keys(orgUnitsByCountry);
 
-    let organisationUnitsWithPermission: string[] = [];
+    let allowedOrgUnits: string[] = [];
     const countriesMissingPermission = Object.fromEntries(
       dataElements.map(({ code }) => [code, [] as string[]]),
     );
@@ -178,9 +175,7 @@ export class DataBroker {
       );
       if (missingPermissions.length === 0) {
         // Have access to all data elements for country
-        organisationUnitsWithPermission = organisationUnitsWithPermission.concat(
-          organisationUnitsByCountry[country],
-        );
+        allowedOrgUnits = allowedOrgUnits.concat(orgUnitsByCountry[country]);
       }
 
       missingPermissions.forEach(dataElement =>
@@ -188,7 +183,7 @@ export class DataBroker {
       );
     });
 
-    if (organisationUnitsWithPermission.length === 0) {
+    if (allowedOrgUnits.length === 0) {
       const dataElementsWithNoAccess = Object.entries(countriesMissingPermission)
         .filter(([, countries]) => countries.length === countryCodes.length)
         .map(([dataElement]) => dataElement);
@@ -197,7 +192,7 @@ export class DataBroker {
       );
     }
 
-    return organisationUnitsWithPermission;
+    return allowedOrgUnits;
   };
 
   private checkDataGroupPermissions = async (
@@ -462,9 +457,7 @@ export class DataBroker {
 
     // First we get the mapping for each country, then if any two countries have the
     // exact same mapping we simply combine them
-    const countryCodes = Object.keys(
-      await getOrganisationUnitsByCountry(this.models, orgUnitCodes),
-    );
+    const countryCodes = Object.keys(await fetchOrgUnitsByCountry(this.models, orgUnitCodes));
 
     if (countryCodes.length === 1) {
       // No special logic needed, exit early

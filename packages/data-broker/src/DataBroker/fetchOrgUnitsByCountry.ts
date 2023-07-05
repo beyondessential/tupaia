@@ -6,16 +6,16 @@
 import groupBy from 'lodash.groupby';
 import { DataBrokerModelRegistry } from '../types';
 
-export const getOrganisationUnitsByCountry = async (
+export const fetchOrgUnitsByCountry = async (
   models: DataBrokerModelRegistry,
-  organisationUnitCodes: string[],
+  orgUnitCodes: string[],
 ) => {
-  const orgUnits = await models.entity.find({ code: organisationUnitCodes });
-  const organisationUnitCodesByCountryCodes = Object.fromEntries(
+  const orgUnits = await models.entity.find({ code: orgUnitCodes });
+  const orgUnitsByCountryCodes = Object.fromEntries(
     Object.entries(groupBy(orgUnits, 'country_code')).map(([countryCode, orgUnitsInCountry]) => [
       countryCode,
       orgUnitsInCountry.map(({ code }) => code),
     ]),
   );
-  return organisationUnitCodesByCountryCodes;
+  return orgUnitsByCountryCodes;
 };
