@@ -52,8 +52,8 @@ const SiblingEntities = ({
 };
 
 const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
-  const { region, children } = entity;
-  const hasChildren = children && children.length > 0;
+  const { region, childCodes } = entity;
+  const hasChildren = childCodes && childCodes.length > 0;
 
   if (!region) return null;
 

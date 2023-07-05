@@ -34,11 +34,31 @@ const useNavigateToDashboard = () => {
   };
 };
 
-const getSnakeCase = (measureLevel: string) => {
-  return measureLevel
-    ?.split(/\.?(?=[A-Z])/)
-    .join('_')
-    .toLowerCase();
+const useEntitiesByMeasureLevel = (measureLevel?: string) => {
+  const { projectCode, entityCode } = useParams();
+
+  const getSnakeCase = (measureLevel?: string) => {
+    return measureLevel
+      ?.split(/\.?(?=[A-Z])/)
+      .join('_')
+      .toLowerCase();
+  };
+
+  return useEntitiesWithLocation(
+    projectCode,
+    entityCode,
+    {
+      params: {
+        filter: {
+          generational_distance: {
+            comparator: '<=',
+            comparisonValue: 2,
+          },
+        },
+      },
+    },
+    { enabled: !!measureLevel },
+  );
 };
 
 export const MarkerLayer = () => {
@@ -48,16 +68,9 @@ export const MarkerLayer = () => {
   const navigateToDashboard = useNavigateToDashboard();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: entity } = useEntity(entityCode);
-  const { data: entitiesData } = useEntitiesWithLocation(
-    projectCode,
-    entityCode,
-    {
-      params: { filter: { type: getSnakeCase(selectedOverlay?.measureLevel) } },
-    },
-    { enabled: !!selectedOverlay?.measureLevel },
-  );
+  const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
   const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay);
+  const { data: entity } = useEntity(entityCode);
 
   if (!entitiesData || !mapOverlayData || !entity) {
     return null;
