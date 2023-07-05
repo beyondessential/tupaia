@@ -19,6 +19,7 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.js$': 'babel-jest',
+    "^.+\\.jsx?$": "../../jestTransformer.js"
   },
   testTimeout: 30 * 1000, // 30 seconds. Needed for CI as some test take a while if CPU has high load
 };
