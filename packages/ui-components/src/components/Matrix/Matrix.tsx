@@ -18,7 +18,6 @@ const MatrixTable = styled.table`
   border-collapse: collapse;
   border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
   color: ${({ theme }) => theme.palette.text.primary};
-  overflow: hidden; // hide the overflow from the highlight effect
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
   td,
   th {

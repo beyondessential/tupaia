@@ -1,3 +1,7 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ */
 import React, { useContext } from 'react';
 import { DialogContent, Typography } from '@material-ui/core';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
@@ -15,6 +19,9 @@ const DisplayWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
+/**
+ * This is the modal that appears when a user clicks on a cell in the matrix
+ */
 export const EnlargedMatrixCell = () => {
   const { enlargedCell } = useContext(MatrixContext);
   const dispatch = useContext(MatrixDispatchContext)!;
