@@ -10,12 +10,18 @@ import { Matrix } from '../src/components/Matrix/Matrix.tsx';
 
 const Container = styled(Box)`
   background: ${({ theme }) => theme.palette.background.default};
+  padding: 1rem;
+  height: 38rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 export default {
   title: 'Matrix',
   decorators: [
     Story => (
       <Container>
+        <h2>Matrix</h2>
         <Story />
       </Container>
     ),

@@ -7,7 +7,8 @@ import React, { useContext } from 'react';
 import { TableCell, Button } from '@material-ui/core';
 import styled from 'styled-components';
 import { getIsUsingDots, getPresentationOption, hexToRgba } from './utils';
-import { MatrixContext } from './MatrixContext';
+import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
+import { MatrixRowType } from '../../types';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;
@@ -29,36 +30,23 @@ const DataCell = styled(TableCell)`
   z-index: 1;
   padding: 0;
   height: 100%;
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+  }
   &:hover {
-    &:before,
-    &:after {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      pointer-events: none;
-    }
-    &:before {
-      // do a highlight effect for the column when hovering over a cell
-      // fill with transparent black, and go extra tall to cover the whole column. Table overflow:hidden handles overflows
-      background-color: rgba(0, 0, 0, 0.2);
-      left: 0;
-      top: -5000px;
-      height: 10000px;
-      width: 100%;
-    }
-    &:after {
-      // do a highlight effect for the row when hovering over a cell
-      // fill with transparent white, and go extra wide to cover the whole width. Table overflow:hidden handles overflows
-      background-color: rgba(255, 255, 2555, 0.1);
-      top: 0;
-      left: -5000px;
-      width: 10000px;
-      height: 100%;
+    ${Dot} {
+      transform: scale(1.2);
     }
   }
 `;
 
-const DataCellContent = styled.div``;
+const DataCellContent = styled.div`
+  padding: 0.25rem;
+`;
 
 const ExpandCellButton = styled(Button)`
   width: 100%;
@@ -66,24 +54,20 @@ const ExpandCellButton = styled(Button)`
   padding: 0;
 `;
 
-interface MatrixRowProps {
-  value: any;
-}
-
-export const MatrixCell = ({ value }: MatrixRowProps) => {
+export const MatrixCell = ({ value }: { value: any }) => {
   const { presentationOptions = {} } = useContext(MatrixContext);
   const isDots = getIsUsingDots(presentationOptions);
   const { showRawValue } = presentationOptions;
   const presentation = getPresentationOption(presentationOptions, value);
+  const displayValue = isDots ? (
+    <Dot $color={presentation?.color} aria-label={`${presentation?.description}: ${value}`} />
+  ) : (
+    value
+  );
+
   return (
     <DataCell>
-      <DataCellContent as={showRawValue ? ExpandCellButton : 'div'}>
-        {isDots ? (
-          <Dot $color={presentation?.color} aria-label={`${presentation?.description}: ${value}`} />
-        ) : (
-          value
-        )}
-      </DataCellContent>
+      <DataCellContent as={showRawValue ? ExpandCellButton : 'div'}>{displayValue}</DataCellContent>
     </DataCell>
   );
 };

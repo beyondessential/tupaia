@@ -9,7 +9,7 @@ import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
 import { MatrixCell } from './MatrixCell';
-import { MatrixContext, MatrixDispatchContext } from './MatrixContext';
+import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded: boolean;
@@ -62,9 +62,9 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
 
   const toggleExpandedRows = (rowTitle: string) => {
     if (expandedRows.includes(rowTitle)) {
-      dispatch({ type: 'COLLAPSE_ROW', payload: rowTitle });
+      dispatch({ type: ACTION_TYPES.COLLAPSE_ROW, payload: rowTitle });
     } else {
-      dispatch({ type: 'EXPAND_ROW', payload: rowTitle });
+      dispatch({ type: ACTION_TYPES.EXPAND_ROW, payload: rowTitle });
     }
   };
   const isExpanded = expandedRows.includes(title);

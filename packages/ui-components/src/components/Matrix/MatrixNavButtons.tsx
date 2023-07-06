@@ -7,7 +7,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Button } from '../Button';
-import { MatrixContext, MatrixDispatchContext } from './MatrixContext';
+import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 
 const TableMoveButtonWrapper = styled.div`
   display: flex;
@@ -42,11 +42,11 @@ export const MatrixNavButtons = () => {
   const showButtons = columns.length > maxColumns;
 
   const handleMoveColumnLeft = () => {
-    dispatch({ type: 'DECREASE_START_COLUMN' });
+    dispatch({ type: ACTION_TYPES.DECREASE_START_COLUMN });
   };
 
   const handleMoveColumnRight = () => {
-    dispatch({ type: 'INCREASE_START_COLUMN' });
+    dispatch({ type: ACTION_TYPES.INCREASE_START_COLUMN });
   };
 
   if (!showButtons) return null;

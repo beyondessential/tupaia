@@ -23,14 +23,16 @@ const defaultContextValue = {
 // This is the context for the rows, columns and presentation options of the matrix
 export const MatrixContext = createContext(defaultContextValue);
 
+export enum ACTION_TYPES {
+  EXPAND_ROW = 'EXPAND_ROW',
+  COLLAPSE_ROW = 'COLLAPSE_ROW',
+  INCREASE_START_COLUMN = 'INCREASE_START_COLUMN',
+  DECREASE_START_COLUMN = 'DECREASE_START_COLUMN',
+  SET_MAX_COLUMNS = 'SET_MAX_COLUMNS',
+}
 interface MatrixAction {
-  type:
-    | 'EXPAND_ROW'
-    | 'COLLAPSE_ROW'
-    | 'INCREASE_START_COLUMN'
-    | 'DECREASE_START_COLUMN'
-    | 'SET_MAX_COLUMNS';
-  payload: RowTitle | number | undefined;
+  type: ACTION_TYPES;
+  payload?: RowTitle | number | Record<string, any> | null;
 }
 
 // This is the context for the dispatch function of the matrix
@@ -46,29 +48,29 @@ export const matrixReducer = (
   action: MatrixAction,
 ): MatrixReducerState => {
   switch (action.type) {
-    case 'EXPAND_ROW':
+    case ACTION_TYPES.EXPAND_ROW:
       return {
         ...state,
         expandedRows: [...state.expandedRows, action.payload as RowTitle],
       };
-    case 'COLLAPSE_ROW':
+    case ACTION_TYPES.COLLAPSE_ROW:
       return {
         ...state,
         expandedRows: state.expandedRows.filter(
           (rowTitle: RowTitle) => rowTitle !== action.payload,
         ),
       };
-    case 'INCREASE_START_COLUMN':
+    case ACTION_TYPES.INCREASE_START_COLUMN:
       return {
         ...state,
         startColumn: state.startColumn + 1,
       };
-    case 'DECREASE_START_COLUMN':
+    case ACTION_TYPES.DECREASE_START_COLUMN:
       return {
         ...state,
         startColumn: state.startColumn - 1,
       };
-    case 'SET_MAX_COLUMNS':
+    case ACTION_TYPES.SET_MAX_COLUMNS:
       return {
         ...state,
         maxColumns: action.payload as number,

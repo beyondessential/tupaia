@@ -9,8 +9,7 @@ export type MatrixColumnType = {
   title: string;
 };
 
-export type MatrixRowType = {
+export type MatrixRowType = Record<string, any> & {
   title: string;
-  children?: MatrixRow[];
-  [key: string]: any;
+  children?: MatrixRowType[];
 };
