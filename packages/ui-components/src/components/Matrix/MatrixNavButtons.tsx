@@ -13,6 +13,7 @@ const TableMoveButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
+  margin-bottom: 1rem;
 `;
 
 const TableMoveButton = styled(Button).attrs({
@@ -28,6 +29,7 @@ const TableMoveButton = styled(Button).attrs({
   &:disabled {
     background-color: transparent;
     opacity: 0.6;
+    border-color: transparent;
   }
   &:hover,
   &:focus {

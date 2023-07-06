@@ -114,7 +114,11 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
     <TableRow $visible={isVisible} $highlighted={depth > 0}>
       <NonGroupedRowHeaderCell $depth={parents.length}>{title}</NonGroupedRowHeaderCell>
       {displayedColumns.map(({ key }) => (
-        <MatrixCell key={`column-${key}-row-${row.title}-value`} value={row[key]} />
+        <MatrixCell
+          key={`column-${key}-row-${row.title}-value`}
+          value={row[key]}
+          rowTitle={row.title}
+        />
       ))}
     </TableRow>
   );

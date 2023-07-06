@@ -145,6 +145,46 @@ const nestedRows = [
   },
 ];
 
+const basicRows = [
+  {
+    title: 'Data item 1',
+    Col4: 59.5,
+    Col2: 43.4,
+  },
+  {
+    title: 'Data item 2',
+    Col1: 6.76,
+    Col4: 74.2,
+    Col3: 44.998,
+  },
+  {
+    title: 'Data item 3',
+    Col1: 33.9,
+    Col4: 11.749,
+    Col2: 6.347,
+    Col3: 35.9,
+  },
+  {
+    title: 'Data item 4',
+    Col1: 0.05,
+    Col4: 32.11,
+    Col2: 0,
+    Col3: 7.1,
+  },
+  {
+    title: 'Data item 5',
+    Col1: 320,
+    Col4: 17,
+    Col2: 69.325,
+    Col3: 142.68,
+  },
+  {
+    title: 'Data item 6',
+    Col1: 534,
+    Col3: 0,
+  },
+];
+
 const columns = [
   {
     key: 'Col1',
@@ -212,6 +252,11 @@ const dotPresentationOptions = {
 };
 
 const Template = args => <Matrix {...args} columns={columns} />;
+
+export const Simple = Template.bind({});
+Simple.args = {
+  rows: basicRows,
+};
 
 export const NestedWithDots = Template.bind({});
 NestedWithDots.args = {

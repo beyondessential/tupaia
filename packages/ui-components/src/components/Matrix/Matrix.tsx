@@ -12,6 +12,7 @@ import { hexToRgba } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
+import { EnlargedMatrixCell } from './EnlargedMatrixCell';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
@@ -80,6 +81,7 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
       >
         <MatrixDispatchContext.Provider value={dispatch}>
           <MatrixNavButtons />
+          <EnlargedMatrixCell />
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
             <MatrixHeaderRow />
             <TableBody>

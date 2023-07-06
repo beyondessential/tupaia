@@ -54,8 +54,14 @@ const ExpandCellButton = styled(Button)`
   padding: 0;
 `;
 
-export const MatrixCell = ({ value }: { value: any }) => {
+interface MatrixRowProps {
+  value: any;
+  rowTitle: MatrixRowType['title'];
+}
+
+export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
   const { presentationOptions = {} } = useContext(MatrixContext);
+  const dispatch = useContext(MatrixDispatchContext)!;
   const isDots = getIsUsingDots(presentationOptions);
   const { showRawValue } = presentationOptions;
   const presentation = getPresentationOption(presentationOptions, value);
@@ -64,10 +70,27 @@ export const MatrixCell = ({ value }: { value: any }) => {
   ) : (
     value
   );
-
+  const isButton = showRawValue && value !== undefined && value !== null;
+  const onClickCellButton = () => {
+    if (!showRawValue) return;
+    dispatch({
+      type: ACTION_TYPES.SET_ENLARGED_CELL,
+      payload: {
+        rowTitle,
+        value,
+        displayValue,
+        presentation,
+      },
+    });
+  };
   return (
     <DataCell>
-      <DataCellContent as={showRawValue ? ExpandCellButton : 'div'}>{displayValue}</DataCellContent>
+      <DataCellContent
+        as={isButton ? ExpandCellButton : 'div'}
+        onClick={isButton ? onClickCellButton : null}
+      >
+        {displayValue}
+      </DataCellContent>
     </DataCell>
   );
 };

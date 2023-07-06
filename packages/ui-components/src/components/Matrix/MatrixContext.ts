@@ -11,6 +11,7 @@ const defaultContextValue = {
   startColumn: 0,
   maxColumns: 0,
   expandedRows: [],
+  enlargedCell: null,
 } as {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
@@ -18,6 +19,7 @@ const defaultContextValue = {
   startColumn: number;
   maxColumns: number;
   expandedRows: RowTitle[];
+  enlargedCell: Record<string, any> | null;
 };
 
 // This is the context for the rows, columns and presentation options of the matrix
@@ -29,6 +31,7 @@ export enum ACTION_TYPES {
   INCREASE_START_COLUMN = 'INCREASE_START_COLUMN',
   DECREASE_START_COLUMN = 'DECREASE_START_COLUMN',
   SET_MAX_COLUMNS = 'SET_MAX_COLUMNS',
+  SET_ENLARGED_CELL = 'SET_ENLARGED_CELL',
 }
 interface MatrixAction {
   type: ACTION_TYPES;
@@ -40,7 +43,7 @@ export const MatrixDispatchContext = createContext<Dispatch<MatrixAction> | null
 
 type MatrixReducerState = Pick<
   typeof defaultContextValue,
-  'startColumn' | 'expandedRows' | 'maxColumns'
+  'startColumn' | 'expandedRows' | 'maxColumns' | 'enlargedCell'
 >;
 
 export const matrixReducer = (
@@ -74,6 +77,11 @@ export const matrixReducer = (
       return {
         ...state,
         maxColumns: action.payload as number,
+      };
+    case ACTION_TYPES.SET_ENLARGED_CELL:
+      return {
+        ...state,
+        enlargedCell: action.payload as Record<string, any> | null,
       };
     default:
       return state;
