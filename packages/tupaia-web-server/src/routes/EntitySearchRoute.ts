@@ -6,6 +6,8 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
+const DEFAULT_FIELDS = ['code', 'name'];
+
 export type EntitySearchRequest = Request<any, any, any, any>;
 export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
@@ -25,6 +27,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
       ...query,
       page,
       pageSize,
+      fields: DEFAULT_FIELDS,
     });
   }
 }
