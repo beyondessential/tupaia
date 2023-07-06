@@ -13,6 +13,11 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const { projectCode } = params;
     const { searchString, page = 0, pageSize = 5 } = query;
 
-    const entities = await ctx.services.entity.getDescendants();
+    return ctx.services.entity.entitySearch(searchString, {
+      ...query,
+      projectCode,
+      page,
+      pageSize,
+    });
   }
 }

@@ -296,6 +296,10 @@ export class EntityApi extends BaseApi {
       },
     );
   }
+
+  public async entitySearch(searchString: string, queryOptions?: any) {
+    return this.connection.get(`entitySearch/${searchString}`, queryOptions);
+  }
 }
 
 export interface EntityApiInterface extends PublicInterface<EntityApi> {}
