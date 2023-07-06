@@ -92,7 +92,7 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
               value={mapOverlay.code}
               control={<Radio />}
               label={mapOverlay.name}
-              key={mapOverlay.name}
+              key={mapOverlay.code}
             />
           ),
         )}

@@ -60,6 +60,7 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
   return (
     <ActivePolygon
       hasChildren={hasChildren}
+      hasShadedChildren={true}
       coordinates={region}
       // Randomize key to ensure polygon appears at top. This is still important even
       // though the polygon is in a LayerGroup due to issues with react-leaflet that
@@ -71,7 +72,9 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
 
 export const PolygonLayer = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entities = [] } = useEntitiesWithLocation(projectCode, entityCode);
+  const { data: entities = [] } = useEntitiesWithLocation(projectCode, entityCode, {
+    params: { includeRoot: true },
+  });
 
   if (!entities || entities.length === 0) {
     return null;
@@ -82,6 +85,7 @@ export const PolygonLayer = () => {
 
   return (
     <>
+      <ChildEntities entities={childEntities} />
       {activeEntity && (
         <>
           <ActiveEntity entity={activeEntity} />
@@ -91,7 +95,6 @@ export const PolygonLayer = () => {
           />
         </>
       )}
-      <ChildEntities entities={childEntities} />
     </>
   );
 };

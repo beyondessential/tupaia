@@ -36,7 +36,6 @@ const useNavigateToDashboard = () => {
 
 const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   const { projectCode, entityCode } = useParams();
-
   const getSnakeCase = (measureLevel?: string) => {
     return measureLevel
       ?.split(/\.?(?=[A-Z])/)
@@ -49,7 +48,9 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
     entityCode,
     {
       params: {
+        includeRoot: false,
         filter: {
+          type: getSnakeCase(measureLevel),
           generational_distance: {
             comparator: '<=',
             comparisonValue: 2,
