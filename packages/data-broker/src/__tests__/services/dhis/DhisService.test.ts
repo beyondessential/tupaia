@@ -14,7 +14,6 @@ import {
 } from './DhisService.fixtures';
 import { DhisService } from '../../../services/dhis';
 import { createMockDhisApi, createModelsStub, stubGetDhisApi } from './DhisService.stubs';
-import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 const mockPullAnalytics = jest.fn();
 const mockPullEvents = jest.fn();
