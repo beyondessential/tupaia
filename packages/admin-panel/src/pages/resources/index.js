@@ -37,3 +37,6 @@ export { ExternalDatabaseConnectionsPage } from './ExternalDatabaseConnectionsPa
 export { EntityHierarchyPage } from './EntityHierarchyPage';
 export { PermissionGroupsViewerPage } from './PermissionGroupsViewerPage';
 export { CustomLandingPagesPage } from './CustomLandingPagesPage';
+export { DataElementDataServicesPage } from './DataElementDataServicesPage';
+export { DhisInstancesPage } from './DhisInstancesPage';
+export { SupersetInstancesPage } from './SupersetInstancesPage';

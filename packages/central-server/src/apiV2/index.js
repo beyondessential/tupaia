@@ -238,6 +238,7 @@ apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 apiV2.get('/dhisInstances/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
+apiV2.get('/supersetInstances/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
@@ -292,6 +293,8 @@ apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
+apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 
 /**
  * PUT routes
@@ -330,6 +333,8 @@ apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEdit
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson, useRouteHandler(EditSurvey));
+apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 
 /**
  * DELETE routes
@@ -364,6 +369,8 @@ apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroup
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/landingPages/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/dhisInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/supersetInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
 

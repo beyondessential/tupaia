@@ -9,6 +9,8 @@ import {
   ValidationError,
   respondWithDownload,
   writeStreamToFile,
+  getUniqueFileNameParts,
+  getDeDuplicatedFileName,
 } from '@tupaia/utils';
 import { RouteHandler } from './RouteHandler';
 import { getTempDirectory } from '../utilities';
@@ -20,34 +22,44 @@ export class DownloadFiles extends RouteHandler {
   }
 
   async handleRequest() {
-    const { userId } = this.req;
-    const { files: filesNamesString, zipFileName = 'download.zip' } = this.query;
-    const fileNames = filesNamesString.split(','); // Assuming comma unsupported in filenames
+    const { uniqueFileNames: uniqueFileNamesString, zipFileName = 'download.zip' } = this.query;
+    const uniqueFileNames = uniqueFileNamesString.split(','); // Assuming comma unsupported in filenames
 
-    if (fileNames.length === 0) {
-      throw new ValidationError("Must provide a list of file names in the 'files' query parameter");
+    if (uniqueFileNames.length === 0) {
+      throw new ValidationError(
+        "Must provide a list of file names in the 'uniqueFileNames' query parameter",
+      );
     }
 
     const s3Client = new S3Client(new S3());
-    const files = await Promise.all(fileNames.map(fileName => s3Client.downloadFile(fileName)));
+    const files = await Promise.all(
+      uniqueFileNames.map(uniqueFileName => s3Client.downloadFile(uniqueFileName)),
+    );
 
-    // Unique directory to avoid clashes when doing multiple downloads simultaneously
-    const tempDir = getTempDirectory(`downloads/${userId}/${Date.now()}`);
+    const tempDir = getTempDirectory(`downloads/`);
 
-    const writeFileToTempDir = async (fileName, file) => {
-      const filePath = `${tempDir}/${fileName}`;
+    const writeFileToTempDir = async (uniqueFilename, file) => {
+      const filePath = `${tempDir}/${uniqueFilename}`;
       return writeStreamToFile(filePath, file);
     };
 
     if (files.length === 1) {
-      const filePath = await writeFileToTempDir(fileNames[0], files[0]);
+      const { fileName } = getUniqueFileNameParts(uniqueFileNames[0]);
+      const filePath = await writeFileToTempDir(fileName, files[0]);
       respondWithDownload(this.res, filePath);
     } else {
-      const writtenFiles = await Promise.all(
-        files.map((file, index) => writeFileToTempDir(fileNames[index], file)),
-      );
+      const writtenFilePaths = [];
+      const writtenFileNames = [];
 
-      const zipFilePath = zipMultipleFiles(`${tempDir}/${zipFileName}`, writtenFiles);
+      for (let i = 0; i < files.length; i++) {
+        const { fileName } = getUniqueFileNameParts(uniqueFileNames[i]);
+        const deduplicatedFileName = getDeDuplicatedFileName(fileName, writtenFileNames);
+
+        writtenFilePaths.push(await writeFileToTempDir(deduplicatedFileName, files[i]));
+        writtenFileNames.push(deduplicatedFileName);
+      }
+
+      const zipFilePath = zipMultipleFiles(`${tempDir}/${zipFileName}`, writtenFilePaths);
       respondWithDownload(this.res, zipFilePath);
     }
   }
