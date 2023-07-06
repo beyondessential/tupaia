@@ -58,7 +58,7 @@ interface MatrixRowProps {
 const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
   const dispatch = useContext(MatrixDispatchContext)!;
-  const { numberOfColumnsPerPage, expandedRows } = useContext(MatrixContext);
+  const { maxColumns, expandedRows } = useContext(MatrixContext);
 
   const toggleExpandedRows = (rowTitle: string) => {
     if (expandedRows.includes(rowTitle)) {
@@ -86,7 +86,7 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
           </RowHeaderCellContent>
         </BaseRowHeaderCell>
         {/** render empty cells for the rest of the row */}
-        {Array(numberOfColumnsPerPage)
+        {Array(maxColumns)
           .fill(0)
           .map(() => (
             <TableCell />
@@ -101,14 +101,14 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
 
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
-  const { columns, startColumn, numberOfColumnsPerPage, expandedRows } = useContext(MatrixContext);
+  const { columns, startColumn, maxColumns, expandedRows } = useContext(MatrixContext);
   const isVisible = parents.every(parent => expandedRows.includes(parent));
   const depth = parents.length;
 
   // if is nested render a group
   if (children) return <ExpandableRow row={row} parents={parents} />;
 
-  const displayedColumns = columns.slice(startColumn, startColumn + numberOfColumnsPerPage);
+  const displayedColumns = columns.slice(startColumn, startColumn + maxColumns);
   // render a regular row with the title cell and the values
   return (
     <TableRow $visible={isVisible} $highlighted={depth > 0}>

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
 import { MatrixHeaderRow } from './MatrixHeaderRow';
@@ -12,8 +12,6 @@ import { hexToRgba } from './utils';
 import { MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
-
-export const MINIMUM_CELL_WIDTH = 55;
 
 const MatrixTable = styled.table`
   overflow: hidden;
@@ -29,29 +27,30 @@ interface MatrixProps {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
   presentationOptions: any;
-  onUpdateSearch?: (search: string) => void;
-  searchTerm?: string;
 }
 
 export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixProps) => {
-  const [{ startColumn, expandedRows }, dispatch] = useReducer(matrixReducer, {
+  const [{ startColumn, expandedRows, maxColumns }, dispatch] = useReducer(matrixReducer, {
     startColumn: 0,
     expandedRows: [],
+    maxColumns: 0,
   });
-  const [numberOfColumnsPerPage, setNumberOfColumnsPerPage] = useState(0);
   const tableEl = useRef<HTMLTableElement | null>(null);
 
   useEffect(() => {
     // Update the number of columns per page when the table is mounted and data comes in, so that we can determine when to show the nav buttons
-    const updateNumberOfColumnsPerPage = () => {
+    const updateMaxColumns = () => {
       if (!tableEl || !tableEl?.current || !tableEl?.current?.offsetWidth) return;
       const { offsetWidth } = tableEl?.current;
       // 200px is the max width of a column that we want to show
       const maxColumns = Math.floor(offsetWidth / 200);
-      setNumberOfColumnsPerPage(Math.min(maxColumns, columns.length));
+      dispatch({
+        type: 'SET_MAX_COLUMNS',
+        payload: Math.min(maxColumns, columns.length),
+      });
     };
 
-    updateNumberOfColumnsPerPage();
+    updateMaxColumns();
   }, [tableEl?.current?.offsetWidth, columns]);
 
   return (
@@ -61,7 +60,7 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
         columns,
         rows,
         startColumn,
-        numberOfColumnsPerPage,
+        maxColumns,
         expandedRows,
       }}
     >

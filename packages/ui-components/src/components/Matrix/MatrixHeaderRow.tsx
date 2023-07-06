@@ -14,11 +14,11 @@ const HeaderCell = styled(TableCell)`
 `;
 
 export const MatrixHeaderRow = () => {
-  const { columns, startColumn, numberOfColumnsPerPage } = useContext(MatrixContext);
+  const { columns, startColumn, maxColumns } = useContext(MatrixContext);
 
   const displayedColumns = columns.slice(
     startColumn,
-    startColumn + numberOfColumnsPerPage,
+    startColumn + maxColumns,
   ) as MatrixColumnType[];
   return (
     <TableHead>

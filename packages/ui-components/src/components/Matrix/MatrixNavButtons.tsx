@@ -36,10 +36,10 @@ const TableMoveButton = styled(Button).attrs({
 `;
 
 export const MatrixNavButtons = () => {
-  const { startColumn, columns, numberOfColumnsPerPage } = useContext(MatrixContext);
+  const { startColumn, columns, maxColumns } = useContext(MatrixContext);
   const dispatch = useContext(MatrixDispatchContext)!;
   // Show the previous button when the first column is not visible
-  const showButtons = columns.length > numberOfColumnsPerPage;
+  const showButtons = columns.length > maxColumns;
 
   const handleMoveColumnLeft = () => {
     dispatch({ type: 'DECREASE_START_COLUMN' });
@@ -62,7 +62,7 @@ export const MatrixNavButtons = () => {
         Previous
       </TableMoveButton>
       <TableMoveButton
-        disabled={startColumn >= columns.length - numberOfColumnsPerPage}
+        disabled={startColumn >= columns.length - maxColumns}
         onClick={handleMoveColumnRight}
         title="Show next columns"
       >
