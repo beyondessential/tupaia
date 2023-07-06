@@ -12,12 +12,11 @@ import { translateSurveyResponseObject } from './translateInboundSurveyResponse'
 import { populateData } from './populateData';
 import { addSurveyFile } from './addSurveyFile';
 
-// Action constants
-const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
-const ADD_SURVEY_IMAGE = 'AddSurveyImage';
-const ADD_SURVEY_FILE = 'AddSurveyFile';
-
-const VALID_ACTIONS = [SUBMIT_SURVEY_RESPONSE, ADD_SURVEY_IMAGE];
+const ACTIONS = {
+  SubmitSurveyResponse: 'SubmitSurveyResponse',
+  AddSurveyImage: 'AddSurveyImage',
+  AddSurveyFile: 'AddSurveyFile',
+};
 
 const addSurveyImageValidator = yup.object().shape({
   id: yup.string().required(),
@@ -30,7 +29,7 @@ const addSurveyFileValidator = yup.object().shape({
 });
 
 type ChangeRecord = {
-  action: typeof VALID_ACTIONS[number];
+  action: typeof ACTIONS[keyof typeof ACTIONS];
   payload: Record<string, unknown>;
 };
 
@@ -49,7 +48,7 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
 
     for (const { action, payload } of changes) {
       switch (action) {
-        case SUBMIT_SURVEY_RESPONSE: {
+        case ACTIONS.SubmitSurveyResponse: {
           const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
           const validatedSurveyResponse = await validateSurveyResponseObject(
             this.req.models,
@@ -62,14 +61,14 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           surveyResponses.push(surveyResponseWithPopulatedData);
           break;
         }
-        case ADD_SURVEY_IMAGE: {
+        case ACTIONS.AddSurveyImage: {
           const { id, data } = addSurveyImageValidator.validateSync(payload);
           await addSurveyImage(id, data);
           break;
         }
-        case ADD_SURVEY_FILE: {
-          const { fileName, data } = addSurveyFileValidator.validateSync(payload);
-          await addSurveyFile(fileName, data);
+        case ACTIONS.AddSurveyFile: {
+          const { uniqueFileName, data } = addSurveyFileValidator.validateSync(payload);
+          await addSurveyFile(this.req.models, uniqueFileName, data);
           break;
         }
         default:

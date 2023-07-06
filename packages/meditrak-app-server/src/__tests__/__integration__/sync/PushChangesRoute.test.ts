@@ -239,8 +239,8 @@ describe('changes (POST)', () => {
 
     describe('Survey responses containing files', () => {
       it('correctly uploads a file', async () => {
-        const fileName = `${generateId()}_file.png`;
-        const fileResponseObject = { fileName, data: TEST_IMAGE_DATA };
+        const uniqueFileName = `${generateId()}_file.png`;
+        const fileResponseObject = { uniqueFileName, data: TEST_IMAGE_DATA };
 
         const fileAction = {
           action: 'AddSurveyFile',
@@ -254,7 +254,7 @@ describe('changes (POST)', () => {
         });
         expect(filePostResponse.statusCode).toEqual(200);
 
-        const fileString = mockS3Bucket.files[fileName];
+        const fileString = mockS3Bucket.files[uniqueFileName];
         expect(fileString).toEqual(TEST_IMAGE_DATA);
       });
     });
