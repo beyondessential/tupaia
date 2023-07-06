@@ -17,7 +17,7 @@ export type MapOverlaysRequest = Request<any, any, any, any>;
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 // Central server defaults to 100 record limit, this overrides that
-const DEFAULT_PAGE_SIZE = '100';
+const DEFAULT_PAGE_SIZE = 'ALL';
 
 // We return a simplified version of data to the frontend
 interface TranslatedMapOverlay {
