@@ -4,6 +4,7 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { formatEntitiesForResponse } from './format';
 import {
   MultiEntityRequest,
@@ -12,6 +13,8 @@ import {
   EntityRequestQuery,
   EntityResponse,
 } from './types';
+
+const { RAW } = QUERY_CONJUNCTIONS;
 
 export type EntitySearchRequest = MultiEntityRequest<
   MultiEntityRequestParams & { searchString: string },
@@ -26,19 +29,20 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const { pageSize, page } = this.req.query;
     const searchString = rawString.toLowerCase();
 
-    // NOTE: Currently this route won't return the root project entity, we are searching
-    // through only the descendants of the hierarchy
-    const relations = await this.req.models.ancestorDescendantRelation.find({
-      entity_hierarchy_id: hierarchyId,
-    });
-    const hierarchyFilter = {
-      id: relations.map((rel: any) => rel.descendant_id),
-    };
-
     const entities = await this.req.models.entity.find(
       {
         ...filter,
-        ...hierarchyFilter,
+        [RAW]: {
+          // Running this RAW is much faster for larger hierarchies
+          sql: `id IN (
+              SELECT descendant_id
+              FROM ancestor_descendant_relation
+              WHERE entity_hierarchy_id = :hierarchyId
+            )`,
+          parameters: {
+            hierarchyId,
+          },
+        },
         // Name filter last so we don't allow overriding it
         name: {
           comparator: 'ilike',

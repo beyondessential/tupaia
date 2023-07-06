@@ -297,8 +297,11 @@ export class EntityApi extends BaseApi {
     );
   }
 
-  public async entitySearch(searchString: string, queryOptions?: any) {
-    return this.connection.get(`entitySearch/${searchString}`, queryOptions);
+  public async entitySearch(hierarchyName: string, searchString: string, queryOptions?: any) {
+    return this.connection.get(
+      `hierarchy/${hierarchyName}/entitySearch/${searchString}`,
+      queryOptions,
+    );
   }
 }
 

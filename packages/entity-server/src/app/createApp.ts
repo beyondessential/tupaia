@@ -48,11 +48,6 @@ export function createApp(db = new TupaiaDatabase()) {
 
       // Hierarchy routes
       .get<HierarchyRequest>('hierarchies', attachHierarchyContext, handleWith(HierarchyRoute))
-      .get<EntitySearchRequest>(
-        'entitySearch/:searchString',
-        attachCommonEntityContext,
-        handleWith(EntitySearchRoute),
-      )
 
       // MultiEntity routes
       .post<MultiEntityRequest>(
@@ -85,6 +80,11 @@ export function createApp(db = new TupaiaDatabase()) {
         attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityAncestorsRoute),
+      )
+      .get<EntitySearchRequest>(
+        'hierarchy/:hierarchyName/entitySearch/:searchString',
+        attachCommonEntityContext,
+        handleWith(EntitySearchRoute),
       )
 
       // SingleEntity routes
