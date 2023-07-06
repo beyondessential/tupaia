@@ -3707,6 +3707,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cypress/webpack-preprocessor@npm:^5.17.1":
+  version: 5.17.1
+  resolution: "@cypress/webpack-preprocessor@npm:5.17.1"
+  dependencies:
+    bluebird: 3.7.1
+    debug: ^4.3.4
+    lodash: ^4.17.20
+  peerDependencies:
+    "@babel/core": ^7.0.1
+    "@babel/preset-env": ^7.0.0
+    babel-loader: ^8.0.2 || ^9
+    webpack: ^4 || ^5
+  checksum: 4dc2babc77df5fad7eb16629ca716f73df930739563be6bff4e336f9a8f08cf80915a7eed2ea582294ed67336313b62cc30d04ebe3fc2a9b1e48e1445be3c297
+  languageName: node
+  linkType: hard
+
 "@cypress/xvfb@npm:^1.2.4":
   version: 1.2.4
   resolution: "@cypress/xvfb@npm:1.2.4"
@@ -6706,6 +6722,7 @@ __metadata:
     "@babel/node": ^7.10.5
     "@babel/plugin-proposal-nullish-coalescing-operator": ^7.14.5
     "@cypress/snapshot": ^2.1.7
+    "@cypress/webpack-preprocessor": ^5.17.1
     "@testing-library/cypress": ^7.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -11112,6 +11129,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bluebird@npm:3.7.1":
+  version: 3.7.1
+  resolution: "bluebird@npm:3.7.1"
+  checksum: 58c295399e109925149977ebcb40e42fd109d3e458899e71441bc7e5e0867bbd796fdd20278b425fa29f13377fe335fbfc2a6e68e5ca1da03b1c3afdc439d097
+  languageName: node
+  linkType: hard
+
 "bluebird@npm:^3.1.1, bluebird@npm:^3.3.5, bluebird@npm:^3.5.0, bluebird@npm:^3.5.1, bluebird@npm:^3.5.5, bluebird@npm:^3.7.2":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
@@ -14448,7 +14472,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4.3.4, debug@npm:^4.3.3":
+"debug@npm:4.3.4, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:

@@ -4,6 +4,7 @@
  */
 
 const cypressDotenv = require('cypress-dotenv');
+const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 const fs = require('fs');
 
 module.exports = (on, config) => {
@@ -19,6 +20,14 @@ module.exports = (on, config) => {
       return fs.existsSync(filename) ? fs.readFileSync(filename, 'utf8') : null;
     },
   });
+
+  const options = webpackPreprocessor.defaultOptions;
+  options.webpackOptions.module.rules[0].options.presets.push(
+    '@babel/preset-env',
+    '@babel/preset-react',
+  );
+
+  on('file:preprocessor', webpackPreprocessor(options));
 
   return cypressDotenv(config);
 };
