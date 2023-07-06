@@ -12,40 +12,33 @@ import {
   EntityRequestQuery,
   EntityResponse,
 } from './types';
-import { AncestorDescendantRelationType } from '../../models';
 
 export type EntitySearchRequest = MultiEntityRequest<
   MultiEntityRequestParams & { searchString: string },
   EntityResponse[],
   MultiEntityRequestBody,
-  EntityRequestQuery & { pageSize?: number; page?: number; projectCode?: string }
+  EntityRequestQuery & { pageSize?: number; page?: number }
 >;
 export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
-    const { fields, field, filter } = this.req.ctx;
+    const { hierarchyId, fields, field, filter } = this.req.ctx;
     const { searchString: rawString } = this.req.params;
-    const { pageSize, page, projectCode } = this.req.query;
+    const { pageSize, page } = this.req.query;
     const searchString = rawString.toLowerCase();
-    let projectFilter = {};
 
-    // We can either search all entities, or search for entities within a project
-    if (projectCode) {
-      const project = await this.req.models.project.findOne({
-        code: projectCode,
-      });
-      const relations = await this.req.models.ancestorDescendantRelation.find({
-        entity_hierarchy_id: project.entity_hierarchy_id,
-        'ancestor.id': project.entity_id,
-      });
-      projectFilter = {
-        id: relations.map((rel: AncestorDescendantRelationType) => rel['descendant.id']),
-      };
-    }
+    // NOTE: Currently this route won't return the root project entity, we are searching
+    // through only the descendants of the hierarchy
+    const relations = await this.req.models.ancestorDescendantRelation.find({
+      entity_hierarchy_id: hierarchyId,
+    });
+    const hierarchyFilter = {
+      id: relations.map((rel: any) => rel.descendant_id),
+    };
 
     const entities = await this.req.models.entity.find(
       {
         ...filter,
-        ...projectFilter,
+        ...hierarchyFilter,
         // Name filter last so we don't allow overriding it
         name: {
           comparator: 'ilike',

@@ -51,7 +51,6 @@ export function createApp(db = new TupaiaDatabase()) {
       .get<EntitySearchRequest>(
         'entitySearch/:searchString',
         attachCommonEntityContext,
-        attachMultiEntityContext,
         handleWith(EntitySearchRoute),
       )
 
