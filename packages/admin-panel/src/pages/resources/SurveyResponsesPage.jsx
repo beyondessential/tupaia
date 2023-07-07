@@ -10,7 +10,6 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { ApprovalStatus } from '@tupaia/types';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
-import { SurveyResponseEditFields } from '../../surveyResponse/SurveyResponseEditFields';
 
 // Don't include not_required as an editable option because it can lead to
 // mis-matches between surveys and survey responses
@@ -104,23 +103,11 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   entityName,
   ...SURVEY_RESPONSE_COLUMNS,
   {
-    Header: 'Edit',
-    type: 'edit',
+    Header: 'Resubmit',
+    type: 'resubmitSurveyResponse',
     source: 'id',
     actionConfig: {
-      title: 'Edit Survey Response',
-      editEndpoint: 'surveyResponses',
-      fields: [
-        surveyId,
-        entityName,
-        surveyName,
-        assessorName,
-        date,
-        dateOfData,
-        outdated,
-        approvalStatus,
-      ],
-      FieldsComponent: SurveyResponseEditFields,
+      title: 'Resubmit Survey Response',
       extraDialogProps: {
         fullWidth: true,
         maxWidth: 'xl',
