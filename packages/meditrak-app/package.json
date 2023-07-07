@@ -25,6 +25,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "reset-cache": "echo Run me and exit to reset cache && react-native start --reset-cache",
     "start-dev": "react-native run-android",
     "test": "echo \"No tests specified\" && exit 0"
   },
