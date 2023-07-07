@@ -36,9 +36,9 @@ allprojects {
 
 // Project-wide gradle configuration properties for use by all modules
 ext {
-    buildToolsVersion = "30.0.2"
+    buildToolsVersion = "33.0.2"
     minSdkVersion = 21
-    compileSdkVersion = 30
-    targetSdkVersion = 30
+    compileSdkVersion = 33
+    targetSdkVersion = 33
     googlePlayServicesVersion = "15.0.1"
 }
