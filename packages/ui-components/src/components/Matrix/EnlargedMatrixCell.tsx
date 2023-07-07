@@ -1,9 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { DialogContent, Typography } from '@material-ui/core';
+import { DialogContent } from '@material-ui/core';
+import Markdown from 'markdown-to-jsx';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import styled from 'styled-components';
 import { Dialog, DialogFooter, DialogHeader } from '../Dialog';
@@ -27,21 +28,23 @@ export const EnlargedMatrixCell = () => {
   const dispatch = useContext(MatrixDispatchContext)!;
   if (!enlargedCell) return null;
   const { rowTitle, value, displayValue, presentation = {} } = enlargedCell;
-  const { description = '' } = presentation;
+  const { description = '', showRawValue } = presentation;
   const closeModal = () => {
     dispatch({ type: ACTION_TYPES.SET_ENLARGED_CELL, payload: null });
   };
+
+  const bodyText = `${description}${showRawValue ? ` ${value}` : ''}`.replace(/\\n/g, '\n\n');
   return (
     <Dialog open onClose={closeModal}>
       <DialogHeader title={rowTitle} onClose={closeModal} />
       <Content>
         <DisplayWrapper>{displayValue}</DisplayWrapper>
-        <Typography>
-          {description} {value}
-        </Typography>
+        <Markdown>{bodyText.replace(/\\n/g, '\n\n')}</Markdown>
       </Content>
       <DialogFooter>
-        <Button onClick={closeModal}>Back to table</Button>
+        <Button onClick={closeModal} variant="outlined" color="default">
+          Back to table
+        </Button>
       </DialogFooter>
     </Dialog>
   );

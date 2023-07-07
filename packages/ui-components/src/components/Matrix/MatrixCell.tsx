@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext } from 'react';
@@ -60,16 +60,20 @@ export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
   const { presentationOptions = {} } = useContext(MatrixContext);
   const dispatch = useContext(MatrixDispatchContext)!;
   const isDots = getIsUsingDots(presentationOptions);
-  const { showRawValue } = presentationOptions;
   const presentation = getPresentationOption(presentationOptions, value);
   const displayValue = isDots ? (
-    <Dot $color={presentation?.color} aria-label={`${presentation?.description}: ${value}`} />
+    <Dot
+      $color={presentation?.color}
+      aria-label={`${presentation?.description ? `${presentation.description}: ` : ''}${
+        value || 'No value'
+      }`}
+    />
   ) : (
     value
   );
-  const isButton = showRawValue && value !== undefined && value !== null;
+  // If the cell has presentation options, it should be a button so that the data can be expanded. Otherwise, it can just display the data as normal
+  const isButton = !!presentation;
   const onClickCellButton = () => {
-    if (!showRawValue) return;
     dispatch({
       type: ACTION_TYPES.SET_ENLARGED_CELL,
       payload: {
