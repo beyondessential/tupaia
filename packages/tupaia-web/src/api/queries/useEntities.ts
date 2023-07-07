@@ -23,8 +23,8 @@ export const useEntities = (
 
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
-    async (): Promise<EntitiesResponse> => {
-      return get(`entities/${projectCode}/${entityCode}`, {
+    (): Promise<EntitiesResponse> =>
+      get(`entities/${projectCode}/${entityCode}`, {
         params: {
           fields: [
             'parent_code',
@@ -38,8 +38,8 @@ export const useEntities = (
           ],
         },
         ...axiosConfig,
-      });
-    },
+      }),
+
     {
       enabled,
     },

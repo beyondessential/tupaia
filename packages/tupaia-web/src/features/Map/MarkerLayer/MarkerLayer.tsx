@@ -78,8 +78,9 @@ export const MarkerLayer = () => {
   }
 
   // todo: move to mapOverlays route
-  const displayOnLevel = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
-  if (displayOnLevel && camelCase(entity.type!) !== camelCase(displayOnLevel.displayOnLevel)) {
+  // Don't show the marker layer if the entity type doesn't match the measure level
+  const firstSeries = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
+  if (firstSeries && camelCase(entity.type!) !== camelCase(firstSeries.displayOnLevel)) {
     return null;
   }
 
@@ -87,6 +88,7 @@ export const MarkerLayer = () => {
     entitiesData,
     measureData: mapOverlayData.measureData,
     serieses: mapOverlayData.serieses,
+    // Implement this when we add the legend
     hiddenValues: {},
   });
 

@@ -2,13 +2,17 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { calculateRadiusScaleFactor, getMeasureDisplayInfo } from '@tupaia/ui-map-components';
+import {
+  calculateRadiusScaleFactor,
+  getMeasureDisplayInfo,
+  SeriesValue,
+} from '@tupaia/ui-map-components';
 import { Entity } from '@tupaia/types';
 
 interface processMeasureData {
   measureData: any;
   entitiesData: any;
-  serieses: any;
+  serieses: SeriesValue[];
   hiddenValues: any;
 }
 export const processMeasureData = ({

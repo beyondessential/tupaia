@@ -49,6 +49,7 @@ const Heading = styled(Typography).attrs({
 
 const Container = styled(MaxHeightContainer)`
   border-radius: 0 0 5px 5px;
+  // Set pointer events on the container rather than higher up so that it only applies to the open menu
   pointer-events: auto;
 `;
 

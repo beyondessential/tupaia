@@ -13,6 +13,7 @@ import {
 } from '../../../constants';
 import { useEffect } from 'react';
 
+// When the map overlay groups change, update the default map overlay
 export const useDefaultMapOverlay = () => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
