@@ -122,7 +122,7 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
 
     // Pull data from KoBo
     const koboData =
-      (await dataBroker.pullSyncGroupResults(syncGroupCode, {
+      (await dataBroker.pullSyncGroupResults([syncGroupCode], {
         startSubmissionTime: dataServiceSyncGroup.sync_cursor,
       })) || {};
 
