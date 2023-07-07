@@ -13,7 +13,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
     const { query, params, ctx } = this.req;
     const { projectCode } = params;
-    const { searchString, page = 0, pageSize = 5 } = query;
+    const { searchString, page = 0, pageSize = 5, fields = DEFAULT_FIELDS } = query;
 
     const project = (
       await ctx.services.central.fetchResources('projects', {
@@ -27,7 +27,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
       ...query,
       page,
       pageSize,
-      fields: DEFAULT_FIELDS,
+      fields,
     });
   }
 }

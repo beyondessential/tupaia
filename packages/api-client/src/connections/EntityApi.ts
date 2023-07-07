@@ -298,10 +298,12 @@ export class EntityApi extends BaseApi {
   }
 
   public async entitySearch(hierarchyName: string, searchString: string, queryOptions?: any) {
-    return this.connection.get(
-      `hierarchy/${hierarchyName}/entitySearch/${searchString}`,
-      queryOptions,
-    );
+    const { page, pageSize, ...otherQueryOptions } = queryOptions;
+    return this.connection.get(`hierarchy/${hierarchyName}/entitySearch/${searchString}`, {
+      ...this.stringifyQueryParameters(otherQueryOptions),
+      page,
+      pageSize,
+    });
   }
 }
 
