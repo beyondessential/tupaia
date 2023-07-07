@@ -94,7 +94,6 @@ export class DataBroker {
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
-      // @ts-ignore
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
     // Run permission checks in data broker so we only expose data the user is allowed to see
@@ -131,9 +130,7 @@ export class DataBroker {
   };
 
   private fetchFromSyncGroupTable = async (dataSourceSpec: FetchConditions) => {
-    // Add 'type' field to output to keep object layout consistent between tables
-    const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
-    return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
+    return this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
   };
 
   private getOrganisationUnitsByCountry = async (organisationUnitCodes: string[]) => {
