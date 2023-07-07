@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.android.tools.build:gradle:8.0.2'
         classpath 'com.google.gms:google-services:4.3.4'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -37,7 +37,7 @@ allprojects {
 // Project-wide gradle configuration properties for use by all modules
 ext {
     buildToolsVersion = "33.0.2"
-    minSdkVersion = 31
+    minSdkVersion = 33
     compileSdkVersion = 33
     targetSdkVersion = 33
     googlePlayServicesVersion = "15.0.1"
