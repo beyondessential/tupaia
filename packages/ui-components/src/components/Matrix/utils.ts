@@ -114,8 +114,13 @@ export function getIsUsingDots(presentationOptions: PresentationOptions = {}) {
   return Object.keys(presentationOptions).length > 0;
 }
 
-export function checkIfApplyDotStyle(presentationOptions: ConditionalPresentationOptions = {}) {
-  return presentationOptions?.applyLocation?.columnIndexes;
+export function checkIfApplyDotStyle(
+  presentationOptions: ConditionalPresentationOptions = {},
+  columnIndex: number,
+) {
+  const appliedLocations = presentationOptions?.applyLocation?.columnIndexes;
+  if (!appliedLocations) return true;
+  return appliedLocations.includes(columnIndex);
 }
 
 // This function returns a flattened array of columns, NOT including the parent columns

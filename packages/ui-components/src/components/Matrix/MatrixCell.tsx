@@ -6,9 +6,16 @@
 import React, { useContext } from 'react';
 import { TableCell, Button } from '@material-ui/core';
 import styled from 'styled-components';
-import { getIsUsingDots, getPresentationOption, hexToRgba } from './utils';
+import {
+  checkIfApplyDotStyle,
+  getFlattenedColumns,
+  getIsUsingDots,
+  getPresentationOption,
+  hexToRgba,
+} from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
-import { MatrixRowType } from '../../types';
+import { MatrixColumnType, MatrixRowType } from '../../types';
+import { ConditionalPresentationOptions } from '@tupaia/types';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;
@@ -56,17 +63,26 @@ interface MatrixRowProps {
   value: any;
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
+  colKey: MatrixColumnType['key'];
 }
 
 /**
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
-export const MatrixCell = ({ value, rowTitle, isCategory }: MatrixRowProps) => {
-  const { presentationOptions = {}, categoryPresentationOptions = {} } = useContext(MatrixContext);
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowProps) => {
+  const { presentationOptions = {}, categoryPresentationOptions = {}, columns } = useContext(
+    MatrixContext,
+  );
   const dispatch = useContext(MatrixDispatchContext)!;
   // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
+
+  const allColumns = getFlattenedColumns(columns);
+  const colIndex = allColumns.findIndex(({ key }) => key === colKey);
+
   const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
-  const isDots = getIsUsingDots(presentationOptionsForCell);
+  const isDots =
+    getIsUsingDots(presentationOptionsForCell) &&
+    checkIfApplyDotStyle(presentationOptionsForCell as ConditionalPresentationOptions, colIndex);
   const presentation = getPresentationOption(presentationOptionsForCell, value);
   const displayValue = isDots ? (
     <Dot
@@ -78,8 +94,6 @@ export const MatrixCell = ({ value, rowTitle, isCategory }: MatrixRowProps) => {
   ) : (
     value
   );
-  // If the cell has presentation options, it should be a button so that the data can be expanded. Otherwise, it can just display the data as normal
-  const isButton = !!presentation;
   const onClickCellButton = () => {
     dispatch({
       type: ACTION_TYPES.SET_ENLARGED_CELL,
@@ -95,8 +109,8 @@ export const MatrixCell = ({ value, rowTitle, isCategory }: MatrixRowProps) => {
   return (
     <DataCell>
       <DataCellContent
-        as={isButton ? Button : 'div'}
-        onClick={isButton ? onClickCellButton : undefined}
+        as={isDots ? Button : 'div'}
+        onClick={isDots ? onClickCellButton : undefined}
       >
         {displayValue}
       </DataCellContent>

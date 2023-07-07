@@ -98,6 +98,7 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
             value={row[col.key as string]}
             rowTitle={row.title}
             isCategory
+            colKey={col.key}
           />
         ))}
       </TableRow>
@@ -130,6 +131,7 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
           key={`column-${key || title}-row-${row.title}-value`}
           value={row[key as string]}
           rowTitle={row.title}
+          colKey={key}
         />
       ))}
     </TableRow>

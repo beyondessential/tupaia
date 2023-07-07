@@ -471,6 +471,13 @@ const rangeCategoryPresentationOptions = {
   showRawValue: true,
 };
 
+const applyLocationPresentationOptions = {
+  ...dotPresentationOptions,
+  applyLocation: {
+    columnIndexes: [3],
+  },
+};
+
 const Template = args => <Matrix {...args} />;
 
 export const Simple = Template.bind({});
@@ -535,4 +542,11 @@ GroupsRowsWithCategoryPresentationOptions.args = {
   rows: groupedRowsWithCategoryData,
   columns: basicColumns,
   categoryPresentationOptions: rangeCategoryPresentationOptions,
+};
+
+export const ApplyLocationPresentationOptions = Template.bind({});
+ApplyLocationPresentationOptions.args = {
+  rows: basicRows,
+  presentationOptions: applyLocationPresentationOptions,
+  columns: basicColumns,
 };
