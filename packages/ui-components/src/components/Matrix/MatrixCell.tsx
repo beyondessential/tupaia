@@ -46,13 +46,10 @@ const DataCellContent = styled.div`
   align-items: center;
   text-align: center;
   justify-content: center;
+`;
+
+const ExpandButton = styled(Button)`
   &:hover {
-    background-color: rgba(
-      255,
-      255,
-      255,
-      0.08
-    ); // replicate the hover effect for all cell content, not just buttons
     ${Dot} {
       transform: scale(1.2);
     }
@@ -109,7 +106,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowPro
   return (
     <DataCell>
       <DataCellContent
-        as={isDots ? Button : 'div'}
+        as={isDots ? ExpandButton : 'div'}
         onClick={isDots ? onClickCellButton : undefined}
       >
         {displayValue}
