@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext } from 'react';
@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Button } from '../Button';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
+import { getFlattenedColumns } from './utils';
 
 const TableMoveButtonWrapper = styled.div`
   display: flex;
@@ -37,11 +38,16 @@ const TableMoveButton = styled(Button).attrs({
   }
 `;
 
+/**
+ * Renders the buttons to move the columns left and right
+ */
 export const MatrixNavButtons = () => {
-  const { startColumn, columns, maxColumns } = useContext(MatrixContext);
+  const { startColumn, maxColumns, columns } = useContext(MatrixContext);
+  // Get all of the flattened columns
+  const childColumns = getFlattenedColumns(columns);
   const dispatch = useContext(MatrixDispatchContext)!;
-  // Show the previous button when the first column is not visible
-  const showButtons = columns.length > maxColumns;
+  // Show the buttons when there are more columns than the max columns
+  const showButtons = childColumns.length > maxColumns;
 
   const handleMoveColumnLeft = () => {
     dispatch({ type: ACTION_TYPES.DECREASE_START_COLUMN });
@@ -64,7 +70,7 @@ export const MatrixNavButtons = () => {
         Previous
       </TableMoveButton>
       <TableMoveButton
-        disabled={startColumn >= columns.length - maxColumns}
+        disabled={startColumn >= childColumns.length - maxColumns}
         onClick={handleMoveColumnRight}
         title="Show next columns"
       >

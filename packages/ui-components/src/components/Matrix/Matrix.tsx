@@ -1,24 +1,27 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
-import { MatrixHeaderRow } from './MatrixHeaderRow';
+import { PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
-import { hexToRgba } from './utils';
+import { getFlattenedColumns, hexToRgba } from './utils';
+import { MatrixHeader } from './MatrixHeader';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
 import { EnlargedMatrixCell } from './EnlargedMatrixCell';
+import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
   border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
   color: ${({ theme }) => theme.palette.text.primary};
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
+  table-layout: fixed;
   td,
   th {
     border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
@@ -31,13 +34,20 @@ const Wrapper = styled.div`
   width: 100%;
   overflow: auto;
 `;
+
 interface MatrixProps {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
-  presentationOptions: any;
+  presentationOptions?: PresentationOptions;
+  categoryPresentationOptions?: PresentationOptions;
 }
 
-export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixProps) => {
+export const Matrix = ({
+  columns = [],
+  rows = [],
+  presentationOptions,
+  categoryPresentationOptions,
+}: MatrixProps) => {
   const [{ startColumn, expandedRows, maxColumns, enlargedCell }, dispatch] = useReducer(
     matrixReducer,
     {
@@ -55,10 +65,13 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
       if (!tableEl || !tableEl?.current || !tableEl?.current?.offsetWidth) return;
       const { offsetWidth } = tableEl?.current;
       // 200px is the max width of a column that we want to show
-      const maxColumns = Math.floor(offsetWidth / 200);
+      const usableWidth = offsetWidth - 200; // the max size of the first column (row title)
+      const maxColumns = Math.floor(usableWidth / 200);
+
+      const flattenedColumns = getFlattenedColumns(columns);
       dispatch({
         type: ACTION_TYPES.SET_MAX_COLUMNS,
-        payload: Math.min(maxColumns, columns.length),
+        payload: Math.min(maxColumns, flattenedColumns.length),
       });
     };
 
@@ -70,6 +83,7 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
       <MatrixContext.Provider
         value={{
           presentationOptions,
+          categoryPresentationOptions,
           columns,
           rows,
           startColumn,
@@ -82,13 +96,14 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
           <MatrixNavButtons />
           <EnlargedMatrixCell />
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeaderRow />
+            <MatrixHeader />
             <TableBody>
               {rows.map(row => (
                 <MatrixRow row={row} key={row.title} parents={[]} />
               ))}
             </TableBody>
           </Table>
+          <MatrixLegend />
         </MatrixDispatchContext.Provider>
       </MatrixContext.Provider>
     </Wrapper>

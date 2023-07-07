@@ -25,7 +25,6 @@ export const Dot = styled.div<{ $color?: string }>`
 
 const DataCell = styled(TableCell)`
   vertical-align: middle;
-  text-align: center;
   position: relative;
   z-index: 1;
   padding: 0;
@@ -38,6 +37,8 @@ const DataCellContent = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  text-align: center;
+  justify-content: center;
   &:hover {
     background-color: rgba(
       255,
@@ -54,13 +55,19 @@ const DataCellContent = styled.div`
 interface MatrixRowProps {
   value: any;
   rowTitle: MatrixRowType['title'];
+  isCategory?: boolean;
 }
 
-export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
-  const { presentationOptions = {} } = useContext(MatrixContext);
+/**
+ * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
+ */
+export const MatrixCell = ({ value, rowTitle, isCategory }: MatrixRowProps) => {
+  const { presentationOptions = {}, categoryPresentationOptions = {} } = useContext(MatrixContext);
   const dispatch = useContext(MatrixDispatchContext)!;
-  const isDots = getIsUsingDots(presentationOptions);
-  const presentation = getPresentationOption(presentationOptions, value);
+  // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
+  const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
+  const isDots = getIsUsingDots(presentationOptionsForCell);
+  const presentation = getPresentationOption(presentationOptionsForCell, value);
   const displayValue = isDots ? (
     <Dot
       $color={presentation?.color}
@@ -81,6 +88,7 @@ export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
         value,
         displayValue,
         presentation,
+        isCategory,
       },
     });
   };

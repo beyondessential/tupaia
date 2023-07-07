@@ -5,8 +5,9 @@ export type OverrideableComponentProps<P = {}> = P & {
 };
 
 export type MatrixColumnType = {
-  key: string;
+  key?: string;
   title: string;
+  children?: MatrixColumnType[];
 };
 
 export type MatrixRowType = Record<string, any> & {

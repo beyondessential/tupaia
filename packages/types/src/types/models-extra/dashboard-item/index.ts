@@ -9,6 +9,8 @@ import type {
   PresentationOptions,
   ConditionValue,
   ConditionType,
+  RangePresentationOptions,
+  ConditionalPresentationOptions,
 } from './matricies';
 import type { ComponentConfig } from './components';
 import type {
@@ -70,4 +72,6 @@ export type {
   PresentationOptions,
   ConditionValue,
   ConditionType,
+  RangePresentationOptions,
+  ConditionalPresentationOptions,
 };

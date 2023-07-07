@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext } from 'react';
@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
 import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
+import { getDisplayedColumns } from './utils';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded: boolean;
@@ -55,10 +56,14 @@ interface MatrixRowProps {
   parents: MatrixRowTitle[];
 }
 
+/**
+ * This is a component that renders an expandable/collapsible row in the matrix. It renders the row again for each child inside the row, to handle potentially nested rows.
+ */
 const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
   const dispatch = useContext(MatrixDispatchContext)!;
-  const { maxColumns, expandedRows } = useContext(MatrixContext);
+  const { maxColumns, expandedRows, columns, startColumn } = useContext(MatrixContext);
+  const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
 
   const toggleExpandedRows = (rowTitle: string) => {
     if (expandedRows.includes(rowTitle)) {
@@ -70,6 +75,7 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
   const isExpanded = expandedRows.includes(title);
   const isVisible = parents.every(parent => expandedRows.includes(parent));
   const depth = parents.length;
+
   return (
     <>
       <TableRow $visible={isVisible} $highlighted={depth ? isVisible : isExpanded}>
@@ -85,12 +91,15 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
             {title}
           </RowHeaderCellContent>
         </BaseRowHeaderCell>
-        {/** render empty cells for the rest of the row */}
-        {Array(maxColumns)
-          .fill(0)
-          .map(() => (
-            <TableCell />
-          ))}
+        {/** render a cell for each remaining column */}
+        {displayedColumns.map(col => (
+          <MatrixCell
+            key={`row-${row.title}-category-header-${col.key}`}
+            value={row[col.key as string]}
+            rowTitle={row.title}
+            isCategory
+          />
+        ))}
       </TableRow>
       {children?.map(child => (
         <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
@@ -99,6 +108,9 @@ const ExpandableRow = ({ row, parents = [] }: MatrixRowProps) => {
   );
 };
 
+/**
+ * This is a component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
+ */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
   const { columns, startColumn, maxColumns, expandedRows } = useContext(MatrixContext);
@@ -108,15 +120,15 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   // if is nested render a group
   if (children) return <ExpandableRow row={row} parents={parents} />;
 
-  const displayedColumns = columns.slice(startColumn, startColumn + maxColumns);
+  const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
   // render a regular row with the title cell and the values
   return (
     <TableRow $visible={isVisible} $highlighted={depth > 0}>
       <NonGroupedRowHeaderCell $depth={parents.length}>{title}</NonGroupedRowHeaderCell>
-      {displayedColumns.map(({ key }) => (
+      {displayedColumns.map(({ key, title }) => (
         <MatrixCell
-          key={`column-${key}-row-${row.title}-value`}
-          value={row[key]}
+          key={`column-${key || title}-row-${row.title}-value`}
+          value={row[key as string]}
           rowTitle={row.title}
         />
       ))}

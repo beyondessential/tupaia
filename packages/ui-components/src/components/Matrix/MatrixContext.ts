@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import { Dispatch, createContext } from 'react';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { PresentationOptions } from '@tupaia/types';
@@ -12,10 +17,12 @@ const defaultContextValue = {
   maxColumns: 0,
   expandedRows: [],
   enlargedCell: null,
+  categoryPresentationOptions: {},
 } as {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
-  presentationOptions: PresentationOptions;
+  presentationOptions?: PresentationOptions;
+  categoryPresentationOptions?: PresentationOptions;
   startColumn: number;
   maxColumns: number;
   expandedRows: RowTitle[];

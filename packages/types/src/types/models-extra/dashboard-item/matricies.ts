@@ -30,10 +30,10 @@ export type MatrixConfig = BaseConfig & {
   /**
    * @description Category header rows can have values just like real rows, this is how you style them
    */
-  categoryPresentationOptions?: any;
+  categoryPresentationOptions?: PresentationOptions;
 };
 
-export type PresentationOptions = {
+export type ConditionalPresentationOptions = {
   type?: 'condition'; // optional key it seems like
   conditions?: PresentationOptionCondition[];
   /**
@@ -52,6 +52,13 @@ export type PresentationOptions = {
   };
 };
 
+export type RangePresentationOptions = Record<CssColor, PresentationOptionRange> & {
+  type: 'range';
+  showRawValue?: boolean;
+};
+
+export type PresentationOptions = ConditionalPresentationOptions | RangePresentationOptions;
+
 export type PresentationOptionCondition = {
   key: string;
   color?: CssColor;
@@ -62,6 +69,14 @@ export type PresentationOptionCondition = {
    */
   condition: ConditionValue | Record<ConditionType, ConditionValue>;
   legendLabel?: string;
+};
+
+export type PresentationOptionRange = {
+  color?: CssColor;
+  label?: string;
+  description?: string;
+  min?: number;
+  max?: number;
 };
 
 export type ConditionValue = string | number;

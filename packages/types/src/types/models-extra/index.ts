@@ -19,4 +19,6 @@ export type {
   PresentationOptions,
   ConditionValue,
   ConditionType,
+  RangePresentationOptions,
+  ConditionalPresentationOptions,
 } from './dashboard-item';

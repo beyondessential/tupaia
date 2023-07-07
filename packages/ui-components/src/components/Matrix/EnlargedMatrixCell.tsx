@@ -24,15 +24,23 @@ const DisplayWrapper = styled.div`
  * This is the modal that appears when a user clicks on a cell in the matrix
  */
 export const EnlargedMatrixCell = () => {
-  const { enlargedCell } = useContext(MatrixContext);
+  const { enlargedCell, presentationOptions = {}, categoryPresentationOptions = {} } = useContext(
+    MatrixContext,
+  );
   const dispatch = useContext(MatrixDispatchContext)!;
+  // If there is no enlarged cell set, don't render anything
   if (!enlargedCell) return null;
-  const { rowTitle, value, displayValue, presentation = {} } = enlargedCell;
-  const { description = '', showRawValue } = presentation;
+  const { rowTitle, value, displayValue, presentation = {}, isCategory } = enlargedCell;
+  // If it is a category header cell, use the category presentation options, otherwise use the normal presentation options
+  const presentationOptionsToUse = isCategory ? categoryPresentationOptions : presentationOptions;
+
+  const { showRawValue } = presentationOptionsToUse;
+  const { description = '' } = presentation;
   const closeModal = () => {
     dispatch({ type: ACTION_TYPES.SET_ENLARGED_CELL, payload: null });
   };
 
+  // Render the description, and also value if showRawValue is true. Also handle newlines in markdown
   const bodyText = `${description}${showRawValue ? ` ${value}` : ''}`.replace(/\\n/g, '\n\n');
   return (
     <Dialog open onClose={closeModal}>
