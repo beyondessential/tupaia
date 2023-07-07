@@ -24,6 +24,7 @@ module.exports = (on, config) => {
 
   const options = webpackPreprocessor.defaultOptions;
 
+  // Stub out unsupported transitive dependencies
   options.webpackOptions.resolve = {
     alias: {
       fs: path.resolve(__dirname, 'moduleMock.js'),
@@ -32,6 +33,7 @@ module.exports = (on, config) => {
     },
   };
 
+  // Run latest @babel/preset-env preset to transpile modern js
   options.webpackOptions.module.rules.push({
     test: /\.(js|jsx)$/,
     loader: require.resolve('babel-loader'),
