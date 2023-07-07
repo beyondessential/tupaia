@@ -30,21 +30,25 @@ const DataCell = styled(TableCell)`
   z-index: 1;
   padding: 0;
   height: 100%;
-  &:hover {
-    ${Dot} {
-      transform: scale(1.2);
-    }
-  }
 `;
 
 const DataCellContent = styled.div`
   padding: 0.25rem;
-`;
-
-const ExpandCellButton = styled(Button)`
-  width: 100%;
   height: 100%;
-  padding: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  &:hover {
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.08
+    ); // replicate the hover effect for all cell content, not just buttons
+    ${Dot} {
+      transform: scale(1.2);
+    }
+  }
 `;
 
 interface MatrixRowProps {
@@ -79,8 +83,8 @@ export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
   return (
     <DataCell>
       <DataCellContent
-        as={isButton ? ExpandCellButton : 'div'}
-        onClick={isButton ? onClickCellButton : null}
+        as={isButton ? Button : 'div'}
+        onClick={isButton ? onClickCellButton : undefined}
       >
         {displayValue}
       </DataCellContent>
