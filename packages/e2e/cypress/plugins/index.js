@@ -5,6 +5,7 @@
 
 const cypressDotenv = require('cypress-dotenv');
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+const path = require('path');
 const fs = require('fs');
 
 module.exports = (on, config) => {
@@ -22,10 +23,22 @@ module.exports = (on, config) => {
   });
 
   const options = webpackPreprocessor.defaultOptions;
-  options.webpackOptions.module.rules[0].options.presets.push(
-    '@babel/preset-env',
-    '@babel/preset-react',
-  );
+
+  options.webpackOptions.resolve = {
+    alias: {
+      fs: path.resolve(__dirname, 'moduleMock.js'),
+      yargs: path.resolve(__dirname, 'moduleMock.js'),
+      child_process: path.resolve(__dirname, 'moduleMock.js'),
+    },
+  };
+
+  options.webpackOptions.module.rules.push({
+    test: /\.(js|jsx)$/,
+    loader: require.resolve('babel-loader'),
+    options: {
+      presets: ['@babel/preset-env'],
+    },
+  });
 
   on('file:preprocessor', webpackPreprocessor(options));
 
