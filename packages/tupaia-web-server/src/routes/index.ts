@@ -5,6 +5,7 @@
 
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
+export { EntitySearchRequest, EntitySearchRoute } from './EntitySearchRoute';
 export { EntityAncestorsRequest, EntityAncestorsRoute } from './EntityAncestorsRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';
 export {

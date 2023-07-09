@@ -272,4 +272,12 @@ export class MockEntityApi implements EntityApiInterface {
     );
     return ancestorsGroupedByDescendant;
   }
+
+  public entitySearch(
+    hierarchyName: string,
+    searchString: string,
+    queryOptions?: any,
+  ): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }
