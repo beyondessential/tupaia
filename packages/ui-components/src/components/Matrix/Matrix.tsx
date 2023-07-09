@@ -6,7 +6,7 @@
 import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
-import { PresentationOptions } from '@tupaia/types';
+import { MatrixConfig, PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { getFlattenedColumns } from './utils';
 import { MatrixHeader } from './MatrixHeader';
@@ -30,19 +30,12 @@ const Wrapper = styled.div`
   overflow: auto;
 `;
 
-interface MatrixProps {
+interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
-  presentationOptions?: PresentationOptions;
-  categoryPresentationOptions?: PresentationOptions;
 }
 
-export const Matrix = ({
-  columns = [],
-  rows = [],
-  presentationOptions,
-  categoryPresentationOptions,
-}: MatrixProps) => {
+export const Matrix = ({ columns = [], rows = [], ...config }: MatrixProps) => {
   const [{ startColumn, expandedRows, maxColumns, enlargedCell }, dispatch] = useReducer(
     matrixReducer,
     {
@@ -76,8 +69,7 @@ export const Matrix = ({
     <Wrapper>
       <MatrixContext.Provider
         value={{
-          presentationOptions,
-          categoryPresentationOptions,
+          ...config,
           columns,
           rows,
           startColumn,

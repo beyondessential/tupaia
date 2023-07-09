@@ -496,10 +496,8 @@ GroupedRowsWithDots.args = {
 export const HiddenColumnTitles = Template.bind({});
 HiddenColumnTitles.args = {
   rows: groupedRows,
-  presentationOptions: {
-    ...dotPresentationOptions,
-    hideColumnTitles: true,
-  },
+  presentationOptions: dotPresentationOptions,
+  hideColumnTitles: true,
   columns: basicColumns,
 };
 

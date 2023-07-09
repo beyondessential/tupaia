@@ -4,7 +4,7 @@
  */
 
 import { Dispatch, createContext } from 'react';
-import { PresentationOptions } from '@tupaia/types';
+import { MatrixConfig, PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 
 type RowTitle = MatrixRowType['title'];
@@ -12,17 +12,13 @@ type RowTitle = MatrixRowType['title'];
 const defaultContextValue = {
   rows: [],
   columns: [],
-  presentationOptions: {},
   startColumn: 0,
   maxColumns: 0,
   expandedRows: [],
   enlargedCell: null,
-  categoryPresentationOptions: {},
-} as {
+} as Omit<MatrixConfig, 'type' | 'name'> & {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
-  presentationOptions?: PresentationOptions;
-  categoryPresentationOptions?: PresentationOptions;
   startColumn: number;
   maxColumns: number;
   expandedRows: RowTitle[];

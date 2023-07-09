@@ -26,7 +26,7 @@ const ColGroup = styled.colgroup`
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
 export const MatrixHeader = () => {
-  const { columns, startColumn, maxColumns, presentationOptions = {} } = useContext(MatrixContext);
+  const { columns, startColumn, maxColumns, hideColumnTitles = false } = useContext(MatrixContext);
   const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
   // If a column is not displayed, then it should not be rendered in the header. This means that if a column group has no displayed children, then it should not be rendered either.
   const displayedColumnGroups = columns.reduce(
@@ -40,8 +40,6 @@ export const MatrixHeader = () => {
     [],
   );
 
-  const { hideColumnTitles = false } = presentationOptions;
-  console.log(hideColumnTitles);
   // If there are parents, then there should be two rows: 1 for the column group headings, and one for the column headings
   const hasParents = displayedColumnGroups.length > 0;
 
@@ -63,12 +61,8 @@ export const MatrixHeader = () => {
           <TableRow>
             <HeaderCell rowSpan={2} />
             {displayedColumnGroups.map(({ title, children = [] }) => (
-              <HeaderCell
-                key={title}
-                colSpan={children.length}
-                aria-label={hideColumnTitles ? title : ''}
-              >
-                {!hideColumnTitles && title}
+              <HeaderCell key={title} colSpan={children.length}>
+                {title}
               </HeaderCell>
             ))}
           </TableRow>
