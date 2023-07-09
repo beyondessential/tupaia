@@ -127,15 +127,7 @@ export function checkIfApplyDotStyle(
 export function getFlattenedColumns(columns: MatrixColumnType[]): MatrixColumnType[] {
   return columns.reduce((cols, column) => {
     if (column.children) {
-      return [
-        ...cols,
-        ...getFlattenedColumns(
-          column.children.map(child => ({
-            ...child,
-            parentKey: column.key || column.title,
-          })),
-        ),
-      ];
+      return [...cols, ...getFlattenedColumns(column.children)];
     }
     return [...cols, column];
   }, [] as MatrixColumnType[]);

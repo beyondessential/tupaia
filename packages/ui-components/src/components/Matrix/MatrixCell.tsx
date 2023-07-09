@@ -6,6 +6,7 @@
 import React, { useContext } from 'react';
 import { TableCell, Button } from '@material-ui/core';
 import styled from 'styled-components';
+import { ConditionalPresentationOptions } from '@tupaia/types';
 import {
   checkIfApplyDotStyle,
   getFlattenedColumns,
@@ -15,7 +16,6 @@ import {
 } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { MatrixColumnType, MatrixRowType } from '../../types';
-import { ConditionalPresentationOptions } from '@tupaia/types';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;

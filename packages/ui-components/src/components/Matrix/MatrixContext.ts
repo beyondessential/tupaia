@@ -4,8 +4,8 @@
  */
 
 import { Dispatch, createContext } from 'react';
-import { MatrixColumnType, MatrixRowType } from '../../types';
 import { PresentationOptions } from '@tupaia/types';
+import { MatrixColumnType, MatrixRowType } from '../../types';
 
 type RowTitle = MatrixRowType['title'];
 

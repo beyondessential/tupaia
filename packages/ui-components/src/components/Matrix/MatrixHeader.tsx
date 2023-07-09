@@ -28,7 +28,7 @@ const ColGroup = styled.colgroup`
 export const MatrixHeader = () => {
   const { columns, startColumn, maxColumns } = useContext(MatrixContext);
   const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
-
+  // If a column is not displayed, then it should not be rendered in the header. This means that if a column group has no displayed children, then it should not be rendered either.
   const displayedColumnGroups = columns.reduce(
     (result: MatrixColumnType[], column: MatrixColumnType) => {
       const visibleChildren =
@@ -41,7 +41,9 @@ export const MatrixHeader = () => {
   );
   // If there are parents, then there should be two rows: 1 for the column group headings, and one for the column headings
   const hasParents = displayedColumnGroups.length > 0;
+
   return (
+    /** If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.*/
     <>
       <ColGroup />
       {hasParents ? (

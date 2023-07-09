@@ -5,10 +5,10 @@
 
 import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
-import { Table, TableBody, darken } from '@material-ui/core';
+import { Table, TableBody } from '@material-ui/core';
 import { PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
-import { getFlattenedColumns, hexToRgba } from './utils';
+import { getFlattenedColumns } from './utils';
 import { MatrixHeader } from './MatrixHeader';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
