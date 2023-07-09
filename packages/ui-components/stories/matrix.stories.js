@@ -249,7 +249,7 @@ const dotPresentationOptions = {
     {
       key: 'red',
       color: '#b71c1c',
-      label: '',
+      label: 'Secondary header',
       condition: 0,
       description: 'Months of stock: ',
       legendLabel: 'Stock out (MOS 0)',
@@ -490,6 +490,16 @@ export const GroupedRowsWithDots = Template.bind({});
 GroupedRowsWithDots.args = {
   rows: groupedRows,
   presentationOptions: dotPresentationOptions,
+  columns: basicColumns,
+};
+
+export const HiddenColumnTitles = Template.bind({});
+HiddenColumnTitles.args = {
+  rows: groupedRows,
+  presentationOptions: {
+    ...dotPresentationOptions,
+    hideColumnTitles: true,
+  },
   columns: basicColumns,
 };
 

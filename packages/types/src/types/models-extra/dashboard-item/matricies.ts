@@ -59,11 +59,22 @@ export type RangePresentationOptions = Record<CssColor, PresentationOptionRange>
 
 export type PresentationOptions = ConditionalPresentationOptions | RangePresentationOptions;
 
-export type PresentationOptionCondition = {
-  key: string;
+type BasePresentationOption = {
+  /**
+   * @description Specify the color of the display item
+   */
   color?: CssColor;
-  label?: string;
+  /**
+   * @description Specify the text for the legend item. Also used in the enlarged cell view
+   */
   description?: string;
+  /**
+   * @description Specify if you want a label to appear above the enlarged
+   */
+  label?: string;
+};
+export type PresentationOptionCondition = BasePresentationOption & {
+  key: string;
   /**
    * @description the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }
    */
@@ -71,10 +82,7 @@ export type PresentationOptionCondition = {
   legendLabel?: string;
 };
 
-export type PresentationOptionRange = {
-  color?: CssColor;
-  label?: string;
-  description?: string;
+export type PresentationOptionRange = BasePresentationOption & {
   min?: number;
   max?: number;
 };

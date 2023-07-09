@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { DialogContent } from '@material-ui/core';
+import { DialogContent, Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import styled from 'styled-components';
@@ -20,6 +20,13 @@ const DisplayWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
+const SecondaryHeader = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  font-size: 1.2rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  margin-bottom: 1rem;
+`;
 /**
  * This is the modal that appears when a user clicks on a cell in the matrix
  */
@@ -35,7 +42,7 @@ export const EnlargedMatrixCell = () => {
   const presentationOptionsToUse = isCategory ? categoryPresentationOptions : presentationOptions;
 
   const { showRawValue } = presentationOptionsToUse;
-  const { description = '' } = presentation;
+  const { description = '', label } = presentation;
   const closeModal = () => {
     dispatch({ type: ACTION_TYPES.SET_ENLARGED_CELL, payload: null });
   };
@@ -44,8 +51,9 @@ export const EnlargedMatrixCell = () => {
   const bodyText = `${description}${showRawValue ? ` ${value}` : ''}`.replace(/\\n/g, '\n\n');
   return (
     <Dialog open onClose={closeModal}>
-      <DialogHeader title={rowTitle} onClose={closeModal} />
+      <DialogHeader title={rowTitle} onClose={closeModal} titleVariant="h2" />
       <Content>
+        {label && <SecondaryHeader>{label}</SecondaryHeader>}
         <DisplayWrapper>{displayValue}</DisplayWrapper>
         <Markdown>{bodyText.replace(/\\n/g, '\n\n')}</Markdown>
       </Content>
