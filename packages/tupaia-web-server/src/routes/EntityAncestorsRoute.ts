@@ -17,15 +17,8 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
     const { entityCode, projectCode } = params;
     const { includeRootEntity = false, ...restOfQuery } = query;
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['entity_hierarchy.name'],
-      })
-    )[0];
-
     const entities = await ctx.services.entity.getAncestorsOfEntity(
-      project['entity_hierarchy.name'],
+      projectCode,
       entityCode,
       { fields: DEFAULT_FIELDS, ...restOfQuery },
       includeRootEntity,

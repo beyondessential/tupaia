@@ -15,15 +15,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const { projectCode } = params;
     const { searchString, page = 0, pageSize = 5, fields = DEFAULT_FIELDS } = query;
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['entity_hierarchy.name'],
-      })
-    )[0];
-    const entityHierarchyName = project['entity_hierarchy.name'];
-
-    return ctx.services.entity.entitySearch(entityHierarchyName, searchString, {
+    return ctx.services.entity.entitySearch(projectCode, searchString, {
       ...query,
       page,
       pageSize,
