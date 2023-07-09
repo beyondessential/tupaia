@@ -72,6 +72,12 @@ const entityName = {
   },
 };
 
+const countryName = {
+  Header: 'Country',
+  source: 'country.name',
+  editable: false,
+};
+
 export const SURVEY_RESPONSE_COLUMNS = [
   surveyName,
   assessorName,
@@ -93,6 +99,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
 ];
 
 export const SURVEY_RESPONSE_PAGE_COLUMNS = [
+  countryName,
   entityName,
   ...SURVEY_RESPONSE_COLUMNS,
   {

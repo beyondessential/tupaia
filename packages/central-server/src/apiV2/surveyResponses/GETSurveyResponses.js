@@ -20,6 +20,10 @@ import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 export class GETSurveyResponses extends GETHandler {
   permissionsFilteredInternally = true;
 
+  customJoinConditions = {
+    country: ['country.code', 'entity.country_code'],
+  };
+
   async findSingleRecord(surveyResponseId, options) {
     const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
 
