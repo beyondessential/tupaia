@@ -5,7 +5,7 @@
 
 import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
-import { Table, TableBody } from '@material-ui/core';
+import { Table, TableBody, darken } from '@material-ui/core';
 import { PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import { getFlattenedColumns, hexToRgba } from './utils';
@@ -18,14 +18,9 @@ import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
-  border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
   color: ${({ theme }) => theme.palette.text.primary};
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
   table-layout: fixed;
-  td,
-  th {
-    border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
-  }
 `;
 
 // this is a scrollable container
@@ -77,7 +72,6 @@ export const Matrix = ({
 
     updateMaxColumns();
   }, [tableEl?.current?.offsetWidth, columns]);
-
   return (
     <Wrapper>
       <MatrixContext.Provider
