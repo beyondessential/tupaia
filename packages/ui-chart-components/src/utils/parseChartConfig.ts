@@ -25,7 +25,7 @@ type ColorPalette = keyof typeof COLOR_PALETTES;
 export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
   const {
     chartType,
-    chartConfig = { [ADD_TO_ALL_KEY]: {}, name: '' },
+    chartConfig = {} as ChartConfig,
     data,
     colorPalette: paletteName,
   } = viewContent;
