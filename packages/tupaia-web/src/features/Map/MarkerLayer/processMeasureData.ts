@@ -5,22 +5,24 @@
 import {
   calculateRadiusScaleFactor,
   getMeasureDisplayInfo,
-  SeriesValue,
+  LegendProps,
+  MeasureData,
+  Series,
 } from '@tupaia/ui-map-components';
 import { Entity } from '@tupaia/types';
 
-interface processMeasureData {
-  measureData: any;
-  entitiesData: any;
-  serieses: SeriesValue[];
-  hiddenValues: any;
+interface processMeasureDataProps {
+  measureData: MeasureData[];
+  entitiesData: Entity[];
+  serieses: Series[];
+  hiddenValues: LegendProps['hiddenValues'];
 }
 export const processMeasureData = ({
   measureData,
   entitiesData,
   serieses,
   hiddenValues,
-}: processMeasureData) => {
+}: processMeasureDataProps) => {
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
   return entitiesData.map((entity: Entity) => {
@@ -28,7 +30,7 @@ export const processMeasureData = ({
       (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
     );
     const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
-      measure,
+      measure!,
       serieses,
       hiddenValues,
       radiusScaleFactor,
