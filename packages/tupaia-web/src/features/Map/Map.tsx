@@ -16,9 +16,11 @@ import {
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
-import { MapOverlays } from '../MapOverlays';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity } from '../../api/queries';
+import { useEntity, useMapOverlays } from '../../api/queries';
+import { PolygonLayer } from './PolygonLayer';
+import { MarkerLayer } from './MarkerLayer';
+import { useDefaultMapOverlay } from './useDefaultMapOverlay';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -70,7 +72,9 @@ const TilePickerWrapper = styled.div`
 
 // This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
 const MapControlWrapper = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -86,10 +90,13 @@ const MapControlColumn = styled.div`
 `;
 
 export const Map = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
-
   const { data: entity } = useEntity(entityCode);
+
+  // set the map default overlay if there isn't one selected
+  const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);
+  useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
@@ -99,23 +106,25 @@ export const Map = () => {
     <MapContainer>
       <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <MapOverlays />
+        <PolygonLayer />
+        <MarkerLayer />
         <ZoomControl position="bottomright" />
-        <MapControlWrapper>
-          <MapControlColumn>
-            <MapOverlaySelector />
-            <MapLegend />
-          </MapControlColumn>
-          <TilePickerWrapper>
-            <TilePicker
-              tileSets={TILE_SETS}
-              activeTileSet={activeTileSet}
-              onChange={onTileSetChange}
-            />
-          </TilePickerWrapper>
-        </MapControlWrapper>
         <MapWatermark />
       </StyledMap>
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't inter wit the map */}
+      <MapControlWrapper>
+        <MapControlColumn>
+          <MapOverlaySelector />
+          <MapLegend />
+        </MapControlColumn>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={TILE_SETS}
+            activeTileSet={activeTileSet}
+            onChange={onTileSetChange}
+          />
+        </TilePickerWrapper>
+      </MapControlWrapper>
     </MapContainer>
   );
 };
