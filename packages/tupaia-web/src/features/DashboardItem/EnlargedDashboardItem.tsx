@@ -83,15 +83,25 @@ const Tab = styled(MuiTab)`
 
 const ContentWrapper = styled.div``;
 
-enum DISPLAY_TYPES {
-  CHART = 'chart',
-  TABLE = 'table',
-}
+const DISPLAY_TYPE_VIEWS = [
+  {
+    value: 'chart',
+    Icon: BarChart,
+    label: 'View chart',
+    display: DashboardItemContent,
+  },
+  {
+    value: 'table',
+    Icon: GridOn,
+    label: 'View table',
+    display: FlippaTable,
+  },
+];
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
  */
 export const EnlargedDashboardItem = () => {
-  const [displayType, setDisplayType] = useState(DISPLAY_TYPES.CHART);
+  const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
   const { projectCode, entityCode, dashboardName } = useParams();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
@@ -129,13 +139,13 @@ export const EnlargedDashboardItem = () => {
     },
   );
 
-  const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: DISPLAY_TYPES) => {
+  const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
   };
 
   useEffect(() => {
-    console.log('reportCode', reportCode);
-    setDisplayType(DISPLAY_TYPES.CHART);
+    // reset the display type to chart when the report code changes
+    setDisplayType(DISPLAY_TYPE_VIEWS[0].value);
   }, [reportCode]);
 
   if (!reportCode || (!isLoadingDashboards && !currentReport)) return null;
@@ -144,6 +154,8 @@ export const EnlargedDashboardItem = () => {
     ...(currentReport || {}),
     ...reportData,
   };
+
+  console.log(viewContent);
 
   // // On close, remove the report search param from the url
   const handleCloseModal = () => {
@@ -157,6 +169,8 @@ export const EnlargedDashboardItem = () => {
   }`;
 
   const isChart = currentReport?.type === 'chart';
+
+  const availableDisplayTypes = isChart ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
@@ -186,24 +200,24 @@ export const EnlargedDashboardItem = () => {
                   variant="standard"
                   aria-label="Toggle display type"
                 >
-                  <Tab value={DISPLAY_TYPES.CHART} icon={<BarChart />} aria-label="View chart" />
-                  <Tab value={DISPLAY_TYPES.TABLE} icon={<GridOn />} aria-label="View table" />
+                  {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
+                    <Tab key={value} value={value} icon={<Icon />} aria-label={label} />
+                  ))}
                 </Tabs>
               </TabsWrapper>
             )}
-            <ContentWrapper value={DISPLAY_TYPES.CHART} as={isChart ? TabPanel : 'div'}>
-              <DashboardItemContent
-                viewContent={viewContent}
-                isLoading={isLoadingReportData}
-                error={isError ? error : null}
-                onRetryFetch={refetch}
-                isEnlarged
-                isExpandable={false}
-              />
-            </ContentWrapper>
-            <TabPanel value={DISPLAY_TYPES.TABLE}>
-              <FlippaTable />
-            </TabPanel>
+            {availableDisplayTypes.map(({ value, display: Content }) => (
+              <ContentWrapper key={value} value={value} as={isChart ? TabPanel : 'div'}>
+                <Content
+                  viewContent={viewContent}
+                  isLoading={isLoadingReportData}
+                  error={isError ? error : null}
+                  onRetryFetch={refetch}
+                  isEnlarged
+                  isExpandable={false}
+                />
+              </ContentWrapper>
+            ))}
           </TabContext>
         </Container>
       </Wrapper>

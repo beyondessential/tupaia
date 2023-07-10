@@ -26,6 +26,7 @@ interface ChartTableProps {
 
 export const ChartTable = ({ viewContent, className }: ChartTableProps) => {
   const { columns, data } = getChartTableData(viewContent);
+  console.log(data); // TODO: where is `dataElementCode` being removed in the prod version?!
 
   if (!getIsChartData(viewContent)) {
     return (
