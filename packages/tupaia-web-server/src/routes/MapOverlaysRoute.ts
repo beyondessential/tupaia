@@ -39,15 +39,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const { projectCode, entityCode } = params;
     const { pageSize } = query;
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['entity_hierarchy.name'],
-      })
-    )[0];
-    const entityHierarchyName = project['entity_hierarchy.name'];
-
-    const entity = await ctx.services.entity.getEntity(entityHierarchyName, entityCode);
+    const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
     const mapOverlays = await ctx.services.central.fetchResources('mapOverlays', {
       filter: {
         country_codes: {

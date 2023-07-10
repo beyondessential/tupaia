@@ -18,6 +18,7 @@ GET http://{{host}}/{{version}}/hierarchies HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
+
 ### Fetch a single entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO HTTP/1.1
 content-type: {{contentType}}
@@ -31,6 +32,11 @@ Authorization: {{authorization}}
 {
     "entities" : ["TO","PG"]
 }
+
+### Search entitys within hierarchy
+GET http://{{host}}/{{version}}/hierarchy/explore/entitySearch/Hau HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
 
 ### Fetch ancestors of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO_Eua_Tongamamao/ancestors?field=code&includeRootEntity=true HTTP/1.1

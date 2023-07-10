@@ -73,6 +73,7 @@ export type QueryOptions = {
   limit?: number;
   offset?: number;
   sort?: string[];
+  rawSort?: string;
   joinWith?: string;
   joinCondition?: [string, string];
 };

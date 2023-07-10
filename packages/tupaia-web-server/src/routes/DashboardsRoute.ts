@@ -19,16 +19,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const { params, ctx } = this.req;
     const { projectCode, entityCode } = params;
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['entity.code', 'entity_hierarchy.name'],
-      })
-    )[0];
-
     // We're including the root entity in this request, so we don't need to double up fetching it
     const entities = await ctx.services.entity.getAncestorsOfEntity(
-      project['entity_hierarchy.name'],
+      projectCode,
       entityCode,
       {},
       true,
