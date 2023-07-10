@@ -7,7 +7,7 @@ import React from 'react';
 import { useParams } from 'react-router';
 import camelCase from 'camelcase';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-map-components';
+import { MarkerLayer as UIMarkerLayer, MeasureData } from '@tupaia/ui-map-components';
 import {
   useEntitiesWithLocation,
   useEntity,
@@ -17,7 +17,6 @@ import {
 } from '../../../api/queries';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
-import { useDefaultMapOverlay } from './useDefaultMapOverlay';
 
 const useNavigateToDashboard = () => {
   const { projectCode } = useParams();
@@ -63,9 +62,6 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
 };
 
 export const MarkerLayer = () => {
-  // set the map default overlay if there isn't one selected
-  useDefaultMapOverlay();
-
   const navigateToDashboard = useNavigateToDashboard();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
@@ -94,7 +90,7 @@ export const MarkerLayer = () => {
 
   return (
     <UIMarkerLayer
-      measureData={processedMeasureData}
+      measureData={processedMeasureData as MeasureData[]}
       serieses={mapOverlayData.serieses}
       // @ts-ignore - ui-components types refer to organisation unit instead of entity so there is a mismatch
       onSeeOrgUnitDashboard={navigateToDashboard}

@@ -31,7 +31,7 @@ const mapOverlayByCode = (
 interface UseMapOverlaysResult {
   hasMapOverlays: boolean;
   mapOverlayGroups: MapOverlayGroup[];
-  mapOverlaysByCode: any;
+  mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup };
   isLoadingMapOverlays: boolean;
   errorLoadingMapOverlays: UseQueryResult['error'];
   selectedOverlayCode: string | null;

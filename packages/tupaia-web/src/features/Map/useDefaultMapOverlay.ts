@@ -3,34 +3,36 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useParams } from 'react-router';
-import { useMapOverlays, useProject } from '../../../api/queries';
+import { useProject } from '../../api/queries';
 import {
   DEFAULT_MAP_OVERLAY_ID,
   DEFAULT_PERIOD_PARAM_STRING,
   URL_SEARCH_PARAMS,
-} from '../../../constants';
-import { useEffect } from 'react';
+} from '../../constants';
+import { MapOverlayGroup, ProjectCode, EntityCode } from '../../types';
 
 // When the map overlay groups change, update the default map overlay
-export const useDefaultMapOverlay = () => {
+export const useDefaultMapOverlay = (
+  projectCode: ProjectCode,
+  mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup },
+) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
-  const { projectCode, entityCode } = useParams();
   const { data: project } = useProject(projectCode);
-  const { mapOverlaysByCode, mapOverlayGroups } = useMapOverlays(projectCode, entityCode);
 
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
-  const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
-  const defaultMapOverlayId = project?.defaultMeasure || DEFAULT_MAP_OVERLAY_ID;
 
   useEffect(() => {
     if (!project) {
       return;
     }
 
+    const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
+
     if (!selectedMapOverlay || !isValidMapOverlayId) {
+      const defaultMapOverlayId = project.defaultMeasure || DEFAULT_MAP_OVERLAY_ID;
       urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultMapOverlayId);
     }
 
@@ -39,5 +41,5 @@ export const useDefaultMapOverlay = () => {
     }
 
     setUrlParams(urlSearchParams);
-  }, [JSON.stringify(mapOverlayGroups)]);
+  }, [JSON.stringify(mapOverlaysByCode)]);
 };

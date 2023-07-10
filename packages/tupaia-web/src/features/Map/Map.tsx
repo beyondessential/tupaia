@@ -17,9 +17,10 @@ import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity } from '../../api/queries';
+import { useEntity, useMapOverlays } from '../../api/queries';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
+import { useDefaultMapOverlay } from './useDefaultMapOverlay';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -89,10 +90,13 @@ const MapControlColumn = styled.div`
 `;
 
 export const Map = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode } = useParams();
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
-
   const { data: entity } = useEntity(entityCode);
+
+  // set the map default overlay if there isn't one selected
+  const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);
+  useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
