@@ -228,7 +228,7 @@ export function flattenMeasureHierarchy(mapOverlayHierarchy: MapOverlayHierarchy
 }
 
 const getIsHidden = (
-  measureData: MeasureData,
+  measureData: MeasureData = {} as MeasureData,
   serieses: Series[],
   allHiddenValues: Record<string, Record<string, boolean>>,
 ) =>
