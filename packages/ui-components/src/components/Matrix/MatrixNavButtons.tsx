@@ -12,7 +12,8 @@ import { getFlattenedColumns } from './utils';
 
 const TableMoveButtonWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  align-items: center;
   width: 100%;
   margin-bottom: 1rem;
 `;
@@ -23,6 +24,7 @@ const TableMoveButton = styled(Button).attrs({
 })`
   text-transform: none;
   font-size: 0.875rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem; // to compensate for left arrow
   background-color: transparent;
   border-color: transparent;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
@@ -35,6 +37,10 @@ const TableMoveButton = styled(Button).attrs({
   &:hover,
   &:focus {
     color: ${({ theme }) => theme.palette.primary.main};
+  }
+  &:last-child {
+    padding: 0.5rem 0.5rem 0.5rem 1rem; // to compensate for right arrow
+    margin-left: 0;
   }
 `;
 
