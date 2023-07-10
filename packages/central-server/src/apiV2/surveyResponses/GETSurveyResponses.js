@@ -21,6 +21,7 @@ export class GETSurveyResponses extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
+    entity: ['entity.id', 'survey_response.entity_id'],
     country: ['country.code', 'entity.country_code'],
   };
 
