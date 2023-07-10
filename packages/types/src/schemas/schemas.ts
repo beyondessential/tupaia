@@ -1265,125 +1265,291 @@ export const MatrixConfigSchema = {
 		},
 		"presentationOptions": {
 			"description": "Allows for conditional styling",
-			"type": "object",
-			"properties": {
-				"type": {
-					"type": "string",
-					"enum": [
-						"condition"
-					]
-				},
-				"conditions": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"key": {
-								"type": "string"
-							},
-							"color": {
-								"type": "string"
-							},
-							"label": {
-								"type": "string"
-							},
-							"description": {
-								"type": "string"
-							},
-							"condition": {
-								"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
-								"anyOf": [
-									{
-										"type": "object",
-										"properties": {
-											"=": {
-												"type": [
-													"string",
-													"number"
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"condition"
+							]
+						},
+						"conditions": {
+							"type": "array",
+							"items": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "Specify the color of the display item",
+										"type": "string"
+									},
+									"description": {
+										"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+										"type": "string"
+									},
+									"label": {
+										"description": "Specify if you want a label to appear above the enlarged",
+										"type": "string"
+									},
+									"key": {
+										"type": "string"
+									},
+									"condition": {
+										"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<=": {
+														"type": [
+															"string",
+															"number"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"<",
+													"<=",
+													"=",
+													">",
+													">="
 												]
 											},
-											">": {
-												"type": [
-													"string",
-													"number"
-												]
-											},
-											"<": {
-												"type": [
-													"string",
-													"number"
-												]
-											},
-											">=": {
-												"type": [
-													"string",
-													"number"
-												]
-											},
-											"<=": {
+											{
 												"type": [
 													"string",
 													"number"
 												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"<",
-											"<=",
-											"=",
-											">",
-											">="
 										]
 									},
-									{
-										"type": [
-											"string",
-											"number"
-										]
+									"legendLabel": {
+										"type": "string"
 									}
+								},
+								"required": [
+									"condition",
+									"key"
 								]
-							},
-							"legendLabel": {
-								"type": "string"
 							}
 						},
-						"additionalProperties": false,
-						"required": [
-							"condition",
-							"key"
-						]
-					}
-				},
-				"showRawValue": {
-					"default": false,
-					"type": "boolean"
-				},
-				"showNestedRows": {
-					"default": false,
-					"type": "boolean"
-				},
-				"applyLocation": {
-					"description": "Specify if you want to limit where to apply the conditional presentation",
-					"type": "object",
-					"properties": {
-						"columnIndexes": {
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
+						"showRawValue": {
+							"default": false,
+							"type": "boolean"
+						},
+						"showNestedRows": {
+							"default": false,
+							"type": "boolean"
+						},
+						"applyLocation": {
+							"description": "Specify if you want to limit where to apply the conditional presentation",
+							"type": "object",
+							"properties": {
+								"columnIndexes": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"columnIndexes"
+							]
 						}
 					},
+					"additionalProperties": false
+				},
+				{
 					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"range"
+							]
+						},
+						"showRawValue": {
+							"type": "boolean"
+						}
+					},
 					"required": [
-						"columnIndexes"
+						"type"
 					]
 				}
-			},
-			"additionalProperties": false
+			]
 		},
 		"categoryPresentationOptions": {
-			"description": "Category header rows can have values just like real rows, this is how you style them"
+			"description": "Category header rows can have values just like real rows, this is how you style them",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"condition"
+							]
+						},
+						"conditions": {
+							"type": "array",
+							"items": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "Specify the color of the display item",
+										"type": "string"
+									},
+									"description": {
+										"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+										"type": "string"
+									},
+									"label": {
+										"description": "Specify if you want a label to appear above the enlarged",
+										"type": "string"
+									},
+									"key": {
+										"type": "string"
+									},
+									"condition": {
+										"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<=": {
+														"type": [
+															"string",
+															"number"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"<",
+													"<=",
+													"=",
+													">",
+													">="
+												]
+											},
+											{
+												"type": [
+													"string",
+													"number"
+												]
+											}
+										]
+									},
+									"legendLabel": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"condition",
+									"key"
+								]
+							}
+						},
+						"showRawValue": {
+							"default": false,
+							"type": "boolean"
+						},
+						"showNestedRows": {
+							"default": false,
+							"type": "boolean"
+						},
+						"applyLocation": {
+							"description": "Specify if you want to limit where to apply the conditional presentation",
+							"type": "object",
+							"properties": {
+								"columnIndexes": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"columnIndexes"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"range"
+							]
+						},
+						"showRawValue": {
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"type"
+					]
+				}
+			]
 		}
 	},
 	"description": "Matrix viz type",
@@ -1395,7 +1561,7 @@ export const MatrixConfigSchema = {
 	]
 } 
 
-export const PresentationOptionsSchema = {
+export const ConditionalPresentationOptionsSchema = {
 	"properties": {
 		"type": {
 			"type": "string",
@@ -1406,18 +1572,22 @@ export const PresentationOptionsSchema = {
 		"conditions": {
 			"type": "array",
 			"items": {
+				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"key": {
-						"type": "string"
-					},
 					"color": {
-						"type": "string"
-					},
-					"label": {
+						"description": "Specify the color of the display item",
 						"type": "string"
 					},
 					"description": {
+						"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+						"type": "string"
+					},
+					"label": {
+						"description": "Specify if you want a label to appear above the enlarged",
+						"type": "string"
+					},
+					"key": {
 						"type": "string"
 					},
 					"condition": {
@@ -1478,7 +1648,6 @@ export const PresentationOptionsSchema = {
 						"type": "string"
 					}
 				},
-				"additionalProperties": false,
 				"required": [
 					"condition",
 					"key"
@@ -1514,18 +1683,203 @@ export const PresentationOptionsSchema = {
 	"additionalProperties": false
 } 
 
-export const PresentationOptionConditionSchema = {
+export const RangePresentationOptionsSchema = {
 	"properties": {
-		"key": {
-			"type": "string"
+		"type": {
+			"type": "string",
+			"enum": [
+				"range"
+			]
 		},
+		"showRawValue": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object",
+	"required": [
+		"type"
+	]
+} 
+
+export const PresentationOptionsSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"condition"
+					]
+				},
+				"conditions": {
+					"type": "array",
+					"items": {
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"color": {
+								"description": "Specify the color of the display item",
+								"type": "string"
+							},
+							"description": {
+								"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+								"type": "string"
+							},
+							"label": {
+								"description": "Specify if you want a label to appear above the enlarged",
+								"type": "string"
+							},
+							"key": {
+								"type": "string"
+							},
+							"condition": {
+								"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"=": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											">": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"<": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											">=": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"<=": {
+												"type": [
+													"string",
+													"number"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"<",
+											"<=",
+											"=",
+											">",
+											">="
+										]
+									},
+									{
+										"type": [
+											"string",
+											"number"
+										]
+									}
+								]
+							},
+							"legendLabel": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"condition",
+							"key"
+						]
+					}
+				},
+				"showRawValue": {
+					"default": false,
+					"type": "boolean"
+				},
+				"showNestedRows": {
+					"default": false,
+					"type": "boolean"
+				},
+				"applyLocation": {
+					"description": "Specify if you want to limit where to apply the conditional presentation",
+					"type": "object",
+					"properties": {
+						"columnIndexes": {
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"columnIndexes"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"range"
+					]
+				},
+				"showRawValue": {
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"type"
+			]
+		}
+	]
+} 
+
+export const BasePresentationOptionSchema = {
+	"properties": {
 		"color": {
-			"type": "string"
-		},
-		"label": {
+			"description": "Specify the color of the display item",
 			"type": "string"
 		},
 		"description": {
+			"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+			"type": "string"
+		},
+		"label": {
+			"description": "Specify if you want a label to appear above the enlarged",
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const PresentationOptionConditionSchema = {
+	"properties": {
+		"color": {
+			"description": "Specify the color of the display item",
+			"type": "string"
+		},
+		"description": {
+			"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+			"type": "string"
+		},
+		"label": {
+			"description": "Specify if you want a label to appear above the enlarged",
+			"type": "string"
+		},
+		"key": {
 			"type": "string"
 		},
 		"condition": {
@@ -1586,12 +1940,37 @@ export const PresentationOptionConditionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
+	"type": "object",
 	"required": [
 		"condition",
 		"key"
 	]
+} 
+
+export const PresentationOptionRangeSchema = {
+	"properties": {
+		"color": {
+			"description": "Specify the color of the display item",
+			"type": "string"
+		},
+		"description": {
+			"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+			"type": "string"
+		},
+		"label": {
+			"description": "Specify if you want a label to appear above the enlarged",
+			"type": "string"
+		},
+		"min": {
+			"type": "number"
+		},
+		"max": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object"
 } 
 
 export const ConditionValueSchema = {
@@ -9753,125 +10132,291 @@ export const DashboardItemConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Allows for conditional styling",
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"condition"
-							]
-						},
-						"conditions": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"key": {
-										"type": "string"
-									},
-									"color": {
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									},
-									"description": {
-										"type": "string"
-									},
-									"condition": {
-										"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"=": {
-														"type": [
-															"string",
-															"number"
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": [
+										"condition"
+									]
+								},
+								"conditions": {
+									"type": "array",
+									"items": {
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"color": {
+												"description": "Specify the color of the display item",
+												"type": "string"
+											},
+											"description": {
+												"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+												"type": "string"
+											},
+											"label": {
+												"description": "Specify if you want a label to appear above the enlarged",
+												"type": "string"
+											},
+											"key": {
+												"type": "string"
+											},
+											"condition": {
+												"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+												"anyOf": [
+													{
+														"type": "object",
+														"properties": {
+															"=": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															">": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															"<": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															">=": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															"<=": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"<",
+															"<=",
+															"=",
+															">",
+															">="
 														]
 													},
-													">": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"<": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													">=": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"<=": {
+													{
 														"type": [
 															"string",
 															"number"
 														]
 													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"<",
-													"<=",
-													"=",
-													">",
-													">="
 												]
 											},
-											{
-												"type": [
-													"string",
-													"number"
-												]
+											"legendLabel": {
+												"type": "string"
 											}
+										},
+										"required": [
+											"condition",
+											"key"
 										]
-									},
-									"legendLabel": {
-										"type": "string"
 									}
 								},
-								"additionalProperties": false,
-								"required": [
-									"condition",
-									"key"
-								]
-							}
-						},
-						"showRawValue": {
-							"default": false,
-							"type": "boolean"
-						},
-						"showNestedRows": {
-							"default": false,
-							"type": "boolean"
-						},
-						"applyLocation": {
-							"description": "Specify if you want to limit where to apply the conditional presentation",
-							"type": "object",
-							"properties": {
-								"columnIndexes": {
-									"type": "array",
-									"items": {
-										"type": "number"
-									}
+								"showRawValue": {
+									"default": false,
+									"type": "boolean"
+								},
+								"showNestedRows": {
+									"default": false,
+									"type": "boolean"
+								},
+								"applyLocation": {
+									"description": "Specify if you want to limit where to apply the conditional presentation",
+									"type": "object",
+									"properties": {
+										"columnIndexes": {
+											"type": "array",
+											"items": {
+												"type": "number"
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"columnIndexes"
+									]
 								}
 							},
+							"additionalProperties": false
+						},
+						{
 							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": [
+										"range"
+									]
+								},
+								"showRawValue": {
+									"type": "boolean"
+								}
+							},
 							"required": [
-								"columnIndexes"
+								"type"
 							]
 						}
-					},
-					"additionalProperties": false
+					]
 				},
 				"categoryPresentationOptions": {
-					"description": "Category header rows can have values just like real rows, this is how you style them"
+					"description": "Category header rows can have values just like real rows, this is how you style them",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": [
+										"condition"
+									]
+								},
+								"conditions": {
+									"type": "array",
+									"items": {
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"color": {
+												"description": "Specify the color of the display item",
+												"type": "string"
+											},
+											"description": {
+												"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+												"type": "string"
+											},
+											"label": {
+												"description": "Specify if you want a label to appear above the enlarged",
+												"type": "string"
+											},
+											"key": {
+												"type": "string"
+											},
+											"condition": {
+												"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+												"anyOf": [
+													{
+														"type": "object",
+														"properties": {
+															"=": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															">": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															"<": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															">=": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															},
+															"<=": {
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"<",
+															"<=",
+															"=",
+															">",
+															">="
+														]
+													},
+													{
+														"type": [
+															"string",
+															"number"
+														]
+													}
+												]
+											},
+											"legendLabel": {
+												"type": "string"
+											}
+										},
+										"required": [
+											"condition",
+											"key"
+										]
+									}
+								},
+								"showRawValue": {
+									"default": false,
+									"type": "boolean"
+								},
+								"showNestedRows": {
+									"default": false,
+									"type": "boolean"
+								},
+								"applyLocation": {
+									"description": "Specify if you want to limit where to apply the conditional presentation",
+									"type": "object",
+									"properties": {
+										"columnIndexes": {
+											"type": "array",
+											"items": {
+												"type": "number"
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"columnIndexes"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": [
+										"range"
+									]
+								},
+								"showRawValue": {
+									"type": "boolean"
+								}
+							},
+							"required": [
+								"type"
+							]
+						}
+					]
 				}
 			},
 			"required": [
@@ -17348,125 +17893,291 @@ export const DashboardItemSchema = {
 						},
 						"presentationOptions": {
 							"description": "Allows for conditional styling",
-							"type": "object",
-							"properties": {
-								"type": {
-									"type": "string",
-									"enum": [
-										"condition"
-									]
-								},
-								"conditions": {
-									"type": "array",
-									"items": {
-										"type": "object",
-										"properties": {
-											"key": {
-												"type": "string"
-											},
-											"color": {
-												"type": "string"
-											},
-											"label": {
-												"type": "string"
-											},
-											"description": {
-												"type": "string"
-											},
-											"condition": {
-												"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
-												"anyOf": [
-													{
-														"type": "object",
-														"properties": {
-															"=": {
-																"type": [
-																	"string",
-																	"number"
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string",
+											"enum": [
+												"condition"
+											]
+										},
+										"conditions": {
+											"type": "array",
+											"items": {
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"color": {
+														"description": "Specify the color of the display item",
+														"type": "string"
+													},
+													"description": {
+														"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+														"type": "string"
+													},
+													"label": {
+														"description": "Specify if you want a label to appear above the enlarged",
+														"type": "string"
+													},
+													"key": {
+														"type": "string"
+													},
+													"condition": {
+														"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"<",
+																	"<=",
+																	"=",
+																	">",
+																	">="
 																]
 															},
-															">": {
-																"type": [
-																	"string",
-																	"number"
-																]
-															},
-															"<": {
-																"type": [
-																	"string",
-																	"number"
-																]
-															},
-															">=": {
-																"type": [
-																	"string",
-																	"number"
-																]
-															},
-															"<=": {
+															{
 																"type": [
 																	"string",
 																	"number"
 																]
 															}
-														},
-														"additionalProperties": false,
-														"required": [
-															"<",
-															"<=",
-															"=",
-															">",
-															">="
 														]
 													},
-													{
-														"type": [
-															"string",
-															"number"
-														]
+													"legendLabel": {
+														"type": "string"
 													}
+												},
+												"required": [
+													"condition",
+													"key"
 												]
-											},
-											"legendLabel": {
-												"type": "string"
 											}
 										},
-										"additionalProperties": false,
-										"required": [
-											"condition",
-											"key"
-										]
-									}
-								},
-								"showRawValue": {
-									"default": false,
-									"type": "boolean"
-								},
-								"showNestedRows": {
-									"default": false,
-									"type": "boolean"
-								},
-								"applyLocation": {
-									"description": "Specify if you want to limit where to apply the conditional presentation",
-									"type": "object",
-									"properties": {
-										"columnIndexes": {
-											"type": "array",
-											"items": {
-												"type": "number"
-											}
+										"showRawValue": {
+											"default": false,
+											"type": "boolean"
+										},
+										"showNestedRows": {
+											"default": false,
+											"type": "boolean"
+										},
+										"applyLocation": {
+											"description": "Specify if you want to limit where to apply the conditional presentation",
+											"type": "object",
+											"properties": {
+												"columnIndexes": {
+													"type": "array",
+													"items": {
+														"type": "number"
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"columnIndexes"
+											]
 										}
 									},
+									"additionalProperties": false
+								},
+								{
 									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string",
+											"enum": [
+												"range"
+											]
+										},
+										"showRawValue": {
+											"type": "boolean"
+										}
+									},
 									"required": [
-										"columnIndexes"
+										"type"
 									]
 								}
-							},
-							"additionalProperties": false
+							]
 						},
 						"categoryPresentationOptions": {
-							"description": "Category header rows can have values just like real rows, this is how you style them"
+							"description": "Category header rows can have values just like real rows, this is how you style them",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string",
+											"enum": [
+												"condition"
+											]
+										},
+										"conditions": {
+											"type": "array",
+											"items": {
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"color": {
+														"description": "Specify the color of the display item",
+														"type": "string"
+													},
+													"description": {
+														"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+														"type": "string"
+													},
+													"label": {
+														"description": "Specify if you want a label to appear above the enlarged",
+														"type": "string"
+													},
+													"key": {
+														"type": "string"
+													},
+													"condition": {
+														"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"<",
+																	"<=",
+																	"=",
+																	">",
+																	">="
+																]
+															},
+															{
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														]
+													},
+													"legendLabel": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"condition",
+													"key"
+												]
+											}
+										},
+										"showRawValue": {
+											"default": false,
+											"type": "boolean"
+										},
+										"showNestedRows": {
+											"default": false,
+											"type": "boolean"
+										},
+										"applyLocation": {
+											"description": "Specify if you want to limit where to apply the conditional presentation",
+											"type": "object",
+											"properties": {
+												"columnIndexes": {
+													"type": "array",
+													"items": {
+														"type": "number"
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"columnIndexes"
+											]
+										}
+									},
+									"additionalProperties": false
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string",
+											"enum": [
+												"range"
+											]
+										},
+										"showRawValue": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"type"
+									]
+								}
+							]
 						}
 					},
 					"required": [
