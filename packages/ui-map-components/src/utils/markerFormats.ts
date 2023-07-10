@@ -228,7 +228,7 @@ export function flattenMeasureHierarchy(mapOverlayHierarchy: MapOverlayHierarchy
 }
 
 const getIsHidden = (
-  measureData: MeasureData,
+  measureData: MeasureData = {} as MeasureData,
   serieses: Series[],
   allHiddenValues: Record<string, Record<string, boolean>>,
 ) =>
@@ -317,12 +317,12 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
 }
 
 export function getMeasureDisplayInfo(
-  measureData: MeasureData = {},
+  measureData: MeasureData,
   serieses: Series[],
   hiddenValues: LegendProps['hiddenValues'] = {},
   radiusScaleFactor: number = 1,
 ) {
-  const isHidden = getIsHidden(measureData, serieses, hiddenValues);
+  const isHidden = getIsHidden(measureData!, serieses, hiddenValues);
   const displayInfo = {
     isHidden,
   } as {
