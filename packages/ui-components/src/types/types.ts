@@ -1,5 +1,7 @@
 import { ElementType } from 'react';
 
-export type OverrideableComponentProps<P = {}> = P & {
-  component?: keyof JSX.IntrinsicElements | ElementType;
-};
+// the Record<any, any> is to allow for any prop to be passed to the component, for the component that is overriding the original
+export type OverrideableComponentProps<P = {}> = P &
+  Record<any, any> & {
+    component?: keyof JSX.IntrinsicElements | ElementType;
+  };
