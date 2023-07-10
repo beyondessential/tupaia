@@ -10599,6 +10599,7 @@ __metadata:
     "@tupaia/ui-chart-components": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
+    "@tupaia/utils": 1.0.0
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6

@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Chart as ChartComponent, ViewContent } from '@tupaia/ui-chart-components';
+import { ENLARGED_REPORT_CONTAINER_HEIGHT } from '../constants';
 
 const Wrapper = styled.div<{
   $isEnlarged: boolean;
@@ -18,7 +19,7 @@ const Wrapper = styled.div<{
   align-items: stretch;
   height: ${({ $isEnlarged, $hasData }) => {
     if (!$hasData) return 'auto';
-    return $isEnlarged ? '22.5rem' : '14rem';
+    return $isEnlarged ? ENLARGED_REPORT_CONTAINER_HEIGHT : '14rem';
   }};
   flex-direction: column;
   .recharts-responsive-container {

@@ -3,17 +3,21 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';
+import { TabContext, TabPanel } from '@material-ui/lab';
+import { BarChart, GridOn } from '@material-ui/icons';
 import { FlexColumn } from '@tupaia/ui-components';
+import { hexToRgba } from '@tupaia/utils';
 import { DateRangePicker, Modal } from '../../components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
 import { useReport } from '../../api/queries/useReport';
+import { FlippaTable } from '../FlippaTable';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
@@ -48,10 +52,46 @@ const TitleWrapper = styled(FlexColumn)`
   align-items: center;
 `;
 
+const TabsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  .MuiTabs-indicator {
+    display: none;
+  }
+`;
+
+const Tabs = styled(MuiTabs)`
+  border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
+  border-radius: 5px;
+  min-height: 0;
+`;
+
+const Tab = styled(MuiTab)`
+  min-width: 0;
+  padding: 0.5rem;
+  min-height: 0;
+  svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  &[aria-selected='true'] {
+    background-color: ${({ theme }) => theme.palette.primary.main};
+  }
+`;
+
+const ContentWrapper = styled.div``;
+
+enum DISPLAY_TYPES {
+  CHART = 'chart',
+  TABLE = 'table',
+}
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
  */
 export const EnlargedDashboardItem = () => {
+  const [displayType, setDisplayType] = useState(DISPLAY_TYPES.CHART);
   const { projectCode, entityCode, dashboardName } = useParams();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
@@ -89,6 +129,15 @@ export const EnlargedDashboardItem = () => {
     },
   );
 
+  const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: DISPLAY_TYPES) => {
+    setDisplayType(value);
+  };
+
+  useEffect(() => {
+    console.log('reportCode', reportCode);
+    setDisplayType(DISPLAY_TYPES.CHART);
+  }, [reportCode]);
+
   if (!reportCode || (!isLoadingDashboards && !currentReport)) return null;
 
   const viewContent = {
@@ -106,6 +155,8 @@ export const EnlargedDashboardItem = () => {
   const titleText = `${currentReport?.name}, ${
     currentReport?.entityHeader || activeDashboard?.entityName
   }`;
+
+  const isChart = currentReport?.type === 'chart';
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
@@ -126,14 +177,34 @@ export const EnlargedDashboardItem = () => {
               />
             )}
           </TitleWrapper>
-          <DashboardItemContent
-            viewContent={viewContent}
-            isLoading={isLoadingReportData}
-            error={isError ? error : null}
-            onRetryFetch={refetch}
-            isEnlarged
-            isExpandable={false}
-          />
+          <TabContext value={displayType}>
+            {isChart && (
+              <TabsWrapper>
+                <Tabs
+                  value={displayType}
+                  onChange={handleChangeDisplayType}
+                  variant="standard"
+                  aria-label="Toggle display type"
+                >
+                  <Tab value={DISPLAY_TYPES.CHART} icon={<BarChart />} aria-label="View chart" />
+                  <Tab value={DISPLAY_TYPES.TABLE} icon={<GridOn />} aria-label="View table" />
+                </Tabs>
+              </TabsWrapper>
+            )}
+            <ContentWrapper value={DISPLAY_TYPES.CHART} as={isChart ? TabPanel : 'div'}>
+              <DashboardItemContent
+                viewContent={viewContent}
+                isLoading={isLoadingReportData}
+                error={isError ? error : null}
+                onRetryFetch={refetch}
+                isEnlarged
+                isExpandable={false}
+              />
+            </ContentWrapper>
+            <TabPanel value={DISPLAY_TYPES.TABLE}>
+              <FlippaTable />
+            </TabPanel>
+          </TabContext>
         </Container>
       </Wrapper>
     </Modal>
