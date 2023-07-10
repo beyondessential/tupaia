@@ -2,18 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+import { ReactNode } from 'react';
 import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
 import { Entity as TupaiaEntity, CssColor } from '@tupaia/types';
-import { ReferenceProps } from '@tupaia/ui-components';
-import { VALUE_TYPES } from '@tupaia/utils';
 import { MEASURE_TYPES, SCALE_TYPES, BREWER_PALETTE } from '../constants';
-import { Color } from './types';
-import { MarkerProps } from './marker-types';
-import { DataValue } from './legend';
-import { ValueOf } from './helpers';
-import { ReactNode } from 'react';
 import { IconKey } from '../components';
 
 export type ColorKey = keyof typeof BREWER_PALETTE;
@@ -31,8 +24,7 @@ export type Location = {
 };
 
 // A generic data item for anything that has an 'organisationUnitCode' property
-export type GenericDataItem = {
-  [key: string]: any;
+export type GenericDataItem = Record<string, any> & {
   organisationUnitCode: OrgUnitCode;
 };
 

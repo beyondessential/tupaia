@@ -84,7 +84,7 @@ export const PopupMarker = React.memo(
     children,
     popupRef,
   }: PopupMarkerProps) => {
-    const displayCoordinates = coordinates?.map((c: any) => c.toFixed(5)).join(', ');
+    const displayCoordinates = (coordinates as number[])?.map((c: any) => c.toFixed(5)).join(', ');
     return (
       <StyledPopup
         pane="popupPane"

@@ -6,7 +6,7 @@
 import { MarkerSeries, SpectrumSeries, Value } from './series';
 
 export type LegendProps = {
-  setValueHidden: (dataKey?: string, value: Value, hidden: boolean) => void;
+  setValueHidden: (dataKey?: string, value?: Value, hidden?: boolean) => void;
   hiddenValues: Record<string, Record<string, boolean>>;
 };
 
