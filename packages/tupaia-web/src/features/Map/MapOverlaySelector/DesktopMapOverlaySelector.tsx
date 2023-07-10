@@ -11,13 +11,12 @@ import { ExpandMore, Layers } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { Entity } from '../../../types';
-import { useMapOverlayData, useMapOverlays } from '../../../api/queries';
+import { useMapOverlayReport, useMapOverlays } from '../../../api/queries';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
 import { useDateRanges } from '../../../utils';
 
 const MaxHeightContainer = styled.div`
-  flex: 1;
   max-height: 100%;
   overflow: hidden;
   display: flex;
@@ -25,7 +24,7 @@ const MaxHeightContainer = styled.div`
 `;
 
 const Wrapper = styled(MaxHeightContainer)`
-  pointer-events: auto;
+  flex: 1;
   max-width: 21.25rem;
   margin: 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
@@ -37,6 +36,7 @@ const Header = styled.div`
   padding: 0.9rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
+  pointer-events: auto;
 `;
 
 const Heading = styled(Typography).attrs({
@@ -49,6 +49,8 @@ const Heading = styled(Typography).attrs({
 
 const Container = styled(MaxHeightContainer)`
   border-radius: 0 0 5px 5px;
+  // Set pointer events on the container rather than higher up so that it only applies to the open menu
+  pointer-events: auto;
 `;
 
 const OverlayLibraryAccordion = styled(Accordion)`
@@ -132,24 +134,15 @@ export const DesktopMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
-  const { hasMapOverlays, selectedOverlayCode, selectedOverlay } = useMapOverlays(
-    projectCode,
-    entityCode,
-  );
+  const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
   );
-  const { data: mapOverlayData } = useMapOverlayData(
-    projectCode,
-    entityCode,
-    selectedOverlayCode,
-    selectedOverlay?.legacy,
-    {
-      startDate,
-      endDate,
-    },
-  );
+  const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay, {
+    startDate,
+    endDate,
+  });
 
   return (
     <Wrapper>
