@@ -19,13 +19,16 @@ const ShadedPolygon = styled(Polygon)`
 `;
 
 // remove name from the measure data as it's not expected in getSingleFormattedValue
-const getTooltipText = ({ name, ...markerData }: GenericDataItem, serieses: Series[]) =>
-  `${name}: ${getSingleFormattedValue(markerData, serieses)}`;
+const getTooltipText = (markerData: MeasureData, serieses: Series[]) =>
+  `${markerData.name}: ${getSingleFormattedValue(markerData, serieses)}`;
 
 // Filter hidden and invalid values and sort measure data
 const processData = (measureData: MeasureData[], serieses: Series[]): MeasureData[] => {
   const data = measureData
-    .filter(({ coordinates, region }) => region || (coordinates && coordinates.length === 2))
+    .filter(
+      ({ coordinates, region }) =>
+        region || (coordinates && (coordinates as number[])?.length === 2),
+    )
     .filter(({ isHidden }) => !isHidden);
 
   // for radius overlay sort desc radius to place smaller circles over larger circles

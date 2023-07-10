@@ -56,7 +56,7 @@ type ParsedPropsResult = {
   isHidden?: boolean;
   hasShadedChildren: boolean;
   orgUnitMeasureData?: OrgUnit;
-  orgUnitMultiOverlayMeasureData?: GenericDataItem;
+  orgUnitMultiOverlayMeasureData?: MeasureData;
 };
 
 const parseProps = (
@@ -103,7 +103,7 @@ interface InteractivePolygonProps {
   isChildArea?: boolean;
   hasMeasureData?: boolean;
   multiOverlaySerieses?: Series[];
-  multiOverlayMeasureData?: GenericDataItem[];
+  multiOverlayMeasureData?: MeasureData[];
   permanentLabels?: boolean;
   onChangeOrgUnit?: (organisationUnitCode?: string) => void;
   area: Entity;
