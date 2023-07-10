@@ -1,3 +1,4 @@
+import { ElementType } from 'react';
 
 export type MatrixColumnType = {
   key: string;
@@ -8,3 +9,9 @@ export type MatrixRowType = Record<string, any> & {
   title: string;
   children?: MatrixRowType[];
 };
+
+// the Record<any, any> is to allow for any prop to be passed to the component, for the component that is overriding the original
+export type OverrideableComponentProps<P = {}> = P &
+  Record<any, any> & {
+    component?: keyof JSX.IntrinsicElements | ElementType;
+  };
