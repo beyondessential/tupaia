@@ -2,6 +2,7 @@ import { VALUE_TYPES } from '@tupaia/utils';
 import { IconKey } from '../components';
 import { ColorScheme } from '../utils';
 import { MeasureType, OrgUnitCode, ScaleType } from './types';
+import { ValueOf } from './helpers';
 
 const ValueTypes = { ...VALUE_TYPES } as const;
 export type Value = string | number | null | undefined;
