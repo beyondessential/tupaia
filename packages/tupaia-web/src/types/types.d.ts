@@ -9,12 +9,14 @@ import {
   MapOverlay,
   MapOverlayGroupRelation,
   EntityType,
+  MatrixConfig,
 } from '@tupaia/types';
 import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
-import { ViewContent } from '@tupaia/ui-chart-components';
+import { ViewContent as ChartViewContent } from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
+import { MatrixColumnType, MatrixRowType } from '@tupaia/ui-components';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -100,4 +102,14 @@ export type EntityResponse = Entity & {
   childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
+};
+
+export type MatrixViewContent = MatrixConfig & {
+  rows: MatrixRowType[];
+  columns: MatrixColumnType[];
+};
+
+export type DashboardItemDisplayProps = {
+  viewContent: ChartViewContent | MatrixViewContent;
+  isEnlarged?: boolean;
 };
