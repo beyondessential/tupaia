@@ -11,11 +11,7 @@ import { Tabs } from '@material-ui/core';
 import { Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 
-const Wrapper = styled.div<{
-  $isEnlarged: boolean;
-  $hasData: boolean;
-  $displayType: string;
-}>`
+const Wrapper = styled.div`
   display: flex;
   position: relative;
   align-content: stretch;
