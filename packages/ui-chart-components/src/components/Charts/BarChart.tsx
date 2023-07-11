@@ -40,7 +40,7 @@ export const BarChart = ({
   isEnlarged = false,
   isExporting = false,
   chartConfig,
-  exportWithLabels = true,
+  exportWithLabels = false,
 }: BarChartProps) => {
   const getBarSize = () => {
     if (chartConfig.chartType === ChartType.Composed || data.length === 1) {
