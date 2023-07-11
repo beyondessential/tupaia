@@ -7,21 +7,25 @@ import { useQuery, QueryObserverOptions } from 'react-query';
 import { EntityResponse } from '../../types';
 import { get } from '../api';
 
+type EntitiesResponse = EntityResponse[];
+
 export const useEntities = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
   queryOptions?: QueryObserverOptions,
 ) => {
-  const enabled =
-    queryOptions?.enabled === undefined ? !!projectCode && !!entityCode : queryOptions.enabled;
+  let enabled = !!projectCode && !!entityCode;
+
+  if (queryOptions?.enabled !== undefined) {
+    enabled = enabled && queryOptions.enabled;
+  }
 
   return useQuery(
-    ['entities', projectCode, entityCode, axiosConfig],
-    (): Promise<EntityResponse[]> =>
+    ['entities', projectCode, entityCode, axiosConfig, queryOptions],
+    (): Promise<EntitiesResponse> =>
       get(`entities/${projectCode}/${entityCode}`, {
         params: {
-          includeRoot: true,
           fields: [
             'parent_code',
             'code',
@@ -35,28 +39,39 @@ export const useEntities = (
         },
         ...axiosConfig,
       }),
+
     {
       enabled,
     },
   );
 };
 
-export const useEntitiesWithLocation = (projectCode?: string, entityCode?: string) =>
-  useEntities(projectCode, entityCode, {
-    params: {
-      includeRoot: true,
-      fields: [
-        'parent_code',
-        'code',
-        'name',
-        'type',
-        'bounds',
-        'region',
-        'point',
-        'location_type',
-        'image_url',
-        'attributes',
-        'child_codes',
-      ],
+export const useEntitiesWithLocation = (
+  projectCode?: string,
+  entityCode?: string,
+  axiosConfig?: AxiosRequestConfig,
+  queryOptions?: QueryObserverOptions,
+) =>
+  useEntities(
+    projectCode,
+    entityCode,
+    {
+      params: {
+        ...{ ...axiosConfig?.params },
+        fields: [
+          'parent_code',
+          'code',
+          'name',
+          'type',
+          'bounds',
+          'region',
+          'point',
+          'location_type',
+          'image_url',
+          'attributes',
+          'child_codes',
+        ],
+      },
     },
-  });
+    queryOptions,
+  );

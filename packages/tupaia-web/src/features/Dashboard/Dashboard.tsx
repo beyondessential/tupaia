@@ -101,8 +101,8 @@ const DashboardImageContainer = styled.div`
 
 export const Dashboard = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
-  const [isExpanded, setIsExpanded] = useState(false);
   const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { data: entity } = useEntity(entityCode);
   const bounds = entity?.bounds;
 

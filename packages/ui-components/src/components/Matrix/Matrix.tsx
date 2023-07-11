@@ -1,18 +1,19 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
-import { MatrixHeaderRow } from './MatrixHeaderRow';
+import { MatrixConfig } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
+import { getFlattenedColumns, getFullHex } from './utils';
+import { MatrixHeader } from './MatrixHeader';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
 import { EnlargedMatrixCell } from './EnlargedMatrixCell';
-import { getFullHex } from './utils';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
@@ -31,13 +32,13 @@ const Wrapper = styled.div`
   width: 100%;
   overflow: auto;
 `;
-interface MatrixProps {
+
+interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
-  presentationOptions: any;
 }
 
-export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixProps) => {
+export const Matrix = ({ columns = [], rows = [], ...config }: MatrixProps) => {
   const [{ startColumn, expandedRows, maxColumns, enlargedCell }, dispatch] = useReducer(
     matrixReducer,
     {
@@ -55,21 +56,23 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
       if (!tableEl || !tableEl?.current || !tableEl?.current?.offsetWidth) return;
       const { offsetWidth } = tableEl?.current;
       // 200px is the max width of a column that we want to show
-      const maxColumns = Math.floor(offsetWidth / 200);
+      const usableWidth = offsetWidth - 200; // the max size of the first column (row title)
+      const maxColumns = Math.floor(usableWidth / 200);
+
+      const flattenedColumns = getFlattenedColumns(columns);
       dispatch({
         type: ACTION_TYPES.SET_MAX_COLUMNS,
-        payload: Math.min(maxColumns, columns.length),
+        payload: Math.min(maxColumns, flattenedColumns.length),
       });
     };
 
     updateMaxColumns();
   }, [tableEl?.current?.offsetWidth, columns]);
-
   return (
     <Wrapper>
       <MatrixContext.Provider
         value={{
-          presentationOptions,
+          ...config,
           columns,
           rows,
           startColumn,
@@ -82,13 +85,14 @@ export const Matrix = ({ columns = [], rows = [], presentationOptions }: MatrixP
           <MatrixNavButtons />
           <EnlargedMatrixCell />
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeaderRow />
+            <MatrixHeader />
             <TableBody>
               {rows.map(row => (
                 <MatrixRow row={row} key={row.title} parents={[]} />
               ))}
             </TableBody>
           </Table>
+          <MatrixLegend />
         </MatrixDispatchContext.Provider>
       </MatrixContext.Provider>
     </Wrapper>

@@ -6,9 +6,16 @@
 import React, { useContext } from 'react';
 import { TableCell, Button } from '@material-ui/core';
 import styled from 'styled-components';
-import { getIsUsingDots, getPresentationOption, getFullHex } from './utils';
+import { ConditionalPresentationOptions } from '@tupaia/types';
+import {
+  checkIfApplyDotStyle,
+  getFlattenedColumns,
+  getIsUsingDots,
+  getPresentationOption,
+  getFullHex,
+} from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
-import { MatrixRowType } from '../../types';
+import { MatrixColumnType, MatrixRowType } from '../../types';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;
@@ -25,11 +32,11 @@ export const Dot = styled.div<{ $color?: string }>`
 
 const DataCell = styled(TableCell)`
   vertical-align: middle;
-  text-align: center;
   position: relative;
   z-index: 1;
   padding: 0;
   height: 100%;
+  border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
 `;
 
 const DataCellContent = styled.div`
@@ -38,13 +45,12 @@ const DataCellContent = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  text-align: center;
+  justify-content: center;
+`;
+
+const ExpandButton = styled(Button)`
   &:hover {
-    background-color: rgba(
-      255,
-      255,
-      255,
-      0.08
-    ); // replicate the hover effect for all cell content, not just buttons
     ${Dot} {
       transform: scale(1.2);
     }
@@ -54,13 +60,28 @@ const DataCellContent = styled.div`
 interface MatrixRowProps {
   value: any;
   rowTitle: MatrixRowType['title'];
+  isCategory?: boolean;
+  colKey: MatrixColumnType['key'];
 }
 
-export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
-  const { presentationOptions = {} } = useContext(MatrixContext);
+/**
+ * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
+ */
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowProps) => {
+  const { presentationOptions = {}, categoryPresentationOptions = {}, columns } = useContext(
+    MatrixContext,
+  );
   const dispatch = useContext(MatrixDispatchContext)!;
-  const isDots = getIsUsingDots(presentationOptions);
-  const presentation = getPresentationOption(presentationOptions, value);
+  // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
+
+  const allColumns = getFlattenedColumns(columns);
+  const colIndex = allColumns.findIndex(({ key }) => key === colKey);
+
+  const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
+  const isDots =
+    getIsUsingDots(presentationOptionsForCell) &&
+    checkIfApplyDotStyle(presentationOptionsForCell as ConditionalPresentationOptions, colIndex);
+  const presentation = getPresentationOption(presentationOptionsForCell, value);
   const displayValue = isDots ? (
     <Dot
       $color={presentation?.color}
@@ -71,8 +92,6 @@ export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
   ) : (
     value
   );
-  // If the cell has presentation options, it should be a button so that the data can be expanded. Otherwise, it can just display the data as normal
-  const isButton = !!presentation;
   const onClickCellButton = () => {
     dispatch({
       type: ACTION_TYPES.SET_ENLARGED_CELL,
@@ -81,14 +100,15 @@ export const MatrixCell = ({ value, rowTitle }: MatrixRowProps) => {
         value,
         displayValue,
         presentation,
+        isCategory,
       },
     });
   };
   return (
     <DataCell>
       <DataCellContent
-        as={isButton ? Button : 'div'}
-        onClick={isButton ? onClickCellButton : undefined}
+        as={isDots ? ExpandButton : 'div'}
+        onClick={isDots ? onClickCellButton : undefined}
       >
         {displayValue}
       </DataCellContent>
