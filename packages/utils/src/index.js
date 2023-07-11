@@ -42,4 +42,3 @@ export { VALUE_TYPES, formatDataValueByType } from './formatDataValueByType';
 export { createClassExtendingProxy } from './proxy';
 export { fetchPatiently } from './fetchPatiently';
 export { oneSecondSleep, sleep } from './sleep';
-export { hexToRgba } from './hexToRgba';

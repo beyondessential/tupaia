@@ -10,14 +10,13 @@ import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { BarChart, GridOn } from '@material-ui/icons';
 import { FlexColumn } from '@tupaia/ui-components';
-import { hexToRgba } from '@tupaia/utils';
 import { DateRangePicker, Modal } from '../../components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
 import { useReport } from '../../api/queries/useReport';
-import { FlippaTable } from '../FlippaTable';
+import { ChartTable } from '../ChartTable';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
@@ -63,7 +62,12 @@ const TabsWrapper = styled.div`
 `;
 
 const Tabs = styled(MuiTabs)`
-  border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
+  border: 1px solid
+    ${({ theme }) => {
+      let hexString = theme.palette.text.primary.replace('#', '');
+      hexString = hexString.length === 3 ? hexString.replace(/(.)/g, '$1$1') : hexString;
+      return `#${hexString}33`;
+    }};
   border-radius: 5px;
   min-height: 0;
 `;
@@ -94,7 +98,7 @@ const DISPLAY_TYPE_VIEWS = [
     value: 'table',
     Icon: GridOn,
     label: 'View table',
-    display: FlippaTable,
+    display: ChartTable,
   },
 ];
 /**
@@ -154,8 +158,6 @@ export const EnlargedDashboardItem = () => {
     ...(currentReport || {}),
     ...reportData,
   };
-
-  console.log(viewContent);
 
   // // On close, remove the report search param from the url
   const handleCloseModal = () => {
