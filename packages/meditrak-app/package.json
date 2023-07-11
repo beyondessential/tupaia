@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/meditrak-app",
-  "version": "1.12.125",
+  "version": "1.13.126",
   "private": true,
   "description": "Android and iOS app for surveying medical facilities",
   "repository": {
@@ -25,6 +25,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "reset-cache": "echo Run me and exit to reset cache && react-native start --reset-cache",
     "start-dev": "react-native run-android",
     "test": "echo \"No tests specified\" && exit 0"
   },
