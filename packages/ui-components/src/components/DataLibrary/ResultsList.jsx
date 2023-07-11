@@ -50,17 +50,16 @@ export const ResultsList = ({
                   onSelect={onSelect}
                 />
               );
-            } else {
-              return (
-                <SelectableOption
-                  key={option.code}
-                  option={option}
-                  isSelected={isSelected}
-                  onSelect={onSelect}
-                  {...restDefaultOptionProps}
-                />
-              );
             }
+            return (
+              <SelectableOption
+                key={option.code}
+                option={option}
+                isSelected={isSelected}
+                onSelect={onSelect}
+                {...restDefaultOptionProps}
+              />
+            );
           })
         : null}
     </>

@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -37,7 +37,7 @@ const OLD_MEASURE_BUILDER_CONFIG = {
   },
 };
 const NEW_MEASURE_BUILDER_CONFIG = {
-  //Remove combined data element codes
+  // Remove combined data element codes
   //  filter: {
   //   value: {
   //     in: [
@@ -92,7 +92,7 @@ const OLD_PRESENTATION_OPTIONS = {
   popupHeaderFormat: '{code}: {name}',
 };
 const NEW_PRESENTATION_OPTIONS = {
-  //Remove combined values
+  // Remove combined values
   // values: [
   //   {
   //     name: '3 sets of hand washing tables',
@@ -141,7 +141,7 @@ const NEW_PRESENTATION_OPTIONS = {
   popupHeaderFormat: '{code}: {name}',
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE "mapOverlay"
     SET "dataElementCode" = '${NEW_DATA_ELEMENT_CODE}',
@@ -151,7 +151,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE "mapOverlay"
     SET "dataElementCode" = '${OLD_DATA_ELEMENT_CODE}',

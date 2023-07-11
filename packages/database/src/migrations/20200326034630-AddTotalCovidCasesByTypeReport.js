@@ -11,13 +11,13 @@ var seed;
 const REPORT_ID = 'COVID_Total_Cases_By_Type';
 const DASHBOARD_GROUP = 'AU_Covid_Province';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     INSERT INTO "dashboardReport" (
       "id",
@@ -55,7 +55,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
   DELETE FROM 
     "dashboardReport"

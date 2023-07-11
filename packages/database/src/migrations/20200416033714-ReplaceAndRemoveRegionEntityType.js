@@ -12,7 +12,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -62,7 +62,7 @@ const replaceRegionWithSubDistrictForNestedRegions = db =>
       AND type = 'region';
 `);
 
-exports.up = async function() {
+exports.up = async function () {
   const db = new TupaiaDatabase();
 
   await addEntityTypes(db, ['district', 'sub_district']);
@@ -72,7 +72,7 @@ exports.up = async function() {
   db.closeConnections();
 };
 
-exports.down = async function() {
+exports.down = async function () {
   const db = new TupaiaDatabase();
 
   await addEntityTypes(db, ['region']);

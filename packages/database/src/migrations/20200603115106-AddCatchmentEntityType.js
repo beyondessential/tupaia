@@ -10,13 +10,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function() {
+exports.up = async function () {
   const db = new TupaiaDatabase();
   await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'catchment';`);
   await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'sub_catchment';`);
@@ -24,7 +24,7 @@ exports.up = async function() {
   return null;
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

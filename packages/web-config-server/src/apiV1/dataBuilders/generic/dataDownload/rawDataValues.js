@@ -85,7 +85,7 @@ class RawDataValuesBuilder extends DataBuilder {
         }
         if (columnLabels) {
           dataElementsMetadata = dataElementsMetadata.map(de => {
-            return (de.code in columnLabels) ? { ...de, text: columnLabels[de.code] } : de;
+            return de.code in columnLabels ? { ...de, text: columnLabels[de.code] } : de;
           });
         }
         const { entityAggregation, entityIdToNameElements } = surveyConfig;

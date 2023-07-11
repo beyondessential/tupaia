@@ -103,7 +103,7 @@ const ACTION_HANDLERS = {
   [ACTIONS.AddSurveyImage]: addSurveyImage,
 
   /**
-   * AddSurveyFile works ver much like AddSurveyImage, but links with SubmitSurveyResponse by `filename` instead of `id`
+   * AddSurveyFile works very much like AddSurveyImage, but links with SubmitSurveyResponse by `uniqueFileName` instead of `id`
    */
   [ACTIONS.AddSurveyFile]: addSurveyFile,
 };
@@ -125,7 +125,7 @@ const PAYLOAD_VALIDATORS = {
   [ACTIONS.AddSurveyFile]: async (models, payload) => {
     const validator = new ObjectValidator({
       id: [hasContent],
-      filename: [hasContent],
+      uniqueFileName: [hasContent],
       data: [hasContent],
     });
     await validator.validate(payload);

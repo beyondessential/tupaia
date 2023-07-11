@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -26,7 +26,7 @@ export const hierarchyNameToId = async (db, name) => {
 const getWorldBounds = async db =>
   db.runSql(`select bounds from entity where code = 'World' limit 1;`);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'entity', {
     id: generateId(),
     code: PROJECT_CODE,
@@ -60,7 +60,7 @@ exports.up = async function(db) {
   });
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   const hierarchyId = await hierarchyNameToId(db, PROJECT_CODE);
 
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);

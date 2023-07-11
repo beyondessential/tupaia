@@ -11,13 +11,13 @@ var seed;
 const OLD_REPORT_ID = 'COVID_New_Cases_By_Day_State';
 const NEW_REPORT_ID = 'COVID_New_Cases_By_Day';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     update "dashboardReport"
     set id = '${NEW_REPORT_ID}'
@@ -33,7 +33,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     update "dashboardReport"
     set id = '${OLD_REPORT_ID}'

@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -116,7 +116,7 @@ const OVERLAY_IDS_TO_REMOVE = ['Laos_Schools_Electricity_Available'];
 const selectSchoolIndicatorsEiEGroup = async db =>
   db.runSql(`SELECT * FROM map_overlay_group where code = 'School_Indicators_EiE'`);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const group = (await selectSchoolIndicatorsEiEGroup(db)).rows[0];
 
   await insertObject(db, 'mapOverlay', MAP_OVERLAY_OBJECT);
@@ -128,15 +128,15 @@ exports.up = async function(db) {
     child_type: 'mapOverlay',
   });
 
-  //Remove the old map overlay and add a new consolidated one
+  // Remove the old map overlay and add a new consolidated one
   await db.runSql(`	
     DELETE FROM "mapOverlay" 
     WHERE id IN (${arrayToDbString(OVERLAY_IDS_TO_REMOVE)});
   `);
 };
 
-exports.down = function(db) {
-  return null; //No migration down
+exports.down = function (db) {
+  return null; // No migration down
 };
 
 exports._meta = {

@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -25,7 +25,7 @@ const SCALE_BOUNDS = {
   },
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     update "mapOverlay"
     set "presentationOptions" = jsonb_set("presentationOptions",'{scaleBounds}','${JSON.stringify(
@@ -35,7 +35,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     update "mapOverlay"
     set "presentationOptions" = "presentationOptions" - 'scaleBounds'

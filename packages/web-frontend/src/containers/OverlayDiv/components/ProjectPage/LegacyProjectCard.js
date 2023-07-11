@@ -6,10 +6,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { BOX_SHADOW, WHITE, LIGHT_GREY, LIGHT_BLUE, FORM_BLUE } from '../../../../styles';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { Button } from '@material-ui/core';
+import { BOX_SHADOW, WHITE, LIGHT_GREY, LIGHT_BLUE, FORM_BLUE } from '../../../../styles';
 
 const Card = styled.div`
   display: grid;

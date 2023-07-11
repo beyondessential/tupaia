@@ -43,14 +43,14 @@ const ActionButton = styled(Button)`
   text-transform: none;
   font-size: 0.975em;
   line-height: 1.5;
-  padding: 1em;
+  padding: 0.77rem 1rem;
   border-radius: 0.6em;
   ${ExtendedTitle} + & {
     margin-top: 2em;
   }
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
-    font-size: 1em;
+    font-size: 1.0625rem;
   }
 `;
 

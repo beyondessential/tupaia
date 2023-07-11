@@ -8,7 +8,7 @@ type Transform = string | Record<string, unknown>;
 export type StandardReportConfig = {
   transform: Transform[];
   output?: Record<string, unknown>;
-}
+};
 
 export type CustomReportConfig = {
   customReport: string;

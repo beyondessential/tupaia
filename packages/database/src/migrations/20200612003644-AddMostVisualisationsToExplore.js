@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -34,12 +34,12 @@ const addVisualisationsToExplore = (db, tableName) =>
     `)};
 `);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await addVisualisationsToExplore(db, 'dashboardGroup');
   await addVisualisationsToExplore(db, 'mapOverlay');
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   // bit hard to go in reverse without listing out the prior state quite explicitly
   return null;
 };

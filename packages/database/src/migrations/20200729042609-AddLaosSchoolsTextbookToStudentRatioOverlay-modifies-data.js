@@ -10,14 +10,14 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
 const POP_DATA_ELEMENTS = {
-  //Primary school
+  // Primary school
   'Grade 1': ['SchPop011', 'SchPop012'],
   'Grade 2': ['SchPop013', 'SchPop014'],
   'Grade 3': ['SchPop015', 'SchPop016'],
@@ -36,7 +36,7 @@ const POP_DATA_ELEMENTS = {
     'SchPop020',
   ],
 
-  //Secondary (lower)
+  // Secondary (lower)
   'Grade 6': ['SchPop021', 'SchPop022'],
   'Grade 7': ['SchPop023', 'SchPop024'],
   'Grade 8': ['SchPop025', 'SchPop026'],
@@ -52,7 +52,7 @@ const POP_DATA_ELEMENTS = {
     'SchPop028',
   ],
 
-  //Secondary (upper)
+  // Secondary (upper)
   'Upper Sec': ['SchPop029', 'SchPop030', 'SchPop031', 'SchPop032', 'SchPop033', 'SchPop034'],
 };
 
@@ -420,7 +420,7 @@ const insertGroupAndChildren = async (db, groupCode, children, parentId = null) 
   );
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     Object.entries(OVERLAYS_IN_HIERARCHY).map(([groupCode, children]) =>
       insertGroupAndChildren(db, groupCode, children),
@@ -456,7 +456,7 @@ const deleteGroupAndChildren = async (db, groupCode, children) => {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await Promise.all(
     Object.entries(OVERLAYS_IN_HIERARCHY).map(([groupCode, children]) =>
       deleteGroupAndChildren(db, groupCode, children),
