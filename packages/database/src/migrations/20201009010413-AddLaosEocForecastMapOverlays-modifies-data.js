@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -40,7 +40,7 @@ const commonMapOverlayConfig = {
       start: {
         unit: 'day',
         offset: 0, // today
-      }
+      },
     },
     defaultTimePeriod: {
       unit: 'day',
@@ -90,17 +90,19 @@ const MAP_OVERLAY_GROUP_RELATIONS = [
   },
 ];
 
-const getMapOverlayGroupId = async (db) => {
-  const results = await db.runSql(`SELECT id FROM map_overlay_group WHERE code = '${MAP_OVERLAY_GROUP_CODE}';`);
+const getMapOverlayGroupId = async db => {
+  const results = await db.runSql(
+    `SELECT id FROM map_overlay_group WHERE code = '${MAP_OVERLAY_GROUP_CODE}';`,
+  );
 
   if (results.rows.length > 0) {
     return results.rows[0].id;
   }
 
   throw new Error('Not found');
-}
+};
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const mapOverlayGroupId = await getMapOverlayGroupId(db);
 
   for (const mapOverlay of FORECAST_MAP_OVERLAYS) {
@@ -111,14 +113,14 @@ exports.up = async function(db) {
     const data = {
       ...mapOverlayGroupRelation,
       map_overlay_group_id: mapOverlayGroupId,
-    }
+    };
     await insertObject(db, 'map_overlay_group_relation', data);
   }
 
   return null;
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   for (const mapOverlayGroupRelation of MAP_OVERLAY_GROUP_RELATIONS) {
     await db.runSql(
       `DELETE FROM "map_overlay_group_relation" WHERE child_id = '${mapOverlayGroupRelation.child_id}';`,

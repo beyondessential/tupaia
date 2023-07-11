@@ -8,13 +8,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   // Note that the relevant records on DHIS2 must be deleted first, see Edwin for the deletion sql
   return db.runSql(`
     -- Drop triggers so that all the deletes don't flood the sync queue - have taken care of them manually on dhis2
@@ -69,7 +69,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

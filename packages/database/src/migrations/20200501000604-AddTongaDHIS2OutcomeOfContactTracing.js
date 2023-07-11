@@ -10,65 +10,64 @@ const UNTREATED = 'Untreated';
 const NO_TREATMENT_REQUIRED = 'No Treatment Required';
 const UNKNOWN = 'Unknown';
 
-
 const COMMON_DENOMINATOR = {
-  "dataValues": {
-    "CD3b_015": '*'
-  }
+  dataValues: {
+    CD3b_015: '*',
+  },
 };
 
 const DATA_BUILDER_CONFIG = {
-  "dataClasses": {
+  dataClasses: {
     [TREATMENT_IN_PROGRESS]: {
-      "numerator": {
-        "dataValues": {
-          "CD3b_015": TREATMENT_IN_PROGRESS
-        }
+      numerator: {
+        dataValues: {
+          CD3b_015: TREATMENT_IN_PROGRESS,
+        },
       },
-      "denominator": COMMON_DENOMINATOR
+      denominator: COMMON_DENOMINATOR,
     },
     [TREATED]: {
-      "numerator": {
-        "dataValues": {
-          "CD3b_015": TREATED
-        }
+      numerator: {
+        dataValues: {
+          CD3b_015: TREATED,
+        },
       },
-      "denominator": COMMON_DENOMINATOR
+      denominator: COMMON_DENOMINATOR,
     },
     [UNTREATED]: {
-      "numerator": {
-        "dataValues": {
-          "CD3b_015": UNTREATED
-        }
+      numerator: {
+        dataValues: {
+          CD3b_015: UNTREATED,
+        },
       },
-      "denominator": COMMON_DENOMINATOR
+      denominator: COMMON_DENOMINATOR,
     },
     [NO_TREATMENT_REQUIRED]: {
-      "numerator": {
-        "dataValues": {
-          "CD3b_015": NO_TREATMENT_REQUIRED
-        }
+      numerator: {
+        dataValues: {
+          CD3b_015: NO_TREATMENT_REQUIRED,
+        },
       },
-      "denominator":COMMON_DENOMINATOR
+      denominator: COMMON_DENOMINATOR,
     },
     [UNKNOWN]: {
-      "numerator": {
-        "dataValues": {
-          "CD3b_015": UNKNOWN
-        }
+      numerator: {
+        dataValues: {
+          CD3b_015: UNKNOWN,
+        },
       },
-      "denominator": COMMON_DENOMINATOR
-    }
+      denominator: COMMON_DENOMINATOR,
+    },
   },
-  "programCode": "CD3b"
+  programCode: 'CD3b',
 };
 
 const REPORT_ID = 'TO_CD_Outcome_Of_Contact_Tracing';
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -76,11 +75,11 @@ exports.setup = function (options, seedLink) {
 };
 
 const VIEW_JSON_CONFIG = {
-  "name": " Outcome of Contact Tracing",
-  "type": "chart",
-  "chartType": "pie",
-  "periodGranularity": "one_month_at_a_time",
-  "valueType": "fractionAndPercentage"
+  name: ' Outcome of Contact Tracing',
+  type: 'chart',
+  chartType: 'pie',
+  periodGranularity: 'one_month_at_a_time',
+  valueType: 'fractionAndPercentage',
 };
 
 exports.up = async function (db) {
@@ -113,5 +112,5 @@ exports.down = async function (db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

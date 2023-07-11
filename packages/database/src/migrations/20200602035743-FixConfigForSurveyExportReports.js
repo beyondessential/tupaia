@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -30,7 +30,7 @@ const NEW_PEHS_SURVEY_CODES = [
 ];
 
 const CONFIGS_BY_REPORT_ID = {
-  '31': {
+  31: {
     old: {
       preConfig: {
         name: 'Download Disaster Preparation Survey Response',
@@ -62,7 +62,7 @@ const CONFIGS_BY_REPORT_ID = {
       ],
     },
   },
-  '51': {
+  51: {
     old: {
       surveyCodes: ['PEHS'],
       dataElementGroupCode: 'PEHSSurveyDate',
@@ -72,7 +72,7 @@ const CONFIGS_BY_REPORT_ID = {
       dataElementGroupCode: 'PEHSSurveyDate',
     },
   },
-  '52': {
+  52: {
     old: {
       surveyCodes: ['PEHS'],
       dataElementGroupCode: 'PEHSSurveyDate',
@@ -91,7 +91,7 @@ const updateReportConfig = async (db, reportId, config) =>
     WHERE id = '${reportId}';
 `);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     Object.entries(CONFIGS_BY_REPORT_ID).map(([reportId, { new: config }]) =>
       updateReportConfig(db, reportId, config),
@@ -99,7 +99,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await Promise.all(
     Object.entries(CONFIGS_BY_REPORT_ID).map(([reportId, { old: config }]) =>
       updateReportConfig(db, reportId, config),

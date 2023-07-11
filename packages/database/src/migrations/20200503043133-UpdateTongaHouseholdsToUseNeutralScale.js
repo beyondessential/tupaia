@@ -13,13 +13,13 @@ var seed;
 
 const OVERLAY_IDS = ['TONGA_NUMBER_OF_HOUSEHOLDS'];
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE 
       "mapOverlay"
@@ -34,7 +34,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE 
       "mapOverlay"

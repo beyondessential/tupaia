@@ -31,13 +31,13 @@ const REPORT = {
 };
 const DASHBOARD_GROUP_CODE = 'AU_Covid_Province';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
 
   await db.runSql(`
@@ -50,7 +50,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
     UPDATE

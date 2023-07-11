@@ -9,7 +9,7 @@ export class File extends RealmObject {
   toJson() {
     return {
       id: this.id,
-      filename: this.filename,
+      uniqueFileName: this.uniqueFileName,
       data: this.data,
     };
   }
@@ -20,7 +20,7 @@ File.schema = {
   primaryKey: 'id',
   properties: {
     id: 'string',
-    filename: 'string',
+    uniqueFileName: 'string',
     data: { type: 'string', default: '' },
   },
 };

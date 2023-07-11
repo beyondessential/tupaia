@@ -1,4 +1,5 @@
 'use strict';
+
 import { generateId } from '@tupaia/database';
 
 var dbm;
@@ -9,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -18,7 +19,7 @@ exports.setup = function(options, seedLink) {
 const dataSourceCodes = require('./migrationData/20200128021719-AddTongaDataSources/AllTongaDataSources.json');
 const specialConfigs = require('./migrationData/20200128021719-AddTongaDataSources/TongaDataSourcesWithCategoryCombos.json');
 
-exports.up = function(db) {
+exports.up = function (db) {
   const dataSourceValues = dataSourceCodes.map(code => {
     const specialConfig = specialConfigs[code] || {};
     const config = { ...specialConfig, isDataRegional: false };
@@ -30,7 +31,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql('TRUNCATE TABLE data_source');
 };
 

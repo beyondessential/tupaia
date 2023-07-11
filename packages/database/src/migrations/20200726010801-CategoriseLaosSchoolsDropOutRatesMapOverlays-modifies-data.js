@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -66,7 +66,7 @@ const selectAllProvinceDropOutRateMapOverlays = async db =>
     WHERE id IN (${arrayToDbString(PROVINCE_DROP_OUT_MAP_OVERLAYS)})
   `);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await db.runSql(`
     DELETE FROM map_overlay_group_relation where map_overlay_group_id IN (SELECT id FROM map_overlay_group where name IN ('Drop-out Rate in Province', 'Drop-out Rate in District'));
     DELETE FROM map_overlay_group where name = 'Drop-out Rate in Province';
@@ -159,7 +159,7 @@ exports.up = async function(db) {
   }
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

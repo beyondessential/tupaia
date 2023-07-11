@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -21,11 +21,11 @@ const updateOrgUnitLevel = async (db, newValue) =>
     WHERE "dataBuilderConfig" ? 'organisationUnitLevel';
   `);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await updateOrgUnitLevel(db, `LOWER("dataBuilderConfig"->>'organisationUnitLevel')`);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await updateOrgUnitLevel(db, `INITCAP("dataBuilderConfig"->>'organisationUnitLevel')`);
 };
 

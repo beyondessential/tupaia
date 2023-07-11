@@ -36,10 +36,12 @@ export const useDataTableExport = (
         ? tableData.map(row =>
             tableColumns.map(col => {
               const value = row.values[col.id];
-              const valueIsPercentageString = value.includes('%');
-              const num = valueIsPercentageString ? value : parseFloat(value);
-              // if it's a number, return in number format
-              return isNaN(num) ? value : num;
+              // check for strings that are not stringified numbers, including dates and percentages
+              if (typeof value === 'string' && isNaN(value)) return value;
+              // only parse the value if it is not a boolean (as this means it is definitely meant to be a number)
+              const num = value && typeof value !== 'boolean' ? Number(value) : value;
+  
+              return num;
             }),
           )
         : [['There is no available data for the selected time period.']];

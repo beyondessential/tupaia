@@ -9,13 +9,13 @@ var _database = require('@tupaia/database');
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const australia = await db.runSql(`select id from entity where code = 'AU'`);
   if (australia.rows.length === 0) {
     throw new Error('Please import Australia first!');
@@ -42,7 +42,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`UPDATE "project" SET sort_order=1 WHERE "code"='unfpa';`);
   return db.runSql(`DELETE FROM "project" WHERE "code"='covidau';`);
 };

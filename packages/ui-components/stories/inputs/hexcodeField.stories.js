@@ -54,7 +54,7 @@ export const DisabledInput = () => {
         label="Background color"
         id="background-color"
         onChange={setValue}
-        disabled={true}
+        disabled
       />
     </Container>
   );

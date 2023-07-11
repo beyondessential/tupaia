@@ -56,18 +56,18 @@ const getReportConfig = measureLevel => ({
     aggregations: [
       measureLevel === 'District'
         ? {
-          type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-          config: {
-            dataSourceEntityType: 'sub_district',
-            aggregationEntityType: 'district',
-          },
-        }
+            type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+            config: {
+              dataSourceEntityType: 'sub_district',
+              aggregationEntityType: 'district',
+            },
+          }
         : {
-          type: 'RAW',
-          config: {
-            dataSourceEntityType: 'sub_district',
+            type: 'RAW',
+            config: {
+              dataSourceEntityType: 'sub_district',
+            },
           },
-        },
     ],
     dataElements: ['COVID_FJ_7_Day_Rolling_Pos_Tests', 'COVID_FJ_7_Day_Rolling_Num_Tests'],
   },

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { toArray } from '@tupaia/utils';
 import {
   adjustOptionsToAggregationList,
   aggregateAnalytics,
@@ -59,8 +60,6 @@ export class Aggregator {
     }, analytics);
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
-    const code = Array.isArray(codeInput) ? codeInput : [codeInput];
-    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
     const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
       this.context,
       fetchOptions,
@@ -79,7 +78,8 @@ export class Aggregator {
       };
     }
 
-    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
+    const codes = toArray(codeInput);
+    const { results, metadata } = await this.dataBroker.pullAnalytics(codes, adjustedFetchOptions);
     const rawAnalytics = results.reduce((array, { analytics }) => array.concat(analytics), []);
 
     return {
@@ -108,7 +108,6 @@ export class Aggregator {
    * @returns
    */
   async fetchEvents(code, fetchOptions, aggregationOptions = {}) {
-    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
     const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
       this.context,
       fetchOptions,
@@ -120,7 +119,7 @@ export class Aggregator {
       return [];
     }
 
-    const events = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
+    const events = await this.dataBroker.pullEvents([code], adjustedFetchOptions);
 
     return this.processEvents(events, adjustedAggregationOptions);
   }
