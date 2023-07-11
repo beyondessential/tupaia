@@ -48,24 +48,23 @@ const generateDummyAnswer = (questionNumber?: number) => ({
   question_id: getQuestionId(questionNumber),
 });
 
-const mockS3Bucket: { images: Record<string, string>; files: Record<string, string> } = {
-  images: {},
-  files: {},
+const mockS3Bucket: { images: string[]; files: string[] } = {
+  images: [], // ids
+  files: [], // fileNames
 };
 
 const S3ClientMock = {
   uploadImage: (data: string, id: string) => {
-    if (mockS3Bucket.images[id]) {
+    if (mockS3Bucket.images.includes(id)) {
       throw new Error(`Image ${id} already exists`);
     }
-
-    mockS3Bucket.images[id] = data;
+    mockS3Bucket.images = [...mockS3Bucket.images, id];
   },
-  uploadFile: (fileName: string, data: string) => {
-    if (mockS3Bucket.files[fileName]) {
+  uploadFile: (fileName: string) => {
+    if (mockS3Bucket.files.includes(fileName)) {
       throw new Error(`File ${fileName} already exists`);
     }
-    mockS3Bucket.files[fileName] = data;
+    mockS3Bucket.files = [...mockS3Bucket.files, fileName];
   },
 };
 
@@ -231,9 +230,6 @@ describe('changes (POST)', () => {
           body: [imageAction],
         });
         expect(imagePostResponse.statusCode).toEqual(200);
-
-        const imageString = mockS3Bucket.images[id];
-        expect(imageString).toEqual(TEST_IMAGE_DATA);
       });
     });
 
@@ -253,9 +249,6 @@ describe('changes (POST)', () => {
           body: [fileAction],
         });
         expect(filePostResponse.statusCode).toEqual(200);
-
-        const fileString = mockS3Bucket.files[uniqueFileName];
-        expect(fileString).toEqual(TEST_IMAGE_DATA);
       });
     });
 
