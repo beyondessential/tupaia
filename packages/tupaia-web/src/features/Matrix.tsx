@@ -28,8 +28,17 @@ const parseRows = (
   rows: MatrixDataRow[],
   categoryId?: MatrixDataRow['categoryId'],
 ): MatrixRowType[] => {
-  // Get the topmost level of rows if a categoryId has been passed in, otherwise just use all the rows that have been passed in
-  const topLevelRows = categoryId ? rows.filter(row => row.categoryId === categoryId) : rows;
+  let topLevelRows = [];
+  // if a categoryId is not passed in, then we need to find the top level rows
+  if (!categoryId) {
+    // get the highest level rows, which are the ones that have a category but no categoryId
+    const highestLevel = rows.filter(row => row.category && !row.categoryId);
+    // if there are no highest level rows, then the top level rows are just all of the rows
+    topLevelRows = highestLevel.length ? highestLevel : rows;
+  } else {
+    // otherwise, the top level rows are the ones that have the categoryId that was passed in
+    topLevelRows = rows.filter(row => row.categoryId === categoryId);
+  }
 
   // loop through the topLevelRows, and parse them into the format that the Matrix component can use
   return topLevelRows.map(row => {

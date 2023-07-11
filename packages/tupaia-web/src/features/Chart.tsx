@@ -31,10 +31,6 @@ const Wrapper = styled.div<{
   .recharts-wrapper,
   .recharts-wrapper svg {
     height: 100% !important;
-    width: ${({ $isEnlarged }) =>
-      $isEnlarged
-        ? '100%'
-        : '95%'} !important; // some charts end up overflowing the space in the dashboard, if the content is too large. This makes up for it.
   }
   li.recharts-legend-item {
     white-space: nowrap; // ensure there are no line breaks on the export legends
