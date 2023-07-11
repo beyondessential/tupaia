@@ -104,9 +104,21 @@ export type EntityResponse = Entity & {
   children?: Entity[];
 };
 
+export type MatrixDataRow = Record<string, any> & {
+  dataElement?: string;
+  categoryId?: string;
+  category?: string;
+};
+
+export type MatrixDataColumn = {
+  title: string;
+  key: string;
+  category?: string;
+  columns?: MatrixDataColumn[];
+};
 export type MatrixViewContent = MatrixConfig & {
-  rows: MatrixRowType[];
-  columns: MatrixColumnType[];
+  rows: MatrixDataRow[];
+  columns: MatrixDataColumn[];
 };
 
 export type DashboardItemDisplayProps = {
