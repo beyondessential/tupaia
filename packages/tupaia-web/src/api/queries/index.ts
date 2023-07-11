@@ -14,5 +14,5 @@ export { useEntities, useEntitiesWithLocation } from './useEntities';
 export { useEmailVerification } from './useEmailVerification';
 export { useDashboards } from './useDashboards';
 export { useReport } from './useReport';
+export { useMapOverlayReport } from './useMapOverlayReport';
 export { useMapOverlays } from './useMapOverlays';
-export { useMapOverlayData } from './useMapOverlayData';

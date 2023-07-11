@@ -40,11 +40,11 @@ const processData = (measureData: MeasureData[], serieses: Series[]): MeasureDat
 };
 
 interface MarkerLayerProps {
-  measureData: MeasureData[];
-  serieses: Series[];
-  multiOverlayMeasureData: GenericDataItem[];
-  multiOverlaySerieses: Series[];
-  onSeeOrgUnitDashboard: (organisationUnitCode?: string) => void;
+  measureData?: MeasureData[];
+  serieses?: Series[];
+  multiOverlayMeasureData?: GenericDataItem[];
+  multiOverlaySerieses?: Series[];
+  onSeeOrgUnitDashboard?: (organisationUnitCode?: string) => void;
 }
 
 export const MarkerLayer = ({
