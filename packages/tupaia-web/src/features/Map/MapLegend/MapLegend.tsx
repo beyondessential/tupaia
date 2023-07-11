@@ -4,14 +4,21 @@
  */
 
 import React from 'react';
+import { LegendProps } from '@tupaia/ui-map-components';
 import { MobileMapLegend } from './MobileMapLegend';
 import { DesktopMapLegend } from './DesktopMapLegend';
 
-export const MapLegend = () => {
+export const MapLegend = ({
+  hiddenValues,
+  setHiddenValue,
+}: {
+  hiddenValues: LegendProps['hiddenValues'];
+  setHiddenValue: Function;
+}) => {
   return (
     <>
       <MobileMapLegend />
-      <DesktopMapLegend />
+      <DesktopMapLegend hiddenValues={hiddenValues} setHiddenValue={setHiddenValue} />
     </>
   );
 };

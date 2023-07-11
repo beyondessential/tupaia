@@ -15,7 +15,7 @@
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
-    "start-dev": "REACT_APP_DEPLOYMENT_NAME='dev' && vite",
+    "start-dev": "vite",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
