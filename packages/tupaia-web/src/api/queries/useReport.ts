@@ -24,9 +24,10 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
   const timeZone = getBrowserTimeZone();
   const formattedStartDate = formatDateForApi(startDate, null);
   const formattedEndDate = formatDateForApi(endDate, null);
+  const endpoint = legacy ? 'legacyDashboardReport' : 'report';
   return useQuery(
     [
-      'report',
+      endpoint,
       reportCode,
       dashboardCode,
       projectCode,
@@ -36,10 +37,9 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
       formattedEndDate,
     ],
     () =>
-      get(`report/${reportCode}`, {
+      get(`${endpoint}/${reportCode}`, {
         params: {
           dashboardCode,
-          legacy,
           itemCode,
           projectCode,
           organisationUnitCode: entityCode,
