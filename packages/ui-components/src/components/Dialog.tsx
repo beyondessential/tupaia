@@ -67,6 +67,7 @@ interface DialogHeaderProps {
   onClose: () => void;
   color?: TypographyProps['color'];
   children?: ReactNode;
+  titleVariant?: TypographyProps['variant'];
 }
 
 export const DialogHeader = ({
@@ -74,9 +75,10 @@ export const DialogHeader = ({
   onClose,
   color = 'textPrimary',
   children,
+  titleVariant = 'h3',
 }: DialogHeaderProps) => (
   <Header>
-    <DialogTitle color={color} variant="h3">
+    <DialogTitle color={color} variant={titleVariant}>
       {title}
     </DialogTitle>
     {children}
