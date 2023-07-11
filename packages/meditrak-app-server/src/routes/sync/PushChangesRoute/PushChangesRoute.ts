@@ -24,7 +24,7 @@ const addSurveyImageValidator = yup.object().shape({
 });
 
 const addSurveyFileValidator = yup.object().shape({
-  fileName: yup.string().required(),
+  uniqueFileName: yup.string().required(),
   data: yup.string().required(),
 });
 
