@@ -15,7 +15,7 @@ import { MatrixColumnType } from '../../types';
 /**
  * This file contains any utils that useful for the matrix component. This is mainly used for presentation options
  */
-export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
+export const areStringsEqual = (a: string, b: number, caseSensitive = true) =>
   a
     .toString()
     .localeCompare(b.toString(), undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
