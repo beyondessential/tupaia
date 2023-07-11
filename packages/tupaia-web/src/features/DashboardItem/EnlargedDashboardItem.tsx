@@ -46,6 +46,14 @@ const Title = styled(Typography).attrs({
 
 const TitleWrapper = styled(FlexColumn)`
   align-items: center;
+  margin-bottom: 1rem;
+`;
+
+const Subheading = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  font-size: 1rem;
+  margin-bottom: 1rem;
 `;
 
 /**
@@ -126,6 +134,7 @@ export const EnlargedDashboardItem = () => {
               />
             )}
           </TitleWrapper>
+          {currentReport?.description && <Subheading>{currentReport?.description}</Subheading>}
           <DashboardItemContent
             viewContent={viewContent}
             isLoading={isLoadingReportData}

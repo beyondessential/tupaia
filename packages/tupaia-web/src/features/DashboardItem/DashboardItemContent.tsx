@@ -18,7 +18,6 @@ const ErrorLink = styled(Link)`
   text-decoration: underline;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
 `;
-
 const RetryButton = styled(TextButton)`
   margin: 0;
   padding: 0;
@@ -31,6 +30,7 @@ const RetryButton = styled(TextButton)`
 `;
 
 const Alert = styled(BaseAlert)`
+  overflow: hidden; // this is to stop any extra long text from overflowing the alert and causing a horizontal scroll on the dashboard
   .MuiAlert-message {
     max-width: 100%;
   }

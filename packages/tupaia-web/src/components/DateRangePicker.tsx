@@ -23,6 +23,7 @@ const Wrapper = styled.div`
       padding: 0.2rem;
       text-transform: none;
       font-size: 0.875rem;
+      min-width: 0;
       color: ${({ theme }) => theme.palette.text.primary};
       svg {
         height: 1.3rem;

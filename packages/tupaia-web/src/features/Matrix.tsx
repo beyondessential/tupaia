@@ -9,6 +9,7 @@ import {
   MatrixRowType,
   getIsUsingDots,
   Matrix as MatrixComponent,
+  Alert,
 } from '@tupaia/ui-components';
 import {
   DashboardItemDisplayProps,
@@ -17,7 +18,15 @@ import {
   MatrixViewContent,
 } from '../types';
 import { ConditionalPresentationOptions } from '@tupaia/types';
+import styled from 'styled-components';
 
+const NoDataMessage = styled(Alert).attrs({
+  severity: 'info',
+})`
+  width: 100%;
+  margin: 1rem auto;
+  max-width: 24rem;
+`;
 const parseRows = (
   rows: MatrixDataRow[],
   categoryId?: MatrixDataRow['categoryId'],
@@ -75,6 +84,8 @@ export const Matrix = ({
 
   const parsedRows = parseRows(rows, undefined);
   const parsedColumns = parseColumns(columns);
+
+  if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
 
   return <MatrixComponent {...config} rows={parsedRows} columns={parsedColumns} />;
 };

@@ -20,6 +20,7 @@ const MatrixTable = styled.table`
   border-collapse: collapse;
   border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   color: ${({ theme }) => theme.palette.text.primary};
+  table-layout: fixed; // this is to allow us to set max-widths on the columns
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
   td,
   th {
