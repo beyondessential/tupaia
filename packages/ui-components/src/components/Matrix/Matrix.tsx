@@ -14,6 +14,7 @@ import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } fro
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
 import { EnlargedMatrixCell } from './EnlargedMatrixCell';
+import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
