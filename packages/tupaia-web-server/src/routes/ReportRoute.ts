@@ -22,7 +22,7 @@ export class ReportRoute extends Route<ReportRequest> {
     // the params for the non-legacy reports are different
     const params = {
       organisationUnitCodes: organisationUnitCode,
-      hierarchyName: projectCode,
+      hierarchy: projectCode,
       startDate,
       endDate,
     };
