@@ -34,8 +34,6 @@ const ExpandIcon = styled(ExpandLess)`
 const ExpandedLegend = styled.div`
   display: block;
   background-color: ${({ theme }) => theme.mobile.background};
-  min-height: 10rem;
-  min-width: 10rem;
   border-radius: 0.5rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
