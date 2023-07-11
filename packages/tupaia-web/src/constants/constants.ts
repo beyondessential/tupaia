@@ -24,5 +24,3 @@ export const FORM_FIELD_VALIDATION = {
 };
 
 export const MOBILE_BREAKPOINT = '900px';
-
-export const ENLARGED_REPORT_CONTAINER_HEIGHT = '22.5rem';

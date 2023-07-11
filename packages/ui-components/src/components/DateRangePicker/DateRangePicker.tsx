@@ -60,7 +60,6 @@ const Button = styled(MuiButton)`
 const Label = styled(Typography)`
   padding-left: 1rem;
   padding-right: 1rem;
-  min-width: 8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,6 +70,7 @@ const Label = styled(Typography)`
   cursor: auto;
   button + & {
     border: 1px solid ${props => props.theme.palette.grey['400']};
+    min-width: 8rem;
   }
   &.MuiButtonGroup-groupedOutlinedHorizontal {
     margin-left: 0;
