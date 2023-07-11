@@ -24,6 +24,7 @@ const StyledCard = styled(Card)`
   overflow: auto;
   background-color: transparent;
   border: 1px solid #ebebeb;
+  text-align: left;
   .MuiCheckbox-root {
     margin: 0 1em;
     padding: 0;
