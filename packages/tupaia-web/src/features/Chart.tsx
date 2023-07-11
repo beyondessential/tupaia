@@ -97,9 +97,8 @@ export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
 
   const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
 
-  const hasData = viewContent.data && viewContent.data.length > 0;
   return (
-    <Wrapper $isEnlarged={isEnlarged} $hasData={hasData} $displayType={displayType}>
+    <Wrapper>
       <TabContext value={displayType}>
         {isEnlarged && (
           <TabsWrapper>
