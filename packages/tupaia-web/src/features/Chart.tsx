@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Chart as ChartComponent, ViewContent } from '@tupaia/ui-chart-components';
-import { DashboardItemDisplayProps } from '../types';
 
 const Wrapper = styled.div<{
   $isEnlarged: boolean;
@@ -42,7 +41,11 @@ const Wrapper = styled.div<{
   }
 `;
 
-export const Chart = ({ viewContent, isEnlarged = false }: DashboardItemDisplayProps) => {
+interface ChartProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+}
+export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
   const hasData = viewContent.data && viewContent.data.length > 0 ? true : false;
   return (
     <Wrapper $isEnlarged={isEnlarged} $hasData={hasData}>

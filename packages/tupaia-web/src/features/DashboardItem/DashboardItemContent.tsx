@@ -7,11 +7,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
 import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
+import { ViewContent as ChartViewContent } from '@tupaia/ui-chart-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { ReportDisplayProps } from '../../types';
 import { Chart } from '../Chart';
 import { ExpandItemButton } from './ExpandItemButton';
 import { Matrix } from '../Matrix';
+import { DashboardItemType, MatrixViewContent } from '../../types';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -56,7 +57,7 @@ const DisplayComponents = {
 };
 
 interface DashboardItemContentProps {
-  viewContent: ReportDisplayProps;
+  viewContent: DashboardItemType & (ChartViewContent | MatrixViewContent);
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;

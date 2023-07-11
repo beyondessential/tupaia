@@ -11,12 +11,7 @@ import {
   Matrix as MatrixComponent,
   Alert,
 } from '@tupaia/ui-components';
-import {
-  DashboardItemDisplayProps,
-  MatrixDataColumn,
-  MatrixDataRow,
-  MatrixViewContent,
-} from '../types';
+import { MatrixDataColumn, MatrixDataRow, MatrixViewContent } from '../types';
 import { ConditionalPresentationOptions } from '@tupaia/types';
 import styled from 'styled-components';
 
@@ -27,14 +22,19 @@ const NoDataMessage = styled(Alert).attrs({
   margin: 1rem auto;
   max-width: 24rem;
 `;
+
+// This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixDataRow[],
   categoryId?: MatrixDataRow['categoryId'],
 ): MatrixRowType[] => {
+  // Get the topmost level of rows if a categoryId has been passed in, otherwise just use all the rows that have been passed in
   const topLevelRows = categoryId ? rows.filter(row => row.categoryId === categoryId) : rows;
 
+  // loop through the topLevelRows, and parse them into the format that the Matrix component can use
   return topLevelRows.map(row => {
     const { dataElement = '', category, ...rest } = row;
+    // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
       return {
         title: category,
@@ -42,6 +42,7 @@ const parseRows = (
         children: parseRows(rows, category),
       };
     }
+    // otherwise, handle as a regular row
     return {
       title: dataElement,
       ...rest,
@@ -49,15 +50,18 @@ const parseRows = (
   });
 };
 
+// This is a recursive function that parses the columns of the matrix into a format that the Matrix component can use.
 const parseColumns = (columns: MatrixDataColumn[]): MatrixColumnType[] => {
   return columns.map(column => {
     const { category, key, title, columns: children } = column;
+    // if a column has a category, then it has children, so we need to parse them using this same function
     if (category)
       return {
         title: category,
         key: category,
         children: parseColumns(children!),
       };
+    // otherwise, handle as a regular column
     return {
       title,
       key,
@@ -65,24 +69,34 @@ const parseColumns = (columns: MatrixDataColumn[]): MatrixColumnType[] => {
   });
 };
 
-export const Matrix = ({
-  viewContent,
-  isEnlarged = false,
-}: Pick<DashboardItemDisplayProps, 'isEnlarged'> & {
+/**
+ * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
+ */
+
+interface MatrixProps {
   viewContent: MatrixViewContent;
-}) => {
+  isEnlarged?: boolean;
+}
+export const Matrix = ({ viewContent, isEnlarged = false }: MatrixProps) => {
   const { columns, rows, ...config } = viewContent;
+
   const getPlaceholderImage = () => {
     const { presentationOptions = {}, categoryPresentationOptions = {} } = config;
+    // if the matrix is not using any dots, show a text-only placeholder
     if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
       return '/images/matrix-placeholder-text-only.png';
+    // if the matrix has applyLocation.columnIndexes, show a mix placeholder, because this means it is a mix of dots and text
     if ((presentationOptions as ConditionalPresentationOptions)?.applyLocation?.columnIndexes)
       return '/images/matrix-placeholder-mix.png';
+    // otherwise, show a dot-only placeholder
     return '/images/matrix-placeholder-dot-only.png';
   };
-  if (!isEnlarged) return <img src={getPlaceholderImage()} alt="Matrix Placeholder" />;
 
-  const parsedRows = parseRows(rows, undefined);
+  const placeholderImage = getPlaceholderImage();
+  // in the dashboard, show a placeholder image
+  if (!isEnlarged) return <img src={placeholderImage} alt="Matrix Placeholder" />;
+
+  const parsedRows = parseRows(rows);
   const parsedColumns = parseColumns(columns);
 
   if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
