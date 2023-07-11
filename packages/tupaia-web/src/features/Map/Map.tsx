@@ -20,9 +20,7 @@ import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
-import { useDefaultMapOverlay } from './useDefaultMapOverlay';
-import { useMapOverlayReport } from './useMapOverlayReport';
-import { useHiddenMapValues } from './useHiddenMapValues';
+import { useHiddenMapValues, useMapOverlayReport, useDefaultMapOverlay } from './utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -101,11 +99,10 @@ export const Map = () => {
 
   // Setup legend hidden values
   const { data: measureData } = useMapOverlayReport();
-  const { hiddenValues, setHiddenValue } = useHiddenMapValues(measureData?.serieses);
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
 
   // Setup Tile Picker
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
-
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
@@ -123,7 +120,7 @@ export const Map = () => {
       <MapControlWrapper>
         <MapControlColumn>
           <MapOverlaySelector />
-          <MapLegend hiddenValues={hiddenValues} setHiddenValue={setHiddenValue} />
+          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
         </MapControlColumn>
         <TilePickerWrapper>
           <TilePicker

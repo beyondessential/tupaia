@@ -4,9 +4,12 @@
  */
 
 import { useParams } from 'react-router';
-import { useMapOverlays, useMapOverlayReport as useMapOverlayReportQuery } from '../../api/queries';
-import { useDateRanges } from '../../utils';
-import { URL_SEARCH_PARAMS } from '../../constants';
+import {
+  useMapOverlays,
+  useMapOverlayReport as useMapOverlayReportQuery,
+} from '../../../api/queries';
+import { useDateRanges } from '../../../utils';
+import { URL_SEARCH_PARAMS } from '../../../constants';
 
 export const useMapOverlayReport = () => {
   const { projectCode, entityCode } = useParams();

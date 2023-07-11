@@ -14,7 +14,7 @@ import {
   useMapOverlays,
   useProject,
 } from '../../../api/queries';
-import { useMapOverlayReport } from '../useMapOverlayReport';
+import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
 
@@ -61,7 +61,7 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const MarkerLayer = ({ hiddenValues }: LegendProps['hiddenValues']) => {
+export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hiddenValues'] }) => {
   const navigateToDashboard = useNavigateToDashboard();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);

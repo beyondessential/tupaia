@@ -6,7 +6,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayReport } from '../useMapOverlayReport';
+import { useMapOverlayReport } from '../utils';
 import { DateRangePicker } from '../../../components';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';

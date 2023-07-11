@@ -2,13 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { LegendProps, Series } from '@tupaia/ui-map-components';
 import { useState } from 'react';
+import { LegendProps, Series } from '@tupaia/ui-map-components';
 
-export const useHiddenMapValues = (
-  serieses: Series[] = [],
-): { hiddenValues: LegendProps['hiddenValues']; setHiddenValue: Function } => {
+export const useHiddenMapValues = (serieses: Series[] = []) => {
   const [hiddenValues, setHiddenValues] = useState({});
   const [prevSerieses, setPrevSerieses] = useState(serieses);
 
@@ -21,12 +18,12 @@ export const useHiddenMapValues = (
     setHiddenValues(hiddenByDefault);
   }
 
-  const setHiddenValue = (key, value, hidden) => {
-    setHiddenValues(currentState => ({
+  const setValueHidden = (key: string, value: string, hidden: boolean) => {
+    setHiddenValues((currentState: LegendProps['hiddenValues']) => ({
       ...currentState,
       [key]: { ...currentState[key], [value]: hidden },
     }));
   };
 
-  return { setHiddenValue, hiddenValues };
+  return { setValueHidden, hiddenValues };
 };
