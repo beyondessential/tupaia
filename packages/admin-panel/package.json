@@ -55,6 +55,7 @@
     "moment": "^2.22.2",
     "parse-link-header": "^1.0.1",
     "prop-types": "^15.6.0",
+    "qrcode": "^1.5.3",
     "query-string": "^5.1.1",
     "react": "^16.13.1",
     "react-autobind": "^1.0.6",
