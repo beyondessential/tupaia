@@ -36,7 +36,7 @@ const DataCell = styled(TableCell)`
   z-index: 1;
   padding: 0;
   height: 100%;
-  border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
+  border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
 `;
 
 const DataCellContent = styled.div`

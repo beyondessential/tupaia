@@ -15,13 +15,13 @@ import { MatrixColumnType } from '../../types';
 /**
  * This file contains any utils that useful for the matrix component. This is mainly used for presentation options
  */
-export const areStringsEqual = (a: string, b: number, caseSensitive = true) =>
+export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
   a
     .toString()
     .localeCompare(b.toString(), undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
 
 // If the hex is shortened, double up each character. This is for cases like '#fff'
-export const getFullHex = (hex: string, opacity: number) => {
+export const getFullHex = (hex: string) => {
   let hexString = hex.replace('#', '');
   const isShortened = hexString.length === 3;
   if (isShortened) hexString = hexString.replace(/(.)/g, '$1$1');

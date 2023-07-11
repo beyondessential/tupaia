@@ -6,7 +6,7 @@ import React, { useContext } from 'react';
 import { TableCell, TableHead, TableRow, darken } from '@material-ui/core';
 import styled from 'styled-components';
 import { MatrixContext } from './MatrixContext';
-import { getDisplayedColumns, hexToRgba } from './utils';
+import { getDisplayedColumns, getFullHex } from './utils';
 import { MatrixColumnType } from '../../types';
 
 const HeaderCell = styled(TableCell)`
@@ -15,7 +15,7 @@ const HeaderCell = styled(TableCell)`
   border-width: 1px 1px 2px 1px;
   border-style: solid;
   border-color: ${({ theme }) => darken(theme.palette.text.primary, 0.4)}
-    ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
+    ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
 `;
 
 const ColGroup = styled.colgroup`
