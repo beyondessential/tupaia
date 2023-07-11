@@ -12,7 +12,7 @@ import {
   getFlattenedColumns,
   getIsUsingDots,
   getPresentationOption,
-  hexToRgba,
+  getFullHex,
 } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { MatrixColumnType, MatrixRowType } from '../../types';
@@ -26,7 +26,7 @@ export const Dot = styled.div<{ $color?: string }>`
     ${({ theme }) =>
       theme.palette.background.default === 'transparent'
         ? 'transparent'
-        : hexToRgba(theme.palette.background.default, 0.8)};
+        : `${getFullHex(theme.palette.background.default)}cc`};
   margin: 0 auto;
 `;
 

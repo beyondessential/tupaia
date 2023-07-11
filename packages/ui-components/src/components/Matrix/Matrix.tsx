@@ -6,21 +6,24 @@
 import React, { useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
-import { MatrixConfig, PresentationOptions } from '@tupaia/types';
+import { MatrixConfig } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
-import { getFlattenedColumns } from './utils';
+import { getFlattenedColumns, getFullHex } from './utils';
 import { MatrixHeader } from './MatrixHeader';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
 import { EnlargedMatrixCell } from './EnlargedMatrixCell';
-import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
+  border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   color: ${({ theme }) => theme.palette.text.primary};
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
-  table-layout: fixed;
+  td,
+  th {
+    border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
+  }
 `;
 
 // this is a scrollable container
