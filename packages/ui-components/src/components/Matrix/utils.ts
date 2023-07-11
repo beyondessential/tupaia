@@ -20,10 +20,9 @@ export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
     .toString()
     .localeCompare(b.toString(), undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
 
-// This converts hex to RGBA for use when transforming colours from the presentation options to be semi-transparent
-export const hexToRgba = (hex: string, opacity: number) => {
+// If the hex is shortened, double up each character. This is for cases like '#fff'
+export const getFullHex = (hex: string, opacity: number) => {
   let hexString = hex.replace('#', '');
-  // If the hex is shortened, double up each character. This is for cases like '#fff'
   const isShortened = hexString.length === 3;
   if (isShortened) hexString = hexString.replace(/(.)/g, '$1$1');
   return `#${hexString}`;
