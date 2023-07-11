@@ -31,5 +31,6 @@ export const useEntity = (entityCode?: string) => {
 
       return entity;
     },
+    { enabled: !!entityCode && !!projectCode },
   );
 };

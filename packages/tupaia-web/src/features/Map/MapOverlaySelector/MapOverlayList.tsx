@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
 import {
   Accordion,
@@ -13,11 +13,12 @@ import {
   Radio,
   RadioGroup,
 } from '@material-ui/core';
+import { useSearchParams } from 'react-router-dom';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { updateSelectedMapOverlay } from '../../../utils';
+import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -77,6 +78,7 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
+
   return (
     <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
       <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
@@ -86,7 +88,12 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
           mapOverlay.children ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
-            <FormControlLabel value={mapOverlay.code} control={<Radio />} label={mapOverlay.name} />
+            <FormControlLabel
+              value={mapOverlay.code}
+              control={<Radio />}
+              label={mapOverlay.name}
+              key={mapOverlay.code}
+            />
           ),
         )}
       </AccordionContent>
@@ -98,15 +105,23 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
  * This is the parent list of all the map overlays available to pick from
  */
 export const MapOverlayList = () => {
+  const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
   const { mapOverlayGroups, selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
+
+  const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
+    // when overlay changes, reset period to default
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+    setUrlParams(urlSearchParams);
+  };
 
   return (
     <RadioGroup
       aria-label="Map overlays"
       name="map-overlays"
       value={selectedOverlayCode}
-      onChange={updateSelectedMapOverlay}
+      onChange={onChangeMapOverlay}
     >
       {mapOverlayGroups
         .filter(item => item.name)
