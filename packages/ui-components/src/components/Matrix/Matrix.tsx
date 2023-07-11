@@ -8,20 +8,20 @@ import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
 import { MatrixHeaderRow } from './MatrixHeaderRow';
 import { MatrixColumnType, MatrixRowType } from '../../types';
-import { hexToRgba } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixNavButtons } from './MatrixNavButtons';
 import { MatrixRow } from './MatrixRow';
 import { EnlargedMatrixCell } from './EnlargedMatrixCell';
+import { getFullHex } from './utils';
 
 const MatrixTable = styled.table`
   border-collapse: collapse;
-  border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
+  border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   color: ${({ theme }) => theme.palette.text.primary};
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
   td,
   th {
-    border: 1px solid ${({ theme }) => hexToRgba(theme.palette.text.primary, 0.2)};
+    border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   }
 `;
 

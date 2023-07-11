@@ -8,19 +8,17 @@ import { PresentationOptions, ConditionValue } from '@tupaia/types';
 /**
  * This file contains any utils that useful for the matrix component. This is mainly used for presentation options
  */
-export const areStringsEqual = (a: string, b: number, caseSensitive = true) =>
+export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
   a
     .toString()
     .localeCompare(b.toString(), undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
 
-export const hexToRgba = (hex: string, opacity: number) => {
+// Handles when MUI theme variables are shortened hex codes, e.g '#fff'
+export const getFullHex = (hex: string) => {
   let hexString = hex.replace('#', '');
   const isShortened = hexString.length === 3;
   if (isShortened) hexString = hexString.replace(/(.)/g, '$1$1');
-  const r = parseInt(hexString.substring(0, 2), 16);
-  const g = parseInt(hexString.substring(2, 4), 16);
-  const b = parseInt(hexString.substring(4, 6), 16);
-  return `rgba(${r},${g},${b},${opacity})`;
+  return `#${hexString}`;
 };
 
 export const findByKey = (

@@ -6,7 +6,7 @@
 import React, { useContext } from 'react';
 import { TableCell, Button } from '@material-ui/core';
 import styled from 'styled-components';
-import { getIsUsingDots, getPresentationOption, hexToRgba } from './utils';
+import { getIsUsingDots, getPresentationOption, getFullHex } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { MatrixRowType } from '../../types';
 
@@ -19,7 +19,7 @@ export const Dot = styled.div<{ $color?: string }>`
     ${({ theme }) =>
       theme.palette.background.default === 'transparent'
         ? 'transparent'
-        : hexToRgba(theme.palette.background.default, 0.8)};
+        : `${getFullHex(theme.palette.background.default)}cc`};
   margin: 0 auto;
 `;
 
