@@ -6,8 +6,13 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity, DashboardItem, DashboardRelation, Dashboard } from '@tupaia/types';
-import { TupaiaWebDashboardsRequest } from '@tupaia/types';
+import {
+  Entity,
+  DashboardItem,
+  DashboardRelation,
+  Dashboard,
+  TupaiaWebDashboardsRequest,
+} from '@tupaia/types';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];

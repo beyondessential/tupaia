@@ -5,13 +5,15 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { MapOverlay, MapOverlayGroup, MapOverlayGroupRelation } from '@tupaia/types';
+import {
+  MapOverlay,
+  MapOverlayGroup,
+  MapOverlayGroupRelation,
+  TupaiaWebMapOverlaysRequest,
+} from '@tupaia/types';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
-import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 
-// TODO: WAITP-1278 split request types to types package
-// (And actually define it)
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
   TupaiaWebMapOverlaysRequest.ResBody,
@@ -62,7 +64,12 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     });
 
     if (mapOverlays.length === 0) {
-      return [];
+      return {
+        name: entity.name,
+        entityCode: entity.code,
+        entityType: entity.type,
+        mapOverlays: [],
+      };
     }
 
     // Map overlay groups can be nested so we need to keep

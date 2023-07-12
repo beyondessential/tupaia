@@ -4,6 +4,13 @@
  */
 
 export type Params = Record<string, never>;
-export type ResBody = Record<string, never>;
+
+export interface ResBody {
+  name: string;
+  entityCode: string;
+  entityType: string;
+  mapOverlays: any[];
+}
+
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;
