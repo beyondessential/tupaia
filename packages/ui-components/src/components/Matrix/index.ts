@@ -4,3 +4,4 @@
  */
 
 export { Matrix } from './Matrix';
+export * from './utils';
