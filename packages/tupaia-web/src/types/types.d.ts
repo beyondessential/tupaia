@@ -9,12 +9,14 @@ import {
   MapOverlay,
   MapOverlayGroupRelation,
   EntityType,
+  MatrixConfig,
 } from '@tupaia/types';
 import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
-import { ViewContent } from '@tupaia/ui-chart-components';
+import { ViewContent as ChartViewContent } from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
+import { MatrixColumnType, MatrixRowType } from '@tupaia/ui-components';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -63,7 +65,6 @@ export type TupaiaUrlParams = {
   dashboardCode?: DashboardCode;
 };
 
-export type ReportDisplayProps = ViewContent & DashboardItemType;
 export type DashboardName = DashboardResponse['dashboardName'];
 
 export type SingleMapOverlayItem = KeysToCamelCase<
@@ -100,4 +101,25 @@ export type EntityResponse = Entity & {
   childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
+};
+
+// This is the row type in the response from the report endpoint when the report is a matrix. It will contain data for each column, keyed by the column key, as well as dataElement, categoryId and category
+export type MatrixDataRow = Record<string, any> & {
+  dataElement?: string; // this is the data to display in the row header cell
+  categoryId?: string; // this means the row is a child of a grouped row
+  category?: string; // this means the row is a grouped row
+};
+
+// This is the column type in the response from the report endpoint when the report is a matrix
+export type MatrixDataColumn = {
+  title: string;
+  key: string;
+  category?: string; // this means the column is a grouped column
+  columns?: MatrixDataColumn[]; // these are the child columns of a grouped column
+};
+
+// The 'ViewContent' is the data that is passed to the matrix view component
+export type MatrixViewContent = MatrixConfig & {
+  rows: MatrixDataRow[];
+  columns: MatrixDataColumn[];
 };

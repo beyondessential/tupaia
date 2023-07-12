@@ -12,7 +12,7 @@ export const useDashboards = (
   entityCode?: EntityCode,
   dashboardName?: DashboardName,
 ) => {
-  const { data: dashboards = [], isLoading } = useQuery(
+  const { data = [], isLoading } = useQuery(
     ['dashboards', projectCode, entityCode],
     (): Promise<DashboardsResponse[]> =>
       get('dashboards', {
@@ -23,12 +23,11 @@ export const useDashboards = (
 
   let activeDashboard = null;
 
-  if (dashboards.length > 0 && dashboardName) {
+  if (data?.length > 0 && dashboardName) {
     activeDashboard =
-      dashboards.find(
-        (dashboard: DashboardsResponse) => dashboard.dashboardName === dashboardName,
-      ) || dashboards[0];
+      data?.find((dashboard: DashboardsResponse) => dashboard.dashboardName === dashboardName) ||
+      data[0];
   }
 
-  return { dashboards, activeDashboard, isLoading };
+  return { dashboards: data, activeDashboard, isLoading };
 };
