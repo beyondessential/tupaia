@@ -4,6 +4,7 @@
  */
 
 import { Request } from 'express';
+import { ReportRequest } from '@tupaia/types';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -21,7 +22,6 @@ import {
   EntityAncestorsRoute,
   EntityAncestorsRequest,
   ReportRoute,
-  ReportRequest,
   LegacyDashboardReportRoute,
   LegacyDashboardReportRequest,
   LegacyMapOverlayReportRoute,

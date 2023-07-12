@@ -4,21 +4,16 @@
  *
  */
 
-import { Request } from 'express';
+import { ReportRequest } from '@tupaia/types';
 import { Route } from '@tupaia/server-boilerplate';
-
-export type ReportRequest = Request<{ reportCode: string }, any, any, any>;
 
 export class ReportRoute extends Route<ReportRequest> {
   public async buildResponse() {
     const { query, ctx } = this.req;
     const { reportCode } = this.req.params;
-    const { legacy, organisationUnitCode, projectCode, startDate, endDate } = query;
+    // TODO: Remove reference to organisationUnitCode => entityCode
+    const { organisationUnitCode, projectCode, startDate, endDate } = query;
 
-    // Legacy data builders are handled through the web config server still
-    if (legacy === 'true') {
-      return ctx.services.webConfig.fetchReport(reportCode, query);
-    }
     // the params for the non-legacy reports are different
     const params = {
       organisationUnitCodes: organisationUnitCode,
