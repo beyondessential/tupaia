@@ -7,6 +7,7 @@ import { ViewConfig } from '@tupaia/types';
 import { DashboardItemType } from '../../types';
 import { ViewContent } from '@tupaia/ui-chart-components';
 import { SingleValue } from './SingleValue';
+import { transformDataForViewType } from './utils';
 
 interface ViewProps {
   viewContent: Omit<DashboardItemType, 'viewType'> &
@@ -21,9 +22,9 @@ const VIEWS = {
   singleValue: SingleValue,
 };
 export const View = ({ viewContent, isEnlarged }: ViewProps) => {
-  const { data, viewType, ...rest } = viewContent;
+  const { data, viewType, ...config } = viewContent;
   const View = VIEWS[viewType as keyof typeof VIEWS];
-  console.log(viewType);
   if (!View) return null;
-  return <View data={data} config={rest} />;
+  const transformedData = transformDataForViewType(data, viewType);
+  return <View data={transformedData} config={config} />;
 };
