@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, ChangeEvent } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
+import { ListSubheader, SvgIconProps, TextFieldProps } from '@material-ui/core';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ListSubheader } from '@material-ui/core';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
@@ -29,49 +28,48 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-export const GroupedSelectField = ({ SelectProps, ...props }) => (
+export const GroupedSelectField = ({ SelectProps = {}, ...props }: TextFieldProps) => (
   <StyledTextField
     SelectProps={{
-      IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
+      IconComponent: (iconProps: SvgIconProps) => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
     }}
-    {...props}
+    {...(props as any)}
     select
   />
 );
-
-GroupedSelectField.propTypes = {
-  SelectProps: PropTypes.object,
-};
-
-GroupedSelectField.defaultProps = {
-  SelectProps: null,
-};
 
 const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;
 
+type GroupedSelectProps = TextFieldProps & {
+  groupedOptions: { [key: string]: { label: string; value?: string }[] };
+  showPlaceholder?: boolean;
+  placeholder?: string;
+  defaultValue?: string;
+  value?: string;
+  onChange?: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
+};
+
 export const GroupedSelect = ({
-  value,
+  value = '',
   onChange,
   groupedOptions,
-  showPlaceholder,
-  placeholder,
-  defaultValue,
+  showPlaceholder = true,
+  placeholder = 'Please select',
+  defaultValue = '',
   ...props
-}) => {
+}: GroupedSelectProps) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
     },
     [setValue],
   );
-
-  const isControlled = onChange !== null;
 
   // We need to flatten our tree as mui select requires group headings to be adjacent to options, rather than parents
   const flatSetOfItems = [];
@@ -84,8 +82,8 @@ export const GroupedSelect = ({
 
   return (
     <GroupedSelectField
-      value={isControlled ? value : localValue}
-      onChange={isControlled ? onChange : handleChange}
+      value={onChange ? value : localValue}
+      onChange={onChange || handleChange}
       SelectProps={{
         displayEmpty: true,
       }}
@@ -108,26 +106,4 @@ export const GroupedSelect = ({
       )}
     </GroupedSelectField>
   );
-};
-
-GroupedSelect.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  groupedOptions: PropTypes.object.isRequired, // map of group label => standard options array e.g. { Cats: [{ label: 'Ginger', value: 1 }] }
-  placeholder: PropTypes.string,
-  showPlaceholder: PropTypes.bool,
-  defaultValue: PropTypes.any,
-  value: PropTypes.any,
-  onChange: PropTypes.func,
-  tooltip: PropTypes.string,
-};
-
-GroupedSelect.defaultProps = {
-  placeholder: 'Please select',
-  showPlaceholder: true,
-  defaultValue: '',
-  value: '',
-  label: null,
-  onChange: null,
-  tooltip: '',
 };

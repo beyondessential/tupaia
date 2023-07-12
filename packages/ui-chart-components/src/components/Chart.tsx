@@ -1,19 +1,22 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { NoData } from '../NoData';
+import { SmallAlert } from '@tupaia/ui-components';
 import { CartesianChart } from './CartesianChart';
-import { PieChart } from './PieChart';
-import { GaugeChart } from './GaugeChart';
-import { CHART_TYPES } from './constants';
-import { parseChartConfig } from './parseChartConfig';
-import { getIsTimeSeries, isDataKey, getIsChartData } from './utils';
+import { PieChart, GaugeChart } from './Charts';
+import {
+  getIsTimeSeries,
+  isDataKey,
+  parseChartConfig,
+  getIsChartData,
+  getNoDataString,
+} from '../utils';
+import { ChartType, ViewContent, LegendPosition } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -34,9 +37,15 @@ const UnknownChart = () => (
   </UnknownChartContainer>
 );
 
-const removeNonNumericData = data =>
+const NoData = styled(SmallAlert)`
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const removeNonNumericData = (data: any[]) =>
   data.map(dataSeries => {
-    const filteredDataSeries = {};
+    const filteredDataSeries: any = {};
     Object.entries(dataSeries).forEach(([key, value]) => {
       if (!isDataKey(key) || !Number.isNaN(Number(value))) {
         filteredDataSeries[key] = value;
@@ -45,10 +54,10 @@ const removeNonNumericData = data =>
     return filteredDataSeries;
   });
 
-const sortData = data =>
+const sortData = (data: any[]): any[] =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-const getViewContent = viewContent => {
+const getViewContent = (viewContent: ChartProps['viewContent']) => {
   const { chartConfig, data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
   return chartConfig
@@ -60,26 +69,44 @@ const getViewContent = viewContent => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = chartType => {
+const getChartComponent = (chartType: ChartType) => {
   switch (chartType) {
-    case CHART_TYPES.PIE:
+    case ChartType.Pie:
       return PieChart;
-    case CHART_TYPES.GAUGE:
+    case ChartType.Gauge:
       return GaugeChart;
     default:
       return CartesianChart;
   }
 };
 
-export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
+interface ChartProps {
+  viewContent: ViewContent;
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  onItemClick?: (item: any) => void;
+  legendPosition?: LegendPosition;
+}
+
+export const Chart = ({
+  viewContent,
+  isExporting = false,
+  isEnlarged = true,
+  onItemClick = () => {},
+  legendPosition = 'bottom',
+}: ChartProps) => {
   const { chartType } = viewContent;
 
-  if (!Object.values(CHART_TYPES).includes(chartType)) {
+  if (!Object.values(ChartType).includes(chartType)) {
     return <UnknownChart />;
   }
 
-  if (!getIsChartData(viewContent)) {
-    return <NoData viewContent={viewContent} />;
+  if (!getIsChartData({ chartType: viewContent.chartType, data: viewContent.data })) {
+    return (
+      <NoData severity="info" variant="standard">
+        {getNoDataString(viewContent)}
+      </NoData>
+    );
   }
 
   const viewContentConfig = getViewContent(viewContent);
