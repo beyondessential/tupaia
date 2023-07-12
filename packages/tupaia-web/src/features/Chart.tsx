@@ -7,7 +7,7 @@ import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { BarChart, GridOn } from '@material-ui/icons';
-import { Tabs } from '@material-ui/core';
+import { Tabs, darken, lighten } from '@material-ui/core';
 import { Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 
@@ -15,7 +15,6 @@ const Wrapper = styled.div`
   display: flex;
   position: relative;
   align-content: stretch;
-  -webkit-box-align: stretch;
   align-items: stretch;
   flex-direction: column;
   .recharts-responsive-container {
@@ -42,9 +41,12 @@ const TabsWrapper = styled.div`
 const TabsGroup = styled(Tabs)`
   border: 1px solid
     ${({ theme }) => {
-      let hexString = theme.palette.text.primary.replace('#', '');
-      hexString = hexString.length === 3 ? hexString.replace(/(.)/g, '$1$1') : hexString;
-      return `#${hexString}33`;
+      const {
+        text: { primary },
+        type,
+      } = theme.palette;
+      // This is to give the illusion of a thinner border, by blending it into the background more
+      return type === 'light' ? lighten(primary, 0.5) : darken(primary, 0.6);
     }};
   border-radius: 5px;
   min-height: 0;
