@@ -3,7 +3,20 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export type Params = Record<string, never>;
-export type ResBody = Record<string, never>;
+export interface Params {
+  reportCode: string;
+}
+export interface ResBody {
+  data: Record<string, string | number>[];
+  /**
+   * @format iso-date-time
+   */
+  startDate?: string;
+  /**
+   * @format iso-date-time
+   */
+  endDate?: string;
+}
 export type ReqBody = Record<string, never>;
-export type ReqQuery = Record<string, never>;
+// Query is just forwarded, so just allow records to exist
+export type ReqQuery = Record<string, string>;
