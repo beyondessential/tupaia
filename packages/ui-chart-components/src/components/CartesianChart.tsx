@@ -145,7 +145,7 @@ export const CartesianChart = ({
     }, 50);
   }, []);
 
-  const isMobileSize = isMobile();
+  const isMobileSize = isMobile(isExporting);
 
   const {
     chartType: defaultChartType,
