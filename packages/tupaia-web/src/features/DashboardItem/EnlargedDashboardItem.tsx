@@ -8,12 +8,12 @@ import styled from 'styled-components';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
-import { DateRangePicker, Modal } from '../../components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
 import { useReport } from '../../api/queries/useReport';
+import { DateRangePicker, Modal } from '../../components';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
@@ -46,6 +46,14 @@ const Title = styled(Typography).attrs({
 
 const TitleWrapper = styled(FlexColumn)`
   align-items: center;
+  margin-bottom: 1rem;
+`;
+
+const Subheading = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  font-size: 1rem;
+  margin-bottom: 1rem;
 `;
 
 /**
@@ -76,7 +84,7 @@ export const EnlargedDashboardItem = () => {
     onResetDate,
   } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentReport);
 
-  const { data: reportData, isLoading: isLoadingReportData, error, isError, refetch } = useReport(
+  const { data: reportData, isLoading: isLoadingReportData, error, refetch } = useReport(
     reportCode,
     {
       projectCode,
@@ -107,9 +115,11 @@ export const EnlargedDashboardItem = () => {
     currentReport?.entityHeader || activeDashboard?.entityName
   }`;
 
+  const { type } = currentReport || {};
+
   return (
     <Modal isOpen onClose={handleCloseModal}>
-      <Wrapper $hasBigData={reportData?.data?.length > 20 || currentReport?.type === 'matrix'}>
+      <Wrapper $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}>
         <Container>
           <TitleWrapper>
             {currentReport?.name && <Title>{titleText}</Title>}
@@ -126,13 +136,14 @@ export const EnlargedDashboardItem = () => {
               />
             )}
           </TitleWrapper>
+          {currentReport?.description && <Subheading>{currentReport?.description}</Subheading>}
           <DashboardItemContent
-            viewContent={viewContent}
             isLoading={isLoadingReportData}
-            error={isError ? error : null}
+            error={error}
+            viewContent={viewContent}
             onRetryFetch={refetch}
-            isEnlarged
             isExpandable={false}
+            isEnlarged
           />
         </Container>
       </Wrapper>

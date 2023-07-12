@@ -10599,6 +10599,7 @@ __metadata:
     "@tupaia/ui-chart-components": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
+    "@tupaia/utils": 1.0.0
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
@@ -10858,7 +10859,6 @@ __metadata:
     material-ui-datetimepicker: ^1.0.7
     mockdate: ^3.0.5
     moment: ^2.21.0
-    moment-timezone: ^0.5.28
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
     object-assign: 4.1.1

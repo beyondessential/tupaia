@@ -5,13 +5,13 @@
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useProject } from '../../api/queries';
+import { useProject } from '../../../api/queries';
 import {
   DEFAULT_MAP_OVERLAY_ID,
   DEFAULT_PERIOD_PARAM_STRING,
   URL_SEARCH_PARAMS,
-} from '../../constants';
-import { MapOverlayGroup, ProjectCode, EntityCode } from '../../types';
+} from '../../../constants';
+import { MapOverlayGroup, ProjectCode, EntityCode } from '../../../types';
 
 // When the map overlay groups change, update the default map overlay
 export const useDefaultMapOverlay = (
