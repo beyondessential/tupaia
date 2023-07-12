@@ -3,23 +3,19 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
-import { Chart as ChartComponent, ViewContent } from '@tupaia/ui-chart-components';
+import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
+import { BarChart, GridOn } from '@material-ui/icons';
+import { Tabs, darken, lighten } from '@material-ui/core';
+import { Tab } from '@material-ui/core';
+import { TabContext, TabPanel } from '@material-ui/lab';
 
-const Wrapper = styled.div<{
-  $isEnlarged: boolean;
-  $hasData: boolean;
-}>`
+const Wrapper = styled.div`
   display: flex;
   position: relative;
   align-content: stretch;
-  -webkit-box-align: stretch;
   align-items: stretch;
-  height: ${({ $isEnlarged, $hasData }) => {
-    if (!$hasData) return 'auto';
-    return $isEnlarged ? '22.5rem' : '14rem';
-  }};
   flex-direction: column;
   .recharts-responsive-container {
     min-width: 0px;
@@ -27,25 +23,110 @@ const Wrapper = styled.div<{
   .recharts-wrapper {
     font-size: 1rem !important; // this is to make sure the labels on the charts are relative to the base font size
   }
-  // Make the charts conform to the parent container's size
-  .recharts-wrapper,
-  .recharts-wrapper svg {
-    height: 100% !important;
-  }
   li.recharts-legend-item {
     white-space: nowrap; // ensure there are no line breaks on the export legends
   }
+`;
+
+const TabsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  .MuiTabs-indicator {
+    display: none;
+  }
+`;
+
+const TabsGroup = styled(Tabs)`
+  border: 1px solid
+    ${({ theme }) => {
+      const {
+        text: { primary },
+        type,
+      } = theme.palette;
+      // This is to give the illusion of a thinner border, by blending it into the background more
+      return type === 'light' ? lighten(primary, 0.5) : darken(primary, 0.6);
+    }};
+  border-radius: 5px;
+  min-height: 0;
+`;
+
+const TabButton = styled(Tab)`
+  min-width: 0;
+  padding: 0.3rem;
+  min-height: 0;
+  svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  &[aria-selected='true'] {
+    background-color: ${({ theme }) => theme.palette.primary.main};
+  }
+`;
+
+const ContentWrapper = styled.div<{
+  $isEnlarged: boolean;
+}>`
+  padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
 `;
 
 interface ChartProps {
   viewContent: ViewContent;
   isEnlarged?: boolean;
 }
+
+const DISPLAY_TYPE_VIEWS = [
+  {
+    value: 'chart',
+    Icon: BarChart,
+    label: 'View chart',
+    display: ChartComponent,
+  },
+  {
+    value: 'table',
+    Icon: GridOn,
+    label: 'View table',
+    display: ChartTable,
+  },
+];
+
 export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
-  const hasData = viewContent.data && viewContent.data.length > 0 ? true : false;
+  const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
+  const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
+    setDisplayType(value);
+  };
+
+  const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
+
   return (
-    <Wrapper $isEnlarged={isEnlarged} $hasData={hasData}>
-      <ChartComponent viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
+    <Wrapper>
+      <TabContext value={displayType}>
+        {isEnlarged && (
+          <TabsWrapper>
+            <TabsGroup
+              value={displayType}
+              onChange={handleChangeDisplayType}
+              variant="standard"
+              aria-label="Toggle display type"
+            >
+              {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
+                <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
+              ))}
+            </TabsGroup>
+          </TabsWrapper>
+        )}
+        {availableDisplayTypes.map(({ value, display: Content }) => (
+          <ContentWrapper
+            key={value}
+            value={value}
+            as={isEnlarged ? TabPanel : 'div'}
+            $isEnlarged={isEnlarged}
+          >
+            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
+          </ContentWrapper>
+        ))}
+      </TabContext>
     </Wrapper>
   );
 };
