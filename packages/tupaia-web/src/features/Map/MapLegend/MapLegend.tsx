@@ -7,14 +7,23 @@ import React from 'react';
 import { Legend, LegendProps } from '@tupaia/ui-map-components';
 import { MobileMapLegend } from './MobileMapLegend';
 import { useSearchParams } from 'react-router-dom';
-import { DesktopMapLegend } from './DesktopMapLegend';
-import { URL_SEARCH_PARAMS } from '../../../constants';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { useMapOverlayReport } from '../utils';
 import styled from 'styled-components';
 
+const DesktopWrapper = styled.div`
+  pointer-events: auto;
+
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
+
 const SeriesDivider = styled.div`
   height: 0;
-  border-bottom: 1px solid #ffffff22;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${({ theme }) => (theme.palette.type === 'light' ? '#00000022' : '#ffffff22')};
   width: calc(100% - 2rem);
   margin: 0.3rem auto 0.2rem;
 `;
@@ -28,7 +37,7 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
     return null;
   }
 
-  const LegendComponent = (
+  const LegendComponent = () => (
     <Legend
       measureInfo={{ [selectedOverlay]: overlayReportData }}
       setValueHidden={setValueHidden}
@@ -41,8 +50,12 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
 
   return (
     <>
-      <MobileMapLegend Legend={LegendComponent} />
-      <DesktopMapLegend Legend={LegendComponent} />
+      <MobileMapLegend>
+        <LegendComponent />
+      </MobileMapLegend>
+      <DesktopWrapper>
+        <LegendComponent />
+      </DesktopWrapper>
     </>
   );
 };

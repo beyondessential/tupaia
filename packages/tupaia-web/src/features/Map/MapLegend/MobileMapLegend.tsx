@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Close, ExpandLess } from '@material-ui/icons';
 import { Button, IconButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -47,7 +47,7 @@ const CloseButton = styled(IconButton).attrs({
   right: 0;
 `;
 
-export const MobileMapLegend = ({ Legend }) => {
+export const MobileMapLegend = ({ children }: { children: ReactNode }) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -59,7 +59,7 @@ export const MobileMapLegend = ({ Legend }) => {
           <CloseButton onClick={toggleExpanded} aria-label="Close legend">
             <Close />
           </CloseButton>
-          {Legend}
+          {children}
         </ExpandedLegend>
       ) : (
         <MapLegendExpandButton onClick={toggleExpanded}>
