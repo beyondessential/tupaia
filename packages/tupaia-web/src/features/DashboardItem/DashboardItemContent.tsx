@@ -11,6 +11,7 @@ import { Typography, Link, CircularProgress } from '@material-ui/core';
 import { ReportDisplayProps } from '../../types';
 import { Chart } from '../Chart';
 import { ExpandItemButton } from './ExpandItemButton';
+import { View } from '../View';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -52,6 +53,7 @@ const LoadingContainer = styled.div`
 // Eventually matrix etc will be added here
 const DisplayComponents = {
   chart: Chart,
+  view: View,
 };
 
 interface DashboardItemContentProps {
