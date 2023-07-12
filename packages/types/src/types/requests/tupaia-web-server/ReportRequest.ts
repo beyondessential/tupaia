@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { EmptyRequestBody } from './defaults';
-
 export interface Params {
   reportCode: string;
 }
@@ -15,7 +13,7 @@ export interface ResBody {
   endDate: string;
 }
 
-export type ReqBody = EmptyRequestBody;
+export type ReqBody = Record<string, never>;
 
 export interface ReqQuery {
   organisationUnitCode: string;
