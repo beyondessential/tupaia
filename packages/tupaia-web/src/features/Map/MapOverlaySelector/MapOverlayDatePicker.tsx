@@ -5,7 +5,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
-import { useMapOverlayReport, useMapOverlays } from '../../../api/queries';
+import { useMapOverlays } from '../../../api/queries';
+import { useMapOverlayReport } from '../utils';
 import { DateRangePicker } from '../../../components';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
@@ -23,15 +24,7 @@ export const MapOverlayDatePicker = () => {
     periodGranularity,
   } = useDateRanges(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, selectedOverlay);
 
-  const { isLoading: isLoadingMapOverlayData } = useMapOverlayReport(
-    projectCode,
-    entityCode,
-    selectedOverlay,
-    {
-      startDate,
-      endDate,
-    },
-  );
+  const { isLoading: isLoadingMapOverlayData } = useMapOverlayReport();
 
   if (!showDatePicker) return null;
   return (

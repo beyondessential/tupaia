@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Close, ExpandLess } from '@material-ui/icons';
 import { Button, IconButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -10,8 +10,10 @@ import { MOBILE_BREAKPOINT } from '../../../constants';
 
 const Wrapper = styled.div`
   position: absolute;
-  bottom: 1rem;
+  pointer-events: auto;
+  bottom: 0.8rem;
   right: 1rem;
+  padding: 0;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -30,10 +32,11 @@ const ExpandIcon = styled(ExpandLess)`
 `;
 
 const ExpandedLegend = styled.div`
+  display: block;
   background-color: ${({ theme }) => theme.mobile.background};
-  height: 20rem;
-  width: 12rem;
   border-radius: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 `;
 
 const CloseButton = styled(IconButton).attrs({
@@ -44,7 +47,7 @@ const CloseButton = styled(IconButton).attrs({
   right: 0;
 `;
 
-export const MobileMapLegend = () => {
+export const MobileMapLegend = ({ children }: { children: ReactNode }) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -56,6 +59,7 @@ export const MobileMapLegend = () => {
           <CloseButton onClick={toggleExpanded} aria-label="Close legend">
             <Close />
           </CloseButton>
+          {children}
         </ExpandedLegend>
       ) : (
         <MapLegendExpandButton onClick={toggleExpanded}>

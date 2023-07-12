@@ -140,11 +140,10 @@ export const Legend = React.memo(
               const { type } = series;
               const LegendComponent = getLegendComponent(type as MeasureType);
               return (
-                <>
-                  <SeriesContainer key={series.key} className={className} isDisplayed={isDisplayed}>
+                <React.Fragment key={series.key}>
+                  <SeriesContainer className={className} isDisplayed={isDisplayed}>
                     {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
                     <LegendComponent
-                      key={series.key}
                       hasIconLayer={hasIconLayer}
                       hasRadiusLayer={hasRadiusLayer}
                       hasColorLayer={hasColorLayer}
@@ -154,7 +153,7 @@ export const Legend = React.memo(
                     />
                   </SeriesContainer>
                   {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
-                </>
+                </React.Fragment>
               );
             });
         })}
