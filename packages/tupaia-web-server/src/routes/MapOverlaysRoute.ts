@@ -8,10 +8,16 @@ import { Route } from '@tupaia/server-boilerplate';
 import { MapOverlay, MapOverlayGroup, MapOverlayGroupRelation } from '@tupaia/types';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 
 // TODO: WAITP-1278 split request types to types package
 // (And actually define it)
-export type MapOverlaysRequest = Request<any, any, any, any>;
+export type MapOverlaysRequest = Request<
+  TupaiaWebMapOverlaysRequest.Params,
+  TupaiaWebMapOverlaysRequest.ResBody,
+  TupaiaWebMapOverlaysRequest.ReqBody,
+  TupaiaWebMapOverlaysRequest.ReqQuery
+>;
 
 // TODO: Can these be moved into types?
 const ROOT_MAP_OVERLAY_CODE = 'Root';

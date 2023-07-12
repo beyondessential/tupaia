@@ -6,8 +6,14 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { TupaiaWebLegacyDashboardReportRequest } from '@tupaia/types';
 
-export type LegacyDashboardReportRequest = Request<{ reportCode: string }, any, any, any>;
+export type LegacyDashboardReportRequest = Request<
+  TupaiaWebLegacyDashboardReportRequest.Params,
+  TupaiaWebLegacyDashboardReportRequest.ResBody,
+  TupaiaWebLegacyDashboardReportRequest.ReqBody,
+  TupaiaWebLegacyDashboardReportRequest.ReqQuery
+>;
 
 export class LegacyDashboardReportRoute extends Route<LegacyDashboardReportRequest> {
   public async buildResponse() {

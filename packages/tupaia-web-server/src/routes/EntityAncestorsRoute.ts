@@ -6,8 +6,14 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
+import { TupaiaWebEntityAncestorsRequest } from '@tupaia/types';
 
-export type EntityAncestorsRequest = Request<any, any, any, any>;
+export type EntityAncestorsRequest = Request<
+  TupaiaWebEntityAncestorsRequest.Params,
+  TupaiaWebEntityAncestorsRequest.ResBody,
+  TupaiaWebEntityAncestorsRequest.ReqBody,
+  TupaiaWebEntityAncestorsRequest.ReqQuery
+>;
 
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
 
