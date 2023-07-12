@@ -4,8 +4,10 @@
  */
 import React from 'react';
 import { ViewConfig } from '@tupaia/types';
-import { VIEWS } from './utils';
 import { ViewReport } from '../../types';
+import { SingleDownloadLink } from './SingleDownloadLink';
+import { SingleDate } from './SingleDate';
+import { SingleValue } from './SingleValue';
 
 interface ViewProps {
   report: ViewReport;
@@ -13,10 +15,17 @@ interface ViewProps {
   isEnlarged?: boolean;
 }
 
+export const VIEWS = {
+  singleValue: SingleValue,
+  singleDate: SingleDate,
+  singleDownloadLink: SingleDownloadLink,
+};
+
 export const View = ({ report, config, isEnlarged }: ViewProps) => {
   const { viewType } = config;
+  const { data } = report;
   if (viewType === 'multiSingleValue') {
-    const { data } = report;
+    // for multi single values, we need to render each data point as a separate single value item
     return (
       <>
         {data?.map((datum, i) => (
@@ -39,5 +48,5 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
   const Component = VIEWS[viewType as keyof typeof VIEWS];
   if (!Component) return null;
 
-  return <Component report={report} config={config} />;
+  return <Component data={data} config={config} />;
 };

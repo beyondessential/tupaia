@@ -5,14 +5,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { ViewReport } from '../../types';
+import { ViewDataItem } from '../../types';
 
 const Text = styled(Typography)`
   font-size: 1.5rem;
   text-align: center;
+  &:not(:only-of-type) {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
 `;
 interface SingleDateProps {
-  report: ViewReport;
+  data?: ViewDataItem[];
 }
 
 const formatDate = (value: string) => {
@@ -20,8 +24,9 @@ const formatDate = (value: string) => {
   if (!value || isNaN(date.getTime())) return 'Not yet assessed';
   return date.toDateString();
 };
-export const SingleDate = ({ report }: SingleDateProps) => {
-  const { value } = report?.data[0];
+
+export const SingleDate = ({ data }: SingleDateProps) => {
+  const { value } = data![0];
   const formattedValue = formatDate(value as string);
   return <Text>{formattedValue}</Text>;
 };
