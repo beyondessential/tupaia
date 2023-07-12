@@ -78,6 +78,17 @@ const parseColumns = (columns: MatrixDataColumn[]): MatrixColumnType[] => {
   });
 };
 
+const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOptions = {} }) => {
+  // if the matrix is not using any dots, show a text-only placeholder
+  if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
+    return '/images/matrix-placeholder-text-only.png';
+  // if the matrix has applyLocation.columnIndexes, show a mix placeholder, because this means it is a mix of dots and text
+  if ((presentationOptions as ConditionalPresentationOptions)?.applyLocation?.columnIndexes)
+    return '/images/matrix-placeholder-mix.png';
+  // otherwise, show a dot-only placeholder
+  return '/images/matrix-placeholder-dot-only.png';
+};
+
 /**
  * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
  */
@@ -89,19 +100,7 @@ interface MatrixProps {
 export const Matrix = ({ viewContent, isEnlarged = false }: MatrixProps) => {
   const { columns, rows, ...config } = viewContent;
 
-  const getPlaceholderImage = () => {
-    const { presentationOptions = {}, categoryPresentationOptions = {} } = config;
-    // if the matrix is not using any dots, show a text-only placeholder
-    if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
-      return '/images/matrix-placeholder-text-only.png';
-    // if the matrix has applyLocation.columnIndexes, show a mix placeholder, because this means it is a mix of dots and text
-    if ((presentationOptions as ConditionalPresentationOptions)?.applyLocation?.columnIndexes)
-      return '/images/matrix-placeholder-mix.png';
-    // otherwise, show a dot-only placeholder
-    return '/images/matrix-placeholder-dot-only.png';
-  };
-
-  const placeholderImage = getPlaceholderImage();
+  const placeholderImage = getPlaceholderImage(config);
   // in the dashboard, show a placeholder image
   if (!isEnlarged) return <img src={placeholderImage} alt="Matrix Placeholder" />;
 
