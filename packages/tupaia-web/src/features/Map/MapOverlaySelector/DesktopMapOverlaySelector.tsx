@@ -9,12 +9,12 @@ import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { ExpandMore, Layers } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
-import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
-import { useMapOverlayReport, useMapOverlays } from '../../../api/queries';
+import { useMapOverlays } from '../../../api/queries';
+import { useMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
-import { useDateRanges } from '../../../utils';
 
 const MaxHeightContainer = styled.div`
   max-height: 100%;
@@ -134,15 +134,8 @@ export const DesktopMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
-  const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { startDate, endDate } = useDateRanges(
-    URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
-    selectedOverlay,
-  );
-  const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay, {
-    startDate,
-    endDate,
-  });
+  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+  const { data: mapOverlayData } = useMapOverlayReport();
 
   return (
     <Wrapper>

@@ -7,14 +7,14 @@ import React from 'react';
 import { useParams } from 'react-router';
 import camelCase from 'camelcase';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MarkerLayer as UIMarkerLayer, MeasureData } from '@tupaia/ui-map-components';
+import { LegendProps, MarkerLayer as UIMarkerLayer, MeasureData } from '@tupaia/ui-map-components';
 import {
   useEntitiesWithLocation,
   useEntity,
-  useMapOverlayReport,
   useMapOverlays,
   useProject,
 } from '../../../api/queries';
+import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
 
@@ -61,12 +61,12 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const MarkerLayer = () => {
+export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hiddenValues'] }) => {
   const navigateToDashboard = useNavigateToDashboard();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
-  const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay);
+  const { data: mapOverlayData } = useMapOverlayReport();
   const { data: entity } = useEntity(entityCode);
 
   if (!entitiesData || !mapOverlayData || !entity) {
@@ -84,8 +84,7 @@ export const MarkerLayer = () => {
     entitiesData,
     measureData: mapOverlayData.measureData,
     serieses: mapOverlayData.serieses,
-    // Implement this when we add the legend
-    hiddenValues: {},
+    hiddenValues,
   });
 
   return (
