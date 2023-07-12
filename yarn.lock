@@ -10671,6 +10671,7 @@ __metadata:
     "@mui/types": ^7.2.4
     "@storybook/addon-essentials": 6.3.9
     "@storybook/react": ^6.3.9
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/jest": ^29.5.1
     "@types/lodash.throttle": ^4.1.7

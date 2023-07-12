@@ -69,7 +69,7 @@ export function createApp() {
       'requestCountryAccess',
       handleWith(RequestCountryAccessRoute),
     )
-    .get<EntitiesRequest>('entities/:hierarchyName/:rootEntityCode', handleWith(EntitiesRoute))
+    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
     .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntityAncestorsRequest>(

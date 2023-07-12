@@ -186,13 +186,13 @@ const NEW_OVERLAYS = [
   },
 ];
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   // First delete old overlays
   await db.runSql(`	
     DELETE FROM "mapOverlay" WHERE "id" in (${arrayToDbString(OLD_OVERLAY_IDS)});	
@@ -266,7 +266,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   // Down migration does NOT go back to old state, instead just removes all overlays.
   const ids = [true, false].reduce(
     (existing, isProvinceLevel) => [

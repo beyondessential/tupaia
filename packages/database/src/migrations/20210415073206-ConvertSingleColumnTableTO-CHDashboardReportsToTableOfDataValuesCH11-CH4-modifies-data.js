@@ -1,5 +1,7 @@
 /* eslint-disable func-names */
+
 'use strict';
+
 import { buildSingleColumnTableCells } from '../utilities/migration';
 
 var dbm;

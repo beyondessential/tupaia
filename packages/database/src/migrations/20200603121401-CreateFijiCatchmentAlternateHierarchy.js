@@ -18,7 +18,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -28,7 +28,7 @@ const COUNTRY_CODE = 'FJ';
 const PROJECT_CODE = 'wish';
 
 const convertFeaturesToMap = features => {
-  return features.reduce(function(map, feature) {
+  return features.reduce(function (map, feature) {
     map[feature.code] = feature.region;
     return map;
   }, {});
@@ -68,7 +68,7 @@ const deleteEntitiesWithCodes = async (db, codes) => {
   await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(codes)})`);
 };
 
-//This is a bit hacky but delete all relations that aren't the existing top relation
+// This is a bit hacky but delete all relations that aren't the existing top relation
 const deleteEntityRelations = async db => {
   const countryId = await getIdFromCode(db, COUNTRY_CODE);
   const heirarchyId = await getHeirarchyId(db);
@@ -97,9 +97,9 @@ const insertEntity = async (db, entity, hierarchyId, parentIdMap) => {
 
   const record = await insertObject(db, 'entity', {
     id: generateId(),
-    code: code,
+    code,
     parent_id: parentId,
-    name: name,
+    name,
     type: entityType,
     country_code: COUNTRY_CODE,
     metadata: { dhis: { isDataRegional: true } },
@@ -142,7 +142,7 @@ const updateVillageAltHeirarchies = async (db, villages, subcatchmentIdMap, heir
   });
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const hierarchyId = await getHeirarchyId(db);
 
   const provincesWithData = addGeoDataToEntities(
@@ -160,7 +160,7 @@ exports.up = async function(db) {
 
   const subcatchmentIdMap = await insertEntities(
     db,
-    FIJI_ENTITIES_SUB_CATCHMENTS, //subCatchmentsWithData,
+    FIJI_ENTITIES_SUB_CATCHMENTS, // subCatchmentsWithData,
     hierarchyId,
     provinceIdMap,
   );
@@ -176,7 +176,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   // Delete children first to avoid parent_id reference conflicts
   await deleteEntityRelations(db);
   await deleteEntities(db, FIJI_ENTITIES_NEW_VILLAGES);

@@ -6,8 +6,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { Search } from '@material-ui/icons';
 import React from 'react';
 import styled from 'styled-components';
-import { TextField } from '../Inputs';
 import { CircularProgress } from '@material-ui/core';
+import { TextField } from '../Inputs';
 
 const TextFieldWrapper = styled.div`
   padding: 0 15px 20px 15px;

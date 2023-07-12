@@ -24,8 +24,10 @@ const DASHBOARD_GROUP_CODES = [
 
 const getDataBuilderConfig = doseNum => ({
   series: {
-    value: { // The value of this key (value) IS important
-      xyz: { // The value of this key (xyz) is not important
+    value: {
+      // The value of this key (value) IS important
+      xyz: {
+        // The value of this key (xyz) is not important
         operands: [
           {
             dataValues: [doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8'],
@@ -84,8 +86,8 @@ exports.up = async function (db) {
   return db.runSql(`
     UPDATE "dashboardGroup" 
     SET "dashboardReports" = "dashboardReports" || array[${arrayToDbString(
-    REPORTS.map(dash => dash.id),
-  )}]
+      REPORTS.map(dash => dash.id),
+    )}]
     WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES)});
   `);
 };

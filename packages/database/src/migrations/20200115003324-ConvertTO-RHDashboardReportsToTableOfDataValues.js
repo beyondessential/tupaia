@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 
-'use strict';
-
-var dbm;
-var type;
-var seed;
-
 import {
   buildSingleColumnTableCells,
   build2DTableCells,
   build2dTableStringFormatCells,
 } from '../utilities/migration';
+
+('use strict');
+
+var dbm;
+var type;
+var seed;
 
 const convertToTableOfDataValuesSql = table => {
   return `
@@ -272,7 +272,7 @@ const tableFP_01 = {
   cells: [
     ...build2DTableCells({
       prefix: 'FP',
-      numRows: tFP_01Rows.length - 2, //Need to manually append the final two rows
+      numRows: tFP_01Rows.length - 2, // Need to manually append the final two rows
       numCols: tFP_01Cols.length,
       startCell: 2,
       addRowTotal: true,
@@ -628,13 +628,13 @@ const tablePOP_03 = {
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     ${convertToTableOfDataValuesSql(tableFP_03)}
     ${convertToTableOfDataValuesSql(tableIMMS01)}
@@ -661,7 +661,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

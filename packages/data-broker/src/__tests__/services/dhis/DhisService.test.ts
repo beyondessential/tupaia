@@ -14,7 +14,6 @@ import {
 } from './DhisService.fixtures';
 import { DhisService } from '../../../services/dhis';
 import { createMockDhisApi, createModelsStub, stubGetDhisApi } from './DhisService.stubs';
-import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 const mockPullAnalytics = jest.fn();
 const mockPullEvents = jest.fn();
@@ -257,7 +256,9 @@ describe('DhisService', () => {
       };
 
       it('uses AnalyticsPuller for dataElements', async () => {
-        await dhisService.pull([DATA_ELEMENTS.POP01], 'dataElement', { dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING });
+        await dhisService.pull([DATA_ELEMENTS.POP01], 'dataElement', {
+          dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
+        });
         expect(mockPullAnalytics).toHaveBeenCalledOnceWith([dhisApi], [DATA_ELEMENTS.POP01], {
           dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,
         });
@@ -297,9 +298,7 @@ describe('DhisService', () => {
       const getApisForDataSourcesSpy = jest.spyOn(GetDhisApi, 'getApisForDataSources');
 
       it('looks up the api from the given data source', async () => {
-        const dataSources = [
-          DATA_ELEMENTS.POP01,
-        ];
+        const dataSources = [DATA_ELEMENTS.POP01];
         const options = {
           organisationUnitCodes: ['TO'],
           dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING,

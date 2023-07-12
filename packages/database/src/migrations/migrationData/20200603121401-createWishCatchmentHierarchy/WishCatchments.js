@@ -6,7 +6,7 @@ export const FIJI_ENTITIES_SUB_CATCHMENTS = [
     name: 'Dawasamu Catchment',
     type: 'sub_catchment',
   },
-  //Waibula Catchment (FD 1 from 3VTL (temp needs checking))
+  // Waibula Catchment (FD 1 from 3VTL (temp needs checking))
   {
     code: 'FJ_CATCH_Waibula',
     parent_code: 'FJ_PROV_Tailevu',

@@ -11,7 +11,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -48,7 +48,7 @@ const generalCountryCodes = ['MH', 'WS', 'FM', 'FJ'];
 const msupplyCountryCodes = ['TO', 'VU', 'SB', 'KI'];
 const countriesWithSubdistricts = ['KI', 'VU'];
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   /** Updating project entity relations */
   const unfpaHierarchyId = (await getUnfpaHierarchyId(db)).rows[0].id;
   const unfpaProjectId = (await getEntityIdFromCode(db, PROJECT_CODE)).rows[0].id;
@@ -112,7 +112,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   const unfpaHierarchyId = (await getUnfpaHierarchyId(db)).rows[0].id;
   for (const code of countriesToAddToProject) {
     const countryId = (await getEntityIdFromCode(db, code)).rows[0].id;

@@ -33,7 +33,7 @@ const FLUTRACKING_OVERLAYS = [
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -56,7 +56,7 @@ const addMeasureLevelToPresentationOptions = async (db, id, measureLevel) => {
   `);
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const allOverlays = (
     await db.runSql(
       `select * from "mapOverlay" where id in (${arrayToDbString(FLUTRACKING_OVERLAYS)})`,
@@ -72,7 +72,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   // No down function
 };
 

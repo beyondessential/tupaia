@@ -317,12 +317,12 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
 }
 
 export function getMeasureDisplayInfo(
-  measureData: MeasureData,
+  measureData = {} as MeasureData,
   serieses: Series[],
   hiddenValues: LegendProps['hiddenValues'] = {},
   radiusScaleFactor: number = 1,
 ) {
-  const isHidden = getIsHidden(measureData!, serieses, hiddenValues);
+  const isHidden = getIsHidden(measureData, serieses, hiddenValues);
   const displayInfo = {
     isHidden,
   } as {

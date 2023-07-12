@@ -5,3 +5,14 @@ export type OverrideableComponentProps<P = {}> = P &
   Record<any, any> & {
     component?: keyof JSX.IntrinsicElements | ElementType;
   };
+
+export type MatrixColumnType = {
+  key: string;
+  title: string;
+  children?: MatrixColumnType[];
+};
+
+export type MatrixRowType = Record<string, any> & {
+  title: string;
+  children?: MatrixRowType[];
+};

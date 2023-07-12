@@ -67,7 +67,9 @@ const generateReportConfig = (entityLevel, educationLevel) => ({
       "'Male'": "eq($row.gender, 'm') ? $row.value/100 : undefined",
       "'Female'": "eq($row.gender, 'f') ? $row.value/100 : undefined",
       "'Total'": "eq($row.gender, 't') ? $row.value/100 : undefined",
-      "'name'": `translate($row.grade, ${JSON.stringify(DATA_ELEMENT_TRANSLATIONS[educationLevel])})`,
+      "'name'": `translate($row.grade, ${JSON.stringify(
+        DATA_ELEMENT_TRANSLATIONS[educationLevel],
+      )})`,
     },
     {
       transform: 'aggregate',

@@ -105,13 +105,13 @@ const REVERSE_CHANGES_TO_MAKE_BY_OVERLAY = {
   },
 };
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return Promise.all(
     Object.entries(CHANGES_TO_MAKE_BY_OVERLAY).map(([overlayId, changes]) =>
       Promise.all(
@@ -127,7 +127,7 @@ exports.up = function(db) {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return Promise.all(
     Object.entries(REVERSE_CHANGES_TO_MAKE_BY_OVERLAY).map(([overlayId, changes]) =>
       Promise.all(

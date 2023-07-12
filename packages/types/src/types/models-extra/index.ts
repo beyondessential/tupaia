@@ -14,4 +14,11 @@ export type {
   BaseChartConfig,
   CartesianChartConfig,
   ValueType,
+  MatrixConfig,
+  PresentationOptionCondition,
+  PresentationOptions,
+  ConditionValue,
+  ConditionType,
+  RangePresentationOptions,
+  ConditionalPresentationOptions,
 } from './dashboard-item';

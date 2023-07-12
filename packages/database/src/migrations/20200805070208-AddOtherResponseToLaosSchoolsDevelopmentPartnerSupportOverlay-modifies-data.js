@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -133,7 +133,7 @@ const NEW_PROVINCE_MEASURE_BUILDER_CONFIG = {
       value: 'SchDP_UNIC',
       operator: '=',
     },
-    //New Code
+    // New Code
     SchCVD022l: {
       value: 'SchCVD022l',
       operator: '=',
@@ -153,7 +153,7 @@ const NEW_PROVINCE_MEASURE_BUILDER_CONFIG = {
       'SchDP_WFP',
       'SchDP_WR',
       'SchDP_WV',
-      //New Code
+      // New Code
       'SchCVD022l',
     ],
     entityAggregation: {
@@ -290,7 +290,7 @@ const NEW_PROVINCE_PRESENTATION_OPTIONS = {
       color: 'saddleBrown',
       value: 'SchDP_WV',
     },
-    //New Code
+    // New Code
     {
       name: 'Other',
       color: 'cyan',
@@ -424,7 +424,7 @@ const NEW_DISTRICT_MEASURE_BUILDER_CONFIG = {
       value: 'SchDP_UNIC',
       operator: '=',
     },
-    //New Code
+    // New Code
     SchCVD022l: {
       value: 'SchCVD022l',
       operator: '=',
@@ -444,7 +444,7 @@ const NEW_DISTRICT_MEASURE_BUILDER_CONFIG = {
       'SchDP_WFP',
       'SchDP_WR',
       'SchDP_WV',
-      //New Code
+      // New Code
       'SchCVD022l',
     ],
     entityAggregation: {
@@ -581,7 +581,7 @@ const NEW_DISTRICT_PRESENTATION_OPTIONS = {
       color: 'saddleBrown',
       value: 'SchDP_WV',
     },
-    //New Code
+    // New Code
     {
       name: 'Other',
       color: 'cyan',
@@ -612,7 +612,7 @@ const PROVINCE_OVERLAY = {
   newPresentationOptions: NEW_PROVINCE_PRESENTATION_OPTIONS,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await db.runSql(`
     UPDATE "mapOverlay"
     SET "measureBuilderConfig" = '${JSON.stringify(DISTRICT_OVERLAY.newMeasureBuilderConfig)}',
@@ -626,7 +626,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`
     UPDATE "mapOverlay"
     SET "measureBuilderConfig" = '${JSON.stringify(DISTRICT_OVERLAY.oldMeasureBuilderConfig)}',

@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -24,7 +24,7 @@ const createDataSourceFK = columnName => ({
   mapping: 'id',
 });
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   return db.createTable('data_element_data_group', {
     columns: {
       id: { type: 'text', primaryKey: true },
@@ -43,7 +43,7 @@ exports.up = async function(db) {
   });
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   return db.dropTable('data_element_data_group');
 };
 
