@@ -45,7 +45,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       hierarchyName,
       rootEntityCode,
       { filter: DEFAULT_FILTER, fields: DEFAULT_FIELDS, ...query },
-      query.includeRoot || false,
+      query.includeRootEntity || false,
     );
 
     return camelcaseKeys(flatEntities, { deep: true });
