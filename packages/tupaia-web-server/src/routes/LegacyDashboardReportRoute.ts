@@ -20,6 +20,6 @@ export class LegacyDashboardReportRoute extends Route<LegacyDashboardReportReque
     const { query, ctx } = this.req;
     const { reportCode } = this.req.params;
 
-    return ctx.services.webConfig.fetchReport(reportCode, { legacy: true, ...query });
+    return ctx.services.webConfig.fetchReport(reportCode, { legacy: 'true', ...query });
   }
 }
