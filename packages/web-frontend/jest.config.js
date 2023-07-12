@@ -3,6 +3,7 @@ const baseConfig = require('../../jest.config-js.json');
 module.exports = {
   ...baseConfig,
   rootDir: '.',
+  globalSetup: '<rootDir>/config/jest/jest-setup.js',
   setupFiles: ['<rootDir>/config/polyfills.js'],
   testMatch: ['<rootDir>/src/**/__tests__/**/*.js?(x)', '<rootDir>/src/**/?(*.)(spec|test).js?(x)'],
   testURL: 'http://localhost',
