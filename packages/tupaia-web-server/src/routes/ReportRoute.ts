@@ -4,8 +4,8 @@
  *
  */
 
-import { ReportRequest } from '@tupaia/types';
 import { Route } from '@tupaia/server-boilerplate';
+import { ReportRequest } from './requests';
 
 export class ReportRoute extends Route<ReportRequest> {
   public async buildResponse() {

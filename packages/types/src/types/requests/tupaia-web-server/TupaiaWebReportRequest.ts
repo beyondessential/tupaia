@@ -23,7 +23,7 @@ interface ReportRequestQuery {
   endDate: string;
 }
 
-export type ReportRequest<
+export type TupaiaWebReportRequest<
   Params = ReportRequestParams,
   ResBody = ReportRequestResponse,
   ReqBody = EmptyRequestBody,
