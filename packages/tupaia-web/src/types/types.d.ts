@@ -5,14 +5,18 @@ import {
   Entity as BaseEntity,
   Dashboard as BaseDashboard,
   DashboardItem as BaseDashboardItem,
-  DashboardItemConfig,
+  DashboardItemConfig as BaseDashboardItemConfig,
   MapOverlay,
   MapOverlayGroupRelation,
   EntityType,
   MatrixConfig,
 } from '@tupaia/types';
 import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
-import { ViewContent as ChartViewContent } from '@tupaia/ui-chart-components';
+import {
+  ViewContent as ChartViewContent,
+  DataProps,
+  ViewContent,
+} from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
@@ -123,3 +127,29 @@ export type MatrixViewContent = MatrixConfig & {
   rows: MatrixDataRow[];
   columns: MatrixDataColumn[];
 };
+
+export type ViewDataItem = DataProps & {
+  total?: number;
+  viewType?: string;
+};
+
+export type ViewReport = {
+  data?: ViewDataItem[];
+  startDate?: string;
+  endDate?: string;
+};
+
+export type MatrixData = {
+  columns: MatrixDataColumn[];
+  rows: MatrixDataRow[];
+  startDate?: string;
+  endDate?: string;
+};
+
+export type ChartData = {
+  data: DataProps[];
+  startDate?: string;
+  endDate?: string;
+};
+
+export type DashboardItemReport = ViewReport | MatrixData | ChartData;

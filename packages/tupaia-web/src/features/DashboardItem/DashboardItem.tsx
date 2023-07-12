@@ -46,29 +46,26 @@ const Title = styled(Typography).attrs({
 /**
  * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
-export const DashboardItem = ({ report }: { report: DashboardItemType }) => {
+export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemType }) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
-  const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(report) as {
+  const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
+    dashboardItem,
+  ) as {
     startDate?: Moment;
     endDate?: Moment;
   };
-  const { data: reportData, isLoading, isError, error, refetch } = useReport(report.reportCode, {
+  const { data: report, isLoading, isError, error, refetch } = useReport(dashboardItem.reportCode, {
     projectCode,
     entityCode,
     dashboardCode: activeDashboard?.dashboardCode,
-    itemCode: report.code,
+    itemCode: dashboardItem.code,
     startDate: defaultStartDate,
     endDate: defaultEndDate,
-    legacy: report.legacy,
+    legacy: dashboardItem.legacy,
   });
 
-  const viewContent = {
-    ...report,
-    ...reportData,
-  };
-
-  const { periodGranularity, type, viewType, name } = report;
+  const { periodGranularity, type, viewType, name } = dashboardItem;
 
   const isExpandable =
     periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
@@ -80,7 +77,8 @@ export const DashboardItem = ({ report }: { report: DashboardItemType }) => {
       <Container>
         {showTitle && <Title>{name}</Title>}
         <DashboardItemContent
-          viewContent={viewContent}
+          config={dashboardItem}
+          report={report}
           isLoading={isLoading}
           error={isError ? error : null}
           onRetryFetch={refetch}

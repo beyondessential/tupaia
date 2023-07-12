@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { Link } from '@material-ui/core';
 import { ViewConfig } from '@tupaia/types';
 import { transformDownloadLink } from './utils';
+import { ViewReport } from '../../types';
 
 const LinkText = styled(Link).attrs({
   download: true,
@@ -18,15 +19,13 @@ const LinkText = styled(Link).attrs({
   text-decoration: underline;
 `;
 interface SingleDateProps {
-  data: Record<string, any> & {
-    value: string;
-  };
+  report: ViewReport;
   config: ViewConfig;
 }
 
-export const SingleDownloadLink = ({ data, config }: SingleDateProps) => {
-  const { value } = data;
+export const SingleDownloadLink = ({ report, config }: SingleDateProps) => {
+  const { value } = report?.data[0];
   const { name } = config;
-  const formattedValue = transformDownloadLink(value);
+  const formattedValue = transformDownloadLink(value as string);
   return <LinkText href={formattedValue}>{name}</LinkText>;
 };

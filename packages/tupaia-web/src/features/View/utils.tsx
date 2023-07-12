@@ -3,25 +3,40 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { ViewConfig } from '@tupaia/types';
+import { ViewReport, ViewDataItem } from '../../types';
+import { SingleValue } from './SingleValue';
+import { SingleDate } from './SingleDate';
+import { SingleDownloadLink } from './SingleDownloadLink';
 
-const SINGLE_VALUE_COMPONENTS = [
-  'singleTick',
-  'singleValue',
-  'singleDate',
-  'singleDownloadLink',
-  'singleComparison',
-];
+const SINGLE_VALUE_COMPONENTS = ['singleValue', 'singleDate', 'singleDownloadLink'];
 
-export const transformDataForViewType = (data: any, viewType: ViewConfig['viewType']) => {
-  if (
-    SINGLE_VALUE_COMPONENTS.includes(viewType) &&
-    Array.isArray(data) &&
-    typeof data[0] === 'object'
-  ) {
-    return data[0];
+export const VIEWS = {
+  singleValue: SingleValue,
+  singleDate: SingleDate,
+  singleDownloadLink: SingleDownloadLink,
+};
+
+export const transformContentForViewType = (report: ViewReport, config: ViewConfig) => {
+  const { viewType } = config;
+  const { data } = report;
+  if (viewType === 'multiSingleValue') {
+    return data?.map((datum: ViewDataItem) => ({
+      config: {
+        ...config,
+        viewType: datum.viewType || 'singleValue',
+      },
+      report: {
+        ...report,
+        data: [datum],
+      },
+    }));
   }
-
-  return data;
+  return [
+    {
+      config,
+      report,
+    },
+  ];
 };
 
 export const transformDownloadLink = (resourceUrl: string) => {

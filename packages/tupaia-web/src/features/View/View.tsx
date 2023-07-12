@@ -4,31 +4,40 @@
  */
 import React from 'react';
 import { ViewConfig } from '@tupaia/types';
-import { DashboardItemType } from '../../types';
-import { ViewContent } from '@tupaia/ui-chart-components';
-import { SingleValue } from './SingleValue';
-import { transformDataForViewType } from './utils';
-import { SingleDate } from './SingleDate';
-import { SingleDownloadLink } from './SingleDownloadLink';
+import { VIEWS } from './utils';
+import { ViewReport } from '../../types';
 
 interface ViewProps {
-  viewContent: Omit<DashboardItemType, 'viewType'> &
-    ViewConfig & {
-      viewType: 'view';
-      data: ViewContent['data'];
-    };
+  report: ViewReport;
+  config: ViewConfig;
   isEnlarged?: boolean;
 }
 
-const VIEWS = {
-  singleValue: SingleValue,
-  singleDate: SingleDate,
-  singleDownloadLink: SingleDownloadLink,
-};
-export const View = ({ viewContent, isEnlarged }: ViewProps) => {
-  const { data, viewType, ...config } = viewContent;
-  const View = VIEWS[viewType as keyof typeof VIEWS];
-  if (!View) return null;
-  const transformedData = transformDataForViewType(data, viewType);
-  return <View data={transformedData} config={config} />;
+export const View = ({ report, config, isEnlarged }: ViewProps) => {
+  const { viewType } = config;
+  if (viewType === 'multiSingleValue') {
+    const { data } = report;
+    return (
+      <>
+        {data?.map((datum, i) => (
+          <View
+            report={{
+              ...report,
+              data: [datum],
+            }}
+            config={{
+              ...config,
+              viewType: datum.viewType || 'singleValue',
+            }}
+            isEnlarged={isEnlarged}
+            key={i}
+          />
+        ))}
+      </>
+    );
+  }
+  const Component = VIEWS[viewType as keyof typeof VIEWS];
+  if (!Component) return null;
+
+  return <Component report={report} config={config} />;
 };

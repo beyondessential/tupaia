@@ -70,7 +70,7 @@ export const EnlargedDashboardItem = () => {
     dashboardName,
   );
 
-  const currentReport = activeDashboard?.items.find(report => report.code === reportCode);
+  const currentDashboardItem = activeDashboard?.items.find(report => report.code === reportCode);
 
   const {
     startDate,
@@ -82,7 +82,7 @@ export const EnlargedDashboardItem = () => {
     periodGranularity,
     weekDisplayFormat,
     onResetDate,
-  } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentReport);
+  } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem);
 
   const { data: reportData, isLoading: isLoadingReportData, error, refetch } = useReport(
     reportCode,
@@ -92,17 +92,12 @@ export const EnlargedDashboardItem = () => {
       dashboardCode: activeDashboard?.dashboardCode,
       startDate,
       endDate,
-      legacy: currentReport?.legacy,
-      itemCode: currentReport?.code,
+      legacy: currentDashboardItem?.legacy,
+      itemCode: currentDashboardItem?.code,
     },
   );
 
-  if (!reportCode || (!isLoadingDashboards && !currentReport)) return null;
-
-  const viewContent = {
-    ...(currentReport || {}),
-    ...reportData,
-  };
+  if (!reportCode || (!isLoadingDashboards && !currentDashboardItem)) return null;
 
   // // On close, remove the report search param from the url
   const handleCloseModal = () => {
@@ -111,18 +106,18 @@ export const EnlargedDashboardItem = () => {
     setUrlSearchParams(urlSearchParams.toString());
   };
 
-  const titleText = `${currentReport?.name}, ${
-    currentReport?.entityHeader || activeDashboard?.entityName
+  const titleText = `${currentDashboardItem?.name}, ${
+    currentDashboardItem?.entityHeader || activeDashboard?.entityName
   }`;
 
-  const { type } = currentReport || {};
+  const { type } = currentDashboardItem || {};
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
       <Wrapper $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}>
         <Container>
           <TitleWrapper>
-            {currentReport?.name && <Title>{titleText}</Title>}
+            {currentDashboardItem?.name && <Title>{titleText}</Title>}
             {showDatePicker && (
               <DateRangePicker
                 granularity={periodGranularity}
@@ -136,11 +131,14 @@ export const EnlargedDashboardItem = () => {
               />
             )}
           </TitleWrapper>
-          {currentReport?.description && <Subheading>{currentReport?.description}</Subheading>}
+          {currentDashboardItem?.description && (
+            <Subheading>{currentDashboardItem?.description}</Subheading>
+          )}
           <DashboardItemContent
             isLoading={isLoadingReportData}
             error={error}
-            viewContent={viewContent}
+            report={reportData}
+            config={currentDashboardItem}
             onRetryFetch={refetch}
             isExpandable={false}
             isEnlarged

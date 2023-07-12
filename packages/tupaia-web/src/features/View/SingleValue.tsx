@@ -7,6 +7,7 @@ import { ViewConfig } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { ViewReport } from '../../types';
 
 const Text = styled(Typography)`
   font-size: 3.125rem;
@@ -14,16 +15,13 @@ const Text = styled(Typography)`
   text-align: center;
 `;
 interface SingleValueProps {
-  data: {
-    name: string;
-    value: number;
-    total?: number;
-  };
+  report: ViewReport;
   config?: ViewConfig;
 }
-export const SingleValue = ({ data, config }: SingleValueProps) => {
+
+export const SingleValue = ({ report, config }: SingleValueProps) => {
   const { valueType, value_metadata: valueMetadata } = config;
-  const { name, value, total } = data;
+  const { name, value, total } = report?.data![0];
   const metadata = valueMetadata || config[`${name}_metadata`];
 
   const formattedValue = formatDataValueByType(

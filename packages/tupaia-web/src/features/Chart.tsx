@@ -72,7 +72,8 @@ const ContentWrapper = styled.div<{
 `;
 
 interface ChartProps {
-  viewContent: ViewContent;
+  data: ViewContent['data'];
+  config: Omit<ViewContent, 'data'>;
   isEnlarged?: boolean;
 }
 
@@ -91,13 +92,18 @@ const DISPLAY_TYPE_VIEWS = [
   },
 ];
 
-export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
+export const Chart = ({ config, data, isEnlarged = false }: ChartProps) => {
   const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
   const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
   };
 
   const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
+
+  const viewContent = {
+    ...data,
+    ...config,
+  };
 
   return (
     <Wrapper>
@@ -123,7 +129,11 @@ export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
             as={isEnlarged ? TabPanel : 'div'}
             $isEnlarged={isEnlarged}
           >
-            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
+            <Content
+              viewContent={viewContent as ViewContent}
+              isEnlarged={isEnlarged}
+              isExporting={false}
+            />
           </ContentWrapper>
         ))}
       </TabContext>
