@@ -60,7 +60,7 @@ export const LegendEntry = React.memo(
 
     const handleClick = () => {
       if (!unClickable && onClick) {
-        onClick(dataKey, value, !hidden);
+        onClick(dataKey!, value, !hidden);
       }
     };
 
