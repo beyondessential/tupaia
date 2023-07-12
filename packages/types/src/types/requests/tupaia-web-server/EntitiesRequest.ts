@@ -14,4 +14,5 @@ export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
   filter?: Record<string, string | { comparator: string; comparisonValue: any }>;
+  includeRoot?: boolean;
 }
