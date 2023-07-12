@@ -20,7 +20,6 @@ const Wrapper = styled.div`
   margin-bottom: 0.5rem;
   width: 100%;
   max-width: 100%;
-  min-height: 6.25rem;
   position: relative;
   padding: 1rem 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
@@ -74,11 +73,12 @@ export const DashboardItem = ({ report }: { report: DashboardItemType }) => {
   const isExpandable =
     periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
 
+  const showTitle = !!(name && viewType !== 'singleDownloadLink');
   return (
     <Wrapper>
       {/** render the item in the dashboard */}
       <Container>
-        {name && <Title>{name}</Title>}
+        {showTitle && <Title>{name}</Title>}
         <DashboardItemContent
           viewContent={viewContent}
           isLoading={isLoading}

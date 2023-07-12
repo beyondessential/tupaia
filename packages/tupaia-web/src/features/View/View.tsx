@@ -9,6 +9,7 @@ import { ViewContent } from '@tupaia/ui-chart-components';
 import { SingleValue } from './SingleValue';
 import { transformDataForViewType } from './utils';
 import { SingleDate } from './SingleDate';
+import { SingleDownloadLink } from './SingleDownloadLink';
 
 interface ViewProps {
   viewContent: Omit<DashboardItemType, 'viewType'> &
@@ -22,6 +23,7 @@ interface ViewProps {
 const VIEWS = {
   singleValue: SingleValue,
   singleDate: SingleDate,
+  singleDownloadLink: SingleDownloadLink,
 };
 export const View = ({ viewContent, isEnlarged }: ViewProps) => {
   const { data, viewType, ...config } = viewContent;
