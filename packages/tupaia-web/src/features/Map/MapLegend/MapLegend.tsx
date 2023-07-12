@@ -26,6 +26,10 @@ const SeriesDivider = styled.div`
   border-color: ${({ theme }) => (theme.palette.type === 'light' ? '#00000022' : '#ffffff22')};
   width: calc(100% - 2rem);
   margin: 0.3rem auto 0.2rem;
+
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
 `;
 
 export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
