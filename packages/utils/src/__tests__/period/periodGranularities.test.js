@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import sinon from 'sinon';
 import { roundStartEndDates, getDefaultDates, getLimits } from '../../period/periodGranularities';
 
@@ -11,15 +11,13 @@ const DEFAULT_NOW_TIMESTAMP = 1549360800000; // 2019-02-05T10:00:00.000Z
 
 const mockNow = (whenIsNow = DEFAULT_NOW_TIMESTAMP) => {
   sinon.useFakeTimers(whenIsNow);
-  moment.tz.setDefault('Australia/Melbourne');
 };
 
 const resetMocks = () => {
   sinon.restore();
-  moment.tz.setDefault();
 };
 
-describe.skip('chartGranularities', () => {
+describe('chartGranularities', () => {
   beforeEach(() => {
     mockNow(1549360800 * 1000); // (2019-02-05 10:00 UTC)
   });
