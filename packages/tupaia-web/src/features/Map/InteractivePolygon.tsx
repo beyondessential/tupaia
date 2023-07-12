@@ -34,9 +34,14 @@ const useProjectConfig = () => {
 interface InteractivePolygonProps {
   entity: Entity;
   isChildArea?: boolean;
+  showingData?: boolean;
 }
 
-export const InteractivePolygon = ({ entity, isChildArea = false }: InteractivePolygonProps) => {
+export const InteractivePolygon = ({
+  entity,
+  isChildArea = false,
+  showingData = false,
+}: InteractivePolygonProps) => {
   const link = useEntityLink(entity.code);
   const { permanentLabels } = useProjectConfig();
   const navigate = useNavigate();
@@ -48,13 +53,22 @@ export const InteractivePolygon = ({ entity, isChildArea = false }: InteractiveP
   const hasMeasureValue = false;
 
   return (
-    <BasicPolygon positions={region} eventHandlers={{ click: () => navigate(link) }}>
-      <AreaTooltip
-        permanent={permanentLabels && isChildArea && !hasMeasureValue}
-        sticky={!permanentLabels}
-        hasMeasureValue={hasMeasureValue}
-        orgUnitName={name}
-      />
+    <BasicPolygon
+      positions={region}
+      eventHandlers={{
+        click: () => {
+          navigate(link);
+        },
+      }}
+    >
+      {!showingData && (
+        <AreaTooltip
+          permanent={permanentLabels && isChildArea && !hasMeasureValue}
+          sticky={!permanentLabels}
+          hasMeasureValue={hasMeasureValue}
+          orgUnitName={name}
+        />
+      )}
     </BasicPolygon>
   );
 };

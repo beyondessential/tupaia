@@ -33,6 +33,21 @@ const useNavigateToDashboard = () => {
   };
 };
 
+const useNavigateToEntity = () => {
+  const { projectCode } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { data: project } = useProject(projectCode);
+
+  return (entityCode: EntityCode) => {
+    const link = {
+      ...location,
+      pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
+    };
+    navigate(link);
+  };
+};
+
 const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   const { projectCode, entityCode } = useParams();
   const getSnakeCase = (measureLevel?: string) => {
@@ -50,10 +65,6 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
         includeRoot: false,
         filter: {
           type: getSnakeCase(measureLevel),
-          generational_distance: {
-            comparator: '<=',
-            comparisonValue: 2,
-          },
         },
       },
     },
@@ -63,6 +74,7 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
 
 export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hiddenValues'] }) => {
   const navigateToDashboard = useNavigateToDashboard();
+  const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
@@ -93,6 +105,7 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
       serieses={mapOverlayData.serieses}
       // @ts-ignore - ui-components types refer to organisation unit instead of entity so there is a mismatch
       onSeeOrgUnitDashboard={navigateToDashboard}
+      onClickEntity={navigateToEntity}
     />
   );
 };

@@ -6,21 +6,15 @@
 import React from 'react';
 import { ActivePolygon } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityResponse, EntityCode } from '../../types';
+import { EntityResponse, EntityCode, Entity } from '../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation } from '../../api/queries';
+import { useMapOverlayReport } from './utils';
 
-const ChildEntities = ({ entities }: { entities: EntityResponse['children'] }) => {
-  if (!entities || entities.length === 0) {
-    return null;
-  }
-  return (
-    <>
-      {entities.map(entity => (
-        <InteractivePolygon key={entity.code} entity={entity} isChildArea />
-      ))}
-    </>
-  );
+const ChildEntities = ({ entities }: { entities: Entity[] }) => {
+  return entities.map(entity => (
+    <InteractivePolygon key={entity.code} entity={entity} isChildArea />
+  ));
 };
 
 const SiblingEntities = ({
@@ -75,6 +69,7 @@ export const PolygonLayer = () => {
   const { data: entities = [] } = useEntitiesWithLocation(projectCode, entityCode, {
     params: { includeRoot: true },
   });
+  const { data: mapOverlayData } = useMapOverlayReport();
 
   if (!entities || entities.length === 0) {
     return null;
@@ -83,9 +78,12 @@ export const PolygonLayer = () => {
   const activeEntity = entities.find(entity => entity.code === entityCode);
   const childEntities = entities.filter(entity => entity.parentCode === entityCode);
 
+  const displayChildEntities =
+    childEntities && childEntities.length > 0 && !mapOverlayData?.measureData;
+
   return (
     <>
-      <ChildEntities entities={childEntities} />
+      {displayChildEntities && <ChildEntities entities={childEntities} />}
       {activeEntity && (
         <>
           <ActiveEntity entity={activeEntity} />

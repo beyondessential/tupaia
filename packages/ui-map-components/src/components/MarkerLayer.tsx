@@ -45,6 +45,7 @@ interface MarkerLayerProps {
   multiOverlayMeasureData?: GenericDataItem[];
   multiOverlaySerieses?: Series[];
   onSeeOrgUnitDashboard?: (organisationUnitCode?: string) => void;
+  onClickEntity: (organisationUnitCode?: string) => void;
 }
 
 export const MarkerLayer = ({
@@ -53,6 +54,7 @@ export const MarkerLayer = ({
   multiOverlayMeasureData,
   multiOverlaySerieses,
   onSeeOrgUnitDashboard,
+  onClickEntity,
 }: MarkerLayerProps) => {
   if (!measureData || !serieses) return null;
 
@@ -69,6 +71,11 @@ export const MarkerLayer = ({
               pathOptions={{
                 color: measure.color,
                 fillColor: measure.color,
+              }}
+              eventHandlers={{
+                click: () => {
+                  onClickEntity(measure.organisationUnitCode);
+                },
               }}
               {...measure}
             >
