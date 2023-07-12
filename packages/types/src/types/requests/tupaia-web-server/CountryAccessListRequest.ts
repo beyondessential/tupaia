@@ -5,7 +5,13 @@
 
 export type Params = Record<string, never>;
 
-export interface ResBody {}
+interface CountryAccess {
+  id: string;
+  name: string;
+  hasAccess: boolean;
+  accessRequests: string[];
+}
+export type ResBody = CountryAccess[];
 
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;
