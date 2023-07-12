@@ -4,8 +4,16 @@
  *
  */
 
+import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { ReportRequest } from './requests';
+import { TupaiaWebReportRequest } from '@tupaia/types';
+
+export type ReportRequest = Request<
+  TupaiaWebReportRequest.Params,
+  TupaiaWebReportRequest.ResBody,
+  TupaiaWebReportRequest.ReqBody,
+  TupaiaWebReportRequest.ReqQuery
+>;
 
 export class ReportRoute extends Route<ReportRequest> {
   public async buildResponse() {

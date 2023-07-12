@@ -21,6 +21,7 @@ import {
   EntityAncestorsRoute,
   EntityAncestorsRequest,
   ReportRoute,
+  ReportRequest,
   LegacyDashboardReportRoute,
   LegacyDashboardReportRequest,
   LegacyMapOverlayReportRoute,
@@ -40,7 +41,6 @@ import {
   EntitySearchRequest,
   RequestCountryAccessRequest,
 } from '../routes';
-import { ReportRequest } from '../routes/requests';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
