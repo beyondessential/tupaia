@@ -10,6 +10,7 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten } from '@material-ui/core';
 import { Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
+import { ChartData } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,7 +73,7 @@ const ContentWrapper = styled.div<{
 `;
 
 interface ChartProps {
-  data: ViewContent['data'];
+  report: ChartData;
   config: Omit<ViewContent, 'data'>;
   isEnlarged?: boolean;
 }
@@ -92,7 +93,7 @@ const DISPLAY_TYPE_VIEWS = [
   },
 ];
 
-export const Chart = ({ config, data, isEnlarged = false }: ChartProps) => {
+export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
   const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
   const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
@@ -101,7 +102,7 @@ export const Chart = ({ config, data, isEnlarged = false }: ChartProps) => {
   const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
 
   const viewContent = {
-    ...data,
+    ...report,
     ...config,
   };
 
@@ -129,11 +130,7 @@ export const Chart = ({ config, data, isEnlarged = false }: ChartProps) => {
             as={isEnlarged ? TabPanel : 'div'}
             $isEnlarged={isEnlarged}
           >
-            <Content
-              viewContent={viewContent as ViewContent}
-              isEnlarged={isEnlarged}
-              isExporting={false}
-            />
+            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
           </ContentWrapper>
         ))}
       </TabContext>

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import {
   MatrixColumnType,
   MatrixRowType,
@@ -11,9 +12,8 @@ import {
   Matrix as MatrixComponent,
   Alert,
 } from '@tupaia/ui-components';
-import { MatrixDataColumn, MatrixDataRow } from '../types';
 import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
-import styled from 'styled-components';
+import { MatrixData, MatrixDataColumn, MatrixDataRow } from '../types';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',
@@ -95,14 +95,11 @@ const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOpt
 
 interface MatrixProps {
   config: MatrixConfig;
-  data: {
-    columns: MatrixDataColumn[];
-    rows: MatrixDataRow[];
-  };
+  report: MatrixData;
   isEnlarged?: boolean;
 }
-export const Matrix = ({ config, data, isEnlarged = false }: MatrixProps) => {
-  const { columns, rows } = data;
+export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
+  const { columns, rows } = report;
 
   const placeholderImage = getPlaceholderImage(config);
   // in the dashboard, show a placeholder image
