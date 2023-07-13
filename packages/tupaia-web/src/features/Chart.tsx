@@ -10,6 +10,7 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten } from '@material-ui/core';
 import { Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
+import { ChartReport } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,10 +70,15 @@ const ContentWrapper = styled.div<{
   $isEnlarged: boolean;
 }>`
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
+  min-height: ${({ $isEnlarged }) =>
+    $isEnlarged
+      ? '24rem'
+      : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
 `;
 
 interface ChartProps {
-  viewContent: ViewContent;
+  report: ChartReport;
+  config: Omit<ViewContent, 'data'>;
   isEnlarged?: boolean;
 }
 
@@ -91,13 +97,18 @@ const DISPLAY_TYPE_VIEWS = [
   },
 ];
 
-export const Chart = ({ viewContent, isEnlarged = false }: ChartProps) => {
+export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
   const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
   const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
   };
 
   const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
+
+  const viewContent = {
+    ...report,
+    ...config,
+  };
 
   return (
     <Wrapper>

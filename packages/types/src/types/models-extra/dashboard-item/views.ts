@@ -10,6 +10,10 @@ type BaseViewConfig = BaseConfig & {
   valueType?: ValueType;
 };
 
+type ColorOption = {
+  color: CssColor;
+};
+
 export type ListViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'list';
@@ -49,9 +53,18 @@ export type SingleDownloadLinkViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'singleDownloadLink';
 };
+
+type MultiValueRowOption = ColorOption & { name?: string };
 export type MultiValueRowViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'multiValueRow';
+  presentationOptions?: MultiValueRowOption & {
+    dataPairNames?: string[];
+    rowHeader?: ColorOption & { header?: string };
+    leftColumn?: MultiValueRowOption;
+    rightColumn?: MultiValueRowOption;
+    middleColumn?: MultiValueRowOption;
+  };
 };
 
 export type ColorListViewConfig = BaseViewConfig & {
@@ -67,7 +80,24 @@ export type SingleDateViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'singleDate';
 };
+
 export type MultiValueViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'multiValue';
+  presentationOptions?: Record<string, ColorOption> & {
+    isTitleVisible?: boolean;
+    valueFormat?: string;
+  };
 };
+
+export type ViewConfig =
+  | ListViewConfig
+  | SingleValueViewConfig
+  | MultiPhotographViewConfig
+  | MultiSingleValueViewConfig
+  | SingleDownloadLinkViewConfig
+  | MultiValueRowViewConfig
+  | ColorListViewConfig
+  | DataDownloadViewConfig
+  | SingleDateViewConfig
+  | MultiValueViewConfig;

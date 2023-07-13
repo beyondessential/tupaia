@@ -31,6 +31,7 @@ import type {
   SingleDateViewConfig,
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
+  ViewConfig,
 } from './views';
 
 export type {
@@ -74,4 +75,5 @@ export type {
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  ViewConfig,
 };

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import {
   MatrixColumnType,
   MatrixRowType,
@@ -11,9 +12,8 @@ import {
   Matrix as MatrixComponent,
   Alert,
 } from '@tupaia/ui-components';
-import { MatrixDataColumn, MatrixDataRow, MatrixViewContent } from '../types';
-import { ConditionalPresentationOptions } from '@tupaia/types';
-import styled from 'styled-components';
+import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
+import { MatrixReport, MatrixReportColumn, MatrixReportRow } from '../types';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',
@@ -25,8 +25,8 @@ const NoDataMessage = styled(Alert).attrs({
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
-  rows: MatrixDataRow[],
-  categoryId?: MatrixDataRow['categoryId'],
+  rows: MatrixReportRow[],
+  categoryId?: MatrixReportRow['categoryId'],
 ): MatrixRowType[] => {
   let topLevelRows = [];
   // if a categoryId is not passed in, then we need to find the top level rows
@@ -60,7 +60,7 @@ const parseRows = (
 };
 
 // This is a recursive function that parses the columns of the matrix into a format that the Matrix component can use.
-const parseColumns = (columns: MatrixDataColumn[]): MatrixColumnType[] => {
+const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
   return columns.map(column => {
     const { category, key, title, columns: children } = column;
     // if a column has a category, then it has children, so we need to parse them using this same function
@@ -94,11 +94,12 @@ const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOpt
  */
 
 interface MatrixProps {
-  viewContent: MatrixViewContent;
+  config: MatrixConfig;
+  report: MatrixReport;
   isEnlarged?: boolean;
 }
-export const Matrix = ({ viewContent, isEnlarged = false }: MatrixProps) => {
-  const { columns, rows, ...config } = viewContent;
+export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
+  const { columns, rows } = report;
 
   const placeholderImage = getPlaceholderImage(config);
   // in the dashboard, show a placeholder image
