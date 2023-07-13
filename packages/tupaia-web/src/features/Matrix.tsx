@@ -141,6 +141,13 @@ export const Matrix = ({ viewContent, isEnlarged = false }: MatrixProps) => {
   // Use the first row's data element as a placeholder text if possible
   const placeholderText = rows.length > 0 ? `E.g. ${rows[0].dataElement}` : 'Search Rows';
 
+  const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFilter(e.target.value);
+  };
+
+  const clearSearchFilter = () => {
+    setSearchFilter('');
+  };
   return (
     <>
       {/** If no datepicker, allow the user to filter the rows */}
@@ -148,11 +155,11 @@ export const Matrix = ({ viewContent, isEnlarged = false }: MatrixProps) => {
         <SearchWrapper>
           <SearchInput
             value={searchFilter}
-            onChange={e => setSearchFilter(e.target.value)}
+            onChange={updateSearchFilter}
             placeholder={placeholderText}
             InputProps={{
               endAdornment: searchFilter ? (
-                <IconButton onClick={() => setSearchFilter('')}>
+                <IconButton onClick={clearSearchFilter}>
                   <Clear />
                 </IconButton>
               ) : (
