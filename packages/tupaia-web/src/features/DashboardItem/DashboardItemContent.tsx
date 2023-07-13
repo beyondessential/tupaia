@@ -127,9 +127,10 @@ export const DashboardItemContent = ({
 
   // if there is no data for the selected dates, then we want to show a message to the user
   const hasNoData =
-    (type === 'matrix' && (report as MatrixData)?.rows?.length === 0) ||
-    ((type === 'view' || type === 'chart') &&
-      (report as ViewReport | ChartData)?.data?.length === 0);
+    report &&
+    ((type === 'matrix' && (report as MatrixData)?.rows?.length === 0) ||
+      ((type === 'view' || type === 'chart') &&
+        (report as ViewReport | ChartData)?.data?.length === 0));
   return (
     <>
       {/** TODO: fix type of reportData here */}
