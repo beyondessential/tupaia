@@ -16,6 +16,7 @@ const defaultContextValue = {
   maxColumns: 0,
   expandedRows: [],
   enlargedCell: null,
+  disableExpand: false,
 } as Omit<MatrixConfig, 'type' | 'name'> & {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
@@ -23,6 +24,7 @@ const defaultContextValue = {
   maxColumns: number;
   expandedRows: RowTitle[];
   enlargedCell: Record<string, any> | null;
+  disableExpand?: boolean;
 };
 
 // This is the context for the rows, columns and presentation options of the matrix

@@ -22,10 +22,6 @@ const MatrixTable = styled.table`
   color: ${({ theme }) => theme.palette.text.primary};
   table-layout: fixed; // this is to allow us to set max-widths on the columns
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
-  td,
-  th {
-    border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
-  }
 `;
 
 // this is a scrollable container
@@ -38,9 +34,10 @@ const Wrapper = styled.div`
 interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
+  disableExpand?: boolean;
 }
 
-export const Matrix = ({ columns = [], rows = [], ...config }: MatrixProps) => {
+export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
   const [{ startColumn, expandedRows, maxColumns, enlargedCell }, dispatch] = useReducer(
     matrixReducer,
     {
@@ -81,6 +78,7 @@ export const Matrix = ({ columns = [], rows = [], ...config }: MatrixProps) => {
           maxColumns,
           expandedRows,
           enlargedCell,
+          disableExpand,
         }}
       >
         <MatrixDispatchContext.Provider value={dispatch}>
