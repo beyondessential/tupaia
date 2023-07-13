@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Alert as BaseAlert, SmallAlert, TextButton } from '@tupaia/ui-components';
+import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
 import { Chart } from '../Chart';
 import { ExpandItemButton } from './ExpandItemButton';
@@ -74,25 +74,7 @@ interface DashboardItemContentProps {
   isExpandable: boolean;
 }
 
-export const getNoDataString = (report: DashboardItemReport, config: DashboardItemType) => {
-  const { startDate, endDate } = report;
-  const { noDataMessage, source } = config;
-  if (noDataMessage) {
-    return noDataMessage;
-  }
-
-  if (source === 'mSupply') {
-    return 'Requires mSupply';
-  }
-
-  if (startDate && endDate) {
-    return `No data for ${startDate} to ${endDate}`;
-  }
-
-  return 'No data for selected dates';
-};
-
-const getShowNoDataMessage = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
+const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
   // If there is no report, if means it is loading or there is an error, which is handled elsewhere
   if (!report) return false;
   if (type === 'matrix') {
@@ -138,14 +120,17 @@ export const DashboardItemContent = ({
     );
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = getShowNoDataMessage(report, type);
+  const showNoDataMessage = getHasNoData(report, type);
 
   return (
     <>
       {showNoDataMessage ? (
-        <SmallAlert severity="info" variant="standard">
-          {getNoDataString(report, config)}
-        </SmallAlert>
+        <NoData
+          viewContent={{
+            ...config,
+            ...report,
+          }}
+        />
       ) : (
         <DisplayComponent report={report} config={config} isEnlarged={isEnlarged} />
       )}

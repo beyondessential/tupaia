@@ -31,8 +31,8 @@ const transformDownloadLink = (resourceUrl: string) => {
   return `${baseUrl}${resourceUrl}`;
 };
 
-export const SingleDownloadLink = ({ data, config }: SingleDownloadLinkProps) => {
-  const { value } = data![0];
+export const SingleDownloadLink = ({ data = [], config }: SingleDownloadLinkProps) => {
+  const { value } = data[0] || {};
   const { name } = config;
   const formattedValue = transformDownloadLink(value as string);
   return <LinkText href={formattedValue}>{name}</LinkText>;

@@ -25,8 +25,8 @@ interface SingleValueProps {
   config: ViewConfig;
 }
 
-export const SingleValue = ({ data, config }: SingleValueProps) => {
+export const SingleValue = ({ data = [], config }: SingleValueProps) => {
   const { dataColor } = config;
-  const { value } = data![0];
+  const { value } = data[0] || {};
   return <Text $dataColor={dataColor}>{value}</Text>;
 };

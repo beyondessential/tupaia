@@ -25,8 +25,8 @@ const formatDate = (value: string) => {
   return date.toDateString();
 };
 
-export const SingleDate = ({ data }: SingleDateProps) => {
-  const { value } = data![0];
+export const SingleDate = ({ data = [] }: SingleDateProps) => {
+  const { value } = data[0] || {};
   const formattedValue = formatDate(value as string);
   return <Text>{formattedValue}</Text>;
 };

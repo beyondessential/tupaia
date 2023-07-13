@@ -12,14 +12,14 @@ import { ViewDataItem } from '../../types';
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
 }>`
-  color: ${props => props.$color || '#22c7fc'};
+  color: ${({ $color, theme }) => $color || theme.dashboardItem.multiValue.data};
   height: 1.25rem;
 `;
 
 const NegativeIcon = styled(Cancel)<{
   $color?: string;
 }>`
-  color: ${props => props.$color || '#c7c7c7'};
+  color: ${({ $color }) => $color || '#c7c7c7'};
   height: 1.25rem;
 `;
 
