@@ -30880,16 +30880,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-permissions@npm:^2.0.2":
-  version: 2.2.2
-  resolution: "react-native-permissions@npm:2.2.2"
-  peerDependencies:
-    react: ">=16.8.6"
-    react-native: ">=0.60.0"
-  checksum: cfc2b9d9c1e70a965faea108f546b34909cff36bc453e854ea6f129d3fa41c67d0db2fedd13d6041417276f9fd30c03b1aa44e0e20ffb883be3135a28fc94993
-  languageName: node
-  linkType: hard
-
 "react-native-permissions@npm:^3.6.1":
   version: 3.8.3
   resolution: "react-native-permissions@npm:3.8.3"
