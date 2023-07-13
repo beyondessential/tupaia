@@ -4,11 +4,13 @@
  */
 
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DownloadFilesVisual as BaseDownloadFilesVisual, OFF_WHITE } from '@tupaia/ui-components';
 import { getUniqueFileNameParts } from '@tupaia/utils';
 import { download } from '../../utils/request';
+import { VIEW_STYLES } from '../../styles';
 
 const StyledDownloadFilesVisual = styled(BaseDownloadFilesVisual)`
   .filename {
@@ -20,8 +22,16 @@ const StyledDownloadFilesVisual = styled(BaseDownloadFilesVisual)`
   }
 `;
 
-export const DownloadFilesVisual = ({ onClose: originalOnClose, ...restOfProps }) => {
+const DownloadFilesVisualComponent = ({
+  onClose: originalOnClose,
+  isUserLoggedIn,
+  ...restOfProps
+}) => {
   const [error, setError] = useState(null);
+
+  if (!isUserLoggedIn) {
+    return <div style={VIEW_STYLES.downloadLink}>Please log in to enable file downloads</div>;
+  }
 
   const downloadFiles = async uniqueFileNames => {
     try {
@@ -68,10 +78,22 @@ export const DownloadFilesVisual = ({ onClose: originalOnClose, ...restOfProps }
   );
 };
 
-DownloadFilesVisual.propTypes = {
+DownloadFilesVisualComponent.propTypes = {
   onClose: PropTypes.func,
+  isUserLoggedIn: PropTypes.bool,
 };
 
-DownloadFilesVisual.defaultProps = {
+DownloadFilesVisualComponent.defaultProps = {
   onClose: () => {},
+  isUserLoggedIn: false,
 };
+
+const mapStateToProps = state => {
+  const { isUserLoggedIn } = state.authentication;
+
+  return {
+    isUserLoggedIn,
+  };
+};
+
+export const DownloadFilesVisual = connect(mapStateToProps, null)(DownloadFilesVisualComponent);
