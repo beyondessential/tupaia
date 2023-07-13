@@ -10607,7 +10607,6 @@ __metadata:
     axios: ^1.4.0
     moment: ^2.29.1
     npm-run-all: ^4.1.5
-    numeral: ^2.0.6
     react: ^16.13.1
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
