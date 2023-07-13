@@ -65,12 +65,16 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     legacy: dashboardItem.legacy,
   });
 
-  const { periodGranularity, type, viewType, name } = dashboardItem;
+  const { periodGranularity, type, viewType, name, presentationOptions } = dashboardItem;
 
   const isExpandable =
     periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
 
-  const showTitle = !!(name && viewType !== 'singleDownloadLink');
+  let showTitle = !!name;
+  if (viewType === 'multiValue') {
+    showTitle = !!name && presentationOptions?.isTitleVisible;
+  } else if (viewType === 'singleDownloadLink') showTitle = false;
+
   return (
     <Wrapper>
       {/** render the item in the dashboard */}

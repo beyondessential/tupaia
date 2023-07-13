@@ -8,6 +8,7 @@ import { ViewReport } from '../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
+import { MultiValue } from './MultiValue';
 
 interface ViewProps {
   report: ViewReport;
@@ -19,6 +20,7 @@ export const VIEWS = {
   singleValue: SingleValue,
   singleDate: SingleDate,
   singleDownloadLink: SingleDownloadLink,
+  multiValue: MultiValue,
 };
 
 export const View = ({ report, config, isEnlarged }: ViewProps) => {
