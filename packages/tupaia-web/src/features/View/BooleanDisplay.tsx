@@ -24,9 +24,7 @@ const NegativeIcon = styled(Cancel)<{
 interface BooleanDisplayProps {
   value: number;
   metadata?: {
-    presentationOptions?:
-      | MultiValueRowViewConfig['presentationOptions']
-      | MultiValueViewConfig['presentationOptions'];
+    presentationOptions?: MultiValueViewConfig['presentationOptions'];
   };
 }
 

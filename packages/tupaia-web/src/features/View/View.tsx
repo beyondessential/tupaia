@@ -11,6 +11,7 @@ import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
 import { BooleanDisplay } from './BooleanDisplay';
 import { formatDataValueByType } from '@tupaia/utils';
+import { MultiValueRow } from './MultiValueRow';
 
 interface ViewProps {
   report: ViewReport;
@@ -23,6 +24,7 @@ const VIEWS = {
   singleDate: SingleDate,
   singleDownloadLink: SingleDownloadLink,
   multiValue: MultiValue,
+  multiValueRow: MultiValueRow,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {

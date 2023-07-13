@@ -128,10 +128,11 @@ export type MatrixViewContent = MatrixConfig & {
   columns: MatrixDataColumn[];
 };
 
-export type ViewDataItem = DataProps & {
-  total?: number;
-  viewType?: string;
-};
+export type ViewDataItem = Record<string, any> &
+  DataProps & {
+    total?: number;
+    viewType?: string;
+  };
 
 export type ViewReport = {
   data?: ViewDataItem[];
