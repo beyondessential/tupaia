@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from '@material-ui/core';
 import { ViewConfig } from '@tupaia/types';
-import { transformDownloadLink } from './utils';
 import { ViewDataItem } from '../../types';
 
 const LinkText = styled(Link).attrs({
@@ -25,6 +24,12 @@ interface SingleDownloadLinkProps {
   data?: ViewDataItem[];
   config: ViewConfig;
 }
+
+const transformDownloadLink = (resourceUrl: string) => {
+  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  if (resourceUrl.includes('http')) return resourceUrl;
+  return `${baseUrl}${resourceUrl}`;
+};
 
 export const SingleDownloadLink = ({ data, config }: SingleDownloadLinkProps) => {
   const { value } = data![0];

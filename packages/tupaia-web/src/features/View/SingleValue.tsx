@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { ViewDataItem } from '../../types';
 import { CssColor, ViewConfig } from '@tupaia/types';
+import { ViewDataItem } from '../../types';
 
 const Text = styled(Typography)<{
   $dataColor?: CssColor;

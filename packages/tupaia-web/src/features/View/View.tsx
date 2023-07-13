@@ -9,7 +9,6 @@ import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
-import { BooleanDisplay } from './BooleanDisplay';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 
@@ -37,18 +36,13 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
     };
     return {
       ...datum,
-      value:
-        valueType === 'boolean' ? (
-          <BooleanDisplay value={value as number} metadata={metadata} />
-        ) : (
-          formatDataValueByType(
-            {
-              value,
-              metadata,
-            },
-            valueType,
-          )
-        ),
+      value: formatDataValueByType(
+        {
+          value,
+          metadata,
+        },
+        valueType,
+      ),
     };
   });
 };
@@ -56,7 +50,7 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
 export const View = ({ report, config, isEnlarged }: ViewProps) => {
   const { viewType } = config;
   const { data } = report;
-  if (!data) return null;
+  if (!data) return null; // in case there is no data at all, return null
   if (viewType === 'multiSingleValue') {
     // for multi single values, we need to render each data point as a separate single value item
     return (

@@ -13,12 +13,13 @@ import { ExpandItemButton } from './ExpandItemButton';
 import { View } from '../View';
 import { Matrix } from '../Matrix';
 import {
-  ChartData,
+  ChartReport,
   DashboardItemReport,
   DashboardItemType,
-  MatrixData,
+  MatrixReport,
   ViewReport,
 } from '../../types';
+import { DashboardItemConfig } from '@tupaia/types';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -91,6 +92,17 @@ export const getNoDataString = (report: DashboardItemReport, config: DashboardIt
   return 'No data for selected dates';
 };
 
+const getShowNoDataMessage = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
+  // If there is no report, if means it is loading or there is an error, which is handled elsewhere
+  if (!report) return false;
+  if (type === 'matrix') {
+    return (report as MatrixReport)?.rows?.length === 0;
+  }
+  if (type === 'view' || type === 'chart') {
+    return (report as ViewReport | ChartReport)?.data?.length === 0;
+  }
+  return false;
+};
 /**
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
@@ -126,21 +138,18 @@ export const DashboardItemContent = ({
     );
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const hasNoData =
-    report &&
-    ((type === 'matrix' && (report as MatrixData)?.rows?.length === 0) ||
-      ((type === 'view' || type === 'chart') &&
-        (report as ViewReport | ChartData)?.data?.length === 0));
+  const showNoDataMessage = getShowNoDataMessage(report, type);
+
   return (
     <>
-      {/** TODO: fix type of reportData here */}
-      {hasNoData ? (
+      {showNoDataMessage ? (
         <SmallAlert severity="info" variant="standard">
           {getNoDataString(report, config)}
         </SmallAlert>
       ) : (
         <DisplayComponent report={report} config={config} isEnlarged={isEnlarged} />
       )}
+      {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>
   );

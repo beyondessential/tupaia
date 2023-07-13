@@ -10,7 +10,7 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten } from '@material-ui/core';
 import { Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
-import { ChartData } from '../types';
+import { ChartReport } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -70,10 +70,14 @@ const ContentWrapper = styled.div<{
   $isEnlarged: boolean;
 }>`
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
+  min-height: ${({ $isEnlarged }) =>
+    $isEnlarged
+      ? '24rem'
+      : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
 `;
 
 interface ChartProps {
-  report: ChartData;
+  report: ChartReport;
   config: Omit<ViewContent, 'data'>;
   isEnlarged?: boolean;
 }
