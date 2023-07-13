@@ -6,15 +6,12 @@
 export interface Params {
   reportCode: string;
 }
-
 export interface ResBody {
   data: Record<string, unknown>[];
   startDate: string;
   endDate: string;
 }
-
 export type ReqBody = Record<string, never>;
-
 export interface ReqQuery {
   organisationUnitCode: string;
   projectCode: string;

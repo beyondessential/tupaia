@@ -9,8 +9,8 @@ export interface Params {
 export interface ResBody {
   mapOverlayCode: string;
   measureLevel: string;
-  measureOptions: Record<string, any>[];
-  serieses: Record<string, any>[];
+  measureOptions: Record<string, unknown>[];
+  serieses: Record<string, unknown>[];
   measureData: Record<string, string | number>[];
   period?: string | null;
 }
