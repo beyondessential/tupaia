@@ -44,21 +44,19 @@ const Error = styled.div`
 
 export const DownloadFilesVisual = ({
   downloadFiles,
-  viewContent,
+  config = {},
+  data = [],
   isLoading,
   isEnlarged,
   onClose,
   className,
   error,
 }) => {
-  const { data = [] } = viewContent;
-
   // This mapping does nothing, just commenting some typing for future conversion to ts
   const options = data.map(({ uniqueFileName, label }) => ({
     uniqueFileName, // string e.g. 5da02ed278d10e8695530688_report.pdf
     label, // string e.g. 'Instruction Manual' or 'report.pdf'
   }));
-
 
   // selectedFiles: Map of uniqueFileName: string => isSelected: bool
   const noneSelected = Object.fromEntries(
@@ -83,8 +81,8 @@ export const DownloadFilesVisual = ({
   if (!isEnlarged) {
     return (
       <Container className={className}>
-        {options.map(({ label, value }) => (
-          <FileName className="filename" key={value}>
+        {options.map(({ label, uniqueFileName }) => (
+          <FileName className="filename" key={uniqueFileName}>
             {label}
           </FileName>
         ))}
@@ -95,7 +93,7 @@ export const DownloadFilesVisual = ({
   if (!isLoading && options.length === 0) {
     return (
       <Container className={className}>
-        <NoData viewContent={viewContent} />
+        <NoData viewContent={config} />
       </Container>
     );
   }
@@ -151,7 +149,8 @@ export const DownloadFilesVisual = ({
 
 DownloadFilesVisual.propTypes = {
   downloadFiles: PropTypes.func.isRequired,
-  viewContent: PropTypes.object,
+  config: PropTypes.object,
+  data: PropTypes.array,
   isLoading: PropTypes.bool,
   isEnlarged: PropTypes.bool,
   onClose: PropTypes.func,
@@ -160,7 +159,8 @@ DownloadFilesVisual.propTypes = {
 };
 
 DownloadFilesVisual.defaultProps = {
-  viewContent: null,
+  config: {},
+  data: [],
   isLoading: false,
   isEnlarged: false,
   onClose: () => {},

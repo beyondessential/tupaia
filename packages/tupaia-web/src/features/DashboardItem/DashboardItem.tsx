@@ -68,7 +68,11 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   const { periodGranularity, type, viewType, name, presentationOptions } = dashboardItem;
 
   const isExpandable =
-    periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
+    periodGranularity ||
+    type === 'chart' ||
+    type === 'matrix' ||
+    viewType === 'dataDownload' ||
+    viewType === 'filesDownload';
 
   let showTitle = !!name;
   if (viewType === 'multiValue') {

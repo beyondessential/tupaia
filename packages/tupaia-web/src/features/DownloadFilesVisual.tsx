@@ -6,15 +6,23 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { DownloadFilesVisual as BaseDownloadFilesVisual, OFF_WHITE } from '@tupaia/ui-components';
-import { download } from '../../utils/request';
+import { darken } from '@material-ui/core';
+import { DownloadFilesVisual as BaseDownloadFilesVisual } from '@tupaia/ui-components';
+import { get } from '../api';
+async function download(url) {
+  return get(url);
+}
+
+export const OFF_WHITE = '#eeeeee';
 
 const StyledDownloadFilesVisual = styled(BaseDownloadFilesVisual)`
   .filename {
     color: ${OFF_WHITE};
+    color: ${({ theme }) => darken(theme.palette.common.white, 0.1)};
   }
   .checkbox-icon {
     color: ${OFF_WHITE};
+    color: ${({ theme }) => darken(theme.palette.common.white, 0.1)};
   }
 `;
 
@@ -26,7 +34,7 @@ const getZipFileName = () =>
     day: '2-digit',
   })}.zip`;
 
-export const DownloadFilesVisual = ({ onClose: originalOnClose, ...restOfProps }) => {
+export const DownloadFilesVisual = ({ onClose: originalOnClose, data, config, isEnlarged }) => {
   const [error, setError] = useState(null);
 
   const downloadFiles = async files => {
@@ -46,10 +54,12 @@ export const DownloadFilesVisual = ({ onClose: originalOnClose, ...restOfProps }
 
   return (
     <StyledDownloadFilesVisual
-      {...restOfProps}
+      config={config}
+      data={data}
       onClose={onClose}
       downloadFiles={downloadFiles}
       error={error}
+      isEnlarged={isEnlarged}
     />
   );
 };
