@@ -3,47 +3,12 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
-import QRCode from 'react-qr-code';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogFooter, DialogHeader, DialogContent, Button } from '@tupaia/ui-components';
-import CropFreeIcon from '@material-ui/icons/CropFree';
-import { IconButton } from '../../widgets';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 const ENTITIES_ENDPOINT = 'entities';
-
-const QRCodeModal = React.memo(({ isOpen, onCancel, data }) => {
-  return (
-    <Dialog onClose={onCancel} open={isOpen}>
-      <DialogHeader onClose={onCancel} title="Share QR Code" color="primary" />
-      <DialogContent>
-        <h4>Share QR Code</h4>
-        <br />
-        <h3>{data.code}</h3>
-        <br />
-        <br />
-        <QRCode size={256} value={data.id} viewBox="0 0 256 256" />
-      </DialogContent>
-      <DialogFooter>
-        <Button>Download</Button>
-      </DialogFooter>
-    </Dialog>
-  );
-});
-
-const QRCodeButton = ({ row }) => {
-  const [isModalOpen, setModalOpen] = useState(false);
-  return (
-    <>
-      <QRCodeModal isOpen={isModalOpen} data={row} onCancel={() => setModalOpen(false)} />
-      <IconButton onClick={() => setModalOpen(true)}>
-        <CropFreeIcon />
-      </IconButton>
-    </>
-  );
-};
 
 export const ENTITIES_COLUMNS = [
   { source: 'id', show: false },
@@ -59,12 +24,6 @@ export const ENTITIES_COLUMNS = [
   {
     Header: 'Type',
     source: 'type',
-  },
-  {
-    Header: 'Attributes',
-    source: 'attributes',
-    type: 'jsonTooltip',
-    editConfig: { type: 'jsonEditor' },
   },
 ];
 
@@ -96,12 +55,6 @@ const FIELDS = [
     actionConfig: {
       endpoint: ENTITIES_ENDPOINT,
     },
-  },
-  {
-    Header: 'QR Code',
-    source: 'id',
-    type: 'logs',
-    Cell: QRCodeButton,
   },
 ];
 
@@ -161,14 +114,4 @@ export const EntitiesPage = ({ getHeaderEl, ...restOfProps }) => (
 
 EntitiesPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-};
-
-QRCodeModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  data: PropTypes.string.isRequired,
-};
-
-QRCodeButton.propTypes = {
-  row: PropTypes.object.isRequired,
 };
