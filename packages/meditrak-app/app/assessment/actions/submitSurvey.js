@@ -15,17 +15,19 @@ import {
   getFilenameFromUri,
 } from '../../utilities';
 import { getCurrentUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
-import { GENERATE_QR_CODE, SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
+import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
 import { addMessage } from '../../messages';
 import { goBack } from '../../navigation';
-import { getAnswers, getScreens, getValidQuestions } from '../selectors';
+import { getAnswers, getScreens, getSurveyName, getValidQuestions } from '../selectors';
 import { changeAnswer, selectSurvey, validateScreen } from './actions';
 import {
   doesScreenHaveValidationErrors,
   addRecentEntityId,
   getEntityCreationQuestions,
   getOptionCreationAutocompleteQuestions,
+  getQrCodeGenerationQuestions,
 } from '../helpers';
+import { goToQrCodesPage } from '../../navigation/actions';
 
 const getValidatedScreens = (dispatch, getState) => {
   const screens = getScreens(getState());
@@ -196,6 +198,21 @@ const createEntities = async (dispatch, getState, database, questions) => {
   return newEntities;
 };
 
+const createQrCodes = (getState, questions, newEntities) => {
+  const qrCodeGenerationQuestions = getQrCodeGenerationQuestions(questions);
+  const answers = getAnswers(getState());
+  const qrCodes = [];
+  qrCodeGenerationQuestions.forEach(question => {
+    const entityId = answers[question.id];
+    const entity = newEntities.find(({ id }) => id === entityId);
+    if (entity) {
+      qrCodes.push({ id: entityId, name: entity.name });
+    }
+  });
+
+  return qrCodes;
+};
+
 export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepeat) => async (
   dispatch,
   getState,
@@ -211,11 +228,15 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
   const existingSurveyResponses = database.findSurveyResponses({ surveyId, startTime });
 
   let newEntities = [];
+  let qrCodes = [];
+
+  const surveyName = getSurveyName(getState());
 
   // Only save the survey if it isn't a duplicate.
   if (existingSurveyResponses.length === 0) {
     const validQuestions = getValidQuestions(getState(), questions, validatedScreens);
     newEntities = await createEntities(dispatch, getState, database, validQuestions);
+    qrCodes = createQrCodes(getState, validQuestions, newEntities);
     const newOptions = createOptions(getState, database, validQuestions);
     const { responseFields, answersToSubmit } = await processQuestions(
       dispatch,
@@ -244,22 +265,27 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
     analytics.trackEvent('Submit Survey', response);
   }
 
-  // const generateQrCode = primaryEntityQuestion.config.entity.generateQrCode;
-  const generateQrCode = true; // because we are in Household survey
+  const isGeneratingQrCodes = qrCodes.length > 0;
 
   dispatch(synchroniseDatabase());
   dispatch({ type: SURVEY_SUBMIT_SUCCESS });
+  dispatch(addMessage('submit_survey', 'Survey submitted'));
 
-  if (!generateQrCode) {
-    dispatch(addMessage('submit_survey', 'Survey submitted'));
-  }
+  const exitSurvey = () => {
+    dispatch(stopWatchingUserLocation());
+    dispatch(goBack(false));
+  };
 
   if (shouldRepeat) {
     dispatch(selectSurvey(surveyId, true));
-  } else if (generateQrCode && newEntities && newEntities.length) {
-    dispatch({ type: GENERATE_QR_CODE, qrCodeEntity: newEntities[0] });
+  } else if (isGeneratingQrCodes) {
+    dispatch(
+      goToQrCodesPage(surveyName, qrCodes, () => {
+        dispatch(goBack(false)); // Go back to survey then exit
+        exitSurvey();
+      }),
+    );
   } else {
-    dispatch(stopWatchingUserLocation());
-    dispatch(goBack(false));
+    exitSurvey();
   }
 };

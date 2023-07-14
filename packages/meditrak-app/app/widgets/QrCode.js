@@ -49,6 +49,6 @@ QrCode.propTypes = {
 };
 
 QrCode.defaultProps = {
-  getRef: () => {},
+  getRef: () => null,
   size: 200,
 };
