@@ -81,9 +81,18 @@ const updateOrCreateDataGroup = async (
 };
 
 export class SurveyEditor {
+  strictValidationMode = true;
+
   constructor(models, assertPermissions) {
     this.models = models;
     this.assertPermissions = assertPermissions;
+  }
+
+  /**
+   * @param {boolean} strict
+   */
+  setStrictValidationMode(strict) {
+    this.strictValidationMode = strict;
   }
 
   /**
@@ -253,8 +262,10 @@ export class SurveyEditor {
         models: transactingModels,
         file: surveyQuestions,
         survey,
+        isNewSurvey: !existingSurvey,
         dataGroup,
         permissionGroup,
+        strictValidationMode: this.strictValidationMode,
       });
     }
 

@@ -45,7 +45,7 @@ const BASIC_SURVEY_CREATE_PAYLOAD = {
   'data_group.config': {},
 };
 
-describe('Create and Edit Surveys', () => {
+describe.only('Create and Edit Surveys', () => {
   const app = new TestableApp();
   const { models } = app;
 
@@ -349,6 +349,53 @@ describe('Create and Edit Surveys', () => {
 
       const survey = await models.survey.findById(survey1_id);
       expect(survey.period_granularity).to.equal('weekly');
+    });
+
+    describe('Validation', () => {
+      describe('Non-strict', () => {
+        it('Allows overwriting questions', async () => {
+          await app.grantAccess(DEFAULT_POLICY);
+
+          const response = await app.multipartPut({
+            endpoint: `surveys/${survey1_id}`,
+            payload: {
+              name: 'Any change will do 1',
+              period_granularity: 'weekly',
+            },
+            filesByMultipartKey: {
+              surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importANewSurvey.xlsx`),
+            },
+            query: {
+              strictValidationMode: 'false',
+            },
+          });
+
+          expect(response.statusCode).equal(200);
+        });
+      });
+
+      describe('Strict', () => {
+        it('Does not allow overwriting questions', async () => {
+          await app.grantAccess(DEFAULT_POLICY);
+
+          const response = await app.multipartPut({
+            endpoint: `surveys/${survey1_id}`,
+            payload: {
+              name: 'Any change will do 1',
+              period_granularity: 'weekly',
+            },
+            filesByMultipartKey: {
+              surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importANewSurvey.xlsx`),
+            },
+          });
+
+          expect(response.statusCode).equal(400);
+          expect(response.body.error).to.match(
+            /A Question with code "fdfuu42a22321c123a8_test" already exists/,
+          );
+          expect(response.body.isStrictValidationModeError).equal(true);
+        });
+      });
     });
   });
 });

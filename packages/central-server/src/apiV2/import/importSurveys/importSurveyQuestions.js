@@ -66,11 +66,21 @@ const updateOrCreateDataElementInGroup = async (
  * @param models
  * @param {File} file
  * @param {Survey} survey
+ * @param {boolean} isNewSurvey
  * @param {DataGroup} dataGroup
  * @param {PermissionGroup} permissionGroup
+ * @param {boolean} [strictValidationMode]
  * @return {Promise<void>}
  */
-export async function importSurveysQuestions({ models, file, survey, dataGroup, permissionGroup }) {
+export async function importSurveysQuestions({
+  models,
+  file,
+  survey,
+  isNewSurvey,
+  dataGroup,
+  permissionGroup,
+  strictValidationMode = true,
+}) {
   if (!file) {
     throw new UploadError();
   }
@@ -106,7 +116,9 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   let hasSeenDateOfDataQuestion = false;
   const questionCodes = []; // An array to hold all qustion codes, allowing duplicate checking
   const configImporter = new ConfigImporter(models, rows);
-  const objectValidator = new ObjectValidator(constructQuestionValidators(models));
+  const objectValidator = new ObjectValidator(
+    constructQuestionValidators(models, isNewSurvey, strictValidationMode),
+  );
   let hasPrimaryEntityQuestion = false;
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     const row = rows[rowIndex];

@@ -18,6 +18,10 @@ export class CreateSurvey extends CreateHandler {
 
     const convertedFields = await convertNamesToIds(this.models, this.newRecordData);
 
+    if (this.req.query.strictValidationMode === 'false') {
+      surveyEditor.setStrictValidationMode(false);
+    }
+
     return surveyEditor.create(convertedFields);
   }
 }

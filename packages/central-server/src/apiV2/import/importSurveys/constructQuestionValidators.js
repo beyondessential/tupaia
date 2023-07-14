@@ -3,7 +3,13 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { constructIsOneOf, hasContent, isNumber } from '@tupaia/utils';
+import {
+  constructIsOneOf,
+  constructRecordNotExistsWithField,
+  hasContent,
+  isNumber,
+  StrictValidationError,
+} from '@tupaia/utils';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
 import { splitStringOnComma, splitOnNewLinesOrCommas } from '../../utilities';
 import { convertCellToJson, isEmpty, isYesOrNo } from './utilities';
@@ -35,9 +41,9 @@ const optionsValidators = [
   },
 ];
 
-export const constructQuestionValidators = models => ({
+export const constructQuestionValidators = (models, isNewSurvey, strictValidationMode) => ({
   code: [
-    (cell, row) => {
+    async (cell, row) => {
       // Not required for Instruction lines
       if (row.type === 'Instruction') {
         return true;
@@ -45,6 +51,16 @@ export const constructQuestionValidators = models => ({
       if (cell.includes('.')) {
         throw new Error('Question codes must not contain any periods (".")');
       }
+
+      if (isNewSurvey && strictValidationMode) {
+        try {
+          await constructRecordNotExistsWithField(models.question, 'code')(cell);
+        } catch (e) {
+          const errorMessage = `A Question with code "${cell}" already exists, continuing will overwrite the existing Question and Data Element`;
+          throw new StrictValidationError(errorMessage);
+        }
+      }
+
       return hasContent(cell);
     },
   ],
