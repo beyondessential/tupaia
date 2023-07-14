@@ -9,51 +9,54 @@ import { connect } from 'react-redux';
 import { EntityList } from '../../entityMenu';
 import { takeScrollControl, releaseScrollControl } from '../actions';
 import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
-import { QrCodeScannerScreen } from '../QrCodeScannerScreen';
+import { QrCodeScanner } from '../QrCodeScanner';
 import {
-  fetchEntities,
   getEntityAttributeChecker,
   getEntityBaseFilters,
   getRecentEntities,
 } from '../../entityMenu/helpers';
-import { View } from 'react-native';
-import { Text } from '../../widgets';
+import { Divider } from '../../widgets';
 
 const DumbEntityQuestion = props => {
-  const [qrCodeValue, setQrCodeValue] = useState(null);
+  const [isScanningQRCode, setIsScanningQRCode] = useState(false);
 
-  const onSuccess = e => {
-    props.onRowPress({ id: e.data });
-    setQrCodeValue(e.data);
+  const onQRCodeRead = ({ data }) => {
+    props.onSelectEntity({ id: data });
   };
 
-  const { config, isOnlyQuestionOnScreen, getEntityNameFromQRCode } = props;
-  const shouldGenerateCode = config && config.entity && config.entity.createNew;
-  const shouldShowQRCodeScanner = config?.entity?.qrCodeScanner;
-
-  if (qrCodeValue) {
-    const entityName = getEntityNameFromQRCode(qrCodeValue);
-    return (
-      <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-        <Text style={{ fontSize: 20 }}>Result: {entityName}</Text>
-      </View>
-    );
-  }
+  const { config, isOnlyQuestionOnScreen } = props;
+  const shouldGenerateCode = config?.entity?.createNew;
+  const shouldShowQRCodeScanner = !props.selectedEntityId && config?.entity?.showQrCode;
 
   if (shouldGenerateCode) {
     return <CodeGeneratorQuestion {...props} />;
   }
 
+  const EntityListSelector = (
+    <EntityList startOpen={isOnlyQuestionOnScreen} onRowPress={props.onSelectEntity} {...props} />
+  );
+
   if (shouldShowQRCodeScanner) {
-    return <QrCodeScannerScreen onSuccess={onSuccess} />;
+    return (
+      <>
+        <QrCodeScanner
+          onRead={onQRCodeRead}
+          onStartScan={() => setIsScanningQRCode(true)}
+          onFinishScan={() => setIsScanningQRCode(false)}
+        />
+        {isScanningQRCode ? null : <Divider text="or" />}
+        {isScanningQRCode ? null : EntityListSelector}
+      </>
+    );
   }
 
-  return <EntityList startOpen={isOnlyQuestionOnScreen} {...props} />;
+  return EntityListSelector;
 };
 
 DumbEntityQuestion.propTypes = {
   config: PropTypes.object,
   isOnlyQuestionOnScreen: PropTypes.bool.isRequired,
+  onSelectEntity: PropTypes.func.isRequired,
 };
 
 DumbEntityQuestion.defaultProps = {
@@ -66,10 +69,6 @@ const mapStateToProps = (
 ) => {
   const baseEntityFilters = getEntityBaseFilters(state, database, questionId);
   const recentEntities = getRecentEntities(database, state, baseEntityFilters);
-  const getEntityNameFromQRCode = id => {
-    const entities = fetchEntities(database, { id });
-    return entities[0]?.code;
-  };
   const checkEntityAttributes = getEntityAttributeChecker(state, questionId);
 
   return {
@@ -77,12 +76,11 @@ const mapStateToProps = (
     checkEntityAttributes,
     recentEntities,
     selectedEntityId,
-    getEntityNameFromQRCode,
   };
 };
 
 const mapDispatchToProps = (dispatch, { onChangeAnswer }) => ({
-  onRowPress: entity => onChangeAnswer(entity.id),
+  onSelectEntity: entity => onChangeAnswer(entity.id),
   onClear: () => onChangeAnswer(null),
   takeScrollControl: () => dispatch(takeScrollControl()),
   releaseScrollControl: () => dispatch(releaseScrollControl()),
