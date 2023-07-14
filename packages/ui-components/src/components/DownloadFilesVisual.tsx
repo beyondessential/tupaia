@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   Button,
@@ -15,7 +14,7 @@ import {
   FormGroup,
 } from '@material-ui/core';
 import CheckboxIcon from '@material-ui/icons/CheckBox';
-import { NoData } from '../NoData';
+import { NoData } from './NoData';
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +33,7 @@ const FileName = styled.span`
   font-size: 20px;
   text-align: center;
   display: block;
+  color: ${props => props.theme.palette.primary.contrastText};
 `;
 
 const Error = styled.div`
@@ -42,29 +42,34 @@ const Error = styled.div`
   text-align: center;
 `;
 
+interface DownloadFilesVisualProps {
+  downloadFiles: (uniqueFileNames: string[]) => Promise<void>;
+  config?: object;
+  data?: { uniqueFileName: string; label: string }[];
+  isLoading?: boolean;
+  isEnlarged?: boolean;
+  onClose: () => void;
+  className?: string;
+  error?: string;
+}
+
 export const DownloadFilesVisual = ({
   downloadFiles,
   config = {},
-  data = [],
+  data: options = [],
   isLoading,
   isEnlarged,
   onClose,
   className,
   error,
-}) => {
-  // This mapping does nothing, just commenting some typing for future conversion to ts
-  const options = data.map(({ uniqueFileName, label }) => ({
-    uniqueFileName, // string e.g. 5da02ed278d10e8695530688_report.pdf
-    label, // string e.g. 'Instruction Manual' or 'report.pdf'
-  }));
-
+}: DownloadFilesVisualProps) => {
   // selectedFiles: Map of uniqueFileName: string => isSelected: bool
   const noneSelected = Object.fromEntries(
     options.map(({ uniqueFileName }) => [uniqueFileName, false]),
   );
   const [selectedFiles, setSelectedFiles] = useState(noneSelected);
 
-  const toggleSelectFile = uniqueFileName =>
+  const toggleSelectFile = (uniqueFileName: string) =>
     setSelectedFiles({ ...selectedFiles, [uniqueFileName]: !selectedFiles[uniqueFileName] });
 
   const [isDownloading, setIsDownloading] = useState(false);
@@ -110,7 +115,7 @@ export const DownloadFilesVisual = ({
   }
 
   return (
-    <Container className={className} isLoading={isLoading} isEnlarged={isEnlarged}>
+    <Container className={className}>
       <FormContainer>
         <FormControl>
           <FormGroup>
@@ -137,7 +142,6 @@ export const DownloadFilesVisual = ({
           color="primary"
           onClick={downloadSelectedFiles}
           variant="contained"
-          download
           disabled={isDownloading || Object.values(selectedFiles).every(isSelected => !isSelected)}
         >
           Download
@@ -145,25 +149,4 @@ export const DownloadFilesVisual = ({
       </DialogActions>
     </Container>
   );
-};
-
-DownloadFilesVisual.propTypes = {
-  downloadFiles: PropTypes.func.isRequired,
-  config: PropTypes.object,
-  data: PropTypes.array,
-  isLoading: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
-  onClose: PropTypes.func,
-  className: PropTypes.string,
-  error: PropTypes.string,
-};
-
-DownloadFilesVisual.defaultProps = {
-  config: {},
-  data: [],
-  isLoading: false,
-  isEnlarged: false,
-  onClose: () => {},
-  className: '',
-  error: null,
 };
