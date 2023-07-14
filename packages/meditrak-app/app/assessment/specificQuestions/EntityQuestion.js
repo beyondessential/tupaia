@@ -20,13 +20,13 @@ import { Divider } from '../../widgets';
 const DumbEntityQuestion = props => {
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
 
-  const onQrCodeRead = ({ data }) => {
-    props.onSelectEntity({ id: data });
+  const onQrCodeRead = entityId => {
+    props.onSelectEntity({ id: entityId });
   };
 
   const { config, isOnlyQuestionOnScreen } = props;
   const shouldGenerateCode = config?.entity?.createNew;
-  const shouldShowQrCodeScanner = !props.selectedEntityId && config?.entity?.showQrCode;
+  const shouldShowQrCodeScanner = !props.selectedEntityId && config?.entity?.allowScanQrCode;
 
   if (shouldGenerateCode) {
     return <CodeGeneratorQuestion {...props} />;

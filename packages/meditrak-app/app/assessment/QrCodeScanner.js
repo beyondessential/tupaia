@@ -28,8 +28,8 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
     return (
       <Scanner
         style={localStyles.qrCodeScanner}
-        onRead={() => {
-          onRead();
+        onRead={({ data }) => {
+          onRead(data);
           onFinishScan();
           setIsScanningQrCode(false);
         }}
