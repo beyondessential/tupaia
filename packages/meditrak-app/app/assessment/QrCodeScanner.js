@@ -3,35 +3,35 @@ import PropTypes from 'prop-types';
 
 import { StyleSheet } from 'react-native';
 
-import QRCodeScanner from 'react-native-qrcode-scanner';
+import Scanner from 'react-native-qrcode-scanner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RNCamera } from 'react-native-camera';
 import { Button } from '../widgets';
 import { THEME_COLOR_ONE, THEME_COLOR_TWO } from '../globalStyles';
 
 export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
-  const [isScanningQRCode, setIsScanningQRCode] = useState(false);
+  const [isScanningQrCode, setIsScanningQrCode] = useState(false);
 
   const CancelScanButton = (
     <Button
-      style={localStyles.cancelQRCodeScannerButton}
+      style={localStyles.cancelQrCodeScannerButton}
       onPress={() => {
         onFinishScan();
-        setIsScanningQRCode(false);
+        setIsScanningQrCode(false);
       }}
       title={null}
       Icon={<Icon name="close" color={THEME_COLOR_ONE} size={24} />}
     />
   );
 
-  if (isScanningQRCode) {
+  if (isScanningQrCode) {
     return (
-      <QRCodeScanner
+      <Scanner
         style={localStyles.qrCodeScanner}
         onRead={() => {
           onRead();
           onFinishScan();
-          setIsScanningQRCode(false);
+          setIsScanningQrCode(false);
         }}
         flashMode={RNCamera.Constants.FlashMode.auto}
         topContent={CancelScanButton}
@@ -39,7 +39,7 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
     );
   }
 
-  const QRCodeIcon = (
+  const QrCodeIcon = (
     <Icon
       name="qr-code-scanner"
       color={THEME_COLOR_TWO}
@@ -53,9 +53,9 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
       style={localStyles.qrCodeButton}
       onPress={() => {
         onStartScan();
-        setIsScanningQRCode(true);
+        setIsScanningQrCode(true);
       }}
-      Icon={QRCodeIcon}
+      Icon={QrCodeIcon}
       title="Scan QR Code"
       textStyle={localStyles.qrCodeButtonLabelText}
     />
@@ -92,7 +92,7 @@ const localStyles = StyleSheet.create({
   qrCodeScanner: {
     position: 'relative',
   },
-  cancelQRCodeScannerButton: {
+  cancelQrCodeScannerButton: {
     width: 30,
     height: 30,
     backgroundColor: 'transparent',
@@ -103,7 +103,7 @@ const localStyles = StyleSheet.create({
     right: 35,
     top: 5,
   },
-  cancelQRCodeScannerButtonLabelText: {
+  cancelQrCodeScannerButtonLabelText: {
     color: THEME_COLOR_ONE,
   },
 });

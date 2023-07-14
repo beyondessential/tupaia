@@ -18,15 +18,15 @@ import {
 import { Divider } from '../../widgets';
 
 const DumbEntityQuestion = props => {
-  const [isScanningQRCode, setIsScanningQRCode] = useState(false);
+  const [isScanningQrCode, setIsScanningQrCode] = useState(false);
 
-  const onQRCodeRead = ({ data }) => {
+  const onQrCodeRead = ({ data }) => {
     props.onSelectEntity({ id: data });
   };
 
   const { config, isOnlyQuestionOnScreen } = props;
   const shouldGenerateCode = config?.entity?.createNew;
-  const shouldShowQRCodeScanner = !props.selectedEntityId && config?.entity?.showQrCode;
+  const shouldShowQrCodeScanner = !props.selectedEntityId && config?.entity?.showQrCode;
 
   if (shouldGenerateCode) {
     return <CodeGeneratorQuestion {...props} />;
@@ -36,16 +36,16 @@ const DumbEntityQuestion = props => {
     <EntityList startOpen={isOnlyQuestionOnScreen} onRowPress={props.onSelectEntity} {...props} />
   );
 
-  if (shouldShowQRCodeScanner) {
+  if (shouldShowQrCodeScanner) {
     return (
       <>
         <QrCodeScanner
-          onRead={onQRCodeRead}
-          onStartScan={() => setIsScanningQRCode(true)}
-          onFinishScan={() => setIsScanningQRCode(false)}
+          onRead={onQrCodeRead}
+          onStartScan={() => setIsScanningQrCode(true)}
+          onFinishScan={() => setIsScanningQrCode(false)}
         />
-        {isScanningQRCode ? null : <Divider text="or" />}
-        {isScanningQRCode ? null : EntityListSelector}
+        {isScanningQrCode ? null : <Divider text="or" />}
+        {isScanningQrCode ? null : EntityListSelector}
       </>
     );
   }
