@@ -4,12 +4,12 @@
  */
 
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
-import QrCode from 'react-native-qrcode-svg';
 import Share from 'react-native-share';
 
-import { Button, Heading } from '../widgets';
+import { Button, Heading, QrCode } from '../widgets';
 import { THEME_COLOR_ONE, THEME_COLOR_TWO, THEME_FONT_SIZE_ONE } from '../globalStyles';
 import { GENERATE_QR_CODE_SUCCESS } from './constants';
 import { addMessage } from '../messages';
@@ -23,7 +23,7 @@ export const QrCodeScreenComponent = ({ data, onClose }) => {
     qrCodeImg.toDataURL(dataURL => {
       const shareOptions = {
         type: 'image/*',
-        url: `data:image/svg+xml;base64,${dataURL}`,
+        url: `data:image/png;base64,${dataURL}`,
       };
       Share.open(shareOptions)
         .then(res => console.log(res))
@@ -34,18 +34,15 @@ export const QrCodeScreenComponent = ({ data, onClose }) => {
   return (
     <View>
       <Heading text="Share QR Code" style={localStyles.heading} />
-      <Heading text={data.name} style={localStyles.subHeading} />
-      <View style={{ marginLeft: 100 }}>
-        <QrCode getRef={c => setQrCodeImg(c)} size={160} value={data.id} />
+      <View style={localStyles.qrCodeContainer}>
+        <QrCode
+          getRef={c => setQrCodeImg(c)}
+          size={280}
+          qrCodeContents={data.id}
+          humanReadableId={data.name}
+        />
       </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <View style={localStyles.buttonsContainer}>
         <Button
           style={localStyles.closeButton}
           title="Close"
@@ -63,9 +60,26 @@ export const QrCodeScreenComponent = ({ data, onClose }) => {
   );
 };
 
+QrCodeScreenComponent.propTypes = {
+  data: PropTypes.shape({ id: PropTypes.string, name: PropTypes.string }),
+  onClose: PropTypes.func,
+};
+
+QrCodeScreenComponent.defaultProps = {
+  data: {},
+  onClose: () => {},
+};
+
 const localStyles = StyleSheet.create({
-  logo: {
-    marginVertical: 20,
+  qrCodeContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  buttonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   closeButton: {
     borderWidth: 1,
@@ -88,12 +102,6 @@ const localStyles = StyleSheet.create({
     fontSize: THEME_FONT_SIZE_ONE,
     flex: 0,
     textAlign: 'left',
-  },
-  subHeading: {
-    marginVertical: 10,
-    fontSize: THEME_FONT_SIZE_ONE,
-    flex: 0,
-    textAlign: 'center',
   },
 });
 
