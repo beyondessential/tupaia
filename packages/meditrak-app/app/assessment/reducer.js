@@ -18,8 +18,6 @@ import {
   WIPE_CURRENT_SURVEY,
   SCROLL_CONTROL_ATTACH,
   SCROLL_CONTROL_RELEASE,
-  GENERATE_QR_CODE,
-  GENERATE_QR_CODE_SUCCESS,
 } from './constants';
 
 const defaultState = {
@@ -91,14 +89,6 @@ const stateChanges = {
   [SURVEY_SUBMIT_SUCCESS]: () => ({
     isSubmitting: false,
     isSurveyInProgress: false,
-  }),
-  //qrCodeEntity
-  [GENERATE_QR_CODE]: ({ qrCodeEntity }) => ({
-    isGeneratingQrCode: true,
-    qrCodeEntity,
-  }),
-  [GENERATE_QR_CODE_SUCCESS]: () => ({
-    isGeneratingQrCode: false,
   }),
   [UPDATE_SURVEYS]: ({ surveys }) => ({ surveys }),
   [WIPE_CURRENT_SURVEY]: () => ({
