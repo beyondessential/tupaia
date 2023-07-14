@@ -20,7 +20,7 @@ function mapStateToProps(state) {
   const {
     assessorId,
     isSubmitting,
-    isGeneratingQRCode,
+    isGeneratingQrCode,
     qrCodeEntity,
     screens,
     questions,
@@ -40,7 +40,7 @@ function mapStateToProps(state) {
     startTime,
     surveyId,
     surveyName: getSurveyName(state),
-    isGeneratingQRCode,
+    isGeneratingQrCode,
     qrCodeEntity,
   };
 }
