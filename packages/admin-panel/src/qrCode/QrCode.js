@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { toDataURL } from 'qrcode';
 import { Button } from '@tupaia/ui-components';
+import * as download from 'downloadjs';
 
 const Container = styled.div`
   text-align: center;
@@ -27,13 +28,6 @@ const StyledCanvas = styled.canvas`
   outline: 1px solid #dedede;
 `;
 
-function downloadImage(dataUri, filename) {
-  const a = document.createElement('a');
-  a.href = dataUri;
-  a.download = filename;
-  a.click();
-}
-
 export const QrCode = ({ qrCodeContents, humanReadableId }) => {
   // Draw into a canvas so that we can download it as an image
   const canvasRef = useRef(null);
@@ -41,7 +35,7 @@ export const QrCode = ({ qrCodeContents, humanReadableId }) => {
   const handleDownload = () => {
     const canvas = canvasRef.current;
     const dataUri = canvas.toDataURL('image/jpeg', 1.0);
-    downloadImage(dataUri, `${humanReadableId}.jpeg`);
+    download(dataUri, `${humanReadableId}.jpeg`);
   };
 
   useEffect(() => {
