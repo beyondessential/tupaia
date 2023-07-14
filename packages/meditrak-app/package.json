@@ -95,6 +95,8 @@
     "eslint-plugin-react-native": "^3.6.0",
     "flow-bin": "0.38.0",
     "metro-react-native-babel-preset": "^0.59.0",
+    "patch-package": "^7.0.2",
+    "postinstall-postinstall": "^2.1.0",
     "react-test-renderer": "16.13.1"
   }
 }
