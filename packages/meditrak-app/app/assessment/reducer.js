@@ -94,11 +94,11 @@ const stateChanges = {
   }),
   //qrCodeEntity
   [GENERATE_QR_CODE]: ({ qrCodeEntity }) => ({
-    isGeneratingQRCode: true,
+    isGeneratingQrCode: true,
     qrCodeEntity,
   }),
   [GENERATE_QR_CODE_SUCCESS]: () => ({
-    isGeneratingQRCode: false,
+    isGeneratingQrCode: false,
   }),
   [UPDATE_SURVEYS]: ({ surveys }) => ({ surveys }),
   [WIPE_CURRENT_SURVEY]: () => ({

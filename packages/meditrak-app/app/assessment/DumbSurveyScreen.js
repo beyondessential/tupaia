@@ -22,7 +22,7 @@ import {
 import { SurveyTableOfContents } from './SurveyTableOfContents';
 import { THEME_COLOR_ONE } from '../globalStyles';
 import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
-import { QRCodeScreen } from './QRCodeScreen';
+import { QrCodeScreen } from './QrCodeScreen';
 
 const LENGTH_OF_TRANSITION = 300;
 
@@ -70,7 +70,7 @@ export class DumbSurveyScreen extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.screenIndex !== nextProps.screenIndex) return true;
     if (this.props.isSubmitting !== nextProps.isSubmitting) return true;
-    if (this.props.isGeneratingQRCode !== nextProps.isGeneratingQRCode) return true;
+    if (this.props.isGeneratingQrCode !== nextProps.isGeneratingQrCode) return true;
     if (this.props.errorMessage !== nextProps.errorMessage) return true;
     if (this.state !== nextState) return true;
     return false;
@@ -135,13 +135,13 @@ export class DumbSurveyScreen extends React.Component {
       surveyScreens,
       screenIndex,
       questions,
-      isGeneratingQRCode,
+      isGeneratingQrCode,
       qrCodeEntity,
     } = this.props;
     const { isTableOfContentsVisible } = this.state;
     const FinalScreen = () => {
-      if (isGeneratingQRCode) {
-        return <QRCodeScreen data={qrCodeEntity} />;
+      if (isGeneratingQrCode) {
+        return <QrCodeScreen data={qrCodeEntity} />;
       }
       return <SubmitScreen />;
     };
@@ -177,7 +177,7 @@ export class DumbSurveyScreen extends React.Component {
                   {isCurrentContent &&
                     onPressSubmit !== null &&
                     !isSubmitting &&
-                    !isGeneratingQRCode && (
+                    !isGeneratingQrCode && (
                       <Button
                         title="Submit"
                         onPress={onPressSubmit}
@@ -187,7 +187,7 @@ export class DumbSurveyScreen extends React.Component {
                   {isCurrentContent &&
                     onPressRepeat !== null &&
                     !isSubmitting &&
-                    !isGeneratingQRCode && (
+                    !isGeneratingQrCode && (
                       <Button
                         title="Submit and repeat"
                         onPress={onPressRepeat}
@@ -199,7 +199,7 @@ export class DumbSurveyScreen extends React.Component {
             </Animated.View>
           );
         })}
-        {/* {!isGeneratingQRCode && ( */}
+        {/* {!isGeneratingQrCode && ( */}
         <ProgressActionBar
           progress={surveyProgress}
           label="Jump to section"
@@ -240,7 +240,7 @@ DumbSurveyScreen.propTypes = {
   surveyName: PropTypes.string.isRequired,
   surveyProgress: PropTypes.number.isRequired,
   isSubmitting: PropTypes.bool,
-  isGeneratingQRCode: PropTypes.bool.isRequired,
+  isGeneratingQrCode: PropTypes.bool.isRequired,
   surveyScreens: PropTypes.array.isRequired,
   screenIndex: PropTypes.number.isRequired,
 };

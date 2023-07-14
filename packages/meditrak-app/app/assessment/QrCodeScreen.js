@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
+import QrCode from 'react-native-qrcode-svg';
 import Share from 'react-native-share';
 
 import { BlueButton, Button, Heading } from '../widgets';
@@ -16,7 +16,7 @@ import { addMessage } from '../messages';
 import { goBack } from '../navigation';
 import { stopWatchingUserLocation } from '../utilities/userLocation';
 
-export const QRCodeScreenComponent = ({ data, onClose }) => {
+export const QrCodeScreenComponent = ({ data, onClose }) => {
   const [qrCodeImg, setQrCodeImg] = useState(null);
 
   const openShareScreen = () => {
@@ -36,7 +36,7 @@ export const QRCodeScreenComponent = ({ data, onClose }) => {
       <Heading text="Share QR Code" style={localStyles.heading} />
       <Heading text={data.name} style={localStyles.subHeading} />
       <View style={{ marginLeft: 100 }}>
-        <QRCode getRef={c => setQrCodeImg(c)} size={160} value={data.id} />
+        <QrCode getRef={c => setQrCodeImg(c)} size={160} value={data.id} />
       </View>
       <View
         style={{
@@ -89,4 +89,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export const QRCodeScreen = connect(null, mapDispatchToProps)(QRCodeScreenComponent);
+export const QrCodeScreen = connect(null, mapDispatchToProps)(QrCodeScreenComponent);
