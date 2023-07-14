@@ -6,6 +6,7 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
@@ -37,6 +38,8 @@ export const FileUploadField = ({
   textOnButton,
   label,
   tooltip,
+  helperText,
+  error,
 }) => {
   const inputEl = useRef(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
@@ -51,7 +54,7 @@ export const FileUploadField = ({
       newName = event.target.value.split('\\').pop();
     }
 
-    onChange(event, newName);
+    onChange(event, newName, input.files);
   };
 
   return (
@@ -72,6 +75,7 @@ export const FileUploadField = ({
         </GreyButton>
         {fileName && <FileName>{fileName}</FileName>}
       </FileUploadContainer>
+      {helperText && <MuiFormHelperText error={error}>{helperText}</MuiFormHelperText>}
     </FileUploadWrapper>
   );
 };
@@ -84,6 +88,8 @@ FileUploadField.propTypes = {
   multiple: PropTypes.bool,
   label: PropTypes.string,
   tooltip: PropTypes.string,
+  helperText: PropTypes.string,
+  error: PropTypes.bool,
 };
 
 FileUploadField.defaultProps = {
@@ -93,4 +99,6 @@ FileUploadField.defaultProps = {
   textOnButton: null,
   label: '',
   tooltip: '',
+  helperText: null,
+  error: false,
 };
