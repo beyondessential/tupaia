@@ -4,14 +4,14 @@
  */
 
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 import QrCode from 'react-native-qrcode-svg';
 import Share from 'react-native-share';
 
-import { BlueButton, Button, Heading } from '../widgets';
-import { THEME_FONT_SIZE_ONE } from '../globalStyles';
+import { Button, Heading } from '../widgets';
+import { THEME_COLOR_ONE, THEME_COLOR_TWO, THEME_FONT_SIZE_ONE } from '../globalStyles';
 import { GENERATE_QR_CODE_SUCCESS } from './constants';
-import { connect } from 'react-redux';
 import { addMessage } from '../messages';
 import { goBack } from '../navigation';
 import { stopWatchingUserLocation } from '../utilities/userLocation';
@@ -46,15 +46,17 @@ export const QrCodeScreenComponent = ({ data, onClose }) => {
           alignItems: 'center',
         }}
       >
-        <BlueButton
-          style={{ marginLeft: 26, marginTop: 50, width: 150 }}
+        <Button
+          style={localStyles.closeButton}
           title="Close"
           onPress={onClose}
+          textStyle={localStyles.closeButtonLabel}
         />
         <Button
-          style={{ marginRight: 26, marginTop: 50, width: 150 }}
+          style={localStyles.shareButton}
           onPress={openShareScreen}
           title="Share"
+          textStyle={localStyles.shareButtonLabel}
         />
       </View>
     </View>
@@ -64,6 +66,21 @@ export const QrCodeScreenComponent = ({ data, onClose }) => {
 const localStyles = StyleSheet.create({
   logo: {
     marginVertical: 20,
+  },
+  closeButton: {
+    borderWidth: 1,
+    borderColor: THEME_COLOR_ONE,
+    backgroundColor: THEME_COLOR_TWO,
+    marginLeft: 26,
+    marginTop: 50,
+    width: 150,
+  },
+  closeButtonLabel: {
+    color: THEME_COLOR_ONE,
+  },
+  shareButton: { marginRight: 26, marginTop: 50, width: 150 },
+  shareButtonLabel: {
+    fontWeight: 'bold',
   },
   heading: {
     paddingLeft: 20,
