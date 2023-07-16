@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import { Clear, Search } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@tupaia/ui-components';
 import { ConditionalPresentationOptions } from '@tupaia/types';
 import { DashboardItemType, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../types';
+import { useDashboards } from '../api/queries';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',
@@ -128,7 +130,9 @@ interface MatrixProps {
 export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
   const { columns = [], rows = [] } = report;
   const [searchFilter, setSearchFilter] = useState('');
+  const { projectCode, entityCode, dashboardName } = useParams();
 
+  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const placeholderImage = getPlaceholderImage(config);
   // in the dashboard, show a placeholder image
   if (!isEnlarged) return <img src={placeholderImage} alt="Matrix Placeholder" />;
@@ -137,7 +141,7 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
   const parsedColumns = parseColumns(columns);
 
   if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
-  const { periodGranularity } = config;
+  const { periodGranularity, drillDown } = config;
 
   // Use the first row's data element as a placeholder text if possible
   const placeholderText = rows.length > 0 ? `E.g. ${rows[0].dataElement}` : 'Search Rows';
@@ -148,6 +152,23 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
 
   const clearSearchFilter = () => {
     setSearchFilter('');
+  };
+
+  const handleClickRow = (rowTitle: any) => {
+    const { keyLink, parameterLink, itemCode } = drillDown;
+    const activeRow = parsedRows.find(row => row.title === rowTitle);
+    if (!activeRow) return;
+    const params = {
+      dashboardCode: activeDashboard?.dashboardCode,
+      drillDownLevel: 1,
+      isExpanded: true,
+      itemCode,
+      legacy: config?.legacy,
+      organisationUnitCode: entityCode,
+      projectCode,
+      [parameterLink]: activeRow[parameterLink] || undefined,
+    };
+    console.log(params);
   };
   return (
     <>
@@ -175,6 +196,7 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
         rows={parsedRows}
         columns={parsedColumns}
         disableExpand={!!searchFilter}
+        onClickRow={drillDown ? handleClickRow : undefined}
       />
     </>
   );

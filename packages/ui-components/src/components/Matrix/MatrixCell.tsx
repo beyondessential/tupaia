@@ -68,9 +68,12 @@ interface MatrixRowProps {
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
 export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowProps) => {
-  const { presentationOptions = {}, categoryPresentationOptions = {}, columns } = useContext(
-    MatrixContext,
-  );
+  const {
+    presentationOptions = {},
+    categoryPresentationOptions = {},
+    columns,
+    onClickRow,
+  } = useContext(MatrixContext);
   const dispatch = useContext(MatrixDispatchContext)!;
   // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
 
@@ -92,23 +95,29 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowPro
   ) : (
     value
   );
+
+  const isClickable = !!onClickRow || isDots;
   const onClickCellButton = () => {
-    dispatch({
-      type: ACTION_TYPES.SET_ENLARGED_CELL,
-      payload: {
-        rowTitle,
-        value,
-        displayValue,
-        presentation,
-        isCategory,
-      },
-    });
+    if (isDots) {
+      dispatch({
+        type: ACTION_TYPES.SET_ENLARGED_CELL,
+        payload: {
+          rowTitle,
+          value,
+          displayValue,
+          presentation,
+          isCategory,
+        },
+      });
+    } else if (onClickRow) {
+      onClickRow(rowTitle);
+    }
   };
   return (
     <DataCell>
       <DataCellContent
-        as={isDots ? ExpandButton : 'div'}
-        onClick={isDots ? onClickCellButton : undefined}
+        as={isClickable ? ExpandButton : 'div'}
+        onClick={isClickable ? onClickCellButton : undefined}
       >
         {displayValue}
       </DataCellContent>

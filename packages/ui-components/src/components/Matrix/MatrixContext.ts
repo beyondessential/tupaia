@@ -25,6 +25,7 @@ const defaultContextValue = {
   expandedRows: RowTitle[];
   enlargedCell: Record<string, any> | null;
   disableExpand?: boolean;
+  onClickRow?: (rowTitle: RowTitle) => void;
 };
 
 // This is the context for the rows, columns and presentation options of the matrix

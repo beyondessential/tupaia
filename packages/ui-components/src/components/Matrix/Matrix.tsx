@@ -35,6 +35,7 @@ interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
   disableExpand?: boolean;
+  onClickRow?: (rowTitle: MatrixRowType['title']) => void;
 }
 
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
