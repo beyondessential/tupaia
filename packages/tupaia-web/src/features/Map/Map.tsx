@@ -20,7 +20,7 @@ import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
-import { useDefaultMapOverlay } from './useDefaultMapOverlay';
+import { useHiddenMapValues, useMapOverlayReport, useDefaultMapOverlay } from './utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -91,13 +91,18 @@ const MapControlColumn = styled.div`
 
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
-  const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
   const { data: entity } = useEntity(entityCode);
 
   // set the map default overlay if there isn't one selected
   const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);
   useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
+  // Setup legend hidden values
+  const { data: measureData } = useMapOverlayReport();
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
+
+  // Setup Tile Picker
+  const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
@@ -107,7 +112,7 @@ export const Map = () => {
       <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <PolygonLayer />
-        <MarkerLayer />
+        <MarkerLayer hiddenValues={hiddenValues} />
         <ZoomControl position="bottomright" />
         <MapWatermark />
       </StyledMap>
@@ -115,7 +120,7 @@ export const Map = () => {
       <MapControlWrapper>
         <MapControlColumn>
           <MapOverlaySelector />
-          <MapLegend />
+          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
         </MapControlColumn>
         <TilePickerWrapper>
           <TilePicker

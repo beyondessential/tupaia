@@ -29,7 +29,7 @@ const FormHelperText = styled(MuiFormHelperText)`
 `;
 
 interface CheckboxProps extends MuiCheckboxProps {
-  label?: string;
+  label?: React.ReactNode;
   error?: boolean;
   className?: string;
   helperText?: string;

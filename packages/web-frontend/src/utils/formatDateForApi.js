@@ -5,13 +5,12 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
-export const formatDateForApi = (date, timezone) => {
+export const formatDateForApi = date => {
   if (!date) return undefined;
   const dateAsMoment = moment(date);
-  if (timezone) dateAsMoment.tz(timezone);
   return dateAsMoment.format(DATE_FORMAT);
 };

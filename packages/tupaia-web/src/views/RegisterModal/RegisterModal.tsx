@@ -39,6 +39,14 @@ const LinkText = styled(Typography)`
   }
 `;
 
+const TermsText = styled.span`
+  color: ${props => props.theme.palette.common.white};
+
+  a {
+    color: ${props => props.theme.palette.common.white};
+  }
+`;
+
 const FullWidthColumn = styled.div`
   grid-column: 1/-1;
 `;
@@ -101,7 +109,22 @@ export const RegisterModal = () => {
             />
             <TextField name="employer" label="Employer" required />
             <TextField name="position" label="Position" required />
-            <CheckboxField name="hasAgreed" label="I agree to the terms and conditions" required />
+            <CheckboxField
+              name="hasAgreed"
+              label={
+                <TermsText>
+                  I agree to the{' '}
+                  <a
+                    href="https://www.bes.au/terms-and-conditions"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    terms and conditions
+                  </a>
+                </TermsText>
+              }
+              required
+            />
             <FullWidthColumn>
               <AuthModalButton type="submit" isLoading={isLoading}>
                 Register account
