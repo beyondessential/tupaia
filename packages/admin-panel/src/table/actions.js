@@ -79,9 +79,11 @@ const refreshDataWithDebounce = debounce(
     // Set up filter
     const filterObject = { ...baseFilter };
     filters.forEach(({ id, value }) => {
-      filterObject[id] = value;
+      console.log(id, value);
+      filterObject[id] = value.trim();
     });
     const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
+    console.log(filterString);
 
     // Set up sort
     const sortObjects = sorting.map(({ id, desc }) => {
