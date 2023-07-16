@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
-import { GlobalStyle, theme } from './theme';
+import { theme } from './theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +24,6 @@ export const AppProviders = ({ children }: { children: ReactNode }) => (
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <GlobalStyle />
           <CssBaseline />
           {children}
         </QueryClientProvider>

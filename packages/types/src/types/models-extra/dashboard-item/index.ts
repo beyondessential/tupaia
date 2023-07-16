@@ -19,6 +19,7 @@ import type {
   GaugeChartConfig,
   LineChartConfig,
   PieChartConfig,
+  ChartConfig,
 } from './charts';
 import type {
   ColorListViewConfig,
@@ -31,6 +32,7 @@ import type {
   SingleDateViewConfig,
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
+  ViewConfig,
 } from './views';
 
 export type {
@@ -47,23 +49,14 @@ export type {
  * Please also keep ../../utils/vizTypes up to date when making changes
  */
 export type DashboardItemConfig =
-  | GaugeChartConfig
-  | ComposedChartConfig
-  | BarChartConfig
-  | PieChartConfig
-  | LineChartConfig
+  | ChartConfig
   | ComponentConfig
   | MatrixConfig
   | ListViewConfig
-  | SingleValueViewConfig
+  | ViewConfig
   | MultiPhotographViewConfig
-  | MultiSingleValueViewConfig
-  | SingleDownloadLinkViewConfig
-  | MultiValueRowViewConfig
   | ColorListViewConfig
-  | DataDownloadViewConfig
-  | SingleDateViewConfig
-  | MultiValueViewConfig;
+  | DataDownloadViewConfig;
 
 export type { ValueType } from './common';
 export type {
@@ -74,4 +67,15 @@ export type {
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  ViewConfig,
+  DataDownloadViewConfig,
+  ListViewConfig,
+  MultiPhotographViewConfig,
+  MultiSingleValueViewConfig,
+  MultiValueRowViewConfig,
+  MultiValueViewConfig,
+  SingleDateViewConfig,
+  SingleDownloadLinkViewConfig,
+  SingleValueViewConfig,
+  ChartConfig,
 };

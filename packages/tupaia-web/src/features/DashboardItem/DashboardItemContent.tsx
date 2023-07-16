@@ -6,13 +6,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
-import { ViewContent as ChartViewContent } from '@tupaia/ui-chart-components';
+import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
 import { Chart } from '../Chart';
 import { ExpandItemButton } from './ExpandItemButton';
+import { View } from '../View';
 import { Matrix } from '../Matrix';
-import { DashboardItemType, MatrixViewContent } from '../../types';
+import {
+  ChartReport,
+  DashboardItemReport,
+  DashboardItemType,
+  MatrixReport,
+  ViewReport,
+} from '../../types';
+import { DashboardItemConfig } from '@tupaia/types';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -53,11 +60,13 @@ const LoadingContainer = styled.div`
 
 const DisplayComponents = {
   chart: Chart,
+  view: View,
   matrix: Matrix,
 };
 
 interface DashboardItemContentProps {
-  viewContent: DashboardItemType & (ChartViewContent | MatrixViewContent);
+  config: DashboardItemType;
+  report: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
@@ -65,18 +74,30 @@ interface DashboardItemContentProps {
   isExpandable: boolean;
 }
 
+const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
+  // If there is no report, if means it is loading or there is an error, which is handled elsewhere
+  if (!report) return false;
+  if (type === 'matrix') {
+    return (report as MatrixReport)?.rows?.length === 0;
+  }
+  if (type === 'view' || type === 'chart') {
+    return (report as ViewReport | ChartReport)?.data?.length === 0;
+  }
+  return false;
+};
 /**
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = ({
-  viewContent,
+  config,
+  report,
   isEnlarged,
   isLoading,
   error,
   onRetryFetch,
   isExpandable,
 }: DashboardItemContentProps) => {
-  const { name, reportCode, type, viewType } = viewContent;
+  const { name, reportCode, type, viewType } = config;
 
   const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
 
@@ -98,9 +119,22 @@ export const DashboardItemContent = ({
       </Alert>
     );
 
+  // if there is no data for the selected dates, then we want to show a message to the user
+  const showNoDataMessage = getHasNoData(report, type);
+
   return (
     <>
-      {DisplayComponent && <DisplayComponent viewContent={viewContent} isEnlarged={isEnlarged} />}
+      {showNoDataMessage ? (
+        <NoData
+          viewContent={{
+            ...config,
+            ...report,
+          }}
+        />
+      ) : (
+        <DisplayComponent report={report} config={config} isEnlarged={isEnlarged} />
+      )}
+      {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>
   );
