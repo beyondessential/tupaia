@@ -32,6 +32,8 @@ describe('Permissions checker for GETSurveyResponses', async () => {
   let vanuatuAdminResponseId;
   let vanuatuDonorResponseId;
   let filterString;
+  let vanuatuCountry;
+  let laosCountry;
 
   before(async () => {
     await resetTestData();
@@ -43,8 +45,8 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       name: 'Donor',
     });
 
-    const vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU' });
-    const laosCountry = await findOrCreateDummyRecord(models.country, { code: 'LA' });
+    vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU', name: 'Vanuatu' });
+    laosCountry = await findOrCreateDummyRecord(models.country, { code: 'LA', name: 'Laos' });
 
     const vanuatuEntity = await findOrCreateDummyRecord(models.entity, {
       country_code: vanuatuCountry.code,
@@ -122,7 +124,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /surveyResponses/:id', async () => {
+  describe.only('GET /surveyResponses/:id', async () => {
     it("Sufficient permissions: Return a requested survey response if we have permission for the survey in the response's country", async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
@@ -152,7 +154,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     });
   });
 
-  describe('GET /surveyResponses', async () => {
+  describe.only('GET /surveyResponses', async () => {
     it('Sufficient permissions: Return only survey responses we have permissions to the survey in the response country', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
@@ -180,6 +182,21 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
       expect(results).to.be.empty;
+    });
+
+    it('Joins completed: Return all survey responses with a country name attached to the response', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: results } = await app.get(
+        `surveyResponses?${filterString}&columns=["country.name"]`,
+      );
+
+      expect(results.map(r => r['country.name'])).to.have.members([
+        // Duplicates of Vanuatu and Laos expected as four survey responses in test DB (two each from Vanuatu and Laos)
+        vanuatuCountry.name,
+        laosCountry.name,
+        vanuatuCountry.name,
+        laosCountry.name,
+      ]);
     });
   });
 });

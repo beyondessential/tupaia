@@ -21,8 +21,13 @@ export class GETSurveyResponses extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
+    country: {
+      through: 'entity',
+      foreignKey: 'entity.country_code',
+      foreignTable: 'country.code',
+    },
     entity: ['entity.id', 'survey_response.entity_id'],
-    country: ['country.code', 'entity.country_code'],
+    survey: ['survey.id', 'survey_response.survey_id'],
   };
 
   async findSingleRecord(surveyResponseId, options) {
@@ -34,7 +39,6 @@ export class GETSurveyResponses extends GETHandler {
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
     );
-
     return surveyResponse;
   }
 
@@ -72,6 +76,8 @@ export class GETSurveyResponses extends GETHandler {
       this.customJoinConditions,
       this.defaultJoinType,
     );
+
+    // manipulate resulting multi-join with country code specific requirements
 
     return this.database.count(this.recordType, criteria, { multiJoin });
   }

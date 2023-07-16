@@ -75,7 +75,6 @@ const entityName = {
 const countryName = {
   Header: 'Country',
   source: 'country.name',
-  editable: false,
 };
 
 export const SURVEY_RESPONSE_COLUMNS = [

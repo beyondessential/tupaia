@@ -86,12 +86,42 @@ const getForeignKeyColumnName = foreignTable => {
   return exceptions[foreignTable] || `${foreignTable}_id`;
 };
 
+const addJoin = (
+  recordType,
+  recordTypesInQuery,
+  multiJoin,
+  baseRecordType,
+  customJoinConditions,
+  joinType,
+) => {
+  if (!recordTypesInQuery.has(recordType)) {
+    const join = customJoinConditions[recordType];
+    const joinCondition = join.through
+      ? [join.foreignTable, join.foreignKey]
+      : [`${recordType}.id`, `${baseRecordType}.${getForeignKeyColumnName(recordType)}`];
+    if (join?.through) {
+      addJoin(
+        join.through,
+        recordTypesInQuery,
+        multiJoin,
+        baseRecordType,
+        customJoinConditions,
+        joinType,
+      );
+    }
+    multiJoin.push({ joinWith: recordType, joinCondition, joinType });
+    recordTypesInQuery.add(recordType);
+  }
+  return multiJoin;
+};
+
 export const getQueryOptionsForColumns = (
   columnNames,
   baseRecordType,
   customJoinConditions = {},
   joinType = null,
 ) => {
+  console.log(baseRecordType);
   if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
       'No columns start with "_", and conjunction operators are reserved for internal use only',
@@ -99,6 +129,8 @@ export const getQueryOptionsForColumns = (
   }
   const multiJoin = [];
   const recordTypesInQuery = new Set([baseRecordType]);
+  console.log(recordTypesInQuery.size);
+  console.log(baseRecordType);
   columnNames
     .filter(c => c.includes('.'))
     .forEach(columnName => {
@@ -107,15 +139,24 @@ export const getQueryOptionsForColumns = (
       const resource = columnName.split('.')[0];
       const recordType = resourceToRecordType(resource);
       if (!recordTypesInQuery.has(recordType)) {
-        const joinCondition = customJoinConditions[recordType] || [
-          `${recordType}.id`,
-          `${baseRecordType}.${getForeignKeyColumnName(recordType)}`,
-        ];
-        multiJoin.push({ joinWith: recordType, joinCondition, joinType });
-        recordTypesInQuery.add(recordType);
+        const join = customJoinConditions[recordType];
+        if (join) {
+          addJoin(
+            recordType,
+            recordTypesInQuery,
+            multiJoin,
+            baseRecordType,
+            customJoinConditions,
+            joinType,
+          );
+        }
       }
     });
+  console.log(recordTypesInQuery.size);
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
+  console.log([...recordTypesInQuery]);
   const sort = [...recordTypesInQuery].map(recordType => `${recordType}.id`);
+  console.log(sort);
+  console.log(multiJoin);
   return { multiJoin, sort };
 };
