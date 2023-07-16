@@ -65,12 +65,14 @@ const RowHeaderCell = ({
   isExpanded,
   hasChildren,
   children,
+  disableExpandButton,
 }: {
   depth: number;
   isExpanded: boolean;
   rowTitle: string;
   hasChildren: boolean;
   children: React.ReactNode;
+  disableExpandButton?: boolean;
 }) => {
   const dispatch = useContext(MatrixDispatchContext)!;
   const toggleExpandedRows = () => {
@@ -90,6 +92,7 @@ const RowHeaderCell = ({
           aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
           size="small"
           onClick={toggleExpandedRows}
+          disabled={disableExpandButton}
         >
           <ExpandIcon $expanded={isExpanded} />
         </IconButton>
@@ -104,12 +107,14 @@ const RowHeaderCell = ({
  */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title } = row;
-  const { columns, startColumn, maxColumns, expandedRows } = useContext(MatrixContext);
+  const { columns, startColumn, maxColumns, expandedRows, disableExpand = false } = useContext(
+    MatrixContext,
+  );
 
   const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
 
-  const isExpanded = expandedRows.includes(title);
-  const isVisible = parents.every(parent => expandedRows.includes(parent));
+  const isExpanded = expandedRows.includes(title) || disableExpand;
+  const isVisible = parents.every(parent => expandedRows.includes(parent)) || disableExpand;
   const depth = parents.length;
 
   const isCategory = children ? children.length > 0 : false;
@@ -123,6 +128,7 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
           depth={depth}
           rowTitle={title}
           hasChildren={isCategory}
+          disableExpandButton={disableExpand}
         >
           {title}
         </RowHeaderCell>
