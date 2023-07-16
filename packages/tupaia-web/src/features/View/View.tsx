@@ -31,7 +31,7 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   return data?.map(datum => {
     const { value } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata`] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as string] || {}),
       ...datum,
     };
     return {
@@ -61,10 +61,12 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
               ...report,
               data: [datum],
             }}
-            config={{
-              ...config,
-              viewType: datum.viewType || 'singleValue',
-            }}
+            config={
+              {
+                ...config,
+                viewType: (datum.viewType as ViewConfig['viewType']) || 'singleValue',
+              } as ViewConfig
+            }
             isEnlarged={isEnlarged}
             key={i}
           />

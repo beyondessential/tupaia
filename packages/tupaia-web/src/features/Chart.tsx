@@ -5,12 +5,11 @@
 
 import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
-import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { BarChart, GridOn } from '@material-ui/icons';
-import { Tabs, darken, lighten } from '@material-ui/core';
-import { Tab } from '@material-ui/core';
+import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
-import { ChartReport } from '../types';
+import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
+import { ChartReport, DashboardItemType } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -78,7 +77,7 @@ const ContentWrapper = styled.div<{
 
 interface ChartProps {
   report: ChartReport;
-  config: Omit<ViewContent, 'data'>;
+  config: DashboardItemType;
   isEnlarged?: boolean;
 }
 
@@ -134,7 +133,11 @@ export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
             as={isEnlarged ? TabPanel : 'div'}
             $isEnlarged={isEnlarged}
           >
-            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
+            <Content
+              viewContent={viewContent as ViewContent}
+              isEnlarged={isEnlarged}
+              isExporting={false}
+            />
           </ContentWrapper>
         ))}
       </TabContext>

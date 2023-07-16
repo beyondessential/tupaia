@@ -24,6 +24,17 @@ export {
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  ViewConfig,
+  DataDownloadViewConfig,
+  ListViewConfig,
+  MultiPhotographViewConfig,
+  MultiSingleValueViewConfig,
+  MultiValueRowViewConfig,
+  MultiValueViewConfig,
+  SingleDateViewConfig,
+  SingleDownloadLinkViewConfig,
+  SingleValueViewConfig,
+  ChartConfig,
 } from './models-extra';
 export * from './requests';
 export * from './css';

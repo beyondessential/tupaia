@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { CssColor, ViewConfig } from '@tupaia/types';
+import { CssColor, ViewConfig, SingleValueViewConfig } from '@tupaia/types';
 import { ViewDataItem } from '../../types';
 
 const Text = styled(Typography)<{
@@ -26,7 +26,7 @@ interface SingleValueProps {
 }
 
 export const SingleValue = ({ data = [], config }: SingleValueProps) => {
-  const { dataColor } = config;
+  const { dataColor } = config as SingleValueViewConfig;
   const { value } = data[0] || {};
   return <Text $dataColor={dataColor}>{value}</Text>;
 };
