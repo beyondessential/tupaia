@@ -20,7 +20,6 @@ const Wrapper = styled.div`
   margin-bottom: 0.5rem;
   width: 100%;
   max-width: 100%;
-  min-height: 6.25rem;
   position: relative;
   padding: 1rem 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
@@ -47,40 +46,43 @@ const Title = styled(Typography).attrs({
 /**
  * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
-export const DashboardItem = ({ report }: { report: DashboardItemType }) => {
+export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemType }) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
-  const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(report) as {
+  const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
+    dashboardItem,
+  ) as {
     startDate?: Moment;
     endDate?: Moment;
   };
-  const { data: reportData, isLoading, isError, error, refetch } = useReport(report.reportCode, {
+  const { data: report, isLoading, isError, error, refetch } = useReport(dashboardItem.reportCode, {
     projectCode,
     entityCode,
     dashboardCode: activeDashboard?.dashboardCode,
-    itemCode: report.code,
+    itemCode: dashboardItem.code,
     startDate: defaultStartDate,
     endDate: defaultEndDate,
-    legacy: report.legacy,
+    legacy: dashboardItem.legacy,
   });
 
-  const viewContent = {
-    ...report,
-    ...reportData,
-  };
-
-  const { periodGranularity, type, viewType, name } = report;
+  const { periodGranularity, type, viewType, name, presentationOptions } = dashboardItem;
 
   const isExpandable =
     periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
+
+  let showTitle = !!name;
+  if (viewType === 'multiValue') {
+    showTitle = !!name && presentationOptions?.isTitleVisible;
+  } else if (viewType === 'singleDownloadLink') showTitle = false;
 
   return (
     <Wrapper>
       {/** render the item in the dashboard */}
       <Container>
-        {name && <Title>{name}</Title>}
+        {showTitle && <Title>{name}</Title>}
         <DashboardItemContent
-          viewContent={viewContent}
+          config={dashboardItem}
+          report={report}
           isLoading={isLoading}
           error={isError ? error : null}
           onRetryFetch={refetch}

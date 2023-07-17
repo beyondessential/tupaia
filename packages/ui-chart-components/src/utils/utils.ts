@@ -9,8 +9,14 @@ import { GRANULARITY_CONFIG } from '@tupaia/utils';
 import { DataProps, ChartType, ViewContent, VizPeriodGranularity } from '../types';
 
 // tupaia-web uses a responsive approach, so we need to check the window width
-export const isMobile = () => {
+export const isMobile = (isExporting: boolean = false) => {
   const appType = process.env.REACT_APP_APP_TYPE;
+
+  // Always use the desktop styles when exporting
+  if (isExporting) {
+    return false;
+  }
+
   return appType === 'mobile' || window.innerWidth < 900;
 };
 

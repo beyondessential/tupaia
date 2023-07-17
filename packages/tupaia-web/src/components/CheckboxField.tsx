@@ -19,7 +19,7 @@ const StyledCheckbox = styled(Checkbox)`
 interface CheckboxProps extends MuiCheckboxProps {
   options?: any; // options is type RegisterOptions from react-hook-form, but ts-lint can not find that export
   name: string;
-  label?: string;
+  label?: React.ReactNode;
   helperText?: string | null;
 }
 
@@ -31,7 +31,7 @@ export const CheckboxField = ({ name, label, required, options = {}, ...props }:
   return (
     <StyledCheckbox
       name={name}
-      label={label as string}
+      label={label}
       required={required}
       color="primary"
       error={!!errors[name]}

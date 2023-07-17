@@ -143,3 +143,10 @@ enum ConditionType {
   '>=' = '>=',
   '<=' = '<=',
 }
+
+export type ChartConfig =
+  | GaugeChartConfig
+  | ComposedChartConfig
+  | BarChartConfig
+  | PieChartConfig
+  | LineChartConfig;

@@ -6,8 +6,14 @@
 import type { BaseConfig, ValueType } from './common';
 import { CssColor } from '../../css';
 
-type BaseViewConfig = BaseConfig & {
-  valueType?: ValueType;
+type BaseViewConfig = BaseConfig &
+  Record<string, unknown> & {
+    valueType?: ValueType;
+    value_metadata?: Record<string, unknown>;
+  };
+
+type ColorOption = {
+  color: CssColor;
 };
 
 export type ListViewConfig = BaseViewConfig & {
@@ -49,9 +55,18 @@ export type SingleDownloadLinkViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'singleDownloadLink';
 };
+
+type MultiValueRowOption = ColorOption & { header: string };
 export type MultiValueRowViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'multiValueRow';
+  presentationOptions?: MultiValueRowOption & {
+    dataPairNames?: string[];
+    rowHeader?: ColorOption & { name?: string };
+    leftColumn?: MultiValueRowOption;
+    rightColumn?: MultiValueRowOption;
+    middleColumn?: MultiValueRowOption;
+  };
 };
 
 export type ColorListViewConfig = BaseViewConfig & {
@@ -67,7 +82,23 @@ export type SingleDateViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'singleDate';
 };
+
 export type MultiValueViewConfig = BaseViewConfig & {
   type: 'view';
   viewType: 'multiValue';
+
+  presentationOptions?: Record<string, ColorOption> & {
+    isTitleVisible?: boolean;
+    valueFormat?: string;
+  };
 };
+
+export type ViewConfig =
+  | SingleValueViewConfig
+  | MultiPhotographViewConfig
+  | MultiSingleValueViewConfig
+  | SingleDownloadLinkViewConfig
+  | MultiValueRowViewConfig
+  | DataDownloadViewConfig
+  | SingleDateViewConfig
+  | MultiValueViewConfig;
