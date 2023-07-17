@@ -14,16 +14,14 @@ export const useEntity = (entityCode?: string) => {
   const { projectCode } = useParams();
 
   return useQuery(
-    ['entities', projectCode, entityCode],
+    ['entity', projectCode, entityCode],
     async (): Promise<EntityResponse> => {
-      const entities = await get(`entities/${projectCode}/${entityCode}`, {
+      const entity = await get(`entity/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,
           fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region', 'image_url'],
         },
       });
-      // @ts-ignore
-      const entity = entities.find(e => e.code === entityCode);
 
       if (entity.code === 'explore') {
         return { ...entity, bounds: DEFAULT_BOUNDS };

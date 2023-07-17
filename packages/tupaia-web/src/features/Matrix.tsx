@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Clear, Search } from '@material-ui/icons';
@@ -18,7 +18,8 @@ import {
 } from '@tupaia/ui-components';
 import { ConditionalPresentationOptions } from '@tupaia/types';
 import { DashboardItemType, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../types';
-import { useDashboards } from '../api/queries';
+import { useDashboards, useReport } from '../api/queries';
+import { DashboardItemContent } from './DashboardItem/DashboardItemContent';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',
@@ -38,6 +39,8 @@ const SearchWrapper = styled.div`
   width: 100%;
   max-width: 20rem;
 `;
+
+const DrillDownWrapper = styled.div``;
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
@@ -127,12 +130,14 @@ interface MatrixProps {
   report: MatrixReport;
   isEnlarged?: boolean;
 }
+
 export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
   const { columns = [], rows = [] } = report;
   const [searchFilter, setSearchFilter] = useState('');
+  const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const { projectCode, entityCode, dashboardName } = useParams();
 
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { activeDashboard, dashboards } = useDashboards(projectCode, entityCode, dashboardName);
   const placeholderImage = getPlaceholderImage(config);
   // in the dashboard, show a placeholder image
   if (!isEnlarged) return <img src={placeholderImage} alt="Matrix Placeholder" />;
@@ -140,8 +145,28 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
   const parsedRows = parseRows(rows, undefined, searchFilter);
   const parsedColumns = parseColumns(columns);
 
+  const { periodGranularity, drillDown = {} } = config;
+  const { parameterLink, itemCode } = drillDown;
+
+  console.log(dashboards);
+  const {
+    data: drillDownData,
+    isLoading: isDrillDownLoading,
+    isError: isDrillDownError,
+    error: drillDownError,
+    refetch: drillDownRefetch,
+  } = useReport(itemCode, {
+    dashboardCode: activeDashboard?.dashboardCode,
+    projectCode,
+    entityCode,
+    itemCode,
+    isExpanded: true,
+    drillDownLevel: 1,
+    legacy: config?.legacy,
+    [parameterLink]: selectedRow,
+  });
+
   if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
-  const { periodGranularity, drillDown } = config;
 
   // Use the first row's data element as a placeholder text if possible
   const placeholderText = rows.length > 0 ? `E.g. ${rows[0].dataElement}` : 'Search Rows';
@@ -155,21 +180,11 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
   };
 
   const handleClickRow = (rowTitle: any) => {
-    const { keyLink, parameterLink, itemCode } = drillDown;
     const activeRow = parsedRows.find(row => row.title === rowTitle);
     if (!activeRow) return;
-    const params = {
-      dashboardCode: activeDashboard?.dashboardCode,
-      drillDownLevel: 1,
-      isExpanded: true,
-      itemCode,
-      legacy: config?.legacy,
-      organisationUnitCode: entityCode,
-      projectCode,
-      [parameterLink]: activeRow[parameterLink] || undefined,
-    };
-    console.log(params);
+    setSelectedRow(activeRow[parameterLink]);
   };
+
   return (
     <>
       {/** If no datepicker, allow the user to filter the rows */}
@@ -198,6 +213,23 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
         disableExpand={!!searchFilter}
         onClickRow={drillDown ? handleClickRow : undefined}
       />
+      {/* {selectedRow && (
+        <DrillDownWrapper>
+          <DashboardItemContent
+            config={{
+              ...config,
+              ...activeDashboard?.items.find(item => item.code === itemCode),
+              drillDown: undefined,
+            }}
+            report={(drillDownData || {}) as MatrixReport}
+            isLoading={isDrillDownLoading}
+            error={isDrillDownError ? drillDownError : null}
+            onRetryFetch={drillDownRefetch}
+            isExpandable={false}
+            isEnlarged
+          />
+        </DrillDownWrapper>
+      )} */}
     </>
   );
 };
