@@ -22,6 +22,7 @@ import {
 import { SurveyTableOfContents } from './SurveyTableOfContents';
 import { THEME_COLOR_ONE } from '../globalStyles';
 import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
+import { QRCodeScreen } from './QRCodeScreen';
 
 const LENGTH_OF_TRANSITION = 300;
 
@@ -69,6 +70,7 @@ export class DumbSurveyScreen extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.screenIndex !== nextProps.screenIndex) return true;
     if (this.props.isSubmitting !== nextProps.isSubmitting) return true;
+    if (this.props.isGeneratingQRCode !== nextProps.isGeneratingQRCode) return true;
     if (this.props.errorMessage !== nextProps.errorMessage) return true;
     if (this.state !== nextState) return true;
     return false;
@@ -133,8 +135,16 @@ export class DumbSurveyScreen extends React.Component {
       surveyScreens,
       screenIndex,
       questions,
+      isGeneratingQRCode,
+      qrCodeEntity,
     } = this.props;
     const { isTableOfContentsVisible } = this.state;
+    const FinalScreen = () => {
+      if (isGeneratingQRCode) {
+        return <QRCodeScreen data={qrCodeEntity} />;
+      }
+      return <SubmitScreen />;
+    };
 
     return (
       <TupaiaBackground style={localStyles.container}>
@@ -147,6 +157,7 @@ export class DumbSurveyScreen extends React.Component {
           if (screenIndexForThisContent === null) {
             return null;
           }
+
           return (
             <Animated.View
               key={screenIndexForThisContent}
@@ -156,32 +167,39 @@ export class DumbSurveyScreen extends React.Component {
                 <StatusMessage type={STATUS_MESSAGE_ERROR} message={errorMessage} />
               )}
               {screenIndexForThisContent === surveyScreens.length ? (
-                <SubmitScreen />
+                <FinalScreen />
               ) : (
                 <QuestionScreen database={database} screenIndex={screenIndexForThisContent} />
               )}
               {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size="large" />}
               {(onPressSubmit || onPressRepeat) && (
                 <View style={localStyles.buttonContainerContainer}>
-                  {isCurrentContent && onPressSubmit !== null && !isSubmitting && (
-                    <Button
-                      title="Submit"
-                      onPress={onPressSubmit}
-                      style={localStyles.submitButton}
-                    />
-                  )}
-                  {isCurrentContent && onPressRepeat !== null && !isSubmitting && (
-                    <Button
-                      title="Submit and repeat"
-                      onPress={onPressRepeat}
-                      style={localStyles.submitButton}
-                    />
-                  )}
+                  {isCurrentContent &&
+                    onPressSubmit !== null &&
+                    !isSubmitting &&
+                    !isGeneratingQRCode && (
+                      <Button
+                        title="Submit"
+                        onPress={onPressSubmit}
+                        style={localStyles.submitButton}
+                      />
+                    )}
+                  {isCurrentContent &&
+                    onPressRepeat !== null &&
+                    !isSubmitting &&
+                    !isGeneratingQRCode && (
+                      <Button
+                        title="Submit and repeat"
+                        onPress={onPressRepeat}
+                        style={localStyles.submitButton}
+                      />
+                    )}
                 </View>
               )}
             </Animated.View>
           );
         })}
+        {/* {!isGeneratingQRCode && ( */}
         <ProgressActionBar
           progress={surveyProgress}
           label="Jump to section"
@@ -193,6 +211,8 @@ export class DumbSurveyScreen extends React.Component {
           isTableOfContentsEnabled={!isSubmitting}
           onPressToc={() => this.onToggleToc()}
         />
+        {/* )} */}
+
         <Popup
           visible={isTableOfContentsVisible}
           onDismiss={() => this.onToggleToc()}
@@ -220,6 +240,7 @@ DumbSurveyScreen.propTypes = {
   surveyName: PropTypes.string.isRequired,
   surveyProgress: PropTypes.number.isRequired,
   isSubmitting: PropTypes.bool,
+  isGeneratingQRCode: PropTypes.bool.isRequired,
   surveyScreens: PropTypes.array.isRequired,
   screenIndex: PropTypes.number.isRequired,
 };
