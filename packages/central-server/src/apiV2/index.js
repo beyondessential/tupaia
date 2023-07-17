@@ -75,7 +75,12 @@ import {
   GETMapOverlayGroupRelations,
   CreateMapOverlayGroupRelation,
 } from './mapOverlayGroupRelations';
-import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
+import {
+  DeleteSurveyResponses,
+  EditSurveyResponses,
+  GETSurveyResponses,
+  ResubmitSurveyResponse,
+} from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
   EditSurveyScreenComponents,
@@ -295,6 +300,7 @@ apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/surveyResponse/:recordId/resubmit', useRouteHandler(ResubmitSurveyResponse));
 
 /**
  * PUT routes

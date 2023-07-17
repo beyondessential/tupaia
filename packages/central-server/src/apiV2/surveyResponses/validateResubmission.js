@@ -1,0 +1,68 @@
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2022-2023 Beyond Essential Systems Pty Ltd
+ */
+
+import {
+  ValidationError,
+  ObjectValidator,
+  constructRecordExistsWithId,
+  constructIsEmptyOr,
+  takesDateForm,
+  isNotPresent,
+  isPlainObject,
+  isAString,
+} from '@tupaia/utils';
+import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
+import { findQuestionsInSurvey } from '../../dataAccessors';
+import { getSurveyIdFromResponse } from './handleResubmission';
+
+export const validateResubmission = async (models, updatedFields, recordId) => {
+  if (!updatedFields) {
+    throw new ValidationError('Survey responses must not be null');
+  }
+
+  const surveyResponseValidator = createSurveyResponseValidator(models);
+  await surveyResponseValidator.validate(updatedFields);
+  const surveyId = await getSurveyIdFromResponse(models, recordId);
+  const surveyQuestions = await findQuestionsInSurvey(models, surveyId);
+
+  const { answers } = updatedFields;
+  if (!answers) {
+    return;
+  }
+
+  const answerValidations = Object.entries(answers).map(async ([questionCode, value]) => {
+    if (value === null || value === undefined) {
+      throw new ValidationError(`Answer for ${questionCode} is missing value`);
+    }
+
+    const question = surveyQuestions.find(q => q.code === questionCode);
+    if (!question) {
+      throw new ValidationError(
+        `Could not find question with code ${questionCode} on survey ${surveyId}`,
+      );
+    }
+
+    try {
+      const answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
+      await answerValidator.validate({ answer: value });
+    } catch (e) {
+      // validator will always complain of field "answer" but in this context it is not
+      // particularly useful
+      throw new Error(e.message.replace('field "answer"', `question code "${questionCode}"`));
+    }
+  });
+
+  await Promise.all(answerValidations);
+};
+
+const createSurveyResponseValidator = models =>
+  new ObjectValidator({
+    entity_id: [constructIsEmptyOr(constructRecordExistsWithId(models.entity))],
+    survey_id: [isNotPresent],
+    data_time: [constructIsEmptyOr(takesDateForm)],
+    end_time: [isNotPresent],
+    answers: [constructIsEmptyOr(isPlainObject)],
+    approval_status: [constructIsEmptyOr(isAString)],
+  });
