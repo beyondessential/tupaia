@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { ViewConfig } from '@tupaia/types';
 import { ViewDataItem } from '../../types';
 
 const Text = styled(Typography)`
@@ -17,6 +18,7 @@ const Text = styled(Typography)`
 `;
 interface SingleDateProps {
   data?: ViewDataItem[];
+  config?: ViewConfig;
 }
 
 const formatDate = (value: string) => {
@@ -25,8 +27,8 @@ const formatDate = (value: string) => {
   return date.toDateString();
 };
 
-export const SingleDate = ({ data }: SingleDateProps) => {
-  const { value } = data![0];
+export const SingleDate = ({ data = [] }: SingleDateProps) => {
+  const { value } = data[0] || {};
   const formattedValue = formatDate(value as string);
   return <Text>{formattedValue}</Text>;
 };

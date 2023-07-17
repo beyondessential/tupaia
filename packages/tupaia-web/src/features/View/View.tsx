@@ -11,7 +11,6 @@ import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
-import { DownloadFilesVisual } from '../DownloadFilesVisual';
 
 interface ViewProps {
   report: ViewReport;
@@ -25,7 +24,6 @@ const VIEWS = {
   singleDownloadLink: SingleDownloadLink,
   multiValue: MultiValue,
   multiValueRow: MultiValueRow,
-  filesDownload: DownloadFilesVisual,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
@@ -33,7 +31,7 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   return data?.map(datum => {
     const { value } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata`] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as string] || {}),
       ...datum,
     };
     return {
@@ -63,10 +61,12 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
               ...report,
               data: [datum],
             }}
-            config={{
-              ...config,
-              viewType: datum.viewType || 'singleValue',
-            }}
+            config={
+              {
+                ...config,
+                viewType: (datum.viewType as ViewConfig['viewType']) || 'singleValue',
+              } as ViewConfig
+            }
             isEnlarged={isEnlarged}
             key={i}
           />
@@ -81,5 +81,5 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
   if (!Component) return null;
 
   const formattedData = formatData(data, config);
-  return <Component data={formattedData} config={config} isEnlarged={isEnlarged} />;
+  return <Component data={formattedData} config={config} />;
 };

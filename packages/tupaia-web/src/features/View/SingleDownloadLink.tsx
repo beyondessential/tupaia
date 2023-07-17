@@ -26,13 +26,13 @@ interface SingleDownloadLinkProps {
 }
 
 const transformDownloadLink = (resourceUrl: string) => {
-  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  const baseUrl = import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8080/api/v1/';
   if (resourceUrl.includes('http')) return resourceUrl;
   return `${baseUrl}${resourceUrl}`;
 };
 
-export const SingleDownloadLink = ({ data, config }: SingleDownloadLinkProps) => {
-  const { value } = data![0];
+export const SingleDownloadLink = ({ data = [], config }: SingleDownloadLinkProps) => {
+  const { value } = data[0] || {};
   const { name } = config;
   const formattedValue = transformDownloadLink(value as string);
   return <LinkText href={formattedValue}>{name}</LinkText>;

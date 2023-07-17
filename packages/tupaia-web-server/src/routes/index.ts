@@ -4,6 +4,7 @@
  */
 
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
+export { EntityRequest, EntityRoute } from './EntityRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { EntitySearchRequest, EntitySearchRoute } from './EntitySearchRoute';
 export { EntityAncestorsRequest, EntityAncestorsRoute } from './EntityAncestorsRoute';

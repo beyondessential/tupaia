@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MultiValueRowViewConfig } from '@tupaia/types';
+import { MultiValueRowViewConfig, ViewConfig } from '@tupaia/types';
 import {
   Table,
   TableCell as MuiTableCell,
@@ -16,7 +16,7 @@ import { ViewDataItem } from '../../types';
 
 interface MultiValueRowProps {
   data?: ViewDataItem[];
-  config: MultiValueRowViewConfig;
+  config: ViewConfig;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -35,8 +35,10 @@ const TableHeaderCell = styled(TableCell)`
 `;
 
 export const MultiValueRow = ({ data, config }: MultiValueRowProps) => {
-  const { presentationOptions = {} } = config;
-  const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions;
+  const {
+    presentationOptions = {} as MultiValueRowViewConfig['presentationOptions'],
+  } = config as MultiValueRowViewConfig;
+  const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions!;
 
   const headerCells = [leftColumn, middleColumn, rightColumn].filter(item => item);
   const showTableHeader = headerCells.length > 0 || rowHeader;
@@ -46,9 +48,9 @@ export const MultiValueRow = ({ data, config }: MultiValueRowProps) => {
       {showTableHeader && (
         <TableHead>
           <TableRow>
-            {rowHeader && <TableHeaderCell>{rowHeader.name}</TableHeaderCell>}
+            {rowHeader && <TableHeaderCell>{rowHeader?.name}</TableHeaderCell>}
             {headerCells.map(cell => (
-              <TableHeaderCell key={`header-${cell.header}`}>{cell.header}</TableHeaderCell>
+              <TableHeaderCell key={`header-${cell?.header}`}>{cell?.header}</TableHeaderCell>
             ))}
           </TableRow>
         </TableHead>
@@ -58,7 +60,9 @@ export const MultiValueRow = ({ data, config }: MultiValueRowProps) => {
           <TableRow key={datum.name}>
             <TableCell>{datum.name}</TableCell>
             {headerCells.map(cell => (
-              <TableCell key={`row-${i}-cell-${cell.header}`}>{datum[cell.header]}</TableCell>
+              <TableCell key={`row-${i}-cell-${cell?.header}`}>
+                {datum[cell?.header as string]}
+              </TableCell>
             ))}
           </TableRow>
         ))}
