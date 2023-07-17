@@ -45,7 +45,7 @@ export const DownloadFilesVisual = ({ data, config, isEnlarged }: DownloadFilesV
       config={config}
       data={data}
       downloadFiles={download as (uniqueFileNames: string[]) => Promise<void>}
-      error={errorObj.message}
+      error={errorObj?.message}
       isEnlarged={isEnlarged}
       onClose={onClose}
     />
