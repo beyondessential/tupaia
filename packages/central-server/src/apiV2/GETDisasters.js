@@ -40,8 +40,14 @@ export class GETDisasters extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
-    country: ['country.code', 'disaster.countryCode'],
-    entity: ['entity.code', 'disaster.countryCode'],
+    country: {
+      foreignKey: 'disaster.countryCode',
+      foreignTable: 'country.code',
+    },
+    entity: {
+      foreignKey: 'disaster.countryCode',
+      foreignTable: 'entity.code',
+    },
   };
 
   async assertUserHasAccess() {

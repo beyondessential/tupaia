@@ -24,8 +24,14 @@ export class GETDashboardRelations extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
-    dashboard: ['dashboard.id', 'dashboard_relation.dashboard_id'],
-    dashboard_item: ['dashboard_item.id', 'dashboard_relation.child_id'],
+    dashboard: {
+      foreignKey: 'dashboard_relation.dashboard_id',
+      foreignTable: 'dashboard.id',
+    },
+    dashboard_item: {
+      foreignKey: 'dashboard_relation.child_id',
+      foreignTable: 'dashboard_item.id',
+    },
   };
 
   async findSingleRecord(dashboardRelationId, options) {

@@ -26,8 +26,10 @@ export class GETSurveyResponses extends GETHandler {
       foreignKey: 'entity.country_code',
       foreignTable: 'country.code',
     },
-    entity: ['entity.id', 'survey_response.entity_id'],
-    survey: ['survey.id', 'survey_response.survey_id'],
+    entity: {
+      foreignKey: 'survey_response.entity_id',
+      foreignTable: 'entity.id',
+    },
   };
 
   async findSingleRecord(surveyResponseId, options) {
@@ -76,8 +78,6 @@ export class GETSurveyResponses extends GETHandler {
       this.customJoinConditions,
       this.defaultJoinType,
     );
-
-    // manipulate resulting multi-join with country code specific requirements
 
     return this.database.count(this.recordType, criteria, { multiJoin });
   }

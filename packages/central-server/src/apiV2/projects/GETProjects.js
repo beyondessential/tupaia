@@ -35,8 +35,14 @@ export class GETProjects extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
-    entity: ['entity.id', 'project.entity_id'],
-    entity_hierarchy: ['entity_hierarchy.id', 'project.entity_hierarchy_id'],
+    entity: {
+      foreignKey: 'project.entity_id',
+      foreignTable: 'entity.id',
+    },
+    entity_hierarchy: {
+      foreignKey: 'project.entity_hierarchy_id',
+      foreignTable: 'entity_hierarchy.id',
+    },
   };
 
   async findSingleRecord(projectId, options) {

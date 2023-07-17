@@ -26,8 +26,14 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
-    map_overlay_group: ['map_overlay_group.id', 'map_overlay_group_relation.map_overlay_group_id'],
-    map_overlay: ['map_overlay.id', 'map_overlay_group_relation.child_id'],
+    map_overlay_group: {
+      foreignKey: 'map_overlay_group_relation.map_overlay_group_id',
+      foreignTable: 'map_overlay_group.id',
+    },
+    map_overlay: {
+      foreignKey: 'map_overlay_group_relation.child_id',
+      foreignTable: 'map_overlay.id',
+    },
   };
 
   async findSingleRecord(mapOverlayGroupRelationId, options) {

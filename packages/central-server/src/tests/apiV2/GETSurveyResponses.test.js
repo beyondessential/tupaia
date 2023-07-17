@@ -124,7 +124,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     app.revokeAccess();
   });
 
-  describe.only('GET /surveyResponses/:id', async () => {
+  describe('GET /surveyResponses/:id', async () => {
     it("Sufficient permissions: Return a requested survey response if we have permission for the survey in the response's country", async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
@@ -154,7 +154,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     });
   });
 
-  describe.only('GET /surveyResponses', async () => {
+  describe('GET /surveyResponses', async () => {
     it('Sufficient permissions: Return only survey responses we have permissions to the survey in the response country', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);

@@ -96,7 +96,7 @@ const addJoin = (
 ) => {
   if (!recordTypesInQuery.has(recordType)) {
     const join = customJoinConditions[recordType];
-    const joinCondition = join.through
+    const joinCondition = join
       ? [join.foreignTable, join.foreignKey]
       : [`${recordType}.id`, `${baseRecordType}.${getForeignKeyColumnName(recordType)}`];
     if (join?.through) {
@@ -121,7 +121,6 @@ export const getQueryOptionsForColumns = (
   customJoinConditions = {},
   joinType = null,
 ) => {
-  console.log(baseRecordType);
   if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
       'No columns start with "_", and conjunction operators are reserved for internal use only',
@@ -129,8 +128,6 @@ export const getQueryOptionsForColumns = (
   }
   const multiJoin = [];
   const recordTypesInQuery = new Set([baseRecordType]);
-  console.log(recordTypesInQuery.size);
-  console.log(baseRecordType);
   columnNames
     .filter(c => c.includes('.'))
     .forEach(columnName => {
@@ -138,25 +135,16 @@ export const getQueryOptionsForColumns = (
       // is 'survey.name', split into 'survey' and 'name'
       const resource = columnName.split('.')[0];
       const recordType = resourceToRecordType(resource);
-      if (!recordTypesInQuery.has(recordType)) {
-        const join = customJoinConditions[recordType];
-        if (join) {
-          addJoin(
-            recordType,
-            recordTypesInQuery,
-            multiJoin,
-            baseRecordType,
-            customJoinConditions,
-            joinType,
-          );
-        }
-      }
+      addJoin(
+        recordType,
+        recordTypesInQuery,
+        multiJoin,
+        baseRecordType,
+        customJoinConditions,
+        joinType,
+      );
     });
-  console.log(recordTypesInQuery.size);
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
-  console.log([...recordTypesInQuery]);
   const sort = [...recordTypesInQuery].map(recordType => `${recordType}.id`);
-  console.log(sort);
-  console.log(multiJoin);
   return { multiJoin, sort };
 };
