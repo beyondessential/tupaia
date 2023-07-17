@@ -3,24 +3,15 @@ import {
   Project,
   Country,
   Entity as BaseEntity,
-  Dashboard as BaseDashboard,
   DashboardItem as BaseDashboardItem,
-  DashboardItemConfig as BaseDashboardItemConfig,
   MapOverlay,
-  MapOverlayGroupRelation,
   EntityType,
-  MatrixConfig,
 } from '@tupaia/types';
-import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
-import {
-  ViewContent as ChartViewContent,
-  DataProps,
-  ViewContent,
-} from '@tupaia/ui-chart-components';
+import { ActivePolygonProps } from '@tupaia/ui-map-components';
+import { ViewContent as ChartViewContent, DataProps } from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
-import { MatrixColumnType, MatrixRowType } from '@tupaia/ui-components';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;

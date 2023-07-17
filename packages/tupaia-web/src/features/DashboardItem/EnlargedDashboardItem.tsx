@@ -135,7 +135,7 @@ export const EnlargedDashboardItem = () => {
             <Subheading>{currentDashboardItem?.description}</Subheading>
           )}
           <DashboardItemContent
-            isLoading={isLoadingReportData}
+            isLoading={isLoadingReportData || !currentDashboardItem}
             error={error}
             report={reportData}
             config={currentDashboardItem}

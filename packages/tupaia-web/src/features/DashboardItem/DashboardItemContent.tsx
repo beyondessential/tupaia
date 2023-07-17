@@ -91,22 +91,22 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
 export const DashboardItemContent = ({
   config,
   report,
-  isEnlarged,
+  isEnlarged = false,
   isLoading,
   error,
   onRetryFetch,
   isExpandable,
 }: DashboardItemContentProps) => {
-  const { name, reportCode, type, viewType } = config;
-
-  const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
-
-  if (isLoading)
+  if (isLoading) {
     return (
-      <LoadingContainer aria-label={`Loading data for report '${name}'`}>
+      <LoadingContainer aria-label="Loading data for report">
         <CircularProgress />
       </LoadingContainer>
     );
+  }
+
+  const { reportCode, type, viewType } = config;
+  const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
 
   if (error)
     return (

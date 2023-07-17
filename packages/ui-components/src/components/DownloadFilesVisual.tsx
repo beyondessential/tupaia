@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   FormGroup,
 } from '@material-ui/core';
+import { ViewConfig } from '@tupaia/types';
 import CheckboxIcon from '@material-ui/icons/CheckBox';
 import { NoData } from './NoData';
 
@@ -24,7 +25,7 @@ const Container = styled.div`
 const FormContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0px 40px 30px 40px;
+  padding: 0 40px 30px 40px;
 `;
 
 const FileName = styled.span`
@@ -44,18 +45,18 @@ const Error = styled.div`
 
 interface DownloadFilesVisualProps {
   downloadFiles: (uniqueFileNames: string[]) => Promise<void>;
-  config?: object;
+  config?: ViewConfig;
   data?: { uniqueFileName: string; label: string }[];
   isLoading?: boolean;
   isEnlarged?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   className?: string;
   error?: string;
 }
 
 export const DownloadFilesVisual = ({
   downloadFiles,
-  config = {},
+  config,
   data: options = [],
   isLoading,
   isEnlarged,

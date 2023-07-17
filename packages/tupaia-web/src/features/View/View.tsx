@@ -4,13 +4,14 @@
  */
 import React from 'react';
 import { ViewConfig } from '@tupaia/types';
+import { formatDataValueByType } from '@tupaia/utils';
 import { ViewReport } from '../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
-import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
+import { DownloadFilesVisual } from './DownloadFilesVisual';
 
 interface ViewProps {
   report: ViewReport;
@@ -24,6 +25,7 @@ const VIEWS = {
   singleDownloadLink: SingleDownloadLink,
   multiValue: MultiValue,
   multiValueRow: MultiValueRow,
+  filesDownload: DownloadFilesVisual,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
@@ -81,5 +83,5 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
   if (!Component) return null;
 
   const formattedData = formatData(data, config);
-  return <Component data={formattedData} config={config} />;
+  return <Component data={formattedData} config={config} isEnlarged={isEnlarged} />;
 };

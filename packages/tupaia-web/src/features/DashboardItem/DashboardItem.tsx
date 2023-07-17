@@ -55,15 +55,18 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     startDate?: Moment;
     endDate?: Moment;
   };
-  const { data: report, isLoading, isError, error, refetch } = useReport(dashboardItem.reportCode, {
-    projectCode,
-    entityCode,
-    dashboardCode: activeDashboard?.dashboardCode,
-    itemCode: dashboardItem.code,
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
-    legacy: dashboardItem.legacy,
-  });
+  const { data: report, isLoading = true, isError, error, refetch } = useReport(
+    dashboardItem.reportCode,
+    {
+      projectCode,
+      entityCode,
+      dashboardCode: activeDashboard?.dashboardCode,
+      itemCode: dashboardItem.code,
+      startDate: defaultStartDate,
+      endDate: defaultEndDate,
+      legacy: dashboardItem.legacy,
+    },
+  );
 
   const { periodGranularity, type, viewType, name, presentationOptions } = dashboardItem;
 
@@ -87,7 +90,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
         <DashboardItemContent
           config={dashboardItem}
           report={report}
-          isLoading={isLoading}
+          isLoading={isLoading || !dashboardItem}
           error={isError ? error : null}
           onRetryFetch={refetch}
           isExpandable={isExpandable}

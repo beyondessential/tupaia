@@ -7,6 +7,7 @@
 export * from './useOneTimeLogin';
 export { useLogin } from './useLogin';
 export { useLogout } from './useLogout';
+export { useDownload } from './useDownload';
 export * from './useRegister';
 export * from './useRequestCountryAccess';
 export * from './useResendVerificationEmail';
