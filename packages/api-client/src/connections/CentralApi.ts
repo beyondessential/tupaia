@@ -55,6 +55,20 @@ export class CentralApi extends BaseApi {
     return this.connection.get(endpoint, stringifyParams(params));
   }
 
+  public async downloadResource(endpoint: string, params?: QueryParameters) {
+    const queryUrl = this.connection.stringifyQuery(this.connection.baseUrl, endpoint, params);
+    const fetchConfig = {
+      method: 'GET',
+      headers: {
+        Authorization: await this.connection.authHandler.getAuthHeader(),
+      },
+    };
+
+    const response = await this.connection.fetchWithTimeout(queryUrl, fetchConfig);
+    await this.connection.verifyResponse(response);
+    return response;
+  }
+
   public async createResource(
     endpoint: string,
     params: Record<string, unknown>,

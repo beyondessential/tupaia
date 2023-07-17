@@ -9,7 +9,7 @@ import { darken } from '@material-ui/core';
 import { useSearchParams } from 'react-router-dom';
 import { ViewConfig } from '@tupaia/types';
 import { DownloadFilesVisual as BaseDownloadFilesVisual } from '@tupaia/ui-components';
-import { useDownload } from '../../api/mutations';
+import { useDownloadFiles } from '../../api/mutations';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { ViewDataItem } from '../../types';
 
@@ -30,7 +30,7 @@ interface DownloadFilesVisualProps {
 
 export const DownloadFilesVisual = ({ data, config, isEnlarged }: DownloadFilesVisualProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const { mutate: download, error, reset } = useDownload();
+  const { mutate: download, error, reset } = useDownloadFiles();
 
   const onClose = () => {
     reset();

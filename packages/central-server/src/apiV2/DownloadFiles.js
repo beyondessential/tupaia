@@ -25,6 +25,8 @@ export class DownloadFiles extends RouteHandler {
     const { uniqueFileNames: uniqueFileNamesString, zipFileName = 'download.zip' } = this.query;
     const uniqueFileNames = uniqueFileNamesString.split(','); // Assuming comma unsupported in filenames
 
+    console.log('uniqueFileNamesString', uniqueFileNamesString);
+
     if (uniqueFileNames.length === 0) {
       throw new ValidationError(
         "Must provide a list of file names in the 'uniqueFileNames' query parameter",
@@ -42,6 +44,8 @@ export class DownloadFiles extends RouteHandler {
       const filePath = `${tempDir}/${uniqueFilename}`;
       return writeStreamToFile(filePath, file);
     };
+
+    console.log('files', files.length);
 
     if (files.length === 1) {
       const { fileName } = getUniqueFileNameParts(uniqueFileNames[0]);

@@ -22,9 +22,9 @@ type FetchConfig = RequestInit & {
 const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
 export class ApiConnection {
-  private readonly authHandler: AuthHandler;
+  public readonly authHandler: AuthHandler;
 
-  private readonly baseUrl: string;
+  public readonly baseUrl: string;
 
   public constructor(authHandler: AuthHandler, baseUrl: string) {
     this.authHandler = authHandler;
@@ -78,7 +78,7 @@ export class ApiConnection {
     return response.json();
   }
 
-  private async fetchWithTimeout(
+  public async fetchWithTimeout(
     url: string,
     config: RequestInit,
     timeout: number = DEFAULT_MAX_WAIT_TIME,
@@ -86,7 +86,7 @@ export class ApiConnection {
     return nodeFetch(url, { ...config, timeout });
   }
 
-  private async verifyResponse(response: Response): Promise<void> {
+  public async verifyResponse(response: Response): Promise<void> {
     if (!response.ok) {
       const responseJson = await response.json();
       if (
@@ -102,7 +102,7 @@ export class ApiConnection {
     }
   }
 
-  private stringifyQuery(baseUrl = '', endpoint: string, queryParams: QueryParameters): string {
+  public stringifyQuery(baseUrl = '', endpoint: string, queryParams: QueryParameters): string {
     const urlAndEndpoint = baseUrl ? `${baseUrl}/${endpoint}` : endpoint;
 
     const queryString = stringify(queryParams);
