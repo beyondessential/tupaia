@@ -15,7 +15,7 @@ import {
   getFilenameFromUri,
 } from '../../utilities';
 import { getCurrentUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
-import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
+import { GENERATE_QR_CODE, SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
 import { addMessage } from '../../messages';
 import { goBack } from '../../navigation';
 import { getAnswers, getScreens, getValidQuestions } from '../selectors';
@@ -210,10 +210,12 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
   // Skip duplicate survey responses.
   const existingSurveyResponses = database.findSurveyResponses({ surveyId, startTime });
 
+  let newEntities = [];
+
   // Only save the survey if it isn't a duplicate.
   if (existingSurveyResponses.length === 0) {
     const validQuestions = getValidQuestions(getState(), questions, validatedScreens);
-    const newEntities = await createEntities(dispatch, getState, database, validQuestions);
+    newEntities = await createEntities(dispatch, getState, database, validQuestions);
     const newOptions = createOptions(getState, database, validQuestions);
     const { responseFields, answersToSubmit } = await processQuestions(
       dispatch,
@@ -242,12 +244,20 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
     analytics.trackEvent('Submit Survey', response);
   }
 
+  // const generateQrCode = primaryEntityQuestion.config.entity.generateQrCode;
+  const generateQrCode = true; // because we are in Household survey
+
   dispatch(synchroniseDatabase());
   dispatch({ type: SURVEY_SUBMIT_SUCCESS });
-  dispatch(addMessage('submit_survey', 'Survey submitted'));
+
+  if (!generateQrCode) {
+    dispatch(addMessage('submit_survey', 'Survey submitted'));
+  }
 
   if (shouldRepeat) {
     dispatch(selectSurvey(surveyId, true));
+  } else if (generateQrCode && newEntities && newEntities.length) {
+    dispatch({ type: GENERATE_QR_CODE, qrCodeEntity: newEntities[0] });
   } else {
     dispatch(stopWatchingUserLocation());
     dispatch(goBack(false));
