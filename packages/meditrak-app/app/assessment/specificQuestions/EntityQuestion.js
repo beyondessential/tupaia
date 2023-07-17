@@ -11,6 +11,7 @@ import { takeScrollControl, releaseScrollControl } from '../actions';
 import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 import { QrCodeScanner } from '../QrCodeScanner';
 import {
+  fetchEntities,
   getEntityAttributeChecker,
   getEntityBaseFilters,
   getRecentEntities,
@@ -19,6 +20,12 @@ import { Divider } from '../../widgets';
 
 const DumbEntityQuestion = props => {
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
+
+  const validateQrCodeRead = qrCodeData => {
+    if (!props.validEntities.find(({ id }) => id === qrCodeData)) {
+      throw new Error('Invalid QR Code: does not match a valid entity for this question');
+    }
+  };
 
   const onQrCodeRead = entityId => {
     props.onSelectEntity({ id: entityId });
@@ -41,6 +48,7 @@ const DumbEntityQuestion = props => {
       <>
         <QrCodeScanner
           onRead={onQrCodeRead}
+          validateReadData={validateQrCodeRead}
           onStartScan={() => setIsScanningQrCode(true)}
           onFinishScan={() => setIsScanningQrCode(false)}
         />
@@ -57,6 +65,7 @@ DumbEntityQuestion.propTypes = {
   config: PropTypes.object,
   isOnlyQuestionOnScreen: PropTypes.bool.isRequired,
   onSelectEntity: PropTypes.func.isRequired,
+  validEntities: PropTypes.array.isRequired,
 };
 
 DumbEntityQuestion.defaultProps = {
@@ -70,12 +79,12 @@ const mapStateToProps = (
   const baseEntityFilters = getEntityBaseFilters(state, database, questionId);
   const recentEntities = getRecentEntities(database, state, baseEntityFilters);
   const checkEntityAttributes = getEntityAttributeChecker(state, questionId);
+  const validEntities = fetchEntities(database, baseEntityFilters, checkEntityAttributes);
 
   return {
-    baseEntityFilters,
-    checkEntityAttributes,
     recentEntities,
     selectedEntityId,
+    validEntities,
   };
 };
 

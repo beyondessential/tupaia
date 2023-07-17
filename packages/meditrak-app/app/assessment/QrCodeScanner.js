@@ -6,11 +6,12 @@ import { StyleSheet } from 'react-native';
 import Scanner from 'react-native-qrcode-scanner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RNCamera } from 'react-native-camera';
-import { Button } from '../widgets';
+import { Button, STATUS_MESSAGE_ERROR, StatusMessage } from '../widgets';
 import { THEME_COLOR_ONE, THEME_COLOR_TWO } from '../globalStyles';
 
-export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
+export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan, validateReadData }) => {
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
+  const [error, setError] = useState(null);
 
   const CancelScanButton = (
     <Button
@@ -29,7 +30,13 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
       <Scanner
         style={localStyles.qrCodeScanner}
         onRead={({ data }) => {
-          onRead(data);
+          try {
+            validateReadData(data);
+            onRead(data);
+          } catch (e) {
+            setError(e.message);
+          }
+
           onFinishScan();
           setIsScanningQrCode(false);
         }}
@@ -49,27 +56,39 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
   );
 
   return (
-    <Button
-      style={localStyles.qrCodeButton}
-      onPress={() => {
-        onStartScan();
-        setIsScanningQrCode(true);
-      }}
-      Icon={QrCodeIcon}
-      title="Scan QR Code"
-      textStyle={localStyles.qrCodeButtonLabelText}
-    />
+    <>
+      {error ? (
+        <StatusMessage
+          style={localStyles.errorMessage}
+          type={STATUS_MESSAGE_ERROR}
+          message={error}
+        />
+      ) : null}
+      <Button
+        style={localStyles.qrCodeButton}
+        onPress={() => {
+          onStartScan();
+          setError(null);
+          setIsScanningQrCode(true);
+        }}
+        Icon={QrCodeIcon}
+        title="Scan QR Code"
+        textStyle={localStyles.qrCodeButtonLabelText}
+      />
+    </>
   );
 };
 
 QrCodeScanner.propTypes = {
   onRead: PropTypes.func,
+  validateReadData: PropTypes.func,
   onStartScan: PropTypes.func,
   onFinishScan: PropTypes.func,
 };
 
 QrCodeScanner.defaultProps = {
   onRead: () => {},
+  validateReadData: () => {},
   onStartScan: () => {},
   onFinishScan: () => {},
 };
@@ -81,6 +100,9 @@ const localStyles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     width: '100%',
+  },
+  errorMessage: {
+    marginBottom: 0,
   },
   qrCodeButtonLabelIcon: {
     paddingRight: 3,
