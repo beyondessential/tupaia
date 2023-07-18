@@ -11,7 +11,7 @@ export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyRespons
     [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
     () => {
       return post(`surveyResponse/${surveyResponseId}/resubmit`, {
-        data: { updatedSurveyResponse },
+        data: { ...updatedSurveyResponse },
       });
     },
     {

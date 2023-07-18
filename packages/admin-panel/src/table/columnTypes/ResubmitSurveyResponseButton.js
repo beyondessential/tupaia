@@ -5,21 +5,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
+import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '../../widgets';
 import { openResubmitSurveyResponseModal } from '../../surveyResponse/actions';
 
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const ResubmitSurveyResponseButtonComponent = ({ openModal }) => {
   return (
-    <ButtonContainer>
-      <IconButton onClick={openModal} />
-    </ButtonContainer>
+    <IconButton onClick={openModal}>
+      <EditIcon />
+    </IconButton>
   );
 };
 

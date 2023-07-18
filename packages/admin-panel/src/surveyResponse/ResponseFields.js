@@ -5,11 +5,16 @@
 
 /* eslint-disable camelcase */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
+import { Select, DatePicker } from '@tupaia/ui-components';
+import { ApprovalStatus } from '@tupaia/types';
+import { Autocomplete } from '../autocomplete';
+import { useDebounce } from '../utilities';
+import { useEntities } from '../VizBuilderApp/api';
 
 const SectionWrapper = styled.div`
   display: grid;
@@ -29,8 +34,8 @@ const ResponseFieldWrapper = styled.div`
 const ResponseField = ({ title, value }) => {
   return (
     <ResponseFieldWrapper>
-      <ResponseFieldHeading component="h5">{title}</ResponseFieldHeading>
-      <Typography component="body1">{value}</Typography>
+      <ResponseFieldHeading variant="body2">{title}</ResponseFieldHeading>
+      <Typography variant="body2">{value}</Typography>
     </ResponseFieldWrapper>
   );
 };
@@ -40,30 +45,74 @@ ResponseField.propTypes = {
   value: PropTypes.string.isRequired,
 };
 
+const approvalStatusOptions = Object.values(ApprovalStatus).map(type => ({
+  label: type,
+  value: type,
+}));
+
 export const ResponseFields = ({
   surveyName,
   selectedEntity,
-  existingAndNewFields,
-  currentScreenNumber,
+  fields,
+  onChange,
+  setSelectedEntity,
 }) => {
+  const [entitySearchTerm, setEntitySearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(entitySearchTerm, 100);
+
+  const { data: entities = [], isLoading: entityIsLoading } = useEntities(debouncedSearchTerm);
+  const limitedLocations = entities.slice(0, 20);
+
   return (
     <Paper square={false} variant="outlined" style={{ padding: 20, marginBottom: 25 }}>
-      {currentScreenNumber === 0 ? (
-        <SectionWrapper>
-          <ResponseField title="Survey" value={surveyName} />
-          <ResponseField title="Assessor" value={existingAndNewFields.assessor_name} />
-          <ResponseField title="Date of Survey" value={existingAndNewFields.end_time} />
-        </SectionWrapper>
-      ) : (
-        <SectionWrapper>
-          <ResponseField title="Survey" value={surveyName} />
-          <ResponseField title="Assessor" value={existingAndNewFields.assessor_name} />
-          <ResponseField title="Date of Survey" value={existingAndNewFields.end_time} />
-          <ResponseField title="Entity" value={selectedEntity?.name} />
-          <ResponseField title="Date Of Data" value={existingAndNewFields.data_time} />
-          <ResponseField title="Approval Status" value={existingAndNewFields.approval_status} />
-        </SectionWrapper>
-      )}
+      <SectionWrapper>
+        <ResponseField title="Survey" value={surveyName} />
+        <ResponseField title="Assessor" value={fields.assessor_name} />
+        <ResponseField title="Date of Survey" value={fields.end_time} />
+        <Autocomplete
+          value={selectedEntity}
+          label="Entity"
+          options={limitedLocations}
+          getOptionSelected={(option, selected) => {
+            return option.id === selected.id;
+          }}
+          getOptionLabel={option => option?.name || ''}
+          isLoading={entityIsLoading}
+          onChangeSelection={(event, selectedValue) => {
+            if (!selectedValue) {
+              return;
+            }
+            onChange('entity_id', selectedValue.id);
+            setSelectedEntity(selectedValue);
+          }}
+          onChangeSearchTerm={setEntitySearchTerm}
+          searchTerm={entitySearchTerm}
+          placeholder="type to search"
+          optionLabelKey="entity-name"
+        />
+
+        <DatePicker
+          label="Date Of Data"
+          name="dataTime"
+          value={fields.data_time}
+          required
+          onChange={UTCDate => {
+            onChange('data_time', UTCDate);
+          }}
+        />
+
+        <Select
+          id="approval-status"
+          label="Approval Status"
+          name="approvalStatus"
+          required
+          options={approvalStatusOptions}
+          onChange={event => {
+            onChange('approval_status', event.target.value);
+          }}
+          value={fields.approval_status}
+        />
+      </SectionWrapper>
     </Paper>
   );
 };
@@ -71,6 +120,7 @@ export const ResponseFields = ({
 ResponseFields.propTypes = {
   selectedEntity: PropTypes.object.isRequired,
   surveyName: PropTypes.string.isRequired,
-  existingAndNewFields: PropTypes.object.isRequired,
-  currentScreenNumber: PropTypes.number.isRequired,
+  fields: PropTypes.object.isRequired,
+  onChange: PropTypes.object.isRequired,
+  setSelectedEntity: PropTypes.func.isRequired,
 };
