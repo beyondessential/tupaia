@@ -5,14 +5,18 @@ import {
   Entity as BaseEntity,
   Dashboard as BaseDashboard,
   DashboardItem as BaseDashboardItem,
-  DashboardItemConfig,
+  DashboardItemConfig as BaseDashboardItemConfig,
   MapOverlay,
   MapOverlayGroupRelation,
   EntityType,
   MatrixConfig,
 } from '@tupaia/types';
 import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
-import { ViewContent as ChartViewContent } from '@tupaia/ui-chart-components';
+import {
+  ViewContent as ChartViewContent,
+  DataProps,
+  ViewContent,
+} from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
@@ -104,22 +108,48 @@ export type EntityResponse = Entity & {
 };
 
 // This is the row type in the response from the report endpoint when the report is a matrix. It will contain data for each column, keyed by the column key, as well as dataElement, categoryId and category
-export type MatrixDataRow = Record<string, any> & {
+export type MatrixReportRow = Record<string, any> & {
   dataElement?: string; // this is the data to display in the row header cell
   categoryId?: string; // this means the row is a child of a grouped row
   category?: string; // this means the row is a grouped row
 };
 
 // This is the column type in the response from the report endpoint when the report is a matrix
-export type MatrixDataColumn = {
+export type MatrixReportColumn = {
   title: string;
   key: string;
   category?: string; // this means the column is a grouped column
-  columns?: MatrixDataColumn[]; // these are the child columns of a grouped column
+  columns?: MatrixReportColumn[]; // these are the child columns of a grouped column
 };
 
-// The 'ViewContent' is the data that is passed to the matrix view component
-export type MatrixViewContent = MatrixConfig & {
-  rows: MatrixDataRow[];
-  columns: MatrixDataColumn[];
+// This is the data item for a report of type 'view'
+export type ViewDataItem = Record<string, any> &
+  DataProps & {
+    total?: number;
+    viewType?: string;
+  };
+
+// This is the shape of a report when type is 'view'
+export type ViewReport = {
+  data?: ViewDataItem[];
+  startDate?: string;
+  endDate?: string;
 };
+
+// This is the shape of a report when type is 'matrix'
+export type MatrixReport = {
+  columns?: MatrixReportColumn[];
+  rows?: MatrixReportRow[];
+  startDate?: string;
+  endDate?: string;
+};
+
+// This is the shape of a report when type is 'chart'
+export type ChartReport = {
+  data?: ChartViewContent['data'];
+  startDate?: string;
+  endDate?: string;
+};
+
+// Union of all report types
+export type DashboardItemReport = ViewReport | MatrixReport | ChartReport;

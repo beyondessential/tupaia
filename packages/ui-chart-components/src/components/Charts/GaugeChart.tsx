@@ -51,7 +51,7 @@ export const GaugeChart = ({
   onItemClick = () => {},
 }: GaugeChartProps) => {
   const { data, color = BLUE, ...restOfConfigs } = viewContent;
-  const isMobileSize = isMobile();
+  const isMobileSize = isMobile(isExporting);
 
   const generateElements = () => {
     const denominator = 0.05;

@@ -44,7 +44,7 @@ const ActionLink = styled(Button)`
   text-transform: none;
   font-size: 0.975rem;
   line-height: 1.5;
-  padding: 1em;
+  padding: 0.77rem 1rem;
   border-radius: 0.6em;
   text-decoration: none;
   ${ExtendedTitle} + & {
@@ -55,7 +55,7 @@ const ActionLink = styled(Button)`
   }
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
-    font-size: 1rem;
+    font-size: 1.0625rem;
   }
 `;
 

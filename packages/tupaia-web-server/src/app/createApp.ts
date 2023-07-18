@@ -40,6 +40,8 @@ import {
   EntitySearchRoute,
   EntitySearchRequest,
   RequestCountryAccessRequest,
+  EntityRoute,
+  EntityRequest,
 } from '../routes';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
@@ -69,6 +71,7 @@ export function createApp() {
       'requestCountryAccess',
       handleWith(RequestCountryAccessRoute),
     )
+    .get<EntityRequest>('entity/:projectCode/:entityCode', handleWith(EntityRoute))
     .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
     .get<EntityAncestorsRequest>(

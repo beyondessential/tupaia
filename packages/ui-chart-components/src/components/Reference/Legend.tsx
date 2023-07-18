@@ -140,7 +140,7 @@ export const getPieLegend = ({
   legendPosition,
   viewContent,
 }: PieLegendProps) => ({ payload }: any) => {
-  const isMobileSize = isMobile();
+  const isMobileSize = isMobile(isExporting);
   return (
     <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
       {payload.map(({ color, value, payload: item }: TooltipPayload) => {
@@ -189,7 +189,7 @@ export const getCartesianLegend = ({
   isExporting,
   legendPosition,
 }: CartesianLegendProps) => ({ payload }: any) => {
-  const isMobileSize = isMobile();
+  const isMobileSize = isMobile(isExporting);
   return (
     <LegendContainer $position={legendPosition} $isExporting={isExporting}>
       {payload.map(({ color, value, dataKey }: TooltipPayload) => {

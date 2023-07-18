@@ -20,7 +20,7 @@ const StyledDownloadFilesVisual = styled(BaseDownloadFilesVisual)`
   }
 `;
 
-export const DownloadFilesVisual = ({ onClose: originalOnClose, ...restOfProps }) => {
+export const DownloadFilesVisual = ({ onClose: originalOnClose, viewContent, isEnlarged }) => {
   const [error, setError] = useState(null);
 
   const downloadFiles = async uniqueFileNames => {
@@ -58,12 +58,17 @@ export const DownloadFilesVisual = ({ onClose: originalOnClose, ...restOfProps }
     originalOnClose();
   };
 
+  const { data, ...config } = viewContent;
+
   return (
     <StyledDownloadFilesVisual
-      {...restOfProps}
+      data={data}
+      config={config}
+      isEnlarged={isEnlarged}
       onClose={onClose}
       downloadFiles={downloadFiles}
       error={error}
+      isLoading={false}
     />
   );
 };
