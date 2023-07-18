@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Dispatch, createContext } from 'react';
+import { Dispatch, ReactNode, createContext } from 'react';
 import { MatrixConfig, PresentationOptions } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 
@@ -25,6 +25,7 @@ const defaultContextValue = {
   expandedRows: RowTitle[];
   enlargedCell: Record<string, any> | null;
   disableExpand?: boolean;
+  rowHeaderColumnTitle?: ReactNode;
 };
 
 // This is the context for the rows, columns and presentation options of the matrix
