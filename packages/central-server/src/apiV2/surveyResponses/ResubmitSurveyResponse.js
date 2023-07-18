@@ -15,8 +15,8 @@ import {
   assertSurveyResponsePermissions,
   assertSurveyResponseEditPermissions,
 } from './assertSurveyResponsePermissions';
-import { handleSurveyResponse, handleAnswers } from './handleResubmission';
-import { validateResubmission } from './validateResubmission';
+import { handleSurveyResponse, handleAnswers } from './resubmission/handleResubmission';
+import { validateResubmission } from './resubmission/validateResubmission';
 
 /**
  * Handles POST endpoint:
@@ -54,9 +54,20 @@ export class ResubmitSurveyResponse extends EditHandler {
     );
 
     await this.models.wrapInTransaction(async transactingModels => {
-      await validateResubmission(transactingModels, this.updatedFields, this.recordId);
-      await handleAnswers(this.models, this.updatedFields.answers, this.recordId);
-      return handleSurveyResponse(this.models, this.updatedFields, this.recordType, this.recordId);
+      const currentSurveyResponse = await transactingModels.surveyResponse.findOne({
+        id: this.recordId,
+      });
+      if (!currentSurveyResponse) {
+        throw Error('Survey response not found.');
+      }
+      await validateResubmission(transactingModels, this.updatedFields, currentSurveyResponse);
+      await handleAnswers(this.models, this.updatedFields.answers, currentSurveyResponse);
+      return handleSurveyResponse(
+        this.models,
+        this.updatedFields,
+        this.recordType,
+        currentSurveyResponse,
+      );
     });
   }
 }

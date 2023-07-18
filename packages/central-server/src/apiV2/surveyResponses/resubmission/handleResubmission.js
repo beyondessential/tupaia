@@ -4,28 +4,23 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { findQuestionsInSurvey } from '../../dataAccessors';
+import { findQuestionsInSurvey } from '../../../dataAccessors';
 
-export const getSurveyIdFromResponse = async (models, recordId) => {
-  const currentSurveyResponse = await models.surveyResponse.findOne({ id: recordId });
-  return currentSurveyResponse.survey_id;
-};
-
-export const handleSurveyResponse = async (models, updatedFields, recordType, recordId) => {
+export const handleSurveyResponse = async (models, updatedFields, recordType, surveyResponse) => {
   const surveyResponseUpdateFields = { ...updatedFields };
   delete surveyResponseUpdateFields.answers;
   if (Object.keys(surveyResponseUpdateFields).length < 1) {
     return;
   }
-  await models.getModelForDatabaseType(recordType).updateById(recordId, surveyResponseUpdateFields);
+  await models.surveyResponse.updateById(surveyResponse.id, surveyResponseUpdateFields);
 };
 
-export const handleAnswers = async (models, updatedAnswers, recordId) => {
+export const handleAnswers = async (models, updatedAnswers, surveyResponse) => {
   if (!updatedAnswers) {
     return;
   }
   // check answer exists
-  const surveyId = await getSurveyIdFromResponse(models, recordId);
+  const { survey_id: surveyId, id: surveyResponseId } = surveyResponse;
   const surveyQuestions = await findQuestionsInSurvey(models, surveyId);
   const codesToIds = {};
   surveyQuestions.forEach(({ id, code, type }) => {
@@ -38,7 +33,7 @@ export const handleAnswers = async (models, updatedAnswers, recordId) => {
       const isEmptyAnswer = updatedAnswers[questionCode].trim() === '';
       const { id, type } = codesToIds[questionCode];
       const existingAnswer = await models.answer.findOne({
-        survey_response_id: recordId,
+        survey_response_id: surveyResponseId,
         question_id: id,
       });
 
@@ -49,7 +44,7 @@ export const handleAnswers = async (models, updatedAnswers, recordId) => {
         }
         await models.answer.create({
           type,
-          survey_response_id: recordId,
+          survey_response_id: surveyResponseId,
           question_id: id,
           text: updatedAnswers[questionCode],
         });

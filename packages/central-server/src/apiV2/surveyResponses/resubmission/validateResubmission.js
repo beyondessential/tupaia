@@ -9,22 +9,20 @@ import {
   constructRecordExistsWithId,
   constructIsEmptyOr,
   takesDateForm,
-  isNotPresent,
   isPlainObject,
   isAString,
 } from '@tupaia/utils';
-import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
-import { findQuestionsInSurvey } from '../../dataAccessors';
-import { getSurveyIdFromResponse } from './handleResubmission';
+import { constructAnswerValidator } from '../../utilities/constructAnswerValidator';
+import { findQuestionsInSurvey } from '../../../dataAccessors';
 
-export const validateResubmission = async (models, updatedFields, recordId) => {
+export const validateResubmission = async (models, updatedFields, surveyResponse) => {
   if (!updatedFields) {
     throw new ValidationError('Survey responses must not be null');
   }
 
   const surveyResponseValidator = createSurveyResponseValidator(models);
   await surveyResponseValidator.validate(updatedFields);
-  const surveyId = await getSurveyIdFromResponse(models, recordId);
+  const { survey_id: surveyId } = surveyResponse;
   const surveyQuestions = await findQuestionsInSurvey(models, surveyId);
 
   const { answers } = updatedFields;
@@ -60,9 +58,9 @@ export const validateResubmission = async (models, updatedFields, recordId) => {
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
     entity_id: [constructIsEmptyOr(constructRecordExistsWithId(models.entity))],
-    survey_id: [isNotPresent],
     data_time: [constructIsEmptyOr(takesDateForm)],
-    end_time: [isNotPresent],
+    end_time: [constructIsEmptyOr(takesDateForm)],
+    start_time: [constructIsEmptyOr(takesDateForm)],
     answers: [constructIsEmptyOr(isPlainObject)],
     approval_status: [constructIsEmptyOr(isAString)],
   });

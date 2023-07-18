@@ -117,29 +117,6 @@ describe('resubmit surveyResponse endpoint', () => {
     expect(response.body).to.have.keys('error');
   });
 
-  it('Should throw error when survey_id is an included field', async () => {
-    const [surveyResponse] = await buildAndInsertSurveyResponses(models, [
-      {
-        surveyCode: 'TEST_SURVEY_RESP_CRUD',
-        entityCode: ENTITY_ID,
-        data_time: '2020-01-31T09:00:00',
-        answers: { [questionCode(1)]: '123' },
-      },
-    ]);
-
-    const response = await app.post(`surveyResponse/${surveyResponse.surveyResponse.id}/resubmit`, {
-      body: {
-        survey_id: surveyId,
-        data_time: '2020-02-02T09:00:00',
-        answers: {
-          [questionCode(1)]: '1236',
-        },
-      },
-    });
-
-    expect(response.body).to.have.keys('error');
-  });
-
   it('Should return a successful response', async () => {
     const [surveyResponse] = await buildAndInsertSurveyResponses(models, [
       {
