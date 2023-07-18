@@ -14,6 +14,7 @@ import {
   MeasurePopup,
   Polygon,
   AreaTooltip,
+  MeasureData,
 } from '@tupaia/ui-map-components';
 import {
   useEntitiesWithLocation,
@@ -39,7 +40,7 @@ const useNavigateToEntity = () => {
   const navigate = useNavigate();
   const { data: project } = useProject(projectCode);
 
-  return (entityCode: EntityCode) => {
+  return (entityCode?: EntityCode) => {
     const link = {
       ...location,
       pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
@@ -72,7 +73,11 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hiddenValues'] }) => {
+export const DataVisualsLayer = ({
+  hiddenValues,
+}: {
+  hiddenValues: LegendProps['hiddenValues'];
+}) => {
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
@@ -97,7 +102,9 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
     hiddenValues,
   });
 
-  if (!processedMeasureData || !mapOverlayData.serieses) return null;
+  if (!processedMeasureData || !mapOverlayData.serieses) {
+    return null;
+  }
 
   const serieses = mapOverlayData.serieses;
 
@@ -122,7 +129,7 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
             >
               <AreaTooltip
                 serieses={serieses}
-                orgUnitMeasureData={measure}
+                orgUnitMeasureData={measure as MeasureData}
                 orgUnitName={measure.name}
                 hasMeasureValue
               />
@@ -131,9 +138,9 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
         }
 
         return (
-          <MeasureMarker key={measure.organisationUnitCode} {...measure}>
+          <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
             <MeasurePopup
-              markerData={measure}
+              markerData={measure as MeasureData}
               serieses={serieses}
               onSeeOrgUnitDashboard={navigateToEntity}
             />

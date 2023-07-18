@@ -9,8 +9,8 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Entity } from '@tupaia/types';
 import { AreaTooltip, MAP_COLORS } from '@tupaia/ui-map-components';
-import { useEntityLink } from '../../utils';
-import { useProject } from '../../api/queries';
+import { useEntityLink } from '../../../utils';
+import { useProject } from '../../../api/queries';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -34,13 +34,13 @@ const useProjectConfig = () => {
 interface InteractivePolygonProps {
   entity: Entity;
   isChildArea?: boolean;
-  showingData?: boolean;
+  isShowingData?: boolean;
 }
 
 export const InteractivePolygon = ({
   entity,
   isChildArea = false,
-  showingData = false,
+  isShowingData,
 }: InteractivePolygonProps) => {
   const link = useEntityLink(entity.code);
   const { permanentLabels } = useProjectConfig();
@@ -48,8 +48,6 @@ export const InteractivePolygon = ({
   const { name, region } = entity;
 
   if (!region) return null;
-
-  const hasMeasureValue = false;
 
   return (
     <BasicPolygon
@@ -60,11 +58,10 @@ export const InteractivePolygon = ({
         },
       }}
     >
-      {!showingData && (
+      {!isShowingData && (
         <AreaTooltip
-          permanent={permanentLabels && isChildArea && !hasMeasureValue}
+          permanent={permanentLabels && isChildArea}
           sticky={!permanentLabels}
-          hasMeasureValue={hasMeasureValue}
           orgUnitName={name}
         />
       )}

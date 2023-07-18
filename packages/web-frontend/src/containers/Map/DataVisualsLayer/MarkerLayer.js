@@ -9,24 +9,10 @@ import { connect } from 'react-redux';
 import {
   MeasureMarker,
   MeasurePopup,
-  AreaTooltip,
-  getSingleFormattedValue,
   MEASURE_TYPE_RADIUS,
+  LayerGroup,
 } from '@tupaia/ui-map-components';
-import styled from 'styled-components';
-import { LayerGroup, Polygon } from 'react-leaflet';
 import { selectMeasureOptions } from '../../../selectors';
-
-const ShadedPolygon = styled(Polygon)`
-  fill-opacity: 0.5;
-  :hover {
-    fill-opacity: 0.8;
-  }
-`;
-
-// remove name from the measure data as it's not expected in getSingleFormattedValue
-const getTooltipText = (markerData, serieses) =>
-  `${markerData.name}: ${getSingleFormattedValue(markerData, serieses)}`;
 
 // Filter hidden and invalid values and sort measure data
 const processData = (measureData, serieses) => {

@@ -4,9 +4,14 @@
  */
 
 import React from 'react';
-import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
-import { AreaTooltip, MAP_COLORS, BREWER_PALETTE, ActivePolygon } from '@tupaia/ui-map-components';
+import {
+  AreaTooltip,
+  MAP_COLORS,
+  BREWER_PALETTE,
+  ActivePolygon,
+  Polygon,
+} from '@tupaia/ui-map-components';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
