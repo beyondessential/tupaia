@@ -85,7 +85,6 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
     return null;
   }
 
-  // todo: move to mapOverlays route
   // Don't show the marker layer if the entity type doesn't match the measure level
   const firstSeries = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
   if (firstSeries && camelCase(entity.type!) !== camelCase(firstSeries.displayOnLevel)) {
@@ -98,6 +97,9 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
     serieses: mapOverlayData.serieses,
     hiddenValues,
   });
+
+  console.log('processedMeasureData', processedMeasureData);
+  console.log('mapOverlayData.serieses', mapOverlayData.serieses);
 
   return (
     <UIMarkerLayer

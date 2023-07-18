@@ -7,8 +7,7 @@ import React from 'react';
 import { Polygon as PolygonComponent } from 'react-leaflet';
 import styled from 'styled-components';
 import { blue } from '@material-ui/core/colors';
-import { AreaTooltip } from './AreaTooltip';
-import { Entity } from '../types';
+import { AreaTooltip } from '@tupaia/ui-map-components';
 
 export const POLYGON_COLOR = '#EE6230';
 
@@ -23,7 +22,7 @@ const BasicPolygon = styled(PolygonComponent)`
   }
 `;
 
-export const EntityPolygon = ({ entity }: { entity?: Entity }) => {
+export const EntityPolygon = ({ entity }) => {
   if (!entity || !Array.isArray(entity.region)) {
     return null;
   }
