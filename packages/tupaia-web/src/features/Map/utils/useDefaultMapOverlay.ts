@@ -32,7 +32,16 @@ export const useDefaultMapOverlay = (
     const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
 
     if (!selectedMapOverlay || !isValidMapOverlayId) {
-      const defaultMapOverlayId = project.defaultMeasure || DEFAULT_MAP_OVERLAY_ID;
+      const { defaultMeasure } = project;
+      const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
+      // If there are no map overlays, the default overlay is the DEFAULT_MAP_OVERLAY_ID
+      // however if there are map overlays, use the first available overlay
+      let defaultMapOverlayId = overlayCodes.length > 0 ? overlayCodes[0] : DEFAULT_MAP_OVERLAY_ID;
+      // if there is a default measure and it is in the list of overlays, use it
+      if (defaultMeasure && !!mapOverlaysByCode[defaultMeasure]) {
+        defaultMapOverlayId = defaultMeasure;
+      }
+
       urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultMapOverlayId);
     }
 
@@ -41,5 +50,5 @@ export const useDefaultMapOverlay = (
     }
 
     setUrlParams(urlSearchParams);
-  }, [JSON.stringify(mapOverlaysByCode)]);
+  }, [JSON.stringify(mapOverlaysByCode), project, selectedMapOverlay]);
 };
