@@ -1,22 +1,12 @@
-import sinon from 'sinon';
 import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   generateTestId,
-  upsertDummyRecord,
   buildAndInsertSurveyResponses,
 } from '@tupaia/database';
-import { S3Client } from '@tupaia/utils';
-import {
-  expectSuccess,
-  TestableApp,
-  upsertEntity,
-  upsertFacility,
-  upsertQuestion,
-} from '../testUtilities';
+import { expectSuccess, TestableApp, upsertEntity } from '../testUtilities';
 
 const ENTITY_ID = generateTestId();
-const ENTITY_NON_CLINIC_ID = generateTestId();
 
 const questionCode = key => `TEST-${key}`;
 
@@ -29,32 +19,10 @@ describe('resubmit surveyResponse endpoint', () => {
   before(async () => {
     await app.grantFullAccess();
 
-    const country = await upsertDummyRecord(models.country);
-    const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
-      country_id: country.id,
-    });
-    await upsertFacility({
-      code: ENTITY_ID,
-      geographical_area_id: geographicalArea.id,
-      country_id: geographicalArea.country_id,
-    });
-
     await upsertEntity({
       id: ENTITY_ID,
       code: ENTITY_ID,
       type: 'facility',
-    });
-
-    await upsertEntity({
-      id: ENTITY_NON_CLINIC_ID,
-      code: ENTITY_NON_CLINIC_ID,
-      type: 'disaster',
-    });
-
-    // This question will not be part of the survey
-    await upsertQuestion({
-      code: questionCode('unattached'),
-      type: 'FreeText',
     });
 
     const [{ survey }] = await buildAndInsertSurveys(models, [
