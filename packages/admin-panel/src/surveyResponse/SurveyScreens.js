@@ -49,8 +49,9 @@ export const SurveyScreens = ({ survey, existingAnswers, onChange, selectedEntit
   const existingAndNewAnswers = { ...existingAnswers, ...updatedAnswers };
 
   const handleAnswerChange = (questionCode, newValue) => {
-    setUpdatedAnswers({ ...updatedAnswers, [questionCode]: newValue });
-    onChange('answers', updatedAnswers);
+    const newAnswers = { ...updatedAnswers, [questionCode]: newValue };
+    setUpdatedAnswers(newAnswers);
+    onChange('answers', newAnswers);
   };
 
   return (
