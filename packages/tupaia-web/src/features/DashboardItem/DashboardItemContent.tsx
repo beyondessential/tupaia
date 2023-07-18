@@ -89,7 +89,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = ({
-  config,
+  config = {},
   report,
   isEnlarged,
   isLoading,
@@ -101,6 +101,15 @@ export const DashboardItemContent = ({
 
   const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
 
+  if (!DisplayComponent) return null;
+
+  if (isLoading)
+    return (
+      <LoadingContainer aria-label={`Loading data for report '${name}'`}>
+        <CircularProgress />
+      </LoadingContainer>
+    );
+
   if (error)
     return (
       <Alert severity="error">
@@ -110,13 +119,6 @@ export const DashboardItemContent = ({
           <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
         </Typography>
       </Alert>
-    );
-
-  if (isLoading || !config || !report)
-    return (
-      <LoadingContainer aria-label={`Loading data for report '${name}'`}>
-        <CircularProgress />
-      </LoadingContainer>
     );
 
   // if there is no data for the selected dates, then we want to show a message to the user
