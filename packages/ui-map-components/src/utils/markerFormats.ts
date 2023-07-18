@@ -280,9 +280,8 @@ function getValueInfo(value: Value, valueMapping: SeriesValueMapping) {
 }
 // For situations where we can only show one value, just show the value
 // of the first measure.
-export const getSingleFormattedValue = (markerData: MeasureData, series: Series[]) => {
-  return getFormattedInfo(markerData, series[0]).formattedValue;
-};
+export const getSingleFormattedValue = (markerData: MeasureData, series: Series[]) =>
+  getFormattedInfo(markerData, series[0]).formattedValue;
 
 export function getFormattedInfo(markerData: MeasureData, series: Series) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
