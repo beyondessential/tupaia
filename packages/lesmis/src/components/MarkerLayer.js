@@ -39,7 +39,7 @@ const processData = (measureData, serieses) => {
   return data;
 };
 
-export const MarkerLayer = ({ measureData, serieses, onSeeOrgUnitDashboard, onClickEntity }) => {
+export const MarkerLayer = ({ measureData, serieses, onSeeOrgUnitDashboard }) => {
   if (!measureData || !serieses) return null;
 
   const data = processData(measureData, serieses);
@@ -55,11 +55,6 @@ export const MarkerLayer = ({ measureData, serieses, onSeeOrgUnitDashboard, onCl
               pathOptions={{
                 color: measure.color,
                 fillColor: measure.color,
-              }}
-              eventHandlers={{
-                click: () => {
-                  onClickEntity(measure.organisationUnitCode);
-                },
               }}
               {...measure}
             >

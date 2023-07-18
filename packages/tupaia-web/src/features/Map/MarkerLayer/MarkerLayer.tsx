@@ -7,7 +7,14 @@ import React from 'react';
 import { useParams } from 'react-router';
 import camelCase from 'camelcase';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LegendProps, MarkerLayer as UIMarkerLayer, MeasureData } from '@tupaia/ui-map-components';
+import {
+  LegendProps,
+  MeasureMarker,
+  LayerGroup,
+  MeasurePopup,
+  Polygon,
+  AreaTooltip,
+} from '@tupaia/ui-map-components';
 import {
   useEntitiesWithLocation,
   useEntity,
@@ -17,21 +24,14 @@ import {
 import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
+import styled from 'styled-components';
 
-const useNavigateToDashboard = () => {
-  const { projectCode } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { data: project } = useProject(projectCode);
-
-  return (entityCode: EntityCode) => {
-    const link = {
-      ...location,
-      pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
-    };
-    navigate(link);
-  };
-};
+const ShadedPolygon = styled(Polygon)`
+  fill-opacity: 0.5;
+  :hover {
+    fill-opacity: 0.8;
+  }
+`;
 
 const useNavigateToEntity = () => {
   const { projectCode } = useParams();
@@ -73,7 +73,6 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
 };
 
 export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hiddenValues'] }) => {
-  const navigateToDashboard = useNavigateToDashboard();
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
@@ -98,16 +97,49 @@ export const MarkerLayer = ({ hiddenValues }: { hiddenValues: LegendProps['hidde
     hiddenValues,
   });
 
-  console.log('processedMeasureData', processedMeasureData);
-  console.log('mapOverlayData.serieses', mapOverlayData.serieses);
+  if (!processedMeasureData || !mapOverlayData.serieses) return null;
+
+  const serieses = mapOverlayData.serieses;
 
   return (
-    <UIMarkerLayer
-      measureData={processedMeasureData as MeasureData[]}
-      serieses={mapOverlayData.serieses}
-      // @ts-ignore - ui-components types refer to organisation unit instead of entity so there is a mismatch
-      onSeeOrgUnitDashboard={navigateToDashboard}
-      onClickEntity={navigateToEntity}
-    />
+    <LayerGroup>
+      {processedMeasureData.map(measure => {
+        if (measure.region) {
+          return (
+            <ShadedPolygon
+              key={measure.organisationUnitCode}
+              positions={measure.region}
+              pathOptions={{
+                color: measure.color,
+                fillColor: measure.color,
+              }}
+              eventHandlers={{
+                click: () => {
+                  navigateToEntity(measure.organisationUnitCode);
+                },
+              }}
+              {...measure}
+            >
+              <AreaTooltip
+                serieses={serieses}
+                orgUnitMeasureData={measure}
+                orgUnitName={measure.name}
+                hasMeasureValue
+              />
+            </ShadedPolygon>
+          );
+        }
+
+        return (
+          <MeasureMarker key={measure.organisationUnitCode} {...measure}>
+            <MeasurePopup
+              markerData={measure}
+              serieses={serieses}
+              onSeeOrgUnitDashboard={navigateToEntity}
+            />
+          </MeasureMarker>
+        );
+      })}
+    </LayerGroup>
   );
 };

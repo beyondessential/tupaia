@@ -40,7 +40,6 @@ export const AreaTooltip = ({
   orgUnitMeasureData = {} as MeasureData,
   text,
 }: AreaTooltipProps) => {
-  console.log('AREA TOOLTIP', serieses);
   return (
     <Tooltip
       pane="tooltipPane"

@@ -49,7 +49,6 @@ export const InteractivePolygon = ({
 
   if (!region) return null;
 
-  // Todo: Polygon overlays waitp-1221
   const hasMeasureValue = false;
 
   return (

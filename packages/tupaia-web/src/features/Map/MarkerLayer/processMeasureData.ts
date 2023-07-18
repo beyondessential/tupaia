@@ -8,6 +8,7 @@ import {
   LegendProps,
   MeasureData,
   Series,
+  MEASURE_TYPE_RADIUS,
 } from '@tupaia/ui-map-components';
 import { Entity } from '@tupaia/types';
 
@@ -25,7 +26,7 @@ export const processMeasureData = ({
 }: processMeasureDataProps) => {
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
-  return entitiesData.map((entity: Entity) => {
+  const entityMeasureData = entitiesData.map((entity: Entity) => {
     const measure = measureData.find(
       (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
     );
@@ -49,4 +50,14 @@ export const processMeasureData = ({
       originalValue,
     };
   });
+
+  // for radius overlay sort desc radius to place smaller circles over larger circles
+  if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
+    entityMeasureData.sort((a, b) => Number(b.radius) - Number(a.radius));
+  }
+
+  // Filter hidden and invalid values and sort measure data
+  return entityMeasureData
+    .filter(({ coordinates, region }) => region || (coordinates && coordinates?.length === 2))
+    .filter(({ isHidden }) => !isHidden);
 };

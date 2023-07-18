@@ -48,7 +48,6 @@ const UIMarkerLayer = ({
   multiOverlayMeasureData,
   multiOverlaySerieses,
   onSeeOrgUnitDashboard,
-  onClickEntity,
 }) => {
   if (!measureData || !serieses) return null;
 
@@ -57,26 +56,6 @@ const UIMarkerLayer = ({
   return (
     <LayerGroup>
       {data.map(measure => {
-        if (measure.region) {
-          return (
-            <ShadedPolygon
-              key={measure.organisationUnitCode}
-              positions={measure.region}
-              pathOptions={{
-                color: measure.color,
-                fillColor: measure.color,
-              }}
-              eventHandlers={{
-                click: () => {
-                  onClickEntity(measure.organisationUnitCode);
-                },
-              }}
-              {...measure}
-            >
-              <AreaTooltip text={getTooltipText(measure, serieses)} />
-            </ShadedPolygon>
-          );
-        }
         // Need to show all values on tooltips even though we toggle off one map overlay
         const markerData = {
           ...measure,
