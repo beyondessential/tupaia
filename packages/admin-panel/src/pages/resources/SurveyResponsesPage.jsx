@@ -117,7 +117,7 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   },
 ];
 
-const ANSWER_FIELDS = [
+export const ANSWER_COLUMNS = [
   {
     Header: 'Question',
     source: 'question.text',
@@ -128,20 +128,6 @@ const ANSWER_FIELDS = [
     Header: 'Answer',
     source: 'text',
     type: 'tooltip',
-  },
-];
-
-export const ANSWER_COLUMNS = [
-  ...ANSWER_FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      title: 'Edit Answer',
-      editEndpoint: 'answers',
-      fields: ANSWER_FIELDS,
-    },
   },
 ];
 
