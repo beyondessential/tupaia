@@ -44,7 +44,7 @@ import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
-import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import { GETAnswers } from './answers';
 import { CreateSurvey, DeleteSurveys, EditSurvey, GETSurveys } from './surveys';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
@@ -77,7 +77,6 @@ import {
 } from './mapOverlayGroupRelations';
 import {
   DeleteSurveyResponses,
-  EditSurveyResponses,
   GETSurveyResponses,
   ResubmitSurveyResponse,
 } from './surveyResponses';
@@ -276,6 +275,7 @@ apiV2.post('/me/deleteAccount', allowAnyone(deleteAccount));
 apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
 apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
+apiV2.post('/surveyResponse/:recordId/resubmit', useRouteHandler(ResubmitSurveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
@@ -300,7 +300,6 @@ apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/surveyResponse/:recordId/resubmit', useRouteHandler(ResubmitSurveyResponse));
 
 /**
  * PUT routes
@@ -308,10 +307,7 @@ apiV2.post('/surveyResponse/:recordId/resubmit', useRouteHandler(ResubmitSurveyR
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
 apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
-apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
-apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
-apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
 apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
@@ -349,8 +345,6 @@ apiV2.delete('/userEntityPermissions/:recordId', useRouteHandler(DeleteUserEntit
 apiV2.delete('/surveys/:recordId', useRouteHandler(DeleteSurveys));
 apiV2.delete('/surveyResponses/:recordId', useRouteHandler(DeleteSurveyResponses));
 apiV2.delete('/surveyScreenComponents/:recordId', useRouteHandler(DeleteSurveyScreenComponents));
-apiV2.delete('/answers/:recordId', useRouteHandler(DeleteAnswers));
-apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(DeleteAnswers));
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
