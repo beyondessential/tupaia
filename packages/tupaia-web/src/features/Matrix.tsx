@@ -27,14 +27,10 @@ const NoDataMessage = styled(Alert).attrs({
 `;
 
 const SearchInput = styled(TextField)`
+  margin-bottom: 0;
   .MuiInputBase-root {
     background-color: transparent;
   }
-`;
-
-const SearchWrapper = styled.div`
-  width: 100%;
-  max-width: 20rem;
 `;
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
@@ -135,12 +131,8 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
 
   const parsedRows = parseRows(rows, undefined, searchFilter);
   const parsedColumns = parseColumns(columns);
-
   if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
   const { periodGranularity } = config;
-
-  // Use the first row's data element as a placeholder text if possible
-  const placeholderText = rows.length > 0 ? `E.g. ${rows[0].dataElement}` : 'Search Rows';
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);
@@ -150,14 +142,17 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
     setSearchFilter('');
   };
   return (
-    <>
-      {/** If no datepicker, allow the user to filter the rows */}
-      {!periodGranularity && (
-        <SearchWrapper>
+    <MatrixComponent
+      {...config}
+      rows={parsedRows}
+      columns={parsedColumns}
+      disableExpand={!!searchFilter}
+      rowHeaderColumnTitle={
+        periodGranularity ? null : (
           <SearchInput
             value={searchFilter}
             onChange={updateSearchFilter}
-            placeholder={placeholderText}
+            placeholder="Search..."
             InputProps={{
               endAdornment: searchFilter ? (
                 <IconButton onClick={clearSearchFilter}>
@@ -168,14 +163,8 @@ export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
               ),
             }}
           />
-        </SearchWrapper>
-      )}
-      <MatrixComponent
-        {...config}
-        rows={parsedRows}
-        columns={parsedColumns}
-        disableExpand={!!searchFilter}
-      />
-    </>
+        )
+      }
+    />
   );
 };
