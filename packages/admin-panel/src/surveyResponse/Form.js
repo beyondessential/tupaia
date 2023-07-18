@@ -16,18 +16,17 @@ import { MODAL_STATUS } from './constants';
 import { SurveyScreens } from './SurveyScreens';
 import { ResponseFields } from './ResponseFields';
 
-export const Form = ({ surveyResponseId, onDismiss }) => {
+export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   const [surveyResubmission, setSurveyResubmission] = useState({});
   const isUnchanged = Object.keys(surveyResubmission).length === 0;
   const [resubmitStatus, setResubmitStatus] = useState(MODAL_STATUS.INITIAL);
-  const [updatedFields, setUpdatedFields] = useState({});
-  const [currentScreenNumber, setCurrentScreenNumber] = useState(0);
   const [selectedEntity, setSelectedEntity] = useState({});
+  const [resubmitErrorMessage, setResubmitErrorMessage] = useState(null);
 
   const useResubmitResponse = () => {
     return useResubmitSurveyResponse(surveyResponseId, surveyResubmission);
   };
-  const { mutateAsync: resubmitResponse, error: resubmitError } = useResubmitResponse();
+  const { mutateAsync: resubmitResponse } = useResubmitResponse();
 
   const handleResubmit = useCallback(async () => {
     setResubmitStatus(MODAL_STATUS.LOADING);
@@ -35,14 +34,15 @@ export const Form = ({ surveyResponseId, onDismiss }) => {
       await resubmitResponse();
     } catch (e) {
       setResubmitStatus(MODAL_STATUS.ERROR);
+      setResubmitErrorMessage(e.message);
       return;
     }
     setResubmitStatus(MODAL_STATUS.SUCCESS);
+    onAfterMutate();
   });
 
-  const { data, isLoading: isFetching, errorMessage: fetchErrorMessage } = useGetExistingData(
-    surveyResponseId,
-  );
+  const { data, isLoading: isFetching, error: fetchError } = useGetExistingData(surveyResponseId);
+  const fetchErrorMessage = fetchError?.message;
 
   useEffect(() => {
     if (!data) {
@@ -52,61 +52,95 @@ export const Form = ({ surveyResponseId, onDismiss }) => {
     }
   }, [data]);
 
-  const existingAndNewFields = { ...data?.surveyResponse, ...updatedFields };
+  const handleDismissError = () => {
+    setResubmitStatus(MODAL_STATUS.INITIAL);
+    setResubmitErrorMessage(null);
+  };
+
+  const renderButtons = useCallback(() => {
+    switch (resubmitStatus) {
+      case MODAL_STATUS.LOADING:
+        return <></>;
+      case MODAL_STATUS.ERROR:
+        return (
+          <>
+            <Button variant="outlined" onClick={() => handleDismissError()}>
+              Dismiss
+            </Button>
+          </>
+        );
+      case MODAL_STATUS.SUCCESS:
+        return (
+          <>
+            <Button onClick={onDismiss}>Close</Button>
+          </>
+        );
+      case MODAL_STATUS.INITIAL:
+      default:
+        return (
+          <>
+            <Button variant="outlined" onClick={onDismiss}>
+              Cancel
+            </Button>
+            <Button
+              id="form-button-resubmit"
+              type="submit"
+              onClick={() => handleResubmit()}
+              disabled={isFetching || isUnchanged}
+            >
+              Resubmit
+            </Button>
+          </>
+        );
+    }
+  }, [resubmitStatus, isFetching, isUnchanged]);
+
+  const existingAndNewFields = { ...data?.surveyResponse, ...surveyResubmission };
   const isResubmitting = resubmitStatus === MODAL_STATUS.LOADING;
+  const isResubmitSuccess = resubmitStatus === MODAL_STATUS.SUCCESS;
 
   return (
-    <ModalContentProvider
-      isLoading={isFetching || isResubmitting}
-      errorMessage={fetchErrorMessage || resubmitError}
-    >
-      {!isFetching && (
-        <ResponseFields
-          onChange={(fieldName, updatedValue) =>
-            setSurveyResubmission({ ...surveyResubmission, [fieldName]: updatedValue })
-          }
-          selectedEntity={selectedEntity}
-          surveyName={data?.survey.name}
-          existingAndNewFields={existingAndNewFields}
-          currentScreenNumber={currentScreenNumber}
-        />
-      )}
-      <Divider />
-      {!isFetching && (
-        <SurveyScreens
-          onChange={updatedAnswers =>
-            setSurveyResubmission({ ...surveyResubmission, answers: updatedAnswers })
-          }
-          survey={data?.survey}
-          existingAnswers={data?.answers}
-          selectedEntity={selectedEntity}
-          setSelectedEntity={setSelectedEntity}
-          surveyResponse={data?.surveyResponse}
-          existingAndNewFields={existingAndNewFields}
-          setUpdatedFields={setUpdatedFields}
-          currentScreenNumber={currentScreenNumber}
-          setCurrentScreenNumber={setCurrentScreenNumber}
-        />
-      )}
-      <DialogFooter>
-        <Button variant="outlined" onClick={onDismiss} disabled={false}>
-          Cancel
-        </Button>
-        <Button
-          id="form-button-resubmit"
-          onClick={() => handleResubmit()}
-          disabled={isFetching || isUnchanged}
-        >
-          Resubmit
-        </Button>
-      </DialogFooter>
-    </ModalContentProvider>
+    <>
+      <ModalContentProvider
+        isLoading={isFetching || isResubmitting}
+        errorMessage={fetchErrorMessage || resubmitErrorMessage}
+      >
+        {!isFetching && !isResubmitSuccess && (
+          <>
+            <ResponseFields
+              selectedEntity={selectedEntity}
+              surveyName={data?.survey.name}
+              fields={existingAndNewFields}
+              onChange={(field, updatedField) =>
+                setSurveyResubmission({ ...surveyResubmission, [field]: updatedField })
+              }
+              setSelectedEntity={setSelectedEntity}
+            />
+            <Divider />
+            <SurveyScreens
+              onChange={(field, updatedField) =>
+                setSurveyResubmission({ ...surveyResubmission, [field]: updatedField })
+              }
+              survey={data?.survey}
+              existingAnswers={data?.answers}
+              selectedEntity={selectedEntity}
+              setSelectedEntity={setSelectedEntity}
+              surveyResponse={data?.surveyResponse}
+              fields={existingAndNewFields}
+            />
+          </>
+        )}
+        {isResubmitSuccess && 'The survey response has been successfully submitted.'}
+      </ModalContentProvider>
+      <DialogFooter>{renderButtons()}</DialogFooter>
+    </>
   );
 };
 
 Form.propTypes = {
   surveyResponseId: PropTypes.string,
   onDismiss: PropTypes.func.isRequired,
+  onAfterMutate: PropTypes.func.isRequired,
 };
 
 Form.defaultProps = {

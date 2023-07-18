@@ -106,13 +106,6 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
     Header: 'Resubmit',
     type: 'resubmitSurveyResponse',
     source: 'id',
-    actionConfig: {
-      title: 'Resubmit Survey Response',
-      extraDialogProps: {
-        fullWidth: true,
-        maxWidth: 'xl',
-      },
-    },
   },
   {
     Header: 'Delete',
