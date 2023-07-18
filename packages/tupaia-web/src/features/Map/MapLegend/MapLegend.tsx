@@ -13,7 +13,7 @@ import styled from 'styled-components';
 
 const DesktopWrapper = styled.div`
   pointer-events: auto;
-
+  margin: 0.4rem 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
