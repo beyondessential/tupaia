@@ -37412,6 +37412,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -37789,6 +37793,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -38149,6 +38157,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -38504,6 +38516,10 @@ export const DashboardWithItemsSchema = {
 											"view"
 										],
 										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
 									},
 									"type": {
 										"type": "string",
@@ -38861,6 +38877,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -39217,6 +39237,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -39227,6 +39251,91 @@ export const DashboardWithItemsSchema = {
 										"type": "string",
 										"enum": [
 											"multiValueRow"
+										]
+									},
+									"presentationoptions": {
+										"type": "object",
+										"properties": {
+											"color": {
+												"type": "string"
+											},
+											"header": {
+												"type": "string"
+											},
+											"datapairnames": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											},
+											"rowheader": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color"
+												]
+											},
+											"leftcolumn": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"header": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color",
+													"header"
+												]
+											},
+											"rightcolumn": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"header": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color",
+													"header"
+												]
+											},
+											"middlecolumn": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"header": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color",
+													"header"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"color",
+											"header"
 										]
 									}
 								},
@@ -39572,6 +39681,10 @@ export const DashboardWithItemsSchema = {
 											"view"
 										],
 										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
 									},
 									"type": {
 										"type": "string",
@@ -39929,6 +40042,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -40284,6 +40401,10 @@ export const DashboardWithItemsSchema = {
 											"view"
 										],
 										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
 									},
 									"type": {
 										"type": "string",
@@ -40641,6 +40762,10 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -40652,6 +40777,18 @@ export const DashboardWithItemsSchema = {
 										"enum": [
 											"multiValue"
 										]
+									},
+									"presentationoptions": {
+										"type": "object",
+										"properties": {
+											"istitlevisible": {
+												"type": "boolean"
+											},
+											"valueformat": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false
 									}
 								},
 								"additionalProperties": false,
