@@ -4,7 +4,7 @@
  */
 
 import { Project } from '../../models';
-import { KeysToCamelCase } from '../../../utils';
+import { KeysToCamelCase } from '../../../utils/casing';
 
 export interface Params {
   projectCode: string;

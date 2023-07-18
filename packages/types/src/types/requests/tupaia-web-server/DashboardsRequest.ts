@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { Dashboard, DashboardItem } from '../../models';
-import { KeysToCamelCase } from '../../../utils';
+import { KeysToCamelCase } from '../../../utils/casing';
 
 export interface Params {
   projectCode: string;
