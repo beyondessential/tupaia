@@ -103,18 +103,18 @@ export const EnlargedDashboardItem = () => {
     onResetDate,
   } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem);
 
+  // If the report is a drilldown, it will have a drilldown id in the url
   const drilldownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
+  // At this time we only support drilldown in matrix visuals
   const isDrillDown = currentDashboardItem?.type === 'matrix' && !!drilldownId;
+  // If the report is a drilldown, we want to get the parent dashboard item, so that we can get the parameter link for querying the data, and also so that we can show a back button to the correct parent dashboard item
+  const parentDashboardItem = isDrillDown
+    ? activeDashboard?.items.find(
+        report => report.drillDown && report.drillDown.itemCode === reportCode,
+      )
+    : null;
 
-  const getParentDashboardItem = () => {
-    if (!isDrillDown) return null;
-    return activeDashboard?.items.find(
-      report => report.drillDown && report.drillDown.itemCode === reportCode,
-    );
-  };
-
-  const parentDashboardItem = getParentDashboardItem();
-
+  // Get the parameters for the report
   const getParameters = () => {
     const params = {
       projectCode,
@@ -126,6 +126,7 @@ export const EnlargedDashboardItem = () => {
       itemCode: currentDashboardItem?.code,
     };
     if (!isDrillDown) return params;
+    // If the report is a drilldown, we want to add the drilldown id to the params, so that correct data is fetched
     const { parameterLink } = parentDashboardItem.drillDown;
     return {
       ...params,
@@ -155,6 +156,7 @@ export const EnlargedDashboardItem = () => {
 
   const { type } = currentDashboardItem || {};
 
+  // If the report is a drilldown, we want to show a back button to the parent dashboard item
   const getBackLink = () => {
     if (!parentDashboardItem) return '';
     const { code } = parentDashboardItem;

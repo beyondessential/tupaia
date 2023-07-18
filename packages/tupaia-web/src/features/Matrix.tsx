@@ -130,6 +130,7 @@ const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOpt
   return '/images/matrix-placeholder-dot-only.png';
 };
 
+// This function gets the base drilldown link, which is the link that is used for all rows in the matrix, if drilldown is configured.
 const getBaseDrilldownLink = (drillDown?: DashboardItemType['drillDown']) => {
   const [urlSearchParams] = useSearchParams();
   if (!drillDown) return '';
