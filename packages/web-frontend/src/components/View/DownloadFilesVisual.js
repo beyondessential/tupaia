@@ -25,6 +25,8 @@ const StyledDownloadFilesVisual = styled(BaseDownloadFilesVisual)`
 const DownloadFilesVisualComponent = ({
   onClose: originalOnClose,
   isUserLoggedIn,
+  viewContent,
+  isEnlarged,
   ...restOfProps
 }) => {
   const [error, setError] = useState(null);
