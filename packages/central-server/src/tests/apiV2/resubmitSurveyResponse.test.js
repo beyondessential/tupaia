@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-// import moment from 'moment';
 import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
@@ -9,9 +8,7 @@ import {
 } from '@tupaia/database';
 import { S3Client } from '@tupaia/utils';
 import {
-  // expectErrors,
   expectSuccess,
-  // setupDummySyncQueue,
   TestableApp,
   upsertEntity,
   upsertFacility,
@@ -23,8 +20,6 @@ const ENTITY_NON_CLINIC_ID = generateTestId();
 
 const questionCode = key => `TEST-${key}`;
 
-// const expectError = (response, expectedError) => expectErrors(response, expectedError, 400);
-
 let surveyId;
 
 describe('resubmit surveyResponse endpoint', () => {
@@ -32,9 +27,6 @@ describe('resubmit surveyResponse endpoint', () => {
   const { models } = app;
 
   before(async () => {
-    // Stub out uploading photos to s3
-    sinon.stub(S3Client.prototype, 'uploadImage').callsFake(() => 'photo_upload');
-
     await app.grantFullAccess();
 
     const country = await upsertDummyRecord(models.country);
@@ -92,7 +84,6 @@ describe('resubmit surveyResponse endpoint', () => {
 
   after(() => {
     app.revokeAccess();
-    S3Client.prototype.uploadImage.restore();
   });
 
   it('Should throw error when answers contain an invalid question code', async () => {
