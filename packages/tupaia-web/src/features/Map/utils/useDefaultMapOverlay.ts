@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useProject } from '../../../api/queries';
 import {
   DEFAULT_MAP_OVERLAY_ID,
@@ -18,7 +18,9 @@ export const useDefaultMapOverlay = (
   projectCode: ProjectCode,
   mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup },
 ) => {
-  const [urlSearchParams, setUrlParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [urlSearchParams] = useSearchParams();
   const { data: project } = useProject(projectCode);
 
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
@@ -49,6 +51,10 @@ export const useDefaultMapOverlay = (
       urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
     }
 
-    setUrlParams(urlSearchParams);
+    // we have to navigate using navigate instead of setUrlParams because setUrlParams seems to override any existing params and existing hash
+    navigate({
+      ...location,
+      search: urlSearchParams.toString(),
+    });
   }, [JSON.stringify(mapOverlaysByCode), project, selectedMapOverlay]);
 };
