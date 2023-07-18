@@ -48,7 +48,6 @@ export const EditModalComponent = ({
   cancelButtonText,
   saveButtonText,
   extraDialogProps,
-  endpoint,
 }) => {
   // key the fields by their source so we can easily find the field to edit. Use the exploded fields so that any subfields are placed into the top level of the array
   const fieldsBySource = keyBy(getExplodedFields(fields), 'source');
@@ -83,7 +82,6 @@ export const EditModalComponent = ({
             return onEditField(fieldSourceToEdit, newValue);
           }}
           onSetFormFile={handleSetFormFile}
-          endpoint={endpoint}
         />
         {displayUsedBy && <UsedBy {...usedByConfig} />}
       </ModalContentProvider>
@@ -121,7 +119,6 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
-  endpoint: PropTypes.string.isRequired,
 };
 
 EditModalComponent.defaultProps = {
@@ -199,7 +196,6 @@ const mergeProps = (
       }
       dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files));
     },
-    endpoint,
     usedByConfig,
   };
 };
