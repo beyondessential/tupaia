@@ -30,7 +30,11 @@ const FileUploadWrapper = styled.div``;
 const FileUploadContainer = styled(FlexStart)``;
 
 interface FileUploadFieldProps {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>, fileName?: string) => void;
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fileName?: string,
+    files?: FileList | null | undefined,
+  ) => void;
   name: string;
   fileName: string;
   multiple: boolean;
@@ -38,7 +42,7 @@ interface FileUploadFieldProps {
   label?: string;
   tooltip?: string;
   helperText?: string;
-  error?: string;
+  error?: boolean;
 }
 
 export const FileUploadField = ({
@@ -65,7 +69,7 @@ export const FileUploadField = ({
       newName = event.target.value.split('\\').pop();
     }
 
-    onChange(event, newName, input.files);
+    onChange(event, newName, input?.files);
   };
 
   return (
