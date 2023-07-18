@@ -10,6 +10,7 @@ import {
   catchAsyncErrors,
   handleError,
   logApiRequest,
+  multipartJson,
 } from './middleware';
 
 import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
@@ -44,7 +45,7 @@ import { GETPermissionGroups } from './GETPermissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
-import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
+import { CreateSurvey, DeleteSurveys, EditSurvey, GETSurveys } from './surveys';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import { CreateProject, EditProject, GETProjects } from './projects';
@@ -127,6 +128,7 @@ import {
 } from './externalDatabaseConnections';
 import { CreateLandingPage, EditLandingPage } from './landingPages';
 import { DownloadFiles } from './DownloadFiles';
+import { suggestSurveyCode } from './suggestSurveyCode';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -251,6 +253,7 @@ apiV2.get(
 );
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 
 /**
  * POST routes
@@ -289,6 +292,7 @@ apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySync
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
+apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 
@@ -298,7 +302,6 @@ apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
 apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
-apiV2.put('/surveys/:recordId', useRouteHandler(EditSurveys));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
 apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
@@ -329,6 +332,7 @@ apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHand
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
+apiV2.put('/surveys/:recordId', multipartJson, useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 
