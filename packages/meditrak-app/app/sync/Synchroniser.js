@@ -106,7 +106,7 @@ export class Synchroniser {
   /**
    * Set the current batch size based on how long the previous batch took to complete.
    *
-   * The batch size is a number between 3 and 500 and is determined by a combination
+   * The batch size is a number between <min> and <max> and is determined by a combination
    * of server performance and connection speed.
    *
    * @param {number} lastBatchSyncDuration
@@ -225,8 +225,11 @@ export class Synchroniser {
     setProgress(this.synchroniserProgress);
 
     // Get batch of outgoing changes and send them
-    const changes = this.changeQueue.nextWithinThreshold(this.batchSize);
+    const changes = await this.changeQueue.nextWithinThreshold(this.batchSize);
     const { requestDuration } = await this.pushChanges(changes.map(({ payload }) => payload));
+
+    // Run any post-change cleanup
+    await this.cleanupChangesAfterPush(changes.map(({ change }) => change));
 
     // Take the successfully sent batch of changes off the queue requiring sync
     this.changeQueue.use(changes.map(({ change }) => change));
@@ -401,6 +404,17 @@ export class Synchroniser {
     for (let m = 0; m < migrationMethods.length; m++) {
       setProgressMessage(`Running migration ${m + 1}/${migrationMethods.length}`);
       await migrationMethods[m](this, setProgressMessage);
+    }
+  }
+
+  async cleanupChangesAfterPush(changes) {
+    for (const change of changes) {
+      try {
+        await change.cleanupAfterPush(this.database);
+      } catch (e) {
+        // TODO: log
+        console.error(`Error thrown in cleanupAfterPush: ${e}`);
+      }
     }
   }
 }

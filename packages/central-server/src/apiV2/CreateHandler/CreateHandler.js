@@ -23,7 +23,9 @@ export class CreateHandler extends CRUDHandler {
     try {
       customResponseDetails = await this.createRecord();
     } catch (error) {
-      throw new DatabaseError('Creating record', error);
+      const newError = new DatabaseError('Creating record', error);
+      newError.stack = error.stack;
+      throw newError;
     }
     respond(this.res, {
       message: `Successfully created ${this.resource}`,
