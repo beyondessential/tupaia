@@ -12,7 +12,7 @@ export const useEntities = search =>
     ['entities', search],
     async () => {
       const endpoint = stringifyQuery(undefined, `entities`, {
-        columns: JSON.stringify(['name', 'id']),
+        columns: JSON.stringify(['name', 'code', 'id']),
         filter: JSON.stringify({
           name: { comparator: 'ilike', comparisonValue: `%${search}%`, castAs: 'text' },
         }),
