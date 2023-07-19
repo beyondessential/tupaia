@@ -4,15 +4,11 @@
  */
 
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { EntityResponse } from '../../types';
+import { EntityCode, EntityResponse, ProjectCode } from '../../types';
 import { get } from '../api';
 import { DEFAULT_BOUNDS } from '../../constants';
 
-export const useEntity = (entityCode?: string) => {
-  //  Todo: use entity endpoint when it's done and remove project code
-  const { projectCode } = useParams();
-
+export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   return useQuery(
     ['entity', projectCode, entityCode],
     async (): Promise<EntityResponse> => {
