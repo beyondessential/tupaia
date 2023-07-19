@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router';
-import { useEntity } from '../api/queries';
+import { useEntity, useUser } from '../api/queries';
 import { RouterButton } from '../components';
 import { MODAL_ROUTES } from '../constants';
 
@@ -22,29 +22,35 @@ const Text = styled(Typography)`
   }
 `;
 
-const RequestAccessButton = styled(RouterButton)`
-  margin-top: 0.5rem;
+const RequestAccessButton = styled(RouterButton).attrs({
+  variant: 'outlined',
+  color: 'default',
+})`
+  margin-top: 1rem;
   text-transform: none;
 `;
 
 export const NoAccessDashboard = () => {
-  const { entityCode, projectCode } = useParams();
-  const { data: entity } = useEntity(projectCode, entityCode);
+  const { entityCode } = useParams();
+  const { isLoggedIn } = useUser();
+  const { data: entity } = useEntity(entityCode);
   if (!entity) return null;
   const { type = '' } = entity;
   const displayType = type?.toLowerCase();
   const isProject = displayType === 'project';
+  const LINK = {
+    MODAL: isLoggedIn ? MODAL_ROUTES.REQUEST_COUNTRY_ACCESS : MODAL_ROUTES.LOGIN,
+    TEXT: isLoggedIn ? 'Request Access' : 'Login',
+  };
   return (
     <>
       <Text>
-        You do not currently have access to view project data
-        {isProject ? 'at the project level view' : ` for the selected ${displayType}`}
+        You do not currently have access to view project data{' '}
+        {isProject ? 'at the project level view' : `for the selected ${displayType}`}
       </Text>
       <Text>
-        If you believe you should be granted access to view this data, you may{' '}
-        <RequestAccessButton modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
-          Request Access
-        </RequestAccessButton>
+        {isLoggedIn && ' If you believe you should be granted access to view this data, you may '}
+        <RequestAccessButton modal={LINK.MODAL}>{LINK.TEXT}</RequestAccessButton>
       </Text>
     </>
   );

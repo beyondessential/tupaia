@@ -22,6 +22,7 @@ import {
 import { DashboardItemConfig } from '@tupaia/types';
 import { ProjectDescription } from '../ProjectDescription';
 import { NoAccessDashboard } from '../NoAccessDashboard';
+import { NoDataAtLevelDashboard } from '../NoDataAtLevelDashboard';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -66,6 +67,7 @@ const DisplayComponents = {
   matrix: Matrix,
   ProjectDescription,
   NoAccessDashboard,
+  NoDataAtLevelDashboard,
 };
 
 interface DashboardItemContentProps {
