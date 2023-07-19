@@ -20,6 +20,7 @@ import {
   ViewReport,
 } from '../../types';
 import { DashboardItemConfig } from '@tupaia/types';
+import { ProjectDescription } from '../ProjectDescription';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -62,6 +63,7 @@ const DisplayComponents = {
   chart: Chart,
   view: View,
   matrix: Matrix,
+  ProjectDescription,
 };
 
 interface DashboardItemContentProps {
@@ -97,9 +99,12 @@ export const DashboardItemContent = ({
   onRetryFetch,
   isExpandable,
 }: DashboardItemContentProps) => {
-  const { name, reportCode, type, viewType } = config;
+  const { name, reportCode, type, viewType, componentName } = config;
 
-  const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
+  const componentKey = componentName || type;
+
+  const DisplayComponent =
+    DisplayComponents[componentKey as keyof typeof DisplayComponents] || null;
 
   if (!DisplayComponent) return null;
 
