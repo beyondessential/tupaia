@@ -22,7 +22,7 @@ import {
   LegacyProjectPendingLink,
   ProjectCardList,
 } from '../layout';
-import { LoadingScreen, RouterButton } from '../components';
+import { RouterButton } from '../components';
 import { CircularProgress } from '@material-ui/core';
 
 const Wrapper = styled.div`
@@ -31,6 +31,7 @@ const Wrapper = styled.div`
   padding: 0.2rem 0 0;
   width: 54rem;
   max-width: 100%;
+  min-height: 90vh;
 `;
 
 const TagLine = styled.p`
@@ -40,8 +41,8 @@ const TagLine = styled.p`
 const ProjectsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 24px 0;
+  gap: 1rem;
+  margin: 1.5rem 0;
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -71,6 +72,17 @@ const Logo = styled.img`
 
 const Loader = styled.div`
   margin-top: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Container = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 /**
@@ -81,6 +93,7 @@ export const ProjectsModal = () => {
     data: { projects },
     isFetching,
   } = useProjects();
+  //const isFetching = true;
   const { isLoggedIn } = useUser();
   const location = useLocation();
   return (
@@ -91,7 +104,7 @@ export const ProjectsModal = () => {
           Data aggregation, analysis, and visualisation for the most remote settings in the world
         </TagLine>
       </div>
-      <div>
+      <Container>
         <ExploreButton>
           <ExploreIcon />I just want to explore
         </ExploreButton>
@@ -149,7 +162,7 @@ export const ProjectsModal = () => {
             />
           </ProjectsGrid>
         )}
-      </div>
+      </Container>
     </Wrapper>
   );
 };
