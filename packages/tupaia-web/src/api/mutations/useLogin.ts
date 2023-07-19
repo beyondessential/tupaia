@@ -15,6 +15,7 @@ type LoginCredentials = {
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const location = useLocation() as { state: { referrer?: string } };
+
   const navigate = useNavigate();
 
   const { closeModal } = useModal();

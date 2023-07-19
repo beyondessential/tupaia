@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import { To, useLocation } from 'react-router';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import {
   MODAL_ROUTES,
@@ -75,6 +76,7 @@ export const ProjectsModal = () => {
     data: { projects },
   } = useProjects();
   const { isLoggedIn } = useUser();
+  const location = useLocation();
   return (
     <Wrapper>
       <div>
@@ -96,7 +98,7 @@ export const ProjectsModal = () => {
                 project: { code, homeEntityCode, dashboardGroupName },
               }) => (
                 <LegacyProjectAllowedLink
-                  url={`/${code}/${homeEntityCode}${
+                  to={`/${code}/${homeEntityCode}${
                     dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
                 />
@@ -105,14 +107,31 @@ export const ProjectsModal = () => {
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
                 const LINK = {
                   TEXT: 'Log in',
-                  URL: `#${MODAL_ROUTES.LOGIN}`,
+                  TO: {
+                    ...location,
+                    hash: MODAL_ROUTES.LOGIN,
+                  },
+                  STATE: {
+                    referrer: location,
+                  },
+                } as {
+                  TEXT: ReactNode;
+                  TO: To;
+                  STATE?: Record<string, unknown> | null;
                 };
                 if (isLoggedIn) {
                   LINK.TEXT = 'Request Access';
-                  LINK.URL = `?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`;
+                  LINK.TO = {
+                    ...location,
+                    hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
+                    search: `${URL_SEARCH_PARAMS.PROJECT}=${code}`,
+                  };
+                  LINK.STATE = null;
                 }
                 return (
-                  <LegacyProjectDeniedLink url={LINK.URL}>{LINK.TEXT}</LegacyProjectDeniedLink>
+                  <LegacyProjectDeniedLink to={LINK.TO} routerState={LINK.STATE}>
+                    {LINK.TEXT}
+                  </LegacyProjectDeniedLink>
                 );
               },
             }}

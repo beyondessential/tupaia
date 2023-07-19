@@ -5,6 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import { To } from 'react-router';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { RouterButton } from '../../components';
@@ -105,13 +106,15 @@ const StyledPendingButton = styled(RouterButton).attrs({
 `;
 
 export const LegacyProjectDeniedLink = ({
-  url,
+  to,
   children,
+  routerState,
 }: {
-  url: string;
+  to: To;
   children: ReactNode;
+  routerState?: Record<string, unknown> | null;
 }) => (
-  <RouterButton to={url} color="primary" variant="outlined">
+  <RouterButton to={to} color="primary" variant="outlined" routerState={routerState}>
     <LockIcon />
     {children}
   </RouterButton>
@@ -124,8 +127,8 @@ export const LegacyProjectPendingLink = () => (
   </StyledPendingButton>
 );
 
-export const LegacyProjectAllowedLink = ({ url }: { url: string }) => (
-  <RouterButton to={url}>View project</RouterButton>
+export const LegacyProjectAllowedLink = ({ to }: { to: To }) => (
+  <RouterButton to={to}>View project</RouterButton>
 );
 
 interface LegacyProjectCardProps {
