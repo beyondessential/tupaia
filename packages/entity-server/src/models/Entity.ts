@@ -46,4 +46,9 @@ export interface EntityModel extends Model<BaseEntityModel, EntityFields, Entity
     entityIds: string[],
     criteria?: EntityFilter,
   ) => Promise<EntityType[]>;
+  getAncestorsOfEntities: (
+    hierarchyId: string,
+    entityIds: string[],
+    criteria?: EntityFilter,
+  ) => Promise<EntityType[]>;
 }

@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Dashboard, Warning, NewReleases } from '@material-ui/icons';
 import MuiBox from '@material-ui/core/Box';
-import { Tabs, Tab, LightTabs, LightTab } from '../src';
+import { Tabs, Tab, LightTabs, LightTab } from '../src/components';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {

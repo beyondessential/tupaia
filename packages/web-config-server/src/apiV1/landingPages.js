@@ -1,37 +1,7 @@
 import { respond } from '@tupaia/utils';
-
-function buildProjectData(project) {
-  const {
-    name,
-    code,
-    description,
-    sort_order: sortOrder,
-    image_url: imageUrl,
-    logo_url: logoUrl,
-    permission_groups: permissionGroups,
-    dashboard_group_name: dashboardGroupName,
-    default_measure: defaultMeasure,
-    config,
-  } = project;
-
-  return {
-    name,
-    code,
-    permissionGroups,
-    description,
-    sortOrder,
-    imageUrl,
-    logoUrl,
-    dashboardGroupName,
-    defaultMeasure,
-    config,
-  };
-}
+import { buildProjectDataForFrontend } from './projects';
 
 async function buildLandingPageDataForFrontend(landingPage, req) {
-  const projectData = await req.models.project.find({ code: landingPage.project_codes });
-  const projects = projectData.map(project => buildProjectData(project));
-
   const {
     name,
     image_url: imageUrl,
@@ -45,7 +15,19 @@ async function buildLandingPageDataForFrontend(landingPage, req) {
     website_url: websiteUrl,
     include_name_in_header: includeNameInHeader,
     extended_title: extendedTitle,
+    project_codes: projectCodes,
   } = landingPage;
+
+  // Fetch all the projects with their entity_ids
+  const allProjects = await req.models.project.getAllProjectDetails();
+
+  // Filter to only the projects that are included in the landing page
+  const applicableProjects = allProjects.filter(project => projectCodes.includes(project.code));
+
+  // Build the project data for the frontend, using the method from the projects API, so that we get the same information returned, including permissions
+  const projects = await Promise.all(
+    applicableProjects.map(project => buildProjectDataForFrontend(project, req)),
+  );
 
   return {
     name,

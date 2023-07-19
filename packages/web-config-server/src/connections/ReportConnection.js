@@ -27,6 +27,12 @@ export class ReportConnection extends ApiConnection {
     const userName = req?.userJson?.userName;
 
     const getAuthHeader = async () => {
+      // If we're authorized using a header already, forward that header
+      const authHeader = req?.headers?.authorization || req?.headers?.Authorization;
+      if (authHeader) {
+        return authHeader;
+      }
+
       if (userName === PUBLIC_USER_NAME) {
         return PUBLIC_USER_AUTH_HEADER;
       }

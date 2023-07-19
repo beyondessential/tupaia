@@ -11,7 +11,7 @@ import {
   BREWER_AUTO,
   UNKNOWN_COLOR,
   UNKNOWN_ICON,
-} from '@tupaia/ui-components';
+} from '@tupaia/ui-map-components';
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { MARKER_TYPES, SCALE_TYPES } from '../constants';

@@ -6,7 +6,7 @@ import React from 'react';
 import { PhotoAlbum } from '@material-ui/icons';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
+import { useParams, useRouteMatch } from 'react-router-dom';
 import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header, HeaderAvatarTitle } from '../components';
 import { WeeklyReportsExportModal } from '../containers/Modals';
@@ -30,6 +30,7 @@ const links = [
 const CountryReportsViewComponent = ({ backButtonConfig }) => {
   const { countryCode } = useParams();
   const countryName = useSelector(state => getCountryName(state, countryCode));
+  const match = useRouteMatch();
 
   return (
     <>
@@ -38,7 +39,7 @@ const CountryReportsViewComponent = ({ backButtonConfig }) => {
         back={backButtonConfig}
         ExportModal={WeeklyReportsExportModal}
       />
-      <TabsToolbar links={links} maxWidth="xl" />
+      <TabsToolbar links={links} maxWidth="xl" baseRoute={match.url} />
       <CountryRoutes />
     </>
   );
