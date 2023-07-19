@@ -5,6 +5,6 @@
 
 export { SurveyScreen } from './SurveyScreen';
 export { SurveysMenuScreen } from './SurveysMenuScreen';
-export { QrCodeScreen } from './QrCodeScreen';
+export { QrCodeScreen } from './qrCodeScreen';
 
 export { reducer } from './reducer';
