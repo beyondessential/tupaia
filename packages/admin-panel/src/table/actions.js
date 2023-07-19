@@ -79,8 +79,7 @@ const refreshDataWithDebounce = debounce(
     // Set up filter
     const filterObject = { ...baseFilter };
     filters.forEach(({ id, value }) => {
-      // When user accidentally press space, it will still search
-      filterObject[id] = value.trim();
+      filterObject[id] = value;
     });
     const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
 
