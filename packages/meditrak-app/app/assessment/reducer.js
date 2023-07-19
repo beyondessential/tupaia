@@ -8,7 +8,6 @@ import { createReducer } from '../utilities';
 import {
   ANSWER_CHANGE,
   ASSESSMENT_RESET,
-  EXTRA_PROPS_CHANGE,
   SURVEY_SCREEN_ERROR_MESSAGE_CHANGE,
   SURVEY_SCREEN_SELECT,
   SURVEY_SELECT,
@@ -56,10 +55,6 @@ const stateChanges = {
         return { ...component, validationErrorMessage };
       }
       return component;
-    }),
-  [EXTRA_PROPS_CHANGE]: ({ componentIndex, newProps }, state) =>
-    updateComponentState(state, state.currentScreenIndex, componentIndex, component => {
-      return { ...component, extraProps: { ...component.extraProps, ...newProps } };
     }),
   [ASSESSMENT_RESET]: () => defaultState,
   [SURVEY_SCREEN_ERROR_MESSAGE_CHANGE]: ({ message, screenIndex }, state) => {

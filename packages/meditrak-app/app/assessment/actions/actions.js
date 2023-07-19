@@ -16,7 +16,6 @@ import {
 
 import {
   ANSWER_CHANGE,
-  EXTRA_PROPS_CHANGE,
   SURVEY_SCREEN_SELECT,
   SURVEY_SELECT,
   UPDATE_SURVEYS,
@@ -71,12 +70,6 @@ export const changeAnswer = (questionId, newAnswer) => ({
   type: ANSWER_CHANGE,
   questionId,
   newAnswer,
-});
-
-export const changeExtraProps = (componentIndex, newProps) => ({
-  type: EXTRA_PROPS_CHANGE,
-  componentIndex,
-  newProps,
 });
 
 export const takeScrollControl = () => ({

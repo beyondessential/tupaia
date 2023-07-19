@@ -6,7 +6,7 @@
 import { connect } from 'react-redux';
 
 import { getQuestionState } from './selectors';
-import { changeAnswer, changeExtraProps, validateComponent } from './actions';
+import { changeAnswer, validateComponent } from './actions';
 import { DumbQuestion } from './DumbQuestion';
 import {
   BinaryQuestion,
@@ -62,14 +62,9 @@ const mapStateToProps = (
   state,
   { componentIndex, screenIndex, type, questionText, textInputProps, optionSetId, realmDatabase },
 ) => {
-  const { answer, extraProps, validationErrorMessage } = getQuestionState(
-    state,
-    screenIndex,
-    componentIndex,
-  );
+  const { answer, validationErrorMessage } = getQuestionState(state, screenIndex, componentIndex);
   return {
     answer,
-    extraProps,
     optionSetId,
     realmDatabase,
     textInputProps,
@@ -93,7 +88,6 @@ const mergeProps = ({ hasValidationErrorMessage, ...restOfStateProps }, { dispat
         dispatch(validateComponent(screenIndex, componentIndex, validationCriteria, newAnswer));
       }
     },
-    onChangeExtraProps: newProps => dispatch(changeExtraProps(id, newProps)),
   };
 };
 

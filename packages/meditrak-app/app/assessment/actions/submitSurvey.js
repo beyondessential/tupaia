@@ -50,16 +50,7 @@ const processAnswerForDatabase = async (database, questionId, type, answer) => {
   if (type === 'File' && answer) {
     const fileId = generateUUID().toString();
     const uniqueFileName = `${fileId}_${getFilenameFromUri(answer)}`;
-    const data = await RNFS.readFile(answer, 'base64');
-    database.saveFile(fileId, uniqueFileName, data);
-
-    // Delete local file copy
-    try {
-      await RNFS.unlink(answer);
-    } catch (e) {
-      console.warn(`Failed to unlink file: ${answer}`);
-    }
-
+    database.saveFile(fileId, uniqueFileName, answer);
     processedAnswer = uniqueFileName;
   }
 
