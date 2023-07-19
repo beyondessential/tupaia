@@ -6,7 +6,7 @@
 export * as TupaiaWebCountryAccessListRequest from './CountryAccessListRequest';
 export * as TupaiaWebDashboardsRequest from './DashboardsRequest';
 export * as TupaiaWebEntitiesRequest from './EntitiesRequest';
-export * as TupaiaWebEntityRequest from './EntitiesRequest';
+export * as TupaiaWebEntityRequest from './EntityRequest';
 export * as TupaiaWebEntitySearchRequest from './EntitySearchRequest';
 export * as TupaiaWebLegacyDashboardReportRequest from './LegacyDashboardReportRequest';
 export * as TupaiaWebLegacyMapOverlayReportRequest from './LegacyMapOverlayReportRequest';
