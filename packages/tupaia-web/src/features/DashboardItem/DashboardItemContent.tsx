@@ -21,6 +21,7 @@ import {
 } from '../../types';
 import { DashboardItemConfig } from '@tupaia/types';
 import { ProjectDescription } from '../ProjectDescription';
+import { NoAccessDashboard } from '../NoAccessDashboard';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -64,6 +65,7 @@ const DisplayComponents = {
   view: View,
   matrix: Matrix,
   ProjectDescription,
+  NoAccessDashboard,
 };
 
 interface DashboardItemContentProps {
@@ -103,8 +105,7 @@ export const DashboardItemContent = ({
 
   const componentKey = componentName || type;
 
-  const DisplayComponent =
-    DisplayComponents[componentKey as keyof typeof DisplayComponents] || null;
+  const DisplayComponent = DisplayComponents[componentKey as keyof typeof DisplayComponents];
 
   if (!DisplayComponent) return null;
 

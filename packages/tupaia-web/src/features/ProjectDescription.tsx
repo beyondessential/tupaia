@@ -19,7 +19,7 @@ const Title = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-const Countries = styled(Typography)`
+const SecondaryText = styled(Typography)`
   font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   text-align: center;
@@ -31,11 +31,11 @@ export const ProjectDescription = () => {
   if (isLoading) return null;
 
   const { description, names = [] } = project!;
-  if (!description && !names) return 'No project selected';
+  if (!description && !names) return <SecondaryText>No project selected</SecondaryText>;
   return (
     <>
       <Title>{description}</Title>
-      <Countries>{names.join(', ')}</Countries>
+      <SecondaryText>{names.join(', ')}</SecondaryText>
     </>
   );
 };
