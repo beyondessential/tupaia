@@ -23,7 +23,8 @@ export enum MODAL_ROUTES {
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 
-export const DEFAULT_URL = `/explore/explore/General`;
+export const DEFAULT_PROJECT_ENTITY = '/explore/explore';
+export const DEFAULT_URL = `${DEFAULT_PROJECT_ENTITY}/General`;
 
 export enum TABS {
   MAP = 'map',
