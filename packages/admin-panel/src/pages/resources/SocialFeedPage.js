@@ -46,6 +46,12 @@ const FIELDS = [
         {
           label: 'Image',
           fieldName: 'image',
+          type: 'image',
+          avatarVariant: 'square',
+          deleteModal: {
+            title: 'Remove Project Image',
+            message: 'Are you sure you want to delete your image?',
+          },
         },
         {
           label: 'Body (accepts basic markdown)',

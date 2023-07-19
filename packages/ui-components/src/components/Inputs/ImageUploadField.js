@@ -129,12 +129,30 @@ export const ImageUploadField = React.memo(
       }
       return null;
     };
+
+    const createBase64Image = fileObject => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(fileObject);
+      });
+    };
+
     const handleFileUpload = async event => {
       const image = event.target.files[0];
       const newErrorMessage = await validateImageSize(image);
       setErrorMessage(newErrorMessage);
       // Only call onChange if image is validated, so the user can't upload anything invalid.
-      if (!newErrorMessage) onChange(image);
+      if (!newErrorMessage) {
+        const base64Image = await createBase64Image(image);
+        onChange(base64Image);
+      }
     };
 
     return (
