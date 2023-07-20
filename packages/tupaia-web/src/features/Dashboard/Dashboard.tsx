@@ -104,7 +104,7 @@ export const Dashboard = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds;
 
   const toggleExpanded = () => {
