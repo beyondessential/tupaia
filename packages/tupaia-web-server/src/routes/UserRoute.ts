@@ -5,8 +5,14 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { TupaiaWebUserRequest } from '@tupaia/types';
 
-export type UserRequest = Request;
+export type UserRequest = Request<
+  TupaiaWebUserRequest.Params,
+  TupaiaWebUserRequest.ResBody,
+  TupaiaWebUserRequest.ReqBody,
+  TupaiaWebUserRequest.ReqQuery
+>;
 
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
