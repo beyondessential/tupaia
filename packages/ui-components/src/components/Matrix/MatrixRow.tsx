@@ -153,7 +153,6 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
             rowTitle={row.title}
             colKey={key}
             isCategory={isCategory}
-            link={link}
           />
         ))}
       </TableRow>

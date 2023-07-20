@@ -59,7 +59,15 @@ const Subheading = styled(Typography).attrs({
   margin-bottom: 1rem;
 `;
 
-const BackLink = styled(IconButton).attrs({
+const ContentWrapper = styled.div`
+  min-height: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BackLinkButton = styled(IconButton).attrs({
   component: Link,
   color: 'default',
 })`
@@ -72,12 +80,33 @@ const BackLink = styled(IconButton).attrs({
     height: 2rem;
   }
 `;
+
+const BackLink = ({ parentDashboardItem }: { parentDashboardItem?: DashboardItemType | null }) => {
+  const [urlSearchParams] = useSearchParams();
+  const location = useLocation();
+  if (!parentDashboardItem) return null;
+  const { code } = parentDashboardItem;
+  // we make a copy of the search params so we don't mutate the original and accidentally change the url
+  const searchParams = new URLSearchParams(urlSearchParams);
+  searchParams.set(URL_SEARCH_PARAMS.REPORT, code);
+  searchParams.delete(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
+  const backLink = {
+    ...location,
+    search: searchParams.toString(),
+  };
+
+  return (
+    <BackLinkButton to={backLink} title="Back to parent dashboard item">
+      <KeyboardArrowLeft />
+    </BackLinkButton>
+  );
+};
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
  */
 export const EnlargedDashboardItem = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
-  const location = useLocation();
+
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
 
@@ -147,7 +176,7 @@ export const EnlargedDashboardItem = () => {
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT);
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_PERIOD);
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
-    setUrlSearchParams(urlSearchParams.toString());
+    setUrlSearchParams(urlSearchParams);
   };
 
   const titleText = `${currentDashboardItem?.name}, ${
@@ -156,32 +185,12 @@ export const EnlargedDashboardItem = () => {
 
   const { type } = currentDashboardItem || {};
 
-  // If the report is a drilldown, we want to show a back button to the parent dashboard item
-  const getBackLink = () => {
-    if (!parentDashboardItem) return '';
-    const { code } = parentDashboardItem;
-    // we make a copy of the search params so we don't mutate the original and accidentally change the url
-    const searchParams = new URLSearchParams(urlSearchParams);
-    searchParams.set(URL_SEARCH_PARAMS.REPORT, code);
-    searchParams.delete(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
-    return {
-      ...location,
-      search: searchParams.toString(),
-    };
-  };
-
-  const backLink = getBackLink();
-
   return (
     <Modal isOpen onClose={handleCloseModal}>
       <Wrapper $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}>
         <Container>
           <TitleWrapper>
-            {backLink && (
-              <BackLink to={backLink} title="Back to parent dashboard item">
-                <KeyboardArrowLeft />
-              </BackLink>
-            )}
+            <BackLink parentDashboardItem={parentDashboardItem} />
             {currentDashboardItem?.name && <Title>{titleText}</Title>}
             {showDatePicker && (
               <DateRangePicker
@@ -199,15 +208,17 @@ export const EnlargedDashboardItem = () => {
           {currentDashboardItem?.description && (
             <Subheading>{currentDashboardItem?.description}</Subheading>
           )}
-          <DashboardItemContent
-            isLoading={isLoadingReportData}
-            error={error}
-            report={reportData}
-            config={currentDashboardItem}
-            onRetryFetch={refetch}
-            isExpandable={false}
-            isEnlarged
-          />
+          <ContentWrapper>
+            <DashboardItemContent
+              isLoading={isLoadingReportData}
+              error={error}
+              report={reportData}
+              config={currentDashboardItem}
+              onRetryFetch={refetch}
+              isExpandable={false}
+              isEnlarged
+            />
+          </ContentWrapper>
         </Container>
       </Wrapper>
     </Modal>

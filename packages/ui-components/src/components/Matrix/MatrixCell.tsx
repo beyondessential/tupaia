@@ -64,7 +64,7 @@ interface MatrixRowProps {
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
   colKey: MatrixColumnType['key'];
-  link: MatrixRowType['link'];
+  link?: MatrixRowType['link'];
 }
 
 /**
