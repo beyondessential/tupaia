@@ -43,7 +43,7 @@ const Title = styled(Typography).attrs({
 
 export const RequestCountryAccessModal = () => {
   const formContext = useForm();
-  const { data, isLoading: isLoadingList } = useCountryAccessList();
+  const { data, isLoading: isLoadingList, isFetching } = useCountryAccessList();
 
   const getCountriesByAccess = (hasRequests: boolean) => {
     return data?.filter(({ hasAccess, accessRequests }) => {
@@ -65,7 +65,7 @@ export const RequestCountryAccessModal = () => {
     <ModalBody>
       <Title>Request access to countries</Title>
       {isError && <Typography color="error">{error.message}</Typography>}
-      <LoadingScreen isLoading={isLoadingList || isSubmitting} />
+      <LoadingScreen isLoading={isLoadingList || isFetching || isSubmitting} />
       {isSuccess ? (
         <Typography>
           Thank you for your country request. We will review your application and respond by email

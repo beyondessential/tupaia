@@ -4,26 +4,20 @@
  */
 
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { EntityResponse } from '../../types';
+import { EntityCode, EntityResponse, ProjectCode } from '../../types';
 import { get } from '../api';
 import { DEFAULT_BOUNDS } from '../../constants';
 
-export const useEntity = (entityCode?: string) => {
-  //  Todo: use entity endpoint when it's done and remove project code
-  const { projectCode } = useParams();
-
+export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   return useQuery(
-    ['entities', projectCode, entityCode],
+    ['entity', projectCode, entityCode],
     async (): Promise<EntityResponse> => {
-      const entities = await get(`entities/${projectCode}/${entityCode}`, {
+      const entity = await get(`entity/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,
           fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region', 'image_url'],
         },
       });
-      // @ts-ignore
-      const entity = entities.find(e => e.code === entityCode);
 
       if (entity.code === 'explore') {
         return { ...entity, bounds: DEFAULT_BOUNDS };
