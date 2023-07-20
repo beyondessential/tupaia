@@ -27,24 +27,39 @@ export const useDefaultMapOverlay = (
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
 
   useEffect(() => {
-    if (!project) {
+    const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
+    const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
+
+    if (!project || overlayCodes.length === 0) {
       return;
     }
 
-    const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
+    const getDefaultOverlayCode = () => {
+      // If the selected overlay is valid, or if there is no selected overlay stop here
+      if (!selectedMapOverlay || !isValidMapOverlayId) {
+        const { defaultMeasure } = project;
 
-    if (!selectedMapOverlay || !isValidMapOverlayId) {
-      const { defaultMeasure } = project;
-      const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
-      // If there are no map overlays, the default overlay is the DEFAULT_MAP_OVERLAY_ID
-      // however if there are map overlays, use the first available overlay
-      let defaultMapOverlayId = overlayCodes.length > 0 ? overlayCodes[0] : DEFAULT_MAP_OVERLAY_ID;
-      // if there is a default measure and it is in the list of overlays, use it
-      if (defaultMeasure && !!mapOverlaysByCode[defaultMeasure]) {
-        defaultMapOverlayId = defaultMeasure;
+        // if the defaultMeasure exists, use this
+        if (mapOverlaysByCode[defaultMeasure]) {
+          return defaultMeasure;
+        }
+
+        // if the generic default overlay exists, use this
+        if (mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID]) {
+          return DEFAULT_MAP_OVERLAY_ID;
+        }
+
+        // otherwise use the first overlay in the list
+        if (overlayCodes.length > 0) {
+          return overlayCodes[0];
+        }
       }
+    };
 
-      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultMapOverlayId);
+    const defaultOverlayCode = getDefaultOverlayCode();
+
+    if (defaultOverlayCode) {
+      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultOverlayCode);
     }
 
     if (!selectedMapOverlayPeriod) {
