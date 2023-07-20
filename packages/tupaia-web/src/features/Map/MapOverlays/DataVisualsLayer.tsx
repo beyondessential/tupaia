@@ -6,6 +6,7 @@
 import React from 'react';
 import { useParams } from 'react-router';
 import camelCase from 'camelcase';
+import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LegendProps,
@@ -25,7 +26,6 @@ import {
 import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
-import styled from 'styled-components';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -106,7 +106,7 @@ export const DataVisualsLayer = ({
     return null;
   }
 
-  const serieses = mapOverlayData.serieses;
+  const { serieses } = mapOverlayData;
 
   return (
     <LayerGroup>

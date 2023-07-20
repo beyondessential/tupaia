@@ -85,8 +85,7 @@ export const PolygonNavigationLayer = () => {
           />
         </>
       )}
-      {childEntities &&
-        childEntities.length > 0 &&
+      {childEntities?.length > 0 &&
         childEntities.map(entity => (
           <InteractivePolygon
             key={entity.code}
