@@ -7,7 +7,7 @@ import React from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { useProject } from '../api/queries';
+import { useProject } from '../../api/queries';
 
 const Title = styled(Typography).attrs({
   variant: 'h3',

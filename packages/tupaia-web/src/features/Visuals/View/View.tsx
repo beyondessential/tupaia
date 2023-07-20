@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { ViewConfig } from '@tupaia/types';
-import { ViewReport } from '../../types';
+import { ViewReport } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';

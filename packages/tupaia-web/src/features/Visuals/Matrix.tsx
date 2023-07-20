@@ -16,7 +16,7 @@ import {
   TextField,
 } from '@tupaia/ui-components';
 import { ConditionalPresentationOptions } from '@tupaia/types';
-import { DashboardItemType, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../types';
+import { DashboardItemType, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../../types';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',

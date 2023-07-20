@@ -5,9 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router';
-import { useEntity } from '../api/queries';
+import { Typography } from '@material-ui/core';
+import { useEntity } from '../../api/queries';
 
 const Text = styled(Typography)`
   font-size: 1rem;

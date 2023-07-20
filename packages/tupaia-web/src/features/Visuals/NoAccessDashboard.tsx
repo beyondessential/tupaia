@@ -7,9 +7,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router';
-import { useEntity, useUser } from '../api/queries';
-import { RouterButton } from '../components';
-import { MODAL_ROUTES } from '../constants';
+import { useEntity, useUser } from '../../api/queries';
+import { RouterButton } from '../../components';
+import { MODAL_ROUTES } from '../../constants';
 
 const Text = styled(Typography)`
   font-size: 1rem;
