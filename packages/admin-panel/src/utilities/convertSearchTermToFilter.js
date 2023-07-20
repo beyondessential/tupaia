@@ -14,7 +14,7 @@ export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
     filterObject[key] = {
       comparator: `ilike`,
       // When user accidentally press space, it will still search
-      comparisonValue: `${value}%`.trim(),
+      comparisonValue: `${value.trim()}%`,
       castAs: 'text',
     };
   });
