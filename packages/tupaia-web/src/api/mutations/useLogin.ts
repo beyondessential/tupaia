@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Location, useLocation, useNavigate } from 'react-router';
 import { useModal } from '../../utils';
 import { post } from '../api';
-import { DEFAULT_PROJECT_ENTITY, DEFAULT_URL, MODAL_ROUTES } from '../../constants';
+import { DEFAULT_PROJECT_ENTITY, MODAL_ROUTES } from '../../constants';
 
 type LoginCredentials = {
   email: string;
