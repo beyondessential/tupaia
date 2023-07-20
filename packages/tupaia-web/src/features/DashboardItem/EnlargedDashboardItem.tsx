@@ -196,7 +196,6 @@ export const EnlargedDashboardItem = () => {
               />
             )}
           </TitleWrapper>
-
           {currentDashboardItem?.description && (
             <Subheading>{currentDashboardItem?.description}</Subheading>
           )}
