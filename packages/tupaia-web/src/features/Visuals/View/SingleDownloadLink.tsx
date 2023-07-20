@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from '@material-ui/core';
 import { ViewConfig } from '@tupaia/types';
-import { ViewDataItem } from '../../types';
+import { ViewDataItem } from '../../../types';
 
 const LinkText = styled(Link).attrs({
   download: true,

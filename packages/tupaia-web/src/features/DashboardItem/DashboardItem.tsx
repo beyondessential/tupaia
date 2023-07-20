@@ -73,7 +73,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   let showTitle = !!name;
   if (viewType === 'multiValue') {
     showTitle = !!name && presentationOptions?.isTitleVisible;
-  } else if (viewType === 'singleDownloadLink') showTitle = false;
+  } else if (viewType === 'singleDownloadLink' || type === 'component') showTitle = false;
 
   return (
     <Wrapper>

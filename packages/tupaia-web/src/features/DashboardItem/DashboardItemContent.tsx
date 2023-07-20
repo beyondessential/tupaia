@@ -6,12 +6,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { Chart } from '../Chart';
+import { DashboardItemConfig } from '@tupaia/types';
+import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
+import { Chart } from '../Visuals/Chart';
 import { ExpandItemButton } from './ExpandItemButton';
-import { View } from '../View';
-import { Matrix } from '../Matrix';
+import {
+  View,
+  Matrix,
+  ProjectDescription,
+  NoAccessDashboard,
+  NoDataAtLevelDashboard,
+} from '../Visuals';
 import {
   ChartReport,
   DashboardItemReport,
@@ -19,7 +25,6 @@ import {
   MatrixReport,
   ViewReport,
 } from '../../types';
-import { DashboardItemConfig } from '@tupaia/types';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -62,6 +67,9 @@ const DisplayComponents = {
   chart: Chart,
   view: View,
   matrix: Matrix,
+  ProjectDescription,
+  NoAccessDashboard,
+  NoDataAtLevelDashboard,
 };
 
 interface DashboardItemContentProps {
@@ -97,9 +105,11 @@ export const DashboardItemContent = ({
   onRetryFetch,
   isExpandable,
 }: DashboardItemContentProps) => {
-  const { name, reportCode, type, viewType } = config;
+  const { name, reportCode, type, viewType, componentName } = config;
 
-  const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
+  const componentKey = componentName || type;
+
+  const DisplayComponent = DisplayComponents[componentKey as keyof typeof DisplayComponents];
 
   if (!DisplayComponent) return null;
 
