@@ -80,6 +80,12 @@ const ExpandButtonLabel = styled.div`
   padding-bottom: 0.5rem;
 `;
 
+const ButtonWrapper = styled.div`
+  > div {
+    padding: 1rem;
+  }
+`;
+
 interface MobileMapOverlaySelectorProps {
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
@@ -92,7 +98,7 @@ export const MobileMapOverlaySelector = ({
   return (
     <Wrapper>
       {!overlayLibraryOpen && (
-        <>
+        <ButtonWrapper>
           <MapOverlayDatePicker />
           <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
             <span>
@@ -103,7 +109,7 @@ export const MobileMapOverlaySelector = ({
               <ArrowForwardIos />
             </ArrowWrapper>
           </ExpandButton>
-        </>
+        </ButtonWrapper>
       )}
       <OverlayMenu
         $expanded={overlayLibraryOpen}

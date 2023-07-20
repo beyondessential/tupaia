@@ -55,7 +55,11 @@ const Container = styled(MaxHeightContainer)`
 `;
 
 const TitleWrapper = styled.div`
+  padding: 1rem;
   background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+  div + div {
+    padding-top: 0.5rem;
+  }
 `;
 
 const OverlayLibraryAccordion = styled(Accordion)`

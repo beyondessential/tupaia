@@ -15,9 +15,6 @@ const Wrapper = styled.div<{
   $hasMapOverlays: boolean;
 }>`
   border-radius: ${({ $hasMapOverlays }) => ($hasMapOverlays ? '0' : '0 0 5px 5px')};
-  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    padding: 1rem 1rem 0;
-  }
 `;
 
 const MapOverlayName = styled.span`
