@@ -110,7 +110,9 @@ const getServiceUrlForSubdomain = (service: ServiceName, originalSubdomain: stri
 };
 
 const isLocalhost = (hostname: string) =>
-  hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
+  hostname.startsWith('localhost') ||
+  hostname.startsWith('127.0.0.1') ||
+  hostname.startsWith('10.0.2.2'); // Android Emulator out to host
 
 const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
   if (isLocalhost(hostname)) {

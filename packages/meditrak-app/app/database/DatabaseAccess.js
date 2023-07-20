@@ -59,12 +59,12 @@ export class DatabaseAccess extends SyncingDatabase {
     });
   }
 
-  saveFile(fileId, uniqueFileName, data) {
+  saveFile(fileId, uniqueFileName, filePathOnDevice) {
     this.write(() => {
       this.create('File', {
         id: fileId,
         uniqueFileName,
-        data,
+        filePathOnDevice,
       });
       this.addChangeToSync('AddSurveyFile', fileId);
     });

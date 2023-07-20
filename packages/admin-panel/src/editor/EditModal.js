@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import keyBy from 'lodash.keyby';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -52,33 +52,38 @@ export const EditModalComponent = ({
   // key the fields by their source so we can easily find the field to edit. Use the exploded fields so that any subfields are placed into the top level of the array
   const fieldsBySource = keyBy(getExplodedFields(fields), 'source');
 
+  // Files cannot be stored in redux (https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions)
+  // So instead we keep a map of fieldKey -> File, and store only the filename in redux.
+  const [files, setFiles] = useState({});
+  const handleSetFormFile = (inputKey, { fileName, file }) => {
+    setFiles({
+      ...files,
+      [inputKey]: file,
+    });
+    onEditField(inputKey, fileName);
+  };
+  useEffect(() => {
+    // Rely on the fact that opening/closing the modal clears `fields` to make sure that `files` gets wiped between forms.
+    setFiles({});
+  }, [fields]);
+
+  const FieldsComponentResolved = FieldsComponent ?? Editor;
+
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
       <DialogHeader onClose={onDismiss} title={title} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-        <>
-          {!FieldsComponent && fields.length > 0 && (
-            <Editor
-              fields={fields}
-              recordData={recordData}
-              onEditField={(fieldSource, newValue) => {
-                const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-                return onEditField(fieldSourceToEdit, newValue);
-              }}
-            />
-          )}
-          {FieldsComponent && (
-            <FieldsComponent
-              isLoading={isLoading}
-              recordData={recordData}
-              onEditField={(fieldSource, newValue) => {
-                const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-                return onEditField(fieldSourceToEdit, newValue);
-              }}
-            />
-          )}
-          {displayUsedBy && <UsedBy {...usedByConfig} />}
-        </>
+        <FieldsComponentResolved
+          fields={fields}
+          isLoading={isLoading}
+          recordData={recordData}
+          onEditField={(fieldSource, newValue) => {
+            const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+            return onEditField(fieldSourceToEdit, newValue);
+          }}
+          onSetFormFile={handleSetFormFile}
+        />
+        {displayUsedBy && <UsedBy {...usedByConfig} />}
       </ModalContentProvider>
       <DialogFooter>
         <Button id="form-button-cancel" variant="outlined" onClick={onDismiss} disabled={isLoading}>
@@ -86,7 +91,7 @@ export const EditModalComponent = ({
         </Button>
         <Button
           id="form-button-save"
-          onClick={onSave}
+          onClick={() => onSave(files)}
           disabled={!!errorMessage || isLoading || isUnchanged}
         >
           {saveButtonText}
@@ -159,7 +164,14 @@ const processRecordData = (recordData, fields) => {
 };
 
 const mergeProps = (
-  { endpoint, editedFields, recordData, usedByConfig: usedByConfigInMapStateProps, ...stateProps },
+  {
+    endpoint,
+    editedFields,
+    recordData,
+    usedByConfig: usedByConfigInMapStateProps,
+    initialValues,
+    ...stateProps
+  },
   { dispatch, ...dispatchProps },
   { onProcessDataForSave, usedByConfig: usedByConfigInOwnProps, ...ownProps },
 ) => {
@@ -170,15 +182,19 @@ const mergeProps = (
     ...stateProps,
     ...dispatchProps,
     editedFields,
-    recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
-    onSave: () => {
+    recordData: {
+      ...processRecordData(recordData, stateProps.fields),
+      ...initialValues,
+      ...editedFields,
+    }, // Include edits in visible record data
+    onSave: files => {
       // If there is no record data, this is a new record
       const isNew = Object.keys(recordData).length === 0;
-      let fieldValuesToSave = { ...editedFields };
+      let fieldValuesToSave = isNew ? { ...initialValues, ...editedFields } : { ...editedFields };
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }
-      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
+      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files));
     },
     endpoint,
     usedByConfig,

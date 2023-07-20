@@ -10,7 +10,7 @@ export class File extends RealmObject {
     return {
       id: this.id,
       uniqueFileName: this.uniqueFileName,
-      data: this.data,
+      filePathOnDevice: this.filePathOnDevice,
     };
   }
 }
@@ -21,7 +21,7 @@ File.schema = {
   properties: {
     id: 'string',
     uniqueFileName: 'string',
-    data: { type: 'string', default: '' },
+    filePathOnDevice: 'string',
   },
 };
 
