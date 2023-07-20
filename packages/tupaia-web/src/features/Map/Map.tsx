@@ -86,6 +86,9 @@ const MapControlColumn = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    flex-direction: column-reverse;
+  }
 `;
 
 export const Map = () => {

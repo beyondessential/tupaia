@@ -14,7 +14,7 @@ import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
 import { useMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
-import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
+import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 
 const MaxHeightContainer = styled.div`
   max-height: 100%;
