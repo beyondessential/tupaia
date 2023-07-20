@@ -13,7 +13,6 @@ import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 
 const Wrapper = styled.div`
-  padding: 1rem;
   background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
   > div {
     margin-top: 0;
