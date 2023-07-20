@@ -10,6 +10,7 @@ export const URL_SEARCH_PARAMS = {
   MAP_OVERLAY_PERIOD: 'overlayPeriod',
   REPORT: 'report',
   REPORT_PERIOD: 'reportPeriod',
+  REPORT_DRILLDOWN_ID: 'reportDrillDownId',
 };
 
 export enum MODAL_ROUTES {

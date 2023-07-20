@@ -112,7 +112,6 @@ export const useDateRanges = (
 
   const { startDate: urlStartDate, endDate: urlEndDate } = convertUrlPeriodStringToDateRange(
     currentPeriodString,
-    periodGranularity,
   );
 
   const startDate = urlStartDate || itemStartDate || defaultStartDate;
@@ -123,10 +122,7 @@ export const useDateRanges = (
       .momentUnit as moment.unitOfTime.StartOf;
     const startDate = moment(_startDate).startOf(period);
     const endDate = moment(_endDate).endOf(period);
-    const urlPeriodString = convertDateRangeToUrlPeriodString(
-      { startDate, endDate },
-      periodGranularity,
-    );
+    const urlPeriodString = convertDateRangeToUrlPeriodString({ startDate, endDate });
     urlSearchParams.set(urlParam, urlPeriodString);
     setUrlSearchParams(urlSearchParams);
   };
