@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { ExpandMore, Layers } from '@material-ui/icons';
+import { ArrowDropDown, Layers } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
@@ -15,6 +15,7 @@ import { useMapOverlays } from '../../../api/queries';
 import { useMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
+import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 
 const MaxHeightContainer = styled.div`
   max-height: 100%;
@@ -53,6 +54,10 @@ const Container = styled(MaxHeightContainer)`
   pointer-events: auto;
 `;
 
+const TitleWrapper = styled.div`
+  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+`;
+
 const OverlayLibraryAccordion = styled(Accordion)`
   display: flex;
   flex-direction: column;
@@ -74,6 +79,7 @@ const OverlayLibraryAccordion = styled(Accordion)`
 
 const OverlayLibraryIcon = styled(Layers)`
   margin-right: 0.5rem;
+  width: 1.2rem;
   .Mui-expanded & {
     fill: ${({ theme }) => theme.palette.secondary.main};
   }
@@ -143,7 +149,10 @@ export const DesktopMapOverlaySelector = ({
         <Heading>Map Overlays</Heading>
       </Header>
       <Container>
-        <MapOverlaySelectorTitle />
+        <TitleWrapper>
+          <MapOverlaySelectorTitle />
+          <MapOverlayDatePicker />
+        </TitleWrapper>
         {hasMapOverlays && (
           <OverlayLibraryAccordion
             expanded={overlayLibraryOpen}
@@ -151,7 +160,7 @@ export const DesktopMapOverlaySelector = ({
             square
           >
             <OverlayLibraryHeader
-              expandIcon={<ExpandMore />}
+              expandIcon={<ArrowDropDown />}
               aria-controls="overlay-library-content"
               id="overlay-library-header"
             >
