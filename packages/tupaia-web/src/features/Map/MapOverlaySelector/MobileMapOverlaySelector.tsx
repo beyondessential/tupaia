@@ -81,6 +81,7 @@ const ExpandButtonLabel = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
+  // add padding around the date picker when present
   > div {
     padding: 1rem;
   }
