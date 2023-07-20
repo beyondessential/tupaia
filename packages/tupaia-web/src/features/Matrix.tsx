@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSearchParams, useLocation, useParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 import {
