@@ -57,6 +57,7 @@ const Container = styled(MaxHeightContainer)`
 const TitleWrapper = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+  // Add padding between the title and the date picker when both are present
   div + div {
     padding-top: 0.5rem;
   }
