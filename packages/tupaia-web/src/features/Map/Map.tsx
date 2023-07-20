@@ -90,7 +90,7 @@ const MapControlColumn = styled.div`
 
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
 
   // set the map default overlay if there isn't one selected
   const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);

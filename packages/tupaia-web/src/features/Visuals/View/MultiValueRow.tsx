@@ -12,7 +12,7 @@ import {
   TableBody,
   TableHead,
 } from '@material-ui/core';
-import { ViewDataItem } from '../../types';
+import { ViewDataItem } from '../../../types';
 
 interface MultiValueRowProps {
   data?: ViewDataItem[];

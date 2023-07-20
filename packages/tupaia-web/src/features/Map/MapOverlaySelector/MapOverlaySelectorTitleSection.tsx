@@ -40,7 +40,7 @@ export const MapOverlaySelectorTitle = () => {
     entityCode,
   );
 
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
   return (
     <Wrapper $hasMapOverlays={hasMapOverlays}>
       {isLoadingMapOverlays ? (

@@ -71,6 +71,44 @@ export class TupaiaApi {
     return this.requestJson(endpoint, null, fetchConfig);
   }
 
+  multipartPost({ endpoint, filesByMultipartKey, queryParameters, payload }) {
+    return this.multipart({
+      method: 'POST',
+      endpoint,
+      filesByMultipartKey,
+      queryParameters,
+      payload,
+    });
+  }
+
+  multipartPut({ endpoint, filesByMultipartKey, queryParameters, payload }) {
+    return this.multipart({
+      method: 'PUT',
+      endpoint,
+      filesByMultipartKey,
+      queryParameters,
+      payload,
+    });
+  }
+
+  /**
+   * @param {string} method
+   * @param {string} endpoint
+   * @param {File[]} filesByMultipartKey
+   * @param {} [queryParameters]
+   * @param {{}} [payload] The multipartJson part which is not a file. Sent as JSON.
+   * @return {Promise<{headers: *, body: *}>}
+   */
+  multipart({ method, endpoint, filesByMultipartKey, queryParameters, payload }) {
+    const formData = new FormData();
+    Object.entries(filesByMultipartKey).forEach(([key, file]) => formData.append(key, file));
+    if (payload) {
+      formData.append('payload', JSON.stringify(payload));
+    }
+    const fetchConfig = this.buildFetchConfig(method, null, formData, false);
+    return this.requestJson(endpoint, queryParameters, fetchConfig);
+  }
+
   /**
    * @param endpoint
    * @param queryParameters

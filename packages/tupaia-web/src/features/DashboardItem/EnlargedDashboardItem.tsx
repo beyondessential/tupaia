@@ -5,15 +5,17 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { KeyboardArrowLeft } from '@material-ui/icons';
 import { Typography } from '@material-ui/core';
-import { FlexColumn } from '@tupaia/ui-components';
+import { FlexColumn, IconButton } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
 import { useReport } from '../../api/queries/useReport';
 import { DateRangePicker, Modal } from '../../components';
+import { DashboardItemType } from '../../types';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
@@ -47,6 +49,7 @@ const Title = styled(Typography).attrs({
 const TitleWrapper = styled(FlexColumn)`
   align-items: center;
   margin-bottom: 1rem;
+  position: relative;
 `;
 
 const Subheading = styled(Typography).attrs({
@@ -56,11 +59,54 @@ const Subheading = styled(Typography).attrs({
   margin-bottom: 1rem;
 `;
 
+const ContentWrapper = styled.div`
+  min-height: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BackLinkButton = styled(IconButton).attrs({
+  component: Link,
+  color: 'default',
+})`
+  position: absolute;
+  left: 0;
+  top: -0.2rem;
+  padding: 0.5rem;
+  svg {
+    width: 2rem;
+    height: 2rem;
+  }
+`;
+
+const BackLink = ({ parentDashboardItem }: { parentDashboardItem?: DashboardItemType | null }) => {
+  const [urlSearchParams] = useSearchParams();
+  const location = useLocation();
+  if (!parentDashboardItem) return null;
+  const { code } = parentDashboardItem;
+  // we make a copy of the search params so we don't mutate the original and accidentally change the url
+  const searchParams = new URLSearchParams(urlSearchParams);
+  searchParams.set(URL_SEARCH_PARAMS.REPORT, code);
+  searchParams.delete(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
+  const backLink = {
+    ...location,
+    search: searchParams.toString(),
+  };
+
+  return (
+    <BackLinkButton to={backLink} title="Back to parent dashboard item">
+      <KeyboardArrowLeft />
+    </BackLinkButton>
+  );
+};
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
  */
 export const EnlargedDashboardItem = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
+
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
 
@@ -70,7 +116,9 @@ export const EnlargedDashboardItem = () => {
     dashboardName,
   );
 
-  const currentDashboardItem = activeDashboard?.items.find(report => report.code === reportCode);
+  const currentDashboardItem = activeDashboard?.items.find(
+    (dashboardItem: DashboardItemType) => dashboardItem.code === reportCode,
+  );
 
   const {
     startDate,
@@ -84,9 +132,20 @@ export const EnlargedDashboardItem = () => {
     onResetDate,
   } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem);
 
-  const { data: reportData, isLoading: isLoadingReportData, error, refetch } = useReport(
-    reportCode,
-    {
+  // If the report is a drilldown, it will have a drilldown id in the url
+  const drilldownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
+  // At this time we only support drilldown in matrix visuals
+  const isDrillDown = currentDashboardItem?.type === 'matrix' && !!drilldownId;
+  // If the report is a drilldown, we want to get the parent dashboard item, so that we can get the parameter link for querying the data, and also so that we can show a back button to the correct parent dashboard item
+  const parentDashboardItem = isDrillDown
+    ? activeDashboard?.items.find(
+        report => report.drillDown && report.drillDown.itemCode === reportCode,
+      )
+    : null;
+
+  // Get the parameters for the report
+  const getParameters = () => {
+    const params = {
       projectCode,
       entityCode,
       dashboardCode: activeDashboard?.dashboardCode,
@@ -94,16 +153,30 @@ export const EnlargedDashboardItem = () => {
       endDate,
       legacy: currentDashboardItem?.legacy,
       itemCode: currentDashboardItem?.code,
-    },
+    };
+    if (!isDrillDown) return params;
+    // If the report is a drilldown, we want to add the drilldown id to the params, so that correct data is fetched
+    const { parameterLink } = parentDashboardItem.drillDown;
+    return {
+      ...params,
+      [parameterLink]: drilldownId,
+    };
+  };
+
+  const params = getParameters();
+  const { data: reportData, isLoading: isLoadingReportData, error, refetch } = useReport(
+    reportCode,
+    params,
   );
 
   if (!reportCode || (!isLoadingDashboards && !currentDashboardItem)) return null;
 
-  // // On close, remove the report search param from the url
+  // // On close, remove the report search params from the url
   const handleCloseModal = () => {
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT);
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_PERIOD);
-    setUrlSearchParams(urlSearchParams.toString());
+    urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
+    setUrlSearchParams(urlSearchParams);
   };
 
   const titleText = `${currentDashboardItem?.name}, ${
@@ -117,6 +190,7 @@ export const EnlargedDashboardItem = () => {
       <Wrapper $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}>
         <Container>
           <TitleWrapper>
+            <BackLink parentDashboardItem={parentDashboardItem} />
             {currentDashboardItem?.name && <Title>{titleText}</Title>}
             {showDatePicker && (
               <DateRangePicker
@@ -134,15 +208,17 @@ export const EnlargedDashboardItem = () => {
           {currentDashboardItem?.description && (
             <Subheading>{currentDashboardItem?.description}</Subheading>
           )}
-          <DashboardItemContent
-            isLoading={isLoadingReportData}
-            error={error}
-            report={reportData}
-            config={currentDashboardItem}
-            onRetryFetch={refetch}
-            isExpandable={false}
-            isEnlarged
-          />
+          <ContentWrapper>
+            <DashboardItemContent
+              isLoading={isLoadingReportData}
+              error={error}
+              report={reportData}
+              config={currentDashboardItem}
+              onRetryFetch={refetch}
+              isExpandable={false}
+              isEnlarged
+            />
+          </ContentWrapper>
         </Container>
       </Wrapper>
     </Modal>

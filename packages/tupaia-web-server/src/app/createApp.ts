@@ -74,9 +74,8 @@ export function createApp() {
     .get<EntityRequest>('entity/:projectCode/:entityCode', handleWith(EntityRoute))
     .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
-    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntityAncestorsRequest>(
-      'entityAncestors/:projectCode/:entityCode',
+      'entityAncestors/:projectCode/:rootEntityCode',
       handleWith(EntityAncestorsRoute),
     )
     // TODO: Stop using get for logout, then delete this
