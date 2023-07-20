@@ -6,7 +6,7 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import { Autorenew, Alarm, CalendarToday, ChevronRight, ChevronLeft } from '@material-ui/icons';
-import { WarningCloud, Clipboard, Dashboard, Home, Virus, TupaiaIcon } from '../src';
+import { WarningCloud, Clipboard, Dashboard, Home, Virus, TupaiaIcon } from '../src/components';
 
 export default {
   title: 'Icon',

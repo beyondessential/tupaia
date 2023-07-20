@@ -36,6 +36,9 @@ module.exports = async ({ config }) => {
     ...config.resolve.alias,
     yargs: path.resolve(__dirname, 'moduleMock.js'),
     child_process: path.resolve(__dirname, 'moduleMock.js'),
+    '@aws-sdk/credential-providers': path.resolve(__dirname, 'moduleMock.js'),
+    '@aws-sdk/client-s3': path.resolve(__dirname, 'moduleMock.js'),
+    '@aws-sdk/lib-storage': path.resolve(__dirname, 'moduleMock.js'),
   };
 
   config.module.rules.push({

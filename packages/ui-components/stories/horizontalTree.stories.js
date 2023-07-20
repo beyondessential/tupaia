@@ -6,7 +6,7 @@
 import { randomIntBetween, sleep } from '@tupaia/utils';
 import React from 'react';
 import styled from 'styled-components';
-import { HorizontalTree } from '../src';
+import { HorizontalTree } from '../src/components';
 import { getEntityDescendants } from './story-utils/api';
 
 export default {

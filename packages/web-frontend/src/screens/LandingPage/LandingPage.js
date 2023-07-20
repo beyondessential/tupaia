@@ -37,12 +37,10 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE}px);
   overflow-y: auto;
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
     padding: 2em 3.5em;
-    min-height: calc(100vh - ${TOP_BAR_HEIGHT}px);
   }
 `;
 

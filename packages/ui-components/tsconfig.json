@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig-ts.json",
+  "compileOnSave": true,
+  "compilerOptions": {
+    "jsx": "react",
+    "allowJs": true,
+    "outDir": "dist",
+    "lib": [
+      "es6",
+      "dom",
+      "es2019"
+    ],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
+  },
+  "include": [
+    "src/**/*",
+    "jest.config.ts",
+    "helpers/**/*"
+  ]
+}
