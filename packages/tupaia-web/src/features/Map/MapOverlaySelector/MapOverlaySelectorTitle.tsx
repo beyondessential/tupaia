@@ -8,19 +8,15 @@ import { Typography } from '@material-ui/core';
 import { RadioButtonChecked } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import { useParams } from 'react-router';
-import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { useEntity, useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
 const Wrapper = styled.div<{
   $hasMapOverlays: boolean;
 }>`
-  padding: 0;
-  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
   border-radius: ${({ $hasMapOverlays }) => ($hasMapOverlays ? '0' : '0 0 5px 5px')};
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
-    padding: 1.3rem 1rem 1rem 1.125rem;
+    padding: 1rem 1rem 0;
   }
 `;
 
@@ -79,7 +75,6 @@ export const MapOverlaySelectorTitle = () => {
           )}
         </Typography>
       )}
-      <MapOverlayDatePicker />
     </Wrapper>
   );
 };

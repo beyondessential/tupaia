@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
+import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
+import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -27,14 +28,16 @@ const ExpandButton = styled(Button)`
   align-items: center;
   font-size: 0.875rem;
   border-radius: 0;
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
+  padding: 1rem;
   text-align: left;
   background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
   position: relative;
   &:hover,
   &:focus {
     background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  }
+  p {
+    margin-left: 1rem;
   }
 `;
 
@@ -89,15 +92,18 @@ export const MobileMapOverlaySelector = ({
   return (
     <Wrapper>
       {!overlayLibraryOpen && (
-        <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
-          <span>
-            <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
-            <MapOverlaySelectorTitle />
-          </span>
-          <ArrowWrapper>
-            <ArrowForwardIos />
-          </ArrowWrapper>
-        </ExpandButton>
+        <>
+          <MapOverlayDatePicker />
+          <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
+            <span>
+              <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
+              <MapOverlaySelectorTitle />
+            </span>
+            <ArrowWrapper>
+              <ArrowForwardIos />
+            </ArrowWrapper>
+          </ExpandButton>
+        </>
       )}
       <OverlayMenu
         $expanded={overlayLibraryOpen}
@@ -106,7 +112,7 @@ export const MobileMapOverlaySelector = ({
       >
         <OverlayLibraryHeaderButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
           <ArrowWrapper>
-            <ArrowBackIos />
+            <ArrowBack />
           </ArrowWrapper>
           <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
         </OverlayLibraryHeaderButton>
