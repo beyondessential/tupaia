@@ -9,11 +9,13 @@ import styled from 'styled-components';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
 const Wrapper = styled.div`
-  position: absolute;
   pointer-events: auto;
-  bottom: 0.8rem;
-  right: 1rem;
   padding: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 0.8rem;
+  padding-right: 0.8rem;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -33,6 +35,7 @@ const ExpandIcon = styled(ExpandLess)`
 
 const ExpandedLegend = styled.div`
   display: block;
+  position: relative;
   background-color: ${({ theme }) => theme.mobile.background};
   border-radius: 0.5rem;
   padding-top: 0.5rem;
