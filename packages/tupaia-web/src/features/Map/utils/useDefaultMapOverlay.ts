@@ -56,11 +56,7 @@ export const useDefaultMapOverlay = (
       }
     };
 
-    const defaultOverlayCode = getDefaultOverlayCode();
-
-    if (defaultOverlayCode) {
-      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultOverlayCode);
-    }
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, getDefaultOverlayCode());
 
     if (!selectedMapOverlayPeriod) {
       urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
