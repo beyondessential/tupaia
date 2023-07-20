@@ -66,3 +66,20 @@ export const Multiple = () => {
     </Container>
   );
 };
+
+export const WithLabel = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+        label="Profile Image"
+        helperText="Select an image to use as your profile pic"
+      />
+    </Container>
+  );
+};
