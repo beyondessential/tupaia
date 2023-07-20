@@ -122,9 +122,13 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
   dbConditions[RAW] = {
     sql: `
     (
+      -- Special case for no permission
+      (
+        "map_overlay"."permission_group" = ''
+      )
       -- Look up the country codes list from the map overlay and check that the user has
       -- access to at least one of the countries for the appropriate permissions group
-      (
+      OR (
         "map_overlay"."country_codes"
         &&
         ARRAY(

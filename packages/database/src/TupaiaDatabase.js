@@ -542,6 +542,11 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     }
   }
 
+  // Add raw SQL sort options
+  if (options.rawSort) {
+    query = query.orderByRaw(options.rawSort);
+  }
+
   // Restrict the number of rows returned if limit provided
   if (options.limit) {
     query = query.limit(options.limit);

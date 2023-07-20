@@ -1,11 +1,12 @@
 {
-  "extends": "./.eslintrc-js.json",
+  "extends": ["./.eslintrc-js.json"],
   "env": {
     "browser": true
   },
   "rules": {
     "jsx-a11y/href-no-hash": "off",
     "react/destructuring-assignment": "off",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "import/extensions": "off"
   }
 }

@@ -6,7 +6,7 @@
 import type { BaseConfig, ValueType } from './common';
 import { CssColor } from '../../css';
 
-type BaseChartConfig = BaseConfig & {
+export type BaseChartConfig = BaseConfig & {
   ticks?: any;
 
   startDate?: string;
@@ -103,7 +103,7 @@ type CommonChartChartConfig = {
 /**
  * A Cartesian chart has an area with axes e.g. bar, line.
  */
-type CartesianChartConfig = {
+export type CartesianChartConfig = {
   /**
    * @description The label on the x-axis
    */
@@ -143,3 +143,10 @@ enum ConditionType {
   '>=' = '>=',
   '<=' = '<=',
 }
+
+export type ChartConfig =
+  | GaugeChartConfig
+  | ComposedChartConfig
+  | BarChartConfig
+  | PieChartConfig
+  | LineChartConfig;

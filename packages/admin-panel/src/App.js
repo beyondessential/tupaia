@@ -38,23 +38,32 @@ export const App = ({ user }) => {
         <div ref={headerEl} />
         <Switch>
           {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-            <Route key={route.to} path={route.to}>
-              <TabsToolbar
-                links={route.tabs.map(tab => ({
-                  ...tab,
-                  id: `app-subTab-${labelToId(tab.label)}`,
-                }))}
-                maxWidth="xl"
-              />
-              <Switch>
-                {route.tabs.map(tab => (
-                  <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} />
-                  </Route>
-                ))}
-                <Redirect to={route.to} />
-              </Switch>
-            </Route>
+            <Route
+              key={route.to}
+              path={route.to}
+              render={({ match }) => {
+                return (
+                  <>
+                    <TabsToolbar
+                      links={route.tabs.map(tab => ({
+                        ...tab,
+                        id: `app-subTab-${labelToId(tab.label)}`,
+                      }))}
+                      maxWidth="xl"
+                      baseRoute={match.url}
+                    />
+                    <Switch>
+                      {route.tabs.map(tab => (
+                        <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
+                          <tab.component getHeaderEl={getHeaderEl} />
+                        </Route>
+                      ))}
+                      <Redirect to={route.to} />
+                    </Switch>
+                  </>
+                );
+              }}
+            />
           ))}
           <Redirect to="surveys" />
         </Switch>
