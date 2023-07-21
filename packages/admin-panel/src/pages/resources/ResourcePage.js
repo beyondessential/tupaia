@@ -11,6 +11,7 @@ import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { getExplodedFields, usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
+import { QrCodeModal } from '../../qrCode';
 
 const Container = styled(PageBody)`
   // This is a work around to put the scroll bar at the top of the section by rotating the
@@ -84,6 +85,7 @@ export const ResourcePage = ({
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
       <LogsModal />
+      <QrCodeModal />
     </>
   );
 };

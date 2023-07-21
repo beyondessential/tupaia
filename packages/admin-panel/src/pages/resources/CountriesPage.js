@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { ENTITIES_COLUMNS } from './EntitiesPage';
+import { COLUMNS as ENTITIES_COLUMNS } from './EntitiesPage';
 
 const FIELDS = [
   { source: 'id', show: false },
