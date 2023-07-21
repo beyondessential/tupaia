@@ -54,7 +54,7 @@ const err2 = new ValidationError(
 );
 const err3 = new ValidationError('Incorrect format for customJoinConditions: entity');
 
-describe.only('Request record types with standard joins', () => {
+describe('Request record types with standard joins', () => {
   it('returns one join', () => {
     const results = getQueryOptionsForColumns(
       columnNames1,
@@ -98,7 +98,7 @@ describe.only('Request record types with standard joins', () => {
   });
 });
 
-describe.only('Requests record types that require a through join', () => {
+describe('Requests record types that require a through join', () => {
   it('returns a record type that has one through join', () => {
     const results = getQueryOptionsForColumns(
       columnNames3,
@@ -153,7 +153,7 @@ describe.only('Requests record types that require a through join', () => {
   });
 });
 
-describe.only('Calling incorrect parameters to throw an error', () => {
+describe('Calling incorrect parameters to throw an error', () => {
   it('defines a column with "_" in front of it to trigger the validation error', () => {
     expect(() =>
       getQueryOptionsForColumns(
