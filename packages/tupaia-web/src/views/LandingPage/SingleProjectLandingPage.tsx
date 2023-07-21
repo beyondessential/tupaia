@@ -100,6 +100,7 @@ export function SingleProjectLandingPage({
       {accessType && (
         <ActionLink
           variant="contained"
+          target= "_newProjectTab"
           component={Link}
           to={urls[accessType]}
           disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}

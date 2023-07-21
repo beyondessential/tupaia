@@ -128,7 +128,7 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 export const ProjectAllowedLink = ({ url }: LinkProps) => (
-  <BaseLink to={url} target= '_newTab'>View project</BaseLink>
+  <BaseLink to={url} target= '_newProjectTab'>View project</BaseLink>
 );
 
 interface ProjectCardProps extends Partial<SingleProject> {
