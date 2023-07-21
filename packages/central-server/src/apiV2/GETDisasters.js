@@ -41,12 +41,12 @@ export class GETDisasters extends GETHandler {
 
   customJoinConditions = {
     country: {
-      foreignKey: 'disaster.countryCode',
-      foreignTable: 'country.code',
+      nearTableKey: 'disaster.countryCode',
+      farTableKey: 'country.code',
     },
     entity: {
-      foreignKey: 'disaster.countryCode',
-      foreignTable: 'entity.code',
+      nearTableKey: 'disaster.countryCode',
+      farTableKey: 'entity.code',
     },
   };
 

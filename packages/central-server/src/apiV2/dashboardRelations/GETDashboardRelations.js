@@ -25,12 +25,12 @@ export class GETDashboardRelations extends GETHandler {
 
   customJoinConditions = {
     dashboard: {
-      foreignKey: 'dashboard_relation.dashboard_id',
-      foreignTable: 'dashboard.id',
+      nearTableKey: 'dashboard_relation.dashboard_id',
+      farTableKey: 'dashboard.id',
     },
     dashboard_item: {
-      foreignKey: 'dashboard_relation.child_id',
-      foreignTable: 'dashboard_item.id',
+      nearTableKey: 'dashboard_relation.child_id',
+      farTableKey: 'dashboard_item.id',
     },
   };
 

@@ -27,12 +27,12 @@ export class GETMapOverlayGroupRelations extends GETHandler {
 
   customJoinConditions = {
     map_overlay_group: {
-      foreignKey: 'map_overlay_group_relation.map_overlay_group_id',
-      foreignTable: 'map_overlay_group.id',
+      nearTableKey: 'map_overlay_group_relation.map_overlay_group_id',
+      farTableKey: 'map_overlay_group.id',
     },
     map_overlay: {
-      foreignKey: 'map_overlay_group_relation.child_id',
-      foreignTable: 'map_overlay.id',
+      nearTableKeyKey: 'map_overlay_group_relation.child_id',
+      farTableKey: 'map_overlay.id',
     },
   };
 

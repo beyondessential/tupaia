@@ -23,12 +23,12 @@ export class GETSurveyResponses extends GETHandler {
   customJoinConditions = {
     country: {
       through: 'entity',
-      foreignKey: 'entity.country_code',
-      foreignTable: 'country.code',
+      nearTableKey: 'entity.country_code',
+      farTableKey: 'country.code',
     },
     entity: {
-      foreignKey: 'survey_response.entity_id',
-      foreignTable: 'entity.id',
+      nearTableKey: 'survey_response.entity_id',
+      farTableKey: 'entity.id',
     },
   };
 

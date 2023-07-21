@@ -4,6 +4,7 @@
  */
 import formatLinkHeader from 'format-link-header';
 import { ValidationError } from '@tupaia/utils';
+import clonedeep from 'lodash.clonedeep';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
 export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
@@ -94,25 +95,42 @@ const addJoin = (
   customJoinConditions,
   joinType,
 ) => {
-  if (!recordTypesInQuery.has(recordType)) {
+  let clonedMultiJoin = clonedeep(multiJoin);
+  let clonedRecordTypesInQuery = clonedeep(recordTypesInQuery);
+  if (!clonedRecordTypesInQuery.has(recordType)) {
     const join = customJoinConditions[recordType];
     const joinCondition = join
-      ? [join.foreignTable, join.foreignKey]
+      ? [join.farTableKey, join.nearTableKey]
       : [`${recordType}.id`, `${baseRecordType}.${getForeignKeyColumnName(recordType)}`];
     if (join?.through) {
-      addJoin(
+      if ('nearTableKey' in join !== true || 'farTableKey' in join !== true) {
+        throw new ValidationError(`Incorrect format for customJoinConditions: ${recordType}`);
+      }
+      const nearTable = join.nearTableKey.split('.');
+      if (nearTable[0] !== join.through) {
+        throw new ValidationError(
+          'nearTableKey must refer to a column on the table you wish to join through',
+        );
+      }
+      const childJoin = addJoin(
         join.through,
-        recordTypesInQuery,
-        multiJoin,
+        clonedRecordTypesInQuery,
+        clonedMultiJoin,
         baseRecordType,
         customJoinConditions,
         joinType,
       );
+      clonedMultiJoin = childJoin.clonedMultiJoin;
+      clonedRecordTypesInQuery = childJoin.clonedRecordTypesInQuery;
     }
-    multiJoin.push({ joinWith: recordType, joinCondition, joinType });
-    recordTypesInQuery.add(recordType);
+    clonedMultiJoin.push({ joinWith: recordType, joinCondition, joinType });
+    clonedRecordTypesInQuery.add(recordType);
   }
-  return multiJoin;
+
+  return {
+    clonedMultiJoin,
+    clonedRecordTypesInQuery,
+  };
 };
 
 export const getQueryOptionsForColumns = (
@@ -126,8 +144,8 @@ export const getQueryOptionsForColumns = (
       'No columns start with "_", and conjunction operators are reserved for internal use only',
     );
   }
-  const multiJoin = [];
-  const recordTypesInQuery = new Set([baseRecordType]);
+  let multiJoin = [];
+  let recordTypesInQuery = new Set([baseRecordType]);
   columnNames
     .filter(c => c.includes('.'))
     .forEach(columnName => {
@@ -135,7 +153,7 @@ export const getQueryOptionsForColumns = (
       // is 'survey.name', split into 'survey' and 'name'
       const resource = columnName.split('.')[0];
       const recordType = resourceToRecordType(resource);
-      addJoin(
+      const joins = addJoin(
         recordType,
         recordTypesInQuery,
         multiJoin,
@@ -143,6 +161,8 @@ export const getQueryOptionsForColumns = (
         customJoinConditions,
         joinType,
       );
+      multiJoin = joins.clonedMultiJoin;
+      recordTypesInQuery = joins.clonedRecordTypesInQuery;
     });
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
   const sort = [...recordTypesInQuery].map(recordType => `${recordType}.id`);
