@@ -45,7 +45,7 @@ export const RouterLink = ({ to, modal, children, ...props }: RouterButtonProps)
   const link = modal ? { ...location, hash: modal } : to;
 
   return (
-    <Link to={link} {...props} target='_newtab'>
+    <Link to={link} {...props}>
       {children}
     </Link>
   );

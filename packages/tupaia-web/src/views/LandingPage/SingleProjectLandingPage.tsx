@@ -12,6 +12,7 @@ import { PROJECT_ACCESS_TYPES, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../con
 import { getProjectAccessType } from '../../utils';
 import { SingleLandingPage, SingleProject } from '../../types';
 import { useLandingPage } from '../../api/queries';
+import { useParams } from 'react-router';
 
 /**
  * This is the template for the content of a landing page if there is only one project
@@ -76,6 +77,10 @@ export function SingleProjectLandingPage({
 
   const { homeEntityCode, code, dashboardGroupName } = project;
 
+  const { landingPageUrlSegment } = useParams();
+
+  const {isLandingPage} = useLandingPage(landingPageUrlSegment);
+
   const urls = {
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}${
@@ -101,7 +106,7 @@ export function SingleProjectLandingPage({
       {accessType && (
         <ActionLink
           variant="contained"
-          target= {`${useLandingPage()}`}
+          target= "_blank"
           component={Link}
           to={urls[accessType]}
           disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}

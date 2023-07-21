@@ -98,7 +98,6 @@ export function MultiProjectLandingPage({
                   return (
                     <ProjectDeniedLink
                       url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
-                      
                     />
                   );
                 }
