@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -12,7 +12,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { CreateNewFolder } from '@material-ui/icons';
 import { useAutocomplete } from '@material-ui/lab';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { FlexColumn } from '../Layout';
+import { FlexColumn } from '@tupaia/ui-components';
 import { InputField } from './InputField';
 import { ResultsList } from './ResultsList';
 import { SelectedDataHeader } from './SelectedDataHeader';
