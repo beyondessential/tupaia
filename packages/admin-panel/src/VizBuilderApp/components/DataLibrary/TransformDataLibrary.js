@@ -5,9 +5,12 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { DataLibrary } from '@tupaia/ui-components';
 import { prefetchTransformSchemas, useSearchTransformSchemas } from '../../api';
-import { TransformSelectedOptionWithJsonEditor, TransformSelectedOption } from './component';
+import {
+  TransformSelectedOptionWithJsonEditor,
+  TransformSelectedOption,
+  DataLibrary,
+} from './component';
 
 const DATA_TYPES = {
   TRANSFORM: 'Transforms',
