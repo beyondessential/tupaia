@@ -320,6 +320,20 @@ export const constructForSingle = (models, recordType) => {
           hasContent,
           isURLPathSegment,
           constructRecordNotExistsWithField(models.landingPage, 'url_segment'),
+          urlSegment => {
+            const forbiddenRoutes = [
+              'login',
+              'register',
+              'request-access',
+              'reset-password',
+              'request-access',
+              'verify-email',
+            ];
+            if (forbiddenRoutes.includes(urlSegment)) {
+              throw new Error('This url segment is not allowed');
+            }
+            return true;
+          },
         ],
         project_codes: [
           hasContent,

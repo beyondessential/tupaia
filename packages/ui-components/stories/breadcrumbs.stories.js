@@ -9,7 +9,7 @@ import MuiBox from '@material-ui/core/Box';
 import { Link as RouterLink } from 'react-router-dom';
 import * as COLORS from './story-utils/theme/colors';
 import { RouterProvider } from '../helpers/RouterProvider';
-import { Breadcrumbs, LightBreadcrumbs, Tabs, Tab, LightTabs, LightTab } from '../src';
+import { Breadcrumbs, LightBreadcrumbs, Tabs, Tab, LightTabs, LightTab } from '../src/components';
 
 const Container = styled(MuiBox)`
   max-width: 1200px;

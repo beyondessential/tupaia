@@ -16,7 +16,7 @@ import {
   EditableTableProvider,
   EditableTable,
   LoadingContainer,
-} from '../../src';
+} from '../../src/components';
 
 export default {
   title: 'Tables/EditableTable',

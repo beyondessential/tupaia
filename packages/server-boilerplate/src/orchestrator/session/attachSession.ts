@@ -27,3 +27,15 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const attachSessionIfAvailable = async (req: Request, res: Response, next: NextFunction) => {
+  // Same as above but don't throw errors on failure
+  const sessionId = req.sessionCookie?.id;
+  if (sessionId) {
+    const session: SessionType = await req.sessionModel.findById(sessionId);
+    if (session) {
+      req.session = session;
+    }
+  }
+  next();
+};
