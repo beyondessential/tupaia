@@ -17,6 +17,7 @@ export class CreateFeedItems extends BESAdminCreateHandler {
       permission_group_id,
       creation_date,
       template_variables: { title, image, body, link },
+      type,
       geographical_area_id,
       user_id,
       record_id,
@@ -32,20 +33,22 @@ export class CreateFeedItems extends BESAdminCreateHandler {
         body,
         link,
       },
+      type,
       geographical_area_id,
       user_id,
       record_id,
     });
 
-    // await this.insertImagePath(newFeedItem.id, image);
-    return newFeedItem;
+    await this.insertImagePath(this.models, image, newFeedItem);
   }
 
-  // async insertImagePath(models, base64Image, feedItemId) {
-  //   const update = {
-  //     image: await uploadImage(base64Image),
-  //   };
-  //   // console.log(feedItemId);
-  //   return models.feedItem.updateById(feedItemId, update);
-  // }
+  async insertImagePath(models, base64Image, newFeedItem) {
+    const update = {
+      template_variables: {
+        ...newFeedItem.template_variables,
+        image: await uploadImage(base64Image),
+      },
+    };
+    return models.feedItem.updateById(newFeedItem.id, update);
+  }
 }
