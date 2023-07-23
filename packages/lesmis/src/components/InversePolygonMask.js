@@ -6,6 +6,7 @@
 import React from 'react';
 import { Polygon as PolygonComponent } from 'react-leaflet';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const BasicPolygon = styled(PolygonComponent)`
   fill: black;
@@ -33,4 +34,12 @@ export const InversePolygonMask = ({ region }) => {
   const positions = getOuterPolygon(region);
 
   return <BasicPolygon positions={positions} interactive={false} />;
+};
+
+InversePolygonMask.propTypes = {
+  region: PropTypes.array,
+};
+
+InversePolygonMask.defaultProps = {
+  region: null,
 };

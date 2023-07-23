@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Polygon as PolygonComponent } from 'react-leaflet';
 import styled from 'styled-components';
 import { blue } from '@material-ui/core/colors';
@@ -34,4 +35,15 @@ export const EntityPolygon = ({ entity }) => {
       <AreaTooltip text={name} />
     </BasicPolygon>
   );
+};
+
+EntityPolygon.propTypes = {
+  entity: PropTypes.shape({
+    name: PropTypes.string,
+    region: PropTypes.array,
+  }),
+};
+
+EntityPolygon.defaultProps = {
+  entity: null,
 };

@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { LayerGroup, Polygon } from 'react-leaflet';
 import {
   MeasureMarker,
@@ -75,4 +76,16 @@ export const MarkerLayer = ({ measureData, serieses, onSeeOrgUnitDashboard }) =>
       })}
     </LayerGroup>
   );
+};
+
+MarkerLayer.propTypes = {
+  measureData: PropTypes.array,
+  serieses: PropTypes.array,
+  onSeeOrgUnitDashboard: PropTypes.func,
+};
+
+MarkerLayer.defaultProps = {
+  measureData: null,
+  serieses: null,
+  onSeeOrgUnitDashboard: null,
 };
