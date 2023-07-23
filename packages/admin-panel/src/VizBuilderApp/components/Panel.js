@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { FlexColumn, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components';
+import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
+import { JsonEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';

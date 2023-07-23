@@ -9,8 +9,10 @@ import { Done, Close, ChevronRight } from '@material-ui/icons';
 import { Input as MuiInput } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 import { ALICE_BLUE } from './constant';
-import { Tooltip as BaseTooltip } from '../Tooltip';
-import { FlexSpaceBetween as MuiFlexSpaceBetween } from '../Layout';
+import {
+  FlexSpaceBetween as MuiFlexSpaceBetween,
+  Tooltip as BaseTooltip,
+} from '@tupaia/ui-components';
 
 const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
   width: 100%;
