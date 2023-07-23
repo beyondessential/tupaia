@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../../constants';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
@@ -62,7 +62,7 @@ const OverlayListWrapper = styled.div`
 const OverlayMenu = styled.div<{
   $expanded: boolean;
 }>`
-  height: ${({ $expanded }) => ($expanded ? '95vh' : '0')};
+  height: ${({ $expanded }) => ($expanded ? `calc(100vh - ${TOP_BAR_HEIGHT_MOBILE})` : '0')};
   transition: height 0.3s ease-in-out;
   width: 100%;
   position: absolute;
