@@ -4,20 +4,14 @@
  */
 
 import React from 'react';
-import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
-import { AreaTooltip } from './AreaTooltip';
-import { MAP_COLORS, BREWER_PALETTE } from '../constants';
-import { ActivePolygon } from './ActivePolygon';
 import {
-  Color,
-  ColorKey,
-  Entity,
-  GenericDataItem,
-  MeasureData,
-  OrgUnitCode,
-  Series,
-} from '../types';
+  AreaTooltip,
+  MAP_COLORS,
+  BREWER_PALETTE,
+  ActivePolygon,
+  Polygon,
+} from '@tupaia/ui-map-components';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -47,24 +41,12 @@ const TransparentShadedPolygon = styled(Polygon)`
   }
 `;
 
-type OrgUnit = GenericDataItem & {
-  isHidden?: boolean;
-};
-
-type ParsedPropsResult = {
-  shade?: Color;
-  isHidden?: boolean;
-  hasShadedChildren: boolean;
-  orgUnitMeasureData?: OrgUnit;
-  orgUnitMultiOverlayMeasureData?: MeasureData;
-};
-
 const parseProps = (
-  organisationUnitCode: OrgUnitCode = undefined,
-  organisationUnitChildren: OrgUnit[],
-  measureOrgUnits: OrgUnit[],
-  multiOverlayMeasureData: MeasureData[],
-): ParsedPropsResult => {
+  organisationUnitCode,
+  organisationUnitChildren,
+  measureOrgUnits,
+  multiOverlayMeasureData,
+) => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
@@ -99,19 +81,6 @@ const parseProps = (
   return { shade, isHidden, hasShadedChildren, orgUnitMeasureData, orgUnitMultiOverlayMeasureData };
 };
 
-interface InteractivePolygonProps {
-  isChildArea?: boolean;
-  hasMeasureData?: boolean;
-  multiOverlaySerieses?: Series[];
-  multiOverlayMeasureData?: MeasureData[];
-  permanentLabels?: boolean;
-  onChangeOrgUnit?: (organisationUnitCode?: string) => void;
-  area: Entity;
-  isActive?: boolean;
-  measureOrgUnits?: OrgUnit[];
-  organisationUnitChildren?: GenericDataItem[];
-}
-
 export const InteractivePolygon = React.memo(
   ({
     isChildArea = false,
@@ -124,7 +93,7 @@ export const InteractivePolygon = React.memo(
     isActive = false,
     measureOrgUnits = [],
     organisationUnitChildren = [],
-  }: InteractivePolygonProps) => {
+  }) => {
     const { organisationUnitCode } = area;
     const coordinates = area.location?.region;
     const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
@@ -195,7 +164,7 @@ export const InteractivePolygon = React.memo(
       }
 
       // To match with the color in markerIcon.js which uses BREWER_PALETTE
-      const color = BREWER_PALETTE[shade as ColorKey] || shade;
+      const color = BREWER_PALETTE[shade] || shade;
 
       // Work around: color should go through the styled components
       // but there is a rendering bug between Styled Components + Leaflet

@@ -31,3 +31,5 @@ export * from './Tabs';
 export * from './ThemeTest';
 export * from './VitalsLoader';
 export * from './YearSelector';
+export * from './MarkerLayer';
+export * from './EntityPolygon';
