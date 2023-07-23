@@ -5,33 +5,29 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { MapOverlay, MapOverlayGroup, MapOverlayGroupRelation } from '@tupaia/types';
+import {
+  MapOverlay,
+  MapOverlayGroup,
+  MapOverlayGroupRelation,
+  TupaiaWebMapOverlaysRequest,
+} from '@tupaia/types';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
-// TODO: WAITP-1278 split request types to types package
-// (And actually define it)
-export type MapOverlaysRequest = Request<any, any, any, any>;
+export type MapOverlaysRequest = Request<
+  TupaiaWebMapOverlaysRequest.Params,
+  TupaiaWebMapOverlaysRequest.ResBody,
+  TupaiaWebMapOverlaysRequest.ReqBody,
+  TupaiaWebMapOverlaysRequest.ReqQuery
+>;
+type TranslatedMapOverlayGroup = TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 
 // TODO: Can these be moved into types?
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 // Central server defaults to 100 record limit, this overrides that
 const DEFAULT_PAGE_SIZE = 'ALL';
-
-// We return a simplified version of data to the frontend
-interface TranslatedMapOverlay {
-  code: string;
-  name: string;
-  reportCode: string;
-  legacy: boolean;
-  // ...config
-}
-interface TranslatedMapOverlayGroup {
-  name: string;
-  children: OverlayChild[];
-}
-type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
@@ -56,7 +52,12 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     });
 
     if (mapOverlays.length === 0) {
-      return [];
+      return {
+        name: entity.name,
+        entityCode: entity.code,
+        entityType: entity.type,
+        mapOverlays: [],
+      };
     }
 
     // Map overlay groups can be nested so we need to keep
