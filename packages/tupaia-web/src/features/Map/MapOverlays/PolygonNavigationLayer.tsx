@@ -6,22 +6,10 @@
 import React from 'react';
 import { ActivePolygon } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityResponse, EntityCode } from '../../types';
+import { EntityResponse, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
-import { useEntitiesWithLocation } from '../../api/queries';
-
-const ChildEntities = ({ entities }: { entities: EntityResponse['children'] }) => {
-  if (!entities || entities.length === 0) {
-    return null;
-  }
-  return (
-    <>
-      {entities.map(entity => (
-        <InteractivePolygon key={entity.code} entity={entity} isChildArea />
-      ))}
-    </>
-  );
-};
+import { useEntitiesWithLocation } from '../../../api/queries';
+import { useMapOverlayReport } from '../utils';
 
 const SiblingEntities = ({
   parentEntityCode,
@@ -40,7 +28,9 @@ const SiblingEntities = ({
     return null;
   }
 
-  const children = siblingEntities.filter(entity => entity.code !== activeEntityCode);
+  const children = siblingEntities
+    .filter(entity => entity.code !== activeEntityCode)
+    .filter(entity => entity.parentCode === parentEntityCode);
 
   return (
     <>
@@ -70,11 +60,12 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
   );
 };
 
-export const PolygonLayer = () => {
+export const PolygonNavigationLayer = () => {
   const { projectCode, entityCode } = useParams();
   const { data: entities = [] } = useEntitiesWithLocation(projectCode, entityCode, {
     params: { includeRoot: true },
   });
+  const { data: mapOverlayData } = useMapOverlayReport();
 
   if (!entities || entities.length === 0) {
     return null;
@@ -85,7 +76,6 @@ export const PolygonLayer = () => {
 
   return (
     <>
-      <ChildEntities entities={childEntities} />
       {activeEntity && (
         <>
           <ActiveEntity entity={activeEntity} />
@@ -95,6 +85,15 @@ export const PolygonLayer = () => {
           />
         </>
       )}
+      {childEntities?.length > 0 &&
+        childEntities.map(entity => (
+          <InteractivePolygon
+            key={entity.code}
+            entity={entity}
+            isChildArea
+            isShowingData={!!mapOverlayData?.measureData}
+          />
+        ))}
     </>
   );
 };

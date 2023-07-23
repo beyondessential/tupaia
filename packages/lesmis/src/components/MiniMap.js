@@ -10,11 +10,11 @@ import {
   BasePolygon,
   BaseTileLayer,
   IconMarker,
-  InversePolygonMask,
   LeafletMapContainer,
 } from '@tupaia/ui-map-components';
 import { TILE_SETS, RED, COUNTRY_CODE } from '../constants';
 import { useEntityData } from '../api';
+import { InversePolygonMask } from './InversePolygonMask';
 
 const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
 
