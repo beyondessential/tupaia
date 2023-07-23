@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -18,8 +18,7 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
-import { PolygonLayer } from './PolygonLayer';
-import { MarkerLayer } from './MarkerLayer';
+import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useMapOverlayReport, useDefaultMapOverlay } from './utils';
 
 const MapContainer = styled.div`
@@ -116,8 +115,8 @@ export const Map = () => {
     <MapContainer>
       <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <PolygonLayer />
-        <MarkerLayer hiddenValues={hiddenValues} />
+        <PolygonNavigationLayer />
+        <DataVisualsLayer hiddenValues={hiddenValues} />
         <ZoomControl position="bottomright" />
         <MapWatermark />
       </StyledMap>
