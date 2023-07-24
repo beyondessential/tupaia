@@ -27,11 +27,13 @@ const FileNameAndFileSize = styled.span`
 `;
 
 const FileUploadWrapper = styled.div``;
-const FileUploadContainer = styled(FlexStart)``;
+const FileUploadContainer = styled(FlexStart)`
+  margin-top: 15px;
+`;
 
-const humanFileSize = sizeInBytes => {
+const humanFileSize = (sizeInBytes: number) => {
   const i = sizeInBytes === 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
-  return `${(sizeInBytes / 1024 ** i).toFixed(2) * 1} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
+  return `${(sizeInBytes / 1024 ** i).toFixed(2)} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
 };
 
 interface FileUploadFieldProps {
@@ -82,7 +84,7 @@ export const FileUploadField = ({
     }
 
     if (maxSizeInBytes) {
-      for (const file of input.files) {
+      for (const file of Array.from(input.files)) {
         const { size: newSizeInBytes } = file;
         if (newSizeInBytes > maxSizeInBytes) {
           setSizeInBytes(null);
@@ -101,10 +103,11 @@ export const FileUploadField = ({
       onChange(event, newName, input.files);
       // We don't support file size label if multiple
     } else {
-      const [file] = input.files;
+      const [file] = Array.from(input.files);
       setSizeInBytes(file.size);
       onChange(event, newName, input.files);
     }
+    setError(null);
   };
 
   return (
@@ -123,7 +126,7 @@ export const FileUploadField = ({
         <GreyButton component="span" startIcon={<SaveAlt />}>
           {text}
         </GreyButton>
-        {fileName && <FileNameAndFileSize>{fileName} {showFileSize && humanFileSize(sizeInBytes)}</FileNameAndFileSize>}
+        {fileName && <FileNameAndFileSize>{fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}</FileNameAndFileSize>}
       </FileUploadContainer>
       {error && <MuiFormHelperText error>{error}</MuiFormHelperText>}
       {helperText && <MuiFormHelperText>{helperText}</MuiFormHelperText>}
