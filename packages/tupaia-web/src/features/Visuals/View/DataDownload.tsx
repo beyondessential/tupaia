@@ -21,20 +21,13 @@ const ListItem = styled.li`
   }
 `;
 
-const Wrapper = styled.div`
-  padding: 1rem;
-  width: 25rem;
-  max-width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-`;
-
 const Form = styled(BaseForm)`
   flex-grow: 1;
-
+  width: 25rem;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 1rem;
   > fieldset {
     flex-grow: 1;
     text-align: left;
@@ -82,38 +75,36 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
     setUrlSearchParams(urlSearchParams);
   };
   return (
-    <Wrapper>
-      <Form formContext={formContext}>
-        <CheckboxList
-          options={
-            data
-              ? data.map(({ name, value }) => ({
-                  label: name,
-                  value: value as string,
-                }))
-              : []
-          }
-          name={reportCode!}
-          legend="Select the data you wish to download"
-          required
-        />
+    <Form formContext={formContext}>
+      <CheckboxList
+        options={
+          data
+            ? data.map(({ name, value }) => ({
+                label: name,
+                value: value as string,
+              }))
+            : []
+        }
+        name={reportCode!}
+        legend="Select the data you wish to download"
+        required
+      />
 
-        <ButtonWrapper>
-          <FormButton variant="outlined" color="default" onClick={closeModal}>
-            Cancel
-          </FormButton>
-          <FormButton
-            component={Link}
-            disabled={!selectedCodes || selectedCodes.length === 0}
-            href={downloadLink}
-            download
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Download
-          </FormButton>
-        </ButtonWrapper>
-      </Form>
-    </Wrapper>
+      <ButtonWrapper>
+        <FormButton variant="outlined" color="default" onClick={closeModal}>
+          Cancel
+        </FormButton>
+        <FormButton
+          component={Link}
+          disabled={!selectedCodes || selectedCodes.length === 0}
+          href={downloadLink}
+          download
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Download
+        </FormButton>
+      </ButtonWrapper>
+    </Form>
   );
 };

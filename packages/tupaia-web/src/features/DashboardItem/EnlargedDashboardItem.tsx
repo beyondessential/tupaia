@@ -65,7 +65,10 @@ const Subheading = styled(Typography).attrs({
 
 const ContentWrapper = styled.div`
   min-height: 20rem;
-  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const BackLinkButton = styled(IconButton).attrs({
@@ -131,7 +134,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     periodGranularity,
     weekDisplayFormat,
     onResetDate,
-  } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem);
+  } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem?.config);
 
   const { config } = currentDashboardItem || {};
 
@@ -189,14 +192,12 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
 
   const { type } = currentDashboardItem?.config || {};
 
+  const isDataDownload =
+    ((currentDashboardItem?.config as unknown) as ViewConfig).viewType === 'dataDownload';
+  const hasBigData = !isDataDownload && (reportData?.data?.length > 20 || type === 'matrix');
   return (
     <Modal isOpen onClose={handleCloseModal}>
-      <Wrapper
-        $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}
-        $applyWidth={
-          ((currentDashboardItem?.config as unknown) as ViewConfig).viewType !== 'dataDownload'
-        }
-      >
+      <Wrapper $hasBigData={hasBigData} $applyWidth={!isDataDownload}>
         <Container>
           <TitleWrapper>
             <BackLink parentDashboardItem={parentDashboardItem} />
