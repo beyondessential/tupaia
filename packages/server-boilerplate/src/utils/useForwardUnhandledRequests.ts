@@ -2,35 +2,17 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { Express, NextFunction, Request, Response } from 'express';
+import { Express } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
-import { UnauthenticatedError } from '@tupaia/utils';
 import { handleError } from './handleError';
 import { attachSession as defaultAttachSession } from '../orchestrator';
-import { AuthHandler } from '@tupaia/api-client';
-
-type AuthHandlerProvider = (req: Request) => AuthHandler;
-
-// Create a middleware function using the given authHandler
-const attachAuthorizationHeader = (authHandlerProvider: AuthHandlerProvider) => async (req: Request, res: Response, next: NextFunction) => {
-  const authHandler = authHandlerProvider(req);
-  req.headers.authorization = await authHandler.getAuthHeader();
-  next();
-};
-
-const defaultAuthHandlerProvider = (req: Request) => {
-  const { session } = req;
-
-  if (!session) {
-    throw new UnauthenticatedError('Session is not attached');
-  }
-
-  // Session already has a getAuthHeader function so can act as an AuthHandler
-  return session;
-};
-
-type Middleware = (req: Request, res: Response, next: NextFunction) => void;
+import {
+  AuthHandlerProvider,
+  Middleware,
+  attachAuthorizationHeader,
+  defaultAuthHandlerProvider,
+} from './proxyTypes';
 
 export const useForwardUnhandledRequests = (
   app: Express,
@@ -65,5 +47,10 @@ export const useForwardUnhandledRequests = (
   };
 
   // Forward any unhandled request to central-server
-  app.use(attachSession, attachAuthorizationHeader(authHandlerProvider), createProxyMiddleware(options), handleError);
+  app.use(
+    attachSession,
+    attachAuthorizationHeader(authHandlerProvider),
+    createProxyMiddleware(options),
+    handleError,
+  );
 };
