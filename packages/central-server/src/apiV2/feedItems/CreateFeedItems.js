@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { title } from 'case';
 import { BESAdminCreateHandler } from '../CreateHandler';
 import { uploadImage } from '../utilities';
 /**
@@ -24,23 +23,25 @@ export class CreateFeedItems extends BESAdminCreateHandler {
       record_id,
     } = this.newRecordData;
 
-    const newFeedItem = await this.models.feedItem.create({
-      country_id,
-      permission_group_id,
-      creation_date,
-      template_variables: {
-        title,
-        image: '',
-        body,
-        link,
-      },
-      type,
-      geographical_area_id,
-      user_id,
-      record_id,
-    });
+    await this.models.wrapInTransaction(async () => {
+      const newFeedItem = await this.models.feedItem.create({
+        country_id,
+        permission_group_id,
+        creation_date,
+        template_variables: {
+          title,
+          image: '',
+          body,
+          link,
+        },
+        type,
+        geographical_area_id,
+        user_id,
+        record_id,
+      });
 
-    await this.insertImagePath(this.models, image, newFeedItem);
+      await this.insertImagePath(this.models, image, newFeedItem);
+    });
   }
 
   async insertImagePath(models, base64Image, newFeedItem) {
