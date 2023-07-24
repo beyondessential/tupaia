@@ -35,10 +35,9 @@ export type ProjectCode = Project['code'];
 export type EntityCode = Entity['code'];
 
 export type DashboardItem = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
-  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType', 'entityheader'> & {
+  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType'> & {
     chartType?: string;
     viewType?: string;
-    entityHeader?: string;
   };
 
 export type DashboardName = DashboardItem['dashboardName'];

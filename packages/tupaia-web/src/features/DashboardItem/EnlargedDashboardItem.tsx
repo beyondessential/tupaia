@@ -128,10 +128,12 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     onResetDate,
   } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem);
 
+  const { config } = (currentDashboardItem as DashboardItem['config']) || {};
+
   // If the report is a drilldown, it will have a drilldown id in the url
   const drilldownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
   // At this time we only support drilldown in matrix visuals
-  const isDrillDown = currentDashboardItem?.config?.type === 'matrix' && !!drilldownId;
+  const isDrillDown = config?.type === 'matrix' && !!drilldownId;
   // If the report is a drilldown, we want to get the parent dashboard item, so that we can get the parameter link for querying the data, and also so that we can show a back button to the correct parent dashboard item
   const parentDashboardItem = isDrillDown
     ? activeDashboard?.items.find(
@@ -177,12 +179,9 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     setUrlSearchParams(urlSearchParams);
   };
 
-  const titleText = `${currentDashboardItem?.config?.name}, ${
-    // @ts-ignore - entityHeader is all lowercase in the types config
-    currentDashboardItem?.config?.entityHeader || entityName
-  }`;
+  const titleText = `${config?.name}, ${config?.entityHeader || entityName}`;
 
-  const type = currentDashboardItem?.config?.type;
+  const type = config || {};
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
@@ -190,7 +189,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
         <Container>
           <TitleWrapper>
             <BackLink parentDashboardItem={parentDashboardItem} />
-            {currentDashboardItem?.config?.name && <Title>{titleText}</Title>}
+            {config?.name && <Title>{titleText}</Title>}
             {showDatePicker && (
               <DateRangePicker
                 granularity={periodGranularity}
@@ -204,9 +203,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
               />
             )}
           </TitleWrapper>
-          {currentDashboardItem?.config?.description && (
-            <Subheading>{currentDashboardItem?.config?.description}</Subheading>
-          )}
+          {config?.description && <Subheading>{config?.description}</Subheading>}
           <ContentWrapper>
             <DashboardItemContent
               isLoading={isLoadingReportData}
