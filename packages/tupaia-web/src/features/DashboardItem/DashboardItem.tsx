@@ -9,7 +9,7 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { DashboardItemType } from '../../types';
+import { DashboardItem as DashboardItemType } from '../../types';
 import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 
@@ -55,17 +55,18 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     startDate?: Moment;
     endDate?: Moment;
   };
+
   const { data: report, isLoading, isError, error, refetch } = useReport(dashboardItem.reportCode, {
     projectCode,
     entityCode,
-    dashboardCode: activeDashboard?.dashboardCode,
+    dashboardCode: activeDashboard?.code,
     itemCode: dashboardItem.code,
     startDate: defaultStartDate,
     endDate: defaultEndDate,
     legacy: dashboardItem.legacy,
   });
 
-  const { periodGranularity, type, viewType, name, presentationOptions } = dashboardItem;
+  const { presentationOptions, periodGranularity, type, viewType, name } = dashboardItem.config;
 
   const isExpandable =
     periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
@@ -73,7 +74,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   let showTitle = !!name;
   if (viewType === 'multiValue') {
     showTitle = !!name && presentationOptions?.isTitleVisible;
-  } else if (viewType === 'singleDownloadLink') showTitle = false;
+  } else if (viewType === 'singleDownloadLink' || type === 'component') showTitle = false;
 
   return (
     <Wrapper>
@@ -81,7 +82,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
       <Container>
         {showTitle && <Title>{name}</Title>}
         <DashboardItemContent
-          config={dashboardItem}
+          dashboardItem={dashboardItem}
           report={report}
           isLoading={isLoading}
           error={isError ? error : null}

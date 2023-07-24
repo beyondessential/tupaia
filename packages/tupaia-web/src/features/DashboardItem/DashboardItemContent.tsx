@@ -6,20 +6,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { Chart } from '../Chart';
+import { DashboardItemConfig } from '@tupaia/types';
+import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { ExpandItemButton } from './ExpandItemButton';
-import { View } from '../View';
-import { Matrix } from '../Matrix';
+import {
+  View,
+  Chart,
+  Matrix,
+  ProjectDescription,
+  NoAccessDashboard,
+  NoDataAtLevelDashboard,
+} from '../Visuals';
 import {
   ChartReport,
   DashboardItemReport,
-  DashboardItemType,
+  DashboardItem,
   MatrixReport,
   ViewReport,
 } from '../../types';
-import { DashboardItemConfig } from '@tupaia/types';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -62,10 +67,13 @@ const DisplayComponents = {
   chart: Chart,
   view: View,
   matrix: Matrix,
+  ProjectDescription,
+  NoAccessDashboard,
+  NoDataAtLevelDashboard,
 };
 
 interface DashboardItemContentProps {
-  config: DashboardItemType;
+  dashboardItem: DashboardItem;
   report: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
@@ -89,7 +97,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = ({
-  config = {},
+  dashboardItem = {},
   report,
   isEnlarged,
   isLoading,
@@ -97,9 +105,12 @@ export const DashboardItemContent = ({
   onRetryFetch,
   isExpandable,
 }: DashboardItemContentProps) => {
-  const { name, reportCode, type, viewType } = config;
+  const { reportCode, componentName, config } = dashboardItem;
+  const { name, type, viewType } = config;
 
-  const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
+  const componentKey = componentName || type;
+
+  const DisplayComponent = DisplayComponents[componentKey as keyof typeof DisplayComponents];
 
   if (!DisplayComponent) return null;
 

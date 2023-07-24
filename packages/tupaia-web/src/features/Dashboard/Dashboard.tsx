@@ -16,7 +16,6 @@ import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem, EnlargedDashboardItem } from '../DashboardItem';
-import { DashboardItemType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -104,7 +103,7 @@ export const Dashboard = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds;
 
   const toggleExpanded = () => {
@@ -129,12 +128,12 @@ export const Dashboard = () => {
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map((item: DashboardItemType) => (
+          {activeDashboard?.items.map(item => (
             <DashboardItem key={item.code} dashboardItem={item} />
           ))}
         </DashboardItemsWrapper>
       </ScrollBody>
-      <EnlargedDashboardItem />
+      <EnlargedDashboardItem entityName={entity?.name} />
     </Panel>
   );
 };

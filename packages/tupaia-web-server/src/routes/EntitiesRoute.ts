@@ -6,8 +6,14 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
+import { TupaiaWebEntitiesRequest } from '@tupaia/types';
 
-export type EntitiesRequest = Request<any, any, any, any>;
+export type EntitiesRequest = Request<
+  TupaiaWebEntitiesRequest.Params,
+  TupaiaWebEntitiesRequest.ResBody,
+  TupaiaWebEntitiesRequest.ReqBody,
+  TupaiaWebEntitiesRequest.ReqQuery
+>;
 
 const DEFAULT_FILTER = {
   generational_distance: {
@@ -39,7 +45,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       hierarchyName,
       rootEntityCode,
       { filter: DEFAULT_FILTER, fields: DEFAULT_FIELDS, ...query },
-      query.includeRoot || false,
+      query.includeRootEntity || false,
     );
 
     return camelcaseKeys(flatEntities, { deep: true });
