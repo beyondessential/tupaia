@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { SelectableMultipleTimesOption, SelectableOption } from './options';
 
@@ -36,6 +37,7 @@ export const ResultsList = ({
             });
             const isSelected =
               value.find(selectedItem => selectedItem.code === option.code) !== undefined;
+            // eslint-disable-next-line no-nested-ternary
             const onSelect = allowAddMultipleTimes
               ? event => onChange(event, [...value, option])
               : isSelected
@@ -64,4 +66,20 @@ export const ResultsList = ({
         : null}
     </>
   );
+};
+
+ResultsList.propTypes = {
+  groupedOptions: PropTypes.array,
+  getOptionProps: PropTypes.string.isRequired,
+  allowAddMultipleTimes: PropTypes.bool,
+  value: PropTypes.array,
+  onChange: PropTypes.func.isRequired,
+  searchPageSize: PropTypes.number,
+};
+
+ResultsList.defaultProps = {
+  groupedOptions: [],
+  allowAddMultipleTimes: false,
+  value: [],
+  searchPageSize: null,
 };

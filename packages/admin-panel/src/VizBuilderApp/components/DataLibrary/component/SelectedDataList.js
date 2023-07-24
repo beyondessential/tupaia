@@ -2,8 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import styled from 'styled-components';
 import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { Droppable } from 'react-beautiful-dnd';
 import { SelectedDataCard } from './options';
 
@@ -28,3 +29,13 @@ export const SelectedDataList = ({ value, optionComponent }) => (
     )}
   </Droppable>
 );
+
+SelectedDataList.propTypes = {
+  value: PropTypes.array,
+  optionComponent: PropTypes.node,
+};
+
+SelectedDataList.defaultProps = {
+  value: [],
+  optionComponent: null,
+};

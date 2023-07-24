@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledDataTypeTabs = styled.div`
   &.has-multiple {
@@ -33,7 +34,7 @@ export const DataTypeTabs = ({ dataTypes, dataType, onChange }) => (
     {dataTypes.length > 1 &&
       dataTypes.map((d, index) => (
         <DataTypeTab
-          key={index}
+          key={index} // eslint-disable-line react/no-array-index-key
           onClick={event => onChange(event, d)}
           className={d === dataType ? 'selected' : ''}
         >
@@ -42,3 +43,13 @@ export const DataTypeTabs = ({ dataTypes, dataType, onChange }) => (
       ))}
   </StyledDataTypeTabs>
 );
+
+DataTypeTabs.propTypes = {
+  dataTypes: PropTypes.array,
+  dataType: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+DataTypeTabs.defaultProps = {
+  dataTypes: [],
+};
