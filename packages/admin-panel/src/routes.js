@@ -200,12 +200,11 @@ export const ROUTES = [
         to: '/entityTypes',
         component: EntityTypesPage,
       },
-      // TODO OSC-10 Uncomment to enabled Entity Hierarchies
-      //   {
-      //     label: 'Entity Hierarchies',
-      //     to: '/entityHierarchies',
-      //     component: EntityHierarchiesPage,
-      //   },
+      {
+        label: 'Entity Hierarchies',
+        to: '/entityHierarchies',
+        component: EntityHierarchiesPage,
+      },
     ],
   },
   {
