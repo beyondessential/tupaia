@@ -140,7 +140,7 @@ const getBaseDrilldownLink = (drillDown?: DashboardItem['drillDown']) => {
  */
 
 interface MatrixProps {
-  config: DashboardItem;
+  config: DashboardItem['config'];
   report: MatrixReport;
   isEnlarged?: boolean;
 }

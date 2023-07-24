@@ -77,7 +77,7 @@ const ContentWrapper = styled.div<{
 
 interface ChartProps {
   report: ChartReport;
-  config: DashboardItem;
+  config: DashboardItem['config'];
   isEnlarged?: boolean;
 }
 

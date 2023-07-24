@@ -97,7 +97,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = ({
-  dashboardItem = {},
+  dashboardItem,
   report,
   isEnlarged,
   isLoading,

@@ -209,7 +209,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
               isLoading={isLoadingReportData}
               error={error}
               report={reportData}
-              dashboardItem={currentDashboardItem}
+              dashboardItem={currentDashboardItem!}
               onRetryFetch={refetch}
               isExpandable={false}
               isEnlarged
