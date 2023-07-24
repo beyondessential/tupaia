@@ -3,24 +3,14 @@ import {
   Project,
   Country,
   Entity as BaseEntity,
-  Dashboard as BaseDashboard,
   DashboardItem as BaseDashboardItem,
-  DashboardItemConfig as BaseDashboardItemConfig,
   MapOverlay,
-  MapOverlayGroupRelation,
-  EntityType,
-  MatrixConfig,
 } from '@tupaia/types';
-import { ActivePolygonProps, LeafletMapProps } from '@tupaia/ui-map-components';
-import {
-  ViewContent as ChartViewContent,
-  DataProps,
-  ViewContent,
-} from '@tupaia/ui-chart-components';
+import { ActivePolygonProps } from '@tupaia/ui-map-components';
+import { ViewContent as ChartViewContent, DataProps } from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
-import { MatrixColumnType, MatrixRowType } from '@tupaia/ui-components';
 
 export type SingleProject = KeysToCamelCase<Project> & {
   hasAccess: boolean;
@@ -44,32 +34,14 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
+export type DashboardItem = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
   Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType', 'entityheader'> & {
     chartType?: string;
     viewType?: string;
     entityHeader?: string;
   };
 
-export type DashboardsResponse = {
-  dashboardName: string;
-  dashboardCode: string;
-  dashboardId: string;
-  entityCode: string;
-  entityName: string;
-  entityType: string;
-  items: DashboardItemType[];
-};
-
-export type DashboardCode = DashboardsResponse['dashboardCode'];
-
-export type TupaiaUrlParams = {
-  projectCode?: ProjectCode;
-  entityCode?: EntityCode;
-  dashboardCode?: DashboardCode;
-};
-
-export type DashboardName = DashboardResponse['dashboardName'];
+export type DashboardName = DashboardItem['dashboardName'];
 
 export type SingleMapOverlayItem = KeysToCamelCase<
   Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
@@ -85,21 +57,15 @@ export type MapOverlayGroup = {
   name: MapOverlay['name'];
   children: SingleMapOverlayItem[] | MapOverlayGroup[];
 };
-export type MapOverlays = {
-  entityCode: EntityCode;
-  entityType: EntityType;
-  name: string;
-  mapOverlays: MapOverlayGroup[];
-};
 
 // re-type the coordinates to be what the ui-map-components expect, because in the types package they are any | null
 export type Entity = KeysToCamelCase<Omit<BaseEntity, 'region' | 'bounds'>> & {
   region?: ActivePolygonProps['coordinates'];
   bounds?: Position[];
 };
+
 /* Response Types */
 // Todo: replace with types from @tupaia/types
-
 export type EntityResponse = Entity & {
   parentCode: Entity['code'];
   childCodes: Entity['code'][];
