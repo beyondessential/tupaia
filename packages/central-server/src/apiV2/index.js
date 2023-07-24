@@ -297,7 +297,7 @@ apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySync
 apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
-apiV2.post('/surveys', multipartJson, useRouteHandler(CreateSurvey));
+apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 
@@ -334,7 +334,7 @@ apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHand
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
-apiV2.put('/surveys/:recordId', multipartJson, useRouteHandler(EditSurvey));
+apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 
