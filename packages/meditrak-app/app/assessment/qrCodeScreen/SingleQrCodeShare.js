@@ -20,7 +20,7 @@ export const SingleQrCodeShare = ({ qrCode, onClose }) => {
         getRef={ref => {
           qrCodeImgRef.current = ref;
         }}
-        size={280}
+        size={300}
         qrCodeContents={qrCode.id}
         humanReadableId={qrCode.name}
       />
@@ -70,16 +70,17 @@ const localStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: THEME_COLOR_ONE,
     backgroundColor: 'transparent',
-    width: 150,
+    width: 142,
     marginTop: 50,
-    marginRight: 15,
+    marginRight: 16,
   },
   closeButtonLabel: {
     color: THEME_COLOR_ONE,
+    fontWeight: 'bold',
   },
   shareButton: {
     marginTop: 50,
-    width: 150,
+    width: 142,
   },
   shareButtonLabel: {
     fontWeight: 'bold',
