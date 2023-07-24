@@ -275,7 +275,11 @@ apiV2.post('/me/deleteAccount', allowAnyone(deleteAccount));
 apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
 apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
-apiV2.post('/surveyResponse/:recordId/resubmit', useRouteHandler(ResubmitSurveyResponse));
+apiV2.post(
+  '/surveyResponse/:recordId/resubmit',
+  multipartJson(false),
+  useRouteHandler(ResubmitSurveyResponse),
+);
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
