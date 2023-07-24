@@ -40,7 +40,7 @@ export class EditFeedItems extends BESAdminEditHandler {
     if (base64Image !== undefined) {
       updatedFields.template_variables = {
         title: updatedTitle || existingTitle,
-        image: await uploadImage(base64Image, existingImage),
+        image: await uploadImage(base64Image, this.recordId, 'feed_item', existingImage),
         body: updatedBody || existingBody,
         link: updatedLink || existingLink,
       };

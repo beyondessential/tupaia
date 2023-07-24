@@ -49,7 +49,7 @@ const FIELDS = [
           type: 'image',
           avatarVariant: 'square',
           deleteModal: {
-            title: 'Remove Project Image',
+            title: 'Remove Feed Item Image',
             message: 'Are you sure you want to delete your image?',
           },
         },

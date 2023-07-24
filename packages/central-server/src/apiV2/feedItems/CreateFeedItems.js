@@ -1,8 +1,9 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { title } from 'case';
 import { BESAdminCreateHandler } from '../CreateHandler';
 import { uploadImage } from '../utilities';
 /**
@@ -46,7 +47,7 @@ export class CreateFeedItems extends BESAdminCreateHandler {
     const update = {
       template_variables: {
         ...newFeedItem.template_variables,
-        image: await uploadImage(base64Image),
+        image: await uploadImage(base64Image, newFeedItem.id, 'feed_item'),
       },
     };
     return models.feedItem.updateById(newFeedItem.id, update);
