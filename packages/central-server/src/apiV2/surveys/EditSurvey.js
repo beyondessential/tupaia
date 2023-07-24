@@ -18,6 +18,10 @@ export class EditSurvey extends EditHandler {
 
     const convertedFields = await convertNamesToIds(this.models, this.updatedFields);
 
+    if (this.req.query.strictValidationMode === 'false') {
+      surveyEditor.setStrictValidationMode(false);
+    }
+
     return surveyEditor.edit(this.recordId, convertedFields);
   }
 }

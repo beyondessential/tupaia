@@ -136,9 +136,15 @@ export class UploadError extends RespondingError {
   }
 }
 
-export class ValidationError extends RespondingError {
+export class StrictValidationError extends RespondingError {
   constructor(message) {
-    super(message, 400);
+    super(message, 400, { isStrictValidationModeError: true });
+  }
+}
+
+export class ValidationError extends RespondingError {
+  constructor(message, extraFields = {}) {
+    super(message, 400, extraFields);
   }
 }
 
@@ -163,14 +169,20 @@ export class TypeValidationError extends ValidationError {
 }
 
 export class ImportValidationError extends ValidationError {
-  constructor(message, rowNumber = undefined, field = undefined, tabName = undefined) {
+  constructor(
+    message,
+    rowNumber = undefined,
+    field = undefined,
+    tabName = undefined,
+    extraFields = {},
+  ) {
     const errorMessage =
       'Import failed' +
       `${tabName !== undefined ? ` in tab ${tabName}` : ''}` +
       `${rowNumber !== undefined ? ` at row ${rowNumber}` : ''}` +
       `${field !== undefined ? ` on the field '${field}'` : ''}` +
       ` with the message '${message}'`;
-    super(errorMessage);
+    super(errorMessage, extraFields);
   }
 }
 
@@ -200,10 +212,15 @@ export class CustomError extends RespondingError {
       ...jsonFields,
       ...extraJsonFields,
     };
-    const { responseText, responseStatus, description } = json;
+    const { responseText, responseStatus, description, isStrictValidationModeError } = json;
     const { status, details } = responseText;
     const errorMessage = status || responseText;
-    super(errorMessage, responseStatus, { description, status, details });
+    super(errorMessage, responseStatus, {
+      description,
+      status,
+      details,
+      isStrictValidationModeError,
+    });
   }
 }
 

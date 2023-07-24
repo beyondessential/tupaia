@@ -18,19 +18,40 @@ const Heading = styled(Typography)`
   margin-bottom: 18px;
 `;
 
-export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
+const StyledAlert = styled(SmallAlert)`
+  &.MuiAlert-standardWarning {
+    color: #8b6e37;
+    background: #fcf8e2;
+    border: 1px solid #faecca;
+
+    .MuiAlert-icon {
+      color: #8b6e37;
+    }
+  }
+`;
+
+export const ModalContentProvider = ({
+  isLoading,
+  errorMessage,
+  warningMessage,
+  children,
+  severity,
+}) => {
+  const message = errorMessage || warningMessage;
+  const header = severity === 'error' ? 'An error has occurred.' : 'Warning';
+
   return (
     <Content>
       {isLoading && 'Please be patient, this can take some time...'}
-      {!!errorMessage && (
+      {!!message && (
         <>
-          <Heading variant="h6">An error has occurred.</Heading>
-          <SmallAlert severity="error" variant="standard">
-            {errorMessage}
-          </SmallAlert>
+          <Heading variant="h6">{header}</Heading>
+          <StyledAlert severity={severity} variant="standard">
+            {message}
+          </StyledAlert>
         </>
       )}
-      <span style={isLoading || !!errorMessage ? { display: 'none' } : {}}>{children}</span>
+      <span style={isLoading || !!message ? { display: 'none' } : {}}>{children}</span>
     </Content>
   );
 };
@@ -38,10 +59,14 @@ export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
 ModalContentProvider.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
+  warningMessage: PropTypes.string,
+  severity: PropTypes.string,
   children: PropTypes.node,
 };
 
 ModalContentProvider.defaultProps = {
   errorMessage: null,
+  warningMessage: null,
   children: null,
+  severity: 'error',
 };

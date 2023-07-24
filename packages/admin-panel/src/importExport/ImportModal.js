@@ -27,6 +27,7 @@ const STATUS = {
   TIMEOUT: 'timeout',
   SUCCESS: 'success',
   ERROR: 'error',
+  WARNING: 'warning',
 };
 
 const defaultFinishedMessage = () => <span>Your import has been successfully processed.</span>;
@@ -50,6 +51,7 @@ export const ImportModalComponent = React.memo(
     const [status, setStatus] = useState(STATUS.IDLE);
     const [finishedMessage, setFinishedMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [warningMessage, setWarningMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
@@ -67,6 +69,7 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setWarningMessage(null);
       setFinishedMessage(null);
       setFiles([]);
       setFileName(noFileMessage);
@@ -75,6 +78,7 @@ export const ImportModalComponent = React.memo(
     const handleClose = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setWarningMessage(null);
       setFinishedMessage(null);
       setIsOpen(false);
       setValues({});
@@ -82,9 +86,10 @@ export const ImportModalComponent = React.memo(
       setFileName(noFileMessage);
     };
 
-    const handleSubmit = async event => {
+    const handleSubmit = async (event, strictValidationMode = true) => {
       event.preventDefault();
       setErrorMessage(null);
+      setWarningMessage(null);
       setFinishedMessage(null);
       setStatus(STATUS.LOADING);
       changeRequest();
@@ -96,6 +101,7 @@ export const ImportModalComponent = React.memo(
         const { body: response } = await api.upload(endpoint, recordType, files, {
           ...values,
           ...actionConfig.extraQueryParameters,
+          strictValidationMode,
         });
         if (response.emailTimeoutHit) {
           setStatus(STATUS.TIMEOUT);
@@ -108,11 +114,20 @@ export const ImportModalComponent = React.memo(
         }
         changeSuccess();
       } catch (error) {
-        setStatus(STATUS.ERROR);
-        setFinishedMessage(null);
-        setErrorMessage(error.message);
-        changeError();
+        if (error?.extraFields?.isStrictValidationModeError) {
+          setStatus(STATUS.WARNING);
+          setWarningMessage(error?.message);
+        } else {
+          setStatus(STATUS.ERROR);
+          setFinishedMessage(null);
+          setErrorMessage(error.message);
+          changeError();
+        }
       }
+    };
+
+    const handleConfirm = async event => {
+      return handleSubmit(event, false);
     };
 
     // Print a more descriptive network timeout error
@@ -127,6 +142,20 @@ export const ImportModalComponent = React.memo(
         case STATUS.TIMEOUT:
         case STATUS.SUCCESS:
           return <Button onClick={handleClose}>Done</Button>;
+        case STATUS.WARNING:
+          return (
+            <>
+              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+              <Button
+                id="form-button-confirm"
+                type="submit"
+                isLoading={status === STATUS.LOADING}
+                onClick={handleConfirm}
+              >
+                Import anyway
+              </Button>
+            </>
+          );
         case STATUS.ERROR:
           return (
             <>
@@ -165,7 +194,9 @@ export const ImportModalComponent = React.memo(
             />
             <ModalContentProvider
               errorMessage={fileErrorMessage}
+              warningMessage={warningMessage}
               isLoading={status === STATUS.LOADING}
+              severity={status}
             >
               {finishedMessage ? (
                 <>{finishedMessage}</>

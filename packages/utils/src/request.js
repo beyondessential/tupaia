@@ -92,11 +92,12 @@ export const asynchronouslyFetchValuesForObject = async objectSpecification => {
   return returnObject;
 };
 
-const throwCustomError = (status, errorMessage) => {
+const throwCustomError = (status, errorMessage, errorBody) => {
   const statusCode = status || 500;
   throw new CustomError({
     responseStatus: statusCode,
     responseText: errorMessage,
+    isStrictValidationModeError: !!errorBody.isStrictValidationModeError,
   });
 };
 
@@ -116,7 +117,7 @@ export const verifyResponseStatus = async response => {
       throwCustomError(response.status, responseJson.message);
     }
     if (responseJson.error) {
-      throwCustomError(response.status, responseJson.error);
+      throwCustomError(response.status, responseJson.error, responseJson);
     }
   }
 };
