@@ -23,8 +23,8 @@ export class CreateFeedItems extends BESAdminCreateHandler {
       record_id,
     } = this.newRecordData;
 
-    await this.models.wrapInTransaction(async () => {
-      const newFeedItem = await this.models.feedItem.create({
+    await this.models.wrapInTransaction(async transactingModels => {
+      const newFeedItem = await transactingModels.feedItem.create({
         country_id,
         permission_group_id,
         creation_date,
@@ -40,7 +40,7 @@ export class CreateFeedItems extends BESAdminCreateHandler {
         record_id,
       });
 
-      await this.insertImagePath(this.models, image, newFeedItem);
+      await this.insertImagePath(transactingModels, image, newFeedItem);
     });
   }
 

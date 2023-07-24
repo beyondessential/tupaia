@@ -15,6 +15,7 @@ import { useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoading, isLoggedIn } = useUser();
+  useUser();
 
   if (isLoading) {
     return <LoadingScreen isLoading />;
