@@ -16,7 +16,9 @@ export {
   SessionModel,
   SessionType,
   SessionCookie,
+  SessionSwitchingAuthHandler,
   attachSession,
+  attachSessionIfAvailable,
 } from './orchestrator';
 export * from './types';
 export * from './models';

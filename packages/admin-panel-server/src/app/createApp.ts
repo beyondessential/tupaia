@@ -136,7 +136,7 @@ export function createApp() {
     )
     .build();
 
-  useForwardUnhandledRequests(app, CENTRAL_API_URL, undefined, undefined, {
+  useForwardUnhandledRequests(app, CENTRAL_API_URL, undefined, {
     '/hierarchy': ENTITY_API_URL,
     '/hierarchies': ENTITY_API_URL,
   });

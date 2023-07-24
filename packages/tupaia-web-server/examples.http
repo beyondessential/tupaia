@@ -1,0 +1,48 @@
+@localhost = http://localhost:8100/v1
+@dev = https://dev-config.tupaia.org
+@host = {{localhost}}
+# Uncomment the line below to point at dev rather than localhost
+# @host = {{dev}}
+@contentType = application/json
+
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+### Login
+# @name login
+POST {{host}}/login HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
+}
+
+### Logout
+# @name logout
+GET {{host}}/logout HTTP/1.1
+content-type: {{contentType}}
+
+### Get Project
+# @name project
+GET {{host}}/project/covidau HTTP/1.1
+content-type: {{contentType}}
+
+### Get Dashboard
+# @name dashboards
+GET {{host}}/dashboards HTTP/1.1
+content-type: {{contentType}}
+
+
+### Fetch country access list
+GET {{host}}/countryAccessList
+content-type: {{contentType}}
+
+### Fetch legacy report
+GET {{host}}/report/28?dashboardCode=explore_General&itemCode=28&legacy=true&organisationUnitCode=explore&projectCode=explore&timeZone=Pacific%2FAuckland
+content-type: {{contentType}}
+
+### Fetch report
+GET {{host}}/report/tupaia_metrics_n_visuals_by_country?dashboardCode=explore_tupaia_metrics&endDate=2023-06-26&itemCode=tupaia_metrics_n_visuals_by_country&legacy=false&organisationUnitCode=explore&projectCode=explore&startDate=2015-01-01&timeZone=Pacific%2FAuckland
+content-type: {{contentType}}

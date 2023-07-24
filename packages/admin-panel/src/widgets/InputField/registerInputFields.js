@@ -24,6 +24,7 @@ import { registerInputField } from './InputField';
 import { ReduxAutocomplete } from '../../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
+import { FileUploadField } from './FileUploadField';
 
 // "InputField" is treated as a dynamic factory, where different input types can be supported
 // depending on what is injected at runtime. This is the standard set of injections, which is the
@@ -326,6 +327,14 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       name={props.name}
+    />
+  ));
+  registerInputField('file', props => (
+    <FileUploadField
+      name={props.name}
+      label={props.label}
+      helperText={props.secondaryLabel}
+      onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
     />
   ));
 };

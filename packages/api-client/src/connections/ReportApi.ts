@@ -16,6 +16,10 @@ export class ReportApi extends BaseApi {
   public async fetchTransformSchemas() {
     return this.connection.get('fetchTransformSchemas');
   }
+
+  public async fetchReport(reportCode: string, query?: QueryParameters | null) {
+    return this.connection.get(`fetchReport/${reportCode}`, query);
+  }
 }
 
 export interface ReportApiInterface extends PublicInterface<ReportApi> {}

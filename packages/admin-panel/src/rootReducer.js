@@ -10,6 +10,7 @@ import { reducer as editor } from './editor';
 import { reducer as logs } from './logsTable';
 import { reducer as dataChangeListener } from './dataChangeListener';
 import { reducer as usedBy } from './usedBy';
+import { reducer as qrCode } from './qrCode';
 
 const appReducer = combineReducers({
   authentication,
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
   logs,
   dataChangeListener,
   usedBy,
+  qrCode,
 });
 
 export const rootReducer = (state, action) => {

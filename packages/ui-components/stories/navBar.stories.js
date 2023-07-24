@@ -11,7 +11,7 @@ import {
   WarningCloud,
   Dashboard,
   ProfileButtonItem,
-} from '../src';
+} from '../src/components';
 import { RouterProvider } from '../helpers/RouterProvider';
 
 export default {

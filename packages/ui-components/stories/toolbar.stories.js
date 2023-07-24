@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Alarm } from '@material-ui/icons';
-import { TabsToolbar, Clipboard, WarningCloud } from '../src';
+import { TabsToolbar, Clipboard, WarningCloud } from '../src/components';
 import { RouterProvider } from '../helpers/RouterProvider';
 
 export default {
@@ -33,4 +33,4 @@ const links = [
   },
 ];
 
-export const tabsToolbar = () => <TabsToolbar links={links} />;
+export const tabsToolbar = () => <TabsToolbar links={links} baseRoute="theBaseRoute" />;

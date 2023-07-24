@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { ImageUploadField } from '../../src';
+import { ImageUploadField } from '../../src/components';
 
 export default {
   title: 'Inputs/ImageUploadField',

@@ -9,8 +9,8 @@ export class File extends RealmObject {
   toJson() {
     return {
       id: this.id,
-      filename: this.filename,
-      data: this.data,
+      uniqueFileName: this.uniqueFileName,
+      filePathOnDevice: this.filePathOnDevice,
     };
   }
 }
@@ -20,8 +20,8 @@ File.schema = {
   primaryKey: 'id',
   properties: {
     id: 'string',
-    filename: 'string',
-    data: { type: 'string', default: '' },
+    uniqueFileName: 'string',
+    filePathOnDevice: 'string',
   },
 };
 

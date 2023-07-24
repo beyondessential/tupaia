@@ -18,4 +18,7 @@ export class MockReportApi implements ReportApiInterface {
   public fetchTransformSchemas(): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public fetchReport(): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }

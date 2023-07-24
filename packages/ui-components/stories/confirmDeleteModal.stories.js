@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import MuiBox from '@material-ui/core/Box';
-import { ConfirmDeleteModal, WarningButton } from '../src';
+import { ConfirmDeleteModal, WarningButton } from '../src/components';
 
 export default {
   title: 'ConfirmDeleteModal',

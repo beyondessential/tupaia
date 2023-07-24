@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { Checkbox } from '../../src';
+import { Checkbox } from '../../src/components';
 
 export default {
   title: 'Inputs/Checkbox',

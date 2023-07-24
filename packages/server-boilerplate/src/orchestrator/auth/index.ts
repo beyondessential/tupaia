@@ -4,3 +4,4 @@
  */
 
 export { AuthConnection, AuthResponse } from './AuthConnection';
+export { SessionSwitchingAuthHandler } from './SessionSwitchingAuthHandler';

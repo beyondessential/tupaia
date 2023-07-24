@@ -69,7 +69,7 @@ export function createApp() {
     .build();
 
   // Forward any unhandled request to central-server
-  useForwardUnhandledRequests(app, CENTRAL_API_URL, '/admin', attachSession);
+  useForwardUnhandledRequests(app, CENTRAL_API_URL, '/admin', undefined, attachSession);
 
   return app;
 }

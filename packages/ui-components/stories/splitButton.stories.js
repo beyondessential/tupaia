@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { SplitButton } from '../src';
+import { SplitButton } from '../src/components';
 
 export default {
   title: 'SplitButton',

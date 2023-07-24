@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { InputLabel } from '../../src';
+import { InputLabel } from '../../src/components';
 
 export default {
   title: 'Inputs/InputLabel',

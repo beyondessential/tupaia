@@ -75,9 +75,17 @@ export const dataServiceSyncGroup = (fields: DataServiceSyncGroupFields): DataSe
   } = fields;
   return { code, data_group_code, service_type, config, sync_cursor, sync_status };
 };
+export const dataServiceSyncGroupType = (fields: DataServiceSyncGroupFields) =>
+  ({
+    ...dataServiceSyncGroup(fields),
+    databaseType: TYPES.DATA_SERVICE_SYNC_GROUP,
+  } as DataServiceSyncGroup);
 export const dataServiceSyncGroups = <K extends string>(
   fieldsByKey: Record<K, DataServiceSyncGroupFields>,
 ) => createInstances(fieldsByKey, dataServiceSyncGroup);
+export const dataServiceSyncGroupTypes = <K extends string>(
+  fieldsByKey: Record<K, DataServiceSyncGroupFields>,
+) => createInstances(fieldsByKey, dataServiceSyncGroupType);
 
 type EntityFields = {
   code: string;
