@@ -15,7 +15,7 @@ import {
   CardTabPanels,
   CardTabPanel,
   DataCardTabs,
-} from '../src/components';
+} from '../src/components/CardTabs';
 
 export default {
   title: 'CardTabs',

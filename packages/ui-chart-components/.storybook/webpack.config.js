@@ -36,12 +36,16 @@ module.exports = async ({ config }) => {
     ...config.resolve.alias,
     yargs: path.resolve(__dirname, 'moduleMock.js'),
     child_process: path.resolve(__dirname, 'moduleMock.js'),
+    '@aws-sdk/credential-providers': path.resolve(__dirname, 'awsModuleMock.js'),
+    '@aws-sdk/client-s3': path.resolve(__dirname, 'awsModuleMock.js'),
+    '@aws-sdk/lib-storage': path.resolve(__dirname, 'awsModuleMock.js'),
   };
 
   config.module.rules.push({
     test: /\.(js|jsx)$/,
     loader: require.resolve('babel-loader'),
     options: {
+      presets: ['@babel/preset-env', '@babel/preset-react'],
       plugins: ['@babel/plugin-proposal-nullish-coalescing-operator'],
     },
   });
