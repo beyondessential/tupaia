@@ -8,14 +8,14 @@ import PropTypes from 'prop-types';
 import QrCodeMatrix from 'react-native-qrcode-svg';
 import Svg, { G, Rect, Text } from 'react-native-svg';
 
-const CODE_SVG_RATIO = 0.65;
+const CODE_SVG_RATIO = 0.6;
 const TEXT_VERTICAL_RATIO = 0.15;
 
 export const QrCode = ({ getRef, qrCodeContents, humanReadableId, size }) => {
   const codeSize = size * CODE_SVG_RATIO;
   const textBoxHeight = size * TEXT_VERTICAL_RATIO;
   const textBoxPadding = (size - codeSize - textBoxHeight) / 2;
-  const fontSize = 0.5 * textBoxHeight;
+  const fontSize = 0.7 * textBoxHeight;
   const textXOffset = size / 2;
   const textYOffset = textBoxPadding / 2 + textBoxHeight / 2 - fontSize / 2;
   const codeXOffset = (size - codeSize) / 2;
