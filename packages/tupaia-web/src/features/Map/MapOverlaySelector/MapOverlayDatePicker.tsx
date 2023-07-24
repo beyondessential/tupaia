@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
 import { useMapOverlays } from '../../../api/queries';
@@ -11,13 +10,6 @@ import { useMapOverlayReport } from '../utils';
 import { DateRangePicker } from '../../../components';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-
-const Wrapper = styled.div`
-  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
-  > div {
-    margin-top: 0;
-  }
-`;
 
 export const MapOverlayDatePicker = () => {
   const { projectCode, entityCode } = useParams();
@@ -36,7 +28,7 @@ export const MapOverlayDatePicker = () => {
 
   if (!showDatePicker) return null;
   return (
-    <Wrapper>
+    <div>
       {isLoadingMapOverlayData ? (
         <>
           <Skeleton animation="wave" width={200} height={20} />
@@ -52,6 +44,6 @@ export const MapOverlayDatePicker = () => {
           onSetDates={setDates}
         />
       )}
-    </Wrapper>
+    </div>
   );
 };

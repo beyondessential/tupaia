@@ -37,7 +37,7 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   const selectedOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const { data: overlayReportData } = useMapOverlayReport();
 
-  if (!selectedOverlay || !overlayReportData) {
+  if (!selectedOverlay) {
     return null;
   }
 

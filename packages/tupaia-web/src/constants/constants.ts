@@ -24,5 +24,3 @@ export const FORM_FIELD_VALIDATION = {
 };
 
 export const MOBILE_BREAKPOINT = '900px';
-export const TOP_BAR_HEIGHT = '60px';
-export const TOP_BAR_HEIGHT_MOBILE = '50px';

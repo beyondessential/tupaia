@@ -8,14 +8,11 @@ import { useParams } from 'react-router';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
-import {
-  MOBILE_BREAKPOINT,
-  TOP_BAR_HEIGHT,
-  TOP_BAR_HEIGHT_MOBILE,
-  TUPAIA_LIGHT_LOGO_SRC,
-} from '../../constants';
+import { MOBILE_BREAKPOINT, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 import { EntitySearch } from '../../features';
 
+const TOP_BAR_HEIGHT = 60;
+const TOP_BAR_HEIGHT_MOBILE = 50;
 /* Both min height and height must be specified due to bugs in Firefox flexbox, that means that topbar height will be ignored even if using flex-basis. */
 const Header = styled.header<{
   $primaryColor?: string | null;
@@ -23,8 +20,8 @@ const Header = styled.header<{
 }>`
   background-color: ${({ $primaryColor, theme }) =>
     $primaryColor || theme.palette.background.default};
-  height: ${TOP_BAR_HEIGHT_MOBILE};
-  min-height: ${TOP_BAR_HEIGHT_MOBILE};
+  height: ${TOP_BAR_HEIGHT_MOBILE}px;
+  min-height: ${TOP_BAR_HEIGHT_MOBILE}px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,8 +41,8 @@ const Header = styled.header<{
     color: ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    height: ${TOP_BAR_HEIGHT};
-    min-height: ${TOP_BAR_HEIGHT};
+    height: ${TOP_BAR_HEIGHT}px;
+    min-height: ${TOP_BAR_HEIGHT}px;
     align-items: initial;
     border-bottom: 1px solid rgba(151, 151, 151, 0.3);
   }
