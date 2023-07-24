@@ -56,7 +56,7 @@ export const QrCode = ({ qrCodeContents, humanReadableId }) => {
       // Add header text
       const textY = 60 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
       ctx.fillStyle = 'black';
-      ctx.font = `${55 * DOWNLOAD_IMAGE_SCALE}px sans-serif`;
+      ctx.font = `${39 * DOWNLOAD_IMAGE_SCALE}px monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(humanReadableId, SCALED_CANVAS_SIZE / 2, textY);
 
