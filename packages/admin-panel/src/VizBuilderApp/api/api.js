@@ -64,3 +64,18 @@ export const upload = async (endpoint, options, fileName, file) => {
   data.append(fileName, file);
   return request(endpoint, { method: 'post', ...options, data });
 };
+
+/**
+ * @param {string} method
+ * @param {string} endpoint
+ * @param {{[key: string]: File}} [filesByMultipartKey]
+ * @param {{}} [payload] The multipartJson part which is not a file. Sent as JSON.
+ */
+export const multipart = async ({ method, endpoint, filesByMultipartKey = {}, payload }) => {
+  const formData = new FormData();
+  Object.entries(filesByMultipartKey).forEach(([key, file]) => formData.append(key, file));
+  if (payload) {
+    formData.append('payload', JSON.stringify(payload));
+  }
+  return request(endpoint, { data: formData, method });
+};
