@@ -9,10 +9,10 @@ import { UseQueryResult } from 'react-query';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
 import { DashboardItemConfig } from '@tupaia/types';
 import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
-import { Chart } from '../Visuals/Chart';
 import { ExpandItemButton } from './ExpandItemButton';
 import {
   View,
+  Chart,
   Matrix,
   ProjectDescription,
   NoAccessDashboard,
@@ -21,7 +21,7 @@ import {
 import {
   ChartReport,
   DashboardItemReport,
-  DashboardItemType,
+  DashboardItem,
   MatrixReport,
   ViewReport,
 } from '../../types';
@@ -73,7 +73,7 @@ const DisplayComponents = {
 };
 
 interface DashboardItemContentProps {
-  config: DashboardItemType;
+  dashboardItem: DashboardItem;
   report: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
@@ -97,7 +97,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = ({
-  config = {},
+  dashboardItem = {},
   report,
   isEnlarged,
   isLoading,
@@ -105,7 +105,8 @@ export const DashboardItemContent = ({
   onRetryFetch,
   isExpandable,
 }: DashboardItemContentProps) => {
-  const { name, reportCode, type, viewType, componentName } = config;
+  const { reportCode, componentName, config } = dashboardItem;
+  const { name, type, viewType } = config;
 
   const componentKey = componentName || type;
 

@@ -8,14 +8,14 @@ import styled from 'styled-components';
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { KeyboardArrowLeft } from '@material-ui/icons';
 import { Typography } from '@material-ui/core';
+import { ViewConfig } from '@tupaia/types';
 import { FlexColumn, IconButton } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { useDashboards } from '../../api/queries';
+import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
-import { useReport } from '../../api/queries/useReport';
 import { DateRangePicker, Modal } from '../../components';
-import { DashboardItemType } from '../../types';
+import { DashboardItem, Entity } from '../../types';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
@@ -65,9 +65,6 @@ const Subheading = styled(Typography).attrs({
 
 const ContentWrapper = styled.div`
   min-height: 20rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
 `;
 
@@ -85,7 +82,7 @@ const BackLinkButton = styled(IconButton).attrs({
   }
 `;
 
-const BackLink = ({ parentDashboardItem }: { parentDashboardItem?: DashboardItemType | null }) => {
+const BackLink = ({ parentDashboardItem }: { parentDashboardItem?: DashboardItem | null }) => {
   const [urlSearchParams] = useSearchParams();
   const location = useLocation();
   if (!parentDashboardItem) return null;
@@ -108,7 +105,7 @@ const BackLink = ({ parentDashboardItem }: { parentDashboardItem?: DashboardItem
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when the report code in the url is equal to the report code of the item.
  */
-export const EnlargedDashboardItem = () => {
+export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
   const { projectCode, entityCode, dashboardName } = useParams();
 
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
@@ -121,7 +118,7 @@ export const EnlargedDashboardItem = () => {
   );
 
   const currentDashboardItem = activeDashboard?.items.find(
-    (dashboardItem: DashboardItemType) => dashboardItem.code === reportCode,
+    dashboardItem => dashboardItem.code === reportCode,
   );
 
   const {
@@ -136,14 +133,17 @@ export const EnlargedDashboardItem = () => {
     onResetDate,
   } = useDateRanges(URL_SEARCH_PARAMS.REPORT_PERIOD, currentDashboardItem);
 
+  const { config } = currentDashboardItem || {};
+
   // If the report is a drilldown, it will have a drilldown id in the url
   const drilldownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
   // At this time we only support drilldown in matrix visuals
-  const isDrillDown = currentDashboardItem?.type === 'matrix' && !!drilldownId;
+  const isDrillDown = config?.type === 'matrix' && !!drilldownId;
   // If the report is a drilldown, we want to get the parent dashboard item, so that we can get the parameter link for querying the data, and also so that we can show a back button to the correct parent dashboard item
   const parentDashboardItem = isDrillDown
     ? activeDashboard?.items.find(
-        report => report.drillDown && report.drillDown.itemCode === reportCode,
+        // @ts-ignore - drillDown is all lowercase in the types config
+        dashboardItem => dashboardItem?.config?.drillDown?.itemCode === reportCode,
       )
     : null;
 
@@ -152,7 +152,7 @@ export const EnlargedDashboardItem = () => {
     const params = {
       projectCode,
       entityCode,
-      dashboardCode: activeDashboard?.dashboardCode,
+      dashboardCode: activeDashboard?.code,
       startDate,
       endDate,
       legacy: currentDashboardItem?.legacy,
@@ -160,7 +160,8 @@ export const EnlargedDashboardItem = () => {
     };
     if (!isDrillDown) return params;
     // If the report is a drilldown, we want to add the drilldown id to the params, so that correct data is fetched
-    const { parameterLink } = parentDashboardItem.drillDown;
+    // @ts-ignore - drillDown is all lowercase in the types config
+    const { parameterLink } = parentDashboardItem?.config?.drillDown;
     return {
       ...params,
       [parameterLink]: drilldownId,
@@ -183,22 +184,20 @@ export const EnlargedDashboardItem = () => {
     setUrlSearchParams(urlSearchParams);
   };
 
-  const titleText = `${currentDashboardItem?.name}, ${
-    currentDashboardItem?.entityHeader || activeDashboard?.entityName
-  }`;
+  const titleText = `${config?.name}, ${config?.entityHeader || entityName}`;
 
-  const { type, viewType } = currentDashboardItem || {};
+  const { type, viewType } = (currentDashboardItem?.config || {}) as DashboardItem['config'];
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
       <Wrapper
         $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}
-        $applyWidth={viewType !== 'dataDownload'}
+        $applyWidth={viewType ? viewType !== 'dataDownload' : true}
       >
         <Container>
           <TitleWrapper>
             <BackLink parentDashboardItem={parentDashboardItem} />
-            {currentDashboardItem?.name && <Title>{titleText}</Title>}
+            {config?.name && <Title>{titleText}</Title>}
             {showDatePicker && (
               <DateRangePicker
                 granularity={periodGranularity}
@@ -212,15 +211,13 @@ export const EnlargedDashboardItem = () => {
               />
             )}
           </TitleWrapper>
-          {currentDashboardItem?.description && (
-            <Subheading>{currentDashboardItem?.description}</Subheading>
-          )}
+          {config?.description && <Subheading>{config?.description}</Subheading>}
           <ContentWrapper>
             <DashboardItemContent
               isLoading={isLoadingReportData}
               error={error}
               report={reportData}
-              config={currentDashboardItem}
+              dashboardItem={currentDashboardItem}
               onRetryFetch={refetch}
               isExpandable={false}
               isEnlarged
