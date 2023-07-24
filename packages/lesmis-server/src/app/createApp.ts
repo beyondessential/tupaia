@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  handleWith,
-  useForwardUnhandledRequests,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
 import {
   DashboardRoute,
@@ -41,6 +37,13 @@ const path = require('path');
  * Set up express server with middleware,
  */
 export function createApp() {
+  const stripAdminFromRoute = (route: string) =>
+    route.startsWith('admin') ? route.replace('admin', '') : route;
+
+  const forwardAdminRequestToCentralApi = forwardRequest(CENTRAL_API_URL, {
+    pathRewrite: stripAdminFromRoute,
+  });
+
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
@@ -61,15 +64,12 @@ export function createApp() {
     /**
      * POST
      */
-
     .post<RegisterRequest>('register', handleWith(RegisterRoute))
     .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
     .post<PDFExportRequest>('pdf', handleWith(PDFExportRoute))
 
+    .use('admin', forwardAdminRequestToCentralApi)
     .build();
-
-  // Forward any unhandled request to central-server
-  useForwardUnhandledRequests(app, CENTRAL_API_URL, '/admin', attachSession);
 
   return app;
 }
