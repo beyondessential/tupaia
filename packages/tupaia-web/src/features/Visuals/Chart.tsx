@@ -9,7 +9,7 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
-import { ChartReport, DashboardItemType } from '../../types';
+import { DashboardItemReport, DashboardItemType } from '../../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ const ContentWrapper = styled.div<{
 `;
 
 interface ChartProps {
-  report: ChartReport;
+  report: DashboardItemReport;
   config: DashboardItemType;
   isEnlarged?: boolean;
 }

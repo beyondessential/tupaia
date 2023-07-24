@@ -19,10 +19,14 @@ import { DashboardItemType } from '../../types';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
+  $applyWidth?: boolean;
 }>`
   max-width: 100%;
-  min-width: ${({ $hasBigData }) => ($hasBigData ? '90vw' : 'auto')};
-  width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '48rem')};
+  min-width: ${({ $hasBigData, $applyWidth }) => ($applyWidth && $hasBigData ? '90vw' : 'auto')};
+  width: ${({ $hasBigData, $applyWidth }) => {
+    if (!$applyWidth) return 'auto';
+    return $hasBigData ? '90%' : '48rem';
+  }};
 `;
 
 const Container = styled(FlexColumn)`
@@ -183,11 +187,14 @@ export const EnlargedDashboardItem = () => {
     currentDashboardItem?.entityHeader || activeDashboard?.entityName
   }`;
 
-  const { type } = currentDashboardItem || {};
+  const { type, viewType } = currentDashboardItem || {};
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
-      <Wrapper $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}>
+      <Wrapper
+        $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}
+        $applyWidth={viewType !== 'dataDownload'}
+      >
         <Container>
           <TitleWrapper>
             <BackLink parentDashboardItem={parentDashboardItem} />

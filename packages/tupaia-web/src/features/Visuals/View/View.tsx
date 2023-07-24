@@ -3,18 +3,18 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport } from '../../../types';
+import { ViewReport, DashboardItemType, DashboardItemReport } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
+import { DataDownload } from './DataDownload';
 
 interface ViewProps {
-  report: ViewReport;
-  config: ViewConfig;
+  report: DashboardItemReport;
+  config: DashboardItemType;
   isEnlarged?: boolean;
 }
 
@@ -24,9 +24,10 @@ const VIEWS = {
   singleDownloadLink: SingleDownloadLink,
   multiValue: MultiValue,
   multiValueRow: MultiValueRow,
+  dataDownload: DataDownload,
 };
 
-const formatData = (data: ViewReport['data'], config: ViewConfig) => {
+const formatData = (data: ViewReport['data'], config: DashboardItemType) => {
   const { valueType, value_metadata: valueMetadata } = config;
   return data?.map(datum => {
     const { value } = datum;
@@ -49,7 +50,7 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
 
 export const View = ({ report, config, isEnlarged }: ViewProps) => {
   const { viewType } = config;
-  const { data } = report;
+  const { data } = report as ViewReport;
   if (!data) return null; // in case there is no data at all, return null
   if (viewType === 'multiSingleValue') {
     // for multi single values, we need to render each data point as a separate single value item
@@ -64,8 +65,8 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
             config={
               {
                 ...config,
-                viewType: (datum.viewType as ViewConfig['viewType']) || 'singleValue',
-              } as ViewConfig
+                viewType: (datum.viewType as DashboardItemType['viewType']) || 'singleValue',
+              } as DashboardItemType
             }
             isEnlarged={isEnlarged}
             key={i}
@@ -81,5 +82,14 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
   if (!Component) return null;
 
   const formattedData = formatData(data, config);
-  return <Component data={formattedData} config={config} />;
+  return (
+    <Component
+      report={{
+        ...report,
+        data: formattedData,
+      }}
+      config={config}
+      isEnlarged={isEnlarged}
+    />
+  );
 };

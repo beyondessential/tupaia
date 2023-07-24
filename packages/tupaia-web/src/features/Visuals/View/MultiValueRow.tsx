@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MultiValueRowViewConfig, ViewConfig } from '@tupaia/types';
+import { MultiValueRowViewConfig } from '@tupaia/types';
 import {
   Table,
   TableCell as MuiTableCell,
@@ -12,11 +12,11 @@ import {
   TableBody,
   TableHead,
 } from '@material-ui/core';
-import { ViewDataItem } from '../../../types';
+import { ViewDataItem, ViewReport, DashboardItemType } from '../../../types';
 
 interface MultiValueRowProps {
-  data?: ViewDataItem[];
-  config: ViewConfig;
+  report: ViewReport;
+  config: DashboardItemType;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -34,10 +34,8 @@ const TableHeaderCell = styled(TableCell)`
   text-decoration: underline;
 `;
 
-export const MultiValueRow = ({ data, config }: MultiValueRowProps) => {
-  const {
-    presentationOptions = {} as MultiValueRowViewConfig['presentationOptions'],
-  } = config as MultiValueRowViewConfig;
+export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) => {
+  const { presentationOptions = {} as MultiValueRowViewConfig['presentationOptions'] } = config;
   const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions!;
 
   const headerCells = [leftColumn, middleColumn, rightColumn].filter(item => item);
@@ -56,7 +54,7 @@ export const MultiValueRow = ({ data, config }: MultiValueRowProps) => {
         </TableHead>
       )}
       <TableBody>
-        {data?.map((datum, i) => (
+        {data?.map((datum: ViewDataItem, i) => (
           <TableRow key={datum.name}>
             <TableCell>{datum.name}</TableCell>
             {headerCells.map(cell => (

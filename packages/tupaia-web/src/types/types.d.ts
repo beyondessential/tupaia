@@ -124,7 +124,8 @@ export type MatrixReportColumn = {
 
 // This is the data item for a report of type 'view'
 export type ViewDataItem = Record<string, any> &
-  DataProps & {
+  Omit<DataProps, 'value'> & {
+    value?: DataProps['value'] | boolean;
     total?: number;
     viewType?: string;
   };
@@ -134,6 +135,7 @@ export type ViewReport = {
   data?: ViewDataItem[];
   startDate?: string;
   endDate?: string;
+  downloadUrl?: string;
 };
 
 // This is the shape of a report when type is 'matrix'

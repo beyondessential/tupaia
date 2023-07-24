@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { CssColor, ViewConfig, SingleValueViewConfig } from '@tupaia/types';
-import { ViewDataItem } from '../../../types';
+import { CssColor } from '@tupaia/types';
+import { ViewReport, DashboardItemType } from '../../../types';
 
 const Text = styled(Typography)<{
   $dataColor?: CssColor;
@@ -21,12 +21,12 @@ const Text = styled(Typography)<{
   }
 `;
 interface SingleValueProps {
-  data?: ViewDataItem[];
-  config: ViewConfig;
+  report: ViewReport;
+  config: DashboardItemType;
 }
 
-export const SingleValue = ({ data = [], config }: SingleValueProps) => {
-  const { dataColor } = config as SingleValueViewConfig;
+export const SingleValue = ({ report: { data = [] }, config }: SingleValueProps) => {
+  const { dataColor } = config;
   const { value } = data[0] || {};
   return <Text $dataColor={dataColor}>{value}</Text>;
 };

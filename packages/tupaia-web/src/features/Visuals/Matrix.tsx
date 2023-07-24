@@ -17,7 +17,13 @@ import {
   TextField,
 } from '@tupaia/ui-components';
 import { ConditionalPresentationOptions } from '@tupaia/types';
-import { DashboardItemType, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../../types';
+import {
+  DashboardItemType,
+  MatrixReport,
+  MatrixReportColumn,
+  MatrixReportRow,
+  DashboardItemReport,
+} from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
 const NoDataMessage = styled(Alert).attrs({
@@ -141,12 +147,12 @@ const getBaseDrilldownLink = (drillDown?: DashboardItemType['drillDown']) => {
 
 interface MatrixProps {
   config: DashboardItemType;
-  report: MatrixReport;
+  report: DashboardItemReport;
   isEnlarged?: boolean;
 }
 
 export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
-  const { columns = [], rows = [] } = report;
+  const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
   const placeholderImage = getPlaceholderImage(config);

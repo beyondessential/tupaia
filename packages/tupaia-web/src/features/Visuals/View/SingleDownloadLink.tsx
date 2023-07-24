@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from '@material-ui/core';
-import { ViewConfig } from '@tupaia/types';
-import { ViewDataItem } from '../../../types';
+import { ViewReport, DashboardItemType } from '../../../types';
+import { transformDownloadLink } from './transformDownloadLink';
 
 const LinkText = styled(Link).attrs({
   download: true,
@@ -21,17 +21,11 @@ const LinkText = styled(Link).attrs({
   }
 `;
 interface SingleDownloadLinkProps {
-  data?: ViewDataItem[];
-  config: ViewConfig;
+  report: ViewReport;
+  config: DashboardItemType;
 }
 
-const transformDownloadLink = (resourceUrl: string) => {
-  const baseUrl = import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8080/api/v1/';
-  if (resourceUrl.includes('http')) return resourceUrl;
-  return `${baseUrl}${resourceUrl}`;
-};
-
-export const SingleDownloadLink = ({ data = [], config }: SingleDownloadLinkProps) => {
+export const SingleDownloadLink = ({ report: { data = [] }, config }: SingleDownloadLinkProps) => {
   const { value } = data[0] || {};
   const { name } = config;
   const formattedValue = transformDownloadLink(value as string);
