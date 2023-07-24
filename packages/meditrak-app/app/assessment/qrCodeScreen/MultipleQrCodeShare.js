@@ -22,7 +22,7 @@ export const MultipleQrCodeShare = ({ qrCodes, onClose }) => {
             getRef={ref => {
               qrCodeImgRefs.current[index] = ref;
             }}
-            size={280}
+            size={300}
             qrCodeContents={id}
             humanReadableId={name}
           />
@@ -86,6 +86,7 @@ const localStyles = StyleSheet.create({
   },
   closeButtonLabel: {
     color: THEME_COLOR_ONE,
+    fontWeight: 'bold',
   },
   shareButton: { marginTop: 20, marginBottom: 5, width: 300 },
   shareButtonLabel: {
