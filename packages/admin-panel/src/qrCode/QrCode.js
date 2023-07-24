@@ -18,7 +18,7 @@ const ButtonContainer = styled.div`
   margin-top: 30px;
 `;
 
-const CODE_SIZE = 320; // width/height at browser display size
+const CODE_SIZE = 300; // width/height at browser display size
 const CANVAS_SIZE = 395; // width/height at browser display size
 const DOWNLOAD_IMAGE_SCALE = 2; // render the canvas at double size to get a larger and clearer image download
 
@@ -56,7 +56,7 @@ export const QrCode = ({ qrCodeContents, humanReadableId }) => {
       // Add header text
       const textY = 60 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
       ctx.fillStyle = 'black';
-      ctx.font = `${24 * DOWNLOAD_IMAGE_SCALE}px sans-serif`;
+      ctx.font = `${39 * DOWNLOAD_IMAGE_SCALE}px monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(humanReadableId, SCALED_CANVAS_SIZE / 2, textY);
 
@@ -67,7 +67,7 @@ export const QrCode = ({ qrCodeContents, humanReadableId }) => {
       });
       const img = new Image();
       const codeX = (SCALED_CANVAS_SIZE - SCALED_CODE_SIZE) / 2;
-      const codeY = 65 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
+      const codeY = 90 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
       img.onload = () => ctx.drawImage(img, codeX, codeY);
       img.src = qrDataUrl;
     };
