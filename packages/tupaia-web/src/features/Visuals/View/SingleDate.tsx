@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { ViewReport, DashboardItemType } from '../../../types';
+import { ViewReport } from '../../../types';
 
 const Text = styled(Typography)`
   font-size: 1.5rem;
@@ -17,7 +17,6 @@ const Text = styled(Typography)`
 `;
 interface SingleDateProps {
   report: ViewReport;
-  config?: DashboardItemType;
 }
 
 const formatDate = (value: string) => {

@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link, List } from '@material-ui/core';
-import { ViewReport, DashboardItemType } from '../../../types';
+import { ViewReport } from '../../../types';
 import { CheckboxList, Form as BaseForm } from '../../../components';
 import { useForm } from 'react-hook-form';
 import { Button } from '@tupaia/ui-components';
@@ -54,12 +54,12 @@ const FormButton = styled(Button)`
 
 interface DataDownloadProps {
   report: ViewReport;
-  config: DashboardItemType;
   isEnlarged?: boolean;
 }
 
-export const DataDownload = ({ report, config, isEnlarged }: DataDownloadProps) => {
+export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
   const formContext = useForm({
     mode: 'onChange',
   });
@@ -73,7 +73,7 @@ export const DataDownload = ({ report, config, isEnlarged }: DataDownloadProps) 
       </List>
     );
 
-  const selectedCodes = formContext.watch(config.code as string);
+  const selectedCodes = formContext.watch(reportCode!);
   const downloadLink = transformDownloadLink(`/${report.downloadUrl}&surveyCodes=${selectedCodes}`);
 
   const closeModal = () => {
@@ -93,7 +93,7 @@ export const DataDownload = ({ report, config, isEnlarged }: DataDownloadProps) 
                 }))
               : []
           }
-          name={config.code as string}
+          name={reportCode!}
           legend="Select the data you wish to download"
           required
         />

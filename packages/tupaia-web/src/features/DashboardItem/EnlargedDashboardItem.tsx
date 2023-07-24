@@ -8,14 +8,14 @@ import styled from 'styled-components';
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { KeyboardArrowLeft } from '@material-ui/icons';
 import { Typography } from '@material-ui/core';
-import { ViewConfig } from '@tupaia/types';
 import { FlexColumn, IconButton } from '@tupaia/ui-components';
+import { ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker, Modal } from '../../components';
-import { DashboardItem, Entity } from '../../types';
+import { Entity, DashboardItem } from '../../types';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
@@ -109,7 +109,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
   const { projectCode, entityCode, dashboardName } = useParams();
 
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
+  const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT) as DashboardItem['code'];
 
   const { activeDashboard, isLoading: isLoadingDashboards } = useDashboards(
     projectCode,
@@ -119,7 +119,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
 
   const currentDashboardItem = activeDashboard?.items.find(
     dashboardItem => dashboardItem.code === reportCode,
-  );
+  ) as DashboardItem;
 
   const {
     startDate,
@@ -141,10 +141,10 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
   const isDrillDown = config?.type === 'matrix' && !!drilldownId;
   // If the report is a drilldown, we want to get the parent dashboard item, so that we can get the parameter link for querying the data, and also so that we can show a back button to the correct parent dashboard item
   const parentDashboardItem = isDrillDown
-    ? activeDashboard?.items.find(
+    ? (activeDashboard?.items.find(
         // @ts-ignore - drillDown is all lowercase in the types config
         dashboardItem => dashboardItem?.config?.drillDown?.itemCode === reportCode,
-      )
+      ) as DashboardItem)
     : null;
 
   // Get the parameters for the report
@@ -184,15 +184,18 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     setUrlSearchParams(urlSearchParams);
   };
 
+  // @ts-ignore - entityHeader is in all lowercase in the types config
   const titleText = `${config?.name}, ${config?.entityHeader || entityName}`;
 
-  const { type, viewType } = (currentDashboardItem?.config || {}) as DashboardItem['config'];
+  const { type } = currentDashboardItem?.config || {};
 
   return (
     <Modal isOpen onClose={handleCloseModal}>
       <Wrapper
         $hasBigData={reportData?.data?.length > 20 || type === 'matrix'}
-        $applyWidth={viewType ? viewType !== 'dataDownload' : true}
+        $applyWidth={
+          ((currentDashboardItem?.config as unknown) as ViewConfig).viewType !== 'dataDownload'
+        }
       >
         <Container>
           <TitleWrapper>

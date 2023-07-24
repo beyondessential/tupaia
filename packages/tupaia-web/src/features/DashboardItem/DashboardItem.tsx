@@ -9,9 +9,10 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { DashboardItem as DashboardItemType } from '../../types';
+import { DashboardItemConfig, DashboardItem as DashboardItemType } from '../../types';
 import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
+import { MultiValueViewConfig } from '@tupaia/types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,24 +57,38 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     endDate?: Moment;
   };
 
-  const { data: report, isLoading, isError, error, refetch } = useReport(dashboardItem.reportCode, {
-    projectCode,
-    entityCode,
-    dashboardCode: activeDashboard?.code,
-    itemCode: dashboardItem.code,
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
-    legacy: dashboardItem.legacy,
-  });
+  const { data: report, isLoading, isError, error, refetch } = useReport(
+    dashboardItem?.reportCode,
+    {
+      projectCode,
+      entityCode,
+      dashboardCode: activeDashboard?.code,
+      itemCode: dashboardItem?.code,
+      startDate: defaultStartDate,
+      endDate: defaultEndDate,
+      legacy: dashboardItem?.legacy,
+    },
+  );
 
-  const { presentationOptions, periodGranularity, type, viewType, name } = dashboardItem.config;
+  const { config = {} } = dashboardItem;
 
+  const {
+    presentationOptions,
+    periodGranularity,
+    type,
+    viewType,
+    name,
+  } = config as DashboardItemConfig;
   const isExpandable =
-    periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload';
+    periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload'
+      ? true
+      : false;
 
   let showTitle = !!name;
   if (viewType === 'multiValue') {
-    showTitle = !!name && presentationOptions?.isTitleVisible;
+    showTitle =
+      !!name &&
+      !!(presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
   } else if (viewType?.includes('Download') || type === 'component') showTitle = false;
 
   return (

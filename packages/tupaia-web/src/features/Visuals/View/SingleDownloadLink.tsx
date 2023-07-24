@@ -5,7 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from '@material-ui/core';
-import { ViewReport, DashboardItemType } from '../../../types';
+import { ViewConfig } from '@tupaia/types';
+import { ViewReport } from '../../../types';
 import { transformDownloadLink } from './transformDownloadLink';
 
 const LinkText = styled(Link).attrs({
@@ -22,12 +23,12 @@ const LinkText = styled(Link).attrs({
 `;
 interface SingleDownloadLinkProps {
   report: ViewReport;
-  config: DashboardItemType;
+  config: ViewConfig;
 }
 
 export const SingleDownloadLink = ({ report: { data = [] }, config }: SingleDownloadLinkProps) => {
   const { value } = data[0] || {};
-  const { name } = config;
+  const { name } = config || {};
   const formattedValue = transformDownloadLink(value as string);
   return <LinkText href={formattedValue}>{name}</LinkText>;
 };

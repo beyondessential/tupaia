@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useReducer, useRef } from 'react';
+import React, { ReactNode, useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody } from '@material-ui/core';
 import { MatrixConfig } from '@tupaia/types';
@@ -35,6 +35,7 @@ interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
   columns: MatrixColumnType[];
   rows: MatrixRowType[];
   disableExpand?: boolean;
+  rowHeaderColumnTitle?: ReactNode;
 }
 
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {

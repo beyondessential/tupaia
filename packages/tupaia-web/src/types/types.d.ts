@@ -4,10 +4,22 @@ import {
   Country,
   Entity as BaseEntity,
   DashboardItem as BaseDashboardItem,
+  DashboardItemConfig as BaseDashboardItemConfig,
   MapOverlay,
+  ViewConfig,
+  TupaiaWebDashboardsRequest,
+  MultiValueViewConfig,
+  MultiValueRowViewConfig,
+  ChartConfig,
+  MatrixConfig,
+  ComponentConfig,
 } from '@tupaia/types';
 import { ActivePolygonProps } from '@tupaia/ui-map-components';
-import { ViewContent as ChartViewContent, DataProps } from '@tupaia/ui-chart-components';
+import {
+  ViewContent as ChartViewContent,
+  DataProps,
+  ViewContent,
+} from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
@@ -34,11 +46,29 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardItem = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
-  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType'> & {
-    chartType?: string;
-    viewType?: string;
-  };
+type CamelCaseDashboardItemConfig = KeysToCamelCase<BaseDashboardItemConfig>;
+
+type DashboardItemConfigPresentationOptions =
+  | MultiValueViewConfig['presentationOptions']
+  | MultiValueRowViewConfig['presentationOptions']
+  | MatrixConfig['presentationOptions']
+  | ChartConfig['presentationOptions'];
+
+type BaseConfig = Omit<
+  BaseDashboardItemConfig,
+  'viewType' | 'presentationOptions' | 'componentName'
+>;
+export type DashboardItemConfig = BaseConfig & {
+  viewType?: ViewConfig['viewType'];
+  presentationOptions?: DashboardItemConfigPresentationOptions;
+  componentName?: ComponentConfig['componentName'];
+};
+
+export type DashboardItem = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> & {
+  config: DashboardItemConfig;
+};
+
+export type Dashboard = TupaiaWebDashboardsRequest.ResBody[0];
 
 export type DashboardName = DashboardItem['dashboardName'];
 
@@ -92,7 +122,7 @@ export type ViewDataItem = Record<string, any> &
   Omit<DataProps, 'value'> & {
     value?: DataProps['value'] | boolean;
     total?: number;
-    viewType?: string;
+    viewType?: ViewConfig['viewType'];
   };
 
 // This is the shape of a report when type is 'view'

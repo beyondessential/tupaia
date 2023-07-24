@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MultiValueRowViewConfig } from '@tupaia/types';
+import { MultiValueRowViewConfig, ViewConfig } from '@tupaia/types';
 import {
   Table,
   TableCell as MuiTableCell,
@@ -12,11 +12,11 @@ import {
   TableBody,
   TableHead,
 } from '@material-ui/core';
-import { ViewDataItem, ViewReport, DashboardItemType } from '../../../types';
+import { ViewDataItem, ViewReport } from '../../../types';
 
 interface MultiValueRowProps {
   report: ViewReport;
-  config: DashboardItemType;
+  config: ViewConfig;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -35,8 +35,8 @@ const TableHeaderCell = styled(TableCell)`
 `;
 
 export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) => {
-  const { presentationOptions = {} as MultiValueRowViewConfig['presentationOptions'] } = config;
-  const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions!;
+  const { presentationOptions } = (config || {}) as MultiValueRowViewConfig;
+  const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions || {};
 
   const headerCells = [leftColumn, middleColumn, rightColumn].filter(item => item);
   const showTableHeader = headerCells.length > 0 || rowHeader;

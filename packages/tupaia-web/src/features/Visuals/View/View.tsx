@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ViewReport, DashboardItemType, DashboardItemReport } from '../../../types';
+import { ViewConfig } from '@tupaia/types';
+import { ViewReport, DashboardItemReport, DashboardItemConfig } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
@@ -14,7 +15,7 @@ import { DataDownload } from './DataDownload';
 
 interface ViewProps {
   report: DashboardItemReport;
-  config: DashboardItemType;
+  config: DashboardItemConfig;
   isEnlarged?: boolean;
 }
 
@@ -27,12 +28,12 @@ const VIEWS = {
   dataDownload: DataDownload,
 };
 
-const formatData = (data: ViewReport['data'], config: DashboardItemType) => {
+const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   const { valueType, value_metadata: valueMetadata } = config;
   return data?.map(datum => {
     const { value } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata` as string] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as any] || {}),
       ...datum,
     };
     return {
@@ -49,7 +50,9 @@ const formatData = (data: ViewReport['data'], config: DashboardItemType) => {
 };
 
 export const View = ({ report, config, isEnlarged }: ViewProps) => {
-  const { viewType } = config;
+  // cast the config to a ViewConfig so we can access the viewType
+  const viewConfig = config as ViewConfig;
+  const { viewType } = viewConfig;
   const { data } = report as ViewReport;
   if (!data) return null; // in case there is no data at all, return null
   if (viewType === 'multiSingleValue') {
@@ -65,8 +68,8 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
             config={
               {
                 ...config,
-                viewType: (datum.viewType as DashboardItemType['viewType']) || 'singleValue',
-              } as DashboardItemType
+                viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
+              } as ViewConfig
             }
             isEnlarged={isEnlarged}
             key={i}
@@ -81,14 +84,14 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
   // if the view type is not supported, return null
   if (!Component) return null;
 
-  const formattedData = formatData(data, config);
+  const formattedData = formatData(data, viewConfig);
   return (
     <Component
       report={{
         ...report,
         data: formattedData,
       }}
-      config={config}
+      config={viewConfig}
       isEnlarged={isEnlarged}
     />
   );

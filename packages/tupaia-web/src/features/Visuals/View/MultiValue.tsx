@@ -6,7 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Table, TableCell as MuiTableCell, TableRow, TableBody } from '@material-ui/core';
 import { CheckCircle, Cancel } from '@material-ui/icons';
-import { ViewDataItem, ViewReport, DashboardItemType } from '../../../types';
+import { MultiValueViewConfig, ViewConfig } from '@tupaia/types';
+import { ViewDataItem, ViewReport } from '../../../types';
 
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
@@ -24,19 +25,19 @@ const NegativeIcon = styled(Cancel)<{
 
 interface BooleanDisplayProps {
   value: boolean;
-  config?: DashboardItemType;
+  config?: MultiValueViewConfig;
 }
 
-const BooleanDisplay = ({ value, config = {} as DashboardItemType }: BooleanDisplayProps) => {
-  const { presentationOptions = {} } = config;
+const BooleanDisplay = ({ value, config = {} as MultiValueViewConfig }: BooleanDisplayProps) => {
+  const { presentationOptions = {} as MultiValueViewConfig['presentationOptions'] } = config;
   const Icon = value ? PositiveIcon : NegativeIcon;
   const colorKey = value ? 'yes' : 'no';
-  const color = presentationOptions[colorKey]?.color;
+  const color = presentationOptions![colorKey]?.color;
   return <Icon $color={color} />;
 };
 interface MultiValueProps {
   report: ViewReport;
-  config: DashboardItemType;
+  config: ViewConfig;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -52,7 +53,7 @@ const TableCell = styled(MuiTableCell)`
 `;
 
 export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
-  const { valueType } = config as DashboardItemType;
+  const { valueType } = config;
   return (
     <Table>
       <TableBody>
@@ -61,7 +62,10 @@ export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
             <TableCell component="th">{datum.name}</TableCell>
             <TableCell>
               {valueType === 'boolean' ? (
-                <BooleanDisplay value={datum.value as boolean} config={config} />
+                <BooleanDisplay
+                  value={datum.value as boolean}
+                  config={config as MultiValueViewConfig}
+                />
               ) : (
                 datum.value
               )}
