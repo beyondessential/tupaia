@@ -17,7 +17,7 @@ import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
 
-import { handleWith, handleError } from '../../utils';
+import { handleWith, handleError, addProxy } from '../../utils';
 import { TestRoute } from '../../routes';
 import { LoginRoute, LoginRequest, LogoutRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
@@ -239,6 +239,15 @@ export class ApiBuilder {
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('delete', path, ...handlers);
+  }
+
+  public forward(
+    path: string,
+    target: string,
+    authHandlerProvider: (req: Request) => AuthHandler,
+  ) {
+    addProxy(this.app, this.formatPath(path), target, this.attachSession, authHandlerProvider);
+    return this;
   }
 
   public build() {

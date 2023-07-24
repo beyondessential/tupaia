@@ -7,3 +7,4 @@ export { configureWinston } from './configureWinston';
 export { handleError } from './handleError';
 export { handleWith } from './handleWith';
 export { useForwardUnhandledRequests } from './useForwardUnhandledRequests';
+export { addProxy } from './addProxy';
