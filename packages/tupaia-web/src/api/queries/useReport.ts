@@ -6,20 +6,20 @@
 import { Moment } from 'moment';
 import { useQuery } from 'react-query';
 import { get } from '../api';
-import { DashboardItemType, EntityCode, ProjectCode, DashboardsResponse } from '../../types';
+import { DashboardItem, EntityCode, ProjectCode } from '../../types';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
 
 type QueryParams = Record<string, unknown> & {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
-  dashboardCode?: DashboardsResponse['dashboardCode'];
-  itemCode?: DashboardItemType['code'];
-  legacy?: DashboardItemType['legacy'];
+  dashboardCode?: DashboardItem['code'];
+  itemCode?: DashboardItem['code'];
+  legacy?: DashboardItem['legacy'];
   startDate?: Moment | string | null;
   endDate?: Moment | string | null;
 };
 
-export const useReport = (reportCode: DashboardItemType['reportCode'], params: QueryParams) => {
+export const useReport = (reportCode: DashboardItem['reportCode'], params: QueryParams) => {
   const {
     dashboardCode,
     projectCode,

@@ -4,13 +4,16 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
 import { Input as MuiInput } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
+import {
+  FlexSpaceBetween as MuiFlexSpaceBetween,
+  Tooltip as BaseTooltip,
+} from '@tupaia/ui-components';
 import { ALICE_BLUE } from './constant';
-import { Tooltip as BaseTooltip } from '../Tooltip';
-import { FlexSpaceBetween as MuiFlexSpaceBetween } from '../Layout';
 
 const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
   width: 100%;
@@ -117,6 +120,13 @@ const IconWrapper = styled.div`
   }
 `;
 
+const OptionType = PropTypes.shape({
+  id: PropTypes.string,
+  code: PropTypes.string,
+  title: PropTypes.string,
+  description: PropTypes.string,
+});
+
 const Option = ({ option, onDoubleClick }) => {
   const { code, title, description } = option;
   return (
@@ -125,6 +135,11 @@ const Option = ({ option, onDoubleClick }) => {
       <OptionDescription>{description}</OptionDescription>
     </OptionText>
   );
+};
+
+Option.propTypes = {
+  option: OptionType.isRequired,
+  onDoubleClick: PropTypes.func.isRequired,
 };
 
 const EditableOption = ({ option, isEditing, setIsEditing, title, setTitle }) => {
@@ -149,6 +164,18 @@ const EditableOption = ({ option, isEditing, setIsEditing, title, setTitle }) =>
   );
 };
 
+EditableOption.propTypes = {
+  option: OptionType.isRequired,
+  setIsEditing: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  setTitle: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool,
+};
+
+EditableOption.defaultProps = {
+  isEditing: false,
+};
+
 const Tooltip = ({ option, children }) => {
   return (
     <BaseTooltip
@@ -166,6 +193,11 @@ const Tooltip = ({ option, children }) => {
   );
 };
 
+Tooltip.propTypes = {
+  option: OptionType.isRequired,
+  children: PropTypes.node.isRequired,
+};
+
 export const BaseSelectedOption = ({ option, onRemove }) => {
   return (
     <Tooltip option={option}>
@@ -177,6 +209,11 @@ export const BaseSelectedOption = ({ option, onRemove }) => {
       </FlexSpaceBetween>
     </Tooltip>
   );
+};
+
+BaseSelectedOption.propTypes = {
+  option: OptionType.isRequired,
+  onRemove: PropTypes.func.isRequired,
 };
 
 export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
@@ -225,6 +262,12 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
   );
 };
 
+EditableSelectedOption.propTypes = {
+  option: OptionType.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onTitleChange: PropTypes.func.isRequired,
+};
+
 export const SelectableOption = ({ option, isSelected, onSelect, ...restProps }) => (
   <StyledSelectableOption
     onClick={onSelect}
@@ -242,6 +285,16 @@ export const SelectableOption = ({ option, isSelected, onSelect, ...restProps })
   </StyledSelectableOption>
 );
 
+SelectableOption.propTypes = {
+  option: OptionType.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool,
+};
+
+SelectableOption.defaultProps = {
+  isSelected: false,
+};
+
 export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   <StyledSelectableMultipleTimesOption onClick={onSelect}>
     <Tooltip option={option}>
@@ -254,6 +307,11 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
     </IconWrapper>
   </StyledSelectableMultipleTimesOption>
 );
+
+SelectableMultipleTimesOption.propTypes = {
+  option: OptionType.isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
 
 export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
@@ -275,4 +333,10 @@ export const SelectedDataCard = ({ option, index, optionComponent }) => {
       )}
     </Draggable>
   );
+};
+
+SelectedDataCard.propTypes = {
+  option: OptionType.isRequired,
+  index: PropTypes.number.isRequired,
+  optionComponent: PropTypes.node.isRequired,
 };

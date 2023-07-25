@@ -7,7 +7,7 @@ import { useLocation, Link, useParams } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
-import { DashboardsResponse } from '../../types';
+import { DashboardItem } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -20,7 +20,7 @@ const MenuButton = styled(ButtonBase)`
 `;
 
 interface DashboardMenuItemProps {
-  dashboardName: DashboardsResponse['dashboardName'];
+  dashboardName: DashboardItem['name'];
   onClose: () => void;
 }
 
@@ -41,8 +41,8 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
 }: {
-  activeDashboard: DashboardsResponse | null;
-  dashboards: DashboardsResponse[];
+  activeDashboard: DashboardItem | null;
+  dashboards: DashboardItem[];
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -57,7 +57,7 @@ export const DashboardMenu = ({
   return (
     <>
       <MenuButton onClick={handleClickListItem}>
-        {activeDashboard?.dashboardName}
+        {activeDashboard?.name}
         <ArrowDropDownIcon />
       </MenuButton>
       <Menu
@@ -67,12 +67,8 @@ export const DashboardMenu = ({
         onClose={handleClose}
         variant="menu"
       >
-        {dashboards.map(({ dashboardName, dashboardCode }) => (
-          <DashboardMenuItem
-            key={dashboardCode}
-            dashboardName={dashboardName}
-            onClose={handleClose}
-          />
+        {dashboards.map(({ name, code }) => (
+          <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
       </Menu>
     </>

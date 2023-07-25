@@ -25,5 +25,3 @@ export {
   RequestCountryAccessRequest,
   RequestCountryAccessRoute,
 } from './RequestCountryAccessRoute';
-// TODO: Stop using get for logout, then delete this
-export { TempLogoutRequest, TempLogoutRoute } from './TempLogoutRoute';

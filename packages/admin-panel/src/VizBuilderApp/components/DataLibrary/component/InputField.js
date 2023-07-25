@@ -1,13 +1,14 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import React from 'react';
+import PropTypes from 'prop-types';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Search } from '@material-ui/icons';
-import React from 'react';
 import styled from 'styled-components';
 import { CircularProgress } from '@material-ui/core';
-import { TextField } from '../Inputs';
+import { TextField } from '@tupaia/ui-components';
 
 const TextFieldWrapper = styled.div`
   padding: 0 15px 20px 15px;
@@ -39,3 +40,13 @@ export const InputField = ({ getRootProps, getInputProps, isLoading }) => (
     />
   </TextFieldWrapper>
 );
+
+InputField.propTypes = {
+  getRootProps: PropTypes.func.isRequired,
+  getInputProps: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+};
+
+InputField.defaultProps = {
+  isLoading: false,
+};

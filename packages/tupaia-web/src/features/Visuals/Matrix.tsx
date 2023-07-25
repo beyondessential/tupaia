@@ -17,7 +17,7 @@ import {
   TextField,
 } from '@tupaia/ui-components';
 import { ConditionalPresentationOptions } from '@tupaia/types';
-import { DashboardItemType, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../../types';
+import { DashboardItem, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
 const NoDataMessage = styled(Alert).attrs({
@@ -40,7 +40,7 @@ const parseRows = (
   rows: MatrixReportRow[],
   categoryId?: MatrixReportRow['categoryId'],
   searchFilter?: string,
-  drillDown?: DashboardItemType['drillDown'],
+  drillDown?: DashboardItem['drillDown'],
   baseDrillDownLink?: string,
 ): MatrixRowType[] => {
   const location = useLocation();
@@ -127,7 +127,7 @@ const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOpt
 };
 
 // This function gets the base drilldown link, which is the link that is used for all rows in the matrix, if drilldown is configured.
-const getBaseDrilldownLink = (drillDown?: DashboardItemType['drillDown']) => {
+const getBaseDrilldownLink = (drillDown?: DashboardItem['drillDown']) => {
   const [urlSearchParams] = useSearchParams();
   if (!drillDown) return '';
   const { itemCode } = drillDown;
@@ -140,7 +140,7 @@ const getBaseDrilldownLink = (drillDown?: DashboardItemType['drillDown']) => {
  */
 
 interface MatrixProps {
-  config: DashboardItemType;
+  config: DashboardItem['config'];
   report: MatrixReport;
   isEnlarged?: boolean;
 }

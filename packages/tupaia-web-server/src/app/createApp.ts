@@ -30,8 +30,6 @@ import {
   MapOverlaysRequest,
   UserRoute,
   UserRequest,
-  TempLogoutRoute,
-  TempLogoutRequest,
   ProjectRoute,
   ProjectRequest,
   CountryAccessListRoute,
@@ -78,8 +76,6 @@ export function createApp() {
       'entityAncestors/:projectCode/:rootEntityCode',
       handleWith(EntityAncestorsRoute),
     )
-    // TODO: Stop using get for logout, then delete this
-    .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
     .build();
 
   useForwardUnhandledRequests(

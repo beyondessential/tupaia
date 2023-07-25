@@ -71,21 +71,26 @@ const TilePickerWrapper = styled.div`
 
 // This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
 const MapControlWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
   display: flex;
-
   // This is to prevent the wrapper div from blocking clicks on the map overlays
   pointer-events: none;
+  position: relative;
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
 `;
 
 const MapControlColumn = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    flex-direction: column-reverse;
+  }
 `;
 
 export const Map = () => {
