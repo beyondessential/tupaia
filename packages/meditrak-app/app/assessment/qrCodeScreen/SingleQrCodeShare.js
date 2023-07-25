@@ -21,7 +21,7 @@ export const SingleQrCodeShare = ({ qrCode, onClose }) => {
           qrCodeImgRef.current = ref;
         }}
         size={300}
-        qrCodeContents={qrCode.id}
+        qrCodeContents={qrCode.data}
         humanReadableId={qrCode.name}
       />
 
@@ -46,7 +46,7 @@ export const SingleQrCodeShare = ({ qrCode, onClose }) => {
 };
 
 SingleQrCodeShare.propTypes = {
-  qrCode: PropTypes.shape({ id: PropTypes.string, name: PropTypes.string }).isRequired,
+  qrCode: PropTypes.shape({ data: PropTypes.string, name: PropTypes.string }).isRequired,
   onClose: PropTypes.func,
 };
 
