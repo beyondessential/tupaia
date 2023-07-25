@@ -17,7 +17,7 @@ import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
 
-import { handleWith, handleError } from '../../utils';
+import { handleWith, handleError, emptyMiddleware } from '../../utils';
 import { TestRoute } from '../../routes';
 import { LoginRoute, LoginRequest, LogoutRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
@@ -55,8 +55,8 @@ export class ApiBuilder {
     this.app = express();
     this.attachSession = defaultAttachSession;
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
-    this.attachVerifyLogin = () => {}; // Do nothing by default
-    this.verifyAuthMiddleware = () => {}; // Do nothing by default
+    this.attachVerifyLogin = emptyMiddleware;
+    this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
 
     /**
      * Add middleware
@@ -182,17 +182,9 @@ export class ApiBuilder {
     return this;
   }
 
-  public use<T extends ExpressRequest<T> = Request>(
-    path: string,
-    ...middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
-  ) {
+  public use(path: string, ...middleware: RequestHandler[]) {
     this.handlers.push({
-      add: () =>
-        this.app.use(
-          this.formatPath(path),
-          this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-          ...middleware,
-        ),
+      add: () => this.app.use(this.formatPath(path), this.attachSession, ...middleware),
     });
     return this;
   }

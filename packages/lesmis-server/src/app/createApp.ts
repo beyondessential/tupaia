@@ -37,13 +37,6 @@ const path = require('path');
  * Set up express server with middleware,
  */
 export function createApp() {
-  const stripAdminFromRoute = (route: string) =>
-    route.startsWith('admin') ? route.replace('admin', '') : route;
-
-  const forwardAdminRequestToCentralApi = forwardRequest(CENTRAL_API_URL, {
-    pathRewrite: stripAdminFromRoute,
-  });
-
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
@@ -68,7 +61,7 @@ export function createApp() {
     .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
     .post<PDFExportRequest>('pdf', handleWith(PDFExportRoute))
 
-    .use('admin', forwardAdminRequestToCentralApi)
+    .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
 
   return app;

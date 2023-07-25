@@ -34,18 +34,13 @@ export const forwardRequest = (
   target: string,
   options: {
     authHandlerProvider?: AuthHandlerProvider;
-    pathRewrite?: (path: string) => string;
   } = {},
 ) => {
-  const { authHandlerProvider = defaultAuthHandlerProvider, pathRewrite } = options;
+  const { authHandlerProvider = defaultAuthHandlerProvider } = options;
   const proxyOptions = {
     target,
     changeOrigin: true,
-    pathRewrite: (originalPath: string) => {
-      const route = stripVersionFromPath(originalPath);
-      if (pathRewrite) return pathRewrite(route);
-      return route;
-    },
+    pathRewrite: stripVersionFromPath,
     onProxyReq: fixRequestBody,
     onProxyRes: (proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) => {
       // To get around CORS because Admin Panel has credentials: true in fetch for session cookies
