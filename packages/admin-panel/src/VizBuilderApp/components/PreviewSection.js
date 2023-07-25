@@ -7,8 +7,8 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { Chart, FlexSpaceBetween, FetchLoader, DataTable, JsonEditor } from '@tupaia/ui-components';
-
+import { FlexSpaceBetween, FetchLoader, DataTable, JsonEditor } from '@tupaia/ui-components';
+import { Chart } from '@tupaia/ui-chart-components';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';

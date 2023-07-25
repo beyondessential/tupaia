@@ -27,8 +27,6 @@
           steps:
             - name: Test admin-panel-server
               command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
-            - name: Test central-server
-              command: './packages/devops/scripts/ci/testBackend.sh central-server'
             - name: Test data-table-server
               command: './packages/devops/scripts/ci/testBackend.sh data-table-server'
             - name: Test lesmis-server
@@ -37,8 +35,6 @@
               command: './packages/devops/scripts/ci/testBackend.sh psss-server'
             - name: Test report-server
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
-            - name: Test web-config-server
-              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
         - type: parallel
           name: Test batch 2
           steps:
@@ -54,8 +50,6 @@
               command: './packages/devops/scripts/ci/testBackend.sh indicators'
             - name: Test internal-dependencies
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
-            - name: Test web-frontend
-              command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
         - type: parallel
           name: Test batch 3
           steps:
@@ -63,6 +57,14 @@
               command: './packages/devops/scripts/ci/testBackend.sh entity-server'
             - name: Test meditrak-app-server
               command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
+            - name: Test tupaia-web-server
+              command: './packages/devops/scripts/ci/testBackend.sh tupaia-web-server'
+            - name: Test tupaia-web
+              command: './packages/devops/scripts/ci/testFrontend.sh tupaia-web'
+            - name: Test web-config-server
+              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: Test central-server
+              command: './packages/devops/scripts/ci/testBackend.sh central-server'
 
 - name: Deploy changes
   service: deployment

@@ -61,7 +61,7 @@ export const AlertsOutbreaksViewComponent = React.memo(({ countryCodes }) => {
   return (
     <>
       <Header Title={Title} ExportModal={ExportModal} />
-      <TabsToolbar links={makeLinks(match.path)} />
+      <TabsToolbar links={makeLinks(match.path)} baseRoute={match.url} />
       <AlertRoutes />
     </>
   );

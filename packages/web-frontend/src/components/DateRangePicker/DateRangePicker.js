@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { FlexEnd } from '@tupaia/ui-components/src/components/Layout/Flexbox';
+import { FlexEnd } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';

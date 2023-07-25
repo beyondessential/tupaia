@@ -23,7 +23,7 @@
     "start-report-server": "yarn workspace @tupaia/report-server start-dev -s",
     "test": "yarn test:jest",
     "test:jest": "yarn package:test --env=jsdom",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build-dev:watch",
+    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
     "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
     "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server"
   },

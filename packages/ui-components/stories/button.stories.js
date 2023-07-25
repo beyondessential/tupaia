@@ -20,7 +20,7 @@ import {
   GreyOutlinedButton,
   FavouriteButton,
   FlexColumn as BaseFlexColumn,
-} from '../src';
+} from '../src/components';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
@@ -118,7 +118,9 @@ export const text = () => (
 
 export const loading = () => (
   <Container>
-    <Button isLoading>Default</Button>
+    <Button isLoading loadingText="Loading">
+      Default
+    </Button>
   </Container>
 );
 

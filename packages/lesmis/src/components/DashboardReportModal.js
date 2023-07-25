@@ -16,12 +16,8 @@ import {
   Container as MuiContainer,
   CircularProgress,
 } from '@material-ui/core';
-import {
-  DateRangePicker,
-  WhiteButton,
-  SplitButton,
-  useChartDataExport,
-} from '@tupaia/ui-components';
+import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
+import { useChartDataExport } from '@tupaia/ui-chart-components';
 
 import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';

@@ -22,8 +22,9 @@ export type NullableKeys<T> = { [K in keyof T]-?: null | T[K] extends T[K] ? K :
  * Maps keys of type that fields which can be null are instead optional (useful for serializing database items to JSON output)
  * NullableKeysToOptional<{ cat: string; dog: number; fish: boolean | null; }> => { cat: string; dog: number; fish?: boolean; }
  */
-export type NullableKeysToOptional<T> = Pick<T, NonNullKeys<T>> &
-  { [P in NullableKeys<T>]?: Exclude<T[P], null> };
+export type NullableKeysToOptional<T> = Pick<T, NonNullKeys<T>> & {
+  [P in NullableKeys<T>]?: Exclude<T[P], null>;
+};
 
 /**
  * Deeply partial object, eg.
@@ -63,9 +64,28 @@ export type Flatten<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends Record<string, Record<string, any>>,
   J extends string = '.',
-  K extends keyof T & string = keyof T & string
+  K extends keyof T & string = keyof T & string,
 > = UnionToIntersection<
   {
     [V in K]: { [field in keyof T[V] & string as `${V}${J}${field}`]: T[V][field] };
   }[K]
 >;
+
+// Converts a type key to camel case, from snake case
+export type CamelCase<S extends string> = S extends `${infer P1}_${infer P2}${infer P3}`
+  ? `${Lowercase<P1>}${Uppercase<P2>}${CamelCase<P3>}`
+  : Lowercase<S>;
+
+// Converts a type object to camel case, from snake case
+export type ObjectToCamel<T> = {
+  [K in keyof T as CamelCase<string & K>]: T[K] extends Record<string, any>
+    ? KeysToCamelCase<T[K]>
+    : T[K];
+};
+
+// Converts type objects or arrays to camel case
+export type KeysToCamelCase<T> = {
+  [K in keyof T as CamelCase<string & K>]: T[K] extends Array<any>
+    ? KeysToCamelCase<T[K][number]>[]
+    : ObjectToCamel<T[K]>;
+};

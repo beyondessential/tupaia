@@ -32,12 +32,13 @@ function getHomeEntityCode(project, entitiesWithAccess) {
   return project.entity_code;
 }
 
-async function buildProjectDataForFrontend(project, req) {
+export async function buildProjectDataForFrontend(project, req) {
   const {
     id: projectId,
     name,
     code,
     description,
+    entity_code: entityCode,
     sort_order: sortOrder,
     image_url: imageUrl,
     logo_url: logoUrl,
@@ -48,7 +49,7 @@ async function buildProjectDataForFrontend(project, req) {
     config,
   } = project;
 
-  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id)));
+  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id))); // the return value of these is different to entitiesWithAccess
   const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, permissionGroups);
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
@@ -69,6 +70,7 @@ async function buildProjectDataForFrontend(project, req) {
     code,
     permissionGroups,
     description,
+    entityCode,
     sortOrder,
     imageUrl,
     logoUrl,
