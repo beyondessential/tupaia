@@ -44,7 +44,7 @@ const Paper = styled(MuiPaper)`
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
   max-width: 100%;
-  min-width: 300px;
+  min-width: 18.75rem;
   // Prevent width from animating.
   transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 `;

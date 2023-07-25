@@ -9,7 +9,7 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
-import { ChartReport, DashboardItem } from '../../types';
+import { DashboardItemReport, DashboardItemConfig } from '../../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -76,8 +76,8 @@ const ContentWrapper = styled.div<{
 `;
 
 interface ChartProps {
-  report: ChartReport;
-  config: DashboardItem['config'];
+  report: DashboardItemReport;
+  config: DashboardItemConfig;
   isEnlarged?: boolean;
 }
 
@@ -104,10 +104,10 @@ export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
 
   const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
 
-  const viewContent = {
+  const viewContent = ({
     ...report,
     ...config,
-  };
+  } as unknown) as ViewContent;
 
   return (
     <Wrapper>
@@ -133,11 +133,7 @@ export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
             as={isEnlarged ? TabPanel : 'div'}
             $isEnlarged={isEnlarged}
           >
-            <Content
-              viewContent={viewContent as ViewContent}
-              isEnlarged={isEnlarged}
-              isExporting={false}
-            />
+            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
           </ContentWrapper>
         ))}
       </TabContext>
