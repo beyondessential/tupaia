@@ -6,7 +6,7 @@ import React, { ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { DEFAULT_URL, MOBILE_BREAKPOINT } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const LogoWrapper = styled.div`
   flex-grow: 1;
@@ -63,7 +63,7 @@ const LogoComponent = ({
 }: {
   isCustomLandingPage: boolean;
   children: ReactNode[];
-}) => (isCustomLandingPage ? <>{children}</> : <LogoLink to={DEFAULT_URL}>{children}</LogoLink>);
+}) => (isCustomLandingPage ? <>{children}</> : <LogoLink to="/">{children}</LogoLink>);
 
 interface LogoProps {
   logoSrc?: string;
