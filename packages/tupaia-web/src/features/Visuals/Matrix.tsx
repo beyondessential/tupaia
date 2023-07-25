@@ -16,8 +16,14 @@ import {
   Alert,
   TextField,
 } from '@tupaia/ui-components';
-import { ConditionalPresentationOptions } from '@tupaia/types';
-import { DashboardItem, MatrixReport, MatrixReportColumn, MatrixReportRow } from '../../types';
+import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
+import {
+  MatrixReport,
+  MatrixReportColumn,
+  MatrixReportRow,
+  DashboardItemReport,
+  DashboardItemConfig,
+} from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
 const NoDataMessage = styled(Alert).attrs({
@@ -40,7 +46,7 @@ const parseRows = (
   rows: MatrixReportRow[],
   categoryId?: MatrixReportRow['categoryId'],
   searchFilter?: string,
-  drillDown?: DashboardItem['drillDown'],
+  drillDown?: MatrixConfig['drillDown'],
   baseDrillDownLink?: string,
 ): MatrixRowType[] => {
   const location = useLocation();
@@ -86,7 +92,7 @@ const parseRows = (
           ? {
               ...location,
               search: `${baseDrillDownLink}&${URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID}=${
-                row[drillDown.parameterLink]
+                row[drillDown.parameterLink!]
               }`,
             }
           : null,
@@ -115,7 +121,10 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
   });
 };
 
-const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOptions = {} }) => {
+const getPlaceholderImage = ({
+  presentationOptions = {},
+  categoryPresentationOptions = {},
+}: MatrixConfig) => {
   // if the matrix is not using any dots, show a text-only placeholder
   if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
     return '/images/matrix-placeholder-text-only.png';
@@ -127,11 +136,11 @@ const getPlaceholderImage = ({ presentationOptions = {}, categoryPresentationOpt
 };
 
 // This function gets the base drilldown link, which is the link that is used for all rows in the matrix, if drilldown is configured.
-const getBaseDrilldownLink = (drillDown?: DashboardItem['drillDown']) => {
+const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
   const [urlSearchParams] = useSearchParams();
   if (!drillDown) return '';
   const { itemCode } = drillDown;
-  urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, itemCode);
+  urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
   return urlSearchParams.toString();
 };
 
@@ -140,18 +149,17 @@ const getBaseDrilldownLink = (drillDown?: DashboardItem['drillDown']) => {
  */
 
 interface MatrixProps {
-  config: DashboardItem['config'];
-  report: MatrixReport;
+  config: DashboardItemConfig;
+  report: DashboardItemReport;
   isEnlarged?: boolean;
 }
 
 export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
-  const { columns = [], rows = [] } = report;
+  const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
-  const placeholderImage = getPlaceholderImage(config);
-
-  const { periodGranularity, drillDown } = config;
+  const { periodGranularity, drillDown } = config as MatrixConfig;
+  const placeholderImage = getPlaceholderImage(config as MatrixConfig);
 
   const baseDrillDownLink = getBaseDrilldownLink(drillDown);
   const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, baseDrillDownLink);

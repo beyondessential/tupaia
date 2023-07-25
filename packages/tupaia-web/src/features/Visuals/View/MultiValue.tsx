@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Table, TableCell as MuiTableCell, TableRow, TableBody } from '@material-ui/core';
 import { CheckCircle, Cancel } from '@material-ui/icons';
 import { MultiValueViewConfig, ViewConfig } from '@tupaia/types';
-import { ViewDataItem } from '../../../types';
+import { ViewDataItem, ViewReport } from '../../../types';
 
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
@@ -29,16 +29,14 @@ interface BooleanDisplayProps {
 }
 
 const BooleanDisplay = ({ value, config = {} as MultiValueViewConfig }: BooleanDisplayProps) => {
-  const { presentationOptions = {} } = config;
+  const { presentationOptions = {} as MultiValueViewConfig['presentationOptions'] } = config;
   const Icon = value ? PositiveIcon : NegativeIcon;
   const colorKey = value ? 'yes' : 'no';
-  const color = presentationOptions[colorKey]?.color;
+  const color = presentationOptions![colorKey]?.color;
   return <Icon $color={color} />;
 };
 interface MultiValueProps {
-  data?: (Omit<ViewDataItem, 'value'> & {
-    value: string | number | boolean;
-  })[];
+  report: ViewReport;
   config: ViewConfig;
 }
 
@@ -54,12 +52,12 @@ const TableCell = styled(MuiTableCell)`
   }
 `;
 
-export const MultiValue = ({ data, config }: MultiValueProps) => {
-  const { valueType } = config as MultiValueViewConfig;
+export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
+  const { valueType } = config;
   return (
     <Table>
       <TableBody>
-        {data?.map((datum, i) => (
+        {data?.map((datum: ViewDataItem, i) => (
           <TableRow key={i}>
             <TableCell component="th">{datum.name}</TableCell>
             <TableCell>
