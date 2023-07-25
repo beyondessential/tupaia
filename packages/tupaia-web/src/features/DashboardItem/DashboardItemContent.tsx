@@ -114,7 +114,7 @@ export const DashboardItemContent = ({
 
   if (!DisplayComponent) return null;
 
-  if (isLoading)
+  if (isLoading || !report)
     return (
       <LoadingContainer aria-label={`Loading data for report '${name}'`}>
         <CircularProgress />

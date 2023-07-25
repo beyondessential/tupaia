@@ -63,7 +63,7 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
     entityCode,
     {
       params: {
-        includeRoot: false,
+        includeRootEntity: false,
         filter: {
           type: getSnakeCase(measureLevel),
         },
