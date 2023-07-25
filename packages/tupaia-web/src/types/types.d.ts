@@ -45,6 +45,7 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
+/** Breaking up the config for dashboard items to fix error 'Expression produces a union type that is too complex to represent' which is due to the dashboard item config being so complex */
 type CamelCaseDashboardItemConfig = KeysToCamelCase<BaseDashboardItemConfig>;
 
 type DashboardItemConfigPresentationOptions =
