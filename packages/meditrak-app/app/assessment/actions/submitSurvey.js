@@ -206,7 +206,9 @@ const createQrCodes = (getState, questions, newEntities) => {
     const entityId = answers[question.id];
     const entity = newEntities.find(({ id }) => id === entityId);
     if (entity) {
-      qrCodes.push({ id: entityId, name: entity.name });
+      // TODO: Consolidate id prefixing into a common util (RN-968)
+      const qrCodeData = `entity-${entityId}`;
+      qrCodes.push({ data: qrCodeData, name: entity.name });
     }
   });
 

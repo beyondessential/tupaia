@@ -16,14 +16,14 @@ export const MultipleQrCodeShare = ({ qrCodes, onClose }) => {
 
   return (
     <ScrollView>
-      {qrCodes.map(({ id, name }, index) => (
-        <View key={id} style={localStyles.qrCodeContainer}>
+      {qrCodes.map(({ data, name }, index) => (
+        <View key={data} style={localStyles.qrCodeContainer}>
           <QrCode
             getRef={ref => {
               qrCodeImgRefs.current[index] = ref;
             }}
             size={300}
-            qrCodeContents={id}
+            qrCodeContents={data}
             humanReadableId={name}
           />
           <Button
@@ -51,8 +51,9 @@ export const MultipleQrCodeShare = ({ qrCodes, onClose }) => {
 };
 
 MultipleQrCodeShare.propTypes = {
-  qrCodes: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string, name: PropTypes.string }))
-    .isRequired,
+  qrCodes: PropTypes.arrayOf(
+    PropTypes.shape({ data: PropTypes.string, name: PropTypes.string }).isRequired,
+  ).isRequired,
   onClose: PropTypes.func,
 };
 
