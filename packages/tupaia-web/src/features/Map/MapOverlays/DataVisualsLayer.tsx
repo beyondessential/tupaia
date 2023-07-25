@@ -4,10 +4,7 @@
  */
 
 import React from 'react';
-import { useParams } from 'react-router';
-import camelCase from 'camelcase';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LegendProps,
   MeasureMarker,
@@ -17,14 +14,7 @@ import {
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
-import {
-  useEntitiesWithLocation,
-  useEntity,
-  useMapOverlays,
-  useProject,
-} from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
-import { EntityCode } from '../../../types';
+import { useActiveMapOverlayReport, useNavigateToEntity } from '../utils';
 import { processMeasureData } from './processMeasureData';
 
 const ShadedPolygon = styled(Polygon)`
@@ -34,95 +24,45 @@ const ShadedPolygon = styled(Polygon)`
   }
 `;
 
-const useNavigateToEntity = () => {
-  const { projectCode } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { data: project } = useProject(projectCode);
-
-  return (entityCode?: EntityCode) => {
-    const link = {
-      ...location,
-      pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
-    };
-    navigate(link);
-  };
-};
-
-const useEntitiesByMeasureLevel = (measureLevel?: string) => {
-  const { projectCode, entityCode } = useParams();
-  const getSnakeCase = (measureLevel?: string) => {
-    return measureLevel
-      ?.split(/\.?(?=[A-Z])/)
-      .join('_')
-      .toLowerCase();
-  };
-
-  return useEntitiesWithLocation(
-    projectCode,
-    entityCode,
-    {
-      params: {
-        includeRootEntity: false,
-        filter: {
-          type: getSnakeCase(measureLevel),
-        },
-      },
-    },
-    { enabled: !!measureLevel },
-  );
-};
-
 export const DataVisualsLayer = ({
   hiddenValues,
 }: {
   hiddenValues: LegendProps['hiddenValues'];
 }) => {
   const navigateToEntity = useNavigateToEntity();
-  const { projectCode, entityCode } = useParams();
-  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
-  const { data: mapOverlayData } = useMapOverlayReport();
-  const { data: entity } = useEntity(projectCode, entityCode);
+  const { serieses, measureData, entities } = useActiveMapOverlayReport();
 
-  if (!entitiesData || !mapOverlayData || !entity) {
-    return null;
-  }
-
-  // Don't show the marker layer if the entity type doesn't match the measure level
-  const firstSeries = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
-  if (firstSeries && camelCase(entity.type!) !== camelCase(firstSeries.displayOnLevel)) {
+  if (!measureData) {
     return null;
   }
 
   const processedMeasureData = processMeasureData({
-    entitiesData,
-    measureData: mapOverlayData.measureData,
-    serieses: mapOverlayData.serieses,
+    entitiesData: entities!,
+    measureData,
+    serieses,
     hiddenValues,
   });
 
-  if (!processedMeasureData || !mapOverlayData.serieses) {
+  if (!processedMeasureData) {
     return null;
   }
-
-  const { serieses } = mapOverlayData;
 
   return (
     <LayerGroup>
       {processedMeasureData.map(measure => {
-        if (measure.region) {
+        const { region, organisationUnitCode: entity, color, name } = measure;
+        if (region) {
           return (
             <ShadedPolygon
-              key={measure.organisationUnitCode}
-              positions={measure.region}
+              key={entity}
+              positions={region}
               pathOptions={{
-                color: measure.color,
-                fillColor: measure.color,
+                color: color,
+                fillColor: color,
               }}
               eventHandlers={{
                 click: () => {
-                  navigateToEntity(measure.organisationUnitCode);
+                  navigateToEntity(entity);
                 },
               }}
               {...measure}
@@ -130,7 +70,7 @@ export const DataVisualsLayer = ({
               <AreaTooltip
                 serieses={serieses}
                 orgUnitMeasureData={measure as MeasureData}
-                orgUnitName={measure.name}
+                orgUnitName={name}
                 hasMeasureValue
               />
             </ShadedPolygon>
@@ -138,7 +78,7 @@ export const DataVisualsLayer = ({
         }
 
         return (
-          <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
+          <MeasureMarker key={entity} {...(measure as MeasureData)}>
             <MeasurePopup
               markerData={measure as MeasureData}
               serieses={serieses}

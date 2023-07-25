@@ -5,4 +5,6 @@
 
 export { useDefaultMapOverlay } from './useDefaultMapOverlay';
 export { useHiddenMapValues } from './useHiddenMapValues';
-export { useMapOverlayReport } from './useMapOverlayReport';
+export { useActiveMapOverlayReport } from './useActiveMapOverlayReport.ts';
+export { getSnakeCase } from './getSnakeCase';
+export { useNavigateToEntity } from './useNavigateToEntity';

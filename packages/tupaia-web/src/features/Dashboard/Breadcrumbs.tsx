@@ -50,20 +50,28 @@ export const Breadcrumbs = () => {
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
-  const breadcrumbs = data.map(({ code, name }: { code: string, name: string }) => ({ code, name })).reverse();
+  const breadcrumbs = data
+    .map(({ code, name }: { code: string; name: string }) => ({ code, name }))
+    .reverse();
+
+  if (breadcrumbs.length < 2) {
+    return null;
+  }
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      {breadcrumbs.map(({ code: entityCode, name: entityName }: { code: string, name: string }, index: number) => {
-        const last = index === breadcrumbs.length - 1;
-        return last ? (
-          <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
-        ) : (
-          <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
-            {entityName}
-          </Crumb>
-        );
-      })}
+      {breadcrumbs.map(
+        ({ code: entityCode, name: entityName }: { code: string; name: string }, index: number) => {
+          const last = index === breadcrumbs.length - 1;
+          return last ? (
+            <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
+          ) : (
+            <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
+              {entityName}
+            </Crumb>
+          );
+        },
+      )}
     </StyledBreadcrumbs>
   );
 };
