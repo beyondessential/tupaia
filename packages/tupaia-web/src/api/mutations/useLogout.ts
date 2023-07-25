@@ -4,12 +4,12 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { get } from '../api';
+import { post } from '../api';
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
 
-  return useMutation('logout', () => get('logout'), {
+  return useMutation('logout', () => post('logout'), {
     onSuccess: () => {
       queryClient.invalidateQueries();
     },

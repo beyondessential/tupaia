@@ -4,7 +4,6 @@ import {
   Country,
   Entity as BaseEntity,
   DashboardItem as BaseDashboardItem,
-  DashboardItemConfig as BaseDashboardItemConfig,
   MapOverlay,
   ViewConfig,
   TupaiaWebDashboardsRequest,
