@@ -4,17 +4,8 @@
  */
 
 import { expect } from 'chai';
-import { ValidationError } from '@tupaia/utils';
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
 
-const baseRecordType1 = 'survey_response';
-const baseRecordType2 = 'project';
-const columnNames1 = ['survey_response.id', 'survey.name'];
-const columnNames2 = ['survey_response.id', 'survey.name', 'user_account.first_name'];
-const columnNames3 = ['survey_response.id', 'country.name'];
-const columnNames4 = ['survey_response.id', 'country.name', 'disaster.type'];
-const columnNames5 = ['_survey_response.id', 'survey.name'];
-const columnNames6 = ['project.id', 'entity.id'];
 const customJoinConditions1 = {};
 const customJoinConditions2 = {
   country: {
@@ -45,22 +36,19 @@ const customJoinConditions4 = {
 const customJoinConditions5 = {
   entity: ['entity.id', 'project.entity_id'],
 };
-const joinType = null;
-const err = new ValidationError(
-  'Error: No columns start with "_", and conjunction operators are reserved for internal use only',
-);
-const err2 = new ValidationError(
-  'nearTableKey must refer to a column on the table you wish to join through',
-);
-const err3 = new ValidationError('Incorrect format for customJoinConditions: entity');
+
+const err =
+  'Error: No columns start with "_", and conjunction operators are reserved for internal use only';
+const err2 = 'nearTableKey must refer to a column on the table you wish to join through';
+const err3 = 'Incorrect format for customJoinConditions: entity';
 
 describe('Request record types with standard joins', () => {
   it('returns one join', () => {
     const results = getQueryOptionsForColumns(
-      columnNames1,
-      baseRecordType1,
+      ['survey_response.id', 'survey.name'],
+      'survey_response',
       customJoinConditions1,
-      joinType,
+      null,
     );
     expect(results.sort).to.have.ordered.members(['survey_response.id', 'survey.id']);
     expect(results.multiJoin).to.deep.equal([
@@ -73,10 +61,10 @@ describe('Request record types with standard joins', () => {
   });
   it('Returns two joins of tables that can join to the base record type', () => {
     const results = getQueryOptionsForColumns(
-      columnNames2,
-      baseRecordType1,
+      ['survey_response.id', 'survey.name', 'user_account.first_name'],
+      'survey_response',
       customJoinConditions1,
-      joinType,
+      null,
     );
     expect(results.sort).to.have.ordered.members([
       'survey_response.id',
@@ -101,10 +89,10 @@ describe('Request record types with standard joins', () => {
 describe('Requests record types that require a through join', () => {
   it('returns a record type that has one through join', () => {
     const results = getQueryOptionsForColumns(
-      columnNames3,
-      baseRecordType1,
+      ['survey_response.id', 'country.name'],
+      'survey_response',
       customJoinConditions2,
-      joinType,
+      null,
     );
     expect(results.sort).to.have.ordered.members(['survey_response.id', 'entity.id', 'country.id']);
     expect(results.multiJoin).to.deep.equal([
@@ -122,10 +110,10 @@ describe('Requests record types that require a through join', () => {
   });
   it('returns record types that require two through joins', () => {
     const results = getQueryOptionsForColumns(
-      columnNames4,
-      baseRecordType1,
+      ['survey_response.id', 'country.name', 'disaster.type'],
+      'survey_response',
       customJoinConditions3,
-      joinType,
+      null,
     );
     expect(results.sort).to.have.ordered.members([
       'survey_response.id',
@@ -157,33 +145,33 @@ describe('Calling incorrect parameters to throw an error', () => {
   it('defines a column with "_" in front of it to trigger the validation error', () => {
     expect(() =>
       getQueryOptionsForColumns(
-        columnNames5,
-        baseRecordType1,
+        ['_survey_response.id', 'survey.name'],
+        'survey_response',
         customJoinConditions1,
-        joinType,
-      ).to.throw(err),
+        null,
+      ).toThrow(err),
     );
   });
 
   it('defines the keys in customJoinConditions the wrong way around to trigger an error', () => {
     expect(() =>
       getQueryOptionsForColumns(
-        columnNames3,
-        baseRecordType1,
+        ['survey_response.id', 'country.name'],
+        'survey_response',
         customJoinConditions4,
-        joinType,
-      ).to.throw(err2),
+        null,
+      ).toThrow(err2),
     );
   });
 
   it('defines customJoinConditions in the retired format to trigger an error', () => {
     expect(() =>
       getQueryOptionsForColumns(
-        columnNames6,
-        baseRecordType2,
+        ['project.id', 'entity.id'],
+        'project',
         customJoinConditions5,
-        joinType,
-      ).to.throw(err3),
+        null,
+      ).toThrow(err3),
     );
   });
 });
