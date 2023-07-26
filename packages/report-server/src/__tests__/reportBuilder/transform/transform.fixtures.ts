@@ -121,6 +121,32 @@ export const EXCLUDEABLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
 ];
 
+export const FILLABLE_ANALYTICS = [
+  { period: '20200101', organisationUnit: 'TO', BCD1: 1 },
+  { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+  { period: '20200103', organisationUnit: 'TO', BCD1: 3 },
+  { period: '20200105', organisationUnit: 'TO', BCD1: 5 },
+  { period: '20200106', organisationUnit: 'TO', BCD1: 6 },
+];
+
+export const MULTI_COL_FILLABLE_ANALYTICS = [
+  { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+  { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+  { period: '20200104', organisationUnit: 'TO', BCD1: 5 },
+  { period: '20200102', organisationUnit: 'FJ', BCD1: 5 },
+  { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+  { period: '20200103', organisationUnit: 'PG', BCD1: 8 },
+  { period: '20200104', organisationUnit: 'PG', BCD1: 2 },
+];
+
+export const FILLABLE_ANALYTICS_WITH_DATE = [
+  { date: '2020-01-01', organisationUnit: 'TO', BCD1: 1 },
+  { date: '2020-01-02', organisationUnit: 'TO', BCD1: 2 },
+  { date: '2020-01-03', organisationUnit: 'TO', BCD1: 3 },
+  { date: '2020-01-05', organisationUnit: 'TO', BCD1: 5 },
+  { date: '2020-01-06', organisationUnit: 'TO', BCD1: 6 },
+];
+
 export const PARSABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
