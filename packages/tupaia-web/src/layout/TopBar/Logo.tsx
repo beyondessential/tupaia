@@ -38,7 +38,7 @@ const LogoLink = styled(Link)`
 const Name = styled(Typography)`
   font-style: normal;
   font-weight: ${props => props.theme.typography.fontWeightBold};
-  font-size: 1.25rem;
+  font-size: 1;
   line-height: 1;
   letter-spacing: 0.1rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
