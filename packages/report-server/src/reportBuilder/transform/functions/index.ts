@@ -21,6 +21,7 @@ import {
 import { buildMergeRows, paramsValidator as mergeRowsParamsValidator } from './mergeRows';
 import { buildSortRows, paramsValidator as sortRowsParamsValidator } from './sortRows';
 import { buildExcludeRows, paramsValidator as excludeRowsParamsValidator } from './excludeRows';
+import { buildFillsRows, paramsValidator as fillRowsParamsValidator } from './fillRows';
 import { buildInsertRows, paramsValidator as insertRowsParamsValidator } from './insertRows';
 import {
   buildGatherColumns,
@@ -43,6 +44,7 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   mergeRows: buildMergeRows,
   sortRows: buildSortRows,
   excludeRows: buildExcludeRows,
+  fillRows: buildFillsRows,
   insertRows: buildInsertRows,
   gatherColumns: buildGatherColumns,
   orderColumns: buildOrderColumns,
@@ -56,6 +58,7 @@ export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
   mergeRows: mergeRowsParamsValidator,
   sortRows: sortRowsParamsValidator,
   excludeRows: excludeRowsParamsValidator,
+  fillRows: fillRowsParamsValidator,
   insertRows: insertRowsParamsValidator,
   gatherColumns: gatherColumnsParamsValidator,
   orderColumns: orderColumnsParamsValidator,
