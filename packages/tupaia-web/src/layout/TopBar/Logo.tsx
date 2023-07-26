@@ -38,7 +38,7 @@ const LogoLink = styled(Link)`
 const Name = styled(Typography)`
   font-style: normal;
   font-weight: ${props => props.theme.typography.fontWeightBold};
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1;
   letter-spacing: 0.1rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
@@ -79,7 +79,7 @@ export const Logo = ({ logoSrc, displayName = false, name = '' }: LogoProps) => 
         {/** If a custom landing page has set to display the name in the header, display it here */}
         {displayName && (
           <NameWrapper>
-            <Name variant="h1">{name}</Name>
+            <Name variant="h6">{name}</Name>
           </NameWrapper>
         )}
       </LogoComponent>

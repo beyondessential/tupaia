@@ -15,6 +15,7 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
+import { useLandingPage } from '../../api/queries';
 
 const ProjectsWrapper = styled.div`
   width: 100%;
@@ -89,7 +90,7 @@ export function MultiProjectLandingPage({
                   url={`/${code}/${homeEntityCode}${
                     dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
-                />
+                 />
               ),
               [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {

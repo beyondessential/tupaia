@@ -11,6 +11,7 @@ import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
+import { useLandingPage } from '../../api/queries';
 
 const Card = styled.div`
   display: flex;
@@ -127,8 +128,9 @@ export const ProjectPendingLink = () => (
     Approval in progress
   </OutlineLink>
 );
+
 export const ProjectAllowedLink = ({ url }: LinkProps) => (
-  <BaseLink to={url}>View project</BaseLink>
+  <BaseLink to={url} target={`${useLandingPage(url)}`}>View project</BaseLink>
 );
 
 interface ProjectCardProps extends Partial<SingleProject> {

@@ -25,6 +25,7 @@ export const RouterButton = ({
   modal,
   searchParamsToRemove,
   children,
+  url,
   ...props
 }: RouterButtonProps) => {
   const location = useLocation();
@@ -44,7 +45,7 @@ export const RouterLink = ({ to, modal, children, ...props }: RouterButtonProps)
   const link = modal ? { ...location, hash: modal } : to;
 
   return (
-    <Link to={link} {...props}>
+    <Link to={link} {...props} target='_newtab'>
       {children}
     </Link>
   );

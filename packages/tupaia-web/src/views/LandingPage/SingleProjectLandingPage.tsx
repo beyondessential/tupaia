@@ -11,6 +11,7 @@ import { Button } from '@tupaia/ui-components';
 import { PROJECT_ACCESS_TYPES, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleLandingPage, SingleProject } from '../../types';
+import { useLandingPage } from '../../api/queries';
 
 /**
  * This is the template for the content of a landing page if there is only one project
@@ -100,6 +101,7 @@ export function SingleProjectLandingPage({
       {accessType && (
         <ActionLink
           variant="contained"
+          target= {`${useLandingPage()}`}
           component={Link}
           to={urls[accessType]}
           disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}
