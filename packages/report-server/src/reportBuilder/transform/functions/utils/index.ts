@@ -4,3 +4,4 @@
  */
 
 export * from './transformValidators';
+export { rowValuesKey } from './rowValuesKey';
