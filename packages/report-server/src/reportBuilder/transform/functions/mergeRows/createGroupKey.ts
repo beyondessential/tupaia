@@ -4,6 +4,7 @@
  */
 
 import { Row } from '../../../types';
+import { rowValuesKey } from '../utils';
 
 export const buildCreateGroupKey = (groupBy: undefined | string | string[]) => {
   return (row: Row) => {
@@ -15,6 +16,6 @@ export const buildCreateGroupKey = (groupBy: undefined | string | string[]) => {
       return `${row[groupBy]}`;
     }
 
-    return groupBy.map(columnName => row[columnName]).join('___');
+    return rowValuesKey(row, groupBy);
   };
 };
