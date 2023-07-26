@@ -5,6 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
+import { TransformParser } from '../../parser';
 
 export const starSingleOrMultipleColumnsValidator = yupTsUtils.describableLazy(
   (value: unknown) => {
@@ -53,4 +54,19 @@ export const mapStringToStringValidator = yupTsUtils.describableLazy(
     throw new yup.ValidationError('Input must be a string to string mapping');
   },
   [yup.object()],
+);
+
+export const expressionOrArrayValidator = yupTsUtils.describableLazy(
+  (value: unknown) => {
+    if (TransformParser.isExpression(value)) {
+      return yup.string().required();
+    }
+
+    if (Array.isArray(value)) {
+      return yup.array().required();
+    }
+
+    throw new yup.ValidationError('Input must be an expression or an array');
+  },
+  [yup.string().required(), yup.array().required()],
 );
