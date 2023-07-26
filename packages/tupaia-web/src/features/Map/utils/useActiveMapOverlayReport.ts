@@ -38,7 +38,6 @@ const getRootEntity = (entity?: Entity) => {
   if (!entity) {
     return null;
   }
-  // @ts-ignore
   const { parentCode, code, type } = entity;
 
   if (type === 'country' || !parentCode) {

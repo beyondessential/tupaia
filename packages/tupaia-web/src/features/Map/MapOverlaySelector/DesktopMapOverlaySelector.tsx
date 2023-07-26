@@ -182,8 +182,7 @@ export const DesktopMapOverlaySelector = ({
         {period?.latestAvailable && (
           <LatestDataContainer>
             <LatestDataText>
-              Latest overlay data:{' '}
-              {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
+              Latest overlay data: {periodToMoment(period?.latestAvailable).format('DD/MM/YYYY')}
             </LatestDataText>
           </LatestDataContainer>
         )}

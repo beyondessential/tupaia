@@ -32,7 +32,7 @@ export const DataVisualsLayer = ({
   const navigateToEntity = useNavigateToEntity();
   const { serieses, measureData, entities } = useActiveMapOverlayReport();
 
-  if (!measureData) {
+  if (!measureData || !serieses || !entities) {
     return null;
   }
 

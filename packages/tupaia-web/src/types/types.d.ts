@@ -12,6 +12,7 @@ import {
   ChartConfig,
   MatrixConfig,
   ComponentConfig,
+  TupaiaWebEntityRequest,
 } from '@tupaia/types';
 import { ActivePolygonProps } from '@tupaia/ui-map-components';
 import {
@@ -87,16 +88,13 @@ export type MapOverlayGroup = {
   children: SingleMapOverlayItem[] | MapOverlayGroup[];
 };
 
-// re-type the coordinates to be what the ui-map-components expect, because in the types package they are any | null
-export type Entity = KeysToCamelCase<Omit<BaseEntity, 'region' | 'bounds'>> & {
-  region?: ActivePolygonProps['coordinates'];
-  bounds?: Position[];
+export type Entity = TupaiaWebEntityRequest.ResBody & {
+  parentCode: Entity['code'];
 };
 
 /* Response Types */
 // Todo: replace with types from @tupaia/types
 export type EntityResponse = Entity & {
-  parentCode: Entity['code'];
   childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
