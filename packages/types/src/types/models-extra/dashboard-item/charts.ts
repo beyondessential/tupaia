@@ -69,13 +69,11 @@ export type BarChartConfig = BaseChartConfig &
 export type PieChartConfig = BaseChartConfig & {
   type: 'chart';
   chartType: 'pie';
-  presentationOptions?: Record<
-    string,
-    {
-      color: CssColor;
-    }
-  > &
-    ExportPresentationOptions;
+  presentationOptions?: {
+    [key: string]: {
+      color?: CssColor;
+    };
+  } & ExportPresentationOptions;
 };
 
 /**
@@ -88,7 +86,7 @@ export type LineChartConfig = BaseChartConfig &
     chartConfig?: CommonChartChartConfig;
   };
 
-type CommonChartChartConfig = {
+export type CommonChartChartConfig = {
   /**
    * @description key of column name or special marker '$all' for all columns
    */
@@ -121,7 +119,7 @@ export type CartesianChartConfig = {
    */
   yAxisDomain?: YAxisDomain;
 
-  presentationOptions?: Record<string, unknown> & ExportPresentationOptions;
+  presentationOptions?: any;
 };
 
 type YAxisDomain = {
