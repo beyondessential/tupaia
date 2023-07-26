@@ -4,7 +4,7 @@
  */
 
 import React, { useContext } from 'react';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
@@ -104,7 +104,10 @@ export const EnlargedDashboardVisual = ({
 
   // Don't render the visual if we're in export mode and this is not a preview
   if (isExportMode && !isPreview) return null;
-  const formatDate = date => moment(date).format('DD/MM/YY');
+  // format the dates for export
+  const formatDate = (date: Moment | string) => moment(date).format('DD/MM/YY');
+
+  // today's date for export
   const date = String(moment());
   return (
     <Container>
