@@ -10,7 +10,7 @@ import { mergeStrategies } from './mergeStrategies';
 import { FieldValue, Row } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
-import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
+import { starSingleOrMultipleColumnsValidator } from '../utils';
 import { TransformTable } from '../../table';
 
 type MergeRowsParams = {
