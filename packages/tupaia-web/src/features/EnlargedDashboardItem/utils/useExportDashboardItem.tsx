@@ -179,7 +179,6 @@ export const useExportDashboardItem = (
 
   // reset the export state when the current dashboard item changes
   useEffect(() => {
-    if (!isExportMode) return;
     dispatch({ type: ACTION_TYPES.RESET_EXPORT_STATE, payload: type });
   }, [currentDashboardItem]);
   return EXPORT_FUNCTIONS[exportFormat];

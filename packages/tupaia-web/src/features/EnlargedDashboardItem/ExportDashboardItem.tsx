@@ -155,7 +155,7 @@ const PreviewTitle = styled(Typography).attrs({
 `;
 
 const NoPreviewMessage = styled(Typography)`
-  color: ${({ theme }) => theme.palette.common.black};
+  color: ${({ theme }) => theme.palette.background.paper};
 `;
 
 export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
