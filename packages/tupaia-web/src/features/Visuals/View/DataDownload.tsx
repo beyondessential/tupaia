@@ -4,13 +4,13 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { useSearchParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { Button } from '@tupaia/ui-components';
 import { Link, List } from '@material-ui/core';
 import { ViewReport } from '../../../types';
 import { CheckboxList, Form as BaseForm } from '../../../components';
-import { useForm } from 'react-hook-form';
-import { Button } from '@tupaia/ui-components';
-import { transformDownloadLink } from './transformDownloadLink';
-import { useSearchParams } from 'react-router-dom';
+import { transformDownloadLink } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 
 const ListItem = styled.li`

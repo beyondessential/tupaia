@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Link } from '@material-ui/core';
 import { ViewConfig } from '@tupaia/types';
 import { ViewReport } from '../../../types';
-import { transformDownloadLink } from './transformDownloadLink';
+import { transformDownloadLink } from '../../../utils';
 
 const LinkText = styled(Link).attrs({
   download: true,

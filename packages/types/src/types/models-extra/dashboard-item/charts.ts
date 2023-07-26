@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { BaseConfig, ValueType } from './common';
+import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
 import { CssColor } from '../../css';
 
 export type BaseChartConfig = BaseConfig & {
@@ -69,11 +69,13 @@ export type BarChartConfig = BaseChartConfig &
 export type PieChartConfig = BaseChartConfig & {
   type: 'chart';
   chartType: 'pie';
-  presentationOptions?: {
-    [key: string]: {
+  presentationOptions?: Record<
+    string,
+    {
       color: CssColor;
-    };
-  };
+    }
+  > &
+    ExportPresentationOptions;
 };
 
 /**
@@ -119,7 +121,7 @@ export type CartesianChartConfig = {
    */
   yAxisDomain?: YAxisDomain;
 
-  presentationOptions?: any;
+  presentationOptions?: Record<string, unknown> & ExportPresentationOptions;
 };
 
 type YAxisDomain = {
