@@ -46,6 +46,7 @@ const Alert = styled(BaseAlert)`
   overflow: hidden; // this is to stop any extra long text from overflowing the alert and causing a horizontal scroll on the dashboard
   .MuiAlert-message {
     max-width: 100%;
+    width: 100%;
   }
   p {
     max-width: 90%;
