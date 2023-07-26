@@ -18,9 +18,18 @@ const TEXT_DARKGREY = '#414D55';
 const ExportingStyledTable = styled(ChartTable)`
   padding: 1.8rem 0;
   border-bottom: none;
+  overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
 
+  .MuiTableContainer-root {
+    overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
+  }
   table {
     border: 1px solid ${GREY_DE};
+    width: auto;
+  }
+
+  [role='button'] {
+    display: none; // hide the sort buttons
   }
 
   // table head

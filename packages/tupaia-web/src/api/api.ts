@@ -33,6 +33,7 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
 
   try {
     const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
+
     return response.data;
   } catch (error: any) {
     // normalise errors using fetch error class

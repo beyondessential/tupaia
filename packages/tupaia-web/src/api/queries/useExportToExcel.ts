@@ -26,6 +26,7 @@ export const useExportToExcel = (
     ['export/chart', projectCode, entityCode, itemCode, startDate, endDate],
     () =>
       get('export/chart', {
+        responseType: 'blob',
         params: {
           ...params,
           organisationUnitCode: entityCode,

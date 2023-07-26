@@ -55,7 +55,7 @@ const Title = styled(Typography).attrs({
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   text-align: center;
-  margin: 0.3rem 0 1rem 0;
+  margin: 0.3rem 0 2rem 0;
   line-height: 1.4;
 `;
 
@@ -121,7 +121,7 @@ const ScrollableContent = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 25rem;
-  overflow-y: auto;
+  overflow: auto;
   background: white;
 `;
 const PreviewWrapper = styled.div<{
@@ -129,14 +129,15 @@ const PreviewWrapper = styled.div<{
 }>`
   height: 100%;
   margin: 1rem 0;
-  display: flex;
+  display: ${({ $isPNG }) => ($isPNG ? 'block' : 'flex')};
   justify-content: center;
   align-items: center;
   zoom: ${({ $isPNG }) => ($isPNG ? 0.5 : 1)};
 `;
 
 const PreviewContainer = styled.div`
-  width: 50rem; // the size of the a4 page
+  min-width: 50rem; // the size of the a4 page
+  width: max-content;
   padding: 1rem;
   height: 100%;
   h2 {

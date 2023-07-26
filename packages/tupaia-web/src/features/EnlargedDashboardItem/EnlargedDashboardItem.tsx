@@ -73,6 +73,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     setUrlSearchParams(urlSearchParams);
   };
 
+  const { isExportMode } = exportConfig;
   const isDataDownload =
     ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
   const hasBigData = !isDataDownload && (reportData?.data?.length > 20 || type === 'matrix');
@@ -82,7 +83,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
       <ExportContext.Provider value={exportConfig}>
         <ExportDispatchContext.Provider value={dispatch}>
           <ExportButton />
-          <Wrapper $hasBigData={hasBigData} $applyWidth={!isDataDownload}>
+          <Wrapper $hasBigData={!isExportMode && hasBigData} $applyWidth={!isDataDownload}>
             <ExportDashboardItem entityName={entityName} />
             <EnlargedDashboardVisual entityName={entityName} />
           </Wrapper>

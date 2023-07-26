@@ -114,7 +114,7 @@ export const EnlargedDashboardVisual = ({
       <TitleWrapper>
         <BackLink parentDashboardItem={parentDashboardItem} />
         {config?.name && <Title>{titleText}</Title>}
-        {showDatePicker && (
+        {showDatePicker && !isExportMode && (
           <DateRangePicker
             granularity={periodGranularity}
             onSetDates={setDates}
