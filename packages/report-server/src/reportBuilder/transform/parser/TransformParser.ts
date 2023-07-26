@@ -121,6 +121,24 @@ export class TransformParser extends ExpressionParser {
     this.addRowToScope(this.lookups.current);
   }
 
+  public skipTo(index: number) {
+    if (index > this.rows.length) {
+      throw new Error(
+        `Cannot skip to index: ${index}, out of range of table length ${this.rows.length}`,
+      );
+    }
+
+    if (index < this.lookups.index) {
+      throw new Error(
+        `Cannot skip to index: ${index}, must be equal or greater than current table index ${this.lookups.index}`,
+      );
+    }
+
+    while (this.lookups.index < index) {
+      this.next();
+    }
+  }
+
   public addRowToScope = (row: Row) => {
     Object.entries(row).forEach(([field, value]) => {
       if (value !== undefined && value !== null && !field.includes(' ')) {
