@@ -4,6 +4,7 @@
  */
 
 import startCase from 'lodash.startcase';
+import * as fns from 'date-fns';
 
 // We use the `'undefined'` string to indicate a missing value in cases where the
 // actual `undefined` JS type cannot be used, e.g. in json config persisted in the DB
@@ -32,6 +33,8 @@ const translate = (value, translations) => {
 
 const date = (...argumentList) => new Date(...argumentList);
 
+const dateToString = date => fns.format(date, 'yyyy-MM-dd');
+
 const upperFirstCase = value => {
   return startCase(value);
 };
@@ -41,5 +44,6 @@ export const customFunctions = {
   firstExistingValue,
   translate,
   date,
+  dateToString,
   upperFirstCase,
 };
