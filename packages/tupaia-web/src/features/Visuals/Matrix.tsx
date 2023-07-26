@@ -149,12 +149,12 @@ const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
  */
 
 interface MatrixProps {
-  config: DashboardItemConfig;
-  report: DashboardItemReport;
+  config?: DashboardItemConfig;
+  report?: DashboardItemReport;
   isEnlarged?: boolean;
 }
 
-export const Matrix = ({ config, report, isEnlarged = false }: MatrixProps) => {
+export const Matrix = ({ config = {}, report = {}, isEnlarged = false }: MatrixProps) => {
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
