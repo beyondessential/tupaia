@@ -75,11 +75,13 @@ export class ResubmitSurveyResponse extends EditHandler {
         this.recordType,
         currentSurveyResponse,
       );
-      // Upload files last so that we don't end up with uploaded files if db changes fail
-      for (const file of this.req.files) {
-        const uniqueFileName = file.fieldname;
-        const readableStream = fs.createReadStream(file.path); // see https://github.com/aws/aws-sdk-js-v3/issues/2522
-        await this.s3Client.uploadFile(uniqueFileName, readableStream);
+      if (this.req.files) {
+        // Upload files last so that we don't end up with uploaded files if db changes fail
+        for (const file of this.req.files) {
+          const uniqueFileName = file.fieldname;
+          const readableStream = fs.createReadStream(file.path); // see https://github.com/aws/aws-sdk-js-v3/issues/2522
+          await this.s3Client.uploadFile(uniqueFileName, readableStream);
+        }
       }
     });
   }
