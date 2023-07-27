@@ -22,9 +22,9 @@
     "check-test-data-lake-exists": "DATA_LAKE_DB_NAME=data_lake_test scripts/checkTestDataLakeExists.sh"
   },
   "dependencies": {
-    "@tupaia/database": "1.0.0",
-    "@tupaia/tsutils": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/database": "workspace:*",
+    "@tupaia/tsutils": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
     "deep-equal-in-any-order": "^1.0.27",
