@@ -2,7 +2,6 @@ import {
   LandingPage,
   Project,
   Country,
-  Entity as BaseEntity,
   DashboardItem as BaseDashboardItem,
   MapOverlay,
   ViewConfig,
@@ -14,13 +13,8 @@ import {
   ComponentConfig,
   TupaiaWebEntityRequest,
 } from '@tupaia/types';
-import { ActivePolygonProps } from '@tupaia/ui-map-components';
-import {
-  ViewContent as ChartViewContent,
-  DataProps,
-  ViewContent,
-} from '@tupaia/ui-chart-components';
-import { Position } from 'geojson';
+import { ViewContent as ChartViewContent, DataProps } from '@tupaia/ui-chart-components';
+import { PolygonProps } from 'react-leaflet';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
 
@@ -88,13 +82,9 @@ export type MapOverlayGroup = {
   children: SingleMapOverlayItem[] | MapOverlayGroup[];
 };
 
-export type Entity = TupaiaWebEntityRequest.ResBody & {
+export type Entity = Omit<TupaiaWebEntityRequest.ResBody, 'region'> & {
   parentCode: Entity['code'];
-};
-
-/* Response Types */
-// Todo: replace with types from @tupaia/types
-export type EntityResponse = Entity & {
+  region: PolygonProps['positions'];
   childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];

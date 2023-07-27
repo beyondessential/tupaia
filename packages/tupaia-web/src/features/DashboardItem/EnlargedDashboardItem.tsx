@@ -187,7 +187,6 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     setUrlSearchParams(urlSearchParams);
   };
 
-  // @ts-ignore - entityHeader is in all lowercase in the types config
   const titleText = `${config?.name}, ${config?.entityHeader || entityName}`;
 
   const { type } = currentDashboardItem?.config || {};

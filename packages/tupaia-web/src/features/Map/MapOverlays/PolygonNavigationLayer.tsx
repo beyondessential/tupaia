@@ -6,7 +6,7 @@
 import React from 'react';
 import { ActivePolygon, POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityCode, Entity, EntityResponse } from '../../../types';
+import { EntityCode, Entity } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
 
@@ -40,7 +40,7 @@ const SiblingEntities = ({
   );
 };
 
-const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
+const ActiveEntity = ({ entity }: { entity: Entity }) => {
   const { region, childCodes } = entity;
   const hasChildren = childCodes && childCodes.length > 0;
 
@@ -50,7 +50,6 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
     <ActivePolygon
       hasChildren={hasChildren}
       hasShadedChildren={true}
-      // @ts-ignore
       coordinates={region}
       // Randomize key to ensure polygon appears at top. This is still important even
       // though the polygon is in a LayerGroup due to issues with react-leaflet that
