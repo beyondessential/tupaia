@@ -13,7 +13,6 @@ import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 import { useLandingPage } from '../../api/queries';
 import { useParams } from 'react-router';
-import { LandingPage } from '../../views';
 
 const Card = styled.div`
   display: flex;

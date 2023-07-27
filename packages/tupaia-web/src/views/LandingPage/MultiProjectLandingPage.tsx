@@ -7,8 +7,6 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { URL_SEARCH_PARAMS, TRANSPARENT_BLACK } from '../../constants';
 import { SingleLandingPage } from '../../types';
-import { useParams } from 'react-router';
-import { useLandingPage } from '../../api/queries';
 import { PROJECT_ACCESS_TYPES, MODAL_ROUTES } from '../../constants';
 import {
   ProjectCardList,

@@ -11,8 +11,6 @@ import { Button } from '@tupaia/ui-components';
 import { PROJECT_ACCESS_TYPES, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleLandingPage, SingleProject } from '../../types';
-import { useLandingPage } from '../../api/queries';
-import { useParams } from 'react-router';
 
 /**
  * This is the template for the content of a landing page if there is only one project
