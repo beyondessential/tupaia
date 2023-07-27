@@ -8,9 +8,9 @@ import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
   handleWith,
-  useForwardUnhandledRequests,
   attachSessionIfAvailable,
   SessionSwitchingAuthHandler,
+  forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
 import {
@@ -76,15 +76,9 @@ export function createApp() {
       'entityAncestors/:projectCode/:rootEntityCode',
       handleWith(EntityAncestorsRoute),
     )
+    // Forward everything else to webConfigApi
+    .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .build();
-
-  useForwardUnhandledRequests(
-    app,
-    WEB_CONFIG_API_URL,
-    '',
-    attachSessionIfAvailable,
-    authHandlerProvider,
-  );
 
   return app;
 }
