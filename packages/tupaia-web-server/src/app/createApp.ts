@@ -8,9 +8,9 @@ import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
   handleWith,
-  useForwardUnhandledRequests,
   attachSessionIfAvailable,
   SessionSwitchingAuthHandler,
+  forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
 import {
@@ -81,15 +81,10 @@ export function createApp() {
     )
     // TODO: Stop using get for logout, then delete this
     .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
-    .build();
 
-  useForwardUnhandledRequests(
-    app,
-    WEB_CONFIG_API_URL,
-    '',
-    attachSessionIfAvailable,
-    authHandlerProvider,
-  );
+    // Forward everything else to webConfigApi
+    .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
+    .build();
 
   return app;
 }
