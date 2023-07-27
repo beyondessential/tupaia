@@ -15,6 +15,9 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
+import { isPlainObject } from '@tupaia/utils';
+import { useLandingPage } from '../../api/queries';
+import { useParams } from 'react-router';
 const ProjectsWrapper = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints.values.lg}px;
@@ -73,6 +76,9 @@ export function MultiProjectLandingPage({
   projects,
   includeNameInHeader,
 }: MultiProjectLandingPageProps) {
+  const { landingPageUrlSegment } = useParams();
+  const { isLandingPage } = useLandingPage(landingPageUrlSegment);
+  const newTabCondition = isLandingPage ? '_blank' : '_self';
   return (
     <Wrapper>
       <Title variant={includeNameInHeader ? 'h2' : 'h1'}>Select a project below to view.</Title>
@@ -88,6 +94,7 @@ export function MultiProjectLandingPage({
                   url={`/${code}/${homeEntityCode}${
                     dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
+                  isLandingPage={newTabCondition}
                 />
               ),
               [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
@@ -96,6 +103,7 @@ export function MultiProjectLandingPage({
                   return (
                     <ProjectDeniedLink
                       url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                      isLandingPage={newTabCondition}
                     />
                   );
                 }

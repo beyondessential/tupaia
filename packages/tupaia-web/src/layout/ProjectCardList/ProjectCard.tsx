@@ -114,6 +114,7 @@ const OutlineLink = styled(RouterButton).attrs({
 
 interface LinkProps {
   url: string;
+  isLandingPage: string;
 }
 
 export const ProjectDeniedLink = ({ url }: LinkProps) => (
@@ -130,17 +131,11 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 
-export const ProjectAllowedLink = ({ url }: LinkProps) => {
-  const { landingPageUrlSegment } = useParams();
-
-  const { isLandingPage } = useLandingPage(landingPageUrlSegment);
-
-  return (
-    <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
-      View project
-    </BaseLink>
-  );
-};
+export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
+  <BaseLink to={url} target={isLandingPage}>
+    View project
+  </BaseLink>
+);
 
 interface ProjectCardProps extends Partial<SingleProject> {
   ProjectButton: ComponentType;
