@@ -80,15 +80,9 @@ export const useExportDashboardItem = (
   exportRef?: RefObject<HTMLElement>,
 ) => {
   const { projectCode, entityCode } = useParams();
-  const {
-    exportFormat,
-    exportWithLabels,
-    exportWithTable,
-    exportWithTableDisabled,
-    isExporting,
-    exportError,
-    isExportMode,
-  } = useContext(ExportContext);
+  const { exportFormat, exportWithLabels, exportWithTable, exportWithTableDisabled } = useContext(
+    ExportContext,
+  );
   const dispatch = useContext(ExportDispatchContext)!;
   const { config } = currentDashboardItem || ({} as DashboardItem);
   const { type, presentationOptions, name } = config || ({} as DashboardItemConfig);
@@ -123,6 +117,7 @@ export const useExportDashboardItem = (
   const handleStartExport = () => {
     setIsExporting(true);
     setExportError(null);
+    gaEvent('Export', file, 'Attempt');
   };
 
   // set the isExporting state to false and the export error state to null, and download the file when the export is successful
@@ -130,6 +125,7 @@ export const useExportDashboardItem = (
     downloadJs(result, file);
     setIsExporting(false);
     setExportError(null);
+    gaEvent('Export', file, 'Success');
   };
 
   // set the isExporting state to false and the export error state to the error message when the export fails
@@ -170,12 +166,6 @@ export const useExportDashboardItem = (
     [EXPORT_FORMATS.PNG]: exportToPNG,
     [EXPORT_FORMATS.XLSX]: type === 'matrix' ? () => exportToExcel(excelParams) : doExport,
   };
-
-  // set export error message as null and send ga event when the export is successful/starting
-  useEffect(() => {
-    if (exportError || !isExportMode) return;
-    gaEvent('Export', file, isExporting ? 'Attempt' : 'Success');
-  }, [isExporting]);
 
   // reset the export state when the current dashboard item changes
   useEffect(() => {
