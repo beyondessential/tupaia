@@ -20,7 +20,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/utils": "workspace:*",
     "ajv": "^8.12.0",
     "ajv-formats": "v3.0.0-rc.0",
     "better-ajv-errors": "^1.2.0",
@@ -32,7 +32,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@tupaia/types": "1.0.0",
+    "@tupaia/types": "workspace:*",
     "@types/lodash.get": "^4.4.2",
     "@types/moment-timezone": "0.5.13"
   }

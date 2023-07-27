@@ -27,10 +27,10 @@
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
-    "@tupaia/access-policy": "3.0.0",
-    "@tupaia/database": "1.0.0",
-    "@tupaia/server-boilerplate": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/access-policy": "workspace:*",
+    "@tupaia/database": "workspace:*",
+    "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "client-sessions": "^0.8.0",
