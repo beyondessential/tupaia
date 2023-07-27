@@ -65,12 +65,12 @@ const StyledForm = styled(Form)`
 `;
 
 export const RegisterModal = () => {
-  const { mutate: onSubmit, isLoading, isSuccess, isError, error } = useRegister();
+  const { mutate: onSubmit, isLoading, isError, isSuccess, error } = useRegister();
   const formContext = useForm();
 
   return (
     <ModalBody
-      title="Register"
+      title={isSuccess ? 'Your account has been registered' : 'Register'}
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
     >
       {isSuccess ? (
