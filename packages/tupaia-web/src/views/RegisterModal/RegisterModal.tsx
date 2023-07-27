@@ -109,22 +109,24 @@ export const RegisterModal = () => {
             />
             <TextField name="employer" label="Employer" required />
             <TextField name="position" label="Position" required />
-            <CheckboxField
-              name="hasAgreed"
-              label={
-                <TermsText>
-                  I agree to the{' '}
-                  <a
-                    href="https://www.bes.au/terms-and-conditions"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    terms and conditions
-                  </a>
-                </TermsText>
-              }
-              required
-            />
+            <FullWidthColumn>
+              <CheckboxField
+                name="hasAgreed"
+                label={
+                  <TermsText>
+                    I agree to the{' '}
+                    <a
+                      href="https://www.bes.au/terms-and-conditions"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      terms and conditions
+                    </a>
+                  </TermsText>
+                }
+                required
+              />
+            </FullWidthColumn>
             <FullWidthColumn>
               <AuthModalButton type="submit" isLoading={isLoading}>
                 Register account
