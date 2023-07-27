@@ -34,7 +34,7 @@ QrCodeButtonComponent.propTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   openModal: () => {
     const { row, actionConfig } = ownProps;
-    const { qrCodeContentsKey, humanReadableIdKey } = actionConfig;
+    const { qrCodeContentsKey, humanReadableIdKey, qrCodePrefix } = actionConfig;
     if (!qrCodeContentsKey || !humanReadableIdKey) {
       throw new Error(
         'QR code button misconfigured. Must specify qrCodeContentsKey and humanReadableIdKey',
@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     }
     const qrCodeContents = row[qrCodeContentsKey];
     const humanReadableId = row[humanReadableIdKey];
-    dispatch(openQrCodeModal(qrCodeContents, humanReadableId));
+    dispatch(openQrCodeModal(`${qrCodePrefix}${qrCodeContents}`, humanReadableId));
   },
 });
 
