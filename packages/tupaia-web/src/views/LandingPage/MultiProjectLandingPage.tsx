@@ -15,7 +15,6 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
-import { isPlainObject } from '@tupaia/utils';
 import { useLandingPage } from '../../api/queries';
 import { useParams } from 'react-router';
 const ProjectsWrapper = styled.div`

@@ -11,8 +11,6 @@ import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
-import { useLandingPage } from '../../api/queries';
-import { useParams } from 'react-router';
 
 const Card = styled.div`
   display: flex;
