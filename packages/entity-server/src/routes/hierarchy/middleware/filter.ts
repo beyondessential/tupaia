@@ -73,6 +73,15 @@ const operatorToSqlComparator = {
   '>': '>' as const, // Greater than
   '>=': '>=' as const, // Greater than or equal
 };
+const operatorToSqlArrayComparator = {
+  '==': 'IN' as const, // Contained in array
+  '!=': 'NOT IN' as const, // Not contained in array
+  '=@': '@>' as const, // Overlaps array
+  '<': undefined,
+  '<=': undefined,
+  '>': undefined,
+  '>=': undefined,
+};
 type Operator = keyof typeof operatorToSqlComparator;
 
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
@@ -106,7 +115,9 @@ const convertValueToAdvancedCriteria = (
     return formattedValue;
   }
 
-  const comparator = operatorToSqlComparator[operator];
+  const comparator = Array.isArray(formattedValue)
+    ? operatorToSqlArrayComparator[operator]
+    : operatorToSqlComparator[operator];
 
   return {
     comparator,

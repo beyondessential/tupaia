@@ -15,12 +15,31 @@ export type EntitiesRequest = Request<
   TupaiaWebEntitiesRequest.ReqQuery
 >;
 
-const DEFAULT_FILTER = {
-  generational_distance: {
-    comparator: '<=',
-    comparisonValue: 2,
-  },
+interface FrontEndExcludedConfig {
+  types: string[];
+  exceptions?: {
+    permissionGroups: string[];
+  };
+}
+
+// project.config.frontendExcluded is an array with one entry
+const DEFAULT_FILTER = (frontendExcluded: FrontEndExcludedConfig[] | undefined) => {
+  return {
+    generational_distance: {
+      comparator: '<=',
+      comparisonValue: 2,
+    },
+    ...(frontendExcluded
+      ? {
+          type: {
+            comparator: '!=',
+            comparisonValue: frontendExcluded[0].types,
+          },
+        }
+      : {}),
+  };
 };
+
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
@@ -31,20 +50,15 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const project = (
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
-        columns: ['entity_hierarchy.name', 'entity_hierarchy.canonical_types', 'config'],
+        columns: ['entity_hierarchy.name', 'config'],
       })
     )[0];
-    const {
-      'entity_hierarchy.name': hierarchyName,
-      // TODO: Filter entities by canonical_types and config.frontendExcluded
-      // 'entity_hierarchy.canonical_types': canonicalTypes,
-      // config: projectConfig,
-    } = project;
+    const { 'entity_hierarchy.name': hierarchyName, config } = project;
 
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
       hierarchyName,
       rootEntityCode,
-      { filter: DEFAULT_FILTER, fields: DEFAULT_FIELDS, ...query },
+      { filter: DEFAULT_FILTER(config.frontendExcluded), fields: DEFAULT_FIELDS, ...query },
       query.includeRootEntity || false,
     );
 
