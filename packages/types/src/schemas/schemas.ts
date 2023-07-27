@@ -3748,21 +3748,7 @@ export const ComposedChartConfigSchema = {
 				"min"
 			]
 		},
-		"presentationOptions": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"type": "boolean"
-				}
-			}
-		},
+		"presentationOptions": {},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -4299,21 +4285,7 @@ export const BarChartConfigSchema = {
 				"min"
 			]
 		},
-		"presentationOptions": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"type": "boolean"
-				}
-			}
-		},
+		"presentationOptions": {},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -5285,21 +5257,7 @@ export const LineChartConfigSchema = {
 				"min"
 			]
 		},
-		"presentationOptions": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"type": "boolean"
-				}
-			}
-		},
+		"presentationOptions": {},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -5479,21 +5437,7 @@ export const CartesianChartConfigSchema = {
 				"min"
 			]
 		},
-		"presentationOptions": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"type": "boolean"
-				}
-			}
-		}
+		"presentationOptions": {}
 	},
 	"description": "A Cartesian chart has an area with axes e.g. bar, line.",
 	"type": "object",
@@ -6502,21 +6446,7 @@ export const ChartConfigSchema = {
 						"min"
 					]
 				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						}
-					}
-				},
+				"presentationOptions": {},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -7052,21 +6982,7 @@ export const ChartConfigSchema = {
 						"min"
 					]
 				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						}
-					}
-				},
+				"presentationOptions": {},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -8036,21 +7952,7 @@ export const ChartConfigSchema = {
 						"min"
 					]
 				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						}
-					}
-				},
+				"presentationOptions": {},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -18198,21 +18100,7 @@ export const DashboardItemConfigSchema = {
 						"min"
 					]
 				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						}
-					}
-				},
+				"presentationOptions": {},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -18748,21 +18636,7 @@ export const DashboardItemConfigSchema = {
 						"min"
 					]
 				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						}
-					}
-				},
+				"presentationOptions": {},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -19732,21 +19606,7 @@ export const DashboardItemConfigSchema = {
 						"min"
 					]
 				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						}
-					}
-				},
+				"presentationOptions": {},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -25784,21 +25644,7 @@ export const DashboardItemSchema = {
 								"min"
 							]
 						},
-						"presentationOptions": {
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"type": "boolean"
-								}
-							}
-						},
+						"presentationOptions": {},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -26334,21 +26180,7 @@ export const DashboardItemSchema = {
 								"min"
 							]
 						},
-						"presentationOptions": {
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"type": "boolean"
-								}
-							}
-						},
+						"presentationOptions": {},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -27318,21 +27150,7 @@ export const DashboardItemSchema = {
 								"min"
 							]
 						},
-						"presentationOptions": {
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"type": "boolean"
-								}
-							}
-						},
+						"presentationOptions": {},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -35814,21 +35632,7 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {
-										"type": "object",
-										"properties": {
-											"exportwithlabels": {
-												"type": "boolean"
-											},
-											"exportwithtable": {
-												"type": "boolean"
-											},
-											"exportwithtabledisabled": {
-												"type": "boolean"
-											}
-										},
-										"additionalProperties": false
-									},
+									"presentationoptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -36295,21 +36099,7 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {
-										"type": "object",
-										"properties": {
-											"exportwithlabels": {
-												"type": "boolean"
-											},
-											"exportwithtable": {
-												"type": "boolean"
-											},
-											"exportwithtabledisabled": {
-												"type": "boolean"
-											}
-										},
-										"additionalProperties": false
-									},
+									"presentationoptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
@@ -37177,21 +36967,7 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {
-										"type": "object",
-										"properties": {
-											"exportwithlabels": {
-												"type": "boolean"
-											},
-											"exportwithtable": {
-												"type": "boolean"
-											},
-											"exportwithtabledisabled": {
-												"type": "boolean"
-											}
-										},
-										"additionalProperties": false
-									},
+									"presentationoptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
