@@ -23,14 +23,10 @@ import { ExportButton } from './ExportButton';
 
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
-  $applyWidth?: boolean;
 }>`
   max-width: 100%;
-  min-width: ${({ $hasBigData, $applyWidth }) => ($applyWidth && $hasBigData ? '90vw' : 'auto')};
-  width: ${({ $hasBigData, $applyWidth }) => {
-    if (!$applyWidth) return 'auto';
-    return $hasBigData ? '90%' : '48rem';
-  }};
+  min-width: ${({ $hasBigData }) => ($hasBigData ? '90vw' : 'auto')};
+  width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '48rem')};
   min-height: 25rem;
   display: flex;
   flex-direction: column;
@@ -83,7 +79,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
       <ExportContext.Provider value={exportConfig}>
         <ExportDispatchContext.Provider value={dispatch}>
           <ExportButton />
-          <Wrapper $hasBigData={!isExportMode && hasBigData} $applyWidth={!isDataDownload}>
+          <Wrapper $hasBigData={!isExportMode && hasBigData}>
             <ExportDashboardItem entityName={entityName} />
             <EnlargedDashboardVisual entityName={entityName} />
           </Wrapper>

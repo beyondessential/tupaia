@@ -23,14 +23,16 @@ const ListItem = styled.li`
 
 const Form = styled(BaseForm)`
   flex-grow: 1;
-  width: 25rem;
-  max-width: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  align-items: center;
   > fieldset {
     flex-grow: 1;
-    text-align: left;
+  }
+  legend {
+    margin-bottom: 1.5rem;
   }
 `;
 
@@ -39,10 +41,16 @@ const ButtonWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-top: 1.5rem;
+  width: 100%;
 `;
 
 const FormButton = styled(Button)`
   text-transform: none;
+`;
+
+const CheckboxListWrapper = styled.div`
+  width: 30rem;
+  max-width: 100%;
 `;
 
 interface DataDownloadProps {
@@ -76,20 +84,21 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
   };
   return (
     <Form formContext={formContext}>
-      <CheckboxList
-        options={
-          data
-            ? data.map(({ name, value }) => ({
-                label: name,
-                value: value as string,
-              }))
-            : []
-        }
-        name={reportCode!}
-        legend="Select the data you wish to download"
-        required
-      />
-
+      <CheckboxListWrapper>
+        <CheckboxList
+          options={
+            data
+              ? data.map(({ name, value }) => ({
+                  label: name,
+                  value: value as string,
+                }))
+              : []
+          }
+          name={reportCode!}
+          legend="Select the data you wish to download"
+          required
+        />
+      </CheckboxListWrapper>
       <ButtonWrapper>
         <FormButton variant="outlined" color="default" onClick={closeModal}>
           Cancel
