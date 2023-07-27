@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  handleWith,
-  useForwardUnhandledRequests,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
@@ -131,9 +127,8 @@ export function createApp() {
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemasRoute),
     )
+    .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
-
-  useForwardUnhandledRequests(app, CENTRAL_API_URL);
 
   return app;
 }
