@@ -42,7 +42,10 @@ import {
   EntityRequest,
 } from '../routes';
 
-const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
+const {
+  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
+} = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -76,6 +79,7 @@ export function createApp() {
       'entityAncestors/:projectCode/:rootEntityCode',
       handleWith(EntityAncestorsRoute),
     )
+    .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .build();
