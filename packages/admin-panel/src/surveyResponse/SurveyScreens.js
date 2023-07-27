@@ -37,7 +37,7 @@ const InstructionText = styled(Typography)`
   padding: 5px 0px 25px 0px;
 `;
 
-export const SurveyScreens = ({ survey, existingAnswers, onChange, selectedEntity }) => {
+export const SurveyScreens = ({ survey, existingAnswers, onChange, selectedEntity, fields }) => {
   const [updatedAnswers, setUpdatedAnswers] = useState({});
   const [currentScreenNumber, setCurrentScreenNumber] = useState(1);
 
@@ -77,6 +77,23 @@ export const SurveyScreens = ({ survey, existingAnswers, onChange, selectedEntit
                   label={component.question.name}
                   name="entity"
                   value={selectedEntity.name}
+                  disabled
+                  error={false}
+                  helperText={false}
+                  key={`question-field-${component.question.code}`}
+                />
+              );
+            }
+
+            if (
+              component.question.type === 'SubmissionDate' ||
+              component.question.type === 'DateOfData'
+            ) {
+              return (
+                <StyledTextField
+                  label={component.question.name}
+                  name="dateOfData"
+                  value={fields.data_time}
                   disabled
                   error={false}
                   helperText={false}
@@ -129,4 +146,5 @@ SurveyScreens.propTypes = {
   existingAnswers: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   selectedEntity: PropTypes.object.isRequired,
+  fields: PropTypes.object.isRequired,
 };

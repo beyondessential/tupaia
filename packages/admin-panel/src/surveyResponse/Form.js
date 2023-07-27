@@ -124,8 +124,6 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
               survey={data?.survey}
               existingAnswers={data?.answers}
               selectedEntity={selectedEntity}
-              setSelectedEntity={setSelectedEntity}
-              surveyResponse={data?.surveyResponse}
               fields={existingAndNewFields}
             />
           </>
