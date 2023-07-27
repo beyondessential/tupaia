@@ -30,7 +30,9 @@ const surveyId = {
   source: 'survey.id',
   editable: false,
   type: 'tooltip',
+  show: false,
 };
+
 const assessorName = {
   Header: 'Assessor',
   source: 'assessor_name',
