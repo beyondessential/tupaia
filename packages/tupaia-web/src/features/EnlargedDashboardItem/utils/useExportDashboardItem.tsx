@@ -26,7 +26,7 @@ import {
   ExportContext,
   ExportDispatchContext,
 } from './ExportContext';
-import { useExportToExcel } from '../../../api/queries';
+import { useExportToExcel } from '../../../api/mutations';
 
 interface ExportToExcelParams {
   projectCode?: ProjectCode;
@@ -108,19 +108,6 @@ export const useExportDashboardItem = (
     exportTitle,
   );
 
-  // use the useExportToExcel hook to export the matrix dashboard item. We disable the fetch initially so that we can only do the query when we want to export
-  const { error: excelError, refetch: callExportToExcel, isFetching } = useExportToExcel(
-    getExportToExcelParams({
-      projectCode,
-      dashboardCode: activeDashboard?.code,
-      entityCode,
-      config,
-      report,
-      currentDashboardItem,
-    }),
-    false,
-  );
-
   const filename = toFilename(`export-${entityName}-${name}`, true);
   const file = `${filename}.${exportFormat}`;
 
@@ -132,50 +119,63 @@ export const useExportDashboardItem = (
     dispatch({ type: ACTION_TYPES.SET_IS_EXPORTING, payload: isExporting });
   };
 
-  // Even though we could get the data from the useExportToExcel hook directly, we will use the result of the callExportToExcel function to get the data, because we need to only download the data when the user clicks the export button. Putting it inside a useEffect hook makes it hard to control exactly when the download happens
-  const exportMatrixToExcel = async () => {
-    const result = await callExportToExcel();
-    downloadJs(result.data, file);
+  // set the isExporting state to true and the export error state to null when the export starts
+  const handleStartExport = () => {
+    setIsExporting(true);
+    setExportError(null);
   };
+
+  // set the isExporting state to false and the export error state to null, and download the file when the export is successful
+  const handleExportSuccess = (result: Blob | string) => {
+    downloadJs(result, file);
+    setIsExporting(false);
+    setExportError(null);
+  };
+
+  // set the isExporting state to false and the export error state to the error message when the export fails
+  const handleError = (e: Error) => {
+    setExportError(e.message);
+    setIsExporting(false);
+  };
+
+  // use the useExportToExcel hook to export the matrix dashboard item
+  const { mutate: exportToExcel } = useExportToExcel({
+    onError: (e: Error) => handleError(e),
+    onSuccess: handleExportSuccess,
+    onMutate: handleStartExport,
+  });
 
   // export to png if the export format is png. This should handle the setting of the isExporting state and the export error state because it is not using a hook from elsewhere
   const exportToPNG = async () => {
     try {
-      setIsExporting(true);
+      handleStartExport();
       const node = exportRef?.current as Node;
       const result = await domtoimage.toPng(node, { bgcolor: 'white' });
-      downloadJs(result, file);
+      handleExportSuccess(result);
     } catch (e: any) {
-      setExportError(e.message);
-    } finally {
-      setIsExporting(false);
+      handleError(e);
     }
   };
+
+  const excelParams = getExportToExcelParams({
+    projectCode,
+    dashboardCode: activeDashboard?.code,
+    entityCode,
+    config,
+    report,
+    currentDashboardItem,
+  });
 
   const EXPORT_FUNCTIONS = {
     [EXPORT_FORMATS.PNG]: exportToPNG,
-    [EXPORT_FORMATS.XLSX]: type === 'matrix' ? exportMatrixToExcel : doExport,
+    [EXPORT_FORMATS.XLSX]: type === 'matrix' ? () => exportToExcel(excelParams) : doExport,
   };
-
-  // set export error message if an error is caught from the useExportToExcel hook
-  useEffect(() => {
-    if (excelError) {
-      setExportError((excelError as Error).message);
-    }
-  }, [excelError]);
 
   // set export error message as null and send ga event when the export is successful/starting
   useEffect(() => {
     if (exportError || !isExportMode) return;
-    setExportError(null);
     gaEvent('Export', file, isExporting ? 'Attempt' : 'Success');
   }, [isExporting]);
-
-  // set isExporting to true when the export is fetching, if the type is matrix, because this means the export is being done via the useExportToExcel hook
-  useEffect(() => {
-    if (type !== 'matrix' || !isExportMode) return;
-    setIsExporting(isFetching);
-  }, [isFetching]);
 
   // reset the export state when the current dashboard item changes
   useEffect(() => {

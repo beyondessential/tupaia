@@ -16,4 +16,3 @@ export { useDashboards } from './useDashboards';
 export { useReport } from './useReport';
 export { useMapOverlayReport } from './useMapOverlayReport';
 export { useMapOverlays } from './useMapOverlays';
-export { useExportToExcel } from './useExportToExcel';

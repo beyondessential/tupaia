@@ -233,7 +233,7 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
               <CircularProgress />
             </LoadingContainer>
           ) : (
-            <>
+            <form>
               <Typography>The chart will be exported and downloaded to your browser.</Typography>
               <RadioGroup
                 options={availableExportOptions}
@@ -265,7 +265,7 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
                   )}
                 </FormGroup>
               )}
-            </>
+            </form>
           )}
           {exportError && <Typography color="error">{exportError}</Typography>}
         </LeftColumn>
