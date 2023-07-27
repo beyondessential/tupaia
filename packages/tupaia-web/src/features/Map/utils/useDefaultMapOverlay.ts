@@ -12,12 +12,14 @@ import {
   URL_SEARCH_PARAMS,
 } from '../../../constants';
 import { MapOverlayGroup, ProjectCode, EntityCode } from '../../../types';
+import { useQueryClient } from 'react-query';
 
 // When the map overlay groups change, update the default map overlay
 export const useDefaultMapOverlay = (
   projectCode: ProjectCode,
   mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup },
 ) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [urlSearchParams] = useSearchParams();
@@ -31,6 +33,8 @@ export const useDefaultMapOverlay = (
     const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
 
     if (!project || overlayCodes.length === 0) {
+      // Clear map overlay data when there are no overlays to select from
+      queryClient.invalidateQueries(['mapOverlayReport', projectCode]);
       return;
     }
 

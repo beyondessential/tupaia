@@ -36,7 +36,7 @@ const useEntitiesByType = (
 
 const getRootEntity = (entity?: Entity) => {
   if (!entity) {
-    return null;
+    return undefined;
   }
   const { parentCode, code, type } = entity;
 

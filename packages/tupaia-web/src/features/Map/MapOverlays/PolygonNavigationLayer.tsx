@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { ActivePolygon } from '@tupaia/ui-map-components';
+import { ActivePolygon, POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityResponse, EntityCode, Entity } from '../../../types';
+import { EntityCode, Entity, EntityResponse } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
 
@@ -50,6 +50,7 @@ const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
     <ActivePolygon
       hasChildren={hasChildren}
       hasShadedChildren={true}
+      // @ts-ignore
       coordinates={region}
       // Randomize key to ensure polygon appears at top. This is still important even
       // though the polygon is in a LayerGroup due to issues with react-leaflet that
@@ -71,6 +72,9 @@ export const PolygonNavigationLayer = () => {
 
   const childEntities = entities.filter((entity: Entity) => entity.parentCode === entityCode);
 
+  const showChildEntities =
+    !POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
+
   return (
     <>
       {entity && (
@@ -79,7 +83,7 @@ export const PolygonNavigationLayer = () => {
           <SiblingEntities activeEntityCode={entity.code} parentEntityCode={entity.parentCode} />
         </>
       )}
-      {childEntities?.length > 0 &&
+      {showChildEntities &&
         childEntities.map((entity: Entity) => (
           <InteractivePolygon
             key={entity.code}
