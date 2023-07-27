@@ -9535,7 +9535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tupaia/access-policy@3.0.0, @tupaia/access-policy@workspace:packages/access-policy":
+"@tupaia/access-policy@workspace:*, @tupaia/access-policy@workspace:packages/access-policy":
   version: 0.0.0-use.local
   resolution: "@tupaia/access-policy@workspace:packages/access-policy"
   dependencies:
@@ -9547,12 +9547,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/admin-panel-server@workspace:packages/admin-panel-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/multer": ^1.4.7
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
@@ -9568,7 +9568,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/admin-panel@1.0.0, @tupaia/admin-panel@workspace:packages/admin-panel":
+"@tupaia/admin-panel@workspace:*, @tupaia/admin-panel@workspace:packages/admin-panel":
   version: 0.0.0-use.local
   resolution: "@tupaia/admin-panel@workspace:packages/admin-panel"
   dependencies:
@@ -9576,11 +9576,11 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/ui-chart-components": 1.0
-    "@tupaia/ui-components": 1.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/ui-chart-components": "workspace:*"
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     axios: ^0.21.1
     case: ^1.5.3
     content-disposition-header: ^0.6.0
@@ -9621,41 +9621,41 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/aggregator@1.0.0, @tupaia/aggregator@workspace:packages/aggregator":
+"@tupaia/aggregator@workspace:*, @tupaia/aggregator@workspace:packages/aggregator":
   version: 0.0.0-use.local
   resolution: "@tupaia/aggregator@workspace:packages/aggregator"
   dependencies:
-    "@tupaia/data-broker": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/data-broker": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     lodash.groupby: ^4.6.0
     npm-run-all: ^4.1.5
     winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
-"@tupaia/api-client@3.1.0, @tupaia/api-client@workspace:packages/api-client":
+"@tupaia/api-client@workspace:*, @tupaia/api-client@workspace:packages/api-client":
   version: 0.0.0-use.local
   resolution: "@tupaia/api-client@workspace:packages/api-client"
   dependencies:
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
     qs: ^6.10.1
   languageName: unknown
   linkType: soft
 
-"@tupaia/auth@1.0.0, @tupaia/auth@workspace:packages/auth":
+"@tupaia/auth@workspace:*, @tupaia/auth@workspace:packages/auth":
   version: 0.0.0-use.local
   resolution: "@tupaia/auth@workspace:packages/auth"
   dependencies:
     "@beyondessential/tupaia-access-policy": ^2.5.1
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     jsonwebtoken: ^7.4.3
     npm-run-all: ^4.1.5
     rand-token: ^1.0.1
@@ -9670,15 +9670,15 @@ __metadata:
   resolution: "@tupaia/central-server@workspace:packages/central-server"
   dependencies:
     "@babel/polyfill": ^7.0.0
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/auth": 1.0.0
-    "@tupaia/data-broker": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/dhis-api": 1.0.0
-    "@tupaia/expression-parser": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/data-broker": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/dhis-api": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     adm-zip: ^0.5.5
     api-error-handler: ^1.0.0
     async: ^2.6.2
@@ -9726,13 +9726,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/data-api@1.0.0, @tupaia/data-api@workspace:packages/data-api":
+"@tupaia/data-api@workspace:*, @tupaia/data-api@workspace:packages/data-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/data-api@workspace:packages/data-api"
   dependencies:
-    "@tupaia/database": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/database": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/lodash.groupby": ^4.6.0
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
@@ -9744,21 +9744,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/data-broker@1.0.0, @tupaia/data-broker@workspace:packages/data-broker":
+"@tupaia/data-broker@workspace:*, @tupaia/data-broker@workspace:packages/data-broker":
   version: 0.0.0-use.local
   resolution: "@tupaia/data-broker@workspace:packages/data-broker"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/data-api": 1.0.0
-    "@tupaia/data-lake-api": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/dhis-api": 1.0.0
-    "@tupaia/indicators": 1.0.0
-    "@tupaia/kobo-api": 1.0.0
-    "@tupaia/superset-api": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
-    "@tupaia/weather-api": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/data-api": "workspace:*"
+    "@tupaia/data-lake-api": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/dhis-api": "workspace:*"
+    "@tupaia/indicators": "workspace:*"
+    "@tupaia/kobo-api": "workspace:*"
+    "@tupaia/superset-api": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
+    "@tupaia/weather-api": "workspace:*"
     "@types/lodash.flatten": ^4.4.0
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.isequal": ^4.5.0
@@ -9776,13 +9776,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/data-lake-api@1.0.0, @tupaia/data-lake-api@workspace:packages/data-lake-api":
+"@tupaia/data-lake-api@workspace:*, @tupaia/data-lake-api@workspace:packages/data-lake-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/data-lake-api@workspace:packages/data-lake-api"
   dependencies:
-    "@tupaia/database": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/database": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     deep-equal-in-any-order: ^1.0.27
@@ -9799,15 +9799,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/data-table-server@workspace:packages/data-table-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/aggregator": 1.0.0
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/data-broker": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/aggregator": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/data-broker": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     dotenv: ^8.2.0
     express: ^4.16.2
     mockdate: ^3.0.5
@@ -9815,14 +9815,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/database@1.0.0, @tupaia/database@workspace:packages/database":
+"@tupaia/database@workspace:*, @tupaia/database@workspace:packages/database":
   version: 0.0.0-use.local
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
     "@babel/node": ^7.10.5
-    "@tupaia/auth": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     dotenv: ^8.2.0
@@ -9849,13 +9849,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/dhis-api@1.0.0, @tupaia/dhis-api@workspace:packages/dhis-api":
+"@tupaia/dhis-api@workspace:*, @tupaia/dhis-api@workspace:packages/dhis-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/dhis-api@workspace:packages/dhis-api"
   dependencies:
-    "@tupaia/aggregator": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/aggregator": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     chai-as-promised: ^7.1.1
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -9876,8 +9876,8 @@ __metadata:
     "@babel/plugin-proposal-nullish-coalescing-operator": ^7.14.5
     "@cypress/snapshot": ^2.1.7
     "@testing-library/cypress": ^7.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/database": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     case: ^1.6.3
     cheerio: ^1.0.0-rc.3
     cross-env: ^7.0.2
@@ -9897,13 +9897,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/entity-server@workspace:packages/entity-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/auth": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/lodash.keyby": ^4.6.6
     dotenv: ^8.2.0
     express: ^4.16.2
@@ -9912,7 +9912,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/expression-parser@1.0.0, @tupaia/expression-parser@workspace:packages/expression-parser":
+"@tupaia/expression-parser@workspace:*, @tupaia/expression-parser@workspace:packages/expression-parser":
   version: 0.0.0-use.local
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
@@ -9923,26 +9923,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/indicators@1.0.0, @tupaia/indicators@workspace:packages/indicators":
+"@tupaia/indicators@workspace:*, @tupaia/indicators@workspace:packages/indicators":
   version: 0.0.0-use.local
   resolution: "@tupaia/indicators@workspace:packages/indicators"
   dependencies:
-    "@tupaia/aggregator": 1.0.0
-    "@tupaia/data-broker": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/expression-parser": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/aggregator": "workspace:*"
+    "@tupaia/data-broker": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
   languageName: unknown
   linkType: soft
 
-"@tupaia/kobo-api@1.0.0, @tupaia/kobo-api@workspace:packages/kobo-api":
+"@tupaia/kobo-api@workspace:*, @tupaia/kobo-api@workspace:packages/kobo-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/kobo-api@workspace:packages/kobo-api"
   dependencies:
-    "@tupaia/utils": 1.0.0
+    "@tupaia/utils": "workspace:*"
     npm-run-all: ^4.1.5
   languageName: unknown
   linkType: soft
@@ -9951,11 +9951,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/lesmis-server@workspace:packages/lesmis-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     camelcase-keys: ^6.2.2
     dotenv: ^8.2.0
     express: ^4.16.2
@@ -9972,12 +9972,12 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/styles": ^4.9.10
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/admin-panel": 1.0.0
-    "@tupaia/ui-chart-components": 1.0.0
-    "@tupaia/ui-components": 1.0.0
-    "@tupaia/ui-map-components": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/admin-panel": "workspace:*"
+    "@tupaia/ui-chart-components": "workspace:*"
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/ui-map-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     axios: ^0.21.1
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
@@ -10003,13 +10003,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/meditrak-app-server@workspace:packages/meditrak-app-server"
   dependencies:
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/auth": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/lodash.clonedeep": ^4.5.0
     "@types/semver-compare": ^1.0.1
     dotenv: ^8.2.0
@@ -10034,8 +10034,8 @@ __metadata:
     "@react-native-community/geolocation": ^2.0.2
     "@react-native-community/masked-view": 0.1.10
     "@react-native-community/netinfo": ^5.9.9
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/expression-parser": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
     appcenter: ^4.4.3
     appcenter-analytics: ^4.4.3
     appcenter-crashes: ^4.4.3
@@ -10097,10 +10097,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/psss-server@workspace:packages/psss-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
     client-sessions: ^0.8.0
@@ -10121,10 +10121,10 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
-    "@tupaia/auth": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/ui-components": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     axios: ^0.21.0
     cross-env: ^7.0.2
     date-fns: ^2.16.1
@@ -10158,16 +10158,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/report-server@workspace:packages/report-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/aggregator": 1.0.0
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/auth": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/expression-parser": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/aggregator": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/lodash.isplainobject": ^4.0.6
     "@types/lodash.keyby": ^4.6.6
     "@types/lodash.pick": ^4.4.0
@@ -10188,17 +10188,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/server-boilerplate@1.0.0, @tupaia/server-boilerplate@workspace:packages/server-boilerplate":
+"@tupaia/server-boilerplate@workspace:*, @tupaia/server-boilerplate@workspace:packages/server-boilerplate":
   version: 0.0.0-use.local
   resolution: "@tupaia/server-boilerplate@workspace:packages/server-boilerplate"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/auth": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/api-error-handler": ^1.0.32
     "@types/client-sessions": ^0.8.0
     "@types/cors": ^2.8.8
@@ -10217,11 +10217,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/superset-api@1.0.0, @tupaia/superset-api@workspace:packages/superset-api":
+"@tupaia/superset-api@workspace:*, @tupaia/superset-api@workspace:packages/superset-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
   dependencies:
-    "@tupaia/utils": 1.0.0
+    "@tupaia/utils": "workspace:*"
     "@types/needle": ^2.5.3
     https-proxy-agent: ^5.0.1
     node-fetch: ^1.7.3
@@ -10229,12 +10229,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/tsutils@1.0.0, @tupaia/tsutils@workspace:packages/tsutils":
+"@tupaia/tsutils@workspace:*, @tupaia/tsutils@workspace:packages/tsutils":
   version: 0.0.0-use.local
   resolution: "@tupaia/tsutils@workspace:packages/tsutils"
   dependencies:
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/lodash.get": ^4.4.2
     "@types/moment-timezone": 0.5.13
     ajv: ^8.12.0
@@ -10253,11 +10253,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/tupaia-web-server@workspace:packages/tupaia-web-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/types": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/types": "workspace:*"
     camelcase-keys: ^6.2.2
     dotenv: ^8.2.0
     express: ^4.16.2
@@ -10285,11 +10285,11 @@ __metadata:
     "@storybook/react": ^7.0.18
     "@storybook/react-vite": ^7.0.18
     "@storybook/testing-library": ^0.0.14-next.2
-    "@tupaia/types": 1.0.0
-    "@tupaia/ui-chart-components": 1.0.0
-    "@tupaia/ui-components": 1.0.0
-    "@tupaia/ui-map-components": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/types": "workspace:*"
+    "@tupaia/ui-chart-components": "workspace:*"
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/ui-map-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
@@ -10313,7 +10313,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/types@1.0.0, @tupaia/types@workspace:packages/types":
+"@tupaia/types@workspace:*, @tupaia/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@tupaia/types@workspace:packages/types"
   dependencies:
@@ -10325,16 +10325,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/ui-chart-components@1.0, @tupaia/ui-chart-components@1.0.0, @tupaia/ui-chart-components@workspace:packages/ui-chart-components":
+"@tupaia/ui-chart-components@workspace:*, @tupaia/ui-chart-components@workspace:packages/ui-chart-components":
   version: 0.0.0-use.local
   resolution: "@tupaia/ui-chart-components@workspace:packages/ui-chart-components"
   dependencies:
     "@material-ui/core": ^4.9.8
     "@material-ui/styles": ^4.9.10
     "@storybook/react": ^6.3.9
-    "@tupaia/types": 1.0.0
-    "@tupaia/ui-components": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/types": "workspace:*"
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/lodash.get": ^4.4.7
     "@types/recharts": ^1.8.24
     lodash.get: ^4.4.2
@@ -10348,7 +10348,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/ui-components@1.0, @tupaia/ui-components@1.0.0, @tupaia/ui-components@workspace:packages/ui-components":
+"@tupaia/ui-components@workspace:*, @tupaia/ui-components@workspace:packages/ui-components":
   version: 0.0.0-use.local
   resolution: "@tupaia/ui-components@workspace:packages/ui-components"
   dependencies:
@@ -10361,8 +10361,8 @@ __metadata:
     "@mui/types": ^7.2.4
     "@storybook/addon-essentials": 6.3.9
     "@storybook/react": ^6.3.9
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.1
     "@types/lodash.throttle": ^4.1.7
     "@types/react-dom": ^16.9.18
@@ -10397,7 +10397,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/ui-map-components@1.0, @tupaia/ui-map-components@1.0.0, @tupaia/ui-map-components@workspace:packages/ui-map-components":
+"@tupaia/ui-map-components@workspace:*, @tupaia/ui-map-components@workspace:packages/ui-map-components":
   version: 0.0.0-use.local
   resolution: "@tupaia/ui-map-components@workspace:packages/ui-map-components"
   dependencies:
@@ -10406,8 +10406,8 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@storybook/react": ^6.3.9
-    "@tupaia/ui-components": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.1
     "@types/leaflet": ^1.7.1
     "@types/react-dom": ^16.9.18
@@ -10424,7 +10424,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/utils@1.0.0, @tupaia/utils@workspace:packages/utils":
+"@tupaia/utils@workspace:*, @tupaia/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
@@ -10450,11 +10450,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/weather-api@1.0.0, @tupaia/weather-api@workspace:packages/weather-api":
+"@tupaia/weather-api@workspace:*, @tupaia/weather-api@workspace:packages/weather-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/weather-api@workspace:packages/weather-api"
   dependencies:
-    "@tupaia/utils": 1.0.0
+    "@tupaia/utils": "workspace:*"
     npm-run-all: ^4.1.5
   languageName: unknown
   linkType: soft
@@ -10463,15 +10463,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/web-config-server@workspace:packages/web-config-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/aggregator": 1.0.0
-    "@tupaia/auth": 1.0.0
-    "@tupaia/data-broker": 1.0.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/dhis-api": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/tsutils": 1.0.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/aggregator": "workspace:*"
+    "@tupaia/auth": "workspace:*"
+    "@tupaia/data-broker": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/dhis-api": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     async: ^2.6.0
     babel-plugin-module-resolver: ^4.0.0
     body-parser: ^1.18.2
@@ -10526,10 +10526,10 @@ __metadata:
     "@testing-library/jest-dom": ^5.11.0
     "@testing-library/react": ^11.0.2
     "@testing-library/user-event": ^12.0.11
-    "@tupaia/ui-chart-components": 1.0
-    "@tupaia/ui-components": 1.0
-    "@tupaia/ui-map-components": 1.0
-    "@tupaia/utils": 1.0.0
+    "@tupaia/ui-chart-components": "workspace:*"
+    "@tupaia/ui-components": "workspace:*"
+    "@tupaia/ui-map-components": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     case: ^1.6.3
     chalk: 1.1.3
     cheerio: ^1.0.0-rc.3

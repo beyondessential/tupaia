@@ -20,12 +20,12 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/aggregator": "1.0.0",
-    "@tupaia/data-broker": "1.0.0",
-    "@tupaia/database": "1.0.0",
-    "@tupaia/expression-parser": "1.0.0",
-    "@tupaia/tsutils": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/aggregator": "workspace:*",
+    "@tupaia/data-broker": "workspace:*",
+    "@tupaia/database": "workspace:*",
+    "@tupaia/expression-parser": "workspace:*",
+    "@tupaia/tsutils": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0"
   }

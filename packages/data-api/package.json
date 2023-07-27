@@ -26,9 +26,9 @@
     "refresh-analytics-table": "scripts/refreshAnalyticsTable.sh"
   },
   "dependencies": {
-    "@tupaia/database": "1.0.0",
-    "@tupaia/tsutils": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/database": "workspace:*",
+    "@tupaia/tsutils": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "@types/lodash.groupby": "^4.6.0",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",

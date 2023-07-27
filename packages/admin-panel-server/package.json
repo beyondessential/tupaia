@@ -26,11 +26,11 @@
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
-    "@tupaia/access-policy": "3.0.0",
-    "@tupaia/api-client": "3.1.0",
-    "@tupaia/database": "1.0.0",
-    "@tupaia/server-boilerplate": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/access-policy": "workspace:*",
+    "@tupaia/api-client": "workspace:*",
+    "@tupaia/database": "workspace:*",
+    "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "camelcase-keys": "^7.0.0",
@@ -44,7 +44,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@tupaia/types": "1.0.0",
+    "@tupaia/types": "workspace:*",
     "@types/multer": "^1.4.7"
   }
 }

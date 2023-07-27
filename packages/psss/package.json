@@ -36,8 +36,8 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/ui-components": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/ui-components": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "axios": "^0.21.0",
     "date-fns": "^2.16.1",
     "faker": "^4.1.0",
@@ -63,8 +63,8 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@tupaia/auth": "1.0.0",
-    "@tupaia/database": "1.0.0",
+    "@tupaia/auth": "workspace:*",
+    "@tupaia/database": "workspace:*",
     "cross-env": "^7.0.2",
     "mockdate": "^3.0.5",
     "npm-run-all": "^4.1.5"

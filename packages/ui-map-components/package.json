@@ -25,8 +25,8 @@
     "dependencies": {
         "@material-ui/core": "^4.9.8",
         "@material-ui/icons": "^4.9.1",
-        "@tupaia/ui-components": "1.0.0",
-        "@tupaia/utils": "1.0.0",
+        "@tupaia/ui-components": "workspace:*",
+        "@tupaia/utils": "workspace:*",
         "leaflet": "^1.7.1",
         "moment": "^2.29.1",
         "prop-types": "^15.7.2",

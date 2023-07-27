@@ -24,8 +24,8 @@
     },
     "dependencies": {
         "@material-ui/core": "^4.9.8",
-        "@tupaia/ui-components": "1.0.0",
-        "@tupaia/utils": "1.0.0",
+        "@tupaia/ui-components": "workspace:*",
+        "@tupaia/utils": "workspace:*",
         "lodash.get": "^4.4.2",
         "moment": "^2.29.1",
         "prop-types": "^15.7.2",
@@ -38,7 +38,7 @@
     "devDependencies": {
         "@material-ui/styles": "^4.9.10",
         "@storybook/react": "^6.3.9",
-        "@tupaia/types": "1.0.0",
+        "@tupaia/types": "workspace:*",
         "@types/lodash.get": "^4.4.7",
         "@types/recharts": "^1.8.24"
     }
