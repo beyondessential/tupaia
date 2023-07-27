@@ -12,6 +12,8 @@ import { SingleProject } from '../../types';
 import { MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 import { useLandingPage } from '../../api/queries';
+import { useParams } from 'react-router';
+import { LandingPage } from '../../views';
 
 const Card = styled.div`
   display: flex;
@@ -129,9 +131,17 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 
-export const ProjectAllowedLink = ({ url }: LinkProps) => (
-  <BaseLink to={url} target={`${useLandingPage(url)}`}>View project</BaseLink>
-);
+export const ProjectAllowedLink = ({ url }: LinkProps) => {
+  const { landingPageUrlSegment } = useParams();
+
+  const { isLandingPage } = useLandingPage(landingPageUrlSegment);
+
+  return (
+    <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
+      View project
+    </BaseLink>
+  );
+};
 
 interface ProjectCardProps extends Partial<SingleProject> {
   ProjectButton: ComponentType;

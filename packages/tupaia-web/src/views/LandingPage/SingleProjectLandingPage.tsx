@@ -77,10 +77,6 @@ export function SingleProjectLandingPage({
 
   const { homeEntityCode, code, dashboardGroupName } = project;
 
-  const { landingPageUrlSegment } = useParams();
-
-  const {isLandingPage} = useLandingPage(landingPageUrlSegment);
-
   const urls = {
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}${
@@ -106,7 +102,7 @@ export function SingleProjectLandingPage({
       {accessType && (
         <ActionLink
           variant="contained"
-          target= "_blank"
+          target={accessType === PROJECT_ACCESS_TYPES.ALLOWED ? '_blank' : '_self'}
           component={Link}
           to={urls[accessType]}
           disabled={accessType === PROJECT_ACCESS_TYPES.PENDING}

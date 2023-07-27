@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { URL_SEARCH_PARAMS, TRANSPARENT_BLACK } from '../../constants';
 import { SingleLandingPage } from '../../types';
+import { useParams } from 'react-router';
+import { useLandingPage } from '../../api/queries';
 import { PROJECT_ACCESS_TYPES, MODAL_ROUTES } from '../../constants';
 import {
   ProjectCardList,
@@ -15,8 +17,6 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
-import { useLandingPage } from '../../api/queries';
-
 const ProjectsWrapper = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints.values.lg}px;
@@ -90,7 +90,7 @@ export function MultiProjectLandingPage({
                   url={`/${code}/${homeEntityCode}${
                     dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
-                 />
+                />
               ),
               [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
               [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
