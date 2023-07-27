@@ -19,7 +19,7 @@ export const FORM_FIELD_VALIDATION = {
     },
   },
   PASSWORD: {
-    minLength: { value: 9, message: 'Must be at over 8 characters long' },
+    minLength: { value: 9, message: 'must be over 8 characters long' },
   },
 };
 
