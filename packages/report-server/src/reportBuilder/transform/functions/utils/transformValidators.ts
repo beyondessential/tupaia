@@ -7,6 +7,25 @@ import { yup } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
 import { TransformParser } from '../../parser';
 
+export const fieldValueValidator = yupTsUtils.describableLazy(
+  (value: unknown) => {
+    if (typeof value === 'string') {
+      return yup.string();
+    }
+
+    if (typeof value === 'number') {
+      return yup.number();
+    }
+
+    if (typeof value === 'boolean') {
+      return yup.bool();
+    }
+
+    return yup.string();
+  },
+  [yup.string(), yup.number(), yup.bool()],
+);
+
 export const starSingleOrMultipleColumnsValidator = yupTsUtils.describableLazy(
   (value: unknown) => {
     if (typeof value === 'string' || value === undefined) {
@@ -63,10 +82,10 @@ export const expressionOrArrayValidator = yupTsUtils.describableLazy(
     }
 
     if (Array.isArray(value)) {
-      return yup.array().required();
+      return yup.array(fieldValueValidator).required();
     }
 
     throw new yup.ValidationError('Input must be an expression or an array');
   },
-  [yup.string().required(), yup.array().required()],
+  [yup.string().required(), yup.array(fieldValueValidator).required()],
 );
