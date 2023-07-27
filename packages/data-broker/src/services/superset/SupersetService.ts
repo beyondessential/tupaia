@@ -7,40 +7,19 @@ import moment from 'moment';
 
 import { SupersetApi } from '@tupaia/superset-api';
 import { Service } from '../Service';
-import type { PullOptions as BasePullOptions } from '../Service';
 import { getSupersetApiInstance } from './getSupersetApi';
-import {
-  Analytic,
-  AnalyticResults,
-  DataBrokerModelRegistry,
-  DataElement,
-  DataSource,
-  DataSourceType,
-  EventResults,
-  SyncGroupResults,
-} from '../../types';
+import { Analytic, AnalyticResults, DataElement } from '../../types';
 import { DataServiceMapping, DataServiceMappingEntry } from '../DataServiceMapping';
 
-type PullOptions = BasePullOptions &
-  Partial<{
-    startDate: string;
-    endDate: string;
-    organisationUnitCode: string;
-    organisationUnitCodes: string[];
-  }>;
+type PullOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCode?: string;
+  organisationUnitCodes?: string[];
+  startDate?: string;
+  endDate?: string;
+};
 
 export class SupersetService extends Service {
-  private readonly pullers: Record<string, any>;
-
-  public constructor(models: DataBrokerModelRegistry) {
-    super(models);
-    this.pullers = {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
-      [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroups.bind(this),
-    };
-  }
-
   public async push(): Promise<never> {
     throw new Error('Data push is not supported in SupersetService');
   }
@@ -49,16 +28,7 @@ export class SupersetService extends Service {
     throw new Error('Data deletion is not supported in SupersetService');
   }
 
-  public async pull(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullOptions,
-  ): Promise<AnalyticResults | EventResults | SyncGroupResults> | never {
-    const puller = this.pullers[type];
-    return puller(dataSources, options);
-  }
-
-  private async pullAnalytics(
+  public async pullAnalytics(
     dataSources: DataElement[],
     options: PullOptions,
   ): Promise<AnalyticResults> {
@@ -199,11 +169,11 @@ export class SupersetService extends Service {
     return dataSourcesByChartId;
   }
 
-  private async pullEvents() {
+  public async pullEvents(): Promise<never> {
     throw new Error('pullEvents is not supported in SupersetService');
   }
 
-  private async pullSyncGroups() {
-    throw new Error('pullSyncGroups is not supported in SupersetService');
+  public async pullSyncGroupResults(): Promise<never> {
+    throw new Error('pullSyncGroupResults is not supported in SupersetService');
   }
 }

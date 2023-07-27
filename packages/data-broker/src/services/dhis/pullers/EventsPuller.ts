@@ -7,13 +7,14 @@ import type { DhisApi } from '@tupaia/dhis-api';
 import { getSortByKey } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from '../builders';
 import { DataBrokerModelRegistry, Event } from '../../../types';
+import { DataServiceMapping } from '../../DataServiceMapping';
 import { DhisTranslator } from '../translators';
 import { DataGroup } from '../types';
-import type { PullOptions as BasePullOptions } from '../../Service';
 
-export type PullEventsOptions = BasePullOptions & {
+export type PullEventsOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
   dataElementCodes?: string[];
-  organisationUnitCodes: string[];
   period?: string;
   startDate?: string;
   endDate?: string;

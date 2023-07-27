@@ -3,18 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { FetchOptions as BaseFetchOptions, IndicatorApi } from '@tupaia/indicators';
-import {
-  AnalyticResults,
-  DataBrokerModelRegistry,
-  DataElement,
-  DataSource,
-  DataSourceType,
-} from '../../types';
+import type { FetchOptions as IndicatorFetchOptions, IndicatorApi } from '@tupaia/indicators';
+import { DataBrokerModelRegistry, DataElement } from '../../types';
+import { DataServiceMapping } from '../DataServiceMapping';
 import { Service } from '../Service';
-import type { PullOptions as BasePullOptions } from '../Service';
 
-type PullOptions = BasePullOptions & BaseFetchOptions;
+type PullOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
+} & IndicatorFetchOptions;
 
 export class IndicatorService extends Service {
   private readonly api: IndicatorApi;
@@ -33,35 +30,21 @@ export class IndicatorService extends Service {
     throw new Error('Data deletion is not supported in IndicatorService');
   }
 
-  public async pull(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options: PullOptions,
-  ): Promise<AnalyticResults>;
-  public async pull(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullOptions,
-  ): Promise<AnalyticResults | never> {
-    switch (type) {
-      case this.dataSourceTypes.DATA_ELEMENT:
-        return this.pullAnalytics(dataSources as DataElement[], options as PullOptions);
-      case this.dataSourceTypes.DATA_GROUP:
-        throw new Error('Event pulling is not supported in IndicatorService');
-      case this.dataSourceTypes.SYNC_GROUP:
-        throw new Error('Sync Group pulling is not supported in IndicatorService');
-      default:
-        throw new Error('Unexpected data source type');
-    }
-  }
-
-  private async pullAnalytics(dataSources: DataElement[], options: PullOptions) {
-    const indicatorCodes = dataSources.map(({ code }) => code);
+  public async pullAnalytics(dataElements: DataElement[], options: PullOptions) {
+    const indicatorCodes = dataElements.map(({ code }) => code);
 
     return {
       results: await this.api.buildAnalytics(indicatorCodes, options),
       // TODO: either implement properly in #NOT-521 or remove entirely in #NOT-522
       metadata: { dataElementCodeToName: {} },
     };
+  }
+
+  public async pullEvents(): Promise<never> {
+    throw new Error('pullEvents is not supported in IndicatorService');
+  }
+
+  public async pullSyncGroupResults(): Promise<never> {
+    throw new Error('pullSyncGroupResults is not supported in IndicatorService');
   }
 }
