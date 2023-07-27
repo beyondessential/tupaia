@@ -23,7 +23,7 @@ export const useExportToExcel = (
   const timeZone = getBrowserTimeZone();
   const { projectCode, entityCode, itemCode, startDate, endDate } = params;
   return useQuery(
-    ['export/chart', projectCode, entityCode, itemCode, startDate, endDate],
+    ['export', 'chart', projectCode, entityCode, itemCode, startDate, endDate],
     () =>
       get('export/chart', {
         responseType: 'blob',
