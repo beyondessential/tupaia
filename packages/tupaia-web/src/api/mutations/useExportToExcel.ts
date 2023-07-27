@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { MutationObserverSuccessResult, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { DashboardItem, EntityCode, ProjectCode } from '../../types';
 import { get } from '..';
