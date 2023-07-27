@@ -25,7 +25,6 @@ export const RouterButton = ({
   modal,
   searchParamsToRemove,
   children,
-  url,
   ...props
 }: RouterButtonProps) => {
   const location = useLocation();
