@@ -62,7 +62,7 @@ const ActiveEntity = ({ entity }: { entity: Entity }) => {
 export const PolygonNavigationLayer = () => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: entity } = useEntity(projectCode, entityCode);
+  const { data: activeEntity } = useEntity(projectCode, entityCode);
   const { data: entities } = useEntitiesWithLocation(projectCode, entityCode);
 
   if (!entities || entities.length === 0) {
@@ -76,10 +76,13 @@ export const PolygonNavigationLayer = () => {
 
   return (
     <>
-      {entity && (
+      {activeEntity && (
         <>
-          <ActiveEntity entity={entity} />
-          <SiblingEntities activeEntityCode={entity.code} parentEntityCode={entity.parentCode} />
+          <ActiveEntity entity={activeEntity} />
+          <SiblingEntities
+            activeEntityCode={activeEntity.code}
+            parentEntityCode={activeEntity.parentCode}
+          />
         </>
       )}
       {showChildEntities &&

@@ -118,7 +118,6 @@ export const Dashboard = () => {
         <Breadcrumbs />
         <DashboardImageContainer>
           {bounds ? (
-            // @ts-ignore
             <StaticMap bounds={bounds} />
           ) : (
             <Photo title={entity?.name} photoUrl={entity?.photoUrl} />

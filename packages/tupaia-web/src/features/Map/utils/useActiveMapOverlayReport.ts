@@ -24,6 +24,8 @@ const useEntitiesByType = (
     entityCode,
     {
       params: {
+        // Don't include the root entity in the list of entities for displaying data as the
+        // data visuals are for children of the root entity
         includeRootEntity: false,
         filter: {
           type: getSnakeCase(entityType!),

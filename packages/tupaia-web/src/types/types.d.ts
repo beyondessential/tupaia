@@ -13,6 +13,7 @@ import {
   ComponentConfig,
   TupaiaWebEntityRequest,
 } from '@tupaia/types';
+import { Position } from 'geojson';
 import { ViewContent as ChartViewContent, DataProps } from '@tupaia/ui-chart-components';
 import { PolygonProps } from 'react-leaflet';
 import { KeysToCamelCase } from './helpers';
@@ -82,9 +83,10 @@ export type MapOverlayGroup = {
   children: SingleMapOverlayItem[] | MapOverlayGroup[];
 };
 
-export type Entity = Omit<TupaiaWebEntityRequest.ResBody, 'region'> & {
+export type Entity = Omit<TupaiaWebEntityRequest.ResBody, 'region', 'bounds'> & {
   parentCode: Entity['code'];
   region: PolygonProps['positions'];
+  bounds: Position[];
   childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
