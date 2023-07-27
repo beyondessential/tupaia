@@ -6,48 +6,13 @@
 import { expect } from 'chai';
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
 
-const customJoinConditions1 = {};
-const customJoinConditions2 = {
-  country: {
-    through: 'entity',
-    nearTableKey: 'entity.country_code',
-    farTableKey: 'country.code',
-  },
-};
-const customJoinConditions3 = {
-  country: {
-    through: 'entity',
-    nearTableKey: 'entity.country_code',
-    farTableKey: 'country.code',
-  },
-  disaster: {
-    through: 'country',
-    nearTableKey: 'country.code',
-    farTableKey: 'disaster.countryCode',
-  },
-};
-const customJoinConditions4 = {
-  country: {
-    through: 'entity',
-    nearTableKey: 'country.code',
-    farTableKey: 'entity.country_code',
-  },
-};
-const customJoinConditions5 = {
-  entity: ['entity.id', 'project.entity_id'],
-};
-
-const err =
-  'Error: No columns start with "_", and conjunction operators are reserved for internal use only';
-const err2 = 'nearTableKey must refer to a column on the table you wish to join through';
-const err3 = 'Incorrect format for customJoinConditions: entity';
-
-describe('Request record types with standard joins', () => {
+describe.only('Request record types with standard joins', () => {
   it('returns one join', () => {
+    const customJoinConditions = {};
     const results = getQueryOptionsForColumns(
       ['survey_response.id', 'survey.name'],
       'survey_response',
-      customJoinConditions1,
+      customJoinConditions,
       null,
     );
     expect(results.sort).to.have.ordered.members(['survey_response.id', 'survey.id']);
@@ -60,10 +25,11 @@ describe('Request record types with standard joins', () => {
     ]);
   });
   it('Returns two joins of tables that can join to the base record type', () => {
+    const customJoinConditions = {};
     const results = getQueryOptionsForColumns(
       ['survey_response.id', 'survey.name', 'user_account.first_name'],
       'survey_response',
-      customJoinConditions1,
+      customJoinConditions,
       null,
     );
     expect(results.sort).to.have.ordered.members([
@@ -86,12 +52,19 @@ describe('Request record types with standard joins', () => {
   });
 });
 
-describe('Requests record types that require a through join', () => {
+describe.only('Requests record types that require a through join', () => {
   it('returns a record type that has one through join', () => {
+    const customJoinConditions = {
+      country: {
+        through: 'entity',
+        nearTableKey: 'entity.country_code',
+        farTableKey: 'country.code',
+      },
+    };
     const results = getQueryOptionsForColumns(
       ['survey_response.id', 'country.name'],
       'survey_response',
-      customJoinConditions2,
+      customJoinConditions,
       null,
     );
     expect(results.sort).to.have.ordered.members(['survey_response.id', 'entity.id', 'country.id']);
@@ -109,10 +82,22 @@ describe('Requests record types that require a through join', () => {
     ]);
   });
   it('returns record types that require two through joins', () => {
+    const customJoinConditions = {
+      country: {
+        through: 'entity',
+        nearTableKey: 'entity.country_code',
+        farTableKey: 'country.code',
+      },
+      disaster: {
+        through: 'country',
+        nearTableKey: 'country.code',
+        farTableKey: 'disaster.countryCode',
+      },
+    };
     const results = getQueryOptionsForColumns(
       ['survey_response.id', 'country.name', 'disaster.type'],
       'survey_response',
-      customJoinConditions3,
+      customJoinConditions,
       null,
     );
     expect(results.sort).to.have.ordered.members([
@@ -141,37 +126,52 @@ describe('Requests record types that require a through join', () => {
   });
 });
 
-describe('Calling incorrect parameters to throw an error', () => {
+describe.only('Calling incorrect parameters to throw an error', () => {
   it('defines a column with "_" in front of it to trigger the validation error', () => {
+    const err =
+      'Error: No columns start with "_", and conjunction operators are reserved for internal use only';
+    const customJoinConditions = {};
     expect(() =>
       getQueryOptionsForColumns(
         ['_survey_response.id', 'survey.name'],
         'survey_response',
-        customJoinConditions1,
+        customJoinConditions,
         null,
       ).toThrow(err),
     );
   });
 
   it('defines the keys in customJoinConditions the wrong way around to trigger an error', () => {
+    const err = 'nearTableKey must refer to a column on the table you wish to join through';
+    const customJoinConditions = {
+      country: {
+        through: 'entity',
+        nearTableKey: 'country.code',
+        farTableKey: 'entity.country_code',
+      },
+    };
     expect(() =>
       getQueryOptionsForColumns(
         ['survey_response.id', 'country.name'],
         'survey_response',
-        customJoinConditions4,
+        customJoinConditions,
         null,
-      ).toThrow(err2),
+      ).toThrow(err),
     );
   });
 
   it('defines customJoinConditions in the retired format to trigger an error', () => {
+    const err = 'Incorrect format for customJoinConditions: entity';
+    const customJoinConditions = {
+      entity: ['entity.id', 'project.entity_id'],
+    };
     expect(() =>
       getQueryOptionsForColumns(
         ['project.id', 'entity.id'],
         'project',
-        customJoinConditions5,
+        customJoinConditions,
         null,
-      ).toThrow(err3),
+      ).toThrow(err),
     );
   });
 });
