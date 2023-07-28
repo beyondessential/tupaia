@@ -62,6 +62,7 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  margin-top: ${({ $isExporting }) => ($isExporting ? '1rem' : '0')};
 `;
 
 const DisplayComponents = {
@@ -79,7 +80,7 @@ interface DashboardItemContentProps {
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
-  onRetryFetch: UseQueryResult['refetch'];
+  onRetryFetch?: UseQueryResult['refetch'];
   isExpandable: boolean;
   isExporting?: boolean;
 }
@@ -129,8 +130,16 @@ export const DashboardItemContent = ({
       <Alert severity="error">
         <Typography>{error.message}</Typography>
         <Typography>
-          <RetryButton onClick={onRetryFetch}>Retry loading data</RetryButton> or contact{' '}
-          <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+          {isExporting ? (
+            <>
+              Contact <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+            </>
+          ) : (
+            <>
+              <RetryButton onClick={onRetryFetch}>Retry loading data</RetryButton> or contact{' '}
+              <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+            </>
+          )}
         </Typography>
       </Alert>
     );
