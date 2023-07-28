@@ -895,6 +895,22 @@ export const DisplayOnEntityOtherConditionsSchema = {
 	}
 } 
 
+export const ExportPresentationOptionsSchema = {
+	"properties": {
+		"exportWithLabels": {
+			"type": "boolean"
+		},
+		"exportWithTable": {
+			"type": "boolean"
+		},
+		"exportWithTableDisabled": {
+			"type": "boolean"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CssColorSchema = {
 	"type": "string"
 } 
@@ -1267,8 +1283,18 @@ export const MatrixConfigSchema = {
 			"description": "Allows for conditional styling",
 			"anyOf": [
 				{
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1384,13 +1410,21 @@ export const MatrixConfigSchema = {
 								"columnIndexes"
 							]
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				{
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1411,8 +1445,18 @@ export const MatrixConfigSchema = {
 			"description": "Category header rows can have values just like real rows, this is how you style them",
 			"anyOf": [
 				{
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1528,13 +1572,21 @@ export const MatrixConfigSchema = {
 								"columnIndexes"
 							]
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				{
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1705,8 +1757,18 @@ export const RangePresentationOptionsSchema = {
 export const PresentationOptionsSchema = {
 	"anyOf": [
 		{
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -1822,13 +1884,21 @@ export const PresentationOptionsSchema = {
 						"columnIndexes"
 					]
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -4686,18 +4756,18 @@ export const PieChartConfigSchema = {
 			]
 		},
 		"presentationOptions": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": {
-				"type": "object",
-				"properties": {
-					"color": {
-						"type": "string"
-					}
+			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
 				},
-				"additionalProperties": false,
-				"required": [
-					"color"
-				]
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				}
 			}
 		}
 	},
@@ -7382,18 +7452,18 @@ export const ChartConfigSchema = {
 					]
 				},
 				"presentationOptions": {
+					"additionalProperties": false,
 					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"type": "string"
-							}
+					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
 						},
-						"additionalProperties": false,
-						"required": [
-							"color"
-						]
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						}
 					}
 				}
 			},
@@ -8292,6 +8362,12 @@ export const BaseViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -8315,7 +8391,8 @@ export const BaseViewConfigSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"required": [
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -8682,6 +8759,12 @@ export const ListViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -8700,12 +8783,6 @@ export const ListViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -9110,6 +9187,12 @@ export const SingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -9128,12 +9211,6 @@ export const SingleValueViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -9505,6 +9582,12 @@ export const MultiPhotographViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -9523,12 +9606,6 @@ export const MultiPhotographViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -9896,6 +9973,12 @@ export const MultiSingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -9914,12 +9997,6 @@ export const MultiSingleValueViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -10287,6 +10364,12 @@ export const SingleDownloadLinkViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -10305,12 +10388,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -10695,6 +10772,12 @@ export const MultiValueRowViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -10713,12 +10796,6 @@ export const MultiValueRowViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -11171,6 +11248,12 @@ export const ColorListViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -11189,12 +11272,6 @@ export const ColorListViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -11562,6 +11639,12 @@ export const DataDownloadViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -11580,12 +11663,6 @@ export const DataDownloadViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -11953,6 +12030,12 @@ export const SingleDateViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -11971,12 +12054,6 @@ export const SingleDateViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -12344,6 +12421,12 @@ export const MultiValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -12362,12 +12445,6 @@ export const MultiValueViewConfigSchema = {
 		"value_metadata": {
 			"type": "object",
 			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"view"
-			]
 		},
 		"viewType": {
 			"type": "string",
@@ -12751,6 +12828,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -12770,11 +12853,432 @@ export const ViewConfigSchema = {
 					"type": "object",
 					"additionalProperties": false
 				},
+				"viewType": {
+					"type": "string",
+					"enum": [
+						"list"
+					]
+				},
+				"listConfig": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"color",
+							"label"
+						]
+					}
+				},
+				"valueTranslationOptions": {
+					"description": "If provided, performs a find and replace on list item content",
+					"type": "object",
+					"properties": {
+						"match": {
+							"type": "string"
+						},
+						"replace": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"match",
+						"replace"
+					]
+				}
+			},
+			"required": [
+				"listConfig",
+				"name",
+				"type",
+				"viewType"
+			]
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"description": "A short description that appears above a viz",
+					"type": "string"
+				},
+				"placeholder": {
+					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+					"type": "string"
+				},
+				"periodGranularity": {
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"defaultTimePeriod": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"offset": {
+									"type": "number"
+								},
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"end",
+								"start"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"description": "ISO Date Time",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"start"
+							]
+						}
+					]
+				},
+				"datePickerLimits": {
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"exportConfig": {
+					"description": "Extra config options for exporting"
+				},
+				"noDataMessage": {
+					"description": "Message which shows if no data is found",
+					"type": "string"
+				},
+				"noDataFetch": {
+					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+					"default": false,
+					"type": "boolean"
+				},
+				"drillDown": {
+					"type": "object",
+					"properties": {
+						"keyLink": {
+							"type": "string"
+						},
+						"itemCode": {
+							"type": "string"
+						},
+						"parameterLink": {
+							"type": "string"
+						},
+						"itemCodeByEntry": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							}
+						}
+					},
+					"additionalProperties": false
+				},
+				"entityHeader": {
+					"description": "",
+					"type": "string"
+				},
+				"reference": {
+					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+					"type": "object",
+					"properties": {
+						"link": {
+							"description": "url",
+							"type": "string"
+						},
+						"name": {
+							"description": "label",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+					"type": "string"
+				},
+				"displayOnEntityConditions": {
+					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"attributes": {
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"attributes"
+							]
+						},
+						{
+							"type": "object",
+							"additionalProperties": {
+								"type": [
+									"string",
+									"number",
+									"boolean"
+								]
+							}
+						}
+					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
 				"type": {
 					"type": "string",
 					"enum": [
 						"view"
 					]
+				},
+				"valueType": {
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"value_metadata": {
+					"type": "object",
+					"additionalProperties": false
 				},
 				"viewType": {
 					"type": "string",
@@ -13145,6 +13649,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -13163,12 +13673,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -13535,6 +14039,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -13553,12 +14063,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -13925,6 +14429,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -13943,12 +14453,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -14315,6 +14819,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -14333,12 +14843,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -14790,6 +15294,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -14808,12 +15318,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -15180,6 +15684,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -15198,12 +15708,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -15570,6 +16074,12 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -15588,12 +16098,6 @@ export const ViewConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -15997,8 +16501,18 @@ export const DashboardItemConfigSchema = {
 					"description": "Allows for conditional styling",
 					"anyOf": [
 						{
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -16114,13 +16628,21 @@ export const DashboardItemConfigSchema = {
 										"columnIndexes"
 									]
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -16141,8 +16663,18 @@ export const DashboardItemConfigSchema = {
 					"description": "Category header rows can have values just like real rows, this is how you style them",
 					"anyOf": [
 						{
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -16258,13 +16790,21 @@ export const DashboardItemConfigSchema = {
 										"columnIndexes"
 									]
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -18566,18 +19106,18 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"presentationOptions": {
+					"additionalProperties": false,
 					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"type": "string"
-							}
+					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
 						},
-						"additionalProperties": false,
-						"required": [
-							"color"
-						]
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						}
 					}
 				}
 			},
@@ -19475,6 +20015,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -19493,12 +20039,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -19902,6 +20442,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -19920,12 +20466,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -20296,6 +20836,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -20314,12 +20860,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -20686,6 +21226,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -20704,12 +21250,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -21076,6 +21616,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -21094,12 +21640,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -21466,6 +22006,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -21484,12 +22030,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -21941,395 +22481,11 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
-				"valueType": {
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"value_metadata": {
-					"type": "object",
-					"additionalProperties": false
-				},
 				"type": {
 					"type": "string",
 					"enum": [
 						"view"
 					]
-				},
-				"viewType": {
-					"type": "string",
-					"enum": [
-						"colorList"
-					]
-				}
-			},
-			"required": [
-				"name",
-				"type",
-				"viewType"
-			]
-		},
-		{
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"name": {
-					"type": "string"
-				},
-				"description": {
-					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"placeholder": {
-					"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
-					"type": "string"
-				},
-				"periodGranularity": {
-					"enum": [
-						"day",
-						"month",
-						"one_day_at_a_time",
-						"one_month_at_a_time",
-						"one_quarter_at_a_time",
-						"one_week_at_a_time",
-						"one_year_at_a_time",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"defaultTimePeriod": {
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"offset": {
-									"type": "number"
-								},
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"end",
-								"start"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"description": "ISO Date Time",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"start"
-							]
-						}
-					]
-				},
-				"datePickerLimits": {
-					"type": "object",
-					"properties": {
-						"start": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"end": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportConfig": {
-					"description": "Extra config options for exporting"
-				},
-				"noDataMessage": {
-					"description": "Message which shows if no data is found",
-					"type": "string"
-				},
-				"noDataFetch": {
-					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-					"default": false,
-					"type": "boolean"
-				},
-				"drillDown": {
-					"type": "object",
-					"properties": {
-						"keyLink": {
-							"type": "string"
-						},
-						"itemCode": {
-							"type": "string"
-						},
-						"parameterLink": {
-							"type": "string"
-						},
-						"itemCodeByEntry": {
-							"type": "object",
-							"additionalProperties": {
-								"type": "string"
-							}
-						}
-					},
-					"additionalProperties": false
-				},
-				"entityHeader": {
-					"description": "",
-					"type": "string"
-				},
-				"reference": {
-					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
-						},
-						"name": {
-							"description": "label",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
-					]
-				},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
-				"weekDisplayFormat": {
-					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-					"default": "'WEEK_COMMENCING_ABBR'",
-					"enum": [
-						"ISO_WEEK_NUMBER",
-						"WEEK_COMMENCING",
-						"WEEK_COMMENCING_ABBR",
-						"WEEK_ENDING",
-						"WEEK_ENDING_ABBR"
-					],
-					"type": "string"
 				},
 				"valueType": {
 					"enum": [
@@ -22349,12 +22505,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -22721,6 +22871,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -22739,12 +22895,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -23111,6 +23261,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"valueType": {
 					"enum": [
 						"boolean",
@@ -23129,12 +23285,6 @@ export const DashboardItemConfigSchema = {
 				"value_metadata": {
 					"type": "object",
 					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"view"
-					]
 				},
 				"viewType": {
 					"type": "string",
@@ -23895,8 +24045,18 @@ export const DashboardItemSchema = {
 							"description": "Allows for conditional styling",
 							"anyOf": [
 								{
+									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -24012,13 +24172,21 @@ export const DashboardItemSchema = {
 												"columnIndexes"
 											]
 										}
-									},
-									"additionalProperties": false
+									}
 								},
 								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -24039,8 +24207,18 @@ export const DashboardItemSchema = {
 							"description": "Category header rows can have values just like real rows, this is how you style them",
 							"anyOf": [
 								{
+									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -24156,13 +24334,21 @@ export const DashboardItemSchema = {
 												"columnIndexes"
 											]
 										}
-									},
-									"additionalProperties": false
+									}
 								},
 								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -26464,18 +26650,18 @@ export const DashboardItemSchema = {
 							]
 						},
 						"presentationOptions": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"type": "string"
-									}
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
 								},
-								"additionalProperties": false,
-								"required": [
-									"color"
-								]
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								}
 							}
 						}
 					},
@@ -27373,6 +27559,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -27391,12 +27583,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -27800,6 +27986,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -27818,12 +28010,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -28194,6 +28380,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -28212,12 +28404,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -28584,6 +28770,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -28602,12 +28794,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -28974,6 +29160,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -28992,12 +29184,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -29364,6 +29550,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -29382,12 +29574,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -29839,395 +30025,11 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"value_metadata": {
-							"type": "object",
-							"additionalProperties": false
-						},
 						"type": {
 							"type": "string",
 							"enum": [
 								"view"
 							]
-						},
-						"viewType": {
-							"type": "string",
-							"enum": [
-								"colorList"
-							]
-						}
-					},
-					"required": [
-						"name",
-						"type",
-						"viewType"
-					]
-				},
-				{
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"placeholder": {
-							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"defaultTimePeriod": {
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"offset": {
-											"type": "number"
-										},
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										},
-										"end": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"end",
-										"start"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "ISO Date Time",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"start"
-									]
-								}
-							]
-						},
-						"datePickerLimits": {
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting"
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"type": "object",
-							"properties": {
-								"keyLink": {
-									"type": "string"
-								},
-								"itemCode": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
-								},
-								"name": {
-									"description": "label",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
-							]
-						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
 						},
 						"valueType": {
 							"enum": [
@@ -30247,12 +30049,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -30619,6 +30415,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -30637,12 +30439,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -31009,6 +30805,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
 						"valueType": {
 							"enum": [
 								"boolean",
@@ -31027,12 +30829,6 @@ export const DashboardItemSchema = {
 						"value_metadata": {
 							"type": "object",
 							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"view"
-							]
 						},
 						"viewType": {
 							"type": "string",
@@ -33583,5 +33379,7063 @@ export const DataTablePreviewRequestSchema = {
 		"permission_groups",
 		"type"
 	]
+} 
+
+export const CountryAccessSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"accessRequests": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"accessRequests",
+		"hasAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const ResBodySchema = {
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"id": {
+				"type": "string"
+			},
+			"name": {
+				"type": "string"
+			},
+			"hasAccess": {
+				"type": "boolean"
+			},
+			"accessRequests": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			}
+		},
+		"additionalProperties": false,
+		"required": [
+			"accessRequests",
+			"hasAccess",
+			"id",
+			"name"
+		]
+	}
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCaseSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+} 
+
+export const ObjectToCamelSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const KeysToCamelCaseSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const DashboardWithItemsSchema = {
+	"properties": {
+		"items": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"config": {
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"matrix"
+										]
+									},
+									"dataelementcolumntitle": {
+										"type": "string"
+									},
+									"hidecolumntitles": {
+										"type": "boolean"
+									},
+									"presentationoptions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
+													"type": {
+														"type": "string",
+														"enum": [
+															"condition"
+														]
+													},
+													"conditions": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"color": {
+																	"type": "string"
+																},
+																"description": {
+																	"type": "string"
+																},
+																"label": {
+																	"type": "string"
+																},
+																"key": {
+																	"type": "string"
+																},
+																"condition": {
+																	"anyOf": [
+																		{
+																			"type": "object",
+																			"properties": {
+																				"=": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				">": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				"<": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				">=": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				"<=": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				}
+																			},
+																			"additionalProperties": false,
+																			"required": [
+																				"<",
+																				"<=",
+																				"=",
+																				">",
+																				">="
+																			]
+																		},
+																		{
+																			"type": [
+																				"string",
+																				"number"
+																			]
+																		}
+																	]
+																},
+																"legendlabel": {
+																	"type": "string"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"condition",
+																"key"
+															]
+														}
+													},
+													"showrawvalue": {
+														"type": "boolean"
+													},
+													"shownestedrows": {
+														"type": "boolean"
+													},
+													"applylocation": {
+														"type": "object",
+														"properties": {
+															"columnindexes": {
+																"type": "object",
+																"properties": {
+																	"length": {
+																		"type": "number"
+																	},
+																	"tostring": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"tolocalestring": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"pop": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"push": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"concat": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"join": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"reverse": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"shift": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"slice": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"sort": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"splice": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"unshift": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"indexof": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"lastindexof": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"every": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"some": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"foreach": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"map": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"filter": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"reduce": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"reduceright": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"find": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"findindex": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"fill": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"copywithin": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"entries": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"keys": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"values": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"includes": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"flatmap": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"flat": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"at": {
+																		"type": "object",
+																		"additionalProperties": false
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"at",
+																	"concat",
+																	"copywithin",
+																	"entries",
+																	"every",
+																	"fill",
+																	"filter",
+																	"find",
+																	"findindex",
+																	"flat",
+																	"flatmap",
+																	"foreach",
+																	"includes",
+																	"indexof",
+																	"join",
+																	"keys",
+																	"lastindexof",
+																	"length",
+																	"map",
+																	"pop",
+																	"push",
+																	"reduce",
+																	"reduceright",
+																	"reverse",
+																	"shift",
+																	"slice",
+																	"some",
+																	"sort",
+																	"splice",
+																	"tolocalestring",
+																	"tostring",
+																	"unshift",
+																	"values"
+																]
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"columnindexes"
+														]
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
+													"type": {
+														"type": "string",
+														"enum": [
+															"range"
+														]
+													},
+													"showrawvalue": {
+														"type": "boolean"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										]
+									},
+									"categorypresentationoptions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
+													"type": {
+														"type": "string",
+														"enum": [
+															"condition"
+														]
+													},
+													"conditions": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"color": {
+																	"type": "string"
+																},
+																"description": {
+																	"type": "string"
+																},
+																"label": {
+																	"type": "string"
+																},
+																"key": {
+																	"type": "string"
+																},
+																"condition": {
+																	"anyOf": [
+																		{
+																			"type": "object",
+																			"properties": {
+																				"=": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				">": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				"<": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				">=": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				},
+																				"<=": {
+																					"type": [
+																						"string",
+																						"number"
+																					]
+																				}
+																			},
+																			"additionalProperties": false,
+																			"required": [
+																				"<",
+																				"<=",
+																				"=",
+																				">",
+																				">="
+																			]
+																		},
+																		{
+																			"type": [
+																				"string",
+																				"number"
+																			]
+																		}
+																	]
+																},
+																"legendlabel": {
+																	"type": "string"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"condition",
+																"key"
+															]
+														}
+													},
+													"showrawvalue": {
+														"type": "boolean"
+													},
+													"shownestedrows": {
+														"type": "boolean"
+													},
+													"applylocation": {
+														"type": "object",
+														"properties": {
+															"columnindexes": {
+																"type": "object",
+																"properties": {
+																	"length": {
+																		"type": "number"
+																	},
+																	"tostring": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"tolocalestring": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"pop": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"push": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"concat": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"join": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"reverse": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"shift": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"slice": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"sort": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"splice": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"unshift": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"indexof": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"lastindexof": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"every": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"some": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"foreach": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"map": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"filter": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"reduce": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"reduceright": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"find": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"findindex": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"fill": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"copywithin": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"entries": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"keys": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"values": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"includes": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"flatmap": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"flat": {
+																		"type": "object",
+																		"additionalProperties": false
+																	},
+																	"at": {
+																		"type": "object",
+																		"additionalProperties": false
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"at",
+																	"concat",
+																	"copywithin",
+																	"entries",
+																	"every",
+																	"fill",
+																	"filter",
+																	"find",
+																	"findindex",
+																	"flat",
+																	"flatmap",
+																	"foreach",
+																	"includes",
+																	"indexof",
+																	"join",
+																	"keys",
+																	"lastindexof",
+																	"length",
+																	"map",
+																	"pop",
+																	"push",
+																	"reduce",
+																	"reduceright",
+																	"reverse",
+																	"shift",
+																	"slice",
+																	"some",
+																	"sort",
+																	"splice",
+																	"tolocalestring",
+																	"tostring",
+																	"unshift",
+																	"values"
+																]
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"columnindexes"
+														]
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
+													"type": {
+														"type": "string",
+														"enum": [
+															"range"
+														]
+													},
+													"showrawvalue": {
+														"type": "boolean"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"component"
+										]
+									},
+									"componentname": {
+										"enum": [
+											"ActiveDisasters",
+											"NoAccessDashboard",
+											"NoDataAtLevelDashboard",
+											"ProjectDescription"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"componentname",
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"ticks": {},
+									"startdate": {
+										"type": "string"
+									},
+									"enddate": {
+										"type": "string"
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showperiodrange": {
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"type": "string"
+									},
+									"displayonlevel": {},
+									"label": {},
+									"labeltype": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"measurelevel": {},
+									"renderlegendforoneitem": {
+										"type": "boolean"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"charttype": {
+										"type": "string",
+										"enum": [
+											"gauge"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"charttype",
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"ticks": {},
+									"startdate": {
+										"type": "string"
+									},
+									"enddate": {
+										"type": "string"
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showperiodrange": {
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"type": "string"
+									},
+									"displayonlevel": {},
+									"label": {},
+									"labeltype": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"measurelevel": {},
+									"renderlegendforoneitem": {
+										"type": "boolean"
+									},
+									"xname": {
+										"type": "string"
+									},
+									"yname": {
+										"type": "string"
+									},
+									"yaxisdomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"presentationoptions": {},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"charttype": {
+										"type": "string",
+										"enum": [
+											"composed"
+										]
+									},
+									"chartconfig": {
+										"type": "object",
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"charttype",
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"ticks": {},
+									"startdate": {
+										"type": "string"
+									},
+									"enddate": {
+										"type": "string"
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showperiodrange": {
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"type": "string"
+									},
+									"displayonlevel": {},
+									"label": {},
+									"labeltype": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"measurelevel": {},
+									"renderlegendforoneitem": {
+										"type": "boolean"
+									},
+									"xname": {
+										"type": "string"
+									},
+									"yname": {
+										"type": "string"
+									},
+									"yaxisdomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"presentationoptions": {},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"charttype": {
+										"type": "string",
+										"enum": [
+											"bar"
+										]
+									},
+									"chartconfig": {
+										"type": "object",
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"charttype",
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"ticks": {},
+									"startdate": {
+										"type": "string"
+									},
+									"enddate": {
+										"type": "string"
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showperiodrange": {
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"type": "string"
+									},
+									"displayonlevel": {},
+									"label": {},
+									"labeltype": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"measurelevel": {},
+									"renderlegendforoneitem": {
+										"type": "boolean"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"charttype": {
+										"type": "string",
+										"enum": [
+											"pie"
+										]
+									},
+									"presentationoptions": {
+										"type": "object",
+										"properties": {
+											"exportwithlabels": {
+												"type": "boolean"
+											},
+											"exportwithtable": {
+												"type": "boolean"
+											},
+											"exportwithtabledisabled": {
+												"type": "boolean"
+											}
+										},
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"charttype",
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"ticks": {},
+									"startdate": {
+										"type": "string"
+									},
+									"enddate": {
+										"type": "string"
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showperiodrange": {
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"type": "string"
+									},
+									"displayonlevel": {},
+									"label": {},
+									"labeltype": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"measurelevel": {},
+									"renderlegendforoneitem": {
+										"type": "boolean"
+									},
+									"xname": {
+										"type": "string"
+									},
+									"yname": {
+										"type": "string"
+									},
+									"yaxisdomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"presentationoptions": {},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"charttype": {
+										"type": "string",
+										"enum": [
+											"line"
+										]
+									},
+									"chartconfig": {
+										"type": "object",
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"charttype",
+									"name",
+									"type"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"list"
+										]
+									},
+									"listconfig": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"valuetranslationoptions": {
+										"type": "object",
+										"properties": {
+											"match": {
+												"type": "string"
+											},
+											"replace": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"match",
+											"replace"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"listconfig",
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"singleValue"
+										]
+									},
+									"datacolor": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"datacolor",
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"multiPhotograph"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"multiSingleValue"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"singleDownloadLink"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"multiValueRow"
+										]
+									},
+									"presentationoptions": {
+										"type": "object",
+										"properties": {
+											"color": {
+												"type": "string"
+											},
+											"header": {
+												"type": "string"
+											},
+											"datapairnames": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											},
+											"rowheader": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color"
+												]
+											},
+											"leftcolumn": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"header": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color",
+													"header"
+												]
+											},
+											"rightcolumn": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"header": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color",
+													"header"
+												]
+											},
+											"middlecolumn": {
+												"type": "object",
+												"properties": {
+													"color": {
+														"type": "string"
+													},
+													"header": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"color",
+													"header"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"color",
+											"header"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"dataDownload"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"singleDate"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							},
+							{
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"placeholder": {
+										"type": "string"
+									},
+									"periodgranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaulttimeperiod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierunit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datepickerlimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierunit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportconfig": {},
+									"nodatamessage": {
+										"type": "string"
+									},
+									"nodatafetch": {
+										"type": "boolean"
+									},
+									"drilldown": {
+										"type": "object",
+										"properties": {
+											"keylink": {
+												"type": "string"
+											},
+											"itemcode": {
+												"type": "string"
+											},
+											"parameterlink": {
+												"type": "string"
+											},
+											"itemcodebyentry": {
+												"type": "object",
+												"additionalProperties": false
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityheader": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "object",
+										"properties": {
+											"link": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"source": {
+										"type": "string"
+									},
+									"displayonentityconditions": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": false
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": false
+											}
+										]
+									},
+									"weekdisplayformat": {
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"view"
+										]
+									},
+									"valuetype": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"valueMetadata": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"viewtype": {
+										"type": "string",
+										"enum": [
+											"multiValue"
+										]
+									},
+									"presentationoptions": {
+										"type": "object",
+										"properties": {
+											"istitlevisible": {
+												"type": "boolean"
+											},
+											"valueformat": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"name",
+									"type",
+									"viewtype"
+								]
+							}
+						]
+					},
+					"id": {
+						"type": "string"
+					},
+					"legacy": {
+						"type": "boolean"
+					},
+					"permissionGroupIds": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"reportCode": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"code",
+					"id"
+				]
+			}
+		},
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"root_entity_code": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"id",
+		"items",
+		"name",
+		"root_entity_code"
+	]
+} 
+
+export const TranslatedMapOverlaySchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"reportCode": {
+			"type": "string"
+		},
+		"legacy": {
+			"type": "boolean"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"legacy",
+		"name",
+		"reportCode"
+	]
+} 
+
+export const TranslatedMapOverlayGroupSchema = {
+	"$ref": "#/definitions/TranslatedMapOverlayGroup"
+} 
+
+export const OverlayChildSchema = {
+	"$ref": "#/definitions/OverlayChild"
 } 
 

@@ -6,20 +6,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { Chart } from '../Chart';
+import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
 import { ExpandItemButton } from './ExpandItemButton';
-import { View } from '../View';
-import { Matrix } from '../Matrix';
+import {
+  View,
+  Chart,
+  Matrix,
+  ProjectDescription,
+  NoAccessDashboard,
+  NoDataAtLevelDashboard,
+} from '../Visuals';
 import {
   ChartReport,
   DashboardItemReport,
-  DashboardItemType,
   MatrixReport,
   ViewReport,
+  DashboardItem,
+  DashboardItemConfig,
 } from '../../types';
-import { DashboardItemConfig } from '@tupaia/types';
 
 const ErrorLink = styled(Link)`
   color: inherit;
@@ -41,6 +46,7 @@ const Alert = styled(BaseAlert)`
   overflow: hidden; // this is to stop any extra long text from overflowing the alert and causing a horizontal scroll on the dashboard
   .MuiAlert-message {
     max-width: 100%;
+    width: 100%;
   }
   p {
     max-width: 90%;
@@ -62,16 +68,20 @@ const DisplayComponents = {
   chart: Chart,
   view: View,
   matrix: Matrix,
+  ProjectDescription,
+  NoAccessDashboard,
+  NoDataAtLevelDashboard,
 };
 
 interface DashboardItemContentProps {
-  config: DashboardItemType;
+  dashboardItem?: DashboardItem;
   report: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
   onRetryFetch: UseQueryResult['refetch'];
   isExpandable: boolean;
+  isExporting?: boolean;
 }
 
 const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
@@ -89,24 +99,30 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = ({
-  config,
+  dashboardItem = {} as DashboardItem,
   report,
-  isEnlarged = false,
+  isEnlarged,
   isLoading,
   error,
   onRetryFetch,
   isExpandable,
+  isExporting,
 }: DashboardItemContentProps) => {
-  if (isLoading) {
+  const { reportCode, config } = dashboardItem;
+  const { name, type, viewType, componentName } = config || {};
+
+  const componentKey = componentName || type;
+
+  const DisplayComponent = DisplayComponents[componentKey as keyof typeof DisplayComponents];
+
+  if (!DisplayComponent) return null;
+
+  if (isLoading)
     return (
-      <LoadingContainer aria-label="Loading data for report">
+      <LoadingContainer aria-label={`Loading data for report '${name}'`}>
         <CircularProgress />
       </LoadingContainer>
     );
-  }
-
-  const { reportCode, type, viewType } = config;
-  const DisplayComponent = DisplayComponents[type as keyof typeof DisplayComponents] || null;
 
   if (error)
     return (
@@ -132,7 +148,12 @@ export const DashboardItemContent = ({
           }}
         />
       ) : (
-        <DisplayComponent report={report} config={config} isEnlarged={isEnlarged} />
+        <DisplayComponent
+          report={report}
+          config={config}
+          isEnlarged={isEnlarged}
+          isExporting={isExporting}
+        />
       )}
       {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}

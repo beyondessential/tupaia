@@ -9,9 +9,10 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { DashboardItemType } from '../../types';
+import { DashboardItemConfig, DashboardItem as DashboardItemType } from '../../types';
 import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
+import { MultiValueViewConfig } from '@tupaia/types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,32 +56,40 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     startDate?: Moment;
     endDate?: Moment;
   };
-  const { data: report, isLoading = true, isError, error, refetch } = useReport(
-    dashboardItem.reportCode,
+
+  const { data: report, isLoading, isError, error, refetch } = useReport(
+    dashboardItem?.reportCode,
     {
       projectCode,
       entityCode,
-      dashboardCode: activeDashboard?.dashboardCode,
-      itemCode: dashboardItem.code,
+      dashboardCode: activeDashboard?.code,
+      itemCode: dashboardItem?.code,
       startDate: defaultStartDate,
       endDate: defaultEndDate,
-      legacy: dashboardItem.legacy,
+      legacy: dashboardItem?.legacy,
     },
   );
 
-  const { periodGranularity, type, viewType, name, presentationOptions } = dashboardItem;
+  const { config = {} } = dashboardItem;
 
+  const {
+    presentationOptions,
+    periodGranularity,
+    type,
+    viewType,
+    name,
+  } = config as DashboardItemConfig;
   const isExpandable =
-    periodGranularity ||
-    type === 'chart' ||
-    type === 'matrix' ||
-    viewType === 'dataDownload' ||
-    viewType === 'filesDownload';
+    periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload'
+      ? true
+      : false;
 
   let showTitle = !!name;
   if (viewType === 'multiValue') {
-    showTitle = !!name && presentationOptions?.isTitleVisible;
-  } else if (viewType === 'singleDownloadLink') showTitle = false;
+    showTitle =
+      !!name &&
+      !!(presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
+  } else if (viewType?.includes('Download') || type === 'component') showTitle = false;
 
   return (
     <Wrapper>
@@ -88,9 +97,9 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
       <Container>
         {showTitle && <Title>{name}</Title>}
         <DashboardItemContent
-          config={dashboardItem}
+          dashboardItem={dashboardItem}
           report={report}
-          isLoading={isLoading || !dashboardItem}
+          isLoading={isLoading}
           error={isError ? error : null}
           onRetryFetch={refetch}
           isExpandable={isExpandable}

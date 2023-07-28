@@ -5,10 +5,20 @@ import {
   Entity as BaseEntity,
   DashboardItem as BaseDashboardItem,
   MapOverlay,
-  EntityType,
+  ViewConfig,
+  TupaiaWebDashboardsRequest,
+  MultiValueViewConfig,
+  MultiValueRowViewConfig,
+  ChartConfig,
+  MatrixConfig,
+  ComponentConfig,
 } from '@tupaia/types';
 import { ActivePolygonProps } from '@tupaia/ui-map-components';
-import { ViewContent as ChartViewContent, DataProps } from '@tupaia/ui-chart-components';
+import {
+  ViewContent as ChartViewContent,
+  DataProps,
+  ViewContent,
+} from '@tupaia/ui-chart-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
@@ -35,32 +45,32 @@ export type ProjectCode = Project['code'];
 
 export type EntityCode = Entity['code'];
 
-export type DashboardItemType = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
-  Omit<KeysToCamelCase<DashboardItemConfig>, 'viewType' | 'chartType', 'entityheader'> & {
-    chartType?: string;
-    viewType?: string;
-    entityHeader?: string;
-  };
+/** Breaking up the config for dashboard items to fix error 'Expression produces a union type that is too complex to represent' which is due to the dashboard item config being so complex */
+type CamelCaseDashboardItemConfig = KeysToCamelCase<BaseDashboardItemConfig>;
 
-export type DashboardsResponse = {
-  dashboardName: string;
-  dashboardCode: string;
-  dashboardId: string;
-  entityCode: string;
-  entityName: string;
-  entityType: string;
-  items: DashboardItemType[];
+type DashboardItemConfigPresentationOptions =
+  | MultiValueViewConfig['presentationOptions']
+  | MultiValueRowViewConfig['presentationOptions']
+  | MatrixConfig['presentationOptions']
+  | ChartConfig['presentationOptions'];
+
+type BaseConfig = Omit<
+  BaseDashboardItemConfig,
+  'viewType' | 'presentationOptions' | 'componentName'
+>;
+export type DashboardItemConfig = BaseConfig & {
+  viewType?: ViewConfig['viewType'];
+  presentationOptions?: DashboardItemConfigPresentationOptions;
+  componentName?: ComponentConfig['componentName'];
 };
 
-export type DashboardCode = DashboardsResponse['dashboardCode'];
-
-export type TupaiaUrlParams = {
-  projectCode?: ProjectCode;
-  entityCode?: EntityCode;
-  dashboardCode?: DashboardCode;
+export type DashboardItem = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> & {
+  config: DashboardItemConfig;
 };
 
-export type DashboardName = DashboardResponse['dashboardName'];
+export type Dashboard = TupaiaWebDashboardsRequest.ResBody[0];
+
+export type DashboardName = DashboardItem['dashboardName'];
 
 export type SingleMapOverlayItem = KeysToCamelCase<
   Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
@@ -76,21 +86,15 @@ export type MapOverlayGroup = {
   name: MapOverlay['name'];
   children: SingleMapOverlayItem[] | MapOverlayGroup[];
 };
-export type MapOverlays = {
-  entityCode: EntityCode;
-  entityType: EntityType;
-  name: string;
-  mapOverlays: MapOverlayGroup[];
-};
 
 // re-type the coordinates to be what the ui-map-components expect, because in the types package they are any | null
 export type Entity = KeysToCamelCase<Omit<BaseEntity, 'region' | 'bounds'>> & {
   region?: ActivePolygonProps['coordinates'];
   bounds?: Position[];
 };
+
 /* Response Types */
 // Todo: replace with types from @tupaia/types
-
 export type EntityResponse = Entity & {
   parentCode: Entity['code'];
   childCodes: Entity['code'][];
@@ -115,9 +119,10 @@ export type MatrixReportColumn = {
 
 // This is the data item for a report of type 'view'
 export type ViewDataItem = Record<string, any> &
-  DataProps & {
+  Omit<DataProps, 'value'> & {
+    value?: DataProps['value'] | boolean;
     total?: number;
-    viewType?: string;
+    viewType?: ViewConfig['viewType'];
   };
 
 // This is the shape of a report when type is 'view'
@@ -125,6 +130,7 @@ export type ViewReport = {
   data?: ViewDataItem[];
   startDate?: string;
   endDate?: string;
+  downloadUrl?: string;
 };
 
 // This is the shape of a report when type is 'matrix'

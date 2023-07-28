@@ -46,7 +46,7 @@ const buildAndInsertDataElement = async (models, fields) => {
   );
 };
 
-const buildAndInsertSurvey = async (
+export const buildAndInsertSurvey = async (
   models,
   { dataGroup: dataSourceFields, questions: questionFields = [], code, ...surveyFields },
 ) => {

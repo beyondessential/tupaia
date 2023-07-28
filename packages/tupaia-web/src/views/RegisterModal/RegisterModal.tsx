@@ -65,12 +65,12 @@ const StyledForm = styled(Form)`
 `;
 
 export const RegisterModal = () => {
-  const { mutate: onSubmit, isLoading, isSuccess, isError, error } = useRegister();
+  const { mutate: onSubmit, isLoading, isError, isSuccess, error } = useRegister();
   const formContext = useForm();
 
   return (
     <ModalBody
-      title="Register"
+      title={isSuccess ? 'Your account has been registered' : 'Register'}
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
     >
       {isSuccess ? (
@@ -109,22 +109,24 @@ export const RegisterModal = () => {
             />
             <TextField name="employer" label="Employer" required />
             <TextField name="position" label="Position" required />
-            <CheckboxField
-              name="hasAgreed"
-              label={
-                <TermsText>
-                  I agree to the{' '}
-                  <a
-                    href="https://www.bes.au/terms-and-conditions"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    terms and conditions
-                  </a>
-                </TermsText>
-              }
-              required
-            />
+            <FullWidthColumn>
+              <CheckboxField
+                name="hasAgreed"
+                label={
+                  <TermsText>
+                    I agree to the{' '}
+                    <a
+                      href="https://www.bes.au/terms-and-conditions"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      terms and conditions
+                    </a>
+                  </TermsText>
+                }
+                required
+              />
+            </FullWidthColumn>
             <FullWidthColumn>
               <AuthModalButton type="submit" isLoading={isLoading}>
                 Register account

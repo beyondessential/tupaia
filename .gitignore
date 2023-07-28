@@ -25,6 +25,7 @@ dockercfg
 packages/.vscode/settings.json
 **/testRequests/*.http
 *:Zone.Identifier
+.gradle
 
 # yarn
 .yarn/*

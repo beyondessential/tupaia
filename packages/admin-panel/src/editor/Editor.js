@@ -20,7 +20,11 @@ const EditorWrapper = styled.div`
   }
 `;
 
-export const Editor = ({ fields, recordData, onEditField }) => {
+export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
+  if (!fields || fields.length === 0) {
+    return false;
+  }
+
   const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
     const { setFieldsOnChange, type } = editConfig;
     let updatedValue = inputValue;
@@ -74,6 +78,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
         inputKey={source}
         label={Header}
         onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
+        onSetFormFile={onSetFormFile}
         value={selectValue(editConfig, accessor, source)}
         disabled={!editable}
         recordData={recordData}
@@ -121,4 +126,5 @@ Editor.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
+  onSetFormFile: PropTypes.func.isRequired,
 };

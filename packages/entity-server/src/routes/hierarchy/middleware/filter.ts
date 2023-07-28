@@ -150,6 +150,9 @@ export const extractFilterFromQuery = (
     return {
       [QueryConjunctions.AND]: {
         country_code: allowedCountries,
+        [QueryConjunctions.OR]: {
+          country_code: null,
+        },
       },
     };
   }
@@ -165,6 +168,9 @@ export const extractFilterFromQuery = (
   // To always force returning only entities in allowed countries, even if there is country_code filter in the query params.
   filter[QueryConjunctions.AND] = {
     country_code: allowedCountries,
+    [QueryConjunctions.OR]: {
+      country_code: null,
+    },
   };
 
   return filter;

@@ -13,7 +13,7 @@ import styled from 'styled-components';
 
 const DesktopWrapper = styled.div`
   pointer-events: auto;
-
+  margin: 0.4rem 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -37,7 +37,7 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   const selectedOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const { data: overlayReportData } = useMapOverlayReport();
 
-  if (!selectedOverlay) {
+  if (!selectedOverlay || !overlayReportData) {
     return null;
   }
 

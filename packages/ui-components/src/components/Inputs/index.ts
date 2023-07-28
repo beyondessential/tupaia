@@ -15,7 +15,6 @@ export * from './DatePicker';
 export * from './RadioGroup';
 export * from './FileUploadField';
 export * from './ImageUploadField';
-export * from './SQLQueryEditor';
 export * from './InputLabel';
 export * from './HexcodeField';
 export * from './InputGroup';
