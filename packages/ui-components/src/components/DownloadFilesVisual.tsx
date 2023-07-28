@@ -20,12 +20,14 @@ import { NoData } from './NoData';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
 `;
 
 const FormContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0 40px 30px 40px;
+  padding: 20px 40px 30px 40px;
 `;
 
 const FileName = styled.span`

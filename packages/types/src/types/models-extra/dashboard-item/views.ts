@@ -75,6 +75,10 @@ export type SingleDateViewConfig = BaseViewConfig & {
   viewType: 'singleDate';
 };
 
+export type DownloadFilesViewConfig = BaseViewConfig & {
+  viewType: 'filesDownload';
+};
+
 export type MultiValueViewConfig = BaseViewConfig & {
   viewType: 'multiValue';
   presentationOptions?: Record<string, ColorOption> & {
@@ -92,4 +96,5 @@ export type ViewConfig =
   | MultiValueRowViewConfig
   | DataDownloadViewConfig
   | SingleDateViewConfig
-  | MultiValueViewConfig;
+  | MultiValueViewConfig
+  | DownloadFilesViewConfig;

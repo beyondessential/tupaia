@@ -7,34 +7,33 @@ import downloadJs from 'downloadjs';
 import { getUniqueFileNameParts } from '@tupaia/utils';
 import { get } from '../api';
 
+const getMultiFileDownloadFileName = () => {
+  return `tupaia-download-${new Date().toLocaleString('default', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })}.zip`;
+};
+
 export const useDownloadFiles = () => {
   return useMutation(
     ['download'],
-    async (uniqueFileNames: string[]) => {
-      let fileName, fileNamesParam;
-
-      if (uniqueFileNames.length === 1) {
-        fileName = getUniqueFileNameParts(uniqueFileNames[0]).fileName;
-        fileNamesParam = uniqueFileNames[0];
-      } else {
-        fileNamesParam = uniqueFileNames.join(',');
-        fileName = `tupaia-download-${new Date().toLocaleString('default', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })}.zip`;
-      }
-
-      await get(`downloadFiles?uniqueFileNames=${fileNamesParam}`);
-      return fileName;
-    },
+    async (uniqueFileNames: string[]) =>
+      get('downloadFiles', {
+        responseType: 'blob',
+        params: {
+          uniqueFileNames:
+            uniqueFileNames.length === 1 ? uniqueFileNames[0] : uniqueFileNames.join(','),
+        },
+      }),
     {
-      onSuccess: async (response: any, _variables, fileName?: string) => {
-        console.log('fileName', fileName);
-        const responseBlob = await response?.blob();
-        downloadJs(responseBlob, fileName);
+      onSuccess: async (data: any, uniqueFileNames: string[]) => {
+        let fileName =
+          uniqueFileNames.length === 1
+            ? getUniqueFileNameParts(uniqueFileNames[0]).fileName
+            : getMultiFileDownloadFileName();
 
-        return true;
+        downloadJs(data, fileName);
       },
     },
   );
