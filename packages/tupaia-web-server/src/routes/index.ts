@@ -8,7 +8,6 @@ export { EntityRequest, EntityRoute } from './EntityRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { EntitySearchRequest, EntitySearchRoute } from './EntitySearchRoute';
 export { EntityAncestorsRequest, EntityAncestorsRoute } from './EntityAncestorsRoute';
-export { DownloadFilesRequest, DownloadFilesRoute } from './DownloadFilesRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';
 export {
   LegacyDashboardReportRequest,

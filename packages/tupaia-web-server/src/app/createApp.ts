@@ -16,8 +16,6 @@ import { TupaiaWebSessionModel } from '../models';
 import {
   DashboardsRoute,
   DashboardsRequest,
-  DownloadFilesRoute,
-  DownloadFilesRequest,
   EntitiesRoute,
   EntitiesRequest,
   EntityAncestorsRoute,
@@ -74,7 +72,6 @@ export function createApp() {
       'requestCountryAccess',
       handleWith(RequestCountryAccessRoute),
     )
-    .get<DownloadFilesRequest>('downloadFiles', handleWith(DownloadFilesRoute))
     .get<EntityRequest>('entity/:projectCode/:entityCode', handleWith(EntityRoute))
     .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
