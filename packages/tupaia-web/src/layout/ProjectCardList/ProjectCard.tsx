@@ -112,7 +112,7 @@ const OutlineLink = styled(RouterButton).attrs({
 
 interface LinkProps {
   url: string;
-  isLandingPage: string;
+  isLandingPage: boolean;
 }
 
 export const ProjectDeniedLink = ({ url }: LinkProps) => (
@@ -130,7 +130,7 @@ export const ProjectPendingLink = () => (
 );
 
 export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
-  <BaseLink to={url} target={isLandingPage}>
+  <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
     View project
   </BaseLink>
 );
