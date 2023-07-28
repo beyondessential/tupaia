@@ -895,6 +895,22 @@ export const DisplayOnEntityOtherConditionsSchema = {
 	}
 } 
 
+export const ExportPresentationOptionsSchema = {
+	"properties": {
+		"exportWithLabels": {
+			"type": "boolean"
+		},
+		"exportWithTable": {
+			"type": "boolean"
+		},
+		"exportWithTableDisabled": {
+			"type": "boolean"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CssColorSchema = {
 	"type": "string"
 } 
@@ -1267,8 +1283,18 @@ export const MatrixConfigSchema = {
 			"description": "Allows for conditional styling",
 			"anyOf": [
 				{
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1384,13 +1410,21 @@ export const MatrixConfigSchema = {
 								"columnIndexes"
 							]
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				{
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1411,8 +1445,18 @@ export const MatrixConfigSchema = {
 			"description": "Category header rows can have values just like real rows, this is how you style them",
 			"anyOf": [
 				{
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1528,13 +1572,21 @@ export const MatrixConfigSchema = {
 								"columnIndexes"
 							]
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				{
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
 						"type": {
 							"type": "string",
 							"enum": [
@@ -1705,8 +1757,18 @@ export const RangePresentationOptionsSchema = {
 export const PresentationOptionsSchema = {
 	"anyOf": [
 		{
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -1822,13 +1884,21 @@ export const PresentationOptionsSchema = {
 						"columnIndexes"
 					]
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				},
 				"type": {
 					"type": "string",
 					"enum": [
@@ -4686,18 +4756,18 @@ export const PieChartConfigSchema = {
 			]
 		},
 		"presentationOptions": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": {
-				"type": "object",
-				"properties": {
-					"color": {
-						"type": "string"
-					}
+			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
 				},
-				"additionalProperties": false,
-				"required": [
-					"color"
-				]
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				}
 			}
 		}
 	},
@@ -7382,18 +7452,18 @@ export const ChartConfigSchema = {
 					]
 				},
 				"presentationOptions": {
+					"additionalProperties": false,
 					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"type": "string"
-							}
+					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
 						},
-						"additionalProperties": false,
-						"required": [
-							"color"
-						]
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						}
 					}
 				}
 			},
@@ -16431,8 +16501,18 @@ export const DashboardItemConfigSchema = {
 					"description": "Allows for conditional styling",
 					"anyOf": [
 						{
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -16548,13 +16628,21 @@ export const DashboardItemConfigSchema = {
 										"columnIndexes"
 									]
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -16575,8 +16663,18 @@ export const DashboardItemConfigSchema = {
 					"description": "Category header rows can have values just like real rows, this is how you style them",
 					"anyOf": [
 						{
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -16692,13 +16790,21 @@ export const DashboardItemConfigSchema = {
 										"columnIndexes"
 									]
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
 								"type": {
 									"type": "string",
 									"enum": [
@@ -19000,18 +19106,18 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"presentationOptions": {
+					"additionalProperties": false,
 					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"type": "string"
-							}
+					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
 						},
-						"additionalProperties": false,
-						"required": [
-							"color"
-						]
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						}
 					}
 				}
 			},
@@ -23939,8 +24045,18 @@ export const DashboardItemSchema = {
 							"description": "Allows for conditional styling",
 							"anyOf": [
 								{
+									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -24056,13 +24172,21 @@ export const DashboardItemSchema = {
 												"columnIndexes"
 											]
 										}
-									},
-									"additionalProperties": false
+									}
 								},
 								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -24083,8 +24207,18 @@ export const DashboardItemSchema = {
 							"description": "Category header rows can have values just like real rows, this is how you style them",
 							"anyOf": [
 								{
+									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -24200,13 +24334,21 @@ export const DashboardItemSchema = {
 												"columnIndexes"
 											]
 										}
-									},
-									"additionalProperties": false
+									}
 								},
 								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
 										"type": {
 											"type": "string",
 											"enum": [
@@ -26508,18 +26650,18 @@ export const DashboardItemSchema = {
 							]
 						},
 						"presentationOptions": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"type": "string"
-									}
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
 								},
-								"additionalProperties": false,
-								"required": [
-									"color"
-								]
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								}
 							}
 						}
 					},
@@ -33676,6 +33818,15 @@ export const DashboardWithItemsSchema = {
 											{
 												"type": "object",
 												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
 													"type": {
 														"type": "string",
 														"enum": [
@@ -33956,6 +34107,15 @@ export const DashboardWithItemsSchema = {
 											{
 												"type": "object",
 												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
 													"type": {
 														"type": "string",
 														"enum": [
@@ -33978,6 +34138,15 @@ export const DashboardWithItemsSchema = {
 											{
 												"type": "object",
 												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
 													"type": {
 														"type": "string",
 														"enum": [
@@ -34258,6 +34427,15 @@ export const DashboardWithItemsSchema = {
 											{
 												"type": "object",
 												"properties": {
+													"exportwithlabels": {
+														"type": "boolean"
+													},
+													"exportwithtable": {
+														"type": "boolean"
+													},
+													"exportwithtabledisabled": {
+														"type": "boolean"
+													},
 													"type": {
 														"type": "string",
 														"enum": [
@@ -36326,6 +36504,17 @@ export const DashboardWithItemsSchema = {
 									},
 									"presentationoptions": {
 										"type": "object",
+										"properties": {
+											"exportwithlabels": {
+												"type": "boolean"
+											},
+											"exportwithtable": {
+												"type": "boolean"
+											},
+											"exportwithtabledisabled": {
+												"type": "boolean"
+											}
+										},
 										"additionalProperties": false
 									}
 								},

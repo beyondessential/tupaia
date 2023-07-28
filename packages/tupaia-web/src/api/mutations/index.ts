@@ -12,3 +12,4 @@ export * from './useRequestCountryAccess';
 export * from './useResendVerificationEmail';
 export * from './useResetPassword';
 export * from './useRequestResetPassword';
+export { useExportToExcel } from './useExportToExcel';

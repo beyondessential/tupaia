@@ -15,7 +15,8 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardItem, EnlargedDashboardItem } from '../DashboardItem';
+import { DashboardItem } from '../DashboardItem';
+import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;

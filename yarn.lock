@@ -10297,11 +10297,15 @@ __metadata:
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/dom-to-image": ^2.6.4
+    "@types/downloadjs": ^1.4.3
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
+    dom-to-image: 2.6.0
+    downloadjs: 1.4.7
     moment: ^2.29.1
     npm-run-all: ^4.1.5
     react: ^16.13.1
@@ -10795,6 +10799,20 @@ __metadata:
   version: 0.0.3
   resolution: "@types/doctrine@npm:0.0.3"
   checksum: 7ca9c8ff4d2da437785151c9eef0dd80b8fa12e0ff0fcb988458a78de4b6f0fc92727ba5bbee446e1df615a91f03053c5783b30b7c21ab6ceab6a42557e93e50
+  languageName: node
+  linkType: hard
+
+"@types/dom-to-image@npm:^2.6.4":
+  version: 2.6.4
+  resolution: "@types/dom-to-image@npm:2.6.4"
+  checksum: ddc8d74b944909040a6e6d9ca2feb246b50dc8c3ad908a90634fb6e46e4c438b47aa0a5df4994bd19c1d6f110eb90a15146d1c1a7b8762ab9d050f70e6de4050
+  languageName: node
+  linkType: hard
+
+"@types/downloadjs@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@types/downloadjs@npm:1.4.3"
+  checksum: d5b5e29399fdbb415f351fee64e7f7b3ddef0f251d2375ddaa0c16cd5c026f4a8dce1b4c76d05e019bc65c96f589d70f13512b44e54d568063fdefa0dbfd40c8
   languageName: node
   linkType: hard
 
