@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
 
-describe.only('Request record types with standard joins', () => {
+describe('Request record types with standard joins', () => {
   it('returns one join', () => {
     const customJoinConditions = {};
     const results = getQueryOptionsForColumns(
@@ -52,7 +52,7 @@ describe.only('Request record types with standard joins', () => {
   });
 });
 
-describe.only('Requests record types that require a through join', () => {
+describe('Requests record types that require a through join', () => {
   it('returns a record type that has one through join', () => {
     const customJoinConditions = {
       country: {
@@ -126,7 +126,7 @@ describe.only('Requests record types that require a through join', () => {
   });
 });
 
-describe.only('Calling incorrect parameters to throw an error', () => {
+describe('Calling incorrect parameters to throw an error', () => {
   it('defines a column with "_" in front of it to trigger the validation error', () => {
     const err =
       'Error: No columns start with "_", and conjunction operators are reserved for internal use only';
