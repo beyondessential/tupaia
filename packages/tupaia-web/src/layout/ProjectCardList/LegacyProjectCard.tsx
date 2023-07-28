@@ -95,6 +95,17 @@ const AlarmIcon = styled(Alarm)`
   margin-right: 5px;
 `;
 
+const StyledRouterButton = styled(RouterButton)`
+  color: white;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  text-transform: none;
+  padding: 0.6875rem 1.25rem;
+  min-width: 11.5rem;
+`;
+
 const StyledPendingButton = styled(RouterButton).attrs({
   variant: 'outlined',
   disabled: true,
@@ -128,7 +139,7 @@ export const LegacyProjectPendingLink = () => (
 );
 
 export const LegacyProjectAllowedLink = ({ to }: { to: To }) => (
-  <RouterButton to={to}>View project</RouterButton>
+  <StyledRouterButton to={to}>View project</StyledRouterButton>
 );
 
 interface LegacyProjectCardProps {

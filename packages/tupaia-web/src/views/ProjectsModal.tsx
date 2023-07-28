@@ -16,7 +16,6 @@ import {
 } from '../constants';
 import { useProjects, useUser } from '../api/queries';
 import {
-  LegacyProjectCard,
   LegacyProjectAllowedLink,
   LegacyProjectDeniedLink,
   LegacyProjectPendingLink,
@@ -29,19 +28,22 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.2rem 0 0;
-  width: 54rem;
+  width: 65rem;
   max-width: 100%;
+  text-align: left;
 `;
 
 const TagLine = styled.p`
-  margin: 0.625rem 0 2.5rem;
+  margin: 0.5rem 0.4rem 1.5rem;
+  width: 40%;
+  font-weight: 300;
 `;
 
 const ProjectsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin: 1.5rem 0;
+  gap: 2rem;
+  margin: 1.4rem 0;
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -54,19 +56,33 @@ const ExploreButton = styled(RouterButton).attrs({
   to: DEFAULT_URL,
 })`
   margin-bottom: 16px;
-  width: 250px;
-  height: 50px;
+  margin-left: 0.4rem;
+  width: 200px;
+  height: 40px;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  text-transform: none;
+`;
 
-  svg {
-    margin-right: 10px;
-  }
+const Line = styled.div`
+  background-color: #9ba0a6;
+  height: 1px;
+  margin-top: 15px;
+`;
+
+const ProjectsTitle = styled.h1`
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: white;
+  margin-top: 2rem;
+  margin-left: 0.4rem;
 `;
 
 const Logo = styled.img`
-  width: 200px;
-  height: 85px;
+  width: 6.6875rem;
+  height: 2.6875rem;
 `;
 
 const Loader = styled.div`
@@ -92,13 +108,13 @@ export const ProjectsModal = () => {
       <div>
         <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
         <TagLine>
-          Data aggregation, analysis, and visualisation for the most remote settings in the world
+          Data aggregation, analysis, and visualisation for the most remote settings in the world.
         </TagLine>
       </div>
       <div>
-        <ExploreButton>
-          <ExploreIcon />I just want to explore
-        </ExploreButton>
+        <ExploreButton>Explore Tupaia.org</ExploreButton>
+        <Line />
+        <ProjectsTitle>Projects</ProjectsTitle>
         {isFetching ? (
           <Loader>
             <CircularProgress />
@@ -107,7 +123,6 @@ export const ProjectsModal = () => {
           <ProjectsGrid>
             <ProjectCardList
               projects={projects}
-              ProjectCard={LegacyProjectCard}
               actions={{
                 [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                   project: { code, homeEntityCode, dashboardGroupName },

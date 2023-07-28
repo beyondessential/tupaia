@@ -22,6 +22,9 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
@@ -34,12 +37,13 @@ const CloseButton = styled(IconButton)`
   min-width: initial;
   position: absolute;
   top: 0.1rem;
-  right: 0.1rem;
+  right: 0rem;
 `;
 
 const Paper = styled(MuiPaper)`
-  background-color: ${({ theme }) => theme.palette.background.default};
-  padding: 0;
+  background-color: #202124;
+  padding-left: 3.125rem;
+  padding-right: 3.125rem;
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
@@ -55,12 +59,10 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
-      <Wrapper id="overlay-wrapper">
-        <CloseButton onClick={onClose} color="default">
-          <CloseIcon />
-        </CloseButton>
-        {children}
-      </Wrapper>
+      <CloseButton onClick={onClose} color="default">
+        <CloseIcon />
+      </CloseButton>
+      <Wrapper id="overlay-wrapper">{children}</Wrapper>
     </Dialog>
   );
 };
