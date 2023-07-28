@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import { FetchLoader, SmallAlert } from '@tupaia/ui-components';
-import { getIsChartData, getNoDataString } from '@tupaia/ui-chart-components';
+import { FetchLoader, NoData } from '@tupaia/ui-components';
+import { getIsChartData } from '@tupaia/ui-chart-components';
 import PropTypes from 'prop-types';
 import { VisualHeader } from '../VisualHeader';
 import { FavouriteButton } from '../../FavouriteButton';
@@ -104,13 +104,6 @@ const DrillDownLink = ({ pathname, reportCode, children }) => {
   );
 };
 
-const NoData = styled(SmallAlert)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
 const ListVisualContent = React.memo(
   ({ viewContent, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
     const { data, ...config } = viewContent;
@@ -120,9 +113,7 @@ const ListVisualContent = React.memo(
     if (!isLoading && !getIsChartData(viewContent)) {
       return (
         <Container>
-          <NoData severity="info" variant="standard">
-            {getNoDataString(viewContent)}
-          </NoData>
+          <NoData viewContent={viewContent} />
         </Container>
       );
     }
