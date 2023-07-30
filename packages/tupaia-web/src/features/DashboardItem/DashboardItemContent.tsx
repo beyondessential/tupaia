@@ -54,7 +54,9 @@ const Alert = styled(BaseAlert)`
   }
 `;
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled.div<{
+  $isExporting?: boolean;
+}>`
   width: 100%;
   height: 100%;
   display: flex;
