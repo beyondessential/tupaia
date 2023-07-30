@@ -15,6 +15,9 @@ const Parent = styled.div`
   color: ${props => props.theme.palette.common.black};
 `;
 
+/**
+ * This is the view that gets hit by puppeteer when generating a PDF.
+ */
 export const PDFExport = () => {
   // Hacky way to change default background color without touching root css.
   document.body.style.backgroundColor = 'white';
