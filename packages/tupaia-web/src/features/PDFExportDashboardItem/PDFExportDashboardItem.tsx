@@ -79,6 +79,10 @@ export const getDatesAsString = (
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
+
+/**
+ * This is the dashboard item that gets generated when generating a PDF. It is only present when puppeteer hits this view.
+ */
 export const PDFExportDashboardItem = ({
   dashboardItem,
   entityName,
