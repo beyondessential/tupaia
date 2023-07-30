@@ -6,6 +6,7 @@ import React from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { Typography, Divider as BaseDivider } from '@material-ui/core';
 import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
@@ -17,7 +18,6 @@ import { A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
 import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
-import { Typography, Divider as BaseDivider } from '@material-ui/core';
 import { PDFExportHeader } from './PDFExportHeader';
 
 const Wrapper = styled.div`
@@ -137,10 +137,12 @@ export const PDFExportDashboardItem = ({
           {period && <ExportPeriod>{period}</ExportPeriod>}
           <ExportContent $hasData={report?.data?.length > 0}>
             <DashboardItemContent
-              dashboardItem={{
-                ...dashboardItem,
-                config: dashboardItemConfig,
-              }}
+              dashboardItem={
+                {
+                  ...dashboardItem,
+                  config: dashboardItemConfig,
+                } as DashboardItem
+              }
               report={report}
               isLoading={isLoading}
               error={error}

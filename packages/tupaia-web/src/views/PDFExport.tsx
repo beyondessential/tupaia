@@ -27,10 +27,15 @@ export const PDFExport = () => {
 
   if (!activeDashboard) return null;
 
-  const dashboardItems = selectedDashboardItems?.reduce((result: DashboardItem[], code: string) => {
-    const item = activeDashboard?.items?.find((item: DashboardItem) => item.code === code);
-    return item ? [...result, item] : result;
-  }, []);
+  const dashboardItems = selectedDashboardItems?.reduce(
+    (result: DashboardItem[], code?: string) => {
+      const item = (activeDashboard?.items as DashboardItem[])?.find(
+        (item: DashboardItem) => item.code === (code as DashboardItem['code']),
+      );
+      return item ? [...result, item] : result;
+    },
+    [],
+  );
 
   return (
     <Parent>
