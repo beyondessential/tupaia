@@ -21,13 +21,17 @@ import { Divider } from '../../widgets';
 const DumbEntityQuestion = props => {
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
 
-  const validateQrCodeRead = qrCodeData => {
-    if (!props.validEntities.find(({ id }) => id === qrCodeData)) {
+  const onQrCodeRead = qrCodeData => {
+    let entityId;
+    try {
+      [, entityId] = qrCodeData.split('entity-');
+    } catch {
+      throw new Error('Invalid QR Code: Cannot parse entity id');
+    }
+
+    if (!props.validEntities.find(({ id }) => id === entityId)) {
       throw new Error('Invalid QR Code: does not match a valid entity for this question');
     }
-  };
-
-  const onQrCodeRead = entityId => {
     props.onSelectEntity({ id: entityId });
   };
 
@@ -48,7 +52,6 @@ const DumbEntityQuestion = props => {
       <>
         <QrCodeScanner
           onRead={onQrCodeRead}
-          validateReadData={validateQrCodeRead}
           onStartScan={() => setIsScanningQrCode(true)}
           onFinishScan={() => setIsScanningQrCode(false)}
         />

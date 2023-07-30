@@ -9,7 +9,7 @@ import { RNCamera } from 'react-native-camera';
 import { Button, STATUS_MESSAGE_ERROR, StatusMessage } from '../widgets';
 import { THEME_COLOR_ONE, THEME_COLOR_TWO } from '../globalStyles';
 
-export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan, validateReadData }) => {
+export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
   const [error, setError] = useState(null);
 
@@ -31,7 +31,6 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan, validateReadD
         style={localStyles.qrCodeScanner}
         onRead={({ data }) => {
           try {
-            validateReadData(data);
             onRead(data);
           } catch (e) {
             setError(e.message);
@@ -81,14 +80,12 @@ export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan, validateReadD
 
 QrCodeScanner.propTypes = {
   onRead: PropTypes.func,
-  validateReadData: PropTypes.func,
   onStartScan: PropTypes.func,
   onFinishScan: PropTypes.func,
 };
 
 QrCodeScanner.defaultProps = {
   onRead: () => {},
-  validateReadData: () => {},
   onStartScan: () => {},
   onFinishScan: () => {},
 };
