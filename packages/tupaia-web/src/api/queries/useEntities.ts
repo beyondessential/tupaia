@@ -4,10 +4,8 @@
  */
 import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
-import { EntityResponse } from '../../types';
+import { Entity } from '../../types';
 import { get } from '../api';
-
-type EntitiesResponse = EntityResponse[];
 
 export const useEntities = (
   projectCode?: string,
@@ -23,7 +21,7 @@ export const useEntities = (
 
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
-    (): Promise<EntitiesResponse> =>
+    (): Promise<Entity[]> =>
       get(`entities/${projectCode}/${entityCode}`, {
         params: {
           fields: [

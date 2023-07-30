@@ -6,10 +6,10 @@ import {
   LandingPage,
   Project,
   Country,
-  Entity as BaseEntity,
   MapOverlay,
   TupaiaWebDashboardsRequest,
   TupaiaWebProjectRequest,
+  TupaiaWebEntityRequest,
 } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
 import { ActivePolygonProps } from '@tupaia/ui-map-components';
@@ -26,6 +26,8 @@ export type SingleProject = TupaiaWebProjectRequest.ResBody & {
   config: any;
 };
 
+export type ProjectCode = Project['code'];
+
 export type SingleLandingPage = KeysToCamelCase<Omit<LandingPage, 'project_codes'>> & {
   projects: SingleProject[];
 };
@@ -34,10 +36,6 @@ export type CountryAccessListItem = Country & {
   hasAccess: boolean;
   accessRequests: string[];
 };
-
-export type ProjectCode = Project['code'];
-
-export type EntityCode = Entity['code'];
 
 export type Dashboard = TupaiaWebDashboardsRequest.ResBody[0];
 
@@ -57,14 +55,13 @@ export type MapOverlayGroup = {
 };
 
 // re-type the coordinates to be what the ui-map-components expect, because in the types package they are any | null
-export type Entity = KeysToCamelCase<Omit<BaseEntity, 'region' | 'bounds'>> & {
+export type Entity = KeysToCamelCase<Omit<TupaiaWebEntityRequest.ResBody, 'region' | 'bounds'>> & {
   region?: ActivePolygonProps['coordinates'];
   bounds?: Position[];
-};
-
-export type EntityResponse = Entity & {
   parentCode: Entity['code'];
   childCodes: Entity['code'][];
   photoUrl?: string;
   children?: Entity[];
 };
+
+export type EntityCode = Entity['code'];

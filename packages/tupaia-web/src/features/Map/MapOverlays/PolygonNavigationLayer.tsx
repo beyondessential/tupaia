@@ -6,7 +6,7 @@
 import React from 'react';
 import { ActivePolygon } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityResponse, EntityCode } from '../../../types';
+import { Entity, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation } from '../../../api/queries';
 import { useMapOverlayReport } from '../utils';
@@ -41,7 +41,7 @@ const SiblingEntities = ({
   );
 };
 
-const ActiveEntity = ({ entity }: { entity: EntityResponse }) => {
+const ActiveEntity = ({ entity }: { entity: Entity }) => {
   const { region, childCodes } = entity;
   const hasChildren = childCodes && childCodes.length > 0;
 
