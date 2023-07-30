@@ -14,8 +14,8 @@ const Card = styled.div`
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: auto auto auto;
-  gap: 16px;
-  padding-bottom: 16px;
+  gap: 1rem;
+  padding-bottom: 1rem;
   border-radius: 3px;
   text-align: center;
   position: relative;
@@ -25,10 +25,10 @@ const Card = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 500;
   margin-top: -8px;
-  padding: 0 16px;
+  padding: 0 1rem;
 `;
 
 const Header = styled.div<{
@@ -37,7 +37,7 @@ const Header = styled.div<{
   position: relative;
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
   height: 120px;
   background-color: ${({ theme }) => theme.projectCard.fallBack}; /* fallback color */
   background-image: ${({ $backgroundImage }) => `url(${$backgroundImage})`};
@@ -55,8 +55,8 @@ const Logo = styled.div`
   background: white;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   position: absolute;
-  width: 120px;
-  height: 85px;
+  width: 7.5rem;
+  height: 5.3125;
   bottom: -15px;
   display: flex;
   align-items: center;
