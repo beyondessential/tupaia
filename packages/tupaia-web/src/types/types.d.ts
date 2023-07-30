@@ -9,19 +9,21 @@ import {
   Entity as BaseEntity,
   MapOverlay,
   TupaiaWebDashboardsRequest,
+  TupaiaWebProjectRequest,
 } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
 import { ActivePolygonProps } from '@tupaia/ui-map-components';
 import { Position } from 'geojson';
 import { KeysToCamelCase } from './helpers';
 
-export type SingleProject = KeysToCamelCase<Project> & {
+export type SingleProject = TupaiaWebProjectRequest.ResBody & {
   hasAccess: boolean;
   hasPendingAccess: boolean;
   homeEntityCode: string;
   defaultDashboard: string;
   name: string;
   names: string[];
+  config: any;
 };
 
 export type SingleLandingPage = KeysToCamelCase<Omit<LandingPage, 'project_codes'>> & {

@@ -40,7 +40,7 @@ export const useDefaultMapOverlay = (
         const { defaultMeasure } = project;
 
         // if the defaultMeasure exists, use this
-        if (mapOverlaysByCode[defaultMeasure]) {
+        if (mapOverlaysByCode[defaultMeasure as string]) {
           return defaultMeasure;
         }
 
@@ -58,7 +58,7 @@ export const useDefaultMapOverlay = (
 
     const defaultOverlayCode = getDefaultOverlayCode();
     if (defaultOverlayCode) {
-      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, getDefaultOverlayCode());
+      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, getDefaultOverlayCode() as string);
     }
 
     if (!selectedMapOverlayPeriod) {
