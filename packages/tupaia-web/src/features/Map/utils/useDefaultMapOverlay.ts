@@ -11,12 +11,12 @@ import {
   DEFAULT_PERIOD_PARAM_STRING,
   URL_SEARCH_PARAMS,
 } from '../../../constants';
-import { MapOverlayGroup, ProjectCode, EntityCode } from '../../../types';
+import { MapOverlayGroup, ProjectCode } from '../../../types';
 
 // When the map overlay groups change, update the default map overlay
 export const useDefaultMapOverlay = (
   projectCode: ProjectCode,
-  mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup },
+  mapOverlaysByCode: { [code: string]: MapOverlayGroup },
 ) => {
   const navigate = useNavigate();
   const location = useLocation();

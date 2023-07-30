@@ -3,9 +3,15 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useSearchParams } from 'react-router-dom';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery } from 'react-query';
 import { get } from '../api';
-import { EntityCode, MapOverlayGroup, ProjectCode, SingleMapOverlayItem } from '../../types';
+import {
+  EntityCode,
+  MapOverlayGroup,
+  ProjectCode,
+  SingleMapOverlayItem,
+  MapOverlaysResponse,
+} from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
 const mapOverlayByCode = (
@@ -28,27 +34,24 @@ const mapOverlayByCode = (
   );
 };
 
-interface UseMapOverlaysResult {
-  hasMapOverlays: boolean;
-  mapOverlayGroups: MapOverlayGroup[];
-  mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup };
-  isLoadingMapOverlays: boolean;
-  errorLoadingMapOverlays: UseQueryResult['error'];
-  selectedOverlayCode: string | null;
-  selectedOverlay?: SingleMapOverlayItem;
-}
+// interface UseMapOverlaysResult {
+//   hasMapOverlays: boolean;
+//   mapOverlayGroups: MapOverlayGroup[];
+//   mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup };
+//   isLoadingMapOverlays: boolean;
+//   errorLoadingMapOverlays: UseQueryResult['error'];
+//   selectedOverlayCode: string | null;
+//   selectedOverlay?: SingleMapOverlayItem;
+// }
 
 /**
  * Gets the map overlays and returns useful utils and values associated with these
  */
-export const useMapOverlays = (
-  projectCode?: ProjectCode,
-  entityCode?: EntityCode,
-): UseMapOverlaysResult => {
+export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const [urlSearchParams] = useSearchParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
-    async () => {
+    async (): Promise<MapOverlaysResponse> => {
       return get(`mapOverlays/${projectCode}/${entityCode}`);
     },
     {

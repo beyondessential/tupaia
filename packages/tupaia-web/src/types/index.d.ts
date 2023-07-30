@@ -1,4 +1,6 @@
 export * from './types';
 export * from './report';
-export * from './dashboardItem';
+export * from './dashboard';
+export * from './entity';
+export * from './mapOverlay';
 export * from './helpers';
