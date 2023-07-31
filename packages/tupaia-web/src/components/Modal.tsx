@@ -22,9 +22,6 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem;
-  ::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
@@ -37,13 +34,11 @@ const CloseButton = styled(IconButton)`
   min-width: initial;
   position: absolute;
   top: 0.1rem;
-  right: 0rem;
+  right: 0.1rem;
 `;
 
 const Paper = styled(MuiPaper)`
   background-color: #202124;
-  padding-left: 3.125rem;
-  padding-right: 3.125rem;
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;

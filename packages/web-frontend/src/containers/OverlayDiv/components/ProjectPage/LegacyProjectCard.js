@@ -117,7 +117,7 @@ export const ProjectPendingButton = ({ onClick }) => (
 );
 // eslint-disable-next-line react/prop-types
 export const ProjectAllowedButton = ({ onClick }) => (
-  <Button onClick={onClick} variant="contained" color="secondary">
+  <Button onClick={onClick} variant="contained" color="primary">
     View project
   </Button>
 );
