@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { Pagination } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
+import { format } from 'date-fns';
 
 const StyledTextField = styled(TextField)`
   justify-content: end;
@@ -89,11 +90,16 @@ export const SurveyScreens = ({ survey, existingAnswers, onChange, selectedEntit
               component.question.type === 'SubmissionDate' ||
               component.question.type === 'DateOfData'
             ) {
+              const formattedDate =
+                typeof fields.data_time === 'object'
+                  ? format(fields.data_time, 'yyyy/MM/dd hh:mm:ss')
+                  : fields.data_time;
+
               return (
                 <StyledTextField
                   label={component.question.name}
                   name="dateOfData"
-                  value={fields.data_time}
+                  value={formattedDate}
                   disabled
                   error={false}
                   helperText={false}
