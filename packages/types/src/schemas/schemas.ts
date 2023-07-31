@@ -42340,6 +42340,9 @@ export const TranslatedMapOverlaySchema = {
 		},
 		"legacy": {
 			"type": "boolean"
+		},
+		"sortOrder": {
+			"type": "number"
 		}
 	},
 	"type": "object",
