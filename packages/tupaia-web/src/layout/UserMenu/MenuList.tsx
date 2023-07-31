@@ -18,6 +18,7 @@ const MenuListWrapper = styled.ul<{
   margin-block-start: 0;
   margin-block-end: 0;
   padding-inline-start: 0;
+  margin-top: 1rem;
   * {
     color: ${({ $secondaryColor }) => $secondaryColor};
   }

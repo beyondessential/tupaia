@@ -46,6 +46,7 @@ const Alert = styled(BaseAlert)`
   overflow: hidden; // this is to stop any extra long text from overflowing the alert and causing a horizontal scroll on the dashboard
   .MuiAlert-message {
     max-width: 100%;
+    width: 100%;
   }
   p {
     max-width: 90%;
@@ -80,6 +81,7 @@ interface DashboardItemContentProps {
   error: UseQueryResult['error'] | null;
   onRetryFetch: UseQueryResult['refetch'];
   isExpandable: boolean;
+  isExporting?: boolean;
 }
 
 const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
@@ -104,6 +106,7 @@ export const DashboardItemContent = ({
   error,
   onRetryFetch,
   isExpandable,
+  isExporting,
 }: DashboardItemContentProps) => {
   const { reportCode, config } = dashboardItem;
   const { name, type, viewType, componentName } = config || {};
@@ -145,7 +148,12 @@ export const DashboardItemContent = ({
           }}
         />
       ) : (
-        <DisplayComponent report={report} config={config} isEnlarged={isEnlarged} />
+        <DisplayComponent
+          report={report}
+          config={config}
+          isEnlarged={isEnlarged}
+          isExporting={isExporting}
+        />
       )}
       {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}

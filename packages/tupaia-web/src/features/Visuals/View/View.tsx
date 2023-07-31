@@ -12,6 +12,7 @@ import { MultiValue } from './MultiValue';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
+import { DownloadFiles } from './DownloadFiles';
 
 interface ViewProps {
   report: DashboardItemReport;
@@ -26,6 +27,7 @@ const VIEWS = {
   multiValue: MultiValue,
   multiValueRow: MultiValueRow,
   dataDownload: DataDownload,
+  filesDownload: DownloadFiles,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
