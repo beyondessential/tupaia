@@ -10,6 +10,7 @@ import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { DashboardItemReport, DashboardItemConfig } from '../../types';
+import { A4Page } from '@tupaia/ui-components';
 
 const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
@@ -26,6 +27,11 @@ const ExportingStyledTable = styled(ChartTable)`
   table {
     border: 1px solid ${GREY_DE};
     width: auto;
+  }
+  ${A4Page} & {
+    table {
+      width: 100%;
+    }
   }
 
   [role='button'] {
@@ -117,6 +123,9 @@ const ContentWrapper = styled.div<{
     $isEnlarged
       ? '24rem'
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
+  ${A4Page} & {
+    padding: 0;
+  }
 `;
 
 interface ChartProps {
