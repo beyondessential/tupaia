@@ -9,9 +9,9 @@ import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { TooltipPayload } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
 import { LegendPosition, ViewContent } from '../../types';
 import { isMobile } from '../../utils';
-import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
 
 const LegendContainer = styled.div<{
   $position?: LegendPosition;

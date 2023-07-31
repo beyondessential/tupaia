@@ -163,3 +163,9 @@ type DisplayOnEntityAttributeConditions = {
 type DisplayOnEntityOtherConditions = {
   [key: string]: string | number | boolean;
 };
+
+export type ExportPresentationOptions = {
+  exportWithLabels?: boolean;
+  exportWithTable?: boolean;
+  exportWithTableDisabled?: boolean;
+};
