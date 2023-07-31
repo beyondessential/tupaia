@@ -7,8 +7,6 @@ import { useQuery, QueryObserverOptions } from 'react-query';
 import { Entity } from '../../types';
 import { get } from '../api';
 
-type EntitiesResponse = Entity[];
-
 export const useEntities = (
   projectCode?: string,
   entityCode?: string,
@@ -23,7 +21,7 @@ export const useEntities = (
 
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
-    (): Promise<EntitiesResponse> =>
+    (): Promise<Entity[]> =>
       get(`entities/${projectCode}/${entityCode}`, {
         params: {
           includeRootEntity: true,

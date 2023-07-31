@@ -4,7 +4,7 @@
  */
 
 import { useQuery } from 'react-query';
-import { EntityCode, Entity, ProjectCode } from '../../types';
+import { EntityCode, ProjectCode, Entity } from '../../types';
 import { get } from '../api';
 import { DEFAULT_BOUNDS } from '../../constants';
 

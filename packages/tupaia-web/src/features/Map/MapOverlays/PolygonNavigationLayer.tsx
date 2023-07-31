@@ -6,7 +6,7 @@
 import React from 'react';
 import { ActivePolygon, POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
-import { EntityCode, Entity } from '../../../types';
+import { Entity, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
 

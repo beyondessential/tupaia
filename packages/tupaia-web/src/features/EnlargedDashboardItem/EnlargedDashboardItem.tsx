@@ -72,7 +72,9 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
   const { isExportMode } = exportConfig;
   const isDataDownload =
     ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
-  const hasBigData = !isDataDownload && (reportData?.data?.length > 20 || type === 'matrix');
+  const hasBigData =
+    !isDataDownload &&
+    ((reportData?.data?.length && reportData?.data?.length > 20) || type === 'matrix');
 
   return (
     <Modal isOpen onClose={handleCloseModal}>

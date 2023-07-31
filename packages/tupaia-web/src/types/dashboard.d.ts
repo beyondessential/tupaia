@@ -10,6 +10,7 @@ import {
   MultiValueViewConfig,
   ViewConfig,
   DashboardItem as BaseDashboardItem,
+  TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
 
@@ -35,3 +36,5 @@ export type DashboardItem = Omit<KeysToCamelCase<BaseDashboardItem>, 'config'> &
 };
 
 export type DashboardName = DashboardItem['dashboardName'];
+
+export type Dashboard = TupaiaWebDashboardsRequest.ResBody[0];
