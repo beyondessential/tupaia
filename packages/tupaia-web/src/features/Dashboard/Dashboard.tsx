@@ -18,6 +18,7 @@ import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -113,29 +114,31 @@ export const Dashboard = () => {
   };
 
   return (
-    <Panel $isExpanded={isExpanded}>
-      <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
-      <ScrollBody>
-        <Breadcrumbs />
-        <DashboardImageContainer>
-          {bounds ? (
-            <StaticMap bounds={bounds} />
-          ) : (
-            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
-          )}
-        </DashboardImageContainer>
-        <TitleBar>
-          <Title variant="h3">{entity?.name}</Title>
-          <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
-        </TitleBar>
-        <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map(item => (
-            <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
-          ))}
-        </DashboardItemsWrapper>
-      </ScrollBody>
-      <EnlargedDashboardItem entityName={entity?.name} />
-    </Panel>
+    <ErrorBoundary>
+      <Panel $isExpanded={isExpanded}>
+        <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
+        <ScrollBody>
+          <Breadcrumbs />
+          <DashboardImageContainer>
+            {bounds ? (
+              <StaticMap bounds={bounds} />
+            ) : (
+              <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+            )}
+          </DashboardImageContainer>
+          <TitleBar>
+            <Title variant="h3">{entity?.name}</Title>
+            <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
+          </TitleBar>
+          <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          <DashboardItemsWrapper $isExpanded={isExpanded}>
+            {activeDashboard?.items.map(item => (
+              <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
+            ))}
+          </DashboardItemsWrapper>
+        </ScrollBody>
+        <EnlargedDashboardItem entityName={entity?.name} />
+      </Panel>
+    </ErrorBoundary>
   );
 };

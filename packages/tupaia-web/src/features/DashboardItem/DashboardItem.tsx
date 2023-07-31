@@ -13,6 +13,7 @@ import { MultiValueViewConfig } from '@tupaia/types';
 import { DashboardItemConfig, DashboardItem as DashboardItemType } from '../../types';
 import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   display: flex;
@@ -95,19 +96,21 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   } else if (viewType?.includes('Download') || type === 'component') showTitle = false;
 
   return (
-    <Wrapper>
-      {/** render the item in the dashboard */}
-      <Container>
-        {showTitle && <Title>{name}</Title>}
-        <DashboardItemContent
-          dashboardItem={dashboardItem}
-          report={report}
-          isLoading={isLoading}
-          error={isError ? error : null}
-          onRetryFetch={refetch}
-          isExpandable={isExpandable}
-        />
-      </Container>
-    </Wrapper>
+    <ErrorBoundary>
+      <Wrapper>
+        {/** render the item in the dashboard */}
+        <Container>
+          {showTitle && <Title>{name}</Title>}
+          <DashboardItemContent
+            dashboardItem={dashboardItem}
+            report={report}
+            isLoading={isLoading}
+            error={isError ? error : null}
+            onRetryFetch={refetch}
+            isExpandable={isExpandable}
+          />
+        </Container>
+      </Wrapper>
+    </ErrorBoundary>
   );
 };

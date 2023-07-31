@@ -23,6 +23,7 @@ const Card = styled.div`
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: space-between;
+  text-align: left;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     padding: 2.5rem;
@@ -37,8 +38,8 @@ const Card = styled.div`
 const Logo = styled.div`
   position: relative;
   background: white;
-  width: 5rem;
-  height: 5rem;
+  width: 4.875rem;
+  height: 4.875rem;
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 0.625rem;
@@ -64,6 +65,7 @@ const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.2;
   margin-bottom: 0.625rem;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const CountryText = styled(Text)`
@@ -128,7 +130,7 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 export const ProjectAllowedLink = ({ url }: LinkProps) => (
-  <BaseLink to={url}>View project</BaseLink>
+  <BaseLink to={url}>View Project</BaseLink>
 );
 
 interface ProjectCardProps extends Partial<SingleProject> {

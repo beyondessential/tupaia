@@ -26,6 +26,7 @@ import {
 import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -109,44 +110,46 @@ export const DataVisualsLayer = ({
   const { serieses } = mapOverlayData;
 
   return (
-    <LayerGroup>
-      {processedMeasureData.map(measure => {
-        if (measure.region) {
-          return (
-            <ShadedPolygon
-              key={measure.organisationUnitCode}
-              positions={measure.region}
-              pathOptions={{
-                color: measure.color,
-                fillColor: measure.color,
-              }}
-              eventHandlers={{
-                click: () => {
-                  navigateToEntity(measure.organisationUnitCode);
-                },
-              }}
-              {...measure}
-            >
-              <AreaTooltip
-                serieses={serieses}
-                orgUnitMeasureData={measure as MeasureData}
-                orgUnitName={measure.name}
-                hasMeasureValue
-              />
-            </ShadedPolygon>
-          );
-        }
+    <ErrorBoundary>
+      <LayerGroup>
+        {processedMeasureData.map(measure => {
+          if (measure.region) {
+            return (
+              <ShadedPolygon
+                key={measure.organisationUnitCode}
+                positions={measure.region}
+                pathOptions={{
+                  color: measure.color,
+                  fillColor: measure.color,
+                }}
+                eventHandlers={{
+                  click: () => {
+                    navigateToEntity(measure.organisationUnitCode);
+                  },
+                }}
+                {...measure}
+              >
+                <AreaTooltip
+                  serieses={serieses}
+                  orgUnitMeasureData={measure as MeasureData}
+                  orgUnitName={measure.name}
+                  hasMeasureValue
+                />
+              </ShadedPolygon>
+            );
+          }
 
-        return (
-          <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
-            <MeasurePopup
-              markerData={measure as MeasureData}
-              serieses={serieses}
-              onSeeOrgUnitDashboard={navigateToEntity}
-            />
-          </MeasureMarker>
-        );
-      })}
-    </LayerGroup>
+          return (
+            <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
+              <MeasurePopup
+                markerData={measure as MeasureData}
+                serieses={serieses}
+                onSeeOrgUnitDashboard={navigateToEntity}
+              />
+            </MeasureMarker>
+          );
+        })}
+      </LayerGroup>
+    </ErrorBoundary>
   );
 };

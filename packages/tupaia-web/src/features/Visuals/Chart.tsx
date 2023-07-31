@@ -10,6 +10,7 @@ import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { DashboardItemReport, DashboardItemConfig } from '../../types';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
@@ -175,34 +176,40 @@ export const Chart = ({ config, report, isEnlarged = false, isExporting = false 
   } as unknown) as ViewContent;
 
   return (
-    <Wrapper>
-      <TabContext value={displayType}>
-        {isEnlarged && !isExporting && (
-          <TabsWrapper>
-            <TabsGroup
-              value={displayType}
-              onChange={handleChangeDisplayType}
-              variant="standard"
-              aria-label="Toggle display type"
+    <ErrorBoundary>
+      <Wrapper>
+        <TabContext value={displayType}>
+          {isEnlarged && !isExporting && (
+            <TabsWrapper>
+              <TabsGroup
+                value={displayType}
+                onChange={handleChangeDisplayType}
+                variant="standard"
+                aria-label="Toggle display type"
+              >
+                {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
+                  <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
+                ))}
+              </TabsGroup>
+            </TabsWrapper>
+          )}
+          {availableDisplayTypes.map(({ value, display: Content }) => (
+            <ContentWrapper
+              key={value}
+              value={value}
+              as={isEnlarged && !isExporting ? TabPanel : 'div'}
+              $isEnlarged={isEnlarged}
+              $isExporting={isExporting}
             >
-              {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
-                <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
-              ))}
-            </TabsGroup>
-          </TabsWrapper>
-        )}
-        {availableDisplayTypes.map(({ value, display: Content }) => (
-          <ContentWrapper
-            key={value}
-            value={value}
-            as={isEnlarged && !isExporting ? TabPanel : 'div'}
-            $isEnlarged={isEnlarged}
-            $isExporting={isExporting}
-          >
-            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={isExporting} />
-          </ContentWrapper>
-        ))}
-      </TabContext>
-    </Wrapper>
+              <Content
+                viewContent={viewContent}
+                isEnlarged={isEnlarged}
+                isExporting={isExporting}
+              />
+            </ContentWrapper>
+          ))}
+        </TabContext>
+      </Wrapper>
+    </ErrorBoundary>
   );
 };
