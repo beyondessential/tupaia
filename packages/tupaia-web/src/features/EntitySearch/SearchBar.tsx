@@ -46,6 +46,7 @@ interface SearchBarProps {
 
 export const SearchBar = ({ value = '', onChange, onFocusChange }: SearchBarProps) => {
   const onChangeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('search value...', event.target.value);
     onChange(event.target.value);
   };
 

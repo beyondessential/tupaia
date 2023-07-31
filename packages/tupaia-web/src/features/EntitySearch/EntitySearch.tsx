@@ -5,11 +5,11 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ClickAwayListener } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { Button, ClickAwayListener, ListItemProps } from '@material-ui/core';
+import { Link, useParams } from 'react-router-dom';
 import { SearchBar } from './SearchBar';
 import { EntityMenu } from './EntityMenu';
-import { useEntities, useProject } from '../../api/queries';
+import { useEntities, useProject, useEntitySearch } from '../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Wrapper = styled.div`
@@ -46,7 +46,15 @@ const ResultsWrapper = styled.div`
 
 const SearchResults = styled.div`
   padding: 1rem;
-  display: flex;
+`;
+
+const ResultLink = styled(Button).attrs({
+  component: Link,
+})<ListItemProps>`
+  display: block;
+  text-transform: none;
+  padding: 0.8rem;
+  font-size: 0.875rem;
 `;
 
 const isMobile = () => {
@@ -56,9 +64,13 @@ const isMobile = () => {
 export const EntitySearch = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode!);
-  const { data: entities = [] } = useEntities(projectCode!, project?.code);
+  const { data: entities = [] } = useEntities(projectCode!, project?.entityCode);
   const [searchValue, setSearchValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data: searchResults = [] } = useEntitySearch(projectCode, searchValue);
+
+  console.log('data', searchResults);
 
   const onClose = () => {
     if (isMobile()) {
@@ -70,13 +82,25 @@ export const EntitySearch = () => {
   const grandChildren = entities.filter(entity => entity.parentCode !== project?.code);
 
   return (
-    <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+    <ClickAwayListener onClickAway={onClose}>
       <Wrapper>
         <SearchBar value={searchValue} onChange={setSearchValue} onFocusChange={setIsOpen} />
         {isOpen && (
           <ResultsWrapper>
             {searchValue ? (
-              <SearchResults>{searchValue}</SearchResults>
+              <SearchResults>
+                {searchResults.map(({ code, name }) => {
+                  return (
+                    <ResultLink
+                      key={code}
+                      onClick={onClose}
+                      to={{ ...location, pathname: `/${projectCode}/${code}` }}
+                    >
+                      {name}
+                    </ResultLink>
+                  );
+                })}
+              </SearchResults>
             ) : (
               <EntityMenu
                 projectCode={projectCode!}
