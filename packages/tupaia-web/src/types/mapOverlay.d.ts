@@ -4,7 +4,7 @@
  */
 
 import { KeysToCamelCase } from './helpers.ts';
-import { MapOverlay, TupaiaWebMapOverlaysRequest } from '@tupaia/types';
+import { MapOverlay } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
 
 export type SingleMapOverlayItem = KeysToCamelCase<
@@ -23,6 +23,8 @@ export type MapOverlayGroup = {
 };
 
 // Todo: use TupaiaWebMapOverlaysRequest
+// The types from the server and the types defined above need to be merged which will require backend
+// changes in MapOverlayRoute.ts
 export type MapOverlaysResponse = {
   name: string;
   entityCode: string;
