@@ -12,7 +12,7 @@ import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
+import { useActiveMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
@@ -146,7 +146,7 @@ export const DesktopMapOverlaySelector = ({
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-  const { data: mapOverlayData } = useMapOverlayReport();
+  const { period } = useActiveMapOverlayReport();
 
   return (
     <Wrapper>
@@ -179,11 +179,10 @@ export const DesktopMapOverlaySelector = ({
             </OverlayLibraryContentWrapper>
           </OverlayLibraryAccordion>
         )}
-        {mapOverlayData?.period?.latestAvailable && (
+        {period?.latestAvailable && (
           <LatestDataContainer>
             <LatestDataText>
-              Latest overlay data:{' '}
-              {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
+              Latest overlay data: {periodToMoment(period?.latestAvailable).format('DD/MM/YYYY')}
             </LatestDataText>
           </LatestDataContainer>
         )}

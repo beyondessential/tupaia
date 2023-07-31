@@ -4,10 +4,10 @@
  */
 import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
-import { EntityResponse } from '../../types';
+import { Entity } from '../../types';
 import { get } from '../api';
 
-type EntitiesResponse = EntityResponse[];
+type EntitiesResponse = Entity[];
 
 export const useEntities = (
   projectCode?: string,
@@ -26,6 +26,7 @@ export const useEntities = (
     (): Promise<EntitiesResponse> =>
       get(`entities/${projectCode}/${entityCode}`, {
         params: {
+          includeRootEntity: true,
           fields: [
             'parent_code',
             'code',
@@ -57,7 +58,7 @@ export const useEntitiesWithLocation = (
     entityCode,
     {
       params: {
-        ...{ ...axiosConfig?.params },
+        includeRootEntity: true,
         fields: [
           'parent_code',
           'code',
@@ -71,6 +72,7 @@ export const useEntitiesWithLocation = (
           'attributes',
           'child_codes',
         ],
+        ...{ ...axiosConfig?.params },
       },
     },
     queryOptions,

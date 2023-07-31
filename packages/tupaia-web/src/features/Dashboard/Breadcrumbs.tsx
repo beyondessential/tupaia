@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { useEntityAncestors } from '../../api/queries';
+import { useEntityAncestors, useProject } from '../../api/queries';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   position: absolute;
@@ -49,21 +49,32 @@ const Crumb = styled(Link)`
 export const Breadcrumbs = () => {
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
+  const { data: project } = useProject(projectCode);
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
-  const breadcrumbs = data.map(({ code, name }: { code: string, name: string }) => ({ code, name })).reverse();
+
+  const breadcrumbs = data
+    // Remove the project from the breadcrumbs if there are multiple projects in the entity hierarchy
+    .filter(({ type }: { type: string }) => project?.names.length > 1 || type !== 'project')
+    .reverse();
+
+  if (breadcrumbs.length < 2) {
+    return null;
+  }
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      {breadcrumbs.map(({ code: entityCode, name: entityName }: { code: string, name: string }, index: number) => {
-        const last = index === breadcrumbs.length - 1;
-        return last ? (
-          <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
-        ) : (
-          <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
-            {entityName}
-          </Crumb>
-        );
-      })}
+      {breadcrumbs.map(
+        ({ code: entityCode, name: entityName }: { code: string; name: string }, index: number) => {
+          const isLast = index === breadcrumbs.length - 1;
+          return isLast ? (
+            <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
+          ) : (
+            <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
+              {entityName}
+            </Crumb>
+          );
+        },
+      )}
     </StyledBreadcrumbs>
   );
 };
