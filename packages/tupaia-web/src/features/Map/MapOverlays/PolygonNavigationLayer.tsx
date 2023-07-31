@@ -4,12 +4,11 @@
  */
 
 import React from 'react';
-import { ActivePolygon } from '@tupaia/ui-map-components';
+import { ActivePolygon, POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
 import { Entity, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
-import { useEntitiesWithLocation } from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
+import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
 
 const SiblingEntities = ({
   parentEntityCode,
@@ -62,17 +61,18 @@ const ActiveEntity = ({ entity }: { entity: Entity }) => {
 
 export const PolygonNavigationLayer = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entities = [] } = useEntitiesWithLocation(projectCode, entityCode, {
-    params: { includeRoot: true },
-  });
-  const { data: mapOverlayData } = useMapOverlayReport();
+  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { data: activeEntity } = useEntity(projectCode, entityCode);
+  const { data: entities } = useEntitiesWithLocation(projectCode, entityCode);
 
   if (!entities || entities.length === 0) {
     return null;
   }
 
-  const activeEntity = entities.find(entity => entity.code === entityCode);
-  const childEntities = entities.filter(entity => entity.parentCode === entityCode);
+  const childEntities = entities.filter((entity: Entity) => entity.parentCode === entityCode);
+
+  const showChildEntities =
+    !POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
 
   return (
     <>
@@ -85,13 +85,13 @@ export const PolygonNavigationLayer = () => {
           />
         </>
       )}
-      {childEntities?.length > 0 &&
-        childEntities.map(entity => (
+      {showChildEntities &&
+        childEntities.map((entity: Entity) => (
           <InteractivePolygon
             key={entity.code}
             entity={entity}
             isChildArea
-            isShowingData={!!mapOverlayData?.measureData}
+            isShowingData={!!selectedOverlay}
           />
         ))}
     </>

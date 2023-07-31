@@ -24,6 +24,7 @@ export const useEntities = (
     (): Promise<Entity[]> =>
       get(`entities/${projectCode}/${entityCode}`, {
         params: {
+          includeRootEntity: true,
           fields: [
             'parent_code',
             'code',
@@ -55,7 +56,7 @@ export const useEntitiesWithLocation = (
     entityCode,
     {
       params: {
-        ...{ ...axiosConfig?.params },
+        includeRootEntity: true,
         fields: [
           'parent_code',
           'code',
@@ -69,6 +70,7 @@ export const useEntitiesWithLocation = (
           'attributes',
           'child_codes',
         ],
+        ...{ ...axiosConfig?.params },
       },
     },
     queryOptions,

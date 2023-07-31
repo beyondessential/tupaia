@@ -4,6 +4,7 @@
  */
 
 import { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useProject } from '../../../api/queries';
 import {
@@ -18,6 +19,7 @@ export const useDefaultMapOverlay = (
   projectCode: ProjectCode,
   mapOverlaysByCode: { [code: string]: MapOverlayGroup },
 ) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [urlSearchParams] = useSearchParams();
@@ -31,6 +33,8 @@ export const useDefaultMapOverlay = (
     const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
 
     if (!project || overlayCodes.length === 0) {
+      // Clear map overlay data when there are no overlays to select from
+      queryClient.invalidateQueries(['mapOverlayReport', projectCode]);
       return;
     }
 
