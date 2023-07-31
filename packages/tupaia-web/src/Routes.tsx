@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { LandingPage, ProjectPage } from './views';
+import { LandingPage, PDFExport, ProjectPage } from './views';
 import { Dashboard } from './features';
 import { ModalRoutes } from './ModalRoutes';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
@@ -59,6 +59,7 @@ export const Routes = () => {
     <>
       <ModalRoutes />
       <RouterRoutes>
+        <Route path="/:projectCode/:entityCode/:dashboardName/pdf-export" element={<PDFExport />} />
         <Route element={<MainLayout />}>
           <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
           <Route element={<ProjectPage />}>

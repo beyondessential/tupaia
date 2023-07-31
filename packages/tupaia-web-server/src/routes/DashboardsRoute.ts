@@ -88,6 +88,6 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 
-    return camelcaseKeys(response, { deep: true });
+    return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
   }
 }

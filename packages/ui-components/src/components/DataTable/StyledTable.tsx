@@ -60,7 +60,7 @@ export const StyledTable = styled(MuiTable)`
   }
 
   td.data-type-number {
-    color: #0f0f87;
+    color: ${({ theme }) => (theme.palette.type === 'light' ? '#0f0f87' : 'white')};
   }
 
   td.data-type-boolean {

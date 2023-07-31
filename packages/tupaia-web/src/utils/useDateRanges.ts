@@ -9,7 +9,7 @@ import {
   GRANULARITIES_WITH_ONE_DATE,
   roundStartEndDates,
 } from '@tupaia/utils';
-import { DashboardItem, SingleMapOverlayItem } from '../types';
+import { DashboardItemConfig, SingleMapOverlayItem } from '../types';
 import { DEFAULT_PERIOD_PARAM_STRING } from '../constants';
 
 // converts the date range to a URL period string
@@ -77,7 +77,7 @@ const convertUrlPeriodStringToDateRange = (
  */
 export const useDateRanges = (
   urlParam: string,
-  selectedItem?: SingleMapOverlayItem | DashboardItem,
+  selectedItem?: SingleMapOverlayItem | DashboardItemConfig,
 ) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
