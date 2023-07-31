@@ -38,7 +38,7 @@ const ExportPeriod = styled(Typography)`
 `;
 
 const ExportContent = styled.div<{
-  $hasData: boolean;
+  $hasData?: boolean;
 }>`
   padding-top: ${({ $hasData }) => ($hasData ? '0' : '1.5rem')};
 `;
@@ -139,7 +139,7 @@ export const PDFExportDashboardItem = ({
           <Title>{title}</Title>
           {reference && <ReferenceTooltip reference={reference} />}
           {period && <ExportPeriod>{period}</ExportPeriod>}
-          <ExportContent $hasData={report?.data?.length > 0}>
+          <ExportContent $hasData={report?.data && report?.data?.length > 0}>
             <DashboardItemContent
               dashboardItem={
                 {
