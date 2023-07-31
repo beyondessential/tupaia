@@ -34,16 +34,6 @@ const mapOverlayByCode = (
   );
 };
 
-// interface UseMapOverlaysResult {
-//   hasMapOverlays: boolean;
-//   mapOverlayGroups: MapOverlayGroup[];
-//   mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup };
-//   isLoadingMapOverlays: boolean;
-//   errorLoadingMapOverlays: UseQueryResult['error'];
-//   selectedOverlayCode: string | null;
-//   selectedOverlay?: SingleMapOverlayItem;
-// }
-
 /**
  * Gets the map overlays and returns useful utils and values associated with these
  */

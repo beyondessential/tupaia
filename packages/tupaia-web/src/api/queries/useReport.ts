@@ -8,6 +8,7 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DashboardItem, EntityCode, ProjectCode } from '../../types';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
+import { TupaiaWebReportRequest } from '@tupaia/types';
 
 type QueryParams = Record<string, unknown> & {
   projectCode?: ProjectCode;
@@ -46,7 +47,7 @@ export const useReport = (reportCode: DashboardItem['reportCode'], params: Query
       formattedEndDate,
       ...Object.values(rest),
     ],
-    () =>
+    (): Promise<TupaiaWebReportRequest.ResBody> =>
       get(`${endPoint}/${reportCode}`, {
         params: {
           dashboardCode,

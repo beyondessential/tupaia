@@ -75,7 +75,7 @@ const DisplayComponents = {
 
 interface DashboardItemContentProps {
   dashboardItem?: DashboardItem;
-  report: DashboardItemReport;
+  report?: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
@@ -136,7 +136,7 @@ export const DashboardItemContent = ({
     );
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = getHasNoData(report, type);
+  const showNoDataMessage = getHasNoData(report!, type);
 
   return (
     <>
@@ -149,7 +149,7 @@ export const DashboardItemContent = ({
         />
       ) : (
         <DisplayComponent
-          report={report}
+          report={report!}
           config={config}
           isEnlarged={isEnlarged}
           isExporting={isExporting}
