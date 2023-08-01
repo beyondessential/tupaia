@@ -30,10 +30,10 @@ export type MatrixConfig = BaseConfig & {
   /**
    * @description Category header rows can have values just like real rows, this is how you style them
    */
-  categoryPresentationOptions?: any;
+  categoryPresentationOptions?: PresentationOptions;
 };
 
-type PresentationOptions = {
+export type ConditionalPresentationOptions = {
   type?: 'condition'; // optional key it seems like
   conditions?: PresentationOptionCondition[];
   /**
@@ -52,11 +52,29 @@ type PresentationOptions = {
   };
 };
 
-type PresentationOptionCondition = {
-  key: string;
+export type RangePresentationOptions = Record<CssColor, PresentationOptionRange> & {
+  type: 'range';
+  showRawValue?: boolean;
+};
+
+export type PresentationOptions = ConditionalPresentationOptions | RangePresentationOptions;
+
+type BasePresentationOption = {
+  /**
+   * @description Specify the color of the display item
+   */
   color?: CssColor;
-  label?: string;
+  /**
+   * @description Specify the text for the legend item. Also used in the enlarged cell view
+   */
   description?: string;
+  /**
+   * @description Specify if you want a label to appear above the enlarged
+   */
+  label?: string;
+};
+export type PresentationOptionCondition = BasePresentationOption & {
+  key: string;
   /**
    * @description the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }
    */
@@ -64,9 +82,14 @@ type PresentationOptionCondition = {
   legendLabel?: string;
 };
 
-type ConditionValue = string | number;
+export type PresentationOptionRange = BasePresentationOption & {
+  min?: number;
+  max?: number;
+};
 
-enum ConditionType {
+export type ConditionValue = string | number;
+
+export enum ConditionType {
   '=' = '=',
   '>' = '>',
   '<' = '<',

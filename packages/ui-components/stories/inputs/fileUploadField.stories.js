@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { FileUploadField } from '../../src';
+import { FileUploadField } from '../../src/components';
 
 export default {
   title: 'Inputs/FileUploadField',

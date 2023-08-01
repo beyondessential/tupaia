@@ -320,6 +320,20 @@ export const constructForSingle = (models, recordType) => {
           hasContent,
           isURLPathSegment,
           constructRecordNotExistsWithField(models.landingPage, 'url_segment'),
+          urlSegment => {
+            const forbiddenRoutes = [
+              'login',
+              'register',
+              'request-access',
+              'reset-password',
+              'request-access',
+              'verify-email',
+            ];
+            if (forbiddenRoutes.includes(urlSegment)) {
+              throw new Error('This url segment is not allowed');
+            }
+            return true;
+          },
         ],
         project_codes: [
           hasContent,
@@ -354,9 +368,7 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
         can_repeat: [hasContent, isBoolean],
-        'survey_group.name': [
-          constructIsEmptyOr(constructRecordExistsWithField(models.surveyGroup, 'name')),
-        ],
+        'survey_group.name': [constructIsEmptyOr(isAString)],
         integration_metadata: [],
         period_granularity: [
           constructIsEmptyOr(constructIsOneOf(Object.values(PeriodGranularity))),

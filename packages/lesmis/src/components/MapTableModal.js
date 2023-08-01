@@ -5,14 +5,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import {
-  Dialog,
-  DialogHeader,
-  DialogContent,
-  MapTable,
-  useMapDataExport,
-} from '@tupaia/ui-components';
-
+import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
+import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 
 export const MapTableModal = ({ Button, overlayReportData, title }) => {

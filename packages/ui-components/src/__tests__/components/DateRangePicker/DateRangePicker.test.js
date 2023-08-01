@@ -8,15 +8,15 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
-import { render } from '../../../../helpers/testingRenderer';
-import { DateRangePicker } from '../../../components/DateRangePicker';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITY_CONFIG,
   GRANULARITIES_WITH_ONE_DATE,
-  momentToDateString,
+  momentToDateDisplayString,
   GRANULARITIES,
-} from '../../../components/Chart/periodGranularities';
+} from '@tupaia/utils';
+import { render } from '../../../../helpers/testingRenderer';
+import { DateRangePicker } from '../../../components/DateRangePicker';
 
 const MAX_MOMENT_DATE = moment();
 
@@ -73,7 +73,7 @@ describe('dateRangePicker', () => {
 
       const labelText = screen.getByLabelText('active-date');
       const startDate = MIN_MOMENT_STRINGS[key];
-      const endDate = momentToDateString(MAX_MOMENT_DATE, key, value.rangeFormat);
+      const endDate = momentToDateDisplayString(MAX_MOMENT_DATE, key, value.rangeFormat);
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);

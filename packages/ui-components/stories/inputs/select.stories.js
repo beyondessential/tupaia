@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Select, NativeSelect } from '../../src';
+import { Select, NativeSelect } from '../../src/components';
 
 export default {
   title: 'Inputs/Select',

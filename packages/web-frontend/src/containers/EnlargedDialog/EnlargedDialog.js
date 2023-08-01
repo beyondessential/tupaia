@@ -8,7 +8,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toFilename } from '@tupaia/utils';
-import { useChartDataExport } from '@tupaia/ui-components';
+import { useChartDataExport } from '@tupaia/ui-chart-components';
 import {
   fetchEnlargedDialogData,
   setEnlargedDashboardDateRange,

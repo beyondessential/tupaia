@@ -44,6 +44,7 @@ While each package type has their own structure, there are a few common standard
 ### Platform interfaces
 
 - [Tupaia](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
+- [Tupaia Web](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-web/README.md) (New version of web-frontend)
 - [Admin Panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [LESMIS](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [PSSS](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
@@ -91,7 +92,9 @@ All servers are NodeJS express applications, and the packages follow the same ba
 - [e2e](https://github.com/beyondessential/tupaia/blob/dev/packages/e2e/README.md)
 - [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
-- [kobo-api](https://github.com/beyondessential/tupaia/blob/dev/packages/kobo-api/README.md)
+- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
+- [ui-chart-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-chart-components/README.md)
+- [ui-map-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-map-components/README.md)
 - [server-boilerplate](https://github.com/beyondessential/tupaia/blob/dev/packages/server-boilerplate/README.md)
 - [superset-api](https://github.com/beyondessential/tupaia/blob/dev/packages/superset-api/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
