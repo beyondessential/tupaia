@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, ListItemProps, CircularProgress } from '@material-ui/core';
 import styled from 'styled-components';
 import { FlexColumn } from '@tupaia/ui-components';
@@ -43,6 +43,12 @@ const Loader = () => {
   );
 };
 
+const LoadMoreButton = styled(Button)`
+  display: block;
+  width: 100%;
+  padding: 1rem;
+`;
+
 const NoDataMessage = ({ searchValue }: { searchValue: string }) => {
   return <Body>No results found for search "{searchValue}"</Body>;
 };
@@ -51,9 +57,19 @@ interface SearchResultsProps {
   searchValue: string;
   onClose: () => void;
 }
+const PAGE_LENGTHS = {
+  INITIAL: 5,
+  LOAD_MORE: 5,
+  MAX: 15,
+};
 export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
   const { projectCode } = useParams();
-  const { data: searchResults = [], isLoading } = useEntitySearch(projectCode, searchValue);
+  const [pageSize, setPageSize] = useState(PAGE_LENGTHS.INITIAL);
+  const { data: searchResults = [], isLoading } = useEntitySearch(
+    projectCode,
+    searchValue,
+    pageSize,
+  );
 
   if (isLoading) {
     return <Loader />;
@@ -63,7 +79,10 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
     return <NoDataMessage searchValue={searchValue} />;
   }
 
-  // Load more button
+  const onLoadMore = () => {
+    setPageSize(pageSize + PAGE_LENGTHS.LOAD_MORE);
+  };
+
   return (
     <Container>
       {searchResults.map(({ code, name }) => {
@@ -77,6 +96,9 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
           </ResultLink>
         );
       })}
+      {pageSize <= PAGE_LENGTHS.MAX && (
+        <LoadMoreButton onClick={onLoadMore}>Load more results</LoadMoreButton>
+      )}
     </Container>
   );
 };

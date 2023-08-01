@@ -20,8 +20,7 @@ const Container = styled.div<{
   $isActive: boolean;
 }>`
   position: relative;
-  //display: flex;
-  display: ${({ $isActive }) => ($isActive ? 'flex' : 'none')};
+  display: flex;
   flex-direction: column;
   align-items: center;
   margin-right: 1rem;
