@@ -368,9 +368,7 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
         can_repeat: [hasContent, isBoolean],
-        'survey_group.name': [
-          constructIsEmptyOr(constructRecordExistsWithField(models.surveyGroup, 'name')),
-        ],
+        'survey_group.name': [constructIsEmptyOr(isAString)],
         integration_metadata: [],
         period_granularity: [
           constructIsEmptyOr(constructIsOneOf(Object.values(PeriodGranularity))),

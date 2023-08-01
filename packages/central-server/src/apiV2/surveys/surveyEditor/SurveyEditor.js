@@ -3,82 +3,15 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, ImportValidationError, ValidationError } from '@tupaia/utils';
-import { validateSurveyFields } from '../../dataAccessors';
-import { getArrayQueryParameter } from '../utilities';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertCanImportSurvey } from './assertCanImportSurvey';
-import { importSurveysQuestions } from '../import/importSurveys';
-import { assertCanAddDataElementInGroup } from './assertCanAddDataElementInGroup';
-
-const validateSurveyServiceType = async (models, surveyId, serviceType) => {
-  if (!surveyId) return;
-  const survey = await models.survey.findById(surveyId);
-
-  const existingDataGroup = await models.dataGroup.findOne({ code: survey.code });
-  if (existingDataGroup !== null) {
-    if (serviceType !== existingDataGroup.service_type) {
-      throw new ValidationError(
-        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to change to Data service: ${serviceType}.`,
-      );
-    }
-  }
-};
-
-/**
- * Given a data group, sets the config for those data elements to match (service type / dhis instance code etc).
- */
-const updateDataElementsConfig = async (models, dataGroup) => {
-  const { service_type: serviceType, config } = dataGroup;
-
-  const dataElementIds = (
-    await models.dataElementDataGroup.find({ data_group_id: dataGroup.id })
-  ).map(row => row.data_element_id);
-
-  for (const dataElementId of dataElementIds) {
-    const dataElement = await models.dataElement.findById(dataElementId);
-
-    await assertCanAddDataElementInGroup(models, dataElement.code, dataGroup.code, {
-      service_type: serviceType,
-      config,
-    });
-
-    dataElement.service_type = serviceType;
-    dataElement.config = config;
-
-    dataElement.sanitizeConfig();
-    await dataElement.save();
-  }
-};
-
-const updateOrCreateDataGroup = async (
-  models,
-  surveyId,
-  { surveyCode, serviceType, dhisInstanceCode },
-) => {
-  const survey = surveyId ? await models.survey.findById(surveyId) : null;
-  const existingDataGroup = survey ? await models.dataGroup.findOne({ code: survey.code }) : null;
-
-  let dataGroup = existingDataGroup;
-  if (existingDataGroup !== null) {
-    dataGroup.code = surveyCode;
-    if (serviceType) dataGroup.service_type = serviceType;
-    if (dhisInstanceCode) {
-      dataGroup.config = { dhisInstanceCode };
-    }
-  } else {
-    dataGroup = await models.dataGroup.create({
-      code: surveyCode,
-      service_type: serviceType,
-      config: { dhisInstanceCode },
-    });
-  }
-
-  dataGroup.sanitizeConfig();
-  await dataGroup.save();
-
-  return dataGroup;
-};
+import { DatabaseError, ImportValidationError } from '@tupaia/utils';
+import { validateSurveyFields } from '../../../dataAccessors';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { getArrayQueryParameter } from '../../utilities';
+import { importSurveysQuestions } from '../../import/importSurveys';
+import { assertCanImportSurvey } from '../assertCanImportSurvey';
+import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
+import { validateSurveyServiceType } from './validateSurveyServiceType';
+import { updateDataElementsConfig } from './updateDataElementsConfig';
 
 export class SurveyEditor {
   constructor(models, assertPermissions) {
@@ -118,13 +51,13 @@ export class SurveyEditor {
     const {
       code,
       name,
-      permission_group_id,
-      country_ids,
-      can_repeat,
-      survey_group_id,
-      integration_metadata,
-      period_granularity,
-      requires_approval,
+      permission_group_id: permissionGroupId,
+      country_ids: countryIds,
+      can_repeat: canRepeat,
+      integration_metadata: integrationMetadata,
+      period_granularity: periodGranularity,
+      requires_approval: requiresApproval,
+      'survey_group.name': surveyGroupName,
       'data_group.service_type': serviceType,
       'data_group.config': dataGroupConfig = {},
       surveyQuestions,
@@ -141,8 +74,8 @@ export class SurveyEditor {
     });
 
     let permissionGroup;
-    if (permission_group_id) {
-      permissionGroup = await transactingModels.permissionGroup.findById(permission_group_id);
+    if (permissionGroupId) {
+      permissionGroup = await transactingModels.permissionGroup.findById(permissionGroupId);
     } else if (existingSurvey) {
       permissionGroup = await transactingModels.permissionGroup.findById(
         existingSurvey.permission_group_id,
@@ -157,16 +90,11 @@ export class SurveyEditor {
 
     // TODO: merge this with surveyChecker
     const importSurveysPermissionsChecker = async accessPolicy =>
-      assertCanImportSurvey(accessPolicy, transactingModels, surveyId, country_ids);
+      assertCanImportSurvey(accessPolicy, transactingModels, surveyId, countryIds);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
     );
-
-    let surveyGroup;
-    if (survey_group_id) {
-      surveyGroup = await transactingModels.surveyGroup.findById(survey_group_id);
-    }
 
     const { dhisInstanceCode = '' } = dataGroupConfig;
 
@@ -178,7 +106,7 @@ export class SurveyEditor {
       await validateSurveyFields(transactingModels, surveyId, {
         code: surveyCode,
         serviceType,
-        periodGranularity: period_granularity,
+        periodGranularity,
         dhisInstanceCode,
       });
     } catch (error) {
@@ -207,19 +135,20 @@ export class SurveyEditor {
       // Set the countries this survey is available in
       fieldsToForceUpdate.code = surveyCode;
     }
-    if (country_ids !== undefined) {
+    if (countryIds !== undefined) {
       // Set the countries this survey is available in
-      fieldsToForceUpdate.country_ids = getArrayQueryParameter(country_ids);
+      fieldsToForceUpdate.country_ids = getArrayQueryParameter(countryIds);
     }
-    if (survey_group_id !== undefined) {
-      if (survey_group_id === null) {
+    if (surveyGroupName !== undefined) {
+      if (surveyGroupName === null) {
         fieldsToForceUpdate.survey_group_id = null;
       } else {
+        const surveyGroup = await this.models.surveyGroup.findOrCreate({ name: surveyGroupName });
         fieldsToForceUpdate.survey_group_id = surveyGroup.id;
       }
     }
-    if (permission_group_id !== undefined) {
-      if (permission_group_id === null) {
+    if (permissionGroupId !== undefined) {
+      if (permissionGroupId === null) {
         fieldsToForceUpdate.permission_group_id = null;
       } else {
         // A non-default permission group was provided
@@ -229,18 +158,17 @@ export class SurveyEditor {
     if (name !== undefined) {
       fieldsToForceUpdate.name = name;
     }
-    if (period_granularity !== undefined) {
-      fieldsToForceUpdate.period_granularity =
-        period_granularity === '' ? null : period_granularity;
+    if (periodGranularity !== undefined) {
+      fieldsToForceUpdate.period_granularity = periodGranularity === '' ? null : periodGranularity;
     }
-    if (requires_approval !== undefined) {
-      fieldsToForceUpdate.requires_approval = requires_approval;
+    if (requiresApproval !== undefined) {
+      fieldsToForceUpdate.requires_approval = requiresApproval;
     }
-    if (can_repeat !== undefined) {
-      fieldsToForceUpdate.can_repeat = can_repeat;
+    if (canRepeat !== undefined) {
+      fieldsToForceUpdate.can_repeat = canRepeat;
     }
-    if (integration_metadata !== undefined) {
-      fieldsToForceUpdate.integration_metadata = integration_metadata;
+    if (integrationMetadata !== undefined) {
+      fieldsToForceUpdate.integration_metadata = integrationMetadata;
     }
     // Update the survey based on the fields to force update
     if (Object.keys(fieldsToForceUpdate).length > 0) {
