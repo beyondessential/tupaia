@@ -63,7 +63,7 @@ export const getEntityCreationQuestions = questions =>
   questions.filter(({ config }) => config.entity && config.entity.createNew);
 
 export const getQrCodeGenerationQuestions = questions =>
-  getEntityCreationQuestions(questions).filter(({ config }) => config.entity.generateQrCode);
+  getEntityCreationQuestions(questions).filter(({ config }) => config.entity?.generateQrCode);
 
 export const getOptionCreationAutocompleteQuestions = questions =>
   questions.filter(({ config }) => config.autocomplete && config.autocomplete.createNew);
