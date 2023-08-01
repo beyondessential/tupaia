@@ -54,10 +54,10 @@ export class SurveyEditor {
       permission_group_id: permissionGroupId,
       country_ids: countryIds,
       can_repeat: canRepeat,
-      survey_group_id: surveyGroupId,
       integration_metadata: integrationMetadata,
       period_granularity: periodGranularity,
       requires_approval: requiresApproval,
+      'survey_group.name': surveyGroupName,
       'data_group.service_type': serviceType,
       'data_group.config': dataGroupConfig = {},
       surveyQuestions,
@@ -95,11 +95,6 @@ export class SurveyEditor {
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
     );
-
-    let surveyGroup;
-    if (surveyGroupId) {
-      surveyGroup = await transactingModels.surveyGroup.findById(surveyGroupId);
-    }
 
     const { dhisInstanceCode = '' } = dataGroupConfig;
 
@@ -144,10 +139,11 @@ export class SurveyEditor {
       // Set the countries this survey is available in
       fieldsToForceUpdate.country_ids = getArrayQueryParameter(countryIds);
     }
-    if (surveyGroupId !== undefined) {
-      if (surveyGroupId === null) {
+    if (surveyGroupName !== undefined) {
+      if (surveyGroupName === null) {
         fieldsToForceUpdate.survey_group_id = null;
       } else {
+        const surveyGroup = await this.models.surveyGroup.findOrCreate({ name: surveyGroupName });
         fieldsToForceUpdate.survey_group_id = surveyGroup.id;
       }
     }
