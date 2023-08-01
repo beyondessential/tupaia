@@ -87,9 +87,9 @@ const renderYAxisLabel = (
   return undefined;
 };
 
-const flattenValues = (data?: any[], dataKeys: string[]) => {
+const flattenValues = (data?: any[], dataKeys?: string[]) => {
   if (!data) return [];
-  return data?.map(item => dataKeys.map(key => item[key])).flat();
+  return data?.map(item => dataKeys?.map(key => item[key])).flat();
 };
 
 /**
