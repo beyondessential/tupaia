@@ -54,7 +54,9 @@ export const Breadcrumbs = () => {
 
   const breadcrumbs = data
     // Remove the project from the breadcrumbs if there are multiple projects in the entity hierarchy
-    .filter(({ type }: { type: string }) => project?.names.length > 1 || type !== 'project')
+    .filter(
+      ({ type }) => (project?.names.length && project?.names.length > 1) || type !== 'project',
+    )
     .reverse();
 
   if (breadcrumbs.length < 2) {
