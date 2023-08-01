@@ -11,7 +11,6 @@ import { useMapOverlayReport } from '../utils';
 import { DateRangePicker } from '../../../components';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
 
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
@@ -37,24 +36,22 @@ export const MapOverlayDatePicker = () => {
 
   if (!showDatePicker) return null;
   return (
-    <ErrorBoundary>
-      <Wrapper>
-        {isLoadingMapOverlayData ? (
-          <>
-            <Skeleton animation="wave" width={200} height={20} />
-            <Skeleton animation="wave" width={100} height={14} />
-          </>
-        ) : (
-          <DateRangePicker
-            startDate={startDate}
-            endDate={endDate}
-            minDate={minStartDate}
-            maxDate={maxEndDate}
-            granularity={periodGranularity}
-            onSetDates={setDates}
-          />
-        )}
-      </Wrapper>
-    </ErrorBoundary>
+    <Wrapper>
+      {isLoadingMapOverlayData ? (
+        <>
+          <Skeleton animation="wave" width={200} height={20} />
+          <Skeleton animation="wave" width={100} height={14} />
+        </>
+      ) : (
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          minDate={minStartDate}
+          maxDate={maxEndDate}
+          granularity={periodGranularity}
+          onSetDates={setDates}
+        />
+      )}
+    </Wrapper>
   );
 };

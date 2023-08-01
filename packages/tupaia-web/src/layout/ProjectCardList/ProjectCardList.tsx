@@ -8,7 +8,6 @@ import { ProjectCard as ProjectCardComponent } from './ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleProject } from '../../types';
-import { ErrorBoundary } from '@tupaia/ui-components';
 
 const EXPLORE_CODE = 'explore';
 
@@ -54,17 +53,15 @@ export const ProjectCardList = ({
       {sortedProjects.map(project => {
         const { name, description, logoUrl, imageUrl, names, ActionButton } = project;
         return (
-          <ErrorBoundary>
-            <ProjectCard
-              key={name}
-              name={name}
-              description={description}
-              imageUrl={imageUrl}
-              logoUrl={logoUrl}
-              ProjectButton={(props: any) => <ActionButton {...props} project={project} />}
-              names={names}
-            />
-          </ErrorBoundary>
+          <ProjectCard
+            key={name}
+            name={name}
+            description={description}
+            imageUrl={imageUrl}
+            logoUrl={logoUrl}
+            ProjectButton={(props: any) => <ActionButton {...props} project={project} />}
+            names={names}
+          />
         );
       })}
     </>
