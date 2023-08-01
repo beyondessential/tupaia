@@ -4,9 +4,10 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import styled from 'styled-components';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const SearchInput = styled(TextField).attrs({
   variant: 'outlined',
@@ -35,6 +36,24 @@ const SearchInput = styled(TextField).attrs({
 
   .MuiInputBase-input {
     padding: 0.6em;
+  }
+
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    height: 100%;
+    .MuiInputBase-root {
+      height: 100%;
+      border-radius: 0;
+    }
+
+    .MuiOutlinedInput-notchedOutline,
+    &:hover .MuiOutlinedInput-notchedOutline,
+    .Mui-focused .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+
+    .MuiInputBase-input {
+      padding: 0.6em;
+    }
   }
 `;
 
