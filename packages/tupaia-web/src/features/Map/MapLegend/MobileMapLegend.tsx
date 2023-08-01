@@ -5,6 +5,8 @@
 import React, { ReactNode, useState } from 'react';
 import { Close, ExpandLess } from '@material-ui/icons';
 import { Button, IconButton } from '@tupaia/ui-components';
+import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
+
 import styled from 'styled-components';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
@@ -60,20 +62,22 @@ export const MobileMapLegend = ({ children }: { children: ReactNode }) => {
     setExpanded(!expanded);
   };
   return (
-    <Wrapper>
-      {expanded ? (
-        <ExpandedLegend>
-          <CloseButton onClick={toggleExpanded} aria-label="Close legend">
-            <Close />
-          </CloseButton>
-          {children}
-        </ExpandedLegend>
-      ) : (
-        <MapLegendExpandButton onClick={toggleExpanded}>
-          <ExpandIcon />
-          Map Legend
-        </MapLegendExpandButton>
-      )}
-    </Wrapper>
+    <ErrorBoundary>
+      <Wrapper>
+        {expanded ? (
+          <ExpandedLegend>
+            <CloseButton onClick={toggleExpanded} aria-label="Close legend">
+              <Close />
+            </CloseButton>
+            {children}
+          </ExpandedLegend>
+        ) : (
+          <MapLegendExpandButton onClick={toggleExpanded}>
+            <ExpandIcon />
+            Map Legend
+          </MapLegendExpandButton>
+        )}
+      </Wrapper>
+    </ErrorBoundary>
   );
 };

@@ -10,7 +10,6 @@ import { EntityResponse, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation } from '../../../api/queries';
 import { useMapOverlayReport } from '../utils';
-import { ErrorBoundary } from '@tupaia/ui-components';
 
 const SiblingEntities = ({
   parentEntityCode,
@@ -77,26 +76,24 @@ export const PolygonNavigationLayer = () => {
 
   return (
     <>
-      <ErrorBoundary>
-        {activeEntity && (
-          <>
-            <ActiveEntity entity={activeEntity} />
-            <SiblingEntities
-              activeEntityCode={activeEntity.code}
-              parentEntityCode={activeEntity.parentCode}
-            />
-          </>
-        )}
-        {childEntities?.length > 0 &&
-          childEntities.map(entity => (
-            <InteractivePolygon
-              key={entity.code}
-              entity={entity}
-              isChildArea
-              isShowingData={!!mapOverlayData?.measureData}
-            />
-          ))}
-      </ErrorBoundary>
+      {activeEntity && (
+        <>
+          <ActiveEntity entity={activeEntity} />
+          <SiblingEntities
+            activeEntityCode={activeEntity.code}
+            parentEntityCode={activeEntity.parentCode}
+          />
+        </>
+      )}
+      {childEntities?.length > 0 &&
+        childEntities.map(entity => (
+          <InteractivePolygon
+            key={entity.code}
+            entity={entity}
+            isChildArea
+            isShowingData={!!mapOverlayData?.measureData}
+          />
+        ))}
     </>
   );
 };

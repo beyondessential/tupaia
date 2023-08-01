@@ -18,7 +18,7 @@ import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { ErrorBoundary } from '@tupaia/ui-components';
+import { ErrorBoundary } from '../../../../ui-components/src/components/ErrorBoundary';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;

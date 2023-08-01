@@ -11,6 +11,7 @@ import { Entity } from '@tupaia/types';
 import { AreaTooltip, MAP_COLORS } from '@tupaia/ui-map-components';
 import { useEntityLink } from '../../../utils';
 import { useProject } from '../../../api/queries';
+import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -50,21 +51,23 @@ export const InteractivePolygon = ({
   if (!region) return null;
 
   return (
-    <BasicPolygon
-      positions={region}
-      eventHandlers={{
-        click: () => {
-          navigate(link);
-        },
-      }}
-    >
-      {!isShowingData && (
-        <AreaTooltip
-          permanent={permanentLabels && isChildArea}
-          sticky={!permanentLabels}
-          orgUnitName={name}
-        />
-      )}
-    </BasicPolygon>
+    <ErrorBoundary>
+      <BasicPolygon
+        positions={region}
+        eventHandlers={{
+          click: () => {
+            navigate(link);
+          },
+        }}
+      >
+        {!isShowingData && (
+          <AreaTooltip
+            permanent={permanentLabels && isChildArea}
+            sticky={!permanentLabels}
+            orgUnitName={name}
+          />
+        )}
+      </BasicPolygon>
+    </ErrorBoundary>
   );
 };

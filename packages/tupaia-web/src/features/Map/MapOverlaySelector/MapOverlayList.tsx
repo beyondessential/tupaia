@@ -19,6 +19,7 @@ import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
+import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -80,24 +81,28 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
   };
 
   return (
-    <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
-      <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
-      <AccordionContent>
-        {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
-        {mapOverlayGroup.children.map(mapOverlay =>
-          mapOverlay.children ? (
-            <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
-          ) : (
-            <FormControlLabel
-              value={mapOverlay.code}
-              control={<Radio />}
-              label={mapOverlay.name}
-              key={mapOverlay.code}
-            />
-          ),
-        )}
-      </AccordionContent>
-    </AccordionWrapper>
+    <ErrorBoundary>
+      <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
+        <AccordionHeader expandIcon={<KeyboardArrowRight />}>
+          {mapOverlayGroup.name}
+        </AccordionHeader>
+        <AccordionContent>
+          {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
+          {mapOverlayGroup.children.map(mapOverlay =>
+            mapOverlay.children ? (
+              <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
+            ) : (
+              <FormControlLabel
+                value={mapOverlay.code}
+                control={<Radio />}
+                label={mapOverlay.name}
+                key={mapOverlay.code}
+              />
+            ),
+          )}
+        </AccordionContent>
+      </AccordionWrapper>
+    </ErrorBoundary>
   );
 };
 
@@ -117,17 +122,19 @@ export const MapOverlayList = () => {
   };
 
   return (
-    <RadioGroup
-      aria-label="Map overlays"
-      name="map-overlays"
-      value={selectedOverlayCode}
-      onChange={onChangeMapOverlay}
-    >
-      {mapOverlayGroups
-        .filter(item => item.name)
-        .map(group => (
-          <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
-        ))}
-    </RadioGroup>
+    <ErrorBoundary>
+      <RadioGroup
+        aria-label="Map overlays"
+        name="map-overlays"
+        value={selectedOverlayCode}
+        onChange={onChangeMapOverlay}
+      >
+        {mapOverlayGroups
+          .filter(item => item.name)
+          .map(group => (
+            <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
+          ))}
+      </RadioGroup>
+    </ErrorBoundary>
   );
 };

@@ -24,6 +24,7 @@ import {
 } from '../layout';
 import { RouterButton } from '../components';
 import { CircularProgress } from '@material-ui/core';
+import { ErrorBoundary } from '../../../ui-components/src/components/ErrorBoundary';
 
 const Wrapper = styled.div`
   display: flex;
@@ -99,60 +100,62 @@ export const ProjectsModal = () => {
         <ExploreButton>
           <ExploreIcon />I just want to explore
         </ExploreButton>
-        {isFetching ? (
-          <Loader>
-            <CircularProgress />
-          </Loader>
-        ) : (
-          <ProjectsGrid>
-            <ProjectCardList
-              projects={projects}
-              ProjectCard={LegacyProjectCard}
-              actions={{
-                [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                  project: { code, homeEntityCode, dashboardGroupName },
-                }) => (
-                  <LegacyProjectAllowedLink
-                    to={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${dashboardGroupName}` : ''
-                    }`}
-                  />
-                ),
-                [PROJECT_ACCESS_TYPES.PENDING]: () => <LegacyProjectPendingLink />,
-                [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
-                  const LINK = {
-                    TEXT: 'Log in',
-                    TO: {
-                      ...location,
-                      hash: MODAL_ROUTES.LOGIN,
-                    },
-                    STATE: {
-                      referrer: location,
-                    },
-                  } as {
-                    TEXT: ReactNode;
-                    TO: To;
-                    STATE?: Record<string, unknown> | null;
-                  };
-                  if (isLoggedIn) {
-                    LINK.TEXT = 'Request Access';
-                    LINK.TO = {
-                      ...location,
-                      hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
-                      search: `${URL_SEARCH_PARAMS.PROJECT}=${code}`,
+        <ErrorBoundary>
+          {isFetching ? (
+            <Loader>
+              <CircularProgress />
+            </Loader>
+          ) : (
+            <ProjectsGrid>
+              <ProjectCardList
+                projects={projects}
+                ProjectCard={LegacyProjectCard}
+                actions={{
+                  [PROJECT_ACCESS_TYPES.ALLOWED]: ({
+                    project: { code, homeEntityCode, dashboardGroupName },
+                  }) => (
+                    <LegacyProjectAllowedLink
+                      to={`/${code}/${homeEntityCode}${
+                        dashboardGroupName ? `/${dashboardGroupName}` : ''
+                      }`}
+                    />
+                  ),
+                  [PROJECT_ACCESS_TYPES.PENDING]: () => <LegacyProjectPendingLink />,
+                  [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
+                    const LINK = {
+                      TEXT: 'Log in',
+                      TO: {
+                        ...location,
+                        hash: MODAL_ROUTES.LOGIN,
+                      },
+                      STATE: {
+                        referrer: location,
+                      },
+                    } as {
+                      TEXT: ReactNode;
+                      TO: To;
+                      STATE?: Record<string, unknown> | null;
                     };
-                    LINK.STATE = null;
-                  }
-                  return (
-                    <LegacyProjectDeniedLink to={LINK.TO} routerState={LINK.STATE}>
-                      {LINK.TEXT}
-                    </LegacyProjectDeniedLink>
-                  );
-                },
-              }}
-            />
-          </ProjectsGrid>
-        )}
+                    if (isLoggedIn) {
+                      LINK.TEXT = 'Request Access';
+                      LINK.TO = {
+                        ...location,
+                        hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
+                        search: `${URL_SEARCH_PARAMS.PROJECT}=${code}`,
+                      };
+                      LINK.STATE = null;
+                    }
+                    return (
+                      <LegacyProjectDeniedLink to={LINK.TO} routerState={LINK.STATE}>
+                        {LINK.TEXT}
+                      </LegacyProjectDeniedLink>
+                    );
+                  },
+                }}
+              />
+            </ProjectsGrid>
+          )}
+        </ErrorBoundary>
       </div>
     </Wrapper>
   );

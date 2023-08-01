@@ -10,6 +10,7 @@ import { Skeleton } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useEntity, useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
 
 const Wrapper = styled.div<{
   $hasMapOverlays: boolean;
@@ -56,22 +57,24 @@ export const MapOverlaySelectorTitle = () => {
 
   const { data: entity } = useEntity(projectCode, entityCode);
   return (
-    <Wrapper $hasMapOverlays={hasMapOverlays}>
-      {isLoadingMapOverlays ? (
-        <MapOverlayLoader />
-      ) : (
-        <Typography>
-          {hasMapOverlays ? (
-            <MapOverlayName>
-              <MapOverlayDot /> <span>{selectedOverlay?.name}</span>
-            </MapOverlayName>
-          ) : (
-            `Select an area with valid data. ${
-              entity?.name ? `${entity?.name} has no map overlays available.` : ''
-            }`
-          )}
-        </Typography>
-      )}
-    </Wrapper>
+    <ErrorBoundary>
+      <Wrapper $hasMapOverlays={hasMapOverlays}>
+        {isLoadingMapOverlays ? (
+          <MapOverlayLoader />
+        ) : (
+          <Typography>
+            {hasMapOverlays ? (
+              <MapOverlayName>
+                <MapOverlayDot /> <span>{selectedOverlay?.name}</span>
+              </MapOverlayName>
+            ) : (
+              `Select an area with valid data. ${
+                entity?.name ? `${entity?.name} has no map overlays available.` : ''
+              }`
+            )}
+          </Typography>
+        )}
+      </Wrapper>
+    </ErrorBoundary>
   );
 };

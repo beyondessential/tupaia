@@ -7,6 +7,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button } from '@tupaia/ui-components';
+import { ErrorBoundary } from '../../../ui-components/src/components/ErrorBoundary';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../constants';
 
 const Wrapper = styled.div`
@@ -52,9 +53,11 @@ export const AuthModalBody = ({ children, title, subtitle, className }: AuthModa
   return (
     <Wrapper className={className}>
       <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia Logo" />
-      <Title variant="h2">{title}</Title>
-      {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
-      {children}
+      <ErrorBoundary>
+        <Title variant="h2">{title}</Title>
+        {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
+        {children}
+      </ErrorBoundary>
     </Wrapper>
   );
 };
