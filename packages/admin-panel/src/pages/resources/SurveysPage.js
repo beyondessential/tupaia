@@ -328,6 +328,11 @@ const QUESTION_COLUMNS = [
                     type: 'boolean',
                   },
                   {
+                    label: 'Allow Scan QR Code',
+                    fieldName: 'allowScanQrCode',
+                    type: 'boolean',
+                  },
+                  {
                     label: 'Parent Entity',
                     fieldName: 'parentId',
                     type: 'json',
