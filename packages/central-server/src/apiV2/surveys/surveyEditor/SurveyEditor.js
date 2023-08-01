@@ -3,82 +3,15 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, ImportValidationError, ValidationError } from '@tupaia/utils';
-import { validateSurveyFields } from '../../dataAccessors';
-import { getArrayQueryParameter } from '../utilities';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertCanImportSurvey } from './assertCanImportSurvey';
-import { importSurveysQuestions } from '../import/importSurveys';
-import { assertCanAddDataElementInGroup } from './assertCanAddDataElementInGroup';
-
-const validateSurveyServiceType = async (models, surveyId, serviceType) => {
-  if (!surveyId) return;
-  const survey = await models.survey.findById(surveyId);
-
-  const existingDataGroup = await models.dataGroup.findOne({ code: survey.code });
-  if (existingDataGroup !== null) {
-    if (serviceType !== existingDataGroup.service_type) {
-      throw new ValidationError(
-        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to change to Data service: ${serviceType}.`,
-      );
-    }
-  }
-};
-
-/**
- * Given a data group, sets the config for those data elements to match (service type / dhis instance code etc).
- */
-const updateDataElementsConfig = async (models, dataGroup) => {
-  const { service_type: serviceType, config } = dataGroup;
-
-  const dataElementIds = (
-    await models.dataElementDataGroup.find({ data_group_id: dataGroup.id })
-  ).map(row => row.data_element_id);
-
-  for (const dataElementId of dataElementIds) {
-    const dataElement = await models.dataElement.findById(dataElementId);
-
-    await assertCanAddDataElementInGroup(models, dataElement.code, dataGroup.code, {
-      service_type: serviceType,
-      config,
-    });
-
-    dataElement.service_type = serviceType;
-    dataElement.config = config;
-
-    dataElement.sanitizeConfig();
-    await dataElement.save();
-  }
-};
-
-const updateOrCreateDataGroup = async (
-  models,
-  surveyId,
-  { surveyCode, serviceType, dhisInstanceCode },
-) => {
-  const survey = surveyId ? await models.survey.findById(surveyId) : null;
-  const existingDataGroup = survey ? await models.dataGroup.findOne({ code: survey.code }) : null;
-
-  let dataGroup = existingDataGroup;
-  if (existingDataGroup !== null) {
-    dataGroup.code = surveyCode;
-    if (serviceType) dataGroup.service_type = serviceType;
-    if (dhisInstanceCode) {
-      dataGroup.config = { dhisInstanceCode };
-    }
-  } else {
-    dataGroup = await models.dataGroup.create({
-      code: surveyCode,
-      service_type: serviceType,
-      config: { dhisInstanceCode },
-    });
-  }
-
-  dataGroup.sanitizeConfig();
-  await dataGroup.save();
-
-  return dataGroup;
-};
+import { DatabaseError, ImportValidationError } from '@tupaia/utils';
+import { validateSurveyFields } from '../../../dataAccessors';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { getArrayQueryParameter } from '../../utilities';
+import { importSurveysQuestions } from '../../import/importSurveys';
+import { assertCanImportSurvey } from '../assertCanImportSurvey';
+import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
+import { validateSurveyServiceType } from './validateSurveyServiceType';
+import { updateDataElementsConfig } from './updateDataElementsConfig';
 
 export class SurveyEditor {
   constructor(models, assertPermissions) {
