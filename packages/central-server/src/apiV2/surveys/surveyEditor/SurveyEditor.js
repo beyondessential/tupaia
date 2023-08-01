@@ -51,13 +51,13 @@ export class SurveyEditor {
     const {
       code,
       name,
-      permission_group_id,
-      country_ids,
-      can_repeat,
-      survey_group_id,
-      integration_metadata,
-      period_granularity,
-      requires_approval,
+      permission_group_id: permissionGroupId,
+      country_ids: countryIds,
+      can_repeat: canRepeat,
+      survey_group_id: surveyGroupId,
+      integration_metadata: integrationMetadata,
+      period_granularity: periodGranularity,
+      requires_approval: requiresApproval,
       'data_group.service_type': serviceType,
       'data_group.config': dataGroupConfig = {},
       surveyQuestions,
@@ -74,8 +74,8 @@ export class SurveyEditor {
     });
 
     let permissionGroup;
-    if (permission_group_id) {
-      permissionGroup = await transactingModels.permissionGroup.findById(permission_group_id);
+    if (permissionGroupId) {
+      permissionGroup = await transactingModels.permissionGroup.findById(permissionGroupId);
     } else if (existingSurvey) {
       permissionGroup = await transactingModels.permissionGroup.findById(
         existingSurvey.permission_group_id,
@@ -90,15 +90,15 @@ export class SurveyEditor {
 
     // TODO: merge this with surveyChecker
     const importSurveysPermissionsChecker = async accessPolicy =>
-      assertCanImportSurvey(accessPolicy, transactingModels, surveyId, country_ids);
+      assertCanImportSurvey(accessPolicy, transactingModels, surveyId, countryIds);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
     );
 
     let surveyGroup;
-    if (survey_group_id) {
-      surveyGroup = await transactingModels.surveyGroup.findById(survey_group_id);
+    if (surveyGroupId) {
+      surveyGroup = await transactingModels.surveyGroup.findById(surveyGroupId);
     }
 
     const { dhisInstanceCode = '' } = dataGroupConfig;
@@ -111,7 +111,7 @@ export class SurveyEditor {
       await validateSurveyFields(transactingModels, surveyId, {
         code: surveyCode,
         serviceType,
-        periodGranularity: period_granularity,
+        periodGranularity,
         dhisInstanceCode,
       });
     } catch (error) {
@@ -140,19 +140,19 @@ export class SurveyEditor {
       // Set the countries this survey is available in
       fieldsToForceUpdate.code = surveyCode;
     }
-    if (country_ids !== undefined) {
+    if (countryIds !== undefined) {
       // Set the countries this survey is available in
-      fieldsToForceUpdate.country_ids = getArrayQueryParameter(country_ids);
+      fieldsToForceUpdate.country_ids = getArrayQueryParameter(countryIds);
     }
-    if (survey_group_id !== undefined) {
-      if (survey_group_id === null) {
+    if (surveyGroupId !== undefined) {
+      if (surveyGroupId === null) {
         fieldsToForceUpdate.survey_group_id = null;
       } else {
         fieldsToForceUpdate.survey_group_id = surveyGroup.id;
       }
     }
-    if (permission_group_id !== undefined) {
-      if (permission_group_id === null) {
+    if (permissionGroupId !== undefined) {
+      if (permissionGroupId === null) {
         fieldsToForceUpdate.permission_group_id = null;
       } else {
         // A non-default permission group was provided
@@ -162,18 +162,17 @@ export class SurveyEditor {
     if (name !== undefined) {
       fieldsToForceUpdate.name = name;
     }
-    if (period_granularity !== undefined) {
-      fieldsToForceUpdate.period_granularity =
-        period_granularity === '' ? null : period_granularity;
+    if (periodGranularity !== undefined) {
+      fieldsToForceUpdate.period_granularity = periodGranularity === '' ? null : periodGranularity;
     }
-    if (requires_approval !== undefined) {
-      fieldsToForceUpdate.requires_approval = requires_approval;
+    if (requiresApproval !== undefined) {
+      fieldsToForceUpdate.requires_approval = requiresApproval;
     }
-    if (can_repeat !== undefined) {
-      fieldsToForceUpdate.can_repeat = can_repeat;
+    if (canRepeat !== undefined) {
+      fieldsToForceUpdate.can_repeat = canRepeat;
     }
-    if (integration_metadata !== undefined) {
-      fieldsToForceUpdate.integration_metadata = integration_metadata;
+    if (integrationMetadata !== undefined) {
+      fieldsToForceUpdate.integration_metadata = integrationMetadata;
     }
     // Update the survey based on the fields to force update
     if (Object.keys(fieldsToForceUpdate).length > 0) {
