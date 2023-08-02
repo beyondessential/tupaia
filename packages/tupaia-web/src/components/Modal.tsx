@@ -53,7 +53,13 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen} disablePortal>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperComponent={Paper}
+      fullScreen={fullScreen}
+      disablePortal
+    >
       <CloseButton onClick={onClose} color="default">
         <CloseIcon />
       </CloseButton>

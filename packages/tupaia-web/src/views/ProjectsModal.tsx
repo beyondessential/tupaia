@@ -26,7 +26,7 @@ import { CircularProgress } from '@material-ui/core';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.2rem 0 0;
+  padding: 0.9rem 0 0;
   padding-left: 3.125rem;
   padding-right: 3.125rem;
   width: 65rem;
@@ -37,7 +37,8 @@ const Wrapper = styled.div`
 const TagLine = styled.p`
   margin: 0.5rem 0.4rem 1.5rem;
   max-width: 26rem;
-  font-weight: 300;
+  font-size: 0.875rem;
+  font-weight: 400;
 `;
 
 const ProjectsGrid = styled.div`
@@ -60,28 +61,32 @@ const ExploreButton = styled(RouterButton).attrs({
   color: 'default',
   to: DEFAULT_URL,
 })`
+  margin-top: 0.3rem;
   margin-bottom: 1rem;
-  margin-left: 0.4rem;
-  width: 12.5rem;
+  margin-left: 0.3rem;
+  width: 10.5rem;
   height: 2.5rem;
+  line-height: 1.125rem;
   border-radius: 3px;
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 500;
+  font-style: normal;
   text-align: center;
   text-transform: none;
+  border-color: white;
 `;
 
 const Line = styled.div`
   background-color: #9ba0a6;
   height: 1px;
-  margin-top: 0.9375rem;
+  margin-top: 0.7rem;
 `;
 
 const ProjectsTitle = styled.h1`
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 500;
   color: white;
-  margin-top: 2rem;
+  margin-top: 1.8rem;
   margin-left: 0.4rem;
 `;
 
