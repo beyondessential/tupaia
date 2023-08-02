@@ -165,12 +165,16 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+  public attachApiClientToContext(
+    authHandlerProvider: (req: Request) => AuthHandler,
+    apiClientOverride = null, // Allows overriding with mock for testing
+  ) {
     this.app.use((req, res, next) => {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        const apiClient =
+          apiClientOverride || new TupaiaApiClient(authHandlerProvider(req), baseUrls);
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;
         next();
