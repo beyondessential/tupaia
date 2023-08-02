@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { ArrowDropDown, Layers } from '@material-ui/icons';
+import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
@@ -16,6 +16,7 @@ import { useMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
+import { Tooltip } from '@tupaia/ui-components';
 
 const MaxHeightContainer = styled.div`
   max-height: 100%;
@@ -34,6 +35,9 @@ const Wrapper = styled(MaxHeightContainer)`
 `;
 
 const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.9rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
@@ -46,6 +50,12 @@ const Heading = styled(Typography).attrs({
   font-size: 0.75rem;
   text-transform: uppercase;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const TableAssignmentIcon = styled(Assignment)`
+  margin-right: 0.5rem;
+  width: 1.2rem;
+  cursor: pointer;
 `;
 
 const Container = styled(MaxHeightContainer)`
@@ -138,56 +148,65 @@ interface DesktopMapOverlaySelectorProps {
   entityName?: Entity['name'];
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
+  setIsOpen: any;
 }
 
 export const DesktopMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
-}: DesktopMapOverlaySelectorProps) => {
-  const { projectCode, entityCode } = useParams();
-  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-  const { data: mapOverlayData } = useMapOverlayReport();
-
-  return (
-    <Wrapper>
-      <Header>
-        <Heading>Map Overlays</Heading>
-      </Header>
-      <Container>
-        <TitleWrapper>
-          <MapOverlaySelectorTitle />
-          <MapOverlayDatePicker />
-        </TitleWrapper>
-        {hasMapOverlays && (
-          <OverlayLibraryAccordion
-            expanded={overlayLibraryOpen}
-            onChange={toggleOverlayLibrary}
-            square
-          >
-            <OverlayLibraryHeader
-              expandIcon={<ArrowDropDown />}
-              aria-controls="overlay-library-content"
-              id="overlay-library-header"
+  setIsOpen,
+}: DesktopMapOverlaySelectorProps) =>
+  // { setIsOpen }: any,
+  {
+    const { projectCode, entityCode } = useParams();
+    const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+    const { data: mapOverlayData } = useMapOverlayReport();
+    const handleOpen = () => {
+      setIsOpen(true);
+    };
+    return (
+      <Wrapper>
+        <Header>
+          <Heading>Map Overlays</Heading>
+          <Tooltip arrow interactive placement="top" title="Generate Report">
+            <TableAssignmentIcon onClick={() => handleOpen()} />
+          </Tooltip>
+        </Header>
+        <Container>
+          <TitleWrapper>
+            <MapOverlaySelectorTitle />
+            <MapOverlayDatePicker />
+          </TitleWrapper>
+          {hasMapOverlays && (
+            <OverlayLibraryAccordion
+              expanded={overlayLibraryOpen}
+              onChange={toggleOverlayLibrary}
+              square
             >
-              <OverlayLibraryIcon />
-              <OverlayLibraryTitle>Overlay library</OverlayLibraryTitle>
-            </OverlayLibraryHeader>
-            <OverlayLibraryContentWrapper>
-              <OverlayLibraryContentContainer>
-                <MapOverlayList />
-              </OverlayLibraryContentContainer>
-            </OverlayLibraryContentWrapper>
-          </OverlayLibraryAccordion>
-        )}
-        {mapOverlayData?.period?.latestAvailable && (
-          <LatestDataContainer>
-            <LatestDataText>
-              Latest overlay data:{' '}
-              {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
-            </LatestDataText>
-          </LatestDataContainer>
-        )}
-      </Container>
-    </Wrapper>
-  );
-};
+              <OverlayLibraryHeader
+                expandIcon={<ArrowDropDown />}
+                aria-controls="overlay-library-content"
+                id="overlay-library-header"
+              >
+                <OverlayLibraryIcon />
+                <OverlayLibraryTitle>Overlay library</OverlayLibraryTitle>
+              </OverlayLibraryHeader>
+              <OverlayLibraryContentWrapper>
+                <OverlayLibraryContentContainer>
+                  <MapOverlayList />
+                </OverlayLibraryContentContainer>
+              </OverlayLibraryContentWrapper>
+            </OverlayLibraryAccordion>
+          )}
+          {mapOverlayData?.period?.latestAvailable && (
+            <LatestDataContainer>
+              <LatestDataText>
+                Latest overlay data:{' '}
+                {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
+              </LatestDataText>
+            </LatestDataContainer>
+          )}
+        </Container>
+      </Wrapper>
+    );
+  };

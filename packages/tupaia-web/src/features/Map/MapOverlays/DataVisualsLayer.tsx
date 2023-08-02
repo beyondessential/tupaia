@@ -26,6 +26,7 @@ import {
 import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
+import { MapTableModal } from '../MapTableModal/MapTableModal';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -73,11 +74,14 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const DataVisualsLayer = ({
-  hiddenValues,
-}: {
-  hiddenValues: LegendProps['hiddenValues'];
-}) => {
+export const DataVisualsLayer = (
+  { isOpen, setIsOpen }: any,
+  {
+    hiddenValues,
+  }: {
+    hiddenValues: LegendProps['hiddenValues'];
+  },
+) => {
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
@@ -109,44 +113,55 @@ export const DataVisualsLayer = ({
   const { serieses } = mapOverlayData;
 
   return (
-    <LayerGroup>
-      {processedMeasureData.map(measure => {
-        if (measure.region) {
-          return (
-            <ShadedPolygon
-              key={measure.organisationUnitCode}
-              positions={measure.region}
-              pathOptions={{
-                color: measure.color,
-                fillColor: measure.color,
-              }}
-              eventHandlers={{
-                click: () => {
-                  navigateToEntity(measure.organisationUnitCode);
-                },
-              }}
-              {...measure}
-            >
-              <AreaTooltip
-                serieses={serieses}
-                orgUnitMeasureData={measure as MeasureData}
-                orgUnitName={measure.name}
-                hasMeasureValue
-              />
-            </ShadedPolygon>
-          );
-        }
+    <>
+      {isOpen ? (
+        <MapTableModal
+          serieses={serieses}
+          entity={entity}
+          selectedOverlay={selectedOverlay}
+          processedMeasureData={processedMeasureData}
+          setIsOpen={setIsOpen}
+        />
+      ) : null}
+      <LayerGroup>
+        {processedMeasureData.map(measure => {
+          if (measure.region) {
+            return (
+              <ShadedPolygon
+                key={measure.organisationUnitCode}
+                positions={measure.region}
+                pathOptions={{
+                  color: measure.color,
+                  fillColor: measure.color,
+                }}
+                eventHandlers={{
+                  click: () => {
+                    navigateToEntity(measure.organisationUnitCode);
+                  },
+                }}
+                {...measure}
+              >
+                <AreaTooltip
+                  serieses={serieses}
+                  orgUnitMeasureData={measure as MeasureData}
+                  orgUnitName={measure.name}
+                  hasMeasureValue
+                />
+              </ShadedPolygon>
+            );
+          }
 
-        return (
-          <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
-            <MeasurePopup
-              markerData={measure as MeasureData}
-              serieses={serieses}
-              onSeeOrgUnitDashboard={navigateToEntity}
-            />
-          </MeasureMarker>
-        );
-      })}
-    </LayerGroup>
+          return (
+            <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
+              <MeasurePopup
+                markerData={measure as MeasureData}
+                serieses={serieses}
+                onSeeOrgUnitDashboard={navigateToEntity}
+              />
+            </MeasureMarker>
+          );
+        })}
+      </LayerGroup>
+    </>
   );
 };

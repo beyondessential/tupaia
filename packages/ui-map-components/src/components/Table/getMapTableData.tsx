@@ -26,9 +26,9 @@ const processColumns = (serieses: Series[]) => {
       Header: 'Name',
       accessor: 'name',
       // eslint-disable-next-line react/prop-types
-      Cell: ({ value }: { value: string | number | boolean | undefined }) => (
-        <FirstColumnCell>{String(value)}</FirstColumnCell>
-      ),
+      Cell: ({ value }: { value: string | number | boolean | undefined }) => {
+        <FirstColumnCell>{String(value)}</FirstColumnCell>;
+      },
     },
     ...configColumns,
     { Header: 'Most Recent Data Date', accessor: 'submissionDate' },
