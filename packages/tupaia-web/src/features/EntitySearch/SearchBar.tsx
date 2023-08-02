@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { forwardRef, MutableRefObject } from 'react';
 import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
@@ -61,15 +61,22 @@ interface SearchBarProps {
   value?: string;
   onChange: (newValue: string) => void;
   onFocusChange: (isFocused: boolean) => void;
+  ref: MutableRefObject<null>;
 }
 
-export const SearchBar = ({ value = '', onChange, onFocusChange }: SearchBarProps) => {
-  const onChangeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('search value...', event.target.value);
-    onChange(event.target.value);
-  };
+export const SearchBar = forwardRef(
+  ({ value = '', onChange, onFocusChange }: SearchBarProps, ref) => {
+    const onChangeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(event.target.value);
+    };
 
-  return (
-    <SearchInput value={value} onChange={onChangeInputValue} onFocus={() => onFocusChange(true)} />
-  );
-};
+    return (
+      <SearchInput
+        value={value}
+        onChange={onChangeInputValue}
+        onFocus={() => onFocusChange(true)}
+        inputRef={ref}
+      />
+    );
+  },
+);

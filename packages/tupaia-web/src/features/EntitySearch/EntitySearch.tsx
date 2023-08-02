@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ import { SearchResults } from './SearchResults';
 import { IconButton } from '@tupaia/ui-components';
 
 const Container = styled.div<{
-  $isActive: boolean;
+  $mobileIsActive: boolean;
 }>`
   position: relative;
   display: flex;
@@ -28,7 +28,7 @@ const Container = styled.div<{
   width: 19rem;
 
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: ${({ $isActive }) => ($isActive ? 'flex' : 'none')};
+    display: ${({ $mobileIsActive }) => ($mobileIsActive ? 'flex' : 'none')};
     position: absolute;
     top: 0;
     left: 0;
@@ -62,14 +62,14 @@ const ResultsWrapper = styled.div`
   }
 `;
 
-const OpenButton = styled(IconButton)`
+const MobileOpenButton = styled(IconButton)`
   display: none;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: block;
   }
 `;
 
-const CloseButton = styled(IconButton)`
+const MobileCloseButton = styled(IconButton)`
   display: none;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: block;
@@ -82,19 +82,31 @@ const CloseButton = styled(IconButton)`
 
 export const EntitySearch = () => {
   const { projectCode } = useParams();
+  const inputRef = useRef(null);
   const { data: project } = useProject(projectCode!);
   const { data: entities = [] } = useEntities(projectCode!, project?.entityCode);
   const [searchValue, setSearchValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-
+  const [mobileIsActive, setMobileIsActive] = useState(false);
   const onClose = () => {
-    if (!isOpen) {
-      setIsActive(false);
-    } else if (searchValue.length === 0) {
+    setIsOpen(false);
+    setMobileIsActive(false);
+    setSearchValue('');
+  };
+
+  const onClickMobileOpen = () => {
+    console.log('click mobile open', inputRef.current);
+    setMobileIsActive(true);
+    inputRef.current?.focus();
+  };
+
+  const onClickMobileClose = () => {
+    if (isOpen) {
       setIsOpen(false);
-    } else {
+    } else if (!isOpen && searchValue.length > 0) {
       setSearchValue('');
+    } else if (!isOpen && searchValue.length === 0) {
+      setMobileIsActive(false);
     }
   };
 
@@ -103,15 +115,20 @@ export const EntitySearch = () => {
 
   return (
     <ClickAwayListener onClickAway={onClose}>
-      <>
-        <OpenButton onClick={() => setIsActive(true)} color="default">
+      <div>
+        <MobileOpenButton onClick={onClickMobileOpen} color="default">
           <Search />
-        </OpenButton>
-        <Container $isActive={isActive}>
-          <CloseButton onClick={onClose} color="default">
+        </MobileOpenButton>
+        <Container $mobileIsActive={mobileIsActive}>
+          <MobileCloseButton onClick={onClickMobileClose} color="default">
             <Close />
-          </CloseButton>
-          <SearchBar value={searchValue} onChange={setSearchValue} onFocusChange={setIsOpen} />
+          </MobileCloseButton>
+          <SearchBar
+            value={searchValue}
+            onChange={setSearchValue}
+            onFocusChange={setIsOpen}
+            ref={inputRef}
+          />
           {isOpen && (
             <ResultsWrapper>
               {searchValue ? (
@@ -127,7 +144,7 @@ export const EntitySearch = () => {
             </ResultsWrapper>
           )}
         </Container>
-      </>
+      </div>
     </ClickAwayListener>
   );
 };
