@@ -5,6 +5,7 @@
 
 import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
+import { TupaiaApiInterface } from '@tupaia/api-client';
 import {
   OrchestratorApiBuilder,
   handleWith,
@@ -49,7 +50,7 @@ const {
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
-export function createApp(db = new TupaiaDatabase(), apiClient = null) {
+export function createApp(db = new TupaiaDatabase(), apiClient: TupaiaApiInterface | null = null) {
   const app = new OrchestratorApiBuilder(db, 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)

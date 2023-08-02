@@ -12,6 +12,7 @@ import {
   getBaseUrlsForHost,
   LOCALHOST_BASE_URLS,
   TupaiaApiClient,
+  TupaiaApiInterface,
 } from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
@@ -167,7 +168,7 @@ export class ApiBuilder {
 
   public attachApiClientToContext(
     authHandlerProvider: (req: Request) => AuthHandler,
-    apiClientOverride = null, // Allows overriding with mock for testing
+    apiClientOverride: TupaiaApiInterface | null = null, // Allows overriding with mock for testing
   ) {
     this.app.use((req, res, next) => {
       try {

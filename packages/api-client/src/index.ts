@@ -6,7 +6,7 @@
 /*
  * Main entrypoint
  */
-export { TupaiaApiClient } from './TupaiaApiClient';
+export { TupaiaApiClient, TupaiaApiInterface } from './TupaiaApiClient';
 
 export { AuthHandler } from './types';
 

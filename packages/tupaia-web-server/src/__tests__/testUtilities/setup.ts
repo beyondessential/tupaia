@@ -5,6 +5,7 @@
 
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { TestableServer } from '@tupaia/server-boilerplate';
+import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 
 import {
   findOrCreateDummyRecord,
