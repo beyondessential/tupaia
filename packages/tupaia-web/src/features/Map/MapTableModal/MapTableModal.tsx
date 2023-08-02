@@ -51,7 +51,6 @@ export const MapTableModal = ({
   const { projectCode, entityCode } = useParams();
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
   const entityArray = data.reverse();
-  console.log(entityArray);
 
   const titleText = `${selectedOverlay.name}, ${entityArray[1].name}`;
 
