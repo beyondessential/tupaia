@@ -8,6 +8,7 @@ import { ProjectCard as ProjectCardComponent } from './ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleProject } from '../../types';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const EXPLORE_CODE = 'explore';
 
