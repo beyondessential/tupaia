@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import { InputGroup } from '@tupaia/ui-components';
 import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
-import { createBase64Image } from '../utilities/createBase64Image';
 import { SECTION_FIELD_TYPE } from './constants';
 
 const EditorWrapper = styled.div`
@@ -26,19 +25,14 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   }
 
   const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
-    const { setFieldsOnChange, type } = editConfig;
-    let updatedValue = inputValue;
-    if (type === 'image' && inputValue) {
-      // If the input is a file, we need to convert the file to a base64 encoded image.
-      updatedValue = await createBase64Image(inputValue);
-    }
+    const { setFieldsOnChange } = editConfig;
     if (setFieldsOnChange) {
-      const newFields = setFieldsOnChange(updatedValue, recordData);
+      const newFields = setFieldsOnChange(inputValue, recordData);
       Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
         onEditField(fieldKey, fieldValue);
       });
     }
-    onEditField(inputKey, updatedValue);
+    onEditField(inputKey, inputValue);
   };
 
   const selectValue = (editConfig, accessor, source) => {
