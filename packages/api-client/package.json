@@ -28,6 +28,7 @@
     "qs": "^6.10.1"
   },
   "devDependencies": {
-    "@tupaia/types": "1.0.0"
+    "@tupaia/types": "1.0.0",
+    "@tupaia/access-policy": "1.0.0"
   }
 }
