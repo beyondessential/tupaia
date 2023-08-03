@@ -4,22 +4,16 @@
  */
 import React, { ElementType, ReactNode } from 'react';
 import styled from 'styled-components';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { SmallAlert } from './Alert';
 import { ErrorBoundary } from './ErrorBoundary';
 import { FlexCenter } from './Layout';
+import { SpinningLoader } from './SpinningLoader';
 
 const Container = styled(FlexCenter)`
   width: 100%;
   height: 100%;
   align-self: center;
 `;
-
-const SpinningLoader = () => (
-  <Container>
-    <CircularProgress size={50} />
-  </Container>
-);
 
 interface FetchLoaderProps {
   isLoading?: boolean;

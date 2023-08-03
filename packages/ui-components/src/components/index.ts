@@ -37,6 +37,7 @@ export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './ReferenceTooltip';
 export * from './SplitButton';
+export * from './SpinningLoader';
 export * from './Tabs';
 export * from './Toast';
 export * from './Toolbar';
