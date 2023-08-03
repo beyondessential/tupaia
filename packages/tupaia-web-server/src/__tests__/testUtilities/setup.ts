@@ -4,6 +4,7 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { createBasicHeader } from '@tupaia/utils';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 
@@ -14,10 +15,9 @@ import {
   EntityHierarchyCacher,
   getTestDatabase,
 } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
 
-import { TestModelRegistry } from 'testModelRegistry';
-import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from 'fixtures';
+import { TestModelRegistry } from './testModelRegistry';
+import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
 import { createApp } from '../../app';
 
 const models = getTestModels() as TestModelRegistry;
@@ -29,9 +29,7 @@ const userAccountPassword = 'test';
 
 export const setupTestData = async () => {
   const projectsForInserting = PROJECTS.map(project => {
-    const relationsInProject = ENTITY_RELATIONS.filter(
-      relation => relation.hierarchy === project.code,
-    );
+    const relationsInProject = ENTITY_RELATIONS[project.code];
     const entityCodesInProject = relationsInProject.map(relation => relation.child);
     const entitiesInProject = entityCodesInProject.map(entityCode =>
       ENTITIES.find(entity => entity.code === entityCode),
@@ -60,7 +58,12 @@ export const setupTestData = async () => {
 };
 
 export const setupTestApp = async () => {
-  const app = new TestableServer(createApp(getTestDatabase()));
+  const app = new TestableServer(
+    createApp(
+      getTestDatabase(),
+      new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS) }),
+    ),
+  );
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
   return app;
 };
