@@ -44,6 +44,6 @@ export class MockTupaiaApiClient implements TupaiaApiInterface {
     this.dataTable = dataTable;
     this.entity = entity;
     this.report = report;
-    this.webConfig = webConfig;
+    this.webConfig = webConfig
   }
 }

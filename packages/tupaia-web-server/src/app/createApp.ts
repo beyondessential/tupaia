@@ -50,12 +50,11 @@ const {
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
-export function createApp(db = new TupaiaDatabase(), apiClient: TupaiaApiInterface | null = null) {
-  const app = new OrchestratorApiBuilder(db, 'tupaia-web')
+export function createApp() {
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
-    // Uses default apiClient if no override is provided
-    .attachApiClientToContext(authHandlerProvider, apiClient)
+    .attachApiClientToContext(authHandlerProvider)
     .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
     .get<LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',
