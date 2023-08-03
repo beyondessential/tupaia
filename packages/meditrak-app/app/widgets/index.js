@@ -8,6 +8,7 @@ export { Button } from './Button';
 export { BlueButton } from './BlueButton';
 export { Checkbox } from './Checkbox';
 export { CrossPlatformIcon } from './CrossPlatformIcon';
+export { Divider } from './Divider';
 export { Heading } from './Heading';
 export { Icon } from './Icon';
 export { KeyboardSpacer } from './KeyboardSpacer';
