@@ -64,9 +64,9 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const MapTableModal = ({ setIsOpen }: any) => {
+export const MapTableModal = ({ mapModalOpen }: any) => {
   const handleCloseModal = () => {
-    setIsOpen(false);
+    setMapModalOpen(false);
   };
 
   const { projectCode, entityCode } = useParams();

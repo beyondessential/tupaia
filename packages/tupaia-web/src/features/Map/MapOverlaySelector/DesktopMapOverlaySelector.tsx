@@ -165,13 +165,13 @@ export const DesktopMapOverlaySelector = ({
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
   const { data: mapOverlayData } = useMapOverlayReport();
-  const [isOpen, setIsOpen] = useState(false);
+  const [mapModalOpen, setMapModalOpen] = useState(false);
   const handleOpen = () => {
-    setIsOpen(true);
+    setMapModalOpen(true);
   };
   return (
     <>
-      {isOpen ? <MapTableModal setIsOpen={setIsOpen} /> : null}
+      {mapModalOpen ? <MapTableModal setIsOpen={setMapModalOpen} /> : null}
       <Wrapper>
         <Header>
           <Heading>Map Overlays</Heading>
