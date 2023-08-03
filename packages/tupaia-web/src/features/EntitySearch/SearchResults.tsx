@@ -56,7 +56,7 @@ const LoadMoreButton = styled(Button).attrs({
   width: 100%;
   padding: 0.6rem;
   margin-top: 0.6rem;
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-transform: none;
 `;
 

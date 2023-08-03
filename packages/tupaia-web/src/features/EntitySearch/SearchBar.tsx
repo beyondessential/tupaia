@@ -112,9 +112,11 @@ export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: Sear
   };
 
   const handleClickClose = () => {
+    // If there is text in the search bar, clear it but don't close the search bar input
     if (value.length > 0) {
       onChange('');
       onClose();
+      // If there is no text in the search bar, close the search bar input
     } else if (value.length === 0) {
       setMobileIsActive(false);
       onClose();
