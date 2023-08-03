@@ -46,6 +46,7 @@ const Alert = styled(BaseAlert)`
   overflow: hidden; // this is to stop any extra long text from overflowing the alert and causing a horizontal scroll on the dashboard
   .MuiAlert-message {
     max-width: 100%;
+    width: 100%;
   }
   p {
     max-width: 90%;
@@ -53,7 +54,9 @@ const Alert = styled(BaseAlert)`
   }
 `;
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled.div<{
+  $isExporting?: boolean;
+}>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -61,6 +64,7 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  margin-top: ${({ $isExporting }) => ($isExporting ? '1rem' : '0')};
 `;
 
 const DisplayComponents = {
@@ -74,12 +78,13 @@ const DisplayComponents = {
 
 interface DashboardItemContentProps {
   dashboardItem?: DashboardItem;
-  report: DashboardItemReport;
+  report?: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
-  onRetryFetch: UseQueryResult['refetch'];
+  onRetryFetch?: UseQueryResult['refetch'];
   isExpandable: boolean;
+  isExporting?: boolean;
 }
 
 const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
@@ -104,6 +109,7 @@ export const DashboardItemContent = ({
   error,
   onRetryFetch,
   isExpandable,
+  isExporting,
 }: DashboardItemContentProps) => {
   const { reportCode, config } = dashboardItem;
   const { name, type, viewType, componentName } = config || {};
@@ -114,7 +120,7 @@ export const DashboardItemContent = ({
 
   if (!DisplayComponent) return null;
 
-  if (isLoading)
+  if (isLoading || !report)
     return (
       <LoadingContainer aria-label={`Loading data for report '${name}'`}>
         <CircularProgress />
@@ -126,14 +132,22 @@ export const DashboardItemContent = ({
       <Alert severity="error">
         <Typography>{error.message}</Typography>
         <Typography>
-          <RetryButton onClick={onRetryFetch}>Retry loading data</RetryButton> or contact{' '}
-          <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+          {isExporting ? (
+            <>
+              Contact <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+            </>
+          ) : (
+            <>
+              <RetryButton onClick={onRetryFetch}>Retry loading data</RetryButton> or contact{' '}
+              <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+            </>
+          )}
         </Typography>
       </Alert>
     );
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = getHasNoData(report, type);
+  const showNoDataMessage = getHasNoData(report!, type);
 
   return (
     <>
@@ -145,7 +159,12 @@ export const DashboardItemContent = ({
           }}
         />
       ) : (
-        <DisplayComponent report={report} config={config} isEnlarged={isEnlarged} />
+        <DisplayComponent
+          report={report!}
+          config={config}
+          isEnlarged={isEnlarged}
+          isExporting={isExporting}
+        />
       )}
       {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}

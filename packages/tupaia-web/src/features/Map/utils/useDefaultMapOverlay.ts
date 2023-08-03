@@ -4,6 +4,7 @@
  */
 
 import { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useProject } from '../../../api/queries';
 import {
@@ -11,13 +12,14 @@ import {
   DEFAULT_PERIOD_PARAM_STRING,
   URL_SEARCH_PARAMS,
 } from '../../../constants';
-import { MapOverlayGroup, ProjectCode, EntityCode } from '../../../types';
+import { MapOverlayGroup, ProjectCode } from '../../../types';
 
 // When the map overlay groups change, update the default map overlay
 export const useDefaultMapOverlay = (
   projectCode: ProjectCode,
-  mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup },
+  mapOverlaysByCode: { [code: string]: MapOverlayGroup },
 ) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [urlSearchParams] = useSearchParams();
@@ -31,6 +33,8 @@ export const useDefaultMapOverlay = (
     const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
 
     if (!project || overlayCodes.length === 0) {
+      // Clear map overlay data when there are no overlays to select from
+      queryClient.invalidateQueries(['mapOverlayReport', projectCode]);
       return;
     }
 
@@ -40,7 +44,7 @@ export const useDefaultMapOverlay = (
         const { defaultMeasure } = project;
 
         // if the defaultMeasure exists, use this
-        if (mapOverlaysByCode[defaultMeasure]) {
+        if (mapOverlaysByCode[defaultMeasure as string]) {
           return defaultMeasure;
         }
 
@@ -58,7 +62,7 @@ export const useDefaultMapOverlay = (
 
     const defaultOverlayCode = getDefaultOverlayCode();
     if (defaultOverlayCode) {
-      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, getDefaultOverlayCode());
+      urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, getDefaultOverlayCode() as string);
     }
 
     if (!selectedMapOverlayPeriod) {

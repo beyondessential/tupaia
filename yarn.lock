@@ -10265,11 +10265,15 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
+    "@types/lodash.groupby": ^4.6.0
+    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.sortby": ^4.6.0
     camelcase-keys: ^6.2.2
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
+    lodash.sortby: ^4.6.0
     winston: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -10297,11 +10301,15 @@ __metadata:
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/dom-to-image": ^2.6.4
+    "@types/downloadjs": ^1.4.3
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
+    dom-to-image: 2.6.0
+    downloadjs: 1.4.7
     moment: ^2.29.1
     npm-run-all: ^4.1.5
     react: ^16.13.1
@@ -10798,6 +10806,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/dom-to-image@npm:^2.6.4":
+  version: 2.6.4
+  resolution: "@types/dom-to-image@npm:2.6.4"
+  checksum: ddc8d74b944909040a6e6d9ca2feb246b50dc8c3ad908a90634fb6e46e4c438b47aa0a5df4994bd19c1d6f110eb90a15146d1c1a7b8762ab9d050f70e6de4050
+  languageName: node
+  linkType: hard
+
+"@types/downloadjs@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@types/downloadjs@npm:1.4.3"
+  checksum: d5b5e29399fdbb415f351fee64e7f7b3ddef0f251d2375ddaa0c16cd5c026f4a8dce1b4c76d05e019bc65c96f589d70f13512b44e54d568063fdefa0dbfd40c8
+  languageName: node
+  linkType: hard
+
 "@types/ejs@npm:^3.1.1":
   version: 3.1.2
   resolution: "@types/ejs@npm:3.1.2"
@@ -11257,6 +11279,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: 1a4d85dd4ce371352b65dead78e1c6d89c4d59c440bfd9b27023b1113c8610115f2dda17c056b94697f7bfbd947bd8abfe0afd5195b65e2675b404e0e1542fae
+  languageName: node
+  linkType: hard
+
+"@types/lodash.sortby@npm:^4.6.0":
+  version: 4.7.7
+  resolution: "@types/lodash.sortby@npm:4.7.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 94164b49810e37cc3795c133a6375245cdfc0e6804680e34d7039889954e7201c820d658fff89fcda0a1ce68774286f49ce95f83004d8188c4434cdfc2ca55c4
   languageName: node
   linkType: hard
 
@@ -29489,7 +29520,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.sortby@npm:^4.7.0":
+"lodash.sortby@npm:^4.6.0, lodash.sortby@npm:^4.7.0":
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: db170c9396d29d11fe9a9f25668c4993e0c1331bcb941ddbd48fb76f492e732add7f2a47cfdf8e9d740fa59ac41bbfaf931d268bc72aab3ab49e9f89354d718c

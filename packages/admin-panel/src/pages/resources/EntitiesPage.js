@@ -63,6 +63,7 @@ export const COLUMNS = [
     actionConfig: {
       qrCodeContentsKey: 'id',
       humanReadableIdKey: 'code',
+      qrCodePrefix: 'entity-',
     },
   },
 ];

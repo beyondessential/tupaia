@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { BaseConfig, ValueType } from './common';
+import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
 import { CssColor } from '../../css';
 
 export type BaseChartConfig = BaseConfig & {
@@ -71,9 +71,9 @@ export type PieChartConfig = BaseChartConfig & {
   chartType: 'pie';
   presentationOptions?: {
     [key: string]: {
-      color: CssColor;
+      color?: CssColor;
     };
-  };
+  } & ExportPresentationOptions;
 };
 
 /**
@@ -86,7 +86,7 @@ export type LineChartConfig = BaseChartConfig &
     chartConfig?: CommonChartChartConfig;
   };
 
-type CommonChartChartConfig = {
+export type CommonChartChartConfig = {
   /**
    * @description key of column name or special marker '$all' for all columns
    */

@@ -4,13 +4,18 @@
  */
 
 import { UseQueryResult, useQuery } from 'react-query';
+import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { get } from '../api';
 import { CountryAccessListItem } from '../../types';
 
 export const useCountryAccessList = () => {
-  return useQuery('countryAccessList', () => get('countryAccessList'), {
-    placeholderData: [],
-  }) as Omit<UseQueryResult, 'data'> & {
+  return useQuery(
+    'countryAccessList',
+    (): Promise<TupaiaWebCountryAccessListRequest.ResBody> => get('countryAccessList'),
+    {
+      placeholderData: [],
+    },
+  ) as Omit<UseQueryResult, 'data'> & {
     data: CountryAccessListItem[];
   };
 };

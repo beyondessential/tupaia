@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebEntitySearchRequest } from '@tupaia/types';
 
-const DEFAULT_FIELDS = ['code', 'name'];
+const DEFAULT_FIELDS = ['code', 'name', 'qualified_name'];
 
 export type EntitySearchRequest = Request<
   TupaiaWebEntitySearchRequest.Params,

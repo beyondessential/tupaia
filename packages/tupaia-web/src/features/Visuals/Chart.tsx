@@ -10,7 +10,55 @@ import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { DashboardItemReport, DashboardItemConfig } from '../../types';
+import { A4Page } from '@tupaia/ui-components';
 
+const GREY_DE = '#DEDEE0';
+const GREY_FB = '#FBF9F9';
+const TEXT_DARKGREY = '#414D55';
+
+const ExportingStyledTable = styled(ChartTable)`
+  padding: 1.8rem 0;
+  border-bottom: none;
+  overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
+
+  .MuiTableContainer-root {
+    overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
+  }
+  table {
+    border: 1px solid ${GREY_DE};
+    width: auto;
+  }
+  ${A4Page} & {
+    table {
+      width: 100%;
+    }
+  }
+
+  [role='button'] {
+    display: none; // hide the sort buttons
+  }
+
+  // table head
+  thead {
+    border: 1px solid ${GREY_DE};
+    background: none;
+  }
+
+  // table body
+  tbody {
+    tr {
+      &:nth-of-type(odd) {
+        background: ${GREY_FB};
+      }
+    }
+  }
+
+  th,
+  td {
+    color: ${TEXT_DARKGREY};
+    border-color: ${GREY_DE};
+  }
+`;
 const Wrapper = styled.div`
   display: flex;
   position: relative;
@@ -67,18 +115,24 @@ const TabButton = styled(Tab)`
 
 const ContentWrapper = styled.div<{
   $isEnlarged: boolean;
+  $isExporting: boolean;
 }>`
+  pointer-events: ${({ $isExporting }) => ($isExporting ? 'none' : 'initial')};
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
   min-height: ${({ $isEnlarged }) =>
     $isEnlarged
       ? '24rem'
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
+  ${A4Page} & {
+    padding: 0;
+  }
 `;
 
 interface ChartProps {
   report: DashboardItemReport;
   config: DashboardItemConfig;
   isEnlarged?: boolean;
+  isExporting?: boolean;
 }
 
 const DISPLAY_TYPE_VIEWS = [
@@ -96,13 +150,33 @@ const DISPLAY_TYPE_VIEWS = [
   },
 ];
 
-export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
+const EXPORT_DISPLAY_TYPE_VIEWS = [
+  {
+    value: 'chart',
+    Icon: BarChart,
+    label: 'View chart',
+    display: ChartComponent,
+  },
+  {
+    value: 'table',
+    Icon: GridOn,
+    label: 'View table',
+    display: ExportingStyledTable,
+  },
+];
+
+export const Chart = ({ config, report, isEnlarged = false, isExporting = false }: ChartProps) => {
   const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
   const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
   };
 
-  const availableDisplayTypes = isEnlarged ? DISPLAY_TYPE_VIEWS : [DISPLAY_TYPE_VIEWS[0]];
+  const showTable = isEnlarged
+    ? !isExporting || config?.presentationOptions?.exportWithTable
+    : false;
+
+  const views = isExporting ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
+  let availableDisplayTypes = showTable ? views : [views[0]];
 
   const viewContent = ({
     ...report,
@@ -112,7 +186,7 @@ export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
   return (
     <Wrapper>
       <TabContext value={displayType}>
-        {isEnlarged && (
+        {isEnlarged && !isExporting && (
           <TabsWrapper>
             <TabsGroup
               value={displayType}
@@ -130,10 +204,11 @@ export const Chart = ({ config, report, isEnlarged = false }: ChartProps) => {
           <ContentWrapper
             key={value}
             value={value}
-            as={isEnlarged ? TabPanel : 'div'}
+            as={isEnlarged && !isExporting ? TabPanel : 'div'}
             $isEnlarged={isEnlarged}
+            $isExporting={isExporting}
           >
-            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={false} />
+            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={isExporting} />
           </ContentWrapper>
         ))}
       </TabContext>

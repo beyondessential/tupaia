@@ -45,7 +45,7 @@ const AlertText = styled(Typography)`
 
 interface ProjectCountryFormProps {
   availableCountries: CountryAccessListItem[];
-  projectName: SingleProject['name'];
+  projectName?: SingleProject['name'];
 }
 
 export const ProjectAccessForm = ({ availableCountries, projectName }: ProjectCountryFormProps) => {
