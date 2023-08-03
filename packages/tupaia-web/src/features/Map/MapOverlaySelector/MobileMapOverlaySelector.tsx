@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
-import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../../constants';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';

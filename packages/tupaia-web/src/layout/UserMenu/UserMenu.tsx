@@ -15,7 +15,7 @@ import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
 import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
-import { ErrorBoundary } from '../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;

@@ -7,7 +7,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button } from '@tupaia/ui-components';
-import { ErrorBoundary } from '../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../constants';
 
 const Wrapper = styled.div`

@@ -11,7 +11,7 @@ import { Entity } from '@tupaia/types';
 import { AreaTooltip, MAP_COLORS } from '@tupaia/ui-map-components';
 import { useEntityLink } from '../../../utils';
 import { useProject } from '../../../api/queries';
-import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 

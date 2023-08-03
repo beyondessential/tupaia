@@ -65,7 +65,6 @@ const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.2;
   margin-bottom: 0.625rem;
-  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const CountryText = styled(Text)`

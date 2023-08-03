@@ -26,7 +26,7 @@ import {
 import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
-import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;

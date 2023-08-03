@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import { MapOverlayGroup } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
-import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;

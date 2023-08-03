@@ -20,7 +20,7 @@ import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useMapOverlayReport, useDefaultMapOverlay } from './utils';
-import { ErrorBoundary } from '../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const MapContainer = styled.div`
   height: 100%;

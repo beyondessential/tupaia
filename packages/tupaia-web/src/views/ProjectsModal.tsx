@@ -24,7 +24,6 @@ import {
 } from '../layout';
 import { RouterButton } from '../components';
 import { CircularProgress } from '@material-ui/core';
-import { ErrorBoundary } from '../../../ui-components/src/components/ErrorBoundary';
 
 const Wrapper = styled.div`
   display: flex;

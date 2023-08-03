@@ -10,7 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { useMapOverlayReport } from '../utils';
 import styled from 'styled-components';
-import { ErrorBoundary } from '../../../../../ui-components/src/components/ErrorBoundary';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const DesktopWrapper = styled.div`
   pointer-events: auto;
@@ -55,12 +55,10 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
 
   return (
     <>
-      <MobileMapLegend>
-        <ErrorBoundary>
-          <LegendComponent />
-        </ErrorBoundary>
-      </MobileMapLegend>
       <ErrorBoundary>
+        <MobileMapLegend>
+          <LegendComponent />
+        </MobileMapLegend>
         <DesktopWrapper>
           <LegendComponent />
         </DesktopWrapper>
