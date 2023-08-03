@@ -60,7 +60,9 @@ export const setupTestApp = async () => {
   const app = new TestableServer(
     createApp(
       getTestDatabase(),
-      new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS, getAccessPolicy) }),
+      new MockTupaiaApiClient({
+        entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS, getAccessPolicy),
+      }),
     ),
   );
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));

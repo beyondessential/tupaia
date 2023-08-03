@@ -17,10 +17,10 @@ describe('Error responses', () => {
 
   describe('Microservice errors', () => {
     it('Requesting an entity with no permissions', async () => {
-      const { body: response } = await app.get('entity/oracleages/YOLLS');
+      const response = await app.get('entity/oracleages/YOLLS');
 
-      console.log('response', response);
-      expect(1).toEqual(1);
+      // Forbidden error
+      expect(response.statusCode).toEqual(403);
     });
   });
 });
