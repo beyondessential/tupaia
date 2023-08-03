@@ -3,11 +3,13 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { forwardRef, MutableRefObject } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { Close, Search } from '@material-ui/icons';
+import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
+import { IconButton } from '@tupaia/ui-components';
 
 const SearchInput = styled(TextField).attrs({
   variant: 'outlined',
@@ -57,26 +59,88 @@ const SearchInput = styled(TextField).attrs({
   }
 `;
 
+const Container = styled.div<{
+  $mobileIsActive: boolean;
+}>`
+  position: relative;
+  display: flex;
+  width: 100%;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    width: ${({ $mobileIsActive }) => ($mobileIsActive ? '100%' : '0')};
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: ${TOP_BAR_HEIGHT_MOBILE};
+    // Place on top of the hamburger menu on mobile
+    z-index: 1;
+  }
+`;
+
+const MobileOpenButton = styled(IconButton)`
+  display: none;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: block;
+  }
+`;
+
+const MobileCloseButton = styled(IconButton)`
+  display: none;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: block;
+    position: absolute;
+    top: 0.1rem;
+    right: 0.1rem;
+    z-index: 1;
+  }
+`;
+
 interface SearchBarProps {
   value?: string;
   onChange: (newValue: string) => void;
   onFocusChange: (isFocused: boolean) => void;
-  ref: MutableRefObject<null>;
+  onClose: () => void;
 }
 
-export const SearchBar = forwardRef(
-  ({ value = '', onChange, onFocusChange }: SearchBarProps, ref) => {
-    const onChangeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(event.target.value);
-    };
+export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: SearchBarProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [mobileIsActive, setMobileIsActive] = useState(false);
 
-    return (
-      <SearchInput
-        value={value}
-        onChange={onChangeInputValue}
-        onFocus={() => onFocusChange(true)}
-        inputRef={ref}
-      />
-    );
-  },
-);
+  const onOpen = () => {
+    setMobileIsActive(true);
+    inputRef.current?.focus();
+  };
+
+  const handleClickClose = () => {
+    if (value.length > 0) {
+      onChange('');
+      onClose();
+    } else if (value.length === 0) {
+      setMobileIsActive(false);
+      onClose();
+    }
+  };
+
+  const onChangeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(event.target.value);
+  };
+
+  return (
+    <>
+      <MobileOpenButton onClick={onOpen} color="default">
+        <Search />
+      </MobileOpenButton>
+      <Container $mobileIsActive={mobileIsActive}>
+        <SearchInput
+          value={value}
+          onChange={onChangeInputValue}
+          onFocus={() => onFocusChange(true)}
+          inputRef={inputRef}
+        />
+        <MobileCloseButton onClick={handleClickClose} color="default">
+          <Close />
+        </MobileCloseButton>
+      </Container>
+    </>
+  );
+};
