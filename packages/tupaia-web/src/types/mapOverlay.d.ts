@@ -3,9 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { KeysToCamelCase } from './helpers.ts';
 import { MapOverlay } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
+import { KeysToCamelCase } from './helpers';
 
 export type SingleMapOverlayItem = KeysToCamelCase<
   Pick<MapOverlay, 'code', 'name', 'legacy', 'report_code'>
