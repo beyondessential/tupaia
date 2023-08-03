@@ -1,0 +1,26 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import { TestableServer } from '@tupaia/server-boilerplate';
+import { setupTestApp } from './testUtilities';
+
+describe('Error responses', () => {
+  let app: TestableServer;
+
+  beforeAll(async () => {
+    app = await setupTestApp();
+  });
+
+  afterAll(async () => {});
+
+  describe('Microservice errors', () => {
+    it('Requesting an entity with no permissions', async () => {
+      const { body: response } = await app.get('entity/oracleages/YOLLS');
+
+      console.log('response', response);
+      expect(1).toEqual(1);
+    });
+  });
+});
