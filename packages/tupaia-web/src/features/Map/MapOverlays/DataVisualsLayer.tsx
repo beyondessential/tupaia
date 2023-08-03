@@ -26,7 +26,6 @@ import {
 import { useMapOverlayReport } from '../utils';
 import { EntityCode } from '../../../types';
 import { processMeasureData } from './processMeasureData';
-import { MapTableModal } from '../MapTableModal/MapTableModal';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -74,14 +73,11 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const DataVisualsLayer = (
-  { isOpen, setIsOpen }: any,
-  {
-    hiddenValues,
-  }: {
-    hiddenValues: LegendProps['hiddenValues'];
-  },
-) => {
+export const DataVisualsLayer = ({
+  hiddenValues,
+}: {
+  hiddenValues: LegendProps['hiddenValues'];
+}) => {
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
@@ -114,15 +110,6 @@ export const DataVisualsLayer = (
 
   return (
     <>
-      {isOpen ? (
-        <MapTableModal
-          serieses={serieses}
-          entity={entity}
-          selectedOverlay={selectedOverlay}
-          processedMeasureData={processedMeasureData}
-          setIsOpen={setIsOpen}
-        />
-      ) : null}
       <LayerGroup>
         {processedMeasureData.map(measure => {
           if (measure.region) {

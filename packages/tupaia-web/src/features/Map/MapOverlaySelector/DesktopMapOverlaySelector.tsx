@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
@@ -16,7 +17,14 @@ import { useMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
+import MuiIconButton from '@material-ui/core/IconButton';
 import { Tooltip } from '@tupaia/ui-components';
+import { MapTableModal } from './MapTableModal';
+
+const MapTableButton = styled(MuiIconButton)`
+  margin: -10px -10px -10px 0;
+  padding: 15px 10px 15px 18px;
+`;
 
 const MaxHeightContainer = styled.div`
   max-height: 100%;
@@ -148,29 +156,30 @@ interface DesktopMapOverlaySelectorProps {
   entityName?: Entity['name'];
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
-  setIsOpen: any;
 }
 
 export const DesktopMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
-  setIsOpen,
-}: DesktopMapOverlaySelectorProps) =>
-  // { setIsOpen }: any,
-  {
-    const { projectCode, entityCode } = useParams();
-    const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-    const { data: mapOverlayData } = useMapOverlayReport();
-    const handleOpen = () => {
-      setIsOpen(true);
-    };
-    return (
+}: DesktopMapOverlaySelectorProps) => {
+  const { projectCode, entityCode } = useParams();
+  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+  const { data: mapOverlayData } = useMapOverlayReport();
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+  return (
+    <>
+      {isOpen ? <MapTableModal setIsOpen={setIsOpen} /> : null}
       <Wrapper>
         <Header>
           <Heading>Map Overlays</Heading>
-          <Tooltip arrow interactive placement="top" title="Generate Report">
-            <TableAssignmentIcon onClick={() => handleOpen()} />
-          </Tooltip>
+          <MapTableButton>
+            <Tooltip arrow interactive placement="top" title="Generate Report">
+              <TableAssignmentIcon onClick={() => handleOpen()} />
+            </Tooltip>
+          </MapTableButton>
         </Header>
         <Container>
           <TitleWrapper>
@@ -208,5 +217,6 @@ export const DesktopMapOverlaySelector = ({
           )}
         </Container>
       </Wrapper>
-    );
-  };
+    </>
+  );
+};

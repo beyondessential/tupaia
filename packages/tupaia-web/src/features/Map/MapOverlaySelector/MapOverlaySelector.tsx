@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { DesktopMapOverlaySelector } from './DesktopMapOverlaySelector';
 import { MobileMapOverlaySelector } from './MobileMapOverlaySelector';
 
-export const MapOverlaySelector = ({ setIsOpen }: any) => {
+export const MapOverlaySelector = () => {
   const [overlayLibraryOpen, setOverlayLibraryOpen] = useState(false);
 
   const toggleOverlayLibrary = () => {
@@ -23,7 +23,6 @@ export const MapOverlaySelector = ({ setIsOpen }: any) => {
       <DesktopMapOverlaySelector
         overlayLibraryOpen={overlayLibraryOpen}
         toggleOverlayLibrary={toggleOverlayLibrary}
-        setIsOpen={setIsOpen}
       />
     </>
   );

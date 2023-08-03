@@ -12,7 +12,6 @@ interface ModalProps {
   children?: ReactNode;
   onClose: () => void;
   isOpen: boolean;
-  disablePortal?: boolean;
 }
 
 const Wrapper = styled.div`
@@ -50,18 +49,12 @@ const Paper = styled(MuiPaper)`
   transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 `;
 
-export const Modal = ({ children, isOpen, onClose, disablePortal = true }: ModalProps) => {
+export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   // make the modal full screen at small screen sizes
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      PaperComponent={Paper}
-      fullScreen={fullScreen}
-      disablePortal={disablePortal}
-    >
+    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
       <Wrapper id="overlay-wrapper">
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />
