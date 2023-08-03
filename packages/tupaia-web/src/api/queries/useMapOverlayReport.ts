@@ -115,6 +115,7 @@ export const useMapOverlayReport = (
     },
     {
       enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
+      keepPreviousData: false,
     },
   );
 };
