@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Button, ListItemProps, CircularProgress } from '@material-ui/core';
+import { Button, ListItemProps, CircularProgress, List, ListItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { FlexColumn } from '@tupaia/ui-components';
 import { Link, useParams } from 'react-router-dom';
@@ -14,7 +14,12 @@ const Container = styled.div`
   padding: 1rem;
 `;
 
-const ResultLink = styled(Button).attrs({
+const ScrollBody = styled(List)`
+  overflow: auto;
+  max-height: 20rem;
+`;
+
+const ResultLink = styled(ListItem).attrs({
   component: Link,
 })<ListItemProps>`
   display: block;
@@ -42,11 +47,6 @@ const Loader = () => {
     </MessageBody>
   );
 };
-
-const ScrollBody = styled.div`
-  overflow: auto;
-  max-height: 20rem;
-`;
 
 const LoadMoreButton = styled(Button).attrs({
   variant: 'outlined',
@@ -108,6 +108,7 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
         {searchResults.map(({ code, name }) => {
           return (
             <ResultLink
+              button
               key={code}
               onClick={onClose}
               to={{ ...location, pathname: `/${projectCode}/${code}` }}

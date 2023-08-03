@@ -117,7 +117,7 @@ export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: Sear
       onChange('');
       onClose();
       // If there is no text in the search bar, close the search bar input
-    } else if (value.length === 0) {
+    } else {
       setMobileIsActive(false);
       onClose();
     }
