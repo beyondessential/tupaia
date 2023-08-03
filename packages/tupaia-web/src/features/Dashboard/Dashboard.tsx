@@ -15,8 +15,10 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
-import { DashboardItem, EnlargedDashboardItem } from '../DashboardItem';
-import { DashboardItemType } from '../../types';
+import { DashboardItem } from '../DashboardItem';
+import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
+import { DashboardItem as DashboardItemType } from '../../types';
+import { ExportDashboard } from './ExportDashboard';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -104,7 +106,8 @@ export const Dashboard = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: entity } = useEntity(entityCode);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds;
 
   const toggleExpanded = () => {
@@ -125,16 +128,23 @@ export const Dashboard = () => {
         </DashboardImageContainer>
         <TitleBar>
           <Title variant="h3">{entity?.name}</Title>
-          <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
+          <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
+            Export
+          </ExportButton>
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map((item: DashboardItemType) => (
-            <DashboardItem key={item.code} dashboardItem={item} />
+          {activeDashboard?.items.map(item => (
+            <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
           ))}
         </DashboardItemsWrapper>
       </ScrollBody>
-      <EnlargedDashboardItem />
+      <EnlargedDashboardItem entityName={entity?.name} />
+      <ExportDashboard
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        dashboardItems={activeDashboard?.items as DashboardItemType[]}
+      />
     </Panel>
   );
 };

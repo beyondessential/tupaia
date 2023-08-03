@@ -6,13 +6,24 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity, DashboardItem, DashboardRelation, Dashboard } from '@tupaia/types';
+import {
+  Entity,
+  DashboardItem,
+  DashboardRelation,
+  Dashboard,
+  TupaiaWebDashboardsRequest,
+} from '@tupaia/types';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
 }
 
-export type DashboardsRequest = Request<any, any, any, any>;
+export type DashboardsRequest = Request<
+  TupaiaWebDashboardsRequest.Params,
+  TupaiaWebDashboardsRequest.ResBody,
+  TupaiaWebDashboardsRequest.ReqBody,
+  TupaiaWebDashboardsRequest.ReqQuery
+>;
 
 export class DashboardsRoute extends Route<DashboardsRequest> {
   public async buildResponse() {
@@ -77,6 +88,6 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 
-    return camelcaseKeys(response, { deep: true });
+    return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
   }
 }

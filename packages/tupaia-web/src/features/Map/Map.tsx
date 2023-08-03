@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -18,9 +18,8 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
-import { PolygonLayer } from './PolygonLayer';
-import { MarkerLayer } from './MarkerLayer';
-import { useHiddenMapValues, useMapOverlayReport, useDefaultMapOverlay } from './utils';
+import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
+import { useHiddenMapValues, useActiveMapOverlayReport, useDefaultMapOverlay } from './utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -72,33 +71,38 @@ const TilePickerWrapper = styled.div`
 
 // This contains the map controls (legend, overlay selector, etc, so that they can fit within the map appropriately)
 const MapControlWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
   display: flex;
-
   // This is to prevent the wrapper div from blocking clicks on the map overlays
   pointer-events: none;
+  position: relative;
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
 `;
 
 const MapControlColumn = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    flex-direction: column-reverse;
+  }
 `;
 
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
 
   // set the map default overlay if there isn't one selected
   const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);
   useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
   // Setup legend hidden values
-  const { data: measureData } = useMapOverlayReport();
+  const { measureData } = useActiveMapOverlayReport();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
 
   // Setup Tile Picker
@@ -111,8 +115,8 @@ export const Map = () => {
     <MapContainer>
       <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <PolygonLayer />
-        <MarkerLayer hiddenValues={hiddenValues} />
+        <PolygonNavigationLayer />
+        <DataVisualsLayer hiddenValues={hiddenValues} />
         <ZoomControl position="bottomright" />
         <MapWatermark />
       </StyledMap>

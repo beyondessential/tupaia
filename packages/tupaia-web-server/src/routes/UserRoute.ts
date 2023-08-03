@@ -5,8 +5,15 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { TupaiaWebUserRequest } from '@tupaia/types';
+import camelcaseKeys from 'camelcase-keys';
 
-export type UserRequest = Request;
+export type UserRequest = Request<
+  TupaiaWebUserRequest.Params,
+  TupaiaWebUserRequest.ResBody,
+  TupaiaWebUserRequest.ReqBody,
+  TupaiaWebUserRequest.ReqQuery
+>;
 
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
@@ -18,6 +25,6 @@ export class UserRoute extends Route<UserRequest> {
       return {};
     }
 
-    return ctx.services.central.getUser();
+    return camelcaseKeys(await ctx.services.central.getUser());
   }
 }

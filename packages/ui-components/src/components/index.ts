@@ -3,14 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './DataLibrary';
 export * from './DataTable';
 export * from './DateRangePicker';
 export * from './DownloadFilesVisual';
 export * from './HorizontalTree';
 export * from './Icons';
 export * from './Inputs';
-export * from './JsonEditor';
 export * from './Layout';
 export * from './Modal';
 export * from './Matrix';

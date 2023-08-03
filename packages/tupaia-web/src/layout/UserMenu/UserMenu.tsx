@@ -72,7 +72,7 @@ export const UserMenu = () => {
 
   const Logout = (
     <BaseMenuItem key="logout" onClick={logout}>
-      Logout
+      Log out
     </BaseMenuItem>
   );
 
@@ -135,7 +135,7 @@ export const UserMenu = () => {
         isLoggedIn={isLoggedIn}
         primaryColor={menuPrimaryColor}
         secondaryColor={menuSecondaryColor}
-        currentUserUsername={''}
+        currentUserUsername={data?.name}
       >
         {menuItems}
       </DrawerMenu>
