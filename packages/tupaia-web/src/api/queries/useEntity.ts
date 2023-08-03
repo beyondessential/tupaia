@@ -7,8 +7,10 @@ import { useQuery } from 'react-query';
 import { EntityCode, ProjectCode, Entity } from '../../types';
 import { get } from '../api';
 import { DEFAULT_BOUNDS } from '../../constants';
+import { useHandleNoAccessError } from '../../utils';
 
 export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
+  const handleNoAccessError = useHandleNoAccessError(false);
   return useQuery(
     ['entity', projectCode, entityCode],
     async (): Promise<Entity> => {
@@ -25,6 +27,13 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
 
       return entity;
     },
-    { enabled: !!entityCode && !!projectCode },
+    {
+      enabled: !!entityCode && !!projectCode,
+      onError: (e: any) => {
+        if (e.code === 403) {
+          handleNoAccessError();
+        }
+      },
+    },
   );
 };

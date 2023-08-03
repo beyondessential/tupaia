@@ -10,3 +10,4 @@ export { useEntityLink } from './useEntityLink';
 export { useDateRanges } from './useDateRanges';
 export { gaEvent } from './ga';
 export { transformDownloadLink } from './transformDownloadLink';
+export { useHandleNoAccessError } from './useHandleNoAccessError';
