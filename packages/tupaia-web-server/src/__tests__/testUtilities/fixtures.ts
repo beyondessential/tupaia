@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { AccessPolicy } from '@tupaia/access-policy';
 
 export interface Entity {
   code: string;
@@ -17,10 +18,19 @@ export interface Relation {
   hierarchy?: string;
 }
 
+export const DEFAULT_ACCESS_POLICY = {
+  LABRYNNA: ['Public'],
+  HOLODRUM: ['Public'],
+};
+
+export const getAccessPolicy = (accessPolicy = DEFAULT_ACCESS_POLICY) => {
+  return new AccessPolicy(accessPolicy);
+};
+
 export const PROJECTS = [
   {
     code: 'oracleages',
-    permission_groups: ['Public'],
+    permission_groups: ['Admin'],
     projectEntityName: 'Oracle of Ages',
   },
   {

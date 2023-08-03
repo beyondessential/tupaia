@@ -17,7 +17,7 @@ import {
 } from '@tupaia/database';
 
 import { TestModelRegistry } from './testModelRegistry';
-import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
+import { PROJECTS, ENTITIES, ENTITY_RELATIONS, getAccessPolicy } from './fixtures';
 import { createApp } from '../../app';
 
 const models = getTestModels() as TestModelRegistry;
@@ -61,7 +61,7 @@ export const setupTestApp = async () => {
   const app = new TestableServer(
     createApp(
       getTestDatabase(),
-      new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS) }),
+      new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS, getAccessPolicy) }),
     ),
   );
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
