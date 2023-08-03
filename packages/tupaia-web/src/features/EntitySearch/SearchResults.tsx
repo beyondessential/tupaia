@@ -10,6 +10,10 @@ import { FlexColumn } from '@tupaia/ui-components';
 import { Link, useParams } from 'react-router-dom';
 import { useEntitySearch } from '../../api/queries';
 
+const Container = styled.div`
+  padding: 1rem;
+`;
+
 const ResultLink = styled(Button).attrs({
   component: Link,
 })<ListItemProps>`
@@ -19,11 +23,7 @@ const ResultLink = styled(Button).attrs({
   font-size: 0.875rem;
 `;
 
-const Container = styled.div`
-  padding: 1rem;
-`;
-
-const Body = styled(FlexColumn)`
+const MessageBody = styled(FlexColumn)`
   padding: 1rem;
   min-height: 7rem;
   align-items: center;
@@ -36,40 +36,59 @@ const Body = styled(FlexColumn)`
 
 const Loader = () => {
   return (
-    <Body>
+    <MessageBody>
       <CircularProgress />
       <div>Loading results...</div>
-    </Body>
+    </MessageBody>
   );
 };
 
-const LoadMoreButton = styled(Button)`
+const ScrollBody = styled.div`
+  overflow: auto;
+  max-height: 20rem;
+`;
+
+const LoadMoreButton = styled(Button).attrs({
+  variant: 'outlined',
+  color: 'default',
+})`
   display: block;
   width: 100%;
-  padding: 1rem;
+  padding: 0.6rem;
+  margin-top: 0.6rem;
+  font-size: 13px;
+  text-transform: none;
 `;
 
 const NoDataMessage = ({ searchValue }: { searchValue: string }) => {
-  return <Body>No results found for search "{searchValue}"</Body>;
+  return <MessageBody>No results found for search "{searchValue}"</MessageBody>;
 };
 
 interface SearchResultsProps {
   searchValue: string;
   onClose: () => void;
 }
+
 const PAGE_LENGTHS = {
   INITIAL: 5,
   LOAD_MORE: 5,
-  MAX: 15,
+  MAX: 20,
 };
 export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
   const { projectCode } = useParams();
+  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
   const [pageSize, setPageSize] = useState(PAGE_LENGTHS.INITIAL);
+
   const { data: searchResults = [], isLoading } = useEntitySearch(
     projectCode,
     searchValue,
     pageSize,
   );
+
+  if (searchValue !== prevSearchValue) {
+    setPrevSearchValue(searchValue);
+    setPageSize(PAGE_LENGTHS.INITIAL);
+  }
 
   if (isLoading) {
     return <Loader />;
@@ -85,18 +104,20 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
 
   return (
     <Container>
-      {searchResults.map(({ code, name }) => {
-        return (
-          <ResultLink
-            key={code}
-            onClick={onClose}
-            to={{ ...location, pathname: `/${projectCode}/${code}` }}
-          >
-            {name}
-          </ResultLink>
-        );
-      })}
-      {pageSize <= PAGE_LENGTHS.MAX && (
+      <ScrollBody>
+        {searchResults.map(({ code, name }) => {
+          return (
+            <ResultLink
+              key={code}
+              onClick={onClose}
+              to={{ ...location, pathname: `/${projectCode}/${code}` }}
+            >
+              {name}
+            </ResultLink>
+          );
+        })}
+      </ScrollBody>
+      {pageSize < PAGE_LENGTHS.MAX && (
         <LoadMoreButton onClick={onLoadMore}>Load more results</LoadMoreButton>
       )}
     </Container>
