@@ -7,6 +7,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { To, useLocation } from 'react-router';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
+import { SpinningLoader } from '@tupaia/ui-components';
 import {
   MODAL_ROUTES,
   DEFAULT_URL,
@@ -23,7 +24,6 @@ import {
   ProjectCardList,
 } from '../layout';
 import { RouterButton } from '../components';
-import { CircularProgress } from '@material-ui/core';
 
 const Wrapper = styled.div`
   display: flex;
@@ -101,7 +101,7 @@ export const ProjectsModal = () => {
         </ExploreButton>
         {isFetching ? (
           <Loader>
-            <CircularProgress />
+            <SpinningLoader />
           </Loader>
         ) : (
           <ProjectsGrid>
