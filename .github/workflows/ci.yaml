@@ -1,0 +1,168 @@
+name: Tupaia CI
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: '--max-old-space-size=6144'
+  NODE_ENV: test
+
+jobs:
+  validate_branch_name:
+    name: Validate branch name
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate branch name
+        run: packages/devops/scripts/ci/validateBranchName.sh
+
+  validate_migration:
+    name: Validate new migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate new migration
+        run: packages/devops/scripts/ci/validateNewMigrations.sh
+
+  #    - TODO: use eslint no-exclusive-tests flag at lint step after RN-201
+  validate_tests:
+    name: Validate unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.4
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
+      - run: yarn workspace @tupaia/utils build # /scripts/node/validateTests.js use utils package
+
+      - name: Validate unit tests
+        run: packages/devops/scripts/ci/validateTests.sh
+
+  pull_secrets_from_lastpass:
+    name: Pull secrets from LastPass
+    runs-on: ubuntu-latest
+    outputs:
+      db_pg_password: ${{ steps.pull_env_vars.outputs.DB_PG_PASSWORD }}
+
+    steps:
+      - name: Install LastPass CLI
+        run: |
+          sudo apt-get update -y
+          sudo apt-get upgrade -y
+          sudo apt-get install -y lastpass-cli
+      - name: Login to LastPass
+        run: echo ${{ secrets.LASTPASS_PASSWORD }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ secrets.LASTPASS_USERNAME }}
+      - id: pull_env_vars
+        run: |
+          lpass show --notes "GitHub Action .env Environment Variables" >> secrets.env
+          cat secrets.env | grep DB_PG_PASSWORD >> "$GITHUB_OUTPUT"
+      - name: Upload secrets artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: secrets
+          path: secrets.env
+      - name: Logout of LastPass
+        run: lpass logout --force
+
+  unit_tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    needs: pull_secrets_from_lastpass
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - internal-dependencies
+          - admin-panel-server
+          - central-server
+          - data-table-server
+          - entity-server
+          - lesmis-server
+          - meditrak-app-server
+          - psss-server
+          - report-server
+          - web-config-server
+          - auth
+          - data-api
+          - data-lake-api
+          - database
+          - indicators
+          - web-frontend
+        include:
+          - command: ./packages/devops/scripts/ci/testBackend.sh
+          - command: ./packages/devops/scripts/ci/testInternalDependencies.sh
+            package: internal-dependencies
+
+    services:
+      postgres:
+        image: postgis/postgis:13-3.2
+        env:
+          POSTGRES_PASSWORD: ${{needs.pull_secrets_from_lastpass.outputs.db_pg_password}}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      - name: Download secrets artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: secrets
+      - name: Save secrets as environment variables
+        run: |
+          cat ./secrets.env  | awk -F '=' '/=/ {print $1"="$2}' >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.4
+
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --frozen-lockfile
+      - name: Build internal dependencies
+        run: yarn build:internal-dependencies
+
+      - name: Test ${{ matrix.package }}
+        run: ${{ matrix.command }} ${{ matrix.package }}
+
+  remove_secrets_from_artifact:
+    name: Remove secrets from artifact
+    runs-on: ubuntu-latest
+    needs: unit_tests
+
+    steps:
+      - name: Create a empty secret file
+        run: echo " " > ./secrets.env
+      - name: Delete secrets artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: secrets
+          path: secrets.env
+
+  build_step:
+    name: Run build to make sure it will succeed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.4
+      - run: yarn
+      - run: yarn build

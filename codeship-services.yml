@@ -1,13 +1,3 @@
-testing:
-  build:
-    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
-  cached: true
-  default_cache_branch: 'dev'
-  depends_on:
-    - db
-  encrypted_env_file: ./packages/devops/ci/testing.env.encrypted # test db env vars
-  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-
 # 'e2e' service includes a base cypress container, plus code and node_module dependencies
 # required by e2e tests in web-frontend
 e2e:
@@ -20,12 +10,6 @@ e2e:
   volumes:
     # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
     - /dev/shm:/dev/shm
-
-# 'db' service provides a postgres db with postgis
-db:
-  image: postgis/postgis:13-3.2-alpine
-  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-  encrypted_env_file: ./packages/devops/ci/db.env.encrypted
 
 # the 'deployment' service has the aws cli, and credentials for an IAM role to trigger the lambda
 # script that redeploys tupaia
