@@ -67,6 +67,7 @@ const SURVEY_FIELDS = {
       optionValueKey: 'name',
       secondaryLabel:
         'Select the survey group this survey should be a part of, or leave blank for none',
+      canCreateNewOptions: true,
     },
   },
   can_repeat: {
@@ -325,6 +326,11 @@ const QUESTION_COLUMNS = [
                   {
                     label: 'Create New',
                     fieldName: 'createNew',
+                    type: 'boolean',
+                  },
+                  {
+                    label: 'Allow Scan QR Code',
+                    fieldName: 'allowScanQrCode',
                     type: 'boolean',
                   },
                   {
