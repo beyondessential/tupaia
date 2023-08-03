@@ -26,7 +26,6 @@ import { CircularProgress } from '@material-ui/core';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.9rem 0 0;
   padding-left: 3.125rem;
   padding-right: 3.125rem;
   width: 65rem;

@@ -114,7 +114,7 @@ const OutlineLink = styled(RouterButton).attrs({
 
 interface LinkProps {
   url: string;
-  isLandingPage: boolean;
+  isLandingPage?: boolean;
 }
 
 export const ProjectDeniedLink = ({ url }: LinkProps) => (
