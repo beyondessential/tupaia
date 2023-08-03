@@ -35,6 +35,13 @@
     "express": "^4.16.2",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
+    "lodash.sortby": "^4.6.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@tupaia/types": "1.0.0",
+    "@types/lodash.groupby": "^4.6.0",
+    "@types/lodash.keyby": "^4.6.0",
+    "@types/lodash.sortby": "^4.6.0"
   }
 }

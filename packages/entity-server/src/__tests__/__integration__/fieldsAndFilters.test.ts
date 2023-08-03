@@ -49,6 +49,7 @@ describe('fieldsAndFilters', () => {
         'FUCHSIA',
         'VIRIDIAN',
       ].sort(),
+      qualified_name: 'Kanto',
     };
     expect(entityWithoutRandomFields).toEqual(fullEntityObject);
   });

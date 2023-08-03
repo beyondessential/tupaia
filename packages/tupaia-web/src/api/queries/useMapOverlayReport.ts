@@ -98,7 +98,7 @@ export const useMapOverlayReport = (
   const endpoint = isLegacy ? 'legacyMapOverlayReport' : 'report';
 
   return useQuery(
-    [projectCode, entityCode, mapOverlayCode, startDate, endDate],
+    ['mapOverlayReport', projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
       const response = await get(`${endpoint}/${mapOverlayCode}`, {
         params: {

@@ -14,11 +14,13 @@ export interface TranslatedMapOverlay {
   name: string;
   reportCode: string;
   legacy: boolean;
+  sortOrder?: number | null;
   // ...config
 }
 export interface TranslatedMapOverlayGroup {
   name: string;
   children: OverlayChild[];
+  sortOrder?: number | null;
 }
 export type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 export interface ResBody {
