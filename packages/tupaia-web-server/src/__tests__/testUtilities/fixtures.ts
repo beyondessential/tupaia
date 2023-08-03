@@ -3,6 +3,20 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+export interface Entity {
+  code: string;
+  name: string;
+  type: string;
+  country_code?: string;
+  attributes: { type?: string };
+}
+
+export interface Relation {
+  parent: string;
+  child: string;
+  hierarchy?: string;
+}
+
 export const PROJECTS = [
   {
     code: 'oracleages',
@@ -16,7 +30,7 @@ export const PROJECTS = [
   },
 ];
 
-export const ENTITIES = [
+export const ENTITIES: Entity[] = [
   {
     code: 'oracleages',
     name: 'Oracle of Ages',
@@ -118,39 +132,43 @@ export const ENTITIES = [
   })),
 ];
 
-export const ENTITY_RELATIONS = [
-  { parent: 'oracleages', child: 'LABRYNNA', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'YOLLS', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'DEKU', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'CRESCENT', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'SYMMETRY', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'RIDGE', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'ZORAS', hierarchy: 'oracleages' },
-  { parent: 'LABRYNNA', child: 'NORETURN', hierarchy: 'oracleages' },
-  { parent: 'YOLLS', child: 'SPIRITS', hierarchy: 'oracleages' },
-  { parent: 'DEKU', child: 'WING', hierarchy: 'oracleages' },
-  { parent: 'CRESCENT', child: 'MOONLIT', hierarchy: 'oracleages' },
-  { parent: 'SYMMETRY', child: 'SKULL', hierarchy: 'oracleages' },
-  { parent: 'RIDGE', child: 'CROWN', hierarchy: 'oracleages' },
-  { parent: 'RIDGE', child: 'MERMAIDS', hierarchy: 'oracleages' },
-  { parent: 'ZORAS', child: 'JABU', hierarchy: 'oracleages' },
-  { parent: 'NORETURN', child: 'TOMB', hierarchy: 'oracleages' },
+export const ENTITY_RELATIONS: Record<string, Relation[]> = {
+  oracleages: [
+    { parent: 'oracleages', child: 'LABRYNNA', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'YOLLS', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'DEKU', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'CRESCENT', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'SYMMETRY', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'RIDGE', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'ZORAS', hierarchy: 'oracleages' },
+    { parent: 'LABRYNNA', child: 'NORETURN', hierarchy: 'oracleages' },
+    { parent: 'YOLLS', child: 'SPIRITS', hierarchy: 'oracleages' },
+    { parent: 'DEKU', child: 'WING', hierarchy: 'oracleages' },
+    { parent: 'CRESCENT', child: 'MOONLIT', hierarchy: 'oracleages' },
+    { parent: 'SYMMETRY', child: 'SKULL', hierarchy: 'oracleages' },
+    { parent: 'RIDGE', child: 'CROWN', hierarchy: 'oracleages' },
+    { parent: 'RIDGE', child: 'MERMAIDS', hierarchy: 'oracleages' },
+    { parent: 'ZORAS', child: 'JABU', hierarchy: 'oracleages' },
+    { parent: 'NORETURN', child: 'TOMB', hierarchy: 'oracleages' },
+  ],
 
-  { parent: 'oracleseasons', child: 'HOLODRUM', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'HORON', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'WINTER', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'SPOOL', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'CUCCO', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'EYEGLASS', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'TARM', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'GRAVE', hierarchy: 'oracleseasons' },
-  { parent: 'HOLODRUM', child: 'SUBROSIA', hierarchy: 'oracleseasons' },
-  { parent: 'HORON', child: 'GNARLED', hierarchy: 'oracleseasons' },
-  { parent: 'WINTER', child: 'SNAKES', hierarchy: 'oracleseasons' },
-  { parent: 'SPOOL', child: 'MOTHS', hierarchy: 'oracleseasons' },
-  { parent: 'CUCCO', child: 'DRAGON', hierarchy: 'oracleseasons' },
-  { parent: 'EYEGLASS', child: 'EYEGLASS', hierarchy: 'oracleseasons' },
-  { parent: 'TARM', child: 'RUINS', hierarchy: 'oracleseasons' },
-  { parent: 'GRAVE', child: 'EXPLORERS', hierarchy: 'oracleseasons' },
-  { parent: 'SUBROSIA', child: 'SUBROSIA', hierarchy: 'oracleseasons' },
-];
+  oracleseasons: [
+    { parent: 'oracleseasons', child: 'HOLODRUM', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'HORON', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'WINTER', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'SPOOL', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'CUCCO', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'EYEGLASS', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'TARM', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'GRAVE', hierarchy: 'oracleseasons' },
+    { parent: 'HOLODRUM', child: 'SUBROSIA', hierarchy: 'oracleseasons' },
+    { parent: 'HORON', child: 'GNARLED', hierarchy: 'oracleseasons' },
+    { parent: 'WINTER', child: 'SNAKES', hierarchy: 'oracleseasons' },
+    { parent: 'SPOOL', child: 'MOTHS', hierarchy: 'oracleseasons' },
+    { parent: 'CUCCO', child: 'DRAGON', hierarchy: 'oracleseasons' },
+    { parent: 'EYEGLASS', child: 'EYEGLASS', hierarchy: 'oracleseasons' },
+    { parent: 'TARM', child: 'RUINS', hierarchy: 'oracleseasons' },
+    { parent: 'GRAVE', child: 'EXPLORERS', hierarchy: 'oracleseasons' },
+    { parent: 'SUBROSIA', child: 'SUBROSIA', hierarchy: 'oracleseasons' },
+  ],
+};

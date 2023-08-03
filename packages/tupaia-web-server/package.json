@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "@tupaia/types": "1.0.0",
+    "@tupaia/auth": "1.0.0",
+    "@tupaia/utils": "1.0.0",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.0",
     "@types/lodash.sortby": "^4.6.0"
