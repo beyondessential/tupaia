@@ -13,8 +13,6 @@ describe('Error responses', () => {
     app = await setupTestApp();
   });
 
-  afterAll(async () => {});
-
   describe('Microservice errors', () => {
     it('Requesting an entity with no permissions', async () => {
       const response = await app.get('entity/oracleages/YOLLS');

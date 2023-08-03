@@ -19,6 +19,20 @@ import { TestModelRegistry } from './testModelRegistry';
 import { PROJECTS, ENTITIES, ENTITY_RELATIONS, getAccessPolicy } from './fixtures';
 import { createApp } from '../../app';
 
+// Don't generate the proxy middlewares while we're testing
+jest.mock('http-proxy-middleware');
+
+jest.mock('@tupaia/api-client', () => {
+  const { MockTupaiaApiClient, MockEntityApi } = jest.requireActual('@tupaia/api-client');
+  return {
+    TupaiaApiClient: jest.fn().mockImplementation(() => {
+      return new MockTupaiaApiClient({
+        entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS, getAccessPolicy),
+      });
+    }),
+  };
+});
+
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
 hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
@@ -57,14 +71,7 @@ export const setupTestData = async () => {
 };
 
 export const setupTestApp = async () => {
-  const app = new TestableServer(
-    createApp(
-      getTestDatabase(),
-      new MockTupaiaApiClient({
-        entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS, getAccessPolicy),
-      }),
-    ),
-  );
+  const app = new TestableServer(createApp(getTestDatabase()));
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
   return app;
 };
