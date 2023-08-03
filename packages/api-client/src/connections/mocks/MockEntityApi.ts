@@ -6,11 +6,14 @@
 
 import pick from 'lodash.pick';
 import { isDefined } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { EntityApiInterface } from '..';
 
 export class MockEntityApi implements EntityApiInterface {
   private readonly entitiesByHierarchy: Record<string, Record<string, any>[]>;
   private readonly relations: Record<string, { parent: string; child: string }[]>;
+  private getAccessPolicy?: () => AccessPolicy;
 
   private getEntitiesStub(
     hierarchyName: string,
@@ -22,6 +25,13 @@ export class MockEntityApi implements EntityApiInterface {
     const { field, fields, filter } = queryOptions;
 
     let filteredEntities = foundEntities;
+    if (this.getAccessPolicy) {
+      const accessPolicy = this.getAccessPolicy();
+      filteredEntities = filteredEntities.filter(e => accessPolicy.allows(e.code));
+      if (filteredEntities.length < 1) {
+        throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
+      }
+    }
     if (filter) {
       filteredEntities = filteredEntities.filter(e =>
         Object.entries(filter).every(([key, value]) => e[key] === value),
@@ -110,6 +120,7 @@ export class MockEntityApi implements EntityApiInterface {
   public constructor(
     entities: Record<string, any>[] = [],
     relations: Record<string, { parent: string; child: string }[]> = {},
+    getAccessPolicy?: () => AccessPolicy,
   ) {
     this.relations = relations;
     this.entitiesByHierarchy = {};
@@ -123,6 +134,7 @@ export class MockEntityApi implements EntityApiInterface {
       });
       this.entitiesByHierarchy[hierarchy] = Array.from(entitiesInHierarchy);
     });
+    this.getAccessPolicy = getAccessPolicy;
   }
 
   public async getEntity(
