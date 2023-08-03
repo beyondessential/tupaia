@@ -15,7 +15,6 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
-
 const ProjectsWrapper = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints.values.lg}px;
@@ -89,6 +88,7 @@ export function MultiProjectLandingPage({
                   url={`/${code}/${homeEntityCode}${
                     dashboardGroupName ? `/${dashboardGroupName}` : ''
                   }`}
+                  isLandingPage
                 />
               ),
               [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
@@ -97,6 +97,7 @@ export function MultiProjectLandingPage({
                   return (
                     <ProjectDeniedLink
                       url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                      isLandingPage
                     />
                   );
                 }

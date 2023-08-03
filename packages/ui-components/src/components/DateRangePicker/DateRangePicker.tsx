@@ -68,6 +68,7 @@ const Label = styled(Typography)`
   background-color: white;
   border-left-width: 2px;
   cursor: auto;
+  min-width: 8rem;
   button + & {
     border: 1px solid ${props => props.theme.palette.grey['400']};
     min-width: 8rem;

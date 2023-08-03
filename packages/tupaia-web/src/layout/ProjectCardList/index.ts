@@ -10,4 +10,3 @@ export {
   ProjectPendingLink,
   ProjectLoginLink,
 } from './ProjectCard';
-export * from './LegacyProjectCard';

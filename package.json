@@ -45,7 +45,8 @@
     "package:eject": "cd $INIT_CWD && react-scripts eject"
   },
   "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^4.18.0"
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "react-native-qrcode-scanner/react-native-permissions": "^3.6.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",

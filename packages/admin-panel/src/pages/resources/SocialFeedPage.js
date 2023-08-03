@@ -7,7 +7,30 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import styled from 'styled-components';
 import { ResourcePage } from './ResourcePage';
+
+const Image = styled.div`
+  height: 200px;
+  width: 200px;
+  background-image: url(${props => props.$src});
+  background-size: contain;
+  background-repeat: no-repeat;
+`;
+
+const ImagePreview = row => {
+  if (row.value && row.value.title) {
+    return (
+      <div>
+        <Typography variant="h3">{row.value.title}</Typography>
+        <Image $src={row.value.image} alt={row.value.title} />
+        <div>{row.value.body}</div>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const FIELDS = [
   {
@@ -46,6 +69,12 @@ const FIELDS = [
         {
           label: 'Image',
           fieldName: 'image',
+          type: 'image',
+          avatarVariant: 'square',
+          deleteModal: {
+            title: 'Remove Feed Item Image',
+            message: 'Are you sure you want to delete your image?',
+          },
         },
         {
           label: 'Body (accepts basic markdown)',
@@ -58,19 +87,7 @@ const FIELDS = [
         },
       ],
     },
-    Cell: row => {
-      if (row.value && row.value.title) {
-        return (
-          <div>
-            <Typography variant="h3">{row.value.title}</Typography>
-            <img src={row.value.image} alt={row.value.title} />
-            <div>{row.value.body}</div>
-          </div>
-        );
-      }
-
-      return null;
-    },
+    Cell: ImagePreview,
   },
 ];
 

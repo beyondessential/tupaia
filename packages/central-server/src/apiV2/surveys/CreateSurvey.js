@@ -4,7 +4,7 @@
  */
 
 import { CreateHandler } from '../CreateHandler';
-import { SurveyEditor } from './SurveyEditor';
+import { SurveyEditor } from './surveyEditor';
 import { convertNamesToIds } from './convertNamesToIds';
 
 /**
