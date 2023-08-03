@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
-import { Select, DatePicker } from '@tupaia/ui-components';
+import { Select, DateTimePicker } from '@tupaia/ui-components';
 import { ApprovalStatus } from '@tupaia/types';
 import { Autocomplete } from '../autocomplete';
 import { useDebounce } from '../utilities';
@@ -91,7 +91,7 @@ export const ResponseFields = ({
           optionLabelKey="entity-name"
         />
 
-        <DatePicker
+        <DateTimePicker
           label="Date Of Data"
           name="dataTime"
           value={fields.data_time}
