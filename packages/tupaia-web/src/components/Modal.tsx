@@ -38,8 +38,7 @@ const CloseButton = styled(IconButton)`
 `;
 
 const Paper = styled(MuiPaper)`
-  background-color: ${({ theme }) => theme.palette.background.default};
-  padding: 0;
+  background-color: #202124;
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
@@ -61,12 +60,10 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
       fullScreen={fullScreen}
       disablePortal
     >
-      <Wrapper id="overlay-wrapper">
-        <CloseButton onClick={onClose} color="default">
-          <CloseIcon />
-        </CloseButton>
-        {children}
-      </Wrapper>
+      <CloseButton onClick={onClose} color="default">
+        <CloseIcon />
+      </CloseButton>
+      <Wrapper id="overlay-wrapper">{children}</Wrapper>
     </Dialog>
   );
 };
