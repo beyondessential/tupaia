@@ -171,13 +171,13 @@ export const DesktopMapOverlaySelector = ({
   };
   return (
     <>
-      {mapModalOpen ? <MapTableModal setIsOpen={setMapModalOpen} /> : null}
+      {mapModalOpen ? <MapTableModal setMapModalOpen={setMapModalOpen} /> : null}
       <Wrapper>
         <Header>
           <Heading>Map Overlays</Heading>
           <MapTableButton>
             <Tooltip arrow interactive placement="top" title="Generate Report">
-              <TableAssignmentIcon onClick={() => handleOpen()} />
+              <TableAssignmentIcon onClick={handleOpen} />
             </Tooltip>
           </MapTableButton>
         </Header>

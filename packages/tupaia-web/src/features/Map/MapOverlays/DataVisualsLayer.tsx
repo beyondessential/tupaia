@@ -17,15 +17,9 @@ import {
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
-import {
-  useEntitiesWithLocation,
-  useEntity,
-  useMapOverlays,
-  useProject,
-} from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
+import { useEntity, useProject, useMapOverlays } from '../../../api/queries';
+import { useMapOverlayReport, useMapOverlayData } from '../utils';
 import { EntityCode } from '../../../types';
-import { processMeasureData } from './processMeasureData';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -49,30 +43,6 @@ const useNavigateToEntity = () => {
   };
 };
 
-const useEntitiesByMeasureLevel = (measureLevel?: string) => {
-  const { projectCode, entityCode } = useParams();
-  const getSnakeCase = (measureLevel?: string) => {
-    return measureLevel
-      ?.split(/\.?(?=[A-Z])/)
-      .join('_')
-      .toLowerCase();
-  };
-
-  return useEntitiesWithLocation(
-    projectCode,
-    entityCode,
-    {
-      params: {
-        includeRoot: false,
-        filter: {
-          type: getSnakeCase(measureLevel),
-        },
-      },
-    },
-    { enabled: !!measureLevel },
-  );
-};
-
 export const DataVisualsLayer = ({
   hiddenValues,
 }: {
@@ -81,74 +51,74 @@ export const DataVisualsLayer = ({
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
-  const { data: mapOverlayData } = useMapOverlayReport();
+  const { data: mapOverlayData } = useMapOverlayReport(selectedOverlay);
   const { data: entity } = useEntity(projectCode, entityCode);
 
-  if (!entitiesData || !mapOverlayData || !entity) {
+  if (!entity) {
     return null;
   }
+  console.log(entity);
+  const popUpSerieses = mapOverlayData.serieses;
 
   // Don't show the marker layer if the entity type doesn't match the measure level
-  const firstSeries = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
+  const firstSeries = popUpSerieses.find((series: any) => series.displayOnLevel);
   if (firstSeries && camelCase(entity.type!) !== camelCase(firstSeries.displayOnLevel)) {
     return null;
   }
 
-  const processedMeasureData = processMeasureData({
-    entitiesData,
-    measureData: mapOverlayData.measureData,
-    serieses: mapOverlayData.serieses,
+  const { serieses, processedMeasureData } = useMapOverlayData(
+    projectCode,
+    entityCode,
     hiddenValues,
-  });
-
+  );
   if (!processedMeasureData || !mapOverlayData.serieses) {
-    return null;
+    return {
+      mapOverlayData: null,
+      processedMeasureData: null,
+      serieses: undefined,
+    };
   }
 
-  const { serieses } = mapOverlayData;
-
   return (
-    <>
-      <LayerGroup>
-        {processedMeasureData.map(measure => {
-          if (measure.region) {
-            return (
-              <ShadedPolygon
-                key={measure.organisationUnitCode}
-                positions={measure.region}
-                pathOptions={{
-                  color: measure.color,
-                  fillColor: measure.color,
-                }}
-                eventHandlers={{
-                  click: () => {
-                    navigateToEntity(measure.organisationUnitCode);
-                  },
-                }}
-                {...measure}
-              >
-                <AreaTooltip
-                  serieses={serieses}
-                  orgUnitMeasureData={measure as MeasureData}
-                  orgUnitName={measure.name}
-                  hasMeasureValue
-                />
-              </ShadedPolygon>
-            );
-          }
-
+    <LayerGroup>
+      {processedMeasureData.map(measure => {
+        const { region, organisationUnitCode: entity, color, name } = measure;
+        if (region) {
           return (
-            <MeasureMarker key={measure.organisationUnitCode} {...(measure as MeasureData)}>
-              <MeasurePopup
-                markerData={measure as MeasureData}
+            <ShadedPolygon
+              key={entity}
+              positions={region}
+              pathOptions={{
+                color: color,
+                fillColor: color,
+              }}
+              eventHandlers={{
+                click: () => {
+                  navigateToEntity(entity);
+                },
+              }}
+              {...measure}
+            >
+              <AreaTooltip
                 serieses={serieses}
-                onSeeOrgUnitDashboard={navigateToEntity}
+                orgUnitMeasureData={measure as MeasureData}
+                orgUnitName={name}
+                hasMeasureValue
               />
-            </MeasureMarker>
+            </ShadedPolygon>
           );
-        })}
-      </LayerGroup>
-    </>
+        }
+
+        return (
+          <MeasureMarker key={entity} {...(measure as MeasureData)}>
+            <MeasurePopup
+              markerData={measure as MeasureData}
+              serieses={popUpSerieses}
+              onSeeOrgUnitDashboard={navigateToEntity}
+            />
+          </MeasureMarker>
+        );
+      })}
+    </LayerGroup>
   );
 };

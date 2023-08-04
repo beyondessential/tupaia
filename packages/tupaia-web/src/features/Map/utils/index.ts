@@ -6,3 +6,4 @@
 export { useDefaultMapOverlay } from './useDefaultMapOverlay';
 export { useHiddenMapValues } from './useHiddenMapValues';
 export { useMapOverlayReport } from './useMapOverlayReport';
+export { useMapOverlayData } from './useMapOverlayData';
