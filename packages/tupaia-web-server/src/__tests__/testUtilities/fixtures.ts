@@ -100,14 +100,6 @@ export const ENTITIES: Entity[] = [
     type: 'country',
     attributes: {},
   },
-  // Horon -> Gnarled Root
-  // Woods of Winter -> Snakes Remains
-  // Spool Swamp -> Poison Moths Lair
-  // Mt Cucco -> Dancing Dragon Dungeon
-  // Eyeglass Lake -> Unicorns Cave
-  // Tarm Ruins -> Ancient Ruins
-  // Holodrum Graveyard -> Explorers Crypt
-  // Subrosia -> Sword & Shield Maze
   ...[
     { code: 'HORON', name: 'Horon' },
     { code: 'WINTER', name: 'Woods of Winter' },
