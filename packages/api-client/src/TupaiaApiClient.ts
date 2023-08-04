@@ -22,16 +22,7 @@ import {
 } from './connections';
 import { PRODUCTION_BASE_URLS, ServiceBaseUrlSet } from './constants';
 
-export interface TupaiaApiInterface {
-  entity: EntityApiInterface;
-  central: CentralApiInterface;
-  dataTable: DataTableApiInterface;
-  auth: AuthApiInterface;
-  report: ReportApiInterface;
-  webConfig: WebConfigApiInterface;
-}
-
-export class TupaiaApiClient implements TupaiaApiInterface {
+export class TupaiaApiClient {
   public readonly entity: EntityApiInterface;
   public readonly central: CentralApiInterface;
   public readonly dataTable: DataTableApiInterface;

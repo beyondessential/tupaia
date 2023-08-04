@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaApiInterface } from './TupaiaApiClient';
-
 import {
   AuthApiInterface,
   CentralApiInterface,
@@ -23,7 +21,7 @@ import {
   MockWebConfigApi,
 } from './connections/mocks';
 
-export class MockTupaiaApiClient implements TupaiaApiInterface {
+export class MockTupaiaApiClient {
   public readonly auth: AuthApiInterface;
   public readonly central: CentralApiInterface;
   public readonly dataTable: DataTableApiInterface;
@@ -44,6 +42,6 @@ export class MockTupaiaApiClient implements TupaiaApiInterface {
     this.dataTable = dataTable;
     this.entity = entity;
     this.report = report;
-    this.webConfig = webConfig
+    this.webConfig = webConfig;
   }
 }

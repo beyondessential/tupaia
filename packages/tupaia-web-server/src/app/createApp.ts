@@ -5,7 +5,6 @@
 
 import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
-import { TupaiaApiInterface } from '@tupaia/api-client';
 import {
   OrchestratorApiBuilder,
   handleWith,

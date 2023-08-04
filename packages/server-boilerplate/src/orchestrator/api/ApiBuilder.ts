@@ -12,7 +12,6 @@ import {
   getBaseUrlsForHost,
   LOCALHOST_BASE_URLS,
   TupaiaApiClient,
-  TupaiaApiInterface,
 } from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
