@@ -110,8 +110,8 @@ export const MapTableModal = ({ setIsOpen }: any) => {
         <Wrapper>
           <TitleWrapper>
             <Title>{titleText}</Title>
-            <IconButton>
-              <DownloadIcon onClick={doExport} />
+            <IconButton onClick={doExport}>
+              <DownloadIcon />
             </IconButton>
           </TitleWrapper>
           <MapTable
