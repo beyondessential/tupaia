@@ -5,9 +5,6 @@
 
 interface FrontEndExcludedConfig {
   types: string[];
-  exceptions?: {
-    permissionGroups: string[];
-  };
 }
 
 // In the db project.config.frontendExcluded is an array with one entry for some reason
