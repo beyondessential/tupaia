@@ -9860,6 +9860,43 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/datatrak-server@workspace:packages/datatrak-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/datatrak-server@workspace:packages/datatrak-server"
+  dependencies:
+    "@tupaia/api-client": 3.1.0
+    "@tupaia/database": 1.0.0
+    "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/utils": 1.0.0
+    client-sessions: ^0.8.0
+    dotenv: ^8.2.0
+    express: ^4.16.2
+    winston: ^3.2.1
+  languageName: unknown
+  linkType: soft
+
+"@tupaia/datatrak@workspace:packages/datatrak":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/datatrak@workspace:packages/datatrak"
+  dependencies:
+    "@material-ui/core": ^4.9.11
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/lab": ^4.0.0-alpha.57
+    "@material-ui/styles": ^4.9.10
+    "@tupaia/ui-components": 1.0.0
+    axios: ^1.1.3
+    camelcase-keys: ^6.2.2
+    prop-types: ^15.7.2
+    react: ^16.13.1
+    react-dom: ^16.13.1
+    react-hook-form: ^6.15.1
+    react-query: ^3.39.2
+    react-router-dom: ^5.2.0
+    styled-components: ^5.1.0
+    web-vitals: ^2.1.4
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/devops@workspace:packages/devops":
   version: 0.0.0-use.local
   resolution: "@tupaia/devops@workspace:packages/devops"
@@ -14138,7 +14175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.4.0":
+"axios@npm:^1.1.3, axios@npm:^1.4.0":
   version: 1.4.0
   resolution: "axios@npm:1.4.0"
   dependencies:
@@ -37112,7 +37149,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query@npm:^3.39.3":
+"react-query@npm:^3.39.2, react-query@npm:^3.39.3":
   version: 3.39.3
   resolution: "react-query@npm:3.39.3"
   dependencies:
@@ -43794,6 +43831,13 @@ __metadata:
   version: 1.1.4
   resolution: "web-namespaces@npm:1.1.4"
   checksum: 5149842ccbfbc56fe4f8758957b3f8c8616a281874a5bb84aa1b305e4436a9bad853d21c629a7b8f174902449e1489c7a6c724fccf60965077c5636bd8aed42b
+  languageName: node
+  linkType: hard
+
+"web-vitals@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "web-vitals@npm:2.1.4"
+  checksum: 03d3f47dbf55c3dce07beb0ff5de8ddd52e2d0a53a8df5c84e7a16dda93543341d67231fa79b1d9772b091419af4ec0fd395b8bcf451a0e26846e3f76b3d0efc
   languageName: node
   linkType: hard
 
