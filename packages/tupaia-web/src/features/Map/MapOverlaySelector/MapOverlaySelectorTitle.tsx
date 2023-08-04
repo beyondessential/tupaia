@@ -67,8 +67,8 @@ export const MapOverlaySelectorTitle = () => {
             </MapOverlayName>
           ) : (
             `Select an area with valid data. ${
-              entity?.name ? `${entity?.name} has no map overlays available.` : ''
-            }`
+              entity?.name || 'Your current selection'
+            } has no map overlays available.`
           )}
         </Typography>
       )}
