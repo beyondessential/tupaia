@@ -54,8 +54,8 @@ const ExpandButtonText = styled.span`
 const ZoomInIcon = styled(MuiZoomIcon)`
   margin-right: 1rem;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     margin-right: 0;
   }
 `;

@@ -65,7 +65,6 @@ const TitleBar = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.panel.background};
   z-index: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }

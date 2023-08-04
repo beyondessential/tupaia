@@ -35,14 +35,18 @@ const Card = styled.div`
   }
 `;
 
+const LogoWrapper = styled.div`
+  height: 4.875rem;
+  margin-bottom: 0.625rem;
+`;
+
 const Logo = styled.div`
   position: relative;
   background: white;
   width: 4.875rem;
-  height: 4.875rem;
+  height: 100%;
   border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 0.625rem;
 
   > img {
     position: absolute;
@@ -76,7 +80,11 @@ const Body = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
+`;
+
+const TextWrapper = styled.div`
+  height: 100%;
 `;
 
 const BaseLink = styled(RouterButton)`
@@ -100,7 +108,7 @@ const BaseLink = styled(RouterButton)`
   }
 `;
 
-const OutlineLink = styled(RouterButton).attrs({
+const OutlineLink = styled(BaseLink).attrs({
   variant: 'outlined',
 })`
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
@@ -166,17 +174,19 @@ export const ProjectCard = ({
   ProjectButton,
 }: ProjectCardProps) => (
   <Card>
-    {logoUrl && (
-      <Logo>
-        <img alt={`${name} logo`} src={logoUrl} />
-      </Logo>
-    )}
+    <LogoWrapper>
+      {logoUrl && (
+        <Logo>
+          <img alt={`${name} logo`} src={logoUrl} />
+        </Logo>
+      )}
+    </LogoWrapper>
     <Body>
       <Title>{name}</Title>
-      <div>
+      <TextWrapper>
         <Text>{getDescription(description)}</Text>
         <CountryText>{getCountryNames(names)}</CountryText>
-      </div>
+      </TextWrapper>
     </Body>
     <ProjectButton />
   </Card>
