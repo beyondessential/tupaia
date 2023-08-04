@@ -106,6 +106,7 @@ const OutlineLink = styled(RouterButton).attrs({
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: ${({ theme }) => theme.palette.primary.main};
   background: transparent;
+  text-transform: none;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
