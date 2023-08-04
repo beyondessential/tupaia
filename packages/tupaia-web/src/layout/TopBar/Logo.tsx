@@ -33,6 +33,7 @@ const LogoLink = styled(Link)`
   align-items: center;
   background: none;
   border: none;
+  text-decoration: none;
 `;
 
 const Name = styled(Typography)`

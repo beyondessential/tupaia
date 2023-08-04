@@ -14,6 +14,7 @@ export const useCountryAccessList = () => {
     (): Promise<TupaiaWebCountryAccessListRequest.ResBody> => get('countryAccessList'),
     {
       placeholderData: [],
+      staleTime: 0, // Disable cache so that if we go back to the request access view, the country list is up to date
     },
   ) as Omit<UseQueryResult, 'data'> & {
     data: CountryAccessListItem[];

@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { To, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import { SpinningLoader } from '@tupaia/ui-components';
 import {
   MODAL_ROUTES,
@@ -19,6 +19,7 @@ import {
   ProjectAllowedLink,
   ProjectCardList,
   ProjectDeniedLink,
+  ProjectLoginLink,
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
@@ -144,34 +145,15 @@ export const ProjectsModal = () => {
                 ),
                 [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
                 [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
-                  const LINK = {
-                    TEXT: 'Log in',
-                    TO: {
-                      ...location,
-                      hash: MODAL_ROUTES.LOGIN,
-                    },
-                    STATE: {
-                      referrer: location,
-                    },
-                  } as {
-                    TEXT: ReactNode;
-                    TO: To;
-                    STATE?: Record<string, unknown> | null;
-                  };
                   if (isLoggedIn) {
-                    LINK.TEXT = 'Request Access';
-                    LINK.TO = {
-                      ...location,
-                      hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
-                      search: `${URL_SEARCH_PARAMS.PROJECT}=${code}`,
-                    };
-                    LINK.STATE = null;
+                    return (
+                      <ProjectDeniedLink
+                        url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                      />
+                    );
                   }
-                  return (
-                    <ProjectDeniedLink
-                      url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
-                    />
-                  );
+
+                  return <ProjectLoginLink routerState={{ referrer: location }} />;
                 },
               }}
             />
