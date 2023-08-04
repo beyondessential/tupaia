@@ -14,7 +14,7 @@ export const useUser = () => {
   );
   const { data: user } = userResponse;
 
-  const name = `${user?.firstName} ${user?.lastName}`;
+  const name = user?.firstName ? `${user.firstName} ${user?.lastName}` : undefined;
 
   return {
     ...userResponse,

@@ -106,6 +106,7 @@ const OutlineLink = styled(RouterButton).attrs({
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: ${({ theme }) => theme.palette.primary.main};
   background: transparent;
+  min-width: 10rem;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
@@ -123,7 +124,11 @@ export const ProjectDeniedLink = ({ url }: LinkProps) => (
   </OutlineLink>
 );
 
-export const ProjectLoginLink = () => <OutlineLink modal={MODAL_ROUTES.LOGIN}>Log in</OutlineLink>;
+export const ProjectLoginLink = ({ routerState }: { routerState?: Record<string, any> }) => (
+  <OutlineLink modal={MODAL_ROUTES.LOGIN} routerState={routerState}>
+    Log in
+  </OutlineLink>
+);
 
 export const ProjectPendingLink = () => (
   <OutlineLink to={''} disabled={true} startIcon={<Alarm />}>
