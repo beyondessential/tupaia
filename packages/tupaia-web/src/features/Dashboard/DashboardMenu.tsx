@@ -56,10 +56,13 @@ export const DashboardMenu = ({
 
   return (
     <>
-      <MenuButton onClick={handleClickListItem}>
-        {activeDashboard?.name}
-        <ArrowDropDownIcon />
-      </MenuButton>
+      {activeDashboard && (
+        <MenuButton onClick={handleClickListItem}>
+          {activeDashboard?.name}
+          <ArrowDropDownIcon />
+        </MenuButton>
+      )}
+
       <Menu
         id="dashboards-menu"
         anchorEl={anchorEl}
