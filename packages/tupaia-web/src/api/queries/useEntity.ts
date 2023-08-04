@@ -4,11 +4,17 @@
  */
 
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router';
 import { EntityCode, ProjectCode, Entity } from '../../types';
 import { get } from '../api';
-import { DEFAULT_BOUNDS } from '../../constants';
+import { DEFAULT_BOUNDS, MODAL_ROUTES } from '../../constants';
+import { useModal } from '../../utils';
+import { useUser } from './useUser';
 
 export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
+  const { isLoggedIn } = useUser();
+  const { navigateToModal, navigateToLogin } = useModal();
+  const location = useLocation();
   return useQuery(
     ['entity', projectCode, entityCode],
     async (): Promise<Entity> => {
@@ -25,6 +31,14 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
 
       return entity;
     },
-    { enabled: !!entityCode && !!projectCode },
+    {
+      enabled: !!entityCode && !!projectCode,
+      onError: (e: any) => {
+        if(e.code !== 403) return;
+        if (!isLoggedIn) return navigateToLogin();
+        if (location.hash === `#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`) return;
+        return navigateToModal(MODAL_ROUTES.REQUEST_COUNTRY_ACCESS);
+      },
+    },
   );
 };

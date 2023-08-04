@@ -7,7 +7,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../../../helpers/testingRenderer';
-import { LoadingContainer } from '../../components/LoadingContainer';
+import { LoadingContainer } from '../../components/Loaders/LoadingContainer';
 
 const loadingMessage = 'Loading please wait...';
 const content = 'Loaded Content';
