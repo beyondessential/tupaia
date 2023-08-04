@@ -8,7 +8,7 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn } from '@tupaia/ui-components';
 import { Modal } from '../../../components';
-import { MapTable, MeasureData } from '@tupaia/ui-map-components';
+import { MapTable, MeasureData, useMapDataExport } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import { useEntityAncestors, useMapOverlays, useEntitiesWithLocation } from '../../../api/queries';
 import { useMapOverlayReport } from '../utils';
@@ -64,7 +64,7 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const MapTableModal = ({ setIsOpen }: any) => {
+export const MapTableModal = ({ setIsOpen, measureOptions, measureData }: any) => {
   const handleCloseModal = () => {
     setIsOpen(false);
   };
@@ -93,6 +93,16 @@ export const MapTableModal = ({ setIsOpen }: any) => {
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
   const entityArray = data.reverse();
   const titleText = `${selectedOverlay.name}, ${entityArray[1].name}`;
+  const startDate = serieses.startDate;
+  const endDate = serieses.endDate;
+
+  const { doExport } = useMapDataExport(
+    serieses,
+    processedMeasureData as MeasureData[],
+    titleText,
+    startDate,
+    endDate,
+  );
 
   return (
     <>
@@ -101,7 +111,7 @@ export const MapTableModal = ({ setIsOpen }: any) => {
           <TitleWrapper>
             <Title>{titleText}</Title>
             <IconButton>
-              <DownloadIcon />
+              <DownloadIcon onClick={doExport} />
             </IconButton>
           </TitleWrapper>
           <MapTable
