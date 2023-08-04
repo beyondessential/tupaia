@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { SmallAlert } from './Alert';
 import { ErrorBoundary } from './ErrorBoundary';
 import { FlexCenter } from './Layout';
-import { SpinningLoader } from './SpinningLoader';
+import { SpinningLoader } from './Loaders';
 
 const Container = styled(FlexCenter)`
   width: 100%;

@@ -6,8 +6,8 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
-import { SmallAlert } from './Alert';
-import { GreyOutlinedButton } from './Button';
+import { SmallAlert } from '../Alert';
+import { GreyOutlinedButton } from '../Button';
 
 const Container = styled.div`
   position: relative;
