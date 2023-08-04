@@ -64,7 +64,7 @@ const useEntitiesByMeasureLevel = (measureLevel?: string) => {
   );
 };
 
-export const MapTableModal = ({ setIsOpen, measureOptions, measureData }: any) => {
+export const MapTableModal = ({ setIsOpen }: any) => {
   const handleCloseModal = () => {
     setIsOpen(false);
   };
