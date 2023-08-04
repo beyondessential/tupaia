@@ -41,6 +41,11 @@ const QUESTION_FIELDS = [
     type: 'tooltip',
   },
   {
+    Header: 'Hook',
+    source: 'hook',
+    type: 'tooltip',
+  },
+  {
     Header: 'Option Set Id',
     source: 'option_set_id',
     show: false,
@@ -99,14 +104,19 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-export const QuestionsPage = ({ getHeaderEl }) => (
+const EDITOR_CONFIG = {
+  displayUsedBy: true,
+};
+
+export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Questions"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     getHeaderEl={getHeaderEl}
-    displayUsedBy
+    editorConfig={EDITOR_CONFIG}
+    {...restOfProps}
   />
 );
 

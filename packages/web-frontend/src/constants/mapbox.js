@@ -25,6 +25,8 @@ const urls = {
   laosEthnicity: makeMapboxStyleUrl({ styleId: 'ckm5nv5rv82j217qka0kylmsu' }),
   laosTerrain: makeMapboxStyleUrl({ styleId: 'ckm5o375h43a017qym8ic3sgh' }),
   laosPopulation: makeMapboxStyleUrl({ styleId: 'ckm5nolwx0pkt17o7vvgnuya0' }),
+  // UNFPA
+  unfpaPopulation: makeMapboxStyleUrl({ styleId: 'cl5w14no4001m14qyaermcomc' }),
 };
 
 const openStreets = key => ({
@@ -156,6 +158,13 @@ const population = key => ({
     link: 'https://www.worldpop.org/geodata/listing?id=69',
   },
 });
+const unfpaPopulation = key => ({
+  key,
+  label: 'Population per 1km',
+  thumbnail:
+    'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/unfpa-population-tile-thumbnail.png',
+  url: urls[key],
+});
 
 export const TILE_SETS = [
   openStreets('osm'),
@@ -173,4 +182,6 @@ export const TILE_SETS = [
   ethnicity('laosEthnicity'),
   terrain('laosTerrain'),
   population('laosPopulation'),
+  // UNFPA
+  unfpaPopulation('unfpaPopulation'),
 ];

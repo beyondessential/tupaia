@@ -5,6 +5,7 @@
  */
 
 import { BaseApi } from './BaseApi';
+import { PublicInterface } from './types';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
@@ -14,7 +15,11 @@ const MULTIPLE_VALUES_DELIMITER = ',';
 const comparatorToOperator = {
   '=': '==' as const, // Exact match
   '!=': '!=' as const, // Does not match
-  ilike: '=@' as const, // Contains sub string
+  ilike: '=@' as const, // Contains sub string,
+  '<': '<' as const, // Less than
+  '<=': '<=' as const, // Less than or equal
+  '>': '>' as const, // Greater than
+  '>=': '>=' as const, // Greater than or equal
 };
 
 type ValueOf<T> = T extends Record<string, any> ? T[keyof T] : never;
@@ -182,6 +187,44 @@ export class EntityApi extends BaseApi {
     );
   }
 
+  public async getAncestorsOfEntity(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      field?: string;
+      fields?: string[];
+      filter?: any;
+    },
+    includeRootEntity = false,
+  ) {
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/ancestors`, {
+      ...this.stringifyQueryParameters(queryOptions),
+      includeRootEntity: `${includeRootEntity}`,
+    });
+  }
+
+  public async getAncestorsOfEntities(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      field?: string;
+      fields?: string[];
+      filter?: any;
+    },
+    includeRootEntity = false,
+  ) {
+    return this.connection.post(
+      `hierarchy/${hierarchyName}/ancestors`,
+      {
+        ...this.stringifyQueryParameters(queryOptions),
+        includeRootEntity: `${includeRootEntity}`,
+      },
+      {
+        entities: entityCodes,
+      },
+    );
+  }
+
   public async getRelativesOfEntity(
     hierarchyName: string,
     entityCode: string,
@@ -253,4 +296,15 @@ export class EntityApi extends BaseApi {
       },
     );
   }
+
+  public async entitySearch(hierarchyName: string, searchString: string, queryOptions?: any) {
+    const { page, pageSize, ...otherQueryOptions } = queryOptions;
+    return this.connection.get(`hierarchy/${hierarchyName}/entitySearch/${searchString}`, {
+      ...this.stringifyQueryParameters(otherQueryOptions),
+      page,
+      pageSize,
+    });
+  }
 }
+
+export interface EntityApiInterface extends PublicInterface<EntityApi> {}

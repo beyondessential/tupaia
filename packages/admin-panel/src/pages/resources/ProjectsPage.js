@@ -30,6 +30,7 @@ const FIELDS = [
       optionLabelKey: 'name',
       optionValueKey: 'name',
       sourceKey: 'dashboard_group_name',
+      distinct: true,
     },
   },
   {
@@ -57,12 +58,34 @@ const FIELDS = [
   {
     Header: 'Image',
     source: 'image_url',
-    type: 'tooltip',
+    editConfig: {
+      type: 'image',
+      name: 'image_url',
+      avatarVariant: 'square',
+      deleteModal: {
+        title: 'Remove Project Image',
+        message: 'Are you sure you want to delete your image?',
+      },
+      secondaryLabel: 'Recommended size: 480x240px',
+      maxHeight: 240,
+      maxWidth: 480,
+    },
   },
   {
     Header: 'Logo',
     source: 'logo_url',
-    type: 'tooltip',
+    editConfig: {
+      type: 'image',
+      name: 'logo_url',
+      avatarVariant: 'square',
+      deleteModal: {
+        title: 'Remove Project Logo',
+        message: 'Are you sure you want to delete your image?',
+      },
+      secondaryLabel: 'Recommended size: 480x240px',
+      maxHeight: 240,
+      maxWidth: 480,
+    },
   },
   {
     Header: 'Config',
@@ -86,7 +109,6 @@ const NEW_PROJECT_COLUMNS = [
     source: 'name',
   },
   ...FIELDS,
-
   {
     Header: 'Country Code/s',
     source: 'country.code',
@@ -102,14 +124,14 @@ const NEW_PROJECT_COLUMNS = [
   },
   {
     Header: 'Canonical Types (leave blank for default)',
-    source: 'entityType',
+    source: 'entityTypes',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'entityTypes',
-      optionLabelKey: 'entityType',
-      optionValueKey: 'entityType',
-      sourceKey: 'entityTypes',
+      optionLabelKey: 'type',
+      optionValueKey: 'type',
+      pageSize: 1000, // entityTypes endpoint doesn't support filtering, so fetch all values
       allowMultipleValues: true,
     },
   },
@@ -144,6 +166,13 @@ export const ProjectsPage = ({ getHeaderEl }) => (
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
+    onProcessDataForSave={(editedFields, recordData) => {
+      // If the project is being edited, and the code field is not being edited, then include the existing code in the edited fields so that it can be used for generating project image names.
+      if (recordData.code && !editedFields.code) {
+        return { ...editedFields, code: recordData.code };
+      }
+      return editedFields;
+    }}
   />
 );
 

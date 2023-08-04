@@ -34,7 +34,7 @@ export const getEntityAttributeChecker = (state, questionId) => {
   }
 
   return entity =>
-    Object.entries(JSON.parse(attributes)).every(([key, config]) => {
+    Object.entries(attributes).every(([key, config]) => {
       const attributeValue = getAnswerForQuestion(state, config.questionId);
 
       // No answer was selected for the question to filter, return all
@@ -78,6 +78,10 @@ export const getRecentEntities = (database, state, baseFilters) => {
   return sortedRecentEntities;
 };
 
+/*
+ * This returns a js array, NOT a Realm.Results object
+ * The attributes filter uses a [].filter which converts the results to value iterables
+ */
 export const fetchEntities = (database, baseFilters, checkEntityAttributes) => {
   const entities = database.getEntities(baseFilters);
   return filterOnAttributes(entities, checkEntityAttributes);

@@ -5,6 +5,7 @@
  */
 import React, { lazy, Suspense } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { AdminPanelDataProviders } from '@tupaia/admin-panel';
 import { NavBar, Footer, FullPageLoader } from '../components';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
@@ -17,8 +18,10 @@ import { NotAuthorisedView } from '../views/NotAuthorisedView';
 import { VerifyEmailView } from '../views/VerifyEmailView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 import { ExportView, PDF_DOWNLOAD_VIEW } from '../views/ExportView';
+import { getAdminApiUrl } from '../utils/getAdminApiUrl';
 
-const AdminPanel = lazy(() => import('./AdminPanelRoutes'));
+const AdminPanel = lazy(() => import('./AdminPanelApp'));
+const adminPanelConfig = { apiUrl: `${getAdminApiUrl()}` };
 
 /**
  * Main Page Routes
@@ -49,9 +52,10 @@ export const PageRoutes = React.memo(() => {
           <Footer />
         </Route>
         <Route path={`${path}/admin`}>
-          <NavBar hideSearch />
-          <AdminPanel />
-          <Footer />
+          <AdminPanelDataProviders config={adminPanelConfig}>
+            <AdminPanel />
+            <Footer />
+          </AdminPanelDataProviders>
         </Route>
         <Route path={`${path}/about`}>
           <NavBar />

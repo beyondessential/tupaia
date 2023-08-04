@@ -29,8 +29,6 @@ export const PERIOD_TYPES = {
 
 const NON_NUMERIC_PERIOD_TYPES = [WEEK, QUARTER];
 
-export const DEFAULT_PERIOD_TYPE = PERIOD_TYPES.DAY;
-
 export const PERIOD_TYPE_CONFIG = {
   [DAY]: {
     format: 'YYYYMMDD',

@@ -6,7 +6,7 @@
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { Resolved } from '@tupaia/tsutils';
+import { Resolved } from '@tupaia/types';
 import { yup } from '@tupaia/utils';
 import { TupaiaApiClient } from '@tupaia/api-client';
 

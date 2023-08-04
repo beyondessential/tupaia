@@ -84,6 +84,60 @@ export class TestableApp {
     return this.addOptionsToRequest(supertest(this.app).put(versionedEndpoint), options);
   }
 
+  multipartPost({ endpoint, filesByMultipartKey, payload, headers, query, apiVersion }) {
+    return this.multipart({
+      method: 'post',
+      endpoint,
+      filesByMultipartKey,
+      payload,
+      headers,
+      query,
+      apiVersion,
+    });
+  }
+
+  multipartPut({ endpoint, filesByMultipartKey, payload, headers, query, apiVersion }) {
+    return this.multipart({
+      method: 'put',
+      endpoint,
+      filesByMultipartKey,
+      payload,
+      headers,
+      query,
+      apiVersion,
+    });
+  }
+
+  /**
+   * @param {'put' | 'post'} method
+   * @param {string} endpoint
+   * @param {[key:string]: string} filesByMultipartKey map of fieldname -> file path
+   * @param {} [queryParameters]
+   * @param {} [payload] The part which is not a file. Sent as JSON with fieldname `payload`
+   */
+  multipart({
+    method,
+    endpoint,
+    filesByMultipartKey = {},
+    payload = {},
+    headers,
+    query,
+    apiVersion = DEFAULT_API_VERSION,
+  }) {
+    const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
+    let req = supertest(this.app);
+    if (method === 'put') {
+      req = req.put(versionedEndpoint);
+    } else if (method === 'post') {
+      req = req.post(versionedEndpoint);
+    }
+    req = req.field('payload', JSON.stringify(payload));
+    for (const [fieldname, file] of Object.entries(filesByMultipartKey)) {
+      req = req.attach(fieldname, file);
+    }
+    return this.addOptionsToRequest(req, { headers, query });
+  }
+
   delete(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
     const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
     return this.addOptionsToRequest(supertest(this.app).delete(versionedEndpoint), options);

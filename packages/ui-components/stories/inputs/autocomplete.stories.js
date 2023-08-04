@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import styled from 'styled-components';
-import { Autocomplete } from '../../src';
+import { Autocomplete } from '../../src/components';
 
 export default {
   title: 'Inputs/Autocomplete',
@@ -196,3 +196,15 @@ export const Tags = () => {
     </Container>
   );
 };
+
+export const Tooltip = () => (
+  <Container>
+    <Autocomplete
+      id="tooltip-autocomplete"
+      label="Auto Complete with tooltip label"
+      options={options.map(option => option.name)}
+      placeholder="Search..."
+      tooltip="This is a tooltip"
+    />
+  </Container>
+);

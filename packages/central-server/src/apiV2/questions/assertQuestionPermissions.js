@@ -15,7 +15,7 @@ export const assertQuestionEditPermissions = async (accessPolicy, models, questi
   if (!question) {
     throw new Error(`No question exists with id ${questionId}`);
   }
-  return assertDataElementEditPermissions(question.data_element_code);
+  return assertDataElementEditPermissions(accessPolicy, models, question.data_element_id);
 };
 
 export const createQuestionDBFilter = async (accessPolicy, models, criteria, options) => {

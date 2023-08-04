@@ -111,7 +111,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const MapOverlayGroupsPage = ({ getHeaderEl }) => (
+export const MapOverlayGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Map Overlay Groups"
     endpoint={MAP_OVERLAY_GROUPS_ENDPOINT}
@@ -122,6 +122,7 @@ export const MapOverlayGroupsPage = ({ getHeaderEl }) => (
     editConfig={{
       title: 'Edit Map Overlay Group',
     }}
+    {...restOfProps}
   />
 );
 

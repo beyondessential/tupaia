@@ -1,16 +1,16 @@
-'use strict';
+import { insertObject, arrayToDbString } from '../utilities';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
 
-import { insertObject, arrayToDbString } from '../utilities';
-
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -84,7 +84,7 @@ const BASIC_LAOS_SCHOOLS_DASHBOARD_GROUP_OBJECT = {
   organisationUnitCode: ORGANISATION_UNIT_CODE,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     LAOS_SCHOOLS_DASHBOARD_GROUPS.map(dashboardGroup => {
       const { code, organisationLevel, userGroup, name } = dashboardGroup;
@@ -99,7 +99,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`	
     DELETE FROM "dashboardGroup" 
     WHERE "code" in (${arrayToDbString(

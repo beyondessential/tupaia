@@ -11,3 +11,5 @@ export { Header } from './Header';
 export { PageBody } from './PageBody';
 export { Footer } from './Footer';
 export { ModalContentProvider } from './ModalContentProvider';
+export { JsonEditor } from './JsonEditor';
+export { SQLQueryEditor } from './SQLQueryEditor';

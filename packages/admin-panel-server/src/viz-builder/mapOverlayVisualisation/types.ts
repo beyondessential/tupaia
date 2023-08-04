@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { CamelKeysToSnake, LegacyReport, Report, VizData } from '../types';
+import { CamelKeysToSnake, Report, VizData } from '../types';
 
 type Presentation = Record<string, unknown>;
 
@@ -82,4 +82,4 @@ export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: 
 // };
 //
 export type MapOverlayVizResource = MapOverlayVisualisationResource;
-//| LegacyMapOverlayVisualisationResource;
+// | LegacyMapOverlayVisualisationResource;

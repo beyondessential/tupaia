@@ -1,0 +1,30 @@
+# @tupaia/ui-chart-components
+
+A library of chart interface components for the Tupaia project.
+
+## Available Scripts
+
+In the project directory, you can run:
+
+`yarn storybook`
+
+Runs the storybook app and pulls stories from the `src` directory which have a .stories.js suffix.<br />
+
+The page will reload if you make edits.<br />
+
+## Story Book
+
+Storybook is an open source tool for developing UI components.
+[https://github.com/storybookjs/storybook](https://github.com/storybookjs/storybook)
+
+## Recharts
+
+The components are mostly built on top of components from the [ReCharts library](https://recharts.org).
+
+##### Notes on approach:
+
+- Use [styled components](https://styled-components.com) to customise components
+- Import Material UI components with a Mui prefix to distinguish them from custom components. eg. `import MuiButton from '@material-ui/core/Button';`
+
+- Avoid hard coding children and allow them to be passed in as JSX as much as possible
+- Export components using named exports

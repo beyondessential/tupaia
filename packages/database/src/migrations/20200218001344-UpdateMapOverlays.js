@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -92,15 +92,19 @@ const replaceMeasureBuilderDenominatorConfig = async (db, { id, denominator }) =
     WHERE
       id = '${id}'`);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
-    MAP_OVERLAY_CONFIGS.map(({ id, newDenominator: denominator }) => replaceMeasureBuilderDenominatorConfig(db, { id, denominator })),
+    MAP_OVERLAY_CONFIGS.map(({ id, newDenominator: denominator }) =>
+      replaceMeasureBuilderDenominatorConfig(db, { id, denominator }),
+    ),
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await Promise.all(
-    MAP_OVERLAY_CONFIGS.map(({ id, oldDenominator: denominator }) => replaceMeasureBuilderDenominatorConfig(db, { id, denominator })),
+    MAP_OVERLAY_CONFIGS.map(({ id, oldDenominator: denominator }) =>
+      replaceMeasureBuilderDenominatorConfig(db, { id, denominator }),
+    ),
   );
 };
 

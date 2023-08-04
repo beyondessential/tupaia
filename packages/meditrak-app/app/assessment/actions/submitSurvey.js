@@ -8,7 +8,12 @@ import moment from 'moment';
 import RNFS from 'react-native-fs';
 
 import { synchroniseDatabase } from '../../sync';
-import { getFileInDocumentsPath, imageDataIsFileName, generateMongoId } from '../../utilities';
+import {
+  getFileInDocumentsPath,
+  imageDataIsFileName,
+  generateMongoId,
+  getFilenameFromUri,
+} from '../../utilities';
 import { getCurrentUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
 import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
 import { addMessage } from '../../messages';
@@ -40,6 +45,13 @@ const processAnswerForDatabase = async (database, questionId, type, answer) => {
     const imageData = await RNFS.readFile(localFilename, 'base64');
     database.saveImage(fileId, imageData);
     processedAnswer = fileId;
+  }
+
+  if (type === 'File' && answer) {
+    const fileId = generateUUID().toString();
+    const uniqueFileName = `${fileId}_${getFilenameFromUri(answer)}`;
+    database.saveFile(fileId, uniqueFileName, answer);
+    processedAnswer = uniqueFileName;
   }
 
   // Some question types work off raw data, but display and store a processed version.

@@ -8,6 +8,7 @@ import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
+  VIZ_BUILDER_USER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
@@ -23,6 +24,10 @@ describe('Permissions checker for EditDashboardItems', async () => {
 
   const BES_ADMIN_POLICY = {
     SB: [BES_ADMIN_PERMISSION_GROUP],
+  };
+
+  const VIZ_BUILDER_USER_ADMIN_POLICY = {
+    SB: [VIZ_BUILDER_USER_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -207,7 +212,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
         expect(result.config.name).to.equal(newName);
       });
 
-      it('Allow editing of user information if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
+      it('Allow editing of a dashboard item if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
         const newName = 'Where to find cool pokemon';
         await app.grantAccess(BES_ADMIN_POLICY);
         await app.put(`dashboardItems/${dashboardItemDLPublicLAAdmin.id}`, {
@@ -216,6 +221,32 @@ describe('Permissions checker for EditDashboardItems', async () => {
         const result = await models.dashboardItem.findById(dashboardItemDLPublicLAAdmin.id);
 
         expect(result.config.name).to.equal(newName);
+      });
+
+      it('Does not allow editing of a dashboard item if we have Viz Builder User access in any country, and where the user we are editing does not have access to that country', async () => {
+        const newName = 'Where to find cool pokemon';
+        await app.grantAccess(VIZ_BUILDER_USER_ADMIN_POLICY);
+        const { body: result } = await app.put(
+          `dashboardItems/${dashboardItemDLPublicLAAdmin.id}`,
+          {
+            body: { config: { name: newName } },
+          },
+        );
+
+        expect(result).to.have.keys('error');
+      });
+
+      it('Does not allow editing of a dashboard item if user has Viz Builder User access in the requested country but not BES Admin or the dashboard specific permission', async () => {
+        const newName = 'Where to find cool pokemon';
+        await app.grantAccess(VIZ_BUILDER_USER_ADMIN_POLICY);
+        const { body: result } = await app.put(
+          `dashboardItems/${dashboardItemDLPublicSBAdmin.id}`,
+          {
+            body: { config: { name: newName } },
+          },
+        );
+
+        expect(result).to.have.keys('error');
       });
     });
   });

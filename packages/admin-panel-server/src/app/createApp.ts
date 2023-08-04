@@ -3,15 +3,11 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  handleWith,
-  useForwardUnhandledRequests,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
-import { upload, verifyBESAdminAccess } from '../middleware';
+import { upload } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
@@ -25,6 +21,8 @@ import {
   FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
+  FetchDataTablePreviewDataRequest,
+  FetchDataTablePreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
@@ -36,10 +34,10 @@ import {
   UserRoute,
   ImportMapOverlayVisualisationRequest,
   ImportMapOverlayVisualisationRoute,
-  FetchAggregationOptionsRequest,
-  FetchAggregationOptionsRoute,
   FetchTransformSchemasRequest,
   FetchTransformSchemasRoute,
+  FetchDataTableBuiltInParamsRequest,
+  FetchDataTableBuiltInParamsRoute,
 } from '../routes';
 import { authHandlerProvider } from '../auth';
 
@@ -56,95 +54,81 @@ export function createApp() {
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
-      verifyBESAdminAccess,
       handleWith(FetchHierarchyEntitiesRoute),
     )
     .post<FetchReportPreviewDataRequest>(
       'fetchReportPreviewData',
-      verifyBESAdminAccess,
       handleWith(FetchReportPreviewDataRoute),
     )
     .post<SaveDashboardVisualisationRequest>(
       'dashboardVisualisation',
-      verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
     .put<SaveDashboardVisualisationRequest>(
       'dashboardVisualisation/:dashboardVisualisationId',
-      verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
     .post<SaveMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation',
-      verifyBESAdminAccess,
       handleWith(SaveMapOverlayVisualisationRoute),
     )
     .put<SaveMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation/:mapOverlayVisualisationId',
-      verifyBESAdminAccess,
       handleWith(SaveMapOverlayVisualisationRoute),
     )
     .get<FetchDashboardVisualisationRequest>(
       'dashboardVisualisation/:dashboardVisualisationId',
-      verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
+    )
+    .post<FetchDataTablePreviewDataRequest>(
+      'fetchDataTablePreviewData',
+      handleWith(FetchDataTablePreviewDataRoute),
+    )
+    .get<FetchDataTableBuiltInParamsRequest>(
+      'fetchDataTableBuiltInParams',
+      handleWith(FetchDataTableBuiltInParamsRoute),
     )
     .get(
       'export/dashboardVisualisation/:dashboardVisualisationId',
-      verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
-      verifyBESAdminAccess,
       handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',
-      verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
     .post<ExportMapOverlayVisualisationRequest>(
       'export/mapOverlayVisualisation',
-      verifyBESAdminAccess,
       handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ImportDashboardVisualisationRequest>(
       'import/dashboardVisualisations',
-      verifyBESAdminAccess,
       upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       'import/mapOverlayVisualisations',
-      verifyBESAdminAccess,
       upload.array('mapOverlayVisualisations'),
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
       'uploadTestData',
-      verifyBESAdminAccess,
       upload.single('testData'),
       handleWith(UploadTestDataRoute),
     )
     .get<FetchMapOverlayVisualisationRequest>(
       'mapOverlayVisualisation/:mapOverlayVisualisationId',
-      verifyBESAdminAccess,
       handleWith(FetchMapOverlayVisualisationRoute),
-    )
-    .get<FetchAggregationOptionsRequest>(
-      'fetchAggregationOptions',
-      verifyBESAdminAccess,
-      handleWith(FetchAggregationOptionsRoute),
     )
     .get<FetchTransformSchemasRequest>(
       'fetchTransformSchemas',
-      verifyBESAdminAccess,
       handleWith(FetchTransformSchemasRoute),
     )
+    .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
-
-  useForwardUnhandledRequests(app, CENTRAL_API_URL);
 
   return app;
 }

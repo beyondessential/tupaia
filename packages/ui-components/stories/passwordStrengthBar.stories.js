@@ -6,7 +6,7 @@
 import React, { lazy, useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { PasswordStrengthBar } from '../src';
+import { PasswordStrengthBar } from '../src/components';
 import * as COLORS from './story-utils/theme/colors';
 import { TextField } from '..';
 

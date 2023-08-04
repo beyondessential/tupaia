@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -25,7 +25,7 @@ const getSubDistrictAndSchoolIdsAndParentIds = async db =>
     `SELECT id, parent_id FROM entity WHERE (type = 'sub_district' OR type = 'school') AND country_code = '${COUNTRY_CODE}';`,
   );
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   /** Updating project entity relations */
   const laosSchoolsHierarchyId = (await getLaosSchoolsHierarchyId(db)).rows[0].id;
   const subDistrictAndSchools = (await getSubDistrictAndSchoolIdsAndParentIds(db)).rows;
@@ -42,7 +42,7 @@ exports.up = async function(db) {
     `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   /** Updating project entity relations */
   const laosSchoolsHierarchyId = (await getLaosSchoolsHierarchyId(db)).rows[0].id;
   const subDistrictAndSchools = (await getSubDistrictAndSchoolIdsAndParentIds(db)).rows;

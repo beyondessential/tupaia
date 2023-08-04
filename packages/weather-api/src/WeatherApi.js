@@ -1,5 +1,13 @@
 import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 
+/**
+ * @typedef {Object} WeatherResult
+ * @property {number} min_temp:
+ * @property {number} max_temp:
+ * @property {number} precip:
+ * @property {string} datetime:
+ */
+
 const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
 
 export class WeatherApi {
@@ -23,6 +31,7 @@ export class WeatherApi {
    * @param string lon
    * @param string startDate
    * @param string endDate
+   * @returns {Promise<{ data: WeatherResult[] }>}
    */
   async historicDaily(lat, lon, startDate, endDate) {
     return await this._fetch('/v2.0/history/daily', {
@@ -38,6 +47,7 @@ export class WeatherApi {
    * @param string lat
    * @param string lon
    * @param number days
+   * @returns {Promise<{ data: WeatherResult[] }>}
    */
   async forecastDaily(lat, lon, days = 16) {
     return await this._fetch('/v2.0/forecast/daily', {

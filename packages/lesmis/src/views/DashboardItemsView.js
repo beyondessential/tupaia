@@ -38,6 +38,7 @@ const DashboardItemsView = ({
                   reportCode={item.reportCode}
                   name={item.name}
                   useYearSelector={useYearSelector}
+                  periodGranularity={item.periodGranularity}
                 />
               ))
           ) : (

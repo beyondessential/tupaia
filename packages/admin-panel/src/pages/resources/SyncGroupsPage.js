@@ -81,7 +81,7 @@ const COLUMNS = [
   },
 ];
 
-const EDIT_CONFIG = {
+const EDITOR_CONFIG = {
   title: 'Edit Sync Group',
 };
 
@@ -93,14 +93,15 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SyncGroupsPage = ({ getHeaderEl }) => (
+export const SyncGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Sync Groups"
     endpoint="dataServiceSyncGroups"
     columns={COLUMNS}
-    editConfig={EDIT_CONFIG}
+    editorConfig={EDITOR_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...restOfProps}
   />
 );
 

@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { DashboardMetadataForm } from '../Dashboard';
 import { MapOverlayMetadataForm } from '../MapOverlay';
-import { VIZ_TYPE_PARAM } from '../../constants';
+import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
 
 export const Body = styled.div`
   padding: 30px 20px;
@@ -16,7 +16,7 @@ export const Body = styled.div`
 `;
 
 export const EditModal = () => {
-  const { vizType } = useParams();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,12 +29,12 @@ export const EditModal = () => {
   };
 
   let MetadataForm = null;
-  if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+  if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
     MetadataForm = DashboardMetadataForm;
-  } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+  } else if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
     MetadataForm = MapOverlayMetadataForm;
   } else {
-    throw new Error(`Unknown viz type ${vizType}`);
+    throw new Error(`Unknown viz type ${dashboardItemOrMapOverlay}`);
   }
 
   return (

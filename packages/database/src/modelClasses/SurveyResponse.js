@@ -7,7 +7,7 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class SurveyResponseType extends DatabaseType {
+export class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 }
 

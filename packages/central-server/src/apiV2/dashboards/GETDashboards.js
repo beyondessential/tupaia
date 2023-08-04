@@ -7,7 +7,7 @@ import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertDashboardGetPermissions,
-  createDashboardsDBFilter,
+  getDashboardsDBFilter,
 } from './assertDashboardsPermissions';
 /**
  * Handles endpoints:
@@ -29,7 +29,7 @@ export class GETDashboards extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    const dbConditions = await createDashboardsDBFilter(this.accessPolicy, this.models, criteria);
+    const dbConditions = await getDashboardsDBFilter(this.accessPolicy, this.models, criteria);
     return { dbConditions, dbOptions: options };
   }
 }

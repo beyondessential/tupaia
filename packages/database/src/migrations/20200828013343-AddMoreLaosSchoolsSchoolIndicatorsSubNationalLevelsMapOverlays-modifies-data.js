@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -192,12 +192,12 @@ const addOverlaysByLevel = async (db, level, groupCode) => {
     });
   }
 };
-exports.up = async function(db) {
+exports.up = async function (db) {
   await addOverlaysByLevel(db, 'district', 'School_Indicators_by_District');
   await addOverlaysByLevel(db, 'province', 'School_Indicators_by_Province');
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   const overlayIds = [];
 
   NEW_OVERLAYS.forEach(o => {

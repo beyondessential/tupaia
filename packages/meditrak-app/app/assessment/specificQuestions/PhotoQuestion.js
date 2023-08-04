@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import ImagePicker from 'react-native-image-picker';
@@ -84,15 +84,13 @@ const localStyles = StyleSheet.create({
 const savePhoto = async (photoData, fileName) =>
   RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${fileName}`, photoData, 'base64');
 
-const handleImagePickerResponse = async (response, onChangeAnswer, onChangeExtraProps) => {
+const handleImagePickerResponse = async (response, onChangeAnswer, setError) => {
   if (response.didCancel) {
     return; // Do nothing if user cancelled
   }
 
   if (response.error) {
-    onChangeExtraProps({
-      errorMessage: response.error,
-    });
+    setError(`Error: ${response.error}`);
     onChangeAnswer(null);
   } else {
     const time = new Date().getTime();
@@ -100,33 +98,35 @@ const handleImagePickerResponse = async (response, onChangeAnswer, onChangeExtra
 
     await savePhoto(response.data, fileName);
     onChangeAnswer(fileName);
+    setError(null);
   }
 };
 
-export const PhotoQuestion = ({ answer, extraProps, onChangeAnswer, onChangeExtraProps }) => (
-  <DumbPhotoQuestion
-    imageData={answer}
-    errorMessage={extraProps.errorMessage}
-    onPressChoosePhoto={() => {
-      ImagePicker.showImagePicker(
-        {
-          quality: IMAGE_QUALITY,
-        },
-        response => handleImagePickerResponse(response, onChangeAnswer, onChangeExtraProps),
-      );
-    }}
-    onPressRemovePhoto={() => onChangeAnswer(null)}
-  />
-);
+export const PhotoQuestion = ({ answer, onChangeAnswer }) => {
+  const [error, setError] = useState(null);
+
+  return (
+    <DumbPhotoQuestion
+      imageData={answer}
+      errorMessage={error}
+      onPressChoosePhoto={() => {
+        ImagePicker.showImagePicker(
+          {
+            quality: IMAGE_QUALITY,
+          },
+          response => handleImagePickerResponse(response, onChangeAnswer, setError),
+        );
+      }}
+      onPressRemovePhoto={() => onChangeAnswer(null)}
+    />
+  );
+};
 
 PhotoQuestion.propTypes = {
   answer: PropTypes.string,
   onChangeAnswer: PropTypes.func.isRequired,
-  onChangeExtraProps: PropTypes.func.isRequired,
-  extraProps: PropTypes.object,
 };
 
 PhotoQuestion.defaultProps = {
   answer: null,
-  extraProps: {},
 };

@@ -1,0 +1,159 @@
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ */
+
+import { Upload } from '@aws-sdk/lib-storage';
+import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
+import { getUniqueFileName } from './getUniqueFileName';
+
+export class S3Client {
+  constructor(s3Instance) {
+    /**
+     * AWS aggregated s3 client
+     * @type {import('./S3.js').S3}
+     * @private
+     */
+    this.s3 = s3Instance;
+  }
+
+  /**
+   * @private
+   * @param {string} fileName
+   * @returns {Promise<boolean>} whether file exists
+   */
+  async checkIfFileExists(fileName) {
+    return this.s3
+      .headObject({
+        Bucket: S3_BUCKET_NAME,
+        Key: fileName,
+      })
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  /**
+   * @private
+   */
+  async upload(config) {
+    const uploader = new Upload({
+      client: this.s3,
+      params: {
+        Bucket: S3_BUCKET_NAME,
+        ...config,
+      },
+    });
+
+    const result = await uploader.done();
+    return result.Location;
+  }
+
+  /**
+   * @private
+   */
+  async download(config) {
+    const response = await this.s3.getObject({
+      Bucket: S3_BUCKET_NAME,
+      ...config,
+    });
+
+    return response.Body;
+  }
+
+  /**
+   * @private
+   */
+  async uploadPublicImage(fileName, buffer, fileType) {
+    return this.upload({
+      Key: fileName,
+      Body: buffer,
+      ACL: 'public-read',
+      ContentType: `image/${fileType}`,
+      ContentEncoding: 'base64',
+    });
+  }
+
+  /**
+   * @private
+   */
+  async uploadPrivateFile(fileName, stream) {
+    return this.upload({
+      Key: fileName,
+      Body: stream,
+      ACL: 'bucket-owner-full-control',
+    });
+  }
+
+  /**
+   * @public
+   * @param {string} fileName
+   * @param {*} file
+   * @returns
+   */
+  async uploadFile(fileName, file) {
+    const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
+
+    const alreadyExists = await this.checkIfFileExists(s3FilePath);
+    if (alreadyExists) {
+      throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
+    }
+
+    return this.uploadPrivateFile(s3FilePath, file);
+  }
+
+  async deleteFile(filePath) {
+    const fileName = filePath.split(getS3ImageFilePath())[1];
+    if (!(await this.checkIfFileExists(fileName))) return null;
+    return this.s3.deleteObject({
+      Bucket: S3_BUCKET_NAME,
+      Key: fileName,
+    });
+  }
+
+  /**
+   * @public
+   * @param {*} base64EncodedImage
+   * @param {*} [fileId]
+   * @param {*} [allowOverwrite]
+   */
+  async uploadImage(base64EncodedImage = '', fileId, allowOverwrite = false) {
+    const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
+    const encodedImageString = base64EncodedImage.replace(
+      new RegExp('(data:image)(.*)(;base64,)'),
+      '',
+    );
+    // remove the base64 prefix from the image. This handles svg and other image types
+    const buffer = Buffer.from(encodedImageString, 'base64');
+
+    // use the file type from the image if it's available, otherwise default to png
+    const fileType =
+      base64EncodedImage.includes('data:image') && base64EncodedImage.includes(';base64')
+        ? base64EncodedImage.substring('data:image/'.length, base64EncodedImage.indexOf(';base64'))
+        : 'png';
+
+    // If is not an image file type, e.g. a pdf, throw an error
+    if (!imageTypes.includes(fileType)) throw new Error(`File type ${fileType} is not supported`);
+
+    const fileExtension = fileType.replace('+xml', '');
+
+    const filePath = getS3ImageFilePath();
+    const fileName = fileId
+      ? `${filePath}${fileId}.${fileExtension}`
+      : `${filePath}${getUniqueFileName()}.${fileExtension}`;
+    // In some cases we want to allow overwriting of existing files
+    if (!allowOverwrite) {
+      if (await this.checkIfFileExists(fileName))
+        throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
+    }
+    return this.uploadPublicImage(fileName, buffer, fileType);
+  }
+
+  /**
+   * @public
+   * @param {string} [fileName]
+   */
+  async downloadFile(fileName) {
+    const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
+    return this.download({ Key: s3FilePath });
+  }
+}

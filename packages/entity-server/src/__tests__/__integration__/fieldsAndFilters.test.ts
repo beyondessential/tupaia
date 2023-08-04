@@ -5,7 +5,13 @@
 
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
-import { getEntityWithFields, getEntitiesWithFields, ENTITIES, COUNTRIES } from './fixtures';
+import {
+  getEntityWithFields,
+  getEntitiesWithFields,
+  ENTITIES,
+  COUNTRIES,
+  getHierarchiesWithFields,
+} from './fixtures';
 
 describe('fieldsAndFilters', () => {
   let app: TestableServer;
@@ -43,6 +49,7 @@ describe('fieldsAndFilters', () => {
         'FUCHSIA',
         'VIRIDIAN',
       ].sort(),
+      qualified_name: 'Kanto',
     };
     expect(entityWithoutRandomFields).toEqual(fullEntityObject);
   });
@@ -50,6 +57,14 @@ describe('fieldsAndFilters', () => {
   describe('field', () => {
     it('throws error for unknown field', async () => {
       const { body: error } = await app.get('hierarchy/redblue/KANTO', {
+        query: { field: 'fake_field' },
+      });
+
+      expect(error.error).toContain('Invalid single field requested fake_field');
+    });
+
+    it('throws error for unknown hierarchy field', async () => {
+      const { body: error } = await app.get('hierarchies', {
         query: { field: 'fake_field' },
       });
 
@@ -64,7 +79,7 @@ describe('fieldsAndFilters', () => {
       expect(error.error).toContain('Invalid single field requested attributes');
     });
 
-    it('can fetch a an entity as single field', async () => {
+    it('can fetch an entity as single field', async () => {
       const { body: entity } = await app.get('hierarchy/redblue/KANTO', {
         query: { field: 'name' },
       });
@@ -80,11 +95,27 @@ describe('fieldsAndFilters', () => {
 
       expect(entities).toIncludeSameMembers(['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER']);
     });
+
+    it('can fetch hierarchies as single field', async () => {
+      const { body: hierarchies } = await app.get('hierarchies', {
+        query: { field: 'name' },
+      });
+
+      expect(hierarchies).toIncludeSameMembers(['Pokemon Gold/Silver', 'Pokemon Red/Blue']);
+    });
   });
 
   describe('fields', () => {
     it('throws error for unknown field', async () => {
       const { body: error } = await app.get('hierarchy/redblue/KANTO', {
+        query: { fields: 'fake_field' },
+      });
+
+      expect(error.error).toContain('Unknown field requested: fake_field');
+    });
+
+    it('throws error for unknown hierarchy field', async () => {
+      const { body: error } = await app.get('hierarchies', {
         query: { fields: 'fake_field' },
       });
 
@@ -99,7 +130,7 @@ describe('fieldsAndFilters', () => {
       expect(entity).toEqual(getEntityWithFields('KANTO', ['name', 'attributes']));
     });
 
-    it('can multiple entities with specific fields', async () => {
+    it('can fetch multiple entities with specific fields', async () => {
       const { body: entities } = await app.post('hierarchy/redblue', {
         query: { fields: 'code,type,attributes' },
         body: { entities: ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'] },
@@ -111,6 +142,17 @@ describe('fieldsAndFilters', () => {
           ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'],
           ['code', 'type', 'attributes'],
         ),
+      );
+    });
+
+    it('can fetch hierarchies with specific fields', async () => {
+      const { body: hierarchies } = await app.get('hierarchies', {
+        query: { fields: 'code,name' },
+      });
+
+      expect(hierarchies).toBeArray();
+      expect(hierarchies).toIncludeSameMembers(
+        getHierarchiesWithFields(['goldsilver', 'redblue'], ['code', 'name']),
       );
     });
   });
@@ -196,6 +238,50 @@ describe('fieldsAndFilters', () => {
       });
 
       expect(entities).toIncludeSameMembers(['PKMN_MANSION', 'PKMN_TOWER']);
+    });
+
+    it('it can filter using <', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'generational_distance<2' },
+      });
+
+      expect(entities).toIncludeSameMembers(['KANTO']);
+    });
+
+    it('it can filter using <=', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'generational_distance<=2' },
+      });
+
+      expect(entities).toIncludeSameMembers([
+        'CELADON',
+        'CERULEAN',
+        'CINNABAR',
+        'FUCHSIA',
+        'KANTO',
+        'LAVENDER',
+        'PALLET',
+        'PEWTER',
+        'SAFFRON',
+        'VERMILLION',
+        'VIRIDIAN',
+      ]);
+    });
+
+    it('it can filter using >', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'name>Saffron City' },
+      });
+
+      expect(entities).toIncludeSameMembers(['BLUE', 'SILPH', 'VERMILLION', 'VIRIDIAN']);
+    });
+
+    it('it can filter using >=', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'name>=Saffron City' },
+      });
+
+      expect(entities).toIncludeSameMembers(['BLUE', 'SAFFRON', 'SILPH', 'VERMILLION', 'VIRIDIAN']);
     });
 
     it('it can filter on deep properties of object properties', async () => {

@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import { CalendarToday, KeyboardArrowDown, Visibility, Room } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
-import { Checkbox, TextField, Button } from '../../src';
+import { Checkbox, TextField, Button } from '../../src/components';
 
 export default {
   title: 'Inputs/TextField',
@@ -38,6 +38,7 @@ export const textField = () => (
     <TextField name="number" label="Number" type="number" />
     <TextField name="email" label="Email" type="email" />
     <TextField name="password" label="Password" type="password" />
+    <TextField name="toolTip" label="Tooltip" autoComplete="off" tooltip="This is a tooltip" />
   </Container>
 );
 

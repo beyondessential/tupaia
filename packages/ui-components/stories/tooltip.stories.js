@@ -9,7 +9,7 @@ import MuiBox from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import { Tooltip } from '../src';
+import { Tooltip } from '../src/components';
 
 export default {
   title: 'Tooltip',

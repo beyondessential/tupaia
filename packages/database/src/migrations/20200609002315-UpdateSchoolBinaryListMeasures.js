@@ -5,7 +5,7 @@ var type;
 var seed;
 
 const NEW_DATA_ELEMENT_TO_STRING = {
-  //Removed elements
+  // Removed elements
   // SchFF008:
   //  'Has the school received (hard copies of) learning materials for (remote) communities with limited internet and TV access',
   // SchFF009:
@@ -25,7 +25,7 @@ const NEW_DATA_ELEMENT_TO_STRING = {
   SchFF011: 'Remedial support provided to students',
   SchQuar001: 'Currently used as quarantine centre',
 
-  //New elements
+  // New elements
   SchCVD002: 'Has been used as quarantine centre',
   SchCVD003: 'Disinfected by district health office',
   SchCVD009: 'Functioning water filters',
@@ -70,13 +70,13 @@ const REPORT_ID = 'LAOS_SCHOOL_BINARY_TABLE';
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE "dashboardReport" 
     SET "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataElementToString}', '${JSON.stringify(
@@ -86,7 +86,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE "dashboardReport" 
     SET "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataElementToString}', '${JSON.stringify(

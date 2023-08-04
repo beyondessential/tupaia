@@ -25,15 +25,16 @@ export class AncestorDescendantRelationType extends DatabaseType {
       fields: { code: 'ancestor_code' },
     },
   ];
-
-  get cacheDependencies() {
-    return [TYPES.ENTITY_RELATION, TYPES.ENTITY_HIERARCHY];
-  }
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return AncestorDescendantRelationType;
+  }
+
+  get cacheDependencies() {
+    // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
+    return [TYPES.ANCESTOR_DESCENDANT_RELATION];
   }
 
   async getImmediateRelations(hierarchyId, criteria) {

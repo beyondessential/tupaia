@@ -8,7 +8,7 @@ import { DatabaseType as BaseDatabaseType } from '@tupaia/database';
 export interface AnalyticValue {
   readonly organisationUnit: string;
   readonly period: string;
-  readonly value: number;
+  readonly value: string | number;
 }
 
 export interface Analytic extends AnalyticValue {
@@ -27,9 +27,9 @@ export interface Event {
 }
 
 export interface AnalyticCluster {
-  readonly organisationUnit: Analytic['organisationUnit'];
-  readonly period: Analytic['period'];
-  readonly dataValues: Record<Analytic['dataElement'], Analytic['value'] | string>;
+  readonly organisationUnit: string;
+  readonly period: string;
+  readonly dataValues: Record<string, number | string>;
 }
 
 type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };
@@ -87,3 +87,5 @@ export type FetchOptions = Readonly<{
   readonly endDate: string;
   readonly period?: string;
 }>;
+
+export type DataBroker = unknown;

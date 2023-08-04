@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { MultiSelect } from '../../src';
+import { MultiSelect } from '../../src/components';
 
 export default {
   title: 'Inputs/MultiSelect',
@@ -35,6 +35,23 @@ export const multiSelect = () => {
     <Container>
       <MultiSelect
         label="Select Countries"
+        defaultValue={['All']}
+        id="multi"
+        options={options}
+        renderValue={values =>
+          values.length > 1 ? `${values.length} Countries Selected` : getLabelForValue(values[0])
+        }
+      />
+    </Container>
+  );
+};
+
+export const multiSelectWithTooltip = () => {
+  return (
+    <Container>
+      <MultiSelect
+        label="Select Countries"
+        tooltip="You can select multiple countries"
         defaultValue={['All']}
         id="multi"
         options={options}

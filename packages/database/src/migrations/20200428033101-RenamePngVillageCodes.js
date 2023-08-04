@@ -8,16 +8,16 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-const LAE_ORAKI_ID = '5dc35b6761f76a18373b5be9'; //Incorrect spelling
-const LAE_OKARI_ID = '5e70645d61f76a411c00036d'; //Correct spelling
+const LAE_ORAKI_ID = '5dc35b6761f76a18373b5be9'; // Incorrect spelling
+const LAE_OKARI_ID = '5e70645d61f76a411c00036d'; // Correct spelling
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE entity e
       SET parent_id = '${LAE_OKARI_ID}'
@@ -32,7 +32,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE entity 
       SET code = trim(leading 'PG_' from code)

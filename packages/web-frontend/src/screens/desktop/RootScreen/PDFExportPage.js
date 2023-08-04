@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -27,6 +27,14 @@ const Divider = styled(BaseDivider)`
 `;
 
 const PDFExportPage = ({ currentGroupDashboard, viewResponses, selectedDashboardItems }) => {
+  // Hide the tupaia app loader in index.html
+  useEffect(() => {
+    const el = document.getElementById('tupaia-spinner');
+    if (el) {
+      el.remove();
+    }
+  }, []);
+
   if (!currentGroupDashboard) return null;
   // Hacky way to change default background color without touching root css.
   document.body.style.backgroundColor = 'white';

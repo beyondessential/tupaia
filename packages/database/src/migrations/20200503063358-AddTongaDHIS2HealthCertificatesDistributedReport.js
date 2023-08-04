@@ -7,9 +7,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -17,57 +17,57 @@ exports.setup = function (options, seedLink) {
 };
 
 const ALL_VALUE_CODES = [
-  "CD65", //Shopkeeper - New
-  "CD66", //Shopkeeper - Renewal
-  "CD67", //Food Handler - New
-  "CD68", //Food Handler - Renewal
+  'CD65', // Shopkeeper - New
+  'CD66', // Shopkeeper - Renewal
+  'CD67', // Food Handler - New
+  'CD68', // Food Handler - Renewal
 ];
 
 const DATA_BUILDER_CONFIG = {
-  "dataClasses": {
-    "Shopkeeper": {
-      "numerator": {
-        "dataSource": {
-          "type": "single",
-          "codes": ['CD65', 'CD66']
-        }
+  dataClasses: {
+    Shopkeeper: {
+      numerator: {
+        dataSource: {
+          type: 'single',
+          codes: ['CD65', 'CD66'],
+        },
       },
-      "denominator": {
-        "dataSource": {
-          "type": "single",
-          "codes": ALL_VALUE_CODES
-        }
-      }
+      denominator: {
+        dataSource: {
+          type: 'single',
+          codes: ALL_VALUE_CODES,
+        },
+      },
     },
-    "Food Handler": {
-      "numerator": {
-        "dataSource": {
-          "type": "single",
-          "codes": ['CD67', 'CD68']
-        }
+    'Food Handler': {
+      numerator: {
+        dataSource: {
+          type: 'single',
+          codes: ['CD67', 'CD68'],
+        },
       },
-      "denominator": {
-        "dataSource": {
-          "type": "single",
-          "codes": ALL_VALUE_CODES
-        }
-      }
-    }
-  }
+      denominator: {
+        dataSource: {
+          type: 'single',
+          codes: ALL_VALUE_CODES,
+        },
+      },
+    },
+  },
 };
 
 const VIEW_JSON_CONFIG = {
-  "name": "Health Certificates Distributed",
-  "type": "chart",
-  "chartType": "pie",
-  "valueType": "fractionAndPercentage",
-  "periodGranularity": "month",
-  "defaultTimePeriod": {
-		start: {
-			unit: 'year',
-			modifier: 'start_of'
-    }
-	}
+  name: 'Health Certificates Distributed',
+  type: 'chart',
+  chartType: 'pie',
+  valueType: 'fractionAndPercentage',
+  periodGranularity: 'month',
+  defaultTimePeriod: {
+    start: {
+      unit: 'year',
+      modifier: 'start_of',
+    },
+  },
 };
 
 const DASHBOARD_GROUP = 'Tonga_Communicable_Diseases_National';
@@ -79,8 +79,8 @@ const REPORT = {
   dataBuilder: 'percentagesPerDataClassByMonth',
   dataBuilderConfig: DATA_BUILDER_CONFIG,
   viewJson: VIEW_JSON_CONFIG,
-  dataServices: [{ "isDataRegional": false }]
-}
+  dataServices: [{ isDataRegional: false }],
+};
 
 exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
@@ -103,5 +103,5 @@ exports.down = async function (db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

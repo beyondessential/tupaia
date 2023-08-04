@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertToPeriod, isFuturePeriod, getCurrentPeriod, PERIOD_TYPES } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
+import { convertToPeriod, isFuturePeriod, getCurrentPeriod } from '@tupaia/utils';
 
 /**
  * Add the analytics together across the periods listed in the analytic response, and return an array

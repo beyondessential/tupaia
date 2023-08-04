@@ -1,157 +1,175 @@
 /**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
+import { darken } from '@material-ui/core/styles';
 import Alarm from '@material-ui/icons/Alarm';
-import Button from '@material-ui/core/Button';
-
-import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
+import { Button, Typography } from '@material-ui/core';
 
 const Card = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto auto auto;
-  gap: 16px;
-  padding-bottom: 16px;
-  border-radius: 3px;
-  text-align: center;
-  position: relative;
-  box-shadow: ${BOX_SHADOW};
-  background: ${WHITE};
-  color: #000000;
-`;
-
-const Title = styled.div`
-  font-size: 22px;
-  font-weight: 500;
-  margin-top: -8px;
-  padding: 0 16px;
-`;
-
-const Header = styled.div`
-  position: relative;
   display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
-  height: 120px;
-  background: ${LIGHT_GREY}; /* fallback color */
+  flex-direction: column;
+  padding: 1.6rem;
+  min-height: 20rem;
+  border-radius: 5px;
+  background: #2e2f33;
+  color: white;
+  box-sizing: border-box;
+  align-items: flex-start;
+  justify-content: space-between;
 
-  > img {
-    width: 100%;
-    height: 100%;
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    padding: 2.5rem;
+    height: 24rem;
+  }
+
+  button {
+    margin-top: auto;
   }
 `;
 
 const Logo = styled.div`
+  position: relative;
   background: white;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
-  position: absolute;
-  width: 120px;
-  height: 85px;
-  bottom: -15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 5rem;
+  height: 5rem;
   border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.625rem;
 
   > img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     max-width: 100%;
     max-height: 100%;
   }
 `;
 
-const FullWidthRow = styled.div`
-  grid-column: 1 / -1;
-  padding: 0 16px;
+const Title = styled(Typography)`
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 500;
+  margin-bottom: 0.625rem;
 `;
 
-const Countries = styled(FullWidthRow)`
-  margin-bottom: 8px;
-  font-size: 14px;
-  opacity: 0.7;
-  padding: 0;
+const Text = styled(Typography)`
+  font-size: 0.875rem;
+  line-height: 1.2;
+  margin-bottom: 0.625rem;
 `;
 
-const Footer = styled(FullWidthRow)`
-  display: grid;
-  align-content: end;
-  padding: 0 16px;
+const CountryText = styled(Text)`
+  color: #9ba0a6;
 `;
 
-const LockIcon = styled(Lock)`
-  margin-right: 5px;
+const Body = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 `;
 
-const AlarmIcon = styled(Alarm)`
-  margin-right: 5px;
+const BLUE = '#1978D4';
+
+const StyledButton = styled(Button)`
+  background: ${BLUE};
+  border: 1px solid ${BLUE};
+  color: white;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  text-transform: none;
+  padding: 0.6875rem 1.25rem;
+  min-width: 11.5rem;
+
+  &:hover {
+    background: ${darken(BLUE, 0.1)};
+  }
+
+  .MuiSvgIcon-root {
+    font-size: 1.2em;
+  }
 `;
 
-const styles = {
-  pendingAccessButton: {
-    background: LIGHT_BLUE,
-    color: FORM_BLUE,
-    padding: '5px',
-  },
-  accessButton: {},
-};
+const OutlineButton = styled(StyledButton)`
+  border: 1px solid ${BLUE};
+  color: ${BLUE};
+  background: transparent;
 
-export const ProjectCard = ({
-  name,
-  description,
-  imageUrl,
-  logoUrl,
-  names,
-  projectAction,
-  actionText,
-  accessType,
-  hasAccessPending,
-}) => {
-  return (
-    <Card>
-      <Header>
-        <img alt="project background" src={imageUrl} />
-        {logoUrl && (
-          <Logo>
-            <img alt="project logo" src={logoUrl} />
-          </Logo>
-        )}
-      </Header>
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+`;
+
+// eslint-disable-next-line react/prop-types
+export const ProjectDeniedButton = ({ onClick }) => (
+  <OutlineButton onClick={onClick} startIcon={<Lock />}>
+    Request access
+  </OutlineButton>
+);
+
+export const ProjectLoginButton = ({ onClick }) => (
+  <OutlineButton onClick={onClick}>Log in</OutlineButton>
+);
+
+// eslint-disable-next-line react/prop-types
+export const ProjectPendingButton = ({ onClick }) => (
+  <OutlineButton onClick={onClick} startIcon={<Alarm />}>
+    Approval in progress
+  </OutlineButton>
+);
+// eslint-disable-next-line react/prop-types
+export const ProjectAllowedButton = ({ onClick }) => (
+  <StyledButton onClick={onClick}>View project</StyledButton>
+);
+
+function getCountryNames(projectName, countryNames) {
+  if (projectName === 'Disaster Response') {
+    return 'Global';
+  }
+
+  if (countryNames.length < 3) {
+    return countryNames.sort().join(', ');
+  }
+
+  return 'Multiple countries';
+}
+
+function getDescription(text, limit = 190) {
+  return text.length > limit ? `${text.substring(0, limit)}...` : text;
+}
+
+export const ProjectCard = ({ name, description, logoUrl, names, ProjectButton }) => (
+  <Card>
+    {logoUrl && (
+      <Logo>
+        <img alt={`${name} logo`} src={logoUrl} />
+      </Logo>
+    )}
+    <Body>
       <Title>{name}</Title>
-      <FullWidthRow>{description}</FullWidthRow>
-      <Footer>
-        <Countries>{name === 'Disaster Response' ? 'Global' : names.sort().join(', ')}</Countries>
-        <Button
-          onClick={projectAction}
-          color="primary"
-          style={hasAccessPending ? styles.pendingAccessButton : styles.accessButton}
-          variant={accessType || hasAccessPending ? 'contained' : 'outlined'}
-        >
-          {!accessType && !hasAccessPending && <LockIcon />}
-          {hasAccessPending && <AlarmIcon />}
-          {actionText}
-        </Button>
-      </Footer>
-    </Card>
-  );
-};
+      <div>
+        <Text>{getDescription(description)}</Text>
+        <CountryText>{getCountryNames(name, names)}</CountryText>
+      </div>
+    </Body>
+    <ProjectButton />
+  </Card>
+);
 
 ProjectCard.propTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string.isRequired,
-  logoUrl: PropTypes.string,
   names: PropTypes.arrayOf(PropTypes.string).isRequired,
-  projectAction: PropTypes.func.isRequired,
-  actionText: PropTypes.string.isRequired,
-  accessType: PropTypes.bool.isRequired,
-  hasAccessPending: PropTypes.bool.isRequired,
+  ProjectButton: PropTypes.func.isRequired,
+  logoUrl: PropTypes.string,
 };
 
 ProjectCard.defaultProps = {

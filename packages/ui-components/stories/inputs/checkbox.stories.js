@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { Checkbox } from '../../src';
+import { Checkbox } from '../../src/components';
 
 export default {
   title: 'Inputs/Checkbox',
@@ -39,6 +39,11 @@ export const labels = () => (
       color="primary"
       error
       helperText="Please tick Terms and Conditions"
+    />
+    <Checkbox
+      label="Terms and Conditions"
+      color="primary"
+      tooltip="Please read the terms and conditions carefully"
     />
   </Container>
 );

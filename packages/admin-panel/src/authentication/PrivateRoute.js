@@ -12,7 +12,7 @@ import { getIsUserAuthenticated } from './selectors';
  * A wrapper for <Route> that redirects to the login
  * screen if you're not yet authenticated.
  */
-export const PrivateRouteComponent = ({ isLoggedIn, children, ...props }) => {
+export const PrivateRouteComponent = ({ loginPath, isLoggedIn, children, ...props }) => {
   return (
     <Route
       {...props}
@@ -22,7 +22,7 @@ export const PrivateRouteComponent = ({ isLoggedIn, children, ...props }) => {
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: loginPath,
               state: { from: location },
             }}
           />
@@ -35,10 +35,12 @@ export const PrivateRouteComponent = ({ isLoggedIn, children, ...props }) => {
 PrivateRouteComponent.propTypes = {
   children: PropTypes.node.isRequired,
   isLoggedIn: PropTypes.bool,
+  loginPath: PropTypes.string,
 };
 
 PrivateRouteComponent.defaultProps = {
   isLoggedIn: false,
+  loginPath: '/login',
 };
 
 const mapStateToProps = state => ({

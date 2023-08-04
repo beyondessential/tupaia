@@ -1,22 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { SolidButton } from './SolidButton';
 
 const Label = styled.p`
   font-size: 13px;
-`;
-
-const SolidButton = styled.button`
-  color: white;
-  background: #ee612e;
-  border-radius: 3px;
-  border: none;
-  height: 42px;
-  padding: 0 29px;
-  margin-right: 16px;
-
-  :active {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #ee612e;
-  }
 `;
 
 const GhostButton = styled.button`
@@ -31,11 +18,6 @@ const GhostButton = styled.button`
     background: #ee612e;
     color: #ffffff;
   }
-`;
-
-const Link = styled.a`
-  color: #ee612e;
-  font-size: 12px;
 `;
 
 export const FluTrackingAustralia = () => (

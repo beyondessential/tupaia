@@ -5,10 +5,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Checkbox as BaseCheckbox } from '@tupaia/ui-components/src/components/DataLibrary/Checkbox';
+import { Checkbox as BaseCheckbox, FlexSpaceBetween } from '@tupaia/ui-components';
+import { BaseSelectedOption } from './options';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
-import { BaseSelectedOption, FlexSpaceBetween } from '@tupaia/ui-components/';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;

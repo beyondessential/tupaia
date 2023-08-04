@@ -38,13 +38,13 @@ const REPORTS_WITH_MULTIPLE_DATABUILDERS = [
   'Laos_Schools_Primary_Standardised_Tests_School',
 ];
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return Promise.all([
     ...REPORTS_WITH_ONE_SCHOOL_KEY.map(id =>
       db.runSql(`
@@ -100,7 +100,7 @@ exports.up = function(db) {
   ]);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return Promise.all([
     ...REPORTS_WITH_ONE_SCHOOL_KEY.map(id =>
       db.runSql(`

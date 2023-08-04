@@ -14,8 +14,8 @@ import {
   draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
-  VIZ_TYPE_PARAM,
-  VizType,
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DashboardItemOrMapOverlayParam,
 } from '../viz-builder';
 import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
@@ -26,61 +26,64 @@ export type FetchReportPreviewDataRequest = Request<
     previewConfig: Record<string, unknown>;
     testData?: unknown[];
   },
-  { entityCode: string; hierarchy: string; previewMode?: PreviewMode; vizType: VizType }
+  {
+    entityCode?: string;
+    hierarchy?: string;
+    startDate?: string;
+    endDate?: string;
+    permissionGroup?: string;
+    previewMode?: PreviewMode;
+    dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam;
+  }
 >;
 
 export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
   public async buildResponse() {
     this.validate();
 
-    const { entityCode, hierarchy } = this.req.query;
+    const { entityCode, hierarchy, startDate, endDate, permissionGroup } = this.req.query;
     const { testData = null } = this.req.body;
 
     const reportConfig = this.getReportConfig();
 
-    return this.req.ctx.services.report.testReport(
-      {
-        organisationUnitCodes: entityCode as string,
-        hierarchy: hierarchy as string,
-      },
-      {
-        testData,
-        testConfig: reportConfig,
-      },
-    );
+    const parameters: Record<string, string> = {};
+    if (hierarchy) parameters.hierarchy = hierarchy;
+    if (entityCode) parameters.organisationUnitCodes = entityCode;
+    if (startDate) parameters.startDate = startDate;
+    if (startDate) parameters.startDate = startDate;
+    if (endDate) parameters.endDate = endDate;
+    if (permissionGroup) parameters.permissionGroup = permissionGroup;
+
+    return this.req.ctx.services.report.testReport(parameters, {
+      testData,
+      testConfig: reportConfig,
+    });
   }
 
   private validate = () => {
-    const { entityCode, hierarchy } = this.req.query;
-    const { previewConfig, testData } = this.req.body;
+    const { previewConfig } = this.req.body;
 
     if (!previewConfig) {
       throw new Error('Requires preview config to fetch preview data');
     }
-
-    if (!testData) {
-      if (!hierarchy) {
-        throw new Error('Requires hierarchy or test data to fetch preview data');
-      }
-      if (!entityCode) {
-        throw new Error('Requires entity or test data to fetch preview data');
-      }
-    }
   };
 
   private getReportConfig = () => {
-    const { previewMode, vizType } = this.req.query;
+    const { previewMode, dashboardItemOrMapOverlay } = this.req.query;
     const { previewConfig, testData } = this.req.body;
 
-    const extractor = this.getVizExtractor(vizType, previewConfig);
+    const extractor = this.getVizExtractor(dashboardItemOrMapOverlay, previewConfig);
 
     extractor.setReportValidatorContext({ testData });
 
     return extractor.getReport(previewMode).config;
   };
 
-  private getVizExtractor = (vizType: VizType, previewConfig: Record<string, unknown>) => {
-    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+  private getVizExtractor = (
+    dashboardItemOrMapOverlay: DashboardItemOrMapOverlayParam,
+    previewConfig: Record<string, unknown>,
+  ) => {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
       return new DashboardVisualisationExtractor(
         previewConfig,
         draftDashboardItemValidator,
@@ -88,7 +91,7 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
       );
     }
 
-    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
       return new MapOverlayVisualisationExtractor(
         previewConfig,
         draftMapOverlayValidator,
@@ -97,7 +100,9 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
     }
 
     throw new Error(
-      `Unknown viz type: ${vizType}, must be one of: [${Object.values(VIZ_TYPE_PARAM)}]`,
+      `Unknown param dashboardItemOrMapOverlay: ${dashboardItemOrMapOverlay}, must be one of: [${Object.values(
+        DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+      )}]`,
     );
   };
 }

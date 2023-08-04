@@ -62,3 +62,19 @@ export const mean = typed('mean', {
   },
   Array: calculateMean,
 });
+
+const minArrayValue = (arr: any[]) =>
+  arr.reduce((smallest, current) => (current < smallest ? current : smallest));
+
+export const min = typed('min', {
+  Array: minArrayValue,
+  '...any': (values: unknown[]) => minArrayValue(values),
+});
+
+const maxArrayValue = (arr: any[]) =>
+  arr.reduce((largest, current) => (current > largest ? current : largest));
+
+export const max = typed('max', {
+  Array: maxArrayValue,
+  '...any': (values: unknown[]) => maxArrayValue(values),
+});

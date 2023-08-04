@@ -23,26 +23,18 @@ export type TestReportRequest = Request<
   ReportRouteQuery
 >;
 
-const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
+const BES_DATA_ADMIN_PERMISSION_GROUP = 'BES Data Admin';
 
 export class TestReportRoute extends Route<TestReportRequest> {
   public async buildResponse() {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
-    const { hierarchy = 'explore', organisationUnitCodes, ...restOfQuery } = query;
-
-    const reqContext = {
-      hierarchy,
-      permissionGroup: BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
-      services: this.req.ctx.services,
-      accessPolicy: this.req.accessPolicy,
-    };
-    const reportBuilder = new ReportBuilder(reqContext);
-    reportBuilder.setConfig(body.testConfig);
-
-    if (testData) {
-      reportBuilder.setTestData(testData);
-    }
+    const {
+      hierarchy = 'explore',
+      organisationUnitCodes,
+      permissionGroup = BES_DATA_ADMIN_PERMISSION_GROUP,
+      ...restOfQuery
+    } = query;
 
     const reportQuery = {
       hierarchy,
@@ -50,8 +42,29 @@ export class TestReportRoute extends Route<TestReportRequest> {
       ...restOfQuery,
       ...restOfBody,
     };
+    const aggregator = new ReportServerAggregator(
+      createAggregator(undefined, {
+        accessPolicy: this.req.accessPolicy,
+        services: this.req.ctx.services,
+      }),
+    );
 
-    const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
-    return reportBuilder.build(aggregator, reportQuery);
+    const reqContext = {
+      aggregator,
+      query: reportQuery,
+      hierarchy,
+      permissionGroup,
+      services: this.req.ctx.services,
+      accessPolicy: this.req.accessPolicy,
+    };
+
+    const reportBuilder = new ReportBuilder(reqContext);
+    reportBuilder.setConfig(body.testConfig);
+
+    if (testData) {
+      reportBuilder.setTestData(testData);
+    }
+
+    return reportBuilder.build();
   }
 }

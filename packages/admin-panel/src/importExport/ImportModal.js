@@ -19,7 +19,7 @@ import {
 import { ModalContentProvider, InputField } from '../widgets';
 import { useApi } from '../utilities/ApiProvider';
 import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
-import { checkVisibilityCriteriaAreMet } from '../utilities';
+import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 
 const STATUS = {
   IDLE: 'idle',
@@ -28,8 +28,6 @@ const STATUS = {
   SUCCESS: 'success',
   ERROR: 'error',
 };
-
-const noFileMessage = 'No file chosen';
 
 const defaultFinishedMessage = () => <span>Your import has been successfully processed.</span>;
 
@@ -43,6 +41,10 @@ export const ImportModalComponent = React.memo(
     changeSuccess,
     changeError,
     getFinishedMessage,
+    confirmButtonText,
+    cancelButtonText,
+    uploadButtonText,
+    noFileMessage,
   }) => {
     const api = useApi();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -129,20 +131,23 @@ export const ImportModalComponent = React.memo(
           return (
             <>
               <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
-              <Button disabled>Import</Button>
+              <Button disabled>{confirmButtonText}</Button>
             </>
           );
         default:
           return (
             <>
-              <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
+              <OutlinedButton id="form-button-cancel" onClick={handleClose}>
+                {cancelButtonText}
+              </OutlinedButton>
               <Button
+                id="form-button-import"
                 type="submit"
                 disabled={files.length === 0}
                 isLoading={status === STATUS.LOADING}
                 onClick={handleSubmit}
               >
-                Import
+                {confirmButtonText}
               </Button>
             </>
           );
@@ -172,16 +177,15 @@ export const ImportModalComponent = React.memo(
                       checkVisibilityCriteriaAreMet(visibilityCriteria, values),
                     )
                     .map(queryParameter => {
-                      const { parameterKey, label, secondaryLabel } = queryParameter;
+                      const { parameterKey, ...restOfProps } = queryParameter;
                       return (
                         <InputField
                           key={parameterKey}
                           inputKey={parameterKey}
                           value={values[parameterKey]}
-                          {...queryParameter}
+                          {...restOfProps}
                           onChange={handleValueChange}
-                          label={label}
-                          secondaryLabel={secondaryLabel}
+                          id={`field-${labelToId(parameterKey)}`}
                         />
                       );
                     })}
@@ -193,6 +197,7 @@ export const ImportModalComponent = React.memo(
                     name="file-upload"
                     fileName={fileName}
                     multiple={actionConfig.multiple}
+                    textOnButton={uploadButtonText}
                   />
                 </>
               )}
@@ -200,8 +205,12 @@ export const ImportModalComponent = React.memo(
             <DialogFooter>{renderButtons()}</DialogFooter>
           </form>
         </Dialog>
-        <LightOutlinedButton startIcon={<ImportIcon />} onClick={handleOpen}>
-          Import
+        <LightOutlinedButton
+          id="page-import-button"
+          startIcon={<ImportIcon />}
+          onClick={handleOpen}
+        >
+          {confirmButtonText}
         </LightOutlinedButton>
       </>
     );
@@ -211,20 +220,30 @@ export const ImportModalComponent = React.memo(
 ImportModalComponent.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
+  translate: PropTypes.func,
   queryParameters: PropTypes.array,
   actionConfig: PropTypes.object,
   changeRequest: PropTypes.func.isRequired,
   changeSuccess: PropTypes.func.isRequired,
   changeError: PropTypes.func.isRequired,
   getFinishedMessage: PropTypes.func,
+  confirmButtonText: PropTypes.string,
+  cancelButtonText: PropTypes.string,
+  uploadButtonText: PropTypes.string,
+  noFileMessage: PropTypes.string,
 };
 
 ImportModalComponent.defaultProps = {
+  translate: text => text,
   title: null,
   queryParameters: [],
   actionConfig: {},
   subtitle: '',
   getFinishedMessage: defaultFinishedMessage, // response => react element
+  confirmButtonText: 'Import',
+  cancelButtonText: 'Cancel',
+  uploadButtonText: 'Choose file',
+  noFileMessage: 'No file chosen',
 };
 
 const mapDispatchToProps = dispatch => ({

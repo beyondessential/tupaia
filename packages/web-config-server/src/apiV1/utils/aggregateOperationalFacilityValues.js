@@ -1,4 +1,5 @@
-import { convertToPeriod, PERIOD_TYPES } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
+import { convertToPeriod } from '@tupaia/utils';
 
 export const aggregateOperationalFacilityValues = (
   operationalFacilities,

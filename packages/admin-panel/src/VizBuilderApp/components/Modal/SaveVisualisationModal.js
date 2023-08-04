@@ -20,9 +20,10 @@ import {
   ConfirmModal,
 } from '@tupaia/ui-components';
 
-import { MODAL_STATUS, VIZ_TYPE_PARAM } from '../../constants';
+import { MODAL_STATUS, DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
 import { useVizConfig, useVisualisation } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
+import { useVizBuilderBasePath } from '../../utils';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
@@ -41,13 +42,14 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [_, { setVisualisationValue }] = useVizConfig();
   const { visualisation } = useVisualisation();
 
-  const { vizType } = useParams();
+  const basePath = useVizBuilderBasePath();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const useSaveViz = () => {
-    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
       return useSaveDashboardVisualisation(visualisation);
     }
-    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
       return useSaveMapOverlayVisualisation(visualisation);
     }
     throw new Error('Unknown viz type');
@@ -71,11 +73,11 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
     onClose();
   });
 
-  let backLink = '/';
-  if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
-    backLink = '/dashboard-items';
-  } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
-    backLink = '/dashboard-items/map-overlays';
+  let backLink = basePath;
+  if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
+    backLink = backLink.concat('/visualisations');
+  } else if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
+    backLink = backLink.concat('/visualisations/map-overlays');
   }
 
   if (status === MODAL_STATUS.SUCCESS) {

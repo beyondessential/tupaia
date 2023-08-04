@@ -8,13 +8,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   // Match entity with autocomplete answers on "name", then use those entity ids for the associated
   // survey response (rather than its current facility entity, from the old survey version)
   // Finally, delete the PrimaryEntity answers as the same info is now stored as metadata (entity_id)
@@ -35,7 +35,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

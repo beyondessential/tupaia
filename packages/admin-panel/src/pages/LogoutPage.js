@@ -9,24 +9,26 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { getIsUserAuthenticated, logout } from '../authentication';
 
-const LogoutPageComponent = ({ onLogout, isLoggedIn }) => {
+const LogoutPageComponent = ({ redirectTo, onLogout, isLoggedIn }) => {
   useEffect(() => {
     onLogout();
   }, [onLogout]);
 
   if (!isLoggedIn) {
-    return <Redirect to="/login" />;
+    return <Redirect to={redirectTo} />;
   }
 
   return <div>Logging out...</div>;
 };
 
 LogoutPageComponent.propTypes = {
+  redirectTo: PropTypes.string,
   isLoggedIn: PropTypes.bool,
   onLogout: PropTypes.func.isRequired,
 };
 
 LogoutPageComponent.defaultProps = {
+  redirectTo: '/login',
   isLoggedIn: true,
 };
 
