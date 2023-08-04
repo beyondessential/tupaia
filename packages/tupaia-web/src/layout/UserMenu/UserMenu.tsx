@@ -62,7 +62,7 @@ export const UserMenu = () => {
   );
 
   const VisitMainSite = (
-    <BaseMenuItem key="mainSite" href="https://www.tupaia.org">
+    <BaseMenuItem key="mainSite" href="https://www.tupaia.org" externalLink>
       Visit&nbsp;<span>tupaia.org</span>
     </BaseMenuItem>
   );
@@ -82,6 +82,7 @@ export const UserMenu = () => {
   const HelpCentre = (
     <BaseMenuItem
       key="help"
+      externalLink
       href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm"
     >
       Help centre
