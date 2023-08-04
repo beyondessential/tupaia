@@ -8,6 +8,10 @@ import { camelKeys } from '@tupaia/utils';
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './dashboardVisualisations.fixtures';
+import {
+  BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+} from '../../../permissions';
 
 describe('GET dashboard visualisations', () => {
   const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
@@ -38,9 +42,17 @@ describe('GET dashboard visualisations', () => {
     },
   };
 
+  const policy = {
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+  };
+
+  const besAdminPolicy = {
+    DL: [BES_ADMIN_PERMISSION_GROUP],
+  };
+
   before(async () => {
     await resetTestData();
-    await app.grantFullAccess();
+    await app.grantAccess(policy);
     await setupTest(models, TEST_SETUP);
   });
 
@@ -73,6 +85,14 @@ describe('GET dashboard visualisations', () => {
     });
 
     it('Returns an existing legacy dashboard visualisation', async () => {
+      const id = getVizId('Legacy_Dashboard_Item');
+      const response = await app.get(`dashboardVisualisations/${id}`);
+      expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
+    });
+
+    it('Returns an existing visualisation with only BES Admin permission', async () => {
+      app.revokeAccess();
+      await app.grantAccess(besAdminPolicy);
       const id = getVizId('Legacy_Dashboard_Item');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);

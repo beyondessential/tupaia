@@ -8,7 +8,7 @@ import {
   FeedItemType as BaseFeedItemType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
-import { NullableKeysToOptional } from '@tupaia/tsutils';
+import { NullableKeysToOptional } from '@tupaia/types';
 
 export type FeedItemFields = Readonly<{
   id: string;

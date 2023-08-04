@@ -1,0 +1,294 @@
+{
+    "code": "rh_line_n_reproductive_health_training",
+    "name": "Reproductive Health Training",
+    "legacy": false,
+    "data": {
+      "fetch": {
+        "dataElements": [
+          "RHT_F_FP",
+          "RHT_F_AYFSRH",
+          "RHT_F_LARC",
+          "RHT_F_LMIS"
+        ]
+      },
+      "aggregate": [
+        {
+          "type": "SUM_EACH_YEAR",
+          "config": {
+            "dataSourceEntityType": "facility"
+          }
+        },
+        {
+          "type": "REPLACE_ORG_UNIT_WITH_ORG_GROUP",
+          "config": {
+            "dataSourceEntityType": "facility",
+            "aggregationEntityType": "requested"
+          }
+        }
+      ],
+      "transform": [
+        {
+          "insert": {
+            "value": "=$value > 0 ? 1 : undefined",
+            "dataElement": "=translate($dataElement,{RHT_F_FP: 'FP Training',RHT_F_LARC: 'LARC Training',RHT_F_AYFSRH: 'AYFSRH Training',RHT_F_LMIS: 'LMIS Training'})"
+          },
+          "transform": "updateColumns"
+        },
+        {
+          "using": {
+            "value": "sum",
+            "numberOfFacilities": "unique"
+          },
+          "groupBy": [
+            "period",
+            "organisationUnit",
+            "dataElement"
+          ],
+          "transform": "mergeRows"
+        },
+        "insertNumberOfFacilitiesColumn",
+        {
+          "where": "=eq($value,undefined)",
+          "transform": "excludeRows"
+        },
+        {
+          "insert": {
+            "name": "=$period",
+            "timestamp": "=periodToTimestamp($period)",
+            "=$dataElement": "=$value/$numberOfFacilities",
+            "=$dataElement + '_metadata'": "={numerator:$value,denominator:$numberOfFacilities}"
+          },
+          "exclude": [
+            "numberOfFacilities",
+            "organisationUnit",
+            "value",
+            "dataElement",
+            "period"
+          ],
+          "transform": "updateColumns"
+        },
+        {
+          "using": "single",
+          "groupBy": [
+            "name",
+            "timestamp"
+          ],
+          "transform": "mergeRows"
+        }
+      ]
+    },
+    "presentation": {
+      "type": "chart",
+      "chartType": "line",
+      "labelType": "fractionAndPercentage",
+      "valueType": "percentage",
+      "chartConfig": {
+        "FP Training": {
+          "color": "#4caf50",
+          "legendOrder": 2,
+          "connectNulls": true
+        },
+        "LARC Training": {
+          "color": "#f44336",
+          "legendOrder": 1,
+          "connectNulls": true
+        },
+        "LMIS Training": {
+          "color": "#ff9800",
+          "legendOrder": 3,
+          "connectNulls": true
+        },
+        "AYFSRH Training": {
+          "color": "#2196f3",
+          "legendOrder": 4,
+          "connectNulls": true
+        }
+      },
+      "periodGranularity": "year"
+    },
+    "permissionGroup": "UNFPA",
+    "dashboards": [
+      {
+        "code": "WS_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "WS",
+        "sortOrder": null
+      },
+      {
+        "code": "FJ_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "FJ",
+        "sortOrder": null
+      },
+      {
+        "code": "VU_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "VU",
+        "sortOrder": null
+      },
+      {
+        "code": "MH_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "MH",
+        "sortOrder": null
+      },
+      {
+        "code": "TO_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "TO",
+        "sortOrder": null
+      },
+      {
+        "code": "FM_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "FM",
+        "sortOrder": null
+      },
+      {
+        "code": "KI_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "KI",
+        "sortOrder": null
+      },
+      {
+        "code": "DL_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "DL",
+        "sortOrder": null
+      },
+      {
+        "code": "SB_UNFPA",
+        "name": "UNFPA",
+        "rootEntityCode": "SB",
+        "sortOrder": null
+      }
+    ],
+    "dashboardRelations": [
+      {
+        "dashboardCode": "DL_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 3
+      },
+      {
+        "dashboardCode": "FJ_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 17
+      },
+      {
+        "dashboardCode": "FM_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 18
+      },
+      {
+        "dashboardCode": "SB_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 23
+      },
+      {
+        "dashboardCode": "WS_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 17
+      },
+      {
+        "dashboardCode": "MH_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 18
+      },
+      {
+        "dashboardCode": "TO_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 23
+      },
+      {
+        "dashboardCode": "VU_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 23
+      },
+      {
+        "dashboardCode": "KI_UNFPA",
+        "entityTypes": [
+          "country",
+          "district"
+        ],
+        "projectCodes": [
+          "unfpa"
+        ],
+        "permissionGroups": [
+          "UNFPA"
+        ],
+        "sortOrder": 1
+      }
+    ]
+  }

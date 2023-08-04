@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CLIENT_BASIC_AUTH_HEADER } from 'react-native-dotenv';
 
 import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
-import { isBeta, betaBranch, getDeviceAppVersion } from '../version';
+import { isBeta, betaBranch, centralApiUrl, getDeviceAppVersion } from '../version';
 
 import { analytics } from '../utilities';
 
@@ -20,9 +20,9 @@ const ACCESS_TOKEN_KEY = 'AccessToken';
 const REFRESH_TOKEN_KEY = 'RefreshToken';
 const SOCIAL_FEED_ENDPOINT = 'socialFeed';
 const CURRENT_USER_REWARDS_ENDPOINT = 'me/rewards';
-const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2'; // Change this to 'http://[your-local-ip]:8090/v2' if running central-server locally
+const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2';
 const PRODUCTION_BASE_URL = `https://${isBeta ? `${betaBranch}-` : ''}api.tupaia.org/v2`;
-export const BASE_URL = __DEV__ ? DEV_BASE_URL : PRODUCTION_BASE_URL;
+export const BASE_URL = __DEV__ ? centralApiUrl || DEV_BASE_URL : PRODUCTION_BASE_URL;
 
 const TIMEOUT_INTERVAL = 45 * 1000; // 45 seconds in milliseconds
 

@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
 
 const selectAllMapOverlays = async db => db.runSql('SELECT * FROM "mapOverlay";');
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const mapOverlayRows = (await selectAllMapOverlays(db)).rows;
 
   await Promise.all(
@@ -37,9 +37,9 @@ exports.up = async function(db) {
         displayType,
       };
 
-      //Some of these columns can be null/false by default.
-      //So I only add them into the presentationOptions config if they are not empty/true.
-      //measureData.js will be the place where we populate the default values for these config.
+      // Some of these columns can be null/false by default.
+      // So I only add them into the presentationOptions config if they are not empty/true.
+      // measureData.js will be the place where we populate the default values for these config.
       if (customColors) {
         newPresentationOptions = {
           ...newPresentationOptions,
@@ -84,7 +84,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   const mapOverlayRows = await selectAllMapOverlays(db).rows;
 
   await Promise.all(

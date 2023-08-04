@@ -12,6 +12,7 @@ import { openEditModal } from './actions';
 
 export const CreateButtonComponent = ({ dispatch, label, actionConfig }) => (
   <LightOutlinedButton
+    id="page-new-button"
     startIcon={<AddCircleIcon />}
     onClick={() => dispatch(openEditModal(actionConfig))}
   >

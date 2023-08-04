@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  handleWith,
-  useForwardUnhandledRequests,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
 import {
   DashboardRoute,
@@ -18,7 +14,6 @@ import {
   ReportRoute,
   UserRoute,
   VerifyEmailRoute,
-  UpdateSurveyResponseRoute,
   PDFExportRoute,
 } from '../routes';
 import { attachSession } from '../session';
@@ -31,7 +26,6 @@ import { EntityRequest } from '../routes/EntityRoute';
 import { ReportRequest } from '../routes/ReportRoute';
 import { VerifyEmailRequest } from '../routes/VerifyEmailRoute';
 import { RegisterRequest } from '../routes/RegisterRoute';
-import { UpdateSurveyResponseRequest } from '../routes/UpdateSurveyResponseRoute';
 import { PDFExportRequest } from '../routes/PDFExportRoute';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -63,20 +57,12 @@ export function createApp() {
     /**
      * POST
      */
-
     .post<RegisterRequest>('register', handleWith(RegisterRoute))
     .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
     .post<PDFExportRequest>('pdf', handleWith(PDFExportRoute))
 
-    /**
-     * PUT
-     */
-    .put<UpdateSurveyResponseRequest>('survey-response/:id', handleWith(UpdateSurveyResponseRoute))
-
+    .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
-
-  // Forward any unhandled request to central-server
-  useForwardUnhandledRequests(app, CENTRAL_API_URL, '/admin', attachSession);
 
   return app;
 }

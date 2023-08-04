@@ -8,7 +8,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
-import modalSlideTransition from 'react-animations/lib/fade-in-up';
 import Radium from 'radium';
 
 import {
@@ -42,7 +41,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     animation: 'x 0.3s',
-    animationName: Radium.keyframes(modalSlideTransition, 'modalSlideTransition'),
   },
   header: {
     display: 'flex',

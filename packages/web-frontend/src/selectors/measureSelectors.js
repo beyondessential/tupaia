@@ -7,7 +7,7 @@
 
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
-import { getMeasureDisplayInfo } from '@tupaia/ui-components';
+import { getMeasureDisplayInfo } from '@tupaia/ui-map-components';
 import { POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,
@@ -248,7 +248,7 @@ export const selectAreMeasuresOnTheSameEntityLevel = createSelector(
     }
 
     const measureLevelsFromMeasures = Object.values(measureInfo)
-      .map(({ measureLevel }) => measureLevel)
+      .map(({ measureLevel = [] }) => measureLevel)
       .flat();
     if (measureLevelsFromMeasures.length <= 1) {
       return true;

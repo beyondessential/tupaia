@@ -12,7 +12,7 @@ import {
   Chart as ChartComponent,
   ChartTable as BaseChartTable,
   getIsChartData,
-} from '@tupaia/ui-components';
+} from '@tupaia/ui-chart-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';

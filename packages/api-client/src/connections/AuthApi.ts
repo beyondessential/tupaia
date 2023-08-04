@@ -6,6 +6,7 @@
 
 import { AccessPolicyObject } from '../types';
 import { BaseApi } from './BaseApi';
+import { PublicInterface } from './types';
 
 type ServerAuthResponse = {
   accessToken?: string;
@@ -52,3 +53,5 @@ export class AuthApi extends BaseApi {
     return { accessToken, refreshToken, accessPolicy, email, user };
   }
 }
+
+export interface AuthApiInterface extends PublicInterface<AuthApi> {}

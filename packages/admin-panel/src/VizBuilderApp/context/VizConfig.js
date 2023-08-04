@@ -12,6 +12,8 @@ import React, { useReducer, createContext, useContext } from 'react';
 const initialConfigState = {
   project: null,
   location: null,
+  startDate: null,
+  endDate: null,
   testData: null,
   visualisation: {
     id: null,
@@ -19,11 +21,6 @@ const initialConfigState = {
     code: null,
     permissionGroup: null,
     data: {
-      fetch: {
-        dataElements: [],
-        dataGroups: [],
-      },
-      aggregate: [],
       transform: [],
     },
     presentation: {},
@@ -32,6 +29,8 @@ const initialConfigState = {
 
 const SET_PROJECT = 'SET_PROJECT';
 const SET_LOCATION = 'SET_LOCATION';
+const SET_START_DATE = 'SET_START_DATE';
+const SET_END_DATE = 'SET_END_DATE';
 const SET_TEST_DATA = 'SET_TEST_DATA';
 const SET_VISUALISATION = 'SET_VISUALISATION';
 const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
@@ -48,6 +47,12 @@ function configReducer(state, action) {
       return set(state, 'location', action.value);
     case SET_PROJECT: {
       return set(state, 'project', action.value);
+    }
+    case SET_START_DATE: {
+      return set(state, 'startDate', action.value);
+    }
+    case SET_END_DATE: {
+      return set(state, 'endDate', action.value);
     }
     case SET_TEST_DATA: {
       return set(state, 'testData', action.value);
@@ -95,6 +100,8 @@ const useConfigStore = () => {
 
   const setLocation = value => dispatch({ type: SET_LOCATION, value });
   const setProject = value => dispatch({ type: SET_PROJECT, value });
+  const setStartDate = value => dispatch({ type: SET_START_DATE, value });
+  const setEndDate = value => dispatch({ type: SET_END_DATE, value });
   const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
   const setVisualisation = value => {
     if (!value.data.transform) {
@@ -123,6 +130,8 @@ const useConfigStore = () => {
     {
       setLocation,
       setProject,
+      setStartDate,
+      setEndDate,
       setTestData,
       setVisualisation,
       setVisualisationValue,
@@ -136,13 +145,7 @@ const VisualisationContext = createContext(initialConfigState.visualisation);
 
 const amendStepsToBaseConfig = visualisation => {
   const { data } = { ...visualisation };
-  const { aggregate, transform } = { ...data };
-  // Remove frontend config (isDisabled, id, schema) in aggregation steps.
-  const filteredAggregate = Array.isArray(aggregate)
-    ? aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
-        ...restOfConfig,
-      }))
-    : aggregate;
+  const { transform } = data;
 
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
   const filteredTransform = Array.isArray(transform)
@@ -156,7 +159,7 @@ const amendStepsToBaseConfig = visualisation => {
       })
     : transform;
 
-  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  const filteredData = { ...data, transform: filteredTransform };
   return { ...visualisation, data: filteredData };
 };
 

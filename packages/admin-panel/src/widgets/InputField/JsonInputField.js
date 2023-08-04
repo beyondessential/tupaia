@@ -10,7 +10,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
-import { checkVisibilityCriteriaAreMet } from '../../utilities';
+import { checkVisibilityCriteriaAreMet, labelToId } from '../../utilities';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -91,6 +91,7 @@ export const JsonInputField = props => {
                 ...inputFieldProps
               }) => (
                 <InputField
+                  id={`inputField-${labelToId(fieldName)}`}
                   key={fieldName}
                   label={fieldLabel}
                   secondaryLabel={fieldSecondaryLabel}

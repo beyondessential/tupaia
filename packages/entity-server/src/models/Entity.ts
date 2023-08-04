@@ -21,12 +21,17 @@ export type EntityFields = Readonly<{
   };
 }>;
 
-export type EntityFilter = DbFilter<EntityFields>;
+export type EntityQueryFields = EntityFields & {
+  generational_distance: number;
+};
+
+export type EntityFilter = DbFilter<EntityQueryFields>;
 
 export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
   getParent: (hierarchyId: string) => Promise<EntityType | undefined>;
   getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
+  getAncestors: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
   getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityType | undefined>;
   getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
 }
@@ -38,6 +43,11 @@ export interface EntityModel extends Model<BaseEntityModel, EntityFields, Entity
     criteria?: EntityFilter,
   ) => Promise<EntityType[]>;
   getRelativesOfEntities: (
+    hierarchyId: string,
+    entityIds: string[],
+    criteria?: EntityFilter,
+  ) => Promise<EntityType[]>;
+  getAncestorsOfEntities: (
     hierarchyId: string,
     entityIds: string[],
     criteria?: EntityFilter,

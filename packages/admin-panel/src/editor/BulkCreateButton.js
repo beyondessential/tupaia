@@ -12,6 +12,7 @@ import { openBulkEditModal } from './actions';
 
 export const BulkCreateButtonComponent = ({ dispatch, label, actionConfig }) => (
   <LightOutlinedButton
+    id="page-button-bulk-create"
     startIcon={<AddCircleIcon />}
     onClick={() => dispatch(openBulkEditModal(actionConfig))}
   >

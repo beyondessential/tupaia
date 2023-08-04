@@ -1,0 +1,14 @@
+{
+  "extends": "@beyondessential/eslint-config-ts",
+  "rules": {
+    "import/no-extraneous-dependencies": "error",
+    "react/require-default-props": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.test.ts"],
+      "extends": "@beyondessential/jest"
+    }
+  ],
+  "ignorePatterns": ["dist/", "build/", "node_modules/", ".eslintrc.js"]
+}

@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { JsonEditor as Editor } from '@tupaia/ui-components';
+import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
   display: flex;

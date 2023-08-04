@@ -8,13 +8,13 @@ const OLD_MAP_OVERLAY_GROUP = 'Number of Students';
 
 const NEW_MAP_OVERLAY_GROUP = 'Student Numbers';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
       update "mapOverlay"
       set "groupName" = '${NEW_MAP_OVERLAY_GROUP}'
@@ -22,7 +22,7 @@ exports.up = function(db) {
     `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
       update "mapOverlay"
       set "groupName" = '${OLD_MAP_OVERLAY_GROUP}'

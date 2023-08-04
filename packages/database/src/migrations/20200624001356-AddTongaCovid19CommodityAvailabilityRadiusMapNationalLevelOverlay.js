@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -82,7 +82,7 @@ const BASIC_OVERLAY_OBJECT = {
   projectCodes: PROJECT_CODES,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await Promise.all(
     MAP_OVERLAYS.map((overlay, index) => {
       const { name, id, dataElementCodes } = overlay;
@@ -99,7 +99,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`	
     DELETE FROM "mapOverlay" 
     WHERE "id" in (${arrayToDbString(MAP_OVERLAYS.map(o => o.id))});	

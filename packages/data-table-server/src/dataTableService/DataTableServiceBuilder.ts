@@ -7,10 +7,14 @@ import { DataTableType } from '../models';
 import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
 import {
   AnalyticsDataTableService,
+  DataElementMetadataDataTableService,
+  DataGroupMetaDataDataTableService,
   EntitiesDataTableService,
+  EntityAttributesDataTableService,
   EntityRelationsDataTableService,
   EventsDataTableService,
-} from './internal';
+  SqlDataTableService,
+} from './services';
 
 /**
  * Generic builder class that allows us to configure the context for a specific DataTableService
@@ -44,18 +48,16 @@ class DataTableServiceBuilderForType<Service extends DataTableService> {
   }
 }
 
-const internalDataTableServiceBuilders = {
+const dataTablesServiceBuilders = {
   analytics: () => new DataTableServiceBuilderForType(AnalyticsDataTableService),
+  data_element_metadata: () =>
+    new DataTableServiceBuilderForType(DataElementMetadataDataTableService),
+  data_group_metadata: () => new DataTableServiceBuilderForType(DataGroupMetaDataDataTableService),
   events: () => new DataTableServiceBuilderForType(EventsDataTableService),
   entities: () => new DataTableServiceBuilderForType(EntitiesDataTableService),
   entity_relations: () => new DataTableServiceBuilderForType(EntityRelationsDataTableService),
-};
-
-const userDefinedDataTableServiceBuilders = {};
-
-const dataTablesServiceBuilders = {
-  ...internalDataTableServiceBuilders,
-  ...userDefinedDataTableServiceBuilders,
+  sql: () => new DataTableServiceBuilderForType(SqlDataTableService),
+  entity_attributes: () => new DataTableServiceBuilderForType(EntityAttributesDataTableService),
 };
 
 const isValidServiceType = (
@@ -64,26 +66,17 @@ const isValidServiceType = (
   serviceType in dataTablesServiceBuilders;
 
 export const getDataTableServiceType = (dataTable: DataTableType) => {
-  const { type, code } = dataTable;
-  const serviceType = type === 'internal' ? code : type;
+  const { type } = dataTable;
 
-  if (type === 'internal' && !(serviceType in internalDataTableServiceBuilders)) {
+  if (!isValidServiceType(type)) {
     throw new Error(
-      `No internal data-table defined for: ${serviceType}, must be one of: ${Object.keys(
-        internalDataTableServiceBuilders,
+      `No data table service defined for: ${type}, must be one of: ${Object.keys(
+        dataTablesServiceBuilders,
       )}`,
     );
   }
 
-  if (!isValidServiceType(serviceType)) {
-    throw new Error(
-      `No data table service defined for: ${serviceType}, must be one of: ${Object.keys(
-        userDefinedDataTableServiceBuilders,
-      )}`,
-    );
-  }
-
-  return serviceType;
+  return type;
 };
 
 export class DataTableServiceBuilder {

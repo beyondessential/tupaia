@@ -90,9 +90,7 @@ const localStyles = StyleSheet.create({
 });
 
 SyncPage.navigationOptions = {
-  headerLeft: () => (
-    <HeaderLeftButton source={require('../images/x.png')} labelVisible={false}></HeaderLeftButton>
-  ),
+  headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} labelVisible={false} />,
   headerTitle: 'Sync',
 };
 

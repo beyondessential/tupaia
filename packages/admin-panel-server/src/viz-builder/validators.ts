@@ -14,9 +14,7 @@ const baseCustomReportDataValidator = yup.object().shape({
   customReport: yup.string().required(),
 });
 
-const baseStandardReportDataValidator = yup.object().shape({
-  fetch: yup.object().required(),
-});
+export const baseStandardReportDataValidator = yup.object().shape({});
 
 export const baseVisualisationDataValidator = yup.lazy<
   typeof baseStandardReportDataValidator | typeof baseCustomReportDataValidator

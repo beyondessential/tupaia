@@ -28,6 +28,8 @@ export const changeSearchTerm = (
   searchTerm,
   parentRecord,
   baseFilter = {},
+  pageSize = MAX_AUTOCOMPLETE_RESULTS,
+  distinct = null,
 ) => async (dispatch, getState, { api }) => {
   const fetchId = generateId();
   dispatch({
@@ -40,10 +42,10 @@ export const changeSearchTerm = (
     const filter = convertSearchTermToFilter({ ...baseFilter, [labelColumn]: searchTerm });
     const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
       filter: JSON.stringify(filter),
-      pageSize: MAX_AUTOCOMPLETE_RESULTS,
+      pageSize,
       sort: JSON.stringify([`${labelColumn} ASC`]),
       columns: JSON.stringify([labelColumn, valueColumn]),
-      distinct: true,
+      distinct,
     });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,

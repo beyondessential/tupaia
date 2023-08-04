@@ -4,7 +4,7 @@
  */
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
-import { PERIOD_TYPES } from '@tupaia/utils';
+import { PERIOD_TYPES } from '@tupaia/tsutils';
 import {
   getDateRangeForSumPreviousPerPeriod,
   sumPreviousPerPeriod,

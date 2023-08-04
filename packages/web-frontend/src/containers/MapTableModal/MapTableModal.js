@@ -8,13 +8,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import {
-  Dialog,
-  DialogHeader,
-  DialogContent,
-  MapTable,
-  useMapDataExport,
-} from '@tupaia/ui-components';
+import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
+import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
 
 import MuiIconButton from '@material-ui/core/IconButton';
 import {
@@ -25,6 +20,7 @@ import {
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { Tooltip } from '../../components/Tooltip';
+import { useOverlayDates } from '../MapOverlayBar/useOverlayDates';
 
 const IconButton = styled(MuiIconButton)`
   margin-right: -10px;
@@ -43,7 +39,15 @@ const MapTableModalComponent = ({
     ? `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`
     : '';
 
-  const { doExport } = useMapDataExport(measureOptions, measureData, title);
+  let startDate = null;
+  let endDate = null;
+  if (currentMapOverlays.length === 1) {
+    const mapOverlayDates = useOverlayDates(currentMapOverlays[0]);
+    startDate = mapOverlayDates.startDate;
+    endDate = mapOverlayDates.endDate;
+  }
+
+  const { doExport } = useMapDataExport(measureOptions, measureData, title, startDate, endDate);
 
   if (!currentMapOverlays || !measureData || !measureOptions || measureData.length === 0) {
     return null;

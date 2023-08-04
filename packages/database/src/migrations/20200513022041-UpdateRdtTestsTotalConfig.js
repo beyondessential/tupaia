@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -115,11 +115,11 @@ const updateConfig = (db, config) =>
     WHERE id = '${REPORT_ID}';
 `);
 
-exports.up = function(db) {
+exports.up = function (db) {
   return updateConfig(db, NEW_CONFIG);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return updateConfig(db, OLD_CONFIG);
 };
 

@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { FileUploadField } from '../../src';
+import { FileUploadField } from '../../src/components';
 
 export default {
   title: 'Inputs/FileUploadField',
@@ -28,6 +28,24 @@ export const Simple = () => {
         }}
         name="file-upload"
         fileName={fileName}
+        label="File Upload"
+      />
+    </Container>
+  );
+};
+
+export const SimpleWithTooltip = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+        label="File Upload"
+        tooltip=".png and .jpg files only"
       />
     </Container>
   );
@@ -44,6 +62,23 @@ export const Multiple = () => {
         name="file-upload"
         fileName={fileName}
         multiple
+      />
+    </Container>
+  );
+};
+
+export const WithLabel = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+        label="Profile Image"
+        helperText="Select an image to use as your profile pic"
       />
     </Container>
   );

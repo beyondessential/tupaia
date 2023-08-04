@@ -14,7 +14,7 @@ import {
   ExpandableTableRow,
   FakeHeader,
   CondensedTableBody,
-} from '../../src';
+} from '../../src/components';
 import { useTableData } from '../../helpers/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
 
@@ -131,6 +131,7 @@ const TableBody = ({ ...props }) => {
             expanded={expanded}
             rowIndex={rowIndex}
             key={rowData.id}
+            rowData={rowData}
             {...props}
           />
         );

@@ -6,10 +6,7 @@
 import { yup } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
 
-import { Context } from '../../../context';
-import { TransformParser } from '../../parser';
 import { mergeStrategies } from './mergeStrategies';
-import { buildWhere } from '../where';
 import { FieldValue, Row } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
@@ -19,7 +16,6 @@ import { TransformTable } from '../../table';
 type MergeRowsParams = {
   createGroupKey: (row: Row) => string;
   getMergeStrategy: (field: string) => keyof typeof mergeStrategies;
-  where: (parser: TransformParser) => boolean;
 };
 
 const optionalMergeStrategyNameValidator = yup
@@ -65,23 +61,15 @@ type Group = {
   [columnName: string]: FieldValue[];
 };
 
-const groupRows = (table: TransformTable, params: MergeRowsParams, context: Context) => {
+const groupRows = (table: TransformTable, params: MergeRowsParams) => {
   const groupsByKey: Record<string, Group> = {};
-  const parser = new TransformParser(table, context);
-  const ungroupedRows: Row[] = []; // Rows that don't match the 'where' clause are left ungrouped
 
   table.getRows().forEach((row: Row) => {
-    if (!params.where(parser)) {
-      ungroupedRows.push(row);
-      parser.next();
-      return;
-    }
     const groupKey = params.createGroupKey(row);
     addRowToGroup(groupsByKey, groupKey, row); // mutates groupsByKey
-    parser.next();
   });
 
-  return { groups: Object.values(groupsByKey), ungroupedRows };
+  return Object.values(groupsByKey);
 };
 
 const addRowToGroup = (groupsByKey: Record<string, Group>, groupKey: string, row: Row) => {
@@ -102,10 +90,17 @@ const addRowToGroup = (groupsByKey: Record<string, Group>, groupKey: string, row
 };
 
 const mergeGroups = (groups: Group[], params: MergeRowsParams) => {
-  return groups.map(group => {
+  const excludedColumns = new Set<string>();
+  const mergedRows = groups.map(group => {
     const mergedRow: Row = {};
     Object.entries(group).forEach(([columnName, groupValues]) => {
       const mergeStrategy = params.getMergeStrategy(columnName);
+
+      // We track the excluded columns so that we can remove them from the TransformTable later
+      if (mergeStrategy === 'exclude') {
+        excludedColumns.add(columnName);
+      }
+
       const mergedValue = mergeStrategies[mergeStrategy](groupValues);
       if (mergedValue !== undefined) {
         mergedRow[columnName] = mergedValue;
@@ -113,13 +108,14 @@ const mergeGroups = (groups: Group[], params: MergeRowsParams) => {
     });
     return mergedRow;
   });
+  return { mergedRows, excludedColumns: Array.from(excludedColumns) };
 };
 
-const mergeRows = (table: TransformTable, params: MergeRowsParams, context: Context) => {
-  const { groups, ungroupedRows } = groupRows(table, params, context);
-  const mergedRows = mergeGroups(groups, params);
-  const newRowData = mergedRows.concat(ungroupedRows);
-  return new TransformTable(table.getColumns(), newRowData);
+const mergeRows = (table: TransformTable, params: MergeRowsParams) => {
+  const groups = groupRows(table, params);
+  const { mergedRows, excludedColumns } = mergeGroups(groups, params);
+  const columns = table.getColumns().filter(columnName => !excludedColumns.includes(columnName));
+  return new TransformTable(columns, mergedRows);
 };
 
 const buildParams = (params: unknown): MergeRowsParams => {
@@ -130,11 +126,10 @@ const buildParams = (params: unknown): MergeRowsParams => {
   return {
     createGroupKey: buildCreateGroupKey(groupBy),
     getMergeStrategy: buildGetMergeStrategy(groupBy, using),
-    where: buildWhere(params),
   };
 };
 
-export const buildMergeRows = (params: unknown, context: Context) => {
+export const buildMergeRows = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => mergeRows(table, builtParams, context);
+  return (table: TransformTable) => mergeRows(table, builtParams);
 };

@@ -5,8 +5,6 @@
 
 import { splitStringOn, splitStringOnFirstOccurrence } from '../../utilities';
 
-export const MAX_SURVEY_CODE_GENERATION_ATTEMPTS = 20;
-
 export const caseAndSpaceInsensitiveEquals = (stringA = '', stringB = '') =>
   stringA.toLowerCase().trim() === stringB.toLowerCase().trim();
 
@@ -40,37 +38,4 @@ export const convertCellToJson = (cellString, processValue = value => value) => 
       jsonObject[key] = processValue(value);
     });
   return jsonObject;
-};
-
-const createSurveyCode = async (models, surveyName) => {
-  const baseCode = surveyName
-    .match(/\b(\w)/g)
-    .join('')
-    .toUpperCase();
-
-  let code = baseCode;
-  let attemptCount = 0;
-  let otherSurveyWithSameCodeExists = false;
-  do {
-    attemptCount++;
-    if (attemptCount > MAX_SURVEY_CODE_GENERATION_ATTEMPTS) {
-      throw new Error('Maximum survey code generation attempts reached');
-    }
-
-    if (attemptCount > 1) {
-      code = `${baseCode}${attemptCount}`;
-    }
-
-    otherSurveyWithSameCodeExists = !!(await models.survey.findOne({
-      code,
-      name: { comparator: '<>', comparisonValue: surveyName },
-    }));
-  } while (otherSurveyWithSameCodeExists);
-
-  return code;
-};
-
-export const findOrCreateSurveyCode = async (models, surveyName) => {
-  const survey = await models.survey.findOne({ name: surveyName });
-  return survey ? survey.code : createSurveyCode(models, surveyName);
 };

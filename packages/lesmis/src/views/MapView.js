@@ -8,13 +8,11 @@ import styled from 'styled-components';
 import {
   LeafletMap,
   TileLayer,
-  MarkerLayer,
-  EntityPolygon,
   Legend,
   ZoomControl,
   TilePicker as TilePickerComponent,
-} from '@tupaia/ui-components';
-import { YearSelector, MapOverlaysPanel } from '../components';
+} from '@tupaia/ui-map-components';
+import { YearSelector, MapOverlaysPanel, MarkerLayer, EntityPolygon } from '../components';
 import { useMapOverlayReportData, useMapOverlaysData } from '../api';
 import { TILE_SETS, DEFAULT_DATA_YEAR } from '../constants';
 import { useUrlParams, useUrlSearchParam } from '../utils';

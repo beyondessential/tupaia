@@ -11,7 +11,7 @@ import {
   BREWER_AUTO,
   UNKNOWN_COLOR,
   UNKNOWN_ICON,
-} from '@tupaia/ui-components';
+} from '@tupaia/ui-map-components';
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { MARKER_TYPES, SCALE_TYPES } from '../constants';
@@ -155,11 +155,11 @@ export function processMeasureInfo(response) {
   let { measureData } = response;
   const hiddenMeasures = {};
   const processedOptions = measureOptions.map(measureOption => {
-    const { values: mapOptionValues, type } = measureOption;
+    const { values: mapOptionValues, type, hideNullFromLegend = false } = measureOption;
     const values = autoAssignColors(mapOptionValues);
     const valueMapping = createValueMapping(values, type);
 
-    hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
+    hiddenMeasures[measureOption.key] = measureOption.hideByDefault || {};
 
     if (SPECTRUM_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
@@ -172,7 +172,8 @@ export function processMeasureInfo(response) {
         valueMapping,
         min,
         max,
-        noDataColour: MAP_COLORS.NO_DATA,
+        // if hideNullFromLegend is true, don't set a noDataColour, so as to hide the 'No Data' option from the legend altogether
+        noDataColour: hideNullFromLegend ? null : MAP_COLORS.NO_DATA,
       };
     }
 

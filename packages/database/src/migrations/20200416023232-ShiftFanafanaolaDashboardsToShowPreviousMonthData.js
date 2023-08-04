@@ -11,7 +11,7 @@ const HEALTH_SECTIONS_TO_UPDATE = [
   'Communicable Diseases Validation',
   'Health Promotion Unit Validation',
   'Reproductive Health',
-  'Community Health'
+  'Community Health',
 ];
 
 var dbm;
@@ -19,17 +19,17 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
-  //Add defaultTimePeriod attribute to viewJson
+exports.up = async function (db) {
+  // Add defaultTimePeriod attribute to viewJson
   await db.runSql(`
     UPDATE
       "dashboardReport"
@@ -43,8 +43,8 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
-  //Remove `defaultTimePeriod` attribute from viewJson
+exports.down = async function (db) {
+  // Remove `defaultTimePeriod` attribute from viewJson
   await db.runSql(`
     UPDATE
       "dashboardReport"
@@ -55,7 +55,7 @@ exports.down = async function(db) {
   `);
 };
 
-//Select Statement to select all the Fanafanaola dashboard reports that have period_granularity = 'one_month_at_a_time'
+// Select Statement to select all the Fanafanaola dashboard reports that have period_granularity = 'one_month_at_a_time'
 const ONE_MONTH_A_TIME_FANAFANAOLA_DASH_REPORTS_SQL = `SELECT DISTINCT "dashboardReport".id
 FROM "dashboardReport"
 INNER JOIN "dashboardGroup"
@@ -66,5 +66,5 @@ AND "dashboardReport"."drillDownLevel" IS NULL
 AND "dashboardReport"."viewJson" @> '{"periodGranularity": "${PERIOD_GRANULARITY}"}'`;
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

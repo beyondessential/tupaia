@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 
 const QUESTION_CODES = ['SchDP_vill', 'SchFFvill', 'SchPop_vill', 'SchQuar_vill', 'SchWash_vill'];
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     DELETE FROM answer a 
     USING question q
@@ -26,7 +26,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

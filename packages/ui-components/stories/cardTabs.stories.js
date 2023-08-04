@@ -8,7 +8,14 @@ import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
 import Card from '@material-ui/core/Card';
 import { ErrorOutline, NotificationImportant } from '@material-ui/icons';
-import { CardTabs, CardTabList, CardTab, CardTabPanels, CardTabPanel, DataCardTabs } from '../src';
+import {
+  CardTabs,
+  CardTabList,
+  CardTab,
+  CardTabPanels,
+  CardTabPanel,
+  DataCardTabs,
+} from '../src/components/CardTabs';
 
 export default {
   title: 'CardTabs',

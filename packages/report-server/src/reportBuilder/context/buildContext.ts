@@ -3,37 +3,26 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { AccessPolicy } from '@tupaia/access-policy';
 import { getUniqueEntries } from '@tupaia/utils';
+import { Row } from '../types';
 
-import { FetchResponse } from '../fetch';
 import { detectDependencies } from './detectDependencies';
-import { Context, ContextDependency } from './types';
-import { RequestContext } from '../../types';
-
-export type ReqContext = {
-  hierarchy: string;
-  permissionGroup: string;
-  services: RequestContext['services'];
-  accessPolicy: AccessPolicy;
-};
+import { Context, ContextDependency, ReqContext } from './types';
 
 type ContextBuilder<K extends ContextDependency> = (
   reqContext: ReqContext,
-  data: FetchResponse,
+  data: Row[],
 ) => Promise<Context[K]>;
 
-const isEventResponse = (data: FetchResponse) => data.results.some(result => 'event' in result);
+const isEventResponse = (data: Row[]) => data.some(result => 'event' in result);
 
-const getOrgUnitCodesFromData = (data: FetchResponse) => {
+const getOrgUnitCodesFromData = (data: Row[]) => {
   return getUniqueEntries(
-    isEventResponse(data)
-      ? data.results.map(d => d.orgUnit)
-      : data.results.map(d => d.organisationUnit),
+    isEventResponse(data) ? data.map(d => d.orgUnit) : data.map(d => d.organisationUnit),
   );
 };
 
-const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
+const buildOrgUnits = async (reqContext: ReqContext, data: Row[]) => {
   const orgUnitCodes = getOrgUnitCodesFromData(data);
 
   return reqContext.services.entity.getEntities(reqContext.hierarchy, orgUnitCodes, {
@@ -41,36 +30,8 @@ const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   });
 };
 
-const buildDataElementCodeToName = async (reqContext: ReqContext, data: FetchResponse) => {
-  return data.metadata?.dataElementCodeToName || {};
-};
-
-const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: FetchResponse) => {
-  const orgUnitCodes = getOrgUnitCodesFromData(data);
-
-  const facilitiesByOrgUnitCode = await reqContext.services.entity.getRelationshipsOfEntities(
-    reqContext.hierarchy,
-    orgUnitCodes,
-    'ancestor',
-    {},
-    {},
-    { filter: { type: 'facility' } },
-  );
-
-  const facilityCountByOrgUnit = Object.fromEntries(
-    Object.entries(facilitiesByOrgUnitCode).map(([orgUnit, facilities]) => [
-      orgUnit,
-      (facilities as any[]).length,
-    ]),
-  );
-
-  return facilityCountByOrgUnit;
-};
-
 const contextBuilders: Record<ContextDependency, ContextBuilder<ContextDependency>> = {
   orgUnits: buildOrgUnits,
-  dataElementCodeToName: buildDataElementCodeToName,
-  facilityCountByOrgUnit: buildFacilityCountByOrgUnit,
 };
 
 function validateDependency(key: string): asserts key is keyof typeof contextBuilders {
@@ -89,20 +50,21 @@ const setContextValue = <Key extends ContextDependency>(
   context[key] = value;
 };
 
+export const updateContext = async (context: Context, data: Row[]): Promise<Context> => {
+  for (const key of context.dependencies) {
+    validateDependency(key);
+    setContextValue(context, key, await contextBuilders[key](context.request, data));
+  }
+
+  return context;
+};
+
 export const buildContext = async (
   transform: unknown,
   reqContext: ReqContext,
-  data: FetchResponse,
-  query?: Record<string, unknown>,
 ): Promise<Context> => {
   const dependencies = detectDependencies(transform);
 
-  const context: Context = query ? { query } : {};
-
-  for (const key of dependencies) {
-    validateDependency(key);
-    setContextValue(context, key, await contextBuilders[key](reqContext, data));
-  }
-
+  const context: Context = { request: reqContext, dependencies };
   return context;
 };

@@ -10,7 +10,7 @@ import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 const ENTITIES_ENDPOINT = 'entities';
 
-export const ENTITIES_COLUMNS = [
+export const FIELDS = [
   { source: 'id', show: false },
   {
     Header: 'Code',
@@ -27,8 +27,8 @@ export const ENTITIES_COLUMNS = [
   },
 ];
 
-const FIELDS = [
-  ...ENTITIES_COLUMNS,
+export const COLUMNS = [
+  ...FIELDS,
   {
     Header: 'Country',
     source: 'country_code',
@@ -54,6 +54,16 @@ const FIELDS = [
     type: 'delete',
     actionConfig: {
       endpoint: ENTITIES_ENDPOINT,
+    },
+  },
+  {
+    Header: 'QR',
+    source: 'id',
+    type: 'qrCode',
+    actionConfig: {
+      qrCodeContentsKey: 'id',
+      humanReadableIdKey: 'code',
+      qrCodePrefix: 'entity-',
     },
   },
 ];
@@ -100,14 +110,15 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const EntitiesPage = ({ getHeaderEl }) => (
+export const EntitiesPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
     title="Entities"
     endpoint={ENTITIES_ENDPOINT}
-    columns={FIELDS}
+    columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...restOfProps}
   />
 );
 

@@ -15,12 +15,17 @@ import {
   isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
-  constructIsSubSetOf,
   isValidPassword,
   isNumber,
   ValidationError,
   constructRecordExistsWithCode,
+  constructIsValidEntityType,
+  isHexColor,
+  isURL,
+  isURLPathSegment,
+  constructIsShorterThan,
 } from '@tupaia/utils';
+import { DataTableType, PeriodGranularity } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
@@ -128,7 +133,12 @@ export const constructForSingle = (models, recordType) => {
       return {
         dashboard_id: [constructRecordExistsWithId(models.dashboard)],
         child_id: [constructRecordExistsWithId(models.dashboardItem)],
-        entity_types: [constructIsSubSetOf(Object.values(models.entity.types))],
+        entity_types: [
+          async entityTypes => {
+            const entityTypeValidator = constructIsValidEntityType(models.entity);
+            await Promise.all(entityTypes.map(entityTypeValidator));
+          },
+        ],
         permission_groups: [
           async permissionGroupNames => {
             const permissionGroups = await models.permissionGroup.find({
@@ -258,8 +268,8 @@ export const constructForSingle = (models, recordType) => {
             if (!selectedEntityTypes) {
               return true;
             }
-            const entityDataTypes = await models.entity.types;
-            const filteredEntityTypes = Object.values(entityDataTypes).filter(type =>
+            const entityTypes = await models.entity.getEntityTypes();
+            const filteredEntityTypes = entityTypes.filter(type =>
               selectedEntityTypes.includes(type),
             );
             if (selectedEntityTypes.length !== filteredEntityTypes.length) {
@@ -277,6 +287,108 @@ export const constructForSingle = (models, recordType) => {
         country_code: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         service_config: [hasContent],
+      };
+    case TYPES.DATA_TABLE:
+      return {
+        code: [isAString],
+        description: [isAString],
+        config: [hasContent],
+        type: [constructIsOneOf(Object.values(DataTableType))],
+        permission_groups: [
+          hasContent,
+          async permissionGroupNames => {
+            const permissionGroups = await models.permissionGroup.find({
+              name: permissionGroupNames,
+            });
+            if (permissionGroupNames.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
+      };
+    case TYPES.LANDING_PAGE:
+      return {
+        name: [hasContent, constructIsShorterThan(40)],
+        website_url: [constructIsEmptyOr(isURL)],
+        external_link: [constructIsEmptyOr(isURL)],
+        primary_hexcode: [constructIsEmptyOr(isHexColor)],
+        secondary_hexcode: [constructIsEmptyOr(isHexColor)],
+        long_bio: [constructIsEmptyOr(constructIsShorterThan(250))],
+        extended_title: [constructIsEmptyOr(constructIsShorterThan(60))],
+        url_segment: [
+          hasContent,
+          isURLPathSegment,
+          constructRecordNotExistsWithField(models.landingPage, 'url_segment'),
+          urlSegment => {
+            const forbiddenRoutes = [
+              'login',
+              'register',
+              'request-access',
+              'reset-password',
+              'request-access',
+              'verify-email',
+            ];
+            if (forbiddenRoutes.includes(urlSegment)) {
+              throw new Error('This url segment is not allowed');
+            }
+            return true;
+          },
+        ],
+        project_codes: [
+          hasContent,
+          async projectCodes => {
+            const projects = await models.project.find({
+              code: projectCodes,
+            });
+            if (projectCodes.length !== projects.length) {
+              throw new Error('Some provided projects do not exist');
+            }
+            return true;
+          },
+        ],
+      };
+    case TYPES.SURVEY:
+      return {
+        code: [constructRecordNotExistsWithField(models.survey, 'code')],
+        name: [isAString],
+        'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
+        countryNames: [
+          async countryNames => {
+            if (countryNames.length < 1) {
+              throw new Error('Must specify at least one country');
+            }
+            const countryEntities = await models.country.find({
+              name: countryNames,
+            });
+            if (countryEntities.length !== countryNames.length) {
+              throw new Error('One or more provided countries do not exist');
+            }
+            return true;
+          },
+        ],
+        can_repeat: [hasContent, isBoolean],
+        'survey_group.name': [constructIsEmptyOr(isAString)],
+        integration_metadata: [],
+        period_granularity: [
+          constructIsEmptyOr(constructIsOneOf(Object.values(PeriodGranularity))),
+        ],
+        requires_approval: [hasContent, isBoolean],
+        // data_group_id -> generated at create time, needs following additional fields:
+        'data_group.service_type': [constructIsOneOf(['dhis', 'tupaia'])],
+        'data_group.config': [hasContent],
+        // also survey questions comes in as a file
+      };
+    case TYPES.DHIS_INSTANCE:
+      return {
+        code: [isAString],
+        readonly: [hasContent, isBoolean],
+        config: [hasContent],
+      };
+    case TYPES.SUPERSET_INSTANCE:
+      return {
+        code: [isAString],
+        config: [hasContent],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

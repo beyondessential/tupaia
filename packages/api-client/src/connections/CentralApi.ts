@@ -3,25 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { QueryParameters } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
+import { PublicInterface } from './types';
 
-export type SurveyResponse = {
-  survey_id: string;
-  entity_code: string;
-  timestamp: string;
-  answers: Answers;
-};
+const stringifyParams = (queryParameters: Record<string, unknown> = {}) => {
+  const { filter, columns, sort, ...restOfParameters } = queryParameters;
 
-export type Answers = {
-  [key: string]: string; // question_code -> value
-};
+  const translatedParams = restOfParameters;
+  if (filter) {
+    translatedParams.filter = JSON.stringify(filter);
+  }
+  if (columns) {
+    translatedParams.columns = JSON.stringify(columns);
+  }
+  if (sort) {
+    translatedParams.sort = JSON.stringify(sort);
+  }
 
-const stringifyParams = (queryParameters?: Record<string, unknown>) => {
-  const translatedParams = queryParameters?.filter
-    ? { ...queryParameters, filter: JSON.stringify(queryParameters?.filter) }
-    : queryParameters;
   return translatedParams as QueryParameters;
 };
 
@@ -42,7 +43,7 @@ export class CentralApi extends BaseApi {
     return this.connection.post('me/changePassword', null, passwordChangeFields);
   }
 
-  public async createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
+  public async createSurveyResponses(responses: MeditrakSurveyResponseRequest[]): Promise<void> {
     const BATCH_SIZE = 500;
     for (let i = 0; i < responses.length; i += BATCH_SIZE) {
       const chunk = responses.slice(i, i + BATCH_SIZE);
@@ -97,3 +98,5 @@ export class CentralApi extends BaseApi {
     return resource;
   }
 }
+
+export interface CentralApiInterface extends PublicInterface<CentralApi> {}

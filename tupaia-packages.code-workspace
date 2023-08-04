@@ -69,6 +69,10 @@
       "path": "packages/dhis-api"
     },
     {
+      "name": "e2e",
+      "path": "packages/e2e"
+    },
+    {
       "name": "entity-server",
       "path": "packages/entity-server"
     },
@@ -121,6 +125,18 @@
       "path": "packages/superset-api"
     },
     {
+      "name": "tupaia-web-server",
+      "path": "packages/tupaia-web-server"
+    },
+    {
+      "name": "ui-chart-components",
+      "path": "packages/ui-chart-components"
+    },
+    {
+      "name": "ui-map-components",
+      "path": "packages/ui-map-components"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },
@@ -129,8 +145,16 @@
       "path": "packages/utils"
     },
     {
+      "name": "tupaia-web",
+      "path": "packages/tupaia-web"
+    },
+    {
       "name": "tsutils",
       "path": "packages/tsutils"
+    },
+    {
+      "name": "types",
+      "path": "packages/types"
     },
     {
       "name": "weather-api",
@@ -146,6 +170,7 @@
     }
   ],
   "settings": {
+    "cSpell.caseSensitive": false,
     "cSpell.language": "en-GB",
     "cSpell.words": [
       "analytics",
@@ -158,6 +183,7 @@
       "cleanup",
       "Codeship",
       "ctes",
+      "datetime",
       "Datatrak",
       "debouncing",
       "deleters",
@@ -178,6 +204,7 @@
       "isequal",
       "jsonb",
       "keyby",
+      "Kobo",
       "Lesmis",
       "MediTrak",
       "Microservice",
@@ -209,7 +236,10 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": ["typescript", "typescriptreact"],
+    "eslint.validate": [
+      "typescript",
+      "typescriptreact"
+    ],
     "files.exclude": {
       "packages/": true
     },

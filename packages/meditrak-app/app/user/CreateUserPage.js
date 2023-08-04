@@ -202,7 +202,7 @@ const fields = [
         I agree to the{' '}
         <Text
           style={localStyles.termsLink}
-          onPress={() => Linking.openURL('http://beyondessential.com.au/terms-and-privacy/')}
+          onPress={() => Linking.openURL('https://beyondessential.com.au/terms-and-conditions/')}
         >
           terms and conditions
         </Text>

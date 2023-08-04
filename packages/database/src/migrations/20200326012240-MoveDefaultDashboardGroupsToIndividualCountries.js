@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -60,7 +60,7 @@ const addDashboardGroupsToCountry = (db, dashboardGroups, countryCode) =>
 
 const hasWorldDashboard = `"organisationLevel" <> 'World' AND "organisationUnitCode" = 'World'`;
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const { rows: dashboardGroups } = await db.runSql(
     `SELECT * from "dashboardGroup" WHERE ${hasWorldDashboard};`,
   );
@@ -77,7 +77,7 @@ exports.up = async function(db) {
   );
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   const countryToKeep = COUNTRIES_WITH_WORLD_DASHBOARDS[0];
   const countriesToDelete = COUNTRIES_WITH_WORLD_DASHBOARDS.slice(1);
 

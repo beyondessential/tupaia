@@ -22,13 +22,21 @@ import {
   EntityRelationshipsRoute,
   MultiEntityRelationshipsRequest,
   MultiEntityRelationshipsRoute,
+  EntitySearchRequest,
+  EntitySearchRoute,
+  AncestorsRequest,
+  EntityAncestorsRoute,
+  MultiEntityAncestorsRequest,
+  MultiEntityAncestorsRoute,
 } from '../routes';
 import {
-  attachCommonContext,
+  attachCommonEntityContext,
   attachSingleEntityContext,
   attachMultiEntityContext,
 } from '../routes/hierarchy/middleware';
 import { attachRelationshipsContext } from '../routes/hierarchy/relationships/middleware';
+import { HierarchyRequest, HierarchyRoute } from '../routes/hierarchies';
+import { attachHierarchyContext } from '../routes/hierarchies/middleware';
 
 /**
  * Set up express server with middleware,
@@ -38,58 +46,78 @@ export function createApp(db = new TupaiaDatabase()) {
     new MicroServiceApiBuilder(db, 'entity')
       .useBasicBearerAuth()
 
+      // Hierarchy routes
+      .get<HierarchyRequest>('hierarchies', attachHierarchyContext, handleWith(HierarchyRoute))
+
       // MultiEntity routes
       .post<MultiEntityRequest>(
         'hierarchy/:hierarchyName$',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityRoute),
       )
       .post<MultiEntityDescendantsRequest>(
         'hierarchy/:hierarchyName/descendants',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityDescendantsRoute),
       )
       .post<MultiEntityRelativesRequest>(
         'hierarchy/:hierarchyName/relatives',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         handleWith(MultiEntityRelativesRoute),
       )
       .post<MultiEntityRelationshipsRequest>(
         'hierarchy/:hierarchyName/relationships',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachMultiEntityContext,
         attachRelationshipsContext,
         handleWith(MultiEntityRelationshipsRoute),
+      )
+      .post<MultiEntityAncestorsRequest>(
+        'hierarchy/:hierarchyName/ancestors',
+        attachCommonEntityContext,
+        attachMultiEntityContext,
+        handleWith(MultiEntityAncestorsRoute),
+      )
+      .get<EntitySearchRequest>(
+        'hierarchy/:hierarchyName/entitySearch/:searchString',
+        attachCommonEntityContext,
+        handleWith(EntitySearchRoute),
       )
 
       // SingleEntity routes
       .get<SingleEntityRequest>(
         'hierarchy/:hierarchyName/:entityCode',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         handleWith(SingleEntityRoute),
       )
       .get<DescendantsRequest>(
         'hierarchy/:hierarchyName/:entityCode/descendants',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         handleWith(EntityDescendantsRoute),
       )
       .get<RelativesRequest>(
         'hierarchy/:hierarchyName/:entityCode/relatives',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         handleWith(EntityRelativesRoute),
       )
       .get<RelationshipsRequest>(
         'hierarchy/:hierarchyName/:entityCode/relationships',
-        attachCommonContext,
+        attachCommonEntityContext,
         attachSingleEntityContext,
         attachRelationshipsContext,
         handleWith(EntityRelationshipsRoute),
+      )
+      .get<AncestorsRequest>(
+        'hierarchy/:hierarchyName/:entityCode/ancestors',
+        attachCommonEntityContext,
+        attachSingleEntityContext,
+        handleWith(EntityAncestorsRoute),
       )
       .build()
   );

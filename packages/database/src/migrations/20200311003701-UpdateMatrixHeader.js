@@ -8,20 +8,20 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     update "dashboardReport" set "viewJson" = "viewJson" || '{"entityHeader": ""}' where id = 'WHO_IHR_SPAR_NST';
     update "dashboardReport" set "viewJson" = jsonb_set("viewJson", '{name}', '"IHR self-assessments, Pacific territories"') where id = 'WHO_IHR_SPAR_NST';
     `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

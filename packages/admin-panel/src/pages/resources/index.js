@@ -5,6 +5,7 @@
 
 export { CountriesPage } from './CountriesPage';
 export { EntitiesPage } from './EntitiesPage';
+export { EntityTypesPage } from './EntityTypesPage';
 export { PermissionsPage } from './PermissionsPage';
 export { PermissionGroupsPage } from './PermissionGroupsPage';
 export {
@@ -33,3 +34,9 @@ export { LegacyReportsPage } from './LegacyReportsPage';
 export { ProjectsPage } from './ProjectsPage';
 export { SyncGroupsPage } from './SyncGroupsPage';
 export { ExternalDatabaseConnectionsPage } from './ExternalDatabaseConnectionsPage';
+export { EntityHierarchyPage } from './EntityHierarchyPage';
+export { PermissionGroupsViewerPage } from './PermissionGroupsViewerPage';
+export { CustomLandingPagesPage } from './CustomLandingPagesPage';
+export { DataElementDataServicesPage } from './DataElementDataServicesPage';
+export { DhisInstancesPage } from './DhisInstancesPage';
+export { SupersetInstancesPage } from './SupersetInstancesPage';

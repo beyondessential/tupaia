@@ -24,12 +24,12 @@ export const useExportToImage = (filename, format) => {
   const [isExporting, setIsExporting] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
   const sanitisedFileName = toFilename(filename, true);
-  const node = exportRef.current;
 
   const exportToImg = async () => {
     setIsExporting(true);
     setIsExportLoading(true);
 
+    const node = exportRef.current;
     await exportToImage(node, sanitisedFileName, format);
     setIsExporting(false);
 

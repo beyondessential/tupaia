@@ -86,3 +86,19 @@ export async function clearTestData(db, testStartTime = moment().format('YYYY-MM
   await db.executeSql(sql);
   await AnalyticsRefresher.refreshAnalytics(db);
 }
+
+export async function clearAllTestData(db) {
+  // Safety check
+  const [row] = await db.executeSql(`SELECT current_database();`);
+  const { current_database } = row;
+  if (current_database !== 'tupaia_test') {
+    throw new Error(
+      `Safety check failed: clearAllTestData can only be run against a database named tupaia_test, found ${current_database}.`,
+    );
+  }
+
+  const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
+
+  await db.executeSql(sql);
+  await AnalyticsRefresher.refreshAnalytics(db);
+}

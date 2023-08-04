@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -12,7 +13,6 @@ import {
   createRelationsViaParentOverlayGroupDBFilter,
 } from './assertMapOverlayGroupRelationsPermissions';
 import { assertMapOverlayGroupsGetPermissions } from '../mapOverlayGroups';
-import { TYPES } from '@tupaia/database';
 import { assertMapOverlaysGetPermissions } from '../mapOverlays';
 
 /**
@@ -49,6 +49,7 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
+    console.log('permissions filter criteria', criteria);
     const dbConditions = await createMapOverlayGroupRelationDBFilter(
       this.accessPolicy,
       this.models,
@@ -58,6 +59,7 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
+    console.log('permissions via parent filter criteria', criteria);
     switch (this.parentRecordType) {
       case TYPES.MAP_OVERLAY_GROUP:
         return this.getPermissionsViaParentMapOverlayGroupFilter(criteria, options);

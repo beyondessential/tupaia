@@ -8,9 +8,12 @@ import { Assignment, InsertChart, PeopleAlt, Flag, Storage, Language } from '@ma
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
+  CustomLandingPagesPage,
   EntitiesPage,
+  EntityTypesPage,
   OptionSetsPage,
   PermissionGroupsPage,
+  PermissionGroupsViewerPage,
   PermissionsPage,
   SocialFeedPage,
   SurveyResponsesPage,
@@ -33,8 +36,11 @@ import {
   SyncGroupsPage,
   DataTablesPage,
   ExternalDatabaseConnectionsPage,
+  EntityHierarchyPage,
+  DataElementDataServicesPage,
+  DhisInstancesPage,
+  SupersetInstancesPage,
 } from './pages/resources';
-import { DataElementDataServicesPage } from './pages/resources/DataElementDataServicesPage';
 
 export const ROUTES = [
   {
@@ -86,7 +92,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: '/dashboard-items',
+    to: '/visualisations',
     icon: <InsertChart />,
     tabs: [
       {
@@ -162,6 +168,11 @@ export const ROUTES = [
         component: PermissionGroupsPage,
       },
       {
+        label: 'Permission Groups Viewer',
+        to: '/permission-groups-viewer',
+        component: PermissionGroupsViewerPage,
+      },
+      {
         label: 'Access Requests',
         to: '/access-requests',
         component: AccessRequestsPage,
@@ -182,6 +193,11 @@ export const ROUTES = [
         label: 'Countries',
         to: '/countries',
         component: CountriesPage,
+      },
+      {
+        label: 'Entity Types',
+        to: '/entityTypes',
+        component: EntityTypesPage,
       },
     ],
   },
@@ -205,6 +221,16 @@ export const ROUTES = [
         to: '/disaster',
         component: DisasterResponsePage,
       },
+      {
+        label: 'Entity Hierarchy',
+        to: '/hierarchy',
+        component: EntityHierarchyPage,
+      },
+      {
+        label: 'Landing Pages',
+        to: '/landing-pages',
+        component: CustomLandingPagesPage,
+      },
     ],
   },
   {
@@ -216,6 +242,16 @@ export const ROUTES = [
         label: 'External Database Connections',
         to: '',
         component: ExternalDatabaseConnectionsPage,
+      },
+      {
+        label: 'DHIS Instances',
+        to: '/dhis-instances',
+        component: DhisInstancesPage,
+      },
+      {
+        label: 'mSupply Superset Instances',
+        to: '/superset-instances',
+        component: SupersetInstancesPage,
       },
     ],
   },

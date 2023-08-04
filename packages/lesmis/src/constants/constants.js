@@ -9,11 +9,7 @@ export const PROJECT_CODE = 'laos_schools';
 export const COUNTRY_CODE = 'LA';
 
 // Permissions
-export const LESMIS_PERMISSION_GROUPS = {
-  PUBLIC: 'LESMIS Public',
-  USER: 'LESMIS User',
-  ADMIN: 'LESMIS Admin',
-};
+export const LESMIS_ADMIN_PERMISSION_GROUP = 'LESMIS Admin';
 
 // Dashboard Tab View Names
 export const DASHBOARD_REPORT_TAB_VIEW = 'DashboardReportTabView';

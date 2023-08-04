@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
-import { TestDatabaseConnectionCell } from '../../table/customCells';
 
 const EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT = 'externalDatabaseConnections';
 
@@ -58,8 +57,16 @@ const COLUMNS = [
     source: 'id',
     filterable: false,
     sortable: false,
-    Cell: TestDatabaseConnectionCell,
+    type: 'testDatabaseConnection',
     width: 70,
+  },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
+    },
   },
 ];
 

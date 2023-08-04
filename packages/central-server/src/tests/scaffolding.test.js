@@ -2,17 +2,14 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import moment from 'moment';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
-import { clearTestData } from '@tupaia/database';
-import { getIsProductionEnvironment } from '../devops';
+import { getIsProductionEnvironment } from '@tupaia/utils';
 import { getModels, resetTestData } from './testUtilities';
 import * as SendEmail from '../utilities/sendEmail';
-
-const testStartTime = moment().format('YYYY-MM-DD HH:mm:ss');
+import { clearAllTestData } from '@tupaia/database';
 
 // These setup tasks need to be performed before any test, so we
 // do them in this file outside of any describe block.
@@ -43,6 +40,6 @@ before(async () => {
 after(async () => {
   const models = getModels();
   SendEmail.sendEmail.restore();
-  await clearTestData(models.database, testStartTime);
+  await clearAllTestData(models.database);
   await models.database.closeConnections();
 });

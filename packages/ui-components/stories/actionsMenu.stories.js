@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Alert from '@material-ui/lab/Alert';
 import MuiBox from '@material-ui/core/Box';
-import { ActionsMenu } from '../src';
+import { ActionsMenu } from '../src/components/ActionsMenu';
 
 export default {
   title: 'ActionsMenu',
