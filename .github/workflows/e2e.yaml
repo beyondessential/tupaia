@@ -1,4 +1,4 @@
-name: Tupaia e2e
+name: e2e
 on:
   push:
     branches:

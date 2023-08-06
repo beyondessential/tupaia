@@ -1,4 +1,4 @@
-name: Tupaia CI
+name: CI
 on:
   push:
     branches-ignore:
