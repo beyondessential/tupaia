@@ -1,8 +1,6 @@
 name: Tupaia CI
 on:
   push:
-    branches:
-      - '*'
     branches-ignore:
       - '**-e2e'
 
