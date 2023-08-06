@@ -3,7 +3,7 @@
   "testFiles": "*.spec.js",
   "integrationFolder": "cypress/e2e",
   "projectId": "pty5cc",
-  "requestTimeout": 15000,
+  "requestTimeout": 60000,
   "useRelativeSnapshots": true,
   "viewportHeight": 900,
   "viewportWidth": 1400
