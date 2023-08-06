@@ -56,7 +56,7 @@ export const MapTableModal = ({ setMapModalOpen }: any) => {
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { serieses, processedMeasureData } = useMapOverlayData(projectCode, entityCode);
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
-  const entityObject = data.find((obj: entityObject) => obj.type === 'country');
+  const entityObject = data?.find((obj: entityObject) => obj.type === 'country');
   const titleText = `${selectedOverlay.name}, ${entityObject.name}`;
   return (
     <>

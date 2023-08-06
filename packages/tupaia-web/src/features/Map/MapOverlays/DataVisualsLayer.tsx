@@ -4,7 +4,9 @@
  */
 
 import React from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import camelCase from 'camelcase';
 import {
   LegendProps,
   MeasureMarker,
