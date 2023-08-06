@@ -38,5 +38,5 @@ jobs:
           cache: yarn
       - run: yarn set version 3.2.1
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
-      - run: yarn build:internal-dependencies
+      - run: yarn workspace @tupaia/utils build
       - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID
