@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance, writeJsonFile } from '@tupaia/utils';
 import config from '../../config.json';
 import { E2E_CONFIG_PATH } from '../../constants';
@@ -26,18 +25,17 @@ const validateConfig = () => {
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
-  const db = new TupaiaDatabase();
 
   logger.success('Start e2e test config generation');
   validateConfig();
   logger.success(`✔ Configuration is valid`);
 
   logger.success('* Generating dashboard report config...');
-  const dashboardReports = await generateReportConfig(db);
+  const dashboardReports = await generateReportConfig();
   logger.info(`  Generated ${dashboardReports.urls.length} report urls`);
 
   logger.success('* Generating map overlay urls...');
-  const mapOverlays = await generateOverlayConfig(db);
+  const mapOverlays = await generateOverlayConfig();
   logger.info(`  Generated ${mapOverlays.urls.length} overlay urls`);
 
   writeJsonFile(E2E_CONFIG_PATH, { ...config, dashboardReports, mapOverlays });

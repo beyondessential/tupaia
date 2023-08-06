@@ -8,12 +8,11 @@ import moment from 'moment';
 
 import { compareAsc, readJsonFile, yup, yupUtils } from '@tupaia/utils';
 
-export const buildUrlsUsingConfig = async (db, config, generateUrls) => {
-  const { urlFiles = [], urls = [], urlGenerationOptions = {} } = config;
+export const buildUrlsUsingConfig = async config => {
+  const { urlFiles = [], urls = [] } = config;
   const urlsFromFiles = urlFiles.map(readJsonFile).flat();
-  const generatedUrls = generateUrls ? await generateUrls(db, urlGenerationOptions) : [];
 
-  return [...urlsFromFiles, ...urls, ...generatedUrls];
+  return [...urlsFromFiles, ...urls];
 };
 
 export const sortUrls = urls => uniq(urls).sort(compareAsc);
