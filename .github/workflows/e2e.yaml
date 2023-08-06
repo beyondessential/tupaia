@@ -1,0 +1,20 @@
+name: Tupaia e2e
+on:
+  push:
+    branches:
+      - '*-e2e'
+
+jobs:
+  deploy:
+    name: Run e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn build:internal-dependencies
+      - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID
