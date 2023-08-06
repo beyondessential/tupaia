@@ -14,7 +14,7 @@ export const useMapOverlayData = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
   hiddenValues?: LegendProps['hiddenValues'],
-): { serieses: Series[] | undefined; processedMeasureData: MeasureData[] | null } => {
+): { serieses: Series[] | undefined; processedMeasureData: MeasureData[] | undefined } => {
   const useEntitiesByMeasureLevel = (measureLevel?: string) => {
     const getSnakeCase = (measureLevel?: string) => {
       return measureLevel
@@ -45,7 +45,7 @@ export const useMapOverlayData = (
   if (!entitiesData || !mapOverlayData) {
     return {
       serieses: undefined,
-      processedMeasureData: null,
+      processedMeasureData: undefined,
     };
   }
 
@@ -59,7 +59,7 @@ export const useMapOverlayData = (
   if (!processedMeasureData || !mapOverlayData.serieses) {
     return {
       serieses: undefined,
-      processedMeasureData: null,
+      processedMeasureData: undefined,
     };
   }
 
@@ -68,7 +68,7 @@ export const useMapOverlayData = (
   if (!processedMeasureData || !mapOverlayData) {
     return {
       serieses: undefined,
-      processedMeasureData: null,
+      processedMeasureData: undefined,
     };
   }
   return { serieses, processedMeasureData };

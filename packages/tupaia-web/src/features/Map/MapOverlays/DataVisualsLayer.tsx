@@ -50,33 +50,24 @@ export const DataVisualsLayer = ({
 }) => {
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
-  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: mapOverlayData } = useMapOverlayReport(selectedOverlay);
+  // const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { data: mapOverlayData } = useMapOverlayReport();
   const { data: entity } = useEntity(projectCode, entityCode);
-
-  if (!entity) {
-    return null;
-  }
-  console.log(entity);
-  const popUpSerieses = mapOverlayData.serieses;
-
-  // Don't show the marker layer if the entity type doesn't match the measure level
-  const firstSeries = popUpSerieses.find((series: any) => series.displayOnLevel);
-  if (firstSeries && camelCase(entity.type!) !== camelCase(firstSeries.displayOnLevel)) {
-    return null;
-  }
-
   const { serieses, processedMeasureData } = useMapOverlayData(
     projectCode,
     entityCode,
     hiddenValues,
   );
-  if (!processedMeasureData || !mapOverlayData.serieses) {
-    return {
-      mapOverlayData: null,
-      processedMeasureData: null,
-      serieses: undefined,
-    };
+  const popUpSerieses = mapOverlayData?.serieses;
+
+  // Don't show the marker layer if the entity type doesn't match the measure level
+  const firstSeries = mapOverlayData?.serieses?.find((series: any) => series.displayOnLevel);
+  if (firstSeries && camelCase(entity?.type!) !== camelCase(firstSeries.displayOnLevel)) {
+    return null;
+  }
+
+  if (!processedMeasureData || !mapOverlayData?.serieses) {
+    return null;
   }
 
   return (
