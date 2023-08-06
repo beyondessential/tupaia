@@ -17,7 +17,6 @@ import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
-const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SUB_FACILITY = 'sub_facility';
@@ -45,7 +44,6 @@ const ENTITY_TYPES = {
   CASE,
   CASE_CONTACT,
   COUNTRY,
-  DISASTER,
   DISTRICT,
   FACILITY,
   SUB_FACILITY,

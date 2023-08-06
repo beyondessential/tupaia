@@ -19,8 +19,6 @@ import { DataElementModel } from './DataElement';
 import { DataGroupModel } from './DataGroup';
 import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
-import { DisasterModel } from './Disaster';
-import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
@@ -81,8 +79,6 @@ export const modelClasses = {
   DataServiceSyncGroup: DataServiceSyncGroupModel,
   DataTable: DataTableModel,
   DhisInstance: DhisInstanceModel,
-  Disaster: DisasterModel,
-  DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
