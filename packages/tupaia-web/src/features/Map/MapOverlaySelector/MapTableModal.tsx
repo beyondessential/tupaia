@@ -58,7 +58,6 @@ export const MapTableModal = ({ setMapModalOpen }: any) => {
   const { data = [] } = useEntityAncestors(projectCode, entityCode);
   const entityObject = data.find((obj: entityObject) => obj.type === 'country');
   const titleText = `${selectedOverlay.name}, ${entityObject.name}`;
-  console.log(serieses, processedMeasureData);
   return (
     <>
       <Modal isOpen onClose={handleCloseModal} disablePortal>

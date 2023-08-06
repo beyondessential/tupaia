@@ -14,7 +14,7 @@ import {
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
-import { useEntity, useProject, useMapOverlays } from '../../../api/queries';
+import { useEntity, useProject } from '../../../api/queries';
 import { useMapOverlayReport, useMapOverlayData } from '../utils';
 import { EntityCode } from '../../../types';
 
@@ -47,7 +47,6 @@ export const DataVisualsLayer = ({
 }) => {
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
-  // const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: mapOverlayData } = useMapOverlayReport();
   const { data: entity } = useEntity(projectCode, entityCode);
   const { serieses, processedMeasureData } = useMapOverlayData(
