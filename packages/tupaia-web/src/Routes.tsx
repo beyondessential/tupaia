@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { LandingPage, ProjectPage } from './views';
+import { LandingPage, PDFExport, ProjectPage } from './views';
 import { Dashboard } from './features';
 import { ModalRoutes } from './ModalRoutes';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
@@ -14,11 +14,8 @@ import { LoadingScreen } from './components';
 import { useEntityLink } from './utils';
 
 const HomeRedirect = () => {
-  const { isLoading, isLoggedIn } = useUser();
+  const { isLoggedIn } = useUser();
 
-  if (isLoading) {
-    return <LoadingScreen isLoading />;
-  }
   return (
     <Navigate
       to={`${DEFAULT_URL}#${isLoggedIn ? MODAL_ROUTES.PROJECTS : MODAL_ROUTES.LOGIN}`}
@@ -55,31 +52,50 @@ const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
  *
  * **/
 export const Routes = () => {
+  const { isLoading } = useUser();
   return (
     <>
       <ModalRoutes />
-      <RouterRoutes>
-        <Route element={<MainLayout />}>
-          <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
-          <Route element={<ProjectPage />}>
-            <Route path="/" element={<HomeRedirect />} />
-            {/* Email verification links redirect to the login page where the verification happens */}
-            <Route path="/verify-email" element={<UserPageRedirect modal={MODAL_ROUTES.LOGIN} />} />
-            <Route
-              path="/reset-password"
-              element={<UserPageRedirect modal={MODAL_ROUTES.RESET_PASSWORD} />}
-            />
-            {/* Redirect modal routes to the correct routes just in case */}
-            <Route path="/login" element={<UserPageRedirect modal={MODAL_ROUTES.LOGIN} />} />
-            <Route path="/register" element={<UserPageRedirect modal={MODAL_ROUTES.REGISTER} />} />
-            <Route path="/projects" element={<UserPageRedirect modal={MODAL_ROUTES.PROJECTS} />} />
-            <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
+      {/** Because we need the user login state to handle access errors, we need to load the user before doing anything else, and show a loader if the user is still loading */}
+      {isLoading ? (
+        <LoadingScreen isLoading />
+      ) : (
+        <RouterRoutes>
+          <Route
+            path="/:projectCode/:entityCode/:dashboardName/pdf-export"
+            element={<PDFExport />}
+          />
+          <Route element={<MainLayout />}>
+            <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
+            <Route element={<ProjectPage />}>
+              <Route path="/" element={<HomeRedirect />} />
+              {/* Email verification links redirect to the login page where the verification happens */}
+              <Route
+                path="/verify-email"
+                element={<UserPageRedirect modal={MODAL_ROUTES.LOGIN} />}
+              />
+              <Route
+                path="/reset-password"
+                element={<UserPageRedirect modal={MODAL_ROUTES.RESET_PASSWORD} />}
+              />
+              {/* Redirect modal routes to the correct routes just in case */}
+              <Route path="/login" element={<UserPageRedirect modal={MODAL_ROUTES.LOGIN} />} />
+              <Route
+                path="/register"
+                element={<UserPageRedirect modal={MODAL_ROUTES.REGISTER} />}
+              />
+              <Route
+                path="/projects"
+                element={<UserPageRedirect modal={MODAL_ROUTES.PROJECTS} />}
+              />
+              <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
 
-            {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
-            <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
+              {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
+              <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
+            </Route>
           </Route>
-        </Route>
-      </RouterRoutes>
+        </RouterRoutes>
+      )}
     </>
   );
 };

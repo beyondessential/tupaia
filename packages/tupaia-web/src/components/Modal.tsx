@@ -31,16 +31,14 @@ const CloseIcon = styled(MuiCloseIcon)`
 `;
 
 const CloseButton = styled(IconButton)`
-  background-color: transparent;
-  min-width: initial;
   position: absolute;
   top: 0.1rem;
   right: 0.1rem;
+  z-index: 1;
 `;
 
 const Paper = styled(MuiPaper)`
-  background-color: ${({ theme }) => theme.palette.background.default};
-  padding: 0;
+  background-color: #202124;
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;

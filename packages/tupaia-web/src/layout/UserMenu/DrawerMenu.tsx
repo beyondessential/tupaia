@@ -25,8 +25,8 @@ const MenuWrapper = styled.div`
   padding: 0 1.5em;
   li a,
   li button {
-    font-size: 1.2em;
-    padding: 0.8em;
+    font-size: 1.2rem;
+    padding: 0.8rem 0.5rem;
     line-height: 1.4;
     text-align: left;
     width: 100%;
@@ -38,12 +38,16 @@ const MenuWrapper = styled.div`
   }
 `;
 
-const Username = styled.p`
-  font-weight: ${props => props.theme.typography.fontWeightMedium};
-  text-transform: uppercase;
+const Username = styled.p<{
+  $secondaryColor?: string;
+}>`
+  font-weight: 400;
   margin: 0;
   width: 100%;
-  padding: 0 1em;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  color: ${({ $secondaryColor }) => $secondaryColor};
+  font-size: 1.2rem;
+  padding: 0.5rem 0.5em 0.3rem;
 `;
 
 const MenuHeaderWrapper = styled.div`
@@ -53,12 +57,11 @@ const MenuHeaderWrapper = styled.div`
 const MenuHeaderContainer = styled.div<{
   $secondaryColor?: string;
 }>`
-  border-bottom: 1px solid
-    ${({ $secondaryColor, theme }) => $secondaryColor || theme.palette.text.primary};
   display: flex;
   justify-content: flex-end;
   padding: 0.8em 0;
   align-items: center;
+  border-bottom: 1px solid ${({ $secondaryColor }) => $secondaryColor};
   color: ${({ $secondaryColor }) => $secondaryColor};
 `;
 
@@ -103,7 +106,9 @@ export const DrawerMenu = ({
       <MenuWrapper>
         <MenuHeaderWrapper>
           <MenuHeaderContainer $secondaryColor={secondaryColor}>
-            {currentUserUsername && <Username>{currentUserUsername}</Username>}
+            {currentUserUsername && (
+              <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
+            )}
             <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
               <MenuCloseIcon $secondaryColor={secondaryColor} />
             </MenuCloseButton>

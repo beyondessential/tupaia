@@ -13,6 +13,7 @@ import {
   Dashboard,
   TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
+import { orderBy } from '@tupaia/utils';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
@@ -43,13 +44,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
     });
 
+    const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
+
     // Fetch all dashboard relations
     const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
       filter: {
         // Attached to the given dashboards
         dashboard_id: {
           comparator: 'IN',
-          comparisonValue: dashboards.map((d: Dashboard) => d.id),
+          comparisonValue: sortedDashboards.map((d: Dashboard) => d.id),
         },
         // For the root entity type
         entity_types: {
@@ -73,7 +76,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     });
 
-    const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
+    const dashboardsWithItems = sortedDashboards.map((dashboard: Dashboard) => {
       const childRelations = dashboardRelations.filter(
         (relation: DashboardRelation) => relation.dashboard_id === dashboard.id,
       );

@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { TupaiaWebEntitiesRequest } from '@tupaia/types';
+import { generateFrontendExcludedFilter } from '../utils';
 
 export type EntityAncestorsRequest = Request<
   TupaiaWebEntitiesRequest.Params,
@@ -23,10 +24,18 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
     const { rootEntityCode, projectCode } = params;
     const { includeRootEntity = false, ...restOfQuery } = query;
 
+    const project = (
+      await ctx.services.central.fetchResources('projects', {
+        filter: { code: projectCode },
+        columns: ['config'],
+      })
+    )[0];
+    const { config } = project;
+
     const entities = await ctx.services.entity.getAncestorsOfEntity(
       projectCode,
       rootEntityCode,
-      { fields: DEFAULT_FIELDS, ...restOfQuery },
+      { filter: generateFrontendExcludedFilter(config), fields: DEFAULT_FIELDS, ...restOfQuery },
       includeRootEntity,
     );
 

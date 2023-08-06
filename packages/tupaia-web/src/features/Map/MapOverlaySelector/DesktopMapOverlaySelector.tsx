@@ -13,7 +13,7 @@ import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
+import { useActiveMapOverlayReport } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';

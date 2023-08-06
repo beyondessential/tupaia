@@ -12,7 +12,6 @@ import MuiDivider from '@material-ui/core/Divider';
 import { Button, SmallAlert, TextField, ImageUploadField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
-import { createBase64Image } from '../utilities/createBase64Image';
 import { updateProfile, getUser } from '../authentication';
 
 const Container = styled.section`
@@ -80,12 +79,10 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
     }
   });
 
-  const handleFileChange = async fileObject => {
+  const handleFileChange = async base64 => {
     setStatus(STATUS.DISABLED);
-    const base64 = await createBase64Image(fileObject);
-    const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
     setProfileImage({
-      fileId: `${user.id}-${fileName}`,
+      fileId: `${user.id}-profileImage`,
       data: base64,
     });
     setStatus(STATUS.IDLE);

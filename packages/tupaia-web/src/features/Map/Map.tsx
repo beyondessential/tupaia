@@ -19,7 +19,7 @@ import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
-import { useHiddenMapValues, useMapOverlayReport, useDefaultMapOverlay } from './utils';
+import { useHiddenMapValues, useActiveMapOverlayReport, useDefaultMapOverlay } from './utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -102,7 +102,7 @@ export const Map = () => {
   useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
   // Setup legend hidden values
-  const { data: measureData } = useMapOverlayReport();
+  const { measureData } = useActiveMapOverlayReport();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
 
   // Setup Tile Picker

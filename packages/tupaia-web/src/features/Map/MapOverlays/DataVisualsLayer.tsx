@@ -4,10 +4,7 @@
  */
 
 import React from 'react';
-import { useParams } from 'react-router';
-import camelCase from 'camelcase';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LegendProps,
   MeasureMarker,
