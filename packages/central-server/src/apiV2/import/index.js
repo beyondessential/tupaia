@@ -48,7 +48,6 @@ importRoutes.post(
   upload.single('surveyResponses'),
   catchAsyncErrors(importSurveyResponses),
 );
-importRoutes.post('/disasters', upload.single('disasters'), catchAsyncErrors(importDisaster));
 importRoutes.post('/users', upload.single('users'), catchAsyncErrors(importUsers));
 importRoutes.post('/optionSets', upload.single('optionSets'), catchAsyncErrors(importOptionSets));
 importRoutes.post(

@@ -68,7 +68,7 @@ describe('surveyResponse endpoint', () => {
     await upsertEntity({
       id: ENTITY_NON_CLINIC_ID,
       code: ENTITY_NON_CLINIC_ID,
-      type: 'disaster',
+      type: 'facility',
     });
 
     // This question will not be part of the survey

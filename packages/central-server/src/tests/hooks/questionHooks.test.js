@@ -390,7 +390,7 @@ describe('Question hooks', () => {
               'TEST_create-code': 'test_code',
               'TEST_create-name': 'Test Dynamic Entity',
               'TEST_create-image-url': TEST_URL,
-              'TEST_create-type': 'disaster',
+              'TEST_create-type': 'facility',
             },
           },
         });
@@ -402,7 +402,7 @@ describe('Question hooks', () => {
         expect(entity.parent_id).to.equal(ENTITY_ID);
         expect(entity.name).to.equal('Test Dynamic Entity');
         expect(entity.image_url).to.equal(TEST_URL);
-        expect(entity.type).to.equal('disaster');
+        expect(entity.type).to.equal('facility');
       });
 
       it('Should not create a duplicate entity', async () => {
@@ -421,7 +421,7 @@ describe('Question hooks', () => {
               'TEST_create-code': DUP_CODE,
               'TEST_create-name': 'Dupe Entity',
               'TEST_create-image-url': TEST_URL,
-              'TEST_create-type': 'disaster',
+              'TEST_create-type': 'facility',
             },
           },
         });
@@ -431,7 +431,7 @@ describe('Question hooks', () => {
         const midEntity = await models.entity.findOne({ code: DUP_CODE });
         expect(midEntity).to.not.be.null;
         expect(midEntity.name).to.equal('Dupe Entity');
-        expect(midEntity.type).to.equal('disaster');
+        expect(midEntity.type).to.equal('facility');
         expect(midEntity.image_url).to.equal(TEST_URL);
 
         // submit a second survey response with slightly different data

@@ -173,7 +173,6 @@ apiV2.get('/me', useRouteHandler(GETUserForMe));
 apiV2.get('/me/rewards', allowAnyone(getUserRewards));
 apiV2.get('/me/countries', allowAnyone(getCountryAccessList));
 apiV2.get('/answers/:recordId?', useRouteHandler(GETAnswers));
-apiV2.get('/disasters/:recordId?', useRouteHandler(GETDisasters));
 apiV2.get('/dashboards/:recordId?', useRouteHandler(GETDashboards));
 apiV2.get('/dashboards/:parentRecordId/dashboardRelations', useRouteHandler(GETDashboardRelations));
 apiV2.get(
@@ -277,7 +276,6 @@ apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
-apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
@@ -309,7 +307,6 @@ apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
 apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(EditFeedItems));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
 apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));
@@ -348,7 +345,6 @@ apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandl
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
