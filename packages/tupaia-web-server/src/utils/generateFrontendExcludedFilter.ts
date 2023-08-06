@@ -15,7 +15,7 @@ export function generateFrontendExcludedFilter(
     ? {
         type: {
           comparator: '!=',
-          comparisonValue: frontendExcluded[0].types,
+          comparisonValue: frontendExcluded[0]?.types,
         },
       }
     : {};
