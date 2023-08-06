@@ -9,7 +9,7 @@ import { render as renderReactApp } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import 'react-table/react-table.css';
+import 'react-table-v6/react-table.css';
 import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
@@ -38,7 +38,7 @@ const disableReactDevTools = () => {
   });
 };
 
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
   disableReactDevTools();
 }
 
@@ -77,6 +77,6 @@ renderReactApp(
   document.getElementById('root'),
 );
 
-if (module.hot) {
-  module.hot.accept();
+if (import.meta.hot) {
+  import.meta.hot.accept();
 }
