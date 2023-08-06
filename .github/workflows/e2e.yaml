@@ -5,9 +5,25 @@ on:
       - '*-e2e'
 
 jobs:
-  deploy:
+  pull_secrets:
+    name: Pull secrets
+    runs-on: ubuntu-latest
+    outputs:
+      test_user_password: ${{ steps.pull_secret_step.outputs.TEST_USER_PASSWORD }}
+    steps:
+      - run: sudo apt-get install -y lastpass-cli
+      - run: echo ${{ secrets.LASTPASS_PASSWORD }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ secrets.LASTPASS_USERNAME }}
+      - id: pull_secret_step
+        run: lpass show --notes "Tupaia Github Actions Secrets" >> "$GITHUB_OUTPUT"
+      - run: lpass logout --force
+
+  run_e2e:
     name: Run e2e
     runs-on: ubuntu-latest
+    needs: pull_secrets
+    env:
+      CYPRESS_TEST_USER_EMAIL: test_e2e@beyondessential.com.au
+      CYPRESS_TEST_USER_PASSWORD: ${{ needs.pull_secrets.outputs.test_user_password }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
