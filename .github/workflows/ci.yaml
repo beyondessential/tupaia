@@ -91,7 +91,7 @@ jobs:
       DB_URL: localhost
       DB_USER: tupaia
       AGGREGATION_URL_PREFIX: dev-
-      
+
       # test database
       DB_PG_USER: postgres
       DB_PG_PASSWORD: opensesame2
