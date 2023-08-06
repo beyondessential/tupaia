@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - '*'
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
@@ -117,20 +116,38 @@ jobs:
         package:
           - admin-panel
           - admin-panel-server
+          - aggregator
+          - api-client
           - auth
           - central-server
           - data-api
+          - data-broker
           - data-lake-api
           - data-table-server
           - database
+          - dhis-api
           - entity-server
+          - expression-parser
           - indicators
+          - kobo-api
+          - lesmis
           - lesmis-server
           - meditrak-app-server
+          - psss
           - psss-server
           - report-server
           - server-boilerplate
+          - superset-api
+          - tsutils
+          - tupaia-web
+          - tupaia-web-server
+          - ui-chart-components
+          - ui-components
+          - ui-map-components
+          - utils
+          - weather-api
           - web-config-server
+          - web-frontend
 
     services:
       postgres:
