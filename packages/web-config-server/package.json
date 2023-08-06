@@ -17,6 +17,7 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9997",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
     "test": "yarn package:test:withdb --runInBand",
     "test:coverage": "yarn test --coverage"
   },
