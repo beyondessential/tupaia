@@ -13,7 +13,6 @@ import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importUsers } from './importUsers';
 import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
-import { importDisaster } from './importDisaster';
 import { getTempDirectory } from '../../utilities';
 import { importDataElements } from './importDataElements';
 import { importDataElementDataServices } from './importDataElementDataServices';

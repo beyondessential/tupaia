@@ -19,7 +19,6 @@ export * from './generic/unique';
 export * from './generic/reportServer';
 
 /** Modules */
-export * from './modules/disaster';
 export * from './modules/msupply';
 export * from './modules/pehs';
 export * from './modules/tonga';
