@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -107,7 +108,7 @@ export const Dashboard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const bounds = entity?.bounds;
+  const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -119,17 +120,19 @@ export const Dashboard = () => {
       <ScrollBody>
         <Breadcrumbs />
         <DashboardImageContainer>
-          {bounds ? (
-            <StaticMap bounds={bounds} />
-          ) : (
+          {entity?.photoUrl ? (
             <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+          ) : (
+            <StaticMap bounds={bounds} />
           )}
         </DashboardImageContainer>
         <TitleBar>
           <Title variant="h3">{entity?.name}</Title>
-          <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-            Export
-          </ExportButton>
+          {activeDashboard && (
+            <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
+              Export
+            </ExportButton>
+          )}
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
