@@ -18,6 +18,7 @@ import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
+import { gaEvent } from '../../utils';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -110,6 +111,9 @@ export const Dashboard = () => {
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
+    if (isExpanded === true) {
+      gaEvent('Pages', 'Toggle Info Panel');
+    }
   };
 
   return (
