@@ -6,23 +6,24 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
-import MuiIconButton from '@material-ui/core/IconButton';
-import { Tooltip } from '@tupaia/ui-components';
 import { periodToMoment } from '@tupaia/utils';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { Tooltip } from '@tupaia/ui-components';
+import { IconButton } from '@tupaia/ui-components';
+import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
+import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
+import { MapTableModal } from './MapTableModal';
+import { MapOverlayList } from './MapOverlayList';
+import { MapOverlayDatePicker } from './MapOverlayDatePicker';
+import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
+import { useMapOverlayData } from '../utils';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayData } from '../utils';
-import { MapOverlayList } from './MapOverlayList';
-import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
-import { MapOverlayDatePicker } from './MapOverlayDatePicker';
-import { MapTableModal } from './MapTableModal';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 
-const MapTableButton = styled(MuiIconButton)`
-  margin: -10px -10px -10px 0;
-  padding: 15px 10px 15px 18px;
+const MapTableButton = styled(IconButton)`
+  margin: -0.625rem -0.625rem -0.625 0;
+  padding: 0.5rem 0.325rem 0.5rem 0.75rem;
+  color: white;
 `;
 
 const MaxHeightContainer = styled.div`
@@ -163,22 +164,25 @@ export const DesktopMapOverlaySelector = ({
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-  const { data: mapOverlayData } = useMapOverlayData();
+  const { measureData, period } = useMapOverlayData();
   const [mapModalOpen, setMapModalOpen] = useState(false);
-  const handleOpen = () => {
-    setMapModalOpen(true);
+  const toggleMapTableModal = () => {
+    setMapModalOpen(!mapModalOpen);
   };
+
   return (
     <>
-      {mapModalOpen ? <MapTableModal setMapModalOpen={setMapModalOpen} /> : null}
+      {mapModalOpen && <MapTableModal onClose={toggleMapTableModal} />}
       <Wrapper>
         <Header>
           <Heading>Map Overlays</Heading>
-          <MapTableButton>
-            <Tooltip arrow interactive placement="top" title="Generate Report">
-              <TableAssignmentIcon onClick={handleOpen} />
-            </Tooltip>
-          </MapTableButton>
+          {measureData && (
+            <MapTableButton>
+              <Tooltip arrow interactive placement="top" title="Generate Report">
+                <TableAssignmentIcon onClick={toggleMapTableModal} />
+              </Tooltip>
+            </MapTableButton>
+          )}
         </Header>
         <Container>
           <TitleWrapper>
@@ -206,11 +210,10 @@ export const DesktopMapOverlaySelector = ({
               </OverlayLibraryContentWrapper>
             </OverlayLibraryAccordion>
           )}
-          {mapOverlayData?.period?.latestAvailable && (
+          {period?.latestAvailable && (
             <LatestDataContainer>
               <LatestDataText>
-                Latest overlay data:{' '}
-                {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
+                Latest overlay data: {periodToMoment(period?.latestAvailable).format('DD/MM/YYYY')}
               </LatestDataText>
             </LatestDataContainer>
           )}

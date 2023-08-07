@@ -12,7 +12,6 @@ interface ModalProps {
   children?: ReactNode;
   onClose: () => void;
   isOpen: boolean;
-  disablePortal: true;
 }
 
 const Wrapper = styled.div`
@@ -23,11 +22,13 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
   width: 2rem;
   height: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseButton = styled(IconButton)`
@@ -53,10 +54,16 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperComponent={Paper}
+      fullScreen={fullScreen}
+      // disablePortal
+    >
       <Wrapper id="overlay-wrapper">
-        <CloseButton onClick={onClose} color="default">
-          <CloseIcon />
+        <CloseButton color="default">
+          <CloseIcon onClick={onClose} />
         </CloseButton>
         {children}
       </Wrapper>

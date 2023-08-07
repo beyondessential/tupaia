@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import camelCase from 'camelcase';
 import {
@@ -16,9 +16,8 @@ import {
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
-import { useEntity, useProject } from '../../../api/queries';
-import { useMapOverlayData } from '../utils';
-import { EntityCode } from '../../../types';
+import { useEntity } from '../../../api/queries';
+import { useMapOverlayData, useNavigateToEntity } from '../utils';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -26,21 +25,6 @@ const ShadedPolygon = styled(Polygon)`
     fill-opacity: 0.8;
   }
 `;
-
-const useNavigateToEntity = () => {
-  const { projectCode } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { data: project } = useProject(projectCode);
-
-  return (entityCode?: EntityCode) => {
-    const link = {
-      ...location,
-      pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
-    };
-    navigate(link);
-  };
-};
 
 export const DataVisualsLayer = ({
   hiddenValues,

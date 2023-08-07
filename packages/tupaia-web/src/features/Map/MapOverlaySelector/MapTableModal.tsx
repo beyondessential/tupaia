@@ -10,9 +10,9 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import { MapTable } from '@tupaia/ui-map-components';
+import { useMapOverlayData } from '../utils';
 import { Modal } from '../../../components';
 import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
-import { useMapOverlayData } from '../utils';
 
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
@@ -40,31 +40,29 @@ const TitleWrapper = styled.div`
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 `;
 
-export const MapTableModal = ({ setMapModalOpen }: any) => {
+export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { serieses, measureData } = useMapOverlayData();
   const { data } = useEntityAncestors(projectCode, entityCode);
-  const entityObject = data?.find(entity => entity.type === 'country');
-  const titleText = `${selectedOverlay.name}, ${entityObject?.name}`;
+  const countryObject = data?.find(entity => entity.type === 'country');
+  const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
-  const handleCloseModal = () => {
-    setMapModalOpen(false);
-  };
+  // const handleCloseModal = () => {
+  //   setMapModalOpen(false);
+  // };
 
   return (
-    <>
-      <Modal isOpen onClose={handleCloseModal} disablePortal>
-        <Wrapper>
-          <TitleWrapper>
-            <Title>{titleText}</Title>
-            <IconButton>
-              <DownloadIcon />
-            </IconButton>
-          </TitleWrapper>
-          <MapTable serieses={serieses!} measureData={measureData!} />
-        </Wrapper>
-      </Modal>
-    </>
+    <Modal isOpen onClose={onClose}>
+      <Wrapper>
+        <TitleWrapper>
+          <Title>{titleText}</Title>
+          <IconButton>
+            <DownloadIcon />
+          </IconButton>
+        </TitleWrapper>
+        <MapTable serieses={serieses!} measureData={measureData!} />
+      </Wrapper>
+    </Modal>
   );
 };
