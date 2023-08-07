@@ -76,14 +76,30 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     });
 
+    // Merged and sorted to make mapping easier
+    const mergedItemRelations = orderBy(
+      dashboardRelations.map((relation: DashboardRelation) => ({
+        relation,
+        item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
+      })),
+      [
+        ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
+        ({ item }: { item: DashboardItem }) => item.code,
+      ],
+    );
+
     const dashboardsWithItems = sortedDashboards.map((dashboard: Dashboard) => {
-      const childRelations = dashboardRelations.filter(
-        (relation: DashboardRelation) => relation.dashboard_id === dashboard.id,
-      );
-      const childItemIds = childRelations.map((relation: DashboardRelation) => relation.child_id);
       return {
         ...dashboard,
-        items: dashboardItems.filter((item: DashboardItem) => childItemIds.includes(item.id)),
+        // Filter by the relations, map to the items
+        items: mergedItemRelations
+          .filter(
+            ({ relation }: { relation: DashboardRelation }) =>
+              relation.dashboard_id === dashboard.id,
+          )
+          .map(({ item }: { item: DashboardItem }) => ({
+            ...item,
+          })),
       };
     });
 
