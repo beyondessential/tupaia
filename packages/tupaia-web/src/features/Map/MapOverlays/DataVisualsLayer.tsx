@@ -84,7 +84,7 @@ export const DataVisualsLayer = ({
   const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
   const { data: mapOverlayData } = useMapOverlayReport();
   const { data: entity } = useEntity(projectCode, entityCode);
-
+  console.log(selectedOverlay);
   if (!entitiesData || !mapOverlayData || !entity) {
     return null;
   }

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from './constants';
 import {
   ProjectsModal,
@@ -17,6 +17,8 @@ import {
 } from './views';
 import { Modal } from './components';
 import { useModal } from './utils';
+import { gaEvent } from './utils';
+import ga from './utils/ga';
 
 /**
  * This is the wrapper to handle any search param routes that should be modals
@@ -41,9 +43,15 @@ const modalParams = {
 export const ModalRoutes = () => {
   const { hash, closeModal } = useModal();
 
-  const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
-
+  const modal = (hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES]) || null;
   // If no modal param or invalid modal param, return null
+  console.log(modal);
+  useEffect(() => {
+    if (modal === null) {
+      gaEvent('User', 'Close Modal');
+    }
+    gaEvent('User', modal, 'Open Modal');
+  }, [modal]);
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
 
   const ModalView = modalViews[modal];
