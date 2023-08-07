@@ -9635,7 +9635,6 @@ __metadata:
     redux-thunk: ^2.2.0
     styled-components: ^5.1.0
     uuid: ^3.2.1
-    vite: ^4.4.8
   languageName: unknown
   linkType: soft
 
