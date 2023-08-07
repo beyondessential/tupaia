@@ -17,7 +17,7 @@ import {
   MeasureData,
 } from '@tupaia/ui-map-components';
 import { useEntity, useProject } from '../../../api/queries';
-import { useMapOverlayReport, useMapOverlayData } from '../utils';
+import { useMapOverlayData } from '../utils';
 import { EntityCode } from '../../../types';
 
 const ShadedPolygon = styled(Polygon)`
@@ -49,28 +49,22 @@ export const DataVisualsLayer = ({
 }) => {
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
-  const { data: mapOverlayData } = useMapOverlayReport();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { serieses, processedMeasureData } = useMapOverlayData(
-    projectCode,
-    entityCode,
-    hiddenValues,
-  );
-  const popUpSerieses = mapOverlayData?.serieses;
+  const { serieses, measureData } = useMapOverlayData(hiddenValues);
 
   // Don't show the marker layer if the entity type doesn't match the measure level
-  const firstSeries = mapOverlayData?.serieses?.find((series: any) => series.displayOnLevel);
+  const firstSeries = serieses?.find((series: any) => series.displayOnLevel);
   if (firstSeries && camelCase(entity?.type!) !== camelCase(firstSeries.displayOnLevel)) {
     return null;
   }
 
-  if (!processedMeasureData || !mapOverlayData?.serieses) {
+  if (!measureData || !serieses) {
     return null;
   }
 
   return (
     <LayerGroup>
-      {processedMeasureData.map(measure => {
+      {measureData.map((measure: any) => {
         const { region, organisationUnitCode: entity, color, name } = measure;
         if (region) {
           return (
@@ -102,7 +96,7 @@ export const DataVisualsLayer = ({
           <MeasureMarker key={entity} {...(measure as MeasureData)}>
             <MeasurePopup
               markerData={measure as MeasureData}
-              serieses={popUpSerieses}
+              serieses={serieses}
               onSeeOrgUnitDashboard={navigateToEntity}
             />
           </MeasureMarker>

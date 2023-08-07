@@ -14,13 +14,6 @@ import { Modal } from '../../../components';
 import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
 import { useMapOverlayData } from '../utils';
 
-interface entityObject {
-  parentCode: string;
-  code: string;
-  name: string;
-  type: string;
-}
-
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
 `;
@@ -48,16 +41,17 @@ const TitleWrapper = styled.div`
 `;
 
 export const MapTableModal = ({ setMapModalOpen }: any) => {
+  const { projectCode, entityCode } = useParams();
+  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { serieses, measureData } = useMapOverlayData();
+  const { data } = useEntityAncestors(projectCode, entityCode);
+  const entityObject = data?.find(entity => entity.type === 'country');
+  const titleText = `${selectedOverlay.name}, ${entityObject?.name}`;
+
   const handleCloseModal = () => {
     setMapModalOpen(false);
   };
 
-  const { projectCode, entityCode } = useParams();
-  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { serieses, processedMeasureData } = useMapOverlayData(projectCode, entityCode);
-  const { data = [] } = useEntityAncestors(projectCode, entityCode);
-  const entityObject = data?.find((obj: entityObject) => obj.type === 'country');
-  const titleText = `${selectedOverlay.name}, ${entityObject.name}`;
   return (
     <>
       <Modal isOpen onClose={handleCloseModal} disablePortal>
@@ -68,7 +62,7 @@ export const MapTableModal = ({ setMapModalOpen }: any) => {
               <DownloadIcon />
             </IconButton>
           </TitleWrapper>
-          <MapTable serieses={serieses!} measureData={processedMeasureData!} />
+          <MapTable serieses={serieses!} measureData={measureData!} />
         </Wrapper>
       </Modal>
     </>

@@ -2,74 +2,92 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { MeasureData, Series } from '@tupaia/ui-map-components';
-import { LegendProps } from '@tupaia/ui-map-components';
-import { useEntitiesWithLocation } from '../../../api/queries';
+import { LegendProps, MeasureData } from '@tupaia/ui-map-components';
+import { useParams } from 'react-router';
+import {
+  useEntitiesWithLocation,
+  useEntity,
+  useMapOverlayReport as useMapOverlayReportQuery,
+} from '../../../api/queries';
 import { processMeasureData } from '../MapOverlays/processMeasureData';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayReport } from '../../../api/queries';
-import { EntityCode, ProjectCode } from '../../../types';
+import { Entity, EntityCode, ProjectCode } from '../../../types';
+import { getSnakeCase } from './getSnakeCase';
+import { useDateRanges } from '../../../utils';
+import { URL_SEARCH_PARAMS } from '../../../constants';
 
-export const useMapOverlayData = (
+const useEntitiesByType = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
-  hiddenValues?: LegendProps['hiddenValues'],
-): { serieses: Series[] | undefined; processedMeasureData: MeasureData[] | undefined } => {
-  const useEntitiesByMeasureLevel = (measureLevel?: string) => {
-    const getSnakeCase = (measureLevel?: string) => {
-      return measureLevel
-        ?.split(/\.?(?=[A-Z])/)
-        .join('_')
-        .toLowerCase();
-    };
-
-    return useEntitiesWithLocation(
-      projectCode,
-      entityCode,
-      {
-        params: {
-          includeRoot: false,
-          filter: {
-            type: getSnakeCase(measureLevel),
-          },
+  entityType?: string | null,
+) => {
+  return useEntitiesWithLocation(
+    projectCode,
+    entityCode,
+    {
+      params: {
+        // Don't include the root entity in the list of entities for displaying data as the
+        // data visuals are for children of the root entity
+        includeRootEntity: false,
+        filter: {
+          type: getSnakeCase(entityType!),
         },
       },
-      { enabled: !!measureLevel },
-    );
-  };
+    },
+    { enabled: !!entityType },
+  );
+};
 
+const getRootEntity = (entity?: Entity) => {
+  if (!entity) {
+    return undefined;
+  }
+  const { parentCode, code, type } = entity;
+
+  if (type === 'country' || !parentCode) {
+    return code;
+  }
+
+  return parentCode;
+};
+
+export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) => {
+  const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
-  const { data: mapOverlayData } = useMapOverlayReport(projectCode, entityCode, selectedOverlay);
+  const { startDate, endDate } = useDateRanges(
+    URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
+    selectedOverlay,
+  );
+  const { data: entity } = useEntity(projectCode, entityCode);
+  const entityDataCode = getRootEntity(entity);
 
-  if (!entitiesData || !mapOverlayData) {
-    return {
-      serieses: undefined,
-      processedMeasureData: undefined,
-    };
+  const { data: entitiesData } = useEntitiesByType(
+    projectCode,
+    entityDataCode,
+    selectedOverlay?.measureLevel,
+  );
+
+  const { data } = useMapOverlayReportQuery(projectCode, entityDataCode, selectedOverlay, {
+    startDate,
+    endDate,
+  });
+
+  if (!entitiesData || !data) {
+    return {};
   }
 
   const processedMeasureData = processMeasureData({
-    entitiesData,
-    measureData: mapOverlayData.measureData,
-    serieses: mapOverlayData.serieses,
+    entitiesData: entitiesData,
+    measureData: data.measureData,
+    serieses: data.serieses,
     hiddenValues: hiddenValues ? hiddenValues : {},
   }) as MeasureData[];
 
-  if (!processedMeasureData || !mapOverlayData.serieses) {
-    return {
-      serieses: undefined,
-      processedMeasureData: undefined,
-    };
-  }
-
-  const { serieses } = mapOverlayData;
-
-  if (!processedMeasureData || !mapOverlayData) {
-    return {
-      serieses: undefined,
-      processedMeasureData: undefined,
-    };
-  }
-  return { serieses, processedMeasureData };
+  return {
+    ...data,
+    serieses: data?.serieses,
+    measureData: processedMeasureData,
+    entitiesData,
+    activeEntity: entity,
+  };
 };

@@ -3,22 +3,21 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
+import MuiIconButton from '@material-ui/core/IconButton';
+import { Tooltip } from '@tupaia/ui-components';
 import { periodToMoment } from '@tupaia/utils';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
+import { useMapOverlayData } from '../utils';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
-import MuiIconButton from '@material-ui/core/IconButton';
-import { Tooltip } from '@tupaia/ui-components';
 import { MapTableModal } from './MapTableModal';
 
 const MapTableButton = styled(MuiIconButton)`
@@ -164,7 +163,7 @@ export const DesktopMapOverlaySelector = ({
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-  const { data: mapOverlayData } = useMapOverlayReport();
+  const { data: mapOverlayData } = useMapOverlayData();
   const [mapModalOpen, setMapModalOpen] = useState(false);
   const handleOpen = () => {
     setMapModalOpen(true);
