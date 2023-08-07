@@ -30,6 +30,7 @@ jobs:
       CYPRESS_TEST_USER_EMAIL: test_e2e@beyondessential.com.au
       CYPRESS_TEST_USER_PASSWORD: ${{ needs.pull_secrets.outputs.TEST_USER_PASSWORD }}
       CYPRESS_RECORD_KEY: ${{ needs.pull_secrets.outputs.CYPRESS_RECORD_KEY }}
+      TERM: xterm # workaround for issue where cypress fails to upload to cypress.io
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -39,4 +40,5 @@ jobs:
       - run: yarn set version 3.2.1
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn workspace @tupaia/utils build
+      - run: echo $TERM
       - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID
