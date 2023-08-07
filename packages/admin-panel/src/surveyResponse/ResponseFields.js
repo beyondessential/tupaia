@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 import { Select, DateTimePicker } from '@tupaia/ui-components';
 import { ApprovalStatus } from '@tupaia/types';
+import { format } from 'date-fns';
 import { Autocomplete } from '../autocomplete';
 import { useDebounce } from '../utilities';
 import { useEntities } from '../VizBuilderApp/api';
@@ -68,7 +69,10 @@ export const ResponseFields = ({
       <SectionWrapper>
         <ResponseField title="Survey" value={surveyName} />
         <ResponseField title="Assessor" value={fields.assessor_name} />
-        <ResponseField title="Date of Survey" value={fields.end_time} />
+        <ResponseField
+          title="Date of Survey"
+          value={format(new Date(fields.end_time), 'yyyy/MM/dd hh:mm a')}
+        />
         <Autocomplete
           value={selectedEntity}
           label="Entity"
@@ -96,8 +100,8 @@ export const ResponseFields = ({
           name="dataTime"
           value={fields.data_time}
           required
-          onChange={UTCDate => {
-            onChange('data_time', UTCDate);
+          onChange={AESTDate => {
+            onChange('data_time', format(AESTDate, 'yyyy-MM-dd HH:mm:ss'));
           }}
         />
 
