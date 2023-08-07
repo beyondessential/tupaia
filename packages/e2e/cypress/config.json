@@ -1,6 +1,6 @@
 {
-  "baselineUrl": "https://rn-867-switch-cicd-gha.tupaia.org",
-  "compareUrl": "https://rn-867-switch-cicd-gha.tupaia.org",
+  "baselineUrl": "https://rn-867-switch-cicd-gha-e2e.tupaia.org",
+  "compareUrl": "https://rn-867-switch-cicd-gha-e2e.tupaia.org",
   "dashboardReports": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseData"],
