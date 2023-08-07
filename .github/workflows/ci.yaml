@@ -1,8 +1,8 @@
-name: Tupaia CI
+name: CI
 on:
   push:
-    branches:
-      - '*'
+    branches-ignore:
+      - '**-e2e'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
