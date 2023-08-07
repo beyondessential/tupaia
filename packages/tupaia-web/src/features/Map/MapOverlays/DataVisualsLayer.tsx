@@ -84,11 +84,10 @@ export const DataVisualsLayer = ({
   const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
   const { data: mapOverlayData } = useMapOverlayReport();
   const { data: entity } = useEntity(projectCode, entityCode);
-  console.log(selectedOverlay);
   if (!entitiesData || !mapOverlayData || !entity) {
     return null;
   }
-
+  console.log(selectedOverlay);
   // Don't show the marker layer if the entity type doesn't match the measure level
   const firstSeries = mapOverlayData.serieses.find((series: any) => series.displayOnLevel);
   if (firstSeries && camelCase(entity.type!) !== camelCase(firstSeries.displayOnLevel)) {
