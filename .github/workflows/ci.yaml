@@ -147,7 +147,6 @@ jobs:
           - utils
           - weather-api
           - web-config-server
-          - web-frontend
 
     services:
       postgres:
