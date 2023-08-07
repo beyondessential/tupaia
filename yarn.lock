@@ -9593,7 +9593,7 @@ __metadata:
     "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
-    ace-builds: ^1.4.13
+    ace-builds: ^1.15.3
     axios: ^0.21.1
     case: ^1.5.3
     content-disposition-header: ^0.6.0
@@ -12748,10 +12748,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.4.13":
-  version: 1.4.13
-  resolution: "ace-builds@npm:1.4.13"
-  checksum: 512cc19c367a21d86f6b7c78ac59b44b01304d7cf345ce0ae767db9b14fc65653aec2f9dabde27e7d9c459000f4cef74656804f54fb7cb7867b8b810ea66878d
+"ace-builds@npm:^1.15.3":
+  version: 1.23.4
+  resolution: "ace-builds@npm:1.23.4"
+  checksum: ad7b14083955d896bf22dd68a90c9e6a257be3c43be6d362269b5c51df9f2c0e1d5714e8318d88fdcc9084959f8bbfa20bdb5492d5b0a2c452d27ddc7fe8032c
   languageName: node
   linkType: hard
 

@@ -1,3 +1,2 @@
-module.exports = {
-  strict: () => {},
-};
+function mock() {}
+export default mock;

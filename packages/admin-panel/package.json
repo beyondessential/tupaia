@@ -43,7 +43,7 @@
     "@tupaia/ui-chart-components": "1.0",
     "@tupaia/ui-components": "1.0",
     "@tupaia/utils": "1.0.0",
-    "ace-builds": "^1.4.13",
+    "ace-builds": "^1.15.3",
     "axios": "^0.21.1",
     "case": "^1.5.3",
     "content-disposition-header": "^0.6.0",
@@ -82,8 +82,7 @@
     "redux-persist": "6.0.0",
     "redux-thunk": "^2.2.0",
     "styled-components": "^5.1.0",
-    "uuid": "^3.2.1",
-    "vite": "^4.4.8"
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
