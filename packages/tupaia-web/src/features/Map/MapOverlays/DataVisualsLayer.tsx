@@ -48,7 +48,7 @@ export const DataVisualsLayer = ({
 
   return (
     <LayerGroup>
-      {measureData.map((measure: any) => {
+      {measureData.map((measure: MeasureData) => {
         const { region, organisationUnitCode: entity, color, name } = measure;
         if (region) {
           return (

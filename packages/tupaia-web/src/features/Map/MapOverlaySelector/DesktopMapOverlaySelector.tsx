@@ -177,9 +177,9 @@ export const DesktopMapOverlaySelector = ({
         <Header>
           <Heading>Map Overlays</Heading>
           {measureData && (
-            <MapTableButton>
+            <MapTableButton onClick={toggleMapTableModal}>
               <Tooltip arrow interactive placement="top" title="Generate Report">
-                <TableAssignmentIcon onClick={toggleMapTableModal} />
+                <TableAssignmentIcon />
               </Tooltip>
             </MapTableButton>
           )}

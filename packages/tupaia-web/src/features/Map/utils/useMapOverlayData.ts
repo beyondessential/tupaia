@@ -61,7 +61,7 @@ export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) =>
   const { data: entity } = useEntity(projectCode, entityCode);
   const entityDataCode = getRootEntity(entity);
 
-  const { data: entitiesData } = useEntitiesByType(
+  const { data: entities } = useEntitiesByType(
     projectCode,
     entityDataCode,
     selectedOverlay?.measureLevel,
@@ -72,12 +72,12 @@ export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) =>
     endDate,
   });
 
-  if (!entitiesData || !data) {
+  if (!entities || !data) {
     return {};
   }
 
   const processedMeasureData = processMeasureData({
-    entitiesData: entitiesData,
+    entitiesData: entities,
     measureData: data.measureData,
     serieses: data.serieses,
     hiddenValues: hiddenValues ? hiddenValues : {},
@@ -87,7 +87,7 @@ export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) =>
     ...data,
     serieses: data?.serieses,
     measureData: processedMeasureData,
-    entitiesData,
+    entities,
     activeEntity: entity,
   };
 };
