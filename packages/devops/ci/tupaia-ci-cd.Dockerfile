@@ -19,6 +19,7 @@ COPY yarn.lock ./
 COPY babel.config.json ./
 COPY tsconfig-js.json ./
 COPY jest.config-ts.json ./
+COPY vite.config.js ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 
