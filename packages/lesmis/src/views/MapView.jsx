@@ -78,7 +78,7 @@ const TilePicker = styled(TilePickerComponent)`
 
 const getDefaultTileSet = () => {
   // default to osm in dev so that we don't pay for tiles when running locally
-  if (process.env.NODE_ENV !== 'production') {
+  if (!import.meta.env.PROD) {
     return 'osm';
   }
   const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
