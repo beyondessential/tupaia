@@ -13,11 +13,12 @@ export const useDashboards = (
   entityCode?: EntityCode,
   dashboardName?: DashboardName,
 ) => {
+  const enabled = !!entityCode && !!projectCode;
   const { data = [], isLoading } = useQuery(
     ['dashboards', projectCode, entityCode],
     (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
       get(`dashboards/${projectCode}/${entityCode}`),
-    { enabled: !!entityCode && !!projectCode },
+    { enabled, keepPreviousData: enabled },
   );
 
   let activeDashboard = null;
