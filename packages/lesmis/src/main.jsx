@@ -22,11 +22,3 @@ const render = () => {
 
 render(App);
 
-if (import.meta.hot) {
-  import.meta.hot.accept('./App', () => {
-    // eslint-disable-next-line global-require
-    const NextApp = require('./App').default;
-    render(NextApp);
-  });
-}
- 
