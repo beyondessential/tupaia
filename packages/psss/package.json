@@ -9,13 +9,12 @@
     "directory": "packages/psss"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "main": "dist/index.js",
   "scripts": {
-    "build": "npm run --prefix ../../ package:build:react-scripts",
+    "preview": "vite preview",
+    "build": "npm run --prefix ../../ package:build:vite",
     "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "start-dev": "yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",
@@ -23,9 +22,8 @@
     "start-report-server": "yarn workspace @tupaia/report-server start-dev -s",
     "test": "yarn test:jest",
     "test:jest": "yarn package:test --env=jsdom",
-    "start-ui-components": "yarn workspace @tupaia/ui-components build -w",
-    "start-frontend": "npm-run-all -c -l -p start-ui-components start-dev",
-    "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server"
+    "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server",
+    "start-dev": "yarn package:start:vite"
   },
   "browserslist": [
     "defaults"
