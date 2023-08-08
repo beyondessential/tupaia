@@ -9642,7 +9642,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/aggregator@workspace:packages/aggregator"
   dependencies:
-    "@tupaia/data-broker": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
