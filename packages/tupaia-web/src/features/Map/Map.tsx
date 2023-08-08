@@ -20,6 +20,7 @@ import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity, useMapOverlays } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
+import { gaEvent } from '../../utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -109,6 +110,7 @@ export const Map = () => {
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
+    gaEvent('Map', 'Change Tile Set', activeTileSet.label);
   };
 
   return (

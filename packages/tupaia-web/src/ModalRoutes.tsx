@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from './constants';
 import {
   ProjectsModal,
@@ -16,7 +16,7 @@ import {
   ResetPasswordModal,
 } from './views';
 import { Modal } from './components';
-import { useModal } from './utils';
+import { useModal, gaEvent } from './utils';
 
 /**
  * This is the wrapper to handle any search param routes that should be modals
@@ -42,10 +42,15 @@ export const ModalRoutes = () => {
   const { hash, closeModal } = useModal();
 
   const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
+  useEffect(() => {
+    if (modal === null) {
+      gaEvent('User', 'Close Modal');
+    }
+    gaEvent('User', modal, 'Open Modal');
+  }, [modal]);
 
   // If no modal param or invalid modal param, return null
   if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
-
   const ModalView = modalViews[modal];
 
   const onCloseModal = () => {

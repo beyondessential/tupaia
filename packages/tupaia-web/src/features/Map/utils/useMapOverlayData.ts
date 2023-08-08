@@ -89,5 +89,6 @@ export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) =>
     measureData: processedMeasureData,
     entitiesData,
     activeEntity: entity,
+    selectedOverlay,
   };
 };

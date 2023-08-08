@@ -5,7 +5,7 @@
 
 import { useMutation, useQueryClient } from 'react-query';
 import { Location, useLocation, useNavigate } from 'react-router';
-import { useModal } from '../../utils';
+import { gaEvent, useModal } from '../../utils';
 import { post } from '../api';
 import { DEFAULT_PROJECT_ENTITY, MODAL_ROUTES } from '../../constants';
 
@@ -21,6 +21,7 @@ export const useLogin = () => {
 
   const { closeModal, navigateToModal } = useModal();
 
+  gaEvent('User', 'Log in', 'Attempt');
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
       return post('login', {
@@ -33,6 +34,7 @@ export const useLogin = () => {
     },
     {
       onSuccess: () => {
+        gaEvent('User', 'Login', 'success');
         queryClient.invalidateQueries();
         // if the user was redirected to the login page, redirect them back to the page they were on
         if (location.state?.referrer) {
