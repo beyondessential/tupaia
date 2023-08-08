@@ -22,7 +22,6 @@ const SiblingEntities = ({
     projectCode,
     parentEntityCode,
   );
-
   if (isLoading || !siblingEntities || siblingEntities.length === 0) {
     return null;
   }
@@ -63,6 +62,7 @@ export const PolygonNavigationLayer = () => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: activeEntity } = useEntity(projectCode, entityCode);
+
   const { data: entities } = useEntitiesWithLocation(projectCode, entityCode);
 
   if (!entities || entities.length === 0) {
@@ -70,13 +70,15 @@ export const PolygonNavigationLayer = () => {
   }
 
   const childEntities = entities.filter((entity: Entity) => entity.parentCode === entityCode);
-
   const showChildEntities =
-    !POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
+    POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
+
+  const showActiveEntity =
+    activeEntity && activeEntity?.type !== selectedOverlay?.measureLevel?.toLowerCase();
 
   return (
     <>
-      {activeEntity && (
+      {showActiveEntity && (
         <>
           <ActiveEntity entity={activeEntity} />
           <SiblingEntities

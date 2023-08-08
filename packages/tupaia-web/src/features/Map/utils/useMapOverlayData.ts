@@ -4,11 +4,7 @@
  */
 import { LegendProps, MeasureData } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
-import {
-  useEntitiesWithLocation,
-  useEntity,
-  useMapOverlayReport as useMapOverlayReportQuery,
-} from '../../../api/queries';
+import { useEntitiesWithLocation, useEntity, useMapOverlayReport } from '../../../api/queries';
 import { processMeasureData } from '../MapOverlays/processMeasureData';
 import { useMapOverlays } from '../../../api/queries';
 import { Entity, EntityCode, ProjectCode } from '../../../types';
@@ -21,16 +17,17 @@ const useEntitiesByType = (
   entityCode?: EntityCode,
   entityType?: string | null,
 ) => {
+  const snakeCaseEntityType = getSnakeCase(entityType!);
   return useEntitiesWithLocation(
     projectCode,
     entityCode,
     {
       params: {
         // Don't include the root entity in the list of entities for displaying data as the
-        // data visuals are for children of the root entity
-        includeRootEntity: false,
+        // data visuals are for children of the root entity, unless it is a root entity, ie. a country
+        includeRootEntity: snakeCaseEntityType === 'country',
         filter: {
-          type: getSnakeCase(entityType!),
+          type: snakeCaseEntityType,
         },
       },
     },
@@ -38,7 +35,7 @@ const useEntitiesByType = (
   );
 };
 
-const getRootEntity = (entity?: Entity) => {
+const getRootEntityCode = (entity?: Entity) => {
   if (!entity) {
     return undefined;
   }
@@ -51,7 +48,11 @@ const getRootEntity = (entity?: Entity) => {
   return parentCode;
 };
 
-export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) => {
+// Utility hook for getting data for a map overlay. This accepts optional parameters for hiddenValues, e.g. when legend items are clicked to filter out values, or a rootEntity, e.g. when the data is being fetched for the modal
+export const useMapOverlayData = (
+  hiddenValues?: LegendProps['hiddenValues'],
+  rootEntity?: Entity,
+) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { startDate, endDate } = useDateRanges(
@@ -59,15 +60,15 @@ export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) =>
     selectedOverlay,
   );
   const { data: entity } = useEntity(projectCode, entityCode);
-  const entityDataCode = getRootEntity(entity);
+  const rootEntityCode = rootEntity?.code || getRootEntityCode(entity);
 
   const { data: entities } = useEntitiesByType(
     projectCode,
-    entityDataCode,
+    rootEntityCode,
     selectedOverlay?.measureLevel,
   );
 
-  const { data } = useMapOverlayReportQuery(projectCode, entityDataCode, selectedOverlay, {
+  const { data } = useMapOverlayReport(projectCode, rootEntityCode, selectedOverlay, {
     startDate,
     endDate,
   });
@@ -81,6 +82,7 @@ export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) =>
     measureData: data.measureData,
     serieses: data.serieses,
     hiddenValues: hiddenValues ? hiddenValues : {},
+    includeEntitiesWithoutCoordinates: rootEntity ? true : false,
   }) as MeasureData[];
 
   return {

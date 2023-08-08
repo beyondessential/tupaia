@@ -15,14 +15,19 @@ import {
   Polygon,
   AreaTooltip,
   MeasureData,
+  MAP_COLORS,
 } from '@tupaia/ui-map-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
 
+const { POLYGON_HIGHLIGHT } = MAP_COLORS;
+
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
-  :hover {
+  &:hover {
     fill-opacity: 0.8;
+    fill: ${POLYGON_HIGHLIGHT};
+    stroke: ${POLYGON_HIGHLIGHT};
   }
 `;
 

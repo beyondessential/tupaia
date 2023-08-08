@@ -105,7 +105,7 @@ export const useMapOverlayReport = (
         params: {
           organisationUnitCode: entityCode,
           projectCode,
-          shouldShowAllParentCountryResults: projectCode !== entityCode, // TODO: figure out the logic here for shouldShowAllParentCountryResults
+          shouldShowAllParentCountryResults: projectCode !== entityCode,
           startDate,
           endDate,
         },

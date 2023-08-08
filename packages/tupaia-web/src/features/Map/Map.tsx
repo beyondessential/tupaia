@@ -102,8 +102,8 @@ export const Map = () => {
   useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
   // Setup legend hidden values
-  const { measureData } = useMapOverlayData();
-  const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
+  const { serieses } = useMapOverlayData();
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
