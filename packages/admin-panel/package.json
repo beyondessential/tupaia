@@ -9,13 +9,13 @@
     "directory": "packages/admin-panel"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "main": "dist/library.js",
+  "main": "./lib/library.js",
   "scripts": {
     "build": "run-p -c \"build:* {@}\" --",
-    "build:src": "yarn package:build:vite",
+    "build:src": "npm run --prefix ../../ package:build:vite",
     "preview": "vite preview",
-    "build:library": "rm -rf dist && yarn build:src",
-    "build-dev": "npm run build:library",
+    "build:library": "rm -rf lib && npm run --prefix ../../ package:build:lib",
+    "build-dev": "yarn build",
     "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -82,7 +82,8 @@
     "redux-persist": "6.0.0",
     "redux-thunk": "^2.2.0",
     "styled-components": "^5.1.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "vite": "^4.4.8"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",

@@ -44,7 +44,8 @@
     "package:start:backend-start-dev": "cd $INIT_CWD && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
     "package:eject": "cd $INIT_CWD && react-scripts eject",
     "package:build:vite": "cd $INIT_CWD && vite build --config \"../../vite.config.js\"",
-    "package:start:vite": "cd $INIT_CWD && vite --config \"../../vite.config.js\""
+    "package:start:vite": "cd $INIT_CWD && vite --config \"../../vite.config.js\"",
+    "package:build:lib": "cd $INIT_CWD && babel src --out-dir lib --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\""
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",

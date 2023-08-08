@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-const isTest = import.meta.env.mode === 'test';
+const isTest = process?.env?.NODE_ENV === 'test';
 
 module.exports = {
   presets: [
