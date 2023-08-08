@@ -5,6 +5,5 @@
 
 export { useDefaultMapOverlay } from './useDefaultMapOverlay';
 export { useHiddenMapValues } from './useHiddenMapValues';
-export { useActiveMapOverlayReport } from './useActiveMapOverlayReport';
-export { getSnakeCase } from './getSnakeCase';
+export { useMapOverlayData } from './useMapOverlayData';
 export { useNavigateToEntity } from './useNavigateToEntity';

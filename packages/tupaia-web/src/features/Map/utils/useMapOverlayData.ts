@@ -1,18 +1,20 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { LegendProps, MeasureData } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import {
-  useMapOverlays,
-  useMapOverlayReport as useMapOverlayReportQuery,
   useEntitiesWithLocation,
   useEntity,
+  useMapOverlayReport as useMapOverlayReportQuery,
 } from '../../../api/queries';
+import { processMeasureData } from '../MapOverlays/processMeasureData';
+import { useMapOverlays } from '../../../api/queries';
+import { Entity, EntityCode, ProjectCode } from '../../../types';
+import { getSnakeCase } from './getSnakeCase';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { getSnakeCase } from './getSnakeCase';
-import { Entity, EntityCode, ProjectCode } from '../../../types';
 
 const useEntitiesByType = (
   projectCode?: ProjectCode,
@@ -49,7 +51,7 @@ const getRootEntity = (entity?: Entity) => {
   return parentCode;
 };
 
-export const useActiveMapOverlayReport = () => {
+export const useMapOverlayData = (hiddenValues?: LegendProps['hiddenValues']) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { startDate, endDate } = useDateRanges(
@@ -70,10 +72,21 @@ export const useActiveMapOverlayReport = () => {
     endDate,
   });
 
+  if (!entities || !data) {
+    return {};
+  }
+
+  const processedMeasureData = processMeasureData({
+    entitiesData: entities,
+    measureData: data.measureData,
+    serieses: data.serieses,
+    hiddenValues: hiddenValues ? hiddenValues : {},
+  }) as MeasureData[];
+
   return {
     ...data,
     serieses: data?.serieses,
-    measureData: data?.measureData,
+    measureData: processedMeasureData,
     entities,
     activeEntity: entity,
   };

@@ -22,11 +22,13 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
   width: 2rem;
   height: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseButton = styled(IconButton)`
@@ -59,10 +61,12 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
       fullScreen={fullScreen}
       disablePortal
     >
-      <CloseButton onClick={onClose} color="default">
-        <CloseIcon />
-      </CloseButton>
-      <Wrapper id="overlay-wrapper">{children}</Wrapper>
+      <Wrapper id="overlay-wrapper">
+        <CloseButton onClick={onClose} color="default">
+          <CloseIcon />
+        </CloseButton>
+        {children}
+      </Wrapper>
     </Dialog>
   );
 };
