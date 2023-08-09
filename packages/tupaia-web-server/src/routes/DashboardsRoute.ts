@@ -26,6 +26,8 @@ export type DashboardsRequest = Request<
   TupaiaWebDashboardsRequest.ReqQuery
 >;
 
+const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
+
 export class DashboardsRoute extends Route<DashboardsRequest> {
   public async buildResponse() {
     const { params, ctx } = this.req;
@@ -105,6 +107,20 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const response = dashboardsWithItems.filter(
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
+
+    if (!response.length) {
+      // Returns in an array already
+      const noDataItem = await ctx.services.central.fetchResources('dashboardItems', {
+        filter: { code: NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE },
+      });
+      response.push({
+        name: 'General', // just a dummy dashboard
+        id: 'General',
+        code: 'General',
+        rootEntityCode: rootEntity.code,
+        items: noDataItem,
+      });
+    }
 
     return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
   }
