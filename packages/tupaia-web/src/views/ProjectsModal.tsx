@@ -108,10 +108,7 @@ const Loader = styled.div`
  * This is the projects view that is shown when the projects modal is open
  */
 export const ProjectsModal = () => {
-  const {
-    data: { projects },
-    isFetching,
-  } = useProjects();
+  const { data, isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
   return (
@@ -133,7 +130,7 @@ export const ProjectsModal = () => {
         ) : (
           <ProjectsGrid>
             <ProjectCardList
-              projects={projects}
+              projects={data?.projects ?? []}
               actions={{
                 [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                   project: { code, homeEntityCode, dashboardGroupName },
