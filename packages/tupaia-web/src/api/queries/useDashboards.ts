@@ -14,7 +14,7 @@ export const useDashboards = (
   dashboardName?: DashboardName,
 ) => {
   const enabled = !!entityCode && !!projectCode;
-  const { data = [], isLoading } = useQuery(
+  const { data = [], isLoading, isError } = useQuery(
     ['dashboards', projectCode, entityCode],
     (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
       get(`dashboards/${projectCode}/${entityCode}`),
@@ -27,5 +27,5 @@ export const useDashboards = (
     activeDashboard = data?.find(dashboard => dashboard.name === dashboardName) || data[0];
   }
 
-  return { dashboards: data, activeDashboard, isLoading };
+  return { dashboards: data, activeDashboard, isLoading, isError };
 };

@@ -139,7 +139,7 @@ export const ProjectsModal = () => {
                 }) => (
                   <ProjectAllowedLink
                     url={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${dashboardGroupName}` : ''
+                      dashboardGroupName ? `/${encodeURIComponent('dashboardGroupName')}` : ''
                     }`}
                   />
                 ),

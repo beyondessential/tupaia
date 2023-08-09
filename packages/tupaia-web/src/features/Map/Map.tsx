@@ -120,7 +120,7 @@ export const Map = () => {
         <ZoomControl position="bottomright" />
         <MapWatermark />
       </StyledMap>
-      {/* Map Controls need to be outside the map so that the mouse events on controls don't inter wit the map */}
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
       <MapControlWrapper>
         <MapControlColumn>
           <MapOverlaySelector />
