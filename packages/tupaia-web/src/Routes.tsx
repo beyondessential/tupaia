@@ -11,8 +11,7 @@ import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { useDashboards, useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
-import { useDefaultDashboard, useEntityLink } from './utils';
-import { Dashboard as DashboardType } from './types';
+import { useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoggedIn } = useUser();
@@ -31,33 +30,6 @@ const HomeRedirect = () => {
 const ProjectPageDashboardRedirect = () => {
   const url = useEntityLink();
   return <Navigate to={url} replace />;
-};
-
-/**
- * Redirect to the default dashboard if the selected dashboard name is not valid
- */
-const DashboardRedirect = () => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const location = useLocation();
-  const { dashboards, isLoading } = useDashboards(projectCode, entityCode);
-  const defaultDashboardName = useDefaultDashboard();
-
-  if (
-    isLoading ||
-    dashboards?.find(
-      (dashboard: DashboardType) => dashboard.name === decodeURIComponent(dashboardName!),
-    )
-  )
-    return <Dashboard />;
-  return (
-    <Navigate
-      to={{
-        ...location,
-        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
-      }}
-      replace
-    />
-  );
 };
 
 const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
@@ -119,10 +91,7 @@ export const Routes = () => {
               <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
 
               {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
-              <Route
-                path="/:projectCode/:entityCode/:dashboardName"
-                element={<DashboardRedirect />}
-              />
+              <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
             </Route>
           </Route>
         </RouterRoutes>

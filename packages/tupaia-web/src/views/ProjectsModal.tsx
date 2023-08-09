@@ -23,6 +23,7 @@ import {
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
+import { SingleProject } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -136,15 +137,21 @@ export const ProjectsModal = () => {
               actions={{
                 [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                   project: { code, homeEntityCode, dashboardGroupName },
+                }: {
+                  project: SingleProject;
                 }) => (
                   <ProjectAllowedLink
                     url={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${encodeURIComponent('dashboardGroupName')}` : ''
+                      dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                     }`}
                   />
                 ),
                 [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
-                [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
+                [PROJECT_ACCESS_TYPES.DENIED]: ({
+                  project: { code },
+                }: {
+                  project: SingleProject;
+                }) => {
                   if (isLoggedIn) {
                     return (
                       <ProjectDeniedLink
