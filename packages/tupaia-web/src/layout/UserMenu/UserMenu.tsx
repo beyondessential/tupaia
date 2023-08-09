@@ -15,6 +15,8 @@ import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
 import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
+import { gaEvent } from '../../utils';
+import ga from '../../utils/ga';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -43,6 +45,7 @@ export const UserMenu = () => {
 
   const onCloseMenu = () => {
     setMenuOpen(false);
+    gaEvent('Dropdown', 'Close');
   };
 
   const { landingPageUrlSegment } = useParams();

@@ -8,6 +8,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
+import { gaEvent } from '../../utils';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -52,6 +53,7 @@ export const DashboardMenu = ({
 
   const handleClose = () => {
     setAnchorEl(null);
+    gaEvent('Dropdown', 'close');
   };
 
   return (

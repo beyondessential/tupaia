@@ -8,7 +8,7 @@ type WindowWithGa = Window & {
 };
 const ga = ((window as unknown) as WindowWithGa).ga || (() => {});
 
-if (!ga) {
+if (!window.ga) {
   // eslint-disable-next-line no-console
   console.warn('Google Analytics library not found');
 }

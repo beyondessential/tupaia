@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
@@ -110,6 +110,9 @@ export const Dashboard = () => {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
+  useEffect(() => {
+    gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
+  }, [activeDashboard]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);

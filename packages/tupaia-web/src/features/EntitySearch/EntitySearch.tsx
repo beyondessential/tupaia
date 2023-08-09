@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { EntityMenu } from './EntityMenu';
 import { useEntities, useProject } from '../../api/queries';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
 import { SearchResults } from './SearchResults';
+import { gaEvent } from '../../utils';
 
 const Container = styled.div`
   position: relative;
@@ -59,6 +60,14 @@ export const EntitySearch = () => {
     setIsOpen(false);
     setSearchValue('');
   };
+  useEffect(() => {
+    gaEvent('Search', 'Change Search');
+  }, [setSearchValue]);
+  useEffect(() => {
+    if (isOpen === true) {
+      gaEvent('Search', 'Open Search Bar');
+    }
+  }, [setIsOpen]);
 
   const children = entities.filter(entity => entity.parentCode === project?.code);
   const grandChildren = entities.filter(entity => entity.parentCode !== project?.code);
