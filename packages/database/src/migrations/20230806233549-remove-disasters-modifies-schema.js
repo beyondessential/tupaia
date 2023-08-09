@@ -14,11 +14,12 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql(`
-    DROP TABLE "disasterEvent" CASCADE;
-    DROP TABLE disaster CASCADE;
-  `);
+exports.up = async function (db) {
+  await db.runSql('START TRANSACTION');
+  await db.runSql(`DROP TABLE "disasterEvent"`);
+  await db.runSql(`DROP TABLE "disaster"`);
+  await db.runSql('ROLLBACK');
+  return null;
 };
 
 exports.down = function (db) {
