@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes, useLocation, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import { LandingPage, PDFExport, ProjectPage } from './views';
 import { Dashboard } from './features';
 import { ModalRoutes } from './ModalRoutes';
 import { MODAL_ROUTES, DEFAULT_URL } from './constants';
-import { useDashboards, useUser } from './api/queries';
+import { useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
 import { useEntityLink } from './utils';
