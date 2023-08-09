@@ -50,7 +50,7 @@ const getRootEntityCode = (entity?: Entity) => {
 
 // Utility hook for getting data for a map overlay. This accepts optional parameters for hiddenValues, e.g. when legend items are clicked to filter out values, or a rootEntity, e.g. when the data is being fetched for the modal
 export const useMapOverlayData = (
-  hiddenValues?: LegendProps['hiddenValues'],
+  hiddenValues?: LegendProps['hiddenValues'] | null,
   rootEntity?: Entity,
 ) => {
   const { projectCode, entityCode } = useParams();
