@@ -42,9 +42,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const dashboards = await ctx.services.central.fetchResources('dashboards', {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
+      sort: ['sort_order', 'name'],
     });
-
-    const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
 
     // Fetch all dashboard relations
     const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
@@ -52,7 +51,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         // Attached to the given dashboards
         dashboard_id: {
           comparator: 'IN',
-          comparisonValue: sortedDashboards.map((d: Dashboard) => d.id),
+          comparisonValue: dashboards.map((d: Dashboard) => d.id),
         },
         // For the root entity type
         entity_types: {
@@ -88,7 +87,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ],
     );
 
-    const dashboardsWithItems = sortedDashboards.map((dashboard: Dashboard) => {
+    const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
       return {
         ...dashboard,
         // Filter by the relations, map to the items
