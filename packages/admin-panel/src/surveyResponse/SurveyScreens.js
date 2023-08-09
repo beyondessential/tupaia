@@ -92,8 +92,8 @@ export const SurveyScreens = ({ survey, existingAnswers, onChange, selectedEntit
             ) {
               const formattedDate =
                 typeof fields.data_time === 'object'
-                  ? format(fields.data_time, 'yyyy/MM/dd hh:mm a')
-                  : format(new Date(fields.data_time), 'dd/MM/yyyy hh:mm a');
+                  ? format(fields.data_time, 'yyyy/MM/dd hh:mmaaa')
+                  : format(new Date(fields.data_time), 'dd/MM/yyyy hh:mmaaa');
 
               return (
                 <StyledTextField
