@@ -118,7 +118,7 @@ export const Dashboard = () => {
   const defaultEntityLink = useEntityLink(entityCode);
   useEffect(() => {
     gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
-  }, [activeDashboard]);
+  }, [activeDashboard?.name]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
