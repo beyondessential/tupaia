@@ -19,10 +19,8 @@ import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent } from '../../utils';
+import { gaEvent, useEntityLink } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
-import { useEntityLink } from '../../utils';
-
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
 const MIN_SIDEBAR_WIDTH = 335;
@@ -117,6 +115,7 @@ export const Dashboard = () => {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
+  const defaultEntityLink = useEntityLink(entityCode);
   useEffect(() => {
     gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
   }, [activeDashboard]);
