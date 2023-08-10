@@ -48,7 +48,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
-      pageSize: pageSize,
+      pageSize,
     });
 
     if (mapOverlays.length === 0) {
