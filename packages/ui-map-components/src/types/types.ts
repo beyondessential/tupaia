@@ -5,9 +5,8 @@
 import { ReactNode } from 'react';
 import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
-import { Entity as TupaiaEntity, CssColor } from '@tupaia/types';
+import { Entity as TupaiaEntity, CssColor, IconKey } from '@tupaia/types';
 import { MEASURE_TYPES, SCALE_TYPES, BREWER_PALETTE } from '../constants';
-import { IconKey } from '../components';
 
 export type ColorKey = keyof typeof BREWER_PALETTE;
 export type Color = ColorKey | 'transparent' | CssColor;

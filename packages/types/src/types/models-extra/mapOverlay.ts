@@ -22,7 +22,7 @@ export type MapOverlayConfig = {
   hideFromLegend?: boolean;
   hideFromMenu?: boolean;
   hideFromPopup?: boolean;
-  icon?: string; // "circle"
+  icon?: IconKey;
   info?: {
     reference: {
       link?: string;
@@ -57,7 +57,7 @@ export type MapOverlayConfig = {
       max: number | 'auto';
     };
   };
-  scaleColorScheme?: string; // ui-map-components/constants SCHEME "default"/"default-reverse"
+  scaleColorScheme?: string; // ui-map-components/constants/colors *_SCHEME
   scaleType?: string; // ui-map-components/constants SCALE_TYPES
   valueType?: string; // formatDataValueByType VALUE_TYPES
   values?: InlineValue[];
@@ -67,7 +67,29 @@ type InlineValue = {
   color?: string;
   hideFromLegend?: boolean;
   hideFromPopup?: boolean;
-  icon: string;
+  icon: IconKey;
   name: string;
-  value: string | number;
+  value: string | number | null;
 };
+
+export enum IconKey {
+  PIN = 'pin',
+  UP_ARROW = 'upArrow',
+  RIGHT_ARROW = 'rightArrow',
+  DOWN_ARROW = 'downArrow',
+  HEALTH_PIN = 'healthPin',
+  CIRCLE = 'circle',
+  SQUARE = 'square',
+  TRIANGLE = 'triangle',
+  PENTAGON = 'pentagon',
+  RADIUS = 'radius',
+  RING = 'ring',
+  H = 'h',
+  X = 'x',
+  EMPTY = 'empty',
+  FADE = 'fade',
+  WARNING = 'warning',
+  HELP = 'help',
+  CHECKBOX = 'checkbox',
+  HIDDEN = 'hidden',
+}
