@@ -20,7 +20,7 @@ export const generateRowInserts = (
 ) => {
   const columnsToCheck = requiredColumnValues.map(({ column }) => column);
   const expectedRows = new ExpectedRows(requiredColumnValues);
-  const columnValueIndexes = Object.fromEntries(
+  const existingColumnValueIndexes = Object.fromEntries(
     table.getRows().map((row, index) => [rowValuesKey(row, columnsToCheck), index]),
   );
 
@@ -30,9 +30,9 @@ export const generateRowInserts = (
   while (expectedRows.hasNext()) {
     const row = expectedRows.next();
     const rowKey = rowValuesKey(row, columnsToCheck);
-    if (columnValueIndexes[rowKey] !== undefined) {
+    if (existingColumnValueIndexes[rowKey] !== undefined) {
       // row already in table, update offset to start inserting from that row
-      const newOffset = columnValueIndexes[rowKey] + 1;
+      const newOffset = existingColumnValueIndexes[rowKey] + 1;
       if (newOffset < offset) {
         throw new Error(
           'Column order in table does not match expected order for filling rows. Please ensure the columns are sorted correctly.',
