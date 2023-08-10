@@ -107,7 +107,11 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
-  const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { dashboards, activeDashboard, isLoading: isLoadingDashboards } = useDashboards(
+    projectCode,
+    entityCode,
+    dashboardName,
+  );
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -119,18 +123,13 @@ export const Dashboard = () => {
   };
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
+  const dashboardNotFound =
+    !isLoadingDashboards && !isLoadingProject && project?.code === projectCode && !activeDashboard;
   useEffect(() => {
-    // if is valid or loading, don't redirect
-    if (
-      !dashboards ||
-      isLoadingProject ||
-      project?.code !== projectCode ||
-      dashboards?.find(dashboard => dashboard.name === dashboardName)
-    )
-      return;
-
-    navigate(defaultEntityLink);
-  }, [JSON.stringify(dashboards), dashboardName, projectCode, isLoadingProject]);
+    if (dashboardNotFound) {
+      navigate(defaultEntityLink);
+    }
+  }, [dashboardNotFound, defaultEntityLink]);
 
   return (
     <Panel $isExpanded={isExpanded}>
