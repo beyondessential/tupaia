@@ -120,7 +120,7 @@ export const DashboardItemContent = ({
 
   if (!DisplayComponent) return null;
 
-  if (isLoading || !report)
+  if (isLoading || (!report && config?.type !== 'component' && !error))
     return (
       <LoadingContainer aria-label={`Loading data for report '${name}'`}>
         <SpinningLoader />

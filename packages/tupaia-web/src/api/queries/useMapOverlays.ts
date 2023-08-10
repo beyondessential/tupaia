@@ -41,9 +41,7 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
   const [urlSearchParams] = useSearchParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
-    async (): Promise<MapOverlaysResponse> => {
-      return get(`mapOverlays/${projectCode}/${entityCode}`);
-    },
+    (): Promise<MapOverlaysResponse> => get(`mapOverlays/${projectCode}/${entityCode}`),
     {
       enabled: !!projectCode && !!entityCode,
     },
