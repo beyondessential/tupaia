@@ -38,6 +38,7 @@ export const MeasurePopup = React.memo(
     let onDetailButtonClick;
     if (onSeeOrgUnitDashboard) {
       onDetailButtonClick = () => onSeeOrgUnitDashboard(organisationUnitCode!);
+      console.log(organisationUnitCode);
     }
 
     return (
