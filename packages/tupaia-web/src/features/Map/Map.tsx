@@ -103,8 +103,8 @@ export const Map = () => {
   useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
 
   // Setup legend hidden values
-  const { measureData } = useMapOverlayData();
-  const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
+  const { serieses } = useMapOverlayData();
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
@@ -122,7 +122,7 @@ export const Map = () => {
         <ZoomControl position="bottomright" />
         <MapWatermark />
       </StyledMap>
-      {/* Map Controls need to be outside the map so that the mouse events on controls don't inter wit the map */}
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
       <MapControlWrapper>
         <MapControlColumn>
           <MapOverlaySelector />

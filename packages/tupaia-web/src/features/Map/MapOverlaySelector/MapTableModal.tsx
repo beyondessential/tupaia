@@ -13,6 +13,7 @@ import { MapTable } from '@tupaia/ui-map-components';
 import { useMapOverlayData } from '../utils';
 import { Modal } from '../../../components';
 import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
+import { Entity } from '../../../types';
 
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
@@ -43,9 +44,10 @@ const TitleWrapper = styled.div`
 export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { serieses, measureData } = useMapOverlayData();
   const { data } = useEntityAncestors(projectCode, entityCode);
-  const countryObject = data?.find(entity => entity.type === 'country');
+  const countryObject = data?.find((entity: Entity) => entity.type === 'country');
+  const { serieses, measureData } = useMapOverlayData(null, countryObject);
+
   const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
   return (

@@ -17,7 +17,7 @@ export const useNavigateToEntity = () => {
   return (entityCode?: EntityCode) => {
     const link = {
       ...location,
-      pathname: `/${projectCode}/${entityCode}/${project?.dashboardGroupName}`,
+      pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(project?.dashboardGroupName)}`,
     };
     navigate(link);
   };

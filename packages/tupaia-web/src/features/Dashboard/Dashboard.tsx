@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
@@ -14,13 +14,14 @@ import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards, useEntity } from '../../api/queries';
+import { useDashboards, useEntity, useProject } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
+import { useEntityLink } from '../../utils';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -104,8 +105,14 @@ const DashboardImageContainer = styled.div`
 `;
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   const { projectCode, entityCode, dashboardName } = useParams();
-  const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const { dashboards, activeDashboard, isLoading: isLoadingDashboards } = useDashboards(
+    projectCode,
+    entityCode,
+    dashboardName,
+  );
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -118,6 +125,15 @@ export const Dashboard = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
   };
+
+  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
+  const dashboardNotFound =
+    !isLoadingDashboards && !isLoadingProject && project?.code === projectCode && !activeDashboard;
+  useEffect(() => {
+    if (dashboardNotFound) {
+      navigate(defaultEntityLink);
+    }
+  }, [dashboardNotFound, defaultEntityLink]);
 
   return (
     <Panel $isExpanded={isExpanded}>

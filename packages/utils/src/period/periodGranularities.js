@@ -120,6 +120,12 @@ export const GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT = {
   [SINGLE_YEAR]: YEAR,
 };
 
+const validateDateString = date => {
+  if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
+    throw new Error('Date string is not in the correct format');
+  }
+};
+
 export const roundStartDate = (granularity, startDate) => {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   const momentStartDate = moment.isMoment(startDate) ? startDate : moment(startDate);
@@ -189,6 +195,9 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     // Eg: {defaultTimePeriod: {start: {unit: 'month', offset: -1}, end: {unit: 'month', offset: -1}}}
     if (defaultTimePeriod.start || defaultTimePeriod.end) {
       singleDateConfig = defaultTimePeriod.start || defaultTimePeriod.end;
+      if (typeof singleDateConfig === 'string') {
+        validateDateString(singleDateConfig);
+      }
     } else {
       // else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
       singleDateConfig = defaultTimePeriod;
@@ -201,7 +210,10 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     }
 
     // Grab all the details and get a single default date used for both start/end period.
-    startDate = addMomentOffset(startDate, singleDateConfig);
+    startDate =
+      typeof singleDateConfig === 'string'
+        ? moment(singleDateConfig)
+        : addMomentOffset(moment(), singleDateConfig);
     endDate = startDate;
   }
 
@@ -231,6 +243,18 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     }
     if (defaultTimePeriod.end) {
       endDate = addMomentOffset(endDate, defaultTimePeriod.end);
+    }
+
+    if (typeof defaultTimePeriod.start === 'string') {
+      validateDateString(defaultTimePeriod.start);
+      startDate = moment(defaultTimePeriod.start);
+    }
+    if (typeof defaultTimePeriod.end === 'string') {
+      validateDateString(defaultTimePeriod.end);
+      endDate = moment(defaultTimePeriod.end);
+    }
+    if (moment(startDate).isAfter(endDate)) {
+      throw new Error(`Start date must be earlier than the end date`);
     }
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
