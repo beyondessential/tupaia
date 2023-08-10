@@ -13,18 +13,20 @@ export const useDashboards = (
   entityCode?: EntityCode,
   dashboardName?: DashboardName,
 ) => {
-  const { data = [], isLoading } = useQuery(
+  const enabled = !!entityCode && !!projectCode;
+  const { data = [], isLoading, isError } = useQuery(
     ['dashboards', projectCode, entityCode],
     (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
       get(`dashboards/${projectCode}/${entityCode}`),
-    { enabled: !!entityCode && !!projectCode },
+    { enabled, keepPreviousData: enabled },
   );
 
-  let activeDashboard = null;
+  let activeDashboard = undefined;
 
   if (data?.length > 0 && dashboardName) {
-    activeDashboard = data?.find(dashboard => dashboard.name === dashboardName) || data[0];
+    // trim dashboard name to avoid issues with trailing or leading spaces
+    activeDashboard = data?.find(dashboard => dashboard.name.trim() === dashboardName);
   }
 
-  return { dashboards: data, activeDashboard, isLoading };
+  return { dashboards: data, activeDashboard, isLoading, isError };
 };

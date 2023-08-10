@@ -34,7 +34,7 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
     {
       enabled: !!entityCode && !!projectCode,
       onError: (e: any) => {
-        if(e.code !== 403) return;
+        if (e.code !== 403) return;
         if (!isLoggedIn) return navigateToLogin();
         if (location.hash === `#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`) return;
         return navigateToModal(MODAL_ROUTES.REQUEST_COUNTRY_ACCESS);

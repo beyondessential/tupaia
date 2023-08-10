@@ -41,7 +41,7 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
 }: {
-  activeDashboard: Dashboard | null;
+  activeDashboard?: Dashboard;
   dashboards: Dashboard[];
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
