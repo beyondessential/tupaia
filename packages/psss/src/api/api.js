@@ -4,7 +4,7 @@
  */
 import axios from 'axios';
 
-const PSSS_API_URL = process.env.REACT_APP_PSSS_API_URL;
+const PSSS_API_URL = import.meta.env.REACT_APP_PSSS_API_URL;
 const timeout = 45 * 1000;
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials

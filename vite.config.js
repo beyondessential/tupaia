@@ -19,7 +19,6 @@ export default defineConfig(({ command, mode }) => {
       'process.env': env,
     },
     server: {
-      port: 8088,
       open: true,
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
@@ -27,10 +26,10 @@ export default defineConfig(({ command, mode }) => {
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
-        http: 'moduleMock.js',
-        winston: 'moduleMock.js',
-        jsonwebtoken: 'moduleMock.js',
-        'node-fetch': 'moduleMock.js',
+        http: path.resolve(__dirname, 'moduleMock.js'),
+        winston: path.resolve(__dirname, 'moduleMock.js'),
+        jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
+        'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
   };
@@ -50,10 +49,13 @@ export default defineConfig(({ command, mode }) => {
           // this is to allow for hot reloading in dev
           '@tupaia/ui-chart-components': path.resolve(
             __dirname,
-            '../ui-chart-components/src/index.ts',
+            './packages/ui-chart-components/src/index.ts',
           ),
-          '@tupaia/ui-map-components': path.resolve(__dirname, '../ui-map-components/src/index.ts'),
-          '@tupaia/ui-components': path.resolve(__dirname, '../ui-components/src/index.ts'),
+          '@tupaia/ui-map-components': path.resolve(
+            __dirname,
+            './packages/ui-map-components/src/index.ts',
+          ),
+          '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
         },
       },
     };
