@@ -14,10 +14,10 @@ export type MapOverlayConfig = {
   };
   defaultTimePeriod?: DateOffsetSpec;
   disableRenameLegend?: boolean;
-  displayLevel?: string; // "District"/"SubDistrict"
-  displayOnLevel?: string; // "District"/"SubDistrict"
+  displayLevel?: EntityLevel;
+  displayOnLevel?: EntityLevel;
   displayType?: MeasureType;
-  displayedValueKey?: string; // "originalValue"/"schoolTypeName"/"name"/"facilityTypeName"
+  displayedValueKey?: DisplayedValueType;
   hideByDefault?: Record<string, boolean>;
   hideFromLegend?: boolean;
   hideFromMenu?: boolean;
@@ -36,13 +36,13 @@ export type MapOverlayConfig = {
     string,
     {
       type: MeasureType;
-      measureLevel?: string; // "District"/"SubDistrict"
+      measureLevel?: EntityLevel;
       values?: InlineValue[];
       sortOrder?: number;
       hideFromLegend?: boolean;
     }
   >;
-  measureLevel?: string | string[]; // "City"/"District"/"SubDistrict" ... more
+  measureLevel?: EntityLevel | EntityLevel[];
   name?: string;
   noDataColour?: string; // Hex code string e.g. #99237f
   periodGranularity?: VizPeriodGranularity;
@@ -57,9 +57,9 @@ export type MapOverlayConfig = {
       max: number | 'auto';
     };
   };
-  scaleColorScheme?: string; // ui-map-components/constants/colors *_SCHEME
+  scaleColorScheme?: MeasureColorScheme;
   scaleType?: ScaleType;
-  valueType?: string; // formatDataValueByType VALUE_TYPES
+  valueType?: MeasureValueType;
   values?: InlineValue[];
 };
 
@@ -111,4 +111,39 @@ export enum MeasureType {
   SHADING = 'shading',
   SHADED_SPECTRUM = 'shaded-spectrum',
   POPUP_ONLY = 'popup-only',
+}
+
+enum DisplayedValueType {
+  NAME = 'name',
+  ORIGINAL_VALUE = 'originalValue',
+  SCHOOL_TYPE_NAME = 'schoolTypeName',
+  FACILITY_TYPE_NAME = 'facilityTypeName',
+}
+
+enum EntityLevel {
+  COUNTRY = 'Country',
+  DISTRICT = 'District',
+  SUB_DISTRICT = 'SubDistrict',
+  FACILITY = 'Facility',
+  DISASTER = 'Disaster',
+}
+
+enum MeasureValueType {
+  BOOLEAN = 'boolean',
+  CURRENCY = 'currency',
+  FRACTION = 'fraction',
+  PERCENTAGE = 'percentage',
+  FRACTION_AND_PERCENTAGE = 'fractionAndPercentage',
+  NUMBER_AND_PERCENTAGE = 'numberAndPercentage',
+  TEXT = 'text',
+  NUMBER = 'number',
+  ONE_DECIMAL_PLACE = 'oneDecimalPlace',
+}
+
+export enum MeasureColorScheme {
+  DEFAULT = 'default',
+  REVERSE_DEFAULT = 'default-reverse',
+  PERFORMANCE = 'performance',
+  TIME = 'time',
+  GPI = 'gpi',
 }

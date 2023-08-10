@@ -6,33 +6,28 @@
 
 import moment from 'moment';
 import { blue, red, green } from '@material-ui/core/colors';
-import { ScaleType } from '@tupaia/types';
+import { ScaleType, MeasureColorScheme } from '@tupaia/types';
 import {
   BREWER_PALETTE,
   HEATMAP_UNKNOWN_COLOR,
-  DEFAULT_COLOR_SCHEME,
-  REVERSE_DEFAULT_COLOR_SCHEME,
-  PERFORMANCE_COLOR_SCHEME,
-  TIME_COLOR_SCHEME,
-  GPI_COLOR_SCHEME,
 } from '../constants';
 import { Color, ColorKey, ScaleTypeLiteral } from '../types';
 
 const COLOR_SCHEME_TO_FUNCTION = {
-  [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
-  [REVERSE_DEFAULT_COLOR_SCHEME]: getReverseHeatmapColor,
-  [PERFORMANCE_COLOR_SCHEME]: getPerformanceHeatmapColor,
-  [TIME_COLOR_SCHEME]: getTimeHeatmapColor,
-  [GPI_COLOR_SCHEME]: getGPIColor,
+  [MeasureColorScheme.DEFAULT]: getHeatmapColor,
+  [MeasureColorScheme.REVERSE_DEFAULT]: getReverseHeatmapColor,
+  [MeasureColorScheme.PERFORMANCE]: getPerformanceHeatmapColor,
+  [MeasureColorScheme.TIME]: getTimeHeatmapColor,
+  [MeasureColorScheme.GPI]: getGPIColor,
 };
 
 const SCALE_TYPE_TO_COLOR_SCHEME = {
-  [ScaleType.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
-  [ScaleType.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
-  [ScaleType.NEUTRAL]: DEFAULT_COLOR_SCHEME,
-  [ScaleType.NEUTRAL_REVERSE]: REVERSE_DEFAULT_COLOR_SCHEME,
-  [ScaleType.TIME]: TIME_COLOR_SCHEME,
-  [ScaleType.GPI]: GPI_COLOR_SCHEME,
+  [ScaleType.PERFORMANCE]: MeasureColorScheme.PERFORMANCE,
+  [ScaleType.PERFORMANCE_DESC]: MeasureColorScheme.PERFORMANCE,
+  [ScaleType.NEUTRAL]: MeasureColorScheme.DEFAULT,
+  [ScaleType.NEUTRAL_REVERSE]: MeasureColorScheme.REVERSE_DEFAULT,
+  [ScaleType.TIME]: MeasureColorScheme.TIME,
+  [ScaleType.GPI]: MeasureColorScheme.GPI,
 };
 
 export type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
