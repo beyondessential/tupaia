@@ -38,11 +38,15 @@ export const DataVisualsLayer = ({
   const { data: entity } = useEntity(projectCode, entityCode);
   const { serieses, measureData, activeEntity, selectedOverlay } = useMapOverlayData(hiddenValues);
   useEffect(() => {
-    gaEvent('Map Overlays', 'Change', selectedOverlay?.name);
-  }, [selectedOverlay]);
+    if (selectedOverlay !== undefined) {
+      gaEvent('Map Overlays', 'Change', selectedOverlay?.name);
+    }
+  }, [selectedOverlay?.name]);
   useEffect(() => {
-    gaEvent('Entity', 'Change', activeEntity?.name);
-  }, [activeEntity]);
+    if (activeEntity !== undefined) {
+      gaEvent('Entity', 'Change', activeEntity?.name);
+    }
+  }, [activeEntity?.name]);
 
   // Don't show the marker layer if the entity type doesn't match the measure level
   const firstSeries = serieses?.find((series: any) => series.displayOnLevel);

@@ -59,11 +59,11 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
       onClose={onClose}
       PaperComponent={Paper}
       fullScreen={fullScreen}
-      // disablePortal
+      disablePortal
     >
       <Wrapper id="overlay-wrapper">
-        <CloseButton color="default">
-          <CloseIcon onClick={onClose} />
+        <CloseButton onClick={onClose} color="default">
+          <CloseIcon />
         </CloseButton>
         {children}
       </Wrapper>

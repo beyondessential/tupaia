@@ -58,16 +58,22 @@ export const EntitySearch = () => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => {
     setIsOpen(false);
+    gaEvent('Search', 'Toggle Expand');
     setSearchValue('');
   };
-  useEffect(() => {
-    gaEvent('Search', 'Change Search');
-  }, [setSearchValue]);
-  useEffect(() => {
-    if (isOpen === true) {
-      gaEvent('Search', 'Open Search Bar');
+
+  const toggleExpandedSearchBar = () => {
+    setIsOpen(!isOpen);
+    gaEvent('Search', 'Toggle Expand');
+    if (isOpen === false) {
+      setSearchValue('');
     }
-  }, [setIsOpen]);
+  };
+
+  const updateSearchValue = (value: string) => {
+    setSearchValue(value);
+    gaEvent('Search', 'Change');
+  };
 
   const children = entities.filter(entity => entity.parentCode === project?.code);
   const grandChildren = entities.filter(entity => entity.parentCode !== project?.code);
@@ -77,20 +83,20 @@ export const EntitySearch = () => {
       <Container>
         <SearchBar
           value={searchValue}
-          onChange={setSearchValue}
-          onFocusChange={setIsOpen}
+          onChange={updateSearchValue}
+          onFocusChange={toggleExpandedSearchBar}
           onClose={onClose}
         />
         {isOpen && (
           <ResultsWrapper>
             {searchValue ? (
-              <SearchResults searchValue={searchValue} onClose={onClose} />
+              <SearchResults searchValue={searchValue} onClose={toggleExpandedSearchBar} />
             ) : (
               <EntityMenu
                 projectCode={projectCode!}
                 children={children}
                 grandChildren={grandChildren}
-                onClose={onClose}
+                onClose={toggleExpandedSearchBar}
               />
             )}
           </ResultsWrapper>

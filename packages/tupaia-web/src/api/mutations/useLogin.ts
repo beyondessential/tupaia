@@ -21,7 +21,6 @@ export const useLogin = () => {
 
   const { closeModal, navigateToModal } = useModal();
 
-  gaEvent('User', 'Log in', 'Attempt');
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
       return post('login', {
@@ -33,6 +32,9 @@ export const useLogin = () => {
       });
     },
     {
+      onMutate: () => {
+        gaEvent('User', 'Log in', 'Attempt');
+      },
       onSuccess: () => {
         gaEvent('User', 'Login', 'success');
         queryClient.invalidateQueries();

@@ -9,9 +9,11 @@ import { gaEvent } from '../../utils';
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
-  gaEvent('User', 'Log out');
 
   return useMutation('logout', () => post('logout'), {
+    onMutate: () => {
+      gaEvent('User', 'Log out');
+    },
     onSuccess: () => {
       queryClient.invalidateQueries();
     },

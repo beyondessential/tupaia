@@ -116,9 +116,7 @@ export const Dashboard = () => {
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
-    if (isExpanded === true) {
-      gaEvent('Pages', 'Toggle Info Panel');
-    }
+    gaEvent('Pages', 'Toggle Info Panel');
   };
 
   return (

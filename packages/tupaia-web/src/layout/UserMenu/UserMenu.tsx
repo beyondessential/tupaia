@@ -45,7 +45,6 @@ export const UserMenu = () => {
 
   const onCloseMenu = () => {
     setMenuOpen(false);
-    gaEvent('Dropdown', 'Close');
   };
 
   const { landingPageUrlSegment } = useParams();

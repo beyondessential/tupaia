@@ -43,10 +43,9 @@ export const ModalRoutes = () => {
 
   const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
   useEffect(() => {
-    if (modal === null) {
-      gaEvent('User', 'Close Modal');
+    if (modal !== null) {
+      gaEvent('User', modal, 'Open Dialog');
     }
-    gaEvent('User', modal, 'Open Modal');
   }, [modal]);
 
   // If no modal param or invalid modal param, return null
@@ -55,6 +54,7 @@ export const ModalRoutes = () => {
 
   const onCloseModal = () => {
     closeModal(modalParams[modal as keyof typeof modalParams]);
+    gaEvent('User', 'Close Dialog');
   };
   return (
     <Modal isOpen={true} onClose={onCloseModal}>

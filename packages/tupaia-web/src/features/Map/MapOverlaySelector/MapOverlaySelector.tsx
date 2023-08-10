@@ -6,16 +6,12 @@
 import React, { useState } from 'react';
 import { DesktopMapOverlaySelector } from './DesktopMapOverlaySelector';
 import { MobileMapOverlaySelector } from './MobileMapOverlaySelector';
-import { gaEvent } from '../../../utils';
 
 export const MapOverlaySelector = () => {
   const [overlayLibraryOpen, setOverlayLibraryOpen] = useState(false);
 
   const toggleOverlayLibrary = () => {
     setOverlayLibraryOpen(!overlayLibraryOpen);
-    if (overlayLibraryOpen === false) {
-      gaEvent('Dropdown', 'Close');
-    }
   };
 
   return (
