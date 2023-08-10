@@ -19,7 +19,6 @@ import {
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
 import { gaEvent } from '../../../utils';
-import { getEnvVarOrDefault } from '@tupaia/utils';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -60,7 +59,7 @@ export const DataVisualsLayer = ({
 
   return (
     <LayerGroup>
-      {measureData.map((measure: any) => {
+      {measureData.map((measure: MeasureData) => {
         const { region, organisationUnitCode: entity, color, name } = measure;
         if (region) {
           return (

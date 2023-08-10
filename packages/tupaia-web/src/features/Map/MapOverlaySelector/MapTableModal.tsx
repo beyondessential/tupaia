@@ -48,10 +48,6 @@ export const MapTableModal = ({ onClose }: any) => {
   const countryObject = data?.find(entity => entity.type === 'country');
   const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
-  // const handleCloseModal = () => {
-  //   setMapModalOpen(false);
-  // };
-
   return (
     <Modal isOpen onClose={onClose}>
       <Wrapper>

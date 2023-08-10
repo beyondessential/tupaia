@@ -17,7 +17,7 @@ import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
 const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayItem) => {
   const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
 
-  const measureOptions = [
+  const serieses = [
     {
       measureLevel,
       type: displayType,
@@ -29,8 +29,7 @@ const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayIt
   return {
     measureCode,
     measureLevel,
-    measureOptions,
-    serieses: measureOptions,
+    serieses,
     measureData: measureDataResponse,
   };
 };

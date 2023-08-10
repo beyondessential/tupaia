@@ -21,7 +21,7 @@ import { useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
 const MapTableButton = styled(IconButton)`
-  margin: -0.625rem -0.625rem -0.625 0;
+  margin: -0.625rem -0.625rem -0.625rem 0;
   padding: 0.5rem 0.325rem 0.5rem 0.75rem;
   color: white;
 `;
@@ -177,9 +177,9 @@ export const DesktopMapOverlaySelector = ({
         <Header>
           <Heading>Map Overlays</Heading>
           {measureData && (
-            <MapTableButton>
+            <MapTableButton onClick={toggleMapTableModal}>
               <Tooltip arrow interactive placement="top" title="Generate Report">
-                <TableAssignmentIcon onClick={toggleMapTableModal} />
+                <TableAssignmentIcon />
               </Tooltip>
             </MapTableButton>
           )}
