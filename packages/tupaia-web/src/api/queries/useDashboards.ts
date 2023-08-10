@@ -21,7 +21,7 @@ export const useDashboards = (
     { enabled, keepPreviousData: enabled },
   );
 
-  let activeDashboard = null;
+  let activeDashboard = undefined;
 
   if (data?.length > 0 && dashboardName) {
     activeDashboard = data?.find(dashboard => dashboard.name === dashboardName);
