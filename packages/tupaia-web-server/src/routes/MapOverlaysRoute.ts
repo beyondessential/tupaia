@@ -27,8 +27,6 @@ type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 // TODO: Can these be moved into types?
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
-// Central server defaults to 100 record limit, this overrides that
-const DEFAULT_PAGE_SIZE = 'ALL';
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
@@ -50,7 +48,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
-      pageSize: pageSize || DEFAULT_PAGE_SIZE,
+      pageSize: pageSize,
     });
 
     if (mapOverlays.length === 0) {
