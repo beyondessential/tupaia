@@ -38,11 +38,14 @@ const MenuWrapper = styled.div`
   }
 `;
 
-const Username = styled.p`
+const Username = styled.p<{
+  $secondaryColor?: string;
+}>`
   font-weight: 400;
   margin: 0;
   width: 100%;
-  color: ${({ theme }) => theme.palette.text.secondary};
+  color: ${({ $secondaryColor }) => $secondaryColor};
+  opacity: 0.5;
   font-size: 1.2rem;
   padding: 0.5rem 0.5em 0.3rem;
 `;
@@ -54,11 +57,11 @@ const MenuHeaderWrapper = styled.div`
 const MenuHeaderContainer = styled.div<{
   $secondaryColor?: string;
 }>`
-  border-bottom: 1px solid ${({ theme }) => theme.palette.text.secondary};
   display: flex;
   justify-content: flex-end;
   padding: 0.8em 0;
   align-items: center;
+  border-bottom: 1px solid ${({ $secondaryColor }) => $secondaryColor};
   color: ${({ $secondaryColor }) => $secondaryColor};
 `;
 
@@ -103,7 +106,9 @@ export const DrawerMenu = ({
       <MenuWrapper>
         <MenuHeaderWrapper>
           <MenuHeaderContainer $secondaryColor={secondaryColor}>
-            {currentUserUsername && <Username>{currentUserUsername}</Username>}
+            {currentUserUsername && (
+              <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
+            )}
             <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
               <MenuCloseIcon $secondaryColor={secondaryColor} />
             </MenuCloseButton>

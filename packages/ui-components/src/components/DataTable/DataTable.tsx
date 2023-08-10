@@ -30,7 +30,7 @@ const getColumnId = ({
     return id;
   }
 
-  if (typeof accessor === 'string') {
+  if (typeof accessor === 'object') {
     return accessor;
   }
 
@@ -47,7 +47,7 @@ interface DataTableProps {
 
 export const DataTable = ({
   columns,
-  data,
+  data: data = [],
   className = '',
   rowLimit = 0,
   total = 0,
@@ -85,10 +85,10 @@ export const DataTable = ({
     <TableContainer className={className}>
       <StyledTable {...getTableProps()} style={{ minWidth: columnsData.length * 140 + 250 }}>
         <TableHead>
-          {headerGroups.map(({ getHeaderGroupProps, headers }, i) => (
+          {headerGroups.map(({ getHeaderGroupProps, headers }) => (
             <TableRow {...getHeaderGroupProps()}>
               {headers.map(
-                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }) => (
+                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }, i) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <TableCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
                     <FlexStart>
@@ -114,7 +114,7 @@ export const DataTable = ({
           })}
         </TableBody>
       </StyledTable>
-      {hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
+      a{hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
     </TableContainer>
   );
 };

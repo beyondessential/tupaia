@@ -97,6 +97,7 @@ export const useMapOverlayReport = (
   const isLegacy = mapOverlay?.legacy;
   const endpoint = isLegacy ? 'legacyMapOverlayReport' : 'report';
 
+  const enabled = !!projectCode && !!entityCode && !!mapOverlayCode;
   return useQuery(
     ['mapOverlayReport', projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
@@ -114,7 +115,8 @@ export const useMapOverlayReport = (
       return formatMapOverlayData(responseData);
     },
     {
-      enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
+      enabled,
+      keepPreviousData: enabled, // Only keep previous data if this is still enabled. This fixes an issue where going back to an entity with no map overlays would show the previous entity's map overlay data
     },
   );
 };

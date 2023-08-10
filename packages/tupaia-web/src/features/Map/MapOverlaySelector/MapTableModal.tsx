@@ -4,21 +4,22 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn } from '@tupaia/ui-components';
+import { Typography } from '@material-ui/core';
+import { MapTable } from '@tupaia/ui-map-components';
+import { useMapOverlayData } from '../utils';
 import { Modal } from '../../../components';
-import { MapTable, MeasureData } from '@tupaia/ui-map-components';
-import { useParams } from 'react-router';
-import { useEntityAncestors, useMapOverlays, useEntitiesWithLocation } from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
-import { processMeasureData } from '../MapOverlays/processMeasureData';
+import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
 
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
+  width: 100%;
 `;
 
-const Title = styled.div.attrs({
+const Title = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 1.25rem;
@@ -40,76 +41,25 @@ const TitleWrapper = styled.div`
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 `;
 
-const useEntitiesByMeasureLevel = (measureLevel?: string) => {
-  const { projectCode, entityCode } = useParams();
-  const getSnakeCase = (measureLevel?: string) => {
-    return measureLevel
-      ?.split(/\.?(?=[A-Z])/)
-      .join('_')
-      .toLowerCase();
-  };
-
-  return useEntitiesWithLocation(
-    projectCode,
-    entityCode,
-    {
-      params: {
-        includeRoot: false,
-        filter: {
-          type: getSnakeCase(measureLevel),
-        },
-      },
-    },
-    { enabled: !!measureLevel },
-  );
-};
-
-export const MapTableModal = ({ mapModalOpen }: any) => {
-  const handleCloseModal = () => {
-    setMapModalOpen(false);
-  };
-
+export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data: entitiesData } = useEntitiesByMeasureLevel(selectedOverlay?.measureLevel);
-  const { data: mapOverlayData } = useMapOverlayReport();
-
-  if (!entitiesData || !mapOverlayData) {
-    return null;
-  }
-
-  const processedMeasureData = processMeasureData({
-    entitiesData,
-    measureData: mapOverlayData.measureData,
-    serieses: mapOverlayData.serieses,
-    hiddenValues: {},
-  });
-
-  if (!processedMeasureData || !mapOverlayData) {
-    return null;
-  }
-
-  const { serieses } = mapOverlayData;
-  const { data = [] } = useEntityAncestors(projectCode, entityCode);
-  const entityArray = data.reverse();
-  const titleText = `${selectedOverlay.name}, ${entityArray[1].name}`;
+  const { serieses, measureData } = useMapOverlayData();
+  const { data } = useEntityAncestors(projectCode, entityCode);
+  const countryObject = data?.find(entity => entity.type === 'country');
+  const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
   return (
-    <>
-      <Modal isOpen onClose={() => handleCloseModal()}>
-        <Wrapper>
-          <TitleWrapper>
-            <Title>{titleText}</Title>
-            <IconButton>
-              <DownloadIcon />
-            </IconButton>
-          </TitleWrapper>
-          <MapTable
-            serieses={serieses}
-            measureData={processedMeasureData as MeasureData[]}
-          ></MapTable>
-        </Wrapper>
-      </Modal>
-    </>
+    <Modal isOpen onClose={onClose}>
+      <Wrapper>
+        <TitleWrapper>
+          <Title>{titleText}</Title>
+          <IconButton>
+            <DownloadIcon />
+          </IconButton>
+        </TitleWrapper>
+        <MapTable serieses={serieses!} measureData={measureData!} />
+      </Wrapper>
+    </Modal>
   );
 };

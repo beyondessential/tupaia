@@ -13,12 +13,16 @@ const FirstColumnCell = styled.span`
 `;
 
 const processColumns = (serieses: Series[]) => {
+  console.log(serieses);
   if (!serieses) {
     return [];
   }
 
   const configColumns = serieses.map(column => {
-    return { accessor: column.key, Header: column.name };
+    return {
+      accessor: (row: any) => row[column.key],
+      Header: column.name,
+    };
   });
 
   return [
@@ -60,6 +64,7 @@ export const getMapTableData = (serieses: Series[], measureData: MeasureData[]) 
     JSON.stringify(serieses),
     JSON.stringify(measureData),
   ]);
+
   return {
     columns,
     data,

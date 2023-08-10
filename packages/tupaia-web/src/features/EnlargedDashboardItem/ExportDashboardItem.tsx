@@ -5,11 +5,12 @@
 
 import React, { ChangeEvent, useContext, useRef } from 'react';
 import styled from 'styled-components';
-import { CircularProgress, FormGroup, Typography } from '@material-ui/core';
+import { FormGroup, Typography } from '@material-ui/core';
 import {
   Button as BaseButton,
   RadioGroup as BaseRadioGroup,
   Checkbox as BaseCheckbox,
+  SpinningLoader,
 } from '@tupaia/ui-components';
 import {
   ACTION_TYPES,
@@ -32,11 +33,6 @@ const Wrapper = styled.div`
 const Container = styled.div`
   flex-grow: 1;
   display: flex;
-`;
-
-const LoadingContainer = styled(Container)`
-  justify-content: center;
-  align-items: center;
 `;
 
 const ExportContentContainer = styled(Container)`
@@ -229,9 +225,7 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
       <ExportContentContainer>
         <LeftColumn>
           {isExporting ? (
-            <LoadingContainer>
-              <CircularProgress />
-            </LoadingContainer>
+            <SpinningLoader />
           ) : (
             <form>
               <Typography>The chart will be exported and downloaded to your browser.</Typography>

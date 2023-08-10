@@ -75,11 +75,13 @@ const LabelWrapper = styled(Box)`
   flex-direction: column;
 `;
 
+type Base64 = string | null | ArrayBuffer;
+
 interface ImageUploadFieldProps {
   name: string;
   imageSrc?: string;
   avatarInitial?: string;
-  onChange?: (file: File | null) => void;
+  onChange?: (encodedImage: Base64) => void;
   onDelete?: () => void;
   label: string;
   buttonLabel?: string;
@@ -92,6 +94,20 @@ interface ImageUploadFieldProps {
   secondaryLabel?: string;
   tooltip?: string;
 }
+
+const createBase64Image = (fileObject: File): Promise<Base64> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(fileObject);
+  });
+};
 
 export const ImageUploadField = React.memo(
   ({
@@ -154,7 +170,13 @@ export const ImageUploadField = React.memo(
       const newErrorMessage = await validateImageSize(image);
       setErrorMessage(newErrorMessage);
       // Only call onChange if image is validated, so the user can't upload anything invalid.
-      if (!newErrorMessage) onChange(image);
+      if (!newErrorMessage) {
+        if (!image) {
+          return onChange(image);
+        }
+        const encodedImage = await createBase64Image(image);
+        onChange(encodedImage);
+      }
     };
 
     return (
