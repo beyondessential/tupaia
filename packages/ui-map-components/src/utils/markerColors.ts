@@ -49,7 +49,7 @@ export function resolveSpectrumColour(
 
   const valueToColor = (COLOR_SCHEME_TO_FUNCTION[scaleColorScheme] ||
     COLOR_SCHEME_TO_FUNCTION[SCALE_TYPE_TO_COLOR_SCHEME[scaleType] as ColorScheme] ||
-    COLOR_SCHEME_TO_FUNCTION[DEFAULT_COLOR_SCHEME]) as (
+    COLOR_SCHEME_TO_FUNCTION[MeasureColorScheme.DEFAULT]) as (
     value: number | null,
     ...args: any[]
   ) => string;

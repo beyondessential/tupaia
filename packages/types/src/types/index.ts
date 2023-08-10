@@ -39,6 +39,7 @@ export {
   IconKey,
   MeasureType,
   ScaleType,
+  MeasureColorScheme,
 } from './models-extra';
 export * from './requests';
 export * from './css';
