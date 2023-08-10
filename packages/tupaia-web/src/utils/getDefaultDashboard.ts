@@ -20,7 +20,8 @@ export const getDefaultDashboard = (
     (dashboards &&
       dashboards?.length > 0 &&
       !dashboards?.find(
-        (dashboard: Dashboard) => dashboard.name === decodeURIComponent(defaultDashboardName),
+        (dashboard: Dashboard) =>
+          dashboard.name.trim() === decodeURIComponent(defaultDashboardName),
       ))
   ) {
     defaultDashboardName = dashboards?.[0]?.name || '';

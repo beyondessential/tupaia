@@ -24,7 +24,8 @@ export const useDashboards = (
   let activeDashboard = undefined;
 
   if (data?.length > 0 && dashboardName) {
-    activeDashboard = data?.find(dashboard => dashboard.name === dashboardName);
+    // trim dashboard name to avoid issues with trailing or leading spaces
+    activeDashboard = data?.find(dashboard => dashboard.name.trim() === dashboardName);
   }
 
   return { dashboards: data, activeDashboard, isLoading, isError };
