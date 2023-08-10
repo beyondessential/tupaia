@@ -103,7 +103,7 @@ describe('fillRows', () => {
     );
   });
 
-  it('can fill rows where a multiple columns have missing values', async () => {
+  it('can fill rows where multiple column combinations have missing values', async () => {
     const transform = buildTestTransform([
       {
         transform: 'fillRows',
@@ -179,7 +179,7 @@ describe('fillRows', () => {
     );
   });
 
-  it('fills rows based on index of last matched value', async () => {
+  it('orders filled rows based on index of last matched value', async () => {
     const transform = buildTestTransform([
       {
         transform: 'fillRows',
