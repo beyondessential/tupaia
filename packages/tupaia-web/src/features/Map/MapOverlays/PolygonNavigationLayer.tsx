@@ -71,7 +71,7 @@ export const PolygonNavigationLayer = () => {
 
   const childEntities = entities.filter((entity: Entity) => entity.parentCode === entityCode);
   const showChildEntities =
-    POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
+    !POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
 
   const showActiveEntity =
     activeEntity && activeEntity?.type !== selectedOverlay?.measureLevel?.toLowerCase();
