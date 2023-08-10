@@ -7,7 +7,7 @@ import { Row } from '../../../types';
 
 const divider = '___';
 
-export const rowValuesKey = (row: Row, columnsOfInterest?: string[]) => {
+export const buildRowKey = (row: Row, columnsOfInterest?: string[]) => {
   if (columnsOfInterest) {
     return columnsOfInterest.map(columnName => row[columnName]).join(divider);
   }

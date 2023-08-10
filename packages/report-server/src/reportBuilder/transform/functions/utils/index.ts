@@ -5,4 +5,4 @@
 
 export * from './transformValidators';
 export { checkColumnsExistInTable } from './checkColumnsExistInTable';
-export { rowValuesKey } from './rowValuesKey';
+export { buildRowKey } from './buildRowKey';

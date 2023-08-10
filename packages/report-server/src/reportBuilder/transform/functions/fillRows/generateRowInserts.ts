@@ -6,7 +6,7 @@
 import { FieldValue, Row } from '../../../types';
 import { TransformParser } from '../../parser';
 import { TransformTable } from '../../table';
-import { rowValuesKey } from '../utils';
+import { buildRowKey } from '../utils';
 import { ExpectedRows } from './ExpectedRows';
 
 export const generateRowInserts = (
@@ -21,7 +21,7 @@ export const generateRowInserts = (
   const columnsToCheck = requiredColumnValues.map(({ column }) => column);
   const expectedRows = new ExpectedRows(requiredColumnValues);
   const existingColumnValueIndexes = Object.fromEntries(
-    table.getRows().map((row, index) => [rowValuesKey(row, columnsToCheck), index]),
+    table.getRows().map((row, index) => [buildRowKey(row, columnsToCheck), index]),
   );
 
   const rowInserts: { row: Row; index: number }[] = [];
@@ -29,7 +29,7 @@ export const generateRowInserts = (
   let inserts = 0;
   while (expectedRows.hasNext()) {
     const row = expectedRows.next();
-    const rowKey = rowValuesKey(row, columnsToCheck);
+    const rowKey = buildRowKey(row, columnsToCheck);
     if (existingColumnValueIndexes[rowKey] !== undefined) {
       // row already in table, update offset to start inserting from that row
       const newOffset = existingColumnValueIndexes[rowKey] + 1;
