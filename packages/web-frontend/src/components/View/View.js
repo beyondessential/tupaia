@@ -106,7 +106,8 @@ export class View extends Component {
       viewContent.type === 'chart' ||
       getIsMatrix(viewContent) ||
       viewContent.viewType === 'dataDownload' ||
-      viewContent.viewType === 'filesDownload'
+      viewContent.viewType === 'filesDownload' ||
+      (viewContent.viewType === 'qrCodeVisual' && viewContent.data.length > 1)
     );
   }
 

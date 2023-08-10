@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { QrCodeVisual } from './QrCodeVisual';
 import { DownloadFilesVisual } from './DownloadFilesVisual';
 import { ChartWrapper } from './ChartWrapper';
 import { ColorListWrapper } from './ColorListWrapper';
@@ -30,6 +31,7 @@ const SINGLE_VALUE_COMPONENTS = {
 };
 
 const VIEW_TYPES = {
+  qrCodeVisual: QrCodeVisual,
   filesDownload: DownloadFilesVisual,
   dataDownload: DataDownloadWrapper,
   multiValue: MultiValueWrapper,
