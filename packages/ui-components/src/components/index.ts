@@ -33,6 +33,7 @@ export * from './HomeButton';
 export * from './IconButton';
 export * from './LoadingContainer';
 export * from './NavBar';
+export * from './QrCode'
 export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './ReferenceTooltip';
