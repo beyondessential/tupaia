@@ -37,6 +37,8 @@ export {
   ChartConfig,
   MapOverlayConfig,
   IconKey,
+  MeasureType,
+  ScaleType,
 } from './models-extra';
 export * from './requests';
 export * from './css';

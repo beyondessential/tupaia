@@ -6,9 +6,9 @@
 
 import moment from 'moment';
 import { blue, red, green } from '@material-ui/core/colors';
+import { ScaleType } from '@tupaia/types';
 import {
   BREWER_PALETTE,
-  SCALE_TYPES,
   HEATMAP_UNKNOWN_COLOR,
   DEFAULT_COLOR_SCHEME,
   REVERSE_DEFAULT_COLOR_SCHEME,
@@ -16,7 +16,7 @@ import {
   TIME_COLOR_SCHEME,
   GPI_COLOR_SCHEME,
 } from '../constants';
-import { Color, ColorKey, ScaleType } from '../types';
+import { Color, ColorKey, ScaleTypeLiteral } from '../types';
 
 const COLOR_SCHEME_TO_FUNCTION = {
   [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
@@ -27,12 +27,12 @@ const COLOR_SCHEME_TO_FUNCTION = {
 };
 
 const SCALE_TYPE_TO_COLOR_SCHEME = {
-  [SCALE_TYPES.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
-  [SCALE_TYPES.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
-  [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
-  [SCALE_TYPES.NEUTRAL_REVERSE]: REVERSE_DEFAULT_COLOR_SCHEME,
-  [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
-  [SCALE_TYPES.GPI]: GPI_COLOR_SCHEME,
+  [ScaleType.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
+  [ScaleType.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
+  [ScaleType.NEUTRAL]: DEFAULT_COLOR_SCHEME,
+  [ScaleType.NEUTRAL_REVERSE]: REVERSE_DEFAULT_COLOR_SCHEME,
+  [ScaleType.TIME]: TIME_COLOR_SCHEME,
+  [ScaleType.GPI]: GPI_COLOR_SCHEME,
 };
 
 export type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
@@ -42,14 +42,14 @@ export type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
  *
  */
 export function resolveSpectrumColour(
-  scaleType: ScaleType,
+  scaleType: ScaleTypeLiteral,
   scaleColorScheme: ColorScheme,
   value: number | null, // a number in range [0..1] representing percentage or a string of a date within a range specified by [min, max]
   min: number | string, // the lowest number or a string representing earliest date in a range
   max: number | string, // the highest number or a string representing latest date in a range
   noDataColour?: string, // css hsl string, e.g. `hsl(value, 100%, 50%)` for null value
 ): string {
-  if (value === null || (isNaN(value) && scaleType !== SCALE_TYPES.TIME))
+  if (value === null || (isNaN(value) && scaleType !== ScaleType.TIME))
     return noDataColour || HEATMAP_UNKNOWN_COLOR;
 
   const valueToColor = (COLOR_SCHEME_TO_FUNCTION[scaleColorScheme] ||
@@ -60,24 +60,24 @@ export function resolveSpectrumColour(
   ) => string;
 
   switch (scaleType) {
-    case SCALE_TYPES.PERFORMANCE_DESC: {
+    case ScaleType.PERFORMANCE_DESC: {
       const percentage =
         value || value === 0
           ? 1 - normaliseToPercentage(value, min as number, max as number)
           : null;
       return valueToColor(percentage as number);
     }
-    case SCALE_TYPES.TIME:
+    case ScaleType.TIME:
       // if the value passed is a date locate it in the [min, max] range
       if (isNaN(value))
         return valueToColor(getTimeProportion(value, min as string, max as string), noDataColour);
       return valueToColor(value, noDataColour);
 
-    case SCALE_TYPES.GPI:
+    case ScaleType.GPI:
       return valueToColor(value, min, max);
-    case SCALE_TYPES.PERFORMANCE:
-    case SCALE_TYPES.NEUTRAL:
-    case SCALE_TYPES.NEUTRAL_REVERSE:
+    case ScaleType.PERFORMANCE:
+    case ScaleType.NEUTRAL:
+    case ScaleType.NEUTRAL_REVERSE:
     default:
       return valueToColor(
         value || value === 0 ? normaliseToPercentage(value, min as number, max as number) : null,

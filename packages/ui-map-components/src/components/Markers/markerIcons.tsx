@@ -326,13 +326,13 @@ type IconType = {
   [key: string]: unknown;
 };
 
-export const SPECTRUM_ICON = 'fade';
-export const UNKNOWN_ICON = 'empty';
-export const DEFAULT_ICON = 'healthPin';
-export const LEGEND_COLOR_ICON = 'circle';
-export const LEGEND_SHADING_ICON = 'square';
-export const LEGEND_RADIUS_ICON = 'radius';
-export const HIDDEN_ICON = 'hidden';
+export const SPECTRUM_ICON = IconKey.FADE;
+export const UNKNOWN_ICON = IconKey.EMPTY;
+export const DEFAULT_ICON = IconKey.HEALTH_PIN;
+export const LEGEND_COLOR_ICON = IconKey.CIRCLE;
+export const LEGEND_SHADING_ICON = IconKey.SQUARE;
+export const LEGEND_RADIUS_ICON = IconKey.RADIUS;
+export const HIDDEN_ICON = IconKey.HIDDEN;
 
 function toLeaflet(icon: IconType, color?: string, scale: number = 1): L.DivIcon {
   const {

@@ -16,7 +16,7 @@ export type MapOverlayConfig = {
   disableRenameLegend?: boolean;
   displayLevel?: string; // "District"/"SubDistrict"
   displayOnLevel?: string; // "District"/"SubDistrict"
-  displayType?: string; // ui-map-components/constants MEASURE_TYPES
+  displayType?: MeasureType;
   displayedValueKey?: string; // "originalValue"/"schoolTypeName"/"name"/"facilityTypeName"
   hideByDefault?: Record<string, boolean>;
   hideFromLegend?: boolean;
@@ -35,7 +35,7 @@ export type MapOverlayConfig = {
   measureConfig?: Record<
     string,
     {
-      type: string; // ui-map-components/constants MEASURE_TYPES
+      type: MeasureType;
       measureLevel?: string; // "District"/"SubDistrict"
       values?: InlineValue[];
       sortOrder?: number;
@@ -58,7 +58,7 @@ export type MapOverlayConfig = {
     };
   };
   scaleColorScheme?: string; // ui-map-components/constants/colors *_SCHEME
-  scaleType?: string; // ui-map-components/constants SCALE_TYPES
+  scaleType?: ScaleType;
   valueType?: string; // formatDataValueByType VALUE_TYPES
   values?: InlineValue[];
 };
@@ -92,4 +92,23 @@ export enum IconKey {
   HELP = 'help',
   CHECKBOX = 'checkbox',
   HIDDEN = 'hidden',
+}
+
+export enum ScaleType {
+  PERFORMANCE = 'performance',
+  PERFORMANCE_DESC = 'performanceDesc',
+  NEUTRAL = 'neutral',
+  NEUTRAL_REVERSE = 'neutralReverse',
+  TIME = 'time',
+  GPI = 'gpi',
+}
+
+export enum MeasureType {
+  ICON = 'icon',
+  COLOR = 'color',
+  RADIUS = 'radius',
+  SPECTRUM = 'spectrum',
+  SHADING = 'shading',
+  SHADED_SPECTRUM = 'shaded-spectrum',
+  POPUP_ONLY = 'popup-only',
 }

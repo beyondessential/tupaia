@@ -1,7 +1,7 @@
 import { VALUE_TYPES } from '@tupaia/utils';
 import { IconKey } from '@tupaia/types';
 import { ColorScheme } from '../utils';
-import { MeasureType, OrgUnitCode, ScaleType } from './types';
+import { MeasureTypeLiteral, OrgUnitCode, ScaleTypeLiteral } from './types';
 import { ValueOf } from './helpers';
 
 const ValueTypes = { ...VALUE_TYPES } as const;
@@ -28,7 +28,7 @@ export type BaseSeries = {
   values: SeriesValue[];
   valueMapping: SeriesValueMapping;
   hideFromLegend?: boolean;
-  type: MeasureType;
+  type: MeasureTypeLiteral;
   hideByDefault?: Record<string, boolean>;
   displayedValueKey?: string;
   color: string;
@@ -51,7 +51,7 @@ export type SpectrumSeries = BaseSeries & {
   scaleColorScheme: ColorScheme;
   min: number;
   max: number;
-  scaleType: ScaleType;
+  scaleType: ScaleTypeLiteral;
   dataKey?: string;
   noDataColour?: string;
   scaleBounds?: {
