@@ -114,7 +114,7 @@ export const DataTable = ({
           })}
         </TableBody>
       </StyledTable>
-      a{hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
+      {hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
     </TableContainer>
   );
 };
