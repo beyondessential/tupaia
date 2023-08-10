@@ -29,7 +29,7 @@ function initPersistor(store) {
 
 export const PersistGateProvider = ({ children, store }) => {
   // Do not persist state for tests
-  if (import.meta.env.mode === 'test') {
+  if (process.env.NODE_ENV === 'test') {
     return children;
   }
   return <PersistGate persistor={initPersistor(store)}>{children}</PersistGate>;

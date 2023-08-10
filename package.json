@@ -37,15 +37,15 @@
     "package:build:js": "cd $INIT_CWD && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:build:react-scripts": "cd $INIT_CWD && SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
     "package:build:types": "cd $INIT_CWD && tsc",
+    "package:build:vite": "cd $INIT_CWD && vite build --config \"../../vite.config.js\"",
+    "package:build:lib": "cd $INIT_CWD && babel src --out-dir lib --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:lint": "cd $INIT_CWD && eslint .",
     "package:test": "cd $INIT_CWD && jest",
     "package:test:withdb": "cd $INIT_CWD && yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest",
     "package:start:react-scripts": "cd $INIT_CWD && SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "package:start:backend-start-dev": "cd $INIT_CWD && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
-    "package:eject": "cd $INIT_CWD && react-scripts eject",
-    "package:build:vite": "cd $INIT_CWD && vite build --config \"../../vite.config.js\"",
     "package:start:vite": "cd $INIT_CWD && vite --config \"../../vite.config.js\"",
-    "package:build:lib": "cd $INIT_CWD && babel src --out-dir lib --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\""
+    "package:eject": "cd $INIT_CWD && react-scripts eject"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",
