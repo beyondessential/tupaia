@@ -13,8 +13,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExportIcon from '@material-ui/icons/GetApp';
 import { FileUploadField } from '../widgets/InputField/FileUploadField';
-import { download } from '../VizBuilderApp/api';
 import { IconButton, ModalContentProvider } from '../widgets';
+import { useApi } from '../utilities/ApiProvider';
 
 const Container = styled.div`
   padding-bottom: 1.2rem;
@@ -113,8 +113,9 @@ export const FileQuestionField = ({ value: uniqueFileName, onChange, label, maxS
     });
   };
 
+  const api = useApi();
   const downloadFile = async () => {
-    await download(`downloadFiles?uniqueFileNames=${uniqueFileName}`, undefined, fileName);
+    await api.download(`downloadFiles`, { uniqueFileNames: uniqueFileName }, fileName);
   };
 
   return (
