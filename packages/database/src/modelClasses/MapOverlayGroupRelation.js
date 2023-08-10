@@ -48,4 +48,13 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
       },
     });
   }
+
+  async findParentRelationTree(childIds) {
+    return this.database.findWithParents(
+      this.databaseType,
+      childIds,
+      'child_id',
+      'map_overlay_group_id',
+    );
+  }
 }
