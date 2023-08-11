@@ -4,19 +4,30 @@
  */
 import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: ${({ theme }) => theme.panel.secondaryBackground};
+  justify-content: flex-start;
+  align-items: flex-end;
+  background-color: #202124;
   width: 100%;
   padding: 1rem;
   font-size: 1rem;
+`;
+
+const ItemButton = styled(Menu)`
+  margin: 0 auto;
+  margin-top: 3.125rem;
+  margin-left: 1.1rem;
+  color: #2e2f33;
+`;
+
+const StyledMenuItem = styled(MenuItem)`
+  background-color: #2e2f33;
 `;
 
 interface DashboardMenuItemProps {
@@ -31,9 +42,9 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   const link = { ...location, pathname: `/${projectCode}/${entityCode}/${dashboardName}` };
 
   return (
-    <MenuItem to={link} onClick={onClose} component={Link}>
+    <StyledMenuItem to={link} onClick={onClose} component={Link}>
       {dashboardName}
-    </MenuItem>
+    </StyledMenuItem>
   );
 };
 
@@ -59,11 +70,11 @@ export const DashboardMenu = ({
       {activeDashboard && (
         <MenuButton onClick={handleClickListItem}>
           {activeDashboard?.name}
-          <ArrowDropDownIcon />
+          <KeyboardArrowDownIcon />
         </MenuButton>
       )}
 
-      <Menu
+      <ItemButton
         id="dashboards-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -73,7 +84,7 @@ export const DashboardMenu = ({
         {dashboards.map(({ name, code }) => (
           <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
-      </Menu>
+      </ItemButton>
     </>
   );
 };

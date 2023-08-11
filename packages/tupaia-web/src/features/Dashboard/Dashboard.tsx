@@ -88,11 +88,13 @@ const Title = styled(Typography)`
 const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
   display: ${({ $isExpanded }) =>
     $isExpanded
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
-  background-color: ${({ theme }) => theme.panel.secondaryBackground};
+  background-color: #202124;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 0.5rem;
 `;

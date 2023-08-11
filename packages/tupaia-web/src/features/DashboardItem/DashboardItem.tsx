@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   max-width: 100%;
   position: relative;
   padding: 1rem 1rem;
-  background-color: ${({ theme }) => theme.palette.background.default};
+  background-color: #2e2f33;
 `;
 
 const Container = styled.div`

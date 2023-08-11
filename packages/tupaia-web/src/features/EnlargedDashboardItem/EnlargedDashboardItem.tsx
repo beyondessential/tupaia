@@ -6,6 +6,7 @@
 import React, { useReducer } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
+import { Paper as MuiPaper } from '@material-ui/core';
 import { ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
@@ -30,6 +31,11 @@ const Wrapper = styled.div<{
   min-height: 25rem;
   display: flex;
   flex-direction: column;
+  background-color: #2e2f33;
+`;
+
+const Paper = styled(MuiPaper)`
+  background-color: red;
 `;
 
 /**
@@ -77,7 +83,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     ((reportData?.data?.length && reportData?.data?.length > 20) || type === 'matrix');
 
   return (
-    <Modal isOpen onClose={handleCloseModal}>
+    <Modal isOpen onClose={handleCloseModal} PaperComponent={Paper}>
       <ExportContext.Provider value={exportConfig}>
         <ExportDispatchContext.Provider value={dispatch}>
           <ExportButton />
