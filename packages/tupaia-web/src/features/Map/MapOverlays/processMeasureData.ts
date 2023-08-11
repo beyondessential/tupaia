@@ -17,15 +17,16 @@ interface processMeasureDataProps {
   entitiesData: Entity[];
   serieses: Series[];
   hiddenValues: LegendProps['hiddenValues'];
+  includeEntitiesWithoutCoordinates?: boolean; // this is for differentiating between the processing of data for the table and for the map
 }
 export const processMeasureData = ({
   measureData,
   entitiesData,
   serieses,
   hiddenValues,
+  includeEntitiesWithoutCoordinates,
 }: processMeasureDataProps) => {
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
-
   const entityMeasureData = entitiesData.map((entity: Entity) => {
     const measure = measureData.find(
       (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
@@ -58,6 +59,10 @@ export const processMeasureData = ({
 
   // Filter hidden and invalid values and sort measure data
   return entityMeasureData
-    .filter(({ coordinates, region }) => region || (coordinates && coordinates?.length === 2))
+    .filter(({ coordinates, region }) =>
+      includeEntitiesWithoutCoordinates
+        ? true
+        : region || (coordinates && coordinates?.length === 2),
+    )
     .filter(({ isHidden }) => !isHidden);
 };

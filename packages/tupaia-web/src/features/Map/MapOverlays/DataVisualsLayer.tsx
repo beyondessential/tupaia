@@ -21,7 +21,7 @@ import { useMapOverlayData, useNavigateToEntity } from '../utils';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
-  :hover {
+  &:hover {
     fill-opacity: 0.8;
   }
 `;

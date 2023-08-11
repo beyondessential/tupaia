@@ -23,6 +23,7 @@ import {
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
+import { SingleProject } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -107,10 +108,7 @@ const Loader = styled.div`
  * This is the projects view that is shown when the projects modal is open
  */
 export const ProjectsModal = () => {
-  const {
-    data: { projects },
-    isFetching,
-  } = useProjects();
+  const { data, isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
   return (
@@ -132,19 +130,25 @@ export const ProjectsModal = () => {
         ) : (
           <ProjectsGrid>
             <ProjectCardList
-              projects={projects}
+              projects={data?.projects ?? []}
               actions={{
                 [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                   project: { code, homeEntityCode, dashboardGroupName },
+                }: {
+                  project: SingleProject;
                 }) => (
                   <ProjectAllowedLink
                     url={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${dashboardGroupName}` : ''
+                      dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                     }`}
                   />
                 ),
                 [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
-                [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
+                [PROJECT_ACCESS_TYPES.DENIED]: ({
+                  project: { code },
+                }: {
+                  project: SingleProject;
+                }) => {
                   if (isLoggedIn) {
                     return (
                       <ProjectDeniedLink

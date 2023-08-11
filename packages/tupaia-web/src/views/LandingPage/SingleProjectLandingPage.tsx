@@ -78,7 +78,7 @@ export function SingleProjectLandingPage({
   const urls = {
     [PROJECT_ACCESS_TYPES.PENDING]: '',
     [PROJECT_ACCESS_TYPES.ALLOWED]: `/${code}/${homeEntityCode}${
-      dashboardGroupName ? `/${dashboardGroupName}` : ''
+      dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
     }`,
     [PROJECT_ACCESS_TYPES.DENIED]: isLoggedIn
       ? `?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`
