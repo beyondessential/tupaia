@@ -24732,31 +24732,14 @@ export const MapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"measureLevel": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"enum": [
-							"Country",
-							"Disaster",
-							"District",
-							"Facility",
-							"SubDistrict"
-						],
-						"type": "string"
-					}
-				},
-				{
-					"enum": [
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"SubDistrict"
-					],
-					"type": "string"
-				}
-			]
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
 		},
 		"name": {
 			"type": "string"
@@ -24953,7 +24936,10 @@ export const MapOverlayConfigSchema = {
 		}
 	},
 	"type": "object",
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"displayType"
+	]
 } 
 
 export const InlineValueSchema = {
@@ -34156,31 +34142,14 @@ export const MapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"measureLevel": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"enum": [
-									"Country",
-									"Disaster",
-									"District",
-									"Facility",
-									"SubDistrict"
-								],
-								"type": "string"
-							}
-						},
-						{
-							"enum": [
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"SubDistrict"
-							],
-							"type": "string"
-						}
-					]
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
 				},
 				"name": {
 					"type": "string"
@@ -34376,7 +34345,10 @@ export const MapOverlaySchema = {
 					}
 				}
 			},
-			"additionalProperties": false
+			"additionalProperties": false,
+			"required": [
+				"displayType"
+			]
 		},
 		"country_codes": {
 			"type": "array",
@@ -43592,31 +43564,14 @@ export const TranslatedMapOverlaySchema = {
 			"additionalProperties": false
 		},
 		"measureLevel": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"enum": [
-							"Country",
-							"Disaster",
-							"District",
-							"Facility",
-							"SubDistrict"
-						],
-						"type": "string"
-					}
-				},
-				{
-					"enum": [
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"SubDistrict"
-					],
-					"type": "string"
-				}
-			]
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
 		},
 		"noDataColour": {
 			"type": "string"
@@ -43816,6 +43771,7 @@ export const TranslatedMapOverlaySchema = {
 	"type": "object",
 	"required": [
 		"code",
+		"displayType",
 		"name"
 	]
 } 
