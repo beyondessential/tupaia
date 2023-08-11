@@ -16,9 +16,6 @@ const Text = styled(Typography)`
   text-align: center;
   margin: 0.3rem 0 1rem 0;
   line-height: 1.4;
-  & + & {
-    color: ${({ theme }) => theme.palette.text.secondary};
-  }
 `;
 
 export const NoDataAtLevelDashboard = () => {
