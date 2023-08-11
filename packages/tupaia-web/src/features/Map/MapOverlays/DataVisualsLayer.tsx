@@ -64,7 +64,7 @@ export const DataVisualsLayer = ({
         const { region, organisationUnitCode: entity, color, name, code } = measure;
         if (region) {
           if (code === entityCode) {
-            return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctlyt shaded etc.
+            return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
           }
           return (
             <ShadedPolygon
