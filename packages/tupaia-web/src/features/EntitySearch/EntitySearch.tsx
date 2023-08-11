@@ -66,7 +66,7 @@ export const EntitySearch = () => {
     const updatedOpenValue = !isOpen;
     setIsOpen(updatedOpenValue);
     gaEvent('Search', 'Toggle Expand');
-    if (isOpen === false) {
+    if (updatedOpenValue === false) {
       setSearchValue('');
     }
   };
