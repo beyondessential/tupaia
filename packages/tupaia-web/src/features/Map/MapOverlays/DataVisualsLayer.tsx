@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import camelCase from 'camelcase';
@@ -18,6 +18,7 @@ import {
 } from '@tupaia/ui-map-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
+import { gaEvent } from '../../../utils';
 
 const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
@@ -34,7 +35,17 @@ export const DataVisualsLayer = ({
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { serieses, measureData } = useMapOverlayData(hiddenValues);
+  const { serieses, measureData, activeEntity, selectedOverlay } = useMapOverlayData(hiddenValues);
+  useEffect(() => {
+    if (selectedOverlay !== undefined) {
+      gaEvent('Map Overlays', 'Change', selectedOverlay?.name);
+    }
+  }, [selectedOverlay?.name]);
+  useEffect(() => {
+    if (activeEntity !== undefined) {
+      gaEvent('Entity', 'Change', activeEntity?.name);
+    }
+  }, [activeEntity?.name]);
 
   // Don't show the marker layer if the entity type doesn't match the measure level
   const firstSeries = serieses?.find((series: any) => series.displayOnLevel);
