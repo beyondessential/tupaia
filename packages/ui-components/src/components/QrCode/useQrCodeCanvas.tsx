@@ -1,16 +1,13 @@
 import React from 'react';
 import { toDataURL } from 'qrcode';
 
-const CODE_SIZE = 300; // width/height at browser display size
-const CANVAS_SIZE = 395; // width/height at browser display size
-const DOWNLOAD_IMAGE_SCALE = 2; // render the canvas at double size to get a larger and clearer image download
-const SCALED_CODE_SIZE = CODE_SIZE * DOWNLOAD_IMAGE_SCALE;
-const SCALED_CANVAS_SIZE = CANVAS_SIZE * DOWNLOAD_IMAGE_SCALE;
+const CANVAS_WIDTH = 1400;
+const CANVAS_HEIGHT = 500;
 
 export const getCanvasUrlForDownload = async (humanReadableId: string, qrCodeContents: string) => {
   const canvas = document.createElement('canvas');
-  canvas.setAttribute('width', `${SCALED_CANVAS_SIZE}`);
-  canvas.setAttribute('height', `${SCALED_CANVAS_SIZE}`);
+  canvas.setAttribute('width', `${CANVAS_WIDTH}`);
+  canvas.setAttribute('height', `${CANVAS_HEIGHT}`);
 
   const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
   if (!ctx) {
@@ -18,29 +15,26 @@ export const getCanvasUrlForDownload = async (humanReadableId: string, qrCodeCon
   }
   // Background
   ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, SCALED_CANVAS_SIZE, SCALED_CANVAS_SIZE);
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Add header text
-  const textY = 60 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
+  const textY = 250; // Make sure to avoid the QR code "quiet zone"
+  const textX = 75;
   ctx.fillStyle = 'black';
-  ctx.font = `${24 * DOWNLOAD_IMAGE_SCALE}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText(humanReadableId, SCALED_CANVAS_SIZE / 2, textY);
+  ctx.font = `105px monospace`;
+  ctx.fillText(humanReadableId, textX, textY);
 
   // Add qr code
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const qrDataUrl = await toDataURL(qrCodeContents, {
-    width: SCALED_CODE_SIZE,
-    height: SCALED_CODE_SIZE,
+    width: CANVAS_HEIGHT,
+    height: CANVAS_HEIGHT,
   });
   const img = new Image();
-  const codeX = (SCALED_CANVAS_SIZE - SCALED_CODE_SIZE) / 2;
-  const codeY = 65 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
-  // img.onload = () => {
-  //   ctx.drawImage(img, codeX, codeY)
+  const codeX = 900;
+  const codeY = 0; // Make sure to avoid the QR code "quiet zone"
 
-  // };
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   img.src = qrDataUrl;
@@ -66,8 +60,8 @@ export const drawQrCodeCanvas = async (
   if (!canvas) {
     return null;
   }
-  canvas.setAttribute('width', `${SCALED_CANVAS_SIZE}`);
-  canvas.setAttribute('height', `${SCALED_CANVAS_SIZE}`);
+  canvas.setAttribute('width', `${CANVAS_WIDTH}`);
+  canvas.setAttribute('height', `${CANVAS_HEIGHT}`);
 
   const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
   if (!ctx) {
@@ -75,25 +69,25 @@ export const drawQrCodeCanvas = async (
   }
   // Background
   ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, SCALED_CANVAS_SIZE, SCALED_CANVAS_SIZE);
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Add header text
-  const textY = 60 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
+  const textY = 250; // Make sure to avoid the QR code "quiet zone"
+  const textX = 75;
   ctx.fillStyle = 'black';
-  ctx.font = `${39 * DOWNLOAD_IMAGE_SCALE}px monospace`;
-  ctx.textAlign = 'center';
-  ctx.fillText(humanReadableId, SCALED_CANVAS_SIZE / 2, textY);
+  ctx.font = `105px monospace`;
+  ctx.fillText(humanReadableId, textX, textY);
 
   // Add qr code
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const qrDataUrl = await toDataURL(qrCodeContents, {
-    width: SCALED_CODE_SIZE,
-    height: SCALED_CODE_SIZE,
+    width: CANVAS_HEIGHT,
+    height: CANVAS_HEIGHT,
   });
   const img = new Image();
-  const codeX = (SCALED_CANVAS_SIZE - SCALED_CODE_SIZE) / 2;
-  const codeY = 65 * DOWNLOAD_IMAGE_SCALE; // Make sure to avoid the QR code "quiet zone"
+  const codeX = 900;
+  const codeY = 0; // Make sure to avoid the QR code "quiet zone"
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore

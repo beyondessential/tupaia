@@ -18,6 +18,7 @@ interface QrCodeImageProps {
   humanReadableId: string;
   width?: number | undefined;
   margin?: number | string | undefined;
+  padding?: number | string | undefined;
 }
 
 export const QrCodeImage = ({
@@ -25,6 +26,7 @@ export const QrCodeImage = ({
   humanReadableId,
   width = undefined,
   margin = 'auto',
+  padding = undefined,
 }: QrCodeImageProps) => {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
@@ -38,6 +40,7 @@ export const QrCodeImage = ({
         justifyContent: 'center',
         width,
         margin,
+        padding,
       }}
     >
       <StyledCanvas ref={ref} />
