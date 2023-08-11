@@ -16,7 +16,7 @@ export type MapOverlayConfig = {
   disableRenameLegend?: boolean;
   displayLevel?: EntityLevel;
   displayOnLevel?: EntityLevel;
-  displayType?: MeasureType;
+  displayType: MeasureType;
   displayedValueKey?: DisplayedValueType;
   hideByDefault?: Record<string, boolean>;
   hideFromLegend?: boolean;
@@ -42,7 +42,7 @@ export type MapOverlayConfig = {
       hideFromLegend?: boolean;
     }
   >;
-  measureLevel?: EntityLevel | EntityLevel[];
+  measureLevel?: EntityLevel;
   name?: string;
   noDataColour?: string; // Hex code string e.g. #99237f
   periodGranularity?: VizPeriodGranularity;
