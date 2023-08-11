@@ -63,7 +63,8 @@ export const EntitySearch = () => {
   };
 
   const toggleExpandedSearchBar = () => {
-    setIsOpen(!isOpen);
+    const updatedOpenValue = !isOpen;
+    setIsOpen(updatedOpenValue);
     gaEvent('Search', 'Toggle Expand');
     if (isOpen === false) {
       setSearchValue('');
