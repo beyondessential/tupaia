@@ -14,46 +14,43 @@ import {
   FormGroup,
   Typography,
   Grid,
-  Container
+  Container,
 } from '@material-ui/core';
+import { ViewConfig } from '@tupaia/types';
 import CheckboxIcon from '@material-ui/icons/CheckBox';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { NoData } from '../NoData';
 import { QrCodeImage } from './QrCodeImage';
-import { getCanvasUrlForDownload } from './useQrCodeCanvas'
+import { getCanvasUrlForDownload } from './useQrCodeCanvas';
 
 const FormContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0px 40px 30px 40px;
+  padding: 0 2.5rem 1.875rem 2.5rem;
 `;
 
 const Error = styled.div`
   color: ${props => props.theme.palette.error.main};
-  margin-top: 10px;
+  margin-top: 0.625rem;
   text-align: center;
 `;
 
-const StyledCanvas = styled.canvas`
-  outline: 1px solid #dedede;
-  width: 500px;
-  height: 500px;
-`;
-
 interface DownloadQrCodeVisualProps {
-  downloadImages: (qrCodeCanvasUrlsWithFileNames: {name: string, url: string | undefined}[]) => Promise<void>;
-  config?: object;
+  downloadImages: (
+    qrCodeCanvasUrlsWithFileNames: { name: string; url: string | null }[],
+  ) => Promise<void>;
+  config?: ViewConfig;
   data?: { name: string; value: string }[];
   isLoading?: boolean;
   isEnlarged?: boolean;
-  onClose: () => void
+  onClose: () => void;
   className?: string;
   error?: string;
 }
 
 export const QrCodeVisual = ({
   downloadImages,
-  config = {},
+  config,
   data: options = [],
   isLoading,
   isEnlarged,
@@ -61,87 +58,72 @@ export const QrCodeVisual = ({
   className,
   error,
 }: DownloadQrCodeVisualProps) => {
-
-  const noneSelected = Object.fromEntries(
-    options.map(({ value }) => [value, false]),
-  );
+  const noneSelected = Object.fromEntries(options.map(({ value }) => [value, false]));
   const [selectedQrCodes, setSelectedQrCodes] = useState(noneSelected);
 
   const toggleSelectFile = (value: string) =>
-  setSelectedQrCodes({ ...selectedQrCodes, [value]: !selectedQrCodes[value] });
+    setSelectedQrCodes({ ...selectedQrCodes, [value]: !selectedQrCodes[value] });
 
   const [isDownloading, setIsDownloading] = useState(false);
 
   const downloadSelectedQrCodes = async () => {
-
     setIsDownloading(true);
 
     const selectedItemValues = Object.entries(selectedQrCodes)
-      .filter(([, isSelected]) => isSelected).map(([itemValue]) => itemValue)
+      .filter(([, isSelected]) => isSelected)
+      .map(([itemValue]) => itemValue);
 
-    const qrCodeCanvasUrlsWithFileNames = await Promise.all(options
-      .filter(({value, name}) => selectedItemValues.includes(value)
-    )
-      .map(async ({name, value}) => {
-      const url = await getCanvasUrlForDownload(name, value)
-      return {
-        url,
-        name
-      }
-    }));
-    console.log('qrCodeCanvasUrls',qrCodeCanvasUrlsWithFileNames)
+    const qrCodeCanvasUrlsWithFileNames = await Promise.all(
+      options
+        .filter(({ value }) => selectedItemValues.includes(value))
+        .map(async ({ name, value }) => {
+          const url = await getCanvasUrlForDownload(name, value);
+          return {
+            url,
+            name,
+          };
+        }),
+    );
+
     await downloadImages(qrCodeCanvasUrlsWithFileNames);
     setIsDownloading(false);
   };
 
   if (!isEnlarged) {
-    if(options.length > 1) {
+    if (options.length > 1) {
       return (
         <Container className={className} maxWidth="sm">
-          <p style={{color: 'white', textAlign: 'center'}}>QR Code</p>
-          {
-            options.map(({ name, value }, index) => {
-              if(index > 5) {
-                return
-              }
-              return (
-                <Grid 
-                  container 
-                  style={{paddingBottom: 5}}
-                  alignContent="center"
-                >
-                  <Grid item alignItems='flex-end' xs={6}>
+          <p style={{ color: 'white', textAlign: 'center' }}>QR Code</p>
+          {options
+            .filter((option, index) => index < 6)
+            .map(({ name, value }) => (
+              <Grid container style={{ paddingBottom: 5 }} alignContent="center">
+                <Grid item alignItems="flex-end" xs={6}>
                   <QrCodeImage
-                      qrCodeContents={value}
-                      humanReadableId={name}
-                      width={50}
-                      margin="auto"
-                    />
-                  </Grid> 
-                  <Grid item alignItems='flex-start' xs={6} style={{ justifyItems: 'center'}}>
-                    <Typography variant="body2" style={{color: 'white'}}>
-                      {name}
-                    </Typography>
-                  </Grid> 
+                    qrCodeContents={value}
+                    humanReadableId={name}
+                    width={50}
+                    margin="auto"
+                  />
                 </Grid>
-              )
-            }
-          )
-        }
+                <Grid item alignItems="flex-start" xs={6} style={{ justifyItems: 'center' }}>
+                  <Typography variant="body2" style={{ color: 'white' }}>
+                    {name}
+                  </Typography>
+                </Grid>
+              </Grid>
+            ))}
         </Container>
-      )
+      );
     }
-    const option = options[0]
+    const option = options[0];
     return (
       <Container>
-        <p style={{color: 'white', textAlign: 'center'}}>QR Code</p>
-        <Button style={{position: 'absolute', top: '5px', right: '5px'}} >
-              <DownloadIcon onClick={() => downloadSelectedQrCodes()}/>
+        <p style={{ color: 'white', textAlign: 'center' }}>QR Code</p>
+        <Button style={{ position: 'absolute', top: '5px', right: '5px' }}>
+          <DownloadIcon onClick={() => downloadSelectedQrCodes()} />
         </Button>
-        <QrCodeImage
-          qrCodeContents={option.value}
-          humanReadableId={option.name}
-        />
+        <QrCodeImage qrCodeContents={option.value} humanReadableId={option.name} />
       </Container>
     );
   }
@@ -193,7 +175,9 @@ export const QrCodeVisual = ({
           color="primary"
           onClick={() => downloadSelectedQrCodes()}
           variant="contained"
-          disabled={isDownloading || Object.values(selectedQrCodes).every(isSelected => !isSelected)}
+          disabled={
+            isDownloading || Object.values(selectedQrCodes).every(isSelected => !isSelected)
+          }
         >
           Download
         </Button>

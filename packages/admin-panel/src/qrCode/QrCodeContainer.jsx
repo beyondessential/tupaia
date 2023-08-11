@@ -14,7 +14,7 @@ const Container = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 30px;
+  margin-top: 1.875rem;
 `;
 
 export const QrCodeContainer = ({ qrCodeContents, humanReadableId }) => {

@@ -10,6 +10,7 @@ import { drawQrCodeCanvas } from './useQrCodeCanvas';
 
 const StyledCanvas = styled.canvas`
   outline: 1px solid #dedede;
+  width: 80%;
 `;
 
 interface QrCodeImageProps {
@@ -19,21 +20,27 @@ interface QrCodeImageProps {
   margin?: number | string | undefined;
 }
 
-export const QrCodeImage = ({ qrCodeContents, humanReadableId, width = undefined, margin = 'auto' }: QrCodeImageProps) => {
-  const ref = useRef<HTMLCanvasElement | null>(null)
+export const QrCodeImage = ({
+  qrCodeContents,
+  humanReadableId,
+  width = undefined,
+  margin = 'auto',
+}: QrCodeImageProps) => {
+  const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     drawQrCodeCanvas(ref, humanReadableId, qrCodeContents);
   }, [ref]);
 
-
   return (
-    <Box style={{
-      display: 'flex',
-      justifyContent: 'center',
-      width,
-      margin
-    }}>
-      <StyledCanvas style={{width: '80%'}} ref={ref} />
+    <Box
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        width,
+        margin,
+      }}
+    >
+      <StyledCanvas ref={ref} />
     </Box>
   );
 };
