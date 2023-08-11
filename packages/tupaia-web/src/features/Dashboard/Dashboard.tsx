@@ -157,8 +157,8 @@ export const Dashboard = () => {
         </TitleBar>
         <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
         <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map((item: DashboardItemType) => (
-            <DashboardItem key={item.code} dashboardItem={item} />
+          {activeDashboard?.items.map(item => (
+            <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
           ))}
         </DashboardItemsWrapper>
       </ScrollBody>

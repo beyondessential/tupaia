@@ -12,14 +12,15 @@ import {
   MeasureMarker,
   LayerGroup,
   MeasurePopup,
-  Polygon,
+  BasePolygon,
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
+import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 
-const ShadedPolygon = styled(Polygon)`
+const ShadedPolygon = styled(BasePolygon)`
   fill-opacity: 0.5;
   &:hover {
     fill-opacity: 0.8;
@@ -49,8 +50,11 @@ export const DataVisualsLayer = ({
   return (
     <LayerGroup>
       {measureData.map((measure: MeasureData) => {
-        const { region, organisationUnitCode: entity, color, name } = measure;
+        const { region, organisationUnitCode: entity, color, name, code } = measure;
         if (region) {
+          if (code === entityCode) {
+            return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctlyt shaded etc.
+          }
           return (
             <ShadedPolygon
               key={entity}
