@@ -30,7 +30,7 @@ const getColumnId = ({
     return id;
   }
 
-  if (typeof accessor === 'object') {
+  if (typeof accessor === 'string') {
     return accessor;
   }
 

@@ -13,13 +13,14 @@ const FirstColumnCell = styled.span`
 `;
 
 const processColumns = (serieses: Series[]) => {
-  console.log(serieses);
   if (!serieses) {
     return [];
   }
 
   const configColumns = serieses.map(column => {
     return {
+      // @ts-ignore - The react table accessors don't work as strings if the key has a space so we
+      // need to use the function accessor. The row and column could be any type so we need to ignore
       accessor: (row: any) => row[column.key],
       Header: column.name,
     };
@@ -30,9 +31,9 @@ const processColumns = (serieses: Series[]) => {
       Header: 'Name',
       accessor: 'name',
       // eslint-disable-next-line react/prop-types
-      Cell: (value: { value: string | number | boolean | undefined }) => {
-        <FirstColumnCell>{String(value)}</FirstColumnCell>;
-      },
+      Cell: ({ value }: { value: string | number | boolean | undefined }) => (
+        <FirstColumnCell>{String(value)}</FirstColumnCell>
+      ),
     },
     ...configColumns,
     { Header: 'Most Recent Data Date', accessor: 'submissionDate' },
