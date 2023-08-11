@@ -10407,6 +10407,9 @@ __metadata:
     downloadjs: ^1.4.7
     faker: ^4.1.0
     fast-glob: ^3.2.5
+    js-sql-parser: ^1.4.1
+    jsoneditor: ^9.9.0
+    leaflet: ^1.7.1
     lodash.get: ^4.4.2
     lodash.throttle: ^4.1.1
     moment: ^2.29.1
@@ -19707,7 +19710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"downloadjs@npm:^1.4.7":
+"downloadjs@npm:1.4.7, downloadjs@npm:^1.4.7":
   version: 1.4.7
   resolution: "downloadjs@npm:1.4.7"
   checksum: 4c546a28e7adcb1c290685f923add84e89582549f93502fa1b028194492522f716abb95a70f6ae464067a767e967806970d2a03e6262f8ccbcf3dd68e950d1da
