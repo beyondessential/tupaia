@@ -22,21 +22,17 @@ const Text = styled(Typography)`
 `;
 
 export const NoDataAtLevelDashboard = () => {
-  const { entityCode } = useParams();
-  const { data: entity } = useEntity(entityCode);
+  const { projectCode, entityCode } = useParams();
+  const { data: entity } = useEntity(projectCode, entityCode);
   const { type = 'country' } = entity || ({} as Entity);
   const displayType = type?.toLowerCase();
   const isProject = displayType === 'project';
   return (
-    <>
-      <Text>
-        No project data is currently available for
-        {isProject ? 'at the project level view' : ` for the selected ${displayType}`}.
-      </Text>
-      <Text>
-        If you expected to see data displayed in this view, please contact the project coordinators
-        for a timeline on this data being made available.
-      </Text>
-    </>
+    <Text>
+      No project data is currently available
+      {isProject ? ' at the project level view' : ` for the selected ${displayType}`}. If you
+      expected to see data displayed in this view, please contact the project coordinators for a
+      timeline on this data being made available.
+    </Text>
   );
 };
