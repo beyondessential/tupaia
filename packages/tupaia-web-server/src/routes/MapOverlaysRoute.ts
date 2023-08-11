@@ -173,8 +173,8 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
-      // We know the first layer is 'root', so return the second
-      mapOverlays: nestedGroups.children,
+      // Map overlays always exist beneath a group, so we know the first layer is only groups
+      mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
     };
   }
 }

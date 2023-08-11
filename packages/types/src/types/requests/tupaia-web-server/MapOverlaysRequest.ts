@@ -29,7 +29,7 @@ export interface ResBody {
   name: string;
   entityCode: string;
   entityType: string;
-  mapOverlays: OverlayChild[];
+  mapOverlays: TranslatedMapOverlayGroup[];
 }
 
 export type ReqBody = Record<string, never>;
