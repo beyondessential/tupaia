@@ -51,7 +51,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-    dashboardItem,
+    dashboardItem?.config,
   ) as {
     startDate?: Moment;
     endDate?: Moment;
