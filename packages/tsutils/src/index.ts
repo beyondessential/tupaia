@@ -4,4 +4,4 @@ export * from './hashStringToInt';
 export * from './period';
 export * from './typeGuards';
 export * from './validation';
-export { arrayToAnalytics } from './arrayToAnalytics';
+export * from './arrayToAnalytics';

@@ -10,7 +10,7 @@ interface Analytic {
   value: string | number;
 }
 
-type ArrayAnalytic = [string, string, string, string | number];
+export type ArrayAnalytic = [string, string, string, string | number];
 
 export const arrayToAnalytics = (arrayAnalytics: ArrayAnalytic[]): Analytic[] =>
   arrayAnalytics.map(([dataElement, organisationUnit, period, value]) => ({
