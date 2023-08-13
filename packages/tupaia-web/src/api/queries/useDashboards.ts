@@ -18,7 +18,7 @@ export const useDashboards = (
     ['dashboards', projectCode, entityCode],
     (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
       get(`dashboards/${projectCode}/${entityCode}`),
-    { enabled, keepPreviousData: enabled },
+    { enabled, keepPreviousData: false },
   );
 
   let activeDashboard = undefined;

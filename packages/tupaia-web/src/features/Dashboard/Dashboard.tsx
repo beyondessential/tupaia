@@ -106,7 +106,7 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
-  const { dashboards, activeDashboard, isLoading: isLoadingDashboards } = useDashboards(
+  const { dashboards, activeDashboard, isLoading: isLoadingDashboards, isError } = useDashboards(
     projectCode,
     entityCode,
     dashboardName,
@@ -127,7 +127,11 @@ export const Dashboard = () => {
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
   const dashboardNotFound =
-    !isLoadingDashboards && !isLoadingProject && project?.code === projectCode && !activeDashboard;
+    !isError &&
+    !isLoadingDashboards &&
+    !isLoadingProject &&
+    project?.code === projectCode &&
+    !activeDashboard;
   useEffect(() => {
     if (dashboardNotFound) {
       navigate(defaultEntityLink);

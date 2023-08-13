@@ -19,6 +19,7 @@ export const useProject = (projectCode?: string) => {
     (): Promise<SingleProject> => get(`project/${projectCode}`, {}),
     {
       enabled: !!projectCode,
+      keepPreviousData: false, // this needs to be false, otherwise when we change project, the old one is returned for until the new data is fetched, which leads to extra requests to the wrong project+entity code
       onSuccess: (data: SingleProject) => {
         if (data?.hasAccess) return;
         if (isLoggedIn)
