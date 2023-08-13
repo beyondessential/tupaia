@@ -30,12 +30,12 @@ export const ProjectDescription = () => {
   const { data: project, isLoading } = useProject(projectCode);
   if (isLoading) return null;
 
-  const { description, names = [] } = project!;
+  const { description, names } = project!;
   if (!description && !names) return <SecondaryText>No project selected</SecondaryText>;
   return (
     <>
       <Title>{description}</Title>
-      <SecondaryText>{names.join(', ')}</SecondaryText>
+      <SecondaryText>{names.sort().join(', ')}</SecondaryText>
     </>
   );
 };
