@@ -21,6 +21,7 @@ export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.ReqBody,
   TupaiaWebMapOverlaysRequest.ReqQuery
 >;
+type TranslatedMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 type TranslatedMapOverlayGroup = TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
 type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 
@@ -131,7 +132,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               legacy: overlay.legacy,
               sortOrder: relation.sort_order,
               ...overlay.config,
-            };
+            } as TranslatedMapOverlay;
           }
           return {
             ...nestOverlayGroups(
