@@ -28,11 +28,13 @@ import { SingleProject } from '../types';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: 3.125rem;
-  padding-right: 3.125rem;
   width: 65rem;
   max-width: 100%;
   text-align: left;
+  @media screen and (min-width: 500px) {
+    padding-left: 3.125rem;
+    padding-right: 3.125rem;
+  }
 `;
 
 const TagLine = styled.p`
