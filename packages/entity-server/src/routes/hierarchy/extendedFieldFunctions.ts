@@ -58,6 +58,20 @@ const getBounds = async (
   return entity.getBounds();
 };
 
+const getQualifiedName = async (
+  entity: EntityType,
+  context: {
+    hierarchyId: string;
+  },
+) => {
+  // Qualified name is a comma separated list of the entity's parent tree
+  const ancestors = await entity.getAncestors(context.hierarchyId);
+  return [entity, ...ancestors]
+    .filter(e => e.type !== 'project') // Don't include the project name
+    .map(e => e.name)
+    .join(', ');
+};
+
 export const extendedFieldFunctions = {
   parent_code: getParentCode,
   child_codes: getChildrenCodes,
@@ -65,6 +79,7 @@ export const extendedFieldFunctions = {
   point: getPoint,
   region: getRegion,
   bounds: getBounds,
+  qualified_name: getQualifiedName,
 };
 
 export const isExtendedField = (field: string): field is keyof typeof extendedFieldFunctions =>

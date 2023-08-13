@@ -51,7 +51,7 @@ export type MeasureData = Omit<PolygonProps, 'positions'> &
   MarkerProps &
   Entity & {
     isHidden?: boolean;
-    icon?: string;
+    icon?: IconKey;
     photoUrl?: string;
     value?: number | string;
     submissionDate?: string | Date;

@@ -8,7 +8,7 @@ import { FormProvider, SubmitHandler } from 'react-hook-form';
 
 interface FormProps {
   formContext: any;
-  onSubmit: SubmitHandler<any>;
+  onSubmit?: SubmitHandler<any>;
   children: React.ReactNode;
   className?: string;
 }

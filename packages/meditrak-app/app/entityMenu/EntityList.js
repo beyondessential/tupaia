@@ -17,7 +17,6 @@ import {
   getGreyShade,
 } from '../globalStyles';
 import { EntityItem, ITEM_HEIGHT } from './EntityItem';
-import { fetchEntities } from './helpers';
 
 const SEARCH_BOX_HEIGHT = 40;
 const INITIAL_NUMBER_TO_SHOW = 1000; // will load more if they scroll to the bottom of the list
@@ -27,11 +26,7 @@ const NO_RESULTS_SECTION = { title: 'No results', data: [] };
 export class EntityList extends PureComponent {
   constructor(props) {
     super(props);
-    this.baseEntities = fetchEntities(
-      this.props.realmDatabase,
-      this.props.baseEntityFilters,
-      this.props.checkEntityAttributes,
-    );
+    this.validEntities = this.props.validEntities;
     this.state = {
       searchTerm: '',
       primarySearchResults: null,
@@ -109,10 +104,15 @@ export class EntityList extends PureComponent {
 
     // Use toLowerCase to ignore search casing
     const lowerSearch = searchTerm.toLowerCase();
-    const primarySearchResults = this.baseEntities.filter(entity => entity.name.toLowerCase().startsWith(lowerSearch));
-    const secondarySearchResults = this.baseEntities.filter(entity => !entity.name.toLowerCase().startsWith(lowerSearch)
-                                                            && (entity.name.toLowerCase().includes(lowerSearch)
-                                                            ||  entity.parent?.name.toLowerCase().startsWith(lowerSearch)));
+    const primarySearchResults = this.validEntities.filter(entity =>
+      entity.name.toLowerCase().startsWith(lowerSearch),
+    );
+    const secondarySearchResults = this.validEntities.filter(
+      entity =>
+        !entity.name.toLowerCase().startsWith(lowerSearch) &&
+        (entity.name.toLowerCase().includes(lowerSearch) ||
+          entity.parent?.name.toLowerCase().startsWith(lowerSearch)),
+    );
     this.setState({
       searchTerm,
       primarySearchResults,
@@ -137,8 +137,8 @@ export class EntityList extends PureComponent {
     }
 
     const { recentEntities } = this.props;
-    const allEntities = this.baseEntities.slice(0, numberToShow);
-    const moreAvailable = allEntities.length < this.baseEntities.length;
+    const allEntities = this.validEntities.slice(0, numberToShow);
+    const moreAvailable = allEntities.length < this.validEntities.length;
     if (recentEntities?.length > 0) {
       return {
         sections: [
@@ -185,8 +185,8 @@ export class EntityList extends PureComponent {
   renderResults() {
     const { isOpen, numberToShow } = this.state;
 
-    // if baseEntities fetch returned empty, the survey is probably misconfigured
-    if (this.baseEntities.length === 0) {
+    // if validEntities fetch returned empty, the survey is probably misconfigured
+    if (this.validEntities.length === 0) {
       return (
         <Text style={localStyles.noResultsText}>
           No valid entities for this question, please contact your survey administrator.
@@ -230,8 +230,8 @@ export class EntityList extends PureComponent {
     const { selectedEntityId } = this.props;
     const { searchTerm } = this.state;
 
-    if (this.baseEntities.length > 0 && selectedEntityId) {
-      const selectedEntity = this.baseEntities.filter(entity => entity.id === selectedEntityId)[0];
+    if (this.validEntities.length > 0 && selectedEntityId) {
+      const selectedEntity = this.validEntities.filter(entity => entity.id === selectedEntityId)[0];
       return (
         <View style={localStyles.container}>
           {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
@@ -274,9 +274,7 @@ export class EntityList extends PureComponent {
 }
 
 EntityList.propTypes = {
-  realmDatabase: PropTypes.object.isRequired,
-  baseEntityFilters: PropTypes.object.isRequired,
-  checkEntityAttributes: PropTypes.func,
+  validEntities: PropTypes.array.isRequired,
   recentEntities: PropTypes.array.isRequired,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
@@ -288,7 +286,6 @@ EntityList.propTypes = {
 };
 
 EntityList.defaultProps = {
-  checkEntityAttributes: null,
   selectedEntityId: '',
 };
 

@@ -12,6 +12,8 @@ const EXPORT_DIRECTORY = 'exports';
 export const exportChartHandler = async (req, res) => {
   const sessionCookieName = USER_SESSION_CONFIG.cookieName;
   const sessionCookie = req.cookies[sessionCookieName];
+  // If we used an auth header rather than a session, pass it along to the next request
+  const authHeader = req.headers.authorization || req.headers.Authorization;
 
   const chartConfig = req.query;
 
@@ -52,6 +54,10 @@ export const exportChartHandler = async (req, res) => {
     queryParameters,
     sessionCookieName,
     sessionCookie,
+    true,
+    {
+      authorization: authHeader,
+    }
   );
 
   const matrixData = {
