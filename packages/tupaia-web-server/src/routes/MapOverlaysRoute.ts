@@ -21,6 +21,7 @@ export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.ReqBody,
   TupaiaWebMapOverlaysRequest.ReqQuery
 >;
+type TranslatedMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 type TranslatedMapOverlayGroup = TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
 type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 
@@ -131,7 +132,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               legacy: overlay.legacy,
               sortOrder: relation.sort_order,
               ...overlay.config,
-            };
+            } as TranslatedMapOverlay;
           }
           return {
             ...nestOverlayGroups(
@@ -173,8 +174,8 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
-      // We know the first layer is 'root', so return the second
-      mapOverlays: nestedGroups.children,
+      // Map overlays always exist beneath a group, so we know the first layer is only groups
+      mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
     };
   }
 }
