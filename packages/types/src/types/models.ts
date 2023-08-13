@@ -407,6 +407,16 @@ export interface PermissionGroup {
   'name': string;
   'parent_id'?: string | null;
 }
+export interface PermissionsBasedMeditrakSyncQueue {
+  'change_time'?: number | null;
+  'country_ids'?: string[] | null;
+  'entity_type'?: EntityType | null;
+  'id'?: string | null;
+  'permission_groups'?: string[] | null;
+  'record_id'?: string | null;
+  'record_type'?: string | null;
+  'type'?: string | null;
+}
 export interface Project {
   'code': string;
   'config'?: any | null;
