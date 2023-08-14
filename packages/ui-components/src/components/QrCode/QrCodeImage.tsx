@@ -6,7 +6,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Box } from '@material-ui/core';
-import { drawQrCodeCanvas } from './useQrCodeCanvas';
+import { drawQrCode } from './useQrCode';
 
 const StyledCanvas = styled.canvas`
   outline: 1px solid #dedede;
@@ -30,7 +30,7 @@ export const QrCodeImage = ({
 }: QrCodeImageProps) => {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
-    drawQrCodeCanvas(ref, humanReadableId, qrCodeContents);
+    drawQrCode(ref, humanReadableId, qrCodeContents);
   }, [ref]);
 
   return (

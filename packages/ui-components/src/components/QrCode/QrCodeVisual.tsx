@@ -20,7 +20,7 @@ import CheckboxIcon from '@material-ui/icons/CheckBox';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { NoData } from '../NoData';
 import { QrCodeImage } from './QrCodeImage';
-import { getCanvasUrlForDownload } from './useQrCodeCanvas';
+import { getQrCodeDownloadUrl } from './useQrCode';
 
 const StyledContainer = styled(Container)`
   padding-bottom: 1rem;
@@ -85,7 +85,7 @@ export const QrCodeVisual = ({
       options
         .filter(({ value }) => selectedItemValues.includes(value))
         .map(async ({ name, value }) => {
-          const url = await getCanvasUrlForDownload(name, value);
+          const url = await getQrCodeDownloadUrl(name, value);
           return {
             url,
             name,
