@@ -13,8 +13,7 @@ export const useEmailVerification = () => {
   return useQuery(
     ['user', verifyEmailToken],
     () => get(`verifyEmail?emailToken=${verifyEmailToken}`),
-    {
-      retry: 0,
+    { 
       enabled: !!verifyEmailToken,
     },
   );
