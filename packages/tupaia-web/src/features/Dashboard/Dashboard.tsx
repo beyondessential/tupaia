@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
@@ -19,7 +19,7 @@ import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, useEntityLink } from '../../utils';
+import { gaEvent, getDefaultDashboard } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
@@ -104,18 +104,28 @@ const DashboardImageContainer = styled.div`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
-  const { dashboards, activeDashboard, isLoading: isLoadingDashboards, isError } = useDashboards(
-    projectCode,
-    entityCode,
-    dashboardName,
-  );
+  const {
+    dashboards,
+    activeDashboard,
+    isLoading: isLoadingDashboards,
+    isError,
+    isFetched,
+  } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
-  const defaultEntityLink = useEntityLink(entityCode);
+
+  // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
+  const defaultDashboardName = getDefaultDashboard(
+    project,
+    dashboards,
+    isLoadingDashboards,
+    isError,
+  );
   useEffect(() => {
     gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
   }, [activeDashboard?.name]);
@@ -127,6 +137,7 @@ export const Dashboard = () => {
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
   const dashboardNotFound =
+    isFetched &&
     !isError &&
     !isLoadingDashboards &&
     !isLoadingProject &&
@@ -134,9 +145,12 @@ export const Dashboard = () => {
     !activeDashboard;
   useEffect(() => {
     if (dashboardNotFound) {
-      navigate(defaultEntityLink);
+      navigate({
+        ...location,
+        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
+      });
     }
-  }, [dashboardNotFound, defaultEntityLink]);
+  }, [dashboardNotFound, defaultDashboardName]);
 
   return (
     <Panel $isExpanded={isExpanded}>
