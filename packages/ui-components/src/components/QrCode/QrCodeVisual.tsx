@@ -43,6 +43,11 @@ const StyledParagraph = styled.p`
   text-align: center;
 `;
 
+const SmallQrCodeImage = styled(QrCodeImage)`
+  width: 200;
+  padding: 0.5rem 0;
+`;
+
 interface DownloadQrCodeVisualProps {
   downloadImages: (
     qrCodeCanvasUrlsWithFileNames: { name: string; url: string | null }[],
@@ -102,19 +107,11 @@ export const QrCodeVisual = ({
       return (
         <StyledContainer className={className} maxWidth="sm">
           <StyledParagraph>QR Codes</StyledParagraph>
-          {options
-            .filter((option, index) => index < 4)
-            .map(({ name, value }) => (
-              <Grid container direction="column">
-                <QrCodeImage
-                  qrCodeContents={value}
-                  humanReadableId={name}
-                  width={200}
-                  margin="auto"
-                  padding="0.5rem 0"
-                />
-              </Grid>
-            ))}
+          {options.slice(0, 4).map(({ name, value }) => (
+            <Grid container direction="column">
+              <SmallQrCodeImage qrCodeContents={value} humanReadableId={name} />
+            </Grid>
+          ))}
         </StyledContainer>
       );
     }

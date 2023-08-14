@@ -13,37 +13,27 @@ const StyledCanvas = styled.canvas`
   width: 80%;
 `;
 
+const StyledBox = styled(Box)`
+  display: flex;
+  justify-content: center;
+  margin: auto;
+`;
+
 interface QrCodeImageProps {
   qrCodeContents: string;
   humanReadableId: string;
-  width?: number | undefined;
-  margin?: number | string | undefined;
-  padding?: number | string | undefined;
+  className?: string;
 }
 
-export const QrCodeImage = ({
-  qrCodeContents,
-  humanReadableId,
-  width = undefined,
-  margin = 'auto',
-  padding = undefined,
-}: QrCodeImageProps) => {
+export const QrCodeImage = ({ className, qrCodeContents, humanReadableId }: QrCodeImageProps) => {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     drawQrCode(ref, humanReadableId, qrCodeContents);
   }, [ref]);
 
   return (
-    <Box
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        width,
-        margin,
-        padding,
-      }}
-    >
+    <StyledBox className={className}>
       <StyledCanvas ref={ref} />
-    </Box>
+    </StyledBox>
   );
 };
