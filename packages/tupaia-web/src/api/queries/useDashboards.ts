@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { UseQueryResult, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { get } from '../api';
 import { DashboardName, EntityCode, ProjectCode } from '../../types';
