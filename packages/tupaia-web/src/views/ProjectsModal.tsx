@@ -23,7 +23,6 @@ import {
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
-import { SingleProject } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,6 +32,10 @@ const Wrapper = styled.div`
   width: 65rem;
   max-width: 100%;
   text-align: left;
+
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.searchBar.background};
+  }
 `;
 
 const TagLine = styled.p`

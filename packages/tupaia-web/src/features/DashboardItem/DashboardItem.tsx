@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   max-width: 100%;
   position: relative;
   padding: 1rem 1rem;
-  background-color: #2e2f33;
+  background-color: ${({ theme }) => theme.projectCard.background};
 `;
 
 const Container = styled.div`

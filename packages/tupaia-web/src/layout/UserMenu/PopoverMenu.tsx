@@ -16,6 +16,7 @@ import { MOBILE_BREAKPOINT } from '../../constants';
 const Popover = styled(MuiPopover)`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
+    bac
   }
 `;
 

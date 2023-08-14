@@ -47,13 +47,14 @@ const StyledMap = styled(LeafletMap)`
     top: -50px;
     right: 3px;
     a {
-      background: rgba(43, 45, 56, 0.8);
+      background: #34353f;
       box-shadow: none;
       border: none;
       color: white;
 
       &:hover {
-        background: ${TRANSPARENT_BLACK};
+        background: ${({ theme }) =>
+          theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.7)'};
         box-shadow: none;
       }
     }

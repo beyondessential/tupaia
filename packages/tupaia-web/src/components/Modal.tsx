@@ -39,7 +39,7 @@ const CloseButton = styled(IconButton)`
 `;
 
 const Paper = styled(MuiPaper)`
-  background-color: #202124;
+  background-color: ${({ theme }) => theme.projectCard.background};
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;

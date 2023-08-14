@@ -23,11 +23,16 @@ const ItemButton = styled(Menu)`
   margin: 0 auto;
   margin-top: 3.125rem;
   margin-left: 1.1rem;
-  color: #2e2f33;
-`;
 
-const StyledMenuItem = styled(MenuItem)`
-  background-color: #2e2f33;
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.projectCard.background};
+  }
+
+  .MuiListItem-root {
+    &:hover {
+      background: #606368;
+    }
+  }
 `;
 
 interface DashboardMenuItemProps {
@@ -42,9 +47,9 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   const link = { ...location, pathname: `/${projectCode}/${entityCode}/${dashboardName}` };
 
   return (
-    <StyledMenuItem to={link} onClick={onClose} component={Link}>
+    <MenuItem to={link} onClick={onClose} component={Link}>
       {dashboardName}
-    </StyledMenuItem>
+    </MenuItem>
   );
 };
 

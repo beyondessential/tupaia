@@ -21,6 +21,7 @@ const StyledMenu = styled(MuiMenu)`
     .MuiList-root {
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
+      background-color: white;
     }
 
     &:before,

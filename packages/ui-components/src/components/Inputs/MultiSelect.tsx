@@ -19,6 +19,7 @@ const StyledCheckbox = styled(Checkbox)`
 const MenuItem = styled(MuiMenuItem)`
   padding-top: 0;
   padding-bottom: 0;
+  background-color: white;
 `;
 
 type Option = {

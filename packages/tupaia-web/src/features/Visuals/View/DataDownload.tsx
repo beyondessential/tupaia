@@ -16,6 +16,7 @@ import { URL_SEARCH_PARAMS } from '../../../constants';
 const ListItem = styled.li`
   text-align: center;
   font-size: 1.25rem;
+  background-color: red;
   &:not(:last-child) {
     margin-bottom: 0.625rem;
   }

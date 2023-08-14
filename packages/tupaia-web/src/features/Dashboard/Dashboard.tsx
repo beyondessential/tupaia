@@ -65,7 +65,7 @@ const TitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.panel.background};
+  background-color: ${({ theme }) => theme.projectCard.background};
   z-index: 1;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
@@ -94,7 +94,7 @@ const DashboardItemsWrapper = styled.div<{
     $isExpanded
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
-  background-color: #202124;
+  background-color: ${({ theme }) => theme.searchBar.background};
   grid-template-columns: repeat(2, 1fr);
   column-gap: 0.5rem;
 `;

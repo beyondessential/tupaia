@@ -70,5 +70,5 @@ export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
   }
 
   const url = makeStaticMapUrl(bounds);
-  return <Media $backgroundImage={url} />;
+  return <Media $backgroundImage={url}/>;
 };

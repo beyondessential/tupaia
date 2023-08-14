@@ -83,7 +83,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     ((reportData?.data?.length && reportData?.data?.length > 20) || type === 'matrix');
 
   return (
-    <Modal isOpen onClose={handleCloseModal} PaperComponent={Paper}>
+    <Modal isOpen onClose={handleCloseModal}>
       <ExportContext.Provider value={exportConfig}>
         <ExportDispatchContext.Provider value={dispatch}>
           <ExportButton />
