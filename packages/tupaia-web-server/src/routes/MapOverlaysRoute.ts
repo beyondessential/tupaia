@@ -28,8 +28,6 @@ type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 // TODO: Can these be moved into types?
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
-// Central server defaults to 100 record limit, this overrides that
-const DEFAULT_PAGE_SIZE = 'ALL';
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
@@ -38,6 +36,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const { pageSize } = query;
 
     const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
+    // Do the initial overlay fetch from the central server, since that enforces permissions
     const mapOverlays = await ctx.services.central.fetchResources('mapOverlays', {
       filter: {
         country_codes: {
@@ -50,7 +49,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
-      pageSize: pageSize || DEFAULT_PAGE_SIZE,
+      pageSize,
     });
 
     if (mapOverlays.length === 0) {
@@ -62,46 +61,10 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       };
     }
 
-    // Map overlay groups can be nested so we need to keep
-    // searching until we find the root groups
-    let mapOverlayRelations = await ctx.services.central.fetchResources(
-      'mapOverlayGroupRelations',
-      {
-        filter: {
-          child_type: 'mapOverlay',
-          child_id: mapOverlays.map((overlay: MapOverlay) => overlay.id),
-        },
-        pageSize: DEFAULT_PAGE_SIZE,
-      },
+    // Breaking orchestration server convention and accessing the db directly
+    const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
+      mapOverlays.map((overlay: MapOverlay) => overlay.id),
     );
-    let parentMapOverlayRelations = await ctx.services.central.fetchResources(
-      'mapOverlayGroupRelations',
-      {
-        filter: {
-          child_type: 'mapOverlayGroup',
-          child_id: mapOverlayRelations.map(
-            (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
-          ),
-        },
-        pageSize: DEFAULT_PAGE_SIZE,
-      },
-    );
-    while (parentMapOverlayRelations.length) {
-      // Save the previous relations and fetch another layer
-      mapOverlayRelations = mapOverlayRelations.concat(parentMapOverlayRelations);
-      parentMapOverlayRelations = await ctx.services.central.fetchResources(
-        'mapOverlayGroupRelations',
-        {
-          filter: {
-            child_type: 'mapOverlayGroup',
-            child_id: parentMapOverlayRelations.map(
-              (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
-            ),
-          },
-          pageSize: DEFAULT_PAGE_SIZE,
-        },
-      );
-    }
 
     // Fetch all the groups we've used
     const mapOverlayGroups = await ctx.services.central.fetchResources('mapOverlayGroups', {
