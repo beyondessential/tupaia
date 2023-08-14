@@ -32,10 +32,10 @@ const Wrapper = styled.div<{
   display: flex;
   flex-direction: column;
   background-color: #2e2f33;
-`;
 
-const Paper = styled(MuiPaper)`
-  background-color: red;
+  .muipaper-root: {
+    background: ${({ theme }) => theme.projectCard.background};
+  }
 `;
 
 /**
