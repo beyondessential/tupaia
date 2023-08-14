@@ -113,7 +113,12 @@ export const Map = () => {
 
   return (
     <MapContainer>
-      <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
+      <StyledMap
+        center={entity?.point as LeafletMapProps['center']}
+        bounds={entity?.bounds as LeafletMapProps['bounds']}
+        zoom={15 as LeafletMapProps['zoom']}
+        shouldSnapToPosition
+      >
         <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
         <PolygonNavigationLayer />
         <DataVisualsLayer hiddenValues={hiddenValues} />
