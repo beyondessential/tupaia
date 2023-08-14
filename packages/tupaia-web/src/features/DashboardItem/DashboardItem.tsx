@@ -92,7 +92,12 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     showTitle =
       !!name &&
       !!(presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
-  } else if (viewType?.includes('Download') || type === 'component') showTitle = false;
+  } else if (
+    viewType?.includes('Download') ||
+    type === 'component' ||
+    viewType === 'multiSingleValue'
+  )
+    showTitle = false;
 
   return (
     <Wrapper>
