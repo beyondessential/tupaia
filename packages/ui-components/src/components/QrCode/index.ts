@@ -4,5 +4,5 @@
  */
 
 export * from './QrCodeVisual';
-export * from './useQrCodeCanvas';
+export * from './useQrCode';
 export * from './QrCodeImage';

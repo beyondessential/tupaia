@@ -6,41 +6,34 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Box } from '@material-ui/core';
-import { drawQrCodeCanvas } from './useQrCodeCanvas';
+import { drawQrCode } from './useQrCode';
 
 const StyledCanvas = styled.canvas`
   outline: 1px solid #dedede;
   width: 80%;
 `;
 
+const StyledBox = styled(Box)`
+  display: flex;
+  justify-content: center;
+  margin: auto;
+`;
+
 interface QrCodeImageProps {
   qrCodeContents: string;
   humanReadableId: string;
-  width?: number | undefined;
-  margin?: number | string | undefined;
+  className?: string;
 }
 
-export const QrCodeImage = ({
-  qrCodeContents,
-  humanReadableId,
-  width = undefined,
-  margin = 'auto',
-}: QrCodeImageProps) => {
+export const QrCodeImage = ({ className, qrCodeContents, humanReadableId }: QrCodeImageProps) => {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
-    drawQrCodeCanvas(ref, humanReadableId, qrCodeContents);
+    drawQrCode(ref, humanReadableId, qrCodeContents);
   }, [ref]);
 
   return (
-    <Box
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        width,
-        margin,
-      }}
-    >
+    <StyledBox className={className}>
       <StyledCanvas ref={ref} />
-    </Box>
+    </StyledBox>
   );
 };

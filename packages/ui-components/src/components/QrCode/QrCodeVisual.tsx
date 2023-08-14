@@ -12,7 +12,6 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  Typography,
   Grid,
   Container,
 } from '@material-ui/core';
@@ -21,7 +20,11 @@ import CheckboxIcon from '@material-ui/icons/CheckBox';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { NoData } from '../NoData';
 import { QrCodeImage } from './QrCodeImage';
-import { getCanvasUrlForDownload } from './useQrCodeCanvas';
+import { getQrCodeDownloadUrl } from './useQrCode';
+
+const StyledContainer = styled(Container)`
+  padding-bottom: 1rem;
+`;
 
 const FormContainer = styled.div`
   display: flex;
@@ -33,6 +36,16 @@ const Error = styled.div`
   color: ${props => props.theme.palette.error.main};
   margin-top: 0.625rem;
   text-align: center;
+`;
+
+const StyledParagraph = styled.p`
+  color: white;
+  text-align: center;
+`;
+
+const SmallQrCodeImage = styled(QrCodeImage)`
+  width: 200;
+  padding: 0.5rem 0;
 `;
 
 interface DownloadQrCodeVisualProps {
@@ -77,7 +90,7 @@ export const QrCodeVisual = ({
       options
         .filter(({ value }) => selectedItemValues.includes(value))
         .map(async ({ name, value }) => {
-          const url = await getCanvasUrlForDownload(name, value);
+          const url = await getQrCodeDownloadUrl(name, value);
           return {
             url,
             name,
@@ -92,58 +105,44 @@ export const QrCodeVisual = ({
   if (!isEnlarged) {
     if (options.length > 1) {
       return (
-        <Container className={className} maxWidth="sm">
-          <p style={{ color: 'white', textAlign: 'center' }}>QR Code</p>
-          {options
-            .filter((option, index) => index < 6)
-            .map(({ name, value }) => (
-              <Grid container style={{ paddingBottom: 5 }} alignContent="center">
-                <Grid item alignItems="flex-end" xs={6}>
-                  <QrCodeImage
-                    qrCodeContents={value}
-                    humanReadableId={name}
-                    width={50}
-                    margin="auto"
-                  />
-                </Grid>
-                <Grid item alignItems="flex-start" xs={6} style={{ justifyItems: 'center' }}>
-                  <Typography variant="body2" style={{ color: 'white' }}>
-                    {name}
-                  </Typography>
-                </Grid>
-              </Grid>
-            ))}
-        </Container>
+        <StyledContainer className={className} maxWidth="sm">
+          <StyledParagraph>QR Codes</StyledParagraph>
+          {options.slice(0, 4).map(({ name, value }) => (
+            <Grid container direction="column">
+              <SmallQrCodeImage qrCodeContents={value} humanReadableId={name} />
+            </Grid>
+          ))}
+        </StyledContainer>
       );
     }
     const option = options[0];
     return (
-      <Container>
-        <p style={{ color: 'white', textAlign: 'center' }}>QR Code</p>
+      <StyledContainer>
+        <StyledParagraph>QR Code</StyledParagraph>
         <Button style={{ position: 'absolute', top: '5px', right: '5px' }}>
           <DownloadIcon onClick={() => downloadSelectedQrCodes()} />
         </Button>
         <QrCodeImage qrCodeContents={option.value} humanReadableId={option.name} />
-      </Container>
+      </StyledContainer>
     );
   }
 
   if (!isLoading && options.length === 0) {
     return (
-      <Container className={className}>
+      <StyledContainer className={className}>
         <NoData viewContent={config} />
-      </Container>
+      </StyledContainer>
     );
   }
 
   if (error) {
     return (
-      <Container className={className}>
+      <StyledContainer className={className}>
         <Error>{error}</Error>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
         </DialogActions>
-      </Container>
+      </StyledContainer>
     );
   }
 
