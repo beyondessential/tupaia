@@ -20,7 +20,7 @@ export const SingleQrCodeShare = ({ qrCode, onClose }) => {
         getRef={ref => {
           qrCodeImgRef.current = ref;
         }}
-        size={300}
+        width={300}
         qrCodeContents={qrCode.data}
         humanReadableId={qrCode.name}
       />
