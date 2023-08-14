@@ -105,7 +105,7 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
   return (
     <Container>
       <ScrollBody>
-        {searchResults.map(({ code, name }) => {
+        {searchResults.map(({ code, qualified_name }) => {
           return (
             <ResultLink
               button
@@ -113,7 +113,7 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
               onClick={onClose}
               to={{ ...location, pathname: `/${projectCode}/${code}` }}
             >
-              {name}
+              {qualified_name}
             </ResultLink>
           );
         })}
