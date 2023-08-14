@@ -4,17 +4,19 @@
  */
 
 import { useQuery } from 'react-query';
+import { TupaiaWebUserRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useUser = () => {
-  const userResponse = useQuery('getUser', () => get('getUser'));
+  const userResponse = useQuery(
+    'getUser',
+    (): Promise<TupaiaWebUserRequest.ResBody> => get('getUser'),
+  );
   const { data: user } = userResponse;
-
-  const name = `${user?.first_name} ${user?.last_name}`;
 
   return {
     ...userResponse,
-    data: { ...user, name },
+    data: { ...user, name: user?.userName },
     isLoggedIn: !!user?.email,
   };
 };

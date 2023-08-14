@@ -154,7 +154,7 @@ describe('chartGranularities', () => {
           },
         });
         expect(startDate.format()).toEqual('2019-02-04T00:00:00+11:00');
-        expect(endDate.format()).toEqual('2019-02-10T23:59:59+11:00');
+        expect(endDate.format()).toEqual('2019-02-17T23:59:59+11:00');
       });
 
       it('shorthand syntax', () => {

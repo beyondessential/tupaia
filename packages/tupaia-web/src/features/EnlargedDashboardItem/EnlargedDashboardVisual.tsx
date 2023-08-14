@@ -19,6 +19,7 @@ import { ExportContext, useEnlargedDashboardItem } from './utils';
 const Container = styled(FlexColumn)`
   width: 100%;
   height: 100%;
+  flex: 1;
   .recharts-responsive-container {
     min-height: 22.5rem;
   }

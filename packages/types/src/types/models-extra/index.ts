@@ -33,3 +33,10 @@ export type {
   SingleValueViewConfig,
   ChartConfig,
 } from './dashboard-item';
+export {
+  MapOverlayConfig,
+  IconKey,
+  MeasureType,
+  ScaleType,
+  MeasureColorScheme,
+} from './mapOverlay';

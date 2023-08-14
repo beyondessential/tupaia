@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
+import { Typography, Link } from '@material-ui/core';
+import { Alert as BaseAlert, NoData, TextButton, SpinningLoader } from '@tupaia/ui-components';
 import { ExpandItemButton } from './ExpandItemButton';
 import {
   View,
@@ -54,7 +54,9 @@ const Alert = styled(BaseAlert)`
   }
 `;
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled.div<{
+  $isExporting?: boolean;
+}>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -62,6 +64,7 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  margin-top: ${({ $isExporting }) => ($isExporting ? '1rem' : '0')};
 `;
 
 const DisplayComponents = {
@@ -75,11 +78,11 @@ const DisplayComponents = {
 
 interface DashboardItemContentProps {
   dashboardItem?: DashboardItem;
-  report: DashboardItemReport;
+  report?: DashboardItemReport;
   isEnlarged?: boolean;
   isLoading: boolean;
   error: UseQueryResult['error'] | null;
-  onRetryFetch: UseQueryResult['refetch'];
+  onRetryFetch?: UseQueryResult['refetch'];
   isExpandable: boolean;
   isExporting?: boolean;
 }
@@ -117,10 +120,10 @@ export const DashboardItemContent = ({
 
   if (!DisplayComponent) return null;
 
-  if (isLoading)
+  if (isLoading || (!report && config?.type !== 'component' && !error))
     return (
       <LoadingContainer aria-label={`Loading data for report '${name}'`}>
-        <CircularProgress />
+        <SpinningLoader />
       </LoadingContainer>
     );
 
@@ -129,14 +132,22 @@ export const DashboardItemContent = ({
       <Alert severity="error">
         <Typography>{error.message}</Typography>
         <Typography>
-          <RetryButton onClick={onRetryFetch}>Retry loading data</RetryButton> or contact{' '}
-          <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+          {isExporting ? (
+            <>
+              Contact <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+            </>
+          ) : (
+            <>
+              <RetryButton onClick={onRetryFetch}>Retry loading data</RetryButton> or contact{' '}
+              <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+            </>
+          )}
         </Typography>
       </Alert>
     );
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = getHasNoData(report, type);
+  const showNoDataMessage = getHasNoData(report!, type);
 
   return (
     <>
@@ -149,7 +160,7 @@ export const DashboardItemContent = ({
         />
       ) : (
         <DisplayComponent
-          report={report}
+          report={report!}
           config={config}
           isEnlarged={isEnlarged}
           isExporting={isExporting}

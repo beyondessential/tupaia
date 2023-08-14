@@ -9,10 +9,10 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
+import { MultiValueViewConfig } from '@tupaia/types';
 import { DashboardItemConfig, DashboardItem as DashboardItemType } from '../../types';
 import { useDashboards, useReport } from '../../api/queries';
 import { DashboardItemContent } from './DashboardItemContent';
-import { MultiValueViewConfig } from '@tupaia/types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-    dashboardItem,
+    dashboardItem?.config,
   ) as {
     startDate?: Moment;
     endDate?: Moment;
@@ -79,10 +79,13 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     viewType,
     name,
   } = config as DashboardItemConfig;
-  const isExpandable =
-    periodGranularity || type === 'chart' || type === 'matrix' || viewType === 'dataDownload'
-      ? true
-      : false;
+  const isExpandable = !!(
+    periodGranularity ||
+    type === 'chart' ||
+    type === 'matrix' ||
+    viewType === 'dataDownload' ||
+    viewType === 'filesDownload'
+  );
 
   let showTitle = !!name;
   if (viewType === 'multiValue') {

@@ -13,6 +13,7 @@ import {
 } from '@tupaia/types';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
+import sortBy from 'lodash.sortby';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -20,6 +21,7 @@ export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.ReqBody,
   TupaiaWebMapOverlaysRequest.ReqQuery
 >;
+type TranslatedMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 type TranslatedMapOverlayGroup = TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
 type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 
@@ -118,11 +120,6 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       parentEntry: MapOverlayGroup,
     ): TranslatedMapOverlayGroup => {
       const childRelations = relationsByParentId[parentEntry.id as string] || [];
-      // groupBy does not guarantee order, so we can't sort before this
-      childRelations.sort(
-        (a: MapOverlayGroupRelation, b: MapOverlayGroupRelation) =>
-          (a.sort_order || 0) - (b.sort_order || 0),
-      );
       const nestedChildren: OverlayChild[] = childRelations.map(
         (relation: MapOverlayGroupRelation) => {
           if (relation.child_type === MAP_OVERLAY_CHILD_TYPE) {
@@ -133,21 +130,29 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               code: overlay.code,
               reportCode: overlay.report_code,
               legacy: overlay.legacy,
+              sortOrder: relation.sort_order,
               ...overlay.config,
-            };
+            } as TranslatedMapOverlay;
           }
-          return nestOverlayGroups(
-            relationsByParentId,
-            groupsById,
-            overlaysById,
-            groupsById[relation.child_id],
-          );
+          return {
+            ...nestOverlayGroups(
+              relationsByParentId,
+              groupsById,
+              overlaysById,
+              groupsById[relation.child_id],
+            ),
+            sortOrder: relation.sort_order,
+          };
         },
       );
       // Translate Map Overlay Group
       return {
         name: parentEntry.name,
-        children: nestedChildren,
+        children: sortBy(nestedChildren, ['sortOrder', 'name']).map((child: OverlayChild) => {
+          // We only needed the sortOrder for sorting, strip it before we return
+          const { sortOrder, ...restOfChild } = child;
+          return restOfChild;
+        }),
       };
     };
 
@@ -169,8 +174,8 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
-      // We know the first layer is 'root', so return the second
-      mapOverlays: nestedGroups.children,
+      // Map overlays always exist beneath a group, so we know the first layer is only groups
+      mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
     };
   }
 }

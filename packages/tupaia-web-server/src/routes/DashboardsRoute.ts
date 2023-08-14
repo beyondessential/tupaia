@@ -13,6 +13,7 @@ import {
   Dashboard,
   TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
+import { orderBy } from '@tupaia/utils';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
@@ -24,6 +25,8 @@ export type DashboardsRequest = Request<
   TupaiaWebDashboardsRequest.ReqBody,
   TupaiaWebDashboardsRequest.ReqQuery
 >;
+
+const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
 
 export class DashboardsRoute extends Route<DashboardsRequest> {
   public async buildResponse() {
@@ -41,6 +44,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const dashboards = await ctx.services.central.fetchResources('dashboards', {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
+      sort: ['sort_order', 'name'],
     });
 
     // Fetch all dashboard relations
@@ -73,20 +77,50 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     });
 
+    // Merged and sorted to make mapping easier
+    const mergedItemRelations = orderBy(
+      dashboardRelations.map((relation: DashboardRelation) => ({
+        relation,
+        item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
+      })),
+      [
+        ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
+        ({ item }: { item: DashboardItem }) => item.code,
+      ],
+    );
+
     const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
-      const childRelations = dashboardRelations.filter(
-        (relation: DashboardRelation) => relation.dashboard_id === dashboard.id,
-      );
-      const childItemIds = childRelations.map((relation: DashboardRelation) => relation.child_id);
       return {
         ...dashboard,
-        items: dashboardItems.filter((item: DashboardItem) => childItemIds.includes(item.id)),
+        // Filter by the relations, map to the items
+        items: mergedItemRelations
+          .filter(
+            ({ relation }: { relation: DashboardRelation }) =>
+              relation.dashboard_id === dashboard.id,
+          )
+          .map(({ item }: { item: DashboardItem }) => ({
+            ...item,
+          })),
       };
     });
 
     const response = dashboardsWithItems.filter(
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
+
+    if (!response.length) {
+      // Returns in an array already
+      const noDataItem = await ctx.services.central.fetchResources('dashboardItems', {
+        filter: { code: NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE },
+      });
+      response.push({
+        name: 'General', // just a dummy dashboard
+        id: 'General',
+        code: 'General',
+        rootEntityCode: rootEntity.code,
+        items: noDataItem,
+      });
+    }
 
     return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
   }
