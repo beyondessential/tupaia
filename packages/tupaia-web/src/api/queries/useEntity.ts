@@ -21,7 +21,7 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
       const entity = await get(`entity/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,
-          fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region', 'image_url'],
+          fields: ['parent_code', 'code', 'name', 'type', 'point', 'bounds', 'region', 'image_url'],
         },
       });
 
