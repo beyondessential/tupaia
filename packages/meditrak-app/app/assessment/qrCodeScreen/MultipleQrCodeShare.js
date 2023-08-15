@@ -22,7 +22,7 @@ export const MultipleQrCodeShare = ({ qrCodes, onClose }) => {
             getRef={ref => {
               qrCodeImgRefs.current[index] = ref;
             }}
-            size={300}
+            width={300}
             qrCodeContents={data}
             humanReadableId={name}
           />
