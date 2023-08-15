@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './AppProviders';
 import { Routes } from './Routes';
 
-const App = () => {
+export const App = () => {
   return (
     <AppProviders>
       <BrowserRouter>
@@ -16,5 +16,3 @@ const App = () => {
     </AppProviders>
   );
 };
-
-export default App;

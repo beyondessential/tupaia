@@ -51,7 +51,7 @@
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
-    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-tupaia-web-server start-web-config-server start-data-table-server",
+    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-data-table-server",
     "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
     "storybook": "storybook dev -p 6006",
     "test": "yarn package:test --env=jsdom",

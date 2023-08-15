@@ -4,7 +4,17 @@
  */
 
 import React from 'react';
+import { Alert } from '@tupaia/ui-components';
+import { useUser } from '../api/queries';
 
 export const LandingPage = () => {
-  return <></>;
+  const { data: user, isLoggedIn } = useUser();
+  return (
+    <>
+      <Alert>
+        <p>{isLoggedIn ? `Logged in as ${user?.name}` : 'You are not logged in'}</p>
+      </Alert>
+      <h1>Hello world</h1>
+    </>
+  );
 };
