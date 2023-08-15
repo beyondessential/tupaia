@@ -16,7 +16,6 @@ import { MOBILE_BREAKPOINT } from '../../constants';
 const Popover = styled(MuiPopover)`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
-    bac
   }
 `;
 
@@ -36,7 +35,11 @@ export const PopoverMenu = ({
 }: PopoverMenuProps) => {
   return (
     <Popover
-      PaperProps={{ style: { backgroundColor: primaryColor } }}
+      PaperProps={{
+        style: {
+          backgroundColor: '#2E2F33',
+        },
+      }}
       open={menuOpen}
       anchorEl={() => document.getElementById('user-menu-button') as HTMLElement}
       onClose={onCloseMenu}

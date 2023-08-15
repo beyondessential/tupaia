@@ -7,7 +7,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { Paper as MuiPaper } from '@material-ui/core';
 import {
   MODAL_ROUTES,
   DEFAULT_URL,
@@ -26,7 +25,7 @@ import {
 } from '../layout';
 import { RouterButton } from '../components';
 
-const Wrapper = styled(MuiPaper)`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-left: 3.125rem;
@@ -34,11 +33,6 @@ const Wrapper = styled(MuiPaper)`
   width: 65rem;
   max-width: 100%;
   text-align: left;
-  background: ${({ theme }) => theme.searchBar.background};
-
-  .MuiPaper-root {
-    background: ${({ theme }) => theme.searchBar.background};
-  }
 `;
 
 const TagLine = styled.p`
@@ -117,6 +111,7 @@ export const ProjectsModal = () => {
   const { data, isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
+
   return (
     <Wrapper>
       <div>

@@ -30,7 +30,7 @@ const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
   position: relative;
-  background-color: ${({ theme }) => theme.panel.background};
+  background-color: ${({ theme }) => theme.searchBar.background};
   transition: width 0.3s ease, max-width 0.3s ease;
   width: 100%;
   overflow: visible;
@@ -76,6 +76,7 @@ const ExportButton = styled(Button).attrs({
   variant: 'outlined',
 })`
   font-size: 0.6875rem;
+  margin: 0 1rem;
 `;
 
 const Title = styled(Typography)`
@@ -83,20 +84,21 @@ const Title = styled(Typography)`
   font-weight: 400;
   font-size: 1.625rem;
   line-height: 1.4;
+  padding: 0 1rem;
 `;
 
 const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
-  padding-left: 1.1rem;
-  padding-right: 1.1rem;
+  padding-left: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '0')};
+  padding-right: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '0')};
   display: ${({ $isExpanded }) =>
     $isExpanded
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
   background-color: ${({ theme }) => theme.searchBar.background};
   grid-template-columns: repeat(2, 1fr);
-  column-gap: 0.5rem;
+  column-gap: 0.8rem;
 `;
 
 const DashboardImageContainer = styled.div`

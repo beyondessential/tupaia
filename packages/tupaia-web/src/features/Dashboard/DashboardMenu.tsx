@@ -15,14 +15,14 @@ const MenuButton = styled(ButtonBase)`
   align-items: flex-end;
   background-color: #202124;
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 2rem;
   font-size: 1rem;
 `;
 
 const ItemButton = styled(Menu)`
   margin: 0 auto;
   margin-top: 3.125rem;
-  margin-left: 1.1rem;
+  margin-left: 2rem;
 
   .MuiPaper-root {
     background: ${({ theme }) => theme.projectCard.background};
