@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
@@ -62,13 +62,9 @@ export const EntitySearch = () => {
     setSearchValue('');
   };
 
-  const toggleExpandedSearchBar = () => {
-    const updatedOpenValue = !isOpen;
-    setIsOpen(updatedOpenValue);
+  const expandSearchBar = () => {
+    setIsOpen(true);
     gaEvent('Search', 'Toggle Expand');
-    if (updatedOpenValue === false) {
-      setSearchValue('');
-    }
   };
 
   const updateSearchValue = (value: string) => {
@@ -85,19 +81,19 @@ export const EntitySearch = () => {
         <SearchBar
           value={searchValue}
           onChange={updateSearchValue}
-          onFocusChange={toggleExpandedSearchBar}
+          onFocusChange={expandSearchBar}
           onClose={onClose}
         />
         {isOpen && (
           <ResultsWrapper>
             {searchValue ? (
-              <SearchResults searchValue={searchValue} onClose={toggleExpandedSearchBar} />
+              <SearchResults searchValue={searchValue} onClose={onClose} />
             ) : (
               <EntityMenu
                 projectCode={projectCode!}
                 children={children}
                 grandChildren={grandChildren}
-                onClose={toggleExpandedSearchBar}
+                onClose={onClose}
               />
             )}
           </ResultsWrapper>
