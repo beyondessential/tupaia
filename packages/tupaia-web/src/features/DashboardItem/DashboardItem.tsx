@@ -86,7 +86,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     type === 'matrix' ||
     viewType === 'dataDownload' ||
     viewType === 'filesDownload' ||
-    (viewType === 'qrCodeVisual' && report?.data?.length > 1)
+    (viewType === 'qrCodeVisual' && report && report.data && report?.data?.length > 1)
   );
 
   let showTitle = !!name;

@@ -82,7 +82,7 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems }: ExportDashb
       projectCode,
       entityCode,
       dashboardName,
-      selectedDashboardItems: selectedItems.map(({ code }) => code),
+      selectedDashboardItems: selectedItems.map(({ code }) => code!),
     });
 
   return (
