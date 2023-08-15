@@ -1,0 +1,63 @@
+{
+  "name": "@tupaia/datatrak",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "dependencies": {
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/styles": "^4.9.10",
+    "@tupaia/ui-components": "1.0.0",
+    "axios": "^1.1.3",
+    "camelcase-keys": "^6.2.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hook-form": "^6.15.1",
+    "react-query": "^3.39.2",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.1.0",
+    "vite-plugin-ejs": "^1.6.4",
+    "vite-plugin-env-compatible": "^1.1.1"
+  },
+  "devDependencies": {
+    "@mui/types": "^7.2.4",
+    "@storybook/addon-essentials": "^7.0.18",
+    "@storybook/addon-interactions": "^7.0.18",
+    "@storybook/addon-links": "^7.0.18",
+    "@storybook/blocks": "^7.0.18",
+    "@storybook/builder-vite": "^7.0.18",
+    "@storybook/react": "^7.0.18",
+    "@storybook/react-vite": "^7.0.18",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "@tupaia/types": "1.0.0",
+    "@types/material-ui": "^0.21.12",
+    "@types/react": "16.8.6",
+    "@vitejs/plugin-react": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "storybook": "^7.0.18",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "lint": "yarn package:lint",
+    "lint:fix": "yarn lint --fix",
+    "preview": "vite preview",
+    "start-dev": "y",
+    "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
+    "start-central-server": "yarn workspace @tupaia/central-server start-dev",
+    "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
+    "start-report-server": "yarn workspace @tupaia/report-server start-dev",
+    "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
+    "start-tupaia-web-server": "yarn workspace @tupaia/tupaia-web-server start-dev",
+    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-tupaia-web-server start-web-config-server start-data-table-server",
+    "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
+    "storybook": "storybook dev -p 6006",
+    "test": "yarn package:test --env=jsdom",
+    "build-storybook": "storybook build"
+  },
+  "browserslist": [
+    "defaults"
+  ]
+}
