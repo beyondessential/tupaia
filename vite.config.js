@@ -25,8 +25,6 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('moment-timezone')) return 'momentTimezone';
             if (id.includes('types')) return 'tupaiaTypes';
             if (id.includes('xlsx')) return 'xlsx';
-            if (id.includes('admin-panel')) return 'tupaiaAdminPanel';
-            if (id.includes('utils')) return 'tupaiaUtils';
           },
         },
       },
