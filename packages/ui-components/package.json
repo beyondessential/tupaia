@@ -33,6 +33,7 @@
     "downloadjs": "^1.4.7",
     "js-sql-parser": "^1.4.1",
     "jsoneditor": "^9.9.0",
+    "jszip": "^3.10.1",
     "leaflet": "^1.7.1",
     "lodash.get": "^4.4.2",
     "lodash.throttle": "^4.1.1",

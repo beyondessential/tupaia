@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { Key } from 'react';
 import {
   FormControl as BaseFormControl,
   FormControlLabel,
@@ -81,19 +81,24 @@ const ListItem = styled.li`
 const ListTitle = styled.span`
   font-weight: bold;
 `;
-export interface ListItemProps {
+export interface ListItemProps extends Record<string, unknown> {
   name: string;
-  code: string;
+  code?: string;
+  valueKey?: string;
   disabled?: boolean;
   tooltip?: string;
 }
 
 function not(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
-  return a.filter(item => b.findIndex(i => i.code === item.code) === -1);
+  return a.filter(
+    item => b.findIndex(i => i[i.valueKey || 'code'] === item[item.valueKey || 'code']) === -1,
+  );
 }
 
 function intersection(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
-  return a.filter(item => b.findIndex(i => i.code === item.code) !== -1);
+  return a.filter(
+    item => b.findIndex(i => i[i.valueKey || 'code'] === item[item.valueKey || 'code']) !== -1,
+  );
 }
 
 function union(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
@@ -103,7 +108,7 @@ function union(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
 interface CheckboxListProps {
   list: ListItemProps[];
   title?: string;
-  selectedItems: any[];
+  selectedItems: ListItemProps[];
   setSelectedItems: (items: ListItemProps[]) => void;
 }
 
@@ -179,9 +184,11 @@ export const CheckboxList = ({
       <StyledCardHeader title={<Title />} />
       <List>
         {list.map(item => {
-          const { name, code, disabled, tooltip } = item;
+          const { name, disabled, tooltip, valueKey = 'code' } = item;
+          const value = item[valueKey];
           return (
-            <ListItem key={code}>
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            <ListItem key={value as Key}>
               <FormControl disabled={disabled}>
                 <FormControlLabel
                   label={
@@ -192,7 +199,9 @@ export const CheckboxList = ({
                   control={
                     <Checkbox
                       checked={
-                        selectedItems.findIndex(selectedItem => selectedItem.code === code) !== -1
+                        selectedItems.findIndex(
+                          selectedItem => selectedItem[valueKey] === value,
+                        ) !== -1
                       }
                       onClick={handleCheck(item)}
                       tabIndex={-1}

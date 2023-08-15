@@ -6,8 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import * as download from 'downloadjs';
-import { QrCodeImage, Button, getQrCodeDownloadUrl } from '@tupaia/ui-components';
+import { QrCodeImage, Button, useDownloadQrCodes } from '@tupaia/ui-components';
 
 const Container = styled.div`
   text-align: center;
@@ -18,20 +17,17 @@ const ButtonContainer = styled.div`
 `;
 
 export const QrCodeContainer = ({ qrCodeContents, humanReadableId }) => {
-  const handleDownload = async () => {
-    const dataUrl = await getQrCodeDownloadUrl(humanReadableId, qrCodeContents);
-
-    if (!dataUrl) {
-      return;
-    }
-    download(dataUrl, `${humanReadableId}.jpeg`, 'image/jpeg');
-  };
-
+  const { downloadQrCodes, isDownloading } = useDownloadQrCodes([
+    {
+      name: humanReadableId,
+      value: qrCodeContents,
+    },
+  ]);
   return (
     <Container>
       <QrCodeImage qrCodeContents={qrCodeContents} humanReadableId={humanReadableId} />
       <ButtonContainer>
-        <Button type="button" onClick={handleDownload}>
+        <Button onClick={downloadQrCodes} disabled={isDownloading}>
           Download
         </Button>
       </ButtonContainer>

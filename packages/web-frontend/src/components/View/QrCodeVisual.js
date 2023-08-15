@@ -7,9 +7,13 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { QrCodeVisual as BaseQrCodeVisual, OFF_WHITE } from '@tupaia/ui-components';
-import * as download from 'downloadjs';
-import * as JSZip from 'jszip';
+import { Button, Container, DialogActions, Typography } from '@material-ui/core';
+import {
+  QrCodeVisual as BaseQrCodeVisual,
+  CheckboxList,
+  OFF_WHITE,
+  useDownloadQrCodes,
+} from '@tupaia/ui-components';
 import { VIEW_STYLES } from '../../styles';
 
 const StyledQrCodeContainer = styled(BaseQrCodeVisual)`
@@ -22,6 +26,16 @@ const StyledQrCodeContainer = styled(BaseQrCodeVisual)`
   }
 `;
 
+const Title = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+  text-align: center;
+  font-size: 1rem;
+`;
+
 const QrCodeVisualComponent = ({
   onClose: originalOnClose,
   isUserLoggedIn,
@@ -29,33 +43,12 @@ const QrCodeVisualComponent = ({
   isEnlarged,
 }) => {
   const [error, setError] = useState(null);
+  const [selectedQrCodes, setSelectedQrCodes] = useState([]);
+  const { isDownloading, downloadQrCodes } = useDownloadQrCodes(selectedQrCodes);
 
   if (!isUserLoggedIn) {
     return <div style={VIEW_STYLES.downloadLink}>Please log in to enable file downloads</div>;
   }
-
-  const downloadImages = qrCodeCanvasUrlsWithFileNames => {
-    if (qrCodeCanvasUrlsWithFileNames.length < 1) {
-      return;
-    }
-
-    if (qrCodeCanvasUrlsWithFileNames.length === 1) {
-      const [{ name, url }] = qrCodeCanvasUrlsWithFileNames;
-      download(url, `${name}.jpeg`, 'image/jpeg');
-      return;
-    }
-
-    const zip = new JSZip();
-
-    qrCodeCanvasUrlsWithFileNames.forEach(({ name, url }) => {
-      const base64Data = url.replace(/^data:image\/jpeg;base64,/, '');
-      zip.file(`${name}.jpeg`, base64Data, { base64: true });
-    });
-
-    zip.generateAsync({ type: 'blob' }).then(blob => {
-      download(blob, 'qr-codes.zip');
-    });
-  };
 
   const onClose = () => {
     setError(null);
@@ -64,16 +57,46 @@ const QrCodeVisualComponent = ({
 
   const { data, ...config } = viewContent;
 
+  if (isEnlarged) {
+    const list = data.map(item => ({
+      ...item,
+      code: item.value,
+    }));
+
+    return (
+      <Container>
+        <CheckboxList
+          list={list}
+          title="Select QR Codes"
+          selectedItems={selectedQrCodes}
+          setSelectedItems={setSelectedQrCodes}
+        />
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            color="primary"
+            onClick={downloadQrCodes}
+            variant="contained"
+            disabled={isDownloading || !selectedQrCodes.length}
+          >
+            Download
+          </Button>
+        </DialogActions>
+      </Container>
+    );
+  }
+
   return (
-    <StyledQrCodeContainer
-      data={data}
-      config={config}
-      isEnlarged={isEnlarged}
-      onClose={onClose}
-      downloadImages={downloadImages}
-      error={error}
-      isLoading={false}
-    />
+    <>
+      <Title>QR Codes</Title>
+      <StyledQrCodeContainer
+        data={data}
+        config={config}
+        onClose={onClose}
+        error={error}
+        isLoading={false}
+      />
+    </>
   );
 };
 
