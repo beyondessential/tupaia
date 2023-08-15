@@ -264,7 +264,7 @@ export class DhisService extends Service {
     const { dataServiceMapping } = options;
 
     const dhisDataElements = dataElements.filter(
-      ds => dataServiceMapping.mappingForDataSource(ds)?.service_type === 'dhis',
+      de => dataServiceMapping.mappingForDataSource(de)?.service_type === 'dhis',
     );
     const apis = await getApisForDataSources(this.models, dhisDataElements, dataServiceMapping);
 
@@ -275,7 +275,7 @@ export class DhisService extends Service {
     const { dataServiceMapping, useDeprecatedApi = false } = options;
 
     const dhisDataGroups = dataGroups.filter(
-      ds => dataServiceMapping.mappingForDataSource(ds)?.service_type === 'dhis',
+      dg => dataServiceMapping.mappingForDataSource(dg)?.service_type === 'dhis',
     );
     const apis = await getApisForDataSources(this.models, dhisDataGroups, dataServiceMapping);
 

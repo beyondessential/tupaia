@@ -5,7 +5,7 @@ import {
   createMockModelsStubWithMockEntity,
   createWeatherApiStub,
   createWeatherApiStubWithMockResponse,
-  getMockDataSourcesArg,
+  getMockDataElementsArg,
   getMockOptionsArg,
 } from './WeatherService.stubs';
 import { mockNow } from './testutil';
@@ -133,7 +133,7 @@ describe('WeatherService', () => {
 
       const functionCall = async () =>
         service.pullAnalytics(
-          getMockDataSourcesArg(),
+          getMockDataElementsArg(),
           getMockOptionsArg({
             startDate: undefined,
             endDate: undefined,
@@ -172,7 +172,7 @@ describe('WeatherService', () => {
       const service = new WeatherService(mockModels, mockApi);
 
       await service.pullAnalytics(
-        getMockDataSourcesArg({
+        getMockDataElementsArg({
           code: 'WTHR_FORECAST_PRECIP',
         }),
         getMockOptionsArg({
@@ -199,7 +199,7 @@ describe('WeatherService', () => {
       const service = new WeatherService(mockModels, mockApi);
 
       await service.pullAnalytics(
-        getMockDataSourcesArg(),
+        getMockDataElementsArg(),
         getMockOptionsArg({
           startDate: '2019-01-07',
           endDate: '2019-01-10',

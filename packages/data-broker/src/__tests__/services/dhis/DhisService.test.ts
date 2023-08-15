@@ -263,7 +263,7 @@ describe('DhisService', () => {
       });
     });
 
-    it('looks up the api from the given data source', async () => {
+    it('looks up the api from the given data element', async () => {
       const dataElements = [DATA_ELEMENTS.POP01];
       const options = {
         organisationUnitCodes: ['TO'],
@@ -275,7 +275,7 @@ describe('DhisService', () => {
 
       await dhisService.pullAnalytics(dataElements, options);
 
-      // expect DhisService to ask for the apis for the given data sources
+      // expect DhisService to ask for the apis for the given data elements
       expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
         expect.anything(),
         dataElements,
@@ -302,14 +302,14 @@ describe('DhisService', () => {
 
       await dhisService.pullAnalytics(dataElements, options);
 
-      // expect DhisService to ask for the apis for the given data sources, except non-DHIS ones
+      // expect DhisService to ask for the apis for the given data elements, except non-DHIS ones
       expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
         expect.anything(),
         [DATA_ELEMENTS.POP01],
         DEFAULT_DATA_SERVICE_MAPPING,
       );
 
-      // expect pull to have been called with the given data sources, except non-DHIS ones
+      // expect pull to have been called with the given data elements, except non-DHIS ones
       expect(mockPullAnalytics).toHaveBeenCalledOnceWith(
         [mockedDhisApi1],
         [DATA_ELEMENTS.POP01],
@@ -361,7 +361,7 @@ describe('DhisService', () => {
       expect(mockPullDeprecatedEvents).toHaveBeenCalledTimes(1);
     });
 
-    it('looks up the api from the given data source', async () => {
+    it('looks up the api from the given data element', async () => {
       const dataGroups = [DATA_GROUPS.POP01_GROUP];
       const options = {
         organisationUnitCodes: ['TO'],
@@ -373,7 +373,7 @@ describe('DhisService', () => {
 
       await dhisService.pullEvents(dataGroups, options);
 
-      // expect DhisService to ask for the apis for the given data sources
+      // expect DhisService to ask for the apis for the given data elements
       expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
         expect.anything(),
         dataGroups,
@@ -400,14 +400,14 @@ describe('DhisService', () => {
 
       await dhisService.pullEvents(dataGroups, options);
 
-      // expect DhisService to ask for the apis for the given data sources, except non-DHIS ones
+      // expect DhisService to ask for the apis for the given data elements, except non-DHIS ones
       expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
         expect.anything(),
         [DATA_GROUPS.POP01_GROUP],
         DEFAULT_DATA_SERVICE_MAPPING,
       );
 
-      // expect pull to have been called with the given data sources, except non-DHIS ones
+      // expect pull to have been called with the given data elements, except non-DHIS ones
       expect(mockPullEvents).toHaveBeenCalledOnceWith(
         [mockedDhisApi1],
         [DATA_GROUPS.POP01_GROUP],

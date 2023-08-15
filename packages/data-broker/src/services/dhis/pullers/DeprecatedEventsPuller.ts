@@ -67,14 +67,14 @@ export class DeprecatedEventsPuller {
 
   public pull = async (
     apis: DhisApi[],
-    dataSources: DataGroup[],
+    dataGroups: DataGroup[],
     options: DeprecatedPullEventsOptions,
   ) => {
-    if (dataSources.length > 1) {
+    if (dataGroups.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
-    const [dataSource] = dataSources;
-    const { code: programCode } = dataSource;
+    const [dataGroup] = dataGroups;
+    const { code: programCode } = dataGroup;
 
     const events: Event[] = [];
     const pullForApi = async (api: DhisApi) => {

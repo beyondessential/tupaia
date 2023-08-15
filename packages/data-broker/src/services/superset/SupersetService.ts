@@ -29,7 +29,7 @@ export class SupersetService extends Service {
   }
 
   public async pullAnalytics(
-    dataSources: DataElement[],
+    dataElements: DataElement[],
     options: PullOptions,
   ): Promise<AnalyticResults> {
     const {
@@ -44,8 +44,8 @@ export class SupersetService extends Service {
       : inputOrganisationUnitCodes;
 
     let mergedResults: Analytic[] = [];
-    for (const [supersetInstanceCode, instanceDataSources] of Object.entries(
-      this.groupBySupersetInstanceCode(dataSources, dataServiceMapping),
+    for (const [supersetInstanceCode, instanceDataElements] of Object.entries(
+      this.groupBySupersetInstanceCode(dataElements, dataServiceMapping),
     )) {
       const supersetInstance = await this.models.supersetInstance.findOne({
         code: supersetInstanceCode,
@@ -53,13 +53,13 @@ export class SupersetService extends Service {
       if (!supersetInstance)
         throw new Error(`No superset instance found with code "${supersetInstanceCode}"`);
       const api = await getSupersetApiInstance(this.models, supersetInstance);
-      for (const [chartId, chartDataSources] of Object.entries(
-        this.groupByChartId(instanceDataSources, dataServiceMapping),
+      for (const [chartId, chartDataElements] of Object.entries(
+        this.groupByChartId(instanceDataElements, dataServiceMapping),
       )) {
         const results = await this.pullForApiForChart(
           api,
           chartId,
-          chartDataSources,
+          chartDataElements,
           dataServiceMapping,
           { startDate, endDate, organisationUnitCodes },
         );
@@ -125,48 +125,48 @@ export class SupersetService extends Service {
   }
 
   private groupBySupersetInstanceCode(
-    dataSources: DataElement[],
+    dataElements: DataElement[],
     dataServiceMapping: DataServiceMapping,
   ): Record<string, DataElement[]> {
-    const dataSourcesBySupersetInstanceCode: Record<string, DataElement[]> = {};
-    for (const dataSource of dataSources) {
+    const dataElementsBySupersetInstanceCode: Record<string, DataElement[]> = {};
+    for (const dataElement of dataElements) {
       const mapping = dataServiceMapping.mappingForDataSource(
-        dataSource,
+        dataElement,
       ) as DataServiceMappingEntry;
       const { service_type, config } = mapping;
       if (service_type !== 'superset') continue;
       const { supersetInstanceCode } = config;
       if (!supersetInstanceCode) {
-        throw new Error(`Data Element ${dataSource.code} missing supersetInstanceCode`);
+        throw new Error(`Data Element ${dataElement.code} missing supersetInstanceCode`);
       }
-      if (!dataSourcesBySupersetInstanceCode[supersetInstanceCode]) {
-        dataSourcesBySupersetInstanceCode[supersetInstanceCode] = [];
+      if (!dataElementsBySupersetInstanceCode[supersetInstanceCode]) {
+        dataElementsBySupersetInstanceCode[supersetInstanceCode] = [];
       }
-      dataSourcesBySupersetInstanceCode[supersetInstanceCode].push(dataSource);
+      dataElementsBySupersetInstanceCode[supersetInstanceCode].push(dataElement);
     }
-    return dataSourcesBySupersetInstanceCode;
+    return dataElementsBySupersetInstanceCode;
   }
 
   private groupByChartId(
-    dataSources: DataElement[],
+    dataElements: DataElement[],
     dataServiceMapping: DataServiceMapping,
   ): Record<number, DataElement[]> {
-    const dataSourcesByChartId: Record<number, DataElement[]> = {};
-    for (const dataSource of dataSources) {
+    const dataElementsByChartId: Record<number, DataElement[]> = {};
+    for (const dataElement of dataElements) {
       const mapping = dataServiceMapping.mappingForDataSource(
-        dataSource,
+        dataElement,
       ) as DataServiceMappingEntry;
       const { config } = mapping;
       const { supersetChartId } = config;
       if (!supersetChartId) {
-        throw new Error(`Data Element ${dataSource.code} missing supersetChartId`);
+        throw new Error(`Data Element ${dataElement.code} missing supersetChartId`);
       }
-      if (!dataSourcesByChartId[supersetChartId]) {
-        dataSourcesByChartId[supersetChartId] = [];
+      if (!dataElementsByChartId[supersetChartId]) {
+        dataElementsByChartId[supersetChartId] = [];
       }
-      dataSourcesByChartId[supersetChartId].push(dataSource);
+      dataElementsByChartId[supersetChartId].push(dataElement);
     }
-    return dataSourcesByChartId;
+    return dataElementsByChartId;
   }
 
   public async pullEvents(): Promise<never> {

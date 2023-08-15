@@ -151,17 +151,17 @@ export class WeatherService extends Service {
     const [requestDataSource] = requestDataSources;
     const requestDataSourceCode = requestDataSource.code;
 
-    let dataSources = null;
+    let dataElements = null;
     if (requestType === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
-      dataSources = await this.models.dataElement.find({
+      dataElements = await this.models.dataElement.find({
         code: requestDataSourceCode,
       });
     } else if (requestType === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
-      dataSources = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);
+      dataElements = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);
     }
-    return dataSources as DataElement[];
+    return dataElements as DataElement[];
   }
 
   /**

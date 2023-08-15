@@ -17,9 +17,6 @@ import { DataServiceMapping } from '../../services/DataServiceMapping';
 const mockModels = createModelsStub();
 
 jest.mock('@tupaia/database', () => ({
-  modelClasses: {
-    DataSource: () => {},
-  },
   TupaiaDatabase: jest.fn().mockImplementation(() => {}),
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
   createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility

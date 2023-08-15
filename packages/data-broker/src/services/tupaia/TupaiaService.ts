@@ -67,29 +67,29 @@ export class TupaiaService extends Service {
     throw new Error('Data deletion is not supported in TupaiaService');
   }
 
-  public async pullAnalytics(dataSources: DataElement[], options: PullAnalyticsOptions) {
-    const dataElementCodes = dataSources.map(({ code }) => code);
+  public async pullAnalytics(dataElements: DataElement[], options: PullAnalyticsOptions) {
+    const dataElementCodes = dataElements.map(({ code }) => code);
     const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
       ...translateOptionsForApi(options),
       dataElementCodes,
     });
-    const dataElements = await this.pullDataElementMetadata(dataSources, options);
+    const namedDataElements = await this.pullDataElementMetadata(dataElements, options);
 
     return {
       results: analytics,
       metadata: {
-        dataElementCodeToName: reduceToDictionary(dataElements, 'code', 'name'),
+        dataElementCodeToName: reduceToDictionary(namedDataElements, 'code', 'name'),
       },
       numAggregationsProcessed,
     };
   }
 
-  public async pullEvents(dataSources: DataGroup[], options: PullEventsOptions) {
-    if (dataSources.length > 1) {
+  public async pullEvents(dataGroups: DataGroup[], options: PullEventsOptions) {
+    if (dataGroups.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
-    const [dataSource] = dataSources;
-    const { code: dataGroupCode } = dataSource;
+    const [dataGroup] = dataGroups;
+    const { code: dataGroupCode } = dataGroup;
 
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }

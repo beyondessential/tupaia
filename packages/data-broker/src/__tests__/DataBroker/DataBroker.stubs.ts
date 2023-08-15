@@ -73,10 +73,10 @@ export class MockService extends Service {
 
   public pullEvents = jest.fn().mockImplementation((dataGroups: DataGroup[]) => {
     const { eventsByProgram } = this.mockData;
-    const dataSourceCodes = dataGroups.map(({ code }) => code);
+    const dataGroupCodes = dataGroups.map(({ code }) => code);
 
     return Object.entries(eventsByProgram)
-      .filter(([program]) => dataSourceCodes.includes(program))
+      .filter(([program]) => dataGroupCodes.includes(program))
       .flatMap(([, events]) => events);
   });
 
@@ -84,8 +84,8 @@ export class MockService extends Service {
     .fn()
     .mockImplementation((syncGroups: DataServiceSyncGroup[]) => {
       const { eventsByProgram } = this.mockData;
-      const dataSourceCodes = syncGroups.map(({ code }) => code);
-      return pickBy(eventsByProgram, (_, programCode) => dataSourceCodes.includes(programCode));
+      const syncGroupCodes = syncGroups.map(({ code }) => code);
+      return pickBy(eventsByProgram, (_, programCode) => syncGroupCodes.includes(programCode));
     });
 
   public push = jest.fn();
