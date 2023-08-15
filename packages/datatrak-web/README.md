@@ -1,14 +1,26 @@
-# @tupaia/datatrak-web
+# @tupaia/datatrak
 
-Browser based data collection for [Tupaia](https://tupaia.org/).
+Browser based data collection.
 
-## App Directory Structure
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-- `api`: API layer abstractions such as react-query queries and mutations.
-- `components`: Reusable components that are used throughout the app such as Button, Table, etc.
-- `constants`: App wide constants such as colors, fonts, etc. Some constants are also defined in the components files or directories.
-- `features`: Specific one-off react components that relate to features of the app such as maps, charts etc.
-- `layout`: App wide layout components such as Header, Footer etc.
-- `theme`: @material-ui theme configuration.
-- `utils`: App wide utils such as navigation utils etc.
-- `views`: Top level templates that map to router paths. These might contain components that are specific to the view but are not substantial enough to be a feature such as a one-off form.
+## Available Scripts
+
+In the project directory, you can run:
+
+- `yarn start` Runs the app in development mode.
+- `yarn start-fullstack` Runs the app and the backend servers in development mode.
+- `yarn test` Launches jest test runner in the interactive watch mode.
+- `yarn build` Builds the app for production to the `build` folder.
+
+
+## Coding Conventions
+
+#### Views
+A view is a component that connects to a route (ie. react-router Route).
+
+## Environment Variables
+- You need to set your environment variables in the .env file for the app to work. Go to the .env.examples file to see a list of the required variables.
+
+
+## URL Pattern
