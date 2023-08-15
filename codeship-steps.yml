@@ -29,6 +29,8 @@
               command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
             - name: Test data-table-server
               command: './packages/devops/scripts/ci/testBackend.sh data-table-server'
+            - name: Test datatrak-server
+              command: './packages/devops/scripts/ci/testBackend.sh datatrak-server'
             - name: Test lesmis-server
               command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
             - name: Test psss-server

@@ -49,12 +49,16 @@
       "path": "packages/data-table-server"
     },
     {
-      "name": "datatrak-web",
-      "path": "packages/datatrak-web"
+      "name": "datatrak",
+      "path": "packages/datatrak"
     },
     {
       "name": "database",
       "path": "packages/database"
+    },
+    {
+      "name": "datatrak-server",
+      "path": "packages/datatrak-server"
     },
     {
       "name": "devops",
