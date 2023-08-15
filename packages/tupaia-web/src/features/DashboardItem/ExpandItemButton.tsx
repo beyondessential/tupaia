@@ -79,7 +79,9 @@ export const ExpandItemButton = ({ reportCode, viewType }: ExpandItemButtonProps
     <ExpandableButton onClick={handleExpandDashboardItem}>
       <ZoomInIcon />
       <ExpandButtonText>
-        {viewType === 'dataDownload' ? 'Expand to download data' : 'Expand chart'}
+        {viewType === 'dataDownload' || viewType === 'qrCodeVisual'
+          ? 'Expand to download data'
+          : 'Expand chart'}
       </ExpandButtonText>
     </ExpandableButton>
   );

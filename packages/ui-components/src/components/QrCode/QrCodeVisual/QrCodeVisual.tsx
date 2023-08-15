@@ -5,12 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Button, DialogActions, Container } from '@material-ui/core';
-import { ViewConfig } from '@tupaia/types';
-import { NoData } from '../../NoData';
+import { Container } from '@material-ui/core';
 import { Data } from '../../../types';
 import { SingleQrCode } from './SingleQrCode';
 import { MultiQrCodes } from './MultiQrCode';
+import { DownloadMultiQrCodes } from './DownloadMultiQrCodes';
 
 const Wrapper = styled(Container).attrs({
   maxWidth: 'sm',
@@ -18,47 +17,18 @@ const Wrapper = styled(Container).attrs({
   padding-bottom: 1rem;
 `;
 
-const Error = styled.div`
-  color: ${props => props.theme.palette.error.main};
-  margin-top: 0.625rem;
-  text-align: center;
-`;
-
-interface DownloadQrCodeVisualProps {
-  config?: ViewConfig;
+interface QrCodeVisualProps {
   data?: Data[];
-  isLoading?: boolean;
-  onClose: () => void;
-  className?: string;
-  error?: string;
+  onCloseModal: () => void;
+  isEnlarged?: boolean;
 }
 
 export const QrCodeVisual = ({
-  config,
   data: options = [],
-  isLoading,
-  onClose,
-  className,
-  error,
-}: DownloadQrCodeVisualProps) => {
-  if (!isLoading && options.length === 0) {
-    return (
-      <Wrapper className={className}>
-        <NoData viewContent={config} />
-      </Wrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <Wrapper className={className}>
-        <Error>{error}</Error>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-        </DialogActions>
-      </Wrapper>
-    );
-  }
+  onCloseModal,
+  isEnlarged,
+}: QrCodeVisualProps) => {
+  if (isEnlarged) return <DownloadMultiQrCodes data={options} onCancelDownload={onCloseModal} />;
 
   return (
     <Wrapper>

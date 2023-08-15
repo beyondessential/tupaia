@@ -13,6 +13,7 @@ import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
+import { QRCode } from './QRCode';
 
 interface ViewProps {
   report: DashboardItemReport;
@@ -28,6 +29,7 @@ const VIEWS = {
   multiValueRow: MultiValueRow,
   dataDownload: DataDownload,
   filesDownload: DownloadFiles,
+  qrCodeVisual: QRCode
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {

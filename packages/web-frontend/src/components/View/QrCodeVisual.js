@@ -3,25 +3,16 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Button, Container, DialogActions, Typography } from '@material-ui/core';
-import {
-  QrCodeVisual as BaseQrCodeVisual,
-  CheckboxList,
-  OFF_WHITE,
-  useDownloadQrCodes,
-} from '@tupaia/ui-components';
+import { Typography } from '@material-ui/core';
+import { QrCodeVisual as BaseQrCodeVisual, OFF_WHITE, NoData } from '@tupaia/ui-components';
 import { VIEW_STYLES } from '../../styles';
 
 const StyledQrCodeContainer = styled(BaseQrCodeVisual)`
   .qrcode {
-    color: ${OFF_WHITE};
-  }
-
-  .checkbox-icon {
     color: ${OFF_WHITE};
   }
 `;
@@ -42,60 +33,24 @@ const QrCodeVisualComponent = ({
   viewContent,
   isEnlarged,
 }) => {
-  const [error, setError] = useState(null);
-  const [selectedQrCodes, setSelectedQrCodes] = useState([]);
-  const { isDownloading, downloadQrCodes } = useDownloadQrCodes(selectedQrCodes);
-
   if (!isUserLoggedIn) {
     return <div style={VIEW_STYLES.downloadLink}>Please log in to enable file downloads</div>;
   }
 
   const onClose = () => {
-    setError(null);
     originalOnClose();
   };
 
   const { data, ...config } = viewContent;
 
-  if (isEnlarged) {
-    const list = data.map(item => ({
-      ...item,
-      code: item.value,
-    }));
-
-    return (
-      <Container>
-        <CheckboxList
-          list={list}
-          title="Select QR Codes"
-          selectedItems={selectedQrCodes}
-          setSelectedItems={setSelectedQrCodes}
-        />
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button
-            color="primary"
-            onClick={downloadQrCodes}
-            variant="contained"
-            disabled={isDownloading || !selectedQrCodes.length}
-          >
-            Download
-          </Button>
-        </DialogActions>
-      </Container>
-    );
-  }
-
   return (
     <>
-      <Title>QR Codes</Title>
-      <StyledQrCodeContainer
-        data={data}
-        config={config}
-        onClose={onClose}
-        error={error}
-        isLoading={false}
-      />
+      {!isEnlarged && <Title>{config.name}</Title>}
+      {data.length === 0 ? (
+        <NoData viewContent={viewContent} />
+      ) : (
+        <StyledQrCodeContainer data={data} onCloseModal={onClose} isEnlarged={isEnlarged} />
+      )}
     </>
   );
 };

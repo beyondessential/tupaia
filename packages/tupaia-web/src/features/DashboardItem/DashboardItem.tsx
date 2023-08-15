@@ -79,12 +79,14 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     viewType,
     name,
   } = config as DashboardItemConfig;
+
   const isExpandable = !!(
     periodGranularity ||
     type === 'chart' ||
     type === 'matrix' ||
     viewType === 'dataDownload' ||
-    viewType === 'filesDownload'
+    viewType === 'filesDownload' ||
+    (viewType === 'qrCodeVisual' && report?.data?.length > 1)
   );
 
   let showTitle = !!name;

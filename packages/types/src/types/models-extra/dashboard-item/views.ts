@@ -87,6 +87,10 @@ export type MultiValueViewConfig = BaseViewConfig & {
   };
 };
 
+export type QRCodeViewConfig = BaseViewConfig & {
+  viewType: 'qrCodeVisual';
+};
+
 export type ViewConfig =
   | ListViewConfig
   | SingleValueViewConfig
