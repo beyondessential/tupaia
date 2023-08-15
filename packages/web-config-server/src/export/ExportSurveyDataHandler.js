@@ -27,10 +27,11 @@ export class ExportSurveyDataHandler extends RouteHandler {
       timeZone,
     } = this.query;
 
+    const { headers, cookies } = this.req;
     const sessionCookieName = USER_SESSION_CONFIG.cookieName;
-    const sessionCookie = this.req.cookies[sessionCookieName];
+    const sessionCookie = cookies[sessionCookieName];
     // If we used an auth header rather than a session, pass it along to the next request
-    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const authHeader = headers.authorization || headers.Authorization;
     const { report_code: reportCode, legacy, config } = await this.models.dashboardItem.findOne({
       code: itemCode,
     });
@@ -56,7 +57,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
       true,
       {
         authorization: authHeader,
-      }
+      },
     );
 
     const sheetNames = [];
