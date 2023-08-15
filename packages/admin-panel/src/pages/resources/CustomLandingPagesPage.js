@@ -9,7 +9,7 @@ import { prettyArray } from '../../utilities';
 const LANDING_PAGES_ENDPOINT = 'landingPages';
 
 // the URL prefix to display in the url_segment field
-const URL_PREFIX = `https://${import.meta.env.PROD ? 'www' : 'dev'}.tupaia.org`;
+const URL_PREFIX = `https://${process.env.NODE_ENV === 'production' ? 'www' : 'dev'}.tupaia.org`;
 
 const DISPLAY_URL_PREFIX = `${URL_PREFIX.replace('https://', '')}/`;
 

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import JSONEditor from 'jsoneditor/dist/jsoneditor';
-import 'jsoneditor/dist/jsoneditor.css'; 
+import 'jsoneditor/dist/jsoneditor.css';
 import Ace from 'ace-builds/src-noconflict/ace';
+import 'ace-builds/webpack-resolver';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-github';
 

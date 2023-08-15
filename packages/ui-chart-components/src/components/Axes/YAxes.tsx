@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import { ValueType } from '@tupaia/types';
 import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
 import { DARK_BLUE } from '../../constants';
@@ -87,18 +87,14 @@ const renderYAxisLabel = (
   return undefined;
 };
 
-const flattenValues = (data?: any[], dataKeys?: string[]) => {
-  if (!data) return [];
-  return data?.map(item => dataKeys?.map(key => item[key])).flat();
-};
-
 /**
  * Calculate a dynamic width for the YAxis
  */
 const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
   if (valueType === 'number' || valueType === undefined) {
-    const maxValue = Math.max(...flattenValues(data, dataKeys));
+    const values = data.map(item => dataKeys.map(key => item[key])).flat();
+    const maxValue = Math.max(...values);
 
     // Format the number in the same way that it will be displayed to take into account any rounding
     const maxFormattedValue =
@@ -113,15 +109,6 @@ const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => 
   }
 
   return undefined;
-};
-
-const getDefaultNumberFormat = (data: any[], dataKeys: string[]) => {
-  const uniqueValues = [...new Set(flattenValues(data, dataKeys))];
-  const maxValue = Math.max(...uniqueValues);
-  // if the maxValue is greater than 4, there will already be multiple ticks visible that are whole numbers, so we can use the default format of 0,0, as used in utils
-  if (maxValue >= 4) return '0,0';
-  // if the maxValue is less than 4, we want to show 2 decimal places, so we that we don't have repeated tick values from rounding, so we can use the default format of 0.00
-  return '0.00';
 };
 
 interface YAxisComponentProps {
@@ -153,11 +140,6 @@ const YAxis = ({
   const valueType = viewContent.valueType || config.valueType;
   const width = getAxisWidth(viewContent.data, dataKeys, valueType);
 
-  // this is to stop a bug where if there is no value format set, the axis will round decimals to while values, which is undesirable behaviour when the max axis value is less than 3
-  const defaultFormatter =
-    valueType === VALUE_TYPES.NUMBER
-      ? getDefaultNumberFormat(viewContent.data, dataKeys)
-      : undefined;
   return (
     <YAxisComponent
       key={yAxisId}
@@ -175,12 +157,7 @@ const YAxis = ({
         formatDataValueByType(
           {
             value,
-            metadata: {
-              presentationOptions: {
-                ...(presentationOptions || {}),
-                valueFormat: presentationOptions?.valueFormat || defaultFormatter,
-              },
-            },
+            metadata: { presentationOptions },
           },
           valueType,
         )

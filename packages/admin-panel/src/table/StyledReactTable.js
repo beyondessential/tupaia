@@ -4,7 +4,7 @@
  */
 
 import styled from 'styled-components';
-import ReactTable from 'react-table-v6';
+import ReactTable from 'react-table';
 import * as COLORS from '../theme/colors';
 
 export const StyledReactTable = styled(ReactTable)`

@@ -20,7 +20,7 @@ const isJsonResponse = response => {
 const {
   REACT_APP_API_URL = 'http://localhost:8070/v1',
   REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-} = import.meta.env;
+} = process.env;
 
 export class TupaiaApi {
   constructor(config) {

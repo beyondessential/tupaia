@@ -47,7 +47,7 @@ COPY packages/superset-api/. ./packages/superset-api
 COPY scripts/bash/ ./scripts/bash/
 
 #  Build tooling configuration files
-COPY ./tsconfig* vite.config.js moduleMock.js babel.config.json tsconfig-js.json jest.config-ts.json .eslintrc ./
+COPY ./tsconfig* babel.config.json tsconfig-js.json jest.config-ts.json .eslintrc ./
 
 # Build and install internal dependencies
 RUN yarn build:internal-dependencies
