@@ -101,4 +101,5 @@ export type ViewConfig =
   | DataDownloadViewConfig
   | SingleDateViewConfig
   | MultiValueViewConfig
-  | DownloadFilesViewConfig;
+  | DownloadFilesViewConfig
+  | QRCodeViewConfig;
