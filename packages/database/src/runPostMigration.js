@@ -20,7 +20,6 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'lesmis_session',
   'admin_panel_session',
   'tupaia_web_session',
-  'datatrak_session',
   'analytics',
   'data_service_sync_group', // config is too large for triggers
   'data_table', // config is too large for triggers
