@@ -11,7 +11,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run --prefix ../../ package:build:react-scripts",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 npm run --prefix ../../ package:build:vite",
+    "preview": "vite preview",
     "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
