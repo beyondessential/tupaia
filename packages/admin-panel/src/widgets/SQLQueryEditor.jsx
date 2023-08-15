@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import parser from 'js-sql-parser';
 import BaseAceEditor from 'react-ace';
 import styled from 'styled-components';
-
 import 'ace-builds/src-noconflict/mode-pgsql';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-language_tools';
