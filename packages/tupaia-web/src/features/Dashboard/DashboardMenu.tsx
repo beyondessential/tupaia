@@ -70,12 +70,14 @@ export const DashboardMenu = ({
     setAnchorEl(null);
   };
 
+  const hasMultipleDashboards = dashboards.length > 1;
+
   return (
     <>
       {activeDashboard && (
-        <MenuButton onClick={handleClickListItem}>
+        <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
           {activeDashboard?.name}
-          <KeyboardArrowDownIcon />
+          {hasMultipleDashboards && <KeyboardArrowDownIcon />}
         </MenuButton>
       )}
 

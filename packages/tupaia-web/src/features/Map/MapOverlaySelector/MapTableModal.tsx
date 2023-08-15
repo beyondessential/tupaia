@@ -9,7 +9,7 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
-import { MapTable } from '@tupaia/ui-map-components';
+import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
 import { useMapOverlayData } from '../utils';
 import { Modal } from '../../../components';
 import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
@@ -50,12 +50,23 @@ export const MapTableModal = ({ onClose }: any) => {
 
   const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
+  const startDate = serieses.startDate;
+  const endDate = serieses.endDate;
+
+  const { doExport } = useMapDataExport(
+    serieses,
+    measureData,
+    titleText,
+    startDate,
+    endDate,
+  );
+
   return (
     <Modal isOpen onClose={onClose}>
       <Wrapper>
         <TitleWrapper>
           <Title>{titleText}</Title>
-          <IconButton>
+          <IconButton onClick={doExport}>
             <DownloadIcon />
           </IconButton>
         </TitleWrapper>

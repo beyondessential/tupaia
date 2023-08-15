@@ -12,6 +12,7 @@ interface ModalProps {
   children?: ReactNode;
   onClose: () => void;
   isOpen: boolean;
+  className?: string;
 }
 
 const Wrapper = styled.div`
