@@ -11,6 +11,7 @@ import { MatrixRowType } from '../../types';
 import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { getDisplayedColumns } from './utils';
+import { CellLink } from './CellLink';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded: boolean;
@@ -29,25 +30,30 @@ const TableRow = styled(MuiTableRow)<{
     $highlighted ? lighten(theme.palette.background.default, 0.1) : 'transparent'};
 `;
 
-const BaseRowHeaderCell = styled(TableCell).attrs({
+const HeaderCell = styled(TableCell).attrs({
   component: 'th',
-})<{
-  $depth: number;
-}>`
-  padding-left: ${({ $depth }) => `${0.5 + $depth * 1.5}rem`};
+})`
+  padding: 0;
   max-width: 25%;
 `;
 
-const RowHeaderCellContent = styled.div`
+const RowHeaderCellContent = styled.div<{
+  $depth: number;
+  $isGrouped: boolean;
+}>`
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 1rem;
+  padding-left: ${({ $depth, $isGrouped }) =>
+    $isGrouped ? `${1.5 + $depth * 1.5}rem` : `${0.5 + $depth * 1.5}rem`};
   button {
     margin-right: 0.5rem;
   }
-`;
-
-const NonGroupedRowHeaderCell = styled(BaseRowHeaderCell)`
-  padding-left: ${({ $depth }) => `${1.5 + $depth * 1.5}rem`};
 `;
 
 type MatrixRowTitle = MatrixRowType['title'];
@@ -66,6 +72,7 @@ const RowHeaderCell = ({
   hasChildren,
   children,
   disableExpandButton,
+  link,
 }: {
   depth: number;
   isExpanded: boolean;
@@ -73,6 +80,7 @@ const RowHeaderCell = ({
   hasChildren: boolean;
   children: React.ReactNode;
   disableExpandButton?: boolean;
+  link?: typeof Location | string;
 }) => {
   const dispatch = useContext(MatrixDispatchContext)!;
   const toggleExpandedRows = () => {
@@ -83,22 +91,27 @@ const RowHeaderCell = ({
     }
   };
 
-  if (!hasChildren)
-    return <NonGroupedRowHeaderCell $depth={depth}>{children}</NonGroupedRowHeaderCell>;
   return (
-    <BaseRowHeaderCell $depth={depth}>
-      <RowHeaderCellContent>
-        <IconButton
-          aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
-          size="small"
-          onClick={toggleExpandedRows}
-          disabled={disableExpandButton}
-        >
-          <ExpandIcon $expanded={isExpanded} />
-        </IconButton>
+    <HeaderCell>
+      <RowHeaderCellContent
+        $depth={depth}
+        $isGrouped={!!hasChildren}
+        as={link ? CellLink : 'div'}
+        to={link}
+      >
+        {hasChildren && (
+          <IconButton
+            aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
+            size="small"
+            onClick={toggleExpandedRows}
+            disabled={disableExpandButton}
+          >
+            <ExpandIcon $expanded={isExpanded} />
+          </IconButton>
+        )}
         {children}
       </RowHeaderCellContent>
-    </BaseRowHeaderCell>
+    </HeaderCell>
   );
 };
 
@@ -106,7 +119,7 @@ const RowHeaderCell = ({
  * This is a recursive component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
  */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
-  const { children, title } = row;
+  const { children, title, link } = row;
   const { columns, startColumn, maxColumns, expandedRows, disableExpand = false } = useContext(
     MatrixContext,
   );
@@ -129,6 +142,7 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
           rowTitle={title}
           hasChildren={isCategory}
           disableExpandButton={disableExpand}
+          link={link}
         >
           {title}
         </RowHeaderCell>

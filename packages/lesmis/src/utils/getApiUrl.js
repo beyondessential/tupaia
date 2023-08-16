@@ -4,7 +4,7 @@
  */
 
 export const getApiUrl = () => {
-  const { REACT_APP_LESMIS_API_URL } = process.env;
+  const { REACT_APP_LESMIS_API_URL } = import.meta.env;
   if (REACT_APP_LESMIS_API_URL) {
     return REACT_APP_LESMIS_API_URL;
   }

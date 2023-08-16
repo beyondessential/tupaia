@@ -9,7 +9,7 @@ import {
   AttributionControl,
   MapContainer,
 } from 'react-leaflet';
-import { InteractivePolygon } from '../src';
+import { InteractivePolygon } from '../src/components/InteractivePolygon';
 import multiOverlaySerieses from './data/interactivePolygonSerieses.json';
 import area from './data/entityAreaData.json';
 

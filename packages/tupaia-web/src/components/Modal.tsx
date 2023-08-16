@@ -44,7 +44,7 @@ const Paper = styled(MuiPaper)`
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
   max-width: 100%;
-  min-width: 300px;
+  min-width: 18.75rem;
   // Prevent width from animating.
   transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 `;
@@ -54,7 +54,13 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperComponent={Paper}
+      fullScreen={fullScreen}
+      disablePortal
+    >
       <Wrapper id="overlay-wrapper">
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />

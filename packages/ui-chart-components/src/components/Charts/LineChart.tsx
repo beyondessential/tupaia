@@ -27,7 +27,7 @@ export const LineChart = ({
   yAxisId,
   valueType,
   strokeDasharray,
-  color = BLUE,
+  color,
   isExporting = false,
   isEnlarged = false,
   connectNulls = false,

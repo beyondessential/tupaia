@@ -37,9 +37,8 @@ const LinkText = styled(Typography)`
 `;
 
 const ForgotPasswordText = styled(LinkText)`
-  display: block;
-  margin-top: -0.6rem;
-  text-align: right;
+  margin-top: -0.4rem;
+  float: right;
 `;
 
 export const LoginModal = () => {
@@ -54,12 +53,19 @@ export const LoginModal = () => {
         <EmailVerificationModal />
       )}
       <StyledForm onSubmit={login as SubmitHandler<any>} formContext={formContext}>
-        <TextField name="email" label="Email" type="email" options={FORM_FIELD_VALIDATION.EMAIL} />
+        <TextField
+          name="email"
+          label="Email"
+          type="email"
+          options={FORM_FIELD_VALIDATION.EMAIL}
+          required
+        />
         <TextField
           name="password"
           label="Password"
           type="password"
           options={FORM_FIELD_VALIDATION.PASSWORD}
+          required
         />
         <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.FORGOT_PASSWORD}>
           Forgot password?

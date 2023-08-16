@@ -56,7 +56,7 @@ const isMobile = () => {
 export const EntitySearch = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode!);
-  const { data: entities = [] } = useEntities(projectCode!, project?.entityCode);
+  const { data: entities = [] } = useEntities(projectCode!, project?.code);
   const [searchValue, setSearchValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
@@ -66,8 +66,8 @@ export const EntitySearch = () => {
     }
   };
 
-  const children = entities.filter(entity => entity.parentCode === project?.entityCode);
-  const grandChildren = entities.filter(entity => entity.parentCode !== project?.entityCode);
+  const children = entities.filter(entity => entity.parentCode === project?.code);
+  const grandChildren = entities.filter(entity => entity.parentCode !== project?.code);
 
   return (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
