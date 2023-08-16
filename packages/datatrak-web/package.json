@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "Web app that collects data for the Tupaia project",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/datatrak-web"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "dependencies": {
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
