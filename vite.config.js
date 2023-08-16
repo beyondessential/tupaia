@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import { defineConfig, loadEnv } from 'vite';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import react from '@vitejs/plugin-react';
@@ -8,6 +13,23 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), 'REACT_APP_');
 
   const baseConfig = {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: function manualChunks(id) {
+            if (id.includes('lodash')) return 'lodash';
+            if (id.includes('ace-builds')) return 'ace';
+            if (id.includes('react-ace')) return 'reactAce';
+            if (id.includes('jsoneditor')) return 'jsonEditor';
+            if (id.includes('icons')) return 'muiIcons';
+            if (id.includes('moment-timezone')) return 'momentTimezone';
+            if (id.includes('types')) return 'tupaiaTypes';
+            if (id.includes('xlsx')) return 'xlsx';
+          },
+        },
+      },
+    },
+
     // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
     plugins: [
       ViteEjsPlugin(),

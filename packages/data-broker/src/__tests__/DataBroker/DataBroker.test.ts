@@ -17,9 +17,6 @@ import { DataServiceMapping } from '../../services/DataServiceMapping';
 const mockModels = createModelsStub();
 
 jest.mock('@tupaia/database', () => ({
-  modelClasses: {
-    DataSource: () => {},
-  },
   TupaiaDatabase: jest.fn().mockImplementation(() => {}),
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
   createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
@@ -173,24 +170,28 @@ describe('DataBroker', () => {
         { dataSource: DATA_ELEMENTS.DHIS_01, service_type: 'dhis', config: {} },
       ]);
 
-      const testData: [MethodUnderTest, any[], DataServiceMapping][] = [
-        ['push', [{ code: 'DHIS_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS], mapping],
-        ['delete', [{ code: 'DHIS_01', type: 'dataElement' }, { value: 2 }, TO_OPTIONS], mapping],
-        ['pullAnalytics', ['DHIS_01', TO_OPTIONS], mapping],
-        ['pullMetadata', [{ code: 'DHIS_01', type: 'dataElement' }, TO_OPTIONS], mapping],
+      const testData: [MethodUnderTest, any[]][] = [
+        ['push', [{ code: 'DHIS_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS]],
+        ['delete', [{ code: 'DHIS_01', type: 'dataElement' }, { value: 2 }, TO_OPTIONS]],
+        ['pullMetadata', [{ code: 'DHIS_01', type: 'dataElement' }, TO_OPTIONS]],
       ];
 
-      testData.forEach(([methodUnderTest, inputArgs, expectedMapping]) =>
-        it(`passes mapping to service: ${methodUnderTest}`, async () => {
-          await dataBroker[methodUnderTest](inputArgs[0], inputArgs[1], inputArgs[2]);
-          const serviceMethod =
-            methodUnderTest === 'pullAnalytics' || methodUnderTest === 'pullEvents'
-              ? 'pull'
-              : methodUnderTest;
-          expect(SERVICES.dhis[serviceMethod]).toHaveBeenCalledOnceWith(
+      testData.forEach(
+        ([methodUnderTest, inputArgs]) =>
+          it(`passes mapping to service: ${methodUnderTest}`, async () => {
+            await dataBroker[methodUnderTest](inputArgs[0], inputArgs[1], inputArgs[2]);
+            expect(SERVICES.dhis[methodUnderTest]).toHaveBeenCalledOnceWith(
+              expect.anything(),
+              expect.anything(),
+              expect.objectContaining({ dataServiceMapping: mapping }),
+            );
+          }),
+
+        it('passes mapping to service: pullAnalytics', async () => {
+          await dataBroker.pullAnalytics(['DHIS_01'], TO_OPTIONS);
+          expect(SERVICES.dhis.pullAnalytics).toHaveBeenCalledOnceWith(
             expect.anything(),
-            expect.anything(),
-            expect.objectContaining({ dataServiceMapping: expectedMapping }),
+            expect.objectContaining({ dataServiceMapping: mapping }),
           );
         }),
       );
@@ -215,9 +216,8 @@ describe('DataBroker', () => {
         dataElements: DataElement[],
         expectedOrganisationUnitCodes: string[],
       ) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(
+        expect(service.pullAnalytics).toHaveBeenCalledOnceWith(
           dataElements,
-          'dataElement',
           expect.objectContaining({
             organisationUnitCodes: expect.arrayContaining(expectedOrganisationUnitCodes),
           }),
@@ -307,103 +307,100 @@ describe('DataBroker', () => {
     });
   });
 
-  describe('pull()', () => {
-    describe('permissions', () => {
-      it("throws an error if fetching for a data element the user doesn't have required permissions for", async () => {
-        await expect(
-          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Public'] }) }).pullAnalytics(
-            ['RESTRICTED_01'],
-            {},
-          ),
-        ).toBeRejectedWith('Missing permissions to the following data elements: RESTRICTED_01');
-      });
+  describe('pull permissions', () => {
+    it("throws an error if fetching for a data element the user doesn't have required permissions for", async () => {
+      await expect(
+        new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Public'] }) }).pullAnalytics(
+          ['RESTRICTED_01'],
+          {},
+        ),
+      ).toBeRejectedWith('Missing permissions to the following data elements: RESTRICTED_01');
+    });
 
-      it("throws an error if fetching for a data element in an entity the user doesn't have required permissions for", async () => {
-        await expect(
-          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Admin'] }) }).pullAnalytics(
-            ['RESTRICTED_01'],
-            { organisationUnitCodes: ['TO'] },
-          ),
-        ).toBeRejectedWith('Missing permissions to the following data elements:\nRESTRICTED_01');
-      });
+    it("throws an error if fetching for a data element in an entity the user doesn't have required permissions for", async () => {
+      await expect(
+        new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['Admin'] }) }).pullAnalytics(
+          ['RESTRICTED_01'],
+          { organisationUnitCodes: ['TO'] },
+        ),
+      ).toBeRejectedWith('Missing permissions to the following data elements:\nRESTRICTED_01');
+    });
 
-      it("throws an error if any of data elements in fetch the user doesn't have required permissions for", async () => {
-        await expect(
-          new DataBroker({ accessPolicy: new AccessPolicy({ TO: ['Public'] }) }).pullAnalytics(
-            ['TUPAIA_01', 'RESTRICTED_01'],
-            { organisationUnitCodes: ['TO'] },
-          ),
-        ).toBeRejectedWith(`Missing permissions to the following data elements:\nRESTRICTED_01`);
-      });
+    it("throws an error if any of data elements in fetch the user doesn't have required permissions for", async () => {
+      await expect(
+        new DataBroker({ accessPolicy: new AccessPolicy({ TO: ['Public'] }) }).pullAnalytics(
+          ['TUPAIA_01', 'RESTRICTED_01'],
+          { organisationUnitCodes: ['TO'] },
+        ),
+      ).toBeRejectedWith(`Missing permissions to the following data elements:\nRESTRICTED_01`);
+    });
 
-      it("doesn't throw if the user has BES Admin access", async () => {
-        await expect(
-          new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['BES Admin'] }) }).pullAnalytics(
-            ['RESTRICTED_01'],
-            { organisationUnitCodes: ['TO'] },
-          ),
-        ).toResolve();
-      });
+    it("doesn't throw if the user has BES Admin access", async () => {
+      await expect(
+        new DataBroker({ accessPolicy: new AccessPolicy({ DL: ['BES Admin'] }) }).pullAnalytics(
+          ['RESTRICTED_01'],
+          { organisationUnitCodes: ['TO'] },
+        ),
+      ).toResolve();
+    });
 
-      it("doesn't throw if the user has access to the data element in the requested entity", async () => {
-        const results = await new DataBroker({
-          accessPolicy: new AccessPolicy({ TO: ['Admin'] }),
-        }).pullAnalytics(['RESTRICTED_01'], { organisationUnitCodes: ['TO'] });
-        expect(results).toEqual({
-          results: [
-            {
-              analytics: [
-                {
-                  dataElement: 'RESTRICTED_01',
-                  organisationUnit: 'TO',
-                  period: '20210101',
-                  value: 4,
-                },
-              ],
-              numAggregationsProcessed: 0,
-            },
-          ],
-          metadata: {
-            dataElementCodeToName: {},
+    it("doesn't throw if the user has access to the data element in the requested entity", async () => {
+      const results = await new DataBroker({
+        accessPolicy: new AccessPolicy({ TO: ['Admin'] }),
+      }).pullAnalytics(['RESTRICTED_01'], { organisationUnitCodes: ['TO'] });
+      expect(results).toEqual({
+        results: [
+          {
+            analytics: [
+              {
+                dataElement: 'RESTRICTED_01',
+                organisationUnit: 'TO',
+                period: '20210101',
+                value: 4,
+              },
+            ],
+            numAggregationsProcessed: 0,
           },
-        });
+        ],
+        metadata: {
+          dataElementCodeToName: {},
+        },
       });
+    });
 
-      it('just returns data for entities that the user have appropriate access to', async () => {
-        const results = await new DataBroker({
-          accessPolicy: new AccessPolicy({ FJ: ['Admin'] }),
-        }).pullAnalytics(['RESTRICTED_01'], { organisationUnitCodes: ['TO', 'FJ'] });
-        expect(results).toEqual({
-          results: [
-            {
-              analytics: [
-                {
-                  dataElement: 'RESTRICTED_01',
-                  organisationUnit: 'FJ',
-                  period: '20210101',
-                  value: 5,
-                },
-              ],
-              numAggregationsProcessed: 0,
-            },
-          ],
-          metadata: {
-            dataElementCodeToName: {},
+    it('just returns data for entities that the user have appropriate access to', async () => {
+      const results = await new DataBroker({
+        accessPolicy: new AccessPolicy({ FJ: ['Admin'] }),
+      }).pullAnalytics(['RESTRICTED_01'], { organisationUnitCodes: ['TO', 'FJ'] });
+      expect(results).toEqual({
+        results: [
+          {
+            analytics: [
+              {
+                dataElement: 'RESTRICTED_01',
+                organisationUnit: 'FJ',
+                period: '20210101',
+                value: 5,
+              },
+            ],
+            numAggregationsProcessed: 0,
           },
-        });
+        ],
+        metadata: {
+          dataElementCodeToName: {},
+        },
       });
     });
   });
 
-  describe('pullAnalytics', () => {
+  describe('pullAnalytics()', () => {
     it('same service', async () => {
       const dataBroker = new DataBroker();
       const data = await dataBroker.pullAnalytics(['DHIS_01', 'DHIS_02'], options);
 
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.dhis.pullAnalytics).toHaveBeenCalledOnceWith(
         [DATA_ELEMENTS.DHIS_01, DATA_ELEMENTS.DHIS_02],
-        'dataElement',
         expect.objectContaining(options),
       );
       expect(data).toStrictEqual({
@@ -429,14 +426,12 @@ describe('DataBroker', () => {
       expect(createServiceMock).toHaveBeenCalledTimes(2);
       expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
       expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.dhis.pullAnalytics).toHaveBeenCalledOnceWith(
         [DATA_ELEMENTS.DHIS_01, DATA_ELEMENTS.DHIS_02],
-        'dataElement',
         expect.objectContaining(options),
       );
-      expect(SERVICES.tupaia.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.tupaia.pullAnalytics).toHaveBeenCalledOnceWith(
         [DATA_ELEMENTS.TUPAIA_01],
-        'dataElement',
         expect.objectContaining(options),
       );
       expect(data).toStrictEqual({
@@ -461,15 +456,14 @@ describe('DataBroker', () => {
     });
   });
 
-  describe('pullEvents', () => {
+  describe('pullEvents()', () => {
     it('same service', async () => {
       const dataBroker = new DataBroker();
       const data = await dataBroker.pullEvents(['DHIS_PROGRAM_01', 'DHIS_PROGRAM_02'], options);
 
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.dhis.pullEvents).toHaveBeenCalledOnceWith(
         [DATA_GROUPS.DHIS_PROGRAM_01, DATA_GROUPS.DHIS_PROGRAM_02],
-        'dataGroup',
         expect.objectContaining(options),
       );
       expect(data).toStrictEqual([
@@ -488,14 +482,12 @@ describe('DataBroker', () => {
       expect(createServiceMock).toHaveBeenCalledTimes(2);
       expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
       expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.dhis.pullEvents).toHaveBeenCalledOnceWith(
         [DATA_GROUPS.DHIS_PROGRAM_01, DATA_GROUPS.DHIS_PROGRAM_02],
-        'dataGroup',
         expect.objectContaining(options),
       );
-      expect(SERVICES.tupaia.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.tupaia.pullEvents).toHaveBeenCalledOnceWith(
         [DATA_GROUPS.TUPAIA_PROGRAM_01],
-        'dataGroup',
         expect.objectContaining(options),
       );
       expect(data).toStrictEqual([
@@ -506,7 +498,7 @@ describe('DataBroker', () => {
     });
   });
 
-  describe('pullSyncGroupResults', () => {
+  describe('pullSyncGroupResults()', () => {
     it('same service', async () => {
       const dataBroker = new DataBroker();
       const data = await dataBroker.pullSyncGroupResults(
@@ -515,9 +507,8 @@ describe('DataBroker', () => {
       );
 
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.dhis.pullSyncGroupResults).toHaveBeenCalledOnceWith(
         [SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02],
-        'syncGroup',
         expect.objectContaining(options),
       );
       expect(data).toStrictEqual({
@@ -536,14 +527,12 @@ describe('DataBroker', () => {
       expect(createServiceMock).toHaveBeenCalledTimes(2);
       expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'dhis', dataBroker);
       expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'tupaia', dataBroker);
-      expect(SERVICES.dhis.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.dhis.pullSyncGroupResults).toHaveBeenCalledOnceWith(
         [SYNC_GROUPS.DHIS_SYNC_GROUP_01, SYNC_GROUPS.DHIS_SYNC_GROUP_02],
-        'syncGroup',
         expect.objectContaining(options),
       );
-      expect(SERVICES.tupaia.pull).toHaveBeenCalledOnceWith(
+      expect(SERVICES.tupaia.pullSyncGroupResults).toHaveBeenCalledOnceWith(
         [SYNC_GROUPS.TUPAIA_SYNC_GROUP_01],
-        'syncGroup',
         expect.objectContaining(options),
       );
       expect(data).toStrictEqual({

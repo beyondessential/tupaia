@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "./lib/library.js",
   "scripts": {
-    "build": "run-p -c \"build:* {@}\" --",
+    "build": "run-s -c \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:vite",
     "preview": "vite preview",
     "build:library": "rm -rf lib && npm run --prefix ../../ package:build:lib",
@@ -86,7 +86,6 @@
     "vite": "^4.4.8"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
     "npm-run-all": "^4.1.5"
   }
 }
