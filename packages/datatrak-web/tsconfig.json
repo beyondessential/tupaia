@@ -8,9 +8,7 @@
       "ESNext"
     ],
     "rootDirs": [
-      "src",
-      "stories",
-      ".storybook"
+      "src"
     ],
     "module": "ESNext",
     "skipLibCheck": true,
@@ -28,9 +26,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src",
-    "stories",
-    ".storybook"
+    "src"
   ],
   "references": [
     {
