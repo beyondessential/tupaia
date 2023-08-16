@@ -24485,6 +24485,602 @@ export const DashboardItemConfigSchema = {
 	]
 } 
 
+export const MapOverlayConfigSchema = {
+	"properties": {
+		"customColors": {
+			"type": "string"
+		},
+		"customLabel": {
+			"type": "string"
+		},
+		"datePickerLimits": {
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"defaultTimePeriod": {
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				},
+				"modifier": {
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
+		"disableRenameLegend": {
+			"type": "boolean"
+		},
+		"displayLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"displayOnLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"displayType": {
+			"enum": [
+				"color",
+				"icon",
+				"popup-only",
+				"radius",
+				"shaded-spectrum",
+				"shading",
+				"spectrum"
+			],
+			"type": "string"
+		},
+		"displayedValueKey": {
+			"enum": [
+				"facilityTypeName",
+				"name",
+				"originalValue",
+				"schoolTypeName"
+			],
+			"type": "string"
+		},
+		"hideByDefault": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"hideFromMenu": {
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"type": "boolean"
+		},
+		"icon": {
+			"enum": [
+				"checkbox",
+				"circle",
+				"downArrow",
+				"empty",
+				"fade",
+				"h",
+				"healthPin",
+				"help",
+				"hidden",
+				"pentagon",
+				"pin",
+				"radius",
+				"rightArrow",
+				"ring",
+				"square",
+				"triangle",
+				"upArrow",
+				"warning",
+				"x"
+			],
+			"type": "string"
+		},
+		"info": {
+			"type": "object",
+			"properties": {
+				"reference": {
+					"type": "object",
+					"properties": {
+						"link": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"reference"
+			]
+		},
+		"isTimePeriodEditable": {
+			"type": "boolean"
+		},
+		"measureConfig": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"measureLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"noDataColour": {
+			"type": "string"
+		},
+		"periodGranularity": {
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"popupHeaderFormat": {
+			"type": "string"
+		},
+		"scaleBounds": {
+			"type": "object",
+			"properties": {
+				"left": {
+					"type": "object",
+					"properties": {
+						"min": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						},
+						"max": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"right": {
+					"type": "object",
+					"properties": {
+						"min": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						},
+						"max": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"scaleColorScheme": {
+			"enum": [
+				"default",
+				"default-reverse",
+				"gpi",
+				"performance",
+				"time"
+			],
+			"type": "string"
+		},
+		"scaleType": {
+			"enum": [
+				"gpi",
+				"neutral",
+				"neutralReverse",
+				"performance",
+				"performanceDesc",
+				"time"
+			],
+			"type": "string"
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"numberAndPercentage",
+				"oneDecimalPlace",
+				"percentage",
+				"text"
+			],
+			"type": "string"
+		},
+		"values": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"color": {
+						"type": "string"
+					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"type": "boolean"
+					},
+					"icon": {
+						"enum": [
+							"checkbox",
+							"circle",
+							"downArrow",
+							"empty",
+							"fade",
+							"h",
+							"healthPin",
+							"help",
+							"hidden",
+							"pentagon",
+							"pin",
+							"radius",
+							"rightArrow",
+							"ring",
+							"square",
+							"triangle",
+							"upArrow",
+							"warning",
+							"x"
+						],
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"value": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"icon",
+					"name",
+					"value"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"displayType"
+	]
+} 
+
+export const InlineValueSchema = {
+	"properties": {
+		"color": {
+			"type": "string"
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"type": "boolean"
+		},
+		"icon": {
+			"enum": [
+				"checkbox",
+				"circle",
+				"downArrow",
+				"empty",
+				"fade",
+				"h",
+				"healthPin",
+				"help",
+				"hidden",
+				"pentagon",
+				"pin",
+				"radius",
+				"rightArrow",
+				"ring",
+				"square",
+				"triangle",
+				"upArrow",
+				"warning",
+				"x"
+			],
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"value": {
+			"type": [
+				"string",
+				"number"
+			]
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"icon",
+		"name",
+		"value"
+	]
+} 
+
+export const IconKeySchema = {
+	"enum": [
+		"checkbox",
+		"circle",
+		"downArrow",
+		"empty",
+		"fade",
+		"h",
+		"healthPin",
+		"help",
+		"hidden",
+		"pentagon",
+		"pin",
+		"radius",
+		"rightArrow",
+		"ring",
+		"square",
+		"triangle",
+		"upArrow",
+		"warning",
+		"x"
+	],
+	"type": "string"
+} 
+
+export const MeasureTypeSchema = {
+	"enum": [
+		"color",
+		"icon",
+		"popup-only",
+		"radius",
+		"shaded-spectrum",
+		"shading",
+		"spectrum"
+	],
+	"type": "string"
+} 
+
+export const DisplayedValueTypeSchema = {
+	"enum": [
+		"facilityTypeName",
+		"name",
+		"originalValue",
+		"schoolTypeName"
+	],
+	"type": "string"
+} 
+
+export const EntityLevelSchema = {
+	"enum": [
+		"Country",
+		"Disaster",
+		"District",
+		"Facility",
+		"SubDistrict"
+	],
+	"type": "string"
+} 
+
+export const MeasureValueTypeSchema = {
+	"enum": [
+		"boolean",
+		"currency",
+		"fraction",
+		"fractionAndPercentage",
+		"number",
+		"numberAndPercentage",
+		"oneDecimalPlace",
+		"percentage",
+		"text"
+	],
+	"type": "string"
+} 
+
+export const MeasureColorSchemeSchema = {
+	"enum": [
+		"default",
+		"default-reverse",
+		"gpi",
+		"performance",
+		"time"
+	],
+	"type": "string"
+} 
+
 export const AccessRequestSchema = {
 	"properties": {
 		"approved": {
@@ -33298,7 +33894,462 @@ export const MapOverlaySchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {
+				"customColors": {
+					"type": "string"
+				},
+				"customLabel": {
+					"type": "string"
+				},
+				"datePickerLimits": {
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"defaultTimePeriod": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"disableRenameLegend": {
+					"type": "boolean"
+				},
+				"displayLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"displayOnLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"displayType": {
+					"enum": [
+						"color",
+						"icon",
+						"popup-only",
+						"radius",
+						"shaded-spectrum",
+						"shading",
+						"spectrum"
+					],
+					"type": "string"
+				},
+				"displayedValueKey": {
+					"enum": [
+						"facilityTypeName",
+						"name",
+						"originalValue",
+						"schoolTypeName"
+					],
+					"type": "string"
+				},
+				"hideByDefault": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"hideFromLegend": {
+					"type": "boolean"
+				},
+				"hideFromMenu": {
+					"type": "boolean"
+				},
+				"hideFromPopup": {
+					"type": "boolean"
+				},
+				"icon": {
+					"enum": [
+						"checkbox",
+						"circle",
+						"downArrow",
+						"empty",
+						"fade",
+						"h",
+						"healthPin",
+						"help",
+						"hidden",
+						"pentagon",
+						"pin",
+						"radius",
+						"rightArrow",
+						"ring",
+						"square",
+						"triangle",
+						"upArrow",
+						"warning",
+						"x"
+					],
+					"type": "string"
+				},
+				"info": {
+					"type": "object",
+					"properties": {
+						"reference": {
+							"type": "object",
+							"properties": {
+								"link": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"reference"
+					]
+				},
+				"isTimePeriodEditable": {
+					"type": "boolean"
+				},
+				"measureConfig": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"measureLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"noDataColour": {
+					"type": "string"
+				},
+				"periodGranularity": {
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"popupHeaderFormat": {
+					"type": "string"
+				},
+				"scaleBounds": {
+					"type": "object",
+					"properties": {
+						"left": {
+							"type": "object",
+							"properties": {
+								"min": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								},
+								"max": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"right": {
+							"type": "object",
+							"properties": {
+								"min": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								},
+								"max": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"scaleColorScheme": {
+					"enum": [
+						"default",
+						"default-reverse",
+						"gpi",
+						"performance",
+						"time"
+					],
+					"type": "string"
+				},
+				"scaleType": {
+					"enum": [
+						"gpi",
+						"neutral",
+						"neutralReverse",
+						"performance",
+						"performanceDesc",
+						"time"
+					],
+					"type": "string"
+				},
+				"valueType": {
+					"enum": [
+						"boolean",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"numberAndPercentage",
+						"oneDecimalPlace",
+						"percentage",
+						"text"
+					],
+					"type": "string"
+				},
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"type": "boolean"
+							},
+							"icon": {
+								"enum": [
+									"checkbox",
+									"circle",
+									"downArrow",
+									"empty",
+									"fade",
+									"h",
+									"healthPin",
+									"help",
+									"hidden",
+									"pentagon",
+									"pin",
+									"radius",
+									"rightArrow",
+									"ring",
+									"square",
+									"triangle",
+									"upArrow",
+									"warning",
+									"x"
+								],
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							},
+							"value": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"icon",
+							"name",
+							"value"
+						]
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"displayType"
+			]
+		},
 		"country_codes": {
 			"type": "array",
 			"items": {
@@ -42335,23 +43386,466 @@ export const TranslatedMapOverlaySchema = {
 		"name": {
 			"type": "string"
 		},
+		"legacy": {
+			"type": "boolean"
+		},
 		"reportCode": {
 			"type": "string"
 		},
-		"legacy": {
+		"customColors": {
+			"type": "string"
+		},
+		"customLabel": {
+			"type": "string"
+		},
+		"datePickerLimits": {
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"defaultTimePeriod": {
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				},
+				"modifier": {
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
+		"disableRenameLegend": {
 			"type": "boolean"
+		},
+		"displayLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"displayOnLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"displayType": {
+			"enum": [
+				"color",
+				"icon",
+				"popup-only",
+				"radius",
+				"shaded-spectrum",
+				"shading",
+				"spectrum"
+			],
+			"type": "string"
+		},
+		"displayedValueKey": {
+			"enum": [
+				"facilityTypeName",
+				"name",
+				"originalValue",
+				"schoolTypeName"
+			],
+			"type": "string"
+		},
+		"hideByDefault": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"hideFromMenu": {
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"type": "boolean"
+		},
+		"icon": {
+			"enum": [
+				"checkbox",
+				"circle",
+				"downArrow",
+				"empty",
+				"fade",
+				"h",
+				"healthPin",
+				"help",
+				"hidden",
+				"pentagon",
+				"pin",
+				"radius",
+				"rightArrow",
+				"ring",
+				"square",
+				"triangle",
+				"upArrow",
+				"warning",
+				"x"
+			],
+			"type": "string"
+		},
+		"info": {
+			"type": "object",
+			"properties": {
+				"reference": {
+					"type": "object",
+					"properties": {
+						"link": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"reference"
+			]
+		},
+		"isTimePeriodEditable": {
+			"type": "boolean"
+		},
+		"measureConfig": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"measureLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"noDataColour": {
+			"type": "string"
+		},
+		"periodGranularity": {
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"popupHeaderFormat": {
+			"type": "string"
+		},
+		"scaleBounds": {
+			"type": "object",
+			"properties": {
+				"left": {
+					"type": "object",
+					"properties": {
+						"min": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						},
+						"max": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"right": {
+					"type": "object",
+					"properties": {
+						"min": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						},
+						"max": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"scaleColorScheme": {
+			"enum": [
+				"default",
+				"default-reverse",
+				"gpi",
+				"performance",
+				"time"
+			],
+			"type": "string"
+		},
+		"scaleType": {
+			"enum": [
+				"gpi",
+				"neutral",
+				"neutralReverse",
+				"performance",
+				"performanceDesc",
+				"time"
+			],
+			"type": "string"
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"numberAndPercentage",
+				"oneDecimalPlace",
+				"percentage",
+				"text"
+			],
+			"type": "string"
+		},
+		"values": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"color": {
+						"type": "string"
+					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"type": "boolean"
+					},
+					"icon": {
+						"enum": [
+							"checkbox",
+							"circle",
+							"downArrow",
+							"empty",
+							"fade",
+							"h",
+							"healthPin",
+							"help",
+							"hidden",
+							"pentagon",
+							"pin",
+							"radius",
+							"rightArrow",
+							"ring",
+							"square",
+							"triangle",
+							"upArrow",
+							"warning",
+							"x"
+						],
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"value": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"icon",
+					"name",
+					"value"
+				]
+			}
 		},
 		"sortOrder": {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
+	"type": "object",
 	"required": [
 		"code",
-		"legacy",
-		"name",
-		"reportCode"
+		"displayType",
+		"name"
 	]
 } 
 

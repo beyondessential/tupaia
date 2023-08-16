@@ -11,7 +11,6 @@ export { useUser } from './useUser';
 export { useEntity } from './useEntity';
 export { useEntityAncestors } from './useEntityAncestors';
 export { useEntities, useEntitiesWithLocation } from './useEntities';
-export { useEmailVerification } from './useEmailVerification';
 export { useDashboards } from './useDashboards';
 export { useReport } from './useReport';
 export { useMapOverlayReport } from './useMapOverlayReport';

@@ -52,7 +52,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-    dashboardItem,
+    dashboardItem?.config,
   ) as {
     startDate?: Moment;
     endDate?: Moment;
@@ -93,7 +93,12 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     showTitle =
       !!name &&
       !!(presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
-  } else if (viewType?.includes('Download') || type === 'component') showTitle = false;
+  } else if (
+    viewType?.includes('Download') ||
+    type === 'component' ||
+    viewType === 'multiSingleValue'
+  )
+    showTitle = false;
 
   return (
     <Wrapper>

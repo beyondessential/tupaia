@@ -12,6 +12,7 @@ import { EntityMenu } from './EntityMenu';
 import { useEntities, useProject } from '../../api/queries';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
 import { SearchResults } from './SearchResults';
+import { gaEvent } from '../../utils';
 
 const Container = styled.div`
   position: relative;
@@ -57,7 +58,22 @@ export const EntitySearch = () => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => {
     setIsOpen(false);
+    gaEvent('Search', 'Toggle Expand');
     setSearchValue('');
+  };
+
+  const toggleExpandedSearchBar = () => {
+    const updatedOpenValue = !isOpen;
+    setIsOpen(updatedOpenValue);
+    gaEvent('Search', 'Toggle Expand');
+    if (updatedOpenValue === false) {
+      setSearchValue('');
+    }
+  };
+
+  const updateSearchValue = (value: string) => {
+    setSearchValue(value);
+    gaEvent('Search', 'Change');
   };
 
   const children = entities.filter(entity => entity.parentCode === project?.code);
@@ -68,20 +84,20 @@ export const EntitySearch = () => {
       <Container>
         <SearchBar
           value={searchValue}
-          onChange={setSearchValue}
-          onFocusChange={setIsOpen}
+          onChange={updateSearchValue}
+          onFocusChange={toggleExpandedSearchBar}
           onClose={onClose}
         />
         {isOpen && (
           <ResultsWrapper>
             {searchValue ? (
-              <SearchResults searchValue={searchValue} onClose={onClose} />
+              <SearchResults searchValue={searchValue} onClose={toggleExpandedSearchBar} />
             ) : (
               <EntityMenu
                 projectCode={projectCode!}
                 children={children}
                 grandChildren={grandChildren}
-                onClose={onClose}
+                onClose={toggleExpandedSearchBar}
               />
             )}
           </ResultsWrapper>

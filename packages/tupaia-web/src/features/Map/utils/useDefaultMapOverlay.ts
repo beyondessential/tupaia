@@ -6,18 +6,19 @@
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { useProject } from '../../../api/queries';
 import {
   DEFAULT_MAP_OVERLAY_ID,
   DEFAULT_PERIOD_PARAM_STRING,
   URL_SEARCH_PARAMS,
 } from '../../../constants';
-import { MapOverlayGroup, ProjectCode } from '../../../types';
+import { ProjectCode } from '../../../types';
 
 // When the map overlay groups change, update the default map overlay
 export const useDefaultMapOverlay = (
   projectCode: ProjectCode,
-  mapOverlaysByCode: { [code: string]: MapOverlayGroup },
+  mapOverlaysByCode: { [code: string]: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay },
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
