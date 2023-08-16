@@ -17,3 +17,5 @@ export * from './constants';
 export { MockTupaiaApiClient } from './MockTupaiaApiClient';
 
 export * from './connections/mocks';
+
+export { handleServerError } from './handleServerError';
