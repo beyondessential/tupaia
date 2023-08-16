@@ -16,7 +16,9 @@ import { Entity } from '../../types';
 import { BackLink } from './BackLink';
 import { ExportContext, useEnlargedDashboardItem } from './utils';
 
-const Container = styled(FlexColumn)`
+const Container = styled(FlexColumn)<{
+  $isExportMode?: boolean;
+}>`
   width: 100%;
   height: 100%;
   flex: 1;
@@ -24,7 +26,7 @@ const Container = styled(FlexColumn)`
     min-height: 22.5rem;
   }
   .recharts-cartesian-axis-tick {
-    font-size: 0.875rem;
+    font-size: ${({ $isExportMode }) => ($isExportMode ? '0.875rem' : '1rem')};
   }
 `;
 
@@ -111,7 +113,7 @@ export const EnlargedDashboardVisual = ({
   // today's date for export
   const date = String(moment());
   return (
-    <Container>
+    <Container $isExportMode={isExportMode}>
       <TitleWrapper>
         <BackLink parentDashboardItem={parentDashboardItem} />
         {config?.name && <Title>{titleText}</Title>}
