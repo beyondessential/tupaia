@@ -34,7 +34,7 @@ const Title = styled(Typography).attrs({
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   text-align: center;
-  margin: 1rem 0;
+  margin: 0;
   line-height: 1.4;
 `;
 
@@ -48,7 +48,7 @@ const Subheading = styled(Typography).attrs({
   variant: 'h3',
 })`
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const ContentWrapper = styled.div`

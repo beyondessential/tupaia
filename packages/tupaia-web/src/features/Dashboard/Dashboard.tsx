@@ -34,9 +34,6 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
-  .recharts-wrapper {
-    font-size: 1rem !important;
-  }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) => ($isExpanded ? 50 : 25)}%;
     height: 100%;
