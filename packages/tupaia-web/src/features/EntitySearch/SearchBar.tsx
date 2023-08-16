@@ -20,7 +20,7 @@ const SearchInput = styled(TextField).attrs({
   },
 })<TextFieldProps>`
   .MuiInputBase-root {
-    background: ${({ theme }) => theme.searchBar.background};
+    background: ${({ theme }) => theme.palette.background.paper};
     border-radius: 2.7rem;
   }
 

@@ -37,7 +37,7 @@ export const PopoverMenu = ({
     <Popover
       PaperProps={{
         style: {
-          backgroundColor: '#2E2F33',
+          backgroundColor: primaryColor,
         },
       }}
       open={menuOpen}

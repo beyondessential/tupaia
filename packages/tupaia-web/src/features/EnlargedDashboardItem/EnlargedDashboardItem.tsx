@@ -23,7 +23,7 @@ import { ExportButton } from './ExportButton';
 
 const StyledModal = styled(Modal)`
   .MuiPaper-root {
-    background: ${({ theme }) => theme.projectCard.background};
+    background: ${({ theme }) => theme.palette.background.default};
   }
 `;
 

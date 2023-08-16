@@ -21,7 +21,7 @@ const Header = styled.header<{
   $primaryColor?: string | null;
   $secondaryColor?: string | null;
 }>`
-  background-color: #2e2f33;
+  background-color: ${({theme}) => theme.palette.background.default};
   height: ${TOP_BAR_HEIGHT_MOBILE};
   min-height: ${TOP_BAR_HEIGHT_MOBILE};
   display: flex;
@@ -32,7 +32,7 @@ const Header = styled.header<{
   padding: 0 0.625em;
 
   > * {
-    background-color: ${({ theme }) => theme.projectCard.background};
+    background-color: ${({ theme }) => theme.palette.background.default};
   }
   button,
   a,

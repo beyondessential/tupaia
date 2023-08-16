@@ -12,8 +12,8 @@ export const theme = createMuiTheme(
         main: '#ee6230', // Tupaia Orange
       },
       background: {
-        default: '#262834', // Dark blue background
-        paper: '#262834', // Dark blue to match background
+        default: '#2e2f33', // Black for new redesign primary color
+        paper: '#202124', // Super Black for new redesign secondary color
       },
       text: {
         secondary: '#9ba0a6',
@@ -49,6 +49,9 @@ export const theme = createMuiTheme(
       multiValue: {
         data: '#22c7fc',
       },
+    },
+    navigationBtn: {
+      main: '#34353f',
     },
   },
 );

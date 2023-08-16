@@ -13,7 +13,7 @@ const MenuButton = styled(ButtonBase)`
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
-  background-color: #202124;
+  background-color: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -25,7 +25,7 @@ const ItemButton = styled(Menu)`
   margin-left: 2rem;
 
   .MuiPaper-root {
-    background: ${({ theme }) => theme.projectCard.background};
+    background: ${({ theme }) => theme.palette.background.default};
   }
 
   .MuiListItem-root {

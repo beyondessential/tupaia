@@ -40,7 +40,7 @@ const CloseButton = styled(IconButton)`
 `;
 
 const Paper = styled(MuiPaper)`
-  background: ${({ theme }) => theme.searchBar.background};
+  background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;

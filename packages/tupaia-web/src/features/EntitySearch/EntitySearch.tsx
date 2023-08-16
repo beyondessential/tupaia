@@ -31,7 +31,7 @@ const ResultsWrapper = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: ${({ theme }) => theme.palette.background.default};
+  background: ${({ theme }) => theme.palette.background.paper};
   padding: 0 0.3rem 0.625rem;
   width: calc(100% + 5px);
   border-radius: 8px;

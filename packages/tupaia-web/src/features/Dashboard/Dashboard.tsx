@@ -30,7 +30,7 @@ const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
   position: relative;
-  background-color: ${({ theme }) => theme.searchBar.background};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   transition: width 0.3s ease, max-width 0.3s ease;
   width: 100%;
   overflow: visible;
@@ -65,7 +65,7 @@ const TitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.projectCard.background};
+  background-color: ${({ theme }) => theme.palette.background.default};
   z-index: 1;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
@@ -90,13 +90,12 @@ const Title = styled(Typography)`
 const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
-  padding-left: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '0')};
-  padding-right: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '0')};
+  padding: ${({ $isExpanded }) => ($isExpanded ? '0 2rem' : '0')};
   display: ${({ $isExpanded }) =>
     $isExpanded
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
-  background-color: ${({ theme }) => theme.searchBar.background};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   grid-template-columns: repeat(2, 1fr);
   column-gap: 0.8rem;
 `;
