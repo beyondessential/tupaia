@@ -235,7 +235,6 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
       ...responseFields,
     };
 
-    // Todo: copy save survey response
     database.saveSurveyResponse(response, answersToSubmit, {
       entityObjects: newEntities,
       optionObjects: newOptions,
