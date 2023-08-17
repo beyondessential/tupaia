@@ -15,10 +15,8 @@ import { LandingPage } from './views';
 
 export const Routes = () => {
   return (
-    <>
-      <RouterRoutes>
-        <Route path="/" element={<LandingPage />} />
-      </RouterRoutes>
-    </>
+    <RouterRoutes>
+      <Route path="/" element={<LandingPage />} />
+    </RouterRoutes>
   );
 };
