@@ -48,6 +48,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
       type: [hasContent, constructIsValidEntityType(this.models.entity)],
       allowScanQrCode: [constructIsNotPresentOr(validateIsYesOrNo)],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
+      generateQrCode: [hasContentIfCanCreateNew, constructIsNotPresentOr(validateIsYesOrNo)],
       code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       parent: [pointsToValidPrecedingEntityQuestion],
