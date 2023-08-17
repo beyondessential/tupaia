@@ -23,7 +23,7 @@ import { gaEvent, getDefaultDashboard } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
-const MIN_SIDEBAR_WIDTH = 335;
+const MIN_SIDEBAR_WIDTH = 350;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -34,14 +34,8 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
-  .recharts-wrapper {
-    font-size: 1rem !important;
-  }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) =>
-      $isExpanded
-        ? 50
-        : 25}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
+    width: ${({ $isExpanded }) => ($isExpanded ? 50 : 25)}%;
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
