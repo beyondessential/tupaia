@@ -10575,7 +10575,6 @@ __metadata:
     is-mobile: ^0.2.2
     jest: ^27.0.6
     js-beautify: ^1.13.0
-    jszip: ^3.10.1
     lodash: ^4.17.4
     markdown-to-jsx: ^6.4.1
     material-ui: ^0.18.3
