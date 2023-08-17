@@ -19,7 +19,7 @@ export default defineConfig(({ command, mode }) => {
           manualChunks: function manualChunks(id) {
             if (id.includes('lodash')) return 'lodash';
             if (id.includes('ace-builds')) return 'ace';
-            if (id.includes('reac-ace')) return 'reactAce';
+            if (id.includes('react-ace')) return 'reactAce';
             if (id.includes('jsoneditor')) return 'jsonEditor';
             if (id.includes('icons')) return 'muiIcons';
             if (id.includes('moment-timezone')) return 'momentTimezone';

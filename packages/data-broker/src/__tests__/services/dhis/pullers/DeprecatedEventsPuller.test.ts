@@ -34,7 +34,7 @@ describe('DeprecatedEventsPuller', () => {
   describe('DHIS API invocation', () => {
     const dhisApi = createMockDhisApi();
 
-    it('uses the provided data source as `programCode` option', async () => {
+    it('uses the provided data group as `programCode` option', async () => {
       await deprecatedEventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], basicOptions);
       expect(dhisApi.getEvents).toHaveBeenCalledOnceWith(
         expect.objectContaining({ programCode: 'POP01' }),
