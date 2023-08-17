@@ -73,6 +73,15 @@ const operatorToSqlComparator = {
   '>': '>' as const, // Greater than
   '>=': '>=' as const, // Greater than or equal
 };
+const operatorToSqlArrayComparator = {
+  '==': 'IN' as const, // Contained in array
+  '!=': 'NOT IN' as const, // Not contained in array
+  '=@': undefined, // '@>' might be nice here, but none of our filterable fields are arrays
+  '<': undefined,
+  '<=': undefined,
+  '>': undefined,
+  '>=': undefined,
+};
 type Operator = keyof typeof operatorToSqlComparator;
 
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
@@ -106,11 +115,22 @@ const convertValueToAdvancedCriteria = (
     return formattedValue;
   }
 
-  const comparator = operatorToSqlComparator[operator];
+  const comparisonValue = formatComparisonValue(formattedValue, operator);
+
+  if (Array.isArray(formattedValue)) {
+    const arrayComparator = operatorToSqlArrayComparator[operator];
+    if (!arrayComparator) {
+      throw new Error(`Operator ${operator} is not compatible with multiple filter values`);
+    }
+    return {
+      comparator: arrayComparator,
+      comparisonValue,
+    };
+  }
 
   return {
-    comparator,
-    comparisonValue: formatComparisonValue(formattedValue, operator),
+    comparator: operatorToSqlComparator[operator],
+    comparisonValue,
   };
 };
 
