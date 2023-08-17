@@ -16,22 +16,11 @@ import {
 } from '@tupaia/database';
 
 import { TestModelRegistry } from './testModelRegistry';
-import { PROJECTS, ENTITIES, ENTITY_RELATIONS, getAccessPolicy } from './fixtures';
+import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
 import { createApp } from '../../app';
 
 // Don't generate the proxy middlewares while we're testing
 jest.mock('http-proxy-middleware');
-
-jest.mock('@tupaia/api-client', () => {
-  const { MockTupaiaApiClient, MockEntityApi } = jest.requireActual('@tupaia/api-client');
-  return {
-    TupaiaApiClient: jest.fn().mockImplementation(() => {
-      return new MockTupaiaApiClient({
-        entity: new MockEntityApi(ENTITIES, ENTITY_RELATIONS, getAccessPolicy),
-      });
-    }),
-  };
-});
 
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
