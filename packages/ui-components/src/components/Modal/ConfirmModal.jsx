@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { Button, OutlinedButton } from '../Button';
 import { Dialog, DialogFooter, DialogHeader, DialogContent } from '../Dialog';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingContainer } from '../Loaders';
 import { Alert } from '../Alert';
 
 const DescriptionText = styled(Typography)`

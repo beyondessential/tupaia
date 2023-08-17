@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -14,13 +15,16 @@ import {
   assertSurveyResponsePermissions,
   assertSurveyResponseEditPermissions,
 } from './assertSurveyResponsePermissions';
+import { handleSurveyResponse, handleAnswers } from './resubmission/handleResubmission';
+import { validateResubmission } from './resubmission/validateResubmission';
 
 /**
- * Handles PUT endpoints:
- * - /surveyResponses/:surveyResponseId
+ * Handles POST endpoint:
+ * - /surveyResponses/:surveyResponseId/resubmit
+ * handles both edits and creation of new answers
  */
 
-export class EditSurveyResponses extends EditHandler {
+export class ResubmitSurveyResponse extends EditHandler {
   async assertUserHasAccess() {
     // Check the user has either:
     // - BES admin access
@@ -49,6 +53,21 @@ export class EditSurveyResponses extends EditHandler {
       assertAnyPermissions([assertBESAdminAccess, surveyResponseEditPermissionChecker]),
     );
 
-    return this.updateRecord();
+    await this.models.wrapInTransaction(async transactingModels => {
+      const currentSurveyResponse = await transactingModels.surveyResponse.findOne({
+        id: this.recordId,
+      });
+      if (!currentSurveyResponse) {
+        throw Error('Survey response not found.');
+      }
+      await validateResubmission(transactingModels, this.updatedFields, currentSurveyResponse);
+      await handleAnswers(this.models, this.updatedFields.answers, currentSurveyResponse);
+      return handleSurveyResponse(
+        this.models,
+        this.updatedFields,
+        this.recordType,
+        currentSurveyResponse,
+      );
+    });
   }
 }

@@ -19,6 +19,7 @@ import {
   SURVEYS_MENU_SCREEN,
   WEB_BROWSER_SCREEN,
   HOME_SCREEN,
+  QR_CODES_SCREEN,
 } from './constants';
 import { getIsInSurvey } from './selectors';
 import { logout } from '../authentication';
@@ -52,6 +53,9 @@ export const resetToLogin = () =>
   });
 
 export const viewSyncPage = () => navigateToScreen(SYNC_SCREEN);
+
+export const goToQrCodesPage = (survey, qrCodes, onClose) =>
+  navigateToScreen(QR_CODES_SCREEN, survey, { qrCodes, onClose });
 
 export const goToCreateAccount = () => dispatch => {
   dispatch(

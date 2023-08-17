@@ -334,6 +334,11 @@ const QUESTION_COLUMNS = [
                     type: 'boolean',
                   },
                   {
+                    label: 'Generate QR Code',
+                    fieldName: 'generateQrCode',
+                    type: 'boolean',
+                  },
+                  {
                     label: 'Parent Entity',
                     fieldName: 'parentId',
                     type: 'json',

@@ -11,6 +11,7 @@ import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { DashboardItemReport, DashboardItemConfig } from '../../types';
 import { A4Page } from '@tupaia/ui-components';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
@@ -67,6 +68,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   .recharts-responsive-container {
     min-width: 0px;
+    height: 100%;
   }
   .recharts-wrapper {
     font-size: 1rem !important; // this is to make sure the labels on the charts are relative to the base font size
@@ -119,12 +121,16 @@ const ContentWrapper = styled.div<{
 }>`
   pointer-events: ${({ $isExporting }) => ($isExporting ? 'none' : 'initial')};
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
+  height: 15rem; // to stop charts from shrinking to nothing at mobile size
   min-height: ${({ $isEnlarged }) =>
     $isEnlarged
       ? '24rem'
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   ${A4Page} & {
     padding: 0;
+  }
+  @media (min-width: ${MOBILE_BREAKPOINT}) {
+    height: 100%;
   }
 `;
 

@@ -22,24 +22,24 @@ const Wrapper = styled.div`
   text-align: center;
   overflow-x: hidden;
   padding: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
   width: 2rem;
   height: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseButton = styled(IconButton)`
-  background-color: transparent;
-  min-width: initial;
   position: absolute;
   top: 0.1rem;
   right: 0.1rem;
+  z-index: 1;
 `;
 
 const Paper = styled(MuiPaper)`
-  background-color: ${({ theme }) => theme.palette.background.default};
-  padding: 0;
+  background-color: #202124;
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
@@ -54,13 +54,7 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      PaperComponent={Paper}
-      fullScreen={fullScreen}
-      disablePortal
-    >
+    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
       <Wrapper id="overlay-wrapper">
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />

@@ -10,5 +10,6 @@ import { API_URL } from '../api';
 export const transformDownloadLink = (resourceUrl: string) => {
   const baseUrl = API_URL;
   if (resourceUrl.includes('http')) return resourceUrl;
-  return `${baseUrl}${resourceUrl}`;
+  if (baseUrl.endsWith('/')) return `${baseUrl}${resourceUrl}`; // remove trailing slash from baseUrl if it exists
+  return `${baseUrl}/${resourceUrl}`;
 };

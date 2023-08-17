@@ -16,6 +16,7 @@ import {
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
+import winston from 'winston';
 
 import { handleWith, handleError, emptyMiddleware } from '../../utils';
 import { TestRoute } from '../../routes';
@@ -47,7 +48,11 @@ export class ApiBuilder {
   // We add handlers at the end so that middlewares and initial routes can be set up first
   private handlers: { add: () => void }[] = [];
 
-  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
+  public constructor(
+    transactingConnection: TupaiaDatabase,
+    apiName: string,
+    options: { attachModels: boolean } = { attachModels: false },
+  ) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
@@ -76,6 +81,12 @@ export class ApiBuilder {
      * Add singletons to be attached to req for every route
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (options.attachModels) {
+        winston.warn(
+          "Best practices say orchestrator servers shouldn't access the db directly, are you sure you need req.models?",
+        );
+        req.models = this.models;
+      }
       const context = {}; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;

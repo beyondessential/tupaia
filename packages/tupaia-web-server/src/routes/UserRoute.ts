@@ -6,7 +6,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebUserRequest } from '@tupaia/types';
-import camelcaseKeys from 'camelcase-keys';
 
 export type UserRequest = Request<
   TupaiaWebUserRequest.Params,
@@ -25,6 +24,12 @@ export class UserRoute extends Route<UserRequest> {
       return {};
     }
 
-    return camelcaseKeys(await ctx.services.central.getUser());
+    const {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+    } = await ctx.services.central.getUser();
+
+    return { userName: `${firstName} ${lastName}`, email };
   }
 }

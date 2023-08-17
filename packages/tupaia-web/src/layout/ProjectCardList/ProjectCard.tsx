@@ -6,7 +6,7 @@ import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
-import { darken } from '@material-ui/core/styles';
+import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES } from '../../constants';
@@ -23,6 +23,7 @@ const Card = styled.div`
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: space-between;
+  text-align: left;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     padding: 2.5rem;
@@ -34,14 +35,18 @@ const Card = styled.div`
   }
 `;
 
+const LogoWrapper = styled.div`
+  height: 4.875rem;
+  margin-bottom: 0.625rem;
+`;
+
 const Logo = styled.div`
   position: relative;
   background: white;
-  width: 5rem;
-  height: 5rem;
+  width: 4.875rem;
+  height: 100%;
   border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 0.625rem;
 
   > img {
     position: absolute;
@@ -64,6 +69,7 @@ const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.2;
   margin-bottom: 0.625rem;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const CountryText = styled(Text)`
@@ -74,7 +80,11 @@ const Body = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
+`;
+
+const TextWrapper = styled.div`
+  height: 100%;
 `;
 
 const BaseLink = styled(RouterButton)`
@@ -98,21 +108,26 @@ const BaseLink = styled(RouterButton)`
   }
 `;
 
-const OutlineLink = styled(RouterButton).attrs({
+const OutlineLink = styled(BaseLink).attrs({
   variant: 'outlined',
 })`
-  border: 1px solid ${({ theme }) => theme.palette.primary.main};
-  color: ${({ theme }) => theme.palette.primary.main};
+  border: 1px solid ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
+  color: ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
   background: transparent;
+  min-width: 10rem;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
+  }
+  &.Mui-disabled {
+    border-color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;
 
 interface LinkProps {
   url: string;
-  isLandingPage: boolean;
+  isLandingPage?: boolean;
 }
 
 export const ProjectDeniedLink = ({ url }: LinkProps) => (
@@ -121,7 +136,11 @@ export const ProjectDeniedLink = ({ url }: LinkProps) => (
   </OutlineLink>
 );
 
-export const ProjectLoginLink = () => <OutlineLink modal={MODAL_ROUTES.LOGIN}>Log in</OutlineLink>;
+export const ProjectLoginLink = ({ routerState }: { routerState?: Record<string, any> }) => (
+  <OutlineLink modal={MODAL_ROUTES.LOGIN} routerState={routerState}>
+    Log in
+  </OutlineLink>
+);
 
 export const ProjectPendingLink = () => (
   <OutlineLink to={''} disabled={true} startIcon={<Alarm />}>
@@ -131,7 +150,7 @@ export const ProjectPendingLink = () => (
 
 export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
   <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
-    View project
+    View Project
   </BaseLink>
 );
 
@@ -159,17 +178,19 @@ export const ProjectCard = ({
   ProjectButton,
 }: ProjectCardProps) => (
   <Card>
-    {logoUrl && (
-      <Logo>
-        <img alt={`${name} logo`} src={logoUrl} />
-      </Logo>
-    )}
+    <LogoWrapper>
+      {logoUrl && (
+        <Logo>
+          <img alt={`${name} logo`} src={logoUrl} />
+        </Logo>
+      )}
+    </LogoWrapper>
     <Body>
       <Title>{name}</Title>
-      <div>
+      <TextWrapper>
         <Text>{getDescription(description)}</Text>
         <CountryText>{getCountryNames(names)}</CountryText>
-      </div>
+      </TextWrapper>
     </Body>
     <ProjectButton />
   </Card>
