@@ -7,22 +7,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { ApprovalStatus } from '@tupaia/types';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
 // Don't include not_required as an editable option because it can lead to
 // mis-matches between surveys and survey responses
-export const APPROVAL_STATUS_TYPES = [
-  { label: 'Pending', value: 'pending' },
-  { label: 'Rejected', value: 'rejected' },
-  { label: 'Approved', value: 'approved' },
-];
+export const APPROVAL_STATUS_TYPES = Object.values(ApprovalStatus).map(type => ({
+  label: type,
+  value: type,
+}));
 
 const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
   editable: false,
   type: 'tooltip',
+};
+
+const surveyId = {
+  Header: 'Survey Id',
+  source: 'survey.id',
+  editable: false,
+  type: 'tooltip',
+  show: false,
 };
 
 const assessorName = {
@@ -73,6 +81,7 @@ const entityName = {
 };
 
 export const SURVEY_RESPONSE_COLUMNS = [
+  surveyId,
   surveyName,
   assessorName,
   date,
@@ -96,27 +105,9 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   entityName,
   ...SURVEY_RESPONSE_COLUMNS,
   {
-    Header: 'Edit',
-    type: 'edit',
+    Header: 'Resubmit',
+    type: 'resubmitSurveyResponse',
     source: 'id',
-    actionConfig: {
-      title: 'Edit Survey Response',
-      editEndpoint: 'surveyResponses',
-      fields: [
-        entityName,
-        surveyName,
-        assessorName,
-        date,
-        dateOfData,
-        {
-          Header: 'Approval Status',
-          source: 'approval_status',
-          editConfig: {
-            options: APPROVAL_STATUS_TYPES,
-          },
-        },
-      ],
-    },
   },
   {
     Header: 'Delete',
@@ -128,7 +119,7 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   },
 ];
 
-const ANSWER_FIELDS = [
+export const ANSWER_COLUMNS = [
   {
     Header: 'Question',
     source: 'question.text',
@@ -139,20 +130,6 @@ const ANSWER_FIELDS = [
     Header: 'Answer',
     source: 'text',
     type: 'tooltip',
-  },
-];
-
-export const ANSWER_COLUMNS = [
-  ...ANSWER_FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      title: 'Edit Answer',
-      editEndpoint: 'answers',
-      fields: ANSWER_FIELDS,
-    },
   },
 ];
 
