@@ -25,8 +25,8 @@ const UserMenuContainer = styled.div<{
 `;
 
 const MenuButton = styled(IconButton)`
-  width: 2em;
-  height: 2em;
+  width: 3.125rem;
+  height: 3.125rem;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
