@@ -69,24 +69,6 @@ const MobileCloseButton = styled(IconButton)`
     right: 0.1rem;
     z-index: 1;
   }
-
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
-    .MuiInputBase-root {
-      height: 100%;
-      border-radius: 0;
-    }
-
-    .MuiOutlinedInput-notchedOutline,
-    &:hover .MuiOutlinedInput-notchedOutline,
-    .Mui-focused .MuiOutlinedInput-notchedOutline {
-      border: none;
-    }
-
-    .MuiInputBase-input {
-      padding: 0.6em;
-    }
-  }
 `;
 
 const Container = styled.div<{
