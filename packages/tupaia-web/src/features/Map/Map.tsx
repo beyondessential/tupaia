@@ -17,7 +17,7 @@ import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity, useMapOverlays } from '../../api/queries';
+import { useEntity } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
 import { gaEvent } from '../../utils';
@@ -98,9 +98,7 @@ export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
 
-  // set the map default overlay if there isn't one selected
-  const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);
-  useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
+  useDefaultMapOverlay(projectCode, entityCode);
 
   // Setup legend hidden values
   const { serieses } = useMapOverlayData();
