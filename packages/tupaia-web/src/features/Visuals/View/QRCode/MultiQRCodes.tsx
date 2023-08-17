@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
+import { ViewReport } from '../../../../types';
 import styled from 'styled-components';
 import { List as MuiList, ListItem as MuiListItem } from '@material-ui/core';
-import { QrCodeImage } from '../QrCodeImage';
-import { Data } from '../../../types';
+import { QrCodeImage } from '@tupaia/ui-components';
 
 const SmallQrCodeImage = styled(QrCodeImage)`
   width: 12.5rem;
@@ -22,15 +22,16 @@ const List = styled(MuiList)`
   padding: 0;
 `;
 
-interface MultiQrCodesProps {
-  data?: Data[];
+interface MultiQRCodesProps {
+  data: ViewReport['data'];
 }
 
-export const MultiQrCodes = ({ data: options = [] }: MultiQrCodesProps) => {
+export const MultiQRCodes = ({ data }: MultiQRCodesProps) => {
+  if (!data) return null;
+  const displayData = data.slice(0, 4);
   return (
     <List>
-      {options.slice(0, 4).map(({ name, value }) => (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      {displayData.map(({ name, value }) => (
         // @ts-ignore - ListItem doesn't accept button as false, likely something fixed in later versions
         <ListItem key={value}>
           <SmallQrCodeImage qrCodeContents={value} humanReadableId={name} />

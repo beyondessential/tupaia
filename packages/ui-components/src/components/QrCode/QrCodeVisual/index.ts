@@ -1,1 +1,0 @@
-export { QrCodeVisual } from './QrCodeVisual';

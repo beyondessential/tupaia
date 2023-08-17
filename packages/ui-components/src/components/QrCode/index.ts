@@ -3,6 +3,5 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './QrCodeVisual';
 export * from './QrCodeImage';
 export * from './utils';

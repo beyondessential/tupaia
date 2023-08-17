@@ -20,8 +20,8 @@ const StyledBox = styled(Box)`
 `;
 
 interface QrCodeImageProps {
-  qrCodeContents: string;
-  humanReadableId: string;
+  qrCodeContents?: string;
+  humanReadableId?: string;
   className?: string;
 }
 

@@ -1,8 +1,8 @@
 import { generateQrCodeCanvas } from './generateQrCodeCanvas';
 
 export const generateQrCodeDataUrl = async (
-  humanReadableId: string,
-  qrCodeContents: string,
+  humanReadableId?: string,
+  qrCodeContents?: string,
   canvasEl: HTMLCanvasElement = document.createElement('canvas'),
 ) => {
   const canvas = await generateQrCodeCanvas(humanReadableId, qrCodeContents, canvasEl);

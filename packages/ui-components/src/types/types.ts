@@ -18,6 +18,6 @@ export type MatrixRowType = Record<string, any> & {
 };
 
 export type Data = Record<string, unknown> & {
-  name: string;
-  value: any;
+  name?: string;
+  value?: any;
 };

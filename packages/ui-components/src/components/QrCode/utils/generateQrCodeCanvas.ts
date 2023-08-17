@@ -7,8 +7,8 @@ const TEXT_BOX_HEIGHT = QR_CODE_HEIGHT;
 const TEXT_BOX_WIDTH = CANVAS_WIDTH - QR_CODE_WIDTH;
 
 export const generateQrCodeCanvas = async (
-  humanReadableId: string,
-  qrCodeContents: string,
+  humanReadableId?: string,
+  qrCodeContents?: string,
   canvas: HTMLCanvasElement = document.createElement('canvas'),
 ) => {
   const width = CANVAS_WIDTH;
@@ -30,7 +30,7 @@ export const generateQrCodeCanvas = async (
   ctx.font = `105px monospace`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(humanReadableId, textX, textY);
+  ctx.fillText(humanReadableId as string, textX, textY);
 
   // Add qr code
 

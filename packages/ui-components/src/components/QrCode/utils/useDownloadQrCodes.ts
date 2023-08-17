@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import download from 'downloadjs';
 import JSZip from 'jszip';
-import { Data } from '../../../types';
 import { generateQrCodeDataUrl } from './generateQrCodeDataUrl';
+import { Data } from '../../../types';
 
 type GeneratedQrCodes = {
   url: string;
-  name: string;
+  name?: string;
 };
 
 const generateQrCodes = async (selectedQrCodes: Data[]): Promise<GeneratedQrCodes[]> => {

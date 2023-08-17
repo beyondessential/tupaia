@@ -8,17 +8,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { QrCodeVisual as BaseQrCodeVisual, OFF_WHITE, NoData } from '@tupaia/ui-components';
+import { QrCodeVisual as NoData } from '@tupaia/ui-components';
 import { VIEW_STYLES } from '../../../styles';
 import { MultiQRCodeVisual } from './MultiQRCodeVisual';
 import { SingleQRCodeVisual } from './SingleQRCodeVisual';
 import { EnlargedQRCodeVisual } from './EnlargedQRCodeVisual';
-
-const StyledQrCodeContainer = styled(BaseQrCodeVisual)`
-  .qrcode {
-    color: ${OFF_WHITE};
-  }
-`;
 
 const Wrapper = styled.div`
   position: relative;
@@ -49,7 +43,6 @@ const QRCodeVisualComponent = ({
   const { data, ...config } = viewContent;
   if (isEnlarged) return <EnlargedQRCodeVisual data={data} onCancelDownload={onClose} />;
 
-  // TODO: handle title
   if (!data.length) return <NoData viewContent={viewContent} />;
 
   return (

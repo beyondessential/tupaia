@@ -5,23 +5,24 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@material-ui/core';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import { QrCodeImage } from '../QrCodeImage';
-import { Data } from '../../../types';
-import { useDownloadQrCodes } from '../utils';
+import { IconButton, QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
+import { ViewReport } from '../../../../types';
 
-const DownloadButton = styled(Button)`
+const DownloadButton = styled(IconButton).attrs({
+  color: 'default',
+})`
   position: absolute;
   top: 5px;
   right: 5px;
 `;
 
-interface SingleQrCodeProps {
-  data?: Data[];
+interface SingleQRCodeProps {
+  data: ViewReport['data'];
 }
 
-export const SingleQrCode = ({ data = [] }: SingleQrCodeProps) => {
+export const SingleQRCode = ({ data }: SingleQRCodeProps) => {
+  if (!data) return null;
   const { name, value } = data[0];
 
   const { downloadQrCodes } = useDownloadQrCodes(data);
@@ -31,7 +32,7 @@ export const SingleQrCode = ({ data = [] }: SingleQrCodeProps) => {
       <DownloadButton onClick={downloadQrCodes} title="Download QR Code">
         <DownloadIcon />
       </DownloadButton>
-      <QrCodeImage qrCodeContents={value} humanReadableId={name} />
+      <QrCodeImage qrCodeContents={value as string} humanReadableId={name} />
     </>
   );
 };
