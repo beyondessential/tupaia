@@ -9656,7 +9656,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/api-client@workspace:packages/api-client"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
