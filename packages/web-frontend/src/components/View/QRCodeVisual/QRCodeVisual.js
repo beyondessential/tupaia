@@ -9,12 +9,19 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QrCodeVisual as BaseQrCodeVisual, OFF_WHITE, NoData } from '@tupaia/ui-components';
-import { VIEW_STYLES } from '../../styles';
+import { VIEW_STYLES } from '../../../styles';
+import { MultiQRCodeVisual } from './MultiQRCodeVisual';
+import { SingleQRCodeVisual } from './SingleQRCodeVisual';
+import { EnlargedQRCodeVisual } from './EnlargedQRCodeVisual';
 
 const StyledQrCodeContainer = styled(BaseQrCodeVisual)`
   .qrcode {
     color: ${OFF_WHITE};
   }
+`;
+
+const Wrapper = styled.div`
+  position: relative;
 `;
 
 const Title = styled(Typography).attrs({
@@ -27,7 +34,7 @@ const Title = styled(Typography).attrs({
   font-size: 1rem;
 `;
 
-const QrCodeVisualComponent = ({
+const QRCodeVisualComponent = ({
   onClose: originalOnClose,
   isUserLoggedIn,
   viewContent,
@@ -36,33 +43,31 @@ const QrCodeVisualComponent = ({
   if (!isUserLoggedIn) {
     return <div style={VIEW_STYLES.downloadLink}>Please log in to enable file downloads</div>;
   }
-
   const onClose = () => {
     originalOnClose();
   };
-
   const { data, ...config } = viewContent;
+  if (isEnlarged) return <EnlargedQRCodeVisual data={data} onCancelDownload={onClose} />;
+
+  // TODO: handle title
+  if (!data.length) return <NoData viewContent={viewContent} />;
 
   return (
-    <>
-      {!isEnlarged && <Title>{config.name}</Title>}
-      {data.length === 0 ? (
-        <NoData viewContent={viewContent} />
-      ) : (
-        <StyledQrCodeContainer data={data} onCloseModal={onClose} isEnlarged={isEnlarged} />
-      )}
-    </>
+    <Wrapper>
+      <Title>{config.name}</Title>
+      {data.length > 1 ? <MultiQRCodeVisual data={data} /> : <SingleQRCodeVisual data={data} />}
+    </Wrapper>
   );
 };
 
-QrCodeVisualComponent.propTypes = {
+QRCodeVisualComponent.propTypes = {
   onClose: PropTypes.func,
   isUserLoggedIn: PropTypes.bool,
   viewContent: PropTypes.object.isRequired,
   isEnlarged: PropTypes.bool,
 };
 
-QrCodeVisualComponent.defaultProps = {
+QRCodeVisualComponent.defaultProps = {
   onClose: () => {},
   isUserLoggedIn: false,
   isEnlarged: false,
@@ -76,4 +81,4 @@ const mapStateToProps = state => {
   };
 };
 
-export const QrCodeVisual = connect(mapStateToProps, null)(QrCodeVisualComponent);
+export const QRCodeVisual = connect(mapStateToProps, null)(QRCodeVisualComponent);
