@@ -60,31 +60,6 @@ const SearchInput = styled(TextField).attrs({
   }
 `;
 
-const Container = styled.div<{
-  $mobileIsActive: boolean;
-}>`
-  position: relative;
-  display: flex;
-  width: 100%;
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $mobileIsActive }) => ($mobileIsActive ? '100%' : '0')};
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: ${TOP_BAR_HEIGHT_MOBILE};
-    // Place on top of the hamburger menu on mobile
-    z-index: 1;
-  }
-`;
-
-const MobileOpenButton = styled(IconButton)`
-  display: none;
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: block;
-  }
-`;
-
 const MobileCloseButton = styled(IconButton)`
   display: none;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
@@ -136,17 +111,6 @@ const MobileOpenButton = styled(IconButton)`
   display: none;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: block;
-  }
-`;
-
-const MobileCloseButton = styled(IconButton)`
-  display: none;
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: block;
-    position: absolute;
-    top: 0.1rem;
-    right: 0.1rem;
-    z-index: 1;
   }
 `;
 
