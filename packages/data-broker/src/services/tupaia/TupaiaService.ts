@@ -6,7 +6,6 @@
 import type { TupaiaDataApi } from '@tupaia/data-api';
 import { reduceToDictionary } from '@tupaia/utils';
 import {
-  AnalyticResults,
   DataBrokerModelRegistry,
   DataElement,
   DataElementMetadata,
@@ -14,37 +13,32 @@ import {
   DataGroupMetadata,
   DataSource,
   DataSourceType,
-  EventResults,
 } from '../../types';
+import { DataServiceMapping } from '../DataServiceMapping';
 import { Service } from '../Service';
-import type {
-  PullOptions as BasePullOptions,
-  PullMetadataOptions as BasePullMetadataOptions,
-} from '../Service';
+import type { PullMetadataOptions as BasePullMetadataOptions } from '../Service';
 import { translateOptionsForApi } from './translation';
 
-export type PullAnalyticsOptions = BasePullOptions &
-  Partial<{
-    period: string;
-    startDate: string;
-    endDate: string;
-    includeOptions: boolean;
-  }>;
+type PullAnalyticsOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
+  period?: string;
+  startDate?: string;
+  endDate?: string;
+  includeOptions?: boolean;
+};
 
-export type PullEventsOptions = BasePullOptions &
-  Partial<{
-    period: string;
-    startDate: string;
-    endDate: string;
-  }>;
+type PullEventsOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
+  period?: string;
+  startDate?: string;
+  endDate?: string;
+};
 
 type PullMetadataOptions = BasePullMetadataOptions & {
   includeOptions?: boolean;
 };
-
-type Puller =
-  | ((dataSources: DataElement[], options: PullAnalyticsOptions) => Promise<AnalyticResults>)
-  | ((dataSources: DataGroup[], options: PullEventsOptions) => Promise<EventResults>);
 
 type MetadataPuller =
   | ((dataSources: DataElement[], options: PullMetadataOptions) => Promise<DataElementMetadata[]>)
@@ -53,17 +47,12 @@ type MetadataPuller =
 // used for internal Tupaia apis: TupaiaDataApi and IndicatorApi
 export class TupaiaService extends Service {
   private readonly api: TupaiaDataApi;
-  private readonly pullers: Record<string, Puller>;
   private readonly metadataPullers: Record<string, MetadataPuller>;
 
   public constructor(models: DataBrokerModelRegistry, api: TupaiaDataApi) {
     super(models);
 
     this.api = api;
-    this.pullers = {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
-    };
     this.metadataPullers = {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.pullDataGroupMetadata.bind(this),
@@ -78,46 +67,35 @@ export class TupaiaService extends Service {
     throw new Error('Data deletion is not supported in TupaiaService');
   }
 
-  public async pull(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options: PullAnalyticsOptions,
-  ): Promise<AnalyticResults>;
-  public async pull(
-    dataSources: DataGroup[],
-    type: 'dataGroup',
-    options: PullEventsOptions,
-  ): Promise<EventResults>;
-  public async pull(dataSources: DataSource[], type: DataSourceType, options: BasePullOptions) {
-    const pullData = this.pullers[type];
-    return pullData(dataSources as any, options);
-  }
-
-  private async pullAnalytics(dataSources: DataElement[], options: PullAnalyticsOptions) {
-    const dataElementCodes = dataSources.map(({ code }) => code);
+  public async pullAnalytics(dataElements: DataElement[], options: PullAnalyticsOptions) {
+    const dataElementCodes = dataElements.map(({ code }) => code);
     const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
       ...translateOptionsForApi(options),
       dataElementCodes,
     });
-    const dataElements = await this.pullDataElementMetadata(dataSources, options);
+    const namedDataElements = await this.pullDataElementMetadata(dataElements, options);
 
     return {
       results: analytics,
       metadata: {
-        dataElementCodeToName: reduceToDictionary(dataElements, 'code', 'name'),
+        dataElementCodeToName: reduceToDictionary(namedDataElements, 'code', 'name'),
       },
       numAggregationsProcessed,
     };
   }
 
-  private async pullEvents(dataSources: DataGroup[], options: PullEventsOptions) {
-    if (dataSources.length > 1) {
+  public async pullEvents(dataGroups: DataGroup[], options: PullEventsOptions) {
+    if (dataGroups.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
-    const [dataSource] = dataSources;
-    const { code: dataGroupCode } = dataSource;
+    const [dataGroup] = dataGroups;
+    const { code: dataGroupCode } = dataGroup;
 
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
+  }
+
+  public async pullSyncGroupResults(): Promise<never> {
+    throw new Error('pullSyncGroupResults is not supported in TupaiaService');
   }
 
   public async pullMetadata(
