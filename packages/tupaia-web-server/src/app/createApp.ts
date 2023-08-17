@@ -8,9 +8,9 @@ import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
   handleWith,
-  useForwardUnhandledRequests,
   attachSessionIfAvailable,
   SessionSwitchingAuthHandler,
+  forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
 import {
@@ -30,8 +30,6 @@ import {
   MapOverlaysRequest,
   UserRoute,
   UserRequest,
-  TempLogoutRoute,
-  TempLogoutRequest,
   ProjectRoute,
   ProjectRequest,
   CountryAccessListRoute,
@@ -44,12 +42,15 @@ import {
   EntityRequest,
 } from '../routes';
 
-const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
+const {
+  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
+} = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web')
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web', { attachModels: true })
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
@@ -74,22 +75,14 @@ export function createApp() {
     .get<EntityRequest>('entity/:projectCode/:entityCode', handleWith(EntityRoute))
     .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
-    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
     .get<EntityAncestorsRequest>(
-      'entityAncestors/:projectCode/:entityCode',
+      'entityAncestors/:projectCode/:rootEntityCode',
       handleWith(EntityAncestorsRoute),
     )
-    // TODO: Stop using get for logout, then delete this
-    .get<TempLogoutRequest>('logout', handleWith(TempLogoutRoute))
+    .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
+    // Forward everything else to webConfigApi
+    .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .build();
-
-  useForwardUnhandledRequests(
-    app,
-    WEB_CONFIG_API_URL,
-    '',
-    attachSessionIfAvailable,
-    authHandlerProvider,
-  );
 
   return app;
 }

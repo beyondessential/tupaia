@@ -4,6 +4,7 @@
  */
 import { useQuery } from 'react-query';
 import { momentToDateString } from '@tupaia/utils';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
   autoAssignColors,
   createValueMapping,
@@ -11,26 +12,27 @@ import {
   SPECTRUM_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 import { get } from '../api';
-import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
+import { EntityCode, ProjectCode } from '../../types';
+
+type SingleMapOverlayItem = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 
 // make the response from the new endpoint look like the response from the legacy endpoint
 const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayItem) => {
-  const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
+  const { code, measureLevel, displayType, ...restOfOverlay } = overlay;
 
-  const measureOptions = [
+  const serieses = [
     {
       measureLevel,
       type: displayType,
-      key: dataElementCode || 'value',
+      key: 'value',
       ...restOfOverlay,
     },
   ];
 
   return {
-    measureCode,
+    measureCode: code,
     measureLevel,
-    measureOptions,
-    serieses: measureOptions,
+    serieses,
     measureData: measureDataResponse,
   };
 };
@@ -97,24 +99,27 @@ export const useMapOverlayReport = (
   const isLegacy = mapOverlay?.legacy;
   const endpoint = isLegacy ? 'legacyMapOverlayReport' : 'report';
 
+  const enabled = !!projectCode && !!entityCode && !!mapOverlayCode;
   return useQuery(
-    [projectCode, entityCode, mapOverlayCode, startDate, endDate],
+    ['mapOverlayReport', projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
       const response = await get(`${endpoint}/${mapOverlayCode}`, {
         params: {
           organisationUnitCode: entityCode,
           projectCode,
-          shouldShowAllParentCountryResults: projectCode !== entityCode, // TODO: figure out the logic here for shouldShowAllParentCountryResults
+          shouldShowAllParentCountryResults: projectCode !== entityCode,
           startDate,
           endDate,
         },
       });
 
-      const responseData = isLegacy ? response : normaliseResponse(response.data, mapOverlay);
+      // We know mapOverlay is defined by this point because of the enabled check, but lint doesn't detect it
+      const responseData = isLegacy ? response : normaliseResponse(response.data, mapOverlay as SingleMapOverlayItem);
       return formatMapOverlayData(responseData);
     },
     {
-      enabled: !!projectCode && !!entityCode && !!mapOverlayCode,
+      enabled,
+      keepPreviousData: enabled, // Only keep previous data if this is still enabled. This fixes an issue where going back to an entity with no map overlays would show the previous entity's map overlay data
     },
   );
 };

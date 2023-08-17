@@ -5,15 +5,16 @@
 
 export { AnimatedView } from './AnimatedView';
 export { Button } from './Button';
-export { BlueButton } from './BlueButton';
 export { Checkbox } from './Checkbox';
 export { CrossPlatformIcon } from './CrossPlatformIcon';
+export { Divider } from './Divider';
 export { Heading } from './Heading';
 export { Icon } from './Icon';
 export { KeyboardSpacer } from './KeyboardSpacer';
 export { MenuItem } from './MenuItem';
 export { PressableText } from './PressableText';
 export { ProgressBar } from './ProgressBar';
+export { QrCode } from './QrCode';
 export { Text } from './Text';
 export { TextInput } from './TextInput';
 export { MultilineTextInput } from './MultilineTextInput';

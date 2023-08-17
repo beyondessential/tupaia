@@ -140,7 +140,7 @@ type DefaultTimePeriodWithAbsoluteDate = {
   start: string;
 };
 
-type DateOffsetSpec = {
+export type DateOffsetSpec = {
   unit: PeriodUnit;
   offset: number;
   modifier?: OffsetModifier;
@@ -162,4 +162,10 @@ type DisplayOnEntityAttributeConditions = {
 };
 type DisplayOnEntityOtherConditions = {
   [key: string]: string | number | boolean;
+};
+
+export type ExportPresentationOptions = {
+  exportWithLabels?: boolean;
+  exportWithTable?: boolean;
+  exportWithTableDisabled?: boolean;
 };

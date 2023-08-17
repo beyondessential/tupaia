@@ -16,8 +16,9 @@ import {
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
+import winston from 'winston';
 
-import { handleWith, handleError } from '../../utils';
+import { handleWith, handleError, emptyMiddleware } from '../../utils';
 import { TestRoute } from '../../routes';
 import { LoginRoute, LoginRequest, LogoutRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
@@ -38,13 +39,20 @@ export class ApiBuilder {
 
   private attachSession: RequestHandler;
   private logApiRequestMiddleware: RequestHandler;
-  private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
-  private verifyAuthMiddleware?: RequestHandler;
+  private attachVerifyLogin: (req: LoginRequest, res: Response, next: NextFunction) => void;
+  private verifyAuthMiddleware: RequestHandler;
   private version: number;
 
   private translatorConfigured = false;
 
-  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
+  // We add handlers at the end so that middlewares and initial routes can be set up first
+  private handlers: { add: () => void }[] = [];
+
+  public constructor(
+    transactingConnection: TupaiaDatabase,
+    apiName: string,
+    options: { attachModels: boolean } = { attachModels: false },
+  ) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
@@ -52,6 +60,8 @@ export class ApiBuilder {
     this.app = express();
     this.attachSession = defaultAttachSession;
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
+    this.attachVerifyLogin = emptyMiddleware;
+    this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
 
     /**
      * Add middleware
@@ -71,6 +81,12 @@ export class ApiBuilder {
      * Add singletons to be attached to req for every route
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (options.attachModels) {
+        winston.warn(
+          "Best practices say orchestrator servers shouldn't access the db directly, are you sure you need req.models?",
+        );
+        req.models = this.models;
+      }
       const context = {}; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
@@ -177,15 +193,10 @@ export class ApiBuilder {
     return this;
   }
 
-  public use<T extends ExpressRequest<T> = Request>(
-    path: string,
-    ...middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
-  ) {
-    this.app.use(
-      this.formatPath(path),
-      this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-      ...middleware,
-    );
+  public use(path: string, ...middleware: RequestHandler[]) {
+    this.handlers.push({
+      add: () => this.app.use(this.formatPath(path), this.attachSession, ...middleware),
+    });
     return this;
   }
 
@@ -194,22 +205,21 @@ export class ApiBuilder {
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    if (this.verifyAuthMiddleware) {
-      this.app[method](
-        this.formatPath(path),
-        this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-        this.verifyAuthMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-        this.logApiRequestMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-        ...handlers,
-      );
-    } else {
-      this.app[method](
-        this.formatPath(path),
-        this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-        this.logApiRequestMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-        ...handlers,
-      );
-    }
+    this.handlers.push({
+      add: () =>
+        this.app[method](
+          this.formatPath(path),
+          this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+          this.verifyAuthMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+          this.logApiRequestMiddleware as RequestHandler<
+            Params<T>,
+            ResBody<T>,
+            ReqBody<T>,
+            Query<T>
+          >,
+          ...handlers,
+        ),
+    });
     return this;
   }
 
@@ -242,17 +252,15 @@ export class ApiBuilder {
   }
 
   public build() {
-    if (this.attachVerifyLogin) {
-      this.app.post(
-        this.formatPath('login'),
-        this.attachVerifyLogin,
-        this.logApiRequestMiddleware,
-        handleWith(LoginRoute),
-      );
-    } else {
-      this.app.post(this.formatPath('login'), this.logApiRequestMiddleware, handleWith(LoginRoute));
-    }
+    this.app.post(
+      this.formatPath('login'),
+      this.attachVerifyLogin,
+      this.logApiRequestMiddleware,
+      handleWith(LoginRoute),
+    );
     this.app.post(this.formatPath('logout'), this.logApiRequestMiddleware, handleWith(LogoutRoute));
+
+    this.handlers.forEach(handler => handler.add());
 
     this.app.use(handleError);
     return this.app;

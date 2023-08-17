@@ -4,10 +4,8 @@
  */
 import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
-import { EntityResponse } from '../../types';
+import { Entity } from '../../types';
 import { get } from '../api';
-
-type EntitiesResponse = EntityResponse[];
 
 export const useEntities = (
   projectCode?: string,
@@ -23,9 +21,10 @@ export const useEntities = (
 
   return useQuery(
     ['entities', projectCode, entityCode, axiosConfig, queryOptions],
-    (): Promise<EntitiesResponse> =>
+    (): Promise<Entity[]> =>
       get(`entities/${projectCode}/${entityCode}`, {
         params: {
+          includeRootEntity: true,
           fields: [
             'parent_code',
             'code',
@@ -42,6 +41,7 @@ export const useEntities = (
 
     {
       enabled,
+      keepPreviousData: false, // this needs to be false, otherwise when we change the entity code, the previous data will be returned for a while
     },
   );
 };
@@ -50,14 +50,14 @@ export const useEntitiesWithLocation = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
-  queryOptions?: QueryObserverOptions,
+  queryOptions: QueryObserverOptions = {},
 ) =>
   useEntities(
     projectCode,
     entityCode,
     {
       params: {
-        ...{ ...axiosConfig?.params },
+        includeRootEntity: true,
         fields: [
           'parent_code',
           'code',
@@ -71,7 +71,11 @@ export const useEntitiesWithLocation = (
           'attributes',
           'child_codes',
         ],
+        ...{ ...axiosConfig?.params },
       },
     },
-    queryOptions,
+    {
+      ...queryOptions,
+      keepPreviousData: false, // this needs to be false, otherwise when we change the entity code, the previous data will be returned for a while
+    },
   );

@@ -24,10 +24,7 @@ const SuccessMessage = styled.p`
 
 export const ResetPasswordForm = () => {
   const [urlSearchParams] = useSearchParams();
-  const formContext = useForm({
-    mode: 'onChange',
-  });
-  const { isValid } = formContext.formState;
+  const formContext = useForm();
   const { mutate: resetPassword, isLoading, isError, error, isSuccess } = useResetPassword();
   const passwordResetToken = urlSearchParams.get(URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN);
 
@@ -68,7 +65,7 @@ export const ResetPasswordForm = () => {
             }}
             disabled={isLoading}
           />
-          <AuthModalButton type="submit" isLoading={isLoading} disabled={!isValid}>
+          <AuthModalButton type="submit" isLoading={isLoading}>
             Change password
           </AuthModalButton>
         </StyledForm>
