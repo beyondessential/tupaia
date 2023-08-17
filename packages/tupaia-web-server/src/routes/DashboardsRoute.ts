@@ -122,6 +122,13 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       });
     }
 
+<<<<<<< HEAD
     return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
+=======
+    return camelcaseKeys(response, {
+      deep: true,
+      stopPaths: ['items.config.presentationOptions', 'items.config.chartConfig'], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
+    });
+>>>>>>> 818ba06aa0465b0f182f09280e3fda0ebc100fd8
   }
 }

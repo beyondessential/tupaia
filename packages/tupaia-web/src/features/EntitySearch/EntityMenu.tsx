@@ -19,6 +19,11 @@ const FlexRow = styled.div`
 const List = styled(MuiList)`
   margin-left: 1rem;
 
+  .MuiIconButton-root,
+  .MuiSvgIcon-root {
+    font-size: 1.5rem;
+  }
+
   // Hide expand icon when there are no children but keep the element on the page for spacing
   .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
     color: transparent;

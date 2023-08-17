@@ -166,6 +166,7 @@ export const DashboardItemContent = ({
           isExporting={isExporting}
         />
       )}
+      {console.log(config)}
       {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       {isExpandable && <ExpandItemButton viewType={viewType} reportCode={reportCode} />}
     </>

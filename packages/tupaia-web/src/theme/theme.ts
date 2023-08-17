@@ -3,6 +3,35 @@ import { TRANSPARENT_BLACK } from '../constants';
 
 export const theme = createMuiTheme(
   {
+    typography: {
+      fontSize: 16, // this needs to be 16 to correctly calculate the axis labels in recharts
+      body1: {
+        fontSize: '1rem',
+      },
+    },
+    // these overrides are needed to make up for the base font-size being 16px
+    overrides: {
+      MuiPaper: {
+        root: {
+          fontSize: '0.875rem',
+        },
+      },
+      MuiCardHeader: {
+        root: {
+          fontSize: '0.875rem',
+        },
+      },
+      MuiCheckbox: {
+        root: {
+          fontSize: '1.5rem',
+        },
+      },
+      MuiSvgIcon: {
+        root: {
+          fontSize: '1.5rem',
+        },
+      },
+    },
     palette: {
       type: 'dark',
       primary: {

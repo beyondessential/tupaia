@@ -73,7 +73,11 @@ const AccordionContent = styled(AccordionDetails)`
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
-const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup }) => {
+const MapOverlayAccordion = ({
+  mapOverlayGroup,
+}: {
+  mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+}) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -84,7 +88,7 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMa
       <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
       <AccordionContent>
         {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
-        {mapOverlayGroup.children.map(mapOverlay =>
+        {mapOverlayGroup.children.map((mapOverlay: any) =>
           'children' in mapOverlay ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
@@ -124,8 +128,8 @@ export const MapOverlayList = () => {
       onChange={onChangeMapOverlay}
     >
       {mapOverlayGroups
-        .filter(item => item.name)
-        .map(group => (
+        .filter((item: { name: string }) => item.name)
+        .map((group: any) => (
           <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
         ))}
     </RadioGroup>

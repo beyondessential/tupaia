@@ -25,6 +25,10 @@ const Container = styled.div`
   background: #f9f9f9;
 `;
 
+const NoDataContainer = styled(Container)`
+  display: flex;
+`;
+
 const ROW_TYPE_COMPONENTS = {
   header: HeaderRow,
   subheader: SubHeaderRow,
@@ -112,9 +116,9 @@ const ListVisualContent = React.memo(
 
     if (!isLoading && !getIsChartData(viewContent)) {
       return (
-        <Container>
+        <NoDataContainer>
           <NoData viewContent={viewContent} />
-        </Container>
+        </NoDataContainer>
       );
     }
 
