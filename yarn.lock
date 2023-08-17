@@ -10429,6 +10429,7 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@storybook/react": ^6.3.9
+    "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/jest": ^29.5.1
