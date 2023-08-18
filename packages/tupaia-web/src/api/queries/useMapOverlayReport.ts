@@ -16,27 +16,6 @@ import { EntityCode, ProjectCode } from '../../types';
 
 type SingleMapOverlayItem = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 
-// make the response from the new endpoint look like the response from the legacy endpoint
-const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayItem) => {
-  const { code, measureLevel, displayType, ...restOfOverlay } = overlay;
-
-  const serieses = [
-    {
-      measureLevel,
-      type: displayType,
-      key: 'value',
-      ...restOfOverlay,
-    },
-  ];
-
-  return {
-    measureCode: code,
-    measureLevel,
-    serieses,
-    measureData: measureDataResponse,
-  };
-};
-
 const formatMapOverlayData = (data: any) => {
   const { serieses, measureData } = data;
 
@@ -96,25 +75,23 @@ export const useMapOverlayReport = (
   const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
   const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
   const mapOverlayCode = mapOverlay?.code;
-  const isLegacy = mapOverlay?.legacy;
-  const endpoint = isLegacy ? 'legacyMapOverlayReport' : 'report';
+  const isLegacy = mapOverlay?.legacy ? 'true' : 'false';
 
   const enabled = !!projectCode && !!entityCode && !!mapOverlayCode;
   return useQuery(
     ['mapOverlayReport', projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
-      const response = await get(`${endpoint}/${mapOverlayCode}`, {
+      const responseData = await get(`legacyMapOverlayReport/${mapOverlayCode}`, {
         params: {
           organisationUnitCode: entityCode,
           projectCode,
           shouldShowAllParentCountryResults: projectCode !== entityCode,
           startDate,
           endDate,
+          legacy: isLegacy,
         },
       });
 
-      // We know mapOverlay is defined by this point because of the enabled check, but lint doesn't detect it
-      const responseData = isLegacy ? response : normaliseResponse(response.data, mapOverlay as SingleMapOverlayItem);
       return formatMapOverlayData(responseData);
     },
     {

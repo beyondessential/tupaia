@@ -17,8 +17,8 @@ export type LegacyMapOverlayReportRequest = Request<
 export class LegacyMapOverlayReportRoute extends Route<LegacyMapOverlayReportRequest> {
   public async buildResponse() {
     const { query, ctx } = this.req;
-    const { mapOverlayCode } = this.req.params;
+    const { mapOverlayCode, legacy } = this.req.params;
 
-    return ctx.services.webConfig.fetchMeasureData(mapOverlayCode, { legacy: 'true', ...query });
+    return ctx.services.webConfig.fetchMeasureData(mapOverlayCode, { legacy, ...query });
   }
 }
