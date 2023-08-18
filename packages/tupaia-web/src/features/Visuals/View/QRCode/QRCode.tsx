@@ -14,5 +14,20 @@ interface QRCodeProps {
 
 export const QRCode = ({ report: { data } }: QRCodeProps) => {
   if (!data) return null;
-  return <>{data.length > 1 ? <MultiQRCodes data={data} /> : <SingleQRCode data={data} />}</>;
+  return (
+    <>
+      {data.length > 1 ? (
+        <MultiQRCodes
+          data={
+            data as {
+              name: string;
+              value: string;
+            }[]
+          }
+        />
+      ) : (
+        <SingleQRCode data={data} />
+      )}
+    </>
+  );
 };
