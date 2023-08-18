@@ -29,6 +29,8 @@ type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 
+const DEFAULT_PAGE_SIZE = 'ALL';
+
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
     const { query, params, ctx } = this.req;
@@ -49,7 +51,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
-      pageSize,
+      pageSize: pageSize || DEFAULT_PAGE_SIZE,
     });
 
     if (mapOverlays.length === 0) {
