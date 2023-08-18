@@ -34,7 +34,7 @@ export const MultiQRCodes = ({ data }: MultiQRCodesProps) => {
       {displayData.map(({ name, value }) => (
         // @ts-ignore - ListItem doesn't accept button as false, likely something fixed in later versions
         <ListItem key={value}>
-          <SmallQrCodeImage qrCodeContents={value} humanReadableId={name} />
+          <SmallQrCodeImage qrCodeContents={value as string} humanReadableId={name} />
         </ListItem>
       ))}
     </List>
