@@ -15,6 +15,7 @@ import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
 import { BackLink } from './BackLink';
 import { ExportContext, useEnlargedDashboardItem } from './utils';
+import { DashboardItemContext } from '../DashboardItem/DashboardItemContext';
 
 const Container = styled(FlexColumn)`
   width: 100%;
@@ -130,12 +131,15 @@ export const EnlargedDashboardVisual = ({
       </TitleWrapper>
       {config?.description && <Subheading>{config?.description}</Subheading>}
       <ContentWrapper>
-        <DashboardItemContent
-          isLoading={isLoadingReportData}
-          error={reportError}
-          report={reportData}
-          dashboardItem={{
-            ...currentDashboardItem,
+        <DashboardItemContext.Provider
+          value={{
+            report: reportData,
+            isLoading: isLoadingReportData,
+            error: reportError,
+            refetch: refetchReportData,
+            isEnlarged: true,
+            isExport: isPreview,
+            reportCode: currentDashboardItem?.reportCode,
             config: {
               ...currentDashboardItem?.config,
               presentationOptions: {
@@ -145,11 +149,9 @@ export const EnlargedDashboardVisual = ({
               },
             },
           }}
-          onRetryFetch={refetchReportData}
-          isExpandable={false}
-          isEnlarged
-          isExporting={isPreview}
-        />
+        >
+          <DashboardItemContent />
+        </DashboardItemContext.Provider>
         {isPreview && (
           <ExportDate>
             {startDate &&

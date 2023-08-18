@@ -19,6 +19,7 @@ import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../typ
 import { useReport } from '../../api/queries';
 import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
 import { PDFExportHeader } from './PDFExportHeader';
+import { DashboardItemContext } from '../DashboardItem/DashboardItemContext';
 
 const Wrapper = styled.div`
   margin: 0 7.8rem;
@@ -140,20 +141,19 @@ export const PDFExportDashboardItem = ({
           {reference && <ReferenceTooltip reference={reference} />}
           {period && <ExportPeriod>{period}</ExportPeriod>}
           <ExportContent $hasData={report?.data && report?.data?.length > 0}>
-            <DashboardItemContent
-              dashboardItem={
-                {
-                  ...dashboardItem,
-                  config: dashboardItemConfig,
-                } as DashboardItem
-              }
-              report={report}
-              isLoading={isLoading}
-              error={error}
-              isExpandable={false}
-              isEnlarged
-              isExporting
-            />
+            <DashboardItemContext.Provider
+              value={{
+                config,
+                report,
+                reportCode,
+                isLoading,
+                error,
+                isEnlarged: true,
+                isExport: true,
+              }}
+            >
+              <DashboardItemContent />
+            </DashboardItemContext.Provider>
           </ExportContent>
         </Wrapper>
       </A4PageContent>

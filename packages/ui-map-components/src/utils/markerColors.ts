@@ -7,10 +7,7 @@
 import moment from 'moment';
 import { blue, red, green } from '@material-ui/core/colors';
 import { ScaleType, MeasureColorScheme } from '@tupaia/types';
-import {
-  BREWER_PALETTE,
-  HEATMAP_UNKNOWN_COLOR,
-} from '../constants';
+import { BREWER_PALETTE, HEATMAP_UNKNOWN_COLOR } from '../constants';
 import { Color, ColorKey, ScaleTypeLiteral } from '../types';
 
 const COLOR_SCHEME_TO_FUNCTION = {
