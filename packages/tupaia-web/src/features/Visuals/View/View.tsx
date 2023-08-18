@@ -17,6 +17,7 @@ import { QRCode } from './QRCode';
 import { DashboardItemContext } from '../../DashboardItem';
 
 interface ViewProps {
+  /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
   customReport: DashboardItemReport;
   customConfig: DashboardItemConfig;
 }
