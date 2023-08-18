@@ -34,25 +34,23 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
         ...filter,
         [RAW]: {
           // Running this RAW is much faster for larger hierarchies
+          // Put names that begin with the search string first
+          // Then sort alphabetically within the two groups
           sql: `id IN (
               SELECT descendant_id
               FROM ancestor_descendant_relation
               WHERE entity_hierarchy_id = :hierarchyId
-            )`,
+            )
+            AND name ILIKE :searchFilter
+            ORDER BY STARTS_WITH(LOWER(name), :searchString) DESC, name ASC`,
           parameters: {
             hierarchyId,
+            searchFilter: `%${searchString}%`,
+            searchString,
           },
-        },
-        // Name filter last so we don't allow overriding it
-        name: {
-          comparator: 'ilike',
-          comparisonValue: `%${searchString}%`,
         },
       },
       {
-        // Put names that begin with the search string first
-        // Then sort alphabetically within the two groups
-        rawSort: `STARTS_WITH(LOWER(name),'${searchString}') DESC, name ASC`,
         limit: pageSize,
         offset: page && pageSize ? page * pageSize : undefined,
       },
