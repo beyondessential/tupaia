@@ -25,7 +25,7 @@ import {
   DashboardItemConfig,
 } from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemContext } from '../DashboardItem/DashboardItemContext';
+import { DashboardItemContext } from '../DashboardItem';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',

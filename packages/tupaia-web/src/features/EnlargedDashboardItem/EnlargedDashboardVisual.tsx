@@ -9,13 +9,12 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
 import { BackLink } from './BackLink';
 import { ExportContext, useEnlargedDashboardItem } from './utils';
-import { DashboardItemContext } from '../DashboardItem/DashboardItemContext';
 
 const Container = styled(FlexColumn)`
   width: 100%;

@@ -11,7 +11,7 @@ import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { A4Page } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { DashboardItemContext } from '../DashboardItem/DashboardItemContext';
+import { DashboardItemContext } from '../DashboardItem';
 
 const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';

@@ -17,9 +17,8 @@ import {
 import { A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
-import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
-import { DashboardItemContext } from '../DashboardItem/DashboardItemContext';
 
 const Wrapper = styled.div`
   margin: 0 7.8rem;

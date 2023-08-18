@@ -14,7 +14,7 @@ import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
 import { QRCode } from './QRCode';
-import { DashboardItemContext } from '../../DashboardItem/DashboardItemContext';
+import { DashboardItemContext } from '../../DashboardItem';
 
 interface ViewProps {
   customReport: DashboardItemReport;
