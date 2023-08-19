@@ -176,10 +176,10 @@ describe('SupersetService', () => {
       expect(supersetService.pullSyncGroupResults()).toBeRejectedWith('not supported'));
   });
 
-  describe('pullMetadata()', () => {
+  describe('pullDataElementMetadata()', () => {
     it('default implementation', () =>
       expect(
-        supersetService.pullMetadata([], 'dataElement', {
+        supersetService.pullDataElementMetadata([], {
           dataServiceMapping: new DataServiceMapping(),
         }),
       ).resolves.toEqual([]));

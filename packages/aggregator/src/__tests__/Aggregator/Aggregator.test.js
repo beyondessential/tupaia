@@ -13,6 +13,8 @@ import {
   RESPONSE_BY_SOURCE_TYPE,
   AGGREGATED_ANALYTICS,
   FILTERED_ANALYTICS,
+  DATA_ELEMENTS,
+  DATA_GROUPS,
 } from './fixtures';
 
 jest.mock('../../analytics/aggregateAnalytics/aggregateAnalytics');
@@ -27,16 +29,16 @@ const dataBroker = createJestMockInstance('@tupaia/data-broker', 'DataBroker', {
   getDataSourceTypes: () => DATA_SOURCE_TYPES,
   pullAnalytics: async () => RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT],
   pullEvents: async () => RESPONSE_BY_SOURCE_TYPE[DATA_GROUP],
+  pullDataElements: async codes =>
+    Object.values(DATA_ELEMENTS).filter(de => codes.includes(de.code)),
+  pullDataGroup: async code => DATA_GROUPS[code],
 });
 
+/**
+ * @type {Aggregator}
+ */
 let aggregator;
 
-const fetchOptions = {
-  organisationUnitCodes: ['TO'],
-  startDate: '20200214',
-  endDate: '20200215',
-  period: '20200214;20200215',
-};
 const aggregationOptions = {
   aggregations: [
     {
@@ -57,6 +59,13 @@ describe('Aggregator', () => {
   });
 
   describe('fetchAnalytics()', () => {
+    const fetchOptions = {
+      organisationUnitCodes: ['TO'],
+      startDate: '20200214',
+      endDate: '20200215',
+      period: '20200214;20200215',
+    };
+
     it('`aggregationOptions` parameter is optional', async () => {
       const assertErrorIsNotThrown = async emptyAggregationOptions =>
         expect(
@@ -171,7 +180,14 @@ describe('Aggregator', () => {
     });
   });
 
-  describe('fetch events', () => {
+  describe('fetchEvents()', () => {
+    const fetchOptions = {
+      organisationUnitCodes: ['TO'],
+      startDate: '20200214',
+      endDate: '20200215',
+      period: '20200214;20200215',
+    };
+
     it('fetches events', async () => {
       const code = 'PROGRAM_1';
 
@@ -204,6 +220,27 @@ describe('Aggregator', () => {
       });
       expect(dataBroker.pullEvents).toHaveBeenCalledTimes(0);
       return expect(response).toStrictEqual([]);
+    });
+  });
+
+  describe('fetchDataElements', () => {
+    it('fetches data elements', async () => {
+      const codes = ['POP01', 'POP02'];
+      const fetchOptions = { includeOptions: true };
+
+      const results = await aggregator.fetchDataElements(codes, fetchOptions);
+      expect(results).toStrictEqual([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02]);
+      expect(dataBroker.pullDataElements).toHaveBeenCalledWith(codes, fetchOptions);
+    });
+  });
+
+  describe('fetchDataGroup', () => {
+    it('fetches data groups', async () => {
+      const fetchOptions = { includeOptions: true };
+
+      const result = await aggregator.fetchDataGroup('POP', fetchOptions);
+      expect(result).toStrictEqual(DATA_GROUPS.POP);
+      expect(dataBroker.pullDataGroup).toHaveBeenCalledWith('POP', fetchOptions);
     });
   });
 });

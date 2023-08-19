@@ -73,6 +73,10 @@ export const DHIS_RESPONSE_DATA_ELEMENTS = {
   DIF01_DHIS: { code: 'DIF01_DHIS', uid: 'id000DIF01_DHIS', name: 'Different 1' },
 };
 
+export const DHIS_RESPONSE_DATA_GROUPS = {
+  POP01: { code: 'POP01', uid: 'id000POP01_group', name: 'Population Survey' },
+};
+
 export const DATA_ELEMENTS_BY_GROUP = {
   POP01: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
   DIFF_GROUP: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.DIF01],

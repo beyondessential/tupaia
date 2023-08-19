@@ -13,5 +13,8 @@ Centralised gateway which provides a common interface to external data sources.
 ### Interface
 
 - `push` - pushes data to an external data source
-- `pull` - pulls analytics or events data for requested data elements or data groups
-- `pullMetadata` - pull metadata around requested data elements, data groups, or sync groups
+- `pullAnalytics` - pulls analytics for requested data elements
+- `pullEvents` - pulls event data for requested data groups
+- `pullSyncGroupResults` - pulls data for requested sync groups
+- `pullDataElements` - pull metadata around requested data elements
+- `pullDataGroup` - pull metadata around requested data group

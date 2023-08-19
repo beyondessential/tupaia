@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { DhisApi } from '@tupaia/dhis-api';
 import * as GetDhisApi from '../../../services/dhis/getDhisApi';
 import {
   DATA_ELEMENTS,
@@ -11,23 +12,50 @@ import {
   DHIS_REFERENCE,
   SERVER_NAME,
   DEFAULT_DATA_SERVICE_MAPPING,
+  DHIS_RESPONSE_DATA_ELEMENTS,
+  DHIS_RESPONSE_DATA_GROUPS,
+  DATA_ELEMENTS_BY_GROUP,
 } from './DhisService.fixtures';
 import { DhisService } from '../../../services/dhis';
 import { createMockDhisApi, createModelsStub, stubGetDhisApi } from './DhisService.stubs';
+import { DataElement, DataGroup } from '../../../types';
+
+const getDhisDataElements = (dataElements: { code: string }[]) => {
+  const dataElementCodes = dataElements.map(({ code }) => code);
+  return Object.values(DHIS_RESPONSE_DATA_ELEMENTS).filter(({ code }) =>
+    dataElementCodes.includes(code),
+  );
+};
 
 const mockPullAnalytics = jest.fn();
 const mockPullEvents = jest.fn();
 const mockPullDeprecatedEvents = jest.fn();
+const mockPullDataElements = jest
+  .fn()
+  .mockImplementation((api: DhisApi, dataElements: DataElement[]) =>
+    getDhisDataElements(dataElements),
+  );
+const mockPullDataGroup = jest.fn().mockImplementation((api: DhisApi, dataGroup: DataGroup) => {
+  const dataGroupMetadata =
+    DHIS_RESPONSE_DATA_GROUPS[dataGroup.code as keyof typeof DHIS_RESPONSE_DATA_GROUPS];
+  const dataElements =
+    DATA_ELEMENTS_BY_GROUP[dataGroup.code as keyof typeof DATA_ELEMENTS_BY_GROUP];
+
+  return {
+    ...dataGroupMetadata,
+    dataElements: getDhisDataElements(dataElements),
+  };
+});
 
 jest.mock('../../../services/dhis/pullers', () => ({
   AnalyticsPuller: jest.fn().mockImplementation(() => ({
     pull: mockPullAnalytics,
   })),
   DataElementsMetadataPuller: jest.fn().mockImplementation(() => ({
-    pull: jest.fn(),
+    pull: mockPullDataElements,
   })),
   DataGroupMetadataPuller: jest.fn().mockImplementation(() => ({
-    pull: jest.fn(),
+    pull: mockPullDataGroup,
   })),
   DeprecatedEventsPuller: jest.fn().mockImplementation(() => ({
     pull: mockPullDeprecatedEvents,
@@ -419,5 +447,40 @@ describe('DhisService', () => {
   describe('pullSyncGroupResults()', () => {
     it('throws an error', async () =>
       expect(dhisService.pullSyncGroupResults()).toBeRejectedWith('not supported'));
+  });
+
+  describe('pullDataElementMetadata()', () => {
+    it('uses the metadata puller to fetch results', async () => {
+      const options = { dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING, includeOptions: true };
+      const dataElements = [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02];
+      const results = await dhisService.pullDataElementMetadata(dataElements, options);
+
+      expect(results).toStrictEqual([
+        DHIS_RESPONSE_DATA_ELEMENTS.POP01,
+        DHIS_RESPONSE_DATA_ELEMENTS.POP02,
+      ]);
+      expect(mockPullDataElements).toHaveBeenCalledOnceWith(
+        expect.anything(),
+        dataElements,
+        options,
+      );
+    });
+  });
+
+  describe('pullDataGroupMetadata()', () => {
+    it('uses the metadata puller to fetch results', async () => {
+      const options = { dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING, includeOptions: true };
+      const result = await dhisService.pullDataGroupMetadata(DATA_GROUPS.POP01_GROUP, options);
+
+      expect(result).toStrictEqual({
+        ...DHIS_RESPONSE_DATA_GROUPS.POP01,
+        dataElements: [DHIS_RESPONSE_DATA_ELEMENTS.POP01, DHIS_RESPONSE_DATA_ELEMENTS.POP02],
+      });
+      expect(mockPullDataGroup).toHaveBeenCalledOnceWith(
+        expect.anything(),
+        DATA_GROUPS.POP01_GROUP,
+        options,
+      );
+    });
   });
 });

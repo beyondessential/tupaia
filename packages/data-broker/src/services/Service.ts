@@ -13,8 +13,9 @@ import {
   DataSourceType,
   Diagnostics,
   EventResults,
-  Metadata,
+  DataElementMetadata,
   SyncGroupResults,
+  DataGroupMetadata,
 } from '../types';
 import { DATA_SOURCE_TYPES } from '../utils';
 import { DataServiceMapping } from './DataServiceMapping';
@@ -26,10 +27,6 @@ export type PushOptions = {
 
 export type DeleteOptions = {
   type: DataSourceType;
-  dataServiceMapping: DataServiceMapping;
-};
-
-export type PullMetadataOptions = {
   dataServiceMapping: DataServiceMapping;
 };
 
@@ -75,14 +72,19 @@ export abstract class Service {
     options: Record<string, unknown>,
   ): Promise<SyncGroupResults>;
 
-  /**
-   * The default pullMetadata behaviour is to return no metadata
-   */
-  public async pullMetadata(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullMetadataOptions,
-  ): Promise<Metadata[]> {
-    return dataSources.map(ds => ({ code: ds.code }));
+  public async pullDataElementMetadata(
+    dataElements: DataElement[],
+    options: Record<string, unknown>,
+  ): Promise<DataElementMetadata[]> {
+    // Default behaviour
+    return dataElements.map(({ code }) => ({ code }));
+  }
+
+  public async pullDataGroupMetadata(
+    dataGroup: DataGroup,
+    options: Record<string, unknown>,
+  ): Promise<DataGroupMetadata> {
+    // Default behaviour
+    return { code: dataGroup.code };
   }
 }

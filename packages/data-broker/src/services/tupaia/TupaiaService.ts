@@ -5,22 +5,11 @@
 
 import type { TupaiaDataApi } from '@tupaia/data-api';
 import { reduceToDictionary } from '@tupaia/utils';
-import {
-  DataBrokerModelRegistry,
-  DataElement,
-  DataElementMetadata,
-  DataGroup,
-  DataGroupMetadata,
-  DataSource,
-  DataSourceType,
-} from '../../types';
-import { DataServiceMapping } from '../DataServiceMapping';
+import { DataBrokerModelRegistry, DataElement, DataGroup } from '../../types';
 import { Service } from '../Service';
-import type { PullMetadataOptions as BasePullMetadataOptions } from '../Service';
 import { translateOptionsForApi } from './translation';
 
 type PullAnalyticsOptions = {
-  dataServiceMapping: DataServiceMapping;
   organisationUnitCodes?: string[];
   period?: string;
   startDate?: string;
@@ -29,34 +18,20 @@ type PullAnalyticsOptions = {
 };
 
 type PullEventsOptions = {
-  dataServiceMapping: DataServiceMapping;
   organisationUnitCodes?: string[];
   period?: string;
   startDate?: string;
   endDate?: string;
 };
 
-type PullMetadataOptions = BasePullMetadataOptions & {
-  includeOptions?: boolean;
-};
-
-type MetadataPuller =
-  | ((dataSources: DataElement[], options: PullMetadataOptions) => Promise<DataElementMetadata[]>)
-  | ((dataSources: DataGroup[], options: PullMetadataOptions) => Promise<DataGroupMetadata>);
-
 // used for internal Tupaia apis: TupaiaDataApi and IndicatorApi
 export class TupaiaService extends Service {
   private readonly api: TupaiaDataApi;
-  private readonly metadataPullers: Record<string, MetadataPuller>;
 
   public constructor(models: DataBrokerModelRegistry, api: TupaiaDataApi) {
     super(models);
 
     this.api = api;
-    this.metadataPullers = {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pullDataGroupMetadata.bind(this),
-    };
   }
 
   public async push(): Promise<never> {
@@ -73,12 +48,12 @@ export class TupaiaService extends Service {
       ...translateOptionsForApi(options),
       dataElementCodes,
     });
-    const namedDataElements = await this.pullDataElementMetadata(dataElements, options);
+    const dataElementMetadata = await this.pullDataElementMetadata(dataElements, options);
 
     return {
       results: analytics,
       metadata: {
-        dataElementCodeToName: reduceToDictionary(namedDataElements, 'code', 'name'),
+        dataElementCodeToName: reduceToDictionary(dataElementMetadata, 'code', 'name'),
       },
       numAggregationsProcessed,
     };
@@ -98,38 +73,18 @@ export class TupaiaService extends Service {
     throw new Error('pullSyncGroupResults is not supported in TupaiaService');
   }
 
-  public async pullMetadata(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options: PullMetadataOptions,
-  ): Promise<DataElementMetadata[]>;
-  public async pullMetadata(
-    dataSources: DataGroup[],
-    type: 'dataGroup',
-    options: PullMetadataOptions,
-  ): Promise<DataGroupMetadata>;
-  public async pullMetadata(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullMetadataOptions,
+  public async pullDataElementMetadata(
+    dataElements: DataElement[],
+    options: { includeOptions?: boolean },
   ) {
-    const pullMetadata = this.metadataPullers[type];
-    return pullMetadata(dataSources as any, options);
-  }
-
-  private async pullDataElementMetadata(dataSources: DataElement[], options: PullMetadataOptions) {
     const { includeOptions } = options;
-    const dataElementCodes = dataSources.map(({ code }) => code);
+    const dataElementCodes = dataElements.map(({ code }) => code);
     return this.api.fetchDataElements(dataElementCodes, { includeOptions });
   }
 
-  private async pullDataGroupMetadata(dataSources: DataGroup[], options: PullMetadataOptions) {
-    if (dataSources.length > 1) {
-      throw new Error('Cannot pull metadata from multiple programs at the same time');
-    }
+  public async pullDataGroupMetadata(dataGroup: DataGroup, options: { includeOptions?: boolean }) {
     const { includeOptions } = options;
-    const [dataSource] = dataSources;
-    const { code: dataGroupCode } = dataSource;
+    const { code: dataGroupCode } = dataGroup;
     const dataElementDataSources = await this.models.dataGroup.getDataElementsInDataGroup(
       dataGroupCode,
     );

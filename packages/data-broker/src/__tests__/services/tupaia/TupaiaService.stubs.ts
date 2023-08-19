@@ -7,7 +7,7 @@ import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import type { TupaiaDataApi } from '@tupaia/data-api';
 import { createJestMockInstance } from '@tupaia/utils';
 import { Analytic, Event } from '../../../types';
-import { DATA_ELEMENT_METADATA } from './TupaiaService.fixtures';
+import { DATA_ELEMENT_METADATA, DATA_GROUP_METADATA } from './TupaiaService.fixtures';
 
 export const createModelsStub = () => {
   return baseCreateModelsStub({
@@ -34,5 +34,20 @@ export const createTupaiaDataApiStub = ({
       .fn()
       .mockImplementation(async (dataElementCodes: (keyof typeof DATA_ELEMENT_METADATA)[]) =>
         dataElementCodes.map(code => DATA_ELEMENT_METADATA[code]).filter(de => de),
+      ),
+    fetchDataGroup: jest
+      .fn()
+      .mockImplementation(
+        async (dataGroupCode: keyof typeof DATA_GROUP_METADATA, dataElementCodes: string[]) => {
+          const dataGroup = DATA_GROUP_METADATA[dataGroupCode];
+          const dataElements = Object.values(DATA_ELEMENT_METADATA).filter(de =>
+            dataElementCodes.includes(de.code),
+          );
+
+          return {
+            ...dataGroup,
+            dataElements,
+          };
+        },
       ),
   });

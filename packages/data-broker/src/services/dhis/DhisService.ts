@@ -9,13 +9,11 @@ import {
   DataBrokerModelRegistry,
   DataElementMetadata,
   DataGroupMetadata,
-  DataSourceType,
   DataValue,
   Diagnostics,
   OutboundEvent,
 } from '../../types';
 import type {
-  PullMetadataOptions as BasePullMetadataOptions,
   PushOptions as BasePushOptions,
   DeleteOptions as BaseDeleteOptions,
 } from '../Service';
@@ -28,8 +26,8 @@ import {
   DeprecatedEventsPuller,
   EventsPuller,
   PullAnalyticsOptions,
-  PullDataElementsOptions,
-  PullDataGroupsOptions,
+  PullDataElementMetadataOptions,
+  PullDataGroupMetadataOptions,
   PullEventsOptions,
 } from './pullers';
 import { DataElement, DataGroup, DataSource } from './types';
@@ -45,13 +43,6 @@ type DataGroupPushOptions = BasePushOptions & {
 type DeleteOptions = BaseDeleteOptions & {
   serverName?: string;
 };
-
-export type PullMetadataOptions = BasePullMetadataOptions &
-  Partial<{
-    organisationUnitCode: string;
-    additionalFields: string[];
-    includeOptions: boolean;
-  }>;
 
 interface DeleteEventData {
   dhisReference: string;
@@ -70,22 +61,6 @@ type Deleter =
   | ((api: DhisApi, dataValue: DataValue, dataSource: DataElement) => Promise<Diagnostics>)
   | ((api: DhisApi, data: DeleteEventData) => Promise<Diagnostics>);
 
-type MetadataPuller =
-  | ((
-      api: DhisApi,
-      dataSources: DataElement[],
-      options: PullDataElementsOptions,
-    ) => Promise<DataElementMetadata[]>)
-  | ((
-      api: DhisApi,
-      dataSources: DataGroup[],
-      options: PullDataGroupsOptions,
-    ) => Promise<DataGroupMetadata>);
-
-type MetadataMerger =
-  | ((results: DataElementMetadata[]) => DataElementMetadata[])
-  | ((results: DataGroupMetadata[]) => DataGroupMetadata);
-
 export class DhisService extends Service {
   private readonly translator: DhisTranslator;
   private readonly dataElementsMetadataPuller: DataElementsMetadataPuller;
@@ -96,8 +71,6 @@ export class DhisService extends Service {
   private readonly deprecatedEventsPuller: DeprecatedEventsPuller;
   private readonly pushers: Record<string, Pusher>;
   private readonly deleters: Record<string, Deleter>;
-  private readonly metadataPullers: Record<string, MetadataPuller>;
-  private readonly metadataMergers: Record<string, MetadataMerger>;
 
   public constructor(models: DataBrokerModelRegistry) {
     super(models);
@@ -120,8 +93,6 @@ export class DhisService extends Service {
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models, this.translator);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
-    this.metadataPullers = this.getMetadataPullers();
-    this.metadataMergers = this.getMetadataMergers();
   }
 
   private getPushers() {
@@ -135,24 +106,6 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.deleteEvent.bind(this),
-    };
-  }
-
-  private getMetadataPullers() {
-    return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.dataGroupMetadataPuller.pull.bind(this),
-    };
-  }
-
-  private getMetadataMergers() {
-    return {
-      [this.dataSourceTypes.DATA_ELEMENT]: (results: DataElementMetadata[]) =>
-        results.reduce(
-          (existingResults, result) => existingResults.concat(result),
-          [] as DataElementMetadata[],
-        ),
-      [this.dataSourceTypes.DATA_GROUP]: (results: DataGroupMetadata[]) => results[0],
     };
   }
 
@@ -288,37 +241,49 @@ export class DhisService extends Service {
     throw new Error('pullSyncGroupResults is not supported in DhisService');
   }
 
-  public async pullMetadata(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options: PullDataElementsOptions,
-  ): Promise<DataElementMetadata[]>;
-  public async pullMetadata(
-    dataSources: DataGroup[],
-    type: 'dataGroup',
-    options: PullDataGroupsOptions,
-  ): Promise<DataGroupMetadata>;
-  public async pullMetadata(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullMetadataOptions,
+  public async pullDataElementMetadata(
+    dataElements: DataElement[],
+    options: PullDataElementMetadataOptions,
   ) {
     const { dataServiceMapping } = options;
     const apis: DhisApi[] = await getApisForDataSources(
       this.models,
-      dataSources,
+      dataElements,
       dataServiceMapping,
     );
-    const puller = this.metadataPullers[type];
 
-    const results: any[] = [];
+    const nestedResults: DataElementMetadata[][] = [];
     const pullForApi = async (api: DhisApi) => {
-      const newResults = await puller(api, dataSources as any, options as any);
-      results.push(newResults);
+      const results = await this.dataElementsMetadataPuller.pull.bind(this)(
+        api,
+        dataElements,
+        options,
+      );
+      nestedResults.push(results);
     };
     await Promise.all(apis.map(pullForApi));
 
-    const mergeMetadata = this.metadataMergers[type];
-    return mergeMetadata(results);
+    return nestedResults.flat();
+  }
+
+  public async pullDataGroupMetadata(
+    dataGroup: DataGroup,
+    options: PullDataGroupMetadataOptions,
+  ): Promise<DataGroupMetadata> {
+    const { dataServiceMapping } = options;
+    const apis: DhisApi[] = await getApisForDataSources(
+      this.models,
+      [dataGroup],
+      dataServiceMapping,
+    );
+
+    const results: DataGroupMetadata[] = [];
+    const pullForApi = async (api: DhisApi) => {
+      const result = await this.dataGroupMetadataPuller.pull.bind(this)(api, dataGroup, options);
+      results.push(result);
+    };
+    await Promise.all(apis.map(pullForApi));
+
+    return results[0];
   }
 }

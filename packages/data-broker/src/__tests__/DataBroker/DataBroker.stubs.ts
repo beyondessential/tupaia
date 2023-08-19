@@ -92,7 +92,9 @@ export class MockService extends Service {
 
   public delete = jest.fn();
 
-  public pullMetadata = jest.fn();
+  public pullDataElementMetadata = jest.fn();
+
+  public pullDataGroupMetadata = jest.fn();
 }
 
 export const createModelsStub = () => {

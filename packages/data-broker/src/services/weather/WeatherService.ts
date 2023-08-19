@@ -15,7 +15,6 @@ import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
 import { DataElement, WeatherResult } from './types';
-import type { PullMetadataOptions as BasePullMetadataOptions } from '../Service';
 
 export type PullOptions = {
   dataServiceMapping: DataServiceMapping;
@@ -109,15 +108,7 @@ export class WeatherService extends Service {
     return resultFormat === 'analytics' ? EMPTY_ANALYTICS_RESULTS : ([] as EventResults);
   }
 
-  /**
-   */
-  public async pullMetadata(
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    dataSources: DataElement[],
-    type: DataSourceType,
-    options: BasePullMetadataOptions,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-  ) {
+  public async pullDataElementMetadata() {
     const dataElements = await this.models.dataElement.find({
       service_type: 'weather',
     });

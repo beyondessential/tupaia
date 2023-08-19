@@ -28,6 +28,17 @@ export const DATA_ELEMENT_METADATA = {
   },
 };
 
+export const DATA_GROUP_METADATA = {
+  POP01: {
+    code: 'POP01_GROUP',
+    name: 'Population Survey',
+  },
+};
+
+export const DATA_ELEMENTS_BY_GROUP = {
+  POP01: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
+};
+
 export const ANALYTICS = {
   analytics: [
     {
