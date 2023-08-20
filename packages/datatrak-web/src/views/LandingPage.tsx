@@ -4,17 +4,14 @@
  */
 
 import React from 'react';
-import { Alert } from '@tupaia/ui-components';
-import { useUser } from '../api/queries';
+import { ButtonLink, PageContainer } from '../components';
 
 export const LandingPage = () => {
-  const { data: user, isLoggedIn } = useUser();
   return (
-    <>
-      <Alert>
-        <p>{isLoggedIn ? `Logged in as ${user?.name}` : 'You are not logged in'}</p>
-      </Alert>
-      <h1>Hello world</h1>
-    </>
+    <PageContainer>
+      <h1>Landing Page</h1>
+      <ButtonLink to="/survey">Select survey</ButtonLink>
+      <ButtonLink to="/survey/questions">Survey questions</ButtonLink>
+    </PageContainer>
   );
 };
