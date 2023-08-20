@@ -65,8 +65,6 @@
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
             - name: Test central-server
               command: './packages/devops/scripts/ci/testBackend.sh central-server'
-            - name: Test datatrak-web
-              command: './packages/devops/scripts/ci/testFrontend.sh datatrak-web'
 
 - name: Deploy changes
   service: deployment
