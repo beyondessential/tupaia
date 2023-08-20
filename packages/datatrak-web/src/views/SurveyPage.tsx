@@ -5,9 +5,5 @@
 import React from 'react';
 
 export const SurveyPage = () => {
-  return (
-    <>
-      <h1>Survey Page</h1>
-    </>
-  );
+  return <h1>Survey Page</h1>;
 };

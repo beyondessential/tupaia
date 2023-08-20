@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { TextField, RadioGroup } from '@tupaia/ui-components';
 
 const Text = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 `;
 
 // Todo: Replace with actual components

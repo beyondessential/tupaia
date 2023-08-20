@@ -4,6 +4,3 @@
  */
 
 export const HEADER_HEIGHT = '95px';
-
-//  Colours
-export const BACKGROUND = '#f9f9f9';

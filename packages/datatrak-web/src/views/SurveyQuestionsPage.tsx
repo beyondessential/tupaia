@@ -12,8 +12,8 @@ const Card = styled.div`
   padding: 2rem;
   border-radius: 3px;
   border: 1px solid #dfdfdf;
-  background: white;
-  max-width: 800px;
+  background: ${({ theme }) => theme.palette.background.paper};
+  max-width: 50rem;
 `;
 export const SurveyQuestionsPage = () => {
   return (

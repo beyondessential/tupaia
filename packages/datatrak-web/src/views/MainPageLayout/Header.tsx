@@ -11,7 +11,7 @@ import { PageContainer } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
 
 const Wrapper = styled.div`
-  background: white;
+  background: ${({ theme }) => theme.palette.background.paper};
 `;
 
 const Container = styled(PageContainer)`
@@ -24,7 +24,7 @@ const Container = styled(PageContainer)`
 `;
 
 const StyledImg = styled.img`
-  height: 56px;
+  height: 3.5rem;
   width: auto;
 `;
 
