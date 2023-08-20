@@ -49,6 +49,10 @@
       "path": "packages/data-table-server"
     },
     {
+      "name": "datatrak-web",
+      "path": "packages/datatrak-web"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },
@@ -176,6 +180,7 @@
       "Codeship",
       "ctes",
       "datetime",
+      "Datatrak",
       "debouncing",
       "deleters",
       "dhis",

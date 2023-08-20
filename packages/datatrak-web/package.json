@@ -1,0 +1,50 @@
+{
+  "name": "@tupaia/datatrak-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Web app that collects data for the Tupaia project",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/datatrak-web"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "dependencies": {
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/styles": "^4.9.10",
+    "@tupaia/ui-components": "1.0.0",
+    "@tupaia/utils": "1.0.0",
+    "axios": "^1.4.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-query": "^3.39.3",
+    "react-router": "6.3.0",
+    "react-router-dom": "6.3.0",
+    "styled-components": "^5.1.0"
+  },
+  "devDependencies": {
+    "@mui/types": "^7.2.4",
+    "@tupaia/types": "1.0.0",
+    "@types/material-ui": "^0.21.12",
+    "@types/react": "16.8.6",
+    "@vitejs/plugin-react": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2"
+  },
+  "scripts": {
+    "build": "tsc && npm run --prefix ../../ package:build:vite",
+    "lint": "yarn package:lint",
+    "lint:fix": "yarn lint --fix",
+    "preview": "vite preview",
+    "start-dev": "npm run --prefix ../../ package:start:vite",
+    "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
+    "start-central-server": "yarn workspace @tupaia/central-server start-dev",
+    "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
+    "start-servers": "npm-run-all -c -l -p start-central-server start-web-config-server",
+    "test": "yarn package:test --env=jsdom"
+  }
+}
