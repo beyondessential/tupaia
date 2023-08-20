@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { EntityResponse, ProjectCode } from '../../types';
+import { Entity, ProjectCode } from '../../types';
 import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
 import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
 import { useEntities } from '../../api/queries';
@@ -18,6 +18,11 @@ const FlexRow = styled.div`
 
 const List = styled(MuiList)`
   margin-left: 1rem;
+
+  .MuiIconButton-root,
+  .MuiSvgIcon-root {
+    font-size: 1.5rem;
+  }
 
   // Hide expand icon when there are no children but keep the element on the page for spacing
   .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
@@ -42,8 +47,8 @@ const MenuLink = styled(Button).attrs({
 
 interface EntityMenuProps {
   projectCode: ProjectCode;
-  children: EntityResponse[];
-  grandChildren: EntityResponse[];
+  children: Entity[];
+  grandChildren: Entity[];
   onClose: () => void;
 }
 
@@ -70,9 +75,9 @@ export const EntityMenu = ({ projectCode, children, grandChildren, onClose }: En
 
 interface EntityMenuItemProps {
   projectCode: ProjectCode;
-  entity: EntityResponse;
+  entity: Entity;
   onClose: () => void;
-  children?: EntityResponse[];
+  children?: Entity[];
 }
 const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuItemProps) => {
   const location = useLocation();

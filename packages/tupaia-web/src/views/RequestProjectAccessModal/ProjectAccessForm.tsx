@@ -45,7 +45,7 @@ const AlertText = styled(Typography)`
 
 interface ProjectCountryFormProps {
   availableCountries: CountryAccessListItem[];
-  projectName: SingleProject['name'];
+  projectName?: SingleProject['name'];
 }
 
 export const ProjectAccessForm = ({ availableCountries, projectName }: ProjectCountryFormProps) => {
@@ -101,7 +101,13 @@ export const ProjectAccessForm = ({ availableCountries, projectName }: ProjectCo
           required
         />
       )}
-      <TextField name="message" label="Why would you like access to this project?" type="text" />
+      <TextField
+        name="message"
+        label="Why would you like access to this project?"
+        type="text"
+        multiline
+        rowsMax={4}
+      />
       <AuthModalButton type="submit" disabled={!isValid}>
         Request Access
       </AuthModalButton>

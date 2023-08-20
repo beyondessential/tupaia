@@ -5,6 +5,8 @@
 
 import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 import {
   Accordion,
   AccordionDetails,
@@ -13,13 +15,11 @@ import {
   Radio,
   RadioGroup,
 } from '@material-ui/core';
-import { useSearchParams } from 'react-router-dom';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import styled from 'styled-components';
-import { MapOverlayGroup } from '../../../types';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
-import { ErrorBoundary } from '@tupaia/ui-components';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -74,7 +74,11 @@ const AccordionContent = styled(AccordionDetails)`
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
-const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayGroup }) => {
+const MapOverlayAccordion = ({
+  mapOverlayGroup,
+}: {
+  mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+}) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -89,7 +93,7 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: MapOverlayG
         <AccordionContent>
           {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
           {mapOverlayGroup.children.map(mapOverlay =>
-            mapOverlay.children ? (
+            'children' in mapOverlay ? (
               <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
             ) : (
               <FormControlLabel

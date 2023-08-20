@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { TupaiaWebEntitiesRequest } from '@tupaia/types';
+import { generateFrontendExcludedFilter } from '../utils';
 
 export type EntitiesRequest = Request<
   TupaiaWebEntitiesRequest.Params,
@@ -21,6 +22,7 @@ const DEFAULT_FILTER = {
     comparisonValue: 2,
   },
 };
+
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
@@ -31,20 +33,19 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const project = (
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
-        columns: ['entity_hierarchy.name', 'entity_hierarchy.canonical_types', 'config'],
+        columns: ['config'],
       })
     )[0];
-    const {
-      'entity_hierarchy.name': hierarchyName,
-      // TODO: Filter entities by canonical_types and config.frontendExcluded
-      // 'entity_hierarchy.canonical_types': canonicalTypes,
-      // config: projectConfig,
-    } = project;
+    const { config } = project;
 
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
-      hierarchyName,
+      projectCode,
       rootEntityCode,
-      { filter: DEFAULT_FILTER, fields: DEFAULT_FIELDS, ...query },
+      {
+        filter: { ...DEFAULT_FILTER, ...generateFrontendExcludedFilter(config) },
+        fields: DEFAULT_FIELDS,
+        ...query,
+      },
       query.includeRootEntity || false,
     );
 

@@ -13,7 +13,7 @@ import { useEntityLink } from '../../../utils';
 import { useProject } from '../../../api/queries';
 import { ErrorBoundary } from '@tupaia/ui-components';
 
-const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
+const { POLYGON_BLUE } = MAP_COLORS;
 
 const BasicPolygon = styled(Polygon)`
   fill: ${POLYGON_BLUE};
@@ -21,8 +21,6 @@ const BasicPolygon = styled(Polygon)`
   stroke-width: 1;
   &:hover {
     fill-opacity: 0.5;
-    stroke: ${POLYGON_HIGHLIGHT};
-    fill: ${POLYGON_HIGHLIGHT};
   }
 `;
 

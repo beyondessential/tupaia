@@ -49,6 +49,7 @@ describe('fieldsAndFilters', () => {
         'FUCHSIA',
         'VIRIDIAN',
       ].sort(),
+      qualified_name: 'Kanto',
     };
     expect(entityWithoutRandomFields).toEqual(fullEntityObject);
   });
@@ -314,6 +315,43 @@ describe('fieldsAndFilters', () => {
         'PEWTER',
         'VIRIDIAN',
       ]);
+    });
+
+    it('array filtering uses IN logic for ==', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'type==individual,country' },
+      });
+
+      expect(entities).toIncludeSameMembers(['BLUE', 'KANTO']);
+    });
+
+    it('array filtering uses NOT IN logic for !=', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'type!=facility,country' },
+      });
+
+      // type = city || individual
+      expect(entities).toIncludeSameMembers([
+        'PALLET',
+        'VIRIDIAN',
+        'PEWTER',
+        'CERULEAN',
+        'VERMILLION',
+        'LAVENDER',
+        'CELADON',
+        'FUCHSIA',
+        'SAFFRON',
+        'CINNABAR',
+        'BLUE',
+      ]);
+    });
+
+    it('throws error if multiple values are passed for an incompatible operator', async () => {
+      const { body: error } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'generational_distance<1,2' },
+      });
+
+      expect(error.error).toContain('Operator < is not compatible with multiple filter values');
     });
   });
 });
