@@ -13,6 +13,7 @@ import {
   TilePicker,
   LeafletMapProps,
 } from '@tupaia/ui-map-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
@@ -112,33 +113,35 @@ export const Map = () => {
   };
 
   return (
-    <MapContainer>
-      <StyledMap
-        center={entity?.point as LeafletMapProps['center']}
-        bounds={entity?.bounds as LeafletMapProps['bounds']}
-        zoom={15 as LeafletMapProps['zoom']}
-        shouldSnapToPosition
-      >
-        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <PolygonNavigationLayer />
-        <DataVisualsLayer hiddenValues={hiddenValues} />
-        <ZoomControl position="bottomright" />
-        <MapWatermark />
-      </StyledMap>
-      {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
-      <MapControlWrapper>
-        <MapControlColumn>
-          <MapOverlaySelector />
-          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
-        </MapControlColumn>
-        <TilePickerWrapper>
-          <TilePicker
-            tileSets={TILE_SETS}
-            activeTileSet={activeTileSet}
-            onChange={onTileSetChange}
-          />
-        </TilePickerWrapper>
-      </MapControlWrapper>
-    </MapContainer>
+    <ErrorBoundary>
+      <MapContainer>
+        <StyledMap
+          center={entity?.point as LeafletMapProps['center']}
+          bounds={entity?.bounds as LeafletMapProps['bounds']}
+          zoom={15 as LeafletMapProps['zoom']}
+          shouldSnapToPosition
+        >
+          <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+          <PolygonNavigationLayer />
+          <DataVisualsLayer hiddenValues={hiddenValues} />
+          <ZoomControl position="bottomright" />
+          <MapWatermark />
+        </StyledMap>
+        {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
+        <MapControlWrapper>
+          <MapControlColumn>
+            <MapOverlaySelector />
+            <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
+          </MapControlColumn>
+          <TilePickerWrapper>
+            <TilePicker
+              tileSets={TILE_SETS}
+              activeTileSet={activeTileSet}
+              onChange={onTileSetChange}
+            />
+          </TilePickerWrapper>
+        </MapControlWrapper>
+      </MapContainer>
+    </ErrorBoundary>
   );
 };

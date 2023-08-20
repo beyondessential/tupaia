@@ -9,8 +9,8 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
+import { A4Page, ErrorBoundary } from '@tupaia/ui-components';
 import { DashboardItemReport, DashboardItemConfig } from '../../types';
-import { A4Page } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
 const GREY_DE = '#DEDEE0';
@@ -126,7 +126,7 @@ const ContentWrapper = styled.div<{
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   ${A4Page} & {
     padding: 0;
-  } 
+  }
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${({ $isExporting }) => ($isExporting ? 'auto' : '100%')};
   }
@@ -194,34 +194,40 @@ export const Chart = ({ config, report, isEnlarged = false, isExporting = false 
   } as unknown) as ViewContent;
 
   return (
-    <Wrapper>
-      <TabContext value={displayType}>
-        {isEnlarged && !isExporting && (
-          <TabsWrapper>
-            <TabsGroup
-              value={displayType}
-              onChange={handleChangeDisplayType}
-              variant="standard"
-              aria-label="Toggle display type"
+    <ErrorBoundary>
+      <Wrapper>
+        <TabContext value={displayType}>
+          {isEnlarged && !isExporting && (
+            <TabsWrapper>
+              <TabsGroup
+                value={displayType}
+                onChange={handleChangeDisplayType}
+                variant="standard"
+                aria-label="Toggle display type"
+              >
+                {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
+                  <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
+                ))}
+              </TabsGroup>
+            </TabsWrapper>
+          )}
+          {availableDisplayTypes.map(({ value, display: Content }) => (
+            <ContentWrapper
+              key={value}
+              value={value}
+              as={isEnlarged && !isExporting ? TabPanel : 'div'}
+              $isEnlarged={isEnlarged}
+              $isExporting={isExporting}
             >
-              {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
-                <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
-              ))}
-            </TabsGroup>
-          </TabsWrapper>
-        )}
-        {availableDisplayTypes.map(({ value, display: Content }) => (
-          <ContentWrapper
-            key={value}
-            value={value}
-            as={isEnlarged && !isExporting ? TabPanel : 'div'}
-            $isEnlarged={isEnlarged}
-            $isExporting={isExporting}
-          >
-            <Content viewContent={viewContent} isEnlarged={isEnlarged} isExporting={isExporting} />
-          </ContentWrapper>
-        ))}
-      </TabContext>
-    </Wrapper>
+              <Content
+                viewContent={viewContent}
+                isEnlarged={isEnlarged}
+                isExporting={isExporting}
+              />
+            </ContentWrapper>
+          ))}
+        </TabContext>
+      </Wrapper>
+    </ErrorBoundary>
   );
 };

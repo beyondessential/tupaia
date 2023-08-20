@@ -16,6 +16,7 @@ import {
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
 import { ActiveEntityPolygon } from './ActiveEntityPolygon';
@@ -59,48 +60,50 @@ export const DataVisualsLayer = ({
   }
 
   return (
-    <LayerGroup>
-      {measureData.map((measure: MeasureData) => {
-        const { region, organisationUnitCode: entity, color, name, code } = measure;
-        if (region) {
-          if (code === entityCode) {
-            return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
+    <ErrorBoundary>
+      <LayerGroup>
+        {measureData.map((measure: MeasureData) => {
+          const { region, organisationUnitCode: entity, color, name, code } = measure;
+          if (region) {
+            if (code === entityCode) {
+              return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
+            }
+            return (
+              <ShadedPolygon
+                key={entity}
+                positions={region}
+                pathOptions={{
+                  color: color,
+                  fillColor: color,
+                }}
+                eventHandlers={{
+                  click: () => {
+                    navigateToEntity(entity);
+                  },
+                }}
+                {...measure}
+              >
+                <AreaTooltip
+                  serieses={serieses}
+                  orgUnitMeasureData={measure as MeasureData}
+                  orgUnitName={name}
+                  hasMeasureValue
+                />
+              </ShadedPolygon>
+            );
           }
-          return (
-            <ShadedPolygon
-              key={entity}
-              positions={region}
-              pathOptions={{
-                color: color,
-                fillColor: color,
-              }}
-              eventHandlers={{
-                click: () => {
-                  navigateToEntity(entity);
-                },
-              }}
-              {...measure}
-            >
-              <AreaTooltip
-                serieses={serieses}
-                orgUnitMeasureData={measure as MeasureData}
-                orgUnitName={name}
-                hasMeasureValue
-              />
-            </ShadedPolygon>
-          );
-        }
 
-        return (
-          <MeasureMarker key={entity} {...(measure as MeasureData)}>
-            <MeasurePopup
-              markerData={measure as MeasureData}
-              serieses={serieses}
-              onSeeOrgUnitDashboard={navigateToEntity}
-            />
-          </MeasureMarker>
-        );
-      })}
-    </LayerGroup>
+          return (
+            <MeasureMarker key={entity} {...(measure as MeasureData)}>
+              <MeasurePopup
+                markerData={measure as MeasureData}
+                serieses={serieses}
+                onSeeOrgUnitDashboard={navigateToEntity}
+              />
+            </MeasureMarker>
+          );
+        })}
+      </LayerGroup>
+    </ErrorBoundary>
   );
 };

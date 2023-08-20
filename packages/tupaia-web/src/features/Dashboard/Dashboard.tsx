@@ -9,6 +9,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -21,6 +22,7 @@ import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
+
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
 const MIN_SIDEBAR_WIDTH = 350;
@@ -147,38 +149,40 @@ export const Dashboard = () => {
   }, [dashboardNotFound, defaultDashboardName]);
 
   return (
-    <Panel $isExpanded={isExpanded}>
-      <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
-      <ScrollBody>
-        <Breadcrumbs />
-        <DashboardImageContainer>
-          {entity?.photoUrl ? (
-            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
-          ) : (
-            <StaticMap bounds={bounds} />
-          )}
-        </DashboardImageContainer>
-        <TitleBar>
-          <Title variant="h3">{entity?.name}</Title>
-          {activeDashboard && (
-            <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-              Export
-            </ExportButton>
-          )}
-        </TitleBar>
-        <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map(item => (
-            <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
-          ))}
-        </DashboardItemsWrapper>
-      </ScrollBody>
-      <EnlargedDashboardItem entityName={entity?.name} />
-      <ExportDashboard
-        isOpen={exportModalOpen}
-        onClose={() => setExportModalOpen(false)}
-        dashboardItems={activeDashboard?.items as DashboardItemType[]}
-      />
-    </Panel>
+    <ErrorBoundary>
+      <Panel $isExpanded={isExpanded}>
+        <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
+        <ScrollBody>
+          <Breadcrumbs />
+          <DashboardImageContainer>
+            {entity?.photoUrl ? (
+              <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+            ) : (
+              <StaticMap bounds={bounds} />
+            )}
+          </DashboardImageContainer>
+          <TitleBar>
+            <Title variant="h3">{entity?.name}</Title>
+            {activeDashboard && (
+              <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
+                Export
+              </ExportButton>
+            )}
+          </TitleBar>
+          <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          <DashboardItemsWrapper $isExpanded={isExpanded}>
+            {activeDashboard?.items.map(item => (
+              <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
+            ))}
+          </DashboardItemsWrapper>
+        </ScrollBody>
+        <EnlargedDashboardItem entityName={entity?.name} />
+        <ExportDashboard
+          isOpen={exportModalOpen}
+          onClose={() => setExportModalOpen(false)}
+          dashboardItems={activeDashboard?.items as DashboardItemType[]}
+        />
+      </Panel>
+    </ErrorBoundary>
   );
 };
