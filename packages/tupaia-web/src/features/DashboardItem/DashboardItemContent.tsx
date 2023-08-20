@@ -49,9 +49,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = () => {
-  const { config, report, isEnlarged, isExport, isLoading, error, refetch } = useContext(
-    DashboardItemContext,
-  );
+  const { config, report, isExport, isLoading, error, refetch } = useContext(DashboardItemContext);
   const { type, componentName } = config || {};
 
   const componentKey = componentName || type;
@@ -78,12 +76,7 @@ export const DashboardItemContent = () => {
           }}
         />
       ) : (
-        <DisplayComponent
-          report={report || {}}
-          config={config as DashboardItemConfig}
-          isEnlarged={isEnlarged}
-          isExporting={isExport}
-        />
+        <DisplayComponent />
       )}
       {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
       <ExpandItemButton />

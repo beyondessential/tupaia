@@ -48,7 +48,7 @@ const Title = styled(Typography).attrs({
 const getShowDashboardItemTitle = (config: DashboardItemConfig) => {
   const { presentationOptions, type, viewType, name } = config;
   if (!name) return false;
-  if (viewType === 'mulitValue') {
+  if (viewType === 'multiValue') {
     return (presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
   }
   if (viewType?.includes('Download') || type === 'component' || viewType === 'multiSingleValue')

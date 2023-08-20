@@ -20,9 +20,7 @@ import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import {
   MatrixReport,
   MatrixReportColumn,
-  MatrixReportRow,
-  DashboardItemReport,
-  DashboardItemConfig,
+  MatrixReportRow, 
 } from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { DashboardItemContext } from '../DashboardItem';

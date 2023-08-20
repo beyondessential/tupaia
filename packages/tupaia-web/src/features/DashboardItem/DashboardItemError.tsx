@@ -3,18 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Typography, Link } from '@material-ui/core';
-import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
-import {
-  ChartReport,
-  DashboardItemReport,
-  MatrixReport,
-  ViewReport,
-  DashboardItemConfig,
-} from '../../types';
-import { DashboardItemContext } from './DashboardItemContext';
+import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
 import { UseQueryResult } from 'react-query';
 
 const ErrorLink = styled(Link)`

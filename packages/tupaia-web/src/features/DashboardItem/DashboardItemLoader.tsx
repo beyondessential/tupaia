@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { DashboardItemContext } from './DashboardItemContext';
 import { DashboardItemConfig } from '../../types';
 
 const LoadingContainer = styled.div<{
