@@ -24,7 +24,7 @@ const Container = styled(PageContainer)`
 `;
 
 const StyledImg = styled.img`
-  height: 30px;
+  height: 56px;
   width: auto;
 `;
 
@@ -34,7 +34,7 @@ export const Header = () => {
     <Wrapper>
       <Container>
         <MuiLink color="inherit" component={RouterLink} to="/">
-          <StyledImg src="/tupaia-logo-black.svg" alt="tupaia-logo" />
+          <StyledImg src="/datatrak-logo-black.svg" alt="tupaia-logo" />
         </MuiLink>
         <p>{isLoggedIn ? `Logged in as ${user?.name}` : 'You are not logged in'}</p>
       </Container>

@@ -11,6 +11,7 @@ const Text = styled.div`
   margin-bottom: 10px;
 `;
 
+// Todo: Replace with actual components
 const Placeholder = ({ name, type }) => {
   return (
     <Text>
@@ -19,7 +20,7 @@ const Placeholder = ({ name, type }) => {
   );
 };
 
-const Instruction = ({ text }) => {
+const InstructionQuestion = ({ text }) => {
   return <Text>{text}</Text>;
 };
 
@@ -70,7 +71,7 @@ export enum QUESTION_TYPES {
   FreeText = TextField,
   Geolocate = Placeholder,
   Autocomplete = Placeholder,
-  Instruction = Instruction,
+  Instruction = InstructionQuestion,
   Number = TextField,
   Photo = Placeholder,
   Radio = RadioQuestion,

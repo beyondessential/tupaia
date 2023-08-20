@@ -15,7 +15,6 @@ const Background = styled.div`
   background-image: url('/page-background.svg');
   background-position: center;
   background-size: cover;
-  // Get the height from Header.js
   min-height: calc(100vh - ${HEADER_HEIGHT});
 `;
 
