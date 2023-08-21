@@ -9,6 +9,18 @@ const TABLES_REQUIRING_TRIGGER_CREATION = [
   'entity_hierarchy',
   'analytics_refresher',
   'survey_response',
+  'entity',
+  'country',
+  'clinic',
+  'geographical_area',
+  'option',
+  'option_set',
+  'permission_group',
+  'question',
+  'survey',
+  'survey_group',
+  'survey_screen',
+  'survey_screen_component',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
