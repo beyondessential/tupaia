@@ -5,25 +5,10 @@
 
 import { arrayToDbString } from './utilities';
 
-const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
-  'api_request_log',
-  'dhis_sync_log',
-  'error_log',
-  'migrations',
-  'feed_item',
-  'userSession',
-  'spatial_ref_sys', // Reference table provided by postgis
-  'legacy_report',
-  'report',
-  'ancestor_descendant_relation',
-  'psss_session',
-  'lesmis_session',
-  'admin_panel_session',
-  'tupaia_web_session',
-  'datatrak_session',
-  'analytics',
-  'data_service_sync_group', // config is too large for triggers
-  'data_table', // config is too large for triggers
+const TABLES_REQUIRING_TRIGGER_CREATION = [
+  'entity_hierarchy',
+  'analytics_refresher',
+  'survey_response',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
@@ -56,11 +41,11 @@ export const runPostMigration = async driver => {
     );
   }
 
-  // Find any table in the database that doesn't have a corresponding notification trigger with
+  // Find any table in the database from the required list that doesn't have a corresponding notification trigger with
   // the name {TABLE_NAME}_trigger (eg survey_response_trigger).
   const { rows: tablesWithoutNotifierResults } = await driver.runSql(`
     ${getSelectForTablesWithoutTriggers('_trigger')}
-    AND t.table_name NOT IN (${arrayToDbString(EXCLUDED_TABLES_FROM_TRIGGER_CREATION)});
+    AND t.table_name IN (${arrayToDbString(TABLES_REQUIRING_TRIGGER_CREATION)});
   `);
   const tablesWithoutNotifier = tablesWithoutNotifierResults.map(row => row.table_name);
 
