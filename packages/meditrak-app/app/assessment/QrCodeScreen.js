@@ -4,6 +4,7 @@
  */
 
 import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Share from 'react-native-share';
@@ -43,7 +44,7 @@ const downloadQrCode = (qrCodeRef, filename, onSuccess, onFail) => {
 const QrCodeScreenComponent = props => {
   const { displayDownloadMessage } = props;
   const { qrCodes = [], onClose = () => {} } = props.navigation.state.params;
-  const qrCodeImgRefs = useRef(new Array(qrCodes.length));
+  const qrCodeImgsRef = useRef(new Array(qrCodes.length));
 
   return (
     <TupaiaBackground>
@@ -56,7 +57,7 @@ const QrCodeScreenComponent = props => {
           <View key={data} style={localStyles.qrCodeContainer}>
             <QrCode
               getRef={ref => {
-                qrCodeImgRefs.current[index] = ref;
+                qrCodeImgsRef.current[index] = ref;
               }}
               width={300}
               qrCodeContents={data}
@@ -71,7 +72,7 @@ const QrCodeScreenComponent = props => {
                 ]}
                 onPress={() => {
                   downloadQrCode(
-                    qrCodeImgRefs.current[index],
+                    qrCodeImgsRef.current[index],
                     name,
                     () => displayDownloadMessage('Download successful'),
                     errorMessage => displayDownloadMessage(`Download failed: ${errorMessage}`),
@@ -83,7 +84,7 @@ const QrCodeScreenComponent = props => {
               <Button
                 style={localStyles.smallButton}
                 onPress={() => {
-                  shareQrCode(qrCodeImgRefs.current[index], name);
+                  shareQrCode(qrCodeImgsRef.current[index], name);
                 }}
                 title="Share"
                 textStyle={[localStyles.buttonLabel, localStyles.shareButtonLabel]}
@@ -104,6 +105,10 @@ const QrCodeScreenComponent = props => {
       </ScrollView>
     </TupaiaBackground>
   );
+};
+
+QrCodeScreenComponent.propTypes = {
+  displayDownloadMessage: PropTypes.func.isRequired,
 };
 
 QrCodeScreenComponent.navigationOptions = ({ navigation }) => ({
