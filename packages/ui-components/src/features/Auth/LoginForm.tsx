@@ -50,7 +50,7 @@ type To = LinkProps['to'];
 interface LoginFormProps {
   onSubmit: SubmitHandler<any>;
   isLoading?: boolean;
-  error?: Error;
+  error?: Error | null;
   forgotPasswordLink: To;
   registerLink: To;
   verificationStatus?: STATUS;
