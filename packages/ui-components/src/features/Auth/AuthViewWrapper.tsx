@@ -5,19 +5,16 @@
 
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { Button } from '../../components/Button';
+import { Paper, Typography } from '@material-ui/core';
+import { Button } from '../../components';
 
-const Wrapper = styled.div`
+const Wrapper = styled(Paper)`
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 100%;
-`;
-
-const Logo = styled.img`
-  min-width: 110px;
-  margin-bottom: 3.6rem;
+  box-shadow: none;
+  padding: 3rem 0;
 `;
 
 const Title = styled(Typography)`
@@ -40,24 +37,16 @@ export const AuthModalButton = styled(Button)`
   margin-top: 2rem;
 `;
 
-interface AuthModalBodyProps {
+interface AuthViewWrapperProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
   className?: string;
-  logoUrl?: string;
 }
 
-export const AuthModalBody = ({
-  children,
-  title,
-  subtitle,
-  className,
-  logoUrl,
-}: AuthModalBodyProps) => {
+export const AuthViewWrapper = ({ children, title, subtitle, className }: AuthViewWrapperProps) => {
   return (
     <Wrapper className={className}>
-      <Logo src={logoUrl} alt="Tupaia Logo" />
       <Title variant="h2">{title}</Title>
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
       {children}

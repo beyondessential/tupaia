@@ -7,14 +7,15 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { LinkProps } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { AuthModalBody, AuthModalButton } from './AuthModalBody';
+import { AuthViewWrapper } from './AuthViewWrapper';
 import { AuthFormTextField } from './AuthFormTextField';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
 import { HookFormInput, HookForm } from '../HookForm';
 import { EmailVerificationDisplay, STATUS } from './EmailVerificationDisplay';
+import { AuthViewButton } from './AuthViewButton';
 
-const ModalBody = styled(AuthModalBody)`
+const Wrapper = styled(AuthViewWrapper)`
   width: 38rem;
 `;
 
@@ -34,7 +35,7 @@ const LinkText = styled(Typography)`
     color: ${({ theme }) => theme.palette.text.primary};
   }
 
-  ${AuthModalButton} + & {
+  ${AuthViewButton} + & {
     margin-top: 1.3rem;
   }
 `;
@@ -52,8 +53,8 @@ interface LoginFormProps {
   error?: Error;
   forgotPasswordLink: To;
   registerLink: To;
-  logoUrl?: string;
   verificationStatus?: STATUS;
+  formContext: ReturnType<typeof useForm>;
 }
 
 export const LoginForm = ({
@@ -62,13 +63,11 @@ export const LoginForm = ({
   error,
   forgotPasswordLink,
   registerLink,
-  logoUrl,
   verificationStatus,
+  formContext,
 }: LoginFormProps) => {
-  const formContext = useForm();
-
   return (
-    <ModalBody title="Log in" subtitle="Enter your details below to log in" logoUrl={logoUrl}>
+    <Wrapper title="Log in" subtitle="Enter your details below to log in">
       {error && <Typography color="error">{error.message}</Typography>}
       {verificationStatus && <EmailVerificationDisplay status={verificationStatus} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
@@ -94,13 +93,13 @@ export const LoginForm = ({
         <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
           Forgot password?
         </ForgotPasswordText>
-        <AuthModalButton type="submit" isLoading={isLoading}>
+        <AuthViewButton type="submit" isLoading={isLoading}>
           Log in
-        </AuthModalButton>
+        </AuthViewButton>
         <LinkText align="center">
           Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
         </LinkText>
       </StyledForm>
-    </ModalBody>
+    </Wrapper>
   );
 };

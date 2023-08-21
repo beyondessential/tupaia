@@ -4,21 +4,22 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
 import { Outlet } from 'react-router';
+import styled from 'styled-components';
 import { PageContainer } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-const Background = styled.div`
+export const Background = styled.div`
   width: 100%;
   height: 100%;
   background-image: url('/page-background.svg');
   background-position: center;
   background-size: cover;
   min-height: calc(100vh - ${HEADER_HEIGHT});
+  display: flex;
 `;
 
-export const SurveyPageLayout = () => {
+export const BackgroundPageLayout = () => {
   return (
     <Background>
       <PageContainer>
