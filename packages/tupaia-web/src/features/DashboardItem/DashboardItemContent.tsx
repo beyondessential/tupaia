@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseQueryResult } from 'react-query';
-import { Typography, Link, CircularProgress } from '@material-ui/core';
-import { Alert as BaseAlert, NoData, TextButton } from '@tupaia/ui-components';
+import { Typography, Link } from '@material-ui/core';
+import { Alert as BaseAlert, NoData, TextButton, SpinningLoader } from '@tupaia/ui-components';
 import { ExpandItemButton } from './ExpandItemButton';
 import {
   View,
@@ -120,10 +120,10 @@ export const DashboardItemContent = ({
 
   if (!DisplayComponent) return null;
 
-  if (isLoading || !report)
+  if (isLoading || (!report && config?.type !== 'component' && !error))
     return (
       <LoadingContainer aria-label={`Loading data for report '${name}'`}>
-        <CircularProgress />
+        <SpinningLoader />
       </LoadingContainer>
     );
 

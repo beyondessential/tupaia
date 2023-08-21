@@ -5,7 +5,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-import { MODAL_ROUTES, URL_SEARCH_PARAMS, TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
+import {
+  MODAL_ROUTES,
+  URL_SEARCH_PARAMS,
+  TUPAIA_LIGHT_LOGO_SRC,
+  MOBILE_BREAKPOINT,
+} from '../../constants';
 import { RouterButton } from '../../components';
 
 const Header = styled.div`
@@ -13,13 +18,20 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    flex-wrap: wrap;
+  }
 `;
 
 const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
-  & + & {
-    margin-left: 2rem;
+
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    & + & {
+      margin-left: 2rem;
+    }
   }
 `;
 

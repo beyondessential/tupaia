@@ -62,8 +62,8 @@ export const COLUMNS = [
     type: 'qrCode',
     actionConfig: {
       qrCodeContentsKey: 'id',
-      humanReadableIdKey: 'code',
-      qrCodePrefix: 'entity-',
+      humanReadableIdKey: 'name',
+      qrCodePrefix: 'entity-', // TODO: Consolidate id prefixing into a common util (RN-968)
     },
   },
 ];

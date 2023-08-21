@@ -3,23 +3,27 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import camelCase from 'camelcase';
 import {
   LegendProps,
   MeasureMarker,
   LayerGroup,
   MeasurePopup,
-  Polygon,
+  BasePolygon,
   AreaTooltip,
   MeasureData,
 } from '@tupaia/ui-map-components';
-import { useActiveMapOverlayReport, useNavigateToEntity } from '../utils';
-import { processMeasureData } from './processMeasureData';
+import { useEntity } from '../../../api/queries';
+import { useMapOverlayData, useNavigateToEntity } from '../utils';
+import { ActiveEntityPolygon } from './ActiveEntityPolygon';
+import { gaEvent } from '../../../utils';
 
-const ShadedPolygon = styled(Polygon)`
+const ShadedPolygon = styled(BasePolygon)`
   fill-opacity: 0.5;
-  :hover {
+  &:hover {
     fill-opacity: 0.8;
   }
 `;
@@ -30,28 +34,38 @@ export const DataVisualsLayer = ({
   hiddenValues: LegendProps['hiddenValues'];
 }) => {
   const navigateToEntity = useNavigateToEntity();
-  const { serieses, measureData, entities } = useActiveMapOverlayReport();
+  const { projectCode, entityCode } = useParams();
+  const { data: entity } = useEntity(projectCode, entityCode);
+  const { serieses, measureData, activeEntity, selectedOverlay } = useMapOverlayData(hiddenValues);
+  useEffect(() => {
+    if (selectedOverlay !== undefined) {
+      gaEvent('Map Overlays', 'Change', selectedOverlay?.name);
+    }
+  }, [selectedOverlay?.name]);
+  useEffect(() => {
+    if (activeEntity !== undefined) {
+      gaEvent('Entity', 'Change', activeEntity?.name);
+    }
+  }, [activeEntity?.name]);
 
-  if (!measureData || !serieses || !entities) {
+  // Don't show the marker layer if the entity type doesn't match the measure level
+  const firstSeries = serieses?.find((series: any) => series.displayOnLevel);
+  if (firstSeries && camelCase(entity?.type!) !== camelCase(firstSeries.displayOnLevel)) {
     return null;
   }
 
-  const processedMeasureData = processMeasureData({
-    entitiesData: entities!,
-    measureData,
-    serieses,
-    hiddenValues,
-  });
-
-  if (!processedMeasureData) {
+  if (!measureData || !serieses) {
     return null;
   }
 
   return (
     <LayerGroup>
-      {processedMeasureData.map(measure => {
-        const { region, organisationUnitCode: entity, color, name } = measure;
+      {measureData.map((measure: MeasureData) => {
+        const { region, organisationUnitCode: entity, color, name, code } = measure;
         if (region) {
+          if (code === entityCode) {
+            return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
+          }
           return (
             <ShadedPolygon
               key={entity}

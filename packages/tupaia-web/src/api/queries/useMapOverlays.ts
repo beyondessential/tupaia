@@ -4,25 +4,31 @@
  */
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
+import {
+  TupaiaWebMapOverlaysRequest,
+} from '@tupaia/types';
 import { get } from '../api';
 import {
   EntityCode,
-  MapOverlayGroup,
   ProjectCode,
-  SingleMapOverlayItem,
-  MapOverlaysResponse,
 } from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
+// Retype so we can use shortened names
+type SingleMapOverlayItem = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
+type MapOverlayGroup = TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+type MapOverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
+type MapOverlaysResponse = TupaiaWebMapOverlaysRequest.ResBody;
+
 const mapOverlayByCode = (
-  mapOverlayGroups: MapOverlayGroup[] = [],
+  mapOverlayGroups: MapOverlayChild[] = [],
 ): Record<SingleMapOverlayItem['code'], SingleMapOverlayItem> => {
   return mapOverlayGroups.reduce(
     (
       result: Record<string, SingleMapOverlayItem>,
       mapOverlay: MapOverlayGroup | SingleMapOverlayItem,
     ) => {
-      if (mapOverlay.children) {
+      if ('children' in mapOverlay) {
         return { ...result, ...mapOverlayByCode(mapOverlay.children) };
       }
       return {
@@ -41,9 +47,7 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
   const [urlSearchParams] = useSearchParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
-    async (): Promise<MapOverlaysResponse> => {
-      return get(`mapOverlays/${projectCode}/${entityCode}`);
-    },
+    (): Promise<MapOverlaysResponse> => get(`mapOverlays/${projectCode}/${entityCode}`),
     {
       enabled: !!projectCode && !!entityCode,
     },

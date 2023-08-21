@@ -10089,9 +10089,11 @@ __metadata:
     react-native-modalbox: ^2.0.0
     react-native-permissions: ^3.6.1
     react-native-qrcode-scanner: ^1.5.5
+    react-native-qrcode-svg: ^6.1.2
     react-native-reanimated: ~1.13.0
     react-native-safe-area-context: 3.1.4
     react-native-screens: ~2.10.1
+    react-native-share: ^7.9.1
     react-native-side-menu: ^1.1.3
     react-native-svg: ^12.1.0
     react-native-vector-icons: ^7.1.0
@@ -10099,6 +10101,7 @@ __metadata:
     react-navigation: ^4.4.0
     react-navigation-redux-helpers: ^4.0.1
     react-navigation-stack: ^2.8.2
+    react-qr-code: ^2.0.8
     react-redux: ^5.0.7
     react-test-renderer: 16.13.1
     realm: ^6.1.5
@@ -10280,6 +10283,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
+    "@tupaia/utils": 1.0.0
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.keyby": ^4.6.0
     "@types/lodash.sortby": ^4.6.0
@@ -35608,7 +35612,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -35836,7 +35840,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode@npm:^1.5.3":
+"qr.js@npm:0.0.0":
+  version: 0.0.0
+  resolution: "qr.js@npm:0.0.0"
+  checksum: 5ac6c393967bdeaa660e7fd3a501a25eb538c1f6008a4d30ab2b97bbe520e5c236530090773f1578aa0a523cdaa6923c866615e21143f9e7cd22abd41c789b69
+  languageName: node
+  linkType: hard
+
+"qrcode@npm:^1.5.1, qrcode@npm:^1.5.3":
   version: 1.5.3
   resolution: "qrcode@npm:1.5.3"
   dependencies:
@@ -36826,6 +36837,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-qrcode-svg@npm:^6.1.2":
+  version: 6.2.0
+  resolution: "react-native-qrcode-svg@npm:6.2.0"
+  dependencies:
+    prop-types: ^15.8.0
+    qrcode: ^1.5.1
+  peerDependencies:
+    react: "*"
+    react-native: ">=0.63.4"
+    react-native-svg: ^13.2.0
+  checksum: e4e8a709900e16cf0116e9c5edd8ff7150cfbbb2c9763a5a7b171ba6efb1f84d8b93b919dedb915d16686d7a8b0c49c905c62dcbd86f98d471b1c0bcec6f1ae3
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:~1.13.0":
   version: 1.13.2
   resolution: "react-native-reanimated@npm:1.13.2"
@@ -36867,6 +36892,13 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 152bcda2438a6a514c0d5ef30b2fa29f2deb8078023bdeaea45f0ed5eea277cb8b0c70284936ca2b61f50ce773c35bbecedd8d7c77b8fde94e2ae189324827e1
+  languageName: node
+  linkType: hard
+
+"react-native-share@npm:^7.9.1":
+  version: 7.9.1
+  resolution: "react-native-share@npm:7.9.1"
+  checksum: 276f872de7342eacb6f3524bd276d25e43731359c10820630eac6a3869d69e85147b378fde0bceaa6315a8fea9585c20798bce2ff027fdf1c7b225a8d0a38b07
   languageName: node
   linkType: hard
 
@@ -37105,6 +37137,22 @@ __metadata:
     "@popperjs/core": ^2.0.0
     react: ^16.8.0 || ^17
   checksum: 915fcf08e1da4fd48a200074fcdd936f601ee2173f1e730cfed8a54fd47716aa8bf9cce2392463e3bcbe64a096d0baf463809ed2874b94d3a9d430ae6d817b5d
+  languageName: node
+  linkType: hard
+
+"react-qr-code@npm:^2.0.8":
+  version: 2.0.11
+  resolution: "react-qr-code@npm:2.0.11"
+  dependencies:
+    prop-types: ^15.8.1
+    qr.js: 0.0.0
+  peerDependencies:
+    react: ^16.x || ^17.x || ^18.x
+    react-native-svg: "*"
+  peerDependenciesMeta:
+    react-native-svg:
+      optional: true
+  checksum: 680f7be35078892a29999013b24e36aae10c3529e4cdd2c1436573603864c45010445d6069969d7f76e4642c54584a3b941b8c944189273c3ac5b705156ad23b
   languageName: node
   linkType: hard
 

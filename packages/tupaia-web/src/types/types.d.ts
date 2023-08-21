@@ -11,6 +11,7 @@ export type SingleProject = TupaiaWebProjectRequest.ResBody & {
   homeEntityCode: string;
   defaultDashboard: string;
   name: string;
+  entityCode: string;
   names: string[];
   config: any;
 };

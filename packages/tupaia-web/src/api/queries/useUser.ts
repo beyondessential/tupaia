@@ -14,11 +14,9 @@ export const useUser = () => {
   );
   const { data: user } = userResponse;
 
-  const name = `${user?.firstName} ${user?.lastName}`;
-
   return {
     ...userResponse,
-    data: { ...user, name },
+    data: { ...user, name: user?.userName },
     isLoggedIn: !!user?.email,
   };
 };

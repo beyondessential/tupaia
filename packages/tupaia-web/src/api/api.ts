@@ -15,6 +15,7 @@ const timeout = 45 * 1000; // 45 seconds
 
 type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
+  cancelOnUnmount?: boolean;
 };
 
 type RequestParametersWithMethod = RequestParameters & {
@@ -36,6 +37,8 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
 
     return response.data;
   } catch (error: any) {
+    // don't throw when is cancelled
+    if (axios.isCancel(error)) return;
     // normalise errors using fetch error class
     if (error.response) {
       const { data } = error.response;
@@ -57,8 +60,28 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
   }
 };
 
-export const get = (endpoint: string, options?: RequestParameters) =>
-  request(endpoint, { method: 'get', ...options });
+/**
+ * This method handles query cancellation. Because we are using an older version of react-query, we still need to handle cancellation the old way: https://tanstack.com/query/v3/docs/react/guides/query-cancellation#old-cancel-function
+ */
+export const get = (endpoint: string, options?: RequestParameters) => {
+  // cancelOnUnmount is true by default. It can be opted out of by setting cancelOnUnmount to false in the options object
+  const { cancelOnUnmount = true, ...rest } = options || {};
+
+  const controller = cancelOnUnmount ? new AbortController() : null;
+  const promise = request(endpoint, {
+    method: 'get',
+    ...rest,
+    signal: controller?.signal,
+  }) as Promise<any> & {
+    cancel?: () => void;
+  };
+
+  if (cancelOnUnmount) {
+    promise.cancel = () => controller?.abort();
+  }
+
+  return promise;
+};
 
 export const post = (endpoint: string, options?: RequestParameters) =>
   request(endpoint, { method: 'post', ...options });
