@@ -90,28 +90,13 @@ export class ApiConnection {
   private async verifyResponse(response: Response): Promise<void> {
     if (!response.ok) {
       const responseJson = await response.json();
-      if (
-        response.status &&
-        (response.status < 200 || response.status >= 300) &&
-        !responseJson.error
-      ) {
-        throw new CustomError(
-          {
-            responseText: `API error ${response.status}: ${responseJson.message}`,
-            responseStatus: response.status,
-          },
-          {},
-        );
-      }
-      if (responseJson.error) {
-        throw new CustomError(
-          {
-            responseText: `API error ${response.status}: ${responseJson.error}`,
-            responseStatus: response.status,
-          },
-          {},
-        );
-      }
+      throw new CustomError(
+        {
+          responseText: `API error ${response.status}: ${responseJson.error || responseJson.message}`,
+          responseStatus: response.status,
+        },
+        {},
+      );
     }
   }
 
