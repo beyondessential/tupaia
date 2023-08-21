@@ -28,6 +28,9 @@ const LoginLink = styled(AuthLink).attrs({
   border-color: ${props => props.theme.palette.text.primary};
 `;
 
+/**
+ * This is the displayed user name OR the login/register buttons on desktop
+ */
 export const UserInfo = () => {
   const { isLoggedIn, data } = useUser();
   return (

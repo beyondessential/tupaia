@@ -5,17 +5,11 @@
 
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
-import {
-  MainPageLayout,
-  LandingPage,
-  SurveyPage,
-  SurveyQuestionsPage,
-  LoginPage,
-  BackgroundPageLayout,
-} from './views';
+import { LandingPage, SurveyPage, SurveyQuestionsPage, LoginPage } from './views';
 import { useUser } from './api/queries';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from './constants';
+import { BackgroundPageLayout, MainPageLayout } from './layout';
 
 /**
  * If the user is not logged in, redirect to the login page
@@ -48,6 +42,7 @@ export const Routes = () => {
     <RouterRoutes>
       <Route path="/" element={<MainPageLayout />}>
         <Route index element={<LandingPageRedirect />} />
+        {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
           <Route path={ROUTES.LOGIN} element={<LoginRedirect />} />
           <Route path={ROUTES.SURVEY}>

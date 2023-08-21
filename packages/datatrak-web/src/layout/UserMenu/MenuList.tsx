@@ -9,6 +9,7 @@ import { Link, ListItem } from '@material-ui/core';
 import { Button, RouterLink } from '@tupaia/ui-components';
 import { useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
+import { ROUTES } from '../../constants';
 
 const Menu = styled.ul`
   list-style: none;
@@ -37,10 +38,14 @@ export const MenuButton = styled(Button).attrs({
   }
 `;
 
+/**
+ * This is the menu list that appears in both the drawer and popover menus. It shows different options depending on whether the user is logged in or not.
+ */
 export const MenuList = ({ children }: { children?: ReactNode }) => {
   const { isLoggedIn } = useUser();
   const { mutate: logout } = useLogout();
 
+  // The help centre link is the same for both logged in and logged out users
   const helpCentre = {
     label: 'Help centre',
     href: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
@@ -52,11 +57,11 @@ export const MenuList = ({ children }: { children?: ReactNode }) => {
     ? [
         {
           label: 'Change project',
-          to: '/change-project',
+          to: ROUTES.CHANGE_PROJECT,
         },
         {
           label: 'Account settings',
-          to: '/account-settings',
+          to: ROUTES.ACCOUNT_SETTINGS,
         },
         helpCentre,
         {

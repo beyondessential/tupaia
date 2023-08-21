@@ -28,6 +28,9 @@ interface PopoverMenuProps {
   menuOpen: boolean;
   onCloseMenu: () => void;
 }
+/**
+ * This is the desktop popover user menu
+ */
 export const PopoverMenu = ({ menuOpen, onCloseMenu }: PopoverMenuProps) => {
   return (
     <Popover

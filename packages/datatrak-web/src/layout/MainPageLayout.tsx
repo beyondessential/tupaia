@@ -6,7 +6,7 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
-import { Header } from '../../layout';
+import { Header } from '.';
 
 const PageWrapper = styled.div`
   display: flex;

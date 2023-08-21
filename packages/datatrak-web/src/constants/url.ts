@@ -9,4 +9,6 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   SURVEY: '/survey',
   QUESTIONS: 'questions',
+  ACCOUNT_SETTINGS: '/account-settings',
+  CHANGE_PROJECT: '/change-project',
 };

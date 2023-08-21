@@ -23,10 +23,12 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false, // this fixes the issue with the `any` type from third party libraries
   },
   "include": [
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "references": [
     {

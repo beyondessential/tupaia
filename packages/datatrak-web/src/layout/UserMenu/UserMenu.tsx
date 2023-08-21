@@ -29,6 +29,9 @@ const MenuIcon = styled(MuiMenuIcon)`
   height: 2rem;
 `;
 
+/**
+ * This is the user menu that appears in the header of the app. It includes a drawer menu for mobile and a popover menu for desktop.
+ */
 export const UserMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
