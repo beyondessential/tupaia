@@ -26,4 +26,5 @@ export const useHiddenMapValues = (serieses: Series[] = []) => {
   };
 
   return { setValueHidden, hiddenValues };
+  console.log(hiddenValues);
 };

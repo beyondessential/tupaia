@@ -13,6 +13,7 @@ import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
+import { DashboardInfoButton} from '../../DashboardItem/DashboardInfoButton';
 
 interface ViewProps {
   report: DashboardItemReport;
@@ -86,15 +87,18 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
   // if the view type is not supported, return null
   if (!Component) return null;
 
+
   const formattedData = formatData(data, viewConfig);
-  return (
+  return ( 
+    <>
     <Component
       report={{
-        ...report,
         data: formattedData,
       }}
       config={viewConfig}
       isEnlarged={isEnlarged}
     />
+    <DashboardInfoButton infoText={config.description}/> 
+    </>
   );
 };
