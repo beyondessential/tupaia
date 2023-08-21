@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createJestMockInstance } from '@tupaia/utils';
 import { Aggregator } from '../../Aggregator';
 import * as AggregateAnalytics from '../../analytics/aggregateAnalytics/aggregateAnalytics';
 import * as FilterAnalytics from '../../analytics/filterAnalytics';
@@ -21,12 +22,12 @@ FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
-const dataBroker = {
+const dataBroker = createJestMockInstance('@tupaia/data-broker', 'DataBroker', {
   context: {},
-  getDataSourceTypes: jest.fn(() => DATA_SOURCE_TYPES),
-  pullAnalytics: jest.fn(async () => RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT]),
-  pullEvents: jest.fn(async () => RESPONSE_BY_SOURCE_TYPE[DATA_GROUP]),
-};
+  getDataSourceTypes: () => DATA_SOURCE_TYPES,
+  pullAnalytics: async () => RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT],
+  pullEvents: async () => RESPONSE_BY_SOURCE_TYPE[DATA_GROUP],
+});
 
 let aggregator;
 

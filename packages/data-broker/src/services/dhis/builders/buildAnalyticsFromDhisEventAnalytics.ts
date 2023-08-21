@@ -7,14 +7,14 @@ import flatten from 'lodash.flatten';
 
 import { dateStringToPeriod } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from './buildEventsFromDhisEventAnalytics';
-import { RawAnalyticResults, DataBrokerModelRegistry, Event } from '../../../types';
+import { AnalyticResults, DataBrokerModelRegistry, Event } from '../../../types';
 import { DhisEventAnalytics } from '../types';
 
 export const buildAnalyticsFromDhisEventAnalytics = async (
   models: DataBrokerModelRegistry,
   dhisEventAnalytics: DhisEventAnalytics,
   dataElementCodes: string[] = [],
-): Promise<RawAnalyticResults> => {
+): Promise<AnalyticResults> => {
   const events = await buildEventsFromDhisEventAnalytics(
     models,
     dhisEventAnalytics,

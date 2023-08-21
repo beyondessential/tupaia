@@ -2,7 +2,7 @@ import { ValidationError } from '@tupaia/utils';
 import type { WeatherApi } from '@tupaia/weather-api';
 import { DataServiceMapping } from '../DataServiceMapping';
 import {
-  RawAnalyticResults,
+  AnalyticResults,
   DataBrokerModelRegistry,
   DataGroup,
   DataSource,
@@ -53,7 +53,7 @@ export class WeatherService extends Service {
     dataSources: DataElement[],
     type: 'dataElement',
     options: PullOptions,
-  ): Promise<RawAnalyticResults>;
+  ): Promise<AnalyticResults>;
   private async pull(
     dataSources: DataGroup[],
     type: 'dataGroup',

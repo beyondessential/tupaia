@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/tsutils';
+import { arrayToAnalytics } from '@tupaia/data-broker';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 import { calculateOperationForAnalytics } from '/apiV1/dataBuilders/helpers';

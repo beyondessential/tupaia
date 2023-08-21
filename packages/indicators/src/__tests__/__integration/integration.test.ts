@@ -5,15 +5,15 @@
 
 /* eslint-disable jest/expect-expect */
 
+import { DataBroker } from '@tupaia/data-broker';
 import { getTestModels, setupTest } from '@tupaia/database';
-import type { FetchOptions } from '@tupaia/indicators';
+import { IndicatorApi } from '../../IndicatorApi';
+import { Analytic, FetchOptions, ModelRegistry } from '../../types';
 import {
   arithmeticAnalyticFixtures,
   eventCheckConditionsFixtures,
   indicatorApiFixtures,
 } from './fixtures';
-import { Analytic, DataBrokerModelRegistry } from '../../../types';
-import { DataBroker } from '../../../DataBroker';
 
 interface TestCase {
   input: {
@@ -24,25 +24,19 @@ interface TestCase {
   throws?: boolean;
 }
 
-const models = (getTestModels() as unknown) as DataBrokerModelRegistry;
+const models = (getTestModels() as unknown) as ModelRegistry;
 const dataBroker = new DataBroker();
+const api = new IndicatorApi(models, dataBroker);
 
 const runTestCase = async (testCase: TestCase) => {
   const { input, expected, throws } = testCase;
   const { indicatorCodes, fetchOptions } = input;
 
-  const run = async () => {
-    const pullAnalyticsResult = await dataBroker.pullAnalytics(indicatorCodes, fetchOptions);
-    if (pullAnalyticsResult.results.length > 1) {
-      throw new Error('Too many result sets');
-    }
-    const [resultSet] = pullAnalyticsResult.results;
-    return resultSet.analytics;
-  };
+  const expectedPromise = api.buildAnalytics(indicatorCodes, fetchOptions);
   if (throws) {
-    return expect(run()).toBeRejectedWith(expected as string);
+    return expect(expectedPromise).toBeRejectedWith(expected as string);
   }
-  return expect(run()).resolves.toStrictEqual(expected);
+  return expect(expectedPromise).resolves.toStrictEqual(expected);
 };
 
 describe('Integration tests', () => {

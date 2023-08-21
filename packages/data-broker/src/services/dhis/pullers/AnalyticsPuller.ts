@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { RawAnalyticResults, DataBrokerModelRegistry } from '../../../types';
+import { AnalyticResults, DataBrokerModelRegistry } from '../../../types';
 import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
 import { DataServiceMapping } from '../../DataServiceMapping';
 import { DataElement, DataType, DhisAnalytics, DhisEventAnalytics } from '../types';
@@ -92,7 +92,7 @@ export class AnalyticsPuller {
     dhisDataType?: DataType,
   ) => {
     const pullAnalyticsForApi = this.getPullAnalyticsForApiMethod({ ...options, dhisDataType });
-    const response: RawAnalyticResults = {
+    const response: AnalyticResults = {
       results: [],
       metadata: {
         dataElementCodeToName: {},
@@ -262,7 +262,7 @@ export class AnalyticsPuller {
     options: PullAnalyticsOptions,
   ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
-    const response: RawAnalyticResults = {
+    const response: AnalyticResults = {
       results: [],
       metadata: {
         dataElementCodeToName: {},

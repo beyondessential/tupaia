@@ -16,7 +16,7 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn package:test:withdb --runInBand",
+    "test": "yarn package:test",
     "test:coverage": "yarn test --coverage",
     "test:debug": "yarn test --debug"
   },

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { Analytic, RawAnalyticResults, EntityType, Event, EventResults } from '../../types';
+import { Analytic, AnalyticResults, EntityType, Event, EventResults } from '../../types';
 import { WeatherProperty, WeatherResult } from './types';
 
 export type ResultFormat = 'analytics' | 'events';
@@ -40,11 +40,11 @@ export class ApiResultTranslator {
   /**
    * Translates api result sets to analytics/events format data
    */
-  public translate(apiResultByEntityCode: Record<string, WeatherResult | null>): RawAnalyticResults;
+  public translate(apiResultByEntityCode: Record<string, WeatherResult | null>): AnalyticResults;
   public translate(apiResultByEntityCode: Record<string, WeatherResult | null>): EventResults;
   public translate(
     apiResultByEntityCode: Record<string, WeatherResult | null>,
-  ): RawAnalyticResults | EventResults {
+  ): AnalyticResults | EventResults {
     const translatedByEntityCode: Record<string, Analytic[] | Event[]> = {};
 
     for (const entity of this.entities) {

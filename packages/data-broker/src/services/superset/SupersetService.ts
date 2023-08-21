@@ -8,7 +8,7 @@ import moment from 'moment';
 import { SupersetApi } from '@tupaia/superset-api';
 import { Service } from '../Service';
 import { getSupersetApiInstance } from './getSupersetApi';
-import { Analytic, RawAnalyticResults, DataElement } from '../../types';
+import { Analytic, AnalyticResults, DataElement } from '../../types';
 import { DataServiceMapping, DataServiceMappingEntry } from '../DataServiceMapping';
 
 type PullOptions = {
@@ -31,7 +31,7 @@ export class SupersetService extends Service {
   public async pullAnalytics(
     dataElements: DataElement[],
     options: PullOptions,
-  ): Promise<RawAnalyticResults> {
+  ): Promise<AnalyticResults> {
     const {
       dataServiceMapping,
       startDate,

@@ -132,7 +132,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   [
     'throws if a requested indicator builder does not exist',
     ['NonExistingBuilder'],
-    ['2019-01-01', '2019-12-31', ['AU']],
+    ['2019-01-01', '2019-12-31', ['TO']],
     "'nonExisting' is not an indicator builder",
   ],
 ];

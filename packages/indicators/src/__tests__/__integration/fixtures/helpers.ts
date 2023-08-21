@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics, ArrayAnalytic } from '@tupaia/tsutils';
+import { ArrayAnalytic, arrayToAnalytics } from '../../../utils';
 
 // surveyCode, entityCode, data_time, answers
 export type ArraySurveyResponse = [string, string, string, Record<string, string>];

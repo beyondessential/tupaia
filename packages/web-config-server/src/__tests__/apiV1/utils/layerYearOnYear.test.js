@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/tsutils';
+import { arrayToAnalytics } from '@tupaia/data-broker';
 import { layerYearOnYear } from '../../../apiV1/utils/layerYearOnYear';
 
 describe('layerYearOnYear()', () => {

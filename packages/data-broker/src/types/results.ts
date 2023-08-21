@@ -51,11 +51,7 @@ export interface OutboundEvent {
   dataValues: { code: string; value: string }[];
 }
 
-/**
- * Direct from the data service aka "raw". Not yet processed as final output
- * from DataBroker's pullAnalytics().
- */
-export interface RawAnalyticResults {
+export interface AnalyticResults {
   results: Analytic[];
   metadata: {
     dataElementCodeToName?: Record<string, string>;
