@@ -67,16 +67,17 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
       mapOverlays.map((overlay: MapOverlay) => overlay.id),
     );
+    console.log(mapOverlayRelations);
 
     // Fetch all the groups we've used
-    const mapOverlayGroups = await ctx.services.central.fetchResources('mapOverlayGroups', {
-      filter: {
-        id: mapOverlayRelations.map(
-          (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
-        ),
-      },
+    const relations: string[] = mapOverlayRelations.map(
+      (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
+    );
+    const uniqueRelations: string[] = [...new Set(relations)];
+    console.log(uniqueRelations);
+    const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
+      id: uniqueRelations,
     });
-
     // Convert our multiple flat lists into a single nested object
     const nestOverlayGroups = (
       relationsByParentId: Record<string, MapOverlayGroupRelation[]>,
@@ -128,19 +129,28 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       (group: MapOverlayGroup) => group.code === ROOT_MAP_OVERLAY_CODE,
     );
 
-    const nestedGroups = nestOverlayGroups(
-      relationsByParentId,
-      groupsById,
-      overlaysById,
-      rootOverlayGroup,
-    );
+    if (rootOverlayGroup) {
+      const nestedGroups = nestOverlayGroups(
+        relationsByParentId,
+        groupsById,
+        overlaysById,
+        rootOverlayGroup,
+      );
 
+      return {
+        name: entity.name,
+        entityCode: entity.code,
+        entityType: entity.type,
+        // Map overlays always exist beneath a group, so we know the first layer is only groups
+        mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
+      };
+    }
     return {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
       // Map overlays always exist beneath a group, so we know the first layer is only groups
-      mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
+      mapOverlays: [],
     };
   }
 }
