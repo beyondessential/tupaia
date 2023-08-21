@@ -18,7 +18,7 @@
     ]
   },
   "scripts": {
-    "build": "yarn build:internal-dependencies && yarn build:non-internal-dependencies",
+    "build": "yarn workspaces foreach -ptv --jobs unlimited --exclude tupaia run build",
     "build:internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build:non-internal-dependencies": "./scripts/bash/buildNonInternalDependencies.sh",
     "build:admin-panel": "yarn workspace @tupaia/admin-panel build",
