@@ -4,3 +4,4 @@
  */
 export * from './Auth';
 export * from './HookForm';
+export { RouterLink } from './RouterLink';
