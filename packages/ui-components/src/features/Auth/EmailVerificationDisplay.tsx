@@ -21,7 +21,7 @@ const MessageText = styled(Typography)<{
   }};
 `;
 
-type Message = {
+export type Message = {
   status?: STATUS | string;
   text?: string;
 };
