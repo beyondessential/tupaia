@@ -10,6 +10,7 @@ import { useUser } from './api/queries';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from './constants';
 import { BackgroundPageLayout, MainPageLayout } from './layout';
+import { VerifyEmailPage } from './views/VerifyEmailPage';
 
 /**
  * If the user is not logged in, redirect to the login page
@@ -45,6 +46,7 @@ export const Routes = () => {
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
           <Route path={ROUTES.LOGIN} element={<LoginRedirect />} />
+          <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
           <Route path={ROUTES.SURVEY}>
             <Route index element={<SurveyPage />} />
             <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />

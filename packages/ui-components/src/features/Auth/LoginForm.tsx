@@ -12,7 +12,7 @@ import { AuthFormTextField } from './AuthFormTextField';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
 import { HookFormInput, HookForm } from '../HookForm';
-import { EmailVerificationDisplay, STATUS } from './EmailVerificationDisplay';
+import { EmailVerificationDisplay, Message, STATUS } from './EmailVerificationDisplay';
 import { AuthViewButton } from './AuthViewButton';
 
 const Wrapper = styled(AuthViewWrapper)`
@@ -53,7 +53,7 @@ interface LoginFormProps {
   error?: Error | null;
   forgotPasswordLink: To;
   registerLink: To;
-  verificationStatus?: STATUS;
+  message?: Message;
   formContext: ReturnType<typeof useForm>;
   className?: string;
 }
@@ -64,14 +64,14 @@ export const LoginForm = ({
   error,
   forgotPasswordLink,
   registerLink,
-  verificationStatus,
+  message,
   formContext,
   className,
 }: LoginFormProps) => {
   return (
     <Wrapper title="Log in" subtitle="Enter your details below to log in" className={className}>
       {error && <Typography color="error">{error.message}</Typography>}
-      {verificationStatus && <EmailVerificationDisplay status={verificationStatus} />}
+      {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <HookFormInput
           name="email"

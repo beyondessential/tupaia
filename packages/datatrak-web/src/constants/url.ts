@@ -11,4 +11,5 @@ export const ROUTES = {
   QUESTIONS: 'questions',
   ACCOUNT_SETTINGS: '/account-settings',
   CHANGE_PROJECT: '/change-project',
+  VERIFY_EMAIL: '/verify-email',
 };
