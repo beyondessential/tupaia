@@ -57,6 +57,8 @@ RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
 RUN mkdir -p ./packages/datatrak-web
 COPY packages/datatrak-web/package.json ./packages/datatrak-web 
+RUN mkdir -p ./packages/datatrak-server
+COPY packages/datatrak-server/package.json ./packages/datatrak-server
 RUN mkdir -p ./packages/devops
 COPY packages/devops/package.json ./packages/devops
 RUN mkdir -p ./packages/dhis-api

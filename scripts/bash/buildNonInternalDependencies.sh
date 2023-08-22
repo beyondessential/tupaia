@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-PACKAGES="report-server admin-panel-server central-server data-table-server datatrak-web entity-server lesmis lesmis-server meditrak-app-server psss psss-server web-config-server web-frontend tupaia-web tupaia-web-server"
+PACKAGES="report-server admin-panel-server central-server data-table-server datatrak-web datatrak-server entity-server lesmis lesmis-server meditrak-app-server psss psss-server web-config-server web-frontend tupaia-web tupaia-web-server"
 
 CONCURRENT_BUILD_BATCH_SIZE=1
 
