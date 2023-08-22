@@ -6,4 +6,5 @@
 
 export { MeditrakSurveyResponseRequest } from './central-server/MeditrakSurveyResponseRequest';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
+export * from './datatrak-server';
 export * from './tupaia-web-server';
