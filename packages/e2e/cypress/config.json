@@ -1,6 +1,6 @@
 {
-  "baselineUrl": "https://e2e.tupaia.org",
-  "compareUrl": "https://dev.tupaia.org",
+  "baselineUrl": "https://igor-mstr.tupaia.org",
+  "compareUrl": "https://igor-dev.tupaia.org",
   "dashboardReports": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseData"],
