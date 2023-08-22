@@ -1494,7 +1494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.13.16, @babel/core@npm:^7.20.12, @babel/core@npm:^7.22.0, @babel/core@npm:^7.22.5":
+"@babel/core@npm:^7.11.6, @babel/core@npm:^7.13.16, @babel/core@npm:^7.20.12, @babel/core@npm:^7.22.0, @babel/core@npm:^7.22.5, @babel/core@npm:^7.22.9":
   version: 7.22.9
   resolution: "@babel/core@npm:7.22.9"
   dependencies:
@@ -6678,6 +6678,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/async-storage@npm:^1.6.1":
+  version: 1.12.1
+  resolution: "@react-native-community/async-storage@npm:1.12.1"
+  dependencies:
+    deep-assign: ^3.0.0
+  peerDependencies:
+    react: ^16.8
+    react-native: ">=0.59"
+  checksum: 68b519eb9fc50899257878440fd49a500d4b35c3899311c56c672e779df6516f0760204f6c8edcb3e83398c61a775822996aac6974be4b55a04ad30448d8662d
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-debugger-ui@npm:^4.13.1":
   version: 4.13.1
   resolution: "@react-native-community/cli-debugger-ui@npm:4.13.1"
@@ -9581,13 +9593,15 @@ __metadata:
     "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
     "@tupaia/utils": 1.0.0
+    ace-builds: ^1.15.3
     axios: ^0.21.1
     case: ^1.5.3
     content-disposition-header: ^0.6.0
-    cross-env: ^7.0.2
     date-fns: ^2.29.2
     downloadjs: ^1.4.7
     file-saver: ^1.3.3
+    js-sql-parser: ^1.4.1
+    jsoneditor: ^9.9.0
     localforage: ^1.5.0
     lodash.debounce: ^4.0.8
     lodash.groupby: ^4.6.0
@@ -9600,7 +9614,9 @@ __metadata:
     qrcode: ^1.5.3
     query-string: ^5.1.1
     react: ^16.13.1
+    react-ace: ^10.1.0
     react-autobind: ^1.0.6
+    react-beautiful-dnd: ^13.1.0
     react-beforeunload: ^2.5.1
     react-datepicker: ^1.6.0
     react-dom: ^16.13.1
@@ -9611,7 +9627,7 @@ __metadata:
     react-redux: ^5.0.6
     react-router-dom: ^5.2.0
     react-select: ^1.2.1
-    react-table: ^6.7.6
+    react-table-v6: "npm:react-table@^6.7.6"
     reactstrap: ^5.0.0
     redux: ^3.7.2
     redux-auth-wrapper: ^2.0.1
@@ -9619,6 +9635,7 @@ __metadata:
     redux-thunk: ^2.2.0
     styled-components: ^5.1.0
     uuid: ^3.2.1
+    vite: ^4.4.8
   languageName: unknown
   linkType: soft
 
@@ -9626,7 +9643,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/aggregator@workspace:packages/aggregator"
   dependencies:
-    "@tupaia/data-broker": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -9929,10 +9945,10 @@ __metadata:
   resolution: "@tupaia/indicators@workspace:packages/indicators"
   dependencies:
     "@tupaia/aggregator": 1.0.0
-    "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/tsutils": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -9983,6 +9999,7 @@ __metadata:
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
+    leaflet: ^1.7.1
     lodash.debounce: ^4.0.8
     lodash.keyby: ^4.6.0
     moment: ^2.22.2
@@ -9992,6 +10009,7 @@ __metadata:
     react: ^16.13.1
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
+    react-leaflet: ^3.2.1
     react-password-strength-bar: ^0.3.3
     react-query: ^3.19.0
     react-redux: ^5.0.6
@@ -10056,6 +10074,7 @@ __metadata:
     prop-types: ^15.7.2
     react: 16.13.1
     react-native: ^0.63.5
+    react-native-camera: ^4.2.1
     react-native-database: ^0.1.7
     react-native-device-info: ^7.2.1
     react-native-document-picker: ^8.2.1
@@ -10069,9 +10088,13 @@ __metadata:
     react-native-menu: ^0.23.0
     react-native-modal-datetime-picker: ^9.1.0
     react-native-modalbox: ^2.0.0
+    react-native-permissions: ^3.6.1
+    react-native-qrcode-scanner: ^1.5.5
+    react-native-qrcode-svg: ^6.1.2
     react-native-reanimated: ~1.13.0
     react-native-safe-area-context: 3.1.4
     react-native-screens: ~2.10.1
+    react-native-share: ^7.9.1
     react-native-side-menu: ^1.1.3
     react-native-svg: ^12.1.0
     react-native-vector-icons: ^7.1.0
@@ -10079,6 +10102,7 @@ __metadata:
     react-navigation: ^4.4.0
     react-navigation-redux-helpers: ^4.0.1
     react-navigation-stack: ^2.8.2
+    react-qr-code: ^2.0.8
     react-redux: ^5.0.7
     react-test-renderer: 16.13.1
     realm: ^6.1.5
@@ -10163,6 +10187,7 @@ __metadata:
     "@tupaia/aggregator": 1.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
@@ -10259,11 +10284,16 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
+    "@tupaia/utils": 1.0.0
+    "@types/lodash.groupby": ^4.6.0
+    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.sortby": ^4.6.0
     camelcase-keys: ^6.2.2
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
+    lodash.sortby: ^4.6.0
     winston: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -10291,11 +10321,15 @@ __metadata:
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/dom-to-image": ^2.6.4
+    "@types/downloadjs": ^1.4.3
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
+    dom-to-image: 2.6.0
+    downloadjs: 1.4.7
     moment: ^2.29.1
     npm-run-all: ^4.1.5
     react: ^16.13.1
@@ -10370,28 +10404,20 @@ __metadata:
     "@types/react-router-dom": ^5.3.3
     "@types/react-table": ^7.7.14
     "@types/styled-components": ^5.0.0
-    ace-builds: ^1.4.13
     date-fns: ^2.12.0
     faker: ^4.1.0
     fast-glob: ^3.2.5
-    js-sql-parser: ^1.4.1
-    jsoneditor: ^9.9.0
-    leaflet: ^1.7.1
     lodash.get: ^4.4.2
     lodash.throttle: ^4.1.1
     moment: ^2.29.1
     prop-types: ^15.7.2
     react: ^16.13.1
-    react-ace: ^10.1.0
-    react-beautiful-dnd: ^13.1.0
     react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
     react-hook-form: ^6.0.6
-    react-leaflet: ^3.2.1
     react-password-strength-bar: ^0.3.3
     react-router-dom: ^5.1.2
     react-table: ^7.7.0
-    recharts: ^1.8.5
     styled-components: ^5.0.1
     typescript: ^5.0.4
     xlsx: ^0.17.0
@@ -10797,6 +10823,20 @@ __metadata:
   version: 0.0.3
   resolution: "@types/doctrine@npm:0.0.3"
   checksum: 7ca9c8ff4d2da437785151c9eef0dd80b8fa12e0ff0fcb988458a78de4b6f0fc92727ba5bbee446e1df615a91f03053c5783b30b7c21ab6ceab6a42557e93e50
+  languageName: node
+  linkType: hard
+
+"@types/dom-to-image@npm:^2.6.4":
+  version: 2.6.4
+  resolution: "@types/dom-to-image@npm:2.6.4"
+  checksum: ddc8d74b944909040a6e6d9ca2feb246b50dc8c3ad908a90634fb6e46e4c438b47aa0a5df4994bd19c1d6f110eb90a15146d1c1a7b8762ab9d050f70e6de4050
+  languageName: node
+  linkType: hard
+
+"@types/downloadjs@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@types/downloadjs@npm:1.4.3"
+  checksum: d5b5e29399fdbb415f351fee64e7f7b3ddef0f251d2375ddaa0c16cd5c026f4a8dce1b4c76d05e019bc65c96f589d70f13512b44e54d568063fdefa0dbfd40c8
   languageName: node
   linkType: hard
 
@@ -11262,6 +11302,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.sortby@npm:^4.6.0":
+  version: 4.7.7
+  resolution: "@types/lodash.sortby@npm:4.7.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 94164b49810e37cc3795c133a6375245cdfc0e6804680e34d7039889954e7201c820d658fff89fcda0a1ce68774286f49ce95f83004d8188c4434cdfc2ca55c4
+  languageName: node
+  linkType: hard
+
 "@types/lodash.throttle@npm:^4.1.7":
   version: 4.1.7
   resolution: "@types/lodash.throttle@npm:4.1.7"
@@ -11640,11 +11689,11 @@ __metadata:
   linkType: hard
 
 "@types/react-table@npm:^6.8.5":
-  version: 6.8.6
-  resolution: "@types/react-table@npm:6.8.6"
+  version: 6.8.10
+  resolution: "@types/react-table@npm:6.8.10"
   dependencies:
     "@types/react": "*"
-  checksum: f1ae43654935f5991008ac1f7ed7ceaee6d18bccf33901902833fc6b302c2aed5b19f2def86825e3cebde9be94354dfbdca525a16824523a8f0304225a3ef26f
+  checksum: 2f8fcbe195c53b2685f403f5d66c09b60917d3af7ec9e29f8b3ecdc748eb6db5a93b4aecaaed4910ff33671a8745da2c34184b445cd184ad504b0240be994029
   languageName: node
   linkType: hard
 
@@ -12392,6 +12441,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vitejs/plugin-react@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "@vitejs/plugin-react@npm:4.0.4"
+  dependencies:
+    "@babel/core": ^7.22.9
+    "@babel/plugin-transform-react-jsx-self": ^7.22.5
+    "@babel/plugin-transform-react-jsx-source": ^7.22.5
+    react-refresh: ^0.14.0
+  peerDependencies:
+    vite: ^4.2.0
+  checksum: ec25400dc7c5fce914122d1f57de0fbaff9216addb8cd6187308ad2c7a3d3b73ea3a6f2dd0a8c7ec5e90e56b37046fe90d3e0ec285a9446e73695cb174377f84
+  languageName: node
+  linkType: hard
+
 "@webassemblyjs/ast@npm:1.9.0":
   version: 1.9.0
   resolution: "@webassemblyjs/ast@npm:1.9.0"
@@ -12689,10 +12752,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.4.13":
-  version: 1.4.13
-  resolution: "ace-builds@npm:1.4.13"
-  checksum: 512cc19c367a21d86f6b7c78ac59b44b01304d7cf345ce0ae767db9b14fc65653aec2f9dabde27e7d9c459000f4cef74656804f54fb7cb7867b8b810ea66878d
+"ace-builds@npm:^1.15.3":
+  version: 1.23.4
+  resolution: "ace-builds@npm:1.23.4"
+  checksum: ad7b14083955d896bf22dd68a90c9e6a257be3c43be6d362269b5c51df9f2c0e1d5714e8318d88fdcc9084959f8bbfa20bdb5492d5b0a2c452d27ddc7fe8032c
   languageName: node
   linkType: hard
 
@@ -29491,7 +29554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.sortby@npm:^4.7.0":
+"lodash.sortby@npm:^4.6.0, lodash.sortby@npm:^4.7.0":
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: db170c9396d29d11fe9a9f25668c4993e0c1331bcb941ddbd48fb76f492e732add7f2a47cfdf8e9d740fa59ac41bbfaf931d268bc72aab3ab49e9f89354d718c
@@ -35550,7 +35613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -35778,7 +35841,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode@npm:^1.5.3":
+"qr.js@npm:0.0.0":
+  version: 0.0.0
+  resolution: "qr.js@npm:0.0.0"
+  checksum: 5ac6c393967bdeaa660e7fd3a501a25eb538c1f6008a4d30ab2b97bbe520e5c236530090773f1578aa0a523cdaa6923c866615e21143f9e7cd22abd41c789b69
+  languageName: node
+  linkType: hard
+
+"qrcode@npm:^1.5.1, qrcode@npm:^1.5.3":
   version: 1.5.3
   resolution: "qrcode@npm:1.5.3"
   dependencies:
@@ -36567,6 +36637,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-camera@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "react-native-camera@npm:4.2.1"
+  dependencies:
+    prop-types: ^15.6.2
+  checksum: 0e84ce657774694d1cc49395c43a8f2caabc03df36aa77aacfb5c797ad8cfe0368f4807deccc54e82ff2b193e8c2d1ce7ad504eedf7a9fc4719b38e39958a804
+  languageName: node
+  linkType: hard
+
 "react-native-database@npm:^0.1.7":
   version: 0.1.7
   resolution: "react-native-database@npm:0.1.7"
@@ -36729,6 +36808,50 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-permissions@npm:^3.6.1":
+  version: 3.8.3
+  resolution: "react-native-permissions@npm:3.8.3"
+  dependencies:
+    picocolors: ^1.0.0
+    pkg-dir: ^5.0.0
+  peerDependencies:
+    react: ">=16.13.1"
+    react-native: ">=0.63.3"
+    react-native-windows: ">=0.62.0"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 0097ef67705fea185f47dd3deb193dd9cee1fc5af4a3b1d83ca429826080f62f80a3a45f65fcbcd333f0a9fd8e8eb3ec703142e9c8c243b74116480077d5c930
+  languageName: node
+  linkType: hard
+
+"react-native-qrcode-scanner@npm:^1.5.5":
+  version: 1.6.0
+  resolution: "react-native-qrcode-scanner@npm:1.6.0"
+  dependencies:
+    "@react-native-community/async-storage": ^1.6.1
+    prop-types: ^15.5.10
+    react-native-permissions: ^2.0.2
+  peerDependencies:
+    react-native-camera: ">=1.0.2"
+  checksum: 89fdd8132fa0944949f54d902c7245da96cd488536eae0b2f9923d518a822a4dec606f22001871344b6438149f446639b952fe2be281965d1be91b9af1a47bed
+  languageName: node
+  linkType: hard
+
+"react-native-qrcode-svg@npm:^6.1.2":
+  version: 6.2.0
+  resolution: "react-native-qrcode-svg@npm:6.2.0"
+  dependencies:
+    prop-types: ^15.8.0
+    qrcode: ^1.5.1
+  peerDependencies:
+    react: "*"
+    react-native: ">=0.63.4"
+    react-native-svg: ^13.2.0
+  checksum: e4e8a709900e16cf0116e9c5edd8ff7150cfbbb2c9763a5a7b171ba6efb1f84d8b93b919dedb915d16686d7a8b0c49c905c62dcbd86f98d471b1c0bcec6f1ae3
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:~1.13.0":
   version: 1.13.2
   resolution: "react-native-reanimated@npm:1.13.2"
@@ -36770,6 +36893,13 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 152bcda2438a6a514c0d5ef30b2fa29f2deb8078023bdeaea45f0ed5eea277cb8b0c70284936ca2b61f50ce773c35bbecedd8d7c77b8fde94e2ae189324827e1
+  languageName: node
+  linkType: hard
+
+"react-native-share@npm:^7.9.1":
+  version: 7.9.1
+  resolution: "react-native-share@npm:7.9.1"
+  checksum: 276f872de7342eacb6f3524bd276d25e43731359c10820630eac6a3869d69e85147b378fde0bceaa6315a8fea9585c20798bce2ff027fdf1c7b225a8d0a38b07
   languageName: node
   linkType: hard
 
@@ -37008,6 +37138,22 @@ __metadata:
     "@popperjs/core": ^2.0.0
     react: ^16.8.0 || ^17
   checksum: 915fcf08e1da4fd48a200074fcdd936f601ee2173f1e730cfed8a54fd47716aa8bf9cce2392463e3bcbe64a096d0baf463809ed2874b94d3a9d430ae6d817b5d
+  languageName: node
+  linkType: hard
+
+"react-qr-code@npm:^2.0.8":
+  version: 2.0.11
+  resolution: "react-qr-code@npm:2.0.11"
+  dependencies:
+    prop-types: ^15.8.1
+    qr.js: 0.0.0
+  peerDependencies:
+    react: ^16.x || ^17.x || ^18.x
+    react-native-svg: "*"
+  peerDependenciesMeta:
+    react-native-svg:
+      optional: true
+  checksum: 680f7be35078892a29999013b24e36aae10c3529e4cdd2c1436573603864c45010445d6069969d7f76e4642c54584a3b941b8c944189273c3ac5b705156ad23b
   languageName: node
   linkType: hard
 
@@ -37337,7 +37483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-table@npm:^6.7.6":
+"react-table-v6@npm:react-table@^6.7.6":
   version: 6.11.5
   resolution: "react-table@npm:6.11.5"
   dependencies:
@@ -42254,6 +42400,7 @@ __metadata:
     "@beyondessential/eslint-config-jest": ^1.0.0
     "@beyondessential/eslint-config-js": ^1.1.1
     "@beyondessential/eslint-config-ts": ^1.3.2
+    "@vitejs/plugin-react": ^4.0.4
     babel-eslint: ^10.1.0
     babel-jest: ^27.0.6
     concurrently: ^5.2.0
@@ -42272,6 +42419,8 @@ __metadata:
     ts-jest: ^27.1.3
     ts-node: ^10.7.0
     typescript: ^4.2.0
+    vite: ^4.4.8
+    vite-plugin-ejs: ^1.6.4
   languageName: unknown
   linkType: soft
 
@@ -43573,6 +43722,46 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: 825d8c13511b764710ca503e603746e20a7cb963194033dc606c46b1650a0d8986b577ba92507b54143cbf467032e9868ea04913a86a8fcb88b69c5b8551938b
+  languageName: node
+  linkType: hard
+
+"vite@npm:^4.4.8":
+  version: 4.4.8
+  resolution: "vite@npm:4.4.8"
+  dependencies:
+    esbuild: ^0.18.10
+    fsevents: ~2.3.2
+    postcss: ^8.4.26
+    rollup: ^3.25.2
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    lightningcss: ^1.21.0
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    lightningcss:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: e8ffe688f8a7396b1357778f00cb06d1f3dadad200823c47a1955cf52774a0cbff5ac4d6a8f8d09e26c1d4e588e5815956f9eba02ae301e77a36c3d181a1bc86
   languageName: node
   linkType: hard
 

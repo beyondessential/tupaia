@@ -5,22 +5,32 @@
  */
 import { Moment } from 'moment';
 import { useQuery } from 'react-query';
-import { get } from '../api';
-import { DashboardItemType, EntityCode, ProjectCode, DashboardsResponse } from '../../types';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
+import { TupaiaWebReportRequest } from '@tupaia/types';
+import { get } from '../api';
+import { DashboardItem, EntityCode, ProjectCode } from '../../types';
 
-type QueryParams = {
+type QueryParams = Record<string, unknown> & {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
-  dashboardCode?: DashboardsResponse['dashboardCode'];
-  itemCode?: DashboardItemType['code'];
-  legacy?: DashboardItemType['legacy'];
+  dashboardCode?: DashboardItem['code'];
+  itemCode?: DashboardItem['code'];
+  legacy?: DashboardItem['legacy'];
   startDate?: Moment | string | null;
   endDate?: Moment | string | null;
 };
 
-export const useReport = (reportCode: DashboardItemType['reportCode'], params: QueryParams) => {
-  const { dashboardCode, projectCode, entityCode, itemCode, startDate, endDate, legacy } = params;
+export const useReport = (reportCode: DashboardItem['reportCode'], params: QueryParams) => {
+  const {
+    dashboardCode,
+    projectCode,
+    entityCode,
+    itemCode,
+    startDate,
+    endDate,
+    legacy,
+    ...rest
+  } = params;
   const timeZone = getBrowserTimeZone();
   const formattedStartDate = formatDateForApi(startDate, null);
   const formattedEndDate = formatDateForApi(endDate, null);
@@ -35,8 +45,9 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
       itemCode,
       formattedStartDate,
       formattedEndDate,
+      ...Object.values(rest),
     ],
-    () =>
+    (): Promise<TupaiaWebReportRequest.ResBody> =>
       get(`${endPoint}/${reportCode}`, {
         params: {
           dashboardCode,
@@ -46,10 +57,11 @@ export const useReport = (reportCode: DashboardItemType['reportCode'], params: Q
           timeZone,
           startDate: formattedStartDate,
           endDate: formattedEndDate,
+          ...rest,
         },
       }),
     {
-      enabled: !!reportCode && !!dashboardCode && !!projectCode && !!entityCode,
+      enabled: !!reportCode && !!dashboardCode && !!projectCode && !!entityCode && !!itemCode,
     },
   );
 };

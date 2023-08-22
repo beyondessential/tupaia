@@ -6,6 +6,7 @@
 import nodeFetch from 'node-fetch';
 import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
+import { CustomError } from '@tupaia/utils';
 import { QueryParameters, AuthHandler } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
@@ -94,10 +95,22 @@ export class ApiConnection {
         (response.status < 200 || response.status >= 300) &&
         !responseJson.error
       ) {
-        throw new Error(`API error ${response.status}: ${responseJson.message}`);
+        throw new CustomError(
+          {
+            responseText: `API error ${response.status}: ${responseJson.message}`,
+            responseStatus: response.status,
+          },
+          {},
+        );
       }
       if (responseJson.error) {
-        throw new Error(`API error ${response.status}: ${responseJson.error}`);
+        throw new CustomError(
+          {
+            responseText: `API error ${response.status}: ${responseJson.error}`,
+            responseStatus: response.status,
+          },
+          {},
+        );
       }
     }
   }

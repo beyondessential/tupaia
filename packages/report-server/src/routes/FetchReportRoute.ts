@@ -5,9 +5,10 @@
 
 import { Request } from 'express';
 
-import { createAggregator } from '@tupaia/aggregator';
+import { Aggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
 
+import { DataBroker } from '@tupaia/data-broker';
 import { ReportServerAggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
 import { ReportRouteQuery, ReportRouteBody } from './types';
@@ -52,10 +53,12 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
       services: this.req.ctx.services,
       accessPolicy: this.req.accessPolicy,
       aggregator: new ReportServerAggregator(
-        createAggregator(undefined, {
-          accessPolicy: this.req.accessPolicy,
-          services: this.req.ctx.services,
-        }),
+        new Aggregator(
+          new DataBroker({
+            accessPolicy: this.req.accessPolicy,
+            services: this.req.ctx.services,
+          }),
+        ),
       ),
     };
 

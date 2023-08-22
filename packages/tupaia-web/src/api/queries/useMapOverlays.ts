@@ -3,20 +3,32 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useSearchParams } from 'react-router-dom';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery } from 'react-query';
+import {
+  TupaiaWebMapOverlaysRequest,
+} from '@tupaia/types';
 import { get } from '../api';
-import { EntityCode, MapOverlayGroup, ProjectCode, SingleMapOverlayItem } from '../../types';
+import {
+  EntityCode,
+  ProjectCode,
+} from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 
+// Retype so we can use shortened names
+type SingleMapOverlayItem = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
+type MapOverlayGroup = TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+type MapOverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
+type MapOverlaysResponse = TupaiaWebMapOverlaysRequest.ResBody;
+
 const mapOverlayByCode = (
-  mapOverlayGroups: MapOverlayGroup[] = [],
+  mapOverlayGroups: MapOverlayChild[] = [],
 ): Record<SingleMapOverlayItem['code'], SingleMapOverlayItem> => {
   return mapOverlayGroups.reduce(
     (
       result: Record<string, SingleMapOverlayItem>,
       mapOverlay: MapOverlayGroup | SingleMapOverlayItem,
     ) => {
-      if (mapOverlay.children) {
+      if ('children' in mapOverlay) {
         return { ...result, ...mapOverlayByCode(mapOverlay.children) };
       }
       return {
@@ -28,29 +40,14 @@ const mapOverlayByCode = (
   );
 };
 
-interface UseMapOverlaysResult {
-  hasMapOverlays: boolean;
-  mapOverlayGroups: MapOverlayGroup[];
-  mapOverlaysByCode: { [code: EntityCode]: MapOverlayGroup };
-  isLoadingMapOverlays: boolean;
-  errorLoadingMapOverlays: UseQueryResult['error'];
-  selectedOverlayCode: string | null;
-  selectedOverlay?: SingleMapOverlayItem;
-}
-
 /**
  * Gets the map overlays and returns useful utils and values associated with these
  */
-export const useMapOverlays = (
-  projectCode?: ProjectCode,
-  entityCode?: EntityCode,
-): UseMapOverlaysResult => {
+export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const [urlSearchParams] = useSearchParams();
   const { data, isLoading, error } = useQuery(
     ['mapOverlays', projectCode, entityCode],
-    async () => {
-      return get(`mapOverlays/${projectCode}/${entityCode}`);
-    },
+    (): Promise<MapOverlaysResponse> => get(`mapOverlays/${projectCode}/${entityCode}`),
     {
       enabled: !!projectCode && !!entityCode,
     },

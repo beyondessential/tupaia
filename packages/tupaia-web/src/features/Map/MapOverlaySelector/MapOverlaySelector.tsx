@@ -16,7 +16,10 @@ export const MapOverlaySelector = () => {
 
   return (
     <>
-      <MobileMapOverlaySelector />
+      <MobileMapOverlaySelector
+        overlayLibraryOpen={overlayLibraryOpen}
+        toggleOverlayLibrary={toggleOverlayLibrary}
+      />
       <DesktopMapOverlaySelector
         overlayLibraryOpen={overlayLibraryOpen}
         toggleOverlayLibrary={toggleOverlayLibrary}

@@ -17,7 +17,7 @@ import { WebBrowserContainer } from '../web';
 import { ChangePasswordContainer } from '../changePassword';
 import { RealmExplorer } from '../database/RealmExplorer';
 import { RequestAccountDeletionContainer } from '../requestAccountDeletion';
-import { SurveyScreen, SurveysMenuScreen } from '../assessment';
+import { SurveyScreen, SurveysMenuScreen, QrCodeScreen } from '../assessment';
 import {
   CREATE_ACCOUNT_SCREEN,
   LOGIN_SCREEN,
@@ -32,6 +32,7 @@ import {
   CHANGE_PASSWORD_SCREEN,
   ROUTES_WITH_INVISIBLE_HEADERS,
   DELETE_ACCOUNT_REQUEST_SCREEN,
+  QR_CODES_SCREEN,
 } from './constants';
 import { SyncContainer } from '../sync';
 import { THEME_COLOR_ONE } from '../globalStyles';
@@ -55,6 +56,7 @@ const routes = {
     screen: HomeScreenContainer,
     navigationOptions: () => ({ headerLeft: () => null, animationEnabled: false }),
   },
+  [QR_CODES_SCREEN]: { screen: QrCodeScreen },
   [SYNC_SCREEN]: {
     screen: SyncContainer,
     navigationOptions: () => ({

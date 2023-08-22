@@ -6,7 +6,7 @@ import React, { ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { DEFAULT_URL, MOBILE_BREAKPOINT } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const LogoWrapper = styled.div`
   flex-grow: 1;
@@ -33,6 +33,7 @@ const LogoLink = styled(Link)`
   align-items: center;
   background: none;
   border: none;
+  text-decoration: none;
 `;
 
 const Name = styled(Typography)`
@@ -45,7 +46,7 @@ const Name = styled(Typography)`
     font-size: 1.2rem;
   }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 `;
 
@@ -63,7 +64,7 @@ const LogoComponent = ({
 }: {
   isCustomLandingPage: boolean;
   children: ReactNode[];
-}) => (isCustomLandingPage ? <>{children}</> : <LogoLink to={DEFAULT_URL}>{children}</LogoLink>);
+}) => (isCustomLandingPage ? <>{children}</> : <LogoLink to="/">{children}</LogoLink>);
 
 interface LogoProps {
   logoSrc?: string;

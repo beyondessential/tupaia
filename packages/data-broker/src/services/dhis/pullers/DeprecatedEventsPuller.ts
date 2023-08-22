@@ -4,20 +4,20 @@
  */
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import type { PullOptions as BasePullOptions } from '../../Service';
 import { DataGroup } from '../types';
 import { DataBrokerModelRegistry, Event } from '../../../types';
+import { DataServiceMapping } from '../../DataServiceMapping';
 import { DhisTranslator } from '../translators';
 
-export type DeprecatedPullEventsOptions = BasePullOptions &
-  Partial<{
-    organisationUnitCodes: string[];
-    orgUnitIdScheme: 'uid' | 'code';
-    startDate: string;
-    endDate: string;
-    eventId: string;
-    trackedEntityInstance: string;
-  }>;
+export type DeprecatedPullEventsOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
+  orgUnitIdScheme?: 'uid' | 'code';
+  startDate?: string;
+  endDate?: string;
+  eventId?: string;
+  trackedEntityInstance?: string;
+};
 
 /**
  * This is a deprecated puller which invokes a slow DHIS2 api ('/events')
@@ -67,14 +67,14 @@ export class DeprecatedEventsPuller {
 
   public pull = async (
     apis: DhisApi[],
-    dataSources: DataGroup[],
+    dataGroups: DataGroup[],
     options: DeprecatedPullEventsOptions,
   ) => {
-    if (dataSources.length > 1) {
+    if (dataGroups.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
-    const [dataSource] = dataSources;
-    const { code: programCode } = dataSource;
+    const [dataGroup] = dataGroups;
+    const { code: programCode } = dataGroup;
 
     const events: Event[] = [];
     const pullForApi = async (api: DhisApi) => {

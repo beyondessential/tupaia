@@ -86,6 +86,37 @@ const getForeignKeyColumnName = foreignTable => {
   return exceptions[foreignTable] || `${foreignTable}_id`;
 };
 
+const constructJoinCondition = (recordType, baseRecordType, customJoinConditions, joinType) => {
+  const join = customJoinConditions[recordType];
+  const joinCondition = join
+    ? [join.farTableKey, join.nearTableKey]
+    : [`${recordType}.id`, `${baseRecordType}.${getForeignKeyColumnName(recordType)}`];
+  const parentJoin = {
+    joinWith: recordType,
+    joinCondition,
+    joinType,
+  };
+  if (join?.through) {
+    if ('nearTableKey' in join !== true || 'farTableKey' in join !== true) {
+      throw new ValidationError(`Incorrect format for customJoinConditions: ${recordType}`);
+    }
+    const nearTable = join.nearTableKey.split('.');
+    if (nearTable[0] !== join.through) {
+      throw new ValidationError(
+        'nearTableKey must refer to a column on the table you wish to join through',
+      );
+    }
+    const childJoin = constructJoinCondition(
+      join.through,
+      baseRecordType,
+      customJoinConditions,
+      joinType,
+    );
+    return [...childJoin, parentJoin];
+  }
+  return [parentJoin];
+};
+
 export const getQueryOptionsForColumns = (
   columnNames,
   baseRecordType,
@@ -107,12 +138,16 @@ export const getQueryOptionsForColumns = (
       const resource = columnName.split('.')[0];
       const recordType = resourceToRecordType(resource);
       if (!recordTypesInQuery.has(recordType)) {
-        const joinCondition = customJoinConditions[recordType] || [
-          `${recordType}.id`,
-          `${baseRecordType}.${getForeignKeyColumnName(recordType)}`,
-        ];
-        multiJoin.push({ joinWith: recordType, joinCondition, joinType });
-        recordTypesInQuery.add(recordType);
+        const joinConditions = constructJoinCondition(
+          recordType,
+          baseRecordType,
+          customJoinConditions,
+          joinType,
+        );
+        joinConditions.forEach(j => {
+          if (!recordTypesInQuery.has(j.joinWith)) multiJoin.push(j);
+          recordTypesInQuery.add(j.joinWith);
+        });
       }
     });
   // Ensure every join table is added to the sort, so that queries are predictable during pagination

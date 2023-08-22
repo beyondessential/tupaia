@@ -4,8 +4,8 @@
  */
 
 import React, { ReactNode } from 'react';
-import styled from 'styled-components';
-import { Button, ListItem, ListItemProps } from '@material-ui/core';
+import styled, { css } from 'styled-components';
+import { Button, ListItem, Link, ListItemProps } from '@material-ui/core';
 import { RouterLink } from '../../components';
 
 /**
@@ -18,23 +18,16 @@ const MenuListWrapper = styled.ul<{
   margin-block-start: 0;
   margin-block-end: 0;
   padding-inline-start: 0;
+  margin-top: 1rem;
   * {
     color: ${({ $secondaryColor }) => $secondaryColor};
   }
 `;
 
-const MenuItemButton = styled(Button)`
+const MenuItemStyles = css`
   text-transform: none;
   font-size: 1rem;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
-  padding: 0.4em 1em;
-  line-height: 1.4;
-  width: 100%;
-  justify-content: flex-start;
-`;
-
-const MenuItemLink = styled(RouterLink)`
-  font-size: 1rem;
   padding: 0.4em 1em;
   line-height: 1.4;
   width: 100%;
@@ -44,6 +37,19 @@ const MenuItemLink = styled(RouterLink)`
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.08);
   }
+`;
+
+const MenuItemButton = styled(Button)`
+  ${MenuItemStyles};
+  justify-content: flex-start;
+`;
+
+const MenuItemLink = styled(Link)`
+  ${MenuItemStyles};
+`;
+
+const MenuItemRouterLink = styled(RouterLink)`
+  ${MenuItemStyles};
 `;
 
 type MenuListItemType = ListItemProps & {
@@ -65,6 +71,7 @@ interface MenuItemProps {
   secondaryColor?: string;
   target?: string;
   modal?: string;
+  externalLink?: boolean;
 }
 
 // If is a link, use a link component, else a button so that we have correct semantic HTML
@@ -76,20 +83,36 @@ export const MenuItem = ({
   secondaryColor,
   target,
   modal,
+  externalLink = false,
 }: MenuItemProps) => {
   const handleClickMenuItem = () => {
     if (onClick) onClick();
     onCloseMenu();
   };
-  return (
-    <MenuListItem $secondaryColor={secondaryColor}>
-      {modal || href ? (
-        <MenuItemLink to={href} modal={modal} target={target} onClick={handleClickMenuItem}>
+
+  if (externalLink) {
+    return (
+      <MenuListItem $secondaryColor={secondaryColor}>
+        <MenuItemLink href={href} onClick={handleClickMenuItem}>
           {children}
         </MenuItemLink>
-      ) : (
-        <MenuItemButton onClick={handleClickMenuItem}>{children}</MenuItemButton>
-      )}
+      </MenuListItem>
+    );
+  }
+
+  if (modal || href) {
+    return (
+      <MenuListItem $secondaryColor={secondaryColor}>
+        <MenuItemRouterLink to={href} modal={modal} target={target} onClick={handleClickMenuItem}>
+          {children}
+        </MenuItemRouterLink>
+      </MenuListItem>
+    );
+  }
+
+  return (
+    <MenuListItem $secondaryColor={secondaryColor}>
+      <MenuItemButton onClick={handleClickMenuItem}>{children}</MenuItemButton>
     </MenuListItem>
   );
 };

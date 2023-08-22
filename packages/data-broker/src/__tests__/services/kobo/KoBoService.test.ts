@@ -22,28 +22,22 @@ describe('KoBoService', () => {
       expect(koboService.delete()).toBeRejectedWith('not supported'));
   });
 
-  describe('pull()', () => {
+  describe('pullAnalytics()', () => {
+    it('throws an error', async () =>
+      expect(koboService.pullAnalytics()).toBeRejectedWith('not supported'));
+  });
+
+  describe('pullEvents()', () => {
+    it('throws an error', async () =>
+      expect(koboService.pullEvents()).toBeRejectedWith('not supported'));
+  });
+
+  describe('pullSyncGroupResults()', () => {
     const dataServiceMapping = new DataServiceMapping();
 
-    describe('pullAnalytics()', () => {
-      it('throws an error', async () =>
-        expect(koboService.pull([], 'dataElement', { dataServiceMapping })).toBeRejectedWith(
-          'not supported',
-        ));
-    });
-
-    describe('pullEvents()', () => {
-      it('throws an error', async () =>
-        expect(koboService.pull([], 'dataGroup', { dataServiceMapping })).toBeRejectedWith(
-          'not supported',
-        ));
-    });
-
-    describe('pullSyncGroups()', () => {
-      it('pull and translate from api correctly', () =>
-        expect(
-          koboService.pull([MOCK_DATA_SOURCE], 'syncGroup', { dataServiceMapping }),
-        ).resolves.toHaveProperty('xyz', [TRANSLATED_DATA]));
-    });
+    it('pull and translate from api correctly', async () =>
+      expect(
+        koboService.pullSyncGroupResults([MOCK_DATA_SOURCE], { dataServiceMapping }),
+      ).resolves.toHaveProperty('xyz', [TRANSLATED_DATA]));
   });
 });

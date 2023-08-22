@@ -5,10 +5,65 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-map-components';
 import { connect } from 'react-redux';
-
+import {
+  MeasureMarker,
+  MeasurePopup,
+  MEASURE_TYPE_RADIUS,
+  LayerGroup,
+} from '@tupaia/ui-map-components';
 import { selectMeasureOptions } from '../../../selectors';
+
+// Filter hidden and invalid values and sort measure data
+const processData = (measureData, serieses) => {
+  const data = measureData
+    .filter(({ coordinates, region }) => region || (coordinates && coordinates?.length === 2))
+    .filter(({ isHidden }) => !isHidden);
+
+  // for radius overlay sort desc radius to place smaller circles over larger circles
+  if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
+    data.sort((a, b) => Number(b.radius) - Number(a.radius));
+  }
+
+  return data;
+};
+
+const UIMarkerLayer = ({
+  measureData,
+  serieses,
+  multiOverlayMeasureData,
+  multiOverlaySerieses,
+  onSeeOrgUnitDashboard,
+}) => {
+  if (!measureData || !serieses) return null;
+
+  const data = processData(measureData, serieses);
+
+  return (
+    <LayerGroup>
+      {data.map(measure => {
+        // Need to show all values on tooltips even though we toggle off one map overlay
+        const markerData = {
+          ...measure,
+          ...(multiOverlayMeasureData &&
+            multiOverlayMeasureData.find(
+              ({ organisationUnitCode }) => organisationUnitCode === measure.organisationUnitCode,
+            )),
+        };
+        return (
+          <MeasureMarker key={measure.organisationUnitCode} {...measure}>
+            <MeasurePopup
+              markerData={markerData}
+              serieses={serieses}
+              onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
+              multiOverlaySerieses={multiOverlaySerieses}
+            />
+          </MeasureMarker>
+        );
+      })}
+    </LayerGroup>
+  );
+};
 
 export const MarkerLayerComponent = props => {
   const {
@@ -29,6 +84,7 @@ export const MarkerLayerComponent = props => {
   const processedData = measureData.filter(
     ({ coordinates }) => coordinates && coordinates.length === 2,
   );
+
   return (
     <UIMarkerLayer
       measureData={processedData}

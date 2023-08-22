@@ -5,12 +5,13 @@
  */
 import React from 'react';
 import { Marker } from 'react-leaflet';
+import { IconKey } from '@tupaia/types';
 import { getMarkerForValue } from './markerIcons';
 import { MarkerProps } from '../../types';
 
 export const IconMarker = React.memo(
   ({
-    icon = 'pin',
+    icon = IconKey.PIN,
     color,
     children = null,
     coordinates,

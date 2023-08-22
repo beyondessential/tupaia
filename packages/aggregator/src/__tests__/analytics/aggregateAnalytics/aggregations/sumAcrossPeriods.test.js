@@ -5,7 +5,7 @@
 
 import MockDate from 'mockdate';
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
+import { arrayToAnalytics } from '@tupaia/tsutils';
 import { sumAcrossPeriods } from '../../../../analytics/aggregateAnalytics/aggregations/sumAcrossPeriods';
 
 describe('sumAcrossPeriods', () => {

@@ -5,7 +5,7 @@ import {
   createMockModelsStubWithMockEntity,
   createWeatherApiStub,
   createWeatherApiStubWithMockResponse,
-  getMockDataSourcesArg,
+  getMockDataElementsArg,
   getMockOptionsArg,
 } from './WeatherService.stubs';
 import { mockNow } from './testutil';
@@ -41,7 +41,7 @@ describe('WeatherService', () => {
 
       const service = new WeatherService(mockModels, mockApi);
 
-      const actual = await service.pull(
+      const actual = await service.pullAnalytics(
         [
           {
             code: 'WTHR_PRECIP',
@@ -51,7 +51,6 @@ describe('WeatherService', () => {
             permission_groups: ['*'],
           },
         ],
-        'dataElement',
         getMockOptionsArg({
           startDate: '2019-01-01', // historic data request requires these, but api is mocked so these are ignored
           endDate: '2019-01-02',
@@ -89,7 +88,7 @@ describe('WeatherService', () => {
 
       const service = new WeatherService(mockModels, mockApi);
 
-      const actual = await service.pull(
+      const actual = await service.pullEvents(
         [
           {
             code: 'SOME_DATA_GROUP_CODE',
@@ -97,7 +96,6 @@ describe('WeatherService', () => {
             config: {},
           },
         ],
-        'dataGroup',
         getMockOptionsArg({
           startDate: '2019-01-01', // historic data request requires these, but api is mocked so these are ignored
           endDate: '2019-01-02',
@@ -134,9 +132,8 @@ describe('WeatherService', () => {
       const service = new WeatherService(mockModels, mockApi);
 
       const functionCall = async () =>
-        service.pull(
-          getMockDataSourcesArg(),
-          'dataElement',
+        service.pullAnalytics(
+          getMockDataElementsArg(),
           getMockOptionsArg({
             startDate: undefined,
             endDate: undefined,
@@ -174,11 +171,10 @@ describe('WeatherService', () => {
 
       const service = new WeatherService(mockModels, mockApi);
 
-      await service.pull(
-        getMockDataSourcesArg({
+      await service.pullAnalytics(
+        getMockDataElementsArg({
           code: 'WTHR_FORECAST_PRECIP',
         }),
-        'dataElement',
         getMockOptionsArg({
           startDate: '2019-02-05',
           endDate: '2019-02-07',
@@ -202,9 +198,8 @@ describe('WeatherService', () => {
 
       const service = new WeatherService(mockModels, mockApi);
 
-      await service.pull(
-        getMockDataSourcesArg(),
-        'dataElement',
+      await service.pullAnalytics(
+        getMockDataElementsArg(),
         getMockOptionsArg({
           startDate: '2019-01-07',
           endDate: '2019-01-10',
@@ -219,6 +214,15 @@ describe('WeatherService', () => {
         '2019-01-07',
         '2019-01-11', // (same as input, changed to be exclusive end date)
       );
+    });
+  });
+
+  describe('pullSyncGroupResults()', () => {
+    it('throws an error', async () => {
+      const mockModels = await createMockModelsStubWithMockEntity();
+      const mockApi = createWeatherApiStubWithMockResponse();
+      const service = new WeatherService(mockModels, mockApi);
+      await expect(service.pullSyncGroupResults()).toBeRejectedWith('not supported');
     });
   });
 });

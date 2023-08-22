@@ -16,9 +16,11 @@ WORKDIR /tupaia
 # that node_modules is built and added to the container cache without changes to code invalidating it
 COPY package.json ./
 COPY yarn.lock ./
+COPY moduleMock.js ./
 COPY babel.config.json ./
 COPY tsconfig-js.json ./
 COPY jest.config-ts.json ./
+COPY vite.config.js ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 
@@ -143,5 +145,5 @@ RUN yarn build:internal-dependencies
 # copy everything else from the repo
 COPY . ./
 
-# Make sure all packages build, it is possible to break CI in Codeship if removing this
-RUN yarn build:non-internal-dependencies
+# Make sure all packages build
+RUN yarn build

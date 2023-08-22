@@ -6,7 +6,14 @@ import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { AuthModalBody, AuthModalButton, Form, RouterButton, TextField } from '../components';
+import {
+  AuthModalBody,
+  AuthModalButton,
+  Form,
+  RouterButton,
+  RouterLink,
+  TextField,
+} from '../components';
 import { useRequestResetPassword } from '../api/mutations';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
 
@@ -32,16 +39,28 @@ export const CancelButton = styled(RouterButton).attrs({
   border-color: ${({ theme }) => theme.palette.text.secondary};
   margin-top: 1.3rem;
 `;
+
 const CheckEmailMessage = styled.p`
   text-align: center;
   padding: 0 0.9375rem;
 `;
 
+const LinkText = styled(Typography)`
+  font-size: 11px;
+  line-height: 15px;
+  color: white;
+
+  a {
+    color: white;
+  }
+
+  ${CancelButton} + & {
+    margin-top: 1.3rem;
+  }
+`;
+
 export const ForgotPasswordModal = () => {
-  const formContext = useForm({
-    mode: 'onChange',
-  });
-  const { isValid } = formContext.formState;
+  const formContext = useForm();
   const {
     mutate: requestResetPassword,
     isLoading,
@@ -74,10 +93,14 @@ export const ForgotPasswordModal = () => {
             options={FORM_FIELD_VALIDATION.EMAIL}
             disabled={isLoading}
           />
-          <AuthModalButton type="submit" isLoading={isLoading} disabled={!isValid}>
+          <AuthModalButton type="submit" isLoading={isLoading}>
             Reset password
           </AuthModalButton>
           <CancelButton modal={MODAL_ROUTES.LOGIN}>Back to log in</CancelButton>
+          <LinkText align="center">
+            Don't have an account?{' '}
+            <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
+          </LinkText>
         </StyledForm>
       )}
     </ModalBody>

@@ -11,7 +11,8 @@ import {
   AttributionControl,
   MapContainer,
 } from 'react-leaflet';
-import { MeasureMarker, MeasurePopup } from '../src';
+import { MeasureMarker } from '../src/components/Markers/MeasureMarker';
+import { MeasurePopup } from '../src/components/Markers/MeasurePopup';
 
 const Container = styled.div`
   padding: 1rem;

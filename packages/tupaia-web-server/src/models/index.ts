@@ -4,3 +4,4 @@
  */
 
 export { TupaiaWebSessionModel, TupaiaWebSessionType } from './TupaiaWebSession';
+export { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';

@@ -4,9 +4,10 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useLocation, useNavigate } from 'react-router';
-import { useModal } from '../../utils';
+import { Location, useLocation, useNavigate } from 'react-router';
+import { gaEvent, useModal } from '../../utils';
 import { post } from '../api';
+import { DEFAULT_PROJECT_ENTITY, MODAL_ROUTES } from '../../constants';
 
 type LoginCredentials = {
   email: string;
@@ -14,10 +15,11 @@ type LoginCredentials = {
 };
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const location = useLocation() as { state: { referrer?: string } };
+  const location = useLocation() as Location & { state: { referrer?: string } };
+
   const navigate = useNavigate();
 
-  const { closeModal } = useModal();
+  const { closeModal, navigateToModal } = useModal();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -30,14 +32,22 @@ export const useLogin = () => {
       });
     },
     {
+      onMutate: () => {
+        gaEvent('User', 'Log in', 'Attempt');
+      },
       onSuccess: () => {
+        gaEvent('User', 'Login', 'success');
         queryClient.invalidateQueries();
         // if the user was redirected to the login page, redirect them back to the page they were on
-        if (location.state?.referrer)
+        if (location.state?.referrer) {
           navigate(location.state.referrer, {
             state: null,
           });
-        else closeModal();
+        } else if (location.pathname.includes(DEFAULT_PROJECT_ENTITY)) {
+          navigateToModal(MODAL_ROUTES.PROJECTS);
+        } else {
+          closeModal();
+        }
       },
     },
   );

@@ -7,6 +7,7 @@ import { createReducer } from '../utilities';
 
 import { DATA_CHANGE_ACTIONS as tableActions } from '../table';
 import { DATA_CHANGE_ACTIONS as editorActions } from '../editor';
+import { DATA_CHANGE_ACTIONS as resubmitSurveyActions } from '../surveyResponse';
 
 const defaultState = {
   isChangingDataOnServer: false,
@@ -21,6 +22,7 @@ const buildStateChangesFromDataChangeActions = dataChangeActions => ({
 const stateChanges = {
   ...buildStateChangesFromDataChangeActions(tableActions),
   ...buildStateChangesFromDataChangeActions(editorActions),
+  ...buildStateChangesFromDataChangeActions(resubmitSurveyActions),
 };
 
 export const reducer = createReducer(defaultState, stateChanges);

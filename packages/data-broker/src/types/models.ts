@@ -141,10 +141,7 @@ export type EntityHierarchy = {
   canonical_types: string[];
 };
 
-export type DataSourceTypeInstance = {
-  code: string;
-  service_type: ServiceType;
-  config: Record<string, DbValue>;
+export type DataSourceTypeInstance = DataSource & {
   databaseType:
     | typeof TYPES.DATA_ELEMENT
     | typeof TYPES.DATA_GROUP

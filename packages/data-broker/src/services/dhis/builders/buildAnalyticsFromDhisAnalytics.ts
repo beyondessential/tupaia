@@ -4,7 +4,7 @@
  */
 
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
-import { Analytic, AnalyticResults } from '../../../types';
+import { Analytic, RawAnalyticResults } from '../../../types';
 import { AnalyticDimension, DhisAnalytics, ValueType } from '../types';
 import { sanitizeValue } from './sanitizeValue';
 
@@ -24,7 +24,9 @@ type ColumnSpec = {
   valueType: ValueType;
 };
 
-export const buildAnalyticsFromDhisAnalytics = (dhisAnalytics: DhisAnalytics): AnalyticResults => {
+export const buildAnalyticsFromDhisAnalytics = (
+  dhisAnalytics: DhisAnalytics,
+): RawAnalyticResults => {
   const { headers, rows, metaData: metadata } = dhisAnalytics;
   const columnSpecs = getColumnSpecs(headers);
 

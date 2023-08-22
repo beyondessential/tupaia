@@ -37,8 +37,10 @@ export const processEntityConfig = async (models, config) => {
   );
 
   const processedConfig = {
+    allowScanQrCode: isYes(config.allowScanQrCode),
     type: splitStringOnComma(config.type),
     createNew: isYes(config.createNew),
+    generateQrCode: isYes(config.generateQrCode),
     ...entityCreationNonJsonFields,
     ...entityCreationJsonFields,
   };

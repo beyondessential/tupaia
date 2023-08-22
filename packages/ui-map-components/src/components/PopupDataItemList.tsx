@@ -37,6 +37,7 @@ export const PopupDataItemList = ({
         .map(series => {
           const { name } = series;
           const { formattedValue, valueInfo } = getFormattedInfo(data, series);
+
           return valueInfo.hideFromPopup ? null : (
             <PopupDataItem key={name} measureName={name} value={formattedValue} />
           );

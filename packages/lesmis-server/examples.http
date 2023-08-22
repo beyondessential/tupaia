@@ -40,9 +40,9 @@ content-type: {{contentType}}
 
 
 ### Public report
-GET http://{{host}}/{{version}}/reportData/LA_Phonhong%20District/Laos_Schools_Number_Of_Schools_By_Type_Table?type=view&dashboardGroupId=337 HTTP/1.1
+GET http://{{host}}/{{version}}/report/LA_Phonhong%20District/Laos_Schools_Number_Of_Schools_By_Type_Table?type=view&dashboardGroupId=337 HTTP/1.1
 content-type: {{contentType}}
 
 ### MoES only report
-GET http://{{host}}/{{version}}/reportData/LA_Phonhong%20District/Laos_Schools_Language_Of_Students?type=view&dashboardGroupId=359 HTTP/1.1
+GET http://{{host}}/{{version}}/report/LA_Phonhong%20District/Laos_Schools_Language_Of_Students?type=view&dashboardGroupId=359 HTTP/1.1
 content-type: {{contentType}}

@@ -5,7 +5,7 @@
 import { useMutation } from 'react-query';
 
 export const useApproveSurveyResponseStatus = api =>
-  useMutation(id => api.put(`surveyResponses/${id}`, {}, { approval_status: 'approved' }));
+  useMutation(id => api.post(`surveyResponse/${id}/resubmit`, {}, { approval_status: 'approved' }));
 
 export const useRejectSurveyResponseStatus = api =>
-  useMutation(id => api.put(`surveyResponses/${id}`, {}, { approval_status: 'rejected' }));
+  useMutation(id => api.post(`surveyResponse/${id}/resubmit`, {}, { approval_status: 'rejected' }));

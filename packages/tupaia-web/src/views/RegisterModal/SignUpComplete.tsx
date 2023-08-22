@@ -15,44 +15,27 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   max-width: 100%;
-  width: 36rem;
+  width: 40rem;
 
   a {
-    margin-top: 2rem;
-    width: 50%;
+    margin-top: 2.5rem;
+    margin-bottom: 2rem;
+    width: 20rem;
+    max-width: 100%;
+    text-transform: none;
   }
-`;
-
-const FormLink = styled.a`
-  color: white;
-  font-weight: 500;
 `;
 
 export const SignupComplete = () => {
   return (
     <Container>
       <Typography>
-        Congratulations, you have successfully signed up to Tupaia. To activate your account please{' '}
-        <b>click the verification link in your email.</b> Once activated, you can use your new
-        account to log in to tupaia.org as well as our app, Tupaia Meditrak on{' '}
-        <FormLink
-          href="https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537?mt=8"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          &nbsp;iOS
-        </FormLink>
-        &nbsp;and
-        <FormLink
-          href="https://play.google.com/store/apps/details?id=com.tupaiameditrak&hl=en"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          &nbsp;Android&nbsp;.
-        </FormLink>
+        Congratulations, you have successfully signed up to Tupaia. To activate your account please
+        click the verification link in your email. Once activated, you can use your new account to
+        log in to tupaia.org and the Tupaia Meditrak app.
       </Typography>
       <RouterButton modal={MODAL_ROUTES.VERIFY_EMAIL_RESEND}>
-        Re-send verification email
+        Resend verification email
       </RouterButton>
     </Container>
   );

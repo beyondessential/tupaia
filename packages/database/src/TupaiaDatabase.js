@@ -276,9 +276,9 @@ export class TupaiaDatabase {
     const sql = `
      with recursive findParents as (
        select * from ${recordType}
-         where ${idKey} = '${id}'
+         where ${idKey} in ('${Array.isArray(id) ? id.join("','") : id}')
        union
-         select ${recordType}.* from ${recordType}
+         select distinct(${recordType}.*) from ${recordType}
            join findParents on findParents.${parentIdKey} = ${recordType}.${idKey}
      )
 

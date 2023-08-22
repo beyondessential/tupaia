@@ -6,9 +6,14 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelCaseKeys from 'camelcase-keys';
+import { TupaiaWebEntityRequest } from '@tupaia/types';
 
-// TODO: WAITP-1278 Move this to types
-export type EntityRequest = Request<any, any, any, any>;
+export type EntityRequest = Request<
+  TupaiaWebEntityRequest.Params,
+  TupaiaWebEntityRequest.ResBody,
+  TupaiaWebEntityRequest.ReqBody,
+  TupaiaWebEntityRequest.ReqQuery
+>;
 
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
 

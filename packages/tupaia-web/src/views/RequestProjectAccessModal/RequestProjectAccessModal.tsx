@@ -61,13 +61,10 @@ export const RequestProjectAccessModal = () => {
   );
 
   const getCountriesByAccess = (hasRequests: boolean) => {
-    return projectCountries?.filter(({ hasAccess, accessRequests }) => {
-      return (
-        !hasAccess &&
-        (hasRequests
-          ? accessRequests.includes(projectCode!)
-          : !accessRequests.includes(projectCode!))
-      );
+    return projectCountries?.filter(({ accessRequests }) => {
+      return hasRequests
+        ? accessRequests.includes(projectCode!)
+        : !accessRequests.includes(projectCode!);
     });
   };
 
@@ -85,15 +82,13 @@ export const RequestProjectAccessModal = () => {
   // Show the requested countries if there are any, and the user has not opted to request additional countries
   const showRequestedCountries = requestedCountries?.length > 0 && !requestAdditionalCountries;
 
-  const hasAccess =
-    projectCountries && projectCountries.length ? projectCountries.every(c => c.hasAccess) : false;
   return (
     <ModalBody>
       <LoadingScreen isLoading={isLoading} />
       <ModalHeader />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
-      {hasAccess && <Typography>You already have access to this project</Typography>}
+      {project?.hasAccess && <Typography>You already have access to this project</Typography>}
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}

@@ -8,18 +8,31 @@ import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { BORDER_RADIUS, THEME_COLOR_ONE, THEME_COLOR_TWO, THEME_COLOR_FOUR } from '../globalStyles';
 import { Text } from './Text';
-import { analytics } from '../utilities';
 import { TouchableOpacity } from './Touchable';
 
 export function Button(props) {
-  const { disabledStyle, isDisabled, onPress, title, textDisabledStyle, textStyle, style } = props;
+  const {
+    disabledStyle,
+    isDisabled,
+    onPress,
+    title,
+    textDisabledStyle,
+    textStyle,
+    Icon,
+    style,
+  } = props;
+
+  const Label = (
+    <View style={localStyles.label}>
+      {Icon}
+      <Text style={[localStyles.text, textStyle, isDisabled ? textDisabledStyle : null]}>
+        {title}
+      </Text>
+    </View>
+  );
 
   if (isDisabled) {
-    return (
-      <View style={[localStyles.button, style, disabledStyle]}>
-        <Text style={[localStyles.text, textStyle, textDisabledStyle]}>{title}</Text>
-      </View>
-    );
+    return <View style={[localStyles.button, style, disabledStyle]}>{Label}</View>;
   }
 
   return (
@@ -29,12 +42,17 @@ export function Button(props) {
       analyticsLabel={title}
       onPress={onPress}
     >
-      <Text style={[localStyles.text, textStyle]}>{title}</Text>
+      {Label}
     </TouchableOpacity>
   );
 }
 
 const localStyles = StyleSheet.create({
+  label: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    textAlign: 'center',
+  },
   text: {
     alignSelf: 'center',
     textAlign: 'center',
@@ -61,6 +79,7 @@ Button.propTypes = {
   textStyle: Text.propTypes.style,
   onPress: PropTypes.func,
   title: PropTypes.string,
+  Icon: PropTypes.node,
   isDisabled: PropTypes.bool,
   disabledStyle: ViewPropTypes.style,
   textDisabledStyle: Text.propTypes.style,
@@ -69,6 +88,7 @@ Button.propTypes = {
 Button.defaultProps = {
   onPress: () => {},
   title: 'Press Me',
+  Icon: null,
   isDisabled: false,
   disabledStyle: localStyles.disabledButton,
   textDisabledStyle: localStyles.disabledText,

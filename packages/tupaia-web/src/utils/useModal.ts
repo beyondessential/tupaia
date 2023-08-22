@@ -11,8 +11,20 @@ export const useModal = () => {
   const navigate = useNavigate();
   const { hash, ...location } = useLocation();
 
-  function navigateToModal(hashKey: MODAL_ROUTES) {
-    navigate({ ...location, hash: hashKey });
+  function navigateToModal(
+    hashKey: MODAL_ROUTES,
+    urlSearchParams?: {
+      param: string;
+      value: string;
+    }[],
+  ) {
+    const searchParams = new URLSearchParams(location.search);
+    if (urlSearchParams) {
+      urlSearchParams.forEach(({ param, value }) => {
+        searchParams.set(param, value);
+      });
+    }
+    navigate({ ...location, hash: hashKey, search: searchParams.toString() });
   }
   function closeModal(urlSearchParamsToRemove?: string[]) {
     navigate({

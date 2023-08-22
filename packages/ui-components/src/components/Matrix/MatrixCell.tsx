@@ -16,6 +16,7 @@ import {
 } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { MatrixColumnType, MatrixRowType } from '../../types';
+import { CellLink } from './CellLink';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;
@@ -37,6 +38,7 @@ const DataCell = styled(TableCell)`
   padding: 0;
   height: 100%;
   border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
+  word-break: break-word;
 `;
 
 const DataCellContent = styled.div`
@@ -62,12 +64,13 @@ interface MatrixRowProps {
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
   colKey: MatrixColumnType['key'];
+  link?: MatrixRowType['link'];
 }
 
 /**
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
-export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowProps) => {
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey, link }: MatrixRowProps) => {
   const { presentationOptions = {}, categoryPresentationOptions = {}, columns } = useContext(
     MatrixContext,
   );
@@ -92,6 +95,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowPro
   ) : (
     value
   );
+
   const onClickCellButton = () => {
     dispatch({
       type: ACTION_TYPES.SET_ENLARGED_CELL,
@@ -104,12 +108,17 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixRowPro
       },
     });
   };
+
+  // If the cell has a link, it should be a link to another page. If isDots is true, it should be a button that can be clicked to open a modal. Otherwise, it should just be a normal cell.
+  let CellComponent;
+  if (link) {
+    CellComponent = CellLink;
+  } else if (isDots) {
+    CellComponent = ExpandButton;
+  }
   return (
     <DataCell>
-      <DataCellContent
-        as={isDots ? ExpandButton : 'div'}
-        onClick={isDots ? onClickCellButton : undefined}
-      >
+      <DataCellContent as={CellComponent} onClick={isDots ? onClickCellButton : null} to={link}>
         {displayValue}
       </DataCellContent>
     </DataCell>

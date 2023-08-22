@@ -1,7 +1,8 @@
 import { ValidationError } from '@tupaia/utils';
 import type { WeatherApi } from '@tupaia/weather-api';
+import { DataServiceMapping } from '../DataServiceMapping';
 import {
-  AnalyticResults,
+  RawAnalyticResults,
   DataBrokerModelRegistry,
   DataGroup,
   DataSource,
@@ -14,17 +15,14 @@ import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
 import { DataElement, WeatherResult } from './types';
-import type {
-  PullOptions as BasePullOptions,
-  PullMetadataOptions as BasePullMetadataOptions,
-} from '../Service';
+import type { PullMetadataOptions as BasePullMetadataOptions } from '../Service';
 
-export type PullOptions = BasePullOptions &
-  Partial<{
-    organisationUnitCodes: string[];
-    startDate: string;
-    endDate: string;
-  }>;
+export type PullOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCodes?: string[];
+  startDate?: string;
+  endDate?: string;
+};
 
 export class WeatherService extends Service {
   private readonly api: WeatherApi;
@@ -36,20 +34,32 @@ export class WeatherService extends Service {
     this.dateSanitiser = new DateSanitiser();
   }
 
+  public pullAnalytics(dataElements: DataElement[], options: PullOptions) {
+    return this.pull(dataElements, 'dataElement', options);
+  }
+
+  public pullEvents(dataGroups: DataGroup[], options: PullOptions) {
+    return this.pull(dataGroups, 'dataGroup', options);
+  }
+
+  public async pullSyncGroupResults(): Promise<never> {
+    throw new Error('pullSyncGroupResults is not supported in WeatherService');
+  }
+
   /**
    * Note, if no period specified will return current weather
    */
-  public async pull(
+  private async pull(
     dataSources: DataElement[],
     type: 'dataElement',
     options: PullOptions,
-  ): Promise<AnalyticResults>;
-  public async pull(
+  ): Promise<RawAnalyticResults>;
+  private async pull(
     dataSources: DataGroup[],
     type: 'dataGroup',
     options: PullOptions,
   ): Promise<EventResults>;
-  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
+  private async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
     this.validateOptions(options);
 
     const { startDate, endDate } = options;
@@ -60,7 +70,7 @@ export class WeatherService extends Service {
       options.organisationUnitCodes as string[],
     );
 
-    const dataElementTypeDataSources = await this.extractDataSources(type, dataSources);
+    const dataElementTypeDataSources = await this.extractDataElements(type, dataSources);
 
     const forecastDataElementCodes = dataElementTypeDataSources
       .filter(dataSource => dataSource.config.weatherForecastData === true)
@@ -131,7 +141,7 @@ export class WeatherService extends Service {
     throw new Error('Not supported');
   }
 
-  private async extractDataSources(
+  private async extractDataElements(
     requestType: DataSourceType,
     requestDataSources: DataSource[],
   ): Promise<DataElement[]> {
@@ -141,17 +151,17 @@ export class WeatherService extends Service {
     const [requestDataSource] = requestDataSources;
     const requestDataSourceCode = requestDataSource.code;
 
-    let dataSources = null;
+    let dataElements = null;
     if (requestType === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
-      dataSources = await this.models.dataElement.find({
+      dataElements = await this.models.dataElement.find({
         code: requestDataSourceCode,
       });
     } else if (requestType === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
-      dataSources = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);
+      dataElements = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);
     }
-    return dataSources as DataElement[];
+    return dataElements as DataElement[];
   }
 
   /**

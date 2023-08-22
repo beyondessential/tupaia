@@ -147,6 +147,7 @@ export class DumbSurveyScreen extends React.Component {
           if (screenIndexForThisContent === null) {
             return null;
           }
+
           return (
             <Animated.View
               key={screenIndexForThisContent}
@@ -193,6 +194,7 @@ export class DumbSurveyScreen extends React.Component {
           isTableOfContentsEnabled={!isSubmitting}
           onPressToc={() => this.onToggleToc()}
         />
+
         <Popup
           visible={isTableOfContentsVisible}
           onDismiss={() => this.onToggleToc()}

@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import 'react-table/react-table.css';
+import 'react-table-v6/react-table.css';
 
 export { LoginPage, LogoutPage } from './pages';
 export { PrivateRoute } from './authentication';

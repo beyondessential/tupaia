@@ -105,7 +105,7 @@ const UserMenu = ({
   const ViewProjects = <BaseMenuItem onClick={onOpenViewProjects}>View projects</BaseMenuItem>;
 
   const HelpCentre = (
-    <BaseMenuItem href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm">
+    <BaseMenuItem href="https://beyond-essential.slab.com/topics/support-and-resources-g6piq0i1">
       Help centre
     </BaseMenuItem>
   );

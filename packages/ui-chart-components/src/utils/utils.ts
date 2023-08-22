@@ -53,20 +53,3 @@ export const getIsChartData = ({
 
   return data && data.length > 0;
 };
-
-export const getNoDataString = (viewContent: ViewContent) => {
-  const { noDataMessage, source, startDate, endDate } = viewContent;
-  if (noDataMessage) {
-    return noDataMessage;
-  }
-
-  if (source === 'mSupply') {
-    return 'Requires mSupply';
-  }
-
-  if (startDate && endDate) {
-    return `No data for ${startDate} to ${endDate}`;
-  }
-
-  return 'No data for selected dates';
-};

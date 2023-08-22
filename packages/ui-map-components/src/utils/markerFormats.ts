@@ -5,6 +5,9 @@
  */
 
 import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
+import {
+  ScaleType
+} from '@tupaia/types';
 import { resolveSpectrumColour } from './markerColors';
 import {
   YES_COLOR,
@@ -12,18 +15,17 @@ import {
   BREWER_AUTO,
   UNKNOWN_COLOR,
   MAP_COLORS,
-  SCALE_TYPES,
 } from '../constants';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 import {
   SeriesValue,
   LegendProps,
   MeasureData,
-  ScaleType,
+  ScaleTypeLiteral,
   Series,
   SeriesValueMapping,
   Value,
-  MeasureType,
+  MeasureTypeLiteral,
 } from '../types';
 
 export const MEASURE_TYPE_ICON = 'icon';
@@ -115,16 +117,16 @@ const getNullValueMapping = (type: string) => {
 
 function getFormattedValue(
   value: Value,
-  type: MeasureType,
+  type: MeasureTypeLiteral,
   valueInfo: SeriesValue,
-  scaleType: ScaleType,
+  scaleType: ScaleTypeLiteral,
   valueType: Series['valueType'],
   submissionDate: MeasureData['submissionDate'],
 ) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
-      if (scaleType === SCALE_TYPES.TIME) {
+      if (scaleType === ScaleType.TIME) {
         return `last submission on ${submissionDate}`;
       }
       return formatDataValueByType({ value }, valueType);
@@ -132,7 +134,7 @@ function getFormattedValue(
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
     case MEASURE_TYPE_SHADING:
-      if (scaleType === SCALE_TYPES.TIME) {
+      if (scaleType === ScaleType.TIME) {
         return `last submission on ${submissionDate}`;
       }
       return valueInfo.name || value;
@@ -144,7 +146,7 @@ function getFormattedValue(
 export const getSpectrumScaleValues = (measureData: MeasureData[], series: Series) => {
   const { key, scaleType, startDate, endDate } = series;
 
-  if (scaleType === SCALE_TYPES.TIME) {
+  if (scaleType === ScaleType.TIME) {
     return { min: startDate, max: endDate };
   }
 

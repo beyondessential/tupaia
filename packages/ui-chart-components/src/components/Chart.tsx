@@ -5,17 +5,11 @@
 
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import { NoData } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import { SmallAlert } from '@tupaia/ui-components';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
-import {
-  getIsTimeSeries,
-  isDataKey,
-  parseChartConfig,
-  getIsChartData,
-  getNoDataString,
-} from '../utils';
+import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
 import { ChartType, ViewContent, LegendPosition } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
@@ -36,12 +30,6 @@ const UnknownChart = () => (
     <UnknownChartTitle variant="h2">New chart coming soon</UnknownChartTitle>
   </UnknownChartContainer>
 );
-
-const NoData = styled(SmallAlert)`
-  align-self: center;
-  margin-left: auto;
-  margin-right: auto;
-`;
 
 const removeNonNumericData = (data: any[]) =>
   data.map(dataSeries => {
@@ -102,11 +90,7 @@ export const Chart = ({
   }
 
   if (!getIsChartData({ chartType: viewContent.chartType, data: viewContent.data })) {
-    return (
-      <NoData severity="info" variant="standard">
-        {getNoDataString(viewContent)}
-      </NoData>
-    );
+    return <NoData viewContent={viewContent} />;
   }
 
   const viewContentConfig = getViewContent(viewContent);

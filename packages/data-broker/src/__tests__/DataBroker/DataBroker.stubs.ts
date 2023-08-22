@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import pickBy from 'lodash.pickby';
 import { reduceToDictionary } from '@tupaia/utils';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
@@ -15,8 +16,7 @@ import {
   MockServiceData,
   SYNC_GROUPS,
 } from './DataBroker.fixtures';
-import { DataBrokerModelRegistry, DataSource, DataSourceType } from '../../types';
-import pickBy from 'lodash.pickby';
+import { DataBrokerModelRegistry, DataElement, DataGroup, DataServiceSyncGroup } from '../../types';
 
 export const stubCreateService = (services: Record<string, Service>) =>
   jest.spyOn(CreateService, 'createService').mockImplementation((_, type) => {
@@ -43,55 +43,50 @@ export class MockService extends Service {
     return this;
   }
 
-  public pull = jest
+  public pullAnalytics = jest
     .fn()
     .mockImplementation(
-      (
-        dataSources: DataSource[],
-        type: DataSourceType,
-        options: { organisationUnitCodes?: string[] },
-      ) => {
-        const { analytics, eventsByProgram, dataElements } = this.mockData;
+      (dataElements: DataElement[], options: { organisationUnitCodes?: string[] }) => {
+        const { analytics, dataElements: availableDataElements } = this.mockData;
         const { organisationUnitCodes } = options;
-        const dataSourceCodes = dataSources.map(({ code }) => code);
+        const dataElementCodes = dataElements.map(({ code }) => code);
 
-        switch (type) {
-          case 'dataElement': {
-            let results = analytics.filter(({ dataElement }) =>
-              dataSourceCodes.includes(dataElement),
-            );
-            if (organisationUnitCodes) {
-              results = results.filter(({ organisationUnit }) =>
-                organisationUnitCodes.includes(organisationUnit),
-              );
-            }
-            const selectedDataElements = dataElements.filter(({ code }) =>
-              dataSourceCodes.includes(code),
-            );
-            const dataElementCodeToName = reduceToDictionary(selectedDataElements, 'code', 'name');
-
-            return {
-              results,
-              metadata: {
-                dataElementCodeToName,
-              },
-            };
-          }
-          case 'dataGroup': {
-            return Object.entries(eventsByProgram)
-              .filter(([program]) => dataSourceCodes.includes(program))
-              .flatMap(([, events]) => events);
-          }
-          case 'syncGroup': {
-            return pickBy(eventsByProgram, (_, programCode) =>
-              dataSourceCodes.includes(programCode),
-            );
-          }
-          default:
-            throw new Error(`Invalid data source type: ${type}`);
+        let results = analytics.filter(({ dataElement }) => dataElementCodes.includes(dataElement));
+        if (organisationUnitCodes) {
+          results = results.filter(({ organisationUnit }) =>
+            organisationUnitCodes.includes(organisationUnit),
+          );
         }
+        const selectedDataElements = availableDataElements.filter(({ code }) =>
+          dataElementCodes.includes(code),
+        );
+        const dataElementCodeToName = reduceToDictionary(selectedDataElements, 'code', 'name');
+
+        return {
+          results,
+          metadata: {
+            dataElementCodeToName,
+          },
+        };
       },
     );
+
+  public pullEvents = jest.fn().mockImplementation((dataGroups: DataGroup[]) => {
+    const { eventsByProgram } = this.mockData;
+    const dataGroupCodes = dataGroups.map(({ code }) => code);
+
+    return Object.entries(eventsByProgram)
+      .filter(([program]) => dataGroupCodes.includes(program))
+      .flatMap(([, events]) => events);
+  });
+
+  public pullSyncGroupResults = jest
+    .fn()
+    .mockImplementation((syncGroups: DataServiceSyncGroup[]) => {
+      const { eventsByProgram } = this.mockData;
+      const syncGroupCodes = syncGroups.map(({ code }) => code);
+      return pickBy(eventsByProgram, (_, programCode) => syncGroupCodes.includes(programCode));
+    });
 
   public push = jest.fn();
 

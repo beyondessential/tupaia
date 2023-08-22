@@ -10,6 +10,7 @@ export const URL_SEARCH_PARAMS = {
   MAP_OVERLAY_PERIOD: 'overlayPeriod',
   REPORT: 'report',
   REPORT_PERIOD: 'reportPeriod',
+  REPORT_DRILLDOWN_ID: 'reportDrillDownId',
 };
 
 export enum MODAL_ROUTES {
@@ -23,7 +24,8 @@ export enum MODAL_ROUTES {
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 
-export const DEFAULT_URL = `/explore/explore/General`;
+export const DEFAULT_PROJECT_ENTITY = '/explore/explore';
+export const DEFAULT_URL = `${DEFAULT_PROJECT_ENTITY}/General`;
 
 export enum TABS {
   MAP = 'map',

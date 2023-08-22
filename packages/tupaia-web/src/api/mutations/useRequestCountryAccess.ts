@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
 import { useSearchParams } from 'react-router-dom';
 import { URL_SEARCH_PARAMS } from '../../constants';
@@ -14,6 +14,7 @@ type RequestCountryAccessParams = {
   message?: string;
 };
 export const useRequestCountryAccess = () => {
+  const queryClient = useQueryClient();
   const [urlSearchParams] = useSearchParams();
   const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
@@ -25,6 +26,13 @@ export const useRequestCountryAccess = () => {
           projectCode,
         },
       });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['projects'],
+        });
+      },
     },
   );
 };

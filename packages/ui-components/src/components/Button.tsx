@@ -20,7 +20,7 @@ const StyledButton = styled(MuiButton)`
     box-shadow: none;
   }
 
-  &.Mui-disabled {
+  &.Mui-disabled.MuiButton-containedPrimary {
     opacity: 0.8;
     background-color: ${props => props.theme.palette.primary.main};
     color: white;

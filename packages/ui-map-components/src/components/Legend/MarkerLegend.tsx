@@ -7,11 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
+import { IconKey } from '@tupaia/types';
 import { UNKNOWN_COLOR } from '../../constants';
 import {
   DEFAULT_ICON,
   HIDDEN_ICON,
-  IconKey,
   LEGEND_COLOR_ICON,
   LEGEND_RADIUS_ICON,
   LEGEND_SHADING_ICON,

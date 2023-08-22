@@ -8,9 +8,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { omitBy } from 'lodash';
 import PropTypes from 'prop-types';
-
-import { InteractivePolygon } from '@tupaia/ui-map-components';
-
+import { InteractivePolygon } from './InteractivePolygon';
 import { organisationUnitIsArea } from '../../../utils';
 import {
   selectAreRegionLabelsPermanent,

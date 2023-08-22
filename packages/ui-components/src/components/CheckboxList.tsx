@@ -10,7 +10,6 @@ import {
   Card,
   CardHeader,
   List,
-  ListItem as BaseListItem,
   Checkbox,
 } from '@material-ui/core';
 import styled from 'styled-components';
@@ -82,7 +81,7 @@ const ListItem = styled.li`
 const ListTitle = styled.span`
   font-weight: bold;
 `;
-interface ListItemProps {
+export interface ListItemProps {
   name: string;
   code: string;
   disabled?: boolean;
@@ -165,6 +164,7 @@ export const CheckboxList = ({
               }
               disabled={enabledItems.length === 0}
               inputProps={{ 'aria-describedby': `subtitle-select-all-${title}` }}
+              color="primary"
             />
           }
         />
@@ -197,6 +197,7 @@ export const CheckboxList = ({
                       onClick={handleCheck(item)}
                       tabIndex={-1}
                       disableRipple
+                      color="primary"
                     />
                   }
                 />

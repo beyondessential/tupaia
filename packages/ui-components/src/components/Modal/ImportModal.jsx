@@ -12,7 +12,7 @@ import { SmallAlert } from '../Alert';
 import { Button, OutlinedButton } from '../Button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '../Dialog';
 import { FileUploadField } from '../Inputs';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingContainer } from '../Loaders';
 
 const STATUS = {
   IDLE: 'idle',

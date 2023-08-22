@@ -5,6 +5,7 @@
 
 import { Analytic, AnalyticCluster } from './types';
 
+// TODO: use the one in tsutils
 export type ArrayAnalytic = [string, string, string, string | number];
 
 /**
@@ -24,6 +25,7 @@ export const analyticsToAnalyticClusters = (analytics: Analytic[]): AnalyticClus
   return Object.values(clusterMap);
 };
 
+// TODO: use the one in tsutils
 export const arrayToAnalytics = (arrayAnalytics: ArrayAnalytic[]): Analytic[] =>
   arrayAnalytics.map(([dataElement, organisationUnit, period, value]) => ({
     dataElement,

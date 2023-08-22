@@ -20,6 +20,18 @@ import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 export class GETSurveyResponses extends GETHandler {
   permissionsFilteredInternally = true;
 
+  customJoinConditions = {
+    country: {
+      through: 'entity',
+      nearTableKey: 'entity.country_code',
+      farTableKey: 'country.code',
+    },
+    entity: {
+      nearTableKey: 'survey_response.entity_id',
+      farTableKey: 'entity.id',
+    },
+  };
+
   async findSingleRecord(surveyResponseId, options) {
     const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
 
@@ -29,7 +41,6 @@ export class GETSurveyResponses extends GETHandler {
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
     );
-
     return surveyResponse;
   }
 

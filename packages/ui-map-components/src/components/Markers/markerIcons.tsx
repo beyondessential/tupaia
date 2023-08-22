@@ -21,7 +21,7 @@ import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
 import { BREWER_PALETTE, WHITE } from '../../constants';
 import { IconContainer } from './IconContainer';
 import { Color, ColorKey } from '../../types';
-import { CssColor } from '@tupaia/types';
+import { CssColor, IconKey } from '@tupaia/types';
 
 // allows passing a color to a material icon & scales it down a bit
 const wrapMaterialIcon = (Base: ElementType) => ({ color }: { color: Color }) => (
@@ -250,71 +250,71 @@ const FadedCircle = ({ color, scale = 1 }: IconProps) => {
 };
 
 const icons = {
-  pin: {
+  [IconKey.PIN]: {
     Component: PinIcon,
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
-  upArrow: {
+  [IconKey.UP_ARROW]: {
     Component: UpArrowIcon,
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
-  rightArrow: {
+  [IconKey.RIGHT_ARROW]: {
     Component: RightArrowIcon,
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
-  downArrow: {
+  [IconKey.DOWN_ARROW]: {
     Component: DownArrowIcon,
     iconAnchor: [10, 24],
     popupAnchor: [0, -30],
   },
-  healthPin: {
+  [IconKey.HEALTH_PIN]: {
     Component: HealthPinIcon,
     iconAnchor: [12, 24],
     popupAnchor: [0, -30],
   },
-  circle: {
+  [IconKey.CIRCLE]: {
     Component: CircleIcon,
   },
-  square: {
+  [IconKey.SQUARE]: {
     Component: SquareIcon,
   },
-  triangle: {
+  [IconKey.TRIANGLE]: {
     Component: TriangleIcon,
   },
-  pentagon: {
+  [IconKey.PENTAGON]: {
     Component: PentagonIcon,
   },
-  radius: {
+  [IconKey.RADIUS]: {
     Component: RadiusIcon,
   },
-  ring: {
+  [IconKey.RING]: {
     Component: RingIcon,
   },
-  h: {
+  [IconKey.H]: {
     Component: HIcon,
   },
-  x: {
+  [IconKey.X]: {
     Component: XIcon,
   },
-  empty: {
+  [IconKey.EMPTY]: {
     Component: DottedCircle,
   },
-  fade: {
+  [IconKey.FADE]: {
     Component: FadedCircle,
   },
-  warning: {
+  [IconKey.WARNING]: {
     Component: wrapMaterialIcon(Warning),
   },
-  help: {
+  [IconKey.HELP]: {
     Component: wrapMaterialIcon(Help),
   },
-  checkbox: {
+  [IconKey.CHECKBOX]: {
     Component: wrapMaterialIcon(CheckBox),
   },
-  hidden: {
+  [IconKey.HIDDEN]: {
     Component: () => null,
   },
 };
@@ -326,15 +326,13 @@ type IconType = {
   [key: string]: unknown;
 };
 
-export type IconKey = keyof typeof icons;
-
-export const SPECTRUM_ICON = 'fade';
-export const UNKNOWN_ICON = 'empty';
-export const DEFAULT_ICON = 'healthPin';
-export const LEGEND_COLOR_ICON = 'circle';
-export const LEGEND_SHADING_ICON = 'square';
-export const LEGEND_RADIUS_ICON = 'radius';
-export const HIDDEN_ICON = 'hidden';
+export const SPECTRUM_ICON = IconKey.FADE;
+export const UNKNOWN_ICON = IconKey.EMPTY;
+export const DEFAULT_ICON = IconKey.HEALTH_PIN;
+export const LEGEND_COLOR_ICON = IconKey.CIRCLE;
+export const LEGEND_SHADING_ICON = IconKey.SQUARE;
+export const LEGEND_RADIUS_ICON = IconKey.RADIUS;
+export const HIDDEN_ICON = IconKey.HIDDEN;
 
 function toLeaflet(icon: IconType, color?: string, scale: number = 1): L.DivIcon {
   const {

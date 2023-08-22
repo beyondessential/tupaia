@@ -10,6 +10,7 @@ export const REQUEST_COUNTRY_ACCESS_SCREEN = 'RequestCountryAccess';
 export const WELCOME_SCREEN = 'Welcome';
 export const CREATE_ACCOUNT_SCREEN = 'CreateAccount';
 export const SYNC_SCREEN = 'SyncScreen';
+export const QR_CODES_SCREEN = 'QrCodes';
 export const SURVEY_SCREEN = 'SurveyScreen';
 export const SURVEYS_MENU_SCREEN = 'SurveysMenu';
 export const CHANGE_PASSWORD_SCREEN = 'ChangePassword';

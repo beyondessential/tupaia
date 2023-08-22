@@ -34,6 +34,7 @@ afterAll(() => server.close());
 
 function renderWeeklyReportsPanel() {
   const history = createMemoryHistory({ initialEntries: ['/weekly-reports/TO'] });
+
   render(
     <Router history={history}>
       <Route path="/weekly-reports/:countryCode">
@@ -46,7 +47,9 @@ function renderWeeklyReportsPanel() {
       </Route>
     </Router>,
   );
+
   const countryReports = screen.getByTestId('country-reports');
+
   const inCountryReports = within(countryReports);
 
   return {

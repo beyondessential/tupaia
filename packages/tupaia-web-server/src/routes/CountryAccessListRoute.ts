@@ -5,8 +5,14 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 
-export type CountryAccessListRequest = Request<any, any, any, any>;
+export type CountryAccessListRequest = Request<
+  TupaiaWebCountryAccessListRequest.Params,
+  TupaiaWebCountryAccessListRequest.ResBody,
+  TupaiaWebCountryAccessListRequest.ReqBody,
+  TupaiaWebCountryAccessListRequest.ReqQuery
+>;
 
 export class CountryAccessListRoute extends Route<CountryAccessListRequest> {
   public async buildResponse() {

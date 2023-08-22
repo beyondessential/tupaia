@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Legend } from '../src';
+import { Legend } from '../src/components/Legend';
 import mapOverlaySerieses from './data/mapOverlaySerieses.json';
 import spectrumMapOverlaySeries from './data/spectrumMapOverlaySerieses.json';
 

@@ -14,7 +14,7 @@ const RELATION_CHILD_TYPES = {
   MAP_OVERLAY_GROUP,
 };
 
-class MapOverlayGroupRelationType extends DatabaseType {
+export class MapOverlayGroupRelationType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
 
   async findChildRelations() {
@@ -47,5 +47,14 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
         comparisonValue: mapOverlayGroupIds,
       },
     });
+  }
+
+  async findParentRelationTree(childIds) {
+    return this.database.findWithParents(
+      this.databaseType,
+      childIds,
+      'child_id',
+      'map_overlay_group_id',
+    );
   }
 }

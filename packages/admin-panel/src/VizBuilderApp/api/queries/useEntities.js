@@ -12,7 +12,7 @@ export const useEntities = search =>
     ['entities', search],
     async () => {
       const endpoint = stringifyQuery(undefined, `entities`, {
-        columns: JSON.stringify(['name', 'code']),
+        columns: JSON.stringify(['name', 'code', 'id']),
         filter: JSON.stringify({
           name: { comparator: 'ilike', comparisonValue: `%${search}%`, castAs: 'text' },
         }),
@@ -20,6 +20,19 @@ export const useEntities = search =>
       return get(endpoint);
     },
     {
+      ...DEFAULT_REACT_QUERY_OPTIONS,
+    },
+  );
+
+export const useEntity = entityId =>
+  useQuery(
+    ['entities', entityId],
+    async () => {
+      const endpoint = `entities/${entityId}`;
+      return get(endpoint);
+    },
+    {
+      enabled: !!entityId,
       ...DEFAULT_REACT_QUERY_OPTIONS,
     },
   );

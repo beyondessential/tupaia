@@ -11,6 +11,7 @@ export interface AnalyticValue {
   readonly value: string | number;
 }
 
+// TODO: move to @tupaia/types, same type as for data-broker
 export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }

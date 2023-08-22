@@ -18,10 +18,12 @@ export const requestFromTupaiaConfigServer = async (
   sessionCookieName,
   sessionCookie,
   shouldRetryOnFail = true,
+  additionalHeaders = {},
 ) => {
   try {
     const headers = {
       cookie: `${sessionCookieName}=${sessionCookie}`,
+      ...additionalHeaders
     };
 
     const response = await fetchWithTimeout(

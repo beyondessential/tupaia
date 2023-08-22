@@ -64,8 +64,8 @@ const DashboardPanel = styled(TabPanel)`
 `;
 
 export const MobileTabLayout = () => {
-  const { entityCode } = useParams();
-  const { data } = useEntity(entityCode);
+  const { projectCode, entityCode } = useParams();
+  const { data } = useEntity(projectCode, entityCode);
 
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 

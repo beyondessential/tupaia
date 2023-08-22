@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { BaseConfig } from './common';
+import type { BaseConfig, ExportPresentationOptions } from './common';
 import { CssColor } from '../../css';
 
 /**
@@ -57,7 +57,8 @@ export type RangePresentationOptions = Record<CssColor, PresentationOptionRange>
   showRawValue?: boolean;
 };
 
-export type PresentationOptions = ConditionalPresentationOptions | RangePresentationOptions;
+export type PresentationOptions = ExportPresentationOptions &
+  (ConditionalPresentationOptions | RangePresentationOptions);
 
 type BasePresentationOption = {
   /**

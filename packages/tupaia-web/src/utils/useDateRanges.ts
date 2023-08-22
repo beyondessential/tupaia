@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import moment, { Moment } from 'moment';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
   GRANULARITY_CONFIG,
   GRANULARITIES,
@@ -9,8 +10,11 @@ import {
   GRANULARITIES_WITH_ONE_DATE,
   roundStartEndDates,
 } from '@tupaia/utils';
-import { DashboardItemType, SingleMapOverlayItem } from '../types';
+import { DashboardItemConfig } from '../types';
 import { DEFAULT_PERIOD_PARAM_STRING } from '../constants';
+
+// Add in these 'never' fields so we can destructure them together with the DashboardItem type later
+type SelectableMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay & { startDate: never, endDate: never, weekDisplayFormat: never };
 
 // converts the date range to a URL period string
 const convertDateRangeToUrlPeriodString = (
@@ -77,7 +81,7 @@ const convertUrlPeriodStringToDateRange = (
  */
 export const useDateRanges = (
   urlParam: string,
-  selectedItem?: SingleMapOverlayItem | DashboardItemType,
+  selectedItem?: SelectableMapOverlay | DashboardItemConfig,
 ) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
@@ -112,7 +116,6 @@ export const useDateRanges = (
 
   const { startDate: urlStartDate, endDate: urlEndDate } = convertUrlPeriodStringToDateRange(
     currentPeriodString,
-    periodGranularity,
   );
 
   const startDate = urlStartDate || itemStartDate || defaultStartDate;
@@ -123,10 +126,7 @@ export const useDateRanges = (
       .momentUnit as moment.unitOfTime.StartOf;
     const startDate = moment(_startDate).startOf(period);
     const endDate = moment(_endDate).endOf(period);
-    const urlPeriodString = convertDateRangeToUrlPeriodString(
-      { startDate, endDate },
-      periodGranularity,
-    );
+    const urlPeriodString = convertDateRangeToUrlPeriodString({ startDate, endDate });
     urlSearchParams.set(urlParam, urlPeriodString);
     setUrlSearchParams(urlSearchParams);
   };

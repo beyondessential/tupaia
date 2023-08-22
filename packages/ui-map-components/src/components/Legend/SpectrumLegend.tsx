@@ -8,11 +8,11 @@ import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
+import { ScaleType } from '@tupaia/types';
 import { resolveSpectrumColour } from '../../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
-import { SCALE_TYPES } from '../../constants';
 import { LegendEntry } from './LegendEntry';
-import { ScaleType, SpectrumLegendProps, SpectrumSeries, Value } from '../../types';
+import { ScaleTypeLiteral, SpectrumLegendProps, SpectrumSeries, Value } from '../../types';
 
 const FlexCenter = styled(MuiBox)`
   display: flex;
@@ -46,7 +46,7 @@ const LabelRight = styled.div`
 `;
 
 const getSpectrumLabels = (
-  scaleType: ScaleType,
+  scaleType: ScaleTypeLiteral,
   min: number,
   max: number,
   valueType?: SpectrumSeries['valueType'],
@@ -55,15 +55,15 @@ const getSpectrumLabels = (
   right: string;
 } => {
   switch (scaleType) {
-    case SCALE_TYPES.GPI:
-    case SCALE_TYPES.PERFORMANCE:
-    case SCALE_TYPES.PERFORMANCE_DESC:
-    case SCALE_TYPES.NEUTRAL:
+    case ScaleType.GPI:
+    case ScaleType.PERFORMANCE:
+    case ScaleType.PERFORMANCE_DESC:
+    case ScaleType.NEUTRAL:
       return {
         left: formatDataValueByType({ value: min }, valueType),
         right: formatDataValueByType({ value: max }, valueType),
       };
-    case SCALE_TYPES.TIME:
+    case ScaleType.TIME:
       return { left: '0 days', right: `${moment(max).diff(min, 'days')} days old` };
     default:
       return { left: '0%', right: '100%' };
@@ -92,16 +92,16 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: Sp
   }
 
   switch (scaleType) {
-    case SCALE_TYPES.TIME:
+    case ScaleType.TIME:
       for (let i = 0; i < 1; i += 0.01) {
         const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
       break;
-    case SCALE_TYPES.PERFORMANCE:
-    case SCALE_TYPES.GPI:
-    case SCALE_TYPES.PERFORMANCE_DESC:
-    case SCALE_TYPES.NEUTRAL:
+    case ScaleType.PERFORMANCE:
+    case ScaleType.GPI:
+    case ScaleType.PERFORMANCE_DESC:
+    case ScaleType.NEUTRAL:
     default: {
       const increment = (max - min) / 100;
 

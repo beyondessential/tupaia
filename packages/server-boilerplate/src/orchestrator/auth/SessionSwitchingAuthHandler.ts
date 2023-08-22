@@ -10,12 +10,12 @@ import { SessionType } from '../models';
 
 // Handles switching between microservice client and user login sessions
 export class SessionSwitchingAuthHandler implements AuthHandler {
-  req: Request;
-  session?: SessionType;
+  private req: Request;
+  private session?: SessionType;
 
   // AuthHandlers are run before the session is attached to the request
   // So we unfortunately need to fetch it separately here
-  constructor(req: Request) {
+  public constructor(req: Request) {
     // Save out the request so we can use the attached models later
     this.req = req;
   }
@@ -32,7 +32,7 @@ export class SessionSwitchingAuthHandler implements AuthHandler {
     return this.session;
   }
 
-  async getAuthHeader() {
+  public async getAuthHeader() {
     await this.getSession();
 
     if (this.session) {
