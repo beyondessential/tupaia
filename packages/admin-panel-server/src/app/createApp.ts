@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  handleWith,
-  useForwardUnhandledRequests,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
@@ -54,6 +50,7 @@ const {
  * Set up express server with middleware,
  */
 export function createApp() {
+  const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
@@ -134,12 +131,10 @@ export function createApp() {
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemasRoute),
     )
+    .use('/hierarchy', forwardToEntityApi)
+    .use('/hierarchies', forwardToEntityApi)
+    .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
-
-  useForwardUnhandledRequests(app, CENTRAL_API_URL, undefined, {
-    '/hierarchy': ENTITY_API_URL,
-    '/hierarchies': ENTITY_API_URL,
-  });
 
   return app;
 }

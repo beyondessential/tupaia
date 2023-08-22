@@ -3,8 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
+import { TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { get } from '../api';
-import { DashboardName, DashboardsResponse, EntityCode, ProjectCode } from '../../types';
+import { DashboardName, EntityCode, ProjectCode } from '../../types';
 
 // Returns all dashboards for a project and entity, and also the active dashboard
 export const useDashboards = (
@@ -12,22 +13,22 @@ export const useDashboards = (
   entityCode?: EntityCode,
   dashboardName?: DashboardName,
 ) => {
-  const { data = [], isLoading } = useQuery(
+  const enabled = !!entityCode && !!projectCode;
+  const result = useQuery(
     ['dashboards', projectCode, entityCode],
-    (): Promise<DashboardsResponse[]> =>
-      get('dashboards', {
-        params: { entityCode, projectCode },
-      }),
-    { enabled: !!entityCode && !!projectCode },
+    (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
+      get(`dashboards/${projectCode}/${entityCode}`),
+    { enabled, keepPreviousData: false },
   );
 
-  let activeDashboard = null;
+  const { data = [] } = result;
+
+  let activeDashboard = undefined;
 
   if (data?.length > 0 && dashboardName) {
-    activeDashboard =
-      data?.find((dashboard: DashboardsResponse) => dashboard.dashboardName === dashboardName) ||
-      data[0];
+    // trim dashboard name to avoid issues with trailing or leading spaces
+    activeDashboard = data?.find(dashboard => dashboard.name.trim() === dashboardName.trim());
   }
 
-  return { dashboards: data, activeDashboard, isLoading };
+  return { ...result, dashboards: data, activeDashboard };
 };

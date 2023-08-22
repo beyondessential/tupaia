@@ -3,18 +3,28 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { ExpandMore, Layers } from '@material-ui/icons';
 import { periodToMoment } from '@tupaia/utils';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { Tooltip } from '@tupaia/ui-components';
+import { IconButton } from '@tupaia/ui-components';
+import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
+import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
+import { MapTableModal } from './MapTableModal';
+import { MapOverlayList } from './MapOverlayList';
+import { MapOverlayDatePicker } from './MapOverlayDatePicker';
+import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
+import { useMapOverlayData } from '../utils';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
-import { useMapOverlayReport } from '../utils';
-import { MapOverlayList } from './MapOverlayList';
-import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitleSection';
+import { MOBILE_BREAKPOINT } from '../../../constants';
+
+const MapTableButton = styled(IconButton)`
+  margin: -0.625rem -0.625rem -0.625rem 0;
+  padding: 0.5rem 0.325rem 0.5rem 0.75rem;
+  color: white;
+`;
 
 const MaxHeightContainer = styled.div`
   max-height: 100%;
@@ -33,6 +43,9 @@ const Wrapper = styled(MaxHeightContainer)`
 `;
 
 const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.9rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
@@ -47,10 +60,25 @@ const Heading = styled(Typography).attrs({
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
+const TableAssignmentIcon = styled(Assignment)`
+  margin-right: 0.5rem;
+  width: 1.2rem;
+  cursor: pointer;
+`;
+
 const Container = styled(MaxHeightContainer)`
   border-radius: 0 0 5px 5px;
   // Set pointer events on the container rather than higher up so that it only applies to the open menu
   pointer-events: auto;
+`;
+
+const TitleWrapper = styled.div`
+  padding: 1rem;
+  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+  // Add padding between the title and the date picker when both are present
+  div + div {
+    padding-top: 0.5rem;
+  }
 `;
 
 const OverlayLibraryAccordion = styled(Accordion)`
@@ -74,6 +102,7 @@ const OverlayLibraryAccordion = styled(Accordion)`
 
 const OverlayLibraryIcon = styled(Layers)`
   margin-right: 0.5rem;
+  width: 1.2rem;
   .Mui-expanded & {
     fill: ${({ theme }) => theme.palette.secondary.main};
   }
@@ -135,45 +164,61 @@ export const DesktopMapOverlaySelector = ({
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-  const { data: mapOverlayData } = useMapOverlayReport();
+  const { measureData, period } = useMapOverlayData();
+  const [mapModalOpen, setMapModalOpen] = useState(false);
+  const toggleMapTableModal = () => {
+    setMapModalOpen(!mapModalOpen);
+  };
 
   return (
-    <Wrapper>
-      <Header>
-        <Heading>Map Overlays</Heading>
-      </Header>
-      <Container>
-        <MapOverlaySelectorTitle />
-        {hasMapOverlays && (
-          <OverlayLibraryAccordion
-            expanded={overlayLibraryOpen}
-            onChange={toggleOverlayLibrary}
-            square
-          >
-            <OverlayLibraryHeader
-              expandIcon={<ExpandMore />}
-              aria-controls="overlay-library-content"
-              id="overlay-library-header"
+    <>
+      {mapModalOpen && <MapTableModal onClose={toggleMapTableModal} />}
+      <Wrapper>
+        <Header>
+          <Heading>Map Overlays</Heading>
+          {measureData && (
+            <MapTableButton onClick={toggleMapTableModal}>
+              <Tooltip arrow interactive placement="top" title="Generate Report">
+                <TableAssignmentIcon />
+              </Tooltip>
+            </MapTableButton>
+          )}
+        </Header>
+        <Container>
+          <TitleWrapper>
+            <MapOverlaySelectorTitle />
+            <MapOverlayDatePicker />
+          </TitleWrapper>
+          {hasMapOverlays && (
+            <OverlayLibraryAccordion
+              expanded={overlayLibraryOpen}
+              onChange={toggleOverlayLibrary}
+              square
             >
-              <OverlayLibraryIcon />
-              <OverlayLibraryTitle>Overlay library</OverlayLibraryTitle>
-            </OverlayLibraryHeader>
-            <OverlayLibraryContentWrapper>
-              <OverlayLibraryContentContainer>
-                <MapOverlayList />
-              </OverlayLibraryContentContainer>
-            </OverlayLibraryContentWrapper>
-          </OverlayLibraryAccordion>
-        )}
-        {mapOverlayData?.period?.latestAvailable && (
-          <LatestDataContainer>
-            <LatestDataText>
-              Latest overlay data:{' '}
-              {periodToMoment(mapOverlayData?.period?.latestAvailable).format('DD/MM/YYYY')}
-            </LatestDataText>
-          </LatestDataContainer>
-        )}
-      </Container>
-    </Wrapper>
+              <OverlayLibraryHeader
+                expandIcon={<ArrowDropDown />}
+                aria-controls="overlay-library-content"
+                id="overlay-library-header"
+              >
+                <OverlayLibraryIcon />
+                <OverlayLibraryTitle>Overlay library</OverlayLibraryTitle>
+              </OverlayLibraryHeader>
+              <OverlayLibraryContentWrapper>
+                <OverlayLibraryContentContainer>
+                  <MapOverlayList />
+                </OverlayLibraryContentContainer>
+              </OverlayLibraryContentWrapper>
+            </OverlayLibraryAccordion>
+          )}
+          {period?.latestAvailable && (
+            <LatestDataContainer>
+              <LatestDataText>
+                Latest overlay data: {periodToMoment(period?.latestAvailable).format('DD/MM/YYYY')}
+              </LatestDataText>
+            </LatestDataContainer>
+          )}
+        </Container>
+      </Wrapper>
+    </>
   );
 };

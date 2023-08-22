@@ -8,6 +8,7 @@ import { CssColor } from '../../css';
 
 type BaseViewConfig = BaseConfig &
   Record<string, unknown> & {
+    type: 'view';
     valueType?: ValueType;
     value_metadata?: Record<string, unknown>;
   };
@@ -17,7 +18,6 @@ type ColorOption = {
 };
 
 export type ListViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'list';
   listConfig: {
     [key: string]: {
@@ -36,29 +36,24 @@ export type ListViewConfig = BaseViewConfig & {
 };
 
 export type SingleValueViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'singleValue';
   dataColor: CssColor;
 };
 
 export type MultiPhotographViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'multiPhotograph';
 };
 
 export type MultiSingleValueViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'multiSingleValue';
 };
 
 export type SingleDownloadLinkViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'singleDownloadLink';
 };
 
 type MultiValueRowOption = ColorOption & { header: string };
 export type MultiValueRowViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'multiValueRow';
   presentationOptions?: MultiValueRowOption & {
     dataPairNames?: string[];
@@ -70,23 +65,22 @@ export type MultiValueRowViewConfig = BaseViewConfig & {
 };
 
 export type ColorListViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'colorList';
 };
 
 export type DataDownloadViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'dataDownload';
 };
 export type SingleDateViewConfig = BaseViewConfig & {
-  type: 'view';
   viewType: 'singleDate';
 };
 
-export type MultiValueViewConfig = BaseViewConfig & {
-  type: 'view';
-  viewType: 'multiValue';
+export type DownloadFilesViewConfig = BaseViewConfig & {
+  viewType: 'filesDownload';
+};
 
+export type MultiValueViewConfig = BaseViewConfig & {
+  viewType: 'multiValue';
   presentationOptions?: Record<string, ColorOption> & {
     isTitleVisible?: boolean;
     valueFormat?: string;
@@ -94,6 +88,7 @@ export type MultiValueViewConfig = BaseViewConfig & {
 };
 
 export type ViewConfig =
+  | ListViewConfig
   | SingleValueViewConfig
   | MultiPhotographViewConfig
   | MultiSingleValueViewConfig
@@ -101,4 +96,5 @@ export type ViewConfig =
   | MultiValueRowViewConfig
   | DataDownloadViewConfig
   | SingleDateViewConfig
-  | MultiValueViewConfig;
+  | MultiValueViewConfig
+  | DownloadFilesViewConfig;

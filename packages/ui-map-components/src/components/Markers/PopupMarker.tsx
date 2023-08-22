@@ -85,6 +85,13 @@ export const PopupMarker = React.memo(
     popupRef,
   }: PopupMarkerProps) => {
     const displayCoordinates = (coordinates as number[])?.map((c: any) => c.toFixed(5)).join(', ');
+    /*
+     * This is a workaround for a bug in react-leaflet where the onOpen and onClose callbacks cause a
+     * re-mount of the Popup component which causes the popup to close unexpectedly on map re-renders
+     * @see https://github.com/PaulLeCam/react-leaflet/issues/895
+     * */
+    const onOpenCallback = React.useMemo(() => onOpen, []);
+    const onCloseCallback = React.useMemo(() => onClose, []);
     return (
       <StyledPopup
         pane="popupPane"
@@ -92,8 +99,8 @@ export const PopupMarker = React.memo(
         autoPanPaddingBottomRight={[sidePanelWidth, TOP_BAR_HEIGHT]}
         minWidth={300}
         maxWidth={300}
-        onOpen={onOpen}
-        onClose={onClose}
+        onOpen={onOpenCallback}
+        onClose={onCloseCallback}
         ref={popupRef}
       >
         <Content>

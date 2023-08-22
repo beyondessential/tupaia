@@ -128,7 +128,7 @@ export const createMockModelsStubWithMockEntity = async (fieldValues?: Entity) =
   return mockModels;
 };
 
-export const getMockDataSourcesArg = (overrides?: Partial<DataElement>): DataElement[] => {
+export const getMockDataElementsArg = (overrides?: Partial<DataElement>): DataElement[] => {
   const code = overrides?.code || 'WTHR_PRECIP';
   return [
     {
