@@ -55,6 +55,7 @@ interface LoginFormProps {
   registerLink: To;
   verificationStatus?: STATUS;
   formContext: ReturnType<typeof useForm>;
+  className?: string;
 }
 
 export const LoginForm = ({
@@ -65,9 +66,10 @@ export const LoginForm = ({
   registerLink,
   verificationStatus,
   formContext,
+  className,
 }: LoginFormProps) => {
   return (
-    <Wrapper title="Log in" subtitle="Enter your details below to log in">
+    <Wrapper title="Log in" subtitle="Enter your details below to log in" className={className}>
       {error && <Typography color="error">{error.message}</Typography>}
       {verificationStatus && <EmailVerificationDisplay status={verificationStatus} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>

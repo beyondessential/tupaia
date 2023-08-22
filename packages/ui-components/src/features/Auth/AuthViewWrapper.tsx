@@ -6,7 +6,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
-import { Button } from '../../components';
 
 const Wrapper = styled(Paper)`
   display: flex;
@@ -26,15 +25,6 @@ const Subtitle = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.3;
   margin-top: 1rem;
-`;
-
-export const AuthModalButton = styled(Button)`
-  text-transform: none;
-  font-size: 1rem;
-  width: 22rem;
-  max-width: 100%;
-  margin-left: 0 !important;
-  margin-top: 2rem;
 `;
 
 interface AuthViewWrapperProps {
