@@ -4,8 +4,9 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { MapOverlayGroupRelationModel } from './models';
+import { MapOverlayGroupRelationModel, MapOverlayGroupModel } from './models';
 
 export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
+  readonly mapOverlayGroup: MapOverlayGroupModel;
 }
