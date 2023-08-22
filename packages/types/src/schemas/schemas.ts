@@ -33313,6 +33313,37 @@ export const DataTableSchema = {
 	]
 } 
 
+export const DatatrakSessionSchema = {
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"id",
+		"refresh_token"
+	]
+} 
+
 export const DhisInstanceSchema = {
 	"properties": {
 		"code": {
@@ -34669,79 +34700,6 @@ export const PermissionGroupSchema = {
 	]
 } 
 
-export const PermissionsBasedMeditrakSyncQueueSchema = {
-	"properties": {
-		"change_time": {
-			"type": "number"
-		},
-		"country_ids": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"entity_type": {
-			"enum": [
-				"asset",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"facility",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"local_government",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"permission_groups": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false
-} 
-
 export const ProjectSchema = {
 	"properties": {
 		"code": {
@@ -35993,6 +35951,29 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
+export const ResBodySchema = {
+	"properties": {
+		"userName": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CountryAccessSchema = {
 	"properties": {
 		"id": {
@@ -36019,47 +36000,6 @@ export const CountryAccessSchema = {
 		"id",
 		"name"
 	]
-} 
-
-export const ResBodySchema = {
-	"type": "array",
-	"items": {
-		"type": "object",
-		"properties": {
-			"id": {
-				"type": "string"
-			},
-			"name": {
-				"type": "string"
-			},
-			"hasAccess": {
-				"type": "boolean"
-			},
-			"accessRequests": {
-				"type": "array",
-				"items": {
-					"type": "string"
-				}
-			}
-		},
-		"additionalProperties": false,
-		"required": [
-			"accessRequests",
-			"hasAccess",
-			"id",
-			"name"
-		]
-	}
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const CamelCaseSchema = {

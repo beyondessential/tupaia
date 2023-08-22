@@ -180,6 +180,14 @@ export interface DataTable {
   'permission_groups': string[];
   'type': DataTableType;
 }
+export interface DatatrakSession {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
+  'id': string;
+  'refresh_token': string;
+}
 export interface DhisInstance {
   'code': string;
   'config': any;
@@ -406,16 +414,6 @@ export interface PermissionGroup {
   'id': string;
   'name': string;
   'parent_id'?: string | null;
-}
-export interface PermissionsBasedMeditrakSyncQueue {
-  'change_time'?: number | null;
-  'country_ids'?: string[] | null;
-  'entity_type'?: EntityType | null;
-  'id'?: string | null;
-  'permission_groups'?: string[] | null;
-  'record_id'?: string | null;
-  'record_type'?: string | null;
-  'type'?: string | null;
 }
 export interface Project {
   'code': string;
