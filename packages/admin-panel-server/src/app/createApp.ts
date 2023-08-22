@@ -131,8 +131,8 @@ export function createApp() {
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemasRoute),
     )
-    .use('/hierarchy', forwardToEntityApi)
-    .use('/hierarchies', forwardToEntityApi)
+    .use('hierarchy', forwardToEntityApi)
+    .use('hierarchies', forwardToEntityApi)
     .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
 
