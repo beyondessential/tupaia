@@ -10079,6 +10079,7 @@ __metadata:
     react-native-device-info: ^7.2.1
     react-native-document-picker: ^8.2.1
     react-native-dotenv: ^0.2.0
+    react-native-file-access: ^1.7.1
     react-native-fs: ^2.16.6
     react-native-gesture-handler: ~1.7.0
     react-native-image-picker: ^2.3.4
@@ -36690,6 +36691,16 @@ __metadata:
   dependencies:
     babel-plugin-dotenv: 0.1.1
   checksum: dad3e64e0d085ffd9c85a9930ed1c12c817f56f7a817c1ac6b8e89713152aedec064b640690258d8fdbcbb38a383656a09859a7e312cd8c96b4e55acb8318094
+  languageName: node
+  linkType: hard
+
+"react-native-file-access@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "react-native-file-access@npm:1.7.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 6d3ec8fd1a55d5d6ad44b743d75bcf41c93d6c5a0128885f0f0f2238b5ed83a4522f029696ec7fd3ecdfa547f976405bbe7e2d6f6589050cf31143079369fa55
   languageName: node
   linkType: hard
 
