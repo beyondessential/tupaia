@@ -6,12 +6,12 @@
 import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
-import { LoginForm } from '../../src/features/Auth/LoginForm';
 import { useForm } from 'react-hook-form';
+import { RegisterForm } from '../../src/features/Auth/RegisterForm';
 
 export default {
-  title: 'features/Auth/LoginForm',
-  component: LoginForm,
+  title: 'features/Auth/RegisterForm',
+  component: RegisterForm,
 };
 
 const Container = styled(MuiBox)`
@@ -23,37 +23,29 @@ const baseProps = {
   onSubmit: values => {
     console.log('values', values);
   },
-  isLoading: false,
+  isSuccess: false,
   error: null,
-  forgotPasswordLink: '#',
-  registerLink: '#',
-  logoUrl: 'https://tupaia.org/images/tupaia-logo-dark.svg',
+  loginLink: '#',
+  successMessage: 'Your account has been created. Please check your email for a verification link.',
+  verifyResendLink: '#',
 };
 
 const Wrapper = props => {
   const formContext = useForm();
   return (
     <Container>
-      <LoginForm
+      <RegisterForm
         {...{
           ...baseProps,
           formContext,
-          ...props,
+          ...(props || {}),
         }}
       />
     </Container>
   );
 };
 
-export const Simple = () => (
-  <Wrapper
-    {...{
-      ...baseProps,
-      isLoading: false,
-      error: null,
-    }}
-  />
-);
+export const Simple = () => <Wrapper />;
 
 export const Loading = () => (
   <Wrapper
@@ -75,28 +67,11 @@ export const Error = () => (
   />
 );
 
-export const VerificationSuccess = () => (
+export const Success = () => (
   <Wrapper
     {...{
       ...baseProps,
-      message: {
-        status: 'success',
-        text: 'Verification successful',
-      },
-    }}
-  />
-);
-
-export const VerificationError = () => (
-  <Wrapper
-    {...{
-      ...baseProps,
-      isLoading: false,
-      error: null,
-      message: {
-        status: 'error',
-        text: 'Invalid verification code',
-      },
+      isSuccess: true,
     }}
   />
 );
