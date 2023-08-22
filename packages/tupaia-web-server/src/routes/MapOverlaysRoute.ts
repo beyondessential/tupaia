@@ -67,16 +67,14 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
       mapOverlays.map((overlay: MapOverlay) => overlay.id),
     );
-    console.log(mapOverlayRelations);
 
     // Fetch all the groups we've used
-    const relations: string[] = mapOverlayRelations.map(
+    const overlayGroupIds: string[] = mapOverlayRelations.map(
       (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
     );
-    const uniqueRelations: string[] = [...new Set(relations)];
-    console.log(uniqueRelations);
+    const uniqueGroupIds: string[] = [...new Set(overlayGroupIds)];
     const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
-      id: uniqueRelations,
+      id: uniqueGroupIds,
     });
     // Convert our multiple flat lists into a single nested object
     const nestOverlayGroups = (
@@ -129,28 +127,16 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       (group: MapOverlayGroup) => group.code === ROOT_MAP_OVERLAY_CODE,
     );
 
-    if (rootOverlayGroup) {
-      const nestedGroups = nestOverlayGroups(
-        relationsByParentId,
-        groupsById,
-        overlaysById,
-        rootOverlayGroup,
-      );
+    const nestedGroups =
+      rootOverlayGroup &&
+      nestOverlayGroups(relationsByParentId, groupsById, overlaysById, rootOverlayGroup);
 
-      return {
-        name: entity.name,
-        entityCode: entity.code,
-        entityType: entity.type,
-        // Map overlays always exist beneath a group, so we know the first layer is only groups
-        mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
-      };
-    }
     return {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
       // Map overlays always exist beneath a group, so we know the first layer is only groups
-      mapOverlays: [],
+      mapOverlays: (nestedGroups?.children as TranslatedMapOverlayGroup[]) || [],
     };
   }
 }
