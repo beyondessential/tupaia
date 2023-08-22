@@ -24,7 +24,6 @@ const baseProps = {
   },
   forgotPasswordLink: '#',
   registerLink: '#',
-  verificationStatus: 'idle',
   logoUrl: 'https://tupaia.org/images/tupaia-logo-dark.svg',
 };
 
@@ -73,7 +72,10 @@ export const VerificationSuccess = () => (
         ...baseProps,
         isLoading: false,
         error: null,
-        verificationStatus: 'success',
+        message: {
+          status: 'success',
+          text: 'Verification successful',
+        },
       }}
     />
   </Container>
@@ -86,7 +88,10 @@ export const VerificationError = () => (
         ...baseProps,
         isLoading: false,
         error: null,
-        verificationStatus: 'error',
+        message: {
+          status: 'error',
+          text: 'Invalid verification code',
+        },
       }}
     />
   </Container>
