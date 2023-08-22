@@ -28,8 +28,9 @@ interface QrCodeImageProps {
 export const QrCodeImage = ({ className, qrCodeContents, humanReadableId }: QrCodeImageProps) => {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
-    generateQrCodeDataUrl(humanReadableId, qrCodeContents, ref?.current as HTMLCanvasElement);
-  }, [ref]);
+    if (ref.current)
+      generateQrCodeCanvas(humanReadableId, qrCodeContents, ref.current);
+  }, [ref.current]);
 
   return (
     <StyledBox className={className}>
