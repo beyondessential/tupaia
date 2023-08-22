@@ -25,7 +25,7 @@ const {
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-server', { attachModels: true })
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-server')
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)

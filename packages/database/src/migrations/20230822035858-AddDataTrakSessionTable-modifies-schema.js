@@ -15,7 +15,7 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.createTable('datatrak', {
+  return db.createTable('datatrak_session', {
     columns: {
       id: { type: 'text', primaryKey: true },
       email: { type: 'text', notNull: true },
@@ -29,7 +29,7 @@ exports.up = function (db) {
 };
 
 exports.down = function (db) {
-  return db.dropTable('datatrak');
+  return db.dropTable('datatrak_session');
 };
 
 exports._meta = {
