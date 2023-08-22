@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { Key } from 'react';
+import React, { Key, ReactElement } from 'react';
 import {
   FormControl as BaseFormControl,
   FormControlLabel,
@@ -89,47 +89,47 @@ export interface ListItemProps extends Record<string, unknown> {
   tooltip?: string;
 }
 
-function not(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
-  return a.filter(
-    item => b.findIndex(i => i[i.valueKey || 'code'] === item[item.valueKey || 'code']) === -1,
-  );
-}
-
-function intersection(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
-  return a.filter(
-    item => b.findIndex(i => i[i.valueKey || 'code'] === item[item.valueKey || 'code']) !== -1,
-  );
-}
-
-function union(a: ListItemProps[], b: ListItemProps[]): ListItemProps[] {
-  return [...a, ...not(b, a)];
-}
-
-interface CheckboxListProps {
-  list: ListItemProps[];
+interface CheckboxListProps<ListItem extends ListItemProps> {
+  list: ListItem[];
   title?: string;
-  selectedItems: ListItemProps[];
-  setSelectedItems: (items: ListItemProps[]) => void;
+  selectedItems: ListItem[];
+  setSelectedItems: (items: ListItem[]) => void;
 }
 
-export const CheckboxList = ({
+export const CheckboxList = <ListItem extends ListItemProps>({
   list,
   title = 'Choices',
   selectedItems,
   setSelectedItems,
-}: CheckboxListProps) => {
-  const numberOfChecked = (items: ListItemProps[]) => intersection(selectedItems, items).length;
+}: CheckboxListProps<ListItem>) => {
+  const not = (a: ListItem[], b: ListItem[]) => {
+    return a.filter(
+      item => b.findIndex(i => i[i.valueKey || 'code'] === item[item.valueKey || 'code']) === -1,
+    );
+  };
+
+  const intersection = (a: ListItem[], b: ListItem[]) => {
+    return a.filter(
+      item => b.findIndex(i => i[i.valueKey || 'code'] === item[item.valueKey || 'code']) !== -1,
+    );
+  };
+
+  const union = (a: ListItem[], b: ListItem[]) => {
+    return [...a, ...not(b, a)];
+  };
+
+  const numberOfChecked = (items: ListItem[]) => intersection(selectedItems, items).length;
 
   const enabledItems = list.filter(item => !item.disabled);
 
-  const handleCheckAll = (items: ListItemProps[]) => () => {
+  const handleCheckAll = (items: ListItem[]) => () => {
     if (numberOfChecked(items) === enabledItems.length) {
       setSelectedItems(not(selectedItems, items));
     } else {
       setSelectedItems(union(selectedItems, items));
     }
   };
-  const handleCheck = (item: ListItemProps) => () => {
+  const handleCheck = (item: ListItem) => () => {
     const currentIndex = selectedItems.findIndex(selectedItem => selectedItem.code === item.code);
     const newChecked = [...selectedItems];
 
@@ -142,8 +142,7 @@ export const CheckboxList = ({
     setSelectedItems(newChecked);
   };
   // If the list item has a tooltip, wrap it in a tooltip, otherwise just return the list item
-  // @ts-ignore
-  const CheckboxWrapper = ({ tooltip, children }) =>
+  const CheckboxWrapper = ({ tooltip, children }: { tooltip?: string; children: ReactElement }) =>
     tooltip ? (
       <Tooltip title={tooltip} placement="bottom">
         {children}
