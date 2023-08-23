@@ -6,6 +6,7 @@
 import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
 import { LoginForm } from '../../src/features/Auth/LoginForm';
 import { useForm } from 'react-hook-form';
 
