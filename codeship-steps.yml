@@ -48,11 +48,11 @@
               command: './packages/devops/scripts/ci/testBackend.sh database'
             - name: Test indicators
               command: './packages/devops/scripts/ci/testBackend.sh indicators'
-            - name: Test internal-dependencies
-              command: './packages/devops/scripts/ci/testInternalDependencies.sh'
         - type: parallel
           name: Test batch 3
           steps:
+            - name: Test internal-dependencies
+              command: './packages/devops/scripts/ci/testInternalDependencies.sh'
             - name: Test entity-server
               command: './packages/devops/scripts/ci/testBackend.sh entity-server'
             - name: Test meditrak-app-server
