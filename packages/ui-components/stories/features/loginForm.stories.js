@@ -6,6 +6,7 @@
 import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
 import { LoginForm } from '../../src/features/Auth/LoginForm';
 
 export default {
@@ -22,77 +23,80 @@ const baseProps = {
   onSubmit: values => {
     console.log('values', values);
   },
+  isLoading: false,
+  error: null,
   forgotPasswordLink: '#',
   registerLink: '#',
   logoUrl: 'https://tupaia.org/images/tupaia-logo-dark.svg',
 };
 
+const Wrapper = props => {
+  const formContext = useForm();
+  return (
+    <Container>
+      <LoginForm
+        {...{
+          ...baseProps,
+          formContext,
+          ...props,
+        }}
+      />
+    </Container>
+  );
+};
+
 export const Simple = () => (
-  <Container>
-    <LoginForm
-      {...{
-        ...baseProps,
-        isLoading: false,
-        error: null,
-      }}
-    />
-  </Container>
+  <Wrapper
+    {...{
+      ...baseProps,
+      isLoading: false,
+      error: null,
+    }}
+  />
 );
 
 export const Loading = () => (
-  <Container>
-    <LoginForm
-      {...{
-        ...baseProps,
-        isLoading: true,
-        error: null,
-      }}
-    />
-  </Container>
+  <Wrapper
+    {...{
+      ...baseProps,
+      isLoading: true,
+    }}
+  />
 );
 
 export const Error = () => (
-  <Container>
-    <LoginForm
-      {...{
-        ...baseProps,
-        isLoading: false,
-        error: {
-          message: 'Invalid username or password',
-        },
-      }}
-    />
-  </Container>
+  <Wrapper
+    {...{
+      ...baseProps,
+      error: {
+        message: 'Invalid username or password',
+      },
+    }}
+  />
 );
 
 export const VerificationSuccess = () => (
-  <Container>
-    <LoginForm
-      {...{
-        ...baseProps,
-        isLoading: false,
-        error: null,
-        message: {
-          status: 'success',
-          text: 'Verification successful',
-        },
-      }}
-    />
-  </Container>
+  <Wrapper
+    {...{
+      ...baseProps,
+      message: {
+        status: 'success',
+        text: 'Verification successful',
+      },
+    }}
+  />
 );
 
 export const VerificationError = () => (
-  <Container>
-    <LoginForm
-      {...{
-        ...baseProps,
-        isLoading: false,
-        error: null,
-        message: {
-          status: 'error',
-          text: 'Invalid verification code',
-        },
-      }}
-    />
-  </Container>
+  <Wrapper
+    {...{
+      ...baseProps,
+      isLoading: false,
+      error: null,
+      message: {
+        status: 'error',
+        text: 'Invalid verification code',
+      },
+    }}
+  />
 );
