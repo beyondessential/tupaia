@@ -5,11 +5,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ViewConfig } from '@tupaia/types';
 import MuiInfoIcon from '@material-ui/icons/Info';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
-const OpenDashboardInfoButton = styled.div`
+const Wrapper = styled.div`
   text-transform: none;
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   cursor: pointer;
@@ -46,22 +45,19 @@ const OpenDashboardInfoButton = styled.div`
   }
 `;
 
-const DashboardInfoButtonText = styled.span`
+const DashboardInfoHoverText = styled.span`
   font-size: 1rem;
 `;
 
-interface DashboardInfoButtonProps {
-  viewType?: ViewConfig['viewType'];
+interface DashboardInfoHoverProps {
   infoText: string | undefined;
 }
 
-export const DashboardInfoButton = ({ viewType, infoText }: DashboardInfoButtonProps) => {
-  const content = <DashboardInfoButtonText>{infoText}</DashboardInfoButtonText>;
-
+export const DashboardInfoHover = ({ infoText }: DashboardInfoHoverProps) => {
   return (
-    <OpenDashboardInfoButton>
+    <Wrapper>
       <MuiInfoIcon />
-      <DashboardInfoButtonText>{viewType ? null : content}</DashboardInfoButtonText>
-    </OpenDashboardInfoButton>
+      <DashboardInfoHoverText>{infoText}</DashboardInfoHoverText>
+    </Wrapper>
   );
 };

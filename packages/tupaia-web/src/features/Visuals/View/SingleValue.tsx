@@ -28,5 +28,9 @@ interface SingleValueProps {
 export const SingleValue = ({ report: { data = [] }, config }: SingleValueProps) => {
   const { dataColor } = (config || {}) as SingleValueViewConfig;
   const { value } = data[0] || {};
-  return <Text $dataColor={dataColor}>{value}</Text>;
+  return (
+    <>
+      <Text $dataColor={dataColor}>{value}</Text>
+    </>
+  );
 };
