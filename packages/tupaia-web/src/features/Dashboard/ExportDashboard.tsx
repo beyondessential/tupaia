@@ -50,14 +50,18 @@ const ButtonGroup = styled.div`
 interface ExportDashboardProps {
   isOpen: boolean;
   onClose: () => void;
-  dashboardItems?: DashboardItem[];
+  dashboardItems: DashboardItem[];
 }
 
-export const ExportDashboard = ({ isOpen, onClose, dashboardItems }: ExportDashboardProps) => {
+interface ListItem extends ListItemProps {
+  code: string;
+}
+
+export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const [selectedItems, setSelectedItems] = useState<ListItemProps[]>([]);
+  const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
@@ -67,13 +71,12 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems }: ExportDashb
     onSuccess: handleExportSuccess,
   });
 
-  const list =
-    dashboardItems?.map(({ config, code }) => ({
-      name: config?.name,
-      code,
-      disabled: config?.type !== 'chart',
-      tooltip: config?.type !== 'chart' ? 'PDF export coming soon' : undefined,
-    })) ?? [];
+  const list = dashboardItems.map(({ config, code }) => ({
+    name: config?.name,
+    code,
+    disabled: config?.type !== 'chart',
+    tooltip: config?.type !== 'chart' ? 'PDF export coming soon' : undefined,
+  }));
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -82,7 +85,7 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems }: ExportDashb
       projectCode,
       entityCode,
       dashboardName,
-      selectedDashboardItems: selectedItems.map(({ code }) => code!),
+      selectedDashboardItems: selectedItems.map(({ code }) => code),
     });
 
   return (
