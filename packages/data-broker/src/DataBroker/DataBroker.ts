@@ -11,7 +11,7 @@ import { toArray } from '@tupaia/utils';
 import { createService } from '../services';
 import { DataServiceResolver } from '../services/DataServiceResolver';
 import {
-  AnalyticResults as RawAnalyticResults,
+  RawAnalyticResults,
   DataBrokerModelRegistry,
   DataSourceTypeInstance,
   DataSourceType,
