@@ -43,8 +43,9 @@
     "start-dev": "npm run --prefix ../../ package:start:vite",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
+    "start-datatrak-server": "yarn workspace @tupaia/datatrak-server start-dev",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
-    "start-servers": "npm-run-all -c -l -p start-central-server start-web-config-server",
+    "start-servers": "npm-run-all -c -l -p start-central-server start-web-config-server start-datatrak-server",
     "test": "yarn package:test --env=jsdom"
   }
 }
