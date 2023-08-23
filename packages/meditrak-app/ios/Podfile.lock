@@ -47,6 +47,8 @@ PODS:
     - GCDWebServer/Core (= 3.5.4)
   - GCDWebServer/Core (3.5.4)
   - glog (0.3.5)
+  - Permission-Camera (3.8.3):
+    - RNPermissions
   - RCTRequired (0.63.5)
   - RCTTypeSafety (0.63.5):
     - FBLazyVector (= 0.63.5)
@@ -333,6 +335,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -405,6 +408,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  Permission-Camera:
+    :path: "../node_modules/react-native-permissions/ios/Camera"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -503,6 +508,7 @@ SPEC CHECKSUMS:
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  Permission-Camera: 9c8b1a826770a6feea747cc8a4a89d2b39df4273
   RCTRequired: 5520387431beaa5f32aa8726bf746cd5353119fe
   RCTTypeSafety: bc90d6e287fa427c50ed770922bac30faf0bbfa3
   React: 83a7f231f462b09260a53c5c51005e7659c66890
@@ -545,6 +551,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Yoga: 0276e9f20976c8568e107cfc1163a8629051adc0
 
-PODFILE CHECKSUM: a4b5d43d887ab991f8fa19b0f66ef3e0a59f96a2
+PODFILE CHECKSUM: 696fd15bb8869ad06334654f04a4b035f9614f6e
 
 COCOAPODS: 1.12.1
