@@ -9,10 +9,11 @@ import Typography from '@material-ui/core/Typography';
 import { AuthViewWrapper } from './AuthViewWrapper';
 import { AuthViewButton } from './AuthViewButton';
 import { HookForm, HookFormInput } from '../HookForm';
-import { Checkbox, TextField } from '../../components';
+import { Checkbox } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
 import { SignupComplete } from './SignUpComplete';
+import { AuthFormTextField } from './AuthFormTextField';
 
 const Wrapper = styled(AuthViewWrapper)`
   width: 49rem;
@@ -69,6 +70,7 @@ interface RegisterFormProps {
   loginLink: string;
   successMessage: string;
   verifyResendLink: string;
+  className?: string;
 }
 
 export const RegisterForm = ({
@@ -80,11 +82,13 @@ export const RegisterForm = ({
   loginLink,
   successMessage,
   verifyResendLink,
+  className,
 }: RegisterFormProps) => {
   return (
     <Wrapper
       title={isSuccess ? 'Your account has been registered' : 'Register'}
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
+      className={className}
     >
       {isSuccess ? (
         <SignupComplete successMessage={successMessage} verifyResendLink={verifyResendLink} />
@@ -92,20 +96,20 @@ export const RegisterForm = ({
         <>
           {error && <Typography color="error">{error.message}</Typography>}
           <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
-            <HookFormInput name="firstName" label="First name" required Input={TextField} />
-            <HookFormInput name="lastName" label="Last name" required Input={TextField} />
+            <HookFormInput name="firstName" label="First name" required Input={AuthFormTextField} />
+            <HookFormInput name="lastName" label="Last name" required Input={AuthFormTextField} />
             <HookFormInput
               name="emailAddress"
               label="Email"
               type="email"
               required
               options={FORM_FIELD_VALIDATION.EMAIL}
-              Input={TextField}
+              Input={AuthFormTextField}
             />
             <HookFormInput
               name="contactNumber"
               label="Contact number (optional)"
-              Input={TextField}
+              Input={AuthFormTextField}
             />
             <HookFormInput
               name="password"
@@ -113,7 +117,7 @@ export const RegisterForm = ({
               type="password"
               required
               options={FORM_FIELD_VALIDATION.PASSWORD}
-              Input={TextField}
+              Input={AuthFormTextField}
             />
             <HookFormInput
               name="passwordConfirm"
@@ -125,10 +129,10 @@ export const RegisterForm = ({
                   value === formContext.getValues('password') || 'Passwords do not match.',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
               }}
-              Input={TextField}
+              Input={AuthFormTextField}
             />
-            <HookFormInput name="employer" label="Employer" required Input={TextField} />
-            <HookFormInput name="position" label="Position" required Input={TextField} />
+            <HookFormInput name="employer" label="Employer" required Input={AuthFormTextField} />
+            <HookFormInput name="position" label="Position" required Input={AuthFormTextField} />
             <FullWidthColumn>
               <HookFormInput
                 name="hasAgreed"
@@ -145,6 +149,7 @@ export const RegisterForm = ({
                   </TermsText>
                 }
                 required
+                color="primary"
                 Input={Checkbox}
               />
             </FullWidthColumn>

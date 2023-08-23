@@ -5,11 +5,18 @@
 
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
-import { LandingPage, SurveyPage, SurveyQuestionsPage, LoginPage } from './views';
+import {
+  LandingPage,
+  SurveyPage,
+  SurveyQuestionsPage,
+  LoginPage,
+  RegisterPage,
+  VerifyEmailResendPage,
+} from './views';
 import { useUser } from './api/queries';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from './constants';
-import { BackgroundPageLayout, MainPageLayout } from './layout';
+import { BackgroundPageLayout, AuthLayout, MainPageLayout } from './layout';
 import { VerifyEmailPage } from './views/VerifyEmailPage';
 
 /**
@@ -45,8 +52,13 @@ export const Routes = () => {
         <Route index element={<LandingPageRedirect />} />
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
-          <Route path={ROUTES.LOGIN} element={<LoginRedirect />} />
-          <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+          {/** Any auth views should go in here, as they have a layout where the form is centred in the page */}
+          <Route path="/" element={<AuthLayout />}>
+            <Route path={ROUTES.LOGIN} element={<LoginRedirect />} />
+            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+            <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+            <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
+          </Route>
           <Route path={ROUTES.SURVEY}>
             <Route index element={<SurveyPage />} />
             <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />

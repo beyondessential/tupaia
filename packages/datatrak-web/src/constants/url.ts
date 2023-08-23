@@ -12,4 +12,5 @@ export const ROUTES = {
   ACCOUNT_SETTINGS: '/account-settings',
   CHANGE_PROJECT: '/change-project',
   VERIFY_EMAIL: '/verify-email',
+  VERIFY_EMAIL_RESEND: '/verify-email-resend',
 };

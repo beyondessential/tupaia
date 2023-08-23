@@ -7,11 +7,11 @@ import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { LoginForm } from '../../src/features/Auth/LoginForm';
+import { ResendVerificationEmailForm } from '../../src/features/Auth/ResendVerificationEmailForm';
 
 export default {
-  title: 'features/Auth/LoginForm',
-  component: LoginForm,
+  title: 'features/Auth/ResendVerificationEmailForm',
+  component: ResendVerificationEmailForm,
 };
 
 const Container = styled(MuiBox)`
@@ -23,37 +23,27 @@ const baseProps = {
   onSubmit: values => {
     console.log('values', values);
   },
-  isLoading: false,
+  isSuccess: false,
   error: null,
-  forgotPasswordLink: '#',
-  registerLink: '#',
-  logoUrl: 'https://tupaia.org/images/tupaia-logo-dark.svg',
+  isLoading: false,
 };
 
 const Wrapper = props => {
   const formContext = useForm();
   return (
     <Container>
-      <LoginForm
+      <ResendVerificationEmailForm
         {...{
           ...baseProps,
           formContext,
-          ...props,
+          ...(props || {}),
         }}
       />
     </Container>
   );
 };
 
-export const Simple = () => (
-  <Wrapper
-    {...{
-      ...baseProps,
-      isLoading: false,
-      error: null,
-    }}
-  />
-);
+export const Simple = () => <Wrapper />;
 
 export const Loading = () => (
   <Wrapper
@@ -69,34 +59,17 @@ export const Error = () => (
     {...{
       ...baseProps,
       error: {
-        message: 'Invalid username or password',
+        message: 'Invalid email',
       },
     }}
   />
 );
 
-export const VerificationSuccess = () => (
+export const Success = () => (
   <Wrapper
     {...{
       ...baseProps,
-      message: {
-        status: 'success',
-        text: 'Verification successful',
-      },
-    }}
-  />
-);
-
-export const VerificationError = () => (
-  <Wrapper
-    {...{
-      ...baseProps,
-      isLoading: false,
-      error: null,
-      message: {
-        status: 'error',
-        text: 'Invalid verification code',
-      },
+      isSuccess: true,
     }}
   />
 );
