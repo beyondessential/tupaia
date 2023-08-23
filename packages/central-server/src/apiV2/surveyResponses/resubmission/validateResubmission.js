@@ -31,15 +31,16 @@ export const validateResubmission = async (models, updatedFields, surveyResponse
   }
 
   const answerValidations = Object.entries(answers).map(async ([questionCode, value]) => {
-    if (value === null || value === undefined) {
-      throw new ValidationError(`Answer for ${questionCode} is missing value`);
-    }
-
     const question = surveyQuestions.find(q => q.code === questionCode);
     if (!question) {
       throw new ValidationError(
         `Could not find question with code ${questionCode} on survey ${surveyId}`,
       );
+    }
+
+    if (value === null || value === undefined) {
+      // Answer deleted, valid
+      return;
     }
 
     try {

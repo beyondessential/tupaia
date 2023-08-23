@@ -18,13 +18,23 @@ import { ResponseFields } from './ResponseFields';
 
 export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   const [surveyResubmission, setSurveyResubmission] = useState({});
+  const [filesByQuestionCode, setFilesByQuestionCode] = useState({});
   const isUnchanged = Object.keys(surveyResubmission).length === 0;
   const [resubmitStatus, setResubmitStatus] = useState(MODAL_STATUS.INITIAL);
+
   const [selectedEntity, setSelectedEntity] = useState({});
   const [resubmitErrorMessage, setResubmitErrorMessage] = useState(null);
 
   const useResubmitResponse = () => {
-    return useResubmitSurveyResponse(surveyResponseId, surveyResubmission);
+    // Swap filesByQuestionCode to filesByUniqueFileName.
+    // Tracking by question code allows us to manage files easier e.g. don't have to worry about tracking them in deletions
+    // And the API endpoint needs them by uniqueFileName
+    const filesByUniqueFileName = {};
+    for (const [questionCode, file] of Object.entries(filesByQuestionCode)) {
+      const uniqueFileName = surveyResubmission.answers[questionCode];
+      filesByUniqueFileName[uniqueFileName] = file;
+    }
+    return useResubmitSurveyResponse(surveyResponseId, surveyResubmission, filesByUniqueFileName);
   };
   const { mutateAsync: resubmitResponse } = useResubmitResponse();
 
@@ -55,6 +65,10 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   const handleDismissError = () => {
     setResubmitStatus(MODAL_STATUS.INITIAL);
     setResubmitErrorMessage(null);
+  };
+
+  const onSetFormFile = (questionCode, file) => {
+    setFilesByQuestionCode({ ...filesByQuestionCode, [questionCode]: file });
   };
 
   const renderButtons = useCallback(() => {
@@ -121,6 +135,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
               onChange={(field, updatedField) =>
                 setSurveyResubmission({ ...surveyResubmission, [field]: updatedField })
               }
+              onSetFormFile={onSetFormFile}
               survey={data?.survey}
               existingAnswers={data?.answers}
               selectedEntity={selectedEntity}

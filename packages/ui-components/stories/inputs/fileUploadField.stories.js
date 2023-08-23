@@ -83,3 +83,20 @@ export const WithLabel = () => {
     </Container>
   );
 };
+
+export const WithMaxFileSize = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+        label="File Upload"
+        maxSizeInBytes={1024 * 10} /* 10 KB */
+      />
+    </Container>
+  );
+};

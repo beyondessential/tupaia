@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import { GreyButton } from '../Button';
@@ -20,14 +20,21 @@ const HiddenFileInput = styled.input`
   z-index: -1;
 `;
 
-const FileName = styled.span`
+const FileNameAndFileSize = styled.span`
   font-size: 1rem;
   color: ${props => props.theme.palette.text.secondary};
   margin-left: 0.8rem;
 `;
 
 const FileUploadWrapper = styled.div``;
-const FileUploadContainer = styled(FlexStart)``;
+const FileUploadContainer = styled(FlexStart)`
+  margin-top: 15px;
+`;
+
+const humanFileSize = (sizeInBytes: number) => {
+  const i = sizeInBytes === 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+  return `${(sizeInBytes / 1024 ** i).toFixed(2)} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
+};
 
 interface FileUploadFieldProps {
   onChange: (
@@ -42,7 +49,8 @@ interface FileUploadFieldProps {
   label?: string;
   tooltip?: string;
   helperText?: string;
-  error?: boolean;
+  showFileSize?: boolean;
+  maxSizeInBytes?: number;
 }
 
 export const FileUploadField = ({
@@ -54,22 +62,52 @@ export const FileUploadField = ({
   label,
   tooltip,
   helperText,
-  error,
+  showFileSize = false,
+  maxSizeInBytes,
 }: FileUploadFieldProps) => {
   const inputEl = useRef<HTMLInputElement | null>(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
+
+  const [error, setError] = useState<string | null>(null);
+  const [sizeInBytes, setSizeInBytes] = useState<number | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newName;
     const input = inputEl.current;
 
-    if (input?.files && input.files.length > 1) {
+    if (!input || !input.files) return;
+
+    if (input.files.length > 1) {
       newName = `${input.files.length} files selected`;
     } else {
       newName = event.target.value.split('\\').pop();
     }
 
-    onChange(event, newName, input?.files);
+    if (maxSizeInBytes) {
+      for (const file of Array.from(input.files)) {
+        const { size: newSizeInBytes } = file;
+        if (newSizeInBytes > maxSizeInBytes) {
+          setSizeInBytes(null);
+          setError(
+            `Error: file is too large: ${humanFileSize(newSizeInBytes)}. Max file size: ${humanFileSize(
+              maxSizeInBytes,
+            )}`,
+          );
+          onChange(event, undefined, null);
+          return;
+        }
+      }
+    }
+
+    if (multiple) {
+      onChange(event, newName, input.files);
+      // We don't support file size label if multiple
+    } else {
+      const [file] = Array.from(input.files);
+      setSizeInBytes(file.size);
+      onChange(event, newName, input.files);
+    }
+    setError(null);
   };
 
   return (
@@ -88,9 +126,10 @@ export const FileUploadField = ({
         <GreyButton component="span" startIcon={<SaveAlt />}>
           {text}
         </GreyButton>
-        {fileName && <FileName>{fileName}</FileName>}
+        {fileName && <FileNameAndFileSize>{fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}</FileNameAndFileSize>}
       </FileUploadContainer>
-      {helperText && <MuiFormHelperText error={error}>{helperText}</MuiFormHelperText>}
+      {error && <MuiFormHelperText error>{error}</MuiFormHelperText>}
+      {helperText && <MuiFormHelperText>{helperText}</MuiFormHelperText>}
     </FileUploadWrapper>
   );
 };
