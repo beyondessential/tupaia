@@ -5,13 +5,13 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DataTrakUserRequest } from '@tupaia/types';
+import { DatatrakWebUserRequest } from '@tupaia/types';
 
 export type UserRequest = Request<
-  DataTrakUserRequest.Params,
-  DataTrakUserRequest.ResBody,
-  DataTrakUserRequest.ReqBody,
-  DataTrakUserRequest.ReqQuery
+  DatatrakWebUserRequest.Params,
+  DatatrakWebUserRequest.ResBody,
+  DatatrakWebUserRequest.ReqBody,
+  DatatrakWebUserRequest.ReqQuery
 >;
 
 export class UserRoute extends Route<UserRequest> {
