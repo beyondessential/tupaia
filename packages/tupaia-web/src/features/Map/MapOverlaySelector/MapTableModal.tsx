@@ -17,6 +17,7 @@ import { Entity } from '../../../types';
 
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const Title = styled(Typography).attrs({
