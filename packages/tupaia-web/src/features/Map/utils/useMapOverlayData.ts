@@ -18,7 +18,6 @@ const useEntitiesByType = (
   entityType?: string | null,
 ) => {
   const snakeCaseEntityType = getSnakeCase(entityType!);
-  // TODO: Is this meant to get all the ones at the same level? Is this a FE or BE thing?
   return useEntitiesWithLocation(
     projectCode,
     entityCode,
