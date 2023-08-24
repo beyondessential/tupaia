@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { STATUS } from '@tupaia/ui-components';
+import { EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';
 import { get } from '../api';
 import { LoginPage } from '.';
 
@@ -18,7 +18,7 @@ export const VerifyEmailPage = () => {
   // We need to save the status in state so that we can display the message to the user even after the
   // url param is cleared
   const [message, setMessage] = useState<{
-    status?: STATUS | string;
+    status?: EMAIL_VERIFICATION_STATUS | string;
     text?: string;
   } | null>(null);
   const [urlSearchParams] = useSearchParams();
@@ -32,13 +32,13 @@ export const VerifyEmailPage = () => {
       enabled: !!verifyEmailToken,
       onError: () => {
         setMessage({
-          status: STATUS.ERROR,
+          status: EMAIL_VERIFICATION_STATUS.ERROR,
           text: 'Your email address could not be verified',
         });
       },
       onSuccess: () => {
         setMessage({
-          status: STATUS.SUCCESS,
+          status: EMAIL_VERIFICATION_STATUS.SUCCESS,
           text: 'Your e-mail was successfully verified',
         });
       },

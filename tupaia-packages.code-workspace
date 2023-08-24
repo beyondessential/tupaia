@@ -53,8 +53,8 @@
       "path": "packages/datatrak-web"
     },
     {
-      "name": "datatrak-server",
-      "path": "packages/datatrak-server"
+      "name": "datatrak-web-server",
+      "path": "packages/datatrak-web-server"
     },
     {
       "name": "database",

@@ -6,8 +6,7 @@
 import axios from 'axios';
 import FetchError from './fetchError';
 
-// TODO: change this to be the correct default url when orchestration server is ready
-export const API_URL = import.meta.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://localhost:8100/v1';
+export const API_URL = import.meta.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://localhost:8110/v1';
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;

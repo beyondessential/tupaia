@@ -11,15 +11,15 @@ import { AuthViewWrapper } from './AuthViewWrapper';
 import { AuthFormTextField } from './AuthFormTextField';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
-import { HookFormInput, HookForm } from '../HookForm';
-import { EmailVerificationDisplay, Message, STATUS } from './EmailVerificationDisplay';
-import { AuthViewButton } from './AuthViewButton';
+import { FormInput, Form } from '../Form';
+import { EmailVerificationDisplay, Message } from './EmailVerificationDisplay';
+import { AuthSubmitButton } from './AuthSubmitButton';
 
 const Wrapper = styled(AuthViewWrapper)`
   width: 38rem;
 `;
 
-const StyledForm = styled(HookForm)`
+const StyledForm = styled(Form)`
   margin-top: 1rem;
   width: 22rem;
   max-width: 100%;
@@ -27,15 +27,15 @@ const StyledForm = styled(HookForm)`
 
 const LinkText = styled(Typography)`
   font-weight: 400;
-  font-size: 11px;
-  line-height: 15px;
+  font-size: 0.6875rem;
+  line-height: 1.4;
   color: ${({ theme }) => theme.palette.text.primary};
 
   a {
     color: ${({ theme }) => theme.palette.text.primary};
   }
 
-  ${AuthViewButton} + & {
+  ${AuthSubmitButton} + & {
     margin-top: 1.3rem;
   }
 `;
@@ -73,7 +73,7 @@ export const LoginForm = ({
       {error && <Typography color="error">{error.message}</Typography>}
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
-        <HookFormInput
+        <FormInput
           name="email"
           type="email"
           options={FORM_FIELD_VALIDATION.EMAIL}
@@ -82,7 +82,7 @@ export const LoginForm = ({
           label="Email"
           disabled={isLoading}
         />
-        <HookFormInput
+        <FormInput
           name="password"
           type="password"
           options={FORM_FIELD_VALIDATION.PASSWORD}
@@ -95,9 +95,9 @@ export const LoginForm = ({
         <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
           Forgot password?
         </ForgotPasswordText>
-        <AuthViewButton type="submit" isLoading={isLoading}>
+        <AuthSubmitButton type="submit" isLoading={isLoading}>
           Log in
-        </AuthViewButton>
+        </AuthSubmitButton>
         <LinkText align="center">
           Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
         </LinkText>

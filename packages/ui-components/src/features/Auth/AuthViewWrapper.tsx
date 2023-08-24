@@ -13,10 +13,9 @@ const Wrapper = styled(Paper)`
   align-items: center;
   max-width: 100%;
   box-shadow: none;
-  padding: 3rem 0;
+  padding: 3rem 1rem;
   @media screen and (max-width: 900px) {
     height: 100%;
-    padding: 3rem 1rem;
   }
 `;
 

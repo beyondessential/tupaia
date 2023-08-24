@@ -6,23 +6,24 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 
-export enum STATUS {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export enum EMAIL_VERIFICATION_STATUS {
   SUCCESS = 'success',
   ERROR = 'error',
 }
 
 const MessageText = styled(Typography)<{
-  $status?: STATUS | string;
+  $status?: EMAIL_VERIFICATION_STATUS | string;
 }>`
   color: ${({ theme, $status }) => {
-    if ($status === STATUS.SUCCESS) return theme.palette.success.main;
-    if ($status === STATUS.ERROR) return theme.palette.error.main;
+    if ($status === EMAIL_VERIFICATION_STATUS.SUCCESS) return theme.palette.success.main;
+    if ($status === EMAIL_VERIFICATION_STATUS.ERROR) return theme.palette.error.main;
     return theme.palette.text.primary;
   }};
 `;
 
 export type Message = {
-  status?: STATUS | string;
+  status?: EMAIL_VERIFICATION_STATUS | string;
   text?: string;
 };
 
