@@ -134,8 +134,7 @@ const PreviewWrapper = styled.div<{
 const PreviewContainer = styled.div`
   min-width: 50rem; // the size of the a4 page
   width: max-content;
-  padding: 1rem;
-  height: 100%;
+  padding: 1rem; 
   h2 {
     color: ${({ theme }) => theme.palette.common.black};
   }
