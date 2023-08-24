@@ -31,9 +31,10 @@ const RequestAccessButton = styled(RouterButton).attrs({
 `;
 
 export const NoAccessDashboard = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode } = useParams();
   const { isLoggedIn } = useUser();
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
+ 
   if (!entity) return null;
   const { type = '' } = entity;
   const displayType = type?.toLowerCase();
