@@ -22,9 +22,6 @@ const ExportingStyledTable = styled(ChartTable)`
   border-bottom: none;
   overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
 
-  .MuiTableContainer-root {
-    overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
-  }
   table {
     border: 1px solid ${GREY_DE};
     width: auto;
