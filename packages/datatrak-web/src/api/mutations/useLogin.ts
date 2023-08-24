@@ -4,7 +4,6 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { Location, useLocation, useNavigate } from 'react-router';
 import { post } from '../api';
 
 type LoginCredentials = {
@@ -13,9 +12,6 @@ type LoginCredentials = {
 };
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const location = useLocation() as Location & { state: { referrer?: string } };
-
-  const navigate = useNavigate();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {

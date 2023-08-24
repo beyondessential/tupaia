@@ -53,7 +53,7 @@ interface LoginFormProps {
   error?: Error | null;
   forgotPasswordLink: To;
   registerLink: To;
-  message?: Message;
+  message?: Message | null;
   formContext: ReturnType<typeof useForm>;
   className?: string;
 }
