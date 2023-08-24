@@ -44,7 +44,7 @@ const TagLine = styled.p`
 const ProjectsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1.8125rem;
   margin: 1.4rem 0;
 
   @media (max-width: 1024px) {

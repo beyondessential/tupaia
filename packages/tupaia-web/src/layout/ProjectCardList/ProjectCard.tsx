@@ -16,7 +16,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.6rem;
-  min-height: 20rem;
+  min-height: 24.4375rem;
   border-radius: 5px;
   background: ${({ theme }) => theme.projectCard.background};
   color: white;
@@ -38,8 +38,8 @@ const Card = styled.div`
 const Logo = styled.div`
   position: relative;
   background: white;
-  width: 4.875rem;
-  height: 4.875rem;
+  width: 4.75rem;
+  height: 4.75rem;
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 0.625rem;
@@ -89,7 +89,7 @@ const BaseLink = styled(RouterButton)`
   line-height: 1.2;
   text-transform: none;
   padding: 0.6875rem 1.25rem;
-  min-width: 11.5rem;
+  min-width: 10rem;
 
   &:hover {
     background: ${({ theme }) => darken(theme.palette.primary.main, 0.1)};
@@ -107,6 +107,9 @@ const OutlineLink = styled(RouterButton).attrs({
   color: ${({ theme }) => theme.palette.primary.main};
   background: transparent;
   text-transform: none;
+  line-height: 20px;
+  padding: 0.6875rem 1.5rem;
+  margin: 0 auto;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
@@ -131,7 +134,7 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 export const ProjectAllowedLink = ({ url }: LinkProps) => (
-  <BaseLink to={url}>View Project</BaseLink>
+  <BaseLink to={url}>View project</BaseLink>
 );
 
 interface ProjectCardProps extends Partial<SingleProject> {
