@@ -12,6 +12,7 @@ import { EntityMenu } from './EntityMenu';
 import { useEntities, useProject } from '../../api/queries';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
 import { SearchResults } from './SearchResults';
+import { gaEvent } from '../../utils';
 
 const Container = styled.div`
   position: relative;
@@ -57,7 +58,18 @@ export const EntitySearch = () => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => {
     setIsOpen(false);
+    gaEvent('Search', 'Toggle Expand');
     setSearchValue('');
+  };
+
+  const expandSearchBar = () => {
+    setIsOpen(true);
+    gaEvent('Search', 'Toggle Expand');
+  };
+
+  const updateSearchValue = (value: string) => {
+    setSearchValue(value);
+    gaEvent('Search', 'Change');
   };
 
   const children = entities.filter(entity => entity.parentCode === project?.code);
@@ -68,8 +80,8 @@ export const EntitySearch = () => {
       <Container>
         <SearchBar
           value={searchValue}
-          onChange={setSearchValue}
-          onFocusChange={setIsOpen}
+          onChange={updateSearchValue}
+          onFocusChange={expandSearchBar}
           onClose={onClose}
         />
         {isOpen && (

@@ -86,7 +86,7 @@ export function MultiProjectLandingPage({
               }) => (
                 <ProjectAllowedLink
                   url={`/${code}/${homeEntityCode}${
-                    dashboardGroupName ? `/${dashboardGroupName}` : ''
+                    dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                   }`}
                   isLandingPage
                 />

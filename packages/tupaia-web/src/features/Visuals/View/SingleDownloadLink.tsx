@@ -27,8 +27,8 @@ interface SingleDownloadLinkProps {
 }
 
 export const SingleDownloadLink = ({ report: { data = [] }, config }: SingleDownloadLinkProps) => {
-  const { value } = data[0] || {};
+  const { value, name: displayName } = data[0] || {};
   const { name } = config || {};
   const formattedValue = transformDownloadLink(value as string);
-  return <LinkText href={formattedValue}>{name}</LinkText>;
+  return <LinkText href={formattedValue}>{displayName || name}</LinkText>;
 };

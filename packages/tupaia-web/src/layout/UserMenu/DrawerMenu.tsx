@@ -44,8 +44,8 @@ const Username = styled.p<{
   font-weight: 400;
   margin: 0;
   width: 100%;
-  color: ${({ theme }) => theme.palette.text.secondary};
   color: ${({ $secondaryColor }) => $secondaryColor};
+  opacity: 0.5;
   font-size: 1.2rem;
   padding: 0.5rem 0.5em 0.3rem;
 `;

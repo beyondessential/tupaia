@@ -5,11 +5,15 @@
 
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
+import { gaEvent } from '../../utils';
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return useMutation('logout', () => post('logout'), {
+    onMutate: () => {
+      gaEvent('User', 'Log out');
+    },
     onSuccess: () => {
       queryClient.invalidateQueries();
     },

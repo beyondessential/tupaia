@@ -49,7 +49,6 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    console.log('permissions filter criteria', criteria);
     const dbConditions = await createMapOverlayGroupRelationDBFilter(
       this.accessPolicy,
       this.models,
@@ -59,7 +58,6 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
-    console.log('permissions via parent filter criteria', criteria);
     switch (this.parentRecordType) {
       case TYPES.MAP_OVERLAY_GROUP:
         return this.getPermissionsViaParentMapOverlayGroupFilter(criteria, options);

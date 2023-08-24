@@ -41,7 +41,7 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
 }: {
-  activeDashboard: Dashboard | null;
+  activeDashboard?: Dashboard;
   dashboards: Dashboard[];
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -54,12 +54,14 @@ export const DashboardMenu = ({
     setAnchorEl(null);
   };
 
+  const hasMultipleDashboards = dashboards.length > 1;
+
   return (
     <>
       {activeDashboard && (
-        <MenuButton onClick={handleClickListItem}>
+        <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
           {activeDashboard?.name}
-          <ArrowDropDownIcon />
+          {hasMultipleDashboards && <ArrowDropDownIcon />}
         </MenuButton>
       )}
 

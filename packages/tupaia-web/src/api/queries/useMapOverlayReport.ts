@@ -4,6 +4,7 @@
  */
 import { useQuery } from 'react-query';
 import { momentToDateString } from '@tupaia/utils';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
   autoAssignColors,
   createValueMapping,
@@ -11,29 +12,9 @@ import {
   SPECTRUM_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 import { get } from '../api';
-import { EntityCode, ProjectCode, SingleMapOverlayItem } from '../../types';
+import { EntityCode, ProjectCode } from '../../types';
 
-// make the response from the new endpoint look like the response from the legacy endpoint
-const normaliseResponse = (measureDataResponse: any, overlay: SingleMapOverlayItem) => {
-  const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
-
-  const measureOptions = [
-    {
-      measureLevel,
-      type: displayType,
-      key: dataElementCode || 'value',
-      ...restOfOverlay,
-    },
-  ];
-
-  return {
-    measureCode,
-    measureLevel,
-    measureOptions,
-    serieses: measureOptions,
-    measureData: measureDataResponse,
-  };
-};
+type SingleMapOverlayItem = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 
 const formatMapOverlayData = (data: any) => {
   const { serieses, measureData } = data;
@@ -94,24 +75,23 @@ export const useMapOverlayReport = (
   const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
   const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
   const mapOverlayCode = mapOverlay?.code;
-  const isLegacy = mapOverlay?.legacy;
-  const endpoint = isLegacy ? 'legacyMapOverlayReport' : 'report';
+  const isLegacy = mapOverlay?.legacy ? 'true' : 'false';
 
   const enabled = !!projectCode && !!entityCode && !!mapOverlayCode;
   return useQuery(
     ['mapOverlayReport', projectCode, entityCode, mapOverlayCode, startDate, endDate],
     async () => {
-      const response = await get(`${endpoint}/${mapOverlayCode}`, {
+      const responseData = await get(`legacyMapOverlayReport/${mapOverlayCode}`, {
         params: {
           organisationUnitCode: entityCode,
           projectCode,
-          shouldShowAllParentCountryResults: projectCode !== entityCode, // TODO: figure out the logic here for shouldShowAllParentCountryResults
+          shouldShowAllParentCountryResults: projectCode !== entityCode,
           startDate,
           endDate,
+          legacy: isLegacy,
         },
       });
 
-      const responseData = isLegacy ? response : normaliseResponse(response.data, mapOverlay);
       return formatMapOverlayData(responseData);
     },
     {

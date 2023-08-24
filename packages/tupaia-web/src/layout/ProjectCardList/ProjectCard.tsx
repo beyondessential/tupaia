@@ -6,7 +6,7 @@ import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
-import { darken } from '@material-ui/core/styles';
+import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES } from '../../constants';
@@ -111,13 +111,17 @@ const BaseLink = styled(RouterButton)`
 const OutlineLink = styled(BaseLink).attrs({
   variant: 'outlined',
 })`
-  border: 1px solid ${({ theme }) => theme.palette.primary.main};
-  color: ${({ theme }) => theme.palette.primary.main};
+  border: 1px solid ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
+  color: ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
   background: transparent;
   min-width: 10rem;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
+  }
+  &.Mui-disabled {
+    border-color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;
 

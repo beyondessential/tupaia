@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   width: 100%;
   max-width: 100%;
   position: relative;
-  padding: 1rem 1rem;
+  padding: 0.9375rem 0.9375rem 0.9375rem 0.625rem;
   background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
@@ -51,7 +51,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-    dashboardItem,
+    dashboardItem?.config,
   ) as {
     startDate?: Moment;
     endDate?: Moment;
@@ -92,7 +92,12 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     showTitle =
       !!name &&
       !!(presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
-  } else if (viewType?.includes('Download') || type === 'component') showTitle = false;
+  } else if (
+    viewType?.includes('Download') ||
+    type === 'component' ||
+    viewType === 'multiSingleValue'
+  )
+    showTitle = false;
 
   return (
     <Wrapper>

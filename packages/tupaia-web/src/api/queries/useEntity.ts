@@ -21,7 +21,7 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
       const entity = await get(`entity/${projectCode}/${entityCode}`, {
         params: {
           includeRoot: true,
-          fields: ['parent_code', 'code', 'name', 'type', 'bounds', 'region', 'image_url'],
+          fields: ['parent_code', 'code', 'name', 'type', 'point', 'bounds', 'region', 'image_url'],
         },
       });
 
@@ -34,7 +34,7 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
     {
       enabled: !!entityCode && !!projectCode,
       onError: (e: any) => {
-        if(e.code !== 403) return;
+        if (e.code !== 403) return;
         if (!isLoggedIn) return navigateToLogin();
         if (location.hash === `#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`) return;
         return navigateToModal(MODAL_ROUTES.REQUEST_COUNTRY_ACCESS);
