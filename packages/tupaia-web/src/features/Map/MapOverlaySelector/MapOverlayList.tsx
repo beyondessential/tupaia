@@ -116,7 +116,10 @@ const MapOverlayAccordion = ({
 export const MapOverlayList = () => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
-  const { mapOverlayGroups = [], selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
+  const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
+    projectCode,
+    entityCode,
+  );
 
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
@@ -124,6 +127,7 @@ export const MapOverlayList = () => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
     setUrlParams(urlSearchParams);
   };
+  if (isLoadingMapOverlays) return null;
 
   return (
     <ErrorBoundary>

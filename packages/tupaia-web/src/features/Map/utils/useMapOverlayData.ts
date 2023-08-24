@@ -18,6 +18,7 @@ const useEntitiesByType = (
   entityType?: string | null,
 ) => {
   const snakeCaseEntityType = getSnakeCase(entityType!);
+  // TODO: Is this meant to get all the ones at the same level? Is this a FE or BE thing?
   return useEntitiesWithLocation(
     projectCode,
     entityCode,
@@ -68,13 +69,22 @@ export const useMapOverlayData = (
     selectedOverlay?.measureLevel,
   );
 
-  const { data } = useMapOverlayReport(projectCode, rootEntityCode, selectedOverlay, {
-    startDate,
-    endDate,
-  });
+  const { data, isLoading, isFetched, isIdle } = useMapOverlayReport(
+    projectCode,
+    rootEntityCode,
+    selectedOverlay,
+    {
+      startDate,
+      endDate,
+    },
+  );
+
+  const isLoadingData = isLoading || (!isIdle && !isFetched);
 
   if (!entities || !data) {
-    return {};
+    return {
+      isLoading: isLoadingData,
+    };
   }
 
   const processedMeasureData = processMeasureData({
@@ -87,6 +97,8 @@ export const useMapOverlayData = (
 
   return {
     ...data,
+    isLoading: isLoadingData,
+    isFetched,
     serieses: data?.serieses,
     measureData: processedMeasureData,
     entities,
