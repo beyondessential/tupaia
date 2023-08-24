@@ -9,7 +9,8 @@ import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import morgan from 'morgan';
 
-import { Authenticator } from '@tupaia/auth';
+import { Authenticator, buildBasicBearerAuthMiddleware } from '@tupaia/auth';
+
 import { apiV2 } from './apiV2';
 
 /**
@@ -42,6 +43,11 @@ export function createApp(database, models) {
     req.authenticator = authenticator;
     next();
   });
+
+  /**
+   * Add the basic authenticator to all routes
+   */
+  app.use(buildBasicBearerAuthMiddleware('central-server', authenticator));
 
   /**
    * Add all routes to the app
