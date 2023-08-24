@@ -1,5 +1,5 @@
 {
-  "name": "@tupaia/datatrak-server",
+  "name": "@tupaia/datatrak-web-server",
   "version": "0.0.0",
   "private": true,
   "description": "Orchestration server for datatrak web application",
