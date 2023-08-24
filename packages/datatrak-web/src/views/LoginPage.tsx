@@ -14,7 +14,7 @@ export const LoginPage = ({
   message?: {
     status?: EMAIL_VERIFICATION_STATUS | string;
     text?: string;
-  };
+  } | null;
 }) => {
   const formContext = useForm();
   const { mutate: login, isLoading, error } = useLogin();
