@@ -9,7 +9,8 @@ import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import morgan from 'morgan';
 
-import { Authenticator, buildBasicBearerAuthMiddleware } from '@tupaia/auth';
+import { Authenticator } from '@tupaia/auth';
+import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 
 import { apiV2 } from './apiV2';
 
