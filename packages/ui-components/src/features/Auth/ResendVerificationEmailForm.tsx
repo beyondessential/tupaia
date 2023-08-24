@@ -9,8 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { AuthViewWrapper } from './AuthViewWrapper';
-import { AuthViewButton } from './AuthViewButton';
-import { HookForm, HookFormInput } from '../HookForm';
+import { AuthSubmitButton } from './AuthSubmitButton';
+import { Form, FormInput } from '../Form';
 import { AuthFormTextField } from './AuthFormTextField';
 
 const Wrapper = styled(AuthViewWrapper)`
@@ -22,7 +22,7 @@ const CheckEmailMessage = styled.p`
   padding: 0 0.9375rem;
 `;
 
-const StyledForm = styled(HookForm)`
+const StyledForm = styled(Form)`
   margin-top: 1rem;
   width: 21rem;
   max-width: 100%;
@@ -57,7 +57,7 @@ export const ResendVerificationEmailForm = ({
         </CheckEmailMessage>
       ) : (
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
-          <HookFormInput
+          <FormInput
             name="email"
             label="Email"
             type="email"
@@ -65,9 +65,9 @@ export const ResendVerificationEmailForm = ({
             options={FORM_FIELD_VALIDATION.EMAIL}
             Input={AuthFormTextField}
           />
-          <AuthViewButton type="submit" isLoading={isLoading}>
+          <AuthSubmitButton type="submit" isLoading={isLoading}>
             Resend verification email
-          </AuthViewButton>
+          </AuthSubmitButton>
         </StyledForm>
       )}
     </Wrapper>

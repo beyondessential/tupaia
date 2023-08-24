@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
 import { AuthViewWrapper } from './AuthViewWrapper';
-import { AuthViewButton } from './AuthViewButton';
-import { HookForm, HookFormInput } from '../HookForm';
+import { AuthSubmitButton } from './AuthSubmitButton';
+import { Form, FormInput } from '../Form';
 import { Checkbox } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
@@ -24,7 +24,7 @@ const LinkText = styled(Typography)`
   font-size: 0.6875rem;
   line-height: 1.4;
 
-  ${AuthViewButton} + & {
+  ${AuthSubmitButton} + & {
     margin-top: 1.3rem;
   }
 `;
@@ -48,7 +48,7 @@ const ButtonColumn = styled(FullWidthColumn)`
   justify-content: center;
 `;
 
-const StyledForm = styled(HookForm)`
+const StyledForm = styled(Form)`
   margin-top: 1rem;
   width: 42rem;
   max-width: 100%;
@@ -96,9 +96,9 @@ export const RegisterForm = ({
         <>
           {error && <Typography color="error">{error.message}</Typography>}
           <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
-            <HookFormInput name="firstName" label="First name" required Input={AuthFormTextField} />
-            <HookFormInput name="lastName" label="Last name" required Input={AuthFormTextField} />
-            <HookFormInput
+            <FormInput name="firstName" label="First name" required Input={AuthFormTextField} />
+            <FormInput name="lastName" label="Last name" required Input={AuthFormTextField} />
+            <FormInput
               name="emailAddress"
               label="Email"
               type="email"
@@ -106,12 +106,12 @@ export const RegisterForm = ({
               options={FORM_FIELD_VALIDATION.EMAIL}
               Input={AuthFormTextField}
             />
-            <HookFormInput
+            <FormInput
               name="contactNumber"
               label="Contact number (optional)"
               Input={AuthFormTextField}
             />
-            <HookFormInput
+            <FormInput
               name="password"
               label="Password"
               type="password"
@@ -119,7 +119,7 @@ export const RegisterForm = ({
               options={FORM_FIELD_VALIDATION.PASSWORD}
               Input={AuthFormTextField}
             />
-            <HookFormInput
+            <FormInput
               name="passwordConfirm"
               label="Confirm password"
               type="password"
@@ -131,10 +131,10 @@ export const RegisterForm = ({
               }}
               Input={AuthFormTextField}
             />
-            <HookFormInput name="employer" label="Employer" required Input={AuthFormTextField} />
-            <HookFormInput name="position" label="Position" required Input={AuthFormTextField} />
+            <FormInput name="employer" label="Employer" required Input={AuthFormTextField} />
+            <FormInput name="position" label="Position" required Input={AuthFormTextField} />
             <FullWidthColumn>
-              <HookFormInput
+              <FormInput
                 name="hasAgreed"
                 label={
                   <TermsText>
@@ -154,9 +154,9 @@ export const RegisterForm = ({
               />
             </FullWidthColumn>
             <ButtonColumn>
-              <AuthViewButton type="submit" isLoading={isLoading}>
+              <AuthSubmitButton type="submit" isLoading={isLoading}>
                 Register account
-              </AuthViewButton>
+              </AuthSubmitButton>
               <LinkText align="center">
                 Already have an account? <RouterLink to={loginLink}>Log in here</RouterLink>
               </LinkText>

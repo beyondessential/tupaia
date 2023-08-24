@@ -5,12 +5,13 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
+import { HEADER_HEIGHT } from '../constants';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: calc(100% - ${HEADER_HEIGHT});
   p,
   a,
   .MuiTypography-root.MuiFormControlLabel-label {
