@@ -39,7 +39,6 @@ const CloseButton = styled(IconButton)`
 `;
 
 const Paper = styled(MuiPaper)`
-  background-color: #202124;
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
   overflow-y: auto;
@@ -54,7 +53,13 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperComponent={Paper}
+      fullScreen={fullScreen}
+      disablePortal
+    >
       <Wrapper id="overlay-wrapper">
         <CloseButton onClick={onClose} color="default">
           <CloseIcon />

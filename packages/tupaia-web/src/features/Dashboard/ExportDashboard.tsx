@@ -91,7 +91,7 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems }: ExportDashb
         <Container>
           <LoadingContainer
             heading="Exporting charts to PDF"
-            isLoading={isLoading}
+            isLoading={true}
             errorMessage={error?.message}
             onReset={reset}
           >
