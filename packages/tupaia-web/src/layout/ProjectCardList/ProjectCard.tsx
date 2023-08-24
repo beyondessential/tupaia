@@ -27,7 +27,6 @@ const Card = styled.div`
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     padding: 2.5rem;
-    height: 24rem;
   }
 
   button {
@@ -109,7 +108,6 @@ const OutlineLink = styled(RouterButton).attrs({
   text-transform: none;
   line-height: 20px;
   padding: 0.6875rem 1.5rem;
-  margin: 0 auto;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
