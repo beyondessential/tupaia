@@ -37,7 +37,7 @@ export class GETProjects extends GETHandler {
   customJoinConditions = {
     entity: {
       nearTableKey: 'project.entity_id',
-      farTableTable: 'entity.id',
+      farTableKey: 'entity.id',
     },
     entity_hierarchy: {
       nearTableKey: 'project.entity_hierarchy_id',
