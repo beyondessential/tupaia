@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
   overflow-x: hidden;
-  padding: 2rem;
+  padding: 1.5rem;
   pointer-events: auto;
 `;
 

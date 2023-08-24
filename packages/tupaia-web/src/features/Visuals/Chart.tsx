@@ -130,12 +130,6 @@ const ContentWrapper = styled.div<{
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${({ $isExporting }) => ($isExporting ? 'auto' : '100%')};
   }
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
-  }
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
-  }
 `;
 
 interface ChartProps {

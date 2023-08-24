@@ -107,8 +107,8 @@ const Checkbox = styled(BaseCheckbox)`
 const RightColumn = styled.div`
   flex-grow: 1;
   width: 70%;
-  padding-left: 2rem;
-  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
 `;
 
 const ScrollableContent = styled.div`
