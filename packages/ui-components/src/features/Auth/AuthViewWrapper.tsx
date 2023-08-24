@@ -13,7 +13,7 @@ const Wrapper = styled(Paper)`
   align-items: center;
   max-width: 100%;
   box-shadow: none;
-  padding: 3rem 0;
+  padding: 3rem 1rem;
 `;
 
 const Title = styled(Typography)`
