@@ -51,7 +51,7 @@ const Title = styled(Typography).attrs({
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   text-align: center;
-  margin: 0.3rem 0 2rem 0;
+  margin: 0.3rem 0 1rem 0;
   line-height: 1.4;
 `;
 
