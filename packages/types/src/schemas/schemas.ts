@@ -33313,6 +33313,37 @@ export const DataTableSchema = {
 	]
 } 
 
+export const DatatrakSessionSchema = {
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"id",
+		"refresh_token"
+	]
+} 
+
 export const DhisInstanceSchema = {
 	"properties": {
 		"code": {
@@ -33531,6 +33562,9 @@ export const EntitySchema = {
 				"disaster",
 				"district",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -34692,6 +34726,9 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -35545,6 +35582,9 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"facility",
+		"facility_building",
+		"facility_division",
+		"facility_section",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
@@ -35685,6 +35725,9 @@ export const EntityCreatedSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -35854,6 +35897,9 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"disaster",
 							"district",
 							"facility",
+							"facility_building",
+							"facility_division",
+							"facility_section",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",
