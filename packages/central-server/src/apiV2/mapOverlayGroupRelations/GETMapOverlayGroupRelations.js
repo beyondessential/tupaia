@@ -31,7 +31,7 @@ export class GETMapOverlayGroupRelations extends GETHandler {
       farTableKey: 'map_overlay_group.id',
     },
     map_overlay: {
-      nearTableKeyKey: 'map_overlay_group_relation.child_id',
+      nearTableKey: 'map_overlay_group_relation.child_id',
       farTableKey: 'map_overlay.id',
     },
   };
