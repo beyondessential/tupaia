@@ -9860,9 +9860,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/datatrak-server@workspace:packages/datatrak-server":
+"@tupaia/datatrak-web-server@workspace:packages/datatrak-web-server":
   version: 0.0.0-use.local
-  resolution: "@tupaia/datatrak-server@workspace:packages/datatrak-server"
+  resolution: "@tupaia/datatrak-web-server@workspace:packages/datatrak-web-server"
   dependencies:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0

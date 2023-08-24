@@ -13,19 +13,14 @@ import {
   forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { DataTrakSessionModel } from '../models';
-import {
-  UserRoute,
-  UserRequest,
-} from '../routes';
+import { UserRoute, UserRequest } from '../routes';
 
-const {
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-} = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-server')
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
