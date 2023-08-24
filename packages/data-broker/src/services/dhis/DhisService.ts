@@ -6,19 +6,16 @@
 import type { DhisApi } from '@tupaia/dhis-api';
 import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import {
-  AnalyticResults,
   DataBrokerModelRegistry,
   DataElementMetadata,
   DataGroupMetadata,
   DataSourceType,
   DataValue,
   Diagnostics,
-  EventResults,
   OutboundEvent,
 } from '../../types';
 import type {
   PullMetadataOptions as BasePullMetadataOptions,
-  PullOptions as BasePullOptions,
   PushOptions as BasePushOptions,
   DeleteOptions as BaseDeleteOptions,
 } from '../Service';
@@ -44,14 +41,6 @@ type DataElementPushOptions = BasePushOptions & {
 type DataGroupPushOptions = BasePushOptions & {
   type: 'dataGroup';
 };
-
-type PullOptions = BasePullOptions &
-  Partial<{
-    organisationUnitCode: string;
-    organisationUnitCodes: string[];
-    detectDataServices: boolean;
-    useDeprecatedApi: boolean;
-  }>;
 
 type DeleteOptions = BaseDeleteOptions & {
   serverName?: string;
@@ -81,18 +70,6 @@ type Deleter =
   | ((api: DhisApi, dataValue: DataValue, dataSource: DataElement) => Promise<Diagnostics>)
   | ((api: DhisApi, data: DeleteEventData) => Promise<Diagnostics>);
 
-type Puller =
-  | ((
-      apis: DhisApi[],
-      dataSources: DataElement[],
-      options: PullAnalyticsOptions,
-    ) => Promise<AnalyticResults>)
-  | ((
-      apis: DhisApi[],
-      dataSources: DataGroup[],
-      options: PullEventsOptions,
-    ) => Promise<EventResults>);
-
 type MetadataPuller =
   | ((
       api: DhisApi,
@@ -119,7 +96,6 @@ export class DhisService extends Service {
   private readonly deprecatedEventsPuller: DeprecatedEventsPuller;
   private readonly pushers: Record<string, Pusher>;
   private readonly deleters: Record<string, Deleter>;
-  private readonly pullers: Record<string, Puller>;
   private readonly metadataPullers: Record<string, MetadataPuller>;
   private readonly metadataMergers: Record<string, MetadataMerger>;
 
@@ -144,7 +120,6 @@ export class DhisService extends Service {
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models, this.translator);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
-    this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
     this.metadataMergers = this.getMetadataMergers();
   }
@@ -160,16 +135,6 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.deleteEvent.bind(this),
-    };
-  }
-
-  private getPullers() {
-    return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.analyticsPuller.pull.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.eventsPuller.pull.bind(this),
-      [`${this.dataSourceTypes.DATA_GROUP}_deprecated`]: this.deprecatedEventsPuller.pull.bind(
-        this,
-      ),
     };
   }
 
@@ -295,28 +260,32 @@ export class DhisService extends Service {
   private deleteEvent = async (api: DhisApi, data: DeleteEventData) =>
     api.deleteEvent(data.dhisReference);
 
-  public async pull(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options: PullAnalyticsOptions,
-  ): Promise<AnalyticResults>;
-  public async pull(
-    dataSources: DataGroup[],
-    type: 'dataGroup',
-    options: PullEventsOptions,
-  ): Promise<EventResults>;
-  public async pull(dataSources: DataSource[], type: DataSourceType, options: PullOptions) {
+  public async pullAnalytics(dataElements: DataElement[], options: PullAnalyticsOptions) {
+    const { dataServiceMapping } = options;
+
+    const dhisDataElements = dataElements.filter(
+      de => dataServiceMapping.mappingForDataSource(de)?.service_type === 'dhis',
+    );
+    const apis = await getApisForDataSources(this.models, dhisDataElements, dataServiceMapping);
+
+    return this.analyticsPuller.pull.bind(this)(apis, dhisDataElements, options);
+  }
+
+  public async pullEvents(dataGroups: DataGroup[], options: PullEventsOptions) {
     const { dataServiceMapping, useDeprecatedApi = false } = options;
 
-    const dhisDataSources = dataSources.filter(
-      ds => dataServiceMapping.mappingForDataSource(ds)?.service_type === 'dhis',
+    const dhisDataGroups = dataGroups.filter(
+      dg => dataServiceMapping.mappingForDataSource(dg)?.service_type === 'dhis',
     );
+    const apis = await getApisForDataSources(this.models, dhisDataGroups, dataServiceMapping);
 
-    const apis = await getApisForDataSources(this.models, dhisDataSources, dataServiceMapping);
-    const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
+    return useDeprecatedApi
+      ? this.deprecatedEventsPuller.pull.bind(this)(apis, dhisDataGroups, options)
+      : this.eventsPuller.pull.bind(this)(apis, dhisDataGroups, options);
+  }
 
-    const pullData = this.pullers[pullerKey];
-    return pullData(apis, dhisDataSources as any, options as any);
+  public async pullSyncGroupResults(): Promise<never> {
+    throw new Error('pullSyncGroupResults is not supported in DhisService');
   }
 
   public async pullMetadata(

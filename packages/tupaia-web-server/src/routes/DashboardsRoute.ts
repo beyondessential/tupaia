@@ -26,6 +26,8 @@ export type DashboardsRequest = Request<
   TupaiaWebDashboardsRequest.ReqQuery
 >;
 
+const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
+
 export class DashboardsRoute extends Route<DashboardsRequest> {
   public async buildResponse() {
     const { params, ctx } = this.req;
@@ -42,9 +44,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const dashboards = await ctx.services.central.fetchResources('dashboards', {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
+      sort: ['sort_order', 'name'],
     });
-
-    const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
 
     // Fetch all dashboard relations
     const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
@@ -52,7 +53,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         // Attached to the given dashboards
         dashboard_id: {
           comparator: 'IN',
-          comparisonValue: sortedDashboards.map((d: Dashboard) => d.id),
+          comparisonValue: dashboards.map((d: Dashboard) => d.id),
         },
         // For the root entity type
         entity_types: {
@@ -88,7 +89,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ],
     );
 
-    const dashboardsWithItems = sortedDashboards.map((dashboard: Dashboard) => {
+    const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
       return {
         ...dashboard,
         // Filter by the relations, map to the items
@@ -107,6 +108,23 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 
-    return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
+    if (!response.length) {
+      // Returns in an array already
+      const noDataItem = await ctx.services.central.fetchResources('dashboardItems', {
+        filter: { code: NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE },
+      });
+      response.push({
+        name: 'General', // just a dummy dashboard
+        id: 'General',
+        code: 'General',
+        rootEntityCode: rootEntity.code,
+        items: noDataItem,
+      });
+    }
+
+    return camelcaseKeys(response, {
+      deep: true,
+      stopPaths: ['items.config.presentationOptions', 'items.config.chartConfig'], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
+    });
   }
 }

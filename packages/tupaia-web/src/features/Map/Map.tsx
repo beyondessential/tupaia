@@ -13,13 +13,15 @@ import {
   TilePicker,
   LeafletMapProps,
 } from '@tupaia/ui-map-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity, useMapOverlays } from '../../api/queries';
+import { useEntity } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
+import { gaEvent } from '../../utils';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -97,43 +99,49 @@ export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
 
-  // set the map default overlay if there isn't one selected
-  const { mapOverlaysByCode } = useMapOverlays(projectCode, entityCode);
-  useDefaultMapOverlay(projectCode!, mapOverlaysByCode);
+  useDefaultMapOverlay(projectCode, entityCode);
 
   // Setup legend hidden values
-  const { measureData } = useMapOverlayData();
-  const { hiddenValues, setValueHidden } = useHiddenMapValues(measureData?.serieses);
+  const { serieses } = useMapOverlayData();
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
   const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
+    gaEvent('Map', 'Change Tile Set', activeTileSet.label);
   };
 
   return (
-    <MapContainer>
-      <StyledMap bounds={entity?.bounds as LeafletMapProps['bounds']} shouldSnapToPosition>
-        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-        <PolygonNavigationLayer />
-        <DataVisualsLayer hiddenValues={hiddenValues} />
-        <ZoomControl position="bottomright" />
-        <MapWatermark />
-      </StyledMap>
-      {/* Map Controls need to be outside the map so that the mouse events on controls don't inter wit the map */}
-      <MapControlWrapper>
-        <MapControlColumn>
-          <MapOverlaySelector />
-          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
-        </MapControlColumn>
-        <TilePickerWrapper>
-          <TilePicker
-            tileSets={TILE_SETS}
-            activeTileSet={activeTileSet}
-            onChange={onTileSetChange}
-          />
-        </TilePickerWrapper>
-      </MapControlWrapper>
-    </MapContainer>
+    <ErrorBoundary>
+      <MapContainer>
+        <StyledMap
+          center={entity?.point as LeafletMapProps['center']}
+          bounds={entity?.bounds as LeafletMapProps['bounds']}
+          zoom={15 as LeafletMapProps['zoom']}
+          shouldSnapToPosition
+        >
+          <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+          <PolygonNavigationLayer />
+          <DataVisualsLayer hiddenValues={hiddenValues} />
+          <ZoomControl position="bottomright" />
+          <MapWatermark />
+        </StyledMap>
+        {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
+        <MapControlWrapper>
+          <MapControlColumn>
+            <MapOverlaySelector />
+            <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
+          </MapControlColumn>
+          <TilePickerWrapper>
+            <TilePicker
+              tileSets={TILE_SETS}
+              activeTileSet={activeTileSet}
+              onChange={onTileSetChange}
+            />
+          </TilePickerWrapper>
+        </MapControlWrapper>
+      </MapContainer>
+    </ErrorBoundary>
   );
 };

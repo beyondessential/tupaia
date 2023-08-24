@@ -11,10 +11,11 @@ import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
-import { useEntityLink } from './utils';
+import { gaEvent, useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoggedIn } = useUser();
+  gaEvent('Navigate', 'Go Home');
 
   return (
     <Navigate
