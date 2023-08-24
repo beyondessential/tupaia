@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { LoginForm, STATUS } from '@tupaia/ui-components';
+import { LoginForm, EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';
 import { useLogin } from '../api/mutations';
 import { ROUTES } from '../constants';
 
@@ -23,7 +23,7 @@ export const LoginPage = ({
   message,
 }: {
   message?: {
-    status?: STATUS | string;
+    status?: EMAIL_VERIFICATION_STATUS | string;
     text?: string;
   };
 }) => {

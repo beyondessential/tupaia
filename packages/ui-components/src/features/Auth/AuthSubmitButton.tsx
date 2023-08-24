@@ -6,7 +6,7 @@
 import styled from 'styled-components';
 import { Button } from '../../components';
 
-export const AuthViewButton = styled(Button)`
+export const AuthSubmitButton = styled(Button)`
   text-transform: none;
   font-size: 1rem;
   width: 22rem;

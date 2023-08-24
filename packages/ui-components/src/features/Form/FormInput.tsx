@@ -13,7 +13,7 @@ type HookFormInputWrapperProps = Record<string, unknown> & {
   Input: ComponentType<any>;
   required?: boolean;
 };
-export const HookFormInput = ({
+export const FormInput = ({
   name,
   required,
   options = {},

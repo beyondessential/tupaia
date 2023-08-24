@@ -4,3 +4,4 @@
  */
 
 export { LoginForm } from './LoginForm';
+export { EMAIL_VERIFICATION_STATUS } from './EmailVerificationDisplay';
