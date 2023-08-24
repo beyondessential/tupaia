@@ -59,8 +59,22 @@ export const Routes = () => {
           />
           <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
           <Route path={ROUTES.SURVEY}>
-            <Route index element={<SurveyPage />} />
-            <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+            <Route
+              index
+              element={
+                <PrivateRoute>
+                  <SurveyPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path={ROUTES.QUESTIONS}
+              element={
+                <PrivateRoute>
+                  <SurveyQuestionsPage />
+                </PrivateRoute>
+              }
+            />
           </Route>
         </Route>
       </Route>
