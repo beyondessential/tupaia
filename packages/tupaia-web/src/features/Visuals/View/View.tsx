@@ -13,7 +13,7 @@ import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
-import { DashboardInfoHover } from '../../DashboardItem/DashboardInfoHover';
+import { DashboardInfoHover } from '../../DashboardItem';
 interface ViewProps {
   report: DashboardItemReport;
   config: DashboardItemConfig;

@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiInfoIcon from '@material-ui/icons/Info';
 import { MOBILE_BREAKPOINT } from '../../constants';
+import { Typography } from '@material-ui/core';
 
 const Wrapper = styled.div`
   text-transform: none;
@@ -45,7 +46,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const DashboardInfoHoverText = styled.span`
+const DashboardInfoHoverText = styled(Typography)`
   font-size: 1rem;
 `;
 
@@ -57,7 +58,7 @@ export const DashboardInfoHover = ({ infoText }: DashboardInfoHoverProps) => {
   return (
     <Wrapper>
       <MuiInfoIcon />
-      <DashboardInfoHoverText>{infoText}</DashboardInfoHoverText>
+      <DashboardInfoHoverText>{!infoText ? null : infoText}</DashboardInfoHoverText>
     </Wrapper>
   );
 };
