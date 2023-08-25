@@ -26,11 +26,11 @@ const Container = styled.div`
   }
 `;
 
-interface SignupCompleteProps {
+interface SignUpCompleteProps {
   verifyResendLink: string;
   successMessage: string;
 }
-export const SignupComplete = ({ verifyResendLink, successMessage }: SignupCompleteProps) => {
+export const SignUpComplete = ({ verifyResendLink, successMessage }: SignUpCompleteProps) => {
   return (
     <Container>
       <Typography>{successMessage}</Typography>
