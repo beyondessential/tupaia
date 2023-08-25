@@ -49,6 +49,10 @@ export function createApp(database, models) {
    * Add the basic authenticator to all routes
    */
   app.use(buildBasicBearerAuthMiddleware('central-server', authenticator));
+  app.use((req, res, next) => {
+    req.userId = req.user.id;
+    next();
+  });
 
   /**
    * Add all routes to the app
