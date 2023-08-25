@@ -55,10 +55,11 @@ interface DashboardInfoHoverProps {
 }
 
 export const DashboardInfoHover = ({ infoText }: DashboardInfoHoverProps) => {
+  const content = <DashboardInfoHoverText>{infoText}</DashboardInfoHoverText>;
   return (
     <Wrapper>
       <MuiInfoIcon />
-      <DashboardInfoHoverText>{!infoText ? null : infoText}</DashboardInfoHoverText>
+      {!infoText ? null : content}
     </Wrapper>
   );
 };
