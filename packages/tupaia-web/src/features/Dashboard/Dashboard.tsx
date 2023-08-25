@@ -10,6 +10,7 @@ import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
+import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -150,7 +151,10 @@ export const Dashboard = () => {
 
   const getIsDrilldown = (code: DashboardItemType['code']) => {
     return activeDashboard?.items?.some(item => {
-      if (item.config?.drillDown && item.config?.drillDown?.itemCode === code) return true;
+      const { config } = item as {
+        config: MatrixConfig;
+      };
+      if (config?.drillDown && config?.drillDown?.itemCode === code) return true;
       return false;
     });
   };
