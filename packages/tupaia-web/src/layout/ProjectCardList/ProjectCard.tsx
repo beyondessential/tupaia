@@ -106,7 +106,7 @@ const OutlineLink = styled(RouterButton).attrs({
   color: ${({ theme }) => theme.palette.primary.main};
   background: transparent;
   text-transform: none;
-  line-height: 20px;
+  line-height: 2;
   padding: 0.6875rem 1.5rem;
 
   &:hover {

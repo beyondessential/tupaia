@@ -21,7 +21,7 @@ import {
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Typography } from '@material-ui/core';
 
 const Wrapper = styled.div`
   display: flex;
@@ -73,7 +73,7 @@ const ExploreButton = styled(RouterButton).attrs({
   font-style: normal;
   text-align: center;
   text-transform: none;
-  border-color: white;
+  border-color: ${({theme}) => theme.palette.text.primary};
 `;
 
 const Line = styled.div`
@@ -82,10 +82,10 @@ const Line = styled.div`
   margin-top: 0.7rem;
 `;
 
-const ProjectsTitle = styled.h1`
+const ProjectsTitle = styled(Typography)`
+  color: ${({theme}) => theme.palette.text.primary};
   font-size: 1.5rem;
   font-weight: 500;
-  color: white;
   margin-top: 1.8rem;
   margin-left: 0.4rem;
 `;
@@ -124,7 +124,7 @@ export const ProjectsModal = () => {
       <div>
         <ExploreButton>Explore Tupaia.org</ExploreButton>
         <Line />
-        <ProjectsTitle>Projects</ProjectsTitle>
+        <ProjectsTitle variant="h1">Projects</ProjectsTitle>
         {isFetching ? (
           <Loader>
             <CircularProgress />
