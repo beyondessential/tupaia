@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TextField, RadioGroup } from '@tupaia/ui-components';
+import { GeolocateQuestion } from '../components';
 
 const Text = styled.div`
   margin-bottom: 0.625rem;
@@ -69,7 +70,7 @@ export enum QUESTION_TYPES {
   Date = Placeholder,
   DateTime = Placeholder,
   FreeText = TextField,
-  Geolocate = Placeholder,
+  Geolocate = GeolocateQuestion,
   Autocomplete = Placeholder,
   Instruction = InstructionQuestion,
   Number = TextField,

@@ -19,7 +19,7 @@ export const SurveyQuestionsPage = () => {
   return (
     <Card>
       <h1>Survey Questions Page</h1>
-      <SurveyQuestion label="First name" name="firstName" type="FreeText" />
+      <SurveyQuestion label="First name" name="firstName" type="Geolocate" />
     </Card>
   );
 };
