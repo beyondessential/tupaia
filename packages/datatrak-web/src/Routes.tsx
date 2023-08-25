@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
+import { Navigate, Route, Outlet, Routes as RouterRoutes } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { LandingPage, SurveyPage, SurveyQuestionsPage, LoginPage, VerifyEmailPage } from './views';
 import { useUser } from './api/queries';
@@ -22,11 +22,12 @@ const LoggedInRedirect = ({ children }) => {
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = () => {
   const { isLoggedIn, isLoading, isFetched } = useUser();
   if (isLoading || !isFetched) return <FullPageLoader />;
-  if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
-  return children;
+  if (!isLoggedIn) return <Navigate to={ROUTES.LOGIN} replace={true} />;
+
+  return <Outlet />;
 };
 
 /**
@@ -39,14 +40,9 @@ export const Routes = () => {
   return (
     <RouterRoutes>
       <Route path="/" element={<MainPageLayout />}>
-        <Route
-          index
-          element={
-            <PrivateRoute>
-              <LandingPage />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/" element={<PrivateRoute />}>
+          <Route index element={<LandingPage />} />
+        </Route>
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
           <Route
@@ -58,23 +54,9 @@ export const Routes = () => {
             }
           />
           <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-          <Route path={ROUTES.SURVEY}>
-            <Route
-              index
-              element={
-                <PrivateRoute>
-                  <SurveyPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path={ROUTES.QUESTIONS}
-              element={
-                <PrivateRoute>
-                  <SurveyQuestionsPage />
-                </PrivateRoute>
-              }
-            />
+          <Route path={ROUTES.SURVEY} element={<PrivateRoute />}>
+            <Route index element={<SurveyPage />} />
+            <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
           </Route>
         </Route>
       </Route>
