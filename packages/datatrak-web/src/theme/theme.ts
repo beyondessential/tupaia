@@ -15,7 +15,14 @@ export const theme = createMuiTheme({
     },
     text: {
       primary: '#333333', // dark text color
-      secondary: '#4A79EA', // purple text for secondary buttons etc
+      secondary: '#B8B8B8', // light grey text color
+    },
+  },
+  overrides: {
+    MuiButton: {
+      root: {
+        textTransform: 'none',
+      },
     },
   },
 });

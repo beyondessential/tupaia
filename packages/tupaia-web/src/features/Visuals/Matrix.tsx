@@ -51,11 +51,11 @@ const parseRows = (
 ): MatrixRowType[] => {
   const location = useLocation();
 
-  let topLevelRows = [];
+  let topLevelRows = [] as MatrixReportRow[];
   // if a categoryId is not passed in, then we need to find the top level rows
   if (!categoryId) {
     // get the highest level rows, which are the ones that have a category but no categoryId
-    const highestLevel = rows.filter(row => row.category && !row.categoryId);
+    const highestLevel = rows.filter(row => row.category && !row.categoryId) as MatrixReportRow[];
     // if there are no highest level rows, then the top level rows are just all of the rows
     topLevelRows = highestLevel.length ? highestLevel : rows;
   } else {
