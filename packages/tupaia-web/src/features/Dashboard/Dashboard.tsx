@@ -148,6 +148,16 @@ export const Dashboard = () => {
     }
   }, [dashboardNotFound, defaultDashboardName]);
 
+  const getIsDrilldown = (code: DashboardItemType['code']) => {
+    return activeDashboard?.items?.some(item => {
+      if (item.config?.drillDown && item.config?.drillDown?.itemCode === code) return true;
+      return false;
+    });
+  };
+
+  const visibleDashboards =
+    activeDashboard?.items?.filter(item => !getIsDrilldown(item.code)) || [];
+
   return (
     <ErrorBoundary>
       <Panel $isExpanded={isExpanded}>
@@ -171,7 +181,7 @@ export const Dashboard = () => {
           </TitleBar>
           <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           <DashboardItemsWrapper $isExpanded={isExpanded}>
-            {activeDashboard?.items.map(item => (
+            {visibleDashboards.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
             ))}
           </DashboardItemsWrapper>

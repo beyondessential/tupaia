@@ -5,8 +5,8 @@
 import React, { useContext } from 'react';
 import { DialogContent, Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
-import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import styled from 'styled-components';
+import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { Dialog, DialogFooter, DialogHeader } from '../Dialog';
 import { Button } from '../Button';
 
@@ -14,6 +14,7 @@ const Content = styled(DialogContent)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 const DisplayWrapper = styled.div`
@@ -42,7 +43,7 @@ export const EnlargedMatrixCell = () => {
   const presentationOptionsToUse = isCategory ? categoryPresentationOptions : presentationOptions;
 
   const { showRawValue } = presentationOptionsToUse;
-  const { description = '', label } = presentation;
+  const { description = '', label } = presentation || {};
   const closeModal = () => {
     dispatch({ type: ACTION_TYPES.SET_ENLARGED_CELL, payload: null });
   };
