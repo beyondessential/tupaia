@@ -12,7 +12,7 @@ import { Form, FormInput } from '../Form';
 import { Checkbox } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
-import { SignupComplete } from './SignUpComplete';
+import { SignUpComplete } from './SignUpComplete';
 import { AuthFormTextField } from './AuthFormTextField';
 
 const Wrapper = styled(AuthViewWrapper)`
@@ -91,7 +91,7 @@ export const RegisterForm = ({
       className={className}
     >
       {isSuccess ? (
-        <SignupComplete successMessage={successMessage} verifyResendLink={verifyResendLink} />
+        <SignUpComplete successMessage={successMessage} verifyResendLink={verifyResendLink} />
       ) : (
         <>
           {error && <Typography color="error">{error.message}</Typography>}
