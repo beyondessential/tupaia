@@ -27,7 +27,7 @@ export type Message = {
   text?: string;
 };
 
-export const EmailVerificationDisplay = ({ message }: { message?: Message }) => {
+export const EmailVerificationDisplay = ({ message }: { message?: Message | null }) => {
   if (!message || !message.text) return null;
   const { status, text } = message;
   return <MessageText $status={status}>{text}</MessageText>;

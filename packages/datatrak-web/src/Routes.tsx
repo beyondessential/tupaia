@@ -30,11 +30,12 @@ const LoggedInRedirect = ({ children }) => {
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = () => {
   const { isLoggedIn, isLoading, isFetched } = useUser();
   if (isLoading || !isFetched) return <FullPageLoader />;
-  if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
-  return children;
+  if (!isLoggedIn) return <Navigate to={ROUTES.LOGIN} replace={true} />;
+
+  return <Outlet />;
 };
 
 /**
