@@ -150,20 +150,20 @@ export const Dashboard = () => {
   }, [dashboardNotFound, defaultDashboardName]);
 
   // Filter out drill down items from the dashboard items
-  const visibleDashboards = activeDashboard?.items?.reduce(
-    (items: DashboardItemType[], item: DashboardItemType) => {
-      const isDrillDown = activeDashboard?.items?.some(({ config }) => {
-        if (
-          (config as MatrixConfig)?.drillDown &&
-          (config as MatrixConfig)?.drillDown?.itemCode === item.code
-        )
-          return true;
-        return false;
-      });
-      return isDrillDown ? items : [...items, item];
-    },
-    [],
-  );
+  const visibleDashboards =
+    (activeDashboard?.items as DashboardItemType[])?.reduce(
+      (items: DashboardItemType[], item: DashboardItemType) => {
+        const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
+          const { config } = dashboardItem as {
+            config: MatrixConfig;
+          };
+          if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
+          return false;
+        });
+        return isDrillDown ? items : [...items, item];
+      },
+      [],
+    ) ?? [];
 
   return (
     <ErrorBoundary>
@@ -188,7 +188,7 @@ export const Dashboard = () => {
           </TitleBar>
           <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           <DashboardItemsWrapper $isExpanded={isExpanded}>
-            {visibleDashboards.map(item => (
+            {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
             ))}
           </DashboardItemsWrapper>
