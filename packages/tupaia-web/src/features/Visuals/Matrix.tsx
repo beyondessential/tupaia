@@ -181,7 +181,7 @@ const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
  * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
  */
 
-const MatrixPreview = ({ config }: { config?: MatrixConfig }) => {
+const MatrixPreview = ({ config }: { config?: DashboardItemConfig }) => {
   const placeholderImage = getPlaceholderImage(config as MatrixConfig);
   return (
     <PlaceholderWrapper>
