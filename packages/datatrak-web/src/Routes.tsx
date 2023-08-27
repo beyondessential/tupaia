@@ -58,15 +58,15 @@ export const Routes = () => {
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
           <Route path="/" element={<AuthLayout />}>
-          <Route
-            path={ROUTES.LOGIN}
-            element={
-              <LoggedInRedirect>
-                <LoginPage />
-              </LoggedInRedirect>
-            }
-          />
+            <Route
+              path={ROUTES.LOGIN}
+              element={
+                <LoggedInRedirect>
+                  <LoginPage />
+                </LoggedInRedirect>
+              }
             />
+          </Route>
           <Route element={<PrivateRoute />}>
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewPage />} />
