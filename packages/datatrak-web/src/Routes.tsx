@@ -17,7 +17,7 @@ import {
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { BackgroundPageLayout, MainPageLayout } from './layout';
+import { AuthLayout, BackgroundPageLayout, MainPageLayout } from './layout';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -57,6 +57,7 @@ export const Routes = () => {
         />
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
+          <Route path="/" element={<AuthLayout />}>
           <Route
             path={ROUTES.LOGIN}
             element={
@@ -65,6 +66,7 @@ export const Routes = () => {
               </LoggedInRedirect>
             }
           />
+            />
           <Route element={<PrivateRoute />}>
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewPage />} />

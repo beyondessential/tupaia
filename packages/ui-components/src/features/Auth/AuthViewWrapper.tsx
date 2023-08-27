@@ -14,6 +14,9 @@ const Wrapper = styled(Paper)`
   max-width: 100%;
   box-shadow: none;
   padding: 3rem 1rem;
+  @media screen and (max-width: 900px) {
+    height: 100%;
+  }
 `;
 
 const Title = styled(Typography)`

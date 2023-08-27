@@ -8,4 +8,6 @@ export { SurveyQuestionsPage } from './SurveyQuestionsPage';
 export { SurveyReviewPage } from './SurveyReviewPage';
 export { SurveySuccessPage } from './SurveySuccessPage';
 export { LoginPage } from './LoginPage';
+export { RegisterPage } from './RegisterPage';
+export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';

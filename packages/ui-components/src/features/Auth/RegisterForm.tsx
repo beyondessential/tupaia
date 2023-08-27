@@ -4,23 +4,18 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
-import { useRegister } from '../../api/mutations';
-import { SignUpComplete } from './SignUpComplete';
-import { SubmitHandler } from 'react-hook-form';
-import {
-  TextField,
-  CheckboxField,
-  AuthModalBody,
-  AuthModalButton,
-  RouterLink,
-  Form,
-} from '../../components';
+import { AuthViewWrapper } from './AuthViewWrapper';
+import { AuthSubmitButton } from './AuthSubmitButton';
+import { Form, FormInput } from '../Form';
+import { Checkbox } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
-import { MODAL_ROUTES } from '../../constants';
+import { RouterLink } from '../RouterLink';
+import { SignUpComplete } from './SignUpComplete';
+import { AuthFormTextField } from './AuthFormTextField';
 
-const ModalBody = styled(AuthModalBody)`
+const Wrapper = styled(AuthViewWrapper)`
   width: 49rem;
 `;
 
@@ -28,27 +23,29 @@ const LinkText = styled(Typography)`
   font-weight: 400;
   font-size: 0.6875rem;
   line-height: 1.4;
-  color: ${props => props.theme.palette.common.white};
 
-  a {
-    color: ${props => props.theme.palette.common.white};
-  }
-
-  ${AuthModalButton} + & {
+  ${AuthSubmitButton} + & {
     margin-top: 1.3rem;
   }
 `;
 
 const TermsText = styled.span`
-  color: ${props => props.theme.palette.common.white};
+  color: ${props => props.theme.palette.text.primary};
 
   a {
-    color: ${props => props.theme.palette.common.white};
+    color: ${props => props.theme.palette.text.primary};
   }
 `;
 
 const FullWidthColumn = styled.div`
   grid-column: 1/-1;
+`;
+
+const ButtonColumn = styled(FullWidthColumn)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledForm = styled(Form)`
@@ -64,39 +61,65 @@ const StyledForm = styled(Form)`
   }
 `;
 
-export const RegisterModal = () => {
-  const { mutate: onSubmit, isLoading, isError, isSuccess, error } = useRegister();
-  const formContext = useForm();
+interface RegisterFormProps {
+  onSubmit: SubmitHandler<any>;
+  isLoading: boolean;
+  isSuccess?: boolean;
+  error?: Error | null;
+  formContext: ReturnType<typeof useForm>;
+  loginLink: string;
+  successMessage: string;
+  verifyResendLink: string;
+  className?: string;
+}
 
+export const RegisterForm = ({
+  onSubmit,
+  isLoading,
+  isSuccess,
+  error,
+  formContext,
+  loginLink,
+  successMessage,
+  verifyResendLink,
+  className,
+}: RegisterFormProps) => {
   return (
-    <ModalBody
+    <Wrapper
       title={isSuccess ? 'Your account has been registered' : 'Register'}
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
+      className={className}
     >
       {isSuccess ? (
-        <SignUpComplete />
+        <SignUpComplete successMessage={successMessage} verifyResendLink={verifyResendLink} />
       ) : (
         <>
-          {isError && <Typography color="error">{error.message}</Typography>}
+          {error && <Typography color="error">{error.message}</Typography>}
           <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
-            <TextField name="firstName" label="First name" required />
-            <TextField name="lastName" label="Last name" required />
-            <TextField
+            <FormInput name="firstName" label="First name" required Input={AuthFormTextField} />
+            <FormInput name="lastName" label="Last name" required Input={AuthFormTextField} />
+            <FormInput
               name="emailAddress"
               label="Email"
               type="email"
               required
               options={FORM_FIELD_VALIDATION.EMAIL}
+              Input={AuthFormTextField}
             />
-            <TextField name="contactNumber" label="Contact number (optional)" />
-            <TextField
+            <FormInput
+              name="contactNumber"
+              label="Contact number (optional)"
+              Input={AuthFormTextField}
+            />
+            <FormInput
               name="password"
               label="Password"
               type="password"
               required
               options={FORM_FIELD_VALIDATION.PASSWORD}
+              Input={AuthFormTextField}
             />
-            <TextField
+            <FormInput
               name="passwordConfirm"
               label="Confirm password"
               type="password"
@@ -106,11 +129,12 @@ export const RegisterModal = () => {
                   value === formContext.getValues('password') || 'Passwords do not match.',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
               }}
+              Input={AuthFormTextField}
             />
-            <TextField name="employer" label="Employer" required />
-            <TextField name="position" label="Position" required />
+            <FormInput name="employer" label="Employer" required Input={AuthFormTextField} />
+            <FormInput name="position" label="Position" required Input={AuthFormTextField} />
             <FullWidthColumn>
-              <CheckboxField
+              <FormInput
                 name="hasAgreed"
                 label={
                   <TermsText>
@@ -125,20 +149,21 @@ export const RegisterModal = () => {
                   </TermsText>
                 }
                 required
+                color="primary"
+                Input={Checkbox}
               />
             </FullWidthColumn>
-            <FullWidthColumn>
-              <AuthModalButton type="submit" isLoading={isLoading}>
+            <ButtonColumn>
+              <AuthSubmitButton type="submit" isLoading={isLoading}>
                 Register account
-              </AuthModalButton>
+              </AuthSubmitButton>
               <LinkText align="center">
-                Already have an account?{' '}
-                <RouterLink to={MODAL_ROUTES.LOGIN}>Log in here</RouterLink>
+                Already have an account? <RouterLink to={loginLink}>Log in here</RouterLink>
               </LinkText>
-            </FullWidthColumn>
+            </ButtonColumn>
           </StyledForm>
         </>
       )}
-    </ModalBody>
+    </Wrapper>
   );
 };
