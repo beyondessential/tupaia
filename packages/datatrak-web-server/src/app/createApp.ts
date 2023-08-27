@@ -13,7 +13,12 @@ import {
   forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { DataTrakSessionModel } from '../models';
-import { UserRoute, UserRequest } from '../routes';
+import {
+  UserRoute,
+  UserRequest,
+  SurveyScreenComponentsRoute,
+  SurveyScreenComponentsRequest,
+} from '../routes';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -25,6 +30,10 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    .get<SurveyScreenComponentsRequest>(
+      'surveys/:surveyCode/surveyScreenComponents',
+      handleWith(SurveyScreenComponentsRoute),
+    )
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .build();

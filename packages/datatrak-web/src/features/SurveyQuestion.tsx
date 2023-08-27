@@ -99,5 +99,5 @@ export const SurveyQuestion = (props: SurveyQuestionProps) => {
     return <Text>{props.name}</Text>;
   }
 
-  return <FieldComponent {...props} />;
+  return <FieldComponent inputRef={props.register()} {...props} />;
 };

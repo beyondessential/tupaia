@@ -4,3 +4,7 @@
  */
 
 export { UserRequest, UserRoute } from './UserRoute';
+export {
+  SurveyScreenComponentsRequest,
+  SurveyScreenComponentsRoute,
+} from './SurveyScreenComponentsRoute';

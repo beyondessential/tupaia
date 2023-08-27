@@ -6,7 +6,15 @@
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { LandingPage, SurveyPage, SurveyQuestionsPage, LoginPage, VerifyEmailPage } from './views';
+import {
+  LandingPage,
+  SurveyPage,
+  SurveyQuestionsPage,
+  SurveyReviewPage,
+  SurveySuccessPage,
+  LoginPage,
+  VerifyEmailPage,
+} from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
 import { BackgroundPageLayout, MainPageLayout } from './layout';
@@ -58,11 +66,12 @@ export const Routes = () => {
             }
           />
           <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-          <Route path={ROUTES.SURVEY}>
-            <Route index element={<SurveyPage />} />
-            <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
-          </Route>
+          <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewPage />} />
+          <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessPage />} />
+          <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyPage />} />
+          <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
         </Route>
+        <Route path="*" element={<div>Page not found</div>} />
       </Route>
     </RouterRoutes>
   );
