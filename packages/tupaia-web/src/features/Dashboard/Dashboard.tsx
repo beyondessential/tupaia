@@ -149,18 +149,21 @@ export const Dashboard = () => {
     }
   }, [dashboardNotFound, defaultDashboardName]);
 
-  const getIsDrilldown = (code: DashboardItemType['code']) => {
-    return activeDashboard?.items?.some(item => {
-      const { config } = item as {
-        config: MatrixConfig;
-      };
-      if (config?.drillDown && config?.drillDown?.itemCode === code) return true;
-      return false;
-    });
-  };
-
-  const visibleDashboards =
-    activeDashboard?.items?.filter(item => !getIsDrilldown(item.code)) || [];
+  // Filter out drill down items from the dashboard items
+  const visibleDashboards = activeDashboard?.items?.reduce(
+    (items: DashboardItemType[], item: DashboardItemType) => {
+      const isDrillDown = activeDashboard?.items?.some(({ config }) => {
+        if (
+          (config as MatrixConfig)?.drillDown &&
+          (config as MatrixConfig)?.drillDown?.itemCode === item.code
+        )
+          return true;
+        return false;
+      });
+      return isDrillDown ? items : [...items, item];
+    },
+    [],
+  );
 
   return (
     <ErrorBoundary>
