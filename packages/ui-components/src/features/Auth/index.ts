@@ -4,4 +4,6 @@
  */
 
 export { LoginForm } from './LoginForm';
+export { RegisterForm } from './RegisterForm';
+export { ResendVerificationEmailForm } from './ResendVerificationEmailForm';
 export { EMAIL_VERIFICATION_STATUS } from './EmailVerificationDisplay';

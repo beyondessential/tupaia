@@ -6,4 +6,6 @@ export { LandingPage } from './LandingPage';
 export { SurveyPage } from './SurveyPage';
 export { SurveyQuestionsPage } from './SurveyQuestionsPage';
 export { LoginPage } from './LoginPage';
+export { RegisterPage } from './RegisterPage';
+export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';
