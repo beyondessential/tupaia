@@ -21,6 +21,7 @@ const Container = styled.div`
   border: 1px solid #dfdfdf;
 `;
 
+// Example http://localhost:5173/explore/TO/BCD_DL/1
 export const SurveyScreen = ({ surveyScreen, isLast }) => {
   const { setFormData, formData } = useSurveyForm();
   const navigate = useNavigate();
@@ -94,7 +95,6 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
         )}
         <Button type="submit">Next</Button>
       </form>
-      <pre>{JSON.stringify(formData)}</pre>
     </Container>
   );
 };

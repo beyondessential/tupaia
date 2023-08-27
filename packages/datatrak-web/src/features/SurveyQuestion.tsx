@@ -7,64 +7,29 @@ import React from 'react';
 import styled from 'styled-components';
 import { TextField, RadioGroup } from '@tupaia/ui-components';
 
-const Text = styled.div`
+// Todo: Replace with actual form components in WAITP-1345
+const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
+  background: lightgrey;
+  padding: 0.5rem 1rem;
+  max-width: 30rem;
 `;
 
-// Todo: Replace with actual components
 const Placeholder = ({ name, type }) => {
   return (
-    <Text>
-      `${name} - ${type}`
-    </Text>
+    <QuestionPlaceholder>
+      <p>Question name: {name}</p>
+      <p>Question type: {type}</p>
+    </QuestionPlaceholder>
   );
 };
 
 const InstructionQuestion = ({ text }) => {
-  return <Text>{text}</Text>;
-};
-
-const BinaryQuestion = ({ options = [], ...props }) => {
-  return (
-    <RadioGroup
-      options={[
-        {
-          label: 'Yes',
-          value: 'Yes',
-        },
-        {
-          label: 'No',
-          value: 'No',
-        },
-      ]}
-      {...props}
-    />
-  );
-};
-
-const getFormattedOptions = options => {
-  return options.map(x => {
-    try {
-      // Most of the options data is an array of strings but some of the data is in json
-      const optionConfig = JSON.parse(x);
-      if (optionConfig && optionConfig.label && optionConfig.value) {
-        return optionConfig;
-      }
-    } catch (e) {
-      //
-    }
-
-    return { label: x, value: x };
-  });
-};
-
-const RadioQuestion = ({ options, ...props }) => {
-  const formattedOptions = getFormattedOptions(options);
-  return <RadioGroup {...props} options={formattedOptions} />;
+  return <QuestionPlaceholder>{text}</QuestionPlaceholder>;
 };
 
 export enum QUESTION_TYPES {
-  Binary = BinaryQuestion,
+  Binary = Placeholder,
   Checkbox = Placeholder,
   Date = Placeholder,
   DateTime = Placeholder,
@@ -74,7 +39,7 @@ export enum QUESTION_TYPES {
   Instruction = InstructionQuestion,
   Number = TextField,
   Photo = Placeholder,
-  Radio = RadioQuestion,
+  Radio = Placeholder,
   DaysSince = Placeholder,
   MonthsSince = Placeholder,
   YearsSince = Placeholder,
@@ -91,6 +56,12 @@ interface SurveyQuestionProps {
   type: keyof typeof QUESTION_TYPES;
   name: string;
   label: string;
+  id: string;
+  code: string;
+  text: string;
+  options?: any;
+  config: any;
+  register: any;
 }
 export const SurveyQuestion = (props: SurveyQuestionProps) => {
   const FieldComponent = QUESTION_TYPES[props.type];
