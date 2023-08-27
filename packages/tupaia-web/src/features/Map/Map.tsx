@@ -48,7 +48,7 @@ const StyledMap = styled(LeafletMap)`
     top: -50px;
     right: 3px;
     a {
-      background: ${({ theme }) => theme.navigationBtn.main};
+      background: #34353f;
       box-shadow: none;
       border: none;
       color: white;

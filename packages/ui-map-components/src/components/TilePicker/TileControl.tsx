@@ -18,7 +18,7 @@ const StyledButton = styled(Button)<{
   display: block;
   pointer-events: auto;
   box-shadow: none;
-  background: ${({theme}) => theme.navigationBtn.main};
+  background: #34353f;
   color: ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.text.primary : 'white')};
   margin-top: 0.6rem;
   margin-bottom: 1rem;
