@@ -123,6 +123,7 @@ const ContentWrapper = styled.div<{
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   ${A4Page} & {
     padding: 0;
+    height: auto;
   }
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${({ $isExporting }) => ($isExporting ? 'auto' : '100%')};
