@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
-import ArrowBackIosNewRounded from '@material-ui/icons/ArrowBackIosNewRoundedIcon';
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 
 const ProgressBar = styled.div`
-  background-color: blue;
-  height: 20px;
-  width: 100%;
+  background: ${({ theme }) => theme.palette.primary.main};
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 0.75rem;
+  &:before {
+    content: red;
+    background-color: red;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 0.75rem;
+  }
 `;
 
 const ProgressButton = styled(Button)`
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  background: ${({ theme }) => theme.palette.primary.main};
   color: white;
   border-radius: 3px;
   text-transform: none;
@@ -34,33 +41,44 @@ const CancelButton = styled(Button)`
 `;
 
 const BackButton = styled(Button)`
-  background-color: red;
+  text-align: center;
 `;
 
-export const TopProgressBar = () => {
-  const [progressBar, setProgressBar] = useState(0);
+interface ProgressPercentage {
+  currentSurveyQuestion: number;
+  totalNumberOfSurveyQuestions: number;
+}
+
+export const TopProgressBar = ({}: // currentSurveyQuestion,
+// totalNumberOfSurveyQuestions,
+ProgressPercentage) => {
+  const fraction = 16 / 100;
+  const [progress, setProgress] = useState(fraction);
 
   const handleProgressBar = () => {
-    if (progressBar < 100) {
-      setProgressBar(progressBar + 6.25);
-    }
+    setProgress(progress + fraction);
+  };
+
+  const handleCancel = () => {
+    setProgress(0);
   };
 
   const handleNonProgressBar = () => {
-    if (progressBar === 0) {
-      setProgressBar(0);
+    if (progress === 0) {
+      setProgress(0);
     } else {
-      setProgressBar(progressBar - 6.25);
+      setProgress(progress - fraction);
     }
   };
 
   return (
     <>
-      <ProgressBar style={{ width: `${progressBar}%` }} />
+      <ProgressBar style={{ width: `${progress}%` }} />
       <BackButton onClick={handleNonProgressBar}>
-        <ArrowBackIosNewRounded></ArrowBackIosNewRounded>Back
+        <ArrowBackIosRoundedIcon />
+        Back
       </BackButton>
-      <CancelButton>Cancel</CancelButton>
+      <CancelButton onClick={handleCancel}>Cancel</CancelButton>
       <ProgressButton onClick={handleProgressBar}>Next</ProgressButton>
     </>
   );
