@@ -3,25 +3,29 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards, useEntity } from '../../api/queries';
+import { useDashboards, useEntity, useProject } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
+import { gaEvent, getDefaultDashboard } from '../../utils';
+import { ExportDashboard } from './ExportDashboard';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
-const MIN_SIDEBAR_WIDTH = 335;
+const MIN_SIDEBAR_WIDTH = 350;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -32,14 +36,8 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
-  .recharts-wrapper {
-    font-size: 1rem !important;
-  }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) =>
-      $isExpanded
-        ? 50
-        : 25}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
+    width: ${({ $isExpanded }) => ($isExpanded ? 50 : 25)}%;
     height: 100%;
     min-width: ${MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
@@ -64,7 +62,6 @@ const TitleBar = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.panel.background};
   z-index: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -102,40 +99,90 @@ const DashboardImageContainer = styled.div`
 `;
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { projectCode, entityCode, dashboardName } = useParams();
-  const { dashboards, activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const {
+    dashboards,
+    activeDashboard,
+    isLoading: isLoadingDashboards,
+    isError,
+    isFetched,
+  } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const bounds = entity?.bounds;
+  const bounds = entity?.bounds || DEFAULT_BOUNDS;
+
+  // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
+  const defaultDashboardName = getDefaultDashboard(
+    project,
+    dashboards,
+    isLoadingDashboards,
+    isError,
+  );
+  useEffect(() => {
+    gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
+  }, [activeDashboard?.name]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
+    gaEvent('Pages', 'Toggle Info Panel');
   };
 
+  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
+  const dashboardNotFound =
+    isFetched &&
+    !isError &&
+    !isLoadingDashboards &&
+    !isLoadingProject &&
+    project?.code === projectCode &&
+    !activeDashboard;
+  useEffect(() => {
+    if (dashboardNotFound) {
+      navigate({
+        ...location,
+        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
+      });
+    }
+  }, [dashboardNotFound, defaultDashboardName]);
+
   return (
-    <Panel $isExpanded={isExpanded}>
-      <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
-      <ScrollBody>
-        <Breadcrumbs />
-        <DashboardImageContainer>
-          {bounds ? (
-            <StaticMap bounds={bounds} />
-          ) : (
-            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
-          )}
-        </DashboardImageContainer>
-        <TitleBar>
-          <Title variant="h3">{entity?.name}</Title>
-          <ExportButton startIcon={<GetAppIcon />}>Export</ExportButton>
-        </TitleBar>
-        <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map(item => (
-            <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
-          ))}
-        </DashboardItemsWrapper>
-      </ScrollBody>
-      <EnlargedDashboardItem entityName={entity?.name} />
-    </Panel>
+    <ErrorBoundary>
+      <Panel $isExpanded={isExpanded}>
+        <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
+        <ScrollBody>
+          <Breadcrumbs />
+          <DashboardImageContainer>
+            {entity?.photoUrl ? (
+              <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+            ) : (
+              <StaticMap bounds={bounds} />
+            )}
+          </DashboardImageContainer>
+          <TitleBar>
+            <Title variant="h3">{entity?.name}</Title>
+            {activeDashboard && (
+              <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
+                Export
+              </ExportButton>
+            )}
+          </TitleBar>
+          <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          <DashboardItemsWrapper $isExpanded={isExpanded}>
+            {activeDashboard?.items.map(item => (
+              <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
+            ))}
+          </DashboardItemsWrapper>
+        </ScrollBody>
+        <EnlargedDashboardItem entityName={entity?.name} />
+        <ExportDashboard
+          isOpen={exportModalOpen}
+          onClose={() => setExportModalOpen(false)}
+          dashboardItems={activeDashboard?.items as DashboardItemType[]}
+        />
+      </Panel>
+    </ErrorBoundary>
   );
 };

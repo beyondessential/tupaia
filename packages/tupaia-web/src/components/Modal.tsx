@@ -21,20 +21,21 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
   overflow-x: hidden;
-  padding: 2rem;
+  padding: 1.2rem;
+  pointer-events: auto;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
   width: 2rem;
   height: 2rem;
+  pointer-events: auto;
 `;
 
 const CloseButton = styled(IconButton)`
-  background-color: transparent;
-  min-width: initial;
   position: absolute;
   top: 0.1rem;
   right: 0.1rem;
+  z-index: 1;
 `;
 
 const Paper = styled(MuiPaper)`

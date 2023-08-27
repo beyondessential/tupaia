@@ -134,10 +134,10 @@ export class LeafletMap extends Component<LeafletMapProps> {
   componentDidUpdate = (prevProps: LeafletMapProps) => {
     const { center, bounds, zoom } = this.props;
     if (this.map && this.requiresMoveAnimation(prevProps)) {
-      if (bounds) {
-        this.flyToBounds(bounds);
-      } else if (center) {
+      if (center) {
         this.flyToPoint(center, zoom);
+      } else if (bounds) {
+        this.flyToBounds(bounds);
       }
     }
   };
@@ -216,11 +216,14 @@ export class LeafletMap extends Component<LeafletMapProps> {
 
   flyToPoint = (center: LeafletMapProps['center'], zoom: LeafletMapProps['zoom']) => {
     if (!center) return;
+
     this.map?.setView(center, zoom, { animate: true });
   };
 
   flyToBounds = (bounds: LatLngBoundsExpression) => {
-    if (!areBoundsValid(bounds)) return;
+    if (!areBoundsValid(bounds)) {
+      return;
+    }
     this.map?.fitBounds(bounds, { animate: true });
   };
 

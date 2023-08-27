@@ -13,6 +13,7 @@ import {
   Dashboard,
   TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
+import { orderBy } from '@tupaia/utils';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
@@ -25,7 +26,43 @@ export type DashboardsRequest = Request<
   TupaiaWebDashboardsRequest.ReqQuery
 >;
 
+const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
+const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
+
 export class DashboardsRoute extends Route<DashboardsRequest> {
+  private getNoDataDashboard = async (
+    rootEntityCode: Entity['code'],
+    staticDashboardItemCode: string,
+  ) => {
+    const { models } = this.req;
+    const noDataItem = await models.dashboardItem.findOne({
+      code: staticDashboardItemCode,
+    });
+
+    const { code, legacy, report_code: reportCode, id, config } = noDataItem;
+    return camelcaseKeys(
+      [
+        {
+          name: 'General', // just a dummy dashboard
+          id: 'General',
+          code: 'General',
+          rootEntityCode,
+          items: [
+            {
+              code,
+              legacy,
+              reportCode,
+              id,
+              config,
+            },
+          ],
+        },
+      ],
+      {
+        deep: true,
+      },
+    );
+  };
   public async buildResponse() {
     const { params, ctx } = this.req;
     const { projectCode, entityCode } = params;
@@ -41,7 +78,12 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const dashboards = await ctx.services.central.fetchResources('dashboards', {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
+      sort: ['sort_order', 'name'],
     });
+
+    if (!dashboards.length) {
+      return this.getNoDataDashboard(rootEntity, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
+    }
 
     // Fetch all dashboard relations
     const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
@@ -73,21 +115,49 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     });
 
+    // Merged and sorted to make mapping easier
+    const mergedItemRelations = orderBy(
+      dashboardRelations.map((relation: DashboardRelation) => ({
+        relation,
+        item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
+      })),
+      [
+        ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
+        ({ item }: { item: DashboardItem }) => item.code,
+      ],
+    );
+
     const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
-      const childRelations = dashboardRelations.filter(
-        (relation: DashboardRelation) => relation.dashboard_id === dashboard.id,
-      );
-      const childItemIds = childRelations.map((relation: DashboardRelation) => relation.child_id);
       return {
         ...dashboard,
-        items: dashboardItems.filter((item: DashboardItem) => childItemIds.includes(item.id)),
+        // Filter by the relations, map to the items
+        items: mergedItemRelations
+          .filter(
+            ({ relation }: { relation: DashboardRelation }) =>
+              relation.dashboard_id === dashboard.id,
+          )
+          .map(({ item }: { item: DashboardItem }) => ({
+            ...item,
+          })),
       };
     });
+
+    if (!dashboardsWithItems.length && !dashboardRelations.length) {
+      return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
+    }
 
     const response = dashboardsWithItems.filter(
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 
-    return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
+    if (!response.length) {
+      // Returns in an array already
+      return this.getNoDataDashboard(rootEntity.code, NO_ACCESS_DASHBOARD_ITEM_CODE);
+    }
+
+    return camelcaseKeys(response, {
+      deep: true,
+      stopPaths: ['items.config.presentationOptions', 'items.config.chartConfig'], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
+    });
   }
 }

@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import { Button, useTheme } from '@material-ui/core';
+import { IconButton, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useLandingPage, useUser } from '../../api/queries';
@@ -15,6 +15,7 @@ import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
 import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
+import { ErrorBoundary } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -24,12 +25,9 @@ const UserMenuContainer = styled.div<{
   color: ${({ secondaryColor, theme }) => secondaryColor || theme.palette.text.primary};
 `;
 
-const MenuButton = styled(Button)`
-  width: 2em;
-  min-width: 2em;
-  height: 2em;
-  text-align: right;
-  padding: 0;
+const MenuButton = styled(IconButton)`
+  width: 3.125rem;
+  height: 3.125rem;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
@@ -65,7 +63,7 @@ export const UserMenu = () => {
   );
 
   const VisitMainSite = (
-    <BaseMenuItem key="mainSite" href="https://www.tupaia.org">
+    <BaseMenuItem key="mainSite" href="https://www.tupaia.org" externalLink>
       Visit&nbsp;<span>tupaia.org</span>
     </BaseMenuItem>
   );
@@ -82,6 +80,16 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const HelpCentre = (
+    <BaseMenuItem
+      key="help"
+      externalLink
+      href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm"
+    >
+      Help centre
+    </BaseMenuItem>
+  );
+
   const ChangePassword = (
     <BaseMenuItem key="changePassword" modal={MODAL_ROUTES.RESET_PASSWORD}>
       Change password
@@ -90,19 +98,20 @@ export const UserMenu = () => {
 
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn
-    ? [VisitMainSite, ChangePassword, Logout]
-    : [VisitMainSite];
+    ? [VisitMainSite, HelpCentre, ChangePassword, Logout]
+    : [VisitMainSite, HelpCentre];
 
   const baseMenuItems = isLoggedIn
     ? [
         ViewProjects,
+        HelpCentre,
         ChangePassword,
         <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
           Request country access
         </BaseMenuItem>,
         Logout,
       ]
-    : [ViewProjects];
+    : [ViewProjects, HelpCentre];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
@@ -110,35 +119,37 @@ export const UserMenu = () => {
   const menuSecondaryColor = secondaryHexcode || theme.palette.text.primary;
 
   return (
-    <UserMenuContainer>
-      <UserInfo
-        currentUserUsername={data?.name}
-        isLoggedIn={isLoggedIn}
-        isLandingPage={isLandingPage}
-        secondaryColor={menuSecondaryColor}
-      />
-      <MenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
-        <MenuIcon />
-      </MenuButton>
-      {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
-      <PopoverMenu
-        menuOpen={menuOpen}
-        onCloseMenu={onCloseMenu}
-        primaryColor={menuPrimaryColor}
-        secondaryColor={menuSecondaryColor}
-      >
-        {menuItems}
-      </PopoverMenu>
-      <DrawerMenu
-        menuOpen={menuOpen}
-        onCloseMenu={onCloseMenu}
-        isLoggedIn={isLoggedIn}
-        primaryColor={menuPrimaryColor}
-        secondaryColor={menuSecondaryColor}
-        currentUserUsername={data?.name}
-      >
-        {menuItems}
-      </DrawerMenu>
-    </UserMenuContainer>
+    <ErrorBoundary>
+      <UserMenuContainer>
+        <UserInfo
+          currentUserUsername={data?.name}
+          isLoggedIn={isLoggedIn}
+          isLandingPage={isLandingPage}
+          secondaryColor={menuSecondaryColor}
+        />
+        <MenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
+          <MenuIcon />
+        </MenuButton>
+        {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
+        <PopoverMenu
+          menuOpen={menuOpen}
+          onCloseMenu={onCloseMenu}
+          primaryColor={menuPrimaryColor}
+          secondaryColor={menuSecondaryColor}
+        >
+          {menuItems}
+        </PopoverMenu>
+        <DrawerMenu
+          menuOpen={menuOpen}
+          onCloseMenu={onCloseMenu}
+          isLoggedIn={isLoggedIn}
+          primaryColor={menuPrimaryColor}
+          secondaryColor={menuSecondaryColor}
+          currentUserUsername={data?.name}
+        >
+          {menuItems}
+        </DrawerMenu>
+      </UserMenuContainer>
+    </ErrorBoundary>
   );
 };

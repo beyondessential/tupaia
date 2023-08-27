@@ -5,13 +5,7 @@
 
 import express from 'express';
 
-import {
-  authenticationMiddleware,
-  catchAsyncErrors,
-  handleError,
-  logApiRequest,
-  multipartJson,
-} from './middleware';
+import { catchAsyncErrors, handleError, logApiRequest, multipartJson } from './middleware';
 
 import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
 import { useRouteHandler } from './RouteHandler';
@@ -37,7 +31,7 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETDataTables } from './dataTables';
-import { GETFeedItems } from './GETFeedItems';
+import { GETFeedItems, EditFeedItems, CreateFeedItems } from './feedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
@@ -140,8 +134,6 @@ const allowAnyone = routeHandler => (req, res, next) => {
  * Set up apiV2 routes
  */
 const apiV2 = express.Router();
-
-apiV2.use(authenticationMiddleware); // authenticate user
 
 apiV2.use(logApiRequest); // log every request to the api_request_log table
 
@@ -278,7 +270,7 @@ apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
@@ -310,7 +302,7 @@ apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
 apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/feedItems/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/feedItems/:recordId', useRouteHandler(EditFeedItems));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
 apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));
 apiV2.put('/questions/:recordId', useRouteHandler(EditQuestions));

@@ -13,7 +13,6 @@ import { DataServiceResolver } from '../services/DataServiceResolver';
 import {
   AnalyticResults as RawAnalyticResults,
   DataBrokerModelRegistry,
-  DataSource,
   DataSourceTypeInstance,
   DataSourceType,
   EventResults,
@@ -63,6 +62,12 @@ const getOrganisationUnitCodes = (options: PullOptions) => {
   const { organisationUnitCode, organisationUnitCodes } = options;
   return organisationUnitCodes || (organisationUnitCode ? [organisationUnitCode] : undefined);
 };
+
+interface Pull<T extends DataSourceTypeInstance> {
+  dataSources: T[];
+  serviceType: ServiceType;
+  dataServiceMapping: DataServiceMapping;
+}
 
 export class DataBroker {
   public readonly context: Context;
@@ -185,9 +190,9 @@ export class DataBroker {
     );
 
     const nestedResults = await Promise.all(
-      pulls.map(({ dataSources: dataElementsForThisPull, serviceType, dataServiceMapping }) => {
+      pulls.map(({ dataSources, serviceType, dataServiceMapping }) => {
         const service = this.createService(serviceType);
-        return service.pull(dataElementsForThisPull, this.getDataSourceTypes().DATA_ELEMENT, {
+        return service.pullAnalytics(dataSources, {
           ...options,
           dataServiceMapping,
           organisationUnitCodes: allowedOrgUnits,
@@ -213,9 +218,9 @@ export class DataBroker {
     );
 
     const nestedResults = await Promise.all(
-      pulls.map(({ dataSources: dataGroupsForThisPull, serviceType, dataServiceMapping }) => {
+      pulls.map(({ dataSources, serviceType, dataServiceMapping }) => {
         const service = this.createService(serviceType);
-        return service.pull(dataGroupsForThisPull, this.getDataSourceTypes().DATA_GROUP, {
+        return service.pullEvents(dataSources, {
           ...options,
           dataServiceMapping,
           organisationUnitCodes: allowedOrgUnits,
@@ -235,9 +240,9 @@ export class DataBroker {
     const pulls = await this.getPulls(syncGroups, organisationUnitCodes);
 
     const nestedResults = await Promise.all(
-      pulls.map(({ dataSources: dataGroupsForThisPull, serviceType, dataServiceMapping }) => {
+      pulls.map(({ dataSources, serviceType, dataServiceMapping }) => {
         const service = this.createService(serviceType);
-        return service.pull(dataGroupsForThisPull, this.getDataSourceTypes().SYNC_GROUP, {
+        return service.pullSyncGroupResults(dataSources, {
           ...options,
           dataServiceMapping,
           organisationUnitCodes,
@@ -291,16 +296,10 @@ export class DataBroker {
     };
   }
 
-  private async getPulls(
-    dataSources: DataSourceTypeInstance[],
+  private async getPulls<T extends DataSourceTypeInstance>(
+    dataSources: T[],
     orgUnitCodes?: string[],
-  ): Promise<
-    {
-      dataSources: DataSource[];
-      serviceType: ServiceType;
-      dataServiceMapping: DataServiceMapping;
-    }[]
-  > {
+  ): Promise<Pull<T>[]> {
     // Special case where no org unit is provided
     if (!orgUnitCodes) {
       const pulls = [];
@@ -336,7 +335,7 @@ export class DataBroker {
       );
       return Object.entries(dataServiceMapping.dataSourcesByServiceType()).map(
         ([serviceType, dataSourcesForThisServiceType]) => ({
-          dataSources: dataSourcesForThisServiceType,
+          dataSources: dataSourcesForThisServiceType as T[],
           serviceType: serviceType as ServiceType,
           dataServiceMapping,
         }),

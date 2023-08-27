@@ -9,6 +9,7 @@
  */
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
+import { MapOverlayConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -323,7 +324,7 @@ export interface LesmisSession {
 }
 export interface MapOverlay {
   'code': string;
-  'config'?: any;
+  'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
   'id'?: string;

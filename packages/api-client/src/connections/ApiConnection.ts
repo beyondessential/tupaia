@@ -6,6 +6,7 @@
 import nodeFetch from 'node-fetch';
 import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
+import { CustomError } from '@tupaia/utils';
 import { QueryParameters, AuthHandler } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
@@ -89,16 +90,13 @@ export class ApiConnection {
   private async verifyResponse(response: Response): Promise<void> {
     if (!response.ok) {
       const responseJson = await response.json();
-      if (
-        response.status &&
-        (response.status < 200 || response.status >= 300) &&
-        !responseJson.error
-      ) {
-        throw new Error(`API error ${response.status}: ${responseJson.message}`);
-      }
-      if (responseJson.error) {
-        throw new Error(`API error ${response.status}: ${responseJson.error}`);
-      }
+      throw new CustomError(
+        {
+          responseText: `API error ${response.status}: ${responseJson.error || responseJson.message}`,
+          responseStatus: response.status,
+        },
+        {},
+      );
     }
   }
 

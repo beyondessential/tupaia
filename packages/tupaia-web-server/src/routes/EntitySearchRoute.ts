@@ -5,9 +5,11 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import camelcaseKeys from 'camelcase-keys';
 import { TupaiaWebEntitySearchRequest } from '@tupaia/types';
+import { generateFrontendExcludedFilter } from '../utils';
 
-const DEFAULT_FIELDS = ['code', 'name'];
+const DEFAULT_FIELDS = ['code', 'name', 'qualified_name'];
 
 export type EntitySearchRequest = Request<
   TupaiaWebEntitySearchRequest.Params,
@@ -21,11 +23,22 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const { projectCode } = params;
     const { searchString, page = 0, pageSize = 5, fields = DEFAULT_FIELDS } = query;
 
-    return ctx.services.entity.entitySearch(projectCode, searchString, {
+    const project = (
+      await ctx.services.central.fetchResources('projects', {
+        filter: { code: projectCode },
+        columns: ['config'],
+      })
+    )[0];
+    const { config } = project;
+
+    const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
+      filter: generateFrontendExcludedFilter(config),
       ...query,
       page,
       pageSize,
       fields,
     });
+
+    return camelcaseKeys(entitySearch, { deep: true });
   }
 }

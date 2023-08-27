@@ -3,25 +3,28 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
-import styled from 'styled-components';
-import { To, useLocation } from 'react-router';
+import React from "react";
+import styled from "styled-components";
+import { useLocation } from "react-router";
+import { SpinningLoader } from "@tupaia/ui-components";
+import { Typography } from "@material-ui/core";
 import {
   MODAL_ROUTES,
   DEFAULT_URL,
   PROJECT_ACCESS_TYPES,
   TUPAIA_LIGHT_LOGO_SRC,
   URL_SEARCH_PARAMS,
-} from '../constants';
-import { useProjects, useUser } from '../api/queries';
+} from "../constants";
+import { useProjects, useUser } from "../api/queries";
 import {
   ProjectAllowedLink,
   ProjectCardList,
   ProjectDeniedLink,
+  ProjectLoginLink,
   ProjectPendingLink,
-} from '../layout';
-import { RouterButton } from '../components';
-import { CircularProgress, Typography } from '@material-ui/core';
+} from "../layout";
+import { RouterButton } from "../components";
+import { SingleProject } from "../types";
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,8 +60,8 @@ const ProjectsGrid = styled.div`
 `;
 
 const ExploreButton = styled(RouterButton).attrs({
-  variant: 'outlined',
-  color: 'default',
+  variant: "outlined",
+  color: "default",
   to: DEFAULT_URL,
 })`
   margin-top: 0.3rem;
@@ -73,7 +76,7 @@ const ExploreButton = styled(RouterButton).attrs({
   font-style: normal;
   text-align: center;
   text-transform: none;
-  border-color: ${({theme}) => theme.palette.text.primary};
+  border-color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const Line = styled.div`
@@ -83,7 +86,7 @@ const Line = styled.div`
 `;
 
 const ProjectsTitle = styled(Typography)`
-  color: ${({theme}) => theme.palette.text.primary};
+  color: ${({ theme }) => theme.palette.text.primary};
   font-size: 1.5rem;
   font-weight: 500;
   margin-top: 1.8rem;
@@ -107,10 +110,7 @@ const Loader = styled.div`
  * This is the projects view that is shown when the projects modal is open
  */
 export const ProjectsModal = () => {
-  const {
-    data: { projects },
-    isFetching,
-  } = useProjects();
+  const { data, isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
   return (
@@ -118,7 +118,8 @@ export const ProjectsModal = () => {
       <div>
         <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
         <TagLine>
-          Data aggregation, analysis, and visualisation for the most remote settings in the world.
+          Data aggregation, analysis, and visualisation for the most remote
+          settings in the world.
         </TagLine>
       </div>
       <div>
@@ -127,51 +128,42 @@ export const ProjectsModal = () => {
         <ProjectsTitle variant="h1">Projects</ProjectsTitle>
         {isFetching ? (
           <Loader>
-            <CircularProgress />
+            <SpinningLoader />
           </Loader>
         ) : (
           <ProjectsGrid>
             <ProjectCardList
-              projects={projects}
+              projects={data?.projects ?? []}
               actions={{
                 [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                   project: { code, homeEntityCode, dashboardGroupName },
+                }: {
+                  project: SingleProject;
                 }) => (
                   <ProjectAllowedLink
                     url={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${dashboardGroupName}` : ''
+                      dashboardGroupName
+                        ? `/${encodeURIComponent(dashboardGroupName)}`
+                        : ""
                     }`}
                   />
                 ),
                 [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
-                [PROJECT_ACCESS_TYPES.DENIED]: ({ project: { code } }) => {
-                  const LINK = {
-                    TEXT: 'Log in',
-                    TO: {
-                      ...location,
-                      hash: MODAL_ROUTES.LOGIN,
-                    },
-                    STATE: {
-                      referrer: location,
-                    },
-                  } as {
-                    TEXT: ReactNode;
-                    TO: To;
-                    STATE?: Record<string, unknown> | null;
-                  };
+                [PROJECT_ACCESS_TYPES.DENIED]: ({
+                  project: { code },
+                }: {
+                  project: SingleProject;
+                }) => {
                   if (isLoggedIn) {
-                    LINK.TEXT = 'Request Access';
-                    LINK.TO = {
-                      ...location,
-                      hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
-                      search: `${URL_SEARCH_PARAMS.PROJECT}=${code}`,
-                    };
-                    LINK.STATE = null;
+                    return (
+                      <ProjectDeniedLink
+                        url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                      />
+                    );
                   }
+
                   return (
-                    <ProjectDeniedLink
-                      url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
-                    />
+                    <ProjectLoginLink routerState={{ referrer: location }} />
                   );
                 },
               }}

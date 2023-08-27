@@ -6,6 +6,9 @@
 import {
   AnalyticResults,
   DataBrokerModelRegistry,
+  DataElement,
+  DataGroup,
+  DataServiceSyncGroup,
   DataSource,
   DataSourceType,
   Diagnostics,
@@ -24,11 +27,6 @@ export type PushOptions = {
 export type DeleteOptions = {
   type: DataSourceType;
   dataServiceMapping: DataServiceMapping;
-};
-
-export type PullOptions = {
-  dataServiceMapping: DataServiceMapping;
-  organisationUnitCodes?: string[];
 };
 
 export type PullMetadataOptions = {
@@ -62,11 +60,20 @@ export abstract class Service {
     options: DeleteOptions,
   ): Promise<Diagnostics>;
 
-  public abstract pull(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullOptions,
-  ): Promise<AnalyticResults | EventResults | SyncGroupResults> | never;
+  public abstract pullAnalytics(
+    dataElements: DataElement[],
+    options: Record<string, unknown>,
+  ): Promise<AnalyticResults>;
+
+  public abstract pullEvents(
+    dataGroups: DataGroup[],
+    options: Record<string, unknown>,
+  ): Promise<EventResults>;
+
+  public abstract pullSyncGroupResults(
+    syncGroups: DataServiceSyncGroup[],
+    options: Record<string, unknown>,
+  ): Promise<SyncGroupResults>;
 
   /**
    * The default pullMetadata behaviour is to return no metadata

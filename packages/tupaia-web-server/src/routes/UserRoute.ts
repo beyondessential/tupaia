@@ -24,6 +24,12 @@ export class UserRoute extends Route<UserRequest> {
       return {};
     }
 
-    return ctx.services.central.getUser();
+    const {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+    } = await ctx.services.central.getUser();
+
+    return { userName: `${firstName} ${lastName}`, email };
   }
 }

@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
+import { SpinningLoader } from '@tupaia/ui-components';
 
 const Screen = styled.div<{
   $background: string;
@@ -31,6 +31,6 @@ export const LoadingScreen = ({
 }: LoadingScreenProps) =>
   isLoading ? (
     <Screen $background={background}>
-      <CircularProgress />
+      <SpinningLoader />
     </Screen>
   ) : null;

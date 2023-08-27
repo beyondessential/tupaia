@@ -146,6 +146,11 @@ export {
 export { FacilityModel } from './Facility';
 export { FeedItemModel, FeedItemType } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
+export {
+  MapOverlayGroupRelationModel,
+  MapOverlayGroupRelationType,
+} from './MapOverlayGroupRelation';
+export { MapOverlayGroupModel, MapOverlayGroupType } from './MapOverlayGroup';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
 export { OptionModel } from './Option';
@@ -162,3 +167,4 @@ export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
+export { DashboardItemType, DashboardItemModel } from './DashboardItem';
