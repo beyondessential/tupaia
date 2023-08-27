@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { SurveyQuestion } from '../features';
+import { SurveyQuestion } from '../features/Survey/SurveyQuestion';
 
 const Card = styled.div`
   margin: 2rem auto;

@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
+import React, { ReactNode } from 'react';
+import { Navigate, Route, Routes as RouterRoutes, Outlet } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import {
   LandingPage,
@@ -30,12 +30,11 @@ const LoggedInRedirect = ({ children }) => {
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
-const PrivateRoute = () => {
+const PrivateRoute = ({ children }: { children?: ReactNode }) => {
   const { isLoggedIn, isLoading, isFetched } = useUser();
   if (isLoading || !isFetched) return <FullPageLoader />;
-  if (!isLoggedIn) return <Navigate to={ROUTES.LOGIN} replace={true} />;
-
-  return <Outlet />;
+  if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
+  return children ? children : <Outlet />;
 };
 
 /**
@@ -66,11 +65,13 @@ export const Routes = () => {
               </LoggedInRedirect>
             }
           />
-          <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-          <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewPage />} />
-          <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessPage />} />
-          <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyPage />} />
-          <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+          <Route element={<PrivateRoute />}>
+            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+            <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewPage />} />
+            <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessPage />} />
+            <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyPage />} />
+            <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+          </Route>
         </Route>
         <Route path="*" element={<div>Page not found</div>} />
       </Route>

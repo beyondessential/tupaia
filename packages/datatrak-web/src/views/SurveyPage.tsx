@@ -5,7 +5,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useSurveyScreenComponents } from '../api/queries';
-import { SurveyScreen, SurveyContext } from '../features/Survey';
+import { SurveyScreen, SurveyContext } from '../features';
 
 export const SurveyPage = () => {
   const { surveyCode, screenNumber } = useParams();
