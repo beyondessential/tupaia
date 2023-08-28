@@ -4,19 +4,35 @@
  */
 import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: ${({ theme }) => theme.panel.secondaryBackground};
+  justify-content: flex-start;
+  align-items: flex-end;
+  background-color: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 2rem;
   font-size: 1rem;
+`;
+
+const ItemButton = styled(Menu)`
+  margin: 0 auto;
+  margin-top: 3.125rem;
+  margin-left: 2rem;
+
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.palette.background.default};
+  }
+
+  .MuiListItem-root {
+    &:hover {
+      background: #606368;
+    }
+  }
 `;
 
 interface DashboardMenuItemProps {
@@ -61,11 +77,11 @@ export const DashboardMenu = ({
       {activeDashboard && (
         <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
           {activeDashboard?.name}
-          {hasMultipleDashboards && <ArrowDropDownIcon />}
+          {hasMultipleDashboards && <KeyboardArrowDownIcon />}
         </MenuButton>
       )}
 
-      <Menu
+      <ItemButton
         id="dashboards-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -75,7 +91,7 @@ export const DashboardMenu = ({
         {dashboards.map(({ name, code }) => (
           <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
-      </Menu>
+      </ItemButton>
     </>
   );
 };

@@ -18,7 +18,7 @@ const Card = styled.div`
   padding: 1.6rem;
   min-height: 20rem;
   border-radius: 5px;
-  background: ${({ theme }) => theme.projectCard.background};
+  background: ${({ theme }) => theme.palette.background.default};
   color: white;
   box-sizing: border-box;
   align-items: flex-start;

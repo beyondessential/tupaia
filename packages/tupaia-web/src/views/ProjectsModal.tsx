@@ -14,6 +14,7 @@ import {
   TUPAIA_LIGHT_LOGO_SRC,
   URL_SEARCH_PARAMS,
 } from '../constants';
+import { SingleProject } from '../types';
 import { useProjects, useUser } from '../api/queries';
 import {
   ProjectAllowedLink,
@@ -23,7 +24,6 @@ import {
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
-import { SingleProject } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -113,6 +113,7 @@ export const ProjectsModal = () => {
   const { data, isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
+
   return (
     <Wrapper>
       <div>
