@@ -20,7 +20,6 @@ import {
   SurveysPage,
   QuestionsPage,
   UsersPage,
-  DisasterResponsePage,
   AccessRequestsPage,
   MapOverlaysPage,
   MapOverlayGroupsPage,
@@ -215,11 +214,6 @@ export const ROUTES = [
         label: 'Strive',
         to: '/strive',
         component: StrivePage,
-      },
-      {
-        label: 'Disaster',
-        to: '/disaster',
-        component: DisasterResponsePage,
       },
       {
         label: 'Entity Hierarchy',
