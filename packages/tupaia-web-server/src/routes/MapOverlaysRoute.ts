@@ -65,7 +65,9 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
 
     // Breaking orchestration server convention and accessing the db directly
     const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
-      mapOverlays.map((overlay: MapOverlay) => overlay.id),
+      mapOverlays
+        .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
+        .map((overlay: MapOverlay) => overlay.id),
     );
 
     // Fetch all the groups we've used
