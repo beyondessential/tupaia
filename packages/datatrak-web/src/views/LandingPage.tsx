@@ -13,7 +13,7 @@ export const LandingPage = () => {
       <h1>Landing Page</h1>
       <ButtonLink to="/survey">Select survey</ButtonLink>
       <ButtonLink to="/survey/questions">Survey questions</ButtonLink>
-      <TopProgressBar currentSurveyQuestion = {25} totalNumberOfSurveyQuestions = {100}/>
+      <TopProgressBar currentSurveyQuestion={1} totalNumberOfSurveyQuestions={17} />
     </PageContainer>
   );
 };
