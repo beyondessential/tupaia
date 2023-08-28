@@ -4,3 +4,4 @@
  */
 
 export { useUser } from './useUser';
+export { useSurveys } from './useSurveys';

@@ -4,3 +4,4 @@
  */
 
 export { UserRequest, UserRoute } from './UserRoute';
+export { SurveysRequest, SurveysRoute } from './SurveysRoute';

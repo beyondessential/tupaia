@@ -4,3 +4,4 @@
  */
 
 export * as DatatrakWebUserRequest from './UserRequest';
+export * as DatatrakWebSurveysRequest from './SurveysRequest';

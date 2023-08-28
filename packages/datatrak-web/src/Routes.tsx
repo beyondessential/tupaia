@@ -17,7 +17,7 @@ import {
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { AuthLayout, BackgroundPageLayout, MainPageLayout } from './layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -53,8 +53,8 @@ export const Routes = () => {
         </Route>
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
-          {/** Any auth views should go in here, as they have a layout where the form is centred in the page */}
-          <Route path="/" element={<AuthLayout />}>
+          {/** Any centred views should go in here */}
+          <Route path="/" element={<CentredLayout />}>
             <Route
               path={ROUTES.LOGIN}
               element={
@@ -66,11 +66,11 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-          </Route>
-          <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-          <Route path={ROUTES.SURVEY} element={<PrivateRoute />}>
-            <Route index element={<SurveyPage />} />
-            <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+            <Route path={ROUTES.SURVEY} element={<PrivateRoute />}>
+              <Route index element={<SurveyPage />} />
+              <Route path={':surveyCode'} element={<SurveyQuestionsPage />} />
+            </Route>
           </Route>
         </Route>
       </Route>

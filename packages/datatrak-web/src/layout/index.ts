@@ -5,4 +5,4 @@
 export { Header } from './Header';
 export { BackgroundPageLayout } from './BackgroundPageLayout';
 export { MainPageLayout } from './MainPageLayout';
-export { AuthLayout } from './AuthLayout';
+export { CentredLayout } from './CentredLayout';
