@@ -4,3 +4,10 @@
  */
 import { DatatrakWebSurveysRequest } from '@tupaia/types';
 export type Survey = DatatrakWebSurveysRequest.ResBody[number];
+
+export type SurveyParams = {
+  projectCode: string;
+  entityCode: string;
+  surveyCode: string;
+  screenNumber: string;
+};

@@ -106,7 +106,7 @@ export const LandingPage = () => {
       <Wrapper>
         <SurveyAlert>
           <ButtonWrapper>
-            <PrimaryButton to={ROUTES.SURVEY}>Select survey</PrimaryButton>
+            <PrimaryButton to={ROUTES.SURVEY_SELECT}>Select survey</PrimaryButton>
             <OutlinedButton to="#">Explore Data</OutlinedButton>
           </ButtonWrapper>
           <TextWrapper>
