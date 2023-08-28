@@ -10399,19 +10399,27 @@ __metadata:
     "@storybook/react": ^6.3.9
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/downloadjs": ^1.4.3
     "@types/jest": ^29.5.1
     "@types/lodash.throttle": ^4.1.7
+    "@types/qrcode": ^1.5.1
     "@types/react-dom": ^16.9.18
     "@types/react-router-dom": ^5.3.3
     "@types/react-table": ^7.7.14
     "@types/styled-components": ^5.0.0
     date-fns: ^2.12.0
+    downloadjs: ^1.4.7
     faker: ^4.1.0
     fast-glob: ^3.2.5
+    js-sql-parser: ^1.4.1
+    jsoneditor: ^9.9.0
+    jszip: ^3.10.1
+    leaflet: ^1.7.1
     lodash.get: ^4.4.2
     lodash.throttle: ^4.1.1
     moment: ^2.29.1
     prop-types: ^15.7.2
+    qrcode: ^1.5.3
     react: ^16.13.1
     react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
@@ -10434,6 +10442,7 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@storybook/react": ^6.3.9
+    "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/jest": ^29.5.1
@@ -10564,7 +10573,7 @@ __metadata:
     core-js: ^3.16.1
     dom-to-image: 2.6.0
     dotenv: ^8.2.0
-    downloadjs: 1.4.7
+    downloadjs: ^1.4.7
     email-validator: ^1.1.1
     fs-extra: 3.0.1
     history: ^4.7.2
@@ -11586,6 +11595,15 @@ __metadata:
   version: 1.5.2
   resolution: "@types/q@npm:1.5.2"
   checksum: 3bb811e0bccfa2bf6a6d366d46bf508739de7338a22bdb8474cbd00a1aa9b5c65210f4ada6a8e9cca50f9340e529719f3b65d7f70dbc972854ebb66728743608
+  languageName: node
+  linkType: hard
+
+"@types/qrcode@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@types/qrcode@npm:1.5.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0f780f31d983fa8d1bfbba1a130e8f7b07866d556807eccfb1d08d841c70644cdee8fc169ca752bdf17e99995e6155fcb6179079338ac8359294c781b95112b5
   languageName: node
   linkType: hard
 
@@ -28435,6 +28453,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jszip@npm:^3.10.1":
+  version: 3.10.1
+  resolution: "jszip@npm:3.10.1"
+  dependencies:
+    lie: ~3.3.0
+    pako: ~1.0.2
+    readable-stream: ~2.3.6
+    setimmediate: ^1.0.5
+  checksum: abc77bfbe33e691d4d1ac9c74c8851b5761fba6a6986630864f98d876f3fcc2d36817dfc183779f32c00157b5d53a016796677298272a714ae096dfe6b1c8b60
+  languageName: node
+  linkType: hard
+
 "junk@npm:^3.1.0":
   version: 3.1.0
   resolution: "junk@npm:3.1.0"
@@ -28800,6 +28830,15 @@ __metadata:
   dependencies:
     immediate: ~3.0.5
   checksum: 6da9f2121d2dbd15f1eca44c0c7e211e66a99c7b326ec8312645f3648935bc3a658cf0e9fa7b5f10144d9e2641500b4f55bd32754607c3de945b5f443e50ddd1
+  languageName: node
+  linkType: hard
+
+"lie@npm:~3.3.0":
+  version: 3.3.0
+  resolution: "lie@npm:3.3.0"
+  dependencies:
+    immediate: ~3.0.5
+  checksum: 33102302cf19766f97919a6a98d481e01393288b17a6aa1f030a3542031df42736edde8dab29ffdbf90bebeffc48c761eb1d064dc77592ca3ba3556f9fe6d2a8
   languageName: node
   linkType: hard
 
@@ -33446,6 +33485,13 @@ __metadata:
   version: 0.2.9
   resolution: "pako@npm:0.2.9"
   checksum: 055f9487cd57fbb78df84315873bbdd089ba286f3499daed47d2effdc6253e981f5db6898c23486de76d4a781559f890d643bd3a49f70f1b4a18019c98aa5125
+  languageName: node
+  linkType: hard
+
+"pako@npm:~1.0.2":
+  version: 1.0.11
+  resolution: "pako@npm:1.0.11"
+  checksum: 1be2bfa1f807608c7538afa15d6f25baa523c30ec870a3228a89579e474a4d992f4293859524e46d5d87fd30fa17c5edf34dbef0671251d9749820b488660b16
   languageName: node
   linkType: hard
 

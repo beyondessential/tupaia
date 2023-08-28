@@ -7,10 +7,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dialog, DialogHeader } from '@tupaia/ui-components';
-
+import { QrCodeContainer } from './QrCodeContainer';
 import { closeQrCodeModal } from './actions';
 import { ModalContentProvider } from '../widgets';
-import { QrCode } from './QrCode';
 
 export const QrCodeModalComponent = ({ isOpen, onDismiss, qrCodeContents, humanReadableId }) => {
   return (
@@ -18,7 +17,7 @@ export const QrCodeModalComponent = ({ isOpen, onDismiss, qrCodeContents, humanR
       <DialogHeader onClose={onDismiss} title="Share QR Code" />
       <ModalContentProvider isLoading={false}>
         {qrCodeContents && humanReadableId && (
-          <QrCode qrCodeContents={qrCodeContents} humanReadableId={humanReadableId} />
+          <QrCodeContainer qrCodeContents={qrCodeContents} humanReadableId={humanReadableId} />
         )}
       </ModalContentProvider>
     </Dialog>
