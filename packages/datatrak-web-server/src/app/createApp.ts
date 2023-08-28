@@ -16,6 +16,8 @@ import { DataTrakSessionModel } from '../models';
 import {
   UserRoute,
   UserRequest,
+  SurveysRoute,
+  SurveysRequest,
   SurveyScreenComponentsRoute,
   SurveyScreenComponentsRequest,
 } from '../routes';
@@ -30,6 +32,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyScreenComponentsRequest>(
       'surveys/:surveyCode/surveyScreenComponents',
       handleWith(SurveyScreenComponentsRoute),

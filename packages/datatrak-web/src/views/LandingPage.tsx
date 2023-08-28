@@ -5,14 +5,127 @@
 
 import React from 'react';
 import { ButtonLink, PageContainer } from '../components';
+import styled from 'styled-components';
+import { MOBILE_BREAKPOINT, ROUTES } from '../constants';
+import { Typography, Link } from '@material-ui/core';
+
+const Wrapper = styled.div`
+  padding: 3rem 0;
+`;
+const SurveyAlert = styled.div`
+  background-color: ${({ theme }) => theme.palette.secondary.main};
+  border-radius: 3px;
+  margin: 0 2rem;
+  padding: 2.5rem;
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+`;
+
+const OutlinedButton = styled(ButtonLink).attrs({
+  variant: 'outlined',
+})`
+  margin-top: 1rem;
+  font-size: 1rem;
+`;
+
+const PrimaryButton = styled(ButtonLink)`
+  font-size: 1rem;
+  & ~ .MuiButtonBase-root {
+    margin-left: 0; // override default margin from ui-components
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    width: 11rem;
+  }
+`;
+
+const TextWrapper = styled.div`
+  padding: 0 2rem;
+  max-width: 60%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.lg}px) {
+    padding: 0 11rem 0 2rem;
+    width: calc(100% - 12rem);
+    max-width: 100%;
+  }
+`;
+
+const Text = styled(Typography)`
+  font-size: 1.375rem;
+`;
+
+const MobileText = styled.span`
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
+
+const DesktopText = styled.span`
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
+
+const InlineLink = styled(Link)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  text-decoration: underline;
+`;
+
+const SurveysImage = styled.img`
+  width: auto;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.lg}px) {
+    position: absolute;
+    height: calc(100% + 1rem);
+    top: -2rem;
+    right: -1rem;
+  }
+`;
 
 export const LandingPage = () => {
+  const getMobileAppLink = () => {
+    // Direct to the app store if the user is on a mac, else the play store
+    const isMac = window.navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+    if (isMac) {
+      return 'https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537';
+    }
+    return 'https://play.google.com/store/apps/details?id=com.tupaiameditrak';
+  };
+
+  const linkToMobileApp = getMobileAppLink();
   return (
     <PageContainer>
-      <h1>Landing Page</h1>
-      <ButtonLink to="/survey">Select survey</ButtonLink>
-      <ButtonLink to="/explore/TO/BCD_DL/1">Example survey</ButtonLink>
-      <ButtonLink to="/survey/questions">Survey questions</ButtonLink>
+      <Wrapper>
+        <SurveyAlert>
+          <ButtonWrapper>
+            <PrimaryButton to={ROUTES.SURVEY}>Select survey</PrimaryButton>
+            <OutlinedButton to="#">Explore Data</OutlinedButton>
+          </ButtonWrapper>
+          <TextWrapper>
+            <Text>
+              Tupaia DataTrak makes data collection easy! You can use Tupaia DataTrak to complete
+              surveys (and collect coconuts!), share news, stories and information with the Tupaia
+              community. To collect data offline,{' '}
+              <MobileText>
+                please download our app, Tupaia MediTrak{' '}
+                <InlineLink href={linkToMobileApp} target="_blank">
+                  here
+                </InlineLink>
+              </MobileText>
+              <DesktopText>download our app meditrak from the app or play store</DesktopText>.
+            </Text>
+          </TextWrapper>
+          <SurveysImage src="/surveys.svg" />
+        </SurveyAlert>
+      </Wrapper>
     </PageContainer>
   );
 };

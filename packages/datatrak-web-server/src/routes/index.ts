@@ -8,3 +8,4 @@ export {
   SurveyScreenComponentsRequest,
   SurveyScreenComponentsRoute,
 } from './SurveyScreenComponentsRoute';
+export { SurveysRequest, SurveysRoute } from './SurveysRoute';

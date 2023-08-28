@@ -6,7 +6,7 @@
 
 export { MeditrakSurveyResponseRequest } from './central-server/MeditrakSurveyResponseRequest';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
-export { DatatrakWebUserRequest } from './datatrak-web-server';
+export { DatatrakWebUserRequest, DatatrakWebSurveysRequest } from './datatrak-web-server';
 export {
   TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
