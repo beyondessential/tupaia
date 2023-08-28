@@ -28,6 +28,7 @@ export type DashboardsRequest = Request<
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
+const DEFAULT_PAGE_SIZE = 'ALL';
 
 export class DashboardsRoute extends Route<DashboardsRequest> {
   private getNoDataDashboard = async (
@@ -104,6 +105,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparisonValue: [projectCode],
         },
       },
+      // Override the default limit of 100 records
+      pageSize: DEFAULT_PAGE_SIZE,
     });
 
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
@@ -113,6 +116,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparisonValue: dashboardRelations.map((dr: DashboardRelation) => dr.child_id),
         },
       },
+      // Override the default limit of 100 records
+      pageSize: DEFAULT_PAGE_SIZE,
     });
 
     // Merged and sorted to make mapping easier

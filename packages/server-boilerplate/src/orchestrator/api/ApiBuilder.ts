@@ -82,9 +82,6 @@ export class ApiBuilder {
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if (options.attachModels) {
-        winston.warn(
-          "Best practices say orchestrator servers shouldn't access the db directly, are you sure you need req.models?",
-        );
         req.models = this.models;
       }
       const context = {}; // context is shared between request and response
