@@ -54,7 +54,7 @@ export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
   // make the modal full screen at small screen sizes
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
+  // keep the className to modify any modal
   return (
     <Dialog
       open={isOpen}
