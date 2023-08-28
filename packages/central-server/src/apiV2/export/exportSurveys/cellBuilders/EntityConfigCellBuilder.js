@@ -8,8 +8,8 @@ import { KeyValueCellBuilder } from './KeyValueCellBuilder';
 const SPECIAL_VALUE_PROCESSORS = {
   type: value => value.join(','),
   createNew: value => (value ? 'Yes' : 'No'),
-  allowScanQrCode: value => (value ? 'Yes' : undefined),
-  generateQrCode: value => (value ? 'Yes' : undefined),
+  allowScanQrCode: value => (value ? 'Yes' : 'No'),
+  generateQrCode: value => (value ? 'Yes' : 'No'),
 };
 const KEY_TRANSLATION = {
   parentId: 'parent',
