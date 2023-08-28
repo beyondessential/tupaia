@@ -5,13 +5,7 @@
 
 import express from 'express';
 
-import {
-  authenticationMiddleware,
-  catchAsyncErrors,
-  handleError,
-  logApiRequest,
-  multipartJson,
-} from './middleware';
+import { catchAsyncErrors, handleError, logApiRequest, multipartJson } from './middleware';
 
 import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
 import { useRouteHandler } from './RouteHandler';
@@ -139,8 +133,6 @@ const allowAnyone = routeHandler => (req, res, next) => {
  * Set up apiV2 routes
  */
 const apiV2 = express.Router();
-
-apiV2.use(authenticationMiddleware); // authenticate user
 
 apiV2.use(logApiRequest); // log every request to the api_request_log table
 

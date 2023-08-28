@@ -22,9 +22,6 @@ const ExportingStyledTable = styled(ChartTable)`
   border-bottom: none;
   overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
 
-  .MuiTableContainer-root {
-    overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
-  }
   table {
     border: 1px solid ${GREY_DE};
     width: auto;
@@ -126,15 +123,10 @@ const ContentWrapper = styled.div<{
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   ${A4Page} & {
     padding: 0;
+    height: auto;
   }
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${({ $isExporting }) => ($isExporting ? 'auto' : '100%')};
-  }
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
-  }
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
   }
 `;
 

@@ -22,6 +22,7 @@ const UserMenuContainer = styled.div<{
 }>`
   display: flex;
   align-items: center;
+  border: 1px white;
   color: ${({ secondaryColor, theme }) => secondaryColor || theme.palette.text.primary};
 `;
 

@@ -68,13 +68,22 @@ export const useMapOverlayData = (
     selectedOverlay?.measureLevel,
   );
 
-  const { data } = useMapOverlayReport(projectCode, rootEntityCode, selectedOverlay, {
-    startDate,
-    endDate,
-  });
+  const { data, isLoading, isFetched, isIdle } = useMapOverlayReport(
+    projectCode,
+    rootEntityCode,
+    selectedOverlay,
+    {
+      startDate,
+      endDate,
+    },
+  );
+
+  const isLoadingData = isLoading || (!isIdle && !isFetched);
 
   if (!entities || !data) {
-    return {};
+    return {
+      isLoading: isLoadingData,
+    };
   }
 
   const processedMeasureData = processMeasureData({
@@ -87,6 +96,8 @@ export const useMapOverlayData = (
 
   return {
     ...data,
+    isLoading: isLoadingData,
+    isFetched,
     serieses: data?.serieses,
     measureData: processedMeasureData,
     entities,

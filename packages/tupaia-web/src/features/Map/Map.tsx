@@ -14,7 +14,7 @@ import {
   LeafletMapProps,
 } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
+import { TILE_SETS, MOBILE_BREAKPOINT, openStreets, satellite } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
@@ -49,13 +49,14 @@ const StyledMap = styled(LeafletMap)`
     top: -50px;
     right: 3px;
     a {
-      background: rgba(43, 45, 56, 0.8);
+      background: ${({ theme }) => theme.navigationBtn.main};
       box-shadow: none;
       border: none;
       color: white;
 
       &:hover {
-        background: ${TRANSPARENT_BLACK};
+        background: ${({ theme }) =>
+          theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.7)'};
         box-shadow: none;
       }
     }
@@ -95,6 +96,25 @@ const MapControlColumn = styled.div`
   }
 `;
 
+/**
+ * Utility function to determine whether tileSet should default to satellite
+ * or to osm, based on page load time. This will only run when determining the
+ * initial state of the map.
+ */
+const getAutoTileset = () => {
+  // default to osm in dev so that we don't pay for tiles when running locally
+  if (!import.meta.env.PROD) {
+    return openStreets;
+  } else {
+    const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
+    return ((window as unknown) as Window & {
+      loadTime: number;
+    })?.loadTime < SLOW_LOAD_TIME_THRESHOLD
+      ? satellite
+      : openStreets;
+  }
+};
+
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -106,7 +126,9 @@ export const Map = () => {
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
-  const [activeTileSet, setActiveTileSet] = useState(TILE_SETS[0]);
+
+  const initialTileSet = getAutoTileset();
+  const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
     gaEvent('Map', 'Change Tile Set', activeTileSet.label);

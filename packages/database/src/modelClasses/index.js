@@ -163,3 +163,4 @@ export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
+export { DashboardItemType, DashboardItemModel } from './DashboardItem';

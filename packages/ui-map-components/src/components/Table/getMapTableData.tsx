@@ -18,7 +18,12 @@ const processColumns = (serieses: Series[]) => {
   }
 
   const configColumns = serieses.map(column => {
-    return { accessor: column.key, Header: column.name };
+    return {
+      // @ts-ignore - The react table accessors don't work as strings if the key has a space so we
+      // need to use the function accessor. The row and column could be any type so we need to ignore
+      accessor: (row: any) => row[column.key],
+      Header: column.name,
+    };
   });
 
   return [
@@ -60,6 +65,7 @@ export const getMapTableData = (serieses: Series[], measureData: MeasureData[]) 
     JSON.stringify(serieses),
     JSON.stringify(measureData),
   ]);
+
   return {
     columns,
     data,

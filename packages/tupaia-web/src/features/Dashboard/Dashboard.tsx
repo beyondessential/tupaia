@@ -10,6 +10,7 @@ import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
+import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -31,7 +32,7 @@ const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
   position: relative;
-  background-color: ${({ theme }) => theme.panel.background};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   transition: width 0.3s ease, max-width 0.3s ease;
   width: 100%;
   overflow: visible;
@@ -60,7 +61,7 @@ const TitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.panel.background};
+  background-color: ${({ theme }) => theme.palette.background.default};
   z-index: 1;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
@@ -71,6 +72,7 @@ const ExportButton = styled(Button).attrs({
   variant: 'outlined',
 })`
   font-size: 0.6875rem;
+  margin: 0 1rem;
 `;
 
 const Title = styled(Typography)`
@@ -78,18 +80,20 @@ const Title = styled(Typography)`
   font-weight: 400;
   font-size: 1.625rem;
   line-height: 1.4;
+  padding: 0 1rem;
 `;
 
 const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
+  padding: ${({ $isExpanded }) => ($isExpanded ? '0 2rem' : '0')};
   display: ${({ $isExpanded }) =>
     $isExpanded
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
-  background-color: ${({ theme }) => theme.panel.secondaryBackground};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   grid-template-columns: repeat(2, 1fr);
-  column-gap: 0.5rem;
+  column-gap: 0.8rem;
 `;
 
 const DashboardImageContainer = styled.div`
@@ -148,6 +152,22 @@ export const Dashboard = () => {
     }
   }, [dashboardNotFound, defaultDashboardName]);
 
+  // Filter out drill down items from the dashboard items
+  const visibleDashboards =
+    (activeDashboard?.items as DashboardItemType[])?.reduce(
+      (items: DashboardItemType[], item: DashboardItemType) => {
+        const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
+          const { config } = dashboardItem as {
+            config: MatrixConfig;
+          };
+          if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
+          return false;
+        });
+        return isDrillDown ? items : [...items, item];
+      },
+      [],
+    ) ?? [];
+
   return (
     <ErrorBoundary>
       <Panel $isExpanded={isExpanded}>
@@ -171,7 +191,7 @@ export const Dashboard = () => {
           </TitleBar>
           <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           <DashboardItemsWrapper $isExpanded={isExpanded}>
-            {activeDashboard?.items.map(item => (
+            {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
             ))}
           </DashboardItemsWrapper>
