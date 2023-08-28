@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { SurveyParams } from '../../types.ts';
+import { SurveyParams } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
 
 type SurveyFormContextType = {

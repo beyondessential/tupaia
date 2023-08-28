@@ -4,3 +4,10 @@
  */
 import { Survey as BaseSurvey, CamelCase } from '@tupaia/types';
 export type Survey = CamelCase<BaseSurvey>;
+
+export type SurveyParams = {
+  projectCode: string;
+  entityCode: string;
+  surveyCode: string;
+  screenNumber: string;
+};

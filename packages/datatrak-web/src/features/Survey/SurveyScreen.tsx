@@ -30,7 +30,7 @@ const Container = styled.div`
 
 const SideMenu = styled.div`
   background: rgba(0, 65, 103, 0.3);
-  width: 32rem;
+  width: 30rem;
   margin-right: 1rem;
   max-width: 100%;
 `;
@@ -41,6 +41,7 @@ const Paper = styled(MuiPaper).attrs({
 })`
   flex: 1;
   margin-left: 1rem;
+  padding: 0;
 `;
 
 const StyledForm = styled.form`
@@ -58,7 +59,7 @@ const ScreenHeading = styled(Typography)`
 const FormScrollBody = styled.div`
   flex: 1;
   overflow: auto;
-  padding: 3rem;
+  padding: 2rem;
   margin-bottom: 0.5rem;
 `;
 
@@ -66,7 +67,7 @@ const FormActions = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3rem;
+  padding: 1rem;
   border-top: 1px solid ${props => props.theme.palette.divider};
 
   button:last-child {
@@ -74,7 +75,6 @@ const FormActions = styled.div`
   }
 `;
 
-// Example http://localhost:5173/explore/TO/BCD_DL/1
 export const SurveyScreen = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
@@ -87,10 +87,13 @@ export const SurveyScreen = () => {
   };
 
   const onStepPrevious = handleSubmit(data => {
-    const path = generatePath(ROUTES.SURVEY_SCREEN, {
-      ...params,
-      screenNumber: String(screenNumber - 1),
-    });
+    const path =
+      screenNumber === 1
+        ? ROUTES.SURVEY_SELECT
+        : generatePath(ROUTES.SURVEY_SCREEN, {
+            ...params,
+            screenNumber: String(screenNumber - 1),
+          });
     handleStep(path, data);
   });
 
@@ -113,19 +116,27 @@ export const SurveyScreen = () => {
           <FormScrollBody>
             <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
             {activeScreen.map(
-              ({
-                questionId,
-                questionCode,
-                questionText,
-                questionType,
-                questionOptions,
-                config,
-                questionName,
-                questionLabel,
-                validationCriteria,
-              }) => {
+              (
+                {
+                  questionId,
+                  questionCode,
+                  questionText,
+                  questionType,
+                  questionOptions,
+                  config,
+                  questionName,
+                  questionLabel,
+                  validationCriteria,
+                },
+                index,
+              ) => {
                 if (validationCriteria?.mandatory === true) {
                   console.log('mandatory question', questionCode);
+                }
+                // If the first question is an instruction, don't render it since we always just
+                // show the text of first questions as the heading
+                if (index === 0 && questionType === 'Instruction') {
+                  return null;
                 }
                 return (
                   <SurveyQuestion
@@ -145,11 +156,9 @@ export const SurveyScreen = () => {
             )}
           </FormScrollBody>
           <FormActions>
-            {screenNumber > 1 && (
-              <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
-                Back
-              </MuiButton>
-            )}
+            <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
+              Back
+            </MuiButton>
             <Button type="submit">Next</Button>
           </FormActions>
         </StyledForm>

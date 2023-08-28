@@ -4,11 +4,19 @@
  */
 
 import React, { ReactNode } from 'react';
-import { Navigate, Route, Routes as RouterRoutes, Outlet } from 'react-router-dom';
+import {
+  Navigate,
+  Route,
+  Routes as RouterRoutes,
+  Outlet,
+  generatePath,
+  useParams,
+} from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import {
   LandingPage,
   SurveyPage,
+  SurveySelectPage,
   SurveyQuestionsPage,
   LoginPage,
   VerifyEmailPage,
@@ -41,6 +49,12 @@ const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
   return children ? children : <Outlet />;
 };
 
+const SurveyStartRedirect = () => {
+  const params = useParams();
+  const path = generatePath(ROUTES.SURVEY_SCREEN, { ...params, screenNumber: '1' });
+  return <Navigate to={path} replace={true} />;
+};
+
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
@@ -56,7 +70,7 @@ export const Routes = () => {
         </Route>
         {/** Any views that should have the background image should go in here */}
         <Route path="/" element={<BackgroundPageLayout />}>
-          {/** Any centred views should go in here */}
+          {/** Any public centred views should go in here */}
           <Route path="/" element={<CentredLayout />}>
             <Route
               path={ROUTES.LOGIN}
@@ -72,8 +86,13 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
           </Route>
           <Route element={<PrivateRoute />}>
-            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+            {/** Any private centred views should go in here */}
+            <Route element={<CentredLayout />}>
+              <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+              <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
+            </Route>
             <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
+              <Route index element={<SurveyStartRedirect />} />
               <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
               <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
               <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />

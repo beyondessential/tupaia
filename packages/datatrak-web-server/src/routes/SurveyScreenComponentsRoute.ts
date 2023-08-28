@@ -6,11 +6,13 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
+import { DatatrakWebSurveyScreenComponentsRequest as ScreenComponentsRequest } from '@tupaia/types';
 
 export type SurveyScreenComponentsRequest = Request<
-  { surveyCode: string },
-  Record<string, unknown>[],
-  Record<string, never>
+  ScreenComponentsRequest.Params,
+  ScreenComponentsRequest.ResBody,
+  ScreenComponentsRequest.ReqBody,
+  ScreenComponentsRequest.ReqQuery
 >;
 
 export class SurveyScreenComponentsRoute extends Route<SurveyScreenComponentsRequest> {

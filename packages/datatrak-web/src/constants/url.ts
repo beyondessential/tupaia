@@ -3,13 +3,14 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-const SURVEY_URL = '/:projectCode/:entityCode/:surveyCode';
+const SURVEY_URL = '/survey/:surveyCode';
 
 export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
-  SURVEY: '/:projectCode/:entityCode/:surveyCode',
+  SURVEY_SELECT: '/survey',
+  SURVEY: SURVEY_URL,
   SURVEY_SCREEN: `${SURVEY_URL}/:screenNumber`,
   SURVEY_SUCCESS: `${SURVEY_URL}/success`,
   SURVEY_REVIEW: `${SURVEY_URL}/review`,
