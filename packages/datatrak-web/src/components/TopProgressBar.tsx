@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 `;
 
 const ProgressBar = styled.div`
-  background: ${({ theme }) => theme.progressBar.main}99;
+  background: ${({ theme }) => theme.progressBar.main};
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
