@@ -8,6 +8,7 @@ import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useSurveys } from '../api/queries';
 import { SelectList, ListItemType, ButtonLink } from '../components';
+import { Survey } from '../types';
 
 const Container = styled(Paper)`
   width: 48rem;
@@ -37,12 +38,12 @@ export const SurveySelectPage = () => {
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =
-    data?.reduce((acc, survey) => {
-      const { surveyGroupName } = survey;
+    data?.reduce((acc: ListItemType[], survey: Survey) => {
+      const { surveyGroupName, name, code } = survey;
       const formattedSurvey = {
-        ...survey,
-        value: survey.code,
-        selected: selectedSurvey?.code === survey.code,
+        name,
+        value: code,
+        selected: selectedSurvey?.code === code,
       };
       // if there is no surveyGroupName, add the survey to the list as a top level item
       if (!surveyGroupName) {
