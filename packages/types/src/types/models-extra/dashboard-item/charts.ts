@@ -33,6 +33,8 @@ export type BaseChartConfig = BaseConfig & {
   measureLevel?: any;
 
   renderLegendForOneItem?: boolean;
+
+  newConfigOption?: string;
 };
 
 /**

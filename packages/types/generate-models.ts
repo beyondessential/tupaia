@@ -10,6 +10,7 @@ import sqlts from '@rmp135/sql-ts';
 import Knex from 'knex';
 // @ts-ignore
 import config from './config/models/config.json';
+import { diff } from './diff';
 
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
@@ -34,9 +35,12 @@ const run = async () => {
 
   if (failOnChanges) {
     const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });
-    if (currentTsString !== tsString) {
-      console.log("❌ There are changes in the db schema which are not reflected in @tupaia/types.")
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix")
+    const filesDiffer = diff(currentTsString, tsString);
+    if (filesDiffer) {
+      console.log(
+        '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
+      );
+      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
       process.exit(1);
     }
   }

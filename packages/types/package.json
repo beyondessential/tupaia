@@ -27,6 +27,8 @@
   },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
+    "@types/diff": "^5.0.3",
+    "diff": "^5.1.0",
     "dotenv": "^16.0.3",
     "knex": "^2.3.0",
     "ts-node": "^10.9.1",
