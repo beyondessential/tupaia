@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Button } from '@tupaia/ui-components';
-import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { Typography, Button as MuiButton, Paper as MuiPaper } from '@material-ui/core';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { Button } from '@tupaia/ui-components';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES } from '../../constants';
@@ -69,13 +69,12 @@ const FormActions = styled.div`
 `;
 
 // Example http://localhost:5173/explore/TO/BCD_DL/1
-export const SurveyScreen = ({ surveyScreen, isLast }) => {
-  const { setFormData, formData } = useSurveyForm();
+export const SurveyScreen = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
-  const screenNumber = parseInt(params.screenNumber!, 10);
-
+  const { setFormData, formData, activeScreen, isLast, screenNumber } = useSurveyForm();
   const { register, handleSubmit } = useForm({ defaultValues: formData });
+
   const handleStep = (path, data) => {
     setFormData({ ...formData, ...data });
     navigate(path);
@@ -106,8 +105,8 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
       <Paper>
         <StyledForm onSubmit={onStepForward} noValidate>
           <FormScrollBody>
-            <ScreenHeading variant="h2">{surveyScreen[0].questionText}</ScreenHeading>
-            {surveyScreen.map(
+            <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
+            {activeScreen.map(
               ({
                 questionId,
                 questionCode,
@@ -140,7 +139,7 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
             )}
           </FormScrollBody>
           <FormActions>
-            {screenNumber && screenNumber > 1 && (
+            {screenNumber > 1 && (
               <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
                 Back
               </MuiButton>

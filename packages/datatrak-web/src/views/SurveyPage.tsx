@@ -3,11 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Outlet } from 'react-router-dom';
 import { FullPageLoader, Alert } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { useSurveyScreenComponents } from '../api/queries';
-import { SurveyScreen, SurveyContext } from '../features';
+import { SurveyContext } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT } from '../constants';
 
@@ -18,8 +18,7 @@ const Container = styled.div`
 `;
 
 const Toolbar = styled.div`
-  min-height: 75px;
-  width: 100%;
+  height: 75px;
   background: rgba(0, 65, 103, 0.3);
   margin-left: -15px;
   margin-right: -15px;
@@ -27,16 +26,7 @@ const Toolbar = styled.div`
 
 export const SurveyPage = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
-  const {
-    data: surveyScreenComponents,
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-  } = useSurveyScreenComponents(surveyCode);
-  const activeScreen = surveyScreenComponents[screenNumber!];
-  const numberOfScreens = Object.keys(surveyScreenComponents).length;
-  const isLast = parseInt(screenNumber!, 10) === numberOfScreens;
+  const { isSuccess, isLoading, isError, error } = useSurveyScreenComponents(surveyCode);
 
   if (isLoading) {
     return <FullPageLoader />;
@@ -52,7 +42,7 @@ export const SurveyPage = () => {
         <Toolbar />
         {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
-        <SurveyScreen surveyScreen={activeScreen} isLast={isLast} key={screenNumber} />
+        <Outlet key={screenNumber} />
       </Container>
     </SurveyContext>
   );

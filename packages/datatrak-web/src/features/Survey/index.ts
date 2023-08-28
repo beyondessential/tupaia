@@ -4,4 +4,6 @@
  */
 
 export { SurveyScreen } from './SurveyScreen';
+export { SurveyReviewScreen } from './SurveyReviewScreen';
+export { SurveySuccessScreen } from './SurveySuccessScreen';
 export { SurveyContext } from './SurveyContext';

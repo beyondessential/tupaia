@@ -9,6 +9,7 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
+  SURVEY: '/:projectCode/:entityCode/:surveyCode',
   SURVEY_SCREEN: `${SURVEY_URL}/:screenNumber`,
   SURVEY_SUCCESS: `${SURVEY_URL}/success`,
   SURVEY_REVIEW: `${SURVEY_URL}/review`,

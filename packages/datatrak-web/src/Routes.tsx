@@ -10,11 +10,12 @@ import {
   LandingPage,
   SurveyPage,
   SurveyQuestionsPage,
-  SurveyReviewPage,
-  SurveySuccessPage,
   LoginPage,
   VerifyEmailPage,
   NotFoundPage,
+  SurveyReviewScreen,
+  SurveySuccessScreen,
+  SurveyScreen,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -70,10 +71,12 @@ export const Routes = () => {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-            <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewPage />} />
-            <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessPage />} />
-            <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyPage />} />
-            <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+            <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
+              <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
+              <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
+              <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
+              <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+            </Route>
           </Route>
         </Route>
         <Route path="*" element={<NotFoundPage />} />
