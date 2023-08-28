@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router';
 import { SpinningLoader } from '@tupaia/ui-components';
+import { Typography } from '@material-ui/core';
 import {
   MODAL_ROUTES,
   DEFAULT_URL,
@@ -28,13 +29,12 @@ import { RouterButton } from '../components';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0.9rem 0 0;
+  padding-left: 3.125rem;
+  padding-right: 3.125rem;
   width: 65rem;
   max-width: 100%;
   text-align: left;
-  @media screen and (min-width: 500px) {
-    padding-left: 3.125rem;
-    padding-right: 3.125rem;
-  }
 `;
 
 const TagLine = styled.p`
@@ -47,7 +47,7 @@ const TagLine = styled.p`
 const ProjectsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1.8125rem;
   margin: 1.4rem 0;
 
   @media (max-width: 1024px) {
@@ -76,7 +76,7 @@ const ExploreButton = styled(RouterButton).attrs({
   font-style: normal;
   text-align: center;
   text-transform: none;
-  border-color: white;
+  border-color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const Line = styled.div`
@@ -85,10 +85,10 @@ const Line = styled.div`
   margin-top: 0.7rem;
 `;
 
-const ProjectsTitle = styled.h1`
+const ProjectsTitle = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.primary};
   font-size: 1.5rem;
   font-weight: 500;
-  color: white;
   margin-top: 1.8rem;
   margin-left: 0.4rem;
 `;
@@ -125,7 +125,7 @@ export const ProjectsModal = () => {
       <div>
         <ExploreButton>Explore Tupaia.org</ExploreButton>
         <Line />
-        <ProjectsTitle>Projects</ProjectsTitle>
+        <ProjectsTitle variant="h1">Projects</ProjectsTitle>
         {isFetching ? (
           <Loader>
             <SpinningLoader />

@@ -16,18 +16,18 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.6rem;
-  min-height: 20rem;
+  min-height: 24.4375rem;
   border-radius: 5px;
   background: ${({ theme }) => theme.palette.background.default};
   color: white;
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: space-between;
+
   text-align: left;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     padding: 2.5rem;
-    height: 24rem;
   }
 
   button {
@@ -43,8 +43,8 @@ const LogoWrapper = styled.div`
 const Logo = styled.div`
   position: relative;
   background: white;
-  width: 4.875rem;
-  height: 100%;
+  width: 4.75rem;
+  height: 4.75rem;
   border-radius: 3px;
   overflow: hidden;
 
@@ -77,10 +77,8 @@ const CountryText = styled(Text)`
 `;
 
 const Body = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 `;
 
 const TextWrapper = styled.div`
@@ -97,7 +95,7 @@ const BaseLink = styled(RouterButton)`
   line-height: 1.2;
   text-transform: none;
   padding: 0.6875rem 1.25rem;
-  min-width: 11.5rem;
+  min-width: 10rem;
 
   &:hover {
     background: ${({ theme }) => darken(theme.palette.primary.main, 0.1)};
@@ -114,6 +112,9 @@ const OutlineLink = styled(BaseLink).attrs({
   border: 1px solid ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
   color: ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
   background: transparent;
+  text-transform: none;
+  line-height: 1.2;
+  padding: 0.6875rem 1.8rem;
   min-width: 10rem;
 
   &:hover {
@@ -185,8 +186,8 @@ export const ProjectCard = ({
         </Logo>
       )}
     </LogoWrapper>
+    <Title>{name}</Title>
     <Body>
-      <Title>{name}</Title>
       <TextWrapper>
         <Text>{getDescription(description)}</Text>
         <CountryText>{getCountryNames(names)}</CountryText>

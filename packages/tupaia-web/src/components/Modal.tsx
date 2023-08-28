@@ -64,12 +64,10 @@ export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
       className={className}
       disablePortal
     >
-      <Wrapper id="overlay-wrapper">
-        <CloseButton onClick={onClose} color="default">
-          <CloseIcon />
-        </CloseButton>
-        {children}
-      </Wrapper>
+      <CloseButton onClick={onClose} color="default">
+        <CloseIcon />
+      </CloseButton>
+      <Wrapper id="overlay-wrapper">{children}</Wrapper>
     </Dialog>
   );
 };
