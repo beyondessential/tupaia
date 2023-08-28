@@ -10,6 +10,7 @@ import { useNavigate, useParams, generatePath } from 'react-router-dom';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES } from '../../constants';
+import { SurveyParams } from '../../types';
 
 const Container = styled.div`
   margin-top: 3rem;
@@ -25,8 +26,8 @@ const Container = styled.div`
 export const SurveyScreen = ({ surveyScreen, isLast }) => {
   const { setFormData, formData } = useSurveyForm();
   const navigate = useNavigate();
-  const params = useParams();
-  const screenNumber = parseInt(params.screenNumber, 10);
+  const params = useParams<SurveyParams>();
+  const screenNumber = parseInt(params.screenNumber!, 10);
 
   const { register, handleSubmit } = useForm({ defaultValues: formData });
   const handleStep = (path, data) => {
@@ -37,7 +38,7 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
   const onStepPrevious = handleSubmit(data => {
     const path = generatePath(ROUTES.SURVEY_SCREEN, {
       ...params,
-      screenNumber: screenNumber - 1,
+      screenNumber: String(screenNumber - 1),
     });
     handleStep(path, data);
   });
@@ -47,7 +48,7 @@ export const SurveyScreen = ({ surveyScreen, isLast }) => {
       ? generatePath(ROUTES.SURVEY_REVIEW, params)
       : generatePath(ROUTES.SURVEY_SCREEN, {
           ...params,
-          screenNumber: screenNumber + 1,
+          screenNumber: String(screenNumber + 1),
         });
 
     handleStep(path, data);

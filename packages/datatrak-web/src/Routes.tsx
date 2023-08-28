@@ -14,6 +14,7 @@ import {
   SurveySuccessPage,
   LoginPage,
   VerifyEmailPage,
+  NotFoundPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -30,7 +31,7 @@ const LoggedInRedirect = ({ children }) => {
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
-const PrivateRoute = ({ children }: { children?: ReactNode }) => {
+const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
   const { isLoggedIn, isLoading, isFetched } = useUser();
   if (isLoading || !isFetched) return <FullPageLoader />;
   if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
@@ -75,7 +76,7 @@ export const Routes = () => {
             <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
           </Route>
         </Route>
-        <Route path="*" element={<div>Page not found</div>} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </RouterRoutes>
   );

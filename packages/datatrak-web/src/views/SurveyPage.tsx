@@ -4,11 +4,13 @@
  */
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { FullPageLoader, Alert } from '@tupaia/ui-components';
 import { useSurveyScreenComponents } from '../api/queries';
 import { SurveyScreen, SurveyContext } from '../features';
+import { SurveyParams } from '../types';
 
 export const SurveyPage = () => {
-  const { surveyCode, screenNumber } = useParams();
+  const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const {
     data: surveyScreenComponents,
     isSuccess,
@@ -16,16 +18,16 @@ export const SurveyPage = () => {
     isError,
     error,
   } = useSurveyScreenComponents(surveyCode);
-  const activeScreen = surveyScreenComponents[screenNumber];
+  const activeScreen = surveyScreenComponents[screenNumber!];
   const numberOfScreens = Object.keys(surveyScreenComponents).length;
-  const isLast = parseInt(screenNumber, 10) === numberOfScreens;
+  const isLast = parseInt(screenNumber!, 10) === numberOfScreens;
 
   if (isLoading) {
-    return 'Loading...';
+    return <FullPageLoader />;
   }
 
   if (!isSuccess || (isError && error)) {
-    return `There was an error ${error}`;
+    return <Alert severity="error">`There was an error ${error}`</Alert>;
   }
 
   return (

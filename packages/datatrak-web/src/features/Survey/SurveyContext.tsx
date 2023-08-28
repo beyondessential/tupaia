@@ -5,10 +5,15 @@
 
 import React, { createContext, useContext, useState } from 'react';
 
-const SurveyFormContext = createContext({});
+type SurveyFormContextType = {
+  formData: { [key: string]: any };
+  setFormData: (data: { [key: string]: any }) => void;
+};
+
+const SurveyFormContext = createContext({} as SurveyFormContextType);
 
 export const SurveyContext = ({ children }) => {
-  const [formData, setFormData] = useState(false);
+  const [formData, setFormData] = useState({});
 
   return (
     <SurveyFormContext.Provider value={{ formData, setFormData }}>

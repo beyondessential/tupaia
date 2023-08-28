@@ -1,11 +1,11 @@
-// @ts-nocheck
 /*
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
-import { TextField, RadioGroup } from '@tupaia/ui-components';
+import { TextField } from '@tupaia/ui-components';
 
 // Todo: Replace with actual form components in WAITP-1345
 const QuestionPlaceholder = styled.div`
@@ -15,9 +15,9 @@ const QuestionPlaceholder = styled.div`
   max-width: 30rem;
 `;
 
-const Placeholder = ({ name, type }) => {
+const Placeholder = ({ name, type, id }) => {
   return (
-    <QuestionPlaceholder>
+    <QuestionPlaceholder id={id}>
       <p>Question name: {name}</p>
       <p>Question type: {type}</p>
     </QuestionPlaceholder>
@@ -55,19 +55,19 @@ export enum QUESTION_TYPES {
 interface SurveyQuestionProps {
   type: keyof typeof QUESTION_TYPES;
   name: string;
-  label: string;
   id: string;
-  code: string;
-  text: string;
+  register?: any;
+  label?: string;
+  code?: string;
+  text?: string;
   options?: any;
-  config: any;
-  register: any;
+  config?: any;
 }
 export const SurveyQuestion = (props: SurveyQuestionProps) => {
   const FieldComponent = QUESTION_TYPES[props.type];
 
   if (!FieldComponent) {
-    return <Text>{props.name}</Text>;
+    return <QuestionPlaceholder>{props.name}</QuestionPlaceholder>;
   }
 
   return <FieldComponent inputRef={props.register()} {...props} />;
