@@ -50,5 +50,8 @@ export const theme = createMuiTheme(
         data: '#22c7fc',
       },
     },
+    navigationBtn: {
+      main: '#34353f',
+    },
   },
 );

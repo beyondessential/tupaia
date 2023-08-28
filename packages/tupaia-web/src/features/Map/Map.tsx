@@ -13,7 +13,7 @@ import {
   TilePicker,
   LeafletMapProps,
 } from '@tupaia/ui-map-components';
-import { TRANSPARENT_BLACK, TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
+import { TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
@@ -48,7 +48,7 @@ const StyledMap = styled(LeafletMap)`
     top: -50px;
     right: 3px;
     a {
-      background: #34353f;
+      background: ${({ theme }) => theme.navigationBtn.main};
       box-shadow: none;
       border: none;
       color: white;
