@@ -14,10 +14,14 @@ class LoggedError extends Error {
   constructor(message, originalError = null) {
     super(message);
     this.message = message;
+
+    // We may be in a context where winston is not defined (eg. frontend packages), just console log in that case
+    const logger = winston?.error ? winston.error : console.log;
+
     if (originalError) {
-      winston.error('Original error:', { stack: originalError.stack });
+      logger('Original error:', { stack: originalError.stack });
     }
-    winston.error(this.message, { stack: this.stack });
+    logger(this.message, { stack: this.stack });
   }
 }
 
