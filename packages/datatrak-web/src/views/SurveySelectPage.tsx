@@ -43,7 +43,7 @@ export const SurveySelectPage = () => {
       const formattedSurvey = {
         name,
         value: code,
-        selected: selectedSurvey?.code === code,
+        selected: selectedSurvey?.value === code,
       };
       // if there is no surveyGroupName, add the survey to the list as a top level item
       if (!surveyGroupName) {
@@ -72,7 +72,6 @@ export const SurveySelectPage = () => {
         return item;
       });
     }, []) ?? [];
-
   return (
     <Container>
       <Typography variant="h1">Select survey</Typography>
@@ -94,7 +93,7 @@ export const SurveySelectPage = () => {
           Cancel
         </ButtonLink>
         <ButtonLink
-          to={`${selectedSurvey?.code}/1` || ''}
+          to={`${selectedSurvey?.value}/1` || ''}
           variant="contained"
           color="primary"
           disabled={!selectedSurvey}
