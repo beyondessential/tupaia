@@ -23,6 +23,7 @@ const Card = styled.div`
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: space-between;
+
   text-align: left;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
@@ -76,10 +77,8 @@ const CountryText = styled(Text)`
 `;
 
 const Body = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 `;
 
 const TextWrapper = styled.div`
@@ -114,8 +113,8 @@ const OutlineLink = styled(BaseLink).attrs({
   color: ${({ theme }) => lighten(theme.palette.primary.main, 0.25)};
   background: transparent;
   text-transform: none;
-  line-height: 2;
-  padding: 0.6875rem 1.5rem;
+  line-height: 1.2;
+  padding: 0.6875rem 1.8rem;
   min-width: 10rem;
 
   &:hover {
@@ -187,8 +186,8 @@ export const ProjectCard = ({
         </Logo>
       )}
     </LogoWrapper>
+    <Title>{name}</Title>
     <Body>
-      <Title>{name}</Title>
       <TextWrapper>
         <Text>{getDescription(description)}</Text>
         <CountryText>{getCountryNames(names)}</CountryText>
