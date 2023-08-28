@@ -34,7 +34,7 @@ const FormActions = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 3rem;
-  border-top: 1px solid #dfdfdf;
+  border-top: 1px solid ${props => props.theme.palette.divider};
 `;
 
 export const SurveyReviewScreen = () => {

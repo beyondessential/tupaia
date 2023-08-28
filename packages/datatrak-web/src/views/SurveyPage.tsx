@@ -18,10 +18,10 @@ const Container = styled.div`
 `;
 
 const Toolbar = styled.div`
-  height: 75px;
+  height: 4.7rem;
   background: rgba(0, 65, 103, 0.3);
-  margin-left: -15px;
-  margin-right: -15px;
+  margin-left: -0.9375rem;
+  margin-right: -0.9375rem;
 `;
 
 export const SurveyPage = () => {

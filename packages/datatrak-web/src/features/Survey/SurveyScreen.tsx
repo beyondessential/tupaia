@@ -11,7 +11,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Button } from '@tupaia/ui-components';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
-import { ROUTES } from '../../constants';
+import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
 
 const Container = styled.div`
@@ -21,12 +21,18 @@ const Container = styled.div`
   padding-bottom: 2rem;
   flex: 1;
   overflow: hidden;
+
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    overflow: auto;
+    flex-direction: column;
+  }
 `;
 
 const SideMenu = styled.div`
   background: rgba(0, 65, 103, 0.3);
-  width: 500px;
+  width: 32rem;
   margin-right: 1rem;
+  max-width: 100%;
 `;
 
 const Paper = styled(MuiPaper).attrs({
@@ -44,7 +50,7 @@ const StyledForm = styled.form`
 `;
 
 const ScreenHeading = styled(Typography)`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 500;
   margin-bottom: 1rem;
 `;
@@ -61,7 +67,7 @@ const FormActions = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 3rem;
-  border-top: 1px solid #dfdfdf;
+  border-top: 1px solid ${props => props.theme.palette.divider};
 
   button:last-child {
     margin-left: auto;
