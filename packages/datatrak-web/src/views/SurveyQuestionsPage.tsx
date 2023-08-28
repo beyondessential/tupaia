@@ -20,6 +20,13 @@ export const SurveyQuestionsPage = () => {
     <Card>
       <h1>Survey Questions Page</h1>
       <SurveyQuestion label="First name" id="firstName" name="firstName" type="FreeText" />
+      <SurveyQuestion
+        label="First name"
+        id="firstName"
+        name="firstName"
+        config={{ codeGenerator: { type: 'shortid', prefix: 'CONTACT', length: '10' } }}
+        type="CodeGenerator"
+      />
     </Card>
   );
 };

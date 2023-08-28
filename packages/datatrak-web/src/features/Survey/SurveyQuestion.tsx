@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
+import { CodeGeneratorQuestion } from '../../components/CodeGeneratorQuestion/CodeGeneratorQuestion';
 
 // Todo: Replace with actual form components in WAITP-1345
 const QuestionPlaceholder = styled.div`
@@ -47,7 +48,7 @@ export enum QUESTION_TYPES {
   DateOfData = Placeholder,
   Entity = Placeholder,
   PrimaryEntity = Placeholder,
-  CodeGenerator = Placeholder,
+  CodeGenerator = CodeGeneratorQuestion,
   Arithmetic = Placeholder,
   Condition = Placeholder,
 }
