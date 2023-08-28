@@ -45,7 +45,7 @@ const TitleWrapper = styled.div`
 export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data } = useEntityAncestors(projectCode, entityCode);
+  const { data} = useEntityAncestors(projectCode, entityCode);
   const countryObject = data?.find((entity: Entity) => entity.type === 'country');
   const { serieses, measureData } = useMapOverlayData(null, countryObject);
 
