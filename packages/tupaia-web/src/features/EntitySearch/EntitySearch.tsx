@@ -44,6 +44,7 @@ const ResultsWrapper = styled.div`
     top: ${TOP_BAR_HEIGHT_MOBILE};
     left: 0;
     right: 0;
+    z-index: 1;
     min-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     max-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     border-radius: 0;

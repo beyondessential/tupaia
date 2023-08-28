@@ -48,7 +48,7 @@ const mapOverlayByCode = (
  */
 export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const [urlSearchParams] = useSearchParams();
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, isFetched } = useQuery(
     ['mapOverlays', projectCode, entityCode],
     (): Promise<MapOverlaysResponse> => get(`mapOverlays/${projectCode}/${entityCode}`),
     {
@@ -67,7 +67,7 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
     mapOverlaysByCode: codedOverlays,
     hasMapOverlays: !!data?.mapOverlays?.length,
     mapOverlayGroups: data?.mapOverlays,
-    isLoadingMapOverlays: isLoading,
+    isLoadingMapOverlays: isLoading || !isFetched,
     errorLoadingMapOverlays: error,
     selectedOverlayCode,
     selectedOverlay,

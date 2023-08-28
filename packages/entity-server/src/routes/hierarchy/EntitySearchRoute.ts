@@ -35,14 +35,23 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
         [RAW]: {
           // Running this RAW is much faster for larger hierarchies
           // Put names that begin with the search string first
-          // Then sort alphabetically within the two groups
+          // Then sort parent entity types before child types (e.g. countries before facilities)
+          // Finally sort alphabetically
           sql: `id IN (
               SELECT descendant_id
               FROM ancestor_descendant_relation
               WHERE entity_hierarchy_id = :hierarchyId
             )
             AND name ILIKE :searchFilter
-            ORDER BY STARTS_WITH(LOWER(name), :searchString) DESC, name ASC`,
+            ORDER BY
+              STARTS_WITH(LOWER(name), :searchString) DESC,
+              (
+                SELECT MAX(generational_distance) FROM ancestor_descendant_relation
+                WHERE entity_hierarchy_id = :hierarchyId
+                AND descendant_id = entity.id
+                GROUP BY descendant_id
+              ) ASC,
+              name ASC`,
           parameters: {
             hierarchyId,
             searchFilter: `%${searchString}%`,

@@ -10,6 +10,7 @@ import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
+import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -151,6 +152,22 @@ export const Dashboard = () => {
     }
   }, [dashboardNotFound, defaultDashboardName]);
 
+  // Filter out drill down items from the dashboard items
+  const visibleDashboards =
+    (activeDashboard?.items as DashboardItemType[])?.reduce(
+      (items: DashboardItemType[], item: DashboardItemType) => {
+        const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
+          const { config } = dashboardItem as {
+            config: MatrixConfig;
+          };
+          if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
+          return false;
+        });
+        return isDrillDown ? items : [...items, item];
+      },
+      [],
+    ) ?? [];
+
   return (
     <ErrorBoundary>
       <Panel $isExpanded={isExpanded}>
@@ -174,7 +191,7 @@ export const Dashboard = () => {
           </TitleBar>
           <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           <DashboardItemsWrapper $isExpanded={isExpanded}>
-            {activeDashboard?.items.map(item => (
+            {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
             ))}
           </DashboardItemsWrapper>

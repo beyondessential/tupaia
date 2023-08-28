@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import {} from 'dotenv/config'; // Load the environment variables into process.env
+import { encryptPassword } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
 import { getModels } from './getModels';
@@ -65,4 +67,27 @@ export async function addBaselineTestData() {
     permissionGroupName: 'Admin',
     verifiedEmail: 'verified',
   });
+
+  const apiUser = await createUserAccessor(models, {
+    emailAddress: process.env.CLIENT_USERNAME,
+    password: process.env.CLIENT_SECRET,
+    firstName: 'API',
+    lastName: 'Client',
+    employer: 'Automation',
+    position: 'Test',
+    contactNumber: '',
+    countryName: 'Demo Land',
+    permissionGroupName: 'Public',
+    verifiedEmail: 'verified',
+  });
+
+  await models.apiClient.findOrCreate(
+    {
+      username: process.env.CLIENT_USERNAME,
+    },
+    {
+      user_account_id: apiUser.userId,
+      secret_key_hash: encryptPassword(process.env.CLIENT_SECRET, process.env.API_CLIENT_SALT),
+    },
+  );
 }
