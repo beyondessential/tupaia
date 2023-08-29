@@ -4,8 +4,7 @@
  */
 
 import React from 'react';
-import { ButtonLink, PageContainer } from '../components';
-import { TopProgressBar } from '../components/TopProgressBar';
+import { ButtonLink, PageContainer, TopProgressBar } from '../components';
 
 export const LandingPage = () => {
   return (
@@ -13,7 +12,7 @@ export const LandingPage = () => {
       <h1>Landing Page</h1>
       <ButtonLink to="/survey">Select survey</ButtonLink>
       <ButtonLink to="/survey/questions">Survey questions</ButtonLink>
-      <TopProgressBar currentSurveyQuestion={1} totalNumberOfSurveyQuestions={17} />
+      <TopProgressBar currentSurveyQuestion={5} totalNumberOfSurveyQuestions={10} />
     </PageContainer>
   );
 };

@@ -6,42 +6,50 @@ import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 const Wrapper = styled.div`
   background: rgba(0, 65, 103, 0.3);
   width: 100%;
-  min-width: 22.8125rem;
+  min-width: 22.8rem;
 `;
 
-const ProgressBar = styled.div`
+const ProgressBar = styled.div<{
+  $progress: number;
+}>`
   background: ${({ theme }) => theme.progressBar.main};
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   height: 0.75rem;
-  width: 100%;
+  width: ${({ $progress }) => `${$progress}`}%;
 `;
 
-const ProgressButton = styled(Button)`
+/*
+Styling of buttons as the project progresses.
+
+const ProgressButton = styled(Button).attrs({
+  color: 'primary',
+})`
   background: ${({ theme }) => theme.palette.primary.main};
   color: white;
   border-radius: 3px;
   text-transform: none;
-  font-size: 0.9375rem;
-  height: 2.7851875rem;
-  padding: 0.8125rem 1.5625rem;
+  font-size: 0.9rem;
+  height: 2.8rem;
+  padding: 0.8rem 1.6rem;
 `;
 
-const CancelButton = styled(Button)`
-  background-color: white;
+const CancelButton = styled(Button).attrs({
+  variant: 'outlined',
+  color: 'primary',
+})`
   border-radius: 3px;
-  border: 1px solid ${({ theme }) => theme.palette.primary.main};
-  color: ${({ theme }) => theme.palette.primary.main};
   text-transform: none;
-  font-size: 0.9375rem;
-  height: 2.7851875rem;
-  padding: 0.8125rem 1.5625rem;
+  font-size: 0.9rem;
+  height: 2.8rem;
+  padding: 0.8rem 1.6rem;
 `;
 
 const BackButton = styled(Button)`
   text-align: center;
 `;
+*/
 
 interface ProgressPercentage {
   currentSurveyQuestion: number;
@@ -53,40 +61,10 @@ export const TopProgressBar = ({
   totalNumberOfSurveyQuestions,
 }: ProgressPercentage) => {
   const fraction = (currentSurveyQuestion / totalNumberOfSurveyQuestions) * 100;
-  console.log(fraction);
-  const [progress, setProgress] = useState(fraction);
-
-  const handleProgressBar = () => {
-    if (progress > 99) {
-      setProgress(100);
-    } else {
-      setProgress(progress + fraction);
-    }
-  };
-
-  const handleCancel = () => {
-    setProgress(0);
-  };
-
-  const handleProgressBack = () => {
-    if (progress < currentSurveyQuestion) {
-      setProgress(0);
-    } else {
-      setProgress(progress - fraction);
-    }
-  };
 
   return (
-    <>
-      <Wrapper>
-        <ProgressBar style={{ width: `${progress}%` }} />
-      </Wrapper>
-      <BackButton onClick={handleProgressBack}>
-        <ArrowBackIosRoundedIcon />
-        Back
-      </BackButton>
-      <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-      <ProgressButton onClick={handleProgressBar}>Next</ProgressButton>
-    </>
+    <Wrapper>
+      <ProgressBar $progress={fraction} />
+    </Wrapper>
   );
 };
