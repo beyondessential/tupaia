@@ -18,6 +18,7 @@ const Checkbox = styled(BaseCheckbox)`
 `;
 export const CheckboxQuestion = ({ id, label, name }: SurveyQuestionInputProps) => {
   const { control } = useFormContext();
+  // this is a controller component so that we can make the value save as 'No' when unchecking the checkbox
   return (
     <Controller
       name={name}
