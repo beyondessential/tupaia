@@ -21,7 +21,13 @@ export type SurveyQuestionFieldProps = {
   text?: string;
   config?: any;
   type?: string;
-  options?: string[];
+  options?: (
+    | string
+    | {
+        value: string;
+        label: string;
+      }
+  )[];
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {

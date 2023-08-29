@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { RadioGroup } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { lighten } from '@material-ui/core';
+import { RadioGroup } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 
 const StyledRadioGroup = styled(RadioGroup)`

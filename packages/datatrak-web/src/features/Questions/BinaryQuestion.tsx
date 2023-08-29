@@ -7,13 +7,7 @@ import React from 'react';
 import { SurveyQuestionInputProps } from '../../types';
 import { RadioQuestion } from '.';
 
-export const BinaryQuestion = ({
-  id,
-  label,
-  name,
-  inputRef,
-  options = [],
-}: SurveyQuestionInputProps) => {
+export const BinaryQuestion = ({ options = [], ...props }: SurveyQuestionInputProps) => {
   const questionOptions = options?.length
     ? options
     : [
@@ -26,13 +20,5 @@ export const BinaryQuestion = ({
           label: 'No',
         },
       ];
-  return (
-    <RadioQuestion
-      id={id}
-      label={label}
-      name={name}
-      inputRef={inputRef}
-      options={questionOptions}
-    />
-  );
+  return <RadioQuestion {...props} options={questionOptions} />;
 };
