@@ -7,7 +7,7 @@ import { randomIntBetween, sleep } from '@tupaia/utils';
 import React from 'react';
 import styled from 'styled-components';
 import { HorizontalTree } from '../src/components';
-import { getEntityDescendants } from './story-utils/api';
+import { getEntityDescendants, getHierarchies } from './story-utils/api';
 
 export default {
   title: 'HorizontalTree',
@@ -18,105 +18,58 @@ const Container = styled.div`
   height: 600px;
 `;
 
-const LOADING_TREE = [
-  {
-    id: 'loading_hierarchy',
-    name: 'Click me to see loading state',
-    children: [
-      {
-        id: 'loading_child',
-        name: 'Should see loading state instead of this',
-      },
-    ],
-  },
-];
+const fetchRoot = async () => {
+  await sleep(randomIntBetween(200, 1200));
+  return getHierarchies();
+};
 
-const ERROR_TREE = [
-  {
-    id: 'error_hierarchy',
-    name: 'Australia',
-    children: [
-      {
-        id: 'error_child',
-        name: 'Should see error instead of this',
-      },
-    ],
-  },
-];
+const fetchBranch = async (rootNode, node) => {
+  await sleep(randomIntBetween(200, 1200));
+  return getEntityDescendants(rootNode.code, node.code);
+};
+
+const fetchError = async () => {
+  await sleep(500);
+  throw new Error('Cannot get data for the selected entity');
+};
+
+const fetchLoading = async () => {
+  await sleep(100000);
+  return [];
+};
 
 export const horizontalTree = () => (
   <Container>
-    <HorizontalTree
-      data={getEntityDescendants()}
-      fetchData={async (rootNode, node) => {
-        await sleep(randomIntBetween(200, 1200));
-        return getEntityDescendants(rootNode?.code, node?.code);
-      }}
-    />
+    <HorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
   </Container>
 );
+
 export const horizontalTreeReadOnly = () => (
   <Container>
-    <HorizontalTree
-      data={getEntityDescendants()}
-      readOnly
-      fetchData={async (rootNode, node) => {
-        await sleep(randomIntBetween(200, 1200));
-        return getEntityDescendants(rootNode?.code, node?.code);
-      }}
-    />
+    <HorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
   </Container>
 );
+
 export const horizontalTreeRootError = () => (
   <Container>
-    <HorizontalTree
-      data={ERROR_TREE}
-      fetchData={async () => {
-        await sleep(500);
-        throw new Error('Cannot get data for the selected entity');
-      }}
-    />
+    <HorizontalTree fetchRoot={fetchError} fetchBranch={fetchBranch} />
   </Container>
 );
 
 export const horizontalTreeRootLoading = () => (
   <Container>
-    <HorizontalTree
-      data={LOADING_TREE}
-      fetchData={async () => {
-        await sleep(100000);
-        return [];
-      }}
-    />
+    <HorizontalTree fetchRoot={fetchLoading} fetchBranch={fetchBranch} />
   </Container>
 );
 
 export const horizontalTreeChildrenError = () => (
   <Container>
-    <HorizontalTree
-      data={ERROR_TREE}
-      fetchData={async childNode => {
-        if (childNode) {
-          await sleep(1500);
-          throw new Error('Cannot get data for the selected entity');
-        } else {
-          return ERROR_TREE;
-        }
-      }}
-    />
+    <HorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchError} />
   </Container>
 );
 
 export const horizontalTreeChildrenLoading = () => (
   <Container>
-    <HorizontalTree
-      fetchData={async childNode => {
-        if (childNode) {
-          await sleep(100000);
-          return [];
-        }
-        return LOADING_TREE;
-      }}
-    />
+    <HorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchLoading} />
   </Container>
 );

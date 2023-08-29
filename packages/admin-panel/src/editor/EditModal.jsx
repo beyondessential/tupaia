@@ -196,7 +196,6 @@ const mergeProps = (
       }
       dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files));
     },
-    endpoint,
     usedByConfig,
   };
 };

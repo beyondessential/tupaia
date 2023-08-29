@@ -76,10 +76,10 @@ export class S3Client {
   /**
    * @private
    */
-  async uploadPrivateFile(fileName, stream) {
+  async uploadPrivateFile(fileName, readable) {
     return this.upload({
       Key: fileName,
-      Body: stream,
+      Body: readable,
       ACL: 'bucket-owner-full-control',
     });
   }
@@ -87,10 +87,10 @@ export class S3Client {
   /**
    * @public
    * @param {string} fileName
-   * @param {*} file
+   * @param {Readable} readable
    * @returns
    */
-  async uploadFile(fileName, file) {
+  async uploadFile(fileName, readable) {
     const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
 
     const alreadyExists = await this.checkIfFileExists(s3FilePath);
@@ -98,7 +98,7 @@ export class S3Client {
       throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPrivateFile(s3FilePath, file);
+    return this.uploadPrivateFile(s3FilePath, readable);
   }
 
   async deleteFile(filePath) {
