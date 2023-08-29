@@ -20,9 +20,11 @@ const DatePicker = styled(BaseDatePicker).attrs({
   .MuiFormLabel-root {
     transform: none;
     color: ${props => props.theme.palette.text.primary};
+    position: static;
+    line-height: 1.5;
   }
   label + .MuiInput-formControl {
-    margin-top: 1.2rem;
+    margin-top: 0.3rem;
     font-size: 0.875rem;
   }
   .MuiSvgIcon-root {
