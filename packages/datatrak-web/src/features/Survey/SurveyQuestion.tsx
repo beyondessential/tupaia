@@ -7,7 +7,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
 import { useFormContext } from 'react-hook-form';
-import { BinaryQuestion, DateQuestion, RadioQuestion, TextQuestion } from '../Questions';
+import {
+  BinaryQuestion,
+  DateQuestion,
+  RadioQuestion,
+  TextQuestion,
+  InstructionQuestion,
+} from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
 // Todo: Replace with actual form components in WAITP-1345
@@ -25,10 +31,6 @@ const Placeholder = ({ name, type, id }) => {
       <p>Question type: {type}</p>
     </QuestionPlaceholder>
   );
-};
-
-const InstructionQuestion = ({ text }) => {
-  return <QuestionPlaceholder>{text}</QuestionPlaceholder>;
 };
 
 export enum QUESTION_TYPES {

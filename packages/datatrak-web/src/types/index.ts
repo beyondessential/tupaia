@@ -7,4 +7,5 @@ export type {
   SurveyParams,
   SurveyQuestionFieldProps,
   SurveyQuestionInputProps,
+  SurveyScreenComponent,
 } from './surveys';

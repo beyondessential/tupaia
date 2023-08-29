@@ -9,10 +9,10 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Button } from '@tupaia/ui-components';
-import { SurveyQuestion } from './SurveyQuestion';
+import { QUESTION_TYPES, SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
-import { SurveyParams } from '../../types';
+import { SurveyParams, SurveyScreenComponent } from '../../types';
 
 const Container = styled.div`
   display: flex;
@@ -75,10 +75,12 @@ const FormActions = styled.div`
   }
 `;
 
-const QuestionWrapper = styled.div`
+const QuestionWrapper = styled.div<{
+  $isInstruction: boolean;
+}>`
   display: flex;
-  & + & {
-    margin-top: 3rem;
+  &:not(:last-child) {
+    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1.5rem' : '2.5rem')};
   }
 `;
 
@@ -90,14 +92,17 @@ const QuestionNumber = styled(FormLabel)`
   width: 3.5em;
 `;
 
-const convertNumberToLetter = (number: number) => {
-  return String.fromCharCode(65 + number);
-};
-
 export const SurveyScreen = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
-  const { setFormData, formData, activeScreen, isLast, screenNumber } = useSurveyForm();
+  const {
+    setFormData,
+    formData,
+    isLast,
+    screenNumber,
+    displayQuestions,
+    screenHeader,
+  } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
 
@@ -127,10 +132,7 @@ export const SurveyScreen = () => {
 
     handleStep(path, data);
   });
-  // If the first question is an instruction, don't render it since we always just
-  // show the text of first questions as the heading
-  const displayQuestions =
-    activeScreen[0].questionType === 'Instruction' ? activeScreen.slice(1) : activeScreen;
+
   return (
     <Container>
       <SideMenu />
@@ -138,36 +140,40 @@ export const SurveyScreen = () => {
         <FormProvider {...formContext}>
           <StyledForm onSubmit={onStepForward} noValidate>
             <FormScrollBody>
-              <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
+              <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
               {displayQuestions.map(
-                (
-                  {
-                    questionId,
-                    questionCode,
-                    questionText,
-                    questionType,
-                    questionOptions,
-                    config,
-                    questionLabel,
-                    validationCriteria,
-                  },
-                  index,
-                ) => {
+                ({
+                  questionId,
+                  questionCode,
+                  questionText,
+                  questionType,
+                  questionOptions,
+                  config,
+                  questionLabel,
+                  validationCriteria,
+                  questionNumber,
+                  detailLabel,
+                }) => {
                   if (validationCriteria?.mandatory === true) {
                     console.log('mandatory question', questionCode);
                   }
                   return (
-                    <QuestionWrapper key={questionId}>
-                      <QuestionNumber id={`question_number_${questionId}`}>
-                        {screenNumber}
-                        {convertNumberToLetter(index)}.
-                      </QuestionNumber>
+                    <QuestionWrapper
+                      key={questionId}
+                      $isInstruction={questionType === 'Instruction'}
+                    >
+                      {questionNumber && (
+                        <QuestionNumber id={`question_number_${questionId}`}>
+                          {questionNumber}
+                        </QuestionNumber>
+                      )}
                       <SurveyQuestion
+                        detailLabel={detailLabel}
                         id={questionId}
                         code={questionCode}
                         name={questionCode}
                         type={questionType}
-                        text={questionText}
+                        text={detailLabel || questionText}
                         options={questionOptions}
                         config={config}
                         label={questionLabel || questionText}
