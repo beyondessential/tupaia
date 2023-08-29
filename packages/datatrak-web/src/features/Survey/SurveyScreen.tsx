@@ -4,15 +4,15 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Typography, Paper as MuiPaper, Button as MuiButton, FormLabel } from '@material-ui/core';
+import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Button } from '@tupaia/ui-components';
-import { QUESTION_TYPES, SurveyQuestion } from './SurveyQuestion';
+import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
-import { SurveyParams, SurveyScreenComponent } from '../../types';
+import { SurveyParams } from '../../types';
 
 const Container = styled.div`
   display: flex;
@@ -84,14 +84,6 @@ const QuestionWrapper = styled.div<{
   }
 `;
 
-const QuestionNumber = styled(FormLabel)`
-  text-transform: lowercase;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: ${props => props.theme.palette.text.primary};
-  width: 3.5em;
-`;
-
 export const SurveyScreen = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
@@ -151,7 +143,6 @@ export const SurveyScreen = () => {
                   config,
                   questionLabel,
                   validationCriteria,
-                  questionNumber,
                   detailLabel,
                 }) => {
                   if (validationCriteria?.mandatory === true) {
@@ -162,11 +153,6 @@ export const SurveyScreen = () => {
                       key={questionId}
                       $isInstruction={questionType === 'Instruction'}
                     >
-                      {questionNumber && (
-                        <QuestionNumber id={`question_number_${questionId}`}>
-                          {questionNumber}
-                        </QuestionNumber>
-                      )}
                       <SurveyQuestion
                         detailLabel={detailLabel}
                         id={questionId}

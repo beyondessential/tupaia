@@ -22,14 +22,6 @@ type SurveyFormContextType = {
 
 const SurveyFormContext = createContext({} as SurveyFormContextType);
 
-const convertNumberToLetter = (componentNumber: number, questions: SurveyScreenComponent[]) => {
-  // Find the index of the question in the list of questions that are not instructions, because instruction questions aren't actually questions, but just descriptions so shouldn't be numbered
-  const questionNumber = questions
-    .filter(question => question.questionType !== 'Instruction')
-    .findIndex(question => question.componentNumber === componentNumber);
-  return String.fromCharCode(65 + questionNumber);
-};
-
 export const SurveyContext = ({ children }) => {
   const [formData, setFormData] = useState({});
   const { surveyCode, ...params } = useParams<SurveyParams>();
@@ -42,18 +34,10 @@ export const SurveyContext = ({ children }) => {
 
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions = (activeScreen.length && activeScreen[0].questionType === 'Instruction'
-    ? activeScreen.slice(1)
-    : activeScreen
-  ).map(question => {
-    // don't number instruction questions, because they are just descriptions
-    const { questionType, componentNumber } = question;
-    if (questionType === 'Instruction') return question;
-    return {
-      ...question,
-      questionNumber: `${screenNumber}${convertNumberToLetter(componentNumber, activeScreen)}.`,
-    };
-  });
+  const displayQuestions =
+    activeScreen.length && activeScreen[0].questionType === 'Instruction'
+      ? activeScreen.slice(1)
+      : activeScreen;
 
   return (
     <SurveyFormContext.Provider
