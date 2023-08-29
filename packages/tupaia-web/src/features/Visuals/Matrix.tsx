@@ -21,6 +21,7 @@ import {
   MatrixReport,
   MatrixReportColumn,
   MatrixReportRow,
+  DashboardItemConfig,
 } from '../../types';
 import { DashboardItemContext } from '../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
@@ -176,7 +177,7 @@ const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
   return urlSearchParams.toString();
 };
 
-const MatrixPreview = ({ config }: { config?: DashboardItemConfig }) => {
+const MatrixPreview = ({ config }: { config?: DashboardItemConfig | null }) => {
   const placeholderImage = getPlaceholderImage(config as MatrixConfig);
   return (
     <PlaceholderWrapper>

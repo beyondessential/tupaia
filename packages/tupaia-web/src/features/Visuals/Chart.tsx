@@ -10,7 +10,6 @@ import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { A4Page, ErrorBoundary } from '@tupaia/ui-components';
-import { DashboardItemReport, DashboardItemConfig } from '../../types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItemContext } from '../DashboardItem';
 
@@ -204,7 +203,11 @@ export const Chart = () => {
               $isEnlarged={isEnlarged}
               $isExporting={isExport}
             >
-              <Content viewContent={viewContent} isEnlarged={!!isEnlarged} isExporting={!!isExport} />
+              <Content
+                viewContent={viewContent}
+                isEnlarged={!!isEnlarged}
+                isExporting={!!isExport}
+              />
             </ContentWrapper>
           ))}
         </TabContext>

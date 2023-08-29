@@ -105,7 +105,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         config={viewConfig}
         isEnlarged={isEnlarged}
       />
-      <DashboardInfoHover infoText={config.description} />
+      <DashboardInfoHover infoText={viewConfig.description} />
     </>
   );
 };
