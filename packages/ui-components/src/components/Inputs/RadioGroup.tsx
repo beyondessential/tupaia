@@ -106,13 +106,7 @@ export const RadioGroup = ({
   inputRef,
   inputProps,
 }: RadioGroupProps) => (
-  <FormControl
-    component="fieldset"
-    className={className}
-    color="primary"
-    inputRef={inputRef}
-    id={id}
-  >
+  <FormControl component="fieldset" className={className} color="primary" id={id}>
     <InputLabel as={Legend} label={label} tooltip={tooltip} />
     {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
     <StyledRadioGroup name={name} value={value} onChange={onChange}>
@@ -120,6 +114,7 @@ export const RadioGroup = ({
         <FormControlLabel
           control={
             <Radio
+              inputRef={inputRef}
               inputProps={{
                 'aria-describedby': helperText ? `${name}-helperText` : undefined,
                 ...(inputProps || {}),

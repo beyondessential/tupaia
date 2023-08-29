@@ -12,6 +12,7 @@ import { SurveyQuestionInputProps } from '../../types';
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
   max-width: 25rem;
+  margin-bottom: 0;
   legend {
     color: ${({ theme }) => theme.palette.text.primary};
     font-size: 1rem;

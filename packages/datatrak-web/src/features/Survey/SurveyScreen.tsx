@@ -80,7 +80,7 @@ const QuestionWrapper = styled.div<{
 }>`
   display: flex;
   &:not(:last-child) {
-    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1.5rem' : '2.5rem')};
+    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
   }
 `;
 
