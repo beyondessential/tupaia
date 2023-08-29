@@ -2,7 +2,4 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-
-export { UserMenu } from './UserMenu';
-
+export type { Survey, SurveyParams } from './surveys';

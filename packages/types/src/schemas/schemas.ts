@@ -36047,6 +36047,24 @@ export const ReqQuerySchema = {
 	"additionalProperties": false
 } 
 
+export const CamelCaseSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+} 
+
+export const ObjectToCamelSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const KeysToCamelCaseSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CountryAccessSchema = {
 	"properties": {
 		"id": {
@@ -36073,24 +36091,6 @@ export const CountryAccessSchema = {
 		"id",
 		"name"
 	]
-} 
-
-export const CamelCaseSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const ObjectToCamelSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const KeysToCamelCaseSchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const DashboardWithItemsSchema = {

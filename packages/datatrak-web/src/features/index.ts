@@ -3,4 +3,4 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export { SurveyQuestion } from './SurveyQuestion';
+export { SurveyScreen, SurveySuccessScreen, SurveyReviewScreen, SurveyContext } from './Survey';
