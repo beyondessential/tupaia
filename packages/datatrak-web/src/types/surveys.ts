@@ -11,3 +11,13 @@ export type SurveyParams = {
   surveyCode: string;
   screenNumber: string;
 };
+
+export type SurveyQuestionFieldProps = {
+  id: string;
+  name: string;
+  label?: string;
+  code?: string;
+  text?: string;
+  config?: any;
+  type?: string;
+};

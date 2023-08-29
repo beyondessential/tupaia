@@ -6,6 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
+import { useFormContext } from 'react-hook-form';
+import { TextQuestion } from '../Questions';
+import { SurveyQuestionFieldProps } from '../../types';
 
 // Todo: Replace with actual form components in WAITP-1345
 const QuestionPlaceholder = styled.div`
@@ -33,11 +36,11 @@ export enum QUESTION_TYPES {
   Checkbox = Placeholder,
   Date = Placeholder,
   DateTime = Placeholder,
-  FreeText = TextField,
+  FreeText = TextQuestion,
   Geolocate = Placeholder,
   Autocomplete = Placeholder,
   Instruction = InstructionQuestion,
-  Number = TextField,
+  Number = TextQuestion,
   Photo = Placeholder,
   Radio = Placeholder,
   DaysSince = Placeholder,
@@ -52,23 +55,17 @@ export enum QUESTION_TYPES {
   Condition = Placeholder,
 }
 
-interface SurveyQuestionProps {
-  type: keyof typeof QUESTION_TYPES;
-  name: string;
-  id: string;
-  register?: any;
-  label?: string;
-  code?: string;
-  text?: string;
-  options?: any;
-  config?: any;
+interface SurveyQuestionProps extends SurveyQuestionFieldProps {
+  options?: Record<string, any>;
 }
-export const SurveyQuestion = (props: SurveyQuestionProps) => {
-  const FieldComponent = QUESTION_TYPES[props.type];
+
+export const SurveyQuestion = ({ type, name, options, ...props }: SurveyQuestionProps) => {
+  const { register } = useFormContext();
+  const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
-    return <QuestionPlaceholder>{props.name}</QuestionPlaceholder>;
+    return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
-  return <FieldComponent inputRef={props.register()} {...props} />;
+  return <FieldComponent {...props} name={name} type={type} inputRef={register(options)} />;
 };
