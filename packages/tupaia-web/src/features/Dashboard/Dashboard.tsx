@@ -63,6 +63,7 @@ const TitleBar = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
   z-index: 1;
+
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -188,8 +189,8 @@ export const Dashboard = () => {
                 Export
               </ExportButton>
             )}
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           </TitleBar>
-          <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />

@@ -22,6 +22,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 0.3rem;
   margin-top: 1rem;
+
+  svg {
+    font-size: 1.4rem;
+  }
+
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     .MuiButton-label {
       display: flex;
@@ -30,6 +35,7 @@ const Wrapper = styled.div`
       align-items: center;
     }
     position: absolute;
+    padding: 1rem;
     width: 100%;
     height: 100%;
     background-color: ${({ theme }) => theme.palette.common.black};
@@ -38,8 +44,10 @@ const Wrapper = styled.div`
     left: 0;
     opacity: 0;
     margin-top: 0;
+    text-align: center;
     &:hover,
     &:focus-visible {
+      cursor: auto;
       opacity: 0.9;
       background-color: ${({ theme }) => theme.palette.common.black};
     }
@@ -47,7 +55,7 @@ const Wrapper = styled.div`
 `;
 
 const DashboardInfoHoverText = styled(Typography)`
-  font-size: 1rem;
+  font-size: 0.9rem;
 `;
 
 interface DashboardInfoHoverProps {
@@ -56,11 +64,10 @@ interface DashboardInfoHoverProps {
 
 export const DashboardInfoHover = ({ infoText }: DashboardInfoHoverProps) => {
   if (!infoText) return null;
-  const content = <DashboardInfoHoverText>{infoText}</DashboardInfoHoverText>;
   return (
     <Wrapper>
       <MuiInfoIcon />
-      {content}
+      <DashboardInfoHoverText>{infoText}</DashboardInfoHoverText>
     </Wrapper>
   );
 };

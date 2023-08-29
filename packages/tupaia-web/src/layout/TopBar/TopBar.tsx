@@ -21,7 +21,7 @@ const Header = styled.header<{
   $primaryColor?: string | null;
   $secondaryColor?: string | null;
 }>`
-  background-color: ${({theme}) => theme.palette.background.default};
+  background-color: ${({ theme }) => theme.palette.background.default};
   height: ${TOP_BAR_HEIGHT_MOBILE};
   min-height: ${TOP_BAR_HEIGHT_MOBILE};
   display: flex;
@@ -30,6 +30,8 @@ const Header = styled.header<{
   z-index: 1000;
   position: relative;
   padding: 0 0.625em;
+
+  border-bottom: 1px solid #202124;
 
   > * {
     background-color: ${({ theme }) => theme.palette.background.default};
