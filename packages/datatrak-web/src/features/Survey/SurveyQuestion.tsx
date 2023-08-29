@@ -14,6 +14,7 @@ import {
   TextQuestion,
   InstructionQuestion,
   CheckboxQuestion,
+  DateTimeQuestion,
 } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
@@ -38,7 +39,7 @@ export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
   Checkbox = CheckboxQuestion,
   Date = DateQuestion,
-  DateTime = Placeholder,
+  DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
   Geolocate = Placeholder,
   Autocomplete = Placeholder,
@@ -49,7 +50,7 @@ export enum QUESTION_TYPES {
   DaysSince = Placeholder,
   MonthsSince = Placeholder,
   YearsSince = Placeholder,
-  SubmissionDate = Placeholder,
+  SubmissionDate = DateQuestion,
   DateOfData = Placeholder,
   Entity = Placeholder,
   PrimaryEntity = Placeholder,

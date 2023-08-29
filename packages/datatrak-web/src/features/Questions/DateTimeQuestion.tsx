@@ -4,13 +4,13 @@
  */
 
 import React from 'react';
-import { DatePicker as BaseDatePicker } from '@tupaia/ui-components';
+import { DateTimePicker as BaseDateTimePicker } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { useFormContext, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
 
-const DatePicker = styled(BaseDatePicker).attrs({
+const DateTimePicker = styled(BaseDateTimePicker).attrs({
   InputAdornmentProps: {
     position: 'end',
   },
@@ -37,7 +37,7 @@ const DatePicker = styled(BaseDatePicker).attrs({
   }
 `;
 
-export const DateQuestion = ({ name, label, id, type }: SurveyQuestionInputProps) => {
+export const DateTimeQuestion = ({ name, label, id, type }: SurveyQuestionInputProps) => {
   const { control } = useFormContext();
   // mui datepicker doesn't like uncontroller inputs, so a workaround for this is to use a controller from react-hook-form (https://react-hook-form.com/get-started#IntegratingwithUIlibraries)
   return (
@@ -45,7 +45,7 @@ export const DateQuestion = ({ name, label, id, type }: SurveyQuestionInputProps
       name={name}
       control={control}
       render={renderProps => {
-        return <DatePicker {...renderProps} inputRef={renderProps.ref} label={label} id={id} />;
+        return <DateTimePicker {...renderProps} inputRef={renderProps.ref} label={label} id={id} />;
       }}
     />
   );

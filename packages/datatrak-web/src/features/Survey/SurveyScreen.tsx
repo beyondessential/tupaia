@@ -125,6 +125,8 @@ export const SurveyScreen = () => {
     handleStep(path, data);
   });
 
+  console.log(displayQuestions);
+
   return (
     <Container>
       <SideMenu />

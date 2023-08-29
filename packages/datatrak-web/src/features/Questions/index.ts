@@ -8,3 +8,4 @@ export { BinaryQuestion } from './BinaryQuestion';
 export { DateQuestion } from './DateQuestion';
 export { InstructionQuestion } from './InstructionQuestion';
 export { CheckboxQuestion } from './CheckboxQuestion';
+export { DateTimeQuestion } from './DateTimeQuestion';
