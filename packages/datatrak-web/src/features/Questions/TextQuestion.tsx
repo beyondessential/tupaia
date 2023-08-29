@@ -9,7 +9,7 @@ import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 
 const Label = styled(FormControlLabel)`
-  width: 100%;
+  width: calc(100% - 3.5rem);
   align-items: flex-start;
   margin: 0;
   .MuiInput-root {
