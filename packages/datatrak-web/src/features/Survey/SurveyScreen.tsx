@@ -127,7 +127,10 @@ export const SurveyScreen = () => {
 
     handleStep(path, data);
   });
-
+  // If the first question is an instruction, don't render it since we always just
+  // show the text of first questions as the heading
+  const displayQuestions =
+    activeScreen[0].questionType === 'Instruction' ? activeScreen.slice(1) : activeScreen;
   return (
     <Container>
       <SideMenu />
@@ -136,7 +139,7 @@ export const SurveyScreen = () => {
           <StyledForm onSubmit={onStepForward} noValidate>
             <FormScrollBody>
               <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
-              {activeScreen.map(
+              {displayQuestions.map(
                 (
                   {
                     questionId,
@@ -152,11 +155,6 @@ export const SurveyScreen = () => {
                 ) => {
                   if (validationCriteria?.mandatory === true) {
                     console.log('mandatory question', questionCode);
-                  }
-                  // If the first question is an instruction, don't render it since we always just
-                  // show the text of first questions as the heading
-                  if (index === 0 && questionType === 'Instruction') {
-                    return null;
                   }
                   return (
                     <QuestionWrapper key={questionId}>
