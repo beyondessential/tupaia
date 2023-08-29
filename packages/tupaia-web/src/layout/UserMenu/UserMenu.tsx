@@ -85,7 +85,7 @@ export const UserMenu = () => {
     <BaseMenuItem
       key="help"
       externalLink
-      href="https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm"
+      href="https://beyond-essential.slab.com/topics/support-and-resources-g6piq0i1"
     >
       Help centre
     </BaseMenuItem>

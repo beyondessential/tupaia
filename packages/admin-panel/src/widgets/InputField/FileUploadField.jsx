@@ -7,13 +7,21 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FileUploadField as BaseFileUploadField } from '@tupaia/ui-components';
 
-export const FileUploadField = ({ onChange, name, label, helperText, textOnButton }) => {
+export const FileUploadField = ({
+  onChange,
+  name,
+  label,
+  helperText,
+  textOnButton,
+  showFileSize,
+  maxSizeInBytes,
+}) => {
   const [fileName, setFileName] = useState(null);
 
   const handleChange = async (event, newFileName, files) => {
     setFileName(newFileName);
 
-    const [file] = files;
+    const [file] = files || [];
     if (!file) {
       onChange({
         fileName: null,
@@ -36,6 +44,8 @@ export const FileUploadField = ({ onChange, name, label, helperText, textOnButto
       label={label}
       helperText={helperText}
       textOnButton={textOnButton}
+      showFileSize={showFileSize}
+      maxSizeInBytes={maxSizeInBytes}
     />
   );
 };
@@ -46,6 +56,8 @@ FileUploadField.propTypes = {
   label: PropTypes.string,
   helperText: PropTypes.string,
   textOnButton: PropTypes.string,
+  showFileSize: PropTypes.bool,
+  maxSizeInBytes: PropTypes.number,
 };
 
 FileUploadField.defaultProps = {
@@ -53,4 +65,6 @@ FileUploadField.defaultProps = {
   label: null,
   helperText: null,
   textOnButton: null,
+  showFileSize: false,
+  maxSizeInBytes: null,
 };

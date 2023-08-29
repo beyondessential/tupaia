@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -104,16 +105,30 @@ export class GETSurveys extends GETHandler {
     if (surveyIds.length === 0) return {};
     const rows = await this.database.executeSql(
       `
-    SELECT survey.id, count(survey.id) AS num_questions
-    FROM survey
-    LEFT JOIN survey_screen ss on survey.id = ss.survey_id
+    SELECT 
+      s.id as survey_id,
+      ss.id as survey_screen_id,
+      ss.screen_number as screen_number,
+      ssc.id as survey_screen_component_id,
+      ssc.component_number as component_number,
+      ssc.visibility_criteria as visibility_criteria,
+      q.id as question_id,
+      q.name as question_name,
+      q.type as question_type,
+      q.code as question_code,
+      q.text as question_text
+    FROM survey s
+    LEFT JOIN survey_screen ss on s.id = ss.survey_id
     LEFT JOIN survey_screen_component ssc on ss.id = ssc.screen_id
-    WHERE survey.id in (${surveyIds.map(id => '?').join(',')})
-    GROUP BY survey.id
+    LEFT JOIN question q on ssc.question_id = q.id
+    WHERE s.id in (${surveyIds.map(() => '?').join(',')})
+    GROUP BY s.id, ssc.id, ss.id, q.id
     `,
       surveyIds,
     );
-    return Object.fromEntries(rows.map(row => [row.id, `${row.num_questions} Questions`]));
+
+    const aggregatedQuestions = getAggregatedQuestions(rows);
+    return aggregatedQuestions;
   }
 
   async getSurveyCountryNames(surveyIds) {
@@ -123,7 +138,7 @@ export class GETSurveys extends GETHandler {
     SELECT survey.id, array_agg(country.name) as country_names
     FROM survey
     LEFT JOIN country ON (country.id = any(survey.country_ids))
-    WHERE survey.id in (${surveyIds.map(id => '?').join(',')})
+    WHERE survey.id in (${surveyIds.map(() => '?').join(',')})
     GROUP BY survey.id;
     `,
       surveyIds,
@@ -131,3 +146,61 @@ export class GETSurveys extends GETHandler {
     return Object.fromEntries(rows.map(row => [row.id, row.country_names]));
   }
 }
+
+const getAggregatedQuestions = rawResults => {
+  const initialValue = {};
+  const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
+    const { survey_id: id } = currentResult;
+    const updatedValue = questionsObject;
+    if (updatedValue[id]) {
+      return updatedValue;
+    }
+    updatedValue[id] = [];
+    return questionsObject;
+  }, initialValue);
+
+  for (let i = 0; i < rawResults.length; i++) {
+    const { survey_id, screen_number, survey_screen_id } = rawResults[i];
+    if (surveyQuestions[survey_id].map(screen => screen.id).includes(survey_screen_id)) {
+      continue;
+    }
+    surveyQuestions[survey_id].push({
+      id: survey_screen_id,
+      screen_number,
+      survey_screen_components: [],
+    });
+  }
+
+  for (let i = 0; i < rawResults.length; i++) {
+    const {
+      survey_id,
+      survey_screen_id,
+      survey_screen_component_id,
+      component_number,
+      visibility_criteria,
+      question_id,
+      question_name,
+      question_type,
+      question_code,
+      question_text,
+    } = rawResults[i];
+
+    const screenIndex = surveyQuestions[survey_id]
+      .map(screen => screen.id)
+      .indexOf(survey_screen_id);
+
+    surveyQuestions[survey_id][screenIndex].survey_screen_components.push({
+      id: survey_screen_component_id,
+      visibility_criteria,
+      component_number,
+      question: {
+        id: question_id,
+        name: question_name,
+        type: question_type,
+        code: question_code,
+        text: question_text,
+      },
+    });
+  }
+  return surveyQuestions;
+};

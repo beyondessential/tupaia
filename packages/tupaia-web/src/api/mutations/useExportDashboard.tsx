@@ -4,7 +4,7 @@
  */
 import { useMutation } from 'react-query';
 import { stringifyQuery } from '@tupaia/utils';
-import { post } from '../api';
+import { API_URL, post } from '../api';
 import { DashboardItem, DashboardName, EntityCode, ProjectCode } from '../../types';
 
 type ExportDashboardBody = {
@@ -24,7 +24,7 @@ export const useExportDashboard = ({ onSuccess }: { onSuccess?: (data: Blob) => 
         selectedDashboardItems: selectedDashboardItems?.join(','),
       });
       // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
-      const cookieDomain = new URL(import.meta.env.REACT_APP_TUPAIA_WEB_API_URL).hostname;
+      const cookieDomain = new URL(API_URL).hostname;
       return post('pdf', {
         responseType: 'blob',
         data: {

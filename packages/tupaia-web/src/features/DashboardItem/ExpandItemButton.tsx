@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
-import { ViewConfig } from '@tupaia/types';
 import { Button } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItem } from '../../types';
+import { DashboardItemConfig, ViewReport } from '../../types';
+import { DashboardItemContext } from './DashboardItemContext';
 
 const ExpandableButton = styled(Button).attrs({
   variant: 'outlined',
@@ -59,27 +59,49 @@ const ZoomInIcon = styled(MuiZoomIcon)`
   }
 `;
 
-interface ExpandItemButtonProps {
-  reportCode: DashboardItem['reportCode'];
-  viewType?: ViewConfig['viewType'];
-}
+const EXPANDABLE_TYPES = ['chart', 'matrix', 'dataDownload', 'filesDownload'];
 
 /**
  * ExpandItemButton handles the 'expand' button for the dashboard item in both mobile and desktop sizes
  */
-export const ExpandItemButton = ({ reportCode, viewType }: ExpandItemButtonProps) => {
+export const ExpandItemButton = () => {
+  const { config, isEnlarged, isExport, report, reportCode } = useContext(DashboardItemContext);
+
+  const { viewType, type, periodGranularity } = config || ({} as DashboardItemConfig);
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+
+  if (isEnlarged || isExport) return null;
+
+  const getIsExpandable = () => {
+    if (periodGranularity) return true;
+    else if (EXPANDABLE_TYPES.includes(type)) return true;
+    else if (viewType && EXPANDABLE_TYPES.includes(viewType)) return true;
+    else if (viewType === 'qrCodeVisual') {
+      const { data } = report as ViewReport;
+      return data && data.length > 1;
+    }
+    return false;
+  };
+
+  if (!getIsExpandable()) return null;
+
+  const getText = () => {
+    if (viewType === 'dataDownload' || viewType === 'qrCodeVisual')
+      return 'Expand to download data';
+    return 'Expand chart';
+  };
+
   const handleExpandDashboardItem = () => {
     urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, String(reportCode));
     setUrlSearchParams(urlSearchParams.toString());
   };
 
+  const text = getText();
+
   return (
     <ExpandableButton onClick={handleExpandDashboardItem}>
       <ZoomInIcon />
-      <ExpandButtonText>
-        {viewType === 'dataDownload' ? 'Expand to download data' : 'Expand chart'}
-      </ExpandButtonText>
+      <ExpandButtonText>{text}</ExpandButtonText>
     </ExpandableButton>
   );
 };

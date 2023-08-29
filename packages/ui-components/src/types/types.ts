@@ -16,3 +16,8 @@ export type MatrixRowType = Record<string, any> & {
   title: string;
   children?: MatrixRowType[];
 };
+
+export type Data = Record<string, unknown> & {
+  name?: string;
+  value?: any;
+};
