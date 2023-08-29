@@ -25,8 +25,6 @@ export const TYPES = {
   DHIS_INSTANCE: 'dhis_instance',
   DHIS_SYNC_LOG: 'dhis_sync_log',
   DHIS_SYNC_QUEUE: 'dhis_sync_queue',
-  DISASTER: 'disaster',
-  DISASTER_EVENT: 'disasterEvent',
   ENTITY_HIERARCHY: 'entity_hierarchy',
   ENTITY_RELATION: 'entity_relation',
   ENTITY: 'entity',
