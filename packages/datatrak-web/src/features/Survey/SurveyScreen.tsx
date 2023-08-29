@@ -87,7 +87,7 @@ const QuestionNumber = styled(FormLabel)`
   font-size: 1rem;
   line-height: 1.5;
   color: ${props => props.theme.palette.text.primary};
-  padding-right: 1.5rem;
+  width: 3.5em;
 `;
 
 const convertNumberToLetter = (number: number) => {

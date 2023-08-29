@@ -52,5 +52,10 @@ export const theme = createMuiTheme({
         padding: '2rem 3rem',
       },
     },
+    MuiDialog: {
+      paper: {
+        padding: 0, // reset datepicker modal padding
+      },
+    },
   },
 });

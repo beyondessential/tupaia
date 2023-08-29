@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
 import { useFormContext } from 'react-hook-form';
-import { BinaryQuestion, RadioQuestion, TextQuestion } from '../Questions';
+import { BinaryQuestion, DateQuestion, RadioQuestion, TextQuestion } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
 // Todo: Replace with actual form components in WAITP-1345
@@ -34,7 +34,7 @@ const InstructionQuestion = ({ text }) => {
 export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
   Checkbox = Placeholder,
-  Date = Placeholder,
+  Date = DateQuestion,
   DateTime = Placeholder,
   FreeText = TextQuestion,
   Geolocate = Placeholder,

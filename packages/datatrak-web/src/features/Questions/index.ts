@@ -5,3 +5,4 @@
 export { TextQuestion } from './TextQuestion';
 export { RadioQuestion } from './RadioQuestion';
 export { BinaryQuestion } from './BinaryQuestion';
+export { DateQuestion } from './DateQuestion';
