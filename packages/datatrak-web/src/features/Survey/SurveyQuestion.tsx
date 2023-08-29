@@ -13,6 +13,7 @@ import {
   RadioQuestion,
   TextQuestion,
   InstructionQuestion,
+  CheckboxQuestion,
 } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
@@ -35,7 +36,7 @@ const Placeholder = ({ name, type, id }) => {
 
 export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
-  Checkbox = Placeholder,
+  Checkbox = CheckboxQuestion,
   Date = DateQuestion,
   DateTime = Placeholder,
   FreeText = TextQuestion,
