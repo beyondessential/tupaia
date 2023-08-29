@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 
-const Wrapper = styled.div``;
 const InstructionHeading = styled(Typography).attrs({
   variant: 'h3',
 })`
@@ -18,9 +17,9 @@ export const InstructionQuestion = ({ text, detailLabel }) => {
     return null;
   }
   return (
-    <Wrapper>
+    <>
       {text && <InstructionHeading>{text}</InstructionHeading>}
       {detailLabel && <Typography>{detailLabel}</Typography>}
-    </Wrapper>
+    </>
   );
 };
