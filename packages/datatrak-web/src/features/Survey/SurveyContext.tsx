@@ -42,7 +42,7 @@ export const SurveyContext = ({ children }) => {
 
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions = (activeScreen[0].questionType === 'Instruction'
+  const displayQuestions = (activeScreen.length && activeScreen[0].questionType === 'Instruction'
     ? activeScreen.slice(1)
     : activeScreen
   ).map(question => {
@@ -65,7 +65,7 @@ export const SurveyContext = ({ children }) => {
         numberOfScreens,
         screenNumber,
         displayQuestions,
-        screenHeader: activeScreen[0].questionText,
+        screenHeader: activeScreen.length ? activeScreen[0].questionText : '',
       }}
     >
       {children}
