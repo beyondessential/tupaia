@@ -125,7 +125,6 @@ enum EntityLevel {
   DISTRICT = 'District',
   SUB_DISTRICT = 'SubDistrict',
   FACILITY = 'Facility',
-  DISASTER = 'Disaster',
 }
 
 enum MeasureValueType {

@@ -24625,7 +24625,6 @@ export const MapOverlayConfigSchema = {
 		"displayLevel": {
 			"enum": [
 				"Country",
-				"Disaster",
 				"District",
 				"Facility",
 				"SubDistrict"
@@ -24635,7 +24634,6 @@ export const MapOverlayConfigSchema = {
 		"displayOnLevel": {
 			"enum": [
 				"Country",
-				"Disaster",
 				"District",
 				"Facility",
 				"SubDistrict"
@@ -24734,7 +24732,6 @@ export const MapOverlayConfigSchema = {
 		"measureLevel": {
 			"enum": [
 				"Country",
-				"Disaster",
 				"District",
 				"Facility",
 				"SubDistrict"
@@ -25047,7 +25044,6 @@ export const DisplayedValueTypeSchema = {
 export const EntityLevelSchema = {
 	"enum": [
 		"Country",
-		"Disaster",
 		"District",
 		"Facility",
 		"SubDistrict"
@@ -34035,7 +34031,6 @@ export const MapOverlaySchema = {
 				"displayLevel": {
 					"enum": [
 						"Country",
-						"Disaster",
 						"District",
 						"Facility",
 						"SubDistrict"
@@ -34045,7 +34040,6 @@ export const MapOverlaySchema = {
 				"displayOnLevel": {
 					"enum": [
 						"Country",
-						"Disaster",
 						"District",
 						"Facility",
 						"SubDistrict"
@@ -34144,7 +34138,6 @@ export const MapOverlaySchema = {
 				"measureLevel": {
 					"enum": [
 						"Country",
-						"Disaster",
 						"District",
 						"Facility",
 						"SubDistrict"
@@ -43530,7 +43523,6 @@ export const TranslatedMapOverlaySchema = {
 		"displayLevel": {
 			"enum": [
 				"Country",
-				"Disaster",
 				"District",
 				"Facility",
 				"SubDistrict"
@@ -43540,7 +43532,6 @@ export const TranslatedMapOverlaySchema = {
 		"displayOnLevel": {
 			"enum": [
 				"Country",
-				"Disaster",
 				"District",
 				"Facility",
 				"SubDistrict"
@@ -43639,7 +43630,6 @@ export const TranslatedMapOverlaySchema = {
 		"measureLevel": {
 			"enum": [
 				"Country",
-				"Disaster",
 				"District",
 				"Facility",
 				"SubDistrict"
