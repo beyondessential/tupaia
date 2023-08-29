@@ -9,6 +9,14 @@ import generateUUID from 'bson-objectid';
 // With this config, in order to reach a 1% probability of at least one collision:
 // You would need: 1000 IDs generated per hour for ~211 years.
 // You can test different configs collision probability here: https://zelark.github.io/nano-id-cc/
+
+interface ShortIDConfigProps {
+  alphabet: string;
+  length: number;
+  chunkLength: number;
+  prefix: string;
+}
+
 const DEFAULT_SHORT_ID_CONFIG = {
   alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   length: 13,
@@ -22,7 +30,7 @@ export const MONGO_ID = 'mongoid';
 // e.g. '632-NFO-LEU-I1QI'
 export const generateShortId = config => {
   // Use defaults for any missing config params, allowing users to specify some or all custom configurations
-  const { alphabet, length, chunkLength, prefix } = {
+  const { alphabet, length, chunkLength, prefix }: ShortIDConfigProps = {
     ...DEFAULT_SHORT_ID_CONFIG,
     ...config.codeGenerator,
   };
@@ -43,4 +51,4 @@ export const generateShortId = config => {
 };
 
 // Generate mongo-document style id (same style that Tupaia generates).
-export const generateMongoId = () => generateUUID().toString();
+export const generateMongoId = () => new generateUUID().toString();
