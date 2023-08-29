@@ -47,6 +47,7 @@ export class SurveyScreenComponentsRoute extends Route<SurveyScreenComponentsReq
       'question.options',
       'survey_screen.screen_number',
     ];
+
     return camelcaseKeys(
       await ctx.services.central.fetchResources(`surveys/${survey.id}/surveyScreenComponents`, {
         columns,

@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
 import { useFormContext } from 'react-hook-form';
-import { TextQuestion } from '../Questions';
+import { BinaryQuestion, RadioQuestion, TextQuestion } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
 // Todo: Replace with actual form components in WAITP-1345
@@ -32,7 +32,7 @@ const InstructionQuestion = ({ text }) => {
 };
 
 export enum QUESTION_TYPES {
-  Binary = Placeholder,
+  Binary = BinaryQuestion,
   Checkbox = Placeholder,
   Date = Placeholder,
   DateTime = Placeholder,
@@ -42,7 +42,7 @@ export enum QUESTION_TYPES {
   Instruction = InstructionQuestion,
   Number = TextQuestion,
   Photo = Placeholder,
-  Radio = Placeholder,
+  Radio = RadioQuestion,
   DaysSince = Placeholder,
   MonthsSince = Placeholder,
   YearsSince = Placeholder,
@@ -55,11 +55,7 @@ export enum QUESTION_TYPES {
   Condition = Placeholder,
 }
 
-interface SurveyQuestionProps extends SurveyQuestionFieldProps {
-  options?: Record<string, any>;
-}
-
-export const SurveyQuestion = ({ type, name, options, ...props }: SurveyQuestionProps) => {
+export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProps) => {
   const { register } = useFormContext();
   const FieldComponent = QUESTION_TYPES[type];
 
@@ -67,5 +63,5 @@ export const SurveyQuestion = ({ type, name, options, ...props }: SurveyQuestion
     return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
-  return <FieldComponent {...props} name={name} type={type} inputRef={register(options)} />;
+  return <FieldComponent {...props} name={name} type={type} inputRef={register()} />;
 };

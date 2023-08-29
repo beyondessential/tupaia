@@ -3,9 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { Ref } from 'react';
+import React from 'react';
 import { FormControlLabel, TextField } from '@material-ui/core';
-import { SurveyQuestionFieldProps } from '../../types';
+import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 
 const Label = styled(FormControlLabel)`
@@ -17,16 +17,12 @@ const Label = styled(FormControlLabel)`
   }
 `;
 
-interface TextQuestionProps extends SurveyQuestionFieldProps {
-  inputRef: Ref<HTMLInputElement>;
-}
-
 enum FIELD_TYPES {
   FreeText = 'text',
   Number = 'number',
 }
 
-export const TextQuestion = ({ id, label, name, inputRef, type }: TextQuestionProps) => {
+export const TextQuestion = ({ id, label, name, inputRef, type }: SurveyQuestionInputProps) => {
   return (
     <Label
       label={label}

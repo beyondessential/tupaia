@@ -57,9 +57,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
 
 const Radio = styled(MuiRadio)<
   RadioProps & {
-    InputProps: {
-      'aria-describedby': string | null;
-    };
+    inputProps: React.HTMLAttributes<HTMLInputElement>;
   }
 >`
   color: ${props => props.theme.palette.text.tertiary};
@@ -87,6 +85,9 @@ interface RadioGroupProps {
   tooltipKey?: string;
   tooltip?: string;
   helperText?: string;
+  id?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
+  inputProps?: React.HTMLAttributes<HTMLInputElement>;
 }
 
 export const RadioGroup = ({
@@ -101,8 +102,17 @@ export const RadioGroup = ({
   tooltipKey = 'tooltip',
   tooltip,
   helperText,
+  id,
+  inputRef,
+  inputProps,
 }: RadioGroupProps) => (
-  <FormControl component="fieldset" className={className} color="primary">
+  <FormControl
+    component="fieldset"
+    className={className}
+    color="primary"
+    inputRef={inputRef}
+    id={id}
+  >
     <InputLabel as={Legend} label={label} tooltip={tooltip} />
     {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
     <StyledRadioGroup name={name} value={value} onChange={onChange}>
@@ -110,8 +120,9 @@ export const RadioGroup = ({
         <FormControlLabel
           control={
             <Radio
-              InputProps={{
-                'aria-describedby': helperText ? `${name}-helperText` : null,
+              inputProps={{
+                'aria-describedby': helperText ? `${name}-helperText` : undefined,
+                ...(inputProps || {}),
               }}
             />
           }
