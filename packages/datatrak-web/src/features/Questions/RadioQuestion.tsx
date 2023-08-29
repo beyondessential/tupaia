@@ -52,11 +52,20 @@ const StyledRadioGroup = styled(RadioGroup)`
 `;
 
 // Some options are returned as stringified JSON, so we need to parse them
-const parseOption = (option: string) => {
+const parseOption = (option: SurveyQuestionInputProps['options'][0]) => {
   try {
     const parsedOption = JSON.parse(option);
+    if (!parsedOption.value) {
+      // Valid JSON but not a valid option object, e.g. '50'
+      throw new Error('Options defined as an object must contain the value key at minimum');
+    }
     return parsedOption;
   } catch (e) {
+    if (typeof option === 'string')
+      return {
+        label: option,
+        value: option,
+      };
     return option;
   }
 };
