@@ -11,18 +11,22 @@ import { Dashboard } from '../../types';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
+  align-items: center;
   justify-content: flex-start;
-  align-items: flex-end;
   background-color: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
   padding: 1rem 2rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.4;
+
+  .MuiSvgIcon-root {
+    margin-left: 0.5rem;
+  }
 `;
 
 const ItemButton = styled(Menu)`
-  margin: 0 auto;
-  margin-top: 3.125rem;
-  margin-left: 2rem;
+  margin: 3.125rem auto 0 2rem;
 
   .MuiPaper-root {
     background: ${({ theme }) => theme.palette.background.default};

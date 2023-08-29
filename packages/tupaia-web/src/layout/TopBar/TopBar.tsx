@@ -30,8 +30,7 @@ const Header = styled.header<{
   z-index: 1000;
   position: relative;
   padding: 0 0.625em;
-
-  border-bottom: 1px solid #202124;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.background.paper};
 
   > * {
     background-color: ${({ theme }) => theme.palette.background.default};
@@ -47,7 +46,6 @@ const Header = styled.header<{
     height: ${TOP_BAR_HEIGHT};
     min-height: ${TOP_BAR_HEIGHT};
     align-items: initial;
-    border-bottom: 1px solid rgba(151, 151, 151, 0.3);
   }
 `;
 

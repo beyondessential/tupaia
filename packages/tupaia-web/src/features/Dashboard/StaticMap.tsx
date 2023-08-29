@@ -61,7 +61,7 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
 
   const zoomLevel = longitude === 180 ? 1 : 2;
 
-  return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
+  return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false&logo=false`;
 };
 
 export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
@@ -70,5 +70,5 @@ export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
   }
 
   const url = makeStaticMapUrl(bounds);
-  return <Media $backgroundImage={url}/>;
+  return <Media $backgroundImage={url} />;
 };
