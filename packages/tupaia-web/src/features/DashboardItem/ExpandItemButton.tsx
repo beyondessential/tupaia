@@ -51,11 +51,9 @@ const ExpandButtonText = styled.span`
 `;
 
 const ZoomInIcon = styled(MuiZoomIcon)`
-  margin-right: 1rem;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: 1.5rem;
     height: 1.5rem;
-    margin-right: 0;
   }
 `;
 
@@ -99,8 +97,7 @@ export const ExpandItemButton = () => {
   const text = getText();
 
   return (
-    <ExpandableButton onClick={handleExpandDashboardItem}>
-      <ZoomInIcon />
+    <ExpandableButton onClick={handleExpandDashboardItem} startIcon={<ZoomInIcon />}>
       <ExpandButtonText>{text}</ExpandButtonText>
     </ExpandableButton>
   );
