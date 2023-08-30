@@ -59,7 +59,7 @@ const ExpandButton = styled(Button).attrs({
 }>`
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   text-transform: none;
-  color: ${({ theme }) => theme.palette.common.white};
+  color: ${({ theme }) => theme.palette.text.primary};
   border-color: ${({ theme }) => theme.palette.common.white};
   padding: 0.3rem;
   width: 100%;
