@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import { createMuiTheme } from '@material-ui/core';
 
 export const theme = createMuiTheme(
@@ -16,7 +21,37 @@ export const theme = createMuiTheme(
       },
       text: {
         primary: '#333333', // dark text color
-        secondary: '#4A79EA', // purple text for secondary buttons etc
+        secondary: '#B8B8B8', // light grey text color
+      },
+      divider: '#DFDFDF',
+    },
+    overrides: {
+      MuiDialogActions: {
+        root: {
+          padding: '1.5rem 0 0 0',
+        },
+      },
+      MuiButton: {
+        root: {
+          textTransform: 'none',
+        },
+        label: {
+          fontSize: '1rem',
+        },
+      },
+      MuiTypography: {
+        h1: {
+          fontSize: '1.125rem', // page titles
+          fontWeight: 500,
+        },
+        h2: {
+          fontSize: '1.125rem', // survey page titles
+        },
+      },
+      MuiPaper: {
+        root: {
+          padding: '2rem 3rem',
+        },
       },
     },
   },
