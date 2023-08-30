@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactNode } from 'react';
-import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery } from '@material-ui/core';
+import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery, IconButton } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
-import { IconButton } from '@tupaia/ui-components';
 
 interface ModalProps {
   children?: ReactNode;
@@ -26,16 +25,10 @@ const Wrapper = styled.div`
   pointer-events: auto;
 `;
 
-const CloseIcon = styled(MuiCloseIcon)`
-  width: 2rem;
-  height: 2rem;
-  pointer-events: auto;
-`;
-
 const CloseButton = styled(IconButton)`
   position: absolute;
   top: 0.1rem;
-  right: 0.1rem;
+  right: 0.2rem;
   z-index: 1;
 `;
 
@@ -64,8 +57,8 @@ export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
       className={className}
       disablePortal
     >
-      <CloseButton onClick={onClose} color="default">
-        <CloseIcon />
+      <CloseButton onClick={onClose}>
+        <MuiCloseIcon />
       </CloseButton>
       <Wrapper id="overlay-wrapper">{children}</Wrapper>
     </Dialog>

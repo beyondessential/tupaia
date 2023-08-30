@@ -38,10 +38,7 @@ const Title = styled(Typography).attrs({
   text-align: center;
   margin: 0;
   line-height: 1.4;
-  padding-top: 1.5rem; // to account for buttons on modal at smaller screens overlapping title text
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    padding-top: 0;
-  }
+  padding: 1.5rem 1.5rem 0; // to account for buttons on modal at smaller screens overlapping title text
 `;
 
 const TitleWrapper = styled(FlexColumn)`
