@@ -37,6 +37,7 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
+
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) => ($isExpanded ? 50 : 25)}%;
     height: 100%;
@@ -54,15 +55,29 @@ const ScrollBody = styled.div`
   }
 `;
 
-const TitleBar = styled.div`
+const StickyBar = styled.div<{
+  $isExpanded: boolean;
+}>`
   position: sticky;
   top: 0;
+  z-index: 1;
+
+  h3 {
+    padding-left: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '0rem')};
+  }
+
+  > .MuiButtonBase-root {
+    padding-left: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '1.2rem')};
+  }
+`;
+
+const TitleBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
-  z-index: 1;
+
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -72,7 +87,6 @@ const ExportButton = styled(Button).attrs({
   variant: 'outlined',
 })`
   font-size: 0.6875rem;
-  margin: 0 1rem;
 `;
 
 const Title = styled(Typography)`
@@ -80,7 +94,6 @@ const Title = styled(Typography)`
   font-weight: 400;
   font-size: 1.625rem;
   line-height: 1.4;
-  padding: 0 1rem;
 `;
 
 const DashboardItemsWrapper = styled.div<{
@@ -181,15 +194,17 @@ export const Dashboard = () => {
               <StaticMap bounds={bounds} />
             )}
           </DashboardImageContainer>
-          <TitleBar>
-            <Title variant="h3">{entity?.name}</Title>
-            {activeDashboard && (
-              <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-                Export
-              </ExportButton>
-            )}
-          </TitleBar>
-          <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          <StickyBar $isExpanded={isExpanded}>
+            <TitleBar>
+              <Title variant="h3">{entity?.name}</Title>
+              {activeDashboard && (
+                <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
+                  Export
+                </ExportButton>
+              )}
+            </TitleBar>
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />

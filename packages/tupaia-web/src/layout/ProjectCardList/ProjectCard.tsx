@@ -151,7 +151,7 @@ export const ProjectPendingLink = () => (
 
 export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
   <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
-    View Project
+    View project
   </BaseLink>
 );
 
