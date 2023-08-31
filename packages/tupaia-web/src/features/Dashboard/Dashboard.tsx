@@ -9,7 +9,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
-import { ErrorBoundary } from '@tupaia/ui-components';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
@@ -210,6 +210,7 @@ export const Dashboard = () => {
             <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
+            {isLoadingDashboards && <SpinningLoader mt={5} />}
             {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
             ))}
