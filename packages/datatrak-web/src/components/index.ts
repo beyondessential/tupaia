@@ -5,4 +5,5 @@
 
 export { PageContainer } from './PageContainer';
 export { ButtonLink } from './ButtonLink';
+export { TopProgressBar } from './TopProgressBar';
 export * from './SelectList';

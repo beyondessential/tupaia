@@ -13,6 +13,7 @@ import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
+import { TopProgressBar } from '../../components';
 
 const Container = styled.div`
   display: flex;
@@ -99,6 +100,7 @@ export const SurveyScreen = () => {
     screenNumber,
     displayQuestions,
     screenHeader,
+    screenNumber,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
@@ -131,66 +133,72 @@ export const SurveyScreen = () => {
   });
 
   return (
-    <Container>
-      <SideMenu />
-      <Paper>
-        <FormProvider {...formContext}>
-          <StyledForm onSubmit={onStepForward} noValidate>
-            <FormScrollBody>
-              <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
-              {displayQuestions.map(
-                ({
-                  questionId,
-                  questionCode,
-                  questionText,
-                  questionType,
-                  questionOptions,
-                  config,
-                  questionLabel,
-                  validationCriteria,
-                  detailLabel,
-                  questionOptionSetId,
-                  questionNumber,
-                }) => {
-                  if (validationCriteria?.mandatory === true) {
-                    console.log('mandatory question', questionCode);
-                  }
-                  return (
-                    <QuestionWrapper
-                      key={questionId}
-                      $isInstruction={questionType === 'Instruction'}
-                    >
-                      {questionNumber && (
-                        <QuestionNumber id={`question_number_${questionId}`}>
-                          {questionNumber}
-                        </QuestionNumber>
-                      )}
-                      <SurveyQuestion
-                        detailLabel={detailLabel}
-                        id={questionId}
-                        code={questionCode}
-                        name={questionCode}
-                        type={questionType}
-                        text={detailLabel || questionText}
-                        options={questionOptions}
-                        config={config}
-                        label={questionLabel || questionText}
-                        optionSetId={questionOptionSetId}
-                      />
-                    </QuestionWrapper>
-                  );
-                },
-              )}
-            </FormScrollBody>
-            <FormActions>
-              <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
-                Back
-              </MuiButton>
-              <Button type="submit">Next</Button>
-            </FormActions>
-          </StyledForm>
-        </FormProvider>
-      </Paper>
-    </Container>
+    <>
+      <TopProgressBar
+        currentSurveyQuestion={screenNumber}
+        totalNumberOfSurveyQuestions={numberOfScreens}
+      />
+      <Container>
+        <SideMenu />
+        <Paper>
+          <FormProvider {...formContext}>
+            <StyledForm onSubmit={onStepForward} noValidate>
+              <FormScrollBody>
+                <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
+                {displayQuestions.map(
+                  ({
+                    questionId,
+                    questionCode,
+                    questionText,
+                    questionType,
+                    questionOptions,
+                    config,
+                    questionLabel,
+                    validationCriteria,
+                    detailLabel,
+                    questionOptionSetId,
+                    questionNumber,
+                  }) => {
+                    if (validationCriteria?.mandatory === true) {
+                      console.log('mandatory question', questionCode);
+                    }
+                    return (
+                      <QuestionWrapper
+                        key={questionId}
+                        $isInstruction={questionType === 'Instruction'}
+                      >
+                        {questionNumber && (
+                          <QuestionNumber id={`question_number_${questionId}`}>
+                            {questionNumber}
+                          </QuestionNumber>
+                        )}
+                        <SurveyQuestion
+                          detailLabel={detailLabel}
+                          id={questionId}
+                          code={questionCode}
+                          name={questionCode}
+                          type={questionType}
+                          text={detailLabel || questionText}
+                          options={questionOptions}
+                          config={config}
+                          label={questionLabel || questionText}
+                          optionSetId={questionOptionSetId}
+                        />
+                      </QuestionWrapper>
+                    );
+                  },
+                )}
+              </FormScrollBody>
+              <FormActions>
+                <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
+                  Back
+                </MuiButton>
+                <Button type="submit">Next</Button>
+              </FormActions>
+            </StyledForm>
+          </FormProvider>
+        </Paper>
+      </Container>
+    </>
   );
 };
