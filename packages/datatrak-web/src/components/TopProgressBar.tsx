@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -19,7 +19,7 @@ const ProgressBar = styled.div<{
 `;
 
 interface ProgressPercentage {
-  currentSurveyQuestion: number;
+  currentSurveyQuestion: string | undefined;
   totalNumberOfSurveyQuestions: number;
 }
 
@@ -27,7 +27,7 @@ export const TopProgressBar = ({
   currentSurveyQuestion,
   totalNumberOfSurveyQuestions,
 }: ProgressPercentage) => {
-  const fraction = (currentSurveyQuestion / totalNumberOfSurveyQuestions) * 100;
+  const fraction = (Number(currentSurveyQuestion) / totalNumberOfSurveyQuestions) * 100;
 
   return (
     <Wrapper>
