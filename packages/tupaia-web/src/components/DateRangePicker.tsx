@@ -61,6 +61,7 @@ const ResetButton = styled(TextButton)`
 `;
 
 const DialogPaperComponent = styled.div`
+  border-radius: 3px;
   h3 {
     font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   }
@@ -75,6 +76,10 @@ const DialogPaperComponent = styled.div`
   }
   button {
     text-transform: none;
+  }
+  .MuiButton-outlined {
+    border-color: ${({ theme }) => theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 
