@@ -19,17 +19,16 @@ export const CheckboxQuestion = ({
   id,
   label,
   name,
-  controllerProps,
+  controllerProps: { value, onChange },
 }: SurveyQuestionInputProps) => {
   return (
     <Checkbox
-      {...controllerProps}
       value="Yes"
       label={label}
       id={id}
       name={name!}
-      checked={controllerProps.value === 'Yes'}
-      onChange={e => controllerProps.onChange(e.target.checked ? 'Yes' : 'No')}
+      checked={value === 'Yes'}
+      onChange={e => onChange(e.target.checked ? 'Yes' : 'No')}
     />
   );
 };

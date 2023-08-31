@@ -28,7 +28,7 @@ export const TextQuestion = ({
   name,
   inputRef,
   type,
-  controllerProps,
+  controllerProps: { onChange, value },
 }: SurveyQuestionInputProps) => {
   return (
     <Label
@@ -36,7 +36,8 @@ export const TextQuestion = ({
       name={name!}
       labelPlacement={'top'}
       inputRef={inputRef}
-      {...controllerProps}
+      onChange={onChange}
+      value={value}
       control={
         <TextField
           id={id}

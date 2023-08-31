@@ -59,18 +59,18 @@ export const RadioQuestion = ({
   name,
   inputRef,
   options,
-  controllerProps,
+  controllerProps: { onChange, value },
 }: SurveyQuestionInputProps) => {
   // This is a controlled component because value and onChange are required props
   return (
     <StyledRadioGroup
-      {...controllerProps}
+      onChange={onChange}
       id={id}
       label={label}
       name={name!}
       inputRef={inputRef}
       options={options || []}
-      value={controllerProps.value || ''}
+      value={value || ''}
       inputProps={{
         ['aria-describedby']: `question_number_${id}`,
       }}

@@ -5,7 +5,6 @@
 // @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
-import { TextField } from '@tupaia/ui-components';
 import { useFormContext, Controller } from 'react-hook-form';
 import {
   BinaryQuestion,
@@ -18,7 +17,6 @@ import {
 } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
-// Todo: Replace with actual form components in WAITP-1345
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
   background: lightgrey;
@@ -57,7 +55,7 @@ export enum QUESTION_TYPES {
 }
 
 export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProps) => {
-  const { register, control } = useFormContext();
+  const { control } = useFormContext();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
@@ -70,9 +68,14 @@ export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProp
       name={name!}
       control={control}
       render={renderProps => (
-        <FieldComponent {...props} controllerProps={renderProps} name={name} type={type} />
+        <FieldComponent
+          {...props}
+          controllerProps={renderProps}
+          name={name}
+          type={type}
+          ref={renderProps.ref}
+        />
       )}
-      inputRef={register()}
     />
   );
 };
