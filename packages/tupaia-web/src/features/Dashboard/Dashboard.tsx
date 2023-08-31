@@ -25,8 +25,9 @@ import { gaEvent, getDefaultDashboard } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
-const MIN_SIDEBAR_WIDTH = 350;
+const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
+const MIN_SIDEBAR_WIDTH = 360;
+const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -39,9 +40,10 @@ const Panel = styled.div<{
   min-height: 100%;
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 50 : 25)}%;
+    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
     height: 100%;
-    min-width: ${MIN_SIDEBAR_WIDTH}px;
+    min-width: ${({ $isExpanded }) =>
+      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
       $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
   }
