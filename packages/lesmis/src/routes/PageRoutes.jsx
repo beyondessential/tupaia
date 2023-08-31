@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { AdminPanelDataProviders } from '@tupaia/admin-panel';
-import { NavBar, Footer, FullPageLoader } from '../components';
+import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
 import { PageView, TwoColumnPageView } from '../views/PageView';
@@ -31,65 +31,63 @@ export const PageRoutes = React.memo(() => {
   const { path } = useRouteMatch();
 
   return (
-    <Suspense fallback={<FullPageLoader />}>
-      <Switch>
-        <Route exact path={`${path}/`}>
-          <NavBar hideSearch />
-          <HomeView />
-        </Route>
-        <Route path={`${path}/login`}>
-          <LoginView />
-        </Route>
-        <Route path={`${path}/verify-email`}>
-          <VerifyEmailView />
-        </Route>
-        <Route path={`${path}/register`}>
-          <RegisterView />
-        </Route>
-        <Route path={`${path}/profile`}>
-          <NavBar />
-          <ProfileView />
+    <Switch>
+      <Route exact path={`${path}/`}>
+        <NavBar hideSearch />
+        <HomeView />
+      </Route>
+      <Route path={`${path}/login`}>
+        <LoginView />
+      </Route>
+      <Route path={`${path}/verify-email`}>
+        <VerifyEmailView />
+      </Route>
+      <Route path={`${path}/register`}>
+        <RegisterView />
+      </Route>
+      <Route path={`${path}/profile`}>
+        <NavBar />
+        <ProfileView />
+        <Footer />
+      </Route>
+      <Route path={`${path}/admin`}>
+        <AdminPanelDataProviders config={adminPanelConfig}>
+          <AdminPanel />
           <Footer />
-        </Route>
-        <Route path={`${path}/admin`}>
-          <AdminPanelDataProviders config={adminPanelConfig}>
-            <AdminPanel />
-            <Footer />
-          </AdminPanelDataProviders>
-        </Route>
-        <Route path={`${path}/about`}>
-          <NavBar />
-          <PageView content={ABOUT_PAGE} />
-          <Footer />
-        </Route>
-        <Route path={`${path}/fundamental-quality-standards`}>
-          <NavBar />
-          <TwoColumnPageView content={FQS_PAGE} />
-          <Footer />
-        </Route>
-        <Route path={`${path}/contact`}>
-          <NavBar />
-          <PageView content={CONTACT_PAGE} />
-          <Footer />
-        </Route>
-        <Route path={`${path}/page-not-found`}>
-          <NavBar />
-          <NotFoundView />
-          <Footer />
-        </Route>
-        <Route path={`${path}/not-authorised`}>
-          <NavBar />
-          <NotAuthorisedView />
-          <Footer />
-        </Route>
-        <Route path={`${path}/pdf-export/:entityCode?`}>
-          <ExportView viewType={PDF_DOWNLOAD_VIEW} />
-        </Route>
-        <Route path={`${path}/:entityCode/:view?`}>
-          <NavBar />
-          <EntityView />
-        </Route>
-      </Switch>
-    </Suspense>
+        </AdminPanelDataProviders>
+      </Route>
+      <Route path={`${path}/about`}>
+        <NavBar />
+        <PageView content={ABOUT_PAGE} />
+        <Footer />
+      </Route>
+      <Route path={`${path}/fundamental-quality-standards`}>
+        <NavBar />
+        <TwoColumnPageView content={FQS_PAGE} />
+        <Footer />
+      </Route>
+      <Route path={`${path}/contact`}>
+        <NavBar />
+        <PageView content={CONTACT_PAGE} />
+        <Footer />
+      </Route>
+      <Route path={`${path}/page-not-found`}>
+        <NavBar />
+        <NotFoundView />
+        <Footer />
+      </Route>
+      <Route path={`${path}/not-authorised`}>
+        <NavBar />
+        <NotAuthorisedView />
+        <Footer />
+      </Route>
+      <Route path={`${path}/pdf-export/:entityCode?`}>
+        <ExportView viewType={PDF_DOWNLOAD_VIEW} />
+      </Route>
+      <Route path={`${path}/:entityCode/:view?`}>
+        <NavBar />
+        <EntityView />
+      </Route>
+    </Switch>
   );
 });
