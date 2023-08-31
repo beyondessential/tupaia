@@ -127,7 +127,7 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
     if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
       return valueTranslation[questionId][answer]; // return translated answer if there's any
     }
-    if (answer !== undefined) {
+    if (answer !== undefined && answer !== null) {
       return answer; // return raw answer
     }
 
