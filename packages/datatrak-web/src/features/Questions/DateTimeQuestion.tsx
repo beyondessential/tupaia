@@ -4,11 +4,10 @@
  */
 
 import React from 'react';
-import { DateTimePicker as BaseDateTimePicker } from '@tupaia/ui-components';
-import { SurveyQuestionInputProps } from '../../types';
-import { useFormContext, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
+import { DateTimePicker as BaseDateTimePicker } from '@tupaia/ui-components';
+import { SurveyQuestionInputProps } from '../../types';
 
 const DateTimePicker = styled(BaseDateTimePicker).attrs({
   InputAdornmentProps: {
