@@ -125,8 +125,6 @@ export const SurveyScreen = () => {
     handleStep(path, data);
   });
 
-  console.log(displayQuestions);
-
   return (
     <Container>
       <SideMenu />
@@ -146,6 +144,7 @@ export const SurveyScreen = () => {
                   questionLabel,
                   validationCriteria,
                   detailLabel,
+                  questionOptionSetId,
                 }) => {
                   if (validationCriteria?.mandatory === true) {
                     console.log('mandatory question', questionCode);
@@ -165,6 +164,7 @@ export const SurveyScreen = () => {
                         options={questionOptions}
                         config={config}
                         label={questionLabel || questionText}
+                        optionSetId={questionOptionSetId}
                       />
                     </QuestionWrapper>
                   );

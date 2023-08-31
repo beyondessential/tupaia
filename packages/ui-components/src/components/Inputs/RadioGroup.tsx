@@ -75,9 +75,7 @@ interface RadioGroupProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   value: string | boolean;
   name: string;
-  options: {
-    [key: string]: string;
-  }[];
+  options: Record<string, any>[];
   label?: string;
   className?: string;
   labelKey?: string;

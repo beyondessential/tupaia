@@ -16,10 +16,14 @@ const Wrapper = styled.div`
   .MuiTypography-root.MuiFormControlLabel-label {
     font-size: 0.8125rem;
   }
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+  .MuiPaper-root {
+    height: 100%;
+    padding: 1rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     .MuiPaper-root {
-      height: 100%;
-      padding: 1rem;
+      height: auto;
+      padding: 2rem 3rem;
     }
   }
 `;

@@ -22,13 +22,21 @@ enum FIELD_TYPES {
   Number = 'number',
 }
 
-export const TextQuestion = ({ id, label, name, inputRef, type }: SurveyQuestionInputProps) => {
+export const TextQuestion = ({
+  id,
+  label,
+  name,
+  inputRef,
+  type,
+  ...props
+}: SurveyQuestionInputProps) => {
   return (
     <Label
       label={label}
-      name={name}
+      name={name!}
       labelPlacement={'top'}
       inputRef={inputRef}
+      {...props}
       control={
         <TextField
           id={id}

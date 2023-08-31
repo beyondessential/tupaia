@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, Controller } from 'react-hook-form';
 import {
   BinaryQuestion,
   DateQuestion,
@@ -51,7 +51,7 @@ export enum QUESTION_TYPES {
   MonthsSince = Placeholder,
   YearsSince = Placeholder,
   SubmissionDate = DateQuestion,
-  DateOfData = Placeholder,
+  DateOfData = DateQuestion,
   Entity = Placeholder,
   PrimaryEntity = Placeholder,
   CodeGenerator = Placeholder,
@@ -60,12 +60,19 @@ export enum QUESTION_TYPES {
 }
 
 export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProps) => {
-  const { register } = useFormContext();
+  const { register, control } = useFormContext();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
     return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
-  return <FieldComponent {...props} name={name} type={type} inputRef={register()} />;
+  return (
+    <Controller
+      name={name!}
+      control={control}
+      render={renderProps => <FieldComponent {...props} {...renderProps} />}
+      inputRef={register()}
+    />
+  );
 };

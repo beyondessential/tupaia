@@ -6,7 +6,10 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
-import { DatatrakWebSurveyScreenComponentsRequest as ScreenComponentsRequest } from '@tupaia/types';
+import {
+  KeysToCamelCase,
+  DatatrakWebSurveyScreenComponentsRequest as ScreenComponentsRequest,
+} from '@tupaia/types';
 
 export type SurveyScreenComponentsRequest = Request<
   ScreenComponentsRequest.Params,
@@ -14,6 +17,26 @@ export type SurveyScreenComponentsRequest = Request<
   ScreenComponentsRequest.ReqBody,
   ScreenComponentsRequest.ReqQuery
 >;
+
+type SurveyScreenComponent = KeysToCamelCase<ScreenComponentsRequest.InitialResponse>;
+
+const parseOption = (option: string) => {
+  try {
+    const parsedOption = JSON.parse(option!);
+    if (!parsedOption.value) {
+      // Valid JSON but not a valid option object, e.g. '50'
+      throw new Error('Options defined as an object must contain the value key at minimum');
+    }
+    return parsedOption;
+  } catch (e) {
+    if (typeof option === 'string')
+      return {
+        label: option,
+        value: option,
+      };
+    return option;
+  }
+};
 
 export class SurveyScreenComponentsRoute extends Route<SurveyScreenComponentsRequest> {
   public async buildResponse() {
@@ -46,12 +69,33 @@ export class SurveyScreenComponentsRoute extends Route<SurveyScreenComponentsReq
       'question.type',
       'question.options',
       'survey_screen.screen_number',
+      'question.option_set_id',
     ];
 
-    return camelcaseKeys(
+    const results = camelcaseKeys(
       await ctx.services.central.fetchResources(`surveys/${survey.id}/surveyScreenComponents`, {
         columns,
       }),
     );
+    const STRINGIFIED_FIELDS = [
+      'config',
+      'validationCriteria',
+      'visibilityCriteria',
+    ] as (keyof SurveyScreenComponent)[];
+
+    return results.map((result: SurveyScreenComponent) => {
+      const parsedResult: any = { ...result };
+      STRINGIFIED_FIELDS.forEach(field => {
+        if (parsedResult[field]) {
+          parsedResult[field] = JSON.parse(parsedResult[field] as string);
+        }
+      });
+      if (parsedResult.questionOptions) {
+        parsedResult.questionOptions = parsedResult.questionOptions.map((option: string) => {
+          return parseOption(option);
+        });
+      }
+      return parsedResult;
+    });
   }
 }

@@ -16,7 +16,7 @@ type SurveyFormContextType = {
   isLast: boolean;
   numberOfScreens: number;
   screenNumber: number;
-  screenHeader: string;
+  screenHeader?: string;
   displayQuestions: SurveyScreenComponent[];
 };
 

@@ -47,15 +47,5 @@ export const theme = createMuiTheme({
         fontSize: '1.125rem', // survey page titles
       },
     },
-    MuiPaper: {
-      root: {
-        padding: '2rem 3rem',
-      },
-    },
-    MuiDialog: {
-      paper: {
-        padding: 0, // reset datepicker modal padding
-      },
-    },
   },
 });

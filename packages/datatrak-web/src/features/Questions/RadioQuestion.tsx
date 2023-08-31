@@ -53,39 +53,23 @@ const StyledRadioGroup = styled(RadioGroup)`
   }
 `;
 
-// Some options are returned as stringified JSON, so we need to parse them
-const parseOption = (option: SurveyQuestionInputProps['options'][0]) => {
-  try {
-    const parsedOption = JSON.parse(option);
-    if (!parsedOption.value) {
-      // Valid JSON but not a valid option object, e.g. '50'
-      throw new Error('Options defined as an object must contain the value key at minimum');
-    }
-    return parsedOption;
-  } catch (e) {
-    if (typeof option === 'string')
-      return {
-        label: option,
-        value: option,
-      };
-    return option;
-  }
-};
 export const RadioQuestion = ({
   id,
   label,
   name,
   inputRef,
-  options = [],
+  options,
+  ...controllerProps
 }: SurveyQuestionInputProps) => {
-  const formattedOptions = options.map(option => parseOption(option));
+  // This is a controlled component because value and onChange are required props
   return (
     <StyledRadioGroup
+      {...controllerProps}
       id={id}
       label={label}
-      name={name}
+      name={name!}
       inputRef={inputRef}
-      options={formattedOptions}
+      options={options || []}
       inputProps={{
         ['aria-describedby']: `question_number_${id}`,
       }}

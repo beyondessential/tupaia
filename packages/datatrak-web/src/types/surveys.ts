@@ -4,6 +4,7 @@
  */
 import { Ref } from 'react';
 import { DatatrakWebSurveysRequest, DatatrakWebSurveyScreenComponentsRequest } from '@tupaia/types';
+import { ControllerRenderProps } from 'react-hook-form';
 export type Survey = DatatrakWebSurveysRequest.ResBody[number];
 
 export type SurveyScreenComponent = DatatrakWebSurveyScreenComponentsRequest.ResBody[number] & {
@@ -19,22 +20,17 @@ export type SurveyParams = {
 
 export type SurveyQuestionFieldProps = {
   id: string;
-  name: string;
+  name: SurveyScreenComponent['questionCode'];
   label?: string;
-  code?: string;
+  code?: SurveyScreenComponent['questionCode'];
   text?: string;
   config?: any;
   type?: string;
-  detailLabel?: string;
-  options?: (
-    | string
-    | {
-        value: string;
-        label: string;
-      }
-  )[];
+  detailLabel?: string | null;
+  options?: SurveyScreenComponent['questionOptions'];
+  optionSetId?: SurveyScreenComponent['questionOptionSetId'];
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
   inputRef: Ref<HTMLInputElement>;
-};
+} & ControllerRenderProps;
