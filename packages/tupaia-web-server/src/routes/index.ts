@@ -25,3 +25,7 @@ export {
   RequestCountryAccessRequest,
   RequestCountryAccessRoute,
 } from './RequestCountryAccessRoute';
+export {
+  ExportSurveyResponsesRequest,
+  ExportSurveyResponsesRoute,
+} from './ExportSurveyResponsesRoute';

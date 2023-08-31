@@ -67,6 +67,10 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'entityAncestors/:projectCode/:rootEntityCode',
       handleWith(routes.EntityAncestorsRoute),
     )
+    .get<routes.ExportSurveyResponsesRequest>(
+      'export/surveyResponses',
+      handleWith(routes.ExportSurveyResponsesRoute),
+    )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
