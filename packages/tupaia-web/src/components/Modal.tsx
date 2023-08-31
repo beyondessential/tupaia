@@ -14,17 +14,6 @@ interface ModalProps {
   className?: string;
 }
 
-const Wrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  overflow-x: hidden;
-  padding: 1.2rem;
-  pointer-events: auto;
-`;
-
 const CloseButton = styled(IconButton)`
   position: absolute;
   top: 0.1rem;
@@ -33,6 +22,14 @@ const CloseButton = styled(IconButton)`
 `;
 
 const Paper = styled(MuiPaper)`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow-x: hidden;
+  padding: 1.2rem;
+  pointer-events: auto;
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.9);
@@ -60,7 +57,7 @@ export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
       <CloseButton onClick={onClose}>
         <MuiCloseIcon />
       </CloseButton>
-      <Wrapper id="overlay-wrapper">{children}</Wrapper>
+      {children}
     </Dialog>
   );
 };
