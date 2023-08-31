@@ -15,6 +15,7 @@ import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
 import { QRCode } from './QRCode';
 import { DashboardItemContext } from '../../DashboardItem';
+import { DashboardInfoHover } from '../../DashboardItem';
 
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
@@ -95,13 +96,16 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
 
   const formattedData = formatData(data, viewConfig);
   return (
-    <Component
-      report={{
-        ...report,
-        data: formattedData,
-      }}
-      config={viewConfig}
-      isEnlarged={isEnlarged}
-    />
+    <>
+      <Component
+        report={{
+          ...report,
+          data: formattedData,
+        }}
+        config={viewConfig}
+        isEnlarged={isEnlarged}
+      />
+      <DashboardInfoHover infoText={viewConfig.description} />
+    </>
   );
 };

@@ -49,8 +49,8 @@ const {
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
-export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web', { attachModels: true })
+export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
+  const app = new OrchestratorApiBuilder(db, 'tupaia-web', { attachModels: true })
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)

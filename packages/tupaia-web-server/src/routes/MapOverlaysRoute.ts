@@ -29,6 +29,8 @@ type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 
+const DEFAULT_PAGE_SIZE = 'ALL';
+
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
     const { query, params, ctx } = this.req;
@@ -49,7 +51,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           comparisonValue: [projectCode],
         },
       },
-      pageSize,
+      pageSize: pageSize || DEFAULT_PAGE_SIZE,
     });
 
     if (mapOverlays.length === 0) {
@@ -63,18 +65,19 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
 
     // Breaking orchestration server convention and accessing the db directly
     const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
-      mapOverlays.map((overlay: MapOverlay) => overlay.id),
+      mapOverlays
+        .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
+        .map((overlay: MapOverlay) => overlay.id),
     );
 
     // Fetch all the groups we've used
-    const mapOverlayGroups = await ctx.services.central.fetchResources('mapOverlayGroups', {
-      filter: {
-        id: mapOverlayRelations.map(
-          (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
-        ),
-      },
+    const overlayGroupIds: string[] = mapOverlayRelations.map(
+      (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
+    );
+    const uniqueGroupIds: string[] = [...new Set(overlayGroupIds)];
+    const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
+      id: uniqueGroupIds,
     });
-
     // Convert our multiple flat lists into a single nested object
     const nestOverlayGroups = (
       relationsByParentId: Record<string, MapOverlayGroupRelation[]>,
@@ -126,19 +129,16 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       (group: MapOverlayGroup) => group.code === ROOT_MAP_OVERLAY_CODE,
     );
 
-    const nestedGroups = nestOverlayGroups(
-      relationsByParentId,
-      groupsById,
-      overlaysById,
-      rootOverlayGroup,
-    );
+    const nestedGroups =
+      rootOverlayGroup &&
+      nestOverlayGroups(relationsByParentId, groupsById, overlaysById, rootOverlayGroup);
 
     return {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
       // Map overlays always exist beneath a group, so we know the first layer is only groups
-      mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
+      mapOverlays: (nestedGroups?.children as TranslatedMapOverlayGroup[]) || [],
     };
   }
 }

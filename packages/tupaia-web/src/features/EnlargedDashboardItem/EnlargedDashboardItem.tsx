@@ -21,12 +21,18 @@ import {
 } from './utils';
 import { ExportButton } from './ExportButton';
 
+const StyledModal = styled(Modal)`
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.palette.background.default};
+  }
+`;
+
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
 }>`
   max-width: 100%;
   min-width: ${({ $hasBigData }) => ($hasBigData ? '90vw' : 'auto')};
-  width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '48rem')};
+  width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '45rem')};
   min-height: 25rem;
   display: flex;
   flex-direction: column;
@@ -77,7 +83,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     ((reportData?.data?.length && reportData?.data?.length > 20) || type === 'matrix');
 
   return (
-    <Modal isOpen onClose={handleCloseModal}>
+    <StyledModal isOpen onClose={handleCloseModal}>
       <ExportContext.Provider value={exportConfig}>
         <ExportDispatchContext.Provider value={dispatch}>
           <ExportButton />
@@ -87,6 +93,6 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
           </Wrapper>
         </ExportDispatchContext.Provider>
       </ExportContext.Provider>
-    </Modal>
+    </StyledModal>
   );
 };

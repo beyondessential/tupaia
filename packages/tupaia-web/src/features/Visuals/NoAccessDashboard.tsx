@@ -17,6 +17,8 @@ const Text = styled(Typography)`
   text-align: center;
   margin: 0.3rem 0 1rem 0;
   line-height: 1.4;
+  display: flex;
+  flex-direction: column;
   & + & {
     color: ${({ theme }) => theme.palette.text.secondary};
   }
@@ -31,9 +33,10 @@ const RequestAccessButton = styled(RouterButton).attrs({
 `;
 
 export const NoAccessDashboard = () => {
-  const { entityCode } = useParams();
+  const { projectCode, entityCode } = useParams();
   const { isLoggedIn } = useUser();
-  const { data: entity } = useEntity(entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
+
   if (!entity) return null;
   const { type = '' } = entity;
   const displayType = type?.toLowerCase();
@@ -49,7 +52,9 @@ export const NoAccessDashboard = () => {
         {isProject ? 'at the project level view' : `for the selected ${displayType}`}
       </Text>
       <Text>
-        {isLoggedIn && ' If you believe you should be granted access to view this data, you may '}
+        {isLoggedIn && (
+          <span>If you believe you should be granted access to view this data, you may</span>
+        )}
         <RequestAccessButton modal={LINK.MODAL}>{LINK.TEXT}</RequestAccessButton>
       </Text>
     </>

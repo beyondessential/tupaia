@@ -32,7 +32,7 @@ const ResultsWrapper = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: ${({ theme }) => theme.palette.background.default};
+  background: ${({ theme }) => theme.palette.background.paper};
   padding: 0 0.3rem 0.625rem;
   width: calc(100% + 5px);
   border-radius: 8px;
@@ -44,6 +44,7 @@ const ResultsWrapper = styled.div`
     top: ${TOP_BAR_HEIGHT_MOBILE};
     left: 0;
     right: 0;
+    z-index: 1;
     min-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     max-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     border-radius: 0;

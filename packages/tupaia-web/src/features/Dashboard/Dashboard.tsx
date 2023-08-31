@@ -9,6 +9,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
@@ -21,29 +23,27 @@ import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
+
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
-const MIN_SIDEBAR_WIDTH = 335;
+const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
+const MIN_SIDEBAR_WIDTH = 360;
+const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
   position: relative;
-  background-color: ${({ theme }) => theme.panel.background};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   transition: width 0.3s ease, max-width 0.3s ease;
   width: 100%;
   overflow: visible;
   min-height: 100%;
-  .recharts-wrapper {
-    font-size: 1rem !important;
-  }
+
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) =>
-      $isExpanded
-        ? 50
-        : 25}%; // setting this to 100% when expanded takes up approx 50% of the screen, because the map is also set to 100%
+    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
     height: 100%;
-    min-width: ${MIN_SIDEBAR_WIDTH}px;
+    min-width: ${({ $isExpanded }) =>
+      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
       $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
   }
@@ -54,18 +54,34 @@ const ScrollBody = styled.div`
   height: 100%;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     overflow: auto;
+    // Fix issue where scroll bar appears and dis-appears repeatedly and flickers
+    margin-right: 3px;
+  }
+`;
+
+const StickyBar = styled.div<{
+  $isExpanded: boolean;
+}>`
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  h3 {
+    padding-left: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '0rem')};
+  }
+
+  > .MuiButtonBase-root {
+    padding-left: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '1.2rem')};
   }
 `;
 
 const TitleBar = styled.div`
-  position: sticky;
-  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.panel.background};
-  z-index: 1;
+  background-color: ${({ theme }) => theme.palette.background.default};
+
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -87,13 +103,14 @@ const Title = styled(Typography)`
 const DashboardItemsWrapper = styled.div<{
   $isExpanded: boolean;
 }>`
+  padding: ${({ $isExpanded }) => ($isExpanded ? '0 2rem' : '0')};
   display: ${({ $isExpanded }) =>
     $isExpanded
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
-  background-color: ${({ theme }) => theme.panel.secondaryBackground};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   grid-template-columns: repeat(2, 1fr);
-  column-gap: 0.5rem;
+  column-gap: 0.8rem;
 `;
 
 const DashboardImageContainer = styled.div`
@@ -152,39 +169,60 @@ export const Dashboard = () => {
     }
   }, [dashboardNotFound, defaultDashboardName]);
 
+  // Filter out drill down items from the dashboard items
+  const visibleDashboards =
+    (activeDashboard?.items as DashboardItemType[])?.reduce(
+      (items: DashboardItemType[], item: DashboardItemType) => {
+        const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
+          const { config } = dashboardItem as {
+            config: MatrixConfig;
+          };
+          if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
+          return false;
+        });
+        return isDrillDown ? items : [...items, item];
+      },
+      [],
+    ) ?? [];
+
   return (
-    <Panel $isExpanded={isExpanded}>
-      <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
-      <ScrollBody>
-        <Breadcrumbs />
-        <DashboardImageContainer>
-          {entity?.photoUrl ? (
-            <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
-          ) : (
-            <StaticMap bounds={bounds} />
-          )}
-        </DashboardImageContainer>
-        <TitleBar>
-          <Title variant="h3">{entity?.name}</Title>
-          {activeDashboard && (
-            <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-              Export
-            </ExportButton>
-          )}
-        </TitleBar>
-        <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
-        <DashboardItemsWrapper $isExpanded={isExpanded}>
-          {activeDashboard?.items.map(item => (
-            <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
-          ))}
-        </DashboardItemsWrapper>
-      </ScrollBody>
-      <EnlargedDashboardItem entityName={entity?.name} />
-      <ExportDashboard
-        isOpen={exportModalOpen}
-        onClose={() => setExportModalOpen(false)}
-        dashboardItems={activeDashboard?.items as DashboardItemType[]}
-      />
-    </Panel>
+    <ErrorBoundary>
+      <Panel $isExpanded={isExpanded}>
+        <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
+        <ScrollBody>
+          <Breadcrumbs />
+          <DashboardImageContainer>
+            {entity?.photoUrl ? (
+              <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+            ) : (
+              <StaticMap bounds={bounds} />
+            )}
+          </DashboardImageContainer>
+          <StickyBar $isExpanded={isExpanded}>
+            <TitleBar>
+              <Title variant="h3">{entity?.name}</Title>
+              {activeDashboard && (
+                <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
+                  Export
+                </ExportButton>
+              )}
+            </TitleBar>
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          </StickyBar>
+          <DashboardItemsWrapper $isExpanded={isExpanded}>
+            {isLoadingDashboards && <SpinningLoader mt={5} />}
+            {visibleDashboards?.map(item => (
+              <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
+            ))}
+          </DashboardItemsWrapper>
+        </ScrollBody>
+        <EnlargedDashboardItem entityName={entity?.name} />
+        <ExportDashboard
+          isOpen={exportModalOpen}
+          onClose={() => setExportModalOpen(false)}
+          dashboardItems={activeDashboard?.items as DashboardItemType[]}
+        />
+      </Panel>
+    </ErrorBoundary>
   );
 };
