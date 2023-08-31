@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import styled from 'styled-components'; 
+import styled from 'styled-components';
 import { Checkbox as BaseCheckbox } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 
@@ -19,8 +19,8 @@ export const CheckboxQuestion = ({
   id,
   label,
   name,
-  ...controllerProps
-}: SurveyQuestionInputProps) => { 
+  controllerProps,
+}: SurveyQuestionInputProps) => {
   return (
     <Checkbox
       {...controllerProps}

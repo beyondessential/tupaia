@@ -9,6 +9,10 @@ import { sortBy } from 'lodash';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
 
+const convertNumberToLetter = (number: number) => {
+  return String.fromCharCode(65 + number);
+};
+
 type SurveyFormContextType = {
   formData: { [key: string]: any };
   setFormData: (data: { [key: string]: any }) => void;
@@ -32,12 +36,23 @@ export const SurveyContext = ({ children }) => {
   const numberOfScreens = Object.keys(surveyScreenComponents).length;
   const isLast = screenNumber === numberOfScreens;
 
+  const nonInstructionQuestions = activeScreen.filter(
+    question => question.questionType !== 'Instruction',
+  );
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions =
-    activeScreen.length && activeScreen[0].questionType === 'Instruction'
-      ? activeScreen.slice(1)
-      : activeScreen;
+  const displayQuestions = (activeScreen.length && activeScreen[0].questionType === 'Instruction'
+    ? activeScreen.slice(1)
+    : activeScreen
+  ).map(question => {
+    const questionNumber = nonInstructionQuestions.findIndex(
+      nonInstructionQuestion => question.questionId === nonInstructionQuestion.questionId,
+    );
+    return {
+      ...question,
+      questionNumber: `${screenNumber}${convertNumberToLetter(questionNumber)}.`,
+    };
+  });
 
   return (
     <SurveyFormContext.Provider

@@ -37,16 +37,19 @@ const DateTimePicker = styled(BaseDateTimePicker).attrs({
   }
 `;
 
-export const DateTimeQuestion = ({ name, label, id, type }: SurveyQuestionInputProps) => {
-  const { control } = useFormContext();
-  // mui datepicker doesn't like uncontroller inputs, so a workaround for this is to use a controller from react-hook-form (https://react-hook-form.com/get-started#IntegratingwithUIlibraries)
+export const DateTimeQuestion = ({
+  name,
+  label,
+  id,
+  controllerProps,
+}: SurveyQuestionInputProps) => {
   return (
-    <Controller
+    <DateTimePicker
+      {...controllerProps}
+      inputRef={controllerProps.ref}
+      label={label}
+      id={id}
       name={name}
-      control={control}
-      render={renderProps => {
-        return <DateTimePicker {...renderProps} inputRef={renderProps.ref} label={label} id={id} />;
-      }}
     />
   );
 };

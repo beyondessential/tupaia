@@ -33,4 +33,5 @@ export type SurveyQuestionFieldProps = {
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
   inputRef: Ref<HTMLInputElement>;
-} & ControllerRenderProps;
+  controllerProps: ControllerRenderProps;
+};

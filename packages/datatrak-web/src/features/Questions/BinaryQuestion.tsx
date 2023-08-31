@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { SurveyQuestionInputProps } from '../../types';
-import { RadioQuestion } from '.';
+import { RadioQuestion } from './RadioQuestion';
 
 export const BinaryQuestion = ({ options = [], ...props }: SurveyQuestionInputProps) => {
   const questionOptions = options?.length

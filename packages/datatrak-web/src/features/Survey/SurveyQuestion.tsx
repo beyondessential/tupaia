@@ -47,9 +47,6 @@ export enum QUESTION_TYPES {
   Number = TextQuestion,
   Photo = Placeholder,
   Radio = RadioQuestion,
-  DaysSince = Placeholder,
-  MonthsSince = Placeholder,
-  YearsSince = Placeholder,
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
   Entity = Placeholder,
@@ -67,11 +64,14 @@ export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProp
     return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
+  // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
   return (
     <Controller
       name={name!}
       control={control}
-      render={renderProps => <FieldComponent {...props} {...renderProps} />}
+      render={renderProps => (
+        <FieldComponent {...props} controllerProps={renderProps} name={name} type={type} />
+      )}
       inputRef={register()}
     />
   );

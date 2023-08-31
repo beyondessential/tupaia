@@ -4,10 +4,10 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
 import { Button } from '@tupaia/ui-components';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
@@ -84,6 +84,11 @@ const QuestionWrapper = styled.div<{
   }
 `;
 
+const QuestionNumber = styled(Typography)`
+  width: 3.5rem;
+  text-transform: lowercase;
+`;
+
 export const SurveyScreen = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
@@ -145,6 +150,7 @@ export const SurveyScreen = () => {
                   validationCriteria,
                   detailLabel,
                   questionOptionSetId,
+                  questionNumber,
                 }) => {
                   if (validationCriteria?.mandatory === true) {
                     console.log('mandatory question', questionCode);
@@ -154,6 +160,11 @@ export const SurveyScreen = () => {
                       key={questionId}
                       $isInstruction={questionType === 'Instruction'}
                     >
+                      {questionNumber && (
+                        <QuestionNumber id={`question_number_${questionId}`}>
+                          {questionNumber}
+                        </QuestionNumber>
+                      )}
                       <SurveyQuestion
                         detailLabel={detailLabel}
                         id={questionId}
