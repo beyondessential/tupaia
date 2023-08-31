@@ -46,6 +46,20 @@ export const SurveyContext = ({ children }) => {
   const nonInstructionQuestions = activeScreen.filter(
     question => question.questionType !== 'Instruction',
   );
+
+  // for the purposes of displaying the screen number, we don't want to count screens that only have instructions
+  const screensWithQuestions = Object.values(surveyScreenComponents).filter(screen => {
+    const nonInstructionQuestions = screen.filter(
+      question => question.questionType !== 'Instruction',
+    );
+    return nonInstructionQuestions.length > 0;
+  });
+
+  const screenNumberToDisplay = activeScreen?.length
+    ? screensWithQuestions.findIndex(
+        screen => screen[0].questionId === activeScreen[0].questionId,
+      ) + 1
+    : -1;
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
   const displayQuestions = (activeScreen.length && activeScreen[0].questionType === 'Instruction'
@@ -58,7 +72,7 @@ export const SurveyContext = ({ children }) => {
     if (questionNumber === -1) return question;
     return {
       ...question,
-      questionNumber: `${screenNumber}${convertNumberToLetter(questionNumber)}.`,
+      questionNumber: `${screenNumberToDisplay}${convertNumberToLetter(questionNumber)}.`,
     };
   });
 

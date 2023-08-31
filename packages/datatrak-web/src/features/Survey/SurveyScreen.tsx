@@ -97,10 +97,10 @@ export const SurveyScreen = () => {
     setFormData,
     formData,
     isLast,
-    screenNumber,
     displayQuestions,
     screenHeader,
     screenNumber,
+    numberOfScreens,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
