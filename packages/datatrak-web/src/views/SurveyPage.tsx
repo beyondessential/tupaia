@@ -40,6 +40,7 @@ export const SurveyPage = () => {
     <SurveyContext>
       <Container>
         <Toolbar />
+
         {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
         <Outlet key={screenNumber} />
