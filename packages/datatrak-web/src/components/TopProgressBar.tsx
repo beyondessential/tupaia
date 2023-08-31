@@ -19,7 +19,7 @@ const ProgressBar = styled.div<{
 `;
 
 interface ProgressPercentage {
-  currentSurveyQuestion: string | undefined;
+  currentSurveyQuestion: number;
   totalNumberOfSurveyQuestions: number;
 }
 
@@ -27,7 +27,7 @@ export const TopProgressBar = ({
   currentSurveyQuestion,
   totalNumberOfSurveyQuestions,
 }: ProgressPercentage) => {
-  const fraction = (Number(currentSurveyQuestion) / totalNumberOfSurveyQuestions) * 100;
+  const fraction = (currentSurveyQuestion / totalNumberOfSurveyQuestions) * 100;
 
   return (
     <Wrapper>
