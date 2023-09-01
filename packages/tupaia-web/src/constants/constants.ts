@@ -6,8 +6,8 @@
 export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
 
 export const PROJECT_ACCESS_TYPES = {
-  PENDING: 'PENDING',
   ALLOWED: 'ALLOWED',
+  PENDING: 'PENDING',
   DENIED: 'DENIED',
 };
 

@@ -35,6 +35,11 @@ export {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ChartConfig,
+  MapOverlayConfig,
+  IconKey,
+  MeasureType,
+  ScaleType,
+  MeasureColorScheme,
 } from './models-extra';
 export * from './requests';
 export * from './css';

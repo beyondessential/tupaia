@@ -10,7 +10,7 @@ import Box from '@material-ui/core/Box';
 import { ColumnFilterContainer } from './ColumnFilter';
 import { RecursiveColumn } from './RecursiveColumn';
 import { Column } from './Column';
-import { useData } from '../../hooks/useData';
+import { useFetch } from '../../hooks';
 
 const Container = styled.div`
   display: flex;
@@ -36,46 +36,40 @@ const DescendantsContainer = styled.div`
   border-radius: 5px 5px 0px 0px;
 `;
 
-export const HorizontalTree = ({ fetchData, className, readOnly }) => {
+export const HorizontalTree = ({ fetchRoot, fetchBranch, className, readOnly }) => {
   const [selectedRoot, setSelectedRoot] = useState(undefined);
-  const { data, isLoading, error, fetchData: fetchRootData } = useData(fetchData);
-  const {
-    data: children,
-    isLoading: areChildrenLoading,
-    error: childrenError,
-    clearData: clearChildren,
-    fetchData: fetchChildren,
-  } = useData(fetchData);
+  const rootQuery = useFetch(fetchRoot);
+  const branchQuery = useFetch(fetchBranch);
 
   useEffect(() => {
-    fetchRootData();
-  }, [fetchRootData]);
+    rootQuery.fetchData();
+  }, [rootQuery.fetchData]);
 
   return (
     <Container className={className}>
       <RootContainer>
         <Column
-          data={data}
-          isLoading={isLoading}
-          error={error}
+          data={rootQuery.data}
+          isLoading={rootQuery.isLoading}
+          error={rootQuery.error}
           onSelect={() => {
             setSelectedRoot(undefined);
-            clearChildren();
+            branchQuery.clearData();
           }}
           onExpand={rootNode => {
             setSelectedRoot(rootNode);
-            fetchChildren(rootNode, rootNode);
+            branchQuery.fetchData(rootNode, rootNode);
           }}
           showExpandIcon={false}
         />
       </RootContainer>
       <DescendantsContainer>
-        {(children || areChildrenLoading || childrenError) && (
+        {branchQuery.isTriggered && (
           <RecursiveColumn
-            data={children}
-            isLoading={areChildrenLoading}
-            error={childrenError}
-            fetchData={node => fetchData(selectedRoot, node)}
+            data={branchQuery.data}
+            isLoading={branchQuery.isLoading}
+            error={branchQuery.error}
+            fetchData={node => fetchBranch(selectedRoot, node)}
             readOnly={readOnly}
           />
         )}
@@ -88,7 +82,8 @@ export const HorizontalTree = ({ fetchData, className, readOnly }) => {
 };
 
 HorizontalTree.propTypes = {
-  fetchData: PropTypes.func.isRequired,
+  fetchRoot: PropTypes.func.isRequired,
+  fetchBranch: PropTypes.func.isRequired,
   className: PropTypes.string,
   readOnly: PropTypes.bool,
 };

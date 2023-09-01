@@ -5,5 +5,5 @@
     "noEmit": true
   },
 
-  "include": ["src/**/*", "jest.setup.ts", "jest.config.ts", "global.d.ts"]
+  "include": ["src/**/*", "jest.config.ts", "global.d.ts"]
 }

@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
-import { ActivePolygon, POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
+import {  POLYGON_MEASURE_TYPES,   } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
 import { Entity, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
-import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
+import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries'; 
+import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 
 const SiblingEntities = ({
   parentEntityCode,
@@ -22,7 +23,6 @@ const SiblingEntities = ({
     projectCode,
     parentEntityCode,
   );
-
   if (isLoading || !siblingEntities || siblingEntities.length === 0) {
     return null;
   }
@@ -40,29 +40,11 @@ const SiblingEntities = ({
   );
 };
 
-const ActiveEntity = ({ entity }: { entity: Entity }) => {
-  const { region, childCodes } = entity;
-  const hasChildren = childCodes && childCodes.length > 0;
-
-  if (!region) return null;
-
-  return (
-    <ActivePolygon
-      hasChildren={hasChildren}
-      hasShadedChildren={true}
-      coordinates={region}
-      // Randomize key to ensure polygon appears at top. This is still important even
-      // though the polygon is in a LayerGroup due to issues with react-leaflet that
-      // maintainer says are out of scope for the module.
-      key={`currentOrgUnitPolygon${Math.random()}`}
-    />
-  );
-};
-
 export const PolygonNavigationLayer = () => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: activeEntity } = useEntity(projectCode, entityCode);
+
   const { data: entities } = useEntitiesWithLocation(projectCode, entityCode);
 
   if (!entities || entities.length === 0) {
@@ -71,14 +53,19 @@ export const PolygonNavigationLayer = () => {
 
   const childEntities = entities.filter((entity: Entity) => entity.parentCode === entityCode);
 
-  const showChildEntities =
-    !POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType) && childEntities?.length > 0;
+  const isPolygonOverlay = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
+  const showChildEntities = !isPolygonOverlay && childEntities?.length > 0;
+
+  const showActiveEntity =
+    !isPolygonOverlay &&
+    activeEntity &&
+    activeEntity?.type !== selectedOverlay?.measureLevel?.toLowerCase();
 
   return (
     <>
-      {activeEntity && (
+      {showActiveEntity && (
         <>
-          <ActiveEntity entity={activeEntity} />
+          <ActiveEntityPolygon entity={activeEntity} />
           <SiblingEntities
             activeEntityCode={activeEntity.code}
             parentEntityCode={activeEntity.parentCode}

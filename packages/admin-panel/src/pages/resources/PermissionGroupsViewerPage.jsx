@@ -46,25 +46,20 @@ const usePermissionGroups = () => {
     DEFAULT_REACT_QUERY_OPTIONS,
   );
 
-  function fetchData(selectedRoot, node) {
-    if (isLoading) {
-      return null;
-    }
+  const fetchRoot = () => (isLoading ? null : getDescendantData(null, data));
+  const fetchBranch = (selectedRoot, node) => (isLoading ? null : getDescendantData(node.id, data));
 
-    return getDescendantData(node ? node.id : null, data);
-  }
-
-  return { fetchData };
+  return { fetchRoot, fetchBranch };
 };
 export const PermissionGroupsViewerPage = ({ getHeaderEl }) => {
   const HeaderPortal = usePortalWithCallback(<Header title="Permission Groups" />, getHeaderEl);
-  const { fetchData } = usePermissionGroups();
+  const { fetchRoot, fetchBranch } = usePermissionGroups();
 
   return (
     <>
       {HeaderPortal}
       <Container>
-        <StyledHorizontalTree fetchData={fetchData} readOnly />
+        <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
       </Container>
       <LogsModal />
     </>

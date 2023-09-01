@@ -3,6 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { DataProps } from '@tupaia/ui-chart-components';
+
 // This is the row type in the response from the report endpoint when the report is a matrix. It will contain data for each column, keyed by the column key, as well as dataElement, categoryId and category
 export type MatrixReportRow = Record<string, any> & {
   dataElement?: string; // this is the data to display in the row header cell

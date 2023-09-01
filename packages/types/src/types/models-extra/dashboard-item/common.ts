@@ -140,7 +140,7 @@ type DefaultTimePeriodWithAbsoluteDate = {
   start: string;
 };
 
-type DateOffsetSpec = {
+export type DateOffsetSpec = {
   unit: PeriodUnit;
   offset: number;
   modifier?: OffsetModifier;

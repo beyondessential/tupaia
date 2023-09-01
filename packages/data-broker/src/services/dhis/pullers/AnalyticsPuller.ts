@@ -7,23 +7,23 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { AnalyticResults, DataBrokerModelRegistry } from '../../../types';
+import { RawAnalyticResults, DataBrokerModelRegistry } from '../../../types';
 import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
+import { DataServiceMapping } from '../../DataServiceMapping';
 import { DataElement, DataType, DhisAnalytics, DhisEventAnalytics } from '../types';
 import { DataElementsMetadataPuller } from './DataElementsMetadataPuller';
-import { PullOptions } from '../../Service';
 import { DhisTranslator } from '../translators';
 
-export type PullAnalyticsOptions = PullOptions &
-  Partial<{
-    programCodes?: string[];
-    organisationUnitCode: string;
-    organisationUnitCodes: string[];
-    period: string;
-    startDate: string;
-    endDate: string;
-    dataPeriodType: string;
-  }>;
+export type PullAnalyticsOptions = {
+  dataServiceMapping: DataServiceMapping;
+  organisationUnitCode?: string;
+  organisationUnitCodes?: string[];
+  programCodes?: string[];
+  period?: string;
+  startDate?: string;
+  endDate?: string;
+  dataPeriodType?: string;
+};
 
 export class AnalyticsPuller {
   private readonly models;
@@ -92,7 +92,7 @@ export class AnalyticsPuller {
     dhisDataType?: DataType,
   ) => {
     const pullAnalyticsForApi = this.getPullAnalyticsForApiMethod({ ...options, dhisDataType });
-    const response: AnalyticResults = {
+    const response: RawAnalyticResults = {
       results: [],
       metadata: {
         dataElementCodeToName: {},
@@ -262,7 +262,7 @@ export class AnalyticsPuller {
     options: PullAnalyticsOptions,
   ) => {
     const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
-    const response: AnalyticResults = {
+    const response: RawAnalyticResults = {
       results: [],
       metadata: {
         dataElementCodeToName: {},

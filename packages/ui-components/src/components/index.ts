@@ -28,15 +28,15 @@ export * from './Dialog';
 export * from './EnvBanner';
 export * from './ErrorBoundary';
 export * from './FetchLoader';
-export * from './FullPageLoader';
 export * from './HomeButton';
 export * from './IconButton';
-export * from './LoadingContainer';
 export * from './NavBar';
+export * from './QrCode'
 export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './ReferenceTooltip';
 export * from './SplitButton';
+export * from './Loaders';
 export * from './Tabs';
 export * from './Toast';
 export * from './Toolbar';
