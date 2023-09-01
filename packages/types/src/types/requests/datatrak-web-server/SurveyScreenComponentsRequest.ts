@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { KeysToCamelCase } from '../../../utils';
+import { KeysToCamelCase } from '../../../utils/casing';
 import { SurveyScreenComponent } from '../../models';
 
 export interface Params {

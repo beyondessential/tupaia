@@ -5,4 +5,5 @@
 
 export { PageContainer } from './PageContainer';
 export { ButtonLink } from './ButtonLink';
+export { CodeGeneratorQuestion } from './CodeGeneratorQuestion/CodeGeneratorQuestion';
 export * from './SelectList';

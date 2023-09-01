@@ -18,10 +18,12 @@ const QuestionPlaceholder = styled.div`
 
 const Placeholder = ({ name, type, id }) => {
   return (
-    <QuestionPlaceholder id={id}>
-      <p>Question name: {name}</p>
-      <p>Question type: {type}</p>
-    </QuestionPlaceholder>
+    <>
+      <QuestionPlaceholder id={id}>
+        <p>Question name: {name}</p>
+        <p>Question type: {type}</p>
+      </QuestionPlaceholder>
+    </>
   );
 };
 
@@ -66,6 +68,7 @@ interface SurveyQuestionProps {
 }
 export const SurveyQuestion = (props: SurveyQuestionProps) => {
   const FieldComponent = QUESTION_TYPES[props.type];
+  
 
   if (!FieldComponent) {
     return <QuestionPlaceholder>{props.name}</QuestionPlaceholder>;

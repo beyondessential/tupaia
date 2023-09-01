@@ -109,60 +109,62 @@ export const SurveyScreen = () => {
   });
 
   return (
-    <Container>
-      <SideMenu />
-      <Paper>
-        <StyledForm onSubmit={onStepForward} noValidate>
-          <FormScrollBody>
-            <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
-            {activeScreen.map(
-              (
-                {
-                  questionId,
-                  questionCode,
-                  questionText,
-                  questionType,
-                  questionOptions,
-                  config,
-                  questionName,
-                  questionLabel,
-                  validationCriteria,
+    <>
+      <Container>
+        <SideMenu />
+        <Paper>
+          <StyledForm onSubmit={onStepForward} noValidate>
+            <FormScrollBody>
+              <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
+              {activeScreen.map(
+                (
+                  {
+                    questionId,
+                    questionCode,
+                    questionText,
+                    questionType,
+                    questionOptions,
+                    config,
+                    questionName,
+                    questionLabel,
+                    validationCriteria,
+                  },
+                  index,
+                ) => {
+                  if (validationCriteria?.mandatory === true) {
+                    console.log('mandatory question', questionCode);
+                  }
+                  // If the first question is an instruction, don't render it since we always just
+                  // show the text of first questions as the heading
+                  if (index === 0 && questionType === 'Instruction') {
+                    return null;
+                  }
+                  return (
+                    <SurveyQuestion
+                      register={register}
+                      key={questionId}
+                      id={questionId}
+                      code={questionCode}
+                      name={questionCode}
+                      type={questionType}
+                      text={questionText}
+                      options={questionOptions}
+                      config={config}
+                      label={questionLabel || questionName}
+                    />
+                  );
                 },
-                index,
-              ) => {
-                if (validationCriteria?.mandatory === true) {
-                  console.log('mandatory question', questionCode);
-                }
-                // If the first question is an instruction, don't render it since we always just
-                // show the text of first questions as the heading
-                if (index === 0 && questionType === 'Instruction') {
-                  return null;
-                }
-                return (
-                  <SurveyQuestion
-                    register={register}
-                    key={questionId}
-                    id={questionId}
-                    code={questionCode}
-                    name={questionCode}
-                    type={questionType}
-                    text={questionText}
-                    options={questionOptions}
-                    config={config}
-                    label={questionLabel || questionName}
-                  />
-                );
-              },
-            )}
-          </FormScrollBody>
-          <FormActions>
-            <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
-              Back
-            </MuiButton>
-            <Button type="submit">Next</Button>
-          </FormActions>
-        </StyledForm>
-      </Paper>
-    </Container>
+              )}
+            </FormScrollBody>
+            <FormActions>
+              <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
+                Back
+              </MuiButton>
+              <Button type="submit">Next</Button>
+            </FormActions>
+          </StyledForm>
+        </Paper>
+      </Container>
+    </>
   );
 };

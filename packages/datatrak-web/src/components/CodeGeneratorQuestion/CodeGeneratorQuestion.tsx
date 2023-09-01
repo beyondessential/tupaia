@@ -2,16 +2,14 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect } from 'react';
-import { SHORT_ID, generateShortId, generateMongoId } from './generateId';
-import { Typography } from '@material-ui/core';
+import { TextField, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-// {"codeGenerator":{"type":"shortid","prefix":"CONTACT","length":"10"}}
+import { SHORT_ID, generateMongoId, generateShortId } from './generateId';
 
 const LabelId = styled(Typography).attrs({
   variant: 'h1',
-  color: 'textSecondary',
+  color: 'textPrimary',
 })`
   font-size: 1rem;
   margin-bottom: 0.4 rem;
@@ -26,29 +24,37 @@ const BodyText = styled(Typography).attrs({
 
 const GeneratedCode = styled(Typography).attrs({
   variant: 'h1',
-  color: 'textSecondary',
-})``;
+  color: 'textPrimary',
+})`
+  font-size: 0.875rem;
+`;
 
 interface CodeGeneratorProps {
   id: string;
   name: string;
-  label: string;
+  label: 'Asset ID';
   config: any;
+  register: any;
 }
+
+// {"codeGenerator":{"type":"shortid","prefix":"CONTACT","length":"10"}}
 
 export const CodeGeneratorQuestion = ({
   id,
   name,
   label = 'Asset ID',
   config,
+  ...props
 }: CodeGeneratorProps) => {
   const [code, setCode] = useState('');
+
   useEffect(() => {
-    console.log('mount', config);
+    console.log(config['type']);
     const newCode =
-      config.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
+      config?.codeGenerator?.type === SHORT_ID ? generateShortId(config) : generateMongoId();
     setCode(newCode);
-  }, [config, id]);
+    console.log(newCode);
+  }, []);
 
   return (
     <>
@@ -58,7 +64,7 @@ export const CodeGeneratorQuestion = ({
         of if we are generating a QR code and when we print it
       </BodyText>
       <GeneratedCode>{code}</GeneratedCode>
-      <input name={name} id={id} type="hidden" value={code} />
+      <TextField name={name} id={id} type="shortid" value={code} {...props} />
     </>
   );
 };
