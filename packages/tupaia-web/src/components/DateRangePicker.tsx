@@ -15,25 +15,19 @@ const Wrapper = styled.div`
   margin-left: -0.2rem;
   .MuiBox-root {
     justify-content: space-between;
-    button,
-    span {
+
+    .MuiTypography-root {
+      color: ${({ theme }) => theme.palette.text.primary};
       background-color: transparent;
       border-color: transparent;
-      margin: 0;
       padding: 0.2rem;
-      text-transform: none;
       font-size: 0.875rem;
       min-width: 0;
-      color: ${({ theme }) => theme.palette.text.primary};
-      svg {
-        height: 1.3rem;
-        width: 1.3rem;
-      }
-      .MuiIconButton-label {
-        padding: 0;
-      }
     }
+
     button {
+      background-color: transparent;
+      border-color: transparent;
       min-height: unset;
       min-width: unset;
       &:hover,

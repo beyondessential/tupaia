@@ -31,14 +31,19 @@ const AccordionWrapper = styled(Accordion)`
     margin: 0;
   }
 `;
+
 const AccordionHeader = styled(AccordionSummary)`
+  border-radius: 3px;
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
   &.MuiAccordionSummary-root {
     min-height: unset;
     padding: 0;
     flex-direction: row-reverse;
   }
   .MuiAccordionSummary-expandIcon {
-    padding: 0rem;
+    padding: 0;
     &.Mui-expanded {
       transform: rotate(90deg);
     }
@@ -71,6 +76,14 @@ const AccordionContent = styled(AccordionDetails)`
   }
 `;
 
+const FormLabel = styled(FormControlLabel)`
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
+`;
+
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
@@ -96,7 +109,7 @@ const MapOverlayAccordion = ({
             'children' in mapOverlay ? (
               <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
             ) : (
-              <FormControlLabel
+              <FormLabel
                 value={mapOverlay.code}
                 control={<Radio />}
                 label={mapOverlay.name}
@@ -109,6 +122,11 @@ const MapOverlayAccordion = ({
     </ErrorBoundary>
   );
 };
+
+const RadioGroupContainer = styled(RadioGroup)`
+  // Use display block to prevent the menu buttons moving around when opening the accordion
+  display: block;
+`;
 
 /**
  * This is the parent list of all the map overlays available to pick from
@@ -131,7 +149,7 @@ export const MapOverlayList = () => {
 
   return (
     <ErrorBoundary>
-      <RadioGroup
+      <RadioGroupContainer
         aria-label="Map overlays"
         name="map-overlays"
         value={selectedOverlayCode}
@@ -142,7 +160,7 @@ export const MapOverlayList = () => {
           .map(group => (
             <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
           ))}
-      </RadioGroup>
+      </RadioGroupContainer>
     </ErrorBoundary>
   );
 };
