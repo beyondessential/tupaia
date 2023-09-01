@@ -233,7 +233,13 @@ export const DatePickerDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} maxWidth="sm" id="date-picker-dialog" {...muiDialogProps}>
+    <Dialog
+      open={isOpen}
+      maxWidth="sm"
+      id="date-picker-dialog"
+      disableRestoreFocus
+      {...muiDialogProps}
+    >
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
         {!isSingleDate && (
