@@ -65,14 +65,10 @@ export const DataVisualsLayer = ({
       <LayerGroup>
         {measureData.map((measure: MeasureData) => {
           const { region, organisationUnitCode: entity, color, name, code } = measure;
-
           if (region) {
-            if (code === entityCode) {
-              return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
-            }
-
             // To match with the color in markerIcon.js which uses BREWER_PALETTE
             const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
+
             return (
               <ShadedPolygon
                 key={entity}

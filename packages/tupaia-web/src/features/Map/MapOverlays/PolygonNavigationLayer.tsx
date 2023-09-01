@@ -4,11 +4,11 @@
  */
 
 import React from 'react';
-import {  POLYGON_MEASURE_TYPES,   } from '@tupaia/ui-map-components';
+import { POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router-dom';
 import { Entity, EntityCode } from '../../../types';
 import { InteractivePolygon } from './InteractivePolygon';
-import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries'; 
+import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
 import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 
 const SiblingEntities = ({
@@ -57,9 +57,8 @@ export const PolygonNavigationLayer = () => {
   const showChildEntities = !isPolygonOverlay && childEntities?.length > 0;
 
   const showActiveEntity =
-    !isPolygonOverlay &&
     activeEntity &&
-    activeEntity?.type !== selectedOverlay?.measureLevel?.toLowerCase();
+    activeEntity?.type?.replace('_', '') !== selectedOverlay?.measureLevel?.toLowerCase();
 
   return (
     <>
