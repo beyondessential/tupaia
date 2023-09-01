@@ -31,7 +31,12 @@ const AccordionWrapper = styled(Accordion)`
     margin: 0;
   }
 `;
+
 const AccordionHeader = styled(AccordionSummary)`
+  border-radius: 3px;
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
   &.MuiAccordionSummary-root {
     min-height: unset;
     padding: 0;
@@ -71,6 +76,14 @@ const AccordionContent = styled(AccordionDetails)`
   }
 `;
 
+const FormLabel = styled(FormControlLabel)`
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
+`;
+
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
@@ -96,7 +109,7 @@ const MapOverlayAccordion = ({
             'children' in mapOverlay ? (
               <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
             ) : (
-              <FormControlLabel
+              <FormLabel
                 value={mapOverlay.code}
                 control={<Radio />}
                 label={mapOverlay.name}
