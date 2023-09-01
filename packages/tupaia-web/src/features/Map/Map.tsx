@@ -134,13 +134,15 @@ export const Map = () => {
     gaEvent('Map', 'Change Tile Set', activeTileSet.label);
   };
 
+  const zoom = entity?.bounds ? undefined : 10;
+
   return (
     <ErrorBoundary>
       <MapContainer>
         <StyledMap
           center={entity?.point as LeafletMapProps['center']}
           bounds={entity?.bounds as LeafletMapProps['bounds']}
-          zoom={15 as LeafletMapProps['zoom']}
+          zoom={zoom as LeafletMapProps['zoom']}
           shouldSnapToPosition
         >
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
