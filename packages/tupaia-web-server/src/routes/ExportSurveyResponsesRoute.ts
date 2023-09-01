@@ -60,7 +60,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
     );
 
     return {
-      contents: { ...response.body },
+      contents: response,
       filePath: 'test.xlsx',
       type: '.xlsx',
     };
