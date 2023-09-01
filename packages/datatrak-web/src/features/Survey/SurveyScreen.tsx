@@ -4,10 +4,10 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
 import { Button } from '@tupaia/ui-components';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
@@ -76,18 +76,34 @@ const FormActions = styled.div`
   }
 `;
 
+const QuestionWrapper = styled.div<{
+  $isInstruction: boolean;
+}>`
+  display: flex;
+  &:not(:last-child) {
+    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
+  }
+`;
+
+const QuestionNumber = styled(Typography)`
+  width: 3.5rem;
+  text-transform: lowercase;
+`;
+
 export const SurveyScreen = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
   const {
     setFormData,
     formData,
-    activeScreen,
     isLast,
+    displayQuestions,
+    screenHeader,
     screenNumber,
     numberOfScreens,
   } = useSurveyForm();
-  const { register, handleSubmit } = useForm({ defaultValues: formData });
+  const formContext = useForm({ defaultValues: formData });
+  const { handleSubmit } = formContext;
 
   const handleStep = (path, data) => {
     setFormData({ ...formData, ...data });
@@ -125,56 +141,62 @@ export const SurveyScreen = () => {
       <Container>
         <SideMenu />
         <Paper>
-          <StyledForm onSubmit={onStepForward} noValidate>
-            <FormScrollBody>
-              <ScreenHeading variant="h2">{activeScreen[0].questionText}</ScreenHeading>
-              {activeScreen.map(
-                (
-                  {
+          <FormProvider {...formContext}>
+            <StyledForm onSubmit={onStepForward} noValidate>
+              <FormScrollBody>
+                <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
+                {displayQuestions.map(
+                  ({
                     questionId,
                     questionCode,
                     questionText,
                     questionType,
                     questionOptions,
                     config,
-                    questionName,
                     questionLabel,
                     validationCriteria,
+                    detailLabel,
+                    questionOptionSetId,
+                    questionNumber,
+                  }) => {
+                    if (validationCriteria?.mandatory === true) {
+                      console.log('mandatory question', questionCode);
+                    }
+                    return (
+                      <QuestionWrapper
+                        key={questionId}
+                        $isInstruction={questionType === 'Instruction'}
+                      >
+                        {questionNumber && (
+                          <QuestionNumber id={`question_number_${questionId}`}>
+                            {questionNumber}
+                          </QuestionNumber>
+                        )}
+                        <SurveyQuestion
+                          detailLabel={detailLabel}
+                          id={questionId}
+                          code={questionCode}
+                          name={questionCode}
+                          type={questionType}
+                          text={detailLabel || questionText}
+                          options={questionOptions}
+                          config={config}
+                          label={questionLabel || questionText}
+                          optionSetId={questionOptionSetId}
+                        />
+                      </QuestionWrapper>
+                    );
                   },
-                  index,
-                ) => {
-                  if (validationCriteria?.mandatory === true) {
-                    console.log('mandatory question', questionCode);
-                  }
-                  // If the first question is an instruction, don't render it since we always just
-                  // show the text of first questions as the heading
-                  if (index === 0 && questionType === 'Instruction') {
-                    return null;
-                  }
-                  return (
-                    <SurveyQuestion
-                      register={register}
-                      key={questionId}
-                      id={questionId}
-                      code={questionCode}
-                      name={questionCode}
-                      type={questionType}
-                      text={questionText}
-                      options={questionOptions}
-                      config={config}
-                      label={questionLabel || questionName}
-                    />
-                  );
-                },
-              )}
-            </FormScrollBody>
-            <FormActions>
-              <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
-                Back
-              </MuiButton>
-              <Button type="submit">Next</Button>
-            </FormActions>
-          </StyledForm>
+                )}
+              </FormScrollBody>
+              <FormActions>
+                <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
+                  Back
+                </MuiButton>
+                <Button type="submit">Next</Button>
+              </FormActions>
+            </StyledForm>
+          </FormProvider>
         </Paper>
       </Container>
     </>

@@ -5,16 +5,30 @@
 
 import React, { createContext, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { SurveyParams } from '../../types';
+import { sortBy } from 'lodash';
+import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
+
+const convertNumberToLetter = (number: number) => {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  if (number > 25) {
+    // occasionally there are more than 26 questions on a screen, so we then start at aa, ab....
+    const firstLetter = alphabet[Math.floor(number / 26) - 1];
+    const secondLetter = alphabet[number % 26];
+    return `${firstLetter}${secondLetter}`;
+  }
+  return alphabet[number];
+};
 
 type SurveyFormContextType = {
   formData: { [key: string]: any };
   setFormData: (data: { [key: string]: any }) => void;
-  activeScreen: any;
+  activeScreen: SurveyScreenComponent[];
   isLast: boolean;
   numberOfScreens: number;
   screenNumber: number;
+  screenHeader?: string;
+  displayQuestions: SurveyScreenComponent[];
 };
 
 const SurveyFormContext = createContext({} as SurveyFormContextType);
@@ -25,13 +39,55 @@ export const SurveyContext = ({ children }) => {
   const screenNumber = parseInt(params.screenNumber!, 10);
   const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyCode);
 
-  const activeScreen = surveyScreenComponents[screenNumber!];
+  const activeScreen = sortBy(surveyScreenComponents[screenNumber!], 'componentNumber');
   const numberOfScreens = Object.keys(surveyScreenComponents).length;
   const isLast = screenNumber === numberOfScreens;
 
+  const nonInstructionQuestions = activeScreen.filter(
+    question => question.questionType !== 'Instruction',
+  );
+
+  // for the purposes of displaying the screen number, we don't want to count screens that only have instructions
+  const screensWithQuestions = Object.values(surveyScreenComponents).filter(screen => {
+    const nonInstructionQuestions = screen.filter(
+      question => question.questionType !== 'Instruction',
+    );
+    return nonInstructionQuestions.length > 0;
+  });
+
+  const screenNumberToDisplay = activeScreen?.length
+    ? screensWithQuestions.findIndex(
+        screen => screen[0].questionId === activeScreen[0].questionId,
+      ) + 1
+    : -1;
+  // If the first question is an instruction, don't render it since we always just
+  // show the text of first questions as the heading. Format the questions with a question number to display
+  const displayQuestions = (activeScreen.length && activeScreen[0].questionType === 'Instruction'
+    ? activeScreen.slice(1)
+    : activeScreen
+  ).map(question => {
+    const questionNumber = nonInstructionQuestions.findIndex(
+      nonInstructionQuestion => question.questionId === nonInstructionQuestion.questionId,
+    );
+    if (questionNumber === -1) return question;
+    return {
+      ...question,
+      questionNumber: `${screenNumberToDisplay}${convertNumberToLetter(questionNumber)}.`,
+    };
+  });
+
   return (
     <SurveyFormContext.Provider
-      value={{ formData, setFormData, activeScreen, isLast, numberOfScreens, screenNumber }}
+      value={{
+        formData,
+        setFormData,
+        activeScreen,
+        isLast,
+        numberOfScreens,
+        screenNumber,
+        displayQuestions,
+        screenHeader: activeScreen.length ? activeScreen[0].questionText : '',
+      }}
     >
       {children}
     </SurveyFormContext.Provider>

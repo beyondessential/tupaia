@@ -48,11 +48,6 @@ export const theme = createMuiTheme(
           fontSize: '1.125rem', // survey page titles
         },
       },
-      MuiPaper: {
-        root: {
-          padding: '2rem 3rem',
-        },
-      },
     },
   },
   {
