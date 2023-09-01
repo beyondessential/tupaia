@@ -77,11 +77,11 @@ export class ApiConnection {
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
     await this.verifyResponse(response);
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    if (contentType && contentType.indexOf('application/json') !== -1) {
       return response.json();
     }
-    // If the response isn't json, it's most likely a file export
-    return response.buffer();
+    // If the content isn't json we expect the receiving code to parse it
+    return response;
   }
 
   private async fetchWithTimeout(
