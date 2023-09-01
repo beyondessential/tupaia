@@ -51,7 +51,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       easyReadingMode,
     };
 
-    if (organisationUnitCode.length === 2) {
+    if (organisationUnitCode?.length === 2) {
       // The code is only two characters, must be the 2 character country ISO code
       centralQuery.countryCode = organisationUnitCode;
     } else {
@@ -66,7 +66,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
     // Extract the filename from the content-disposition header
     const contentDispositionHeader = response.headers.get('content-disposition');
     const regex = /filename="(?<filename>.*)"/; // Find the value between quotes after filename=
-    const filePath: string | null = regex.exec(contentDispositionHeader)?.groups?.filename ?? null;
+    const filePath: string | undefined = regex.exec(contentDispositionHeader)?.groups?.filename;
 
     return {
       contents: await response.buffer(),

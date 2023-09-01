@@ -6,7 +6,7 @@
 export type Params = Record<string, never>;
 export type ResBody = {
   contents: Buffer;
-  filePath: string;
+  filePath?: string;
   type: string;
 };
 export type ReqBody = Record<string, never>;
