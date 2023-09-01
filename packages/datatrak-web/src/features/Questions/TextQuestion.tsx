@@ -26,16 +26,15 @@ export const TextQuestion = ({
   id,
   label,
   name,
-  inputRef,
   type,
-  controllerProps: { onChange, value },
+  controllerProps: { onChange, value, ref },
 }: SurveyQuestionInputProps) => {
   return (
     <Label
       label={label}
       name={name!}
       labelPlacement={'top'}
-      inputRef={inputRef}
+      inputRef={ref}
       onChange={onChange}
       value={value}
       control={

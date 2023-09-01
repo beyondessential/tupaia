@@ -57,9 +57,8 @@ export const RadioQuestion = ({
   id,
   label,
   name,
-  inputRef,
   options,
-  controllerProps: { onChange, value },
+  controllerProps: { onChange, value, ref },
 }: SurveyQuestionInputProps) => {
   // This is a controlled component because value and onChange are required props
   return (
@@ -68,7 +67,7 @@ export const RadioQuestion = ({
       id={id}
       label={label}
       name={name!}
-      inputRef={inputRef}
+      inputRef={ref}
       options={options || []}
       value={value || ''}
       inputProps={{

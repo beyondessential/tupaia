@@ -39,7 +39,16 @@ const DatePicker = styled(BaseDatePicker).attrs({
 export const DateQuestion = ({
   label,
   id,
-  controllerProps: { onChange, value, name },
+  controllerProps: { onChange, value, name, ref },
 }: SurveyQuestionInputProps) => {
-  return <DatePicker onChange={onChange} value={value} label={label} id={id} name={name} />;
+  return (
+    <DatePicker
+      onChange={onChange}
+      value={value}
+      label={label}
+      id={id}
+      name={name}
+      inputRef={ref}
+    />
+  );
 };
