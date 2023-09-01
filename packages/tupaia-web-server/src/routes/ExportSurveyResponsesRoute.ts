@@ -37,7 +37,11 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       throw new Error(`Invalid itemCode ${itemCode}`);
     }
 
-    const centralParams: Record<string, any> = {
+    const centralQuery: TupaiaWebExportSurveyResponsesRequest.ReqQuery & {
+      reportName: string;
+      countryCode?: string;
+      entityCode?: string;
+    } = {
       latest,
       surveyCodes,
       startDate,
@@ -49,19 +53,24 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
 
     if (organisationUnitCode.length === 2) {
       // The code is only two characters, must be the 2 character country ISO code
-      centralParams.countryCode = organisationUnitCode;
+      centralQuery.countryCode = organisationUnitCode;
     } else {
-      centralParams.entityCode = organisationUnitCode;
+      centralQuery.entityCode = organisationUnitCode;
     }
 
     const response = await ctx.services.central.fetchResources(
       'export/surveyResponses',
-      centralParams,
+      centralQuery,
     );
 
+    // Extract the filename from the content-disposition header
+    const contentDispositionHeader = response.headers.get('content-disposition');
+    const regex = /filename="(?<filename>.*)"/; // Find the value between quotes after filename=
+    const filePath: string | null = regex.exec(contentDispositionHeader)?.groups?.filename ?? null;
+
     return {
-      contents: response,
-      filePath: 'test.xlsx',
+      contents: await response.buffer(),
+      filePath,
       type: '.xlsx',
     };
   }
