@@ -147,17 +147,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       };
     });
 
-    if (!dashboardsWithItems.length && !dashboardRelations.length) {
-      return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
-    }
-
     const response = dashboardsWithItems.filter(
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 
     if (!response.length) {
-      // Returns in an array already
-      return this.getNoDataDashboard(rootEntity.code, NO_ACCESS_DASHBOARD_ITEM_CODE);
+      const dashboardCode = dashboardRelations.length
+        ? NO_ACCESS_DASHBOARD_ITEM_CODE
+        : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
+      return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 
     return camelcaseKeys(response, {
