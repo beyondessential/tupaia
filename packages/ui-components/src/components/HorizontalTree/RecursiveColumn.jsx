@@ -5,23 +5,16 @@
 
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useData } from '../../hooks/useData';
+import { useFetch } from '../../hooks/useFetch';
 import { Column } from './Column';
 
 export const RecursiveColumn = ({ data, isLoading, error, fetchData, readOnly }) => {
-  const {
-    data: children,
-    isLoading: areChildrenLoading,
-    error: childrenError,
-    clearData: clearChildren,
-    fetchData: fetchChildren,
-  } = useData(fetchData);
+  const childQuery = useFetch(fetchData);
+  const isExpanded = childQuery.isTriggered;
 
   useEffect(() => {
-    clearChildren();
+    childQuery.clearData();
   }, [data]);
-
-  const isExpanded = !!(children || areChildrenLoading || childrenError);
 
   return (
     <>
@@ -30,19 +23,19 @@ export const RecursiveColumn = ({ data, isLoading, error, fetchData, readOnly })
         isLoading={isLoading}
         error={error}
         onSelect={() => {
-          clearChildren();
+          childQuery.clearData();
         }}
         onExpand={node => {
-          fetchChildren(node);
+          childQuery.fetchData(node);
         }}
         isExpanded={isExpanded}
         readOnly={readOnly}
       />
       {isExpanded && (
         <RecursiveColumn
-          data={children}
-          isLoading={areChildrenLoading}
-          error={childrenError}
+          data={childQuery.data}
+          isLoading={childQuery.isLoading}
+          error={childQuery.error}
           fetchData={fetchData}
           readOnly={readOnly}
         />

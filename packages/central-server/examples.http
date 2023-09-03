@@ -29,3 +29,8 @@ content-type: {{contentType}}
 GET http://{{host}}/{{version}}/downloadFiles?files=cat_pic.pdf HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+### GET surveyResponses
+GET http://{{host}}/{{version}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}

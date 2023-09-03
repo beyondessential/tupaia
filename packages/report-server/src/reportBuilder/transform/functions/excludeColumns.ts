@@ -4,7 +4,7 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { starSingleOrMultipleColumnsValidator } from './transformValidators';
+import { starSingleOrMultipleColumnsValidator } from './utils';
 import { getColumnMatcher } from './helpers';
 import { TransformTable } from '../table';
 

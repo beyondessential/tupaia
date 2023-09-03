@@ -18,7 +18,7 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn package:test:withdb --runInBand",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {

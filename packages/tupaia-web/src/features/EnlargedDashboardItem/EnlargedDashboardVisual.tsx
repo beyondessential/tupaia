@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
@@ -130,12 +130,15 @@ export const EnlargedDashboardVisual = ({
       </TitleWrapper>
       {config?.description && <Subheading>{config?.description}</Subheading>}
       <ContentWrapper>
-        <DashboardItemContent
-          isLoading={isLoadingReportData}
-          error={reportError}
-          report={reportData}
-          dashboardItem={{
-            ...currentDashboardItem,
+        <DashboardItemContext.Provider
+          value={{
+            report: reportData,
+            isLoading: isLoadingReportData,
+            error: reportError,
+            refetch: refetchReportData,
+            isEnlarged: true,
+            isExport: isPreview,
+            reportCode: currentDashboardItem?.reportCode,
             config: {
               ...currentDashboardItem?.config,
               presentationOptions: {
@@ -145,11 +148,9 @@ export const EnlargedDashboardVisual = ({
               },
             },
           }}
-          onRetryFetch={refetchReportData}
-          isExpandable={false}
-          isEnlarged
-          isExporting={isPreview}
-        />
+        >
+          <DashboardItemContent />
+        </DashboardItemContext.Provider>
         {isPreview && (
           <ExportDate>
             {startDate &&

@@ -15,7 +15,9 @@ export const handleSurveyResponse = async (models, updatedFields, recordType, su
   await models.surveyResponse.updateById(surveyResponse.id, surveyResponseUpdateFields);
 };
 
-export const handleAnswers = async (models, updatedAnswers, surveyResponse) => {
+export const handleAnswers = async (models, updatedFields, surveyResponse) => {
+  const { answers: updatedAnswers } = updatedFields;
+
   if (!updatedAnswers) {
     return;
   }
@@ -30,7 +32,7 @@ export const handleAnswers = async (models, updatedAnswers, surveyResponse) => {
 
   await Promise.all(
     questionCodes.map(async questionCode => {
-      const isEmptyAnswer = updatedAnswers[questionCode].trim() === '';
+      const isAnswerDeletion = updatedAnswers[questionCode] === null;
       const { id, type } = codesToIds[questionCode];
       const existingAnswer = await models.answer.findOne({
         survey_response_id: surveyResponseId,
@@ -38,8 +40,7 @@ export const handleAnswers = async (models, updatedAnswers, surveyResponse) => {
       });
 
       if (!existingAnswer) {
-        if (isEmptyAnswer) {
-          // assumes a new answer with an empty string should not be recorded.
+        if (isAnswerDeletion) {
           return;
         }
         await models.answer.create({
@@ -51,8 +52,7 @@ export const handleAnswers = async (models, updatedAnswers, surveyResponse) => {
         return;
       }
 
-      if (isEmptyAnswer) {
-        // assumes that an empty string for an existing field means delete.
+      if (isAnswerDeletion) {
         await models.answer.delete({ id: existingAnswer.id });
         return;
       }
