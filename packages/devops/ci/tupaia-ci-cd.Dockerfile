@@ -44,7 +44,7 @@ RUN mkdir -p ./packages/access-policy \
   ./packages/data-table-server \
   ./packages/database \
   ./packages/datatrak-web \
-  ./packages/datatrak-server \
+  ./packages/datatrak-web-server \
   ./packages/devops \
   ./packages/dhis-api \
   ./packages/e2e \
@@ -85,7 +85,7 @@ COPY packages/data-lake-api/package.json ./packages/data-lake-api
 COPY packages/data-table-server/package.json ./packages/data-table-server
 COPY packages/database/package.json ./packages/database
 COPY packages/datatrak-web/package.json ./packages/datatrak-web 
-COPY packages/datatrak-server/package.json ./packages/datatrak-server
+COPY packages/datatrak-web-server/package.json ./packages/datatrak-web-server
 COPY packages/devops/package.json ./packages/devops
 COPY packages/dhis-api/package.json ./packages/dhis-api
 COPY packages/e2e/package.json ./packages/e2e

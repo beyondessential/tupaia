@@ -40,7 +40,7 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-interface ButtonProps extends MuiButtonProps {
+export interface ButtonProps extends MuiButtonProps {
   isLoading?: boolean;
   loadingText?: string;
 }

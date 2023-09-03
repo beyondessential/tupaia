@@ -1,0 +1,101 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Collapse, ListItem as MuiListItem } from '@material-ui/core';
+import { Check, Description, Folder, FolderOpen, KeyboardArrowRight } from '@material-ui/icons';
+
+const IconWrapper = styled.div`
+  padding-right: 0.2rem;
+  display: flex;
+  align-items: center;
+`;
+
+const Item = styled(MuiListItem)`
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0.3rem 1rem 0.3rem 0;
+  &.Mui-selected {
+    border-color: ${({ theme }) => theme.palette.primary.main};
+    background-color: transparent;
+  }
+  .MuiCollapse-container & {
+    padding-left: 1.5rem;
+  }
+  &:hover,
+  &.Mui-selected:hover,
+  &:focus,
+  &.Mui-selected:focus {
+    background-color: ${({ theme }) => theme.palette.secondary.light};
+  }
+`;
+
+const Arrow = styled(KeyboardArrowRight)<{
+  $open?: boolean;
+}>`
+  transform: ${({ $open }) => ($open ? 'rotate(90deg)' : 'rotate(0deg)')};
+  transition: transform 0.1s ease-in-out;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+export type ListItemType = Record<string, unknown> & {
+  children?: ListItemType[];
+  name: string;
+  value: string;
+  selected?: boolean;
+};
+
+interface ListItemProps {
+  item: ListItemType;
+  children?: React.ReactNode;
+  onSelect?: (item: ListItemType) => void;
+}
+
+export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
+  const [open, setOpen] = useState(false);
+  const isNested = !!item.children;
+
+  const getIcon = () => {
+    if (isNested) return open ? FolderOpen : Folder;
+    return Description;
+  };
+
+  const toggleOpen = () => {
+    setOpen(!open);
+  };
+
+  const onClick = () => {
+    if (isNested) {
+      return toggleOpen();
+    }
+    return onSelect ? onSelect(item) : null;
+  };
+
+  const Icon = getIcon();
+
+  return (
+    <>
+      <Item button onClick={onClick} selected={item.selected}>
+        <ButtonContainer>
+          <IconWrapper>
+            <Icon color="primary" />
+          </IconWrapper>
+          {item.name}
+          {isNested && <Arrow $open={open} />}
+        </ButtonContainer>
+        {item.selected && <Check color="primary" />}
+      </Item>
+      {isNested && <Collapse in={open}>{children}</Collapse>}
+    </>
+  );
+};
