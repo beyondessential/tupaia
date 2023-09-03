@@ -16,7 +16,6 @@ import {
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
-import winston from 'winston';
 
 import { handleWith, handleError, emptyMiddleware } from '../../utils';
 import { TestRoute } from '../../routes';
