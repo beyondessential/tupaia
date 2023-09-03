@@ -86,8 +86,8 @@ export const RegisterForm = ({
 }: RegisterFormProps) => {
   return (
     <Wrapper
-      title={isSuccess ? 'Your account has been registered' : 'Register'}
-      subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
+      title={isSuccess ? 'Your account has been registered' : 'Register an account'}
+      subtitle={!isSuccess ? 'Enter your details below to register an account' : undefined}
       className={className}
     >
       {isSuccess ? (

@@ -10,10 +10,10 @@ export const theme = createMuiTheme(
     palette: {
       type: 'light',
       primary: {
-        main: '#4A79EA', // Main purple (as seen on primary buttons)
+        main: '#328DE5', // Main purple (as seen on primary buttons)
       },
       secondary: {
-        main: '#E7EFFF', // Light purple
+        main: '#328de533', // Light purple
       },
       background: {
         default: '#F9F9F9', // Off white background
