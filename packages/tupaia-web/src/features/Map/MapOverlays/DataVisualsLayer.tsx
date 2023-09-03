@@ -20,7 +20,6 @@ import {
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
-import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 import { gaEvent } from '../../../utils';
 
 const ShadedPolygon = styled(BasePolygon)`
@@ -64,7 +63,7 @@ export const DataVisualsLayer = ({
     <ErrorBoundary>
       <LayerGroup>
         {measureData.map((measure: MeasureData) => {
-          const { region, organisationUnitCode: entity, color, name, code } = measure;
+          const { region, organisationUnitCode: entity, color, name } = measure;
           if (region) {
             // To match with the color in markerIcon.js which uses BREWER_PALETTE
             const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
