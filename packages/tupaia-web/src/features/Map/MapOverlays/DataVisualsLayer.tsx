@@ -15,11 +15,11 @@ import {
   BasePolygon,
   AreaTooltip,
   MeasureData,
+  BREWER_PALETTE,
 } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
-import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 import { gaEvent } from '../../../utils';
 
 const ShadedPolygon = styled(BasePolygon)`
@@ -63,18 +63,18 @@ export const DataVisualsLayer = ({
     <ErrorBoundary>
       <LayerGroup>
         {measureData.map((measure: MeasureData) => {
-          const { region, organisationUnitCode: entity, color, name, code } = measure;
+          const { region, organisationUnitCode: entity, color, name } = measure;
           if (region) {
-            if (code === entityCode) {
-              return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
-            }
+            // To match with the color in markerIcon.js which uses BREWER_PALETTE
+            const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
+
             return (
               <ShadedPolygon
                 key={entity}
                 positions={region}
                 pathOptions={{
-                  color: color,
-                  fillColor: color,
+                  color: shade,
+                  fillColor: shade,
                 }}
                 eventHandlers={{
                   click: () => {

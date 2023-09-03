@@ -4,23 +4,23 @@
  */
 
 import React from 'react';
-import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Entity } from '@tupaia/types';
-import { AreaTooltip, MAP_COLORS } from '@tupaia/ui-map-components';
+import { AreaTooltip, MAP_COLORS, Polygon } from '@tupaia/ui-map-components';
 import { useEntityLink } from '../../../utils';
 import { useProject } from '../../../api/queries';
 import { ErrorBoundary } from '@tupaia/ui-components';
 
-const { POLYGON_BLUE } = MAP_COLORS;
+const { POLYGON_HIGHLIGHT } = MAP_COLORS;
 
 const BasicPolygon = styled(Polygon)`
-  fill: ${POLYGON_BLUE};
   fill-opacity: 0.04;
   stroke-width: 1;
   &:hover {
     fill-opacity: 0.5;
+    stroke: ${POLYGON_HIGHLIGHT};
+    fill: ${POLYGON_HIGHLIGHT};
   }
 `;
 
