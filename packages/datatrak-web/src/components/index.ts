@@ -6,4 +6,5 @@
 export { PageContainer } from './PageContainer';
 export { ButtonLink } from './ButtonLink';
 export { CodeGeneratorQuestion } from './CodeGeneratorQuestion/CodeGeneratorQuestion';
+export { TopProgressBar } from './TopProgressBar';
 export * from './SelectList';

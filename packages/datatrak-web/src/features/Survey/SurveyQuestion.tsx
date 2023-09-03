@@ -7,8 +7,18 @@ import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
 import { CodeGeneratorQuestion } from '../../components/CodeGeneratorQuestion/CodeGeneratorQuestion';
+import { useFormContext, Controller } from 'react-hook-form';
+import {
+  BinaryQuestion,
+  DateQuestion,
+  RadioQuestion,
+  TextQuestion,
+  InstructionQuestion,
+  CheckboxQuestion,
+  DateTimeQuestion,
+} from '../Questions';
+import { SurveyQuestionFieldProps } from '../../types';
 
-// Todo: Replace with actual form components in WAITP-1345
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
   background: lightgrey;
@@ -27,27 +37,20 @@ const Placeholder = ({ name, type, id }) => {
   );
 };
 
-const InstructionQuestion = ({ text }) => {
-  return <QuestionPlaceholder>{text}</QuestionPlaceholder>;
-};
-
 export enum QUESTION_TYPES {
-  Binary = Placeholder,
-  Checkbox = Placeholder,
-  Date = Placeholder,
-  DateTime = Placeholder,
-  FreeText = TextField,
+  Binary = BinaryQuestion,
+  Checkbox = CheckboxQuestion,
+  Date = DateQuestion,
+  DateTime = DateTimeQuestion,
+  FreeText = TextQuestion,
   Geolocate = Placeholder,
   Autocomplete = Placeholder,
   Instruction = InstructionQuestion,
-  Number = TextField,
+  Number = TextQuestion,
   Photo = Placeholder,
-  Radio = Placeholder,
-  DaysSince = Placeholder,
-  MonthsSince = Placeholder,
-  YearsSince = Placeholder,
-  SubmissionDate = Placeholder,
-  DateOfData = Placeholder,
+  Radio = RadioQuestion,
+  SubmissionDate = DateQuestion,
+  DateOfData = DateQuestion,
   Entity = Placeholder,
   PrimaryEntity = Placeholder,
   CodeGenerator = CodeGeneratorQuestion,
@@ -55,23 +58,28 @@ export enum QUESTION_TYPES {
   Condition = Placeholder,
 }
 
-interface SurveyQuestionProps {
-  type: keyof typeof QUESTION_TYPES;
-  name: string;
-  id: string;
-  register?: any;
-  label?: string;
-  code?: string;
-  text?: string;
-  options?: any;
-  config?: any;
-}
-export const SurveyQuestion = (props: SurveyQuestionProps) => {
-  const FieldComponent = QUESTION_TYPES[props.type];
+export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProps) => {
+  const { control } = useFormContext();
+  const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
-    return <QuestionPlaceholder>{props.name}</QuestionPlaceholder>;
+    return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
-  return <FieldComponent inputRef={props.register()} {...props} />;
+  // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
+  return (
+    <Controller
+      name={name!}
+      control={control}
+      render={renderProps => (
+        <FieldComponent
+          {...props}
+          controllerProps={renderProps}
+          name={name}
+          type={type}
+          ref={renderProps.ref}
+        />
+      )}
+    />
+  );
 };
