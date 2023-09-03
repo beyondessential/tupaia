@@ -68,7 +68,6 @@ interface SurveyQuestionProps {
 }
 export const SurveyQuestion = (props: SurveyQuestionProps) => {
   const FieldComponent = QUESTION_TYPES[props.type];
-  
 
   if (!FieldComponent) {
     return <QuestionPlaceholder>{props.name}</QuestionPlaceholder>;

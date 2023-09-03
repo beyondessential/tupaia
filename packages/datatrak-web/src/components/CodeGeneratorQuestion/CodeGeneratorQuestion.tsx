@@ -48,12 +48,15 @@ export const CodeGeneratorQuestion = ({
 }: CodeGeneratorProps) => {
   const [code, setCode] = useState('');
 
+  const configObject = JSON.parse(config);
+  const { codeGenerator } = configObject;
+
   useEffect(() => {
-    console.log(config['type']);
+    console.log('configObject', configObject);
+    console.log('config', config);
     const newCode =
-      config?.codeGenerator?.type === SHORT_ID ? generateShortId(config) : generateMongoId();
+      configObject.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
     setCode(newCode);
-    console.log(newCode);
   }, []);
 
   return (
@@ -64,7 +67,7 @@ export const CodeGeneratorQuestion = ({
         of if we are generating a QR code and when we print it
       </BodyText>
       <GeneratedCode>{code}</GeneratedCode>
-      <TextField name={name} id={id} type="shortid" value={code} {...props} />
+      <TextField name={name} id={id} type="text" value={code} {...props} />
     </>
   );
 };

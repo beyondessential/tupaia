@@ -10,12 +10,12 @@ import generateUUID from 'bson-objectid';
 // You would need: 1000 IDs generated per hour for ~211 years.
 // You can test different configs collision probability here: https://zelark.github.io/nano-id-cc/
 
-interface ShortIDConfigProps {
+type ShortIDConfigProps = {
   alphabet: string;
   length: number;
   chunkLength: number;
   prefix: string;
-}
+};
 
 const DEFAULT_SHORT_ID_CONFIG = {
   alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -30,10 +30,12 @@ export const MONGO_ID = 'mongoid';
 // e.g. '632-NFO-LEU-I1QI'
 export const generateShortId = config => {
   // Use defaults for any missing config params, allowing users to specify some or all custom configurations
+
   const { alphabet, length, chunkLength, prefix }: ShortIDConfigProps = {
     ...DEFAULT_SHORT_ID_CONFIG,
     ...config.codeGenerator,
   };
+
   // will match every {chunkLength} characters, including remainders
   // i.e. '632NFOLEUI1QI'.match(pattern) -> ['632', 'NFO', 'LEU', 'I1Q', 'I']
   const pattern = new RegExp(`.{1,${chunkLength}}`, 'g');

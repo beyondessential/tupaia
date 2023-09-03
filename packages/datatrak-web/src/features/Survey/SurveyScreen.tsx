@@ -13,6 +13,7 @@ import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
+import { CodeGeneratorQuestion } from '../../components';
 
 const Container = styled.div`
   display: flex;
