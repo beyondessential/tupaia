@@ -7,13 +7,13 @@ import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { Typography, Paper as MuiPaper, Button as MuiButton } from '@material-ui/core';
-import { Button } from '@tupaia/ui-components';
+import { Typography, Paper as MuiPaper } from '@material-ui/core';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
 import { SurveyToolbar } from './SurveyToolbar';
+import { Button } from '../../components';
 
 const Container = styled.div`
   display: flex;
@@ -88,6 +88,16 @@ const QuestionWrapper = styled.div<{
 const QuestionNumber = styled(Typography)`
   width: 3.5rem;
   text-transform: lowercase;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  button,
+  a {
+    &:last-child {
+      margin-left: 1rem;
+    }
+  }
 `;
 
 export const SurveyScreen = () => {
@@ -186,10 +196,20 @@ export const SurveyScreen = () => {
                 )}
               </FormScrollBody>
               <FormActions>
-                <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
+                <Button
+                  onClick={onStepPrevious}
+                  startIcon={<ArrowBackIosIcon />}
+                  variant="text"
+                  color="default"
+                >
                   Back
-                </MuiButton>
-                <Button type="submit">Next</Button>
+                </Button>
+                <ButtonGroup>
+                  <Button variant="outlined" to={ROUTES.SURVEY_SELECT}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Next</Button>
+                </ButtonGroup>
               </FormActions>
             </StyledForm>
           </FormProvider>

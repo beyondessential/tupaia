@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useSurveys } from '../api/queries';
-import { SelectList, ListItemType, ButtonLink } from '../components';
+import { SelectList, ListItemType, Button } from '../components';
 import { Survey } from '../types';
 
 const Container = styled(Paper)`
@@ -89,17 +89,16 @@ export const SurveySelectPage = () => {
         </ListWrapper>
       )}
       <DialogActions>
-        <ButtonLink to="/" variant="outlined">
+        <Button to="/" variant="outlined">
           Cancel
-        </ButtonLink>
-        <ButtonLink
+        </Button>
+        <Button
           to={`${selectedSurvey?.value}/1` || ''}
-          variant="contained"
-          color="primary"
           disabled={!selectedSurvey}
+          tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
         >
           Next
-        </ButtonLink>
+        </Button>
       </DialogActions>
     </Container>
   );
