@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   padding: 4rem 0;
 `;
 const SurveyAlert = styled.div`
-  background-color: ${({ theme }) => theme.palette.common.white};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 3px;
   margin: 0 2rem;
   padding: 2.5rem;
