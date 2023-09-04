@@ -39,7 +39,6 @@ export const LoginPage = ({
       registerLink={ROUTES.REGISTER}
       formContext={formContext}
       message={message}
-      className="auth-page"
     />
   );
 };
