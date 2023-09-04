@@ -11,6 +11,7 @@ concurrency:
 env:
   NODE_OPTIONS: '--max-old-space-size=6144'
   NODE_ENV: test
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
 jobs:
   validate_branch_name:
