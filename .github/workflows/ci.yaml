@@ -190,7 +190,7 @@ jobs:
           node-version: 14.19.3
           cache: yarn
       - run: yarn set version 3.2.1
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable --production
       - run: yarn build
 
   allgreen:
