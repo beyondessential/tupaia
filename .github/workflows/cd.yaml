@@ -2,7 +2,7 @@ name: Deploy
 on:
   workflow_run:
     # Note: This will only trigger if the workflow file is on the default branch
-    workflows: [Tupaia CI]
+    workflows: [CI]
     types: [completed]
 
 permissions:
