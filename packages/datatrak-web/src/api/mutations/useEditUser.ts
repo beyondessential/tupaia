@@ -3,35 +3,36 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { put } from '../api';
 import { useUser } from '../queries';
+import { ROUTES } from '../../constants';
 
 type ProjectId = {
   projectId: string;
 };
 export const useEditUser = () => {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: user } = useUser();
-  console.log('user', user);
 
   return useMutation<any, Error, ProjectId, unknown>(
-    ({ projectId }: ProjectId) => {
-      console.log('projectId', projectId);
+    async ({ projectId }: ProjectId) => {
       if (!user?.id || !projectId) {
         return;
       }
 
-      return put(`users/${user.id}`, {
+      await put(`users/${user.id}`, {
         data: {
           project_id: projectId,
-          position: 'Updated position 123',
         },
       });
     },
     {
       onSuccess: () => {
-        console.log('success');
+        queryClient.invalidateQueries('getUser');
+        navigate(ROUTES.HOME);
       },
     },
   );

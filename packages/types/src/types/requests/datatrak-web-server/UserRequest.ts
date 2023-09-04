@@ -5,6 +5,7 @@
 
 export type Params = Record<string, never>;
 export interface ResBody {
+  id?: string;
   userName?: string;
   email?: string;
   projectId?: string;

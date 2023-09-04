@@ -50,7 +50,7 @@ export const ProjectSelectPage = () => {
   }));
 
   const onConfirm = () => {
-    mutate({ projectId: selectedProject?.value });
+    mutate({ projectId: selectedProject?.value as Project['id'] });
   };
 
   return (

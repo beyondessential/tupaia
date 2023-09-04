@@ -8,7 +8,9 @@ import { KeysToCamelCase } from '../../../utils/casing';
 
 export type Params = Record<string, never>;
 
-type ProjectResponse = KeysToCamelCase<Project>;
+type ProjectResponse = KeysToCamelCase<Project> & {
+  entityName: string;
+};
 
 export type ResBody = ProjectResponse[];
 export type ReqBody = Record<string, never>;
