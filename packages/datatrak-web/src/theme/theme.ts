@@ -20,7 +20,7 @@ export const theme = createMuiTheme(
         paper: '#ffffff', // White background
       },
       text: {
-        primary: '#333333', // dark text color
+        primary: '#2E2F33', // dark text color
         secondary: '#898989', // light grey text color
       },
       divider: '#DFDFDF',
