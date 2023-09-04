@@ -26,9 +26,11 @@ GET/PUT/POST:
       survey_screen_components: [
         id: '...',
         visibility_criteria: '...',
+        component_number,
         question: {
           id: '...',
           name: 'Hmm I wonder',
+          code: 'CODE123',
           type: 'Text'
         }
       ] 

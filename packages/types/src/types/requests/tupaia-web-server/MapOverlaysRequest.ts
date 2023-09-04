@@ -3,20 +3,22 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { MapOverlay } from '../../models';
+import { MapOverlayConfig } from '../../models-extra';
+import { KeysToCamelCase } from '../../../utils/casing';
+
 export interface Params {
   projectCode: string;
   entityCode: string;
 }
 
 // We return a simplified version of data to the frontend
-export interface TranslatedMapOverlay {
-  code: string;
-  name: string;
-  reportCode: string;
-  legacy: boolean;
-  sortOrder?: number | null;
-  // ...config
-}
+export type TranslatedMapOverlay = KeysToCamelCase<
+  Pick<MapOverlay, 'code' | 'name' | 'legacy' | 'report_code'>
+> &
+  MapOverlayConfig & {
+    sortOrder?: number | null;
+  };
 export interface TranslatedMapOverlayGroup {
   name: string;
   children: OverlayChild[];
@@ -27,7 +29,7 @@ export interface ResBody {
   name: string;
   entityCode: string;
   entityType: string;
-  mapOverlays: OverlayChild[];
+  mapOverlays: TranslatedMapOverlayGroup[];
 }
 
 export type ReqBody = Record<string, never>;

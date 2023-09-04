@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createAggregator } from '@tupaia/aggregator';
 import { filterEntities } from '@tupaia/utils';
+import { DataBroker } from '@tupaia/data-broker';
 import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '/aggregator';
 
@@ -15,9 +15,10 @@ import { Aggregator } from '/aggregator';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(
-      Aggregator,
-      { accessPolicy: req.accessPolicy },
+    this.aggregator = new Aggregator(
+      new DataBroker({
+        accessPolicy: req.accessPolicy,
+      }),
       this.models,
       this,
     );
