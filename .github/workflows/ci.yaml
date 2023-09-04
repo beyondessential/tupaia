@@ -213,6 +213,7 @@ jobs:
       - validate_migration
       - validate_tests
       - validate_types
+      - validate_lockfile
       - run_tests
       - build
     runs-on: ubuntu-latest
