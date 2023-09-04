@@ -16,7 +16,8 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn package:test:withdb --runInBand",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage",
     "test:debug": "yarn test --debug"
   },
