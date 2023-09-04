@@ -299,7 +299,7 @@ describe('POST /surveyResponse', async () => {
       });
     });
 
-    // TODO: re-enable after S3Client is properly mocked
+    // TODO: re-enable after S3Client is properly mocked after RN-982
     // describe('Survey responses containing images', () => {
     //   const imageResponseObject = { id: generateId(), data: TEST_IMAGE_DATA };
     //   const IMAGE_URL = `${BUCKET_URL}/${S3_BUCKET_NAME}/${getS3ImageFilePath()}${
