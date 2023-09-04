@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -20,11 +20,10 @@ import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import {
   MatrixReport,
   MatrixReportColumn,
-  MatrixReportRow,
-  DashboardItemReport,
-  DashboardItemConfig,
+  MatrixReportRow, 
 } from '../../types';
 import { URL_SEARCH_PARAMS } from '../../constants';
+import { DashboardItemContext } from '../DashboardItem';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',
@@ -148,13 +147,8 @@ const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
  * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
  */
 
-interface MatrixProps {
-  config?: DashboardItemConfig;
-  report?: DashboardItemReport;
-  isEnlarged?: boolean;
-}
-
-export const Matrix = ({ config = {}, report = {}, isEnlarged = false }: MatrixProps) => {
+export const Matrix = () => {
+  const { config, report, isEnlarged } = useContext(DashboardItemContext);
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 

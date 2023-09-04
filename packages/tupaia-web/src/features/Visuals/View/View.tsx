@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { ViewConfig } from '@tupaia/types';
 import { ViewReport, DashboardItemReport, DashboardItemConfig } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
@@ -13,11 +13,13 @@ import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
+import { QRCode } from './QRCode';
+import { DashboardItemContext } from '../../DashboardItem';
 
 interface ViewProps {
-  report: DashboardItemReport;
-  config: DashboardItemConfig;
-  isEnlarged?: boolean;
+  /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
+  customReport?: DashboardItemReport;
+  customConfig?: DashboardItemConfig;
 }
 
 const VIEWS = {
@@ -28,6 +30,7 @@ const VIEWS = {
   multiValueRow: MultiValueRow,
   dataDownload: DataDownload,
   filesDownload: DownloadFiles,
+  qrCodeVisual: QRCode,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
@@ -51,7 +54,12 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   });
 };
 
-export const View = ({ report, config, isEnlarged }: ViewProps) => {
+export const View = ({ customConfig, customReport }: ViewProps) => {
+  const { config: originalConfig, report: originalReport, isEnlarged } = useContext(
+    DashboardItemContext,
+  );
+  const report = customReport || originalReport;
+  const config = customConfig || originalConfig;
   // cast the config to a ViewConfig so we can access the viewType
   const viewConfig = config as ViewConfig;
   const { viewType } = viewConfig;
@@ -63,17 +71,16 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
       <>
         {data?.map((datum, i) => (
           <View
-            report={{
+            customReport={{
               ...report,
               data: [datum],
             }}
-            config={
+            customConfig={
               {
                 ...config,
                 viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
               } as ViewConfig
             }
-            isEnlarged={isEnlarged}
             key={i}
           />
         ))}

@@ -4,17 +4,27 @@
  *
  */
 import { useMutation } from 'react-query';
-import { post } from '../../VizBuilderApp/api/api';
+import { useApi } from '../../utilities/ApiProvider';
 
-export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyResponse) =>
-  useMutation(
+export const useResubmitSurveyResponse = (
+  surveyResponseId,
+  updatedSurveyResponse,
+  filesByQuestionCode,
+) => {
+  const api = useApi();
+  return useMutation(
     [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
     () => {
-      return post(`surveyResponse/${surveyResponseId}/resubmit`, {
-        data: { ...updatedSurveyResponse },
+      return api.multipartPost({
+        endpoint: `surveyResponse/${surveyResponseId}/resubmit`,
+        filesByMultipartKey: filesByQuestionCode,
+        payload: {
+          ...updatedSurveyResponse,
+        },
       });
     },
     {
       throwOnError: true,
     },
   );
+};

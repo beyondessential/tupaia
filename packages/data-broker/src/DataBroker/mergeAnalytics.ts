@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Analytic, AnalyticResults as RawAnalyticResults } from '../types';
+import { Analytic, RawAnalyticResults } from '../types';
 
 export interface AnalyticResults {
   results: {
