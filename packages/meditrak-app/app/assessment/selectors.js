@@ -127,10 +127,12 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
     if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
       return valueTranslation[questionId][answer]; // return translated answer if there's any
     }
+    // return raw answer if it's a number, else 0 (e.g. if no valueTranslation provided for the question and this specific answer when answer is non-numeric)
     if (answer !== undefined && answer !== null) {
-      return answer; // return raw answer
+      return isNaN(answer) ? 0 : answer; // return raw answer
     }
 
+    // return default answer if there's no answer
     return defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // No answer found, return the default answer
   };
 
