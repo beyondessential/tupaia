@@ -219,6 +219,7 @@
       "singularise",
       "spec",
       "specs",
+      "Syncable",
       "testid",
       "Tongatapu",
       "Tupaia",
@@ -227,10 +228,7 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": [
-      "typescript",
-      "typescriptreact"
-    ],
+    "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
       "packages/": true
     },

@@ -3,20 +3,20 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-// TODO: Tidy this up as part of RN-502
+import { MeditrakAppServerModelRegistry } from '../types';
+import { Change } from './types';
 
-const arraysAreSame = (arr1, arr2) =>
+const arraysAreSame = (arr1: unknown[], arr2: unknown[]) =>
   arr1.length === arr2.length && arr1.every(item => arr2.includes(item));
 
 export class MeditrakSyncRecordUpdater {
-  constructor(models) {
+  private readonly models: MeditrakAppServerModelRegistry;
+
+  public constructor(models: MeditrakAppServerModelRegistry) {
     this.models = models;
   }
 
-  /**
-   * @public
-   */
-  async updateSyncRecords(changes) {
+  public async updateSyncRecords(changes: Change[]) {
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       await this.processChange(change);
@@ -24,11 +24,10 @@ export class MeditrakSyncRecordUpdater {
   }
 
   /**
-   * @private
    * We need to check for permissions changes when processing survey changes
    * If the permissions have changed, we need to update all related records
    */
-  async processSurveyChange(surveyChangeData) {
+  private async processSurveyChange(surveyChangeData: Change) {
     const { new_record: newRecord, old_record: oldRecord, ...surveyChange } = surveyChangeData;
     if (!oldRecord) {
       // New survey, so permissions cannot have changed
@@ -40,9 +39,18 @@ export class MeditrakSyncRecordUpdater {
       return this.addToSyncQueue(surveyChange);
     }
 
+    const newCountries = newRecord.country_ids;
+    const oldCountries = oldRecord.country_ids;
+
+    if (!Array.isArray(newCountries) || !Array.isArray(oldCountries)) {
+      throw new Error(
+        `Expected arrays for country_ids, but got: new ${newCountries}, old ${oldCountries}`,
+      );
+    }
+
     if (
       newRecord.permission_group_id === oldRecord.permission_group_id &&
-      arraysAreSame(newRecord.country_ids, oldRecord.country_ids)
+      arraysAreSame(newCountries, oldCountries)
     ) {
       // Permissions haven't changed, just queue the survey change
       return this.addToSyncQueue(surveyChange);
@@ -51,27 +59,29 @@ export class MeditrakSyncRecordUpdater {
     // Permissions have changed, enqueue changes for all related records
     // to ensure devices sync down those records if they now have permissions
     const survey = await this.models.survey.findById(surveyChange.record_id);
-    const surveyScreenChanges = (await survey.surveyScreens()).map(record => ({
+    const surveyScreenChanges: Change[] = (await survey.surveyScreens()).map(record => ({
       record_type: 'survey_screen',
       record_id: record.id,
       type: 'update',
     }));
-    const surveyScreenComponentChanges = (await survey.surveyScreenComponents()).map(record => ({
-      record_type: 'survey_screen_component',
-      record_id: record.id,
-      type: 'update',
-    }));
-    const questionChanges = (await survey.questions()).map(record => ({
+    const surveyScreenComponentChanges: Change[] = (await survey.surveyScreenComponents()).map(
+      record => ({
+        record_type: 'survey_screen_component',
+        record_id: record.id,
+        type: 'update',
+      }),
+    );
+    const questionChanges: Change[] = (await survey.questions()).map(record => ({
       record_type: 'question',
       record_id: record.id,
       type: 'update',
     }));
-    const optionSetChanges = (await survey.optionSets()).map(record => ({
+    const optionSetChanges: Change[] = (await survey.optionSets()).map(record => ({
       record_type: 'option_set',
       record_id: record.id,
       type: 'update',
     }));
-    const optionChanges = (await survey.options()).map(record => ({
+    const optionChanges: Change[] = (await survey.options()).map(record => ({
       record_type: 'option',
       record_id: record.id,
       type: 'update',
@@ -89,10 +99,7 @@ export class MeditrakSyncRecordUpdater {
     return Promise.all(allChanges.map(change => this.addToSyncQueue(change)));
   }
 
-  /**
-   * @private
-   */
-  processChange(change) {
+  private processChange(change: Change) {
     if (change.record_type === 'survey') {
       return this.processSurveyChange(change);
     }
@@ -100,10 +107,7 @@ export class MeditrakSyncRecordUpdater {
     return this.addToSyncQueue(change);
   }
 
-  /**
-   * @private
-   */
-  addToSyncQueue(change) {
+  private addToSyncQueue(change: Change) {
     return this.models.meditrakSyncQueue.updateOrCreate(
       {
         record_id: change.record_id,
