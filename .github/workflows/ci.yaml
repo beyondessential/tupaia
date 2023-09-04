@@ -189,3 +189,20 @@ jobs:
       - run: yarn set version 3.2.1
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
       - run: yarn build
+
+  allgreen:
+    name: All Green
+    if: always()
+    needs:
+      - validate_branch_name
+      - validate_migration
+      - validate_tests
+      - validate_types
+      - run_tests
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Green if all jobs are green
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
