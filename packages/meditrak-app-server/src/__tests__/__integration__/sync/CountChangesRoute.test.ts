@@ -10,7 +10,7 @@ import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/ut
 import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from '../../../sync';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { TestModelRegistry } from '../../types';
-import { setupTestApp, setupTestUser } from '../../utilities';
+import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../utilities';
 import { CAT_USER_SESSION } from '../fixtures';
 import { upsertDummyQuestion } from './upsertDummyQuestion';
 
@@ -36,9 +36,11 @@ describe('changes/count', () => {
         apiClientUserId: undefined,
       }),
     );
+    grantUserAccess(user.id);
   });
 
   afterAll(async () => {
+    revokeAccess();
     syncableChangeEnqueuer.stopListeningForChanges();
     await clearTestData(getTestDatabase());
   });

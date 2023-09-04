@@ -10088,6 +10088,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/meditrak-app-server@workspace:packages/meditrak-app-server"
   dependencies:
+    "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
