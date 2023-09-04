@@ -18,6 +18,8 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
+  ProjectsRoute,
+  ProjectsRequest,
   SurveyScreenComponentsRoute,
   SurveyScreenComponentsRequest,
 } from '../routes';
@@ -33,6 +35,7 @@ export function createApp() {
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
+    .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<SurveyScreenComponentsRequest>(
       'surveys/:surveyCode/surveyScreenComponents',
       handleWith(SurveyScreenComponentsRoute),

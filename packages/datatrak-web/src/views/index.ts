@@ -12,4 +12,5 @@ export { RegisterPage } from './RegisterPage';
 export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';
 export { NotFoundPage } from './NotFoundPage';
+export { ProjectSelectPage } from './ProjectSelectPage';
 export { SurveySuccessScreen, SurveyReviewScreen, SurveyScreen } from '../features';
