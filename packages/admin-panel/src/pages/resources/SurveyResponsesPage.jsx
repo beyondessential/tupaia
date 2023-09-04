@@ -80,6 +80,11 @@ const entityName = {
   },
 };
 
+const countryName = {
+  Header: 'Country',
+  source: 'country.name',
+};
+
 export const SURVEY_RESPONSE_COLUMNS = [
   surveyId,
   surveyName,
@@ -102,6 +107,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
 ];
 
 export const SURVEY_RESPONSE_PAGE_COLUMNS = [
+  countryName,
   entityName,
   ...SURVEY_RESPONSE_COLUMNS,
   {

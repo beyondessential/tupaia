@@ -41,12 +41,16 @@ import {
 } from '../routes';
 import { authHandlerProvider } from '../auth';
 
-const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
+const {
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
+  ENTITY_API_URL = 'http://localhost:8050/v1',
+} = process.env;
 
 /**
  * Set up express server with middleware,
  */
 export function createApp() {
+  const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
@@ -127,6 +131,8 @@ export function createApp() {
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemasRoute),
     )
+    .use('hierarchy', forwardToEntityApi)
+    .use('hierarchies', forwardToEntityApi)
     .use('*', forwardRequest(CENTRAL_API_URL))
     .build();
 

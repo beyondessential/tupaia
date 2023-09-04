@@ -7,7 +7,7 @@ import { yup } from '@tupaia/utils';
 import { TransformTable } from '../table';
 import { Row } from '../../types';
 import { getColumnMatcher } from './helpers';
-import { gatherColumnsValidator } from './transformValidators';
+import { gatherColumnsValidator } from './utils';
 
 type GatherColumnsParams = {
   shouldKeepColumn: (field: string) => boolean;

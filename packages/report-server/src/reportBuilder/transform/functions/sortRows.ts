@@ -7,7 +7,7 @@ import { yup, orderBy } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
 
 import { Row } from '../../types';
-import { starSingleOrMultipleColumnsValidator } from './transformValidators';
+import { starSingleOrMultipleColumnsValidator } from './utils';
 import { TransformTable } from '../table';
 import { TransformParser } from '../parser';
 

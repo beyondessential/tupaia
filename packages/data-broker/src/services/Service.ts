@@ -4,7 +4,7 @@
  */
 
 import {
-  AnalyticResults,
+  RawAnalyticResults,
   DataBrokerModelRegistry,
   DataElement,
   DataGroup,
@@ -63,7 +63,7 @@ export abstract class Service {
   public abstract pullAnalytics(
     dataElements: DataElement[],
     options: Record<string, unknown>,
-  ): Promise<AnalyticResults>;
+  ): Promise<RawAnalyticResults>;
 
   public abstract pullEvents(
     dataGroups: DataGroup[],

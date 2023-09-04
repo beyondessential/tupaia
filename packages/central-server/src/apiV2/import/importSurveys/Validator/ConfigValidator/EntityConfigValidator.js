@@ -13,17 +13,25 @@ const { ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
 
 const isEntityQuestion = ({ type }) => [ENTITY, PRIMARY_ENTITY].includes(type);
 
+const isNotPresentIfNotCreateNew = (value, object, key) => {
+  const canCreateNew = isYes(object.createNew);
+  if (!canCreateNew) {
+    if (object.hasOwnProperty(key)) {
+      throw new Error('Can only be present if createNew is Yes');
+    }
+  }
+  return true;
+};
+
 const hasContentIfCanCreateNew = (value, object, key) => {
   const canCreateNew = isYes(object.createNew);
   if (canCreateNew) {
     if (isEmpty(value)) {
       throw new Error('Should not be empty if createNew is Yes');
     }
-  } else if (object.hasOwnProperty(key)) {
-    throw new Error('Can only be present if createNew is Yes');
   }
 
-  return true;
+  return isNotPresentIfNotCreateNew(value, object, key);
 };
 
 export class EntityConfigValidator extends JsonFieldValidator {
@@ -48,7 +56,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
       type: [hasContent, constructIsValidEntityType(this.models.entity)],
       allowScanQrCode: [constructIsNotPresentOr(validateIsYesOrNo)],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
-      generateQrCode: [hasContentIfCanCreateNew, constructIsNotPresentOr(validateIsYesOrNo)],
+      generateQrCode: [isNotPresentIfNotCreateNew, constructIsNotPresentOr(validateIsYesOrNo)],
       code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       parent: [pointsToValidPrecedingEntityQuestion],

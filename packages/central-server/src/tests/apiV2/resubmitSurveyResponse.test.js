@@ -164,7 +164,7 @@ describe('resubmit surveyResponse endpoint', () => {
     expect(body.filter(answer => answer.text === 'hello world')).to.not.be.an('undefined');
   });
 
-  it('Should delete an answer if it already exists and the update is an empty string', async () => {
+  it('Should delete an answer if it already exists and the update is null', async () => {
     const [surveyResponse] = await buildAndInsertSurveyResponses(models, [
       {
         surveyCode: 'TEST_SURVEY_RESP_CRUD',
@@ -176,7 +176,7 @@ describe('resubmit surveyResponse endpoint', () => {
 
     const response = await app.post(`surveyResponse/${surveyResponse.surveyResponse.id}/resubmit`, {
       body: {
-        answers: { [questionCode(1)]: '' },
+        answers: { [questionCode(1)]: null },
       },
     });
 

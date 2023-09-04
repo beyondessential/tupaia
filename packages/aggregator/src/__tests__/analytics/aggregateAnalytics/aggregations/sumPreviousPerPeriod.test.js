@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
-import { PERIOD_TYPES } from '@tupaia/tsutils';
+import { arrayToAnalytics, PERIOD_TYPES } from '@tupaia/tsutils';
+
 import {
   getDateRangeForSumPreviousPerPeriod,
   sumPreviousPerPeriod,
