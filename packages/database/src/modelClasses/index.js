@@ -158,7 +158,7 @@ export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel, ProjectType } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
-export { SurveyModel } from './Survey';
+export { SurveyModel, SurveyType } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
