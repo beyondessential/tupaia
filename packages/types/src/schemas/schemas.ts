@@ -1602,6 +1602,13 @@ export const MatrixConfigSchema = {
 					]
 				}
 			]
+		},
+		"valueType": {
+			"description": "Specify the valueType for formatting of the value in the matrix",
+			"type": "string",
+			"enum": [
+				"string"
+			]
 		}
 	},
 	"description": "Matrix viz type",
@@ -18382,6 +18389,13 @@ export const DashboardItemConfigSchema = {
 							]
 						}
 					]
+				},
+				"valueType": {
+					"description": "Specify the valueType for formatting of the value in the matrix",
+					"type": "string",
+					"enum": [
+						"string"
+					]
 				}
 			},
 			"required": [
@@ -27301,6 +27315,13 @@ export const DashboardItemSchema = {
 										"type"
 									]
 								}
+							]
+						},
+						"valueType": {
+							"description": "Specify the valueType for formatting of the value in the matrix",
+							"type": "string",
+							"enum": [
+								"string"
 							]
 						}
 					},
@@ -38624,6 +38645,12 @@ export const DashboardWithItemsSchema = {
 													"type"
 												]
 											}
+										]
+									},
+									"valuetype": {
+										"type": "string",
+										"enum": [
+											"string"
 										]
 									}
 								},
