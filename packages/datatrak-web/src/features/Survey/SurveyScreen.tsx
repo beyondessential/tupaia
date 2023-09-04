@@ -13,7 +13,7 @@ import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
 import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
-import { TopProgressBar } from '../../components';
+import { SurveyToolbar } from './SurveyToolbar';
 
 const Container = styled.div`
   display: flex;
@@ -100,7 +100,6 @@ export const SurveyScreen = () => {
     displayQuestions,
     screenHeader,
     screenNumber,
-    numberOfScreens,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
@@ -134,10 +133,7 @@ export const SurveyScreen = () => {
 
   return (
     <>
-      <TopProgressBar
-        currentSurveyQuestion={screenNumber}
-        totalNumberOfSurveyQuestions={numberOfScreens}
-      />
+      <SurveyToolbar />
       <Container>
         <SideMenu />
         <Paper>

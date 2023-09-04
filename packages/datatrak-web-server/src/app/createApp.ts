@@ -20,6 +20,8 @@ import {
   SurveysRequest,
   SurveyScreenComponentsRoute,
   SurveyScreenComponentsRequest,
+  SurveyRequest,
+  SurveyRoute,
 } from '../routes';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -33,6 +35,7 @@ export function createApp() {
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
+    .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<SurveyScreenComponentsRequest>(
       'surveys/:surveyCode/surveyScreenComponents',
       handleWith(SurveyScreenComponentsRoute),

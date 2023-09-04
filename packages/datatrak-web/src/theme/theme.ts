@@ -10,10 +10,10 @@ export const theme = createMuiTheme(
     palette: {
       type: 'light',
       primary: {
-        main: '#328DE5', // Main purple (as seen on primary buttons)
+        main: '#328DE5', // Main blue (as seen on primary buttons)
       },
       secondary: {
-        main: '#328de533', // Light purple
+        main: '#EC642D', // Tupaia orange
       },
       background: {
         default: '#F9F9F9', // Off white background
@@ -36,7 +36,7 @@ export const theme = createMuiTheme(
           textTransform: 'none',
         },
         label: {
-          fontSize: '1rem',
+          fontSize: '0.875rem',
         },
       },
       MuiTypography: {

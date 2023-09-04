@@ -1,10 +1,13 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
 import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
   background: rgba(0, 65, 103, 0.3);
   width: 100%;
-  min-width: 22.8rem;
 `;
 
 const ProgressBar = styled.div<{

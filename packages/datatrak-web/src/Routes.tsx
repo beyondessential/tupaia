@@ -86,7 +86,7 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
           </Route>
         </Route>
-        <Route path="/" element={<BackgroundPageLayout />}>
+        <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
           <Route element={<PrivateRoute />}>
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>

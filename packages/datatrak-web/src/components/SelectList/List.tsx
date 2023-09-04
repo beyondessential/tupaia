@@ -14,9 +14,9 @@ interface SelectListProps {
 
 export const List = ({ items, onSelect }: SelectListProps) => {
   return (
-    <MuiList>
+    <MuiList disablePadding>
       {items?.map(item => (
-        <ListItem item={item} onSelect={onSelect}>
+        <ListItem item={item} onSelect={onSelect} key={item.value}>
           {item?.children && <List items={item.children} onSelect={onSelect} />}
         </ListItem>
       ))}

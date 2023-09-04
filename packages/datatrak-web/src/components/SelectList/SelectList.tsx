@@ -25,6 +25,12 @@ const ListWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
+const Label = styled(FormLabel).attrs({
+  component: 'h2',
+})`
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+`;
 interface SelectListProps {
   items?: ListItemType[];
   onSelect?: (item: ListItemType) => void;
@@ -34,7 +40,7 @@ interface SelectListProps {
 export const SelectList = ({ items = [], onSelect, label }: SelectListProps) => {
   return (
     <Wrapper>
-      <FormLabel component={'h2'}>{label}</FormLabel>
+      <Label>{label}</Label>
       <ListWrapper>
         <List items={items} onSelect={onSelect} />
       </ListWrapper>

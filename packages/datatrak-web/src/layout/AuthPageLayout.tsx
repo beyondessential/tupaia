@@ -3,21 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { Outlet } from 'react-router';
 import styled from 'styled-components';
-import { PageContainer } from '../components';
-import { HEADER_HEIGHT } from '../constants';
+import { BackgroundPageLayout } from './BackgroundPageLayout';
 
-export const Background = styled.div`
-  width: 100%;
-  height: 100%;
-  background-image: url('/auth-background.svg');
-  background-position: top center;
-  background-size: cover;
-  min-height: calc(100vh - ${HEADER_HEIGHT});
-  display: flex;
-
+export const AuthPageLayout = styled(BackgroundPageLayout).attrs({
+  backgroundImage: '/auth-background.svg',
+})`
   .auth-page {
     h2 {
       font-weight: ${({ theme }) => theme.typography.fontWeightBold};
@@ -57,13 +48,3 @@ export const Background = styled.div`
     }
   }
 `;
-
-export const AuthPageLayout = () => {
-  return (
-    <Background>
-      <PageContainer>
-        <Outlet />
-      </PageContainer>
-    </Background>
-  );
-};
