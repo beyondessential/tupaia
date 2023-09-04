@@ -75,7 +75,7 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
     );
 
   const selectedCodes = formContext.watch(reportCode!);
-  const downloadLink = transformDownloadLink(`/${report.downloadUrl}&surveyCodes=${selectedCodes}`);
+  const downloadLink = transformDownloadLink(`${report.downloadUrl}&surveyCodes=${selectedCodes}`);
 
   const closeModal = () => {
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT);

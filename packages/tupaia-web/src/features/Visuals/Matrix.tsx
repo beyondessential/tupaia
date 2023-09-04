@@ -16,6 +16,7 @@ import {
   Alert,
   TextField,
 } from '@tupaia/ui-components';
+import { formatDataValueByType } from '@tupaia/utils';
 import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import {
   MatrixReport,
@@ -81,6 +82,7 @@ const parseRows = (
   searchFilter?: string,
   drillDown?: MatrixConfig['drillDown'],
   baseDrillDownLink?: string,
+  valueType?: MatrixConfig['valueType'],
 ): MatrixRowType[] => {
   const location = useLocation();
 
@@ -101,7 +103,14 @@ const parseRows = (
 
     // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
-      const children = parseRows(rows, category, searchFilter, drillDown, baseDrillDownLink);
+      const children = parseRows(
+        rows,
+        category,
+        searchFilter,
+        drillDown,
+        baseDrillDownLink,
+        valueType,
+      );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
       return [
@@ -129,7 +138,12 @@ const parseRows = (
               }`,
             }
           : null,
-        ...rest,
+        ...Object.entries(rest).reduce((acc, [key, value]) => {
+          return {
+            ...acc,
+            [key]: valueType ? formatDataValueByType({ value }, valueType) : value,
+          };
+        }, {}),
       },
     ];
   }, [] as MatrixRowType[]);
@@ -201,10 +215,17 @@ export const Matrix = () => {
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
-  const { periodGranularity, drillDown } = config as MatrixConfig;
+  const { periodGranularity, drillDown, valueType } = config as MatrixConfig;
 
   const baseDrillDownLink = getBaseDrilldownLink(drillDown);
-  const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, baseDrillDownLink);
+  const parsedRows = parseRows(
+    rows,
+    undefined,
+    searchFilter,
+    drillDown,
+    baseDrillDownLink,
+    valueType,
+  );
   const parsedColumns = parseColumns(columns);
 
   // in the dashboard, show a placeholder image
