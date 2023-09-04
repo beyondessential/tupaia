@@ -3,9 +3,10 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { TextField, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { SHORT_ID, generateMongoId, generateShortId } from './generateId';
+import { SurveyQuestionInputProps } from '../../types';
 
 const LabelId = styled(Typography).attrs({
   variant: 'h1',
@@ -19,55 +20,69 @@ const BodyText = styled(Typography).attrs({
   color: 'textSecondary',
 })`
   font-size: 0.875rem;
-  margin-bottom: 1.125rem;
+  margin-bottom: 1.13rem;
 `;
 
 const GeneratedCode = styled(Typography).attrs({
   variant: 'h1',
   color: 'textPrimary',
 })`
-  font-size: 0.875rem;
+  font-size: 0.88rem;
+  margin-bottom: 0.6rem;
 `;
 
-interface CodeGeneratorProps {
+const Line = styled.div`
+  height: 1px;
+  background: ${({ theme }) => theme.palette.divider};
+  width: 58.1rem;
+`;
+
+type CodeGeneratorProps = SurveyQuestionInputProps & {
   id: string;
   name: string;
-  label: 'Asset ID';
+  label: string;
   config: any;
   register: any;
-}
+};
 
 // {"codeGenerator":{"type":"shortid","prefix":"CONTACT","length":"10"}}
 
 export const CodeGeneratorQuestion = ({
   id,
   name,
-  label = 'Asset ID',
+  label,
   config,
+  controllerProps: { onChange, value, ref },
   ...props
 }: CodeGeneratorProps) => {
-  const [code, setCode] = useState('');
-
-  const configObject = JSON.parse(config);
-  const { codeGenerator } = configObject;
-
   useEffect(() => {
-    console.log('configObject', configObject);
-    console.log('config', config);
+    console.log(config);
     const newCode =
-      configObject.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
-    setCode(newCode);
+      config.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
+    if (!value) {
+      onChange(newCode);
+    }
   }, []);
 
   return (
-    <>
+    <div>
       <LabelId variant="h1">{label}</LabelId>
       <BodyText>
-        Please confirm this number is recorded on the asset. Note: We need to work out the workflow
-        of if we are generating a QR code and when we print it
+        Please confirm this number is recorded on the asset. <br></br>
+        Note: We need to work out the workflow of if we are generating a QR code and when we print
+        it
       </BodyText>
-      <GeneratedCode>{code}</GeneratedCode>
-      <TextField name={name} id={id} type="text" value={code} {...props} />
-    </>
+      <GeneratedCode>{value}</GeneratedCode>
+      <Line></Line>
+      <TextField
+        {...props}
+        name={name}
+        id={id}
+        type="hidden"
+        inputRef={ref}
+        onChange={onChange}
+        value={value}
+      />
+    </div>
   );
 };

@@ -5,8 +5,6 @@
 // @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
-import { TextField } from '@tupaia/ui-components';
-import { CodeGeneratorQuestion } from '../../components/CodeGeneratorQuestion/CodeGeneratorQuestion';
 import { useFormContext, Controller } from 'react-hook-form';
 import {
   BinaryQuestion,
@@ -18,6 +16,7 @@ import {
   DateTimeQuestion,
 } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
+import { CodeGeneratorQuestion } from '../../components';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
@@ -28,12 +27,10 @@ const QuestionPlaceholder = styled.div`
 
 const Placeholder = ({ name, type, id }) => {
   return (
-    <>
-      <QuestionPlaceholder id={id}>
-        <p>Question name: {name}</p>
-        <p>Question type: {type}</p>
-      </QuestionPlaceholder>
-    </>
+    <QuestionPlaceholder id={id}>
+      <p>Question name: {name}</p>
+      <p>Question type: {type}</p>
+    </QuestionPlaceholder>
   );
 };
 
