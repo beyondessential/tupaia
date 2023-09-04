@@ -4,10 +4,22 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { LoginForm, EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';
+import styled from 'styled-components';
+import { LoginForm as BaseLoginForm, EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';
 import { useLogin } from '../api/mutations';
 import { ROUTES } from '../constants';
 
+const LoginForm = styled(BaseLoginForm)`
+  form {
+    margin-top: 2.4rem;
+    > a {
+      font-size: 0.75rem;
+    }
+  }
+  .MuiFormControl-root:nth-child(2) {
+    margin-bottom: 0.7rem;
+  }
+`;
 export const LoginPage = ({
   message,
 }: {
@@ -27,6 +39,7 @@ export const LoginPage = ({
       registerLink={ROUTES.REGISTER}
       formContext={formContext}
       message={message}
+      className="auth-page"
     />
   );
 };

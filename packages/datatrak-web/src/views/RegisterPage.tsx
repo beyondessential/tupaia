@@ -10,27 +10,8 @@ import { useRegister } from '../api/mutations';
 import { ROUTES } from '../constants';
 
 const RegisterForm = styled(BaseRegisterForm)`
-  h2 {
-    font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  }
-  h3 {
-    margin-top: 0.32rem;
-  }
   form {
     margin-top: 4.3rem;
-  }
-  .MuiFormControl-root {
-    margin-bottom: 1rem;
-  }
-  .MuiTypography-root.MuiFormControlLabel-label,
-  .MuiTypography-root.MuiFormControlLabel-label a {
-    font-size: 0.6875rem;
-  }
-  .MuiSvgIcon-root {
-    font-size: 1rem;
-  }
-  .MuiCheckbox-root {
-    padding-right: 0.375rem;
   }
 `;
 
