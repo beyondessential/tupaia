@@ -34874,37 +34874,6 @@ export const DataTableSchema = {
 	]
 } 
 
-export const DatatrakSessionSchema = {
-	"properties": {
-		"access_policy": {},
-		"access_token": {
-			"type": "string"
-		},
-		"access_token_expiry": {
-			"type": "string"
-		},
-		"email": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"refresh_token": {
-			"type": "string"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"access_policy",
-		"access_token",
-		"access_token_expiry",
-		"email",
-		"id",
-		"refresh_token"
-	]
-} 
-
 export const DhisInstanceSchema = {
 	"properties": {
 		"code": {
@@ -45107,7 +45076,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -45122,7 +45091,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -45173,7 +45142,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -45213,7 +45182,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -45251,7 +45220,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -45277,7 +45246,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -45317,7 +45286,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -45337,33 +45306,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -45385,7 +45354,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -45406,7 +45375,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -45422,7 +45391,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -45441,7 +45410,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"qrCodeVisual"
@@ -45452,7 +45421,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							}
 						]
