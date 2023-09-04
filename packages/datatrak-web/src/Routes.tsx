@@ -36,9 +36,17 @@ import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
  * If the user is logged in and tries to access the login page, redirect to the home page
  */
 const LoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, isLoading, isFetched } = useUser();
-  if (isLoading || !isFetched) return <FullPageLoader />;
-  if (isLoggedIn) return <Navigate to="/" replace={true} />;
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  if (isLoading || !isFetched) {
+    return <FullPageLoader />;
+  }
+  if (isLoggedIn) {
+    if (data?.projectId) {
+      return <Navigate to={ROUTES.HOME} replace={true} />;
+    } else {
+      return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
+    }
+  }
   return children;
 };
 

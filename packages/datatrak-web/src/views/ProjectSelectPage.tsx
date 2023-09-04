@@ -5,10 +5,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
-import { SpinningLoader } from '@tupaia/ui-components';
-import { useProjects } from '../api/queries';
-import { SelectList, ListItemType, ButtonLink } from '../components';
+import { SpinningLoader, Button } from '@tupaia/ui-components';
 import { DatatrakWebProjectsRequest } from '@tupaia/types';
+import { useProjects } from '../api/queries';
+import { useEditUser } from '../api/mutations';
+import { SelectList, ListItemType, ButtonLink } from '../components';
+import { HEADER_HEIGHT } from '../constants';
 
 export type Project = DatatrakWebProjectsRequest.ResBody[number];
 
@@ -16,6 +18,7 @@ const Container = styled(Paper)`
   width: 48rem;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - ${HEADER_HEIGHT} - 4rem) !important;
 `;
 
 const LoadingContainer = styled.div`
@@ -31,12 +34,14 @@ const ListWrapper = styled.div`
   max-height: 35rem;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 `;
 
 export const ProjectSelectPage = () => {
   const { data, isLoading, isFetched } = useProjects();
   const [selectedProject, setSelectedProject] = useState<ListItemType | null>(null);
   const showLoader = isLoading || !isFetched;
+  const { mutate, isLoading: isConfirming } = useEditUser();
 
   const projectOptions = data?.map(({ entityName, id }: Project) => ({
     name: entityName,
@@ -44,9 +49,13 @@ export const ProjectSelectPage = () => {
     selected: id === selectedProject?.value,
   }));
 
+  const onConfirm = () => {
+    mutate({ projectId: selectedProject?.value });
+  };
+
   return (
     <Container>
-      <Typography variant="h1">Select project</Typography>
+      <Typography variant="h1">Select project {isConfirming && '...'}</Typography>
       {showLoader ? (
         <LoadingContainer>
           <SpinningLoader />
@@ -64,14 +73,9 @@ export const ProjectSelectPage = () => {
         <ButtonLink to="/" variant="outlined">
           Cancel
         </ButtonLink>
-        <ButtonLink
-          to={`${selectedProject?.value}/1` || ''}
-          variant="contained"
-          color="primary"
-          disabled={!selectedProject}
-        >
+        <Button onClick={onConfirm} variant="contained" color="primary" disabled={!selectedProject}>
           Confirm
-        </ButtonLink>
+        </Button>
       </DialogActions>
     </Container>
   );

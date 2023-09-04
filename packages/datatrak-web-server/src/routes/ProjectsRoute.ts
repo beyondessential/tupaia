@@ -21,6 +21,7 @@ const columns = [
   'dashboard_group_name',
   'default_measure',
   'description',
+  'entity.name',
   'entity_hierarchy_id',
   'entity_id',
   'id',
@@ -28,7 +29,6 @@ const columns = [
   'logo_url',
   'permission_groups',
   'sort_order',
-  'entity.name',
 ];
 
 export class ProjectsRoute extends Route<ProjectsRequest> {
@@ -37,7 +37,6 @@ export class ProjectsRoute extends Route<ProjectsRequest> {
     const projects = await ctx.services.central.fetchResources('projects', {
       columns,
     });
-    console.log('projects', projects);
     return camelcaseKeys(projects, { deep: true });
   }
 }
