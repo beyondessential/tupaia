@@ -1,0 +1,43 @@
+name: e2e
+on:
+  push:
+    branches:
+      - '**-e2e'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  pull_secrets:
+    name: Pull secrets
+    runs-on: ubuntu-latest
+    outputs:
+      TEST_USER_PASSWORD: ${{ steps.pull_secret_step.outputs.TEST_USER_PASSWORD }}
+      CYPRESS_RECORD_KEY: ${{ steps.pull_secret_step.outputs.CYPRESS_RECORD_KEY }}
+    steps:
+      - run: sudo apt-get install -y lastpass-cli
+      - run: echo ${{ secrets.LASTPASS_PASSWORD }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ secrets.LASTPASS_USERNAME }}
+      - id: pull_secret_step
+        run: lpass show --notes "Tupaia Github Actions Secrets" >> "$GITHUB_OUTPUT"
+      - run: lpass logout --force
+
+  run_e2e:
+    name: Run e2e
+    runs-on: ubuntu-latest
+    needs: pull_secrets
+    env:
+      CYPRESS_TEST_USER_EMAIL: test_e2e@beyondessential.com.au
+      CYPRESS_TEST_USER_PASSWORD: ${{ needs.pull_secrets.outputs.TEST_USER_PASSWORD }}
+      CYPRESS_RECORD_KEY: ${{ needs.pull_secrets.outputs.CYPRESS_RECORD_KEY }}
+      TERM: xterm # workaround for issue where cypress fails to upload to cypress.io
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn workspace @tupaia/utils build
+      - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID
