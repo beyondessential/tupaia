@@ -81,6 +81,18 @@ jobs:
       - run: yarn build:internal-dependencies
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
 
+  validate_lockfile:
+    name: Validate lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
+
   run_tests:
     name: Run tests
     runs-on: ubuntu-latest
@@ -190,7 +202,7 @@ jobs:
           node-version: 14.19.3
           cache: yarn
       - run: yarn set version 3.2.1
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable --production
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus --production
       - run: yarn build
 
   allgreen:
