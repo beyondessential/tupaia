@@ -5,8 +5,8 @@
 
 import { getHighestPossibleIdForGivenTime } from '@tupaia/database';
 import { DbFilter } from '@tupaia/server-boilerplate';
-import { getSupportedModels } from '../../sync';
-import { MeditrakSyncQueueFields } from '../../models/MeditrakSyncQueue';
+import { getSupportedModels } from '../../../sync';
+import { MeditrakSyncQueueFields } from '../../../models/MeditrakSyncQueue';
 
 const getRecordTypeFilter = (appVersion: string, recordTypes: string[] | undefined) => {
   if (recordTypes) {

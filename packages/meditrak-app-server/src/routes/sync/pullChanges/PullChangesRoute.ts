@@ -9,7 +9,7 @@ import { TYPES } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatabaseError } from '@tupaia/utils';
 import { getChangesFilter } from './getChangesFilter';
-import { getUnsupportedModelFields } from '../../sync';
+import { getUnsupportedModelFields } from '../../../sync';
 
 type ChangeRecord = {
   action: 'update' | 'delete';
