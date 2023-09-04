@@ -8,12 +8,10 @@ import styled from 'styled-components';
 import { SHORT_ID, generateMongoId, generateShortId } from './generateId';
 import { SurveyQuestionInputProps } from '../../types';
 
-const LabelId = styled(Typography).attrs({
-  variant: 'h1',
-  color: 'textPrimary',
-})`
+const LabelId = styled(Typography)`
   font-size: 1rem;
-  margin-bottom: 0.4 rem;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
 `;
 
 const BodyText = styled(Typography).attrs({
@@ -23,29 +21,17 @@ const BodyText = styled(Typography).attrs({
   margin-bottom: 1.13rem;
 `;
 
-const GeneratedCode = styled(Typography).attrs({
-  variant: 'h1',
-  color: 'textPrimary',
-})`
+const GeneratedCode = styled(Typography)`
   font-size: 0.88rem;
+  font-weight: 500;
   margin-bottom: 0.6rem;
 `;
 
 const Line = styled.div`
   height: 1px;
   background: ${({ theme }) => theme.palette.divider};
-  width: 58.1rem;
+  width: 100%;
 `;
-
-type CodeGeneratorProps = SurveyQuestionInputProps & {
-  id: string;
-  name: string;
-  label: string;
-  config: any;
-  register: any;
-};
-
-// {"codeGenerator":{"type":"shortid","prefix":"CONTACT","length":"10"}}
 
 export const CodeGeneratorQuestion = ({
   id,
@@ -54,19 +40,18 @@ export const CodeGeneratorQuestion = ({
   config,
   controllerProps: { onChange, value, ref },
   ...props
-}: CodeGeneratorProps) => {
+}: SurveyQuestionInputProps) => {
   useEffect(() => {
-    console.log(config);
-    const newCode =
-      config.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
     if (!value) {
+      const newCode =
+        config.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
       onChange(newCode);
     }
   }, []);
 
   return (
     <div>
-      <LabelId variant="h1">{label}</LabelId>
+      <LabelId variant="h3">{label}</LabelId>
       <BodyText>
         Please confirm this number is recorded on the asset. <br></br>
         Note: We need to work out the workflow of if we are generating a QR code and when we print
@@ -76,7 +61,7 @@ export const CodeGeneratorQuestion = ({
       <Line></Line>
       <TextField
         {...props}
-        name={name}
+        name={name!}
         id={id}
         type="hidden"
         inputRef={ref}
