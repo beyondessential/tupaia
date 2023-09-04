@@ -12,7 +12,7 @@ import { Dashboard } from '../../types';
 const MenuButton = styled(ButtonBase)`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
   padding: 1rem 2rem;
