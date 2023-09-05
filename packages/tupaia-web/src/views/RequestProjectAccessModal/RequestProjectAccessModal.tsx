@@ -88,7 +88,6 @@ export const RequestProjectAccessModal = () => {
       <ModalHeader />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
-      {project?.hasAccess && <Typography>You already have access to this project</Typography>}
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}
