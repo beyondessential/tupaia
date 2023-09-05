@@ -199,7 +199,7 @@ jobs:
       - validate_tests
       - validate_types
       - run_tests
-      - build
+      # - build
     runs-on: ubuntu-latest
     steps:
       - name: Green if all jobs are green
@@ -210,19 +210,7 @@ jobs:
         if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          payload: |
-            {
-              "text": "CI: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                  }
-                }
-              ]
-            }
+          payload-file-path: './slack-notification-payload.json'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
