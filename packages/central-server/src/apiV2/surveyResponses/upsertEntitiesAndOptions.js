@@ -5,7 +5,7 @@
 
 import { DatabaseError } from '@tupaia/utils';
 
-const createEntities = async (models, entitiesCreated, surveyId) => {
+const upsertEntities = async (models, entitiesCreated, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
 
@@ -53,7 +53,7 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
 
     try {
       if (entitiesCreated.length > 0) {
-        await createEntities(models, entitiesCreated, surveyResponse.survey_id);
+        await upsertEntities(models, entitiesCreated, surveyResponse.survey_id);
       }
 
       if (optionsCreated.length > 0) {

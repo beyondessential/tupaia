@@ -4,56 +4,36 @@
  */
 
 import {
-  splitStringOnComma,
-  translateQuestionDependentFields,
   translateQuestionDependentNestedFields,
-  replaceQuestionCodesWithIds,
   replaceNestedQuestionCodesWithIds,
 } from '../../../utilities';
 import { isYes } from '../utilities';
 
-/**
- * Dictionary of entity creation fields used in the input
- * to the keys that will be used in the output
- */
-const ENTITY_CREATION_FIELD_TRANSLATION = {
-  name: 'name',
-  code: 'code',
-  parent: 'parentId',
-  grandparent: 'grandparentId',
-};
-
-const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
-const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
+const ENTITY_KEYS_WITH_NESTED_FIELDS = ['fields', 'filter'];
 
 export const processEntityConfig = async (models, config) => {
-  const entityCreationNonJsonFields = translateQuestionDependentFields(
+  const entityFilterAndUpsertFields = translateQuestionDependentNestedFields(
     config,
-    ENTITY_CREATION_FIELD_TRANSLATION,
-  );
-  const entityCreationJsonFields = translateQuestionDependentNestedFields(
-    config,
-    ENTITY_CREATION_JSON_FIELD_LIST,
+    ENTITY_KEYS_WITH_NESTED_FIELDS,
   );
 
   const processedConfig = {
-    allowScanQrCode: isYes(config.allowScanQrCode),
-    type: splitStringOnComma(config.type),
     createNew: isYes(config.createNew),
-    generateQrCode: isYes(config.generateQrCode),
-    ...entityCreationNonJsonFields,
-    ...entityCreationJsonFields,
+    ...entityFilterAndUpsertFields,
   };
 
-  let resultConfig = await replaceQuestionCodesWithIds(
+  // Optional configs
+  if (config.generateQrCode !== undefined) {
+    processedConfig.generateQrCode = isYes(config.generateQrCode);
+  }
+  if (config.allowScanQrCode !== undefined) {
+    processedConfig.allowScanQrCode = isYes(config.allowScanQrCode);
+  }
+
+  const resultConfig = await replaceNestedQuestionCodesWithIds(
     models,
     processedConfig,
-    ENTITY_CREATION_FIELD_LIST,
-  );
-  resultConfig = await replaceNestedQuestionCodesWithIds(
-    models,
-    resultConfig,
-    ENTITY_CREATION_JSON_FIELD_LIST,
+    ENTITY_KEYS_WITH_NESTED_FIELDS,
   );
 
   return resultConfig;

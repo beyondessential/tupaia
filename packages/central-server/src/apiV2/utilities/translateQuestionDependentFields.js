@@ -1,22 +1,19 @@
-import { splitStringOn } from './split';
+import { splitStringOn, splitStringOnComma } from './split';
+
+/**
+ * Dictionary of entity creation fields used in the input
+ * to the keys that will be used in the output
+ */
+const ENTITY_FIELD_TRANSLATION = {
+  name: 'name',
+  code: 'code',
+  parent: 'parentId',
+  grandparent: 'grandparentId',
+};
 
 // Subfields will be in the format field.subfield, e.g. 'attributes.type'
 const isSubfield = (nestedFieldList, fieldKey) =>
   nestedFieldList.find(field => fieldKey.startsWith(field));
-
-export const translateQuestionDependentFields = (config, fieldTranslation) => {
-  const resultConfig = {};
-
-  Object.entries(config).forEach(([fieldKey, questionCode]) => {
-    const translatedFieldKey = fieldTranslation[fieldKey];
-
-    if (translatedFieldKey) {
-      resultConfig[translatedFieldKey] = questionCode;
-    }
-  });
-
-  return resultConfig;
-};
 
 export const translateQuestionDependentNestedFields = (config, nestedFieldList) => {
   const resultConfig = {};
@@ -27,7 +24,21 @@ export const translateQuestionDependentNestedFields = (config, nestedFieldList) 
       if (!resultConfig[primaryFieldKey]) {
         resultConfig[primaryFieldKey] = {};
       }
-      resultConfig[primaryFieldKey][subfieldKey] = questionCode;
+
+      // Convert to array if type key in filter object
+      if (primaryFieldKey === 'filter' && subfieldKey === 'type') {
+        resultConfig[primaryFieldKey][subfieldKey] = splitStringOnComma(questionCode);
+      } else if (subfieldKey === 'attributes') {
+        // split string again for attributes field, as it is double nested
+        const [attributesKey, attributesSubfieldKey] = splitStringOn(subfieldKey);
+        if (!resultConfig[primaryFieldKey][attributesKey]) {
+          resultConfig[primaryFieldKey][attributesKey] = {};
+        }
+        resultConfig[primaryFieldKey][attributesKey][attributesSubfieldKey] = questionCode;
+      } else {
+        const outputSubfieldKey = ENTITY_FIELD_TRANSLATION[subfieldKey] || subfieldKey;
+        resultConfig[primaryFieldKey][outputSubfieldKey] = questionCode;
+      }
     }
   });
 
@@ -42,49 +53,54 @@ export const translateQuestionCodeToId = async (questionModel, code) => {
   return { question_id: question.id };
 };
 
-export const replaceQuestionCodesWithIds = async (models, config, fieldList) => {
-  const resultConfig = {};
-
-  await Promise.all(
-    Object.entries(config).map(async ([fieldKey, value]) => {
-      let newValue = value;
-      if (fieldList.includes(fieldKey)) {
-        const { question_id: questionId } = await translateQuestionCodeToId(models.question, value);
-        newValue = { questionId };
-      }
-      resultConfig[fieldKey] = newValue;
-    }),
-  );
-
-  return resultConfig;
-};
-
 /**
  * Replace all question codes with question ids in nested config (eg: attributes.type)
  */
 export const replaceNestedQuestionCodesWithIds = async (models, config, nestedFieldList) => {
   const resultConfig = {};
-
+  console.log('config, nestedFieldList line 63', config, nestedFieldList);
   await Promise.all(
     Object.entries(config).map(async ([fieldKey, value]) => {
       let newValue = value;
       if (nestedFieldList.includes(fieldKey)) {
         for (let i = 0; i < Object.entries(value).length; i++) {
-          const [subfieldKey, questionCode] = Object.entries(value)[i];
-          const { question_id: questionId } = await translateQuestionCodeToId(
-            models.question,
-            questionCode,
-          );
-          newValue = {
-            ...newValue,
-            [subfieldKey]: { questionId },
-          };
+          const [subfieldKey, subfieldValue] = Object.entries(value)[i];
+          if (subfieldKey === 'type') {
+            continue;
+          } else if (subfieldKey === 'attributes') {
+            let newAttributesFieldValue = {};
+            const attributesSubfields = Object.entries(subfieldValue);
+            for (let k = 0; k < attributesSubfields.length; k++) {
+              const [attributesSubfieldKey, attributesSubfieldValue] = attributesSubfields[k];
+              const { question_id: questionId } = await translateQuestionCodeToId(
+                models.question,
+                attributesSubfieldValue,
+              );
+              newAttributesFieldValue = {
+                ...newAttributesFieldValue,
+                [attributesSubfieldKey]: { questionId },
+              };
+            }
+            newValue = {
+              ...newValue,
+              attributes: newAttributesFieldValue,
+            };
+          } else {
+            const { question_id: questionId } = await translateQuestionCodeToId(
+              models.question,
+              subfieldValue,
+            );
+            newValue = {
+              ...newValue,
+              [subfieldKey]: { questionId },
+            };
+          }
         }
       }
 
       resultConfig[fieldKey] = newValue;
     }),
   );
-
+  console.log('result config', resultConfig);
   return resultConfig;
 };

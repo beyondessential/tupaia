@@ -3,12 +3,13 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { getEntityCreationQuestions } from '../../helpers';
+import { getUpsertEntityQuestions } from '../../helpers';
 import { getAnswers } from '../../selectors';
 import { changeAnswer } from '../actions';
 
 const buildEntity = async (state, database, fields, entityId, answers) => {
   const entity = { id: entityId };
+
   Object.entries(fields).forEach(([fieldName, value]) => {
     // Value is not defined, skip
     if (value === undefined) {
@@ -23,13 +24,18 @@ const buildEntity = async (state, database, fields, entityId, answers) => {
     }
   });
 
+  const isUpdate = database.findOne('Entity', entityId);
+  if (isUpdate) {
+    return entity;
+  }
+
   const getSelectedCountry = () => database.getCountry(state.country.selectedCountryId);
   if (!entity.countryCode) {
     entity.countryCode = getSelectedCountry().code;
   }
   if (!entity.parent) {
     const country = getSelectedCountry();
-    entity.parent = country.entity(database);
+    entity.parent_id = country.entity(database).id;
   }
   if (!entity.code) {
     entity.code = entityId;
@@ -38,17 +44,17 @@ const buildEntity = async (state, database, fields, entityId, answers) => {
   return entity;
 };
 
-export const createNewEntities = async (dispatch, getState, database, questions) => {
-  const entityCreationQuestions = getEntityCreationQuestions(questions);
+export const createUpsertEntityObjects = async (dispatch, getState, database, questions) => {
+  const entityUpsertQuestions = getUpsertEntityQuestions(questions);
+
   const answers = getAnswers(getState());
   const newEntities = [];
   await Promise.all(
-    entityCreationQuestions.map(async question => {
-      const { code, name, parentId, type } = question.config.entity;
-      const answer = answers[question.id];
-      const fields = { id: answer, code, name, parentId, type: type[0] };
-
-      const entity = await buildEntity(getState(), database, fields, answer, answers);
+    entityUpsertQuestions.map(async question => {
+      const { code, name, parentId, type } = question.config.entity.fields;
+      const entityId = answers[question.id];
+      const fields = { code, name, parentId, type };
+      const entity = await buildEntity(getState(), database, fields, entityId, answers);
       newEntities.push(entity);
       dispatch(changeAnswer(question.id, entity.id));
     }),

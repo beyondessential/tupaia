@@ -28,6 +28,7 @@ const LENGTH_OF_TRANSITION = 300;
 export class DumbSurveyScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: navigation.state.params.headerLabel,
+    // eslint-disable-next-line global-require
     headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} labelVisible={false} />,
   });
 
