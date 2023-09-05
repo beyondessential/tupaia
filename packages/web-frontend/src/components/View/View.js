@@ -106,7 +106,8 @@ export class View extends Component {
       viewContent.type === 'chart' ||
       getIsMatrix(viewContent) ||
       viewContent.viewType === 'dataDownload' ||
-      viewContent.viewType === 'filesDownload'
+      viewContent.viewType === 'filesDownload' ||
+      (viewContent.viewType === 'qrCodeVisual' && viewContent.data.length > 1)
     );
   }
 
@@ -163,7 +164,9 @@ export class View extends Component {
 
     const isExpandable = this.getIsExpandable();
     const expandHelpText =
-      viewContent.viewType === 'dataDownload' ? 'Expand to download data' : 'Expand chart';
+      viewContent.viewType === 'dataDownload' || viewContent.viewType === 'qrCodeVisual'
+        ? 'Expand to download data'
+        : 'Expand chart';
     const expandButton = isExpandable ? (
       <DashboardItemExpanderButton onEnlarge={onEnlarge} helpText={expandHelpText} />
     ) : null;

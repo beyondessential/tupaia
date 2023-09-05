@@ -48,7 +48,7 @@
     "core-js": "^3.16.1",
     "dom-to-image": "2.6.0",
     "dotenv": "^8.2.0",
-    "downloadjs": "1.4.7",
+    "downloadjs": "^1.4.7",
     "email-validator": "^1.1.1",
     "history": "^4.7.2",
     "is-mobile": "^0.2.2",
