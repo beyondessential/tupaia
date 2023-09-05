@@ -107,7 +107,9 @@ export const getPresentationOption = (options: PresentationOptions, value: any) 
 };
 
 export function getIsUsingDots(presentationOptions: PresentationOptions = {}) {
-  return Object.keys(presentationOptions).length > 0;
+  return (
+    Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length > 0
+  );
 }
 
 export function checkIfApplyDotStyle(

@@ -146,11 +146,11 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
         >
           {title}
         </RowHeaderCell>
-        {displayedColumns.map(({ key, title }) => (
+        {displayedColumns.map(({ key, title: cellTitle }) => (
           <MatrixCell
-            key={`column-${key || title}-row-${row.title}-value`}
+            key={`column-${key || cellTitle}-row-${title}-value`}
             value={row[key as string]}
-            rowTitle={row.title}
+            rowTitle={title}
             colKey={key}
             isCategory={isCategory}
           />
