@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TextField, RadioGroup } from '@tupaia/ui-components';
-import { GeolocateQuestion } from '../components';
+import { GeolocateQuestion } from './Questions';
 
 const Text = styled.div`
   margin-bottom: 0.625rem;

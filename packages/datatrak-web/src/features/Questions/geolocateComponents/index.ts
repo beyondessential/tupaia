@@ -5,4 +5,3 @@
 
 export { LatLongFields } from './LatLongFields';
 export { MapModal } from './MapModal';
-export { MapWatermark } from './MapWaterMark';
