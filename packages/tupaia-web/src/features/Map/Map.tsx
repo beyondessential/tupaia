@@ -22,6 +22,7 @@ import { useEntity } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
 import { gaEvent } from '../../utils';
+import { DemoLand } from './DemoLand';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -148,6 +149,7 @@ export const Map = () => {
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
           <PolygonNavigationLayer />
           <DataVisualsLayer hiddenValues={hiddenValues} />
+          <DemoLand />
           <ZoomControl position="bottomright" />
           <MapWatermark />
         </StyledMap>
