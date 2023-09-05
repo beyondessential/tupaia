@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100%;
+  padding: max(3rem, 10vh) 0;
   p,
   a,
   .MuiTypography-root.MuiFormControlLabel-label {
