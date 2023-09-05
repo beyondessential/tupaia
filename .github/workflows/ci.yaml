@@ -207,6 +207,7 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
       - name: Report Status
+        if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
