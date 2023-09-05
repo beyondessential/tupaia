@@ -6,7 +6,7 @@ import { TextField, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { SHORT_ID, generateMongoId, generateShortId } from './generateId';
-import { SurveyQuestionInputProps } from '../../types';
+import { SurveyQuestionInputProps } from '../../../types';
 
 const LabelId = styled(Typography)`
   font-size: 1rem;
@@ -23,7 +23,7 @@ const BodyText = styled(Typography).attrs({
 
 const GeneratedCode = styled(Typography)`
   font-size: 0.88rem;
-  font-weight: 500;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   margin-bottom: 0.6rem;
 `;
 
