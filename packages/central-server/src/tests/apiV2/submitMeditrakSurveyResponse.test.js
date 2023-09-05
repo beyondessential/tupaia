@@ -69,7 +69,7 @@ function expectEqualStrings(a, b, key = '?') {
     return assert.fail(
       a,
       b,
-      `${a} was not equal to ${b}, exception thrown probably because one or both are not strings.`,
+      `${a} was not equal to ${b}, exception thrown probably because one or both are not strings. Key: "${key}"`,
     );
   }
 }
