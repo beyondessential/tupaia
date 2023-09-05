@@ -14,9 +14,9 @@ import {
   InstructionQuestion,
   CheckboxQuestion,
   DateTimeQuestion,
+  CodeGeneratorQuestion,
 } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
-import { CodeGeneratorQuestion } from '../../components';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
