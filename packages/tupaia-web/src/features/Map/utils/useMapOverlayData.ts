@@ -68,7 +68,7 @@ export const useMapOverlayData = (
     selectedOverlay?.measureLevel,
   );
 
-  const { data, isLoading, isFetched, isIdle } = useMapOverlayReport(
+  const { data, isLoading, isFetched, isIdle, status } = useMapOverlayReport(
     projectCode,
     rootEntityCode,
     selectedOverlay,
@@ -78,7 +78,7 @@ export const useMapOverlayData = (
     },
   );
 
-  const isLoadingData = isLoading || (!isIdle && !isFetched);
+  const isLoadingData = isLoading || (!isIdle && !isFetched && !!selectedOverlay);
 
   if (!entities || !data) {
     return {
@@ -89,7 +89,7 @@ export const useMapOverlayData = (
   const processedMeasureData = processMeasureData({
     entitiesData: entities,
     measureData: data.measureData,
-    serieses: data.serieses.sort((a, b) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
+    serieses: data.serieses?.sort((a, b) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
     includeEntitiesWithoutCoordinates: rootEntity ? true : false,
   }) as MeasureData[];
