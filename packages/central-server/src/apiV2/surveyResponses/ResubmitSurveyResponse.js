@@ -29,7 +29,6 @@ import { validateResubmission } from './resubmission/validateResubmission';
 export class ResubmitSurveyResponse extends EditHandler {
   constructor(req, res) {
     super(req, res);
-    this.s3Client = new S3Client(new S3());
   }
 
   async assertUserHasAccess() {
@@ -80,9 +79,18 @@ export class ResubmitSurveyResponse extends EditHandler {
         for (const file of this.req.files) {
           const uniqueFileName = file.fieldname;
           const readableStream = fs.createReadStream(file.path); // see https://github.com/aws/aws-sdk-js-v3/issues/2522
-          await this.s3Client.uploadFile(uniqueFileName, readableStream);
+          const s3Client = this.getS3client();
+          await s3Client.uploadFile(uniqueFileName, readableStream);
         }
       }
     });
+  }
+
+  // Workaround to allow us to test this route, remove after S3Client is mocked after RN-982
+  getS3client() {
+    if (!this.s3Client) {
+      this.s3Client = new S3Client(new S3());
+    }
+    return this.s3Client;
   }
 }

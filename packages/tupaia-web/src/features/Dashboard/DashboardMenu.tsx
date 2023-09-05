@@ -12,7 +12,7 @@ import { Dashboard } from '../../types';
 const MenuButton = styled(ButtonBase)`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
   padding: 1rem 2rem;
@@ -26,10 +26,13 @@ const MenuButton = styled(ButtonBase)`
 `;
 
 const ItemButton = styled(Menu)`
-  margin: 3.125rem auto 0 2rem;
+  margin: 0 auto 0 2rem;
 
   .MuiPaper-root {
     background: ${({ theme }) => theme.palette.background.default};
+  }
+  .MuiMenu-paper {
+    max-height: -webkit-fill-available;
   }
 
   .MuiListItem-root {
@@ -91,6 +94,7 @@ export const DashboardMenu = ({
         open={Boolean(anchorEl)}
         onClose={handleClose}
         variant="menu"
+        disablePortal
       >
         {dashboards.map(({ name, code }) => (
           <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
