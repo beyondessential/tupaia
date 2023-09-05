@@ -29,7 +29,7 @@ import {
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout, AuthPageLayout } from './layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -69,7 +69,7 @@ export const Routes = () => {
           <Route index element={<LandingPage />} />
         </Route>
         {/** Any views that should have the background image should go in here */}
-        <Route path="/" element={<AuthPageLayout />}>
+        <Route path="/" element={<BackgroundPageLayout backgroundImage="/auth-background.svg" />}>
           {/** Any public centred views should go in here */}
           <Route path="/" element={<CentredLayout />}>
             <Route

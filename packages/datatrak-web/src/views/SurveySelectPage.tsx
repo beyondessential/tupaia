@@ -10,7 +10,9 @@ import { useSurveys } from '../api/queries';
 import { SelectList, ListItemType, Button } from '../components';
 import { Survey } from '../types';
 
-const Container = styled(Paper)`
+const Container = styled(Paper).attrs({
+  variant: 'outlined',
+})`
   width: 48rem;
   display: flex;
   flex-direction: column;
