@@ -31,6 +31,7 @@ const ListWrapper = styled.div`
   max-height: 35rem;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 `;
 
 export const SurveySelectPage = () => {
