@@ -49,7 +49,7 @@ const ButtonColumn = styled(FullWidthColumn)`
 `;
 
 const StyledForm = styled(Form)`
-  margin-top: 1rem;
+  margin-top: 4.3rem;
   width: 42rem;
   max-width: 100%;
 
@@ -86,8 +86,8 @@ export const RegisterForm = ({
 }: RegisterFormProps) => {
   return (
     <Wrapper
-      title={isSuccess ? 'Your account has been registered' : 'Register'}
-      subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
+      title={isSuccess ? 'Your account has been registered' : 'Register an account'}
+      subtitle={!isSuccess ? 'Enter your details below to register an account' : undefined}
       className={className}
     >
       {isSuccess ? (

@@ -21,6 +21,9 @@ const Menu = styled.ul`
 
 const MenuListItem = styled(ListItem)`
   padding: 0;
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primary.main}15;
+  }
 `;
 
 export const MenuButton = styled(Button).attrs({

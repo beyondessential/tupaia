@@ -14,6 +14,36 @@ const Wrapper = styled(Paper)`
   max-width: 100%;
   box-shadow: none;
   padding: 3rem 1rem;
+  form a {
+    &:hover,
+    &:focus {
+      color: ${({ theme }) => theme.palette.primary.main};
+    }
+  }
+  .MuiFormControl-root {
+    margin-bottom: 1rem;
+  }
+  .MuiTypography-root.MuiFormControlLabel-label {
+    font-size: 0.6875rem;
+  }
+  .MuiTypography-root.MuiFormControlLabel-label a {
+    font-size: 0.6875rem;
+  }
+  .MuiSvgIcon-root {
+    font-size: 1rem;
+  }
+  .MuiCheckbox-root {
+    padding-right: 0.375rem;
+  }
+  p a {
+    font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+    text-decoration: none;
+    color: ${({ theme }) => theme.palette.text.primary};
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
   @media screen and (max-width: 900px) {
     height: 100%;
   }
@@ -21,13 +51,13 @@ const Wrapper = styled(Paper)`
 
 const Title = styled(Typography)`
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
 `;
 
 const Subtitle = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.3;
-  margin-top: 1rem;
+  margin-top: 0.32rem;
 `;
 
 interface AuthViewWrapperProps {

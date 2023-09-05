@@ -6,10 +6,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Collapse, ListItem as MuiListItem } from '@material-ui/core';
-import { Check, Description, Folder, FolderOpen, KeyboardArrowRight } from '@material-ui/icons';
+import { Check, Description, FolderOpenTwoTone, KeyboardArrowRight } from '@material-ui/icons';
 
 const IconWrapper = styled.div`
-  padding-right: 0.2rem;
+  padding-right: 0.5rem;
   display: flex;
   align-items: center;
 `;
@@ -25,13 +25,16 @@ const Item = styled(MuiListItem)`
     background-color: transparent;
   }
   .MuiCollapse-container & {
-    padding-left: 1.5rem;
+    padding-left: 1rem;
   }
   &:hover,
   &.Mui-selected:hover,
   &:focus,
   &.Mui-selected:focus {
-    background-color: ${({ theme }) => theme.palette.secondary.light};
+    background-color: ${({ theme }) => theme.palette.primary.main}33;
+  }
+  .MuiSvgIcon-root {
+    font-size: 1rem;
   }
 `;
 
@@ -66,7 +69,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   const isNested = !!item.children;
 
   const getIcon = () => {
-    if (isNested) return open ? FolderOpen : Folder;
+    if (isNested) return FolderOpenTwoTone;
     return Description;
   };
 
