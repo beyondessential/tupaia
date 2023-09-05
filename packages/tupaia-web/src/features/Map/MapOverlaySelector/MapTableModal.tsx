@@ -45,22 +45,16 @@ const TitleWrapper = styled.div`
 export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data} = useEntityAncestors(projectCode, entityCode);
+  const { data } = useEntityAncestors(projectCode, entityCode);
   const countryObject = data?.find((entity: Entity) => entity.type === 'country');
   const { serieses, measureData } = useMapOverlayData(null, countryObject);
 
   const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
-  const startDate = serieses.startDate;
-  const endDate = serieses.endDate;
+  const startDate = serieses?.startDate;
+  const endDate = serieses?.endDate;
 
-  const { doExport } = useMapDataExport(
-    serieses,
-    measureData,
-    titleText,
-    startDate,
-    endDate,
-  );
+  const { doExport } = useMapDataExport(serieses, measureData, titleText, startDate, endDate);
 
   return (
     <Modal isOpen onClose={onClose}>
