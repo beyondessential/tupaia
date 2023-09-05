@@ -14,8 +14,8 @@ import {
   PROJECT_ACCESS_TYPES,
   TUPAIA_LIGHT_LOGO_SRC,
   URL_SEARCH_PARAMS,
+  MOBILE_BREAKPOINT,
 } from '../constants';
-import { SingleProject } from '../types';
 import { useProjects, useUser } from '../api/queries';
 import {
   ProjectAllowedLink,
@@ -25,6 +25,7 @@ import {
   ProjectPendingLink,
 } from '../layout';
 import { RouterButton } from '../components';
+import { SingleProject } from '../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,6 +36,9 @@ const Wrapper = styled.div`
   width: 65rem;
   max-width: 100%;
   text-align: left;
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    padding: 0.9rem 0;
+  }
 `;
 
 const TagLine = styled.p`
@@ -56,6 +60,8 @@ const ProjectsGrid = styled.div`
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    padding-left: 0.675rem;
+    padding-right: 0.675rem;
   }
 `;
 
