@@ -114,39 +114,39 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - admin-panel
-          - admin-panel-server
-          - aggregator
-          - api-client
-          - auth
-          - central-server
-          - data-api
-          - data-broker
-          - data-lake-api
-          - data-table-server
-          - database
-          - dhis-api
-          - entity-server
-          - expression-parser
-          - indicators
-          - kobo-api
-          - lesmis
-          - lesmis-server
-          - meditrak-app-server
-          - psss
+          # - admin-panel
+          # - admin-panel-server
+          # - aggregator
+          # - api-client
+          # - auth
+          # - central-server
+          # - data-api
+          # - data-broker
+          # - data-lake-api
+          # - data-table-server
+          # - database
+          # - dhis-api
+          # - entity-server
+          # - expression-parser
+          # - indicators
+          # - kobo-api
+          # - lesmis
+          # - lesmis-server
+          # - meditrak-app-server
+          # - psss
           - psss-server
-          - report-server
-          - server-boilerplate
-          - superset-api
-          - tsutils
-          - tupaia-web
-          - tupaia-web-server
-          - ui-chart-components
-          - ui-components
-          - ui-map-components
-          - utils
-          - weather-api
-          - web-config-server
+          # - report-server
+          # - server-boilerplate
+          # - superset-api
+          # - tsutils
+          # - tupaia-web
+          # - tupaia-web-server
+          # - ui-chart-components
+          # - ui-components
+          # - ui-map-components
+          # - utils
+          # - weather-api
+          # - web-config-server
 
     services:
       postgres:
@@ -210,7 +210,7 @@ jobs:
         if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          payload-file-path: './slack-notification-payload.json'
+          payload-file-path: './.github/workflows/slack-notification-payload.json'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
