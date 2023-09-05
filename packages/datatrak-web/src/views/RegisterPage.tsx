@@ -4,16 +4,9 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import styled from 'styled-components';
-import { RegisterForm as BaseRegisterForm } from '@tupaia/ui-components';
+import { RegisterForm } from '@tupaia/ui-components';
 import { useRegister } from '../api/mutations';
 import { ROUTES } from '../constants';
-
-const RegisterForm = styled(BaseRegisterForm)`
-  form {
-    margin-top: 4.3rem;
-  }
-`;
 
 export const RegisterPage = () => {
   const formContext = useForm();

@@ -49,7 +49,7 @@ const ButtonColumn = styled(FullWidthColumn)`
 `;
 
 const StyledForm = styled(Form)`
-  margin-top: 1rem;
+  margin-top: 4.3rem;
   width: 42rem;
   max-width: 100%;
 
