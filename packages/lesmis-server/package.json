@@ -36,6 +36,6 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "lodash.uniqby": "^4.7.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   }
 }
