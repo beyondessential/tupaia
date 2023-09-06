@@ -24,7 +24,7 @@ export const useEnlargedDashboardItem = () => {
   );
 
   const currentDashboardItem = activeDashboard?.items.find(
-    dashboardItem => dashboardItem.code === reportCode,
+    dashboardItem => dashboardItem.reportCode === reportCode,
   ) as DashboardItem;
 
   const { startDate, endDate } = useDateRanges(
