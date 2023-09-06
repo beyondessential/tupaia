@@ -19,7 +19,7 @@ export type EntitySearchRequest = Request<
 >;
 export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
-    const { query, params, ctx } = this.req;
+    const { query, params, ctx, models } = this.req;
     const { projectCode } = params;
     const { searchString, page = 0, pageSize = 5, fields = DEFAULT_FIELDS } = query;
 
@@ -31,8 +31,10 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     )[0];
     const { config } = project;
 
+    const { typesExcludedFromWebFrontend } = models.entity;
+
     const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
-      filter: generateFrontendExcludedFilter(config),
+      filter: generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
       ...query,
       page,
       pageSize,
