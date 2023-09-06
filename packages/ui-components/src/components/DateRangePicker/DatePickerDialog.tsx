@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { DialogProps, Typography } from '@material-ui/core';
@@ -231,6 +231,16 @@ export const DatePickerDialog = ({
     onClose();
     return setErrorMessage('');
   };
+
+  // in case of resetting the date values programmatically, update the selected values in state so they are accurate
+  useEffect(() => {
+    if (!momentStartDate?.isSame(selectedStartDate)) {
+      setSelectedStartDate(momentStartDate);
+    }
+    if (!momentEndDate?.isSame(selectedEndDate)) {
+      setSelectedEndDate(momentEndDate);
+    }
+  }, [momentStartDate?.format('DD/MM/YYYY'), momentEndDate?.format('DD/MM/YYYY')]);
 
   return (
     <Dialog
