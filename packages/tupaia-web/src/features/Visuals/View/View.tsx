@@ -39,7 +39,7 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   return data?.map(datum => {
     const { value } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata` as any] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as any] || config || {}),
       ...datum,
     };
     return {
