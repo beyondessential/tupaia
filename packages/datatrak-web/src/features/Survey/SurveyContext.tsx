@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { Dispatch, createContext, useContext, useReducer, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { sortBy } from 'lodash';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
@@ -21,20 +21,66 @@ const convertNumberToLetter = (number: number) => {
 };
 
 type SurveyFormContextType = {
-  formData: { [key: string]: any };
-  setFormData: (data: { [key: string]: any }) => void;
+  formData: Record<string, any>;
   activeScreen: SurveyScreenComponent[];
   isLast: boolean;
   numberOfScreens: number;
   screenNumber: number;
   screenHeader?: string;
   displayQuestions: SurveyScreenComponent[];
+  sideMenuOpen?: boolean;
+  surveyScreenComponents?: Record<number, SurveyScreenComponent[]>;
 };
 
-const SurveyFormContext = createContext({} as SurveyFormContextType);
+const defaultContext = {
+  formData: {},
+  activeScreen: [],
+  isLast: false,
+  numberOfScreens: 0,
+  screenNumber: 1,
+  screenHeader: '',
+  displayQuestions: [],
+  sideMenuOpen: false,
+  surveyScreenComponents: [],
+} as SurveyFormContextType;
+
+const SurveyFormContext = createContext(defaultContext as SurveyFormContextType);
+
+export enum ACTION_TYPES {
+  SET_FORM_DATA = 'SET_FORM_DATA',
+  TOGGLE_SIDE_MENU = 'TOGGLE_SIDE_MENU',
+}
+
+interface SurveyFormAction {
+  type: ACTION_TYPES;
+  payload?: Record<string, any> | null;
+}
+
+export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
+
+export const surveyReducer = (
+  state: SurveyFormContextType,
+  action: SurveyFormAction,
+): SurveyFormContextType => {
+  switch (action.type) {
+    case ACTION_TYPES.SET_FORM_DATA:
+      return {
+        ...state,
+        formData: action.payload as Record<string, any>,
+      };
+    case ACTION_TYPES.TOGGLE_SIDE_MENU:
+      return {
+        ...state,
+        sideMenuOpen: !state.sideMenuOpen,
+      };
+    default:
+      return state;
+  }
+};
 
 export const SurveyContext = ({ children }) => {
-  const [formData, setFormData] = useState({});
+  const [state, dispatch] = useReducer(surveyReducer, defaultContext);
+
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = parseInt(params.screenNumber!, 10);
   const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyCode);
@@ -79,19 +125,37 @@ export const SurveyContext = ({ children }) => {
   return (
     <SurveyFormContext.Provider
       value={{
-        formData,
-        setFormData,
+        ...state,
         activeScreen,
         isLast,
         numberOfScreens,
         screenNumber,
         displayQuestions,
+        surveyScreenComponents,
         screenHeader: activeScreen.length ? activeScreen[0].questionText : '',
       }}
     >
-      {children}
+      <SurveyFormDispatchContext.Provider value={dispatch}>
+        {children}
+      </SurveyFormDispatchContext.Provider>
     </SurveyFormContext.Provider>
   );
 };
 
-export const useSurveyForm = () => useContext(SurveyFormContext);
+export const useSurveyForm = () => {
+  const surveyFormContext = useContext(SurveyFormContext);
+  const dispatch = useContext(SurveyFormDispatchContext)!;
+
+  const toggleSideMenu = () => {
+    dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
+  };
+
+  const setFormData = (formData: Record<string, any>) => {
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: formData });
+  };
+  return {
+    ...surveyFormContext,
+    toggleSideMenu,
+    setFormData,
+  };
+};
