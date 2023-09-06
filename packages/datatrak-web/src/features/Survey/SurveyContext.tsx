@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { Dispatch, createContext, useContext, useReducer, useState } from 'react';
+import React, { Dispatch, createContext, useContext, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import { sortBy } from 'lodash';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
