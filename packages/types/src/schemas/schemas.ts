@@ -37875,20 +37875,25 @@ export const DashboardWithItemsSchema = {
 						"type": "string"
 					},
 					"config": {
+						"description": "The master list of viz types.\nPlease also keep ../../utils/vizTypes up to date when making changes",
 						"anyOf": [
 							{
+								"description": "Matrix viz type",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -37903,7 +37908,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -37954,7 +37959,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -37994,7 +37999,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -38022,6 +38027,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -38032,7 +38038,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -38058,7 +38064,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -38098,7 +38104,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -38118,42 +38124,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -38164,16 +38181,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -38183,11 +38208,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -38203,24 +38236,28 @@ export const DashboardWithItemsSchema = {
 											"matrix"
 										]
 									},
-									"dataelementcolumntitle": {
+									"dataElementColumnTitle": {
+										"description": "Matrix viz type can specify a column as the data element column.",
 										"type": "string"
 									},
-									"hidecolumntitles": {
+									"hideColumnTitles": {
+										"description": "Like it sounds",
 										"type": "boolean"
 									},
-									"presentationoptions": {
+									"presentationOptions": {
+										"description": "Allows for conditional styling",
 										"anyOf": [
 											{
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38232,21 +38269,26 @@ export const DashboardWithItemsSchema = {
 													"conditions": {
 														"type": "array",
 														"items": {
+															"additionalProperties": false,
 															"type": "object",
 															"properties": {
 																"color": {
+																	"description": "Specify the color of the display item",
 																	"type": "string"
 																},
 																"description": {
+																	"description": "Specify the text for the legend item. Also used in the enlarged cell view",
 																	"type": "string"
 																},
 																"label": {
+																	"description": "Specify if you want a label to appear above the enlarged",
 																	"type": "string"
 																},
 																"key": {
 																	"type": "string"
 																},
 																"condition": {
+																	"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
 																	"anyOf": [
 																		{
 																			"type": "object",
@@ -38299,217 +38341,53 @@ export const DashboardWithItemsSchema = {
 																		}
 																	]
 																},
-																"legendlabel": {
+																"legendLabel": {
 																	"type": "string"
 																}
 															},
-															"additionalProperties": false,
 															"required": [
 																"condition",
 																"key"
 															]
 														}
 													},
-													"showrawvalue": {
+													"showRawValue": {
+														"default": false,
 														"type": "boolean"
 													},
-													"shownestedrows": {
+													"showNestedRows": {
+														"default": false,
 														"type": "boolean"
 													},
-													"applylocation": {
+													"applyLocation": {
+														"description": "Specify if you want to limit where to apply the conditional presentation",
 														"type": "object",
 														"properties": {
-															"columnindexes": {
-																"type": "object",
-																"properties": {
-																	"length": {
-																		"type": "number"
-																	},
-																	"tostring": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"tolocalestring": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"pop": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"push": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"concat": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"join": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"reverse": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"shift": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"slice": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"sort": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"splice": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"unshift": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"indexof": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"lastindexof": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"every": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"some": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"foreach": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"map": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"filter": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"reduce": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"reduceright": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"find": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"findindex": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"fill": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"copywithin": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"entries": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"keys": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"values": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"includes": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"flatmap": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"flat": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"at": {
-																		"type": "object",
-																		"additionalProperties": false
-																	}
-																},
-																"additionalProperties": false,
-																"required": [
-																	"at",
-																	"concat",
-																	"copywithin",
-																	"entries",
-																	"every",
-																	"fill",
-																	"filter",
-																	"find",
-																	"findindex",
-																	"flat",
-																	"flatmap",
-																	"foreach",
-																	"includes",
-																	"indexof",
-																	"join",
-																	"keys",
-																	"lastindexof",
-																	"length",
-																	"map",
-																	"pop",
-																	"push",
-																	"reduce",
-																	"reduceright",
-																	"reverse",
-																	"shift",
-																	"slice",
-																	"some",
-																	"sort",
-																	"splice",
-																	"tolocalestring",
-																	"tostring",
-																	"unshift",
-																	"values"
-																]
+															"columnIndexes": {
+																"type": "array",
+																"items": {
+																	"type": "number"
+																}
 															}
 														},
 														"additionalProperties": false,
 														"required": [
-															"columnindexes"
+															"columnIndexes"
 														]
 													}
-												},
-												"additionalProperties": false
+												}
 											},
 											{
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38518,29 +38396,30 @@ export const DashboardWithItemsSchema = {
 															"range"
 														]
 													},
-													"showrawvalue": {
+													"showRawValue": {
 														"type": "boolean"
 													}
 												},
-												"additionalProperties": false,
 												"required": [
 													"type"
 												]
 											}
 										]
 									},
-									"categorypresentationoptions": {
+									"categoryPresentationOptions": {
+										"description": "Category header rows can have values just like real rows, this is how you style them",
 										"anyOf": [
 											{
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38552,21 +38431,26 @@ export const DashboardWithItemsSchema = {
 													"conditions": {
 														"type": "array",
 														"items": {
+															"additionalProperties": false,
 															"type": "object",
 															"properties": {
 																"color": {
+																	"description": "Specify the color of the display item",
 																	"type": "string"
 																},
 																"description": {
+																	"description": "Specify the text for the legend item. Also used in the enlarged cell view",
 																	"type": "string"
 																},
 																"label": {
+																	"description": "Specify if you want a label to appear above the enlarged",
 																	"type": "string"
 																},
 																"key": {
 																	"type": "string"
 																},
 																"condition": {
+																	"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
 																	"anyOf": [
 																		{
 																			"type": "object",
@@ -38619,217 +38503,53 @@ export const DashboardWithItemsSchema = {
 																		}
 																	]
 																},
-																"legendlabel": {
+																"legendLabel": {
 																	"type": "string"
 																}
 															},
-															"additionalProperties": false,
 															"required": [
 																"condition",
 																"key"
 															]
 														}
 													},
-													"showrawvalue": {
+													"showRawValue": {
+														"default": false,
 														"type": "boolean"
 													},
-													"shownestedrows": {
+													"showNestedRows": {
+														"default": false,
 														"type": "boolean"
 													},
-													"applylocation": {
+													"applyLocation": {
+														"description": "Specify if you want to limit where to apply the conditional presentation",
 														"type": "object",
 														"properties": {
-															"columnindexes": {
-																"type": "object",
-																"properties": {
-																	"length": {
-																		"type": "number"
-																	},
-																	"tostring": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"tolocalestring": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"pop": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"push": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"concat": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"join": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"reverse": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"shift": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"slice": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"sort": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"splice": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"unshift": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"indexof": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"lastindexof": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"every": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"some": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"foreach": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"map": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"filter": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"reduce": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"reduceright": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"find": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"findindex": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"fill": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"copywithin": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"entries": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"keys": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"values": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"includes": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"flatmap": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"flat": {
-																		"type": "object",
-																		"additionalProperties": false
-																	},
-																	"at": {
-																		"type": "object",
-																		"additionalProperties": false
-																	}
-																},
-																"additionalProperties": false,
-																"required": [
-																	"at",
-																	"concat",
-																	"copywithin",
-																	"entries",
-																	"every",
-																	"fill",
-																	"filter",
-																	"find",
-																	"findindex",
-																	"flat",
-																	"flatmap",
-																	"foreach",
-																	"includes",
-																	"indexof",
-																	"join",
-																	"keys",
-																	"lastindexof",
-																	"length",
-																	"map",
-																	"pop",
-																	"push",
-																	"reduce",
-																	"reduceright",
-																	"reverse",
-																	"shift",
-																	"slice",
-																	"some",
-																	"sort",
-																	"splice",
-																	"tolocalestring",
-																	"tostring",
-																	"unshift",
-																	"values"
-																]
+															"columnIndexes": {
+																"type": "array",
+																"items": {
+																	"type": "number"
+																}
 															}
 														},
 														"additionalProperties": false,
 														"required": [
-															"columnindexes"
+															"columnIndexes"
 														]
 													}
-												},
-												"additionalProperties": false
+												}
 											},
 											{
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38838,43 +38558,46 @@ export const DashboardWithItemsSchema = {
 															"range"
 														]
 													},
-													"showrawvalue": {
+													"showRawValue": {
 														"type": "boolean"
 													}
 												},
-												"additionalProperties": false,
 												"required": [
 													"type"
 												]
 											}
 										]
 									},
-									"valuetype": {
+									"valueType": {
+										"description": "Specify the valueType for formatting of the value in the matrix",
 										"type": "string",
 										"enum": [
 											"string"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type"
 								]
 							},
 							{
+								"description": "A Component viz type simply renders a React component as the viz",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -38889,7 +38612,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -38940,7 +38663,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -38980,7 +38703,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39008,6 +38731,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -39018,7 +38742,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -39044,7 +38768,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39084,7 +38808,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39104,42 +38828,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -39150,16 +38885,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -39169,11 +38912,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -39189,7 +38940,7 @@ export const DashboardWithItemsSchema = {
 											"component"
 										]
 									},
-									"componentname": {
+									"componentName": {
 										"enum": [
 											"ActiveDisasters",
 											"NoAccessDashboard",
@@ -39199,26 +38950,29 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"componentname",
+									"componentName",
 									"name",
 									"type"
 								]
 							},
 							{
+								"description": "Gauge Chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -39233,7 +38987,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39284,7 +39038,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39324,7 +39078,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39352,6 +39106,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -39362,7 +39117,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -39388,7 +39143,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39428,7 +39183,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39448,42 +39203,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -39494,16 +39260,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -39513,11 +39287,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -39528,13 +39310,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -39549,18 +39331,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
 										]
 									},
 									"color": {
+										"description": "Some chart types take 'color' as an option",
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
+										"description": "Some charts can have their label customised",
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -39568,8 +39352,8 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
 									"type": {
@@ -39578,33 +39362,36 @@ export const DashboardWithItemsSchema = {
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"gauge"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
 							},
 							{
+								"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -39619,7 +39406,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39670,7 +39457,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39710,7 +39497,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39738,6 +39525,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -39748,7 +39536,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -39774,7 +39562,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39814,7 +39602,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39834,42 +39622,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -39880,16 +39679,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -39899,11 +39706,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -39914,13 +39729,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -39935,18 +39750,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
 										]
 									},
 									"color": {
+										"description": "Some chart types take 'color' as an option",
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
+										"description": "Some charts can have their label customised",
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -39954,17 +39771,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
-									"xname": {
+									"xName": {
+										"description": "The label on the x-axis",
 										"type": "string"
 									},
-									"yname": {
+									"yName": {
+										"description": "The label on the y-axis",
 										"type": "string"
 									},
-									"yaxisdomain": {
+									"yAxisDomain": {
+										"description": "Configuration options for the y-axis",
 										"type": "object",
 										"properties": {
 											"max": {
@@ -40034,44 +39854,80 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {},
+									"presentationOptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"composed"
 										]
 									},
-									"chartconfig": {
+									"chartConfig": {
 										"type": "object",
-										"additionalProperties": false
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												},
+												"stackId": {
+													"type": "number"
+												},
+												"legendOrder": {
+													"type": "number"
+												},
+												"yAxisDomain": {},
+												"valueType": {
+													"enum": [
+														"boolean",
+														"color",
+														"currency",
+														"fraction",
+														"fractionAndPercentage",
+														"number",
+														"oneDecimalPlace",
+														"percentage",
+														"text",
+														"view"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
 							},
 							{
+								"description": "Bar Chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -40086,7 +39942,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -40137,7 +39993,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40177,7 +40033,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40205,6 +40061,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -40215,7 +40072,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -40241,7 +40098,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40281,7 +40138,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40301,42 +40158,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -40347,16 +40215,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -40366,11 +40242,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -40381,13 +40265,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -40402,18 +40286,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
 										]
 									},
 									"color": {
+										"description": "Some chart types take 'color' as an option",
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
+										"description": "Some charts can have their label customised",
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -40421,17 +40307,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
-									"xname": {
+									"xName": {
+										"description": "The label on the x-axis",
 										"type": "string"
 									},
-									"yname": {
+									"yName": {
+										"description": "The label on the y-axis",
 										"type": "string"
 									},
-									"yaxisdomain": {
+									"yAxisDomain": {
+										"description": "Configuration options for the y-axis",
 										"type": "object",
 										"properties": {
 											"max": {
@@ -40501,44 +40390,80 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {},
+									"presentationOptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"bar"
 										]
 									},
-									"chartconfig": {
+									"chartConfig": {
 										"type": "object",
-										"additionalProperties": false
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												},
+												"stackId": {
+													"type": "number"
+												},
+												"legendOrder": {
+													"type": "number"
+												},
+												"yAxisDomain": {},
+												"valueType": {
+													"enum": [
+														"boolean",
+														"color",
+														"currency",
+														"fraction",
+														"fractionAndPercentage",
+														"number",
+														"oneDecimalPlace",
+														"percentage",
+														"text",
+														"view"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
 							},
 							{
+								"description": "Pie Chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -40553,7 +40478,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -40604,7 +40529,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40644,7 +40569,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40672,6 +40597,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -40682,7 +40608,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -40708,7 +40634,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40748,7 +40674,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40768,42 +40694,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -40814,16 +40751,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -40833,11 +40778,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -40848,13 +40801,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -40869,18 +40822,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
 										]
 									},
 									"color": {
+										"description": "Some chart types take 'color' as an option",
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
+										"description": "Some charts can have their label customised",
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -40888,8 +40843,8 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
 									"type": {
@@ -40898,48 +40853,51 @@ export const DashboardWithItemsSchema = {
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"pie"
 										]
 									},
-									"presentationoptions": {
+									"presentationOptions": {
+										"additionalProperties": false,
 										"type": "object",
 										"properties": {
-											"exportwithlabels": {
+											"exportWithLabels": {
 												"type": "boolean"
 											},
-											"exportwithtable": {
+											"exportWithTable": {
 												"type": "boolean"
 											},
-											"exportwithtabledisabled": {
+											"exportWithTableDisabled": {
 												"type": "boolean"
 											}
-										},
-										"additionalProperties": false
+										}
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
 							},
 							{
+								"description": "Line Chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -40954,7 +40912,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41005,7 +40963,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41045,7 +41003,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41073,6 +41031,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -41083,7 +41042,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -41109,7 +41068,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41149,7 +41108,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41169,42 +41128,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -41215,16 +41185,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -41234,11 +41212,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -41249,13 +41235,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -41270,18 +41256,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
 										]
 									},
 									"color": {
+										"description": "Some chart types take 'color' as an option",
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
+										"description": "Some charts can have their label customised",
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -41289,17 +41277,20 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
-									"xname": {
+									"xName": {
+										"description": "The label on the x-axis",
 										"type": "string"
 									},
-									"yname": {
+									"yName": {
+										"description": "The label on the y-axis",
 										"type": "string"
 									},
-									"yaxisdomain": {
+									"yAxisDomain": {
+										"description": "Configuration options for the y-axis",
 										"type": "object",
 										"properties": {
 											"max": {
@@ -41369,44 +41360,79 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {},
+									"presentationOptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"line"
 										]
 									},
-									"chartconfig": {
+									"chartConfig": {
 										"type": "object",
-										"additionalProperties": false
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												},
+												"stackId": {
+													"type": "number"
+												},
+												"legendOrder": {
+													"type": "number"
+												},
+												"yAxisDomain": {},
+												"valueType": {
+													"enum": [
+														"boolean",
+														"color",
+														"currency",
+														"fraction",
+														"fractionAndPercentage",
+														"number",
+														"oneDecimalPlace",
+														"percentage",
+														"text",
+														"view"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -41421,7 +41447,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41472,7 +41498,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41512,7 +41538,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41540,6 +41566,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -41550,7 +41577,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -41576,7 +41603,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41616,7 +41643,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41636,42 +41663,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -41682,16 +41720,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -41701,11 +41747,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -41721,7 +41775,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -41736,21 +41790,37 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"list"
 										]
 									},
-									"listconfig": {
+									"listConfig": {
 										"type": "object",
-										"additionalProperties": false
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"color",
+												"label"
+											]
+										}
 									},
-									"valuetranslationoptions": {
+									"valueTranslationOptions": {
+										"description": "If provided, performs a find and replace on list item content",
 										"type": "object",
 										"properties": {
 											"match": {
@@ -41767,27 +41837,29 @@ export const DashboardWithItemsSchema = {
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"listconfig",
+									"listConfig",
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -41802,7 +41874,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41853,7 +41925,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41893,7 +41965,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41921,6 +41993,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -41931,7 +42004,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -41957,7 +42030,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41997,7 +42070,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42017,42 +42090,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -42063,16 +42147,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -42082,11 +42174,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -42102,7 +42202,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -42117,41 +42217,43 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"singleValue"
 										]
 									},
-									"datacolor": {
+									"dataColor": {
 										"type": "string"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
-									"datacolor",
+									"dataColor",
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -42166,7 +42268,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42217,7 +42319,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42257,7 +42359,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42285,6 +42387,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -42295,7 +42398,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -42321,7 +42424,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42361,7 +42464,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42381,42 +42484,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -42427,16 +42541,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -42446,11 +42568,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -42466,7 +42596,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -42481,37 +42611,39 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiPhotograph"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -42526,7 +42658,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42577,7 +42709,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42617,7 +42749,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42645,6 +42777,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -42655,7 +42788,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -42681,7 +42814,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42721,7 +42854,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42741,42 +42874,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -42787,16 +42931,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -42806,11 +42958,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -42826,7 +42986,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -42841,37 +43001,39 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiSingleValue"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -42886,7 +43048,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42937,7 +43099,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42977,7 +43139,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43005,6 +43167,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -43015,7 +43178,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -43041,7 +43204,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43081,7 +43244,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43101,42 +43264,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -43147,16 +43321,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -43166,11 +43348,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -43186,7 +43376,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -43201,37 +43391,39 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"singleDownloadLink"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -43246,7 +43438,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43297,7 +43489,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43337,7 +43529,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43365,6 +43557,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -43375,7 +43568,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -43401,7 +43594,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43441,7 +43634,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43461,42 +43654,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -43507,16 +43711,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -43526,11 +43738,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -43546,7 +43766,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -43561,17 +43781,18 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiValueRow"
 										]
 									},
-									"presentationoptions": {
+									"presentationOptions": {
+										"additionalProperties": false,
 										"type": "object",
 										"properties": {
 											"color": {
@@ -43580,13 +43801,14 @@ export const DashboardWithItemsSchema = {
 											"header": {
 												"type": "string"
 											},
-											"datapairnames": {
+											"dataPairNames": {
 												"type": "array",
 												"items": {
 													"type": "string"
 												}
 											},
-											"rowheader": {
+											"rowHeader": {
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43596,12 +43818,12 @@ export const DashboardWithItemsSchema = {
 														"type": "string"
 													}
 												},
-												"additionalProperties": false,
 												"required": [
 													"color"
 												]
 											},
-											"leftcolumn": {
+											"leftColumn": {
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43611,13 +43833,13 @@ export const DashboardWithItemsSchema = {
 														"type": "string"
 													}
 												},
-												"additionalProperties": false,
 												"required": [
 													"color",
 													"header"
 												]
 											},
-											"rightcolumn": {
+											"rightColumn": {
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43627,13 +43849,13 @@ export const DashboardWithItemsSchema = {
 														"type": "string"
 													}
 												},
-												"additionalProperties": false,
 												"required": [
 													"color",
 													"header"
 												]
 											},
-											"middlecolumn": {
+											"middleColumn": {
+												"additionalProperties": false,
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43643,40 +43865,40 @@ export const DashboardWithItemsSchema = {
 														"type": "string"
 													}
 												},
-												"additionalProperties": false,
 												"required": [
 													"color",
 													"header"
 												]
 											}
 										},
-										"additionalProperties": false,
 										"required": [
 											"color",
 											"header"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -43691,7 +43913,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43742,7 +43964,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43782,7 +44004,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43810,6 +44032,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -43820,7 +44043,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -43846,7 +44069,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43886,7 +44109,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43906,42 +44129,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -43952,16 +44186,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -43971,11 +44213,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -43991,7 +44241,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -44006,37 +44256,39 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"dataDownload"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -44051,7 +44303,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44102,7 +44354,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44142,7 +44394,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44170,6 +44422,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -44180,7 +44433,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -44206,7 +44459,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44246,7 +44499,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44266,42 +44519,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -44312,16 +44576,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -44331,11 +44603,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -44351,7 +44631,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -44366,37 +44646,39 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"singleDate"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -44411,7 +44693,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44462,7 +44744,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44502,7 +44784,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44530,6 +44812,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -44540,7 +44823,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -44566,7 +44849,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44606,7 +44889,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44626,42 +44909,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -44672,16 +44966,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -44691,11 +44993,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -44711,7 +45021,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -44726,37 +45036,39 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"filesDownload"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -44771,7 +45083,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44822,7 +45134,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44862,7 +45174,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44890,6 +45202,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -44900,7 +45213,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -44926,7 +45239,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44966,7 +45279,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44986,42 +45299,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -45032,16 +45356,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -45051,11 +45383,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -45071,7 +45411,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -45086,49 +45426,51 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiValue"
 										]
 									},
-									"presentationoptions": {
+									"presentationOptions": {
+										"additionalProperties": false,
 										"type": "object",
 										"properties": {
-											"istitlevisible": {
+											"isTitleVisible": {
 												"type": "boolean"
 											},
-											"valueformat": {
+											"valueFormat": {
 												"type": "string"
 											}
-										},
-										"additionalProperties": false
+										}
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
 									"name": {
 										"type": "string"
 									},
 									"description": {
+										"description": "A short description that appears above a viz",
 										"type": "string"
 									},
 									"placeholder": {
+										"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -45143,7 +45485,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -45194,7 +45536,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -45234,7 +45576,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -45262,6 +45604,7 @@ export const DashboardWithItemsSchema = {
 												"type": "object",
 												"properties": {
 													"start": {
+														"description": "ISO Date Time",
 														"type": "string"
 													}
 												},
@@ -45272,7 +45615,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -45298,7 +45641,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -45338,7 +45681,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -45358,42 +45701,53 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {
+										"description": "Extra config options for exporting"
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": "string"
+												}
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
+										"description": "",
 										"type": "string"
 									},
 									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
 										"type": "object",
 										"properties": {
 											"link": {
+												"description": "url",
 												"type": "string"
 											},
 											"name": {
+												"description": "label",
 												"type": "string"
 											}
 										},
@@ -45404,16 +45758,24 @@ export const DashboardWithItemsSchema = {
 										]
 									},
 									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
 													"attributes": {
 														"type": "object",
-														"additionalProperties": false
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
 													}
 												},
 												"additionalProperties": false,
@@ -45423,11 +45785,19 @@ export const DashboardWithItemsSchema = {
 											},
 											{
 												"type": "object",
-												"additionalProperties": false
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -45443,7 +45813,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -45458,22 +45828,21 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"valueMetadata": {
+									"value_metadata": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"qrCodeVisual"
 										]
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							}
 						]
@@ -45484,13 +45853,13 @@ export const DashboardWithItemsSchema = {
 					"legacy": {
 						"type": "boolean"
 					},
-					"permissionGroupIds": {
+					"permission_group_ids": {
 						"type": "array",
 						"items": {
 							"type": "string"
 						}
 					},
-					"reportCode": {
+					"report_code": {
 						"type": "string"
 					}
 				},

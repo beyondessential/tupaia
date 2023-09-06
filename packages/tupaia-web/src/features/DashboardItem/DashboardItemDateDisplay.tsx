@@ -12,7 +12,7 @@ import { DashboardItemContext } from './DashboardItemContext';
 const LatestAvailable = styled(Typography).attrs({
   color: 'textSecondary',
 })<{
-  $isEnlarged: boolean;
+  $isEnlarged?: boolean;
 }>`
   font-size: 0.6rem;
   text-align: ${({ $isEnlarged }) => ($isEnlarged ? 'left' : 'center')};

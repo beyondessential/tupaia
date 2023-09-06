@@ -6,7 +6,7 @@
 import React, { useReducer } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
-import { ViewConfig } from '@tupaia/types';
+import { BaseReport, ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
@@ -78,9 +78,14 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
   const { isExportMode } = exportConfig;
   const isDataDownload =
     ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
-  const hasBigData =
-    !isDataDownload &&
-    ((reportData?.data?.length && reportData?.data?.length > 20) || type === 'matrix');
+
+  const getHasBigData = () => {
+    if (isDataDownload) return false;
+    else if (type === 'matrix') return true;
+    const { data } = reportData as BaseReport;
+    return data && data.length > 20;
+  };
+  const hasBigData = getHasBigData();
 
   return (
     <StyledModal isOpen onClose={handleCloseModal}>
