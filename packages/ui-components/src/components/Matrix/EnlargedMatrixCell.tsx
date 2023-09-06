@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { DialogContent, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import styled from 'styled-components';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
-import { Dialog, DialogFooter, DialogHeader } from '../Dialog';
+import { Dialog, DialogFooter, DialogHeader, DialogContent } from '../Dialog';
 import { Button } from '../Button';
 
 const Content = styled(DialogContent)`
