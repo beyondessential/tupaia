@@ -17,13 +17,14 @@ import {
   TextField,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import {
+  ConditionalPresentationOptions,
+  MatrixConfig,
   MatrixReport,
   MatrixReportColumn,
   MatrixReportRow,
-  DashboardItemConfig,
-} from '../../types';
+} from '@tupaia/types';
+import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from '../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
 

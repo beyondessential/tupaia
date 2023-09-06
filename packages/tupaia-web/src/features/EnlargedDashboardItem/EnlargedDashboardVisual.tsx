@@ -61,17 +61,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `;
 
-interface EnlargedDashboardVisualProps {
-  entityName?: Entity['name'];
-  isPreview?: boolean;
-}
-
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
   padding-top: 1rem;
   padding-bottom: 0.3rem;
 `;
+interface EnlargedDashboardVisualProps {
+  entityName?: Entity['name'];
+  isPreview?: boolean;
+}
+
 /*
  * EnlargedDashboardVisual is the enlarged dashboard item report visuals. It handles the case of a preview as well as the regular enlarged dashboard item.
  */

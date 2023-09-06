@@ -5,8 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport } from '../../../types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
 
 const Text = styled(Typography)`
   font-size: 1.5rem;

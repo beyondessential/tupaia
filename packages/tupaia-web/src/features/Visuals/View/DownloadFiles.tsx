@@ -7,11 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from '@material-ui/core';
 import { useSearchParams } from 'react-router-dom';
-import { ViewConfig } from '@tupaia/types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
 import { DownloadFilesVisual } from '@tupaia/ui-components';
 import { useDownloadFiles } from '../../../api/mutations';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { ViewReport } from '../../../types';
 
 const StyledDownloadFilesVisual = styled(DownloadFilesVisual)`
   .filename {

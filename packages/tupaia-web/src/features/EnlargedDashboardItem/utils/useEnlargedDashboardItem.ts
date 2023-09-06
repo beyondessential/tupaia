@@ -70,10 +70,13 @@ export const useEnlargedDashboardItem = () => {
 
   const params = getParameters();
 
-  const { data: reportData, isLoading: isLoadingReportData, error, refetch } = useReport(
-    reportCode,
-    params,
-  );
+  const {
+    data: reportData,
+    isLoading: isLoadingReportData,
+    error,
+    refetch,
+    isFetching,
+  } = useReport(reportCode, params);
 
   return {
     activeDashboard,
@@ -81,7 +84,7 @@ export const useEnlargedDashboardItem = () => {
     currentDashboardItem,
     isLoadingDashboards,
     reportData,
-    isLoadingReportData,
+    isLoadingReportData: isLoadingReportData || isFetching,
     reportError: error,
     refetchReportData: refetch,
     parentDashboardItem,

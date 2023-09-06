@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport, DashboardItemReport, DashboardItemConfig } from '../../../types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
+import { DashboardItemReport, DashboardItemConfig } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
