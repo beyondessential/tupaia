@@ -13,7 +13,6 @@ import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
 import { ProjectAccessForm } from './ProjectAccessForm';
 import { RequestedCountries } from './RequestedCountries';
-import { Typography } from '@material-ui/core';
 import { CountryAccessListItem } from '../../types';
 
 const ModalBody = styled.div`
