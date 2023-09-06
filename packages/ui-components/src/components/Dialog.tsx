@@ -38,7 +38,6 @@ export const Dialog = ({ children, ...props }: DialogProps) => (
 
 const Header = styled(FlexStart)`
   position: relative;
-  background-color: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : DARK_BACKGROUND)};
   padding: 1.3rem 1.875rem 1.25rem;
   border-bottom: ${({ border, theme }) => {
     if (!border) return 'none';
@@ -99,6 +98,4 @@ export const DialogFooter = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding: 1.1rem 1.875rem;
-  background-color: ${({ theme }) =>
-    theme.palette.type === 'light' ? LIGHT_BACKGROUND : DARK_BACKGROUND};
 `;

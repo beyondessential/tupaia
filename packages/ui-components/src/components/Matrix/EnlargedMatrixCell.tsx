@@ -14,7 +14,6 @@ const Content = styled(DialogContent)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 const DisplayWrapper = styled.div`

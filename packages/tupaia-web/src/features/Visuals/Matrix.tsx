@@ -230,7 +230,7 @@ export const Matrix = () => {
 
   // in the dashboard, show a placeholder image
   if (!isEnlarged) return <MatrixPreview config={config} />;
-  if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
+  if (!parsedRows.length && !searchFilter) return <NoDataMessage>No data available</NoDataMessage>;
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);
