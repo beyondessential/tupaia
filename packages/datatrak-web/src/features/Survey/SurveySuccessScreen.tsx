@@ -3,13 +3,15 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography, Button } from '@material-ui/core';
+import { useForm } from 'react-hook-form';
 import { ButtonLink } from '../../components';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import { useSurveyForm } from './SurveyContext.tsx';
 import { ROUTES } from '../../constants';
+import { FormatShapesTwoTone } from '@material-ui/icons';
 
 const Wrapper = styled.div`
   display: flex;
@@ -64,16 +66,25 @@ const CloseBtn = styled(ButtonLink).attrs({
 export const SurveySuccessScreen = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const { numberOfScreens } = useSurveyForm();
-
-  const onStepPrevious = () => {
+  const { activeScreen, formData, setFormData } = useSurveyForm();
+  const { reset} = useForm({defaultValues: formData})
+  
+  const repeatSurvey = (data) => {
+    setFormData(reset({ ...formData, ...data }));
     const path = generatePath(ROUTES.SURVEY_SCREEN, {
       ...params,
-      screenNumber: String(numberOfScreens),
+      screenNumber: String(activeScreen), 
     });
-    navigate(path);
-  };
+    navigate(path)
+};
+      // useEffect(() => {
+      //   if(formState.isSubmitSuccessful) {
+      //     reset({formData})
+      //   }
+      // }, [formState, reset]) 
+
   return (
+    <>
     <Wrapper>
       <StyledImg src="/submit-success.svg" alt="submit-success" />
       <SurveySubmit variant="h1">Survey submitted!</SurveySubmit>
@@ -81,8 +92,9 @@ export const SurveySuccessScreen = () => {
         To repeat the same survey again click the button below otherwise ‘Close’ to return back to
         your dashboard
       </SubmissionText>
-      <RepeatSurvey onClick={onStepPrevious}>Repeat Survey</RepeatSurvey>
+      <RepeatSurvey onClick={repeatSurvey}>Repeat Survey</RepeatSurvey>
       <CloseBtn to="/">Close</CloseBtn>
     </Wrapper>
+    </>
   );
 };
