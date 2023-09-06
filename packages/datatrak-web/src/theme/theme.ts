@@ -10,18 +10,18 @@ export const theme = createMuiTheme(
     palette: {
       type: 'light',
       primary: {
-        main: '#4A79EA', // Main purple (as seen on primary buttons)
+        main: '#328DE5', // Main blue (as seen on primary buttons)
       },
       secondary: {
-        main: '#E7EFFF', // Light purple
+        main: '#EC642D', // Tupaia orange
       },
       background: {
         default: '#F9F9F9', // Off white background
         paper: '#ffffff', // White background
       },
       text: {
-        primary: '#333333', // dark text color
-        secondary: '#B8B8B8', // light grey text color
+        primary: '#2E2F33', // dark text color
+        secondary: '#898989', // light grey text color
       },
       divider: '#DFDFDF',
     },
@@ -36,7 +36,7 @@ export const theme = createMuiTheme(
           textTransform: 'none',
         },
         label: {
-          fontSize: '1rem',
+          fontSize: '0.875rem',
         },
       },
       MuiTypography: {
