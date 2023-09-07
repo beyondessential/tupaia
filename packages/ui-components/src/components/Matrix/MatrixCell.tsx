@@ -105,6 +105,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, link }: Matrix
         displayValue,
         presentation,
         isCategory,
+        colKey,
       },
     });
   };
