@@ -14,6 +14,7 @@ import {
   InstructionQuestion,
   CheckboxQuestion,
   DateTimeQuestion,
+  CodeGeneratorQuestion,
 } from '../Questions';
 import { SurveyQuestionFieldProps } from '../../types';
 
@@ -49,7 +50,7 @@ export enum QUESTION_TYPES {
   DateOfData = DateQuestion,
   Entity = Placeholder,
   PrimaryEntity = Placeholder,
-  CodeGenerator = Placeholder,
+  CodeGenerator = CodeGeneratorQuestion,
   Arithmetic = Placeholder,
   Condition = Placeholder,
 }
