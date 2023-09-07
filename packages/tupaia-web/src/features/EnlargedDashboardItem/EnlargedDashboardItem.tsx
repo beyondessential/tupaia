@@ -80,7 +80,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
 
   const getHasBigData = () => {
-    if (isDataDownload) return false;
+    if (isDataDownload || !reportData) return false;
     else if (type === 'matrix') return true;
     const { data } = reportData as BaseReport;
     return data && data.length > 20;

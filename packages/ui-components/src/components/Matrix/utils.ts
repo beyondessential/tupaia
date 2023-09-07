@@ -60,6 +60,8 @@ const getPresentationOptionFromCondition = (
   value: any,
 ) => {
   const { conditions = [] } = options;
+  // handle undefined values so they don't accidentally get displayed as the default condition
+  if (value === undefined) return null;
 
   const option = conditions.find(
     ({ condition }: { condition: PresentationOptionCondition['condition'] }) => {

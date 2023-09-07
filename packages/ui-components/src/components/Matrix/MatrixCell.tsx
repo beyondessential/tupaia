@@ -118,7 +118,11 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, link }: Matrix
   }
   return (
     <DataCell>
-      <DataCellContent as={CellComponent} onClick={isDots ? onClickCellButton : null} to={link}>
+      <DataCellContent
+        as={CellComponent}
+        onClick={isDots && value !== undefined ? onClickCellButton : null}
+        to={link}
+      >
         {displayValue}
       </DataCellContent>
     </DataCell>
