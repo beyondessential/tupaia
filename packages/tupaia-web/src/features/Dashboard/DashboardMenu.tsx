@@ -50,15 +50,21 @@ interface DashboardMenuItemProps {
 
 const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) => {
   const location = useLocation();
-  const { projectCode, entityCode } = useParams();
+  const { projectCode, entityCode, dashboardName: selectedDashboardName } = useParams();
 
+  const encodedDashboardName = encodeURIComponent(dashboardName);
   const link = {
     ...location,
-    pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(dashboardName)}`,
+    pathname: `/${projectCode}/${entityCode}/${encodedDashboardName}`,
   };
 
   return (
-    <MenuItem to={link} onClick={onClose} component={Link}>
+    <MenuItem
+      to={link}
+      onClick={onClose}
+      component={Link}
+      selected={dashboardName === selectedDashboardName}
+    >
       {dashboardName}
     </MenuItem>
   );
