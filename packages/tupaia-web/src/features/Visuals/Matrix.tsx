@@ -17,13 +17,14 @@ import {
   TextField,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import {
+  ConditionalPresentationOptions,
+  MatrixConfig,
   MatrixReport,
   MatrixReportColumn,
   MatrixReportRow,
-  DashboardItemConfig,
-} from '../../types';
+} from '@tupaia/types';
+import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from '../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
 
@@ -230,7 +231,7 @@ export const Matrix = () => {
 
   // in the dashboard, show a placeholder image
   if (!isEnlarged) return <MatrixPreview config={config} />;
-  if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
+  if (!parsedRows.length && !searchFilter) return <NoDataMessage>No data available</NoDataMessage>;
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);

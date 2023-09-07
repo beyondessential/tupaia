@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport, DashboardItemReport, DashboardItemConfig } from '../../../types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
+import { formatDataValueByType } from '@tupaia/utils';
+import { DashboardItemReport, DashboardItemConfig } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
-import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
@@ -35,11 +35,11 @@ const VIEWS = {
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
-  const { valueType, value_metadata: valueMetadata } = config;
+  const { valueType } = config;
   return data?.map(datum => {
-    const { value } = datum;
+    const { value, value_metadata: valueMetadata } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata` as any] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as any] || config || {}),
       ...datum,
     };
     return {
@@ -72,10 +72,12 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
       <>
         {data?.map((datum, i) => (
           <View
-            customReport={{
-              ...report,
-              data: [datum],
-            }}
+            customReport={
+              {
+                ...report,
+                data: [datum],
+              } as ViewReport
+            }
             customConfig={
               {
                 ...config,
@@ -98,10 +100,12 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   return (
     <>
       <Component
-        report={{
-          ...report,
-          data: formattedData,
-        }}
+        report={
+          {
+            ...report,
+            data: formattedData,
+          } as ViewReport
+        }
         config={viewConfig}
         isEnlarged={isEnlarged}
       />

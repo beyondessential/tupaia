@@ -55,8 +55,8 @@ export const getExportToExcelParams = ({
   let newEndDate = moment.isMoment(endDate) ? endDate.utc().toISOString() : endDate;
   if (!startDate && !endDate) {
     const { startDate: viewStartDate, endDate: viewEndDate } = report || {};
-    newStartDate = viewStartDate;
-    newEndDate = viewEndDate;
+    newStartDate = viewStartDate!;
+    newEndDate = viewEndDate!;
   }
 
   return {

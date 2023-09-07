@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button } from '@tupaia/ui-components';
 import { Link, List } from '@material-ui/core';
-import { ViewReport } from '../../../types';
+import { ViewReport } from '@tupaia/types';
 import { CheckboxList, Form as BaseForm } from '../../../components';
 import { transformDownloadLink } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';

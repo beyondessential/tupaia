@@ -14,7 +14,11 @@ import { DashboardItemConfig } from '../types';
 import { DEFAULT_PERIOD_PARAM_STRING } from '../constants';
 
 // Add in these 'never' fields so we can destructure them together with the DashboardItem type later
-type SelectableMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay & { startDate: never, endDate: never, weekDisplayFormat: never };
+type SelectableMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay & {
+  startDate: never;
+  endDate: never;
+  weekDisplayFormat: never;
+};
 
 // converts the date range to a URL period string
 const convertDateRangeToUrlPeriodString = (
@@ -89,7 +93,7 @@ export const useDateRanges = (
     return {};
   }
 
-  const currentPeriodString = urlSearchParams.get(urlParam) || '';
+  const currentPeriodString = urlSearchParams.get(urlParam) || DEFAULT_PERIOD_PARAM_STRING;
 
   const {
     periodGranularity,
@@ -132,7 +136,7 @@ export const useDateRanges = (
   };
 
   const onResetDate = () => {
-    urlSearchParams.delete(urlParam);
+    urlSearchParams.set(urlParam, DEFAULT_PERIOD_PARAM_STRING);
     setUrlSearchParams(urlSearchParams);
   };
 
