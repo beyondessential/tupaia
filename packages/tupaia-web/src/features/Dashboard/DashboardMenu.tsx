@@ -8,6 +8,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
+import { TOP_BAR_HEIGHT } from '../../constants';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -32,7 +33,7 @@ const ItemButton = styled(Menu)`
     background: ${({ theme }) => theme.palette.background.default};
   }
   .MuiMenu-paper {
-    max-height: -webkit-fill-available;
+    max-height: calc(100vh - ${TOP_BAR_HEIGHT});
   }
 
   .MuiListItem-root {
@@ -51,7 +52,10 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
 
-  const link = { ...location, pathname: `/${projectCode}/${entityCode}/${dashboardName}` };
+  const link = {
+    ...location,
+    pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(dashboardName)}`,
+  };
 
   return (
     <MenuItem to={link} onClick={onClose} component={Link}>
