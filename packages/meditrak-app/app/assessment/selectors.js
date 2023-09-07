@@ -128,7 +128,7 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
       return valueTranslation[questionId][answer]; // return translated answer if there's any
     }
     // return raw answer if it's a number, else 0 (e.g. if no valueTranslation provided for the question and this specific answer when answer is non-numeric)
-    if (answer !== undefined && answer !== null) {
+    if (answer !== undefined && answer !== null && answer !== '') {
       return isNaN(answer) ? 0 : answer; // return raw answer
     }
 
