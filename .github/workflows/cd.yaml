@@ -1,0 +1,26 @@
+name: Deploy
+on:
+  workflow_run:
+    # Note: This will only trigger if the workflow file is on the default branch
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for AWS
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # Only run if Tupaia CI passed
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: ap-southeast-2
+          role-to-assume: arn:aws:iam::843218180240:role/Tupaia_GHA
+          role-session-name: GHA@Tupaia
+      - run: CI_BRANCH=$GITHUB_REF_NAME CI_COMMITTER_NAME=$GITHUB_ACTOR CI_BUILD_ID=$GITHUB_RUN_ID packages/devops/scripts/ci/triggerRedeploy.sh

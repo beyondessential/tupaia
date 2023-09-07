@@ -38,13 +38,13 @@ export const assertSurveyResponseEditPermissions = async (
   accessPolicy,
   models,
   surveyResponseId,
-  updatedFields,
+  { survey_id, entity_id },
 ) => {
   // If we update survey_id or entity_id, check that we would still have permission for the result
-  if (updatedFields.survey_id || updatedFields.entity_id) {
+  if (survey_id || entity_id) {
     const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
-    const surveyId = updatedFields.survey_id ? updatedFields.survey_id : surveyResponse.survey_id;
-    const entityId = updatedFields.entity_id ? updatedFields.entity_id : surveyResponse.entity_id;
+    const surveyId = survey_id || surveyResponse.survey_id;
+    const entityId = entity_id || surveyResponse.entity_id;
 
     await assertSurveyEntityPairPermission(accessPolicy, models, surveyId, entityId);
   }

@@ -5,4 +5,3 @@
 
 export { Aggregator } from './Aggregator';
 export * from './analytics';
-export { createAggregator } from './createAggregator';

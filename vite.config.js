@@ -21,8 +21,10 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('ace-builds')) return 'ace';
             if (id.includes('react-ace')) return 'reactAce';
             if (id.includes('jsoneditor')) return 'jsonEditor';
+            if (id.includes('jszip')) return 'jszip';
             if (id.includes('icons')) return 'muiIcons';
             if (id.includes('moment-timezone')) return 'momentTimezone';
+            if (id.includes('qrcode')) return 'qrcode';
             if (id.includes('types')) return 'tupaiaTypes';
             if (id.includes('xlsx')) return 'xlsx';
           },

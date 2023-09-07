@@ -4,16 +4,23 @@
  */
 
 import React from 'react';
-import { ButtonLink, PageContainer } from '../components';
+import { ButtonLink, PageContainer as BasePageContainer } from '../components';
 import styled from 'styled-components';
 import { MOBILE_BREAKPOINT, ROUTES } from '../constants';
 import { Typography, Link } from '@material-ui/core';
 
+const PageContainer = styled(BasePageContainer)`
+  background: url('/landing-page-background.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+`;
+
 const Wrapper = styled.div`
-  padding: 3rem 0;
+  padding: 4rem 0;
 `;
 const SurveyAlert = styled.div`
-  background-color: ${({ theme }) => theme.palette.secondary.main};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 3px;
   margin: 0 2rem;
   padding: 2.5rem;
@@ -48,13 +55,13 @@ const ButtonWrapper = styled.div`
 
 const TextWrapper = styled.div`
   padding: 0 2rem;
-  max-width: 60%;
+  max-width: 80%;
   margin: 0;
   display: flex;
   flex-direction: column;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.lg}px) {
-    padding: 0 11rem 0 2rem;
-    width: calc(100% - 12rem);
+    padding: 0 12rem 0 2rem;
+    width: calc(100% - 10rem);
     max-width: 100%;
   }
 `;
@@ -83,10 +90,10 @@ const InlineLink = styled(Link)`
 const SurveysImage = styled.img`
   width: auto;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.lg}px) {
+    height: calc(100% + 4.6rem);
     position: absolute;
-    height: calc(100% + 1rem);
-    top: -2rem;
-    right: -1rem;
+    right: 5rem;
+    top: -2.3rem;
   }
 `;
 
@@ -120,7 +127,10 @@ export const LandingPage = () => {
                   here
                 </InlineLink>
               </MobileText>
-              <DesktopText>download our app meditrak from the app or play store</DesktopText>.
+              <DesktopText>
+                download our app meditrak from Google Play or Apple App Store
+              </DesktopText>
+              .
             </Text>
           </TextWrapper>
           <SurveysImage src="/surveys.svg" />

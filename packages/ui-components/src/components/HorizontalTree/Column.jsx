@@ -169,7 +169,7 @@ export const Column = ({
             ) : (
               <List>
                 {filteredData?.map(node => {
-                  const hasChildren = node.children.length > 0;
+                  const hasChildren = Array.isArray(node.children) && node.children.length > 0;
 
                   return (
                     <ListItem
@@ -204,11 +204,7 @@ Column.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      children: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string.isRequired,
-        }),
-      ).isRequired,
+      children: PropTypes.arrayOf(PropTypes.any),
     }),
   ),
   readOnly: PropTypes.bool,

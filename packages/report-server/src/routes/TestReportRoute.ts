@@ -5,8 +5,9 @@
 
 import { Request } from 'express';
 
-import { createAggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
+import { Aggregator } from '@tupaia/aggregator';
+import { DataBroker } from '@tupaia/data-broker';
 
 import { ReportServerAggregator } from '../aggregator';
 import { ReportBuilder, Row, BuiltReport } from '../reportBuilder';
@@ -43,10 +44,12 @@ export class TestReportRoute extends Route<TestReportRequest> {
       ...restOfBody,
     };
     const aggregator = new ReportServerAggregator(
-      createAggregator(undefined, {
-        accessPolicy: this.req.accessPolicy,
-        services: this.req.ctx.services,
-      }),
+      new Aggregator(
+        new DataBroker({
+          accessPolicy: this.req.accessPolicy,
+          services: this.req.ctx.services,
+        }),
+      ),
     );
 
     const reqContext = {

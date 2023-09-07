@@ -69,7 +69,7 @@ export const Routes = () => {
           <Route index element={<LandingPage />} />
         </Route>
         {/** Any views that should have the background image should go in here */}
-        <Route path="/" element={<BackgroundPageLayout />}>
+        <Route path="/" element={<BackgroundPageLayout backgroundImage="/auth-background.svg" />}>
           {/** Any public centred views should go in here */}
           <Route path="/" element={<CentredLayout />}>
             <Route
@@ -85,6 +85,8 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
           </Route>
+        </Route>
+        <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
           <Route element={<PrivateRoute />}>
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>

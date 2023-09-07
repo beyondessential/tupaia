@@ -9,19 +9,21 @@ import styled from 'styled-components';
 import { PageContainer } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const Background = styled.div`
+export const Background = styled.div<{
+  $backgroundImage?: string;
+}>`
   width: 100%;
   height: 100%;
-  background-image: url('/page-background.svg');
-  background-position: center;
+  background-image: ${({ $backgroundImage }) => `url(${$backgroundImage})`};
+  background-position: top center;
   background-size: cover;
   min-height: calc(100vh - ${HEADER_HEIGHT});
   display: flex;
 `;
 
-export const BackgroundPageLayout = () => {
+export const BackgroundPageLayout = ({ backgroundImage }: { backgroundImage?: string }) => {
   return (
-    <Background>
+    <Background $backgroundImage={backgroundImage}>
       <PageContainer>
         <Outlet />
       </PageContainer>

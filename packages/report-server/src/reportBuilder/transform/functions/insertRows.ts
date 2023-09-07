@@ -10,7 +10,7 @@ import { Row } from '../../types';
 import { Context } from '../../context';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
-import { mapStringToStringValidator } from './transformValidators';
+import { mapStringToStringValidator } from './utils';
 import { TransformTable } from '../table';
 
 type InsertParams = {

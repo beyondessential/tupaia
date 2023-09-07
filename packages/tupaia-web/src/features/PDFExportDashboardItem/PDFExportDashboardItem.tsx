@@ -17,7 +17,7 @@ import {
 import { A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
-import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
 const Wrapper = styled.div`
@@ -140,20 +140,19 @@ export const PDFExportDashboardItem = ({
           {reference && <ReferenceTooltip reference={reference} />}
           {period && <ExportPeriod>{period}</ExportPeriod>}
           <ExportContent $hasData={report?.data && report?.data?.length > 0}>
-            <DashboardItemContent
-              dashboardItem={
-                {
-                  ...dashboardItem,
-                  config: dashboardItemConfig,
-                } as DashboardItem
-              }
-              report={report}
-              isLoading={isLoading}
-              error={error}
-              isExpandable={false}
-              isEnlarged
-              isExporting
-            />
+            <DashboardItemContext.Provider
+              value={{
+                config,
+                report,
+                reportCode,
+                isLoading,
+                error,
+                isEnlarged: true,
+                isExport: true,
+              }}
+            >
+              <DashboardItemContent />
+            </DashboardItemContext.Provider>
           </ExportContent>
         </Wrapper>
       </A4PageContent>

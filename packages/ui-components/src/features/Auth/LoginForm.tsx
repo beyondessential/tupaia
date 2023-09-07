@@ -20,9 +20,12 @@ const Wrapper = styled(AuthViewWrapper)`
 `;
 
 const StyledForm = styled(Form)`
-  margin-top: 1rem;
+  margin-top: 2.4rem;
   width: 22rem;
   max-width: 100%;
+  .MuiFormControl-root:nth-child(2) {
+    margin-bottom: 0;
+  }
 `;
 
 const LinkText = styled(Typography)`
@@ -41,8 +44,13 @@ const LinkText = styled(Typography)`
 `;
 
 const ForgotPasswordText = styled(LinkText)`
-  margin-top: -0.4rem;
+  margin-top: 0.5rem;
   float: right;
+
+  // to prevent issues with specificity overriding this, we use a parent selector
+  form & {
+    font-size: 0.75rem;
+  }
 `;
 
 type To = LinkProps['to'];
