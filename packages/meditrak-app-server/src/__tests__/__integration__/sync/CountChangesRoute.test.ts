@@ -7,7 +7,7 @@ import { constructAccessToken } from '@tupaia/auth';
 import { clearTestData, getTestDatabase, getTestModels, upsertDummyRecord } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/utils';
-import { SyncableChangeEnqueuer } from '../../../sync';
+import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from '../../../sync';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { TestModelRegistry } from '../../types';
 import { setupTestApp, setupTestUser } from '../../utilities';
@@ -24,6 +24,7 @@ describe('changes/count', () => {
   syncableChangeEnqueuer.setDebounceTime(50);
 
   beforeAll(async () => {
+    await createPermissionsBasedMeditrakSyncQueue(models.database);
     syncableChangeEnqueuer.listenForChanges();
     app = await setupTestApp();
 
