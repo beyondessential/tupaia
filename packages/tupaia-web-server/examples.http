@@ -46,3 +46,7 @@ content-type: {{contentType}}
 ### Fetch report
 GET {{host}}/report/tupaia_metrics_n_visuals_by_country?dashboardCode=explore_tupaia_metrics&endDate=2023-06-26&itemCode=tupaia_metrics_n_visuals_by_country&legacy=false&organisationUnitCode=explore&projectCode=explore&startDate=2015-01-01&timeZone=Pacific%2FAuckland
 content-type: {{contentType}}
+
+### Fetch entities
+GET {{host}}/entities/strive/PG_Lae_Abb?includeRootEntity=true&fields[]=parent_code&fields[]=code&fields[]=name&fields[]=type&fields[]=point&fields[]=image_url&fields[]=attributes&fields[]=child_codes
+content-type: {{contentType}}
