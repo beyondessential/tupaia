@@ -26,6 +26,9 @@ const Wrapper = styled.div`
   padding: 0.9375rem 0.9375rem 0.9375rem 0.625rem;
   background-color: ${({ theme }) => theme.palette.background.default};
   border-radius: 0.3rem;
+  svg.recharts-surface {
+    overflow: visible;
+  }
 `;
 
 const Container = styled.div`
