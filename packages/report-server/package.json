@@ -50,7 +50,7 @@
     "lodash.pick": "^4.4.0",
     "mathjs": "^9.4.0",
     "moment": "^2.24.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@tupaia/types": "1.0.0",
