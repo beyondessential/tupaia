@@ -19,13 +19,6 @@ const LatLongWrapper = styled.div`
   margin-left: -1.4rem;
 `;
 
-const DataField = styled(TextField)`
-  .MuiInput-underline:before,
-  .MuiInput-underline:after {
-    content: none;
-  }
-`;
-
 const Text = styled.div`
   margin-bottom: 0.625rem;
 `;
@@ -73,7 +66,7 @@ export const GeolocateQuestion = ({
     value.latitude = value.latitude || null;
     value.longitude = value.longitude || null;
   }
-  console.log(value);
+
   return (
     <>
       {mapModalOpen && (

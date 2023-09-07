@@ -4,6 +4,7 @@
  */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { Icon } from 'leaflet';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap, ZoomControl } from 'react-leaflet';
 import { Typography } from '@material-ui/core';
 import { OutlinedButton, Button } from '@tupaia/ui-components';
@@ -12,12 +13,12 @@ import { Modal } from '../../../components/Modal';
 
 const GeolocateModal = styled(Modal)`
   height: 40rem;
-  width: 100rem;
+  max-width: 75rem;
 `;
 
 const HeaderWrapper = styled.div`
-  height: 2rem;
   width: 75rem;
+  height: auto;
   text-align: left;
 `;
 const ModalHeading = styled(Typography).attrs({
@@ -26,6 +27,7 @@ const ModalHeading = styled(Typography).attrs({
   color: black;
   font-size: 1.125rem;
   padding-bottom: 0.5rem;
+  white-space: normal;
 `;
 
 const ModalSubHeading = styled(Typography).attrs({
@@ -53,6 +55,11 @@ const ModalButtonsWrapper = styled.div`
 const CancelButton = styled(OutlinedButton)``;
 
 const SubmitButton = styled(Button)``;
+
+const mapPin = new Icon({
+  iconUrl: '/mapIcon.png',
+  iconSize: [75, 75],
+});
 
 const UserLocationMap = ({
   geolocation,
@@ -100,11 +107,22 @@ const PinDrop = ({
       });
     },
   });
+  // useMapEvents({
+  //   dragend(e) {
+  //     setGeolocation(e.target.getLatLng());
+  //   },
+  // });
 
   if (geolocation.latitude !== null && geolocation.longitude !== null) {
-    return <Marker position={[geolocation.latitude, geolocation.longitude]} />;
+    return (
+      <Marker
+        position={[geolocation.latitude, geolocation.longitude]}
+        icon={mapPin}
+        draggable={true}
+      />
+    );
   } else {
-    return <Marker position={[0, 0]} />;
+    return <Marker position={[0, 0]} icon={mapPin} draggable={true} />;
   }
 };
 export const MapModal = ({

@@ -50,14 +50,13 @@ export const LatLongFields = ({ setGeolocation, geolocation }: any) => {
       [event.target.name]: parseFloat(value),
     });
   };
-  console.log(geolocation);
   return (
     <Wrapper>
       <LatField
         InputLabelProps={{ shrink: true }}
         id="standard-basic"
         name="latitude"
-        value={geolocation.latitude || null}
+        value={geolocation.latitude || ''}
         label="Latitude"
         onChange={handleChange}
       />
@@ -65,7 +64,7 @@ export const LatLongFields = ({ setGeolocation, geolocation }: any) => {
         InputLabelProps={{ shrink: true }}
         id="standard-basic"
         name="longitude"
-        value={geolocation.longitude || null}
+        value={geolocation.longitude || ''}
         label="Longitude"
         onChange={handleChange}
       />
