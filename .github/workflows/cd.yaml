@@ -10,6 +10,16 @@ permissions:
   id-token: write # OIDC token for AWS
 
 jobs:
+  printJob:
+    name: Print event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+  
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -23,4 +33,4 @@ jobs:
           aws-region: ap-southeast-2
           role-to-assume: arn:aws:iam::843218180240:role/Tupaia_GHA
           role-session-name: GHA@Tupaia
-      - run: CI_BRANCH=${{ github.event.workflow_run.head_branch }} CI_COMMITTER_NAME=${{ github.event.workflow_run.actor.name }} CI_BUILD_ID=$GITHUB_RUN_ID packages/devops/scripts/ci/triggerRedeploy.sh
+      - run: CI_BRANCH=${{ github.event.workflow_run.head_branch }} CI_COMMITTER_NAME=gha CI_BUILD_ID=$GITHUB_RUN_ID packages/devops/scripts/ci/triggerRedeploy.sh
