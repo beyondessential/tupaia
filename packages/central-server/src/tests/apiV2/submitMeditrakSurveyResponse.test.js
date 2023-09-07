@@ -113,7 +113,7 @@ describe('POST /surveyResponse', async () => {
       ]);
       await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
-      const user = await models.user.findOne();
+      const user = await models.user.findOne({ emailAddress: 'test.user@tupaia.org' });
       userId = user.id;
     });
 
