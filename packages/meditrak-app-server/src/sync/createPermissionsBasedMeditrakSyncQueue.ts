@@ -3,15 +3,15 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-// Exact copy of: @tupaia/meditrak-app-server/src/sync/createPermissionsBasedMeditrakSyncQueue.js
+// Exact copy of: @tupaia/central-server/src/database/meditrakSyncQueue/createPermissionsBasedMeditrakSyncQueue.js
 // TODO: Tidy this up as part of RN-502
 
-import { SqlQuery } from '@tupaia/database';
+import { SqlQuery, TupaiaDatabase } from '@tupaia/database';
 
-const groupToArrayOrNull = field =>
+const groupToArrayOrNull = (field: string) =>
   `NULLIF(array(select distinct unnest(array_agg(${field}))), '{NULL}')`;
 
-const groupToFlatArrayOrNull = field =>
+const groupToFlatArrayOrNull = (field: string) =>
   `NULLIF(array(select distinct unnest(array_concat_agg(${field}))), '{}')`;
 
 /**
@@ -91,6 +91,6 @@ GROUP BY msq.id;
 CREATE UNIQUE INDEX permissions_based_meditrak_sync_queue_id_idx ON permissions_based_meditrak_sync_queue (id); 
 `);
 
-export const createPermissionsBasedMeditrakSyncQueue = async database => {
+export const createPermissionsBasedMeditrakSyncQueue = async (database: TupaiaDatabase) => {
   return query.executeOnDatabase(database);
 };

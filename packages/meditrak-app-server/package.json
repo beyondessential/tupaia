@@ -23,7 +23,8 @@
     "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
-    "test": "yarn package:test:withdb"
+    "test": "yarn package:test:withdb",
+    "create-meditrak-sync-view": "node dist/sync/createMeditrakSyncView.js"
   },
   "dependencies": {
     "@tupaia/api-client": "3.1.0",
