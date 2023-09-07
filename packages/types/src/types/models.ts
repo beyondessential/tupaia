@@ -356,11 +356,11 @@ export interface MeditrakDevice {
   'user_id': string;
 }
 export interface MeditrakSyncQueue {
-  'change_time'?: number | null;
+  'change_time'?: number;
   'id': string;
   'record_id': string;
   'record_type': string;
-  'type': string;
+  'type': MeditrakSyncQueueChangeType;
 }
 export interface Ms1SyncLog {
   'count'?: number | null;
@@ -415,7 +415,7 @@ export interface PermissionsBasedMeditrakSyncQueue {
   'permission_groups'?: string[] | null;
   'record_id'?: string | null;
   'record_type'?: string | null;
-  'type'?: string | null;
+  'type'?: MeditrakSyncQueueChangeType | null;
 }
 export interface Project {
   'code': string;
@@ -632,6 +632,10 @@ export enum PeriodGranularity {
   'monthly' = 'monthly',
   'weekly' = 'weekly',
   'daily' = 'daily',
+}
+export enum MeditrakSyncQueueChangeType {
+  'update' = 'update',
+  'delete' = 'delete',
 }
 export enum EntityType {
   'world' = 'world',
