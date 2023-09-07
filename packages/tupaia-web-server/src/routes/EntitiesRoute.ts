@@ -27,7 +27,7 @@ const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { params, query, ctx } = this.req;
+    const { params, query, ctx, models } = this.req;
     const { rootEntityCode, projectCode } = params;
 
     const project = (
@@ -38,11 +38,16 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     )[0];
     const { config } = project;
 
+    const { typesExcludedFromWebFrontend } = models.entity;
+
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
       projectCode,
       rootEntityCode,
       {
-        filter: { ...DEFAULT_FILTER, ...generateFrontendExcludedFilter(config) },
+        filter: {
+          ...DEFAULT_FILTER,
+          ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
+        },
         fields: DEFAULT_FIELDS,
         ...query,
       },
