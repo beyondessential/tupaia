@@ -49,4 +49,5 @@ cp -r ./src/migrations-backup/* ./src/migrations/
 rm -rf ./src/migrations-backup
 
 # ensure that the latest permissions based meditrak sync queue has been built
+yarn workspace @tupaia/central-server build
 yarn workspace @tupaia/central-server create-meditrak-sync-view
