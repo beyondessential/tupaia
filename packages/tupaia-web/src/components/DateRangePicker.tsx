@@ -30,8 +30,7 @@ const Wrapper = styled.div`
       border-color: transparent;
       min-height: unset;
       min-width: unset;
-      &:hover,
-      &:focus {
+      &:hover {
         background-color: rgba(255, 255, 255, 0.3);
       }
     }
