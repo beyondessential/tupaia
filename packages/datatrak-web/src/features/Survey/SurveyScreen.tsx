@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams, generatePath } from 'react-router-dom';
@@ -14,6 +14,7 @@ import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
 import { SurveyToolbar } from './SurveyToolbar';
 import { Button } from '../../components';
+import { CancelSurveyModal } from './CancelSurveyModal';
 
 const Container = styled.div`
   display: flex;
@@ -101,6 +102,7 @@ const ButtonGroup = styled.div`
 `;
 
 export const SurveyScreen = () => {
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
   const {
@@ -140,6 +142,10 @@ export const SurveyScreen = () => {
 
     handleStep(path, data);
   });
+
+  const openCancelModal = () => {
+    setCancelModalOpen(true);
+  };
 
   return (
     <>
@@ -205,7 +211,7 @@ export const SurveyScreen = () => {
                   Back
                 </Button>
                 <ButtonGroup>
-                  <Button variant="outlined" to={ROUTES.SURVEY_SELECT}>
+                  <Button variant="outlined" onClick={openCancelModal}>
                     Cancel
                   </Button>
                   <Button type="submit">Next</Button>
@@ -215,6 +221,7 @@ export const SurveyScreen = () => {
           </FormProvider>
         </Paper>
       </Container>
+      <CancelSurveyModal open={cancelModalOpen} onClose={() => setCancelModalOpen(false)} />
     </>
   );
 };
