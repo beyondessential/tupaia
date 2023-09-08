@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const ProgressBar = styled.div<{
   $progress: number;
 }>`
-  background: ${({ theme }) => theme.progressBar.main};
+  background: ${({ theme }) => theme.palette.primary.dark};
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;

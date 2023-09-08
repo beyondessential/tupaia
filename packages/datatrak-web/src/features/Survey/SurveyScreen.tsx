@@ -14,26 +14,34 @@ import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { SurveyParams } from '../../types';
 import { SurveyToolbar } from './SurveyToolbar';
 import { Button } from '../../components';
+import { SurveySideMenu, SIDE_MENU_WIDTH } from './SurveySideMenu';
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  margin-left: -1rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  flex: 1;
   overflow: hidden;
+  flex: 1;
+  align-items: flex-start;
+`;
+
+const Container = styled.div<{
+  $sideMenuOpen?: boolean;
+}>`
+  display: flex;
+  justify-content: flex-start;
+  height: 100%;
+  flex: 1;
+  position: relative;
+  padding: 0 1rem;
+  margin-left: ${({ $sideMenuOpen }) => ($sideMenuOpen ? 0 : `-${SIDE_MENU_WIDTH}`)};
+  transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 
   @media (max-width: ${MOBILE_BREAKPOINT}) {
     overflow: auto;
     flex-direction: column;
   }
-`;
-
-const SideMenu = styled.div`
-  background: rgba(0, 65, 103, 0.3);
-  width: 30rem;
-  margin-right: 1rem;
-  max-width: 100%;
 `;
 
 const Paper = styled(MuiPaper).attrs({
@@ -110,6 +118,7 @@ export const SurveyScreen = () => {
     displayQuestions,
     screenHeader,
     screenNumber,
+    sideMenuOpen,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
@@ -144,77 +153,79 @@ export const SurveyScreen = () => {
   return (
     <>
       <SurveyToolbar />
-      <Container>
-        <SideMenu />
-        <Paper>
-          <FormProvider {...formContext}>
-            <StyledForm onSubmit={onStepForward} noValidate>
-              <FormScrollBody>
-                <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
-                {displayQuestions.map(
-                  ({
-                    questionId,
-                    questionCode,
-                    questionText,
-                    questionType,
-                    questionOptions,
-                    config,
-                    questionLabel,
-                    validationCriteria,
-                    detailLabel,
-                    questionOptionSetId,
-                    questionNumber,
-                  }) => {
-                    if (validationCriteria?.mandatory === true) {
-                      console.log('mandatory question', questionCode);
-                    }
-                    return (
-                      <QuestionWrapper
-                        key={questionId}
-                        $isInstruction={questionType === 'Instruction'}
-                      >
-                        {questionNumber && (
-                          <QuestionNumber id={`question_number_${questionId}`}>
-                            {questionNumber}
-                          </QuestionNumber>
-                        )}
-                        <SurveyQuestion
-                          detailLabel={detailLabel}
-                          id={questionId}
-                          code={questionCode}
-                          name={questionCode}
-                          type={questionType}
-                          text={detailLabel || questionText}
-                          options={questionOptions}
-                          config={config}
-                          label={questionLabel || questionText}
-                          optionSetId={questionOptionSetId}
-                        />
-                      </QuestionWrapper>
-                    );
-                  },
-                )}
-              </FormScrollBody>
-              <FormActions>
-                <Button
-                  onClick={onStepPrevious}
-                  startIcon={<ArrowBackIosIcon />}
-                  variant="text"
-                  color="default"
-                >
-                  Back
-                </Button>
-                <ButtonGroup>
-                  <Button variant="outlined" to={ROUTES.SURVEY_SELECT}>
-                    Cancel
+      <FormProvider {...formContext}>
+        <Wrapper>
+          <SurveySideMenu />
+          <Container $sideMenuOpen={sideMenuOpen}>
+            <Paper>
+              <StyledForm onSubmit={onStepForward} noValidate>
+                <FormScrollBody>
+                  <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
+                  {displayQuestions.map(
+                    ({
+                      questionId,
+                      questionCode,
+                      questionText,
+                      questionType,
+                      questionOptions,
+                      config,
+                      questionLabel,
+                      validationCriteria,
+                      detailLabel,
+                      questionOptionSetId,
+                      questionNumber,
+                    }) => {
+                      if (validationCriteria?.mandatory === true) {
+                        console.log('mandatory question', questionCode);
+                      }
+                      return (
+                        <QuestionWrapper
+                          key={questionId}
+                          $isInstruction={questionType === 'Instruction'}
+                        >
+                          {questionNumber && (
+                            <QuestionNumber id={`question_number_${questionId}`}>
+                              {questionNumber}
+                            </QuestionNumber>
+                          )}
+                          <SurveyQuestion
+                            detailLabel={detailLabel}
+                            id={questionId}
+                            code={questionCode}
+                            name={questionCode}
+                            type={questionType}
+                            text={detailLabel || questionText}
+                            options={questionOptions}
+                            config={config}
+                            label={questionLabel || questionText}
+                            optionSetId={questionOptionSetId}
+                          />
+                        </QuestionWrapper>
+                      );
+                    },
+                  )}
+                </FormScrollBody>
+                <FormActions>
+                  <Button
+                    onClick={onStepPrevious}
+                    startIcon={<ArrowBackIosIcon />}
+                    variant="text"
+                    color="default"
+                  >
+                    Back
                   </Button>
-                  <Button type="submit">Next</Button>
-                </ButtonGroup>
-              </FormActions>
-            </StyledForm>
-          </FormProvider>
-        </Paper>
-      </Container>
+                  <ButtonGroup>
+                    <Button variant="outlined" to={ROUTES.SURVEY_SELECT}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">Next</Button>
+                  </ButtonGroup>
+                </FormActions>
+              </StyledForm>
+            </Paper>
+          </Container>
+        </Wrapper>
+      </FormProvider>
     </>
   );
 };
