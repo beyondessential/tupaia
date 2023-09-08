@@ -52,6 +52,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         },
       },
       pageSize: pageSize || DEFAULT_PAGE_SIZE,
+      disableAdmin: true,
     });
 
     if (mapOverlays.length === 0) {

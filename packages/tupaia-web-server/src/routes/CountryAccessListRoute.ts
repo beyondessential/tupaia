@@ -17,6 +17,6 @@ export type CountryAccessListRequest = Request<
 export class CountryAccessListRoute extends Route<CountryAccessListRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
-    return ctx.services.central.fetchResources('me/countries');
+    return ctx.services.central.fetchResources('me/countries', { disableAdmin: true });
   }
 }

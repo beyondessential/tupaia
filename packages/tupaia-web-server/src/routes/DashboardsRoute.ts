@@ -80,6 +80,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const dashboards = await ctx.services.central.fetchResources('dashboards', {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
       sort: ['sort_order', 'name'],
+      disableAdmin: true,
     });
 
     if (!dashboards.length) {
@@ -107,6 +108,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
       // Override the default limit of 100 records
       pageSize: DEFAULT_PAGE_SIZE,
+      disableAdmin: true,
     });
 
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
@@ -118,6 +120,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
       // Override the default limit of 100 records
       pageSize: DEFAULT_PAGE_SIZE,
+      disableAdmin: true,
     });
 
     // Merged and sorted to make mapping easier

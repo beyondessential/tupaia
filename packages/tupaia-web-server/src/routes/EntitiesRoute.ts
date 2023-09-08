@@ -34,6 +34,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
         columns: ['config'],
+        disableAdmin: true,
       })
     )[0];
     const { config } = project;

@@ -30,7 +30,10 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       easyReadingMode,
     } = query;
     const dashboardItem = (
-      await ctx.services.central.fetchResources('dashboardItems', { code: itemCode })
+      await ctx.services.central.fetchResources('dashboardItems', {
+        code: itemCode,
+        disableAdmin: true,
+      })
     )[0];
 
     if (!dashboardItem) {
@@ -58,10 +61,10 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       centralQuery.entityCode = organisationUnitCode;
     }
 
-    const response = await ctx.services.central.fetchResources(
-      'export/surveyResponses',
-      centralQuery,
-    );
+    const response = await ctx.services.central.fetchResources('export/surveyResponses', {
+      ...centralQuery,
+      disableAdmin: true,
+    });
 
     // Extract the filename from the content-disposition header
     const contentDispositionHeader = response.headers.get('content-disposition');

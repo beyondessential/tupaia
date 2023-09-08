@@ -28,6 +28,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
         columns: ['config'],
+        disableAdmin: true,
       })
     )[0];
     const { config } = project;

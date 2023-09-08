@@ -27,6 +27,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
         columns: ['config'],
+        disableAdmin: true,
       })
     )[0];
     const { config } = project;
