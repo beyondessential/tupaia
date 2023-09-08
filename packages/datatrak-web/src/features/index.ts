@@ -4,3 +4,4 @@
  */
 
 export { SurveyScreen, SurveySuccessScreen, SurveyReviewScreen, SurveyContext } from './Survey';
+export { ProjectSelectForm } from './ProjectSelectForm';

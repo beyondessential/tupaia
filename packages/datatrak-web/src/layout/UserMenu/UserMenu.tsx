@@ -22,8 +22,6 @@ const MenuButton = styled(IconButton).attrs({
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
-  width: 100%;
-  height: 100%;
   color: ${({ theme }) => theme.palette.text.primary};
   width: 2rem;
   height: 2rem;

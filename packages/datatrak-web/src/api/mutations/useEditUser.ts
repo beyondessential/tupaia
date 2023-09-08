@@ -4,17 +4,14 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { Project } from '@tupaia/types';
 import { put } from '../api';
 import { useUser } from '../queries';
-import { ROUTES } from '../../constants';
 
-type ProjectId = {
-  projectId: string;
-};
-export const useEditUser = () => {
+type ProjectId = { projectId: Project['id'] };
+
+export const useEditUser = onSuccess => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const { data: user } = useUser();
 
   return useMutation<any, Error, ProjectId, unknown>(
@@ -32,7 +29,7 @@ export const useEditUser = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getUser');
-        navigate(ROUTES.HOME);
+        onSuccess();
       },
     },
   );
