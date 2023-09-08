@@ -7,18 +7,18 @@ import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { SpinningLoader, Button } from '@tupaia/ui-components';
 import { DatatrakWebProjectsRequest } from '@tupaia/types';
-import { useProjects } from '../api/queries';
+import { useProjects, useUser } from '../api/queries';
 import { useEditUser } from '../api/mutations';
 import { SelectList, ListItemType, ButtonLink } from '../components';
-import { HEADER_HEIGHT } from '../constants';
 
 export type Project = DatatrakWebProjectsRequest.ResBody[number];
 
-const Container = styled(Paper)`
+const Container = styled(Paper).attrs({
+  variant: 'outlined',
+})`
   width: 48rem;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - ${HEADER_HEIGHT} - 4rem) !important;
 `;
 
 const LoadingContainer = styled.div`
@@ -37,26 +37,41 @@ const ListWrapper = styled.div`
   overflow: auto;
 `;
 
+const useData = () => {
+  const { data: projects, ...projectsQuery } = useProjects();
+  const { data: user, ...userQuery } = useUser();
+  const isLoading =
+    projectsQuery.isLoading ||
+    !projectsQuery.isFetched ||
+    userQuery.isLoading ||
+    !userQuery.isFetched;
+
+  return { projects, user, isLoading };
+};
+
 export const ProjectSelectPage = () => {
-  const { data, isLoading, isFetched } = useProjects();
   const [selectedProject, setSelectedProject] = useState<ListItemType | null>(null);
-  const showLoader = isLoading || !isFetched;
+  const { projects, user, isLoading } = useData();
   const { mutate, isLoading: isConfirming } = useEditUser();
 
-  const projectOptions = data?.map(({ entityName, id }: Project) => ({
+  if (!isLoading && user?.projectId && selectedProject?.value !== user?.projectId) {
+    const userProject = projects?.find(({ id }) => id === user?.projectId);
+    setSelectedProject({ name: userProject?.entityName, value: userProject?.id });
+  }
+  const onConfirm = () => {
+    mutate({ projectId: selectedProject?.value as Project['id'] });
+  };
+
+  const projectOptions = projects?.map(({ entityName, id }: Project) => ({
     name: entityName,
     value: id,
     selected: id === selectedProject?.value,
   }));
 
-  const onConfirm = () => {
-    mutate({ projectId: selectedProject?.value as Project['id'] });
-  };
-
   return (
     <Container>
       <Typography variant="h1">Select project {isConfirming && '...'}</Typography>
-      {showLoader ? (
+      {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />
         </LoadingContainer>
