@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { KeyValueCellBuilder } from './KeyValueCellBuilder';
+import { KeyValueCellBuilder } from '../KeyValueCellBuilder';
 
 const SPECIAL_VALUE_PROCESSORS = {
   type: value => value.join(','),

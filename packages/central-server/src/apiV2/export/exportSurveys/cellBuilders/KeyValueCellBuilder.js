@@ -24,7 +24,7 @@ export class KeyValueCellBuilder {
     return key;
   }
 
-  async processValue(value, key) {
+  async processValue(value) {
     return value.toString();
   }
 
