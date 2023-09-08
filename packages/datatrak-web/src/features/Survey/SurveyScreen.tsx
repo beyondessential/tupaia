@@ -2,27 +2,43 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm, FormProvider } from 'react-hook-form';
-import { useNavigate, useParams, generatePath } from 'react-router-dom';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { Typography, Paper as MuiPaper } from '@material-ui/core';
-import { SurveyQuestion } from './SurveyQuestion';
-import { useSurveyForm } from './SurveyContext';
-import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
-import { SurveyParams } from '../../types';
-import { SurveyToolbar } from './SurveyToolbar';
-import { Button } from '../../components';
-import { CancelSurveyModal } from './CancelSurveyModal';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useForm, FormProvider } from "react-hook-form";
+import { useNavigate, useParams, generatePath } from "react-router-dom";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import { Typography, Paper as MuiPaper } from "@material-ui/core";
+import { SurveyQuestion } from "./SurveyQuestion";
+import { useSurveyForm } from "./SurveyContext";
+import { ROUTES, MOBILE_BREAKPOINT } from "../../constants";
+import { SurveyParams } from "../../types";
+import { SurveyToolbar } from "./SurveyToolbar";
+import { Button } from "../../components";
+import { CancelSurveyModal } from "./CancelSurveyModal";
+import { SurveySideMenu, SIDE_MENU_WIDTH } from "./SurveySideMenu";
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  margin-left: -1rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  flex: 1;
   overflow: hidden;
+  flex: 1;
+  align-items: flex-start;
+`;
+
+const Container = styled.div<{
+  $sideMenuOpen?: boolean;
+}>`
+  display: flex;
+  justify-content: flex-start;
+  height: 100%;
+  flex: 1;
+  position: relative;
+  padding: 0 1rem;
+  margin-left: ${({ $sideMenuOpen }) =>
+    $sideMenuOpen ? 0 : `-${SIDE_MENU_WIDTH}`};
+  transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 
   @media (max-width: ${MOBILE_BREAKPOINT}) {
     overflow: auto;
@@ -30,15 +46,8 @@ const Container = styled.div`
   }
 `;
 
-const SideMenu = styled.div`
-  background: rgba(0, 65, 103, 0.3);
-  width: 30rem;
-  margin-right: 1rem;
-  max-width: 100%;
-`;
-
 const Paper = styled(MuiPaper).attrs({
-  variant: 'outlined',
+  variant: "outlined",
   elevation: 0,
 })`
   flex: 1;
@@ -70,7 +79,7 @@ const FormActions = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-top: 1px solid ${props => props.theme.palette.divider};
+  border-top: 1px solid ${(props) => props.theme.palette.divider};
 
   button:last-child {
     margin-left: auto;
@@ -82,7 +91,8 @@ const QuestionWrapper = styled.div<{
 }>`
   display: flex;
   &:not(:last-child) {
-    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
+    margin-bottom: ${({ $isInstruction }) =>
+      $isInstruction ? "1rem" : "2rem"};
   }
 `;
 
@@ -112,6 +122,7 @@ export const SurveyScreen = () => {
     displayQuestions,
     screenHeader,
     screenNumber,
+    sideMenuOpen,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
@@ -121,7 +132,7 @@ export const SurveyScreen = () => {
     navigate(path);
   };
 
-  const onStepPrevious = handleSubmit(data => {
+  const onStepPrevious = handleSubmit((data) => {
     const path =
       screenNumber === 1
         ? ROUTES.SURVEY_SELECT
@@ -132,7 +143,7 @@ export const SurveyScreen = () => {
     handleStep(path, data);
   });
 
-  const onStepForward = handleSubmit(data => {
+  const onStepForward = handleSubmit((data) => {
     const path = isLast
       ? generatePath(ROUTES.SURVEY_REVIEW, params)
       : generatePath(ROUTES.SURVEY_SCREEN, {
@@ -150,78 +161,85 @@ export const SurveyScreen = () => {
   return (
     <>
       <SurveyToolbar />
-      <Container>
-        <SideMenu />
-        <Paper>
-          <FormProvider {...formContext}>
-            <StyledForm onSubmit={onStepForward} noValidate>
-              <FormScrollBody>
-                <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
-                {displayQuestions.map(
-                  ({
-                    questionId,
-                    questionCode,
-                    questionText,
-                    questionType,
-                    questionOptions,
-                    config,
-                    questionLabel,
-                    validationCriteria,
-                    detailLabel,
-                    questionOptionSetId,
-                    questionNumber,
-                  }) => {
-                    if (validationCriteria?.mandatory === true) {
-                      console.log('mandatory question', questionCode);
+      <FormProvider {...formContext}>
+        <Wrapper>
+          <SurveySideMenu />
+          <Container $sideMenuOpen={sideMenuOpen}>
+            <Paper>
+              <StyledForm onSubmit={onStepForward} noValidate>
+                <FormScrollBody>
+                  <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
+                  {displayQuestions.map(
+                    ({
+                      questionId,
+                      questionCode,
+                      questionText,
+                      questionType,
+                      questionOptions,
+                      config,
+                      questionLabel,
+                      validationCriteria,
+                      detailLabel,
+                      questionOptionSetId,
+                      questionNumber,
+                    }) => {
+                      if (validationCriteria?.mandatory === true) {
+                        console.log("mandatory question", questionCode);
+                      }
+                      return (
+                        <QuestionWrapper
+                          key={questionId}
+                          $isInstruction={questionType === "Instruction"}
+                        >
+                          {questionNumber && (
+                            <QuestionNumber
+                              id={`question_number_${questionId}`}
+                            >
+                              {questionNumber}
+                            </QuestionNumber>
+                          )}
+                          <SurveyQuestion
+                            detailLabel={detailLabel}
+                            id={questionId}
+                            code={questionCode}
+                            name={questionCode}
+                            type={questionType}
+                            text={detailLabel || questionText}
+                            options={questionOptions}
+                            config={config}
+                            label={questionLabel || questionText}
+                            optionSetId={questionOptionSetId}
+                          />
+                        </QuestionWrapper>
+                      );
                     }
-                    return (
-                      <QuestionWrapper
-                        key={questionId}
-                        $isInstruction={questionType === 'Instruction'}
-                      >
-                        {questionNumber && (
-                          <QuestionNumber id={`question_number_${questionId}`}>
-                            {questionNumber}
-                          </QuestionNumber>
-                        )}
-                        <SurveyQuestion
-                          detailLabel={detailLabel}
-                          id={questionId}
-                          code={questionCode}
-                          name={questionCode}
-                          type={questionType}
-                          text={detailLabel || questionText}
-                          options={questionOptions}
-                          config={config}
-                          label={questionLabel || questionText}
-                          optionSetId={questionOptionSetId}
-                        />
-                      </QuestionWrapper>
-                    );
-                  },
-                )}
-              </FormScrollBody>
-              <FormActions>
-                <Button
-                  onClick={onStepPrevious}
-                  startIcon={<ArrowBackIosIcon />}
-                  variant="text"
-                  color="default"
-                >
-                  Back
-                </Button>
-                <ButtonGroup>
-                  <Button variant="outlined" onClick={openCancelModal}>
-                    Cancel
+                  )}
+                </FormScrollBody>
+                <FormActions>
+                  <Button
+                    onClick={onStepPrevious}
+                    startIcon={<ArrowBackIosIcon />}
+                    variant="text"
+                    color="default"
+                  >
+                    Back
                   </Button>
-                  <Button type="submit">Next</Button>
-                </ButtonGroup>
-              </FormActions>
-            </StyledForm>
-          </FormProvider>
-        </Paper>
-      </Container>
-      <CancelSurveyModal open={cancelModalOpen} onClose={() => setCancelModalOpen(false)} />
+                  <ButtonGroup>
+                    <Button variant="outlined" onClick={openCancelModal}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">Next</Button>
+                  </ButtonGroup>
+                </FormActions>
+              </StyledForm>
+            </Paper>
+          </Container>
+          <CancelSurveyModal
+            open={cancelModalOpen}
+            onClose={() => setCancelModalOpen(false)}
+          />
+        </Wrapper>
+      </FormProvider>
     </>
   );
 };
