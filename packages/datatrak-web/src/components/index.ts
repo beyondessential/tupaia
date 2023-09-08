@@ -7,4 +7,5 @@ export { PageContainer } from './PageContainer';
 export { ButtonLink } from './ButtonLink';
 export { TopProgressBar } from './TopProgressBar';
 export { Button } from './Button';
+export { Modal } from './Modal';
 export * from './SelectList';
