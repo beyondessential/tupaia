@@ -13,6 +13,8 @@ const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
   width: 48rem;
+  display: flex;
+  flex-direction: column;
 `;
 export const ProjectSelectPage = () => {
   const navigate = useNavigate();
