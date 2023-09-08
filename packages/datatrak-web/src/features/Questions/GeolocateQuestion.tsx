@@ -4,11 +4,10 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TextField, Typography } from '@material-ui/core';
-import { LatLongFields } from './geolocateComponents';
+import { Typography } from '@material-ui/core';
 import { Map } from '@material-ui/icons';
 import { FlexColumn } from '@tupaia/ui-components';
-import { MapModal } from './geolocateComponents';
+import { MapModal, LatLongFields } from './geolocateComponents';
 import { SurveyQuestionInputProps } from '../../types';
 
 const MainWrapper = styled(FlexColumn)``;

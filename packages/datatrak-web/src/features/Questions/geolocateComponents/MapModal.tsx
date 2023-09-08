@@ -27,7 +27,6 @@ const ModalHeading = styled(Typography).attrs({
   color: black;
   font-size: 1.125rem;
   padding-bottom: 0.5rem;
-  white-space: normal;
 `;
 
 const ModalSubHeading = styled(Typography).attrs({
@@ -51,10 +50,6 @@ const ModalButtonsWrapper = styled.div`
   height: 2rem;
   text-align: left;
 `;
-
-const CancelButton = styled(OutlinedButton)``;
-
-const SubmitButton = styled(Button)``;
 
 const mapPin = new Icon({
   iconUrl: '/mapIcon.png',
@@ -107,22 +102,11 @@ const PinDrop = ({
       });
     },
   });
-  // useMapEvents({
-  //   dragend(e) {
-  //     setGeolocation(e.target.getLatLng());
-  //   },
-  // });
 
   if (geolocation.latitude !== null && geolocation.longitude !== null) {
-    return (
-      <Marker
-        position={[geolocation.latitude, geolocation.longitude]}
-        icon={mapPin}
-        draggable={true}
-      />
-    );
+    return <Marker position={[geolocation.latitude, geolocation.longitude]} icon={mapPin} />;
   } else {
-    return <Marker position={[0, 0]} icon={mapPin} draggable={true} />;
+    return <Marker position={[0, 0]} icon={mapPin} />;
   }
 };
 export const MapModal = ({
@@ -154,8 +138,8 @@ export const MapModal = ({
         <ZoomControl position="bottomright" />
       </MapDiv>
       <ModalButtonsWrapper>
-        <CancelButton onClick={onCancel}>Cancel</CancelButton>
-        <SubmitButton onClick={onClose}>Submit</SubmitButton>
+        <OutlinedButton onClick={onCancel}>Cancel</OutlinedButton>
+        <Button onClick={onClose}>Submit</Button>
       </ModalButtonsWrapper>
     </GeolocateModal>
   );
