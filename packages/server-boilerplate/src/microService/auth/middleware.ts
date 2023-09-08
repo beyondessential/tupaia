@@ -49,9 +49,20 @@ const getBasicAccessPolicy = async (
 
 export const buildBasicBearerAuthMiddleware = (
   apiName: string,
-  authenticator: Authenticator,
-) => async (req: Request, res: Response, next: NextFunction) => {
+  baseAuthenticator?: Authenticator,
+) => async (
+  req: Request & { authenticator?: Authenticator },
+  res: Response,
+  next: NextFunction,
+) => {
   try {
+    const authenticator = baseAuthenticator || req.authenticator;
+    if (!authenticator) {
+      throw new Error(
+        'No authenticator provided to middleware, must be provided directly or attached to req',
+      );
+    }
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
