@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { To } from 'react-router';
+import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
 import { useSurveyForm } from '../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
 import { ButtonLink } from '../../../components';
-import { To } from 'react-router';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -68,7 +69,17 @@ const SurveyScreenTitle = styled.span`
 `;
 
 export const SurveySideMenu = () => {
-  const { sideMenuOpen, toggleSideMenu, surveyScreenComponents, screenNumber } = useSurveyForm();
+  const { getValues } = useFormContext();
+  const {
+    sideMenuOpen,
+    toggleSideMenu,
+    surveyScreenComponents,
+    screenNumber,
+    setFormData,
+  } = useSurveyForm();
+  const onChangeScreen = () => {
+    setFormData(getValues());
+  };
   return (
     <>
       <SideMenuButton />
@@ -79,6 +90,7 @@ export const SurveySideMenu = () => {
               key={screen[0].questionId}
               to={`../${key}`}
               $active={screenNumber === Number(key)}
+              onClick={onChangeScreen}
             >
               <SurveyScreenNumber>{key}:</SurveyScreenNumber>
               <SurveyScreenTitle>{screen[0].questionText}</SurveyScreenTitle>

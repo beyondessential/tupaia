@@ -66,7 +66,10 @@ export const surveyReducer = (
     case ACTION_TYPES.SET_FORM_DATA:
       return {
         ...state,
-        formData: action.payload as Record<string, any>,
+        formData: {
+          ...state.formData,
+          ...(action.payload as Record<string, any>),
+        },
       };
     case ACTION_TYPES.TOGGLE_SIDE_MENU:
       return {

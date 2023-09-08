@@ -153,11 +153,11 @@ export const SurveyScreen = () => {
   return (
     <>
       <SurveyToolbar />
-      <Wrapper>
-        <SurveySideMenu />
-        <Container $sideMenuOpen={sideMenuOpen}>
-          <Paper>
-            <FormProvider {...formContext}>
+      <FormProvider {...formContext}>
+        <Wrapper>
+          <SurveySideMenu />
+          <Container $sideMenuOpen={sideMenuOpen}>
+            <Paper>
               <StyledForm onSubmit={onStepForward} noValidate>
                 <FormScrollBody>
                   <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
@@ -222,10 +222,10 @@ export const SurveyScreen = () => {
                   </ButtonGroup>
                 </FormActions>
               </StyledForm>
-            </FormProvider>
-          </Paper>
-        </Container>
-      </Wrapper>
+            </Paper>
+          </Container>
+        </Wrapper>
+      </FormProvider>
     </>
   );
 };

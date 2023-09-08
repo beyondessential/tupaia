@@ -121,7 +121,7 @@ export const RadioGroup = ({
           }
           key={option[valueKey].toString()}
           value={option[valueKey]}
-          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} />}
+          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} as="span" />}
         />
       ))}
     </StyledRadioGroup>
