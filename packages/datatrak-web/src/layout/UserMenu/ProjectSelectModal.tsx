@@ -8,7 +8,7 @@ import { Dialog, Paper } from '@material-ui/core';
 import { ProjectSelectForm } from '../../features';
 
 const Wrapper = styled(Paper)`
-  padding: 24px 40px 20px;
+  padding: 1.5rem 2.5rem 1.25rem;
   max-width: none;
   width: 48rem;
 `;
