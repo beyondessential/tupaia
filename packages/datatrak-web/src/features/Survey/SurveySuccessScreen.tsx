@@ -5,100 +5,60 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Typography, Button } from '@material-ui/core';
-import { Description } from '@material-ui/icons';
+import { Typography } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import { ButtonLink } from '../../components';
+import { Button as BaseButton } from '../../components';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import { useSurveyForm } from './SurveyContext.tsx';
 import { ROUTES } from '../../constants';
-import { useSurvey } from '../../api/queries';
-
-const Toolbar = styled.div`
-  height: 4.7rem;
-  background: ${({ theme }) => theme.palette.background.paper};
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  margin-left: -0.9375rem;
-  margin-right: -0.9375rem;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-`;
-
-const SurveyTitleWrapper = styled.div`
-  padding: 1.3rem;
-`;
-
-const SurveyIcon = styled(Description).attrs({
-  color: 'primary',
-})`
-  margin-right: 0.5rem;
-`;
-
-const SurveyTitle = styled(Typography).attrs({
-  variant: 'h1',
-})`
-  display: flex;
-  align-items: center;
-`;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  padding: 2rem 1rem;
+  flex: 1;
 `;
 
 const StyledImg = styled.img`
-  width: 21.4rem;
-  height: 21.4rem;
+  max-width: 80%;
+  max-height: 50%;
   margin-bottom: 2.75rem;
 `;
 
-const SurveySubmit = styled(Typography).attrs({
-  color: 'textPrimary',
+const Title = styled(Typography).attrs({
+  variant: 'h2',
 })`
   font-size: 1.9rem;
   font-weight: 600;
+  text-align: center;
   margin-bottom: 1.19rem;
 `;
 
-const SubmissionText = styled(Typography).attrs({
-  color: 'textPrimary',
-})`
-  width: 34.6rem;
+const Text = styled(Typography)`
+  max-width: 34.6rem;
+  width: 100%;
   text-align: center;
   margin-bottom: 1.875rem;
 `;
 
-const RepeatSurvey = styled(Button).attrs({
-  variant: 'outlined',
-  color: 'primary',
-})`
-  padding: 0.875rem 11rem;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 1.25rem;
+const ButtonGroup = styled.div`
+  max-width: 28rem;
+  width: 100%;
 `;
 
-const CloseBtn = styled(ButtonLink).attrs({
-  variant: 'contained',
-  color: 'primary',
-})`
-  padding: 0.875rem 13rem;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+const Button = styled(BaseButton)`
+  & + & {
+    margin: 1.25rem 0 0 0;
+  }
 `;
+
 export const SurveySuccessScreen = () => {
-  const { surveyCode } = useParams();
   const params = useParams();
   const navigate = useNavigate();
   const { activeScreen, formData, setFormData } = useSurveyForm();
   const { reset } = useForm({ defaultValues: formData });
-  const { data: survey } = useSurvey(surveyCode);
 
   const repeatSurvey = data => {
     setFormData(reset({ ...formData, ...data }));
@@ -110,27 +70,21 @@ export const SurveySuccessScreen = () => {
   };
 
   return (
-    <>
-      <Toolbar>
-        <SurveyTitleWrapper>
-          {survey?.name && (
-            <SurveyTitle>
-              <SurveyIcon />
-              {survey?.name}
-            </SurveyTitle>
-          )}
-        </SurveyTitleWrapper>
-      </Toolbar>
-      <Wrapper>
-        <StyledImg src="/submit-success.svg" alt="submit-success" />
-        <SurveySubmit variant="h1">Survey submitted!</SurveySubmit>
-        <SubmissionText>
-          To repeat the same survey again click the button below otherwise ‘Close’ to return back to
-          your dashboard
-        </SubmissionText>
-        <RepeatSurvey onClick={repeatSurvey}>Repeat Survey</RepeatSurvey>
-        <CloseBtn to="/">Close</CloseBtn>
-      </Wrapper>
-    </>
+    <Wrapper>
+      <StyledImg src="/submit-success.svg" alt="Survey submit success" />
+      <Title>Survey submitted!</Title>
+      <Text>
+        To repeat the same survey again click the button below, otherwise 'Close' to return back to
+        your dashboard
+      </Text>
+      <ButtonGroup>
+        <Button onClick={repeatSurvey} fullWidth variant="outlined">
+          Repeat Survey
+        </Button>
+        <Button to="/" fullWidth>
+          Close
+        </Button>
+      </ButtonGroup>
+    </Wrapper>
   );
 };

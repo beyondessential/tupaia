@@ -10,9 +10,8 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Typography, Paper as MuiPaper } from '@material-ui/core';
 import { SurveyQuestion } from './SurveyQuestion';
 import { useSurveyForm } from './SurveyContext';
-import { ROUTES, MOBILE_BREAKPOINT } from '../../constants';
+import { ROUTES } from '../../constants';
 import { SurveyParams } from '../../types';
-import { SurveyToolbar } from './SurveyToolbar';
 import { Button } from '../../components';
 import { SurveySideMenu, SIDE_MENU_WIDTH } from './SurveySideMenu';
 
@@ -37,11 +36,6 @@ const Container = styled.div<{
   padding: 0 1rem;
   margin-left: ${({ $sideMenuOpen }) => ($sideMenuOpen ? 0 : `-${SIDE_MENU_WIDTH}`)};
   transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
-
-  @media (max-width: ${MOBILE_BREAKPOINT}) {
-    overflow: auto;
-    flex-direction: column;
-  }
 `;
 
 const Paper = styled(MuiPaper).attrs({
@@ -151,81 +145,78 @@ export const SurveyScreen = () => {
   });
 
   return (
-    <>
-      <SurveyToolbar />
-      <FormProvider {...formContext}>
-        <Wrapper>
-          <SurveySideMenu />
-          <Container $sideMenuOpen={sideMenuOpen}>
-            <Paper>
-              <StyledForm onSubmit={onStepForward} noValidate>
-                <FormScrollBody>
-                  <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
-                  {displayQuestions.map(
-                    ({
-                      questionId,
-                      questionCode,
-                      questionText,
-                      questionType,
-                      questionOptions,
-                      config,
-                      questionLabel,
-                      validationCriteria,
-                      detailLabel,
-                      questionOptionSetId,
-                      questionNumber,
-                    }) => {
-                      if (validationCriteria?.mandatory === true) {
-                        console.log('mandatory question', questionCode);
-                      }
-                      return (
-                        <QuestionWrapper
-                          key={questionId}
-                          $isInstruction={questionType === 'Instruction'}
-                        >
-                          {questionNumber && (
-                            <QuestionNumber id={`question_number_${questionId}`}>
-                              {questionNumber}
-                            </QuestionNumber>
-                          )}
-                          <SurveyQuestion
-                            detailLabel={detailLabel}
-                            id={questionId}
-                            code={questionCode}
-                            name={questionCode}
-                            type={questionType}
-                            text={detailLabel || questionText}
-                            options={questionOptions}
-                            config={config}
-                            label={questionLabel || questionText}
-                            optionSetId={questionOptionSetId}
-                          />
-                        </QuestionWrapper>
-                      );
-                    },
-                  )}
-                </FormScrollBody>
-                <FormActions>
-                  <Button
-                    onClick={onStepPrevious}
-                    startIcon={<ArrowBackIosIcon />}
-                    variant="text"
-                    color="default"
-                  >
-                    Back
+    <FormProvider {...formContext}>
+      <Wrapper>
+        <SurveySideMenu />
+        <Container $sideMenuOpen={sideMenuOpen}>
+          <Paper>
+            <StyledForm onSubmit={onStepForward} noValidate>
+              <FormScrollBody>
+                <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
+                {displayQuestions.map(
+                  ({
+                    questionId,
+                    questionCode,
+                    questionText,
+                    questionType,
+                    questionOptions,
+                    config,
+                    questionLabel,
+                    validationCriteria,
+                    detailLabel,
+                    questionOptionSetId,
+                    questionNumber,
+                  }) => {
+                    if (validationCriteria?.mandatory === true) {
+                      console.log('mandatory question', questionCode);
+                    }
+                    return (
+                      <QuestionWrapper
+                        key={questionId}
+                        $isInstruction={questionType === 'Instruction'}
+                      >
+                        {questionNumber && (
+                          <QuestionNumber id={`question_number_${questionId}`}>
+                            {questionNumber}
+                          </QuestionNumber>
+                        )}
+                        <SurveyQuestion
+                          detailLabel={detailLabel}
+                          id={questionId}
+                          code={questionCode}
+                          name={questionCode}
+                          type={questionType}
+                          text={detailLabel || questionText}
+                          options={questionOptions}
+                          config={config}
+                          label={questionLabel || questionText}
+                          optionSetId={questionOptionSetId}
+                        />
+                      </QuestionWrapper>
+                    );
+                  },
+                )}
+              </FormScrollBody>
+              <FormActions>
+                <Button
+                  onClick={onStepPrevious}
+                  startIcon={<ArrowBackIosIcon />}
+                  variant="text"
+                  color="default"
+                >
+                  Back
+                </Button>
+                <ButtonGroup>
+                  <Button variant="outlined" to={ROUTES.SURVEY_SELECT}>
+                    Cancel
                   </Button>
-                  <ButtonGroup>
-                    <Button variant="outlined" to={ROUTES.SURVEY_SELECT}>
-                      Cancel
-                    </Button>
-                    <Button type="submit">Next</Button>
-                  </ButtonGroup>
-                </FormActions>
-              </StyledForm>
-            </Paper>
-          </Container>
-        </Wrapper>
-      </FormProvider>
-    </>
+                  <Button type="submit">Next</Button>
+                </ButtonGroup>
+              </FormActions>
+            </StyledForm>
+          </Paper>
+        </Container>
+      </Wrapper>
+    </FormProvider>
   );
 };
