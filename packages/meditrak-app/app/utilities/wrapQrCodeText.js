@@ -6,7 +6,7 @@
 const MAX_CHARACTERS_PER_LINE = 12;
 const MAX_LINES = 3;
 
-const splitWord = (word: string) => {
+const splitWord = word => {
   const split = [];
 
   let remainder = word;
@@ -21,14 +21,14 @@ const splitWord = (word: string) => {
 };
 
 /*
- * Keep in sync with meditrak-app/app/utilities/wrapQrCodeText.js
+ * Keep in sync with ui-components/src/components/QrCode/utils/wrapText.ts
  * Merge in RN-968
  */
 
-export const wrapText = (text: string): string[] => {
+export const wrapText = text => {
   const words = text.split(' ');
 
-  let lines: string[] = [];
+  let lines = [];
   let currentLine = '';
   for (const word of words) {
     if (`${currentLine} ${word}`.length <= MAX_CHARACTERS_PER_LINE) {
