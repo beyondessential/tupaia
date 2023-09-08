@@ -13,6 +13,7 @@ import { Authenticator } from '@tupaia/auth';
 import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 
 import { apiV2 } from './apiV2';
+import { AdminDisabledAccessPolicyBuilder } from './permissions';
 
 /**
  * Set up express server with middleware,
@@ -37,18 +38,23 @@ export function createApp(database, models) {
   /**
    * Add singletons to be attached to req for every route
    */
-  const authenticator = new Authenticator(models);
+  const baseAuthenticator = new Authenticator(models);
+  const adminDisabledAuthenticator = new Authenticator(models, AdminDisabledAccessPolicyBuilder);
   app.use((req, res, next) => {
     req.database = database;
     req.models = models;
-    req.authenticator = authenticator;
+    if (req.query?.disableAdmin) {
+      req.authenticator = adminDisabledAuthenticator;
+    } else {
+      req.authenticator = baseAuthenticator;
+    }
     next();
   });
 
   /**
    * Add the basic authenticator to all routes
    */
-  app.use(buildBasicBearerAuthMiddleware('central-server', authenticator));
+  app.use(buildBasicBearerAuthMiddleware('central-server'));
   app.use((req, res, next) => {
     req.userId = req.user.id;
     next();
