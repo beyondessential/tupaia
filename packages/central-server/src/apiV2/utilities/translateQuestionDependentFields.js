@@ -5,40 +5,51 @@ import { splitStringOn, splitStringOnComma } from './split';
  * to the keys that will be used in the output
  */
 const ENTITY_FIELD_TRANSLATION = {
-  name: 'name',
-  code: 'code',
   parent: 'parentId',
   grandparent: 'grandparentId',
 };
 
 // Subfields will be in the format field.subfield, e.g. 'attributes.type'
-const isSubfield = (nestedFieldList, fieldKey) =>
+const isNested = (nestedFieldList, fieldKey) =>
   nestedFieldList.find(field => fieldKey.startsWith(field));
+
+const translateNestedField = (rawFieldKey, rawFieldValue) => {
+  const splitField = splitStringOn(rawFieldKey, '.');
+
+  if (splitField.length === 3) {
+    const [, midLevelKey, lowerLevelKey] = splitField;
+    return { primaryKey: midLevelKey, lowerLevelKey, rawFieldValue };
+  }
+
+  const [primaryKey, fieldKey] = splitField;
+  return {
+    primaryKey,
+    processedFieldKey: ENTITY_FIELD_TRANSLATION[fieldKey] || fieldKey,
+    processedFieldValue: rawFieldValue.includes(',')
+      ? splitStringOnComma(rawFieldValue)
+      : rawFieldValue,
+  };
+};
 
 export const translateQuestionDependentNestedFields = (config, nestedFieldList) => {
   const resultConfig = {};
 
-  Object.entries(config).forEach(([fieldKey, questionCode]) => {
-    if (isSubfield(nestedFieldList, fieldKey)) {
-      const [primaryFieldKey, subfieldKey] = splitStringOn(fieldKey, '.');
-      if (!resultConfig[primaryFieldKey]) {
-        resultConfig[primaryFieldKey] = {};
+  Object.entries(config).forEach(([rawFieldKey, rawFieldValue]) => {
+    if (isNested(nestedFieldList, rawFieldKey)) {
+      if (!resultConfig[rawFieldKey]) {
+        resultConfig[rawFieldKey] = {};
       }
-
-      // Convert to array if type key in filter object
-      if (primaryFieldKey === 'filter' && subfieldKey === 'type') {
-        resultConfig[primaryFieldKey][subfieldKey] = splitStringOnComma(questionCode);
-      } else if (subfieldKey === 'attributes') {
-        // split string again for attributes field, as it is double nested
-        const [attributesKey, attributesSubfieldKey] = splitStringOn(subfieldKey);
-        if (!resultConfig[primaryFieldKey][attributesKey]) {
-          resultConfig[primaryFieldKey][attributesKey] = {};
-        }
-        resultConfig[primaryFieldKey][attributesKey][attributesSubfieldKey] = questionCode;
-      } else {
-        const outputSubfieldKey = ENTITY_FIELD_TRANSLATION[subfieldKey] || subfieldKey;
-        resultConfig[primaryFieldKey][outputSubfieldKey] = questionCode;
+      const { primaryKey, processedFieldKey, processedFieldValue } = translateNestedField(
+        rawFieldKey,
+        rawFieldValue,
+      );
+      if (!nestedFieldList.includes(primaryKey)) {
+        resultConfig[primaryKey] = {
+          ...resultConfig[primaryKey],
+          processedFieldKey: processedFieldValue,
+        };
       }
+      resultConfig[processedFieldKey] = processedFieldValue;
     }
   });
 
