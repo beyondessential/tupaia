@@ -3,15 +3,15 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
 import { A4Page, ErrorBoundary } from '@tupaia/ui-components';
-import { DashboardItemReport, DashboardItemConfig } from '../../types';
 import { MOBILE_BREAKPOINT } from '../../constants';
+import { DashboardItemContext } from '../DashboardItem';
 
 const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
@@ -22,9 +22,6 @@ const ExportingStyledTable = styled(ChartTable)`
   border-bottom: none;
   overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
 
-  .MuiTableContainer-root {
-    overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
-  }
   table {
     border: 1px solid ${GREY_DE};
     width: auto;
@@ -114,8 +111,8 @@ const TabButton = styled(Tab)`
 `;
 
 const ContentWrapper = styled.div<{
-  $isEnlarged: boolean;
-  $isExporting: boolean;
+  $isEnlarged?: boolean;
+  $isExporting?: boolean;
 }>`
   pointer-events: ${({ $isExporting }) => ($isExporting ? 'none' : 'initial')};
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
@@ -126,24 +123,12 @@ const ContentWrapper = styled.div<{
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   ${A4Page} & {
     padding: 0;
+    height: auto;
   }
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     height: ${({ $isExporting }) => ($isExporting ? 'auto' : '100%')};
   }
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
-  }
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
-  }
 `;
-
-interface ChartProps {
-  report: DashboardItemReport;
-  config: DashboardItemConfig;
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-}
 
 const DISPLAY_TYPE_VIEWS = [
   {
@@ -175,17 +160,16 @@ const EXPORT_DISPLAY_TYPE_VIEWS = [
   },
 ];
 
-export const Chart = ({ config, report, isEnlarged = false, isExporting = false }: ChartProps) => {
+export const Chart = () => {
   const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
+  const { report, config, isEnlarged, isExport } = useContext(DashboardItemContext);
   const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
   };
+  const shouldUseTabs = isEnlarged && !isExport;
+  const showTable = isEnlarged ? !isExport || config?.presentationOptions?.exportWithTable : false;
 
-  const showTable = isEnlarged
-    ? !isExporting || config?.presentationOptions?.exportWithTable
-    : false;
-
-  const views = isExporting ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
+  const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   let availableDisplayTypes = showTable ? views : [views[0]];
 
   const viewContent = ({
@@ -197,7 +181,7 @@ export const Chart = ({ config, report, isEnlarged = false, isExporting = false 
     <ErrorBoundary>
       <Wrapper>
         <TabContext value={displayType}>
-          {isEnlarged && !isExporting && (
+          {shouldUseTabs && (
             <TabsWrapper>
               <TabsGroup
                 value={displayType}
@@ -215,14 +199,14 @@ export const Chart = ({ config, report, isEnlarged = false, isExporting = false 
             <ContentWrapper
               key={value}
               value={value}
-              as={isEnlarged && !isExporting ? TabPanel : 'div'}
+              as={shouldUseTabs ? TabPanel : 'div'}
               $isEnlarged={isEnlarged}
-              $isExporting={isExporting}
+              $isExporting={isExport}
             >
               <Content
                 viewContent={viewContent}
-                isEnlarged={isEnlarged}
-                isExporting={isExporting}
+                isEnlarged={!!isEnlarged}
+                isExporting={!!isExport}
               />
             </ContentWrapper>
           ))}

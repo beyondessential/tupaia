@@ -17,6 +17,7 @@ import { Entity } from '../../../types';
 
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const Title = styled(Typography).attrs({
@@ -50,16 +51,10 @@ export const MapTableModal = ({ onClose }: any) => {
 
   const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
 
-  const startDate = serieses.startDate;
-  const endDate = serieses.endDate;
+  const startDate = serieses?.startDate;
+  const endDate = serieses?.endDate;
 
-  const { doExport } = useMapDataExport(
-    serieses,
-    measureData,
-    titleText,
-    startDate,
-    endDate,
-  );
+  const { doExport } = useMapDataExport(serieses, measureData, titleText, startDate, endDate);
 
   return (
     <Modal isOpen onClose={onClose}>

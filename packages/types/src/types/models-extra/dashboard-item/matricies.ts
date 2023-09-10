@@ -31,6 +31,10 @@ export type MatrixConfig = BaseConfig & {
    * @description Category header rows can have values just like real rows, this is how you style them
    */
   categoryPresentationOptions?: PresentationOptions;
+  /**
+   * @description Specify the valueType for formatting of the value in the matrix
+   */
+  valueType?: 'string';
 };
 
 export type ConditionalPresentationOptions = {

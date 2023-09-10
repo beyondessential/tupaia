@@ -24,29 +24,12 @@ export const configSchema = shape({
   compareUrl: yup.string(),
   dashboardReports: shape({
     allowEmptyResponse: yup.boolean(),
-    filter: shape({
-      code: stringOrStrings,
-      project: stringOrStrings,
-      orgUnit: stringOrStrings,
-      dashboard: stringOrStrings,
-      startDate: stringOrStrings,
-      endDate: stringOrStrings,
-      dataBuilder: stringOrStrings,
-    }),
     snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_DATA, SNAPSHOT_TYPES.HTML]).min(1).required(),
     urlFiles: strings,
     urls: stringsOrObjects,
   }),
   mapOverlays: shape({
     allowEmptyResponse: yup.boolean(),
-    filter: shape({
-      id: stringOrStrings,
-      project: stringOrStrings,
-      orgUnit: stringOrStrings,
-      startDate: stringOrStrings,
-      endDate: stringOrStrings,
-      measureBuilder: stringOrStrings,
-    }),
     snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_DATA]).min(1).required(),
     urlFiles: strings,
     urlGenerationOptions: shape({

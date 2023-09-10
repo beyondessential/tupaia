@@ -13,34 +13,7 @@ import {
   forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
-import {
-  DashboardsRoute,
-  DashboardsRequest,
-  EntitiesRoute,
-  EntitiesRequest,
-  EntityAncestorsRoute,
-  EntityAncestorsRequest,
-  ReportRoute,
-  ReportRequest,
-  LegacyDashboardReportRoute,
-  LegacyDashboardReportRequest,
-  LegacyMapOverlayReportRoute,
-  LegacyMapOverlayReportRequest,
-  MapOverlaysRoute,
-  MapOverlaysRequest,
-  UserRoute,
-  UserRequest,
-  ProjectRoute,
-  ProjectRequest,
-  CountryAccessListRoute,
-  CountryAccessListRequest,
-  RequestCountryAccessRoute,
-  EntitySearchRoute,
-  EntitySearchRequest,
-  RequestCountryAccessRequest,
-  EntityRoute,
-  EntityRequest,
-} from '../routes';
+import * as routes from '../routes';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
@@ -54,30 +27,49 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
-    .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
-    .get<LegacyDashboardReportRequest>(
+    .get<routes.ReportRequest>('report/:reportCode', handleWith(routes.ReportRoute))
+    .get<routes.LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',
-      handleWith(LegacyDashboardReportRoute),
+      handleWith(routes.LegacyDashboardReportRoute),
     )
-    .get<LegacyMapOverlayReportRequest>(
+    .get<routes.LegacyMapOverlayReportRequest>(
       'legacyMapOverlayReport/:mapOverlayCode',
-      handleWith(LegacyMapOverlayReportRoute),
+      handleWith(routes.LegacyMapOverlayReportRoute),
     )
-    .get<MapOverlaysRequest>('mapOverlays/:projectCode/:entityCode', handleWith(MapOverlaysRoute))
-    .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
-    .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<DashboardsRequest>('dashboards/:projectCode/:entityCode', handleWith(DashboardsRoute))
-    .get<CountryAccessListRequest>('countryAccessList', handleWith(CountryAccessListRoute))
-    .post<RequestCountryAccessRequest>(
+    .get<routes.MapOverlaysRequest>(
+      'mapOverlays/:projectCode/:entityCode',
+      handleWith(routes.MapOverlaysRoute),
+    )
+    .get<routes.ProjectRequest>('project/:projectCode', handleWith(routes.ProjectRoute))
+    .get<routes.UserRequest>('getUser', handleWith(routes.UserRoute))
+    .get<routes.DashboardsRequest>(
+      'dashboards/:projectCode/:entityCode',
+      handleWith(routes.DashboardsRoute),
+    )
+    .get<routes.CountryAccessListRequest>(
+      'countryAccessList',
+      handleWith(routes.CountryAccessListRoute),
+    )
+    .post<routes.RequestCountryAccessRequest>(
       'requestCountryAccess',
-      handleWith(RequestCountryAccessRoute),
+      handleWith(routes.RequestCountryAccessRoute),
     )
-    .get<EntityRequest>('entity/:projectCode/:entityCode', handleWith(EntityRoute))
-    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
-    .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
-    .get<EntityAncestorsRequest>(
+    .get<routes.EntityRequest>('entity/:projectCode/:entityCode', handleWith(routes.EntityRoute))
+    .get<routes.EntitiesRequest>(
+      'entities/:projectCode/:rootEntityCode',
+      handleWith(routes.EntitiesRoute),
+    )
+    .get<routes.EntitySearchRequest>(
+      'entitySearch/:projectCode',
+      handleWith(routes.EntitySearchRoute),
+    )
+    .get<routes.EntityAncestorsRequest>(
       'entityAncestors/:projectCode/:rootEntityCode',
-      handleWith(EntityAncestorsRoute),
+      handleWith(routes.EntityAncestorsRoute),
+    )
+    .get<routes.ExportSurveyResponsesRequest>(
+      'export/surveyResponses',
+      handleWith(routes.ExportSurveyResponsesRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .use('changePassword', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))

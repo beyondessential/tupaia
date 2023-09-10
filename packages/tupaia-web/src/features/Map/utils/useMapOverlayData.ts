@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { LegendProps, MeasureData } from '@tupaia/ui-map-components';
+import { LegendProps, MeasureData, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import { useEntitiesWithLocation, useEntity, useMapOverlayReport } from '../../../api/queries';
 import { processMeasureData } from '../MapOverlays/processMeasureData';
@@ -68,25 +68,36 @@ export const useMapOverlayData = (
     selectedOverlay?.measureLevel,
   );
 
-  const { data } = useMapOverlayReport(projectCode, rootEntityCode, selectedOverlay, {
-    startDate,
-    endDate,
-  });
+  const { data, isLoading, isFetched, isIdle } = useMapOverlayReport(
+    projectCode,
+    rootEntityCode,
+    selectedOverlay,
+    {
+      startDate,
+      endDate,
+    },
+  );
+
+  const isLoadingData = isLoading || (!isIdle && !isFetched && !!selectedOverlay);
 
   if (!entities || !data) {
-    return {};
+    return {
+      isLoading: isLoadingData,
+    };
   }
 
   const processedMeasureData = processMeasureData({
     entitiesData: entities,
     measureData: data.measureData,
-    serieses: data.serieses,
+    serieses: data.serieses?.sort((a: Series, b: Series) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
     includeEntitiesWithoutCoordinates: rootEntity ? true : false,
   }) as MeasureData[];
 
   return {
     ...data,
+    isLoading: isLoadingData,
+    isFetched,
     serieses: data?.serieses,
     measureData: processedMeasureData,
     entities,

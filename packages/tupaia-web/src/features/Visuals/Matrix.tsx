@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import {
   MatrixColumnType,
   MatrixRowType,
@@ -16,15 +16,17 @@ import {
   Alert,
   TextField,
 } from '@tupaia/ui-components';
-import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
+import { formatDataValueByType } from '@tupaia/utils';
 import {
+  ConditionalPresentationOptions,
+  MatrixConfig,
   MatrixReport,
   MatrixReportColumn,
   MatrixReportRow,
-  DashboardItemReport,
-  DashboardItemConfig,
-} from '../../types';
-import { URL_SEARCH_PARAMS } from '../../constants';
+} from '@tupaia/types';
+import { DashboardItemConfig } from '../../types';
+import { DashboardItemContext } from '../DashboardItem';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
 
 const NoDataMessage = styled(Alert).attrs({
   severity: 'info',
@@ -41,6 +43,39 @@ const SearchInput = styled(TextField)`
   }
 `;
 
+const PlaceholderWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PlaceholderWarningContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(43, 45, 56, 0.8);
+  @media (min-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
+
+const PlaceholderImage = styled.img`
+  max-width: 100%;
+`;
+
+const PlaceholderWarningText = styled(Typography)`
+  font-size: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  max-width: 25rem;
+`;
+
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixReportRow[],
@@ -48,6 +83,7 @@ const parseRows = (
   searchFilter?: string,
   drillDown?: MatrixConfig['drillDown'],
   baseDrillDownLink?: string,
+  valueType?: MatrixConfig['valueType'],
 ): MatrixRowType[] => {
   const location = useLocation();
 
@@ -68,7 +104,14 @@ const parseRows = (
 
     // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
-      const children = parseRows(rows, category, searchFilter, drillDown, baseDrillDownLink);
+      const children = parseRows(
+        rows,
+        category,
+        searchFilter,
+        drillDown,
+        baseDrillDownLink,
+        valueType,
+      );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
       return [
@@ -96,7 +139,12 @@ const parseRows = (
               }`,
             }
           : null,
-        ...rest,
+        ...Object.entries(rest).reduce((acc, [key, value]) => {
+          return {
+            ...acc,
+            [key]: valueType ? formatDataValueByType({ value }, valueType) : value,
+          };
+        }, {}),
       },
     ];
   }, [] as MatrixRowType[]);
@@ -144,30 +192,46 @@ const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
   return urlSearchParams.toString();
 };
 
+const MatrixPreview = ({ config }: { config?: DashboardItemConfig | null }) => {
+  const placeholderImage = getPlaceholderImage(config as MatrixConfig);
+  return (
+    <PlaceholderWrapper>
+      <PlaceholderWarningContainer>
+        <PlaceholderWarningText>
+          Please note that the Tupaia matrix chart cannot be properly viewed on small screens.
+        </PlaceholderWarningText>
+      </PlaceholderWarningContainer>
+
+      <PlaceholderImage src={placeholderImage} alt="Matrix Placeholder" />
+    </PlaceholderWrapper>
+  );
+};
+
 /**
  * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
  */
 
-interface MatrixProps {
-  config?: DashboardItemConfig;
-  report?: DashboardItemReport;
-  isEnlarged?: boolean;
-}
-
-export const Matrix = ({ config = {}, report = {}, isEnlarged = false }: MatrixProps) => {
+export const Matrix = () => {
+  const { config, report, isEnlarged } = useContext(DashboardItemContext);
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
-  const { periodGranularity, drillDown } = config as MatrixConfig;
-  const placeholderImage = getPlaceholderImage(config as MatrixConfig);
+  const { periodGranularity, drillDown, valueType } = config as MatrixConfig;
 
   const baseDrillDownLink = getBaseDrilldownLink(drillDown);
-  const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, baseDrillDownLink);
+  const parsedRows = parseRows(
+    rows,
+    undefined,
+    searchFilter,
+    drillDown,
+    baseDrillDownLink,
+    valueType,
+  );
   const parsedColumns = parseColumns(columns);
 
   // in the dashboard, show a placeholder image
-  if (!isEnlarged) return <img src={placeholderImage} alt="Matrix Placeholder" />;
-  if (!parsedRows.length) return <NoDataMessage>No data available</NoDataMessage>;
+  if (!isEnlarged) return <MatrixPreview config={config} />;
+  if (!parsedRows.length && !searchFilter) return <NoDataMessage>No data available</NoDataMessage>;
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);

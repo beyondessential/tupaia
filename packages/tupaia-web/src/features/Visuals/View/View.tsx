@@ -2,22 +2,25 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport, DashboardItemReport, DashboardItemConfig } from '../../../types';
+import React, { useContext } from 'react';
+import { ViewConfig, ViewReport } from '@tupaia/types';
+import { formatDataValueByType } from '@tupaia/utils';
+import { DashboardItemReport, DashboardItemConfig } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
-import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
+import { QRCode } from './QRCode';
+import { DashboardItemContext } from '../../DashboardItem';
+import { DashboardInfoHover } from '../../DashboardItem';
 
 interface ViewProps {
-  report: DashboardItemReport;
-  config: DashboardItemConfig;
-  isEnlarged?: boolean;
+  /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
+  customReport?: DashboardItemReport;
+  customConfig?: DashboardItemConfig;
 }
 
 const VIEWS = {
@@ -28,14 +31,15 @@ const VIEWS = {
   multiValueRow: MultiValueRow,
   dataDownload: DataDownload,
   filesDownload: DownloadFiles,
+  qrCodeVisual: QRCode,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
-  const { valueType, value_metadata: valueMetadata } = config;
+  const { valueType } = config;
   return data?.map(datum => {
-    const { value } = datum;
+    const { value, value_metadata: valueMetadata } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata` as any] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as any] || config || {}),
       ...datum,
     };
     return {
@@ -51,7 +55,12 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   });
 };
 
-export const View = ({ report, config, isEnlarged }: ViewProps) => {
+export const View = ({ customConfig, customReport }: ViewProps) => {
+  const { config: originalConfig, report: originalReport, isEnlarged } = useContext(
+    DashboardItemContext,
+  );
+  const report = customReport || originalReport;
+  const config = customConfig || originalConfig;
   // cast the config to a ViewConfig so we can access the viewType
   const viewConfig = config as ViewConfig;
   const { viewType } = viewConfig;
@@ -63,17 +72,18 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
       <>
         {data?.map((datum, i) => (
           <View
-            report={{
-              ...report,
-              data: [datum],
-            }}
-            config={
+            customReport={
+              {
+                ...report,
+                data: [datum],
+              } as ViewReport
+            }
+            customConfig={
               {
                 ...config,
                 viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
               } as ViewConfig
             }
-            isEnlarged={isEnlarged}
             key={i}
           />
         ))}
@@ -88,13 +98,18 @@ export const View = ({ report, config, isEnlarged }: ViewProps) => {
 
   const formattedData = formatData(data, viewConfig);
   return (
-    <Component
-      report={{
-        ...report,
-        data: formattedData,
-      }}
-      config={viewConfig}
-      isEnlarged={isEnlarged}
-    />
+    <>
+      <Component
+        report={
+          {
+            ...report,
+            data: formattedData,
+          } as ViewReport
+        }
+        config={viewConfig}
+        isEnlarged={isEnlarged}
+      />
+      <DashboardInfoHover infoText={viewConfig.description} />
+    </>
   );
 };

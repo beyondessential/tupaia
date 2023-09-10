@@ -10,6 +10,7 @@ import { Skeleton } from '@material-ui/lab';
 import { useParams } from 'react-router';
 import { useEntity, useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { useMapOverlayData } from '../utils';
 
 const Wrapper = styled.div<{
   $hasMapOverlays: boolean;
@@ -53,9 +54,11 @@ export const MapOverlaySelectorTitle = () => {
     projectCode,
     entityCode,
   );
+  const { isLoading: isLoadingOverlayData } = useMapOverlayData();
 
   const { data: entity } = useEntity(projectCode, entityCode);
-  const isLoading = isLoadingMapOverlays || (hasMapOverlays && !selectedOverlay?.name);
+  const isLoading =
+    isLoadingMapOverlays || isLoadingOverlayData || (hasMapOverlays && !selectedOverlay?.name);
   return (
     <Wrapper $hasMapOverlays={hasMapOverlays}>
       {isLoading ? (

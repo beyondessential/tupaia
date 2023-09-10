@@ -6,8 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Table, TableCell as MuiTableCell, TableRow, TableBody } from '@material-ui/core';
 import { CheckCircle, Cancel } from '@material-ui/icons';
-import { MultiValueViewConfig, ViewConfig } from '@tupaia/types';
-import { ViewDataItem, ViewReport } from '../../../types';
+import { MultiValueViewConfig, ViewConfig, ViewReport, ViewDataItem } from '@tupaia/types';
 
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;

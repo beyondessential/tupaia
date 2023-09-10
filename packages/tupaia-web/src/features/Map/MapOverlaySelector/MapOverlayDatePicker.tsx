@@ -30,6 +30,7 @@ export const MapOverlayDatePicker = () => {
     maxEndDate,
     setDates,
     periodGranularity,
+    onResetDate,
   } = useDateRanges(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, selectedOverlay);
 
   const { isLoading: isLoadingMapOverlayData } = useMapOverlayData();
@@ -50,6 +51,7 @@ export const MapOverlayDatePicker = () => {
           maxDate={maxEndDate}
           granularity={periodGranularity}
           onSetDates={setDates}
+          onResetDate={onResetDate}
         />
       )}
     </Wrapper>

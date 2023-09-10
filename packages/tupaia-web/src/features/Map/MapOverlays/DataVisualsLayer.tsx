@@ -15,11 +15,11 @@ import {
   BasePolygon,
   AreaTooltip,
   MeasureData,
+  BREWER_PALETTE,
 } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { useEntity } from '../../../api/queries';
 import { useMapOverlayData, useNavigateToEntity } from '../utils';
-import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 import { gaEvent } from '../../../utils';
 
 const ShadedPolygon = styled(BasePolygon)`
@@ -63,44 +63,44 @@ export const DataVisualsLayer = ({
     <ErrorBoundary>
       <LayerGroup>
         {measureData.map((measure: MeasureData) => {
-          const { region, organisationUnitCode: entity, color, name, code } = measure;
-          if (region) {
-            if (code === entityCode) {
-              return <ActiveEntityPolygon key={entity} entity={measure} />; // this is so that the polygon is displayed as the active entity, i.e correctly shaded etc.
-            }
+          const { region, organisationUnitCode: entity, color, name, point } = measure;
+          // prioritise point because sometimes data has both point and region
+          if (point)
             return (
-              <ShadedPolygon
-                key={entity}
-                positions={region}
-                pathOptions={{
-                  color: color,
-                  fillColor: color,
-                }}
-                eventHandlers={{
-                  click: () => {
-                    navigateToEntity(entity);
-                  },
-                }}
-                {...measure}
-              >
-                <AreaTooltip
+              <MeasureMarker key={entity} {...(measure as MeasureData)}>
+                <MeasurePopup
+                  markerData={measure as MeasureData}
                   serieses={serieses}
-                  orgUnitMeasureData={measure as MeasureData}
-                  orgUnitName={name}
-                  hasMeasureValue
+                  onSeeOrgUnitDashboard={navigateToEntity}
                 />
-              </ShadedPolygon>
+              </MeasureMarker>
             );
-          }
+
+          // To match with the color in markerIcon.js which uses BREWER_PALETTE
+          const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
 
           return (
-            <MeasureMarker key={entity} {...(measure as MeasureData)}>
-              <MeasurePopup
-                markerData={measure as MeasureData}
+            <ShadedPolygon
+              key={entity}
+              positions={region}
+              pathOptions={{
+                color: shade,
+                fillColor: shade,
+              }}
+              eventHandlers={{
+                click: () => {
+                  navigateToEntity(entity);
+                },
+              }}
+              {...measure}
+            >
+              <AreaTooltip
                 serieses={serieses}
-                onSeeOrgUnitDashboard={navigateToEntity}
+                orgUnitMeasureData={measure as MeasureData}
+                orgUnitName={name}
+                hasMeasureValue
               />
-            </MeasureMarker>
+            </ShadedPolygon>
           );
         })}
       </LayerGroup>

@@ -37,12 +37,19 @@ export const processEntityConfig = async (models, config) => {
   );
 
   const processedConfig = {
-    allowScanQrCode: isYes(config.allowScanQrCode),
     type: splitStringOnComma(config.type),
     createNew: isYes(config.createNew),
     ...entityCreationNonJsonFields,
     ...entityCreationJsonFields,
   };
+
+  // Optional configs
+  if (config.generateQrCode !== undefined) {
+    processedConfig.generateQrCode = isYes(config.generateQrCode);
+  }
+  if (config.allowScanQrCode !== undefined) {
+    processedConfig.allowScanQrCode = isYes(config.allowScanQrCode);
+  }
 
   let resultConfig = await replaceQuestionCodesWithIds(
     models,

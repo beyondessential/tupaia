@@ -60,7 +60,7 @@ def spin_up_tupaia_deployment(event):
       raise Exception('A deployment already exists, perhaps you want to redeploy and swap out the existing one? The easiest way is to push a new commit.')
 
     # get manual input parameters, or default for any not provided
-    instance_type = event.get('InstanceType', 't3a.medium')
+    instance_type = event.get('InstanceType', 't3a.large')
     db_instance_type = event.get('DbInstanceType', 'db.t4g.large')
     image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code

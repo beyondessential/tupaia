@@ -37,9 +37,9 @@ const SeriesDivider = styled.div`
 export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   const [urlSearchParams] = useSearchParams();
   const selectedOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
-  const overlayReportData = useMapOverlayData();
+  const { isLoading, isFetched, ...overlayReportData } = useMapOverlayData();
 
-  if (!selectedOverlay || !overlayReportData) {
+  if (!selectedOverlay || !overlayReportData || !isFetched || isLoading) {
     return null;
   }
 

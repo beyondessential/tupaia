@@ -22,7 +22,8 @@
     "start": "node dist",
     "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test:withdb --runInBand"
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
+    "test": "yarn package:test:withdb"
   },
   "dependencies": {
     "@tupaia/api-client": "3.1.0",
@@ -38,7 +39,7 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "semver-compare": "^1.0.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.0",

@@ -1,9 +1,8 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
-import { oneSecondSleep, randomIntBetween, S3Client } from '@tupaia/utils';
+import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   expectErrors,
   expectSuccess,
@@ -44,9 +43,6 @@ describe('surveyResponse endpoint', () => {
   const { models } = app;
 
   before(async () => {
-    // Stub out uploading photos to s3
-    sinon.stub(S3Client.prototype, 'uploadImage').callsFake(() => 'photo_upload');
-
     await app.grantFullAccess();
 
     const country = await upsertDummyRecord(models.country);
@@ -104,7 +100,6 @@ describe('surveyResponse endpoint', () => {
 
   after(() => {
     app.revokeAccess();
-    S3Client.prototype.uploadImage.restore();
   });
 
   it('Should accept a single submission', async () => {
@@ -470,7 +465,7 @@ describe('surveyResponse endpoint', () => {
       numberOfAnswersInSurveyResponse = await models.answer.count({
         survey_response_id: surveyResponseId,
       });
-      response = await app.put(`surveyResponses/${surveyResponseId}`, {
+      response = await app.post(`surveyResponse/${surveyResponseId}/resubmit`, {
         body: {
           entity_id: newEntityId,
         },

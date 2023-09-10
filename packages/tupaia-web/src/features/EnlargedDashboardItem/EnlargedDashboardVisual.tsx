@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemContent } from '../DashboardItem/DashboardItemContent';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
@@ -38,6 +38,7 @@ const Title = styled(Typography).attrs({
   text-align: center;
   margin: 0;
   line-height: 1.4;
+  padding: 1.5rem 1.5rem 0; // to account for buttons on modal at smaller screens overlapping title text
 `;
 
 const TitleWrapper = styled(FlexColumn)`
@@ -60,17 +61,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `;
 
-interface EnlargedDashboardVisualProps {
-  entityName?: Entity['name'];
-  isPreview?: boolean;
-}
-
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
   padding-top: 1rem;
   padding-bottom: 0.3rem;
 `;
+interface EnlargedDashboardVisualProps {
+  entityName?: Entity['name'];
+  isPreview?: boolean;
+}
+
 /*
  * EnlargedDashboardVisual is the enlarged dashboard item report visuals. It handles the case of a preview as well as the regular enlarged dashboard item.
  */
@@ -132,12 +133,15 @@ export const EnlargedDashboardVisual = ({
       </TitleWrapper>
       {config?.description && <Subheading>{config?.description}</Subheading>}
       <ContentWrapper>
-        <DashboardItemContent
-          isLoading={isLoadingReportData}
-          error={reportError}
-          report={reportData}
-          dashboardItem={{
-            ...currentDashboardItem,
+        <DashboardItemContext.Provider
+          value={{
+            report: reportData,
+            isLoading: isLoadingReportData,
+            error: reportError,
+            refetch: refetchReportData,
+            isEnlarged: true,
+            isExport: isPreview,
+            reportCode: currentDashboardItem?.reportCode,
             config: {
               ...currentDashboardItem?.config,
               presentationOptions: {
@@ -147,11 +151,9 @@ export const EnlargedDashboardVisual = ({
               },
             },
           }}
-          onRetryFetch={refetchReportData}
-          isExpandable={false}
-          isEnlarged
-          isExporting={isPreview}
-        />
+        >
+          <DashboardItemContent />
+        </DashboardItemContext.Provider>
         {isPreview && (
           <ExportDate>
             {startDate &&
