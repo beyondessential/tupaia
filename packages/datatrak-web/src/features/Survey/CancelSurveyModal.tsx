@@ -34,7 +34,7 @@ export const CancelSurveyModal = ({ open, onClose }: { open: boolean; onClose: (
         If you exit, you will lose the progress you've made on the current survey
       </Typography>
       <ButtonWrapper>
-        <ModalButton variant="outlined" to="../../">
+        <ModalButton variant="outlined" to="/">
           Exit survey
         </ModalButton>
         <ModalButton onClick={onClose}>Continue survey</ModalButton>
