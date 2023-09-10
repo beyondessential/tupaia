@@ -8,5 +8,6 @@ export { ButtonLink } from './ButtonLink';
 export { Modal } from './Modal';
 export { TopProgressBar } from './TopProgressBar';
 export { Button } from './Button';
+export { Modal } from './Modal';
 export * from './SelectList';
 export { TextInput } from './TextInput';

@@ -1,34 +1,26 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+
 import React, { ReactNode } from 'react';
-import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery } from '@material-ui/core';
-import MuiCloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
+import { Dialog, Paper, Typography } from '@material-ui/core';
+import MuiCloseIcon from '@material-ui/icons/Close';
 import { IconButton } from '@tupaia/ui-components';
 
-interface ModalProps {
-  children?: ReactNode;
-  onClose: () => void;
-  isOpen: boolean;
-}
-
-const Wrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  overflow-x: hidden;
-  padding: 2rem;
-  pointer-events: auto;
+const Wrapper = styled(Paper)`
+  padding: 4.25rem;
+  width: 100%;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    width: 29rem;
+  }
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
   width: 2rem;
   height: 2rem;
-  pointer-events: auto;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const CloseButton = styled(IconButton)`
@@ -38,28 +30,33 @@ const CloseButton = styled(IconButton)`
   z-index: 1;
 `;
 
-const Paper = styled(MuiPaper)`
-  border-radius: 5px;
-  color: rgba(255, 255, 255, 0.9);
-  overflow-y: auto;
-  max-width: 100%;
-  min-width: 18.75rem;
-  // Prevent width from animating.
-  transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+const Heading = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-weight: 600;
+  text-align: center;
+  font-size: 1rem;
 `;
 
-export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
-  // make the modal full screen at small screen sizes
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+const Content = styled.div`
+  padding-top: 1rem;
+`;
+
+interface ModalProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children?: ReactNode;
+}
+
+export const Modal = ({ open, onClose, title, children }: ModalProps) => {
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={Paper} fullScreen={fullScreen}>
-      <Wrapper id="overlay-wrapper">
-        <CloseButton onClick={onClose} color="default">
-          <CloseIcon />
-        </CloseButton>
-        {children}
-      </Wrapper>
+    <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal>
+      <CloseButton onClick={onClose}>
+        <CloseIcon />
+      </CloseButton>
+      <Heading>{title}</Heading>
+      <Content>{children}</Content>
     </Dialog>
   );
 };
