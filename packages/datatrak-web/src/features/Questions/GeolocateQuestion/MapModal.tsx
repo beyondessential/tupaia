@@ -2,14 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Icon } from 'leaflet';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap, ZoomControl } from 'react-leaflet';
 import { Typography } from '@material-ui/core';
+import { Map } from '@material-ui/icons';
 import { OutlinedButton, Button } from '@tupaia/ui-components';
 import { coordinateType } from '../../../types';
-import { Modal } from '../../../components/Modal';
+import { Modal } from '../../../components';
 
 const GeolocateModal = styled(Modal)`
   height: 40rem;
@@ -49,6 +50,31 @@ const ModalButtonsWrapper = styled.div`
   width: 75rem;
   height: 2rem;
   text-align: left;
+`;
+
+const Text = styled.div`
+  margin-bottom: 0.625rem;
+`;
+
+const MapModalButtonText = styled(Text)`
+  color: blue;
+  text-decoration: underline;
+  margin: 1rem 0.2rem;
+  margin-top: 2.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+`;
+
+const MapModalButton = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const MapButtonIcon = styled(Map)`
+  margin-top: 1rem;
+  color: ${({ theme }) => theme.palette.primary.main};
+  font-size: 1.2rem;
 `;
 
 const mapPin = new Icon({
@@ -109,38 +135,48 @@ const PinDrop = ({
     return <Marker position={[0, 0]} icon={mapPin} />;
   }
 };
+
 export const MapModal = ({
-  onClose,
   geolocation,
   setGeolocation,
   defaultLocation,
 }: {
-  onClose: () => void;
   geolocation: coordinateType;
   setGeolocation: any;
   defaultLocation: coordinateType;
 }) => {
+  const [mapModalOpen, setMapModalOpen] = useState(false);
+
   const onCancel = () => {
     setGeolocation(defaultLocation);
-    onClose();
+    toggleMapModal();
+  };
+  const toggleMapModal = () => {
+    setMapModalOpen(!mapModalOpen);
   };
   return (
-    <GeolocateModal isOpen onClose={onClose}>
-      <HeaderWrapper>
-        <ModalHeading>Drop pin on map</ModalHeading>
-        <ModalSubHeading>
-          Click to drop the pin in a new position on the map and click 'Confirm'
-        </ModalSubHeading>
-      </HeaderWrapper>
-      <MapDiv center={[17.7134, 178.065]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
-        <UserLocationMap geolocation={geolocation} setGeolocation={setGeolocation} />
-        <PinDrop geolocation={geolocation} setGeolocation={setGeolocation} />
-        <ZoomControl position="bottomright" />
-      </MapDiv>
-      <ModalButtonsWrapper>
-        <OutlinedButton onClick={onCancel}>Cancel</OutlinedButton>
-        <Button onClick={onClose}>Submit</Button>
-      </ModalButtonsWrapper>
-    </GeolocateModal>
+    <>
+      <MapModalButton onClick={toggleMapModal}>
+        <MapButtonIcon />
+        <MapModalButtonText>Drop pin on map</MapModalButtonText>
+      </MapModalButton>
+      <GeolocateModal isOpen={mapModalOpen} onClose={toggleMapModal}>
+        <HeaderWrapper>
+          <ModalHeading>Drop pin on map</ModalHeading>
+          <ModalSubHeading>
+            Click to drop the pin in a new position on the map and click 'Confirm'
+          </ModalSubHeading>
+        </HeaderWrapper>
+        <MapDiv center={[17.7134, 178.065]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
+          <UserLocationMap geolocation={geolocation} setGeolocation={setGeolocation} />
+          <PinDrop geolocation={geolocation} setGeolocation={setGeolocation} />
+          <ZoomControl position="bottomright" />
+        </MapDiv>
+        <ModalButtonsWrapper>
+          <OutlinedButton onClick={onCancel}>Cancel</OutlinedButton>
+          <Button onClick={toggleMapModal}>Submit</Button>
+        </ModalButtonsWrapper>
+      </GeolocateModal>
+    </>
   );
 };
