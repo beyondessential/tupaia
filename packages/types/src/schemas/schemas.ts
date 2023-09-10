@@ -37777,6 +37777,49 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
+export const ResBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqBodySchema = {
+	"properties": {
+		"oneTimeLoginToken": {
+			"type": "string"
+		},
+		"oldPassword": {
+			"type": "string"
+		},
+		"password": {
+			"type": "string"
+		},
+		"newPassword": {
+			"type": "string"
+		},
+		"passwordConfirm": {
+			"type": "string"
+		},
+		"newPasswordConfirm": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"newPassword",
+		"newPasswordConfirm",
+		"oldPassword",
+		"oneTimeLoginToken",
+		"password",
+		"passwordConfirm"
+	]
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CountryAccessSchema = {
 	"properties": {
 		"id": {
@@ -37803,47 +37846,6 @@ export const CountryAccessSchema = {
 		"id",
 		"name"
 	]
-} 
-
-export const ResBodySchema = {
-	"type": "array",
-	"items": {
-		"type": "object",
-		"properties": {
-			"id": {
-				"type": "string"
-			},
-			"name": {
-				"type": "string"
-			},
-			"hasAccess": {
-				"type": "boolean"
-			},
-			"accessRequests": {
-				"type": "array",
-				"items": {
-					"type": "string"
-				}
-			}
-		},
-		"additionalProperties": false,
-		"required": [
-			"accessRequests",
-			"hasAccess",
-			"id",
-			"name"
-		]
-	}
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const CamelCaseSchema = {
