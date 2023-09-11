@@ -18,9 +18,9 @@ import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditr
 import { supportsPermissionsBasedSync } from './supportsPermissionsBasedSync';
 
 type ChangeRecord = {
-  action: 'update' | 'delete';
-  recordType: string;
-  timestamp: number;
+  action: MeditrakSyncQueue['type'];
+  recordType: MeditrakSyncQueue['record_type'];
+  timestamp: MeditrakSyncQueue['change_time'];
   record?: Record<string, unknown>;
   error?: { error: string };
 };
