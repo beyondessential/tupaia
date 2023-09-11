@@ -6,13 +6,9 @@
 import { strictJsonParseValue } from '@tupaia/utils';
 
 import {
-  AutocompleteConfigCellBuilder,
-  CodeGeneratorConfigCellBuilder,
-  EntityConfigCellBuilder,
   KeyValueCellBuilder,
   VisibilityCriteriaCellBuilder,
-  ConditionConfigCellBuilder,
-  ArithmeticConfigCellBuilder,
+  QuestionConfigCellBuilder,
 } from './cellBuilders';
 
 export class RowBuilder {
@@ -21,21 +17,8 @@ export class RowBuilder {
     this.rawRows = rawRows;
     this.validationCriteriaCellBuilder = new KeyValueCellBuilder(models);
     this.visibilityCriteriaCellBuilder = new VisibilityCriteriaCellBuilder(models);
-    const entityConfigCellBuilder = new EntityConfigCellBuilder(models);
-    this.configCellBuilders = {
-      Autocomplete: new AutocompleteConfigCellBuilder(models),
-      CodeGenerator: new CodeGeneratorConfigCellBuilder(models),
-      Condition: new ConditionConfigCellBuilder(models),
-      Arithmetic: new ArithmeticConfigCellBuilder(models),
-      Entity: entityConfigCellBuilder,
-      PrimaryEntity: entityConfigCellBuilder,
-    };
+    this.questionConfigCellBuilder = new QuestionConfigCellBuilder(models);
     this.build = this.build.bind(this);
-  }
-
-  async buildConfigCell(questionType, config) {
-    const builder = this.configCellBuilders[questionType];
-    return builder ? builder.build(config) : '';
   }
 
   async build(rowData, index) {
@@ -84,7 +67,7 @@ export class RowBuilder {
     return {
       ...restOfRowData,
       newScreen,
-      config: await this.buildConfigCell(restOfRowData.type, config),
+      config: await this.questionConfigCellBuilder.build(restOfRowData.type, config),
       options: processedOptions.join('\r\n'),
       optionLabels: optionLabels.join('\r\n'),
       optionColors: optionColors.join('\r\n'),
