@@ -14,7 +14,7 @@ export const getEntityBaseFilters = (state, database, questionId) => {
   const filters = { countryCode };
 
   const question = getQuestion(state, questionId);
-  const { parentId, grandparentId, type } = question.config.entity;
+  const { parentId, grandparentId, type } = question.config.entity.filter;
   filters.type = type;
   if (parentId && parentId.questionId) {
     filters['parent.id'] = getAnswerForQuestion(state, parentId.questionId);
@@ -57,7 +57,8 @@ const filterOnAttributes = (entities, checkEntityAttributes) => {
 
 export const getRecentEntities = (database, state, baseFilters) => {
   const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
-  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
+  const entityTypes = questions[primaryEntityQuestionId].config.entity.filter.type;
+
   const recentEntityIds = getRecentEntityIds(
     database,
     assessorId,
