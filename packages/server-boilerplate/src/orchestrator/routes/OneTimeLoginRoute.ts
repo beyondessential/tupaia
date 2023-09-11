@@ -9,7 +9,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { AuthConnection, AuthResponse } from '../auth';
 import { Route } from '../../routes';
 import { EmptyObject } from '../../types';
-import { OneTimeCredentials } from '../../../types';
+import { OneTimeCredentials } from '../types';
 
 export interface OneTimeLoginRequest
   extends Request<EmptyObject, AuthResponse, OneTimeCredentials> {
