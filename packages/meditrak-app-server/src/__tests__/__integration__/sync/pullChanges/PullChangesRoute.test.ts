@@ -19,12 +19,12 @@ import {
   SyncableChangeEnqueuer,
   createPermissionsBasedMeditrakSyncQueue,
   getUnsupportedModelFields,
-} from '../../../sync';
-import { MeditrakAppServerModelRegistry } from '../../../types';
-import { TestModelRegistry } from '../../types';
-import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../utilities';
-import { CAT_USER_SESSION } from '../fixtures';
-import { upsertDummyQuestion } from './upsertDummyQuestion';
+} from '../../../../sync';
+import { MeditrakAppServerModelRegistry } from '../../../../types';
+import { TestModelRegistry } from '../../../types';
+import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
+import { CAT_USER_SESSION } from '../../fixtures';
+import { upsertDummyQuestion } from '../upsertDummyQuestion';
 
 type ChangeRecord = {
   recordType: string;

@@ -7,12 +7,12 @@ import { constructAccessToken } from '@tupaia/auth';
 import { clearTestData, getTestDatabase, getTestModels, upsertDummyRecord } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/utils';
-import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from '../../../sync';
-import { MeditrakAppServerModelRegistry } from '../../../types';
-import { TestModelRegistry } from '../../types';
-import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../utilities';
-import { CAT_USER_SESSION } from '../fixtures';
-import { upsertDummyQuestion } from './upsertDummyQuestion';
+import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from '../../../../sync';
+import { MeditrakAppServerModelRegistry } from '../../../../types';
+import { TestModelRegistry } from '../../../types';
+import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
+import { CAT_USER_SESSION } from '../../fixtures';
+import { upsertDummyQuestion } from '../upsertDummyQuestion';
 
 describe('changes/count', () => {
   let app: TestableServer;
