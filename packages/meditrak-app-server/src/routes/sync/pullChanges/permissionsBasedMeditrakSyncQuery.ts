@@ -82,7 +82,7 @@ export const changesWithPermissions = (
 export const buildPermissionsBasedMeditrakSyncQuery = async <Results>(
   req: Request,
   select: string,
-  { sort, limit, offset }: MeditrakSyncQueryModifiers,
+  { sort, limit, offset }: MeditrakSyncQueryModifiers = {},
 ) => {
   const { appVersion } = req.query;
   if (typeof appVersion !== 'string') {

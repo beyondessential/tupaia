@@ -4,6 +4,8 @@
  */
 
 export {
+  ChangesMetadataRequest,
+  ChangesMetadataRoute,
   CountChangesRequest,
   CountChangesRoute,
   PullChangesRequest,
