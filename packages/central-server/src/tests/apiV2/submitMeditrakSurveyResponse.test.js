@@ -61,15 +61,15 @@ const generateDummyEntityDetails = () => ({
 
 const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
-function expectEqualStrings(a, b) {
+function expectEqualStrings(a, b, key = '?') {
   try {
-    return expect(a.toString()).to.equal(b.toString());
+    return expect(a.toString()).to.equal(b.toString(), `Failed expectEqualStrings with "${key}"`);
   } catch (e) {
     // Errors are thrown by the toString() method.
     return assert.fail(
       a,
       b,
-      `${a} was not equal to ${b}, exception thrown probably because one or both are not strings.`,
+      `${a} was not equal to ${b}, exception thrown probably because one or both are not strings. Key: "${key}"`,
     );
   }
 }
@@ -113,7 +113,7 @@ describe('POST /surveyResponse', async () => {
       ]);
       await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
-      const user = await models.user.findOne();
+      const user = await models.user.findOne({ email: 'test.user@tupaia.org' });
       userId = user.id;
     });
 
@@ -174,7 +174,7 @@ describe('POST /surveyResponse', async () => {
         Object.entries(firstSurveyResponseObject).forEach(([key, value]) => {
           // Other than 'answers' and 'entities_created', all values in the original object should match the database
           if (!['answers', 'entities_created', 'timestamp'].includes(key)) {
-            expectEqualStrings(firstSurveyResponse[key], value);
+            expectEqualStrings(firstSurveyResponse[key], value, key);
           }
         });
       });

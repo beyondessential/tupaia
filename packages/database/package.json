@@ -48,7 +48,7 @@
     "pg-pubsub": "0.6.1",
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
-    "winston": "3.3.3"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@babel/node": "^7.10.5",

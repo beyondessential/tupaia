@@ -668,6 +668,7 @@ export enum EntityType {
   'msupply_store' = 'msupply_store',
   'complaint' = 'complaint',
   'water_sample' = 'water_sample',
+  'farm' = 'farm',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
