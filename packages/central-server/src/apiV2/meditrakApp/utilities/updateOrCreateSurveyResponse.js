@@ -23,11 +23,12 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     clinic_id: clinicId,
     ...surveyResponseProperties
   } = surveyResponseObject;
-  const entitiesCreated = surveyResponseObject.entities_created || [];
+
+  const newAndUpdatedEntities = surveyResponseObject.entities_upserted || [];
   const optionsCreated = surveyResponseObject.options_created || [];
   let surveyResponse;
   try {
-    await createEntities(models, entitiesCreated, surveyResponseObject.survey_id);
+    await upsertEntities(models, newAndUpdatedEntities, surveyResponseObject.survey_id);
     await createOptions(models, optionsCreated);
     const survey = await models.survey.findById(surveyResponseObject.survey_id);
 
@@ -82,23 +83,34 @@ const createOptions = async (models, optionsCreated) => {
   return options;
 };
 
-const createEntities = async (models, entitiesCreated, surveyId) => {
+const upsertEntities = async (models, newAndUpdatedEntities, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
 
   return Promise.all(
-    entitiesCreated.map(async entity =>
-      models.entity.updateOrCreate(
+    newAndUpdatedEntities.map(async entity => {
+      const existentEntity = models.entity.findOne({ id: entity.id });
+      const newMetadata =
+        dataGroup.service_type === 'dhis'
+          ? { dhis: { isDataRegional: !!dataGroup.config.isDataRegional } }
+          : {};
+      if (existentEntity) {
+        return models.entity.updateOrCreate(
+          { id: entity.id },
+          {
+            ...entity,
+            metadata: { ...existentEntity.metadata },
+          },
+        );
+      }
+      return models.entity.updateOrCreate(
         { id: entity.id },
         {
           ...entity,
-          metadata:
-            dataGroup.service_type === 'dhis'
-              ? { dhis: { isDataRegional: !!dataGroup.config.isDataRegional } }
-              : {},
+          metadata: { ...newMetadata },
         },
-      ),
-    ),
+      );
+    }),
   );
 };
 

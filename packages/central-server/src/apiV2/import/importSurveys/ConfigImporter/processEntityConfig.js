@@ -4,43 +4,23 @@
  */
 
 import {
-  splitStringOnComma,
-  translateQuestionDependentFields,
   translateQuestionDependentNestedFields,
-  replaceQuestionCodesWithIds,
   replaceNestedQuestionCodesWithIds,
 } from '../../../utilities';
 import { isYes } from '../utilities';
 
-/**
- * Dictionary of entity creation fields used in the input
- * to the keys that will be used in the output
- */
-const ENTITY_CREATION_FIELD_TRANSLATION = {
-  name: 'name',
-  code: 'code',
-  parent: 'parentId',
-  grandparent: 'grandparentId',
-};
-
 const fieldMappers = {
-  type: value => splitStringOnComma(value),
   createNew: value => isYes(value),
   generateQrCode: value => isYes(value),
   allowScanQrCode: value => isYes(value),
 };
 
-const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
-const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
+const ENTITY_KEYS_WITH_NESTED_FIELDS = ['fields', 'filter'];
 
 export const processEntityConfig = async (models, config) => {
-  const entityCreationNonJsonFields = translateQuestionDependentFields(
+  const entityFilterAndUpsertFields = translateQuestionDependentNestedFields(
     config,
-    ENTITY_CREATION_FIELD_TRANSLATION,
-  );
-  const entityCreationJsonFields = translateQuestionDependentNestedFields(
-    config,
-    ENTITY_CREATION_JSON_FIELD_LIST,
+    ENTITY_KEYS_WITH_NESTED_FIELDS,
   );
 
   const processedConfig = Object.fromEntries(
@@ -51,19 +31,13 @@ export const processEntityConfig = async (models, config) => {
 
   const fullConfig = {
     ...processedConfig,
-    ...entityCreationNonJsonFields,
-    ...entityCreationJsonFields,
+    ...entityFilterAndUpsertFields,
   };
 
-  let resultConfig = await replaceQuestionCodesWithIds(
+  const resultConfig = await replaceNestedQuestionCodesWithIds(
     models,
     fullConfig,
-    ENTITY_CREATION_FIELD_LIST,
-  );
-  resultConfig = await replaceNestedQuestionCodesWithIds(
-    models,
-    resultConfig,
-    ENTITY_CREATION_JSON_FIELD_LIST,
+    ENTITY_KEYS_WITH_NESTED_FIELDS,
   );
 
   return resultConfig;

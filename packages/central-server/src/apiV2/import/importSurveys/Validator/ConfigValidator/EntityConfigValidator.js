@@ -53,15 +53,20 @@ export class EntityConfigValidator extends JsonFieldValidator {
     );
 
     return {
-      type: [hasContent, constructIsValidEntityType(this.models.entity)],
       allowScanQrCode: [constructIsNotPresentOr(validateIsYesOrNo)],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
       generateQrCode: [isNotPresentIfNotCreateNew, constructIsNotPresentOr(validateIsYesOrNo)],
-      code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
-      name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
-      parent: [pointsToValidPrecedingEntityQuestion],
-      grandparent: [pointsToValidPrecedingEntityQuestion],
       'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'fields.code': [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'fields.name': [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'fields.parent': [pointsToValidPrecedingEntityQuestion],
+      'fields.grandparent': [pointsToValidPrecedingEntityQuestion],
+      'fields.type': [constructIsNotPresentOr(constructIsValidEntityType(this.models.entity))],
+      'fields.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'filter.parent': [pointsToValidPrecedingEntityQuestion],
+      'filter.grandparent': [pointsToValidPrecedingEntityQuestion],
+      'filter.type': [constructIsNotPresentOr(constructIsValidEntityType(this.models.entity))],
+      'filter.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }
 

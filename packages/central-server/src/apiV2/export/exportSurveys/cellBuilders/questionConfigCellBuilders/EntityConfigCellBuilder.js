@@ -18,7 +18,8 @@ const KEY_TRANSLATION = {
 
 export class EntityConfigCellBuilder extends KeyValueCellBuilder {
   individualFieldProcessors = {
-    attributes: EntityConfigCellBuilder.processAttributesField,
+    fields: EntityConfigCellBuilder.processFieldsObject,
+    filter: EntityConfigCellBuilder.processFilterObject,
   };
 
   processKey(key) {
@@ -31,35 +32,69 @@ export class EntityConfigCellBuilder extends KeyValueCellBuilder {
       : this.fetchQuestionCode(value);
   }
 
-  /**
-   * Currently we only actually support parentId as an attribute
-   * But this processor function processes all keys for future proofing
-   * Since it's not a one to one relationship we can't run it through the generic handlers
-   *
-   * Input:
-   * attibutes: {
-   *   parentId: {
-   *    questionId: <guid>
-   *   }
-   * }
-   * Converted to Excel config:
-   * attributes.parent: <questionCode>
-   */
-  static async processAttributesField(models, attributesObject = {}) {
-    const processedAttributes = await Promise.all(
-      Object.entries(attributesObject).map(async ([key, value]) => {
-        const translatedKey = KEY_TRANSLATION[key] || key;
+  extractRelevantObject({ entity }) {
+    return entity;
+  }
+
+  static async processFieldsObject(models, fieldsObject = {}) {
+    const processedFields = await Promise.all(
+      Object.entries(fieldsObject).map(async ([key, value]) => {
+        if (key === 'type') {
+          return `fields.${key}: ${value}`;
+        }
+        if (key === 'attributes') {
+          const processedAttributes = await Promise.all(
+            Object.entries(value).map(async ([attributeKey, attributeValue]) => {
+              const question = await models.question.findById(attributeValue?.questionId);
+              if (!question) {
+                throw new Error(
+                  `Could not find a question with id matching ${attributeValue?.questionId}`,
+                );
+              }
+              return `fields.attributes.${attributeKey}: ${question.code}`;
+            }),
+          );
+          return processedAttributes.join('\r\n');
+        }
         const question = await models.question.findById(value?.questionId);
         if (!question) {
           throw new Error(`Could not find a question with id matching ${value?.questionId}`);
         }
-        return `attributes.${translatedKey}: ${question.code}`;
+        const processedKey = KEY_TRANSLATION[key] || key;
+        return `fields.${processedKey}: ${question.code}`;
       }),
     );
-    return processedAttributes.join('\r\n');
+    return processedFields.join('\r\n');
   }
 
-  extractRelevantObject({ entity }) {
-    return entity;
+  static async processFilterObject(models, filterObject = {}) {
+    const processedFilter = await Promise.all(
+      Object.entries(filterObject).map(async ([key, value]) => {
+        if (key === 'type') {
+          return `filter.${key}: ${value.join(',')}`;
+        }
+        if (key === 'attributes') {
+          const processedAttributes = await Promise.all(
+            Object.entries(value).map(async ([attributeKey, attributeValue]) => {
+              const question = await models.question.findById(attributeValue?.questionId);
+              if (!question) {
+                throw new Error(
+                  `Could not find a question with id matching ${attributeValue?.questionId}`,
+                );
+              }
+              return `filter.attributes.${attributeKey}: ${question.code}`;
+            }),
+          );
+          return processedAttributes.join('\r\n');
+        }
+        const question = await models.question.findById(value?.questionId);
+        if (!question) {
+          throw new Error(`Could not find a question with id matching ${value?.questionId}`);
+        }
+        const processedKey = KEY_TRANSLATION[key] || key;
+        return `filter.${processedKey}: ${question.code}`;
+      }),
+    );
+    return processedFilter.join('\r\n');
   }
 }
