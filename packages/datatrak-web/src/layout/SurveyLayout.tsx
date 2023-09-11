@@ -15,6 +15,8 @@ import { Paper as MuiPaper } from '@material-ui/core';
 import { Button } from '../components';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { CancelSurveyModal } from '../features/Survey/CancelSurveyModal';
+import { useSubmitSurvey } from '../api/mutations';
+import { useUser } from '../api/queries';
 
 const ScrollableLayout = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
@@ -68,13 +70,6 @@ const FormActions = styled.div`
   }
 `;
 
-const ScrollBody = styled.div`
-  flex: 1;
-  overflow: auto;
-  padding: 1rem 2.5rem;
-  margin-bottom: 0.5rem;
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   button,
@@ -102,6 +97,7 @@ export const SurveyLayout = () => {
     isReviewScreen,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
+  const { mutate: submitSurvey } = useSubmitSurvey();
   const { handleSubmit } = formContext;
 
   const handleStep = (path, data) => {
@@ -123,7 +119,8 @@ export const SurveyLayout = () => {
   });
 
   const handleSubmitForm = data => {
-    console.log('hello!', data);
+    console.log(JSON.stringify(data));
+    // submitSurvey(data)
   };
 
   const navigateNext = data => {
