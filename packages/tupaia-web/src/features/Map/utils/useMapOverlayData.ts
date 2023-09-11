@@ -60,6 +60,7 @@ export const useMapOverlayData = (
     selectedOverlay,
   );
   const { data: entity } = useEntity(projectCode, entityCode);
+
   const rootEntityCode = rootEntity?.code || getRootEntityCode(entity);
 
   const { data: entities } = useEntitiesByType(

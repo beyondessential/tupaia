@@ -70,7 +70,7 @@ export const EntitySearch = () => {
 
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
-    gaEvent('Search', 'Change');
+    gaEvent('Search', 'Change Search');
   };
 
   const children = entities.filter(entity => entity.parentCode === project?.code);
