@@ -23,7 +23,8 @@
     "migrate-create": "scripts/migrateCreate.sh",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "refresh-database": "node ./scripts/refreshDatabase.js",
-    "test": "yarn package:test:withdb --runInBand",
+    "setup-test": "yarn setup-test-database",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage",
     "update-test-data": "bash -c 'source .env && pg_dump -s -h $DB_URL -U $DB_USER -O $DB_NAME > src/__tests__/testData/testDataDump.sql && pg_dump -t migrations -c -h $DB_URL -U $DB_USER -O $DB_NAME >> src/__tests__/testData/testDataDump.sql'",
     "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh",
@@ -47,7 +48,7 @@
     "pg-pubsub": "0.6.1",
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
-    "winston": "3.3.3"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@babel/node": "^7.10.5",

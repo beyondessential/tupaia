@@ -9576,7 +9576,7 @@ __metadata:
     express: ^4.16.2
     lodash: ^4.17.4
     multer: ^1.4.3
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -9828,7 +9828,7 @@ __metadata:
     dotenv: ^8.2.0
     express: ^4.16.2
     mockdate: ^3.0.5
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -9856,7 +9856,7 @@ __metadata:
     pluralize: ^8.0.0
     rand-token: ^1.0.1
     react-autobind: 1.0.6
-    winston: 3.3.3
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -9893,7 +9893,6 @@ __metadata:
     "@babel/plugin-proposal-nullish-coalescing-operator": ^7.14.5
     "@cypress/snapshot": ^2.1.7
     "@testing-library/cypress": ^7.0.0
-    "@tupaia/database": 1.0.0
     "@tupaia/utils": 1.0.0
     case: ^1.6.3
     cheerio: ^1.0.0-rc.3
@@ -9925,7 +9924,7 @@ __metadata:
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.keyby: ^4.6.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -9977,7 +9976,7 @@ __metadata:
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.uniqby: ^4.7.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -10037,7 +10036,7 @@ __metadata:
     moment: ^2.24.0
     moment-timezone: ^0.5.27
     semver-compare: ^1.0.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -10134,7 +10133,7 @@ __metadata:
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.groupby: ^4.6.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -10211,7 +10210,7 @@ __metadata:
     mathjs: ^9.4.0
     mockdate: ^3.0.5
     moment: ^2.24.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -10240,7 +10239,7 @@ __metadata:
     http-proxy-middleware: ^2.0.1
     i18n: ^0.13.3
     morgan: ^1.9.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -10295,7 +10294,7 @@ __metadata:
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     lodash.sortby: ^4.6.0
-    winston: ^3.2.1
+    winston: ^3.3.3
   languageName: unknown
   linkType: soft
 
@@ -10411,11 +10410,7 @@ __metadata:
     downloadjs: ^1.4.7
     faker: ^4.1.0
     fast-glob: ^3.2.5
-    js-sql-parser: ^1.4.1
-    jsoneditor: ^9.9.0
     jszip: ^3.10.1
-    leaflet: ^1.7.1
-    lodash.get: ^4.4.2
     lodash.throttle: ^4.1.1
     moment: ^2.29.1
     prop-types: ^15.7.2
@@ -14012,17 +14007,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async@npm:^3.1.0, async@npm:^3.2.3":
-  version: 3.2.4
-  resolution: "async@npm:3.2.4"
-  checksum: 43d07459a4e1d09b84a20772414aa684ff4de085cbcaec6eea3c7a8f8150e8c62aa6cd4e699fe8ee93c3a5b324e777d34642531875a0817a35697522c1b02e89
-  languageName: node
-  linkType: hard
-
 "async@npm:^3.2.0":
   version: 3.2.0
   resolution: "async@npm:3.2.0"
   checksum: 6739fae769e6c9f76b272558f118ef041d45c979c573a8fe93f8cfbc32eb9c92da032e9effe6bbcc9b1131292cde6c4a9e61a442894aa06a262addd8dd3adda1
+  languageName: node
+  linkType: hard
+
+"async@npm:^3.2.3":
+  version: 3.2.4
+  resolution: "async@npm:3.2.4"
+  checksum: 43d07459a4e1d09b84a20772414aa684ff4de085cbcaec6eea3c7a8f8150e8c62aa6cd4e699fe8ee93c3a5b324e777d34642531875a0817a35697522c1b02e89
   languageName: node
   linkType: hard
 
@@ -16058,17 +16053,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001015, caniuse-lite@npm:^1.0.30001022, caniuse-lite@npm:^1.0.30001043, caniuse-lite@npm:^1.0.30001061, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001261, caniuse-lite@npm:^1.0.30001370":
-  version: 1.0.30001462
-  resolution: "caniuse-lite@npm:1.0.30001462"
-  checksum: e4a57d7851eec65e7c9b6c11c4bbcecdc49d87b1b01bff3c15ea27efb05f959891b4c70ac169842067c134d6fa126d9ad5a91d0f85c7387c5bd912eaf41ea647
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001503":
-  version: 1.0.30001517
-  resolution: "caniuse-lite@npm:1.0.30001517"
-  checksum: e4e87436ae1c4408cf4438aac22902b31eb03f3f5bad7f33bc518d12ffb35f3fd9395ccf7efc608ee046f90ce324ec6f7f26f8a8172b8c43c26a06ecee612a29
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001015, caniuse-lite@npm:^1.0.30001022, caniuse-lite@npm:^1.0.30001043, caniuse-lite@npm:^1.0.30001061, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001261, caniuse-lite@npm:^1.0.30001370, caniuse-lite@npm:^1.0.30001503":
+  version: 1.0.30001525
+  resolution: "caniuse-lite@npm:1.0.30001525"
+  checksum: a0d190c185b8e1220dbc72e42f310633059aa175ca3396eb781b249ac3da6c62b30cb8efc5fa24d632cb938f58d90b0c7772d1c9942b6643cf418c27c2cb8632
   languageName: node
   linkType: hard
 
@@ -29747,7 +29735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"logform@npm:^2.2.0, logform@npm:^2.3.2, logform@npm:^2.4.0":
+"logform@npm:^2.3.2, logform@npm:^2.4.0":
   version: 2.5.1
   resolution: "logform@npm:2.5.1"
   dependencies:
@@ -44424,7 +44412,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston-transport@npm:^4.4.0, winston-transport@npm:^4.5.0":
+"winston-transport@npm:^4.5.0":
   version: 4.5.0
   resolution: "winston-transport@npm:4.5.0"
   dependencies:
@@ -44450,24 +44438,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston@npm:3.3.3":
-  version: 3.3.3
-  resolution: "winston@npm:3.3.3"
-  dependencies:
-    "@dabh/diagnostics": ^2.0.2
-    async: ^3.1.0
-    is-stream: ^2.0.0
-    logform: ^2.2.0
-    one-time: ^1.0.0
-    readable-stream: ^3.4.0
-    stack-trace: 0.0.x
-    triple-beam: ^1.3.0
-    winston-transport: ^4.4.0
-  checksum: 89a0a8db4e577d0df2bee8af67a751663fb80aaa782750b5a0a151a6bf97074dd0eb7c81780e196197735b851c12ea9c176952128fc51fae07a8a5ddba82913a
-  languageName: node
-  linkType: hard
-
-"winston@npm:^3.2.1, winston@npm:^3.3.3":
+"winston@npm:^3.3.3":
   version: 3.9.0
   resolution: "winston@npm:3.9.0"
   dependencies:
