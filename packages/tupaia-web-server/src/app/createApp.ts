@@ -73,7 +73,6 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
-    .use('changePassword', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .build();
