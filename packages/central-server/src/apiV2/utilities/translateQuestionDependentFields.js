@@ -69,7 +69,7 @@ export const translateQuestionCodeToId = async (questionModel, code) => {
  */
 export const replaceNestedQuestionCodesWithIds = async (models, config, nestedFieldList) => {
   const resultConfig = {};
-  console.log('config, nestedFieldList line 63', config, nestedFieldList);
+
   await Promise.all(
     Object.entries(config).map(async ([fieldKey, value]) => {
       let newValue = value;
@@ -112,6 +112,6 @@ export const replaceNestedQuestionCodesWithIds = async (models, config, nestedFi
       resultConfig[fieldKey] = newValue;
     }),
   );
-  console.log('result config', resultConfig);
+
   return resultConfig;
 };
