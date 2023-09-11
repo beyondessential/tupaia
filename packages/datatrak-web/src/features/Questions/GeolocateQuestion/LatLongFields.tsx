@@ -8,6 +8,7 @@ import { TextInput } from '../../../components';
 
 const Wrapper = styled.div`
   display: flex;
+  padding-bottom: 0.5rem;
   .MuiFormControlLabel-root {
     width: 6.3rem;
     &:first-child {
@@ -28,7 +29,7 @@ export const LatLongFields = ({ setGeolocation, geolocation, name }: any) => {
       <TextInput
         id={`${name}-latitude`}
         name={`${name}-latitude`}
-        value={geolocation.latitude || ''}
+        value={geolocation?.latitude || ''}
         label="Latitude"
         onChange={(e: ChangeEvent<{}>) => handleChange(e, 'latitude')}
         textInputProps={{
@@ -43,7 +44,7 @@ export const LatLongFields = ({ setGeolocation, geolocation, name }: any) => {
       <TextInput
         id={`${name}-longitude`}
         name={`${name}-longitude`}
-        value={geolocation.longitude || ''}
+        value={geolocation?.longitude || ''}
         label="Longitude"
         onChange={(e: ChangeEvent<{}>) => handleChange(e, 'longitude')}
         textInputProps={{

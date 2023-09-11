@@ -9,5 +9,3 @@ export type {
   SurveyQuestionInputProps,
   SurveyScreenComponent,
 } from './surveys';
-
-export type { coordinateType } from './coordinateType';
