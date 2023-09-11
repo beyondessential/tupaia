@@ -41,6 +41,11 @@ export class AuthConnection extends ApiConnection {
     return this.parseAuthResponse(response);
   }
 
+  public async oneTimeLogin(token: string) {
+    const response = await this.post('auth', { grantType: 'one_time_login' }, { token });
+    return this.parseAuthResponse(response);
+  }
+
   public async refreshAccessToken(refreshToken: string) {
     const response = await this.post(
       'auth',
