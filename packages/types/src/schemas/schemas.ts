@@ -37807,11 +37807,7 @@ export const ReqBodySchema = {
 	"additionalProperties": false,
 	"required": [
 		"newPassword",
-		"newPasswordConfirm",
-		"oldPassword",
-		"oneTimeLoginToken",
-		"password",
-		"passwordConfirm"
+		"newPasswordConfirm"
 	]
 } 
 
