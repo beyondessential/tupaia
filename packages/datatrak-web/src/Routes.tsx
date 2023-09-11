@@ -17,7 +17,6 @@ import {
   LandingPage,
   SurveyPage,
   SurveySelectPage,
-  SurveyQuestionsPage,
   LoginPage,
   VerifyEmailPage,
   NotFoundPage,
@@ -29,7 +28,7 @@ import {
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout, ScrollableLayout } from './layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout, SurveyLayout } from './layout';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -96,9 +95,8 @@ export const Routes = () => {
             <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
               <Route index element={<SurveyStartRedirect />} />
               <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
-              <Route element={<ScrollableLayout />}>
+              <Route element={<SurveyLayout />}>
                 <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
-                <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
                 <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
               </Route>
             </Route>

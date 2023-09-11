@@ -76,7 +76,9 @@ export const SurveySideMenu = () => {
     surveyScreenComponents,
     screenNumber,
     setFormData,
+    isReviewScreen,
   } = useSurveyForm();
+  if (isReviewScreen) return null;
   const onChangeScreen = () => {
     setFormData(getValues());
   };

@@ -55,6 +55,9 @@ export enum QUESTION_TYPES {
   Condition = Placeholder,
 }
 
+/**
+ * This is the component that renders a single question in a survey.
+ */
 export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProps) => {
   const { control } = useFormContext();
   const FieldComponent = QUESTION_TYPES[type];

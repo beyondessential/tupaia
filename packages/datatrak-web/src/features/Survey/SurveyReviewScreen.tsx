@@ -3,78 +3,63 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Button as MuiButton, Paper as MuiPaper } from '@material-ui/core';
+import { useSurveyForm } from './SurveyContext';
 import styled from 'styled-components';
-import { generatePath, useNavigate, useParams } from 'react-router-dom';
-import { ROUTES } from '../../constants';
-import { useSurveyForm } from './SurveyContext.tsx';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { Button } from '@tupaia/ui-components';
+import { Typography } from '@material-ui/core';
+import { formatSurveyScreenQuestions } from './utils';
+import { SurveyQuestions } from './SurveyQuestions';
+import { ScrollableBody } from '../../layout';
 
-const Container = styled.div`
-  flex: 1;
-  display: flex;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+const Header = styled.div`
+  padding: 1.375rem 2.75rem;
+  width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
-const Paper = styled(MuiPaper).attrs({
-  variant: 'outlined',
-  elevation: 0,
+const Section = styled.section`
+  padding: 1rem 0;
+`;
+
+const SectionHeader = styled(Typography).attrs({
+  variant: 'h3',
 })`
-  flex: 1;
-  overflow: auto;
-  padding: 3rem;
-  max-width: 70rem;
-  margin: 0 auto;
-`;
-
-const FormActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 3rem;
-  border-top: 1px solid ${props => props.theme.palette.divider};
+  font-size: 1.125rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  margin-bottom: 1rem;
 `;
 
 export const SurveyReviewScreen = () => {
-  const params = useParams();
-  const { formData, numberOfScreens } = useSurveyForm();
+  const { surveyScreenComponents } = useSurveyForm();
+  if (!surveyScreenComponents) return null;
 
-  const navigate = useNavigate();
-
-  const onSubmit = () => {
-    const path = generatePath(ROUTES.SURVEY_SUCCESS, params);
-    navigate(path);
-  };
-
-  const onStepPrevious = () => {
-    const path = generatePath(ROUTES.SURVEY_SCREEN, {
-      ...params,
-      screenNumber: String(numberOfScreens),
-    });
-    navigate(path);
-  };
+  // split the questions into sections by screen so it's easier to read the long form
+  const questionSections = Object.entries(surveyScreenComponents!).map(
+    ([screenNumber, screenComponents]) => {
+      const heading = screenComponents[0].questionText;
+      return {
+        heading,
+        questions: formatSurveyScreenQuestions(screenComponents, screenNumber),
+      };
+    },
+  );
 
   return (
-    <Container>
-      <Paper>
-        <h2>Review and submit</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias aperiam deleniti eaque
-          esse, et harum iure nesciunt, nobis quo repudiandae, sequi tempore ullam voluptates! Ea
-          eum expedita magnam quo recusandae.
-        </p>
-        <pre>{JSON.stringify(formData, null, 2)}</pre>
-        <FormActions>
-          <MuiButton type="button" onClick={onStepPrevious} startIcon={<ArrowBackIosIcon />}>
-            Back
-          </MuiButton>
-          <Button type="button" onClick={onSubmit}>
-            Submit
-          </Button>
-        </FormActions>
-      </Paper>
-    </Container>
+    <>
+      <Header>
+        <Typography variant="h2">Review and submit</Typography>
+        <Typography>
+          Please review your survey answers below. To edit any answers, please navigate back using
+          the 'Back' button below. Once submitted, your survey answers will be uploaded to Tupaia.{' '}
+        </Typography>
+      </Header>
+      <ScrollableBody as="form" noValidate>
+        {questionSections.map(({ heading, questions }, index) => (
+          <Section key={index}>
+            <SectionHeader>{heading}</SectionHeader>
+            <SurveyQuestions questions={questions} />
+          </Section>
+        ))}
+      </ScrollableBody>
+    </>
   );
 };
