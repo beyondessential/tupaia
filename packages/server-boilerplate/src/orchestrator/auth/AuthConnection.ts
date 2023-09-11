@@ -6,7 +6,7 @@
 
 import { createBasicHeader } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
-import { Credentials } from '../types';
+import { Credentials, OneTimeCredentials } from '../types';
 import { ApiConnection } from '../../connections';
 
 const basicAuthHandler = {
@@ -41,8 +41,12 @@ export class AuthConnection extends ApiConnection {
     return this.parseAuthResponse(response);
   }
 
-  public async oneTimeLogin(token: string) {
-    const response = await this.post('auth', { grantType: 'one_time_login' }, { token });
+  public async oneTimeLogin({ token, deviceName }: OneTimeCredentials) {
+    const response = await this.post(
+      'auth',
+      { grantType: 'one_time_login' },
+      { token, deviceName: `TUPAIA-SERVER: ${deviceName}` },
+    );
     return this.parseAuthResponse(response);
   }
 

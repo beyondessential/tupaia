@@ -9,8 +9,10 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { AuthConnection, AuthResponse } from '../auth';
 import { Route } from '../../routes';
 import { EmptyObject } from '../../types';
+import { OneTimeCredentials } from '../../../types';
 
-export interface OneTimeLoginRequest extends Request<EmptyObject, AuthResponse, { token: string }> {
+export interface OneTimeLoginRequest
+  extends Request<EmptyObject, AuthResponse, OneTimeCredentials> {
   ctx: {
     verifyLogin?: (accessPolicy: AccessPolicy) => void;
   };
@@ -26,9 +28,9 @@ export class OneTimeLoginRoute extends Route<OneTimeLoginRequest> {
   }
 
   public async buildResponse() {
-    const { token } = this.req.body;
+    const credentials = this.req.body;
 
-    const response = await this.authConnection.oneTimeLogin(token);
+    const response = await this.authConnection.oneTimeLogin(credentials);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));
