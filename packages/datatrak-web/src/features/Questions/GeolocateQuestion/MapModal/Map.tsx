@@ -4,7 +4,7 @@
  */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Icon, LatLngLiteral } from 'leaflet';
+import { Icon, LatLngBoundsLiteral, LatLngLiteral } from 'leaflet';
 import {
   MapContainer as BaseMapContainer,
   TileLayer,
@@ -33,6 +33,11 @@ type MapComponentProps = {
 
 const DEFAULT_ZOOM_LEVEL = 12;
 const UNSET_LOCATION_ZOOM_LEVEL = 3;
+// These match the default bounds in `ui-map-components` but we don't import this package in this app, so we have to duplicate them here
+const DEFAULT_BOUNDS = [
+  [6.5001, 110],
+  [-40, 204.5],
+] as LatLngBoundsLiteral;
 
 const UserLocationMap = ({
   lat,
@@ -87,7 +92,7 @@ export const Map = ({ lat, lng, setCoordinates }: MapComponentProps) => {
   };
   return (
     <MapContainer
-      center={[-20.53, 162.05]}
+      bounds={DEFAULT_BOUNDS}
       zoom={coordinatesInvalid ? UNSET_LOCATION_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL}
       scrollWheelZoom={true}
       zoomControl={false}

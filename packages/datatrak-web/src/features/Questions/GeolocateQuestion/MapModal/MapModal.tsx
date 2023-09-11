@@ -4,7 +4,7 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LatLngTuple, LatLngLiteral } from 'leaflet';
+import { LatLngLiteral } from 'leaflet';
 import { Typography } from '@material-ui/core';
 import { OutlinedButton } from '@tupaia/ui-components';
 import { Button, Modal } from '../../../../components';
