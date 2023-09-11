@@ -4,7 +4,7 @@
  */
 
 import React, { useContext } from 'react';
-import { IconButton, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
+import { ButtonProps, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
@@ -15,7 +15,7 @@ import { CellLink } from './CellLink';
 import { Button } from '../Button';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
-  $expanded: boolean;
+  $expanded?: boolean;
 }>`
   transform: ${({ $expanded }) => ($expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease-in-out;
@@ -58,7 +58,7 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   as: Button,
   variant: 'text',
   color: 'default',
-})`
+})<ButtonProps>`
   text-transform: none;
   text-align: left;
   svg {
@@ -72,17 +72,23 @@ interface MatrixRowProps {
   parents: MatrixRowTitle[];
 }
 
+type MatrixRowHeaderProps = {
+  depth: number;
+  isExpanded: boolean;
+  rowTitle: string;
+  hasChildren: boolean;
+  children: React.ReactNode;
+  disableExpandButton: boolean;
+  link?: typeof Location | string;
+};
+
 const ExpandableRowHeaderCell = ({
   children,
   isExpanded,
   depth,
   disableExpandButton,
   toggleExpandedRows,
-}: {
-  children: React.ReactNode;
-  isExpanded: boolean;
-  depth: number;
-  disableExpandButton?: boolean;
+}: Pick<MatrixRowHeaderProps, 'children' | 'depth' | 'isExpanded' | 'disableExpandButton'> & {
   toggleExpandedRows: () => void;
 }) => {
   return (
@@ -105,11 +111,7 @@ const RowHeaderCellLink = ({
   children,
   link,
   depth,
-}: {
-  children: React.ReactNode;
-  link?: typeof Location | string;
-  depth: number;
-}) => {
+}: Pick<MatrixRowHeaderProps, 'children' | 'link' | 'depth'>) => {
   return (
     <HeaderCell>
       <RowHeaderCellContent $depth={depth} to={link} as={CellLink}>
@@ -130,15 +132,7 @@ const RowHeaderCell = ({
   children,
   disableExpandButton,
   link,
-}: {
-  depth: number;
-  isExpanded: boolean;
-  rowTitle: string;
-  hasChildren: boolean;
-  children: React.ReactNode;
-  disableExpandButton?: boolean;
-  link?: typeof Location | string;
-}) => {
+}: MatrixRowHeaderProps) => {
   const dispatch = useContext(MatrixDispatchContext)!;
   const toggleExpandedRows = () => {
     if (isExpanded) {
