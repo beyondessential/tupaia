@@ -21,7 +21,8 @@ export const DataVisualsLayer = ({
   const navigateToEntity = useNavigateToEntity();
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { serieses, measureData } = useMapOverlayData(hiddenValues);
+  const { serieses, measureData, isLoading } = useMapOverlayData(hiddenValues);
+  if(isLoading) return null;
 
   // Don't show the marker layer if the entity type doesn't match the measure level
   const firstSeries = serieses?.find((series: any) => series.displayOnLevel);
