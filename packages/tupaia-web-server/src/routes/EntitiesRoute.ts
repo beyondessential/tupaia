@@ -6,7 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
-import { TupaiaWebEntitiesRequest, Entity } from '@tupaia/types';
+import { TupaiaWebEntitiesRequest } from '@tupaia/types';
 import { generateFrontendExcludedFilter } from '../utils';
 
 export type EntitiesRequest = Request<
