@@ -8,18 +8,21 @@ import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Description } from '@material-ui/icons';
 import { TopProgressBar } from '../../components';
-import { useSurveyForm } from './SurveyContext';
 import { useSurvey } from '../../api/queries';
+import { SURVEY_TOOLBAR_HEIGHT } from '../../constants';
+import { useSurveyForm } from './SurveyContext';
 
 const Toolbar = styled.div`
-  height: 4.7rem;
+  height: ${SURVEY_TOOLBAR_HEIGHT};
   background: ${({ theme }) => theme.palette.background.paper};
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  margin-left: -0.9375rem;
-  margin-right: -0.9375rem;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-left: -0.9375rem;
+    margin-right: -0.9375rem;
+  }
 `;
 
 const SurveyTitleWrapper = styled.div`
@@ -54,10 +57,12 @@ export const SurveyToolbar = () => {
           </SurveyTitle>
         )}
       </SurveyTitleWrapper>
-      <TopProgressBar
-        currentSurveyQuestion={screenNumber}
-        totalNumberOfSurveyQuestions={numberOfScreens}
-      />
+      {screenNumber && (
+        <TopProgressBar
+          currentSurveyQuestion={screenNumber}
+          totalNumberOfSurveyQuestions={numberOfScreens}
+        />
+      )}
     </Toolbar>
   );
 };

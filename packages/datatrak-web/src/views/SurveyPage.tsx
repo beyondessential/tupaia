@@ -4,17 +4,18 @@
  */
 import React from 'react';
 import { useParams, Outlet } from 'react-router-dom';
-import { FullPageLoader, Alert } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { FullPageLoader, Alert } from '@tupaia/ui-components';
 import { useSurveyScreenComponents } from '../api/queries';
 import { SurveyContext } from '../features';
 import { SurveyParams } from '../types';
-import { HEADER_HEIGHT } from '../constants';
+import { SurveyToolbar } from '../features/Survey/SurveyToolbar';
 
-const Container = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT});
+// wrap the entire page so that other content can be centered etc
+const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
 `;
 
 export const SurveyPage = () => {
@@ -31,11 +32,12 @@ export const SurveyPage = () => {
 
   return (
     <SurveyContext>
-      <Container>
+      <PageWrapper>
+        <SurveyToolbar />
         {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
         <Outlet key={screenNumber} />
-      </Container>
+      </PageWrapper>
     </SurveyContext>
   );
 };

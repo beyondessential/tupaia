@@ -14,7 +14,6 @@ export const ROUTES = {
   SURVEY_SCREEN: `${SURVEY_URL}/:screenNumber`,
   SURVEY_SUCCESS: `${SURVEY_URL}/success`,
   SURVEY_REVIEW: `${SURVEY_URL}/review`,
-  QUESTIONS: 'questions',
   ACCOUNT_SETTINGS: '/account-settings',
   CHANGE_PROJECT: '/change-project',
   VERIFY_EMAIL: '/verify-email',

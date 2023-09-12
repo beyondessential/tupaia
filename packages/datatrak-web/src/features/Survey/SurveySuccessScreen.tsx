@@ -5,31 +5,84 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Paper as MuiPaper } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import { Button as BaseButton } from '../../components';
+import { generatePath, useNavigate, useParams } from 'react-router-dom';
+import { useSurveyForm } from './SurveyContext.tsx';
+import { ROUTES } from '../../constants';
 
-const Container = styled.div`
-  flex: 1;
+const Wrapper = styled.div`
   display: flex;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  flex: 1;
 `;
 
-const Paper = styled(MuiPaper).attrs({
-  variant: 'outlined',
-  elevation: 0,
-})`
-  flex: 1;
-  overflow: auto;
-  padding: 3rem;
-  max-width: 70rem;
-  margin: 0 auto;
+const StyledImg = styled.img`
+  max-width: 80%;
+  max-height: 50%;
+  margin-bottom: 2.75rem;
 `;
+
+const Title = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-size: 1.9rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.19rem;
+`;
+
+const Text = styled(Typography)`
+  max-width: 34.6rem;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1.875rem;
+`;
+
+const ButtonGroup = styled.div`
+  max-width: 28rem;
+  width: 100%;
+`;
+
+const Button = styled(BaseButton)`
+  & + & {
+    margin: 1.25rem 0 0 0;
+  }
+`;
+
 export const SurveySuccessScreen = () => {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { resetForm } = useSurveyForm();
+
+  const repeatSurvey = () => {
+    resetForm();
+    const path = generatePath(ROUTES.SURVEY_SCREEN, {
+      ...params,
+      screenNumber: '1',
+    });
+    navigate(path);
+  };
+
   return (
-    <Container>
-      <Paper>
-        <h2>Survey submitted</h2>
-      </Paper>
-    </Container>
+    <Wrapper>
+      <StyledImg src="/submit-success.svg" alt="Survey submit success" />
+      <Title>Survey submitted!</Title>
+      <Text>
+        To repeat the same survey again click the button below, otherwise 'Close' to return back to
+        your dashboard
+      </Text>
+      <ButtonGroup>
+        <Button onClick={repeatSurvey} fullWidth variant="outlined">
+          Repeat Survey
+        </Button>
+        <Button to="/" fullWidth>
+          Close
+        </Button>
+      </ButtonGroup>
+    </Wrapper>
   );
 };

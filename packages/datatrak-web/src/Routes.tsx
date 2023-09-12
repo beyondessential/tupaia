@@ -16,8 +16,7 @@ import { FullPageLoader } from '@tupaia/ui-components';
 import {
   LandingPage,
   SurveyPage,
-  SurveySelectPage,
-  SurveyQuestionsPage,
+  SurveySelectPage, 
   LoginPage,
   VerifyEmailPage,
   NotFoundPage,
@@ -29,7 +28,7 @@ import {
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout, ScrollableLayout } from './layout';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -95,10 +94,11 @@ export const Routes = () => {
             </Route>
             <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
               <Route index element={<SurveyStartRedirect />} />
-              <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
               <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
-              <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
-              <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
+              <Route element={<ScrollableLayout />}>
+                <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
+                <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
+              </Route>
             </Route>
           </Route>
         </Route>
