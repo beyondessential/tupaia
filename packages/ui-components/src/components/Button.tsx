@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { ReactNode } from 'react';
+import React, { ReactNode, Ref, forwardRef } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
 import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
@@ -40,21 +40,32 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-interface ButtonProps extends MuiButtonProps {
+export interface ButtonProps extends MuiButtonProps {
   isLoading?: boolean;
   loadingText?: string;
 }
 
-export const Button = ({
-  children,
-  isLoading = false,
-  loadingText = 'Loading',
-  disabled = false,
-  ...props
-}: OverrideableComponentProps<ButtonProps>) => (
-  <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
-    {isLoading ? `${loadingText}...` : children}
-  </StyledButton>
+export const Button = forwardRef(
+  (props: OverrideableComponentProps<ButtonProps>, ref: Ref<any>) => {
+    const {
+      children,
+      isLoading = false,
+      loadingText = 'Loading',
+      disabled = false,
+      ...restOfProps
+    } = props;
+    return (
+      <StyledButton
+        variant="contained"
+        color="primary"
+        {...restOfProps}
+        disabled={isLoading || disabled}
+        ref={ref}
+      >
+        {isLoading ? `${loadingText}...` : children}
+      </StyledButton>
+    );
+  },
 );
 
 export const LightPrimaryButton = styled(Button)`
