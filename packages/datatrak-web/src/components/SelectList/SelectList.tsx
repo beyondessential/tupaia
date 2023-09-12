@@ -35,7 +35,7 @@ interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
   label?: string;
-  ListItem?: React.ReactNode;
+  ListItem?: React.ElementType;
 }
 
 export const SelectList = ({ items = [], onSelect, label, ListItem }: SelectListProps) => {

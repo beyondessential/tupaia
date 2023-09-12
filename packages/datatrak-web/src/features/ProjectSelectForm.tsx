@@ -13,6 +13,7 @@ import { Project } from '@tupaia/types';
 import { Button, SelectList, BaseListItem } from '../components';
 import { useEditUser } from '../api/mutations';
 import { useProjects } from '../api/queries';
+import { ROUTES } from '../constants';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -51,7 +52,7 @@ const StyledListItem = styled(BaseListItem)<{
 const ListItem = ({ item, onSelect }) => {
   const { name, selected, hasAccess } = item;
   const onClick = () => {
-    return onSelect(item);
+    onSelect(item);
   };
 
   const Item = (
@@ -61,11 +62,9 @@ const ListItem = ({ item, onSelect }) => {
     </StyledListItem>
   );
 
-  if (hasAccess) {
-    return Item;
-  }
-
-  return (
+  return hasAccess ? (
+    Item
+  ) : (
     <Tooltip title="Request project access" arrow>
       {Item}
     </Tooltip>
@@ -87,26 +86,32 @@ export const ProjectSelectForm = ({
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
   const { data: projects, isLoading } = useProjects();
   const { mutate, isLoading: isConfirming } = useEditUser(onClose);
+  const onConfirm = () => {
+    mutate({ projectId: selectedProjectId! });
+  };
+
+  const onRequestAccess = () => {
+    navigate(ROUTES.REQUEST_ACCESS);
+    if (variant === 'modal') {
+      onClose();
+    }
+  };
+
+  const onSelect = project => {
+    if (project.hasAccess) {
+      setSelectedProjectId(project.value);
+    } else {
+      onRequestAccess();
+    }
+  };
 
   const projectOptions = projects?.map(({ entityName, id }, index) => ({
     name: entityName,
     value: id,
     selected: id === selectedProjectId,
+    // Todo: get hasAccess from api
     hasAccess: index < 6,
   }));
-
-  const onConfirm = () => {
-    const selectedProject = projectOptions?.find(({ selected }) => selected);
-    if (!selectedProject?.hasAccess) {
-      navigate('request-access');
-      return onClose();
-    }
-    mutate({ projectId: selectedProjectId! });
-  };
-
-  const onSelect = project => {
-    setSelectedProjectId(project.value);
-  };
 
   return (
     <>
