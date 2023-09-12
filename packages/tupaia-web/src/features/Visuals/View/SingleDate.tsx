@@ -36,13 +36,13 @@ const formatDate = (value: string) => {
   return date.toDateString();
 };
 
-export const SingleDate = ({ report: { data = [] }, config }: SingleDateProps) => {
-  const { value, name: dataName } = data[0] || {};
+export const SingleDate = ({ report: { data = [] } }: SingleDateProps) => {
+  const { value, name } = data[0] || {};
   const formattedValue = formatDate(value as string);
-  const { name } = config || {};
+
   return (
     <>
-      <Title>{dataName || name}</Title>
+      {name && <Title>{name}</Title>}
       <Text>{formattedValue}</Text>
     </>
   );
