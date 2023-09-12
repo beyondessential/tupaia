@@ -70,10 +70,11 @@ export const PolygonNavigationLayer = () => {
   const measureLevels = (Array.isArray(selectedOverlay?.measureLevel)
     ? selectedOverlay?.measureLevel
     : [selectedOverlay?.measureLevel]
-  ).map(level => level.toLowerCase());
+  ).filter(measureLevel => !!measureLevel);
 
+  const lowerCaseMeasureLevels = measureLevels.map(measureLevel => measureLevel.toLowerCase());
   const showActiveEntity =
-    activeEntity && measureLevels.includes(activeEntity?.type?.replace('_', ''));
+    activeEntity && lowerCaseMeasureLevels.includes(activeEntity?.type?.replace('_', ''));
 
   return (
     <>
