@@ -8,6 +8,12 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button, Modal } from '../../components';
 
+const Wrapper = styled.div`
+  max-width: 28rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 2rem;
+  }
+`;
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,15 +36,17 @@ const ModalButton = styled(Button)`
 export const CancelSurveyModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   return (
     <Modal open={open} onClose={onClose} title="Survey in progress">
-      <Typography align="center">
-        If you exit, you will lose the progress you've made on the current survey
-      </Typography>
-      <ButtonWrapper>
-        <ModalButton variant="outlined" to="../../">
-          Exit survey
-        </ModalButton>
-        <ModalButton onClick={onClose}>Continue survey</ModalButton>
-      </ButtonWrapper>
+      <Wrapper>
+        <Typography align="center">
+          If you exit, you will lose the progress you've made on the current survey
+        </Typography>
+        <ButtonWrapper>
+          <ModalButton variant="outlined" to="../../">
+            Exit survey
+          </ModalButton>
+          <ModalButton onClick={onClose}>Continue survey</ModalButton>
+        </ButtonWrapper>
+      </Wrapper>
     </Modal>
   );
 };

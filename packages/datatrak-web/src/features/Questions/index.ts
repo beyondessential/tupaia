@@ -9,4 +9,5 @@ export { DateQuestion } from './DateQuestion';
 export { InstructionQuestion } from './InstructionQuestion';
 export { CheckboxQuestion } from './CheckboxQuestion';
 export { DateTimeQuestion } from './DateTimeQuestion';
+export { GeolocateQuestion } from './GeolocateQuestion';
 export { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
