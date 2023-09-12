@@ -1505,10 +1505,19 @@ export const MatrixConfigSchema = {
 		},
 		"valueType": {
 			"description": "Specify the valueType for formatting of the value in the matrix",
-			"type": "string",
 			"enum": [
-				"string"
-			]
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
 		}
 	},
 	"description": "Matrix viz type",
@@ -18292,10 +18301,19 @@ export const DashboardItemConfigSchema = {
 				},
 				"valueType": {
 					"description": "Specify the valueType for formatting of the value in the matrix",
-					"type": "string",
 					"enum": [
-						"string"
-					]
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
 				}
 			},
 			"required": [
@@ -25677,6 +25695,21 @@ export const MatrixReportRowSchema = {
 		},
 		"category": {
 			"type": "string"
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -25859,6 +25892,21 @@ export const MatrixReportSchema = {
 						"type": "string"
 					},
 					"category": {
+						"type": "string"
+					},
+					"valueType": {
+						"enum": [
+							"boolean",
+							"color",
+							"currency",
+							"fraction",
+							"fractionAndPercentage",
+							"number",
+							"oneDecimalPlace",
+							"percentage",
+							"text",
+							"view"
+						],
 						"type": "string"
 					}
 				}
@@ -27522,10 +27570,19 @@ export const DashboardItemSchema = {
 						},
 						"valueType": {
 							"description": "Specify the valueType for formatting of the value in the matrix",
-							"type": "string",
 							"enum": [
-								"string"
-							]
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
 						}
 					},
 					"required": [
@@ -38570,10 +38627,19 @@ export const DashboardWithItemsSchema = {
 									},
 									"valueType": {
 										"description": "Specify the valueType for formatting of the value in the matrix",
-										"type": "string",
 										"enum": [
-											"string"
-										]
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
 									}
 								},
 								"required": [

@@ -4,7 +4,7 @@
  */
 
 import React, { useContext } from 'react';
-import { IconButton, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
+import { ButtonProps, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
@@ -12,9 +12,10 @@ import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { getDisplayedColumns } from './utils';
 import { CellLink } from './CellLink';
+import { Button } from '../Button';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
-  $expanded: boolean;
+  $expanded?: boolean;
 }>`
   transform: ${({ $expanded }) => ($expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease-in-out;
@@ -39,7 +40,7 @@ const HeaderCell = styled(TableCell).attrs({
 
 const RowHeaderCellContent = styled.div<{
   $depth: number;
-  $isGrouped: boolean;
+  $isGrouped?: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -51,7 +52,16 @@ const RowHeaderCellContent = styled.div<{
   padding-right: 1rem;
   padding-left: ${({ $depth, $isGrouped }) =>
     $isGrouped ? `${1.5 + $depth * 1.5}rem` : `${0.5 + $depth * 1.5}rem`};
-  button {
+`;
+
+const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
+  as: Button,
+  variant: 'text',
+  color: 'default',
+})<ButtonProps>`
+  text-transform: none;
+  text-align: left;
+  svg {
     margin-right: 0.5rem;
   }
 `;
@@ -61,6 +71,55 @@ interface MatrixRowProps {
   row: MatrixRowType;
   parents: MatrixRowTitle[];
 }
+
+type MatrixRowHeaderProps = {
+  depth: number;
+  isExpanded: boolean;
+  rowTitle: string;
+  hasChildren: boolean;
+  children: React.ReactNode;
+  disableExpandButton: boolean;
+  link?: typeof Location | string;
+};
+
+const ExpandableRowHeaderCell = ({
+  children,
+  isExpanded,
+  depth,
+  disableExpandButton,
+  toggleExpandedRows,
+}: Pick<MatrixRowHeaderProps, 'children' | 'depth' | 'isExpanded' | 'disableExpandButton'> & {
+  toggleExpandedRows: () => void;
+}) => {
+  return (
+    <HeaderCell>
+      <ExpandableRowHeaderCellContent
+        $depth={depth}
+        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
+        $isGrouped
+        onClick={toggleExpandedRows}
+        disabled={disableExpandButton}
+      >
+        <ExpandIcon $expanded={isExpanded} />
+        <span>{children}</span>
+      </ExpandableRowHeaderCellContent>
+    </HeaderCell>
+  );
+};
+
+const RowHeaderCellLink = ({
+  children,
+  link,
+  depth,
+}: Pick<MatrixRowHeaderProps, 'children' | 'link' | 'depth'>) => {
+  return (
+    <HeaderCell>
+      <RowHeaderCellContent $depth={depth} to={link} as={CellLink}>
+        {children}
+      </RowHeaderCellContent>
+    </HeaderCell>
+  );
+};
 
 /**
  * This component renders the first cell of a row. It renders a button to expand/collapse the row if it has children, otherwise it renders a regular cell.
@@ -73,15 +132,7 @@ const RowHeaderCell = ({
   children,
   disableExpandButton,
   link,
-}: {
-  depth: number;
-  isExpanded: boolean;
-  rowTitle: string;
-  hasChildren: boolean;
-  children: React.ReactNode;
-  disableExpandButton?: boolean;
-  link?: typeof Location | string;
-}) => {
+}: MatrixRowHeaderProps) => {
   const dispatch = useContext(MatrixDispatchContext)!;
   const toggleExpandedRows = () => {
     if (isExpanded) {
@@ -91,26 +142,28 @@ const RowHeaderCell = ({
     }
   };
 
+  if (hasChildren)
+    return (
+      <ExpandableRowHeaderCell
+        depth={depth}
+        isExpanded={isExpanded}
+        toggleExpandedRows={toggleExpandedRows}
+        disableExpandButton={disableExpandButton}
+      >
+        {children}
+      </ExpandableRowHeaderCell>
+    );
+
+  if (link)
+    return (
+      <RowHeaderCellLink depth={depth} link={link}>
+        {children}
+      </RowHeaderCellLink>
+    );
+
   return (
     <HeaderCell>
-      <RowHeaderCellContent
-        $depth={depth}
-        $isGrouped={!!hasChildren}
-        as={link ? CellLink : 'div'}
-        to={link}
-      >
-        {hasChildren && (
-          <IconButton
-            aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
-            size="small"
-            onClick={toggleExpandedRows}
-            disabled={disableExpandButton}
-          >
-            <ExpandIcon $expanded={isExpanded} />
-          </IconButton>
-        )}
-        {children}
-      </RowHeaderCellContent>
+      <RowHeaderCellContent $depth={depth}>{children}</RowHeaderCellContent>
     </HeaderCell>
   );
 };
