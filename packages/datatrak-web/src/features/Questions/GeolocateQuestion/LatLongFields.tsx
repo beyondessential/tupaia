@@ -22,7 +22,7 @@ export const LatLongFields = ({ setGeolocation, geolocation, name }: any) => {
     setGeolocation({
       ...geolocation,
       [field]: parseFloat((e.target as HTMLInputElement).value),
-      accuracy: 20, // default accuracy
+      accuracy: 'N/A',
     });
   };
   return (
