@@ -6,9 +6,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
-import { Button, SpinningLoader } from '@tupaia/ui-components';
+import { Lock } from '@material-ui/icons';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
-import { ButtonLink, SelectList } from '../components';
+import { Button, ButtonLink, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
 import { useProjects } from '../api/queries';
 
@@ -54,6 +55,8 @@ export const ProjectSelectForm = ({
     name: entityName,
     value: id,
     selected: id === selectedProjectId,
+    // Todo: get hasAccess from the API
+    icon: entityName === 'UNFPA' && Lock,
   }));
 
   return (
@@ -84,6 +87,7 @@ export const ProjectSelectForm = ({
           color="primary"
           isLoading={isConfirming}
           disabled={!selectedProjectId}
+          tooltip={selectedProjectId ? '' : 'Select project to proceed'}
         >
           Confirm
         </Button>

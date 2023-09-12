@@ -18,6 +18,7 @@ const Tooltip = styled(BaseTooltip).attrs({
   disablePortal: true,
 })`
   .MuiTooltip-tooltip {
+    border-radius: 3px;
     background-color: ${TOOLTIP_COLOR};
     .MuiTooltip-arrow {
       color: ${TOOLTIP_COLOR};
