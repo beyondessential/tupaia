@@ -45,7 +45,7 @@
     "moment": "^2.24.0",
     "os": "0.1.1",
     "pg": "8.5.1",
-    "pg-pubsub": "0.6.1",
+    "pg-pubsub": "^0.8.1",
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
     "winston": "^3.3.3"

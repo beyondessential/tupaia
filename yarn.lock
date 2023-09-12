@@ -9853,11 +9853,68 @@ __metadata:
     npm-run-all: ^4.1.5
     os: 0.1.1
     pg: 8.5.1
-    pg-pubsub: 0.6.1
+    pg-pubsub: ^0.8.1
     pluralize: ^8.0.0
     rand-token: ^1.0.1
     react-autobind: 1.0.6
     winston: ^3.3.3
+  languageName: unknown
+  linkType: soft
+
+"@tupaia/datatrak-web-server@workspace:packages/datatrak-web-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/datatrak-web-server@workspace:packages/datatrak-web-server"
+  dependencies:
+    "@tupaia/access-policy": 3.0.0
+    "@tupaia/api-client": 3.1.0
+    "@tupaia/database": 1.0.0
+    "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/types": 1.0.0
+    "@tupaia/utils": 1.0.0
+    "@types/lodash.groupby": ^4.6.0
+    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.sortby": ^4.6.0
+    camelcase-keys: ^6.2.2
+    dotenv: ^8.2.0
+    express: ^4.16.2
+    lodash.groupby: ^4.6.0
+    lodash.keyby: ^4.6.0
+    lodash.sortby: ^4.6.0
+    winston: ^3.2.1
+  languageName: unknown
+  linkType: soft
+
+"@tupaia/datatrak-web@workspace:packages/datatrak-web":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
+  dependencies:
+    "@material-ui/core": ^4.9.11
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/lab": ^4.0.0-alpha.57
+    "@material-ui/styles": ^4.9.10
+    "@mui/types": ^7.2.4
+    "@tupaia/types": 1.0.0
+    "@tupaia/ui-components": 1.0.0
+    "@tupaia/utils": 1.0.0
+    "@types/leaflet": ^1.7.1
+    "@types/material-ui": ^0.21.12
+    "@types/react": 16.8.6
+    "@vitejs/plugin-react": ^4.0.0
+    axios: ^1.4.0
+    bson-objectid: ^1.2.2
+    leaflet: ^1.7.1
+    nanoid: ^2.0.3
+    npm-run-all: ^4.1.5
+    react: ^16.13.1
+    react-dom: ^16.13.1
+    react-hook-form: ^6.15.1
+    react-leaflet: ^3.2.1
+    react-query: ^3.39.3
+    react-router: 6.3.0
+    react-router-dom: 6.3.0
+    styled-components: ^5.1.0
+    typescript: ^5.0.2
+    vite: ^4.3.2
   languageName: unknown
   linkType: soft
 
@@ -10421,7 +10478,7 @@ __metadata:
     react: ^16.13.1
     react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
-    react-hook-form: ^6.0.6
+    react-hook-form: ^6.15.1
     react-password-strength-bar: ^0.3.3
     react-router-dom: ^5.1.2
     react-table: ^7.7.0
@@ -33925,6 +33982,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pg-cloudflare@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "pg-cloudflare@npm:1.1.1"
+  checksum: 32aac06b5dc4588bbf78801b6267781bc7e13be672009df949d08e9627ba9fdc26924916665d4de99d47f9b0495301930547488dad889d826856976c7b3f3731
+  languageName: node
+  linkType: hard
+
 "pg-connection-string@npm:2.0.0":
   version: 2.0.0
   resolution: "pg-connection-string@npm:2.0.0"
@@ -33950,6 +34014,13 @@ __metadata:
   version: 2.4.0
   resolution: "pg-connection-string@npm:2.4.0"
   checksum: 2743cb7f45beb9bc47438cd584c0194937fb2f7278a434e26e3d57305731a4b1b689f64d9bbe85b83cb5f8d093818e72bada6c9d5b954dbfcf2f9b795d5b0054
+  languageName: node
+  linkType: hard
+
+"pg-connection-string@npm:^2.6.2":
+  version: 2.6.2
+  resolution: "pg-connection-string@npm:2.6.2"
+  checksum: 22265882c3b6f2320785378d0760b051294a684989163d5a1cde4009e64e84448d7bf67d9a7b9e7f69440c3ee9e2212f9aa10dd17ad6773f6143c6020cebbcb5
   languageName: node
   linkType: hard
 
@@ -33985,6 +34056,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pg-pool@npm:^3.6.1":
+  version: 3.6.1
+  resolution: "pg-pool@npm:3.6.1"
+  peerDependencies:
+    pg: ">=8.0"
+  checksum: 8a6513e6f74a794708c9dd16d2ccda0debadc56435ec2582de2b2e35b01315550c5dab8a0a9a2a16f4adce45523228f5739940fb7687ec7e9c300f284eb08fd1
+  languageName: node
+  linkType: hard
+
 "pg-protocol@npm:^1.2.5":
   version: 1.2.5
   resolution: "pg-protocol@npm:1.2.5"
@@ -33999,15 +34079,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-pubsub@npm:0.6.1":
-  version: 0.6.1
-  resolution: "pg-pubsub@npm:0.6.1"
+"pg-protocol@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "pg-protocol@npm:1.6.0"
+  checksum: e12662d2de2011e0c3a03f6a09f435beb1025acdc860f181f18a600a5495dc38a69d753bbde1ace279c8c442536af9c1a7c11e1d0fe3fad3aa1348b28d9d2683
+  languageName: node
+  linkType: hard
+
+"pg-pubsub@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "pg-pubsub@npm:0.8.1"
   dependencies:
-    pg: ^8.5.1
+    pg: ^8.7.3
     pg-format: ^1.0.2
-    promised-retry: ^0.4.0
-    verror: ^1.10.0
-  checksum: a82f16252eeca44279b9beafcf48d1357f02deccea7f479051ad9e342fa4a6194f7e0c5e75da5c3d52cfb260fe8361acd6be427381591b0211583e0daaf22ae8
+    pony-cause: ^2.1.8
+    promised-retry: ^0.5.0
+  checksum: dccd89ccc5b85c882a7c3b670c8128dfb5b1701869af7902ee1fc7e90d4c19ff2eeb768c661e8e53b83154b33beba655ff0f104156399ef1a51fb059b6bcb0d4
   languageName: node
   linkType: hard
 
@@ -34024,7 +34111,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:8.5.1, pg@npm:^8.5.1":
+"pg@npm:8.5.1":
   version: 8.5.1
   resolution: "pg@npm:8.5.1"
   dependencies:
@@ -34057,6 +34144,30 @@ __metadata:
     pgpass: 1.x
     semver: 4.3.2
   checksum: 6c54bb3b976cc5d96f3672d42f842bef35ff83f36d549e1b3d750881fe79233f099a3a5af02dddf00bed27cc2682beaffaa22fa8cc15e9c852b8be55841bd104
+  languageName: node
+  linkType: hard
+
+"pg@npm:^8.7.3":
+  version: 8.11.3
+  resolution: "pg@npm:8.11.3"
+  dependencies:
+    buffer-writer: 2.0.0
+    packet-reader: 1.0.0
+    pg-cloudflare: ^1.1.1
+    pg-connection-string: ^2.6.2
+    pg-pool: ^3.6.1
+    pg-protocol: ^1.6.0
+    pg-types: ^2.1.0
+    pgpass: 1.x
+  peerDependencies:
+    pg-native: ">=3.0.1"
+  dependenciesMeta:
+    pg-cloudflare:
+      optional: true
+  peerDependenciesMeta:
+    pg-native:
+      optional: true
+  checksum: 8af9468b8969fa0d73a6b349216c8cbc953d938fcae5594f2d24043060e9226a072c8085fc4230172b5576fcab4c39c8563c655f271dc2a9209b6ad5370cafe5
   languageName: node
   linkType: hard
 
@@ -34324,6 +34435,20 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.17.8
   checksum: 97fb927dc55cd34aeb11b31ae2a3332463f114351c86e8aa6580d7755864a0120164fdc3770e6160c8b1775052f0eda14db9a6e34402cd4b08ab2d658a593725
+  languageName: node
+  linkType: hard
+
+"pony-cause@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "pony-cause@npm:1.1.1"
+  checksum: 5ff8878b808be48db801d52246a99d7e4789e52d20575ba504ede30c818fd85d38a033915e02c15fa9b6dce72448836dc1a47094acf8f1c21c4f04a4603b0cfb
+  languageName: node
+  linkType: hard
+
+"pony-cause@npm:^2.1.8":
+  version: 2.1.10
+  resolution: "pony-cause@npm:2.1.10"
+  checksum: 8b61378f213e61056312dc274a1c79980154e9d864f6ad86e0c8b91a50d3ce900d430995ee24147c9f3caa440dfe7d51c274b488d7f033b65b206522536d7217
   languageName: node
   linkType: hard
 
@@ -35589,10 +35714,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"promised-retry@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "promised-retry@npm:0.4.0"
-  checksum: cbec8ed5cfe941ded1cf8d28ff9c062f20397f8adbe6f909a90635709d3f5d32af6d2fa11e432379231cbf0f05b56d951593d81e8bc2bf0b0d0d839d9018797c
+"promised-retry@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "promised-retry@npm:0.5.0"
+  dependencies:
+    pony-cause: ^1.1.1
+  checksum: f4f4e7a709fbc2e710ed9b1eb9a1f0aaa1ad34cb230e2b073ecc4aa4d0b595f34b7856a5e333e1f6f6c9c1a47206f8d9f8ad2c2c45b9100099698af7c69a3c1c
   languageName: node
   linkType: hard
 
@@ -36530,7 +36657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^6.0.0, react-hook-form@npm:^6.0.6":
+"react-hook-form@npm:^6.0.0":
   version: 6.0.6
   resolution: "react-hook-form@npm:6.0.6"
   peerDependencies:
@@ -43655,7 +43782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"verror@npm:1.10.0, verror@npm:^1.10.0":
+"verror@npm:1.10.0":
   version: 1.10.0
   resolution: "verror@npm:1.10.0"
   dependencies:
