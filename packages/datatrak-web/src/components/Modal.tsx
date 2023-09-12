@@ -10,11 +10,8 @@ import MuiCloseIcon from '@material-ui/icons/Close';
 import { IconButton } from '@tupaia/ui-components';
 
 const Wrapper = styled(Paper)`
-  padding: 4.25rem;
-  width: 100%;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    width: 29rem;
-  }
+  padding: 2rem;
+  max-width: 100%;
 `;
 
 const CloseIcon = styled(MuiCloseIcon)`
@@ -45,7 +42,7 @@ const Content = styled.div`
 interface ModalProps {
   open: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children?: ReactNode;
 }
 
@@ -55,7 +52,7 @@ export const Modal = ({ open, onClose, title, children }: ModalProps) => {
       <CloseButton onClick={onClose}>
         <CloseIcon />
       </CloseButton>
-      <Heading>{title}</Heading>
+      {title && <Heading>{title}</Heading>}
       <Content>{children}</Content>
     </Dialog>
   );
