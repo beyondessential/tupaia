@@ -33,7 +33,7 @@ const Label = styled(FormLabel).attrs({
 `;
 interface SelectListProps {
   items?: ListItemType[];
-  onSelect?: (item: ListItemType) => void;
+  onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ReactNode;
 }

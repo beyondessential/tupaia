@@ -22,7 +22,7 @@ interface ModalProps {
 export const ProjectSelectModal = ({ open, onClose, projectId }: ModalProps) => {
   return (
     <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal>
-      <ProjectSelectForm variant="modal" projectId={projectId} onSuccess={onClose} />
+      <ProjectSelectForm variant="modal" projectId={projectId} onClose={onClose} />
     </Dialog>
   );
 };

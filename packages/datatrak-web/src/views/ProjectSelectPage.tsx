@@ -25,7 +25,7 @@ export const ProjectSelectPage = () => {
 
   return (
     <Container>
-      <ProjectSelectForm onSuccess={onSuccess} />
+      <ProjectSelectForm onClose={onSuccess} />
     </Container>
   );
 };

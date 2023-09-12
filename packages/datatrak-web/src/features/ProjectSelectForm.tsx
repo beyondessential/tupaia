@@ -7,7 +7,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock } from '@material-ui/icons';
-import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
+import { useNavigate } from 'react-router-dom';
+import { SpinningLoader, Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList, BaseListItem } from '../components';
 import { useEditUser } from '../api/mutations';
@@ -29,53 +30,83 @@ const ListWrapper = styled.div`
   overflow: auto;
 `;
 
-interface ProjectSelectFormProps {
-  projectId?: Project['id'];
-  variant?: 'modal' | 'page';
-  onSuccess: () => void;
-}
-
 const IconWrapper = styled.div`
   padding-right: 0.5rem;
   display: flex;
   align-items: center;
   width: 1.5rem;
 `;
+
+const StyledListItem = styled(BaseListItem)<{
+  $hasAccess: boolean;
+}>`
+  color: ${({ theme, $hasAccess }) =>
+    $hasAccess ? theme.palette.text.primary : theme.palette.text.secondary};
+
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.primary.main};
+  }
+`;
+
 const ListItem = ({ item, onSelect }) => {
+  const { name, selected, hasAccess } = item;
   const onClick = () => {
-    return onSelect ? onSelect(item) : null;
+    return onSelect(item);
   };
+
+  const Item = (
+    <StyledListItem button onClick={onClick} selected={selected} $hasAccess={hasAccess}>
+      <IconWrapper>{!hasAccess && <Lock />}</IconWrapper>
+      {name}
+    </StyledListItem>
+  );
+
+  if (hasAccess) {
+    return Item;
+  }
+
   return (
-    <BaseListItem button onClick={onClick} selected={item.selected}>
-      <IconWrapper>
-        <Lock color="primary" />
-      </IconWrapper>
-      {item.name}
-    </BaseListItem>
+    <Tooltip title="Request project access" arrow>
+      {Item}
+    </Tooltip>
   );
 };
 
+interface ProjectSelectFormProps {
+  projectId?: Project['id'];
+  variant?: 'modal' | 'page';
+  onClose: () => void;
+}
+
 export const ProjectSelectForm = ({
   projectId,
-  onSuccess,
+  onClose,
   variant = 'page',
 }: ProjectSelectFormProps) => {
+  const navigate = useNavigate();
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
   const { data: projects, isLoading } = useProjects();
-  const { mutate, isLoading: isConfirming } = useEditUser(onSuccess);
+  const { mutate, isLoading: isConfirming } = useEditUser(onClose);
+
+  const projectOptions = projects?.map(({ entityName, id }, index) => ({
+    name: entityName,
+    value: id,
+    selected: id === selectedProjectId,
+    hasAccess: index < 6,
+  }));
+
   const onConfirm = () => {
+    const selectedProject = projectOptions?.find(({ selected }) => selected);
+    if (!selectedProject?.hasAccess) {
+      navigate('request-access');
+      return onClose();
+    }
     mutate({ projectId: selectedProjectId! });
   };
 
   const onSelect = project => {
     setSelectedProjectId(project.value);
   };
-
-  const projectOptions = projects?.map(({ entityName, id }) => ({
-    name: entityName,
-    value: id,
-    selected: id === selectedProjectId,
-  }));
 
   return (
     <>
@@ -96,7 +127,7 @@ export const ProjectSelectForm = ({
       )}
       <DialogActions>
         {variant === 'modal' && (
-          <UIButton onClick={onSuccess} variant="outlined">
+          <UIButton onClick={onClose} variant="outlined">
             Cancel
           </UIButton>
         )}

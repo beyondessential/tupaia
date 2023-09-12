@@ -9,7 +9,7 @@ import { ListItem as Item, ListItemType } from './ListItem';
 
 interface SelectListProps {
   items?: ListItemType[];
-  onSelect?: (item: ListItemType) => void;
+  onSelect: (item: ListItemType) => void;
   ListItem?: React.ReactNode;
 }
 
