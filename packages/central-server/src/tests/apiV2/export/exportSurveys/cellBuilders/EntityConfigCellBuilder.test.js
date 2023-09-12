@@ -37,15 +37,17 @@ const assertCanProcessAndBuildEntity = config =>
 
 describe('EntityConfigCellBuilder', () => {
   it('minimal', async () => {
-    await assertCanProcessAndBuildEntity('type: facility');
+    await assertCanProcessAndBuildEntity('filter.type: facility');
   });
 
   it('can point to another question', async () => {
-    await assertCanProcessAndBuildEntity('type: facility\r\nparent: question_1_code');
+    await assertCanProcessAndBuildEntity('filter.type: facility\r\nfilter.parent: question_1_code');
   });
 
   it('supports attributes.type', async () => {
-    await assertCanProcessAndBuildEntity('type: school\r\nattributes.type: question_2_code');
+    await assertCanProcessAndBuildEntity(
+      'filter.type: school\r\nfilter.attributes.type: question_2_code',
+    );
   });
 
   // TODO: Fix this test

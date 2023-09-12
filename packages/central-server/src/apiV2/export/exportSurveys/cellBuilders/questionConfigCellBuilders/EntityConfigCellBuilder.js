@@ -5,96 +5,101 @@
 
 import { KeyValueCellBuilder } from '../KeyValueCellBuilder';
 
-const SPECIAL_VALUE_PROCESSORS = {
-  type: value => value.join(','),
+const fetchQuestionCode = async (questionId, models) => {
+  const question = await models.question.findById(questionId);
+  if (!question) {
+    throw new Error(`Could not find a question with id matching ${questionId}`);
+  }
+  return question.code;
+};
+
+const FIELD_TRANSLATION = {
+  'filter.parentId.questionId': 'filter.parent',
+  'filter.grandparentId.questionId': 'filter.grandparent',
+  'fields.parentId.questionId': 'fields.parent',
+  'fields.attributes.type.questionId': 'fields.attributes.type',
+  'filter.attributes.type.questionId': 'filter.attributes.type',
+};
+
+const VALUE_TRANSLATION = {
   createNew: value => (value ? 'Yes' : 'No'),
   allowScanQrCode: value => (value ? 'Yes' : 'No'),
   generateQrCode: value => (value ? 'Yes' : 'No'),
+  'filter.parent': fetchQuestionCode,
+  'filter.grandparent': fetchQuestionCode,
+  'fields.parent': fetchQuestionCode,
+  'filter.type': value => value.join(','),
+  'filter.attributes.type': fetchQuestionCode,
+  'fields.attributes.type': fetchQuestionCode,
 };
-const KEY_TRANSLATION = {
-  parentId: 'parent',
-  grandparentId: 'grandparent',
+
+/**
+ * {
+ *   cat {
+ *     name: Buddy
+ *     age: 2
+ *   }
+ * }
+ * =>
+ * {
+ *   cat.name: Buddy
+ *   cat.age: 2
+ * }
+ */
+
+const flattenObject = (value, field, flattenedObject = {}) => {
+  if (!(typeof value === 'object' && !Array.isArray(value) && value !== null)) {
+    // eslint-disable-next-line no-param-reassign
+    flattenedObject[field] = value;
+    return;
+  }
+
+  Object.entries(value).forEach(([subField, subValue]) => {
+    flattenObject(subValue, `${field}.${subField}`, flattenedObject);
+  });
 };
 
 export class EntityConfigCellBuilder extends KeyValueCellBuilder {
-  individualFieldProcessors = {
-    fields: EntityConfigCellBuilder.processFieldsObject,
-    filter: EntityConfigCellBuilder.processFilterObject,
-  };
-
-  processKey(key) {
-    return KEY_TRANSLATION[key] || key;
-  }
-
-  async processValue(value, key) {
-    return SPECIAL_VALUE_PROCESSORS[key]
-      ? SPECIAL_VALUE_PROCESSORS[key](value)
-      : this.fetchQuestionCode(value);
+  async processValue(value, field) {
+    return VALUE_TRANSLATION[field] ? VALUE_TRANSLATION[field](value, this.models) : value;
   }
 
   extractRelevantObject({ entity }) {
     return entity;
   }
 
-  static async processFieldsObject(models, fieldsObject = {}) {
-    const processedFields = await Promise.all(
-      Object.entries(fieldsObject).map(async ([key, value]) => {
-        if (key === 'type') {
-          return `fields.${key}: ${value}`;
-        }
-        if (key === 'attributes') {
-          const processedAttributes = await Promise.all(
-            Object.entries(value).map(async ([attributeKey, attributeValue]) => {
-              const question = await models.question.findById(attributeValue?.questionId);
-              if (!question) {
-                throw new Error(
-                  `Could not find a question with id matching ${attributeValue?.questionId}`,
-                );
-              }
-              return `fields.attributes.${attributeKey}: ${question.code}`;
-            }),
-          );
-          return processedAttributes.join('\r\n');
-        }
-        const question = await models.question.findById(value?.questionId);
-        if (!question) {
-          throw new Error(`Could not find a question with id matching ${value?.questionId}`);
-        }
-        const processedKey = KEY_TRANSLATION[key] || key;
-        return `fields.${processedKey}: ${question.code}`;
+  async processField(rawValue, rawField) {
+    const flattenedFields = {};
+    flattenObject(rawValue, rawField, flattenedFields);
+
+    const processedFieldsAndValues = await Promise.all(
+      Object.entries(flattenedFields).map(async ([field, value]) => {
+        const translatedField = FIELD_TRANSLATION[field] || field;
+        const translatedValue = await this.processValue(value, translatedField);
+        return `${translatedField}: ${translatedValue}`;
+      }),
+    );
+    return processedFieldsAndValues;
+  }
+
+  async build(jsonStringOrObject) {
+    if (!jsonStringOrObject) {
+      return '';
+    }
+
+    const fullObject =
+      typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
+    const object = this.extractRelevantObject(fullObject) || {};
+
+    const processedFields = [];
+
+    await Promise.all(
+      Object.entries(object).map(async ([field, value]) => {
+        const processedFieldsAndValues = await this.processField(value, field);
+
+        processedFields.push(...processedFieldsAndValues);
       }),
     );
     return processedFields.join('\r\n');
-  }
-
-  static async processFilterObject(models, filterObject = {}) {
-    const processedFilter = await Promise.all(
-      Object.entries(filterObject).map(async ([key, value]) => {
-        if (key === 'type') {
-          return `filter.${key}: ${value.join(',')}`;
-        }
-        if (key === 'attributes') {
-          const processedAttributes = await Promise.all(
-            Object.entries(value).map(async ([attributeKey, attributeValue]) => {
-              const question = await models.question.findById(attributeValue?.questionId);
-              if (!question) {
-                throw new Error(
-                  `Could not find a question with id matching ${attributeValue?.questionId}`,
-                );
-              }
-              return `filter.attributes.${attributeKey}: ${question.code}`;
-            }),
-          );
-          return processedAttributes.join('\r\n');
-        }
-        const question = await models.question.findById(value?.questionId);
-        if (!question) {
-          throw new Error(`Could not find a question with id matching ${value?.questionId}`);
-        }
-        const processedKey = KEY_TRANSLATION[key] || key;
-        return `filter.${processedKey}: ${question.code}`;
-      }),
-    );
-    return processedFilter.join('\r\n');
   }
 }
