@@ -24,7 +24,7 @@ type SurveyFormContextType = {
   formData: Record<string, any>;
   activeScreen: SurveyScreenComponent[];
   isLast: boolean;
-  numberOfScreens: number;
+  numberOfScreens: number | null;
   screenNumber: number;
   screenHeader?: string;
   displayQuestions: SurveyScreenComponent[];
@@ -49,6 +49,7 @@ const SurveyFormContext = createContext(defaultContext as SurveyFormContextType)
 export enum ACTION_TYPES {
   SET_FORM_DATA = 'SET_FORM_DATA',
   TOGGLE_SIDE_MENU = 'TOGGLE_SIDE_MENU',
+  RESET_FORM_DATA = 'RESET_FORM_DATA',
 }
 
 interface SurveyFormAction {
@@ -76,6 +77,11 @@ export const surveyReducer = (
         ...state,
         sideMenuOpen: !state.sideMenuOpen,
       };
+    case ACTION_TYPES.RESET_FORM_DATA:
+      return {
+        ...state,
+        formData: {},
+      };
     default:
       return state;
   }
@@ -85,7 +91,7 @@ export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
 
   const { surveyCode, ...params } = useParams<SurveyParams>();
-  const screenNumber = parseInt(params.screenNumber!, 10);
+  const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyCode);
 
   const activeScreen = sortBy(surveyScreenComponents[screenNumber!], 'componentNumber');
@@ -156,9 +162,13 @@ export const useSurveyForm = () => {
   const setFormData = (formData: Record<string, any>) => {
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: formData });
   };
+  const resetForm = () => {
+    dispatch({ type: ACTION_TYPES.RESET_FORM_DATA });
+  };
   return {
     ...surveyFormContext,
     toggleSideMenu,
     setFormData,
+    resetForm,
   };
 };

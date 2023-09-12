@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { useForm } from 'react-hook-form';
 import { Button as BaseButton } from '../../components';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import { useSurveyForm } from './SurveyContext.tsx';
@@ -57,14 +56,13 @@ const Button = styled(BaseButton)`
 export const SurveySuccessScreen = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const { activeScreen, formData, setFormData } = useSurveyForm();
-  const { reset } = useForm({ defaultValues: formData });
+  const { resetForm } = useSurveyForm();
 
-  const repeatSurvey = data => {
-    setFormData(reset({ ...formData, ...data }));
+  const repeatSurvey = () => {
+    resetForm();
     const path = generatePath(ROUTES.SURVEY_SCREEN, {
       ...params,
-      screenNumber: String(activeScreen),
+      screenNumber: '1',
     });
     navigate(path);
   };

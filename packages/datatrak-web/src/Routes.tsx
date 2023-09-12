@@ -16,8 +16,7 @@ import { FullPageLoader } from '@tupaia/ui-components';
 import {
   LandingPage,
   SurveyPage,
-  SurveySelectPage,
-  SurveyQuestionsPage,
+  SurveySelectPage, 
   LoginPage,
   VerifyEmailPage,
   NotFoundPage,
@@ -98,7 +97,6 @@ export const Routes = () => {
               <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
               <Route element={<ScrollableLayout />}>
                 <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
-                <Route path={ROUTES.QUESTIONS} element={<SurveyQuestionsPage />} />
                 <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
               </Route>
             </Route>
