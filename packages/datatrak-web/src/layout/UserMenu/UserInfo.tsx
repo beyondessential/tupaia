@@ -39,7 +39,7 @@ const ProjectButton = styled(Button).attrs({
   padding-right: 0.5rem;
 
   &:hover {
-    color: #2a78c3;
+    color: ${props => props.theme.palette.action.hover};
     text-decoration: underline;
   }
 `;
@@ -56,7 +56,7 @@ const LoginLink = styled(AuthLink).attrs({
   border-color: ${props => props.theme.palette.text.primary};
 `;
 
-const useData = () => {
+const useUserData = () => {
   const { data: projects } = useProjects();
   const { data: user, isLoggedIn } = useUser();
   const userProject = projects?.find(({ id }) => id === user?.projectId);
@@ -68,7 +68,7 @@ const useData = () => {
  */
 export const UserInfo = () => {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
-  const { isLoggedIn, user } = useData();
+  const { isLoggedIn, user } = useUserData();
   const openProjectModal = () => {
     setProjectModalOpen(true);
   };

@@ -40,14 +40,10 @@ const LoggedInRedirect = ({ children }) => {
   if (isLoading || !isFetched) {
     return <FullPageLoader />;
   }
-  if (isLoggedIn) {
-    if (data?.projectId) {
-      return <Navigate to={ROUTES.HOME} replace={true} />;
-    } else {
-      return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
-    }
+  if (!isLoggedIn) {
+    return children;
   }
-  return children;
+  return <Navigate to={data?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private

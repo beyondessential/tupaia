@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { post } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { post } from '../api';
 import { ROUTES } from '../../constants';
 
 type LoginCredentials = {

@@ -7,9 +7,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock } from '@material-ui/icons';
-import { SpinningLoader } from '@tupaia/ui-components';
+import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
-import { Button, ButtonLink, SelectList } from '../components';
+import { Button, SelectList, BaseListItem } from '../components';
 import { useEditUser } from '../api/mutations';
 import { useProjects } from '../api/queries';
 
@@ -35,6 +35,26 @@ interface ProjectSelectFormProps {
   onSuccess: () => void;
 }
 
+const IconWrapper = styled.div`
+  padding-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  width: 1.5rem;
+`;
+const ListItem = ({ item, onSelect }) => {
+  const onClick = () => {
+    return onSelect ? onSelect(item) : null;
+  };
+  return (
+    <BaseListItem button onClick={onClick} selected={item.selected}>
+      <IconWrapper>
+        <Lock color="primary" />
+      </IconWrapper>
+      {item.name}
+    </BaseListItem>
+  );
+};
+
 export const ProjectSelectForm = ({
   projectId,
   onSuccess,
@@ -55,8 +75,6 @@ export const ProjectSelectForm = ({
     name: entityName,
     value: id,
     selected: id === selectedProjectId,
-    // Todo: get hasAccess from the API
-    icon: entityName === 'UNFPA' && Lock,
   }));
 
   return (
@@ -69,6 +87,7 @@ export const ProjectSelectForm = ({
       ) : (
         <ListWrapper>
           <SelectList
+            ListItem={ListItem}
             items={projectOptions}
             label="Select a project from the list below. You can change the project at any time"
             onSelect={onSelect}
@@ -76,10 +95,10 @@ export const ProjectSelectForm = ({
         </ListWrapper>
       )}
       <DialogActions>
-        {variant === 'page' && (
-          <ButtonLink to="/" variant="outlined">
+        {variant === 'modal' && (
+          <UIButton onClick={onSuccess} variant="outlined">
             Cancel
-          </ButtonLink>
+          </UIButton>
         )}
         <Button
           onClick={onConfirm}

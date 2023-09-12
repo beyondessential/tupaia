@@ -9,7 +9,6 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { useSurveys } from '../api/queries';
 import { SelectList, ListItemType, Button } from '../components';
 import { Survey } from '../types';
-import { Description, FolderOpenTwoTone } from '@material-ui/icons';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -48,7 +47,6 @@ export const SurveySelectPage = () => {
         name,
         value: code,
         selected: selectedSurvey?.value === code,
-        icon: Description,
       };
       // if there is no surveyGroupName, add the survey to the list as a top level item
       if (!surveyGroupName) {
@@ -62,7 +60,6 @@ export const SurveySelectPage = () => {
           {
             name: surveyGroupName,
             value: surveyGroupName,
-            icon: FolderOpenTwoTone,
             children: [formattedSurvey],
           },
         ];

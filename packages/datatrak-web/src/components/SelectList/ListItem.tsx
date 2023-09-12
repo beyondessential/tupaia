@@ -5,8 +5,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Collapse, ListItem as MuiListItem, SvgIcon } from '@material-ui/core';
-import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import { Collapse, ListItem as MuiListItem } from '@material-ui/core';
+import { Check, Description, FolderOpenTwoTone, KeyboardArrowRight } from '@material-ui/icons';
 
 const IconWrapper = styled.div`
   padding-right: 0.5rem;
@@ -15,7 +15,7 @@ const IconWrapper = styled.div`
   width: 1.5rem;
 `;
 
-const Item = styled(MuiListItem)`
+export const BaseListItem = styled(MuiListItem)`
   display: flex;
   align-items: center;
   border: 1px solid transparent;
@@ -57,7 +57,6 @@ export type ListItemType = Record<string, unknown> & {
   name: string;
   value: string;
   selected?: boolean;
-  icon?: typeof SvgIcon;
 };
 
 interface ListItemProps {
@@ -70,6 +69,11 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   const [open, setOpen] = useState(false);
   const isNested = !!item.children;
 
+  const getIcon = () => {
+    if (isNested) return FolderOpenTwoTone;
+    return Description;
+  };
+
   const toggleOpen = () => {
     setOpen(!open);
   };
@@ -81,18 +85,20 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
     return onSelect ? onSelect(item) : null;
   };
 
-  const Icon = item.icon as typeof SvgIcon;
+  const Icon = getIcon();
 
   return (
     <>
-      <Item button onClick={onClick} selected={item.selected}>
+      <BaseListItem button onClick={onClick} selected={item.selected}>
         <ButtonContainer>
-          <IconWrapper>{Icon && <Icon color="primary" />}</IconWrapper>
+          <IconWrapper>
+            <Icon color="primary" />
+          </IconWrapper>
           {item.name}
           {isNested && <Arrow $open={open} />}
         </ButtonContainer>
         {item.selected && <Check color="primary" />}
-      </Item>
+      </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );

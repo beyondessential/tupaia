@@ -18,8 +18,6 @@ export type ProjectsRequest = Request<
 const columns = [
   'code',
   'config',
-  'dashboard_group_name',
-  'default_measure',
   'description',
   'entity.name',
   'entity_hierarchy_id',
