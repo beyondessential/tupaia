@@ -8,8 +8,9 @@ import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Description } from '@material-ui/icons';
 import { TopProgressBar } from '../../components';
-import { useSurvey, useSurveyScreenComponents } from '../../api/queries';
+import { useSurvey } from '../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../constants';
+import { useSurveyForm } from './SurveyContext';
 
 const Toolbar = styled.div`
   height: ${SURVEY_TOOLBAR_HEIGHT};
@@ -59,7 +60,7 @@ export const SurveyToolbar = () => {
       </SurveyTitleWrapper>
       {screenNumber && (
         <TopProgressBar
-          currentSurveyQuestion={Number(screenNumber)}
+          currentSurveyQuestion={screenNumber}
           totalNumberOfSurveyQuestions={numberOfScreens}
         />
       )}
