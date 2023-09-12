@@ -145,20 +145,18 @@ const parseRows = (
             const { value, metadata } = item as { value: any; metadata?: any };
             return {
               ...acc,
-              [key]: valueTypeToUse
-                ? formatDataValueByType(
-                    {
-                      value,
-                      metadata,
-                    },
-                    valueTypeToUse,
-                  )
-                : value,
+              [key]: formatDataValueByType(
+                {
+                  value,
+                  metadata,
+                },
+                valueTypeToUse,
+              ),
             };
           }
           return {
             ...acc,
-            [key]: valueTypeToUse ? formatDataValueByType({ value: item }, valueTypeToUse) : item,
+            [key]: formatDataValueByType({ value: item }, valueTypeToUse),
           };
         }, {}),
       },
