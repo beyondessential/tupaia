@@ -19,6 +19,7 @@ import { useMapOverlayData } from '../utils';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { useGAEffect } from '../../../utils';
 
 const MapTableButton = styled(IconButton)`
   margin: -0.625rem -0.625rem -0.625rem 0;
@@ -163,9 +164,11 @@ export const DesktopMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
-  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+  const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { measureData, period } = useMapOverlayData();
   const [mapModalOpen, setMapModalOpen] = useState(false);
+  // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
+  useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
   const toggleMapTableModal = () => {
     setMapModalOpen(!mapModalOpen);
   };

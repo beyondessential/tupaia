@@ -21,7 +21,7 @@ import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard } from '../../utils';
+import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
 import { ExportDashboard } from './ExportDashboard';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
@@ -143,9 +143,7 @@ export const Dashboard = () => {
     isLoadingDashboards,
     isError,
   );
-  useEffect(() => {
-    gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
-  }, [activeDashboard?.name]);
+  useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
