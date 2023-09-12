@@ -126,7 +126,7 @@ export const SurveyScreen = () => {
 
   const onStepPrevious = handleSubmit(data => {
     const path =
-      screenNumber === 1
+      !screenNumber || screenNumber === 1
         ? ROUTES.SURVEY_SELECT
         : generatePath(ROUTES.SURVEY_SCREEN, {
             ...params,
@@ -140,7 +140,7 @@ export const SurveyScreen = () => {
       ? generatePath(ROUTES.SURVEY_REVIEW, params)
       : generatePath(ROUTES.SURVEY_SCREEN, {
           ...params,
-          screenNumber: String(screenNumber + 1),
+          screenNumber: String((screenNumber || 1) + 1),
         });
 
     handleStep(path, data);
