@@ -24,8 +24,8 @@ type SurveyFormContextType = {
   formData: Record<string, any>;
   activeScreen: SurveyScreenComponent[];
   isLast: boolean;
-  numberOfScreens: number | null;
-  screenNumber: number;
+  numberOfScreens: number;
+  screenNumber: number | null;
   screenHeader?: string;
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
