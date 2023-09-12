@@ -7,9 +7,8 @@ import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { FullPageLoader, Alert } from '@tupaia/ui-components';
 import { useSurveyScreenComponents } from '../api/queries';
-import { SurveyContext } from '../features';
+import { SurveyContext, SurveyToolbar } from '../features';
 import { SurveyParams } from '../types';
-import { SurveyToolbar } from '../features/Survey/SurveyToolbar';
 
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`

@@ -16,8 +16,8 @@ import {
   DateTimeQuestion,
   GeolocateQuestion,
   CodeGeneratorQuestion,
-} from '../Questions';
-import { SurveyQuestionFieldProps } from '../../types';
+} from '../../Questions';
+import { SurveyQuestionFieldProps } from '../../../types';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;

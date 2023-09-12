@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SurveyQuestion } from './SurveyQuestion';
-import { SurveyScreenComponent } from '../../types';
+import { SurveyScreenComponent } from '../../../types';
 
 const QuestionWrapper = styled.div<{
   $isInstruction: boolean;
@@ -25,7 +25,7 @@ const QuestionNumber = styled(Typography)`
 /**
  * This is the component that renders questions in a survey.
  */
-export const SurveyQuestions = ({ questions }: { questions: SurveyScreenComponent[] }) => {
+export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComponent[] }) => {
   return (
     <>
       {questions?.map(

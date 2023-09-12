@@ -7,9 +7,9 @@ import styled from 'styled-components';
 import { To } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
-import { useSurveyForm } from '../SurveyContext';
+import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
-import { ButtonLink } from '../../../components';
+import { ButtonLink } from '../../../../components';
 
 export const SIDE_MENU_WIDTH = '20rem';
 

@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useSurveyForm } from './SurveyContext';
+import { useSurveyForm } from '../SurveyContext';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { formatSurveyScreenQuestions } from './utils';
-import { SurveyQuestions } from './SurveyQuestions';
-import { ScrollableBody } from '../../layout';
+import { formatSurveyScreenQuestions } from '../utils';
+import { SurveyQuestionGroup } from '../Components';
+import { ScrollableBody } from '../../../layout';
 
 const Header = styled.div`
   padding: 1.375rem 2.75rem;
@@ -56,7 +56,7 @@ export const SurveyReviewScreen = () => {
         {questionSections.map(({ heading, questions }, index) => (
           <Section key={index}>
             <SectionHeader>{heading}</SectionHeader>
-            <SurveyQuestions questions={questions} />
+            <SurveyQuestionGroup questions={questions} />
           </Section>
         ))}
       </ScrollableBody>

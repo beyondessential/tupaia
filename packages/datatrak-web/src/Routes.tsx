@@ -28,7 +28,8 @@ import {
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout, SurveyLayout } from './layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
+import { SurveyLayout } from './features';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page

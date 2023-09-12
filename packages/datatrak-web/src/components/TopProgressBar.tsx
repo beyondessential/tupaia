@@ -31,6 +31,9 @@ export const TopProgressBar = ({
   totalNumberOfSurveyQuestions,
 }: ProgressPercentage) => {
   const fraction = (currentSurveyQuestion / totalNumberOfSurveyQuestions) * 100;
+  console.log('fraction', fraction);
+  console.log('currentSurveyQuestion', currentSurveyQuestion);
+  console.log('totalNumberOfSurveyQuestions', totalNumberOfSurveyQuestions);
 
   return (
     <Wrapper>

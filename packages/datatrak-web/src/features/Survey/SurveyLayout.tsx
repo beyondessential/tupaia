@@ -5,18 +5,15 @@
 
 import React, { useState } from 'react';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
-import { SurveyParams } from '../types';
-import { useSurveyForm } from '../features/Survey/SurveyContext';
 import { useForm, FormProvider } from 'react-hook-form';
-import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../constants';
 import styled from 'styled-components';
-import { SIDE_MENU_WIDTH, SurveySideMenu } from '../features/Survey/SurveySideMenu';
-import { Paper as MuiPaper } from '@material-ui/core';
-import { Button } from '../components';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { CancelSurveyModal } from '../features/Survey/CancelSurveyModal';
-import { useSubmitSurvey } from '../api/mutations';
-import { useUser } from '../api/queries';
+import { Paper as MuiPaper } from '@material-ui/core';
+import { SurveyParams } from '../../types';
+import { useSurveyForm } from './SurveyContext';
+import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components';
+import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
+import { Button } from '../../components';
 
 const ScrollableLayout = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
@@ -97,7 +94,6 @@ export const SurveyLayout = () => {
     isReviewScreen,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
-  const { mutate: submitSurvey } = useSubmitSurvey();
   const { handleSubmit } = formContext;
 
   const handleStep = (path, data) => {
@@ -107,7 +103,7 @@ export const SurveyLayout = () => {
 
   const onStepPrevious = handleSubmit(data => {
     let path = ROUTES.SURVEY_SELECT;
-    const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber - 1;
+    const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber! - 1;
     if (prevScreenNumber) {
       path = generatePath(ROUTES.SURVEY_SCREEN, {
         ...params,
@@ -119,8 +115,9 @@ export const SurveyLayout = () => {
   });
 
   const handleSubmitForm = data => {
-    console.log(JSON.stringify(data));
-    // submitSurvey(data)
+    // Placeholder for actual submission logic
+    console.log(data);
+    navigate(ROUTES.SURVEY_SUCCESS);
   };
 
   const navigateNext = data => {
@@ -128,7 +125,7 @@ export const SurveyLayout = () => {
       ? generatePath(ROUTES.SURVEY_REVIEW, params)
       : generatePath(ROUTES.SURVEY_SCREEN, {
           ...params,
-          screenNumber: String(screenNumber + 1),
+          screenNumber: String(screenNumber! + 1),
         });
     handleStep(path, data);
   };

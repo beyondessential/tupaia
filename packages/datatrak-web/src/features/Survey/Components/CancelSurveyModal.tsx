@@ -6,12 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button, Modal } from '../../components';
+import { Button, Modal } from '../../../components';
 
 const Wrapper = styled.div`
   max-width: 28rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 2rem;
+    padding: 1rem 2rem;
   }
 `;
 const ButtonWrapper = styled.div`
@@ -25,6 +25,13 @@ const ButtonWrapper = styled.div`
   }
 `;
 
+const Heading = styled(Typography).attrs({
+  variant: 'h2',
+  align: 'center',
+})`
+  margin-bottom: 1rem;
+`;
+
 const ModalButton = styled(Button)`
   ${({ theme }) => theme.breakpoints.down('xs')} {
     & + & {
@@ -35,8 +42,9 @@ const ModalButton = styled(Button)`
 
 export const CancelSurveyModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   return (
-    <Modal open={open} onClose={onClose} title="Survey in progress">
+    <Modal open={open} onClose={onClose}>
       <Wrapper>
+        <Heading>Survey in progress</Heading>
         <Typography align="center">
           If you exit, you will lose the progress you've made on the current survey
         </Typography>

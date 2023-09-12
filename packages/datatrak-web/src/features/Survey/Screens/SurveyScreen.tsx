@@ -5,9 +5,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { useSurveyForm } from './SurveyContext';
-import { SurveyQuestions } from './SurveyQuestions';
-import { ScrollableBody } from '../../layout';
+import { useSurveyForm } from '../SurveyContext';
+import { SurveyQuestionGroup } from '../Components';
+import { ScrollableBody } from '../../../layout';
 
 const ScreenHeading = styled(Typography)`
   font-size: 1.25rem;
@@ -26,7 +26,7 @@ export const SurveyScreen = () => {
     <ScrollableBody>
       <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
       <form noValidate>
-        <SurveyQuestions questions={displayQuestions} />
+        <SurveyQuestionGroup questions={displayQuestions} />
       </form>
     </ScrollableBody>
   );
