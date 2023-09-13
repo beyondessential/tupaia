@@ -36960,6 +36960,9 @@ export const UserAccountSchema = {
 		"profile_image": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"verified_email": {
 			"enum": [
 				"new_user",
@@ -37587,10 +37590,16 @@ export const DataTablePreviewRequestSchema = {
 
 export const ResBodySchema = {
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"userName": {
 			"type": "string"
 		},
 		"email": {
+			"type": "string"
+		},
+		"projectId": {
 			"type": "string"
 		}
 	},
@@ -37631,6 +37640,72 @@ export const ObjectToCamelSchema = {
 export const KeysToCamelCaseSchema = {
 	"type": "object",
 	"additionalProperties": false
+} 
+
+export const ProjectResponseSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"dashboardGroupName": {
+			"type": "string"
+		},
+		"defaultMeasure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"logoUrl": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"entityName": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object",
+	"required": [
+		"code",
+		"entityName",
+		"id"
+	]
 } 
 
 export const InitialResponseSchema = {

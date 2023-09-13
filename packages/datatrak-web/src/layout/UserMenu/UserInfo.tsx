@@ -3,16 +3,44 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button, RouterLink } from '@tupaia/ui-components';
-import { useUser } from '../../api/queries';
+import { RouterLink } from '@tupaia/ui-components';
+import { Button } from '../../components';
+import { useProjects, useUser } from '../../api/queries';
 import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
+import { ProjectSelectModal } from './ProjectSelectModal';
 
 const Wrapper = styled.div`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
+  }
+`;
+
+const Details = styled.div`
+  display: flex;
+  align-items: center;
+
+  > span {
+    color: ${props => props.theme.palette.text.primary};
+    position: relative;
+    top: -1px;
+    font-size: 1.2em;
+    margin-left: 0.5rem;
+  }
+`;
+
+const ProjectButton = styled(Button).attrs({
+  variant: 'text',
+})`
+  color: ${props => props.theme.palette.text.secondary};
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+
+  &:hover {
+    color: ${props => props.theme.palette.action.hover};
+    text-decoration: underline;
   }
 `;
 
@@ -28,23 +56,52 @@ const LoginLink = styled(AuthLink).attrs({
   border-color: ${props => props.theme.palette.text.primary};
 `;
 
+const useUserData = () => {
+  const { data: projects } = useProjects();
+  const { data: user, isLoggedIn } = useUser();
+  const userProject = projects?.find(({ id }) => id === user?.projectId);
+  return { isLoggedIn, user: { ...user, project: userProject } };
+};
+
 /**
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = () => {
-  const { isLoggedIn, data } = useUser();
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
+  const { isLoggedIn, user } = useUserData();
+  const openProjectModal = () => {
+    setProjectModalOpen(true);
+  };
+
+  const closeProjectModal = () => {
+    setProjectModalOpen(false);
+  };
+
   return (
-    <Wrapper>
-      {isLoggedIn ? (
-        <Typography>{data?.name}</Typography>
-      ) : (
-        <>
-          <AuthLink variant="text" to={ROUTES.REGISTER}>
-            Register
-          </AuthLink>
-          <LoginLink to={ROUTES.LOGIN}>Login</LoginLink>
-        </>
-      )}
-    </Wrapper>
+    <>
+      <Wrapper>
+        {isLoggedIn ? (
+          <Details>
+            <Typography>{user.name}</Typography>
+            <span>|</span>
+            <ProjectButton onClick={openProjectModal} tooltip="Change project">
+              {user.project?.entityName}
+            </ProjectButton>
+          </Details>
+        ) : (
+          <>
+            <AuthLink variant="text" to={ROUTES.REGISTER}>
+              Register
+            </AuthLink>
+            <LoginLink to={ROUTES.LOGIN}>Login</LoginLink>
+          </>
+        )}
+      </Wrapper>
+      <ProjectSelectModal
+        open={projectModalOpen}
+        onClose={closeProjectModal}
+        projectId={user.projectId}
+      />
+    </>
   );
 };

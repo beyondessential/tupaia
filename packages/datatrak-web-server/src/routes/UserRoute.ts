@@ -25,11 +25,13 @@ export class UserRoute extends Route<UserRequest> {
     }
 
     const {
+      id,
       first_name: firstName,
       last_name: lastName,
       email,
+      project_id: projectId,
     } = await ctx.services.central.getUser();
 
-    return { userName: `${firstName} ${lastName}`, email };
+    return { userName: `${firstName} ${lastName}`, email, id, projectId };
   }
 }
