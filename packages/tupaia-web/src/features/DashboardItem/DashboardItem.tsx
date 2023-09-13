@@ -55,7 +55,11 @@ const getShowDashboardItemTitle = (config: DashboardItemConfig) => {
   if (viewType === 'multiValue') {
     return (presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
   }
-  if (viewType?.includes('Download') || type === 'component' || viewType === 'multiSingleValue')
+  if (
+    viewType?.includes('Download') ||
+    type === 'component' ||
+    viewType === 'multiSingleValue' 
+  )
     return false;
   return true;
 };

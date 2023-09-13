@@ -19,6 +19,14 @@ const Text = styled(Typography)<{
     margin-bottom: 1rem;
   }
 `;
+const Title = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  font-size: 1rem;
+  text-align: center;
+  margin: 0.3rem 0 1rem 0;
+`;
+
 interface SingleValueProps {
   report: ViewReport;
   config: ViewConfig;
@@ -26,6 +34,12 @@ interface SingleValueProps {
 
 export const SingleValue = ({ report: { data = [] }, config }: SingleValueProps) => {
   const { dataColor } = (config || {}) as SingleValueViewConfig;
-  const { value } = data[0] || {};
-  return <Text $dataColor={dataColor}>{value}</Text>;
+  const { value, name } = data[0] || {};
+
+  return (
+    <>
+      {name && <Title>{name}</Title>}
+      <Text $dataColor={dataColor}>{value}</Text>
+    </>
+  );
 };

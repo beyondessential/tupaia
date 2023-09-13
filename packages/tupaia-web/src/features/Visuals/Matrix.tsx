@@ -76,6 +76,10 @@ const PlaceholderWarningText = styled(Typography)`
   max-width: 25rem;
 `;
 
+const NoResultsMessage = styled(Typography)`
+  padding: 1rem;
+`
+
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixReportRow[],
@@ -145,20 +149,18 @@ const parseRows = (
             const { value, metadata } = item as { value: any; metadata?: any };
             return {
               ...acc,
-              [key]: valueTypeToUse
-                ? formatDataValueByType(
-                    {
-                      value,
-                      metadata,
-                    },
-                    valueTypeToUse,
-                  )
-                : value,
+              [key]: formatDataValueByType(
+                {
+                  value,
+                  metadata,
+                },
+                valueTypeToUse,
+              ),
             };
           }
           return {
             ...acc,
-            [key]: valueTypeToUse ? formatDataValueByType({ value: item }, valueTypeToUse) : item,
+            [key]: formatDataValueByType({ value: item }, valueTypeToUse),
           };
         }, {}),
       },
@@ -258,29 +260,34 @@ export const Matrix = () => {
   };
 
   return (
-    <MatrixComponent
-      {...config}
-      rows={parsedRows}
-      columns={parsedColumns}
-      disableExpand={!!searchFilter}
-      rowHeaderColumnTitle={
-        periodGranularity ? null : (
-          <SearchInput
-            value={searchFilter}
-            onChange={updateSearchFilter}
-            placeholder="Search..."
-            InputProps={{
-              endAdornment: searchFilter ? (
-                <IconButton onClick={clearSearchFilter}>
-                  <Clear />
-                </IconButton>
-              ) : (
-                <Search />
-              ),
-            }}
-          />
-        )
-      }
-    />
+    <>
+      <MatrixComponent
+        {...config}
+        rows={parsedRows}
+        columns={parsedColumns}
+        disableExpand={!!searchFilter}
+        rowHeaderColumnTitle={
+          periodGranularity ? null : (
+            <SearchInput
+              value={searchFilter}
+              onChange={updateSearchFilter}
+              placeholder="Search..."
+              InputProps={{
+                endAdornment: searchFilter ? (
+                  <IconButton onClick={clearSearchFilter}>
+                    <Clear />
+                  </IconButton>
+                ) : (
+                  <Search />
+                ),
+              }}
+            />
+          )
+        }
+      />
+      {searchFilter && !parsedRows.length && (
+        <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
+      )}
+    </>
   );
 };

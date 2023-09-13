@@ -67,9 +67,14 @@ export const PolygonNavigationLayer = () => {
   const showChildEntities =
     (isLoadingOverlayReport || !isPolygonOverlay) && childEntities?.length > 0;
 
+  const measureLevels = (Array.isArray(selectedOverlay?.measureLevel)
+    ? selectedOverlay?.measureLevel
+    : [selectedOverlay?.measureLevel]
+  ).filter(measureLevel => !!measureLevel);
+
+  const lowerCaseMeasureLevels = measureLevels.map(measureLevel => measureLevel.toLowerCase());
   const showActiveEntity =
-    activeEntity &&
-    activeEntity?.type?.replace('_', '') !== selectedOverlay?.measureLevel?.toLowerCase();
+    activeEntity && lowerCaseMeasureLevels.includes(activeEntity?.type?.replace('_', ''));
 
   return (
     <>
