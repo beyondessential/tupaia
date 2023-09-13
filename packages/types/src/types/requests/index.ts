@@ -17,6 +17,7 @@ export {
   TupaiaWebEntitiesRequest,
   TupaiaWebEntityRequest,
   TupaiaWebEntitySearchRequest,
+  TupaiaWebExportSurveyResponsesRequest,
   TupaiaWebLegacyDashboardReportRequest,
   TupaiaWebLegacyMapOverlayReportRequest,
   TupaiaWebMapOverlaysRequest,
