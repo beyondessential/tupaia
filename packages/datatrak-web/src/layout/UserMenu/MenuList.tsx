@@ -59,10 +59,6 @@ export const MenuList = ({ children }: { children?: ReactNode }) => {
   const menuItems = isLoggedIn
     ? [
         {
-          label: 'Change project',
-          to: ROUTES.CHANGE_PROJECT,
-        },
-        {
           label: 'Account settings',
           to: ROUTES.ACCOUNT_SETTINGS,
         },

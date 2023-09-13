@@ -25,6 +25,7 @@ import {
   SurveyReviewScreen,
   SurveySuccessScreen,
   SurveyScreen,
+  ProjectSelectPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -35,10 +36,14 @@ import { SurveyLayout } from './features';
  * If the user is logged in and tries to access the login page, redirect to the home page
  */
 const LoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, isLoading, isFetched } = useUser();
-  if (isLoading || !isFetched) return <FullPageLoader />;
-  if (isLoggedIn) return <Navigate to="/" replace={true} />;
-  return children;
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  if (isLoading || !isFetched) {
+    return <FullPageLoader />;
+  }
+  if (!isLoggedIn) {
+    return children;
+  }
+  return <Navigate to={data?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
@@ -91,6 +96,7 @@ export const Routes = () => {
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
             <Route path={ROUTES.SURVEY} element={<SurveyPage />}>

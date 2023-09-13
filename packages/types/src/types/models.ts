@@ -569,6 +569,7 @@ export interface UserAccount {
   'position'?: string | null;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
+  'project_id'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserEntityPermission {

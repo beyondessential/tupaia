@@ -33,16 +33,17 @@ const Label = styled(FormLabel).attrs({
 `;
 interface SelectListProps {
   items?: ListItemType[];
-  onSelect?: (item: ListItemType) => void;
+  onSelect: (item: ListItemType) => void;
   label?: string;
+  ListItem?: React.ElementType;
 }
 
-export const SelectList = ({ items = [], onSelect, label }: SelectListProps) => {
+export const SelectList = ({ items = [], onSelect, label, ListItem }: SelectListProps) => {
   return (
     <Wrapper>
       <Label>{label}</Label>
       <ListWrapper>
-        <List items={items} onSelect={onSelect} />
+        <List items={items} onSelect={onSelect} ListItem={ListItem} />
       </ListWrapper>
     </Wrapper>
   );

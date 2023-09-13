@@ -12,14 +12,15 @@ const IconWrapper = styled.div`
   padding-right: 0.5rem;
   display: flex;
   align-items: center;
+  width: 1.5rem;
 `;
 
-const Item = styled(MuiListItem)`
+export const BaseListItem = styled(MuiListItem)`
   display: flex;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 3px;
-  padding: 0.3rem 1rem 0.3rem 0;
+  padding: 0.3rem 1rem 0.3rem 0.5rem;
   &.Mui-selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     background-color: transparent;
@@ -61,7 +62,7 @@ export type ListItemType = Record<string, unknown> & {
 interface ListItemProps {
   item: ListItemType;
   children?: React.ReactNode;
-  onSelect?: (item: ListItemType) => void;
+  onSelect: (item: ListItemType) => void;
 }
 
 export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
@@ -81,14 +82,14 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
     if (isNested) {
       return toggleOpen();
     }
-    return onSelect ? onSelect(item) : null;
+    return onSelect(item);
   };
 
   const Icon = getIcon();
 
   return (
     <>
-      <Item button onClick={onClick} selected={item.selected}>
+      <BaseListItem button onClick={onClick} selected={item.selected}>
         <ButtonContainer>
           <IconWrapper>
             <Icon color="primary" />
@@ -97,7 +98,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
           {isNested && <Arrow $open={open} />}
         </ButtonContainer>
         {item.selected && <Check color="primary" />}
-      </Item>
+      </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );

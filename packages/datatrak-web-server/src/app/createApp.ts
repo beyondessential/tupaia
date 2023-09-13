@@ -18,6 +18,8 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
+  ProjectsRoute,
+  ProjectsRequest,
   SurveyScreenComponentsRoute,
   SurveyScreenComponentsRequest,
   SurveyRequest,
@@ -36,6 +38,7 @@ export function createApp() {
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
+    .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<SurveyScreenComponentsRequest>(
       'surveys/:surveyCode/surveyScreenComponents',
       handleWith(SurveyScreenComponentsRoute),

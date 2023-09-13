@@ -2,7 +2,6 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import { createMuiTheme } from '@material-ui/core';
 
 export const theme = createMuiTheme({
@@ -26,6 +25,9 @@ export const theme = createMuiTheme({
     divider: '#DFDFDF',
     grey: {
       400: '#B8B8B8',
+    },
+    action: {
+      hover: '#2a78c3',
     },
   },
   overrides: {

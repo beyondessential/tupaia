@@ -4,4 +4,5 @@
  */
 
 export { SelectList } from './SelectList';
+export { BaseListItem } from './ListItem';
 export type { ListItemType } from './ListItem';

@@ -6,4 +6,5 @@
 export { useLogin } from './useLogin';
 export { useLogout } from './useLogout';
 export { useRegister } from './useRegister';
+export { useEditUser } from './useEditUser';
 export { useResendVerificationEmail } from './useResendVerificationEmail';
