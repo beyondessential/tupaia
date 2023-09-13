@@ -30,7 +30,9 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       easyReadingMode,
     } = query;
     const dashboardItem = (
-      await ctx.services.central.fetchResources('dashboardItems', { code: itemCode })
+      await ctx.services.central.fetchResources('dashboardItems', {
+        filter: { code: itemCode },
+      })
     )[0];
 
     if (!dashboardItem) {
