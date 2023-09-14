@@ -16,6 +16,7 @@ import {
   DateTimeQuestion,
   GeolocateQuestion,
   CodeGeneratorQuestion,
+  EntityQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 
@@ -36,21 +37,21 @@ const Placeholder = ({ name, type, id }) => {
 };
 
 export enum QUESTION_TYPES {
+  Autocomplete = Placeholder,
   Binary = BinaryQuestion,
   Checkbox = CheckboxQuestion,
   Date = DateQuestion,
   DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
+  Entity = EntityQuestion,
   Geolocate = GeolocateQuestion,
-  Autocomplete = Placeholder,
   Instruction = InstructionQuestion,
   Number = TextQuestion,
   Photo = Placeholder,
   Radio = RadioQuestion,
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
-  Entity = Placeholder,
-  PrimaryEntity = Placeholder,
+  PrimaryEntity = EntityQuestion,
   CodeGenerator = CodeGeneratorQuestion,
   Arithmetic = Placeholder,
   Condition = Placeholder,

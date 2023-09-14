@@ -21,6 +21,7 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const { fields } = query;
     const surveys = await ctx.services.central.fetchResources('surveys', {
       columns: fields,
+      pageSize: 500,
     });
     return camelcaseKeys(surveys, { deep: true });
   }
