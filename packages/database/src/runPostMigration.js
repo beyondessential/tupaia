@@ -6,21 +6,30 @@
 import { arrayToDbString } from './utilities';
 
 const TABLES_REQUIRING_TRIGGER_CREATION = [
-  'entity_hierarchy',
-  'analytics_refresher',
-  'survey_response',
-  'entity',
-  'country',
+  'access_request',
+  'ancestor_descendant_relation',
+  'answer',
   'clinic',
+  'country',
+  'data_element',
+  'entity',
+  'entity_hierarchy',
+  'entity_relation',
   'geographical_area',
+  'indicator',
+  'map_overlay',
+  'map_overlay_group',
+  'meditrak_device',
   'option',
   'option_set',
   'permission_group',
   'question',
   'survey',
   'survey_group',
+  'survey_response',
   'survey_screen',
   'survey_screen_component',
+  'user_entity_permission',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
