@@ -55,6 +55,14 @@ const Paper = styled(MuiPaper).attrs({
   display: flex;
   flex-direction: column;
 `;
+
+const Form = styled.form`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
 const FormActions = styled.div`
   display: flex;
   justify-content: space-between;
@@ -117,7 +125,7 @@ export const SurveyLayout = () => {
   const handleSubmitForm = data => {
     // Placeholder for actual submission logic
     console.log(data);
-    navigate(ROUTES.SURVEY_SUCCESS);
+    navigate(generatePath(ROUTES.SURVEY_SELECT, params));
   };
 
   const navigateNext = data => {
@@ -139,6 +147,14 @@ export const SurveyLayout = () => {
     setCancelModalOpen(true);
   };
 
+  const getNextButtonText = () => {
+    if (isReviewScreen) return 'Submit';
+    if (isLast) return 'Review and submit';
+    return 'Next';
+  };
+
+  const nextButtonText = getNextButtonText();
+
   return (
     <ScrollableLayout>
       <FormProvider {...formContext}>
@@ -146,25 +162,27 @@ export const SurveyLayout = () => {
           <SurveySideMenu />
           <Container $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
             <Paper>
-              <Outlet />
-              <FormActions>
-                <Button
-                  onClick={onStepPrevious}
-                  startIcon={<ArrowBackIosIcon />}
-                  variant="text"
-                  color="default"
-                >
-                  Back
-                </Button>
-                <ButtonGroup>
-                  <Button onClick={openCancelModal} variant="outlined">
-                    Cancel
+              <Form onSubmit={handleSubmitScreen} noValidate>
+                <Outlet />
+                <FormActions>
+                  <Button
+                    onClick={onStepPrevious}
+                    startIcon={<ArrowBackIosIcon />}
+                    variant="text"
+                    color="default"
+                  >
+                    Back
                   </Button>
-                  <Button type="submit" onClick={handleSubmitScreen}>
-                    {isReviewScreen ? 'Submit' : 'Next'}
-                  </Button>
-                </ButtonGroup>
-              </FormActions>
+                  <ButtonGroup>
+                    <Button onClick={openCancelModal} variant="outlined">
+                      Cancel
+                    </Button>
+                    <Button type="submit" onClick={handleSubmitScreen}>
+                      {nextButtonText}
+                    </Button>
+                  </ButtonGroup>
+                </FormActions>
+              </Form>
             </Paper>
           </Container>
           <CancelSurveyModal open={cancelModalOpen} onClose={() => setCancelModalOpen(false)} />

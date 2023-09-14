@@ -25,9 +25,7 @@ export const SurveyScreen = () => {
   return (
     <ScrollableBody>
       <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
-      <form noValidate>
-        <SurveyQuestionGroup questions={displayQuestions} />
-      </form>
+      <SurveyQuestionGroup questions={displayQuestions} />
     </ScrollableBody>
   );
 };

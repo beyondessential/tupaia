@@ -28,6 +28,20 @@ const SectionHeader = styled(Typography).attrs({
   margin-bottom: 1rem;
 `;
 
+const Fieldset = styled.fieldset.attrs({
+  disabled: true,
+})`
+  border: none;
+  margin: 0;
+  padding: 0;
+  input,
+  label,
+  button,
+  link {
+    pointer-events: none;
+  }
+`;
+
 export const SurveyReviewScreen = () => {
   const { surveyScreenComponents } = useSurveyForm();
   if (!surveyScreenComponents) return null;
@@ -52,13 +66,15 @@ export const SurveyReviewScreen = () => {
           the 'Back' button below. Once submitted, your survey answers will be uploaded to Tupaia.{' '}
         </Typography>
       </Header>
-      <ScrollableBody as="form" noValidate>
-        {questionSections.map(({ heading, questions }, index) => (
-          <Section key={index}>
-            <SectionHeader>{heading}</SectionHeader>
-            <SurveyQuestionGroup questions={questions} />
-          </Section>
-        ))}
+      <ScrollableBody>
+        <Fieldset>
+          {questionSections.map(({ heading, questions }, index) => (
+            <Section key={index}>
+              <SectionHeader>{heading}</SectionHeader>
+              <SurveyQuestionGroup questions={questions} />
+            </Section>
+          ))}
+        </Fieldset>
       </ScrollableBody>
     </>
   );
