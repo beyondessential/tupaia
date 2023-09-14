@@ -125,7 +125,7 @@ export const SurveyLayout = () => {
   const handleSubmitForm = data => {
     // Placeholder for actual submission logic
     console.log(data);
-    navigate(generatePath(ROUTES.SURVEY_SELECT, params));
+    navigate(generatePath(ROUTES.SURVEY_SUCCESS, params));
   };
 
   const navigateNext = data => {
