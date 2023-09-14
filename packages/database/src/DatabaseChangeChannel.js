@@ -4,13 +4,14 @@
  */
 
 import PGPubSub from 'pg-pubsub';
+import winston from 'winston';
 import { generateId } from './utilities/generateId';
 
 import { getConnectionConfig } from './getConnectionConfig';
 
 export class DatabaseChangeChannel extends PGPubSub {
   constructor() {
-    super(getConnectionConfig());
+    super(getConnectionConfig(), { log: winston.info });
     this.pingListeners = {};
     this.addChannel('ping', this.notifyPingListeners);
   }
