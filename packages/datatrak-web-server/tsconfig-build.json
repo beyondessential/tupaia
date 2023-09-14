@@ -3,7 +3,8 @@
 
   "compilerOptions": {
     "typeRoots": ["src/@types", "node_modules/@types", "../../node_modules/@types"],
-    "noEmit": true
+    "outDir": "dist",
+    "noEmit": false
   },
 
   "include": ["src/**/*", "jest.config.ts"]
