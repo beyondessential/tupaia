@@ -5,7 +5,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { typed, mean as mathjsMean } from 'mathjs';
+import { typed, mean as mathjsMean } from '@beyondessential/mathjs';
 
 export const divide = typed('divide', {
   'number, undefined': (num: number, undef: undefined) => undefined,
