@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { IconButton, QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
-import { ViewReport } from '../../../../types';
+import { ViewReport } from '@tupaia/types';
 
 const DownloadButton = styled(IconButton).attrs({
   color: 'default',

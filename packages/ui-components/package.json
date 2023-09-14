@@ -33,11 +33,13 @@
     "downloadjs": "^1.4.7",
     "jszip": "^3.10.1",
     "lodash.throttle": "^4.1.1",
+    "markdown-to-jsx": "^6.4.1",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "qrcode": "^1.5.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.15.1",
     "react-router-dom": "^5.1.2",
     "react-table": "^7.7.0",
     "styled-components": "^5.0.1",
@@ -60,7 +62,6 @@
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
     "react-docgen-typescript-plugin": "^1.0.5",
-    "react-hook-form": "^6.0.6",
     "react-password-strength-bar": "^0.3.3",
     "typescript": "^5.0.4"
   }

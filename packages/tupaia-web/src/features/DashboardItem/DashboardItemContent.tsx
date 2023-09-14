@@ -5,6 +5,7 @@
 
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
+import { BaseReport, MatrixReport } from '@tupaia/types';
 import { ExpandItemButton } from './ExpandItemButton';
 import {
   View,
@@ -14,16 +15,11 @@ import {
   NoAccessDashboard,
   NoDataAtLevelDashboard,
 } from '../Visuals';
-import {
-  ChartReport,
-  DashboardItemReport,
-  MatrixReport,
-  ViewReport,
-  DashboardItemConfig,
-} from '../../types';
+import { DashboardItemReport, DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from './DashboardItemContext';
 import { DashboardItemError } from './DashboardItemError';
 import { DashboardItemLoader } from './DashboardItemLoader';
+import { DashboardItemDateDisplay } from './DashboardItemDateDisplay';
 
 const DisplayComponents = {
   chart: Chart,
@@ -41,7 +37,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
     return (report as MatrixReport)?.rows?.length === 0;
   }
   if (type === 'view' || type === 'chart') {
-    return (report as ViewReport | ChartReport)?.data?.length === 0;
+    return (report as BaseReport)?.data?.length === 0;
   }
   return false;
 };
@@ -50,6 +46,7 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
  */
 export const DashboardItemContent = () => {
   const { config, report, isExport, isLoading, error, refetch } = useContext(DashboardItemContext);
+
   const { type, componentName } = config || {};
 
   const componentKey = componentName || type;
@@ -79,6 +76,7 @@ export const DashboardItemContent = () => {
         <DisplayComponent />
       )}
       {/** We still want to have the expand button if there is no data because in some cases the user can expand and change the dates */}
+      <DashboardItemDateDisplay />
       <ExpandItemButton />
     </>
   );

@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { useQuery } from 'react-query';
+import { UseQueryResult, useQuery } from 'react-query';
 import { TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { get } from '../api';
 import { DashboardName, EntityCode, ProjectCode } from '../../types';
@@ -12,7 +12,10 @@ export const useDashboards = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
   dashboardName?: DashboardName,
-) => {
+): UseQueryResult & {
+  dashboards: TupaiaWebDashboardsRequest.ResBody;
+  activeDashboard?: TupaiaWebDashboardsRequest.ResBody[number];
+} => {
   const enabled = !!entityCode && !!projectCode;
   const result = useQuery(
     ['dashboards', projectCode, entityCode],
@@ -23,7 +26,7 @@ export const useDashboards = (
 
   const { data = [] } = result;
 
-  let activeDashboard = undefined;
+  let activeDashboard;
 
   if (data?.length > 0 && dashboardName) {
     // trim dashboard name to avoid issues with trailing or leading spaces
