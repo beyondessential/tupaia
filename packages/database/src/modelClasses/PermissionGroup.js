@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class PermissionGroupType extends DatabaseType {
+export class PermissionGroupType extends DatabaseType {
   static databaseType = TYPES.PERMISSION_GROUP;
 
   async parent() {

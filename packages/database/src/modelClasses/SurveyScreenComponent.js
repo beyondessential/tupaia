@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class SurveyScreenComponentType extends DatabaseType {
+export class SurveyScreenComponentType extends DatabaseType {
   static databaseType = TYPES.SURVEY_SCREEN_COMPONENT;
 
   async question() {

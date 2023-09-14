@@ -5,3 +5,4 @@
 
 export { getSupportedModels, getUnsupportedModelFields } from './appSupportedModels';
 export { SyncableChangeEnqueuer } from './SyncableChangeEnqueuer';
+export { createPermissionsBasedMeditrakSyncQueue } from './createPermissionsBasedMeditrakSyncQueue';
