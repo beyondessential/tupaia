@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormatListBulleted, KeyboardArrowLeft } from '@material-ui/icons';
-import { useSurveyForm } from '../SurveyContext';
-import { Button } from '../../../components';
+import { useSurveyForm } from '../../SurveyContext';
+import { Button } from '../../../../components';
 
 const MenuButton = styled(Button).attrs({
   variant: 'contained',

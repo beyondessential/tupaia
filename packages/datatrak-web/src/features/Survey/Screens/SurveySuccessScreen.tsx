@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
+import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button as BaseButton } from '../../components';
-import { generatePath, useNavigate, useParams } from 'react-router-dom';
-import { useSurveyForm } from './SurveyContext.tsx';
-import { ROUTES } from '../../constants';
+import { Button as BaseButton } from '../../../components/index';
+import { useSurveyForm } from '../SurveyContext';
+import { ROUTES } from '../../../constants/index';
 
 const Wrapper = styled.div`
   display: flex;

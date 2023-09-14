@@ -51,6 +51,7 @@ export const theme = createMuiTheme({
       },
       h2: {
         fontSize: '1.125rem', // survey page titles
+        fontWeight: 600,
       },
     },
   },
