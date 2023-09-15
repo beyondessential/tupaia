@@ -17,6 +17,8 @@ import { allowNoPermissions } from '../../permissions';
 
 const MAX_CHANGES_RETURNED = 100;
 
+// TODO: Tidy this up as part of RN-502
+
 /**
  * Gets the record ready to sync down to a sync client, transforming any properties as required
  */
