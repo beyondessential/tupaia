@@ -5,29 +5,66 @@ import { ModelRegistry } from '@tupaia/database';
 import { getUniversalTypes } from '../../database/utilities/getUniversalTypes';
 import { translateEntityConfig } from '../../database/utilities/translateEntityConfig';
 
-const NEW_FORMAT_CONFIG_EXAMPLE = {
+const NEW_FORMAT_CONFIG_EXAMPLE_1 = {
   config: {
     entity: {
       createNew: true,
       fields: {
         parentId: {
-          questionId: 'TEST_QUESTION_ID'
-        }
-      }
-    }
-  }
-} 
+          questionId: 'TEST_QUESTION_ID',
+        },
+      },
+    },
+  },
+};
 
-const OLD_FORMAT_CONFIG_EXAMPLE = {
+const OLD_FORMAT_CONFIG_EXAMPLE_1 = {
   config: {
     entity: {
       createNew: true,
       parentId: {
-        questionId: 'TEST_QUESTION_ID'
-      }
-    }
-  }
-}
+        questionId: 'TEST_QUESTION_ID',
+      },
+    },
+  },
+};
+
+const NEW_FORMAT_CONFIG_EXAMPLE_2 = {
+  config: {
+    entity: undefined,
+  },
+};
+
+const OLD_FORMAT_CONFIG_EXAMPLE_2 = {
+  config: {
+    entity: undefined,
+  },
+};
+
+const NEW_FORMAT_CONFIG_EXAMPLE_3 = {
+  config: {
+    entity: {
+      createNew: false,
+      filter: {
+        type: ['facility'],
+      },
+      fields: {
+        parentId: {
+          questionId: 'TEST_QUESTION_ID',
+        },
+      },
+    },
+  },
+};
+
+const OLD_FORMAT_CONFIG_EXAMPLE_3 = {
+  config: {
+    entity: {
+      createNew: false,
+      type: ['facility'],
+    },
+  },
+};
 
 const modelsStub = sinon.createStubInstance(ModelRegistry, {
   getMinAppVersionByType: {
@@ -46,7 +83,21 @@ describe('database utilities', () => {
 
   describe('translateEntityConfig', () => {
     it('should return an object with the old entity config format', () => {
-      expect(translateEntityConfig(record)).to.;
+      expect(translateEntityConfig(NEW_FORMAT_CONFIG_EXAMPLE_1)).to.deep.equal(
+        OLD_FORMAT_CONFIG_EXAMPLE_1,
+      );
+    });
+
+    it('should not alter the structure if entity property is undefined', () => {
+      expect(translateEntityConfig(NEW_FORMAT_CONFIG_EXAMPLE_2)).to.deep.equal(
+        OLD_FORMAT_CONFIG_EXAMPLE_2,
+      );
+    });
+
+    it('should return only filter if it not createNew but there are fields properties (and will render this question disfunctional for older app versions)', () => {
+      expect(translateEntityConfig(NEW_FORMAT_CONFIG_EXAMPLE_3)).to.deep.equal(
+        OLD_FORMAT_CONFIG_EXAMPLE_3,
+      );
     });
   });
 });

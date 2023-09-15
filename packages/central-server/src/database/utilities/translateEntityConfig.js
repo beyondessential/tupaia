@@ -30,18 +30,21 @@
 const extractFields = newFormatConfig => {
   const extractedFields = {};
   const fieldName = newFormatConfig.createNew ? 'fields' : 'filter';
-  Object.entries(newFormatConfig.entity[fieldName]).forEach((field, value) => {
+  Object.entries(newFormatConfig[fieldName]).forEach(([field, value]) => {
     extractedFields[field] = value;
   });
   return extractedFields;
 };
 
 export const translateEntityConfig = record => {
-  const { entity: newFormatConfig } = record.config;
+  const { entity: newFormatConfig, ...restOfConfig } = record.config;
+  if (!newFormatConfig) {
+    return record;
+  }
   const oldFormatConfig = { ...newFormatConfig, ...extractFields(newFormatConfig) };
 
   delete oldFormatConfig.fields;
   delete oldFormatConfig.filter;
 
-  return { ...record, config: oldFormatConfig };
+  return { ...record, config: { ...restOfConfig, entity: oldFormatConfig } };
 };
