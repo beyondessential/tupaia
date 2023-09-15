@@ -8,39 +8,30 @@ import camelcaseKeys from 'camelcase-keys';
 
 export type EntitiesRequest = any;
 
-const DEFAULT_FILTER = {
-  generational_distance: {
-    comparator: '<=',
-    comparisonValue: 2,
-  },
-};
-
-const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
     const { params, query, ctx } = this.req;
     const { rootEntityCode, projectCode } = params;
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['config'],
-      })
-    )[0];
-    const { config } = project;
+    const { type, searchString, page = 0, pageSize = 20, fields = DEFAULT_FIELDS } = query;
 
-    const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
-      projectCode,
-      rootEntityCode,
-      {
-        filter: { ...DEFAULT_FILTER },
-        fields: DEFAULT_FIELDS,
-        ...query,
+    const tempType = typeof Array ? type[0] : type;
+
+    const dbOptions = {
+      fields,
+      filter: {
+        type: tempType,
       },
-      query.includeRootEntity || false,
-    );
+      pageSize,
+      page,
+    };
 
-    return camelcaseKeys(flatEntities, { deep: true });
+    const entities = searchString
+      ? await ctx.services.entity.entitySearch(projectCode, searchString, dbOptions)
+      : await ctx.services.entity.getDescendantsOfEntity(projectCode, rootEntityCode, dbOptions);
+
+    return camelcaseKeys(entities, { deep: true });
   }
 }

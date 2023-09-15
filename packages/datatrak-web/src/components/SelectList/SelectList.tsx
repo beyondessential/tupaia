@@ -41,7 +41,7 @@ interface SelectListProps {
 export const SelectList = ({ items = [], onSelect, label, ListItem }: SelectListProps) => {
   return (
     <Wrapper>
-      <Label>{label}</Label>
+      {label && <Label>{label}</Label>}
       <ListWrapper>
         <List items={items} onSelect={onSelect} ListItem={ListItem} />
       </ListWrapper>

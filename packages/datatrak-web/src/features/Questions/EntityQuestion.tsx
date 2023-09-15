@@ -4,10 +4,13 @@
  */
 
 import React, { useState } from 'react';
-import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
-import { SelectList } from '../../components';
-import { useEntities } from '../../api/queries/useEntities';
+import RoomIcon from '@material-ui/icons/Room';
+import { TextField } from '@tupaia/ui-components';
+import { SurveyQuestionInputProps } from '../../types';
+import { SelectList, BaseListItem } from '../../components';
+import { useEntities, useEntity } from '../../api/queries';
+import { Lock } from '@material-ui/icons';
 
 const Container = styled.div`
   width: 100%;
@@ -20,45 +23,97 @@ const ListWrapper = styled.div`
   overflow: auto;
 `;
 
+const IconWrapper = styled.div`
+  padding-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  width: 1.5rem;
+`;
+
+const ListItem = ({ item, onSelect }) => {
+  const { name, selected } = item;
+  const onClick = () => {
+    onSelect(item);
+  };
+  return (
+    <BaseListItem button onClick={onClick} selected={selected}>
+      <IconWrapper>
+        <RoomIcon color="primary" />
+      </IconWrapper>
+      {name}
+    </BaseListItem>
+  );
+};
+
+const useQuestionEntities = (searchString, config) => {
+  const entityConfig = config.entity;
+  const parentId = entityConfig?.parentId || 'TO';
+  const { type } = entityConfig;
+  return useEntities('explore', parentId, { searchString, type });
+};
+
 export const EntityQuestion = ({
   id,
   label,
   name,
-  type,
   controllerProps: { onChange, value, ref },
   config,
 }: SurveyQuestionInputProps) => {
-  console.log('config', config);
-  const [selectedEntityId, setSelectedEntityId] = useState(null);
-  const { data: entities, isLoading } = useEntities('explore', 'TO');
+  const [isDirty, setIsDirty] = useState(false);
+  const [searchString, setSearchString] = useState('');
 
-  const onSelect = project => {
-    setSelectedEntityId(project.value);
+  const { data: entities } = useQuestionEntities(searchString, config);
+
+  // Display a previously selected value
+  useEntity(value, {
+    staleTime: 0, // Needs to be 0 to make sure the entity is fetched on first render
+    enabled: !!value && !searchString,
+    onSuccess: entityData => {
+      if (!isDirty) {
+        setSearchString(entityData.name);
+      }
+    },
+  });
+  const onChangeSearch = event => {
+    setIsDirty(true);
+    setSearchString(event.target.value);
   };
 
-  const options = entities?.map(({ name: entityName, id }) => ({
-    name: entityName,
-    value: id,
-    selected: id === selectedEntityId,
-  }));
+  const onSelect = entity => {
+    setIsDirty(true);
+    onChange(entity.value);
+  };
+
+  const options = entities
+    ?.map(({ name: entityName, id }) => ({
+      name: entityName,
+      value: id,
+      selected: id === value,
+    }))
+    .filter(({ name }) => {
+      if (isDirty || !value) {
+        return true;
+      }
+      return name === searchString;
+    });
+
+  const displayValue = isDirty ? searchString : '';
 
   return (
     <Container>
+      <TextField
+        id={id}
+        label={label}
+        name={name!}
+        ref={ref}
+        onChange={onChangeSearch}
+        value={displayValue}
+        type="search"
+        placeholder="Search"
+      />
       <ListWrapper>
-        <SelectList items={options} label="Select" onSelect={onSelect} />
+        <SelectList items={options} onSelect={onSelect} ListItem={ListItem} />
       </ListWrapper>
-      {/*<TextInput*/}
-      {/*  label={label}*/}
-      {/*  name={name!}*/}
-      {/*  ref={ref}*/}
-      {/*  onChange={onChange}*/}
-      {/*  value={value}*/}
-      {/*  textInputProps={{*/}
-      {/*    ['aria-describedby']: `question_number_${id}`,*/}
-      {/*    type: FIELD_TYPES[type as FIELD_TYPES],*/}
-      {/*    placeholder: 'Enter your answer here',*/}
-      {/*  }}*/}
-      {/*/>*/}
     </Container>
   );
 };
