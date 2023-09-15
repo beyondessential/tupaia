@@ -57,6 +57,7 @@ export const useEnlargedDashboardItem = () => {
       endDate,
       legacy: currentDashboardItem?.legacy,
       itemCode: currentDashboardItem?.code,
+      isExpanded: true,
     };
     if (!isDrillDown) return params;
     // If the report is a drilldown, we want to add the drilldown id to the params, so that correct data is fetched

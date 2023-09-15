@@ -1505,10 +1505,19 @@ export const MatrixConfigSchema = {
 		},
 		"valueType": {
 			"description": "Specify the valueType for formatting of the value in the matrix",
-			"type": "string",
 			"enum": [
-				"string"
-			]
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
 		}
 	},
 	"description": "Matrix viz type",
@@ -18292,10 +18301,19 @@ export const DashboardItemConfigSchema = {
 				},
 				"valueType": {
 					"description": "Specify the valueType for formatting of the value in the matrix",
-					"type": "string",
 					"enum": [
-						"string"
-					]
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
 				}
 			},
 			"required": [
@@ -25677,6 +25695,21 @@ export const MatrixReportRowSchema = {
 		},
 		"category": {
 			"type": "string"
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -25859,6 +25892,21 @@ export const MatrixReportSchema = {
 						"type": "string"
 					},
 					"category": {
+						"type": "string"
+					},
+					"valueType": {
+						"enum": [
+							"boolean",
+							"color",
+							"currency",
+							"fraction",
+							"fractionAndPercentage",
+							"number",
+							"oneDecimalPlace",
+							"percentage",
+							"text",
+							"view"
+						],
 						"type": "string"
 					}
 				}
@@ -27522,10 +27570,19 @@ export const DashboardItemSchema = {
 						},
 						"valueType": {
 							"description": "Specify the valueType for formatting of the value in the matrix",
-							"type": "string",
 							"enum": [
-								"string"
-							]
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
 						}
 					},
 					"required": [
@@ -35098,6 +35155,37 @@ export const DataTableSchema = {
 	]
 } 
 
+export const DatatrakSessionSchema = {
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"id",
+		"refresh_token"
+	]
+} 
+
 export const DhisInstanceSchema = {
 	"properties": {
 		"code": {
@@ -35316,6 +35404,7 @@ export const EntitySchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -36477,6 +36566,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -37329,6 +37419,7 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"facility",
+		"farm",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
@@ -37469,6 +37560,7 @@ export const EntityCreatedSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -37638,6 +37730,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"disaster",
 							"district",
 							"facility",
+							"farm",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",
@@ -37778,42 +37871,239 @@ export const DataTablePreviewRequestSchema = {
 } 
 
 export const ResBodySchema = {
+	"properties": {
+		"userName": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		}
+	},
 	"type": "object",
 	"additionalProperties": false
 } 
 
 export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCaseSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+} 
+
+export const CamelCasePartSchema = {
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+} 
+
+export const ObjectToCamelSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const KeysToCamelCaseSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const InitialResponseSchema = {
 	"properties": {
-		"oneTimeLoginToken": {
+		"answers_enabling_follow_up": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"component_number": {
+			"type": "number"
+		},
+		"detail_label": {
 			"type": "string"
 		},
-		"oldPassword": {
+		"id": {
 			"type": "string"
 		},
-		"password": {
+		"is_follow_up": {
+			"type": "boolean"
+		},
+		"question_id": {
 			"type": "string"
 		},
-		"newPassword": {
+		"question_label": {
 			"type": "string"
 		},
-		"passwordConfirm": {
+		"screen_id": {
 			"type": "string"
 		},
-		"newPasswordConfirm": {
+		"config": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"validation_criteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"visibility_criteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"question.name": {
+			"type": "string"
+		},
+		"question.code": {
+			"type": "string"
+		},
+		"question.text": {
+			"type": "string"
+		},
+		"question.type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
+			"type": "string"
+		},
+		"question.options": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"question.option_set_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object",
+	"required": [
+		"component_number",
+		"id",
+		"question_id",
+		"screen_id"
+	]
+} 
+
+export const CamelCasedInitialResponseSchema = {
+	"properties": {
+		"answersEnablingFollowUp": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"componentNumber": {
+			"type": "number"
+		},
+		"detailLabel": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"isFollowUp": {
+			"type": "boolean"
+		},
+		"questionId": {
+			"type": "string"
+		},
+		"questionLabel": {
+			"type": "string"
+		},
+		"screenId": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"validationCriteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"visibilityCriteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"questionName": {
+			"type": "string"
+		},
+		"questionCode": {
+			"type": "string"
+		},
+		"questionText": {
+			"type": "string"
+		},
+		"questionType": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
+			"type": "string"
+		},
+		"questionOptions": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"questionOptionSetId": {
 			"type": "string"
 		}
 	},
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
-		"newPassword",
-		"newPasswordConfirm"
+		"componentNumber",
+		"id",
+		"questionId",
+		"screenId"
 	]
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const CountryAccessSchema = {
@@ -37842,24 +38132,6 @@ export const CountryAccessSchema = {
 		"id",
 		"name"
 	]
-} 
-
-export const CamelCaseSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const ObjectToCamelSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const KeysToCamelCaseSchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const DashboardWithItemsSchema = {
@@ -38568,10 +38840,19 @@ export const DashboardWithItemsSchema = {
 									},
 									"valueType": {
 										"description": "Specify the valueType for formatting of the value in the matrix",
-										"type": "string",
 										"enum": [
-											"string"
-										]
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
 									}
 								},
 								"required": [

@@ -11,6 +11,7 @@ import { InteractivePolygon } from './InteractivePolygon';
 import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
 import { ActiveEntityPolygon } from './ActiveEntityPolygon';
 import { useMapOverlayData } from '../utils';
+import { useGAEffect } from '../../../utils';
 
 const SiblingEntities = ({
   parentEntityCode,
@@ -46,6 +47,7 @@ export const PolygonNavigationLayer = () => {
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { isLoading: isLoadingOverlayReport } = useMapOverlayData();
   const { data: activeEntity } = useEntity(projectCode, entityCode);
+  useGAEffect('Entity', 'Change', activeEntity?.name);
 
   const { data: entities } = useEntitiesWithLocation(projectCode, entityCode);
 
@@ -65,9 +67,14 @@ export const PolygonNavigationLayer = () => {
   const showChildEntities =
     (isLoadingOverlayReport || !isPolygonOverlay) && childEntities?.length > 0;
 
+  const measureLevels = (Array.isArray(selectedOverlay?.measureLevel)
+    ? selectedOverlay?.measureLevel
+    : [selectedOverlay?.measureLevel]
+  ).filter(measureLevel => !!measureLevel);
+
+  const lowerCaseMeasureLevels = measureLevels.map(measureLevel => measureLevel.toLowerCase());
   const showActiveEntity =
-    activeEntity &&
-    activeEntity?.type?.replace('_', '') !== selectedOverlay?.measureLevel?.toLowerCase();
+    activeEntity && lowerCaseMeasureLevels.includes(activeEntity?.type?.replace('_', ''));
 
   return (
     <>

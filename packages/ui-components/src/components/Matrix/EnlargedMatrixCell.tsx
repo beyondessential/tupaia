@@ -44,7 +44,7 @@ export const EnlargedMatrixCell = () => {
   // If it is a category header cell, use the category presentation options, otherwise use the normal presentation options
   const presentationOptionsToUse = isCategory ? categoryPresentationOptions : presentationOptions;
 
-  const { showRawValue } = presentationOptionsToUse;
+  const { showRawValue, showNestedRows } = presentationOptionsToUse;
   const { description = '', label } = presentation || {};
   const closeModal = () => {
     dispatch({ type: ACTION_TYPES.SET_ENLARGED_CELL, payload: null });
@@ -64,7 +64,7 @@ export const EnlargedMatrixCell = () => {
   };
 
   const getBodyText = () => {
-    if (isCategory) {
+    if (isCategory && showNestedRows) {
       return getNestedRowData();
     }
     return `${description}${showRawValue ? ` ${value}` : ''}`;

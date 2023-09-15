@@ -21,7 +21,7 @@ import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity } from '../../api/queries';
 import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
-import { gaEvent } from '../../utils';
+import { useGAEffect } from '../../utils';
 import { DemoLand } from './DemoLand';
 
 const MapContainer = styled.div`
@@ -130,9 +130,9 @@ export const Map = () => {
 
   const initialTileSet = getAutoTileset();
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
+  useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
-    gaEvent('Map', 'Change Tile Set', activeTileSet.label);
   };
 
   const zoom = entity?.bounds ? undefined : 10;

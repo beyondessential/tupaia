@@ -76,6 +76,10 @@ const PlaceholderWarningText = styled(Typography)`
   max-width: 25rem;
 `;
 
+const NoResultsMessage = styled(Typography)`
+  padding: 1rem;
+`
+
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixReportRow[],
@@ -87,11 +91,11 @@ const parseRows = (
 ): MatrixRowType[] => {
   const location = useLocation();
 
-  let topLevelRows = [];
+  let topLevelRows = [] as MatrixReportRow[];
   // if a categoryId is not passed in, then we need to find the top level rows
   if (!categoryId) {
     // get the highest level rows, which are the ones that have a category but no categoryId
-    const highestLevel = rows.filter(row => row.category && !row.categoryId);
+    const highestLevel = rows.filter(row => row.category && !row.categoryId) as MatrixReportRow[];
     // if there are no highest level rows, then the top level rows are just all of the rows
     topLevelRows = highestLevel.length ? highestLevel : rows;
   } else {
@@ -100,8 +104,8 @@ const parseRows = (
   }
   // loop through the topLevelRows, and parse them into the format that the Matrix component can use
   return topLevelRows.reduce((result, row) => {
-    const { dataElement = '', category, ...rest } = row;
-
+    const { dataElement = '', category, valueType: rowValueType, ...rest } = row;
+    const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
       const children = parseRows(
@@ -110,7 +114,7 @@ const parseRows = (
         searchFilter,
         drillDown,
         baseDrillDownLink,
-        valueType,
+        valueTypeToUse,
       );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
@@ -139,10 +143,24 @@ const parseRows = (
               }`,
             }
           : null,
-        ...Object.entries(rest).reduce((acc, [key, value]) => {
+        ...Object.entries(rest).reduce((acc, [key, item]) => {
+          // some items are objects, and we need to parse them to get the value
+          if (typeof item === 'object') {
+            const { value, metadata } = item as { value: any; metadata?: any };
+            return {
+              ...acc,
+              [key]: formatDataValueByType(
+                {
+                  value,
+                  metadata,
+                },
+                valueTypeToUse,
+              ),
+            };
+          }
           return {
             ...acc,
-            [key]: valueType ? formatDataValueByType({ value }, valueType) : value,
+            [key]: formatDataValueByType({ value: item }, valueTypeToUse),
           };
         }, {}),
       },
@@ -242,29 +260,34 @@ export const Matrix = () => {
   };
 
   return (
-    <MatrixComponent
-      {...config}
-      rows={parsedRows}
-      columns={parsedColumns}
-      disableExpand={!!searchFilter}
-      rowHeaderColumnTitle={
-        periodGranularity ? null : (
-          <SearchInput
-            value={searchFilter}
-            onChange={updateSearchFilter}
-            placeholder="Search..."
-            InputProps={{
-              endAdornment: searchFilter ? (
-                <IconButton onClick={clearSearchFilter}>
-                  <Clear />
-                </IconButton>
-              ) : (
-                <Search />
-              ),
-            }}
-          />
-        )
-      }
-    />
+    <>
+      <MatrixComponent
+        {...config}
+        rows={parsedRows}
+        columns={parsedColumns}
+        disableExpand={!!searchFilter}
+        rowHeaderColumnTitle={
+          periodGranularity ? null : (
+            <SearchInput
+              value={searchFilter}
+              onChange={updateSearchFilter}
+              placeholder="Search..."
+              InputProps={{
+                endAdornment: searchFilter ? (
+                  <IconButton onClick={clearSearchFilter}>
+                    <Clear />
+                  </IconButton>
+                ) : (
+                  <Search />
+                ),
+              }}
+            />
+          )
+        }
+      />
+      {searchFilter && !parsedRows.length && (
+        <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
+      )}
+    </>
   );
 };

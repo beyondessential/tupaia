@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
+import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { DashboardItemReport, DashboardItemConfig } from '../../../types';
@@ -17,6 +18,11 @@ import { QRCode } from './QRCode';
 import { DashboardItemContext } from '../../DashboardItem';
 import { DashboardInfoHover } from '../../DashboardItem';
 
+const MultiSingleValueWrapper = styled.div`
+  & + & {
+    margin-top: 1rem;
+  }
+`;
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
   customReport?: DashboardItemReport;
@@ -71,21 +77,22 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     return (
       <>
         {data?.map((datum, i) => (
-          <View
-            customReport={
-              {
-                ...report,
-                data: [datum],
-              } as ViewReport
-            }
-            customConfig={
-              {
-                ...config,
-                viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
-              } as ViewConfig
-            }
-            key={i}
-          />
+          <MultiSingleValueWrapper key={i}>
+            <View
+              customReport={
+                {
+                  ...report,
+                  data: [datum],
+                } as ViewReport
+              }
+              customConfig={
+                {
+                  ...config,
+                  viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
+                } as ViewConfig
+              }
+            />
+          </MultiSingleValueWrapper>
         ))}
       </>
     );

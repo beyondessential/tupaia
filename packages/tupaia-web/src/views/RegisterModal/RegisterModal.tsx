@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
 import { useRegister } from '../../api/mutations';
-import { SignupComplete } from './SignUpComplete';
+import { SignUpComplete } from './SignUpComplete';
 import { SubmitHandler } from 'react-hook-form';
 import {
   TextField,
@@ -74,7 +74,7 @@ export const RegisterModal = () => {
       subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
     >
       {isSuccess ? (
-        <SignupComplete />
+        <SignUpComplete />
       ) : (
         <>
           {isError && <Typography color="error">{error.message}</Typography>}

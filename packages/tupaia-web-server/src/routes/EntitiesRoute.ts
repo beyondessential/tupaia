@@ -23,7 +23,7 @@ const DEFAULT_FILTER = {
   },
 };
 
-const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type', 'child_codes'];
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
@@ -54,6 +54,23 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       query.includeRootEntity || false,
     );
 
-    return camelcaseKeys(flatEntities, { deep: true });
+    // The child_codes list won't have been filtered for frontendExcludedTypes
+    // Since we fetch two layers at a time, we can clean up child_codes in the
+    // first layer, by checking the child exists in the second
+    const formattedEntities = flatEntities.map((entity: any) => {
+      // Only the first layer
+      if (entity.parent_code !== rootEntityCode) {
+        return entity;
+      }
+      const filteredChildren = entity.child_codes?.filter((childCode: string) =>
+        flatEntities.some(({ code }: { code: string }) => code === childCode),
+      );
+      return {
+        ...entity,
+        child_codes: filteredChildren?.length > 0 ? filteredChildren : undefined,
+      };
+    });
+
+    return camelcaseKeys(formattedEntities, { deep: true });
   }
 }

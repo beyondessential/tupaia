@@ -12,12 +12,17 @@ import { getSnakeCase } from './getSnakeCase';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 
+type EntityTypeParam = string | null | undefined;
+
 const useEntitiesByType = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
-  entityType?: string | null,
+  entityType?: EntityTypeParam | EntityTypeParam[],
 ) => {
-  const snakeCaseEntityType = getSnakeCase(entityType!);
+  const entityTypeArray = (Array.isArray(entityType) ? entityType : [entityType]).filter(
+    type => !!type,
+  );
+  const snakeCaseEntityTypes = entityTypeArray?.map(type => getSnakeCase(type!));
   return useEntitiesWithLocation(
     projectCode,
     entityCode,
@@ -25,9 +30,9 @@ const useEntitiesByType = (
       params: {
         // Don't include the root entity in the list of entities for displaying data as the
         // data visuals are for children of the root entity, unless it is a root entity, ie. a country
-        includeRootEntity: snakeCaseEntityType === 'country',
+        includeRootEntity: snakeCaseEntityTypes?.includes('country') ? true : false,
         filter: {
-          type: snakeCaseEntityType,
+          type: snakeCaseEntityTypes?.join(','),
         },
       },
     },
@@ -60,6 +65,7 @@ export const useMapOverlayData = (
     selectedOverlay,
   );
   const { data: entity } = useEntity(projectCode, entityCode);
+
   const rootEntityCode = rootEntity?.code || getRootEntityCode(entity);
 
   const { data: entities } = useEntitiesByType(
