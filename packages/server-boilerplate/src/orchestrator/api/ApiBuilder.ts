@@ -19,13 +19,7 @@ import { UnauthenticatedError } from '@tupaia/utils';
 
 import { handleWith, handleError, emptyMiddleware } from '../../utils';
 import { TestRoute } from '../../routes';
-import {
-  LoginRoute,
-  LoginRequest,
-  LogoutRoute,
-  OneTimeLoginRoute,
-  OneTimeLoginRequest,
-} from '../routes';
+import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
@@ -44,11 +38,7 @@ export class ApiBuilder {
 
   private attachSession: RequestHandler;
   private logApiRequestMiddleware: RequestHandler;
-  private attachVerifyLogin: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => void;
+  private attachVerifyLogin: (req: Request, res: Response, next: NextFunction) => void;
   private verifyAuthMiddleware: RequestHandler;
   private version: number;
 
@@ -93,7 +83,7 @@ export class ApiBuilder {
       if (options.attachModels) {
         req.models = this.models;
       }
-      const context = {}; // context is shared between request and response
+      const context = { apiName: this.apiName }; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
 

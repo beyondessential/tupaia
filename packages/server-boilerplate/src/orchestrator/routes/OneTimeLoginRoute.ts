@@ -15,6 +15,7 @@ export interface OneTimeLoginRequest
   extends Request<EmptyObject, AuthResponse, OneTimeCredentials> {
   ctx: {
     verifyLogin?: (accessPolicy: AccessPolicy) => void;
+    apiName?: string;
   };
 }
 
@@ -28,9 +29,10 @@ export class OneTimeLoginRoute extends Route<OneTimeLoginRequest> {
   }
 
   public async buildResponse() {
+    const { apiName } = this.req.ctx;
     const credentials = this.req.body;
 
-    const response = await this.authConnection.oneTimeLogin(credentials);
+    const response = await this.authConnection.oneTimeLogin(credentials, apiName);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));
