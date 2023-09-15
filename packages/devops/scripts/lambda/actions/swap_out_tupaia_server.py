@@ -5,7 +5,7 @@
 
 from helpers.networking import get_instance_behind_gateway, swap_gateway_instance
 from helpers.teardown import terminate_instance
-from helpers.utilities import add_tag, get_tag, get_instance_by_id
+from helpers.utilities import add_tag, get_tag, get_instance_by_id, find_instances
 
 def swap_out_tupaia_server(event):
     # validate input config
