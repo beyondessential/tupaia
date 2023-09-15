@@ -4905,6 +4905,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@beyondessential/mathjs@npm:v9.4.400":
+  version: 9.4.400
+  resolution: "@beyondessential/mathjs@npm:9.4.400"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+    complex.js: ^2.0.15
+    decimal.js: ^10.3.1
+    escape-latex: ^1.2.0
+    fraction.js: 4.3.4
+    javascript-natural-sort: ^0.7.1
+    seedrandom: ^3.0.5
+    tiny-emitter: ^2.1.0
+    typed-function: ^2.0.0
+  bin:
+    mathjs: bin/cli.js
+  checksum: 57c28cfb45410f4ef4af33ee6117d35df154e7c16c240f7fc5658fc2f18809b5945d81035aace2479656120c331440a8b1a91139596755fbcc061b301790e59b
+  languageName: node
+  linkType: hard
+
 "@beyondessential/tupaia-access-policy@npm:^2.5.1":
   version: 2.5.1
   resolution: "@beyondessential/tupaia-access-policy@npm:2.5.1"
@@ -9989,9 +10008,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
+    "@beyondessential/mathjs": v9.4.400
     date-fns: ^2.16.1
     lodash.startcase: ^4.4.0
-    mathjs: ^9.4.0
     npm-run-all: ^4.1.5
   languageName: unknown
   linkType: soft
@@ -10240,6 +10259,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/report-server@workspace:packages/report-server"
   dependencies:
+    "@beyondessential/mathjs": v9.4.400
     "@tupaia/access-policy": 3.0.0
     "@tupaia/aggregator": 1.0.0
     "@tupaia/api-client": 3.1.0
@@ -10264,7 +10284,6 @@ __metadata:
     lodash.isplainobject: ^4.0.6
     lodash.keyby: ^4.6.0
     lodash.pick: ^4.4.0
-    mathjs: ^9.4.0
     mockdate: ^3.0.5
     moment: ^2.24.0
     winston: ^3.3.3
@@ -22742,10 +22761,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fraction.js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "fraction.js@npm:4.1.1"
-  checksum: e5a1f81d73e32aabf4fbd6581a7b3dfabd9a449ceb97c7e71ed2931dd0607095622341100d7819741eb9b435eb4e0d4a040a69e411dc943fa9b3a3872f3a2e0f
+"fraction.js@npm:4.3.4":
+  version: 4.3.4
+  resolution: "fraction.js@npm:4.3.4"
+  checksum: 26fdecf114e3b693c760d3b2d5447f8ba9e815991ca7c7cdb930156780793b87f10936979a890b389676d960d7cd026273da9a44a6e20c12e3c4fd282a026ed3
   languageName: node
   linkType: hard
 
@@ -30242,25 +30261,6 @@ __metadata:
   version: 1.0.4
   resolution: "math-random@npm:1.0.4"
   checksum: 9edf31ea337bba21994eb968218fd571d55fce86b51661158d8e241886b73121d9e1a35a5bb8997dba8ce67417a83c8dbd0811917248f886840035b7f1c667b9
-  languageName: node
-  linkType: hard
-
-"mathjs@npm:^9.4.0":
-  version: 9.4.4
-  resolution: "mathjs@npm:9.4.4"
-  dependencies:
-    "@babel/runtime": ^7.14.6
-    complex.js: ^2.0.15
-    decimal.js: ^10.3.1
-    escape-latex: ^1.2.0
-    fraction.js: ^4.1.1
-    javascript-natural-sort: ^0.7.1
-    seedrandom: ^3.0.5
-    tiny-emitter: ^2.1.0
-    typed-function: ^2.0.0
-  bin:
-    mathjs: bin/cli.js
-  checksum: 3fdaca4d0e8b73c1e75c87023101d8d047ccec395743c80f24031b7523fc8f2209f8bc572c603d8a8ba4e8b977f240e987f72902e48cce6ff261b3f904fefd5b
   languageName: node
   linkType: hard
 
