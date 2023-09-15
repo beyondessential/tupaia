@@ -1,5 +1,6 @@
-# Swaps an ELB to point at a new tupaia server, and kills the old one for a given branch. This is
-# called by the startup script on the instance as the second phase of "redeploy_tupaia_server", and
+# Swaps an ELB to point at a new tupaia server, and kills the old one(s) for a given deployment.
+
+# This is called by the startup script on the instance as the second phase of "redeploy_tupaia_server", and
 # shouldn't generally be used directly
 
 from helpers.networking import get_instance_behind_gateway, swap_gateway_instance
@@ -30,6 +31,19 @@ def swap_out_tupaia_server(event):
     # add the subdomain tags that now relate to the new instance
     add_tag(new_instance_id, 'SubdomainsViaGateway', get_tag(old_instance, 'SubdomainsViaGateway'))
 
-    terminate_instance(old_instance)
+    # delete old instance(s)
+    instance_filters = [
+      { 'Name': 'tag:DeploymentName', 'Values': [deployment_name] },
+      { 'Name': 'tag:DeploymentType', 'Values': ['tupaia'] },
+      { 'Name': 'tag:StartupBuildProgress', 'Values': ['complete', 'errored'] }, # do not select building as they may be a newer deployment that is coming
+      { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
+    ]
+    instances = find_instances(instance_filters)
+
+    for instance in instances:
+      if instance['InstanceId'] == new_instance_id:
+        continue
+      print('Deleting old instance: ' + instance['InstanceId'])
+      terminate_instance(instance)
 
     print('Successfully swapped out ' + deployment_name)
