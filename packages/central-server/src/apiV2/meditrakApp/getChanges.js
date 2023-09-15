@@ -20,7 +20,7 @@ const MAX_CHANGES_RETURNED = 100;
 /**
  * Gets the record ready to sync down to a sync client, transforming any properties as required
  */
-function getRecordForSync(record) {
+function getRecordForSync(record, recordType) {
   const recordWithoutNulls = {};
   // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
   // which simply had no key for undefined properties, whereas postgres uses null
@@ -29,7 +29,11 @@ function getRecordForSync(record) {
       recordWithoutNulls[key] = value;
     }
   });
-  return recordWithoutNulls;
+
+  // Translate values in columns based on meditrak app version
+  const { meditrakConfig } = this.models[recordType];
+  const translatedRecord = meditrakConfig.translateForSync || recordWithoutNulls;
+  return translatedRecord;
 }
 
 /**
@@ -97,7 +101,7 @@ export async function getChanges(req, res) {
           const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
           changeObject.error = { error: errorMessage };
         } else {
-          changeObject.record = getRecordForSync(record);
+          changeObject.record = getRecordForSync(record, recordType);
         }
       }
       return changeObject;

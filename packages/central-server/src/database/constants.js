@@ -4,3 +4,5 @@
  */
 
 export const DEFAULT_DATABASE_TIMEZONE = 'Pacific/Auckland';
+
+export const CONFIG_BREAK_MEDITRAK_APP_VERSION = '1.13.127';

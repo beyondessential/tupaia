@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 
 const createFieldsConfig = entityConfig => {
   const { createNew, parentId, type: entityType, attributes, name, code } = entityConfig;
-  if (!createNew) return {};
+  if (!createNew) return undefined;
   // select only one field for field type
   const fieldConfig = { name, code, parentId, type: entityType[0], attributes };
   return fieldConfig;
@@ -25,7 +25,7 @@ const createFieldsConfig = entityConfig => {
 
 const createFilterConfig = entityConfig => {
   const { createNew, parentId, grandparentId, type: entityType, attributes } = entityConfig;
-  if (createNew) return {};
+  if (createNew) return undefined;
   // select only one field for field type
   const filterConfig = { parentId, grandparentId, type: entityType, attributes };
   return filterConfig;
