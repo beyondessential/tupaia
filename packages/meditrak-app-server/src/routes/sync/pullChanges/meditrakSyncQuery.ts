@@ -8,7 +8,7 @@ import { Request } from 'express';
 import { getHighestPossibleIdForGivenTime, SqlQuery } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
 import { MeditrakSyncQueryModifiers } from './types';
-import { getSupportedModels } from '../../../sync';
+import { getSupportedDatabaseTypes } from '../../../sync';
 
 export const recordTypeFilter = (req: Request) => {
   const { appVersion, recordTypes = null } = req.query;
@@ -21,7 +21,7 @@ export const recordTypeFilter = (req: Request) => {
     };
   }
   if (typeof appVersion === 'string') {
-    const supportedTypes = getSupportedModels(appVersion);
+    const supportedTypes = getSupportedDatabaseTypes(req.models, appVersion);
     return {
       query: `record_type IN ${SqlQuery.record(supportedTypes)}`,
       params: supportedTypes,

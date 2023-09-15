@@ -12,7 +12,7 @@ import { TYPES } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatabaseError } from '@tupaia/utils';
 import { MeditrakSyncQueue } from '@tupaia/types';
-import { getUnsupportedModelFields } from '../../../sync';
+import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
 import { supportsPermissionsBasedSync } from './supportsPermissionsBasedSync';
@@ -56,9 +56,15 @@ const filterNullProperties = (record: Record<string, unknown>) => {
 
 export class PullChangesRoute extends Route<PullChangesRequest> {
   private async getAppSupportColumns(recordType: string) {
-    const model = this.req.models.getModelForDatabaseType(recordType);
+    const modelName = getSupportedModels().find(
+      name => this.req.models[name].databaseType === recordType,
+    );
+    if (!modelName) {
+      throw new Error(`Couldn't find model for record type: ${recordType}`);
+    }
+    const model = this.req.models[modelName];
     const fields = await model.fetchFieldNames();
-    const unsupportedFields = getUnsupportedModelFields(recordType);
+    const unsupportedFields = getUnsupportedModelFields(modelName);
     return fields.filter(field => !unsupportedFields.includes(field));
   }
 

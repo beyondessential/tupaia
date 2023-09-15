@@ -13,6 +13,11 @@ import {
   OptionModel,
   FacilityModel,
   CountryModel,
+  GeographicalAreaModel,
+  PermissionGroupModel,
+  SurveyGroupModel,
+  SurveyScreenModel,
+  SurveyScreenComponentModel,
 } from '@tupaia/database';
 import { FeedItemModel, MeditrakSyncQueueModel, SurveyModel, SurveyResponseModel } from './models';
 
@@ -25,11 +30,16 @@ export interface MeditrakAppServerModelRegistry extends ModelRegistry {
   readonly country: CountryModel;
   readonly facility: FacilityModel;
   readonly feedItem: FeedItemModel;
+  readonly geographicalArea: GeographicalAreaModel;
   readonly meditrakSyncQueue: MeditrakSyncQueueModel;
   readonly option: OptionModel;
   readonly optionSet: OptionSetModel;
+  readonly permissionGroup: PermissionGroupModel;
   readonly question: QuestionModel;
   readonly survey: SurveyModel;
+  readonly surveyGroup: SurveyGroupModel;
+  readonly surveyScreen: SurveyScreenModel;
+  readonly surveyScreenComponent: SurveyScreenComponentModel;
   readonly surveyResponse: SurveyResponseModel;
   readonly user: UserModel;
 }
