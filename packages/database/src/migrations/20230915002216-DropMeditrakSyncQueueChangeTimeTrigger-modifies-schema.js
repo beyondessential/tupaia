@@ -14,19 +14,47 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql(`DROP TRIGGER IF EXISTS meditrak_sync_queue_trigger ON meditrak_sync_queue`);
+const syncQueues = ['meditrak', 'dhis', 'ms1'];
+
+exports.up = async function (db) {
+  for (let i = 0; i < syncQueues.length; i++) {
+    const syncQueue = syncQueues[i];
+    await db.runSql(
+      `DROP TRIGGER IF EXISTS ${syncQueue}_sync_queue_trigger ON ${syncQueue}_sync_queue`,
+    );
+  }
+
+  await db.runSql(`DROP FUNCTION IF EXISTS update_change_time`);
+
+  return null;
 };
 
-exports.down = function (db) {
-  return db.runSql(`
-  create trigger meditrak_sync_queue_trigger before
-  insert
-      or
-  update
-      on
-      public.meditrak_sync_queue for each row execute function update_change_time()
+exports.down = async function (db) {
+  await db.runSql(`
+    CREATE OR REPLACE FUNCTION public.update_change_time()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+        BEGIN
+          NEW.change_time = floor(extract(epoch from clock_timestamp()) * 1000) + (CAST (nextval('change_time_seq') AS FLOAT)/1000);
+          RETURN NEW;
+        END;
+        $function$
+    ;`);
+
+  for (let i = 0; i < syncQueues.length; i++) {
+    const syncQueue = syncQueues[i];
+    await db.runSql(`
+      create trigger ${syncQueue}_sync_queue_trigger before
+      insert
+          or
+      update
+          on
+          public.${syncQueue}_sync_queue for each row execute function update_change_time()
   `);
+  }
+
+  return null;
 };
 
 exports._meta = {
