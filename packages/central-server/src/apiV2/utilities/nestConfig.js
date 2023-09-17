@@ -1,6 +1,23 @@
 import merge from 'lodash.merge';
 import { splitStringOn } from './split';
 
+/**
+ *  Converts a flat object
+ *  into a nested object.
+ *  e.g.
+ *  {
+ *    createConfig: true,
+ *    'fields.type': 'facility'
+ *  }
+ *  =>
+ *  {
+ *    createConfig: true,
+ *    fields: {
+ *      type: 'facility'
+ *    }
+ *  }
+ */
+
 export const nestConfig = config => {
   let resultConfig = {};
 

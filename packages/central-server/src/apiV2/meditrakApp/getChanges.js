@@ -32,7 +32,9 @@ function getRecordForSync(record, recordType) {
 
   // Translate values in columns based on meditrak app version
   const { meditrakConfig } = this.models[recordType];
-  const translatedRecord = meditrakConfig.translateForSync || recordWithoutNulls;
+  const translatedRecord = meditrakConfig.translateForSync
+    ? meditrakConfig.translateForSync(recordWithoutNulls)
+    : recordWithoutNulls;
   return translatedRecord;
 }
 
