@@ -13,8 +13,8 @@ const Wrapper = styled.div`
   align-items: center;
   height: calc(100vh - ${HEADER_HEIGHT});
   padding: 3rem 0;
-  p,
-  a,
+  form p,
+  form a,
   .MuiTypography-root.MuiFormControlLabel-label {
     font-size: 0.8125rem;
   }

@@ -4,10 +4,10 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock } from '@material-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import { SpinningLoader, Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList, BaseListItem } from '../components';
@@ -75,25 +75,31 @@ interface ProjectSelectFormProps {
   projectId?: Project['id'];
   variant?: 'modal' | 'page';
   onClose: () => void;
+  onRequestAccess?: (projectCode: Project['code']) => void;
 }
 
 export const ProjectSelectForm = ({
   projectId,
   onClose,
   variant = 'page',
+  onRequestAccess,
 }: ProjectSelectFormProps) => {
   const navigate = useNavigate();
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
   const { data: projects, isLoading } = useProjects();
-  const { mutate, isLoading: isConfirming } = useEditUser(onClose);
+  const { mutate, isLoading: isConfirming, error } = useEditUser(onClose);
   const onConfirm = () => {
     mutate({ projectId: selectedProjectId! });
   };
 
-  const onRequestAccess = () => {
-    navigate(ROUTES.REQUEST_ACCESS);
-    if (variant === 'modal') {
-      onClose();
+  const handleRequestAccess = project => {
+    if (variant === 'modal' && onRequestAccess) {
+      onRequestAccess(project.code);
+    } else {
+      navigate({
+        pathname: ROUTES.REQUEST_ACCESS,
+        search: `?project=${project?.code}`,
+      });
     }
   };
 
@@ -101,21 +107,22 @@ export const ProjectSelectForm = ({
     if (project.hasAccess) {
       setSelectedProjectId(project.value);
     } else {
-      onRequestAccess();
+      handleRequestAccess(project);
     }
   };
 
-  const projectOptions = projects?.map(({ entityName, id }, index) => ({
-    name: entityName,
+  const projectOptions = projects?.map(({ name, code, hasAccess, id }) => ({
+    name,
     value: id,
+    code,
     selected: id === selectedProjectId,
-    // Todo: get hasAccess from api
-    hasAccess: index < 6,
+    hasAccess,
   }));
 
   return (
     <>
       <Typography variant="h1">Select project</Typography>
+      {error && <Typography color="error">{error.message}</Typography>}
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />

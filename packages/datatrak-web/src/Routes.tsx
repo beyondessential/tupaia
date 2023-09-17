@@ -26,11 +26,26 @@ import {
   SurveySuccessScreen,
   SurveyScreen,
   ProjectSelectPage,
+  RequestProjectAccessPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
 import { SurveyLayout } from './features';
+
+const ProjectSelectRedirect = ({ children }) => {
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  if (isLoading || !isFetched) {
+    return <FullPageLoader />;
+  }
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace={true} />;
+  }
+  if (data?.projectId) {
+    return <Navigate to={ROUTES.HOME} replace={true} />;
+  }
+  return children;
+};
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -48,9 +63,10 @@ const LoggedInRedirect = ({ children }) => {
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
-  const { isLoggedIn, isLoading, isFetched } = useUser();
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
   if (isLoading || !isFetched) return <FullPageLoader />;
   if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
+  if (!data?.projectId) return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
   return children ? children : <Outlet />;
 };
 
@@ -85,10 +101,25 @@ export const Routes = () => {
                 </LoggedInRedirect>
               }
             />
+            <Route
+              path={ROUTES.PROJECT_SELECT}
+              element={
+                <ProjectSelectRedirect>
+                  <ProjectSelectPage />
+                </ProjectSelectRedirect>
+              }
+            />
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+            <Route
+              path={ROUTES.REQUEST_ACCESS}
+              element={
+                <ProjectSelectRedirect>
+                  <RequestProjectAccessPage />
+                </ProjectSelectRedirect>
+              }
+            />
           </Route>
         </Route>
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
@@ -96,7 +127,6 @@ export const Routes = () => {
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
             <Route path={ROUTES.SURVEY} element={<SurveyPage />}>

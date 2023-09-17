@@ -12,3 +12,4 @@ export {
   SurveyLayout,
   SurveyToolbar,
 } from './Survey';
+export { RequestProjectAccess } from './RequestProjectAccess';
