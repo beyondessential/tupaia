@@ -10,7 +10,7 @@ import { TextField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { SelectList, BaseListItem } from '../../components';
 import { useEntities, useEntity } from '../../api/queries';
-import { Lock } from '@material-ui/icons';
+import { useDebounce } from '../../utils';
 
 const Container = styled.div`
   width: 100%;
@@ -49,7 +49,9 @@ const useQuestionEntities = (searchString, config) => {
   const entityConfig = config.entity;
   const parentId = entityConfig?.parentId || 'TO';
   const { type } = entityConfig;
-  return useEntities('explore', parentId, { searchString, type });
+  const debouncedSearch = useDebounce(searchString!, 200);
+
+  return useEntities('explore', parentId, { searchString: debouncedSearch, type });
 };
 
 export const EntityQuestion = ({
@@ -110,6 +112,7 @@ export const EntityQuestion = ({
         value={displayValue}
         type="search"
         placeholder="Search"
+        autoComplete="one-time-code"
       />
       <ListWrapper>
         <SelectList items={options} onSelect={onSelect} ListItem={ListItem} />

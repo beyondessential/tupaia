@@ -115,6 +115,7 @@ export const LandingPage = () => {
           <ButtonWrapper>
             <PrimaryButton to={ROUTES.SURVEY_SELECT}>Select survey</PrimaryButton>
             <OutlinedButton to="#">Explore Data</OutlinedButton>
+            <OutlinedButton to="/survey/COVIDVac_WS/1">Test page</OutlinedButton>
           </ButtonWrapper>
           <TextWrapper>
             <Text>
