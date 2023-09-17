@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
 
@@ -9,19 +9,20 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { AuthConnection, AuthResponse } from '../auth';
 import { Route } from '../../routes';
 import { EmptyObject } from '../../types';
-import { Credentials } from '../types';
+import { OneTimeCredentials } from '../types';
 
-export interface LoginRequest extends Request<EmptyObject, AuthResponse, Credentials> {
+export interface OneTimeLoginRequest
+  extends Request<EmptyObject, AuthResponse, OneTimeCredentials> {
   ctx: {
     verifyLogin?: (accessPolicy: AccessPolicy) => void;
     apiName?: string;
   };
 }
 
-export class LoginRoute extends Route<LoginRequest> {
+export class OneTimeLoginRoute extends Route<OneTimeLoginRequest> {
   private authConnection: AuthConnection;
 
-  public constructor(req: LoginRequest, res: Response, next: NextFunction) {
+  public constructor(req: OneTimeLoginRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.authConnection = new AuthConnection();
@@ -31,7 +32,7 @@ export class LoginRoute extends Route<LoginRequest> {
     const { apiName } = this.req.ctx;
     const credentials = this.req.body;
 
-    const response = await this.authConnection.login(credentials, apiName);
+    const response = await this.authConnection.oneTimeLogin(credentials, apiName);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));
