@@ -107,6 +107,7 @@ export const ProjectSelectForm = ({
         tooltip,
         button: !hasPendingAccess,
         appearsDisabled: hasAccess === false,
+        hasAccess
       };
     });
   };
