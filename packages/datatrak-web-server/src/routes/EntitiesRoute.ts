@@ -4,74 +4,80 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
+import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { TupaiaApiClient } from '@tupaia/api-client';
+import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { sortSearchResults } from '../utils';
 
-export type EntitiesRequest = any;
+export type EntitiesRequest = Request<
+  DatatrakWebEntitiesRequest.Params,
+  DatatrakWebEntitiesRequest.ResBody,
+  DatatrakWebEntitiesRequest.ReqBody,
+  DatatrakWebEntitiesRequest.ReqQuery
+>;
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
 
-function sortSearchResults(searchString: string, results: any[]) {
-  const lowerSearch = searchString.toLowerCase();
-  const primarySearchResults = results.filter((entity: any) =>
-    entity.name.toLowerCase().startsWith(lowerSearch),
-  );
-  const secondarySearchResults = results.filter(
-    (entity: any) =>
-      !entity.name.toLowerCase().startsWith(lowerSearch) &&
-      (entity.name.toLowerCase().includes(lowerSearch) ||
-        entity.parent?.name.toLowerCase().startsWith(lowerSearch)),
-  );
-
-  return [...primarySearchResults, ...secondarySearchResults];
+async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
+  const response = await services.central.fetchResources('entities', {
+    filter: { id: id },
+    columns: ['code'],
+  });
+  const { code } = response[0];
+  return code;
 }
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { params, query, ctx } = this.req;
+    const { query, ctx } = this.req;
+    const { services } = ctx;
 
     const {
-      countryCode,
-      projectCode,
+      filter: { countryCode, projectCode, grandparentId, parentId, searchString, type },
       fields = DEFAULT_FIELDS,
-      grandparentId,
-      parentId,
-      searchString,
-      type,
     } = query;
 
-    const dbOptions = {
-      fields,
-      filter: {
-        country_code: countryCode,
-        type: {
-          comparator: '=',
-          comparisonValue: type,
-        },
-        name: {
-          comparator: 'ilike',
-          comparisonValue: `%${searchString}%`,
-        },
+    const filter = {
+      generational_distance: {},
+      country_code: countryCode,
+      type: {
+        comparator: '=',
+        comparisonValue: type,
+      },
+      name: {
+        comparator: 'ilike',
+        comparisonValue: `%${searchString}%`,
       },
     };
 
-    let entityCode = projectCode;
+    let entityCode = projectCode as string;
 
-    if (grandparentId || parentId) {
-      const response = await ctx.services.central.fetchResources('entities', {
-        filter: { id: grandparentId || parentId },
-        columns: ['code'],
-      });
-      const { code } = response[0];
-      entityCode = code;
+    if (parentId) {
+      // If parentId is provided, we just want to get the children of that entity
+      entityCode = await getEntityCodeFromId(services, parentId);
+      filter.generational_distance = {
+        comparator: '=',
+        comparisonValue: 1,
+      };
+    } else if (grandparentId) {
+      // If grandparentId is provided, we just want to get the grandchildren of that entity
+      entityCode = await getEntityCodeFromId(services, grandparentId);
+      filter.generational_distance = {
+        comparator: '=',
+        comparisonValue: 2,
+      };
     }
 
-    const entities = await ctx.services.entity.getDescendantsOfEntity(
-      projectCode,
-      entityCode,
-      dbOptions,
-    );
+    const entities = await services.entity.getDescendantsOfEntity(projectCode, entityCode, {
+      fields,
+      filter,
+    });
 
-    const sortedEntities = sortSearchResults(searchString, entities);
+    const sortedEntities = sortSearchResults(
+      searchString,
+      entities,
+    ) as DatatrakWebEntitiesRequest.ResBody;
 
     return camelcaseKeys(sortedEntities, { deep: true });
   }

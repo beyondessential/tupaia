@@ -3,18 +3,13 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
+import { TupaiaWebEntitiesRequest } from '@tupaia/types';
 import { get } from '../api';
 
-type EntityFilters = {
-  type?: string;
-  parentId?: string;
-  grandParentId?: string;
-  searchString?: string;
-  countryCode?: string;
-};
-export const useEntities = (projectCode?: string, params?: EntityFilters) => {
+export const useEntities = (projectCode?: string, params?: TupaiaWebEntitiesRequest.ReqBody) => {
   return useQuery(
     ['entities', projectCode, params],
-    (): Promise<any> => get('entities', { params: { ...params, projectCode } }),
+    (): Promise<TupaiaWebEntitiesRequest.ResBody> =>
+      get('entities', { params: { filter: { ...params, projectCode } } }),
   );
 };
