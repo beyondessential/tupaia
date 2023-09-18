@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button } from '../../components';
-import { useProjects, useUser } from '../../api/queries';
+import { useUser } from '../../api/queries';
 import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
 import { ProjectSelectModal } from './ProjectSelectModal';
 
@@ -56,19 +56,12 @@ const LoginLink = styled(AuthLink).attrs({
   border-color: ${props => props.theme.palette.text.primary};
 `;
 
-const useUserData = () => {
-  const { data: projects } = useProjects();
-  const { data: user, isLoggedIn } = useUser();
-  const userProject = projects?.find(({ id }) => id === user?.projectId);
-  return { isLoggedIn, user: { ...user, project: userProject } };
-};
-
 /**
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = () => {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
-  const { isLoggedIn, user } = useUserData();
+  const { isLoggedIn, data: user } = useUser();
   const openProjectModal = () => {
     setProjectModalOpen(true);
   };
@@ -100,7 +93,7 @@ export const UserInfo = () => {
       <ProjectSelectModal
         open={projectModalOpen}
         onClose={closeProjectModal}
-        projectId={user.projectId}
+        projectId={user.project?.id}
       />
     </>
   );

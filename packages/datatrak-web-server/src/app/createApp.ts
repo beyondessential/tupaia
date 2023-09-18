@@ -40,7 +40,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<EntitiesRequest>('entities/:projectCode/:entityCode', handleWith(EntitiesRoute))
+    .get<EntitiesRequest>('entities/:projectCode', handleWith(EntitiesRoute))
     .get<EntityRequest>('entity/:entityId', handleWith(EntityRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))

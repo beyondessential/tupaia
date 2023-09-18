@@ -5,9 +5,16 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
-export const useEntities = (projectCode?: string, entityCode?: string, params?: any) => {
+type EntityFilters = {
+  type?: string;
+  parentId?: string;
+  grandParentId?: string;
+  searchString?: string;
+  countryCode?: string;
+};
+export const useEntities = (projectCode?: string, params?: EntityFilters) => {
   return useQuery(
-    ['entities', projectCode, entityCode, params],
-    (): Promise<any> => get(`entities/${projectCode}/${entityCode}`, { params }),
+    ['entities', projectCode, params],
+    (): Promise<any> => get(`entities/${projectCode}`, { params }),
   );
 };

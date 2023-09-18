@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntity } from '../../../api/queries';
+import { useEntities, useEntity, useUser } from '../../../api/queries';
 import { useDebounce } from '../../../utils';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
@@ -19,14 +19,22 @@ const Container = styled.div`
 // Todo: Remove this once we have a way to get the country id for the survey (WAITP-1431)
 const COUNTRY_CODE = 'TO';
 
-const useSearchResults = (searchValue, config) => {
-  const entityConfig = config.entity;
-  const rootEntityCode = entityConfig?.parentId || COUNTRY_CODE;
-  const projectCode = 'explore';
-  const { type } = entityConfig;
-  const debouncedSearch = useDebounce(searchValue!, 200);
+const getEntityBaseFilters = ({ entity: entityConfig }) => {
+  return {
+    type: entityConfig.type,
+    parentId: entityConfig.parentId,
+    grandParentId: entityConfig.grandParentId,
+    countryCode: COUNTRY_CODE,
+  };
+};
 
-  return useEntities(projectCode, rootEntityCode, { searchString: debouncedSearch, type });
+const useSearchResults = (searchValue, config) => {
+  const { data: user } = useUser();
+  const projectCode = user?.project?.code;
+  const filters = getEntityBaseFilters(config);
+
+  const debouncedSearch = useDebounce(searchValue!, 200);
+  return useEntities(projectCode, { searchString: debouncedSearch, ...filters });
 };
 
 export const EntityQuestion = ({
