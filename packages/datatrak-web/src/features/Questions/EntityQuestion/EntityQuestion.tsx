@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
 import { useEntities, useEntity } from '../../../api/queries';
 import { useDebounce } from '../../../utils';
@@ -44,9 +45,9 @@ export const EntityQuestion = ({
       }
     },
   });
-  const onChangeSearch = event => {
+  const onChangeSearch = newValue => {
     setIsDirty(true);
-    setSearchValue(event.target.value);
+    setSearchValue(newValue);
   };
 
   const onSelect = entity => {
@@ -54,7 +55,7 @@ export const EntityQuestion = ({
     onChange(entity.value);
   };
 
-  const { data: searchResults } = useSearchResults(searchValue, config);
+  const { data: searchResults, isLoading } = useSearchResults(searchValue, config);
 
   const displayResults = searchResults
     ?.map(({ name: entityName, parentName, id }) => ({
@@ -81,7 +82,11 @@ export const EntityQuestion = ({
         onChangeSearch={onChangeSearch}
         searchValue={searchValue}
       />
-      <ResultsList onSelect={onSelect} searchResults={displayResults} />
+      {isLoading ? (
+        <SpinningLoader />
+      ) : (
+        <ResultsList onSelect={onSelect} searchResults={displayResults} />
+      )}
     </Container>
   );
 };

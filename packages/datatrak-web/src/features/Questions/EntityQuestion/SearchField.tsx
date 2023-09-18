@@ -6,8 +6,8 @@
 import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import SearchIcon from '@material-ui/icons/Search';
-import { InputAdornment } from '@material-ui/core';
+import { Search, Clear } from '@material-ui/icons';
+import { InputAdornment, IconButton } from '@material-ui/core';
 
 const StyledField = styled(TextField)`
   margin-bottom: 0.9rem;
@@ -33,8 +33,21 @@ const StyledField = styled(TextField)`
   }
 `;
 
+const ClearButton = styled(IconButton)`
+  margin-right: -0.6rem;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+`;
 export const SearchField = ({ ref, name, label, id, searchValue, onChangeSearch, isDirty }) => {
   const displayValue = isDirty ? searchValue : '';
+
+  const handleClear = () => {
+    onChangeSearch('');
+  };
+
+  const handleChange = event => {
+    onChangeSearch(event.target.value);
+  };
 
   return (
     <StyledField
@@ -42,16 +55,23 @@ export const SearchField = ({ ref, name, label, id, searchValue, onChangeSearch,
       label={label}
       name={name!}
       ref={ref}
-      onChange={onChangeSearch}
+      onChange={handleChange}
       value={displayValue}
       placeholder="Search..."
       autoComplete="one-time-code"
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon />
+            <Search />
           </InputAdornment>
         ),
+        endAdornment: searchValue ? (
+          <InputAdornment position="end">
+            <ClearButton onMouseDown={handleClear}>
+              <Clear />
+            </ClearButton>
+          </InputAdornment>
+        ) : null,
       }}
     />
   );
