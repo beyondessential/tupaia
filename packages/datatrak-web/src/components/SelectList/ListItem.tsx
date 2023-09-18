@@ -3,29 +3,39 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import {
   Collapse,
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
-import { Check, Description, FolderOpenTwoTone, KeyboardArrowRight } from '@material-ui/icons';
+import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import { Tooltip } from '@tupaia/ui-components';
 
 const IconWrapper = styled.div`
   padding-right: 0.5rem;
   display: flex;
   align-items: center;
   width: 1.5rem;
+  svg {
+    color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 // explicity set the types so that the overrides are applied, for the `button` prop
-export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
+export const BaseListItem = styled(MuiListItem)<
+  MuiListItemProps & {
+    appearsDisabled?: boolean;
+  }
+>`
   display: flex;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 3px;
   padding: 0.3rem 1rem 0.3rem 0.5rem;
+  color: ${({ theme, appearsDisabled }) =>
+    appearsDisabled ? theme.palette.text.secondary : theme.palette.text.primary};
   &.Mui-selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     background-color: transparent;
@@ -62,25 +72,38 @@ const ButtonContainer = styled.div`
 
 export type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
-  name: string;
+  content: string | ReactNode;
   value: string;
   selected?: boolean;
+  icon?: ReactNode;
+  tooltip?: string;
+  button?: boolean;
+  appearsDisabled?: boolean;
 };
 
 interface ListItemProps {
   item: ListItemType;
-  children?: React.ReactNode;
+  children?: ReactNode;
   onSelect: (item: ListItemType) => void;
 }
 
+const Wrapper = ({
+  children,
+  tooltip,
+}: {
+  children: ReactElement;
+  tooltip: ListItemType['tooltip'];
+}) => {
+  if (tooltip) {
+    return <Tooltip title={tooltip}>{children}</Tooltip>;
+  }
+  return <>{children}</>;
+};
+
 export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   const [open, setOpen] = useState(false);
+  const { content, selected, icon, tooltip, button = true, appearsDisabled } = item;
   const isNested = !!item.children;
-
-  const getIcon = () => {
-    if (isNested) return FolderOpenTwoTone;
-    return Description;
-  };
 
   const toggleOpen = () => {
     setOpen(!open);
@@ -93,20 +116,23 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
     return onSelect(item);
   };
 
-  const Icon = getIcon();
-
   return (
     <>
-      <BaseListItem button onClick={onClick} selected={item.selected}>
-        <ButtonContainer>
-          <IconWrapper>
-            <Icon color="primary" />
-          </IconWrapper>
-          {item.name}
-          {isNested && <Arrow $open={open} />}
-        </ButtonContainer>
-        {item.selected && <Check color="primary" />}
-      </BaseListItem>
+      <Wrapper tooltip={tooltip}>
+        <BaseListItem
+          button={button}
+          onClick={onClick}
+          selected={selected}
+          appearsDisabled={appearsDisabled}
+        >
+          <ButtonContainer>
+            <IconWrapper>{icon}</IconWrapper>
+            {content}
+            {isNested && <Arrow $open={open} />}
+          </ButtonContainer>
+          {selected && <Check color="primary" />}
+        </BaseListItem>
+      </Wrapper>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );

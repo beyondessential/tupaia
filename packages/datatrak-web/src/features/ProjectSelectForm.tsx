@@ -10,7 +10,7 @@ import { DialogActions, Typography } from '@material-ui/core';
 import { Lock, WatchLater } from '@material-ui/icons';
 import { SpinningLoader, Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
-import { Button, SelectList, BaseListItem } from '../components';
+import { Button, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
 import { useProjects } from '../api/queries';
 import { ROUTES } from '../constants';
@@ -30,59 +30,6 @@ const ListWrapper = styled.div`
   flex-direction: column;
   overflow: auto;
 `;
-
-const IconWrapper = styled.div`
-  padding-right: 0.5rem;
-  display: flex;
-  align-items: center;
-  width: 1.5rem;
-`;
-
-const StyledListItem = styled(BaseListItem)<{
-  $hasAccess?: boolean;
-}>`
-  color: ${({ theme, $hasAccess }) =>
-    $hasAccess ? theme.palette.text.primary : theme.palette.text.secondary};
-
-  .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.primary.main};
-  }
-`;
-
-const ListItem = ({ item, onSelect }) => {
-  const { name, selected, hasAccess, hasPendingAccess } = item;
-  const onClick = () => {
-    onSelect(item);
-  };
-
-  if (hasPendingAccess)
-    return (
-      <StyledListItem>
-        <IconWrapper>
-          <WatchLater />
-        </IconWrapper>
-        {/** Make the tooltip appear directly over the name, instead of the full width of the list item */}
-        <Tooltip title="Approval in progress" arrow>
-          <span>{name}</span>
-        </Tooltip>
-      </StyledListItem>
-    );
-
-  const Item = (
-    <StyledListItem button onClick={onClick} selected={selected} $hasAccess={hasAccess}>
-      <IconWrapper>{hasAccess ? null : <Lock />}</IconWrapper>
-      {name}
-    </StyledListItem>
-  );
-
-  if (hasAccess) return Item;
-
-  return (
-    <Tooltip title="Request project access" arrow>
-      {Item}
-    </Tooltip>
-  );
-};
 
 interface ProjectSelectFormProps {
   projectId?: Project['id'];
@@ -124,14 +71,47 @@ export const ProjectSelectForm = ({
     }
   };
 
-  const projectOptions = projects?.map(({ name, code, hasAccess, id, hasPendingAccess }) => ({
-    name,
-    value: id,
-    code,
-    selected: id === selectedProjectId,
-    hasAccess,
-    hasPendingAccess,
-  }));
+  const getProjectIcon = (hasAccess: boolean, hasPendingAccess: boolean) => {
+    if (hasPendingAccess) return <WatchLater />;
+    if (!hasAccess) return <Lock />;
+    return null;
+  };
+
+  const getProjectTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
+    if (!hasAccess && !hasPendingAccess) return 'Request project access';
+    return '';
+  };
+
+  const getProjectContent = (name: string, hasPendingAccess: boolean) => {
+    // customise the tooltip to appear over the project name if there is pending access, instead of the default of over the whole list item
+    if (hasPendingAccess)
+      return (
+        <Tooltip title="Approval in progress">
+          <span>{name}</span>
+        </Tooltip>
+      );
+    return name;
+  };
+
+  const getFormattedProjects = () => {
+    return projects?.map(({ name, code, hasAccess, id, hasPendingAccess }) => {
+      const icon = getProjectIcon(hasAccess, hasPendingAccess);
+      const tooltip = getProjectTooltip(hasAccess, hasPendingAccess);
+      const content = getProjectContent(name, hasPendingAccess);
+      return {
+        content,
+        value: id,
+        code,
+        selected: id === selectedProjectId,
+        icon,
+        tooltip,
+        button: !hasPendingAccess,
+        appearsDisabled: hasAccess === false,
+      };
+    });
+  };
+
+  const projectOptions = getFormattedProjects();
 
   return (
     <>
@@ -144,7 +124,6 @@ export const ProjectSelectForm = ({
       ) : (
         <ListWrapper>
           <SelectList
-            ListItem={ListItem}
             items={projectOptions}
             label="Select a project from the list below. You can change the project at any time"
             onSelect={onSelect}

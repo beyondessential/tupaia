@@ -101,11 +101,9 @@ export const UserInfo = () => {
           </>
         )}
       </Wrapper>
-      <ProjectSelectModal
-        open={projectModalOpen}
-        onClose={closeProjectModal}
-        projectId={user.projectId}
-      />
+      {projectModalOpen && (
+        <ProjectSelectModal open onClose={closeProjectModal} projectId={user.projectId} />
+      )}
     </>
   );
 };

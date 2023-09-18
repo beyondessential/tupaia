@@ -21,6 +21,7 @@ interface ModalProps {
 
 export const ProjectSelectModal = ({ open, onClose, projectId }: ModalProps) => {
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
+
   return (
     <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal>
       {requestAccessProjectCode ? (

@@ -10,7 +10,6 @@ import {
   Typography,
   FormGroup,
   FormControl as BaseFormControl,
-  Link,
 } from '@material-ui/core';
 import { CheckCircle } from '@material-ui/icons';
 import {
