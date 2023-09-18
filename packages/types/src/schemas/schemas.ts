@@ -37695,16 +37695,24 @@ export const ProjectResponseSchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"entityName": {
+		"name": {
 			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,
 	"type": "object",
 	"required": [
 		"code",
-		"entityName",
-		"id"
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
 	]
 } 
 
