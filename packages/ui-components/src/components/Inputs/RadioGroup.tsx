@@ -57,9 +57,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
 
 const Radio = styled(MuiRadio)<
   RadioProps & {
-    InputProps: {
-      'aria-describedby': string | null;
-    };
+    inputProps: React.HTMLAttributes<HTMLInputElement>;
   }
 >`
   color: ${props => props.theme.palette.text.tertiary};
@@ -77,9 +75,7 @@ interface RadioGroupProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   value: string | boolean;
   name: string;
-  options: {
-    [key: string]: string;
-  }[];
+  options: Record<string, any>[];
   label?: string;
   className?: string;
   labelKey?: string;
@@ -87,6 +83,9 @@ interface RadioGroupProps {
   tooltipKey?: string;
   tooltip?: string;
   helperText?: string;
+  id?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
+  inputProps?: React.HTMLAttributes<HTMLInputElement>;
 }
 
 export const RadioGroup = ({
@@ -101,8 +100,11 @@ export const RadioGroup = ({
   tooltipKey = 'tooltip',
   tooltip,
   helperText,
+  id,
+  inputRef,
+  inputProps,
 }: RadioGroupProps) => (
-  <FormControl component="fieldset" className={className} color="primary">
+  <FormControl component="fieldset" className={className} color="primary" id={id}>
     <InputLabel as={Legend} label={label} tooltip={tooltip} />
     {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
     <StyledRadioGroup name={name} value={value} onChange={onChange}>
@@ -110,14 +112,16 @@ export const RadioGroup = ({
         <FormControlLabel
           control={
             <Radio
-              InputProps={{
-                'aria-describedby': helperText ? `${name}-helperText` : null,
+              inputRef={inputRef}
+              inputProps={{
+                'aria-describedby': helperText ? `${name}-helperText` : undefined,
+                ...(inputProps || {}),
               }}
             />
           }
           key={option[valueKey].toString()}
           value={option[valueKey]}
-          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} />}
+          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} as="span" />}
         />
       ))}
     </StyledRadioGroup>

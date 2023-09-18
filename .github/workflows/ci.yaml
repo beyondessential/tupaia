@@ -125,6 +125,8 @@ jobs:
           - data-lake-api
           - data-table-server
           - database
+          - datatrak-web
+          - datatrak-web-server
           - dhis-api
           - entity-server
           - expression-parser

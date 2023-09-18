@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+// TODO: Tidy this up as part of RN-502
+
 const arraysAreSame = (arr1, arr2) =>
   arr1.length === arr2.length && arr1.every(item => arr2.includes(item));
 
