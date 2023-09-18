@@ -118,10 +118,6 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
   // the countries that are applicable to this project
   const projectCountries = countries?.filter((c: any) => project?.names?.includes(c.name));
 
-  const allCountriesHaveBeenRequested = projectCountries?.every((country: any) =>
-    country.accessRequests.includes(project?.code),
-  );
-
   const projectCode = project?.code;
   const submitForm = (formData: any) => {
     requestProjectAccess({
@@ -159,24 +155,6 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
       </LoaderWrapper>
     );
 
-  // If the user has already requested access to all countries within this project, show a message and direct the user back to the projects list
-  if (allCountriesHaveBeenRequested) {
-    return (
-      <div>
-        <Typography>
-          You have already requested access to all countries within this project.
-          <br />
-          This can take some time to process, as requests require formal permission to be granted.
-          If you have any questions, please email:{' '}
-          <Link href="mailto:admin@tupaia.org">admin@tupaia.org</Link>
-        </Typography>
-
-        <DialogActions>
-          <Button onClick={onClose}>Back to Projects</Button>
-        </DialogActions>
-      </div>
-    );
-  }
   return (
     <Form onSubmit={submitForm as SubmitHandler<any>} formContext={formContext}>
       {isError && <Error>{error.message}</Error>}
