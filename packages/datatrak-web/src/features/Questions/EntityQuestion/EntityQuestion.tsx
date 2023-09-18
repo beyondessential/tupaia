@@ -16,13 +16,17 @@ const Container = styled.div`
   width: 100%;
 `;
 
+// Todo: Remove this once we have a way to get the country id for the survey (WAITP-1431)
+const COUNTRY_CODE = 'TO';
+
 const useSearchResults = (searchValue, config) => {
   const entityConfig = config.entity;
-  const parentId = entityConfig?.parentId || 'TO';
+  const rootEntityCode = entityConfig?.parentId || COUNTRY_CODE;
+  const projectCode = 'explore';
   const { type } = entityConfig;
   const debouncedSearch = useDebounce(searchValue!, 200);
 
-  return useEntities('explore', parentId, { searchString: debouncedSearch, type });
+  return useEntities(projectCode, rootEntityCode, { searchString: debouncedSearch, type });
 };
 
 export const EntityQuestion = ({
@@ -77,7 +81,7 @@ export const EntityQuestion = ({
         id={id}
         isDirty={isDirty}
         label={label}
-        name={name}
+        name={name!}
         ref={ref}
         onChangeSearch={onChangeSearch}
         searchValue={searchValue}

@@ -56,7 +56,7 @@ export const SelectList = ({
   onSelect,
   label,
   ListItem,
-  variant = 'fullPage',
+  variant = 'inline',
 }: SelectListProps) => {
   return (
     <Wrapper>

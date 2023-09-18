@@ -46,7 +46,12 @@ const ListItem = ({ item, onSelect }) => {
 export const ResultsList = ({ searchResults, onSelect }) => {
   return (
     <ListWrapper>
-      <SelectList items={searchResults} onSelect={onSelect} ListItem={ListItem} />
+      <SelectList
+        items={searchResults}
+        onSelect={onSelect}
+        ListItem={ListItem}
+        variant="fullPage"
+      />
     </ListWrapper>
   );
 };

@@ -7,9 +7,9 @@ import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { Search, Clear } from '@material-ui/icons';
-import { InputAdornment, IconButton } from '@material-ui/core';
+import { InputAdornment, IconButton, TextFieldProps } from '@material-ui/core';
 
-const StyledField = styled(TextField)`
+const StyledField = styled(TextField)<TextFieldProps>`
   margin-bottom: 0.9rem;
 
   .MuiOutlinedInput-notchedOutline {
@@ -38,6 +38,7 @@ const ClearButton = styled(IconButton)`
   padding: 0.5rem;
   font-size: 0.9rem;
 `;
+
 export const SearchField = ({ ref, name, label, id, searchValue, onChangeSearch, isDirty }) => {
   const displayValue = isDirty ? searchValue : '';
 
@@ -53,11 +54,12 @@ export const SearchField = ({ ref, name, label, id, searchValue, onChangeSearch,
     <StyledField
       id={id}
       label={label}
-      name={name!}
+      name={name}
       ref={ref}
       onChange={handleChange}
       value={displayValue}
       placeholder="Search..."
+      // disable browser autofill
       autoComplete="one-time-code"
       InputProps={{
         startAdornment: (
@@ -65,13 +67,14 @@ export const SearchField = ({ ref, name, label, id, searchValue, onChangeSearch,
             <Search />
           </InputAdornment>
         ),
-        endAdornment: searchValue ? (
-          <InputAdornment position="end">
-            <ClearButton onMouseDown={handleClear}>
-              <Clear />
-            </ClearButton>
-          </InputAdornment>
-        ) : null,
+        endAdornment:
+          isDirty && searchValue ? (
+            <InputAdornment position="end">
+              <ClearButton onMouseDown={handleClear}>
+                <Clear />
+              </ClearButton>
+            </InputAdornment>
+          ) : null,
       }}
     />
   );
