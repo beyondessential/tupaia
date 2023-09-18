@@ -121,7 +121,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
       <Wrapper tooltip={tooltip}>
         <BaseListItem
           button={button}
-          onClick={onClick}
+          onClick={button ? onClick : null}
           selected={selected}
           appearsDisabled={appearsDisabled}
         >
