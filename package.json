@@ -81,7 +81,7 @@
     "vite-plugin-ejs": "^1.6.4"
   },
   "engines": {
-    "node": "^14.19.3"
+    "node": "^16.20.2"
   },
   "packageManager": "yarn@3.2.1"
 }
