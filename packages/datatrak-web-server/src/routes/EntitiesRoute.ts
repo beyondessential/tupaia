@@ -74,10 +74,9 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       filter,
     });
 
-    const sortedEntities = sortSearchResults(
-      searchString,
-      entities,
-    ) as DatatrakWebEntitiesRequest.ResBody;
+    const sortedEntities = searchString
+      ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
+      : entities;
 
     return camelcaseKeys(sortedEntities, { deep: true });
   }
