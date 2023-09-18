@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
-import { Lock } from '@material-ui/icons';
+import { Lock, WatchLater } from '@material-ui/icons';
 import { SpinningLoader, Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList, BaseListItem } from '../components';
@@ -39,7 +39,7 @@ const IconWrapper = styled.div`
 `;
 
 const StyledListItem = styled(BaseListItem)<{
-  $hasAccess: boolean;
+  $hasAccess?: boolean;
 }>`
   color: ${({ theme, $hasAccess }) =>
     $hasAccess ? theme.palette.text.primary : theme.palette.text.secondary};
@@ -50,21 +50,34 @@ const StyledListItem = styled(BaseListItem)<{
 `;
 
 const ListItem = ({ item, onSelect }) => {
-  const { name, selected, hasAccess } = item;
+  const { name, selected, hasAccess, hasPendingAccess } = item;
   const onClick = () => {
     onSelect(item);
   };
 
+  if (hasPendingAccess)
+    return (
+      <StyledListItem>
+        <IconWrapper>
+          <WatchLater />
+        </IconWrapper>
+        {/** Make the tooltip appear directly over the name, instead of the full width of the list item */}
+        <Tooltip title="Approval in progress" arrow>
+          <span>{name}</span>
+        </Tooltip>
+      </StyledListItem>
+    );
+
   const Item = (
     <StyledListItem button onClick={onClick} selected={selected} $hasAccess={hasAccess}>
-      <IconWrapper>{!hasAccess && <Lock />}</IconWrapper>
+      <IconWrapper>{hasAccess ? null : <Lock />}</IconWrapper>
       {name}
     </StyledListItem>
   );
 
-  return hasAccess ? (
-    Item
-  ) : (
+  if (hasAccess) return Item;
+
+  return (
     <Tooltip title="Request project access" arrow>
       {Item}
     </Tooltip>
@@ -111,12 +124,13 @@ export const ProjectSelectForm = ({
     }
   };
 
-  const projectOptions = projects?.map(({ name, code, hasAccess, id }) => ({
+  const projectOptions = projects?.map(({ name, code, hasAccess, id, hasPendingAccess }) => ({
     name,
     value: id,
     code,
     selected: id === selectedProjectId,
     hasAccess,
+    hasPendingAccess,
   }));
 
   return (

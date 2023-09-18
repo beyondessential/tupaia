@@ -5,7 +5,11 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Collapse, ListItem as MuiListItem } from '@material-ui/core';
+import {
+  Collapse,
+  ListItem as MuiListItem,
+  ListItemProps as MuiListItemProps,
+} from '@material-ui/core';
 import { Check, Description, FolderOpenTwoTone, KeyboardArrowRight } from '@material-ui/icons';
 
 const IconWrapper = styled.div`
@@ -15,7 +19,8 @@ const IconWrapper = styled.div`
   width: 1.5rem;
 `;
 
-export const BaseListItem = styled(MuiListItem)`
+// explicity set the types so that the overrides are applied, for the `button` prop
+export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   display: flex;
   align-items: center;
   border: 1px solid transparent;
@@ -28,12 +33,15 @@ export const BaseListItem = styled(MuiListItem)`
   .MuiCollapse-container & {
     padding-left: 1rem;
   }
-  &:hover,
-  &.Mui-selected:hover,
-  &:focus,
-  &.Mui-selected:focus {
-    background-color: ${({ theme }) => theme.palette.primary.main}33;
+  &.MuiButtonBase-root {
+    &:hover,
+    &.Mui-selected:hover,
+    &:focus,
+    &.Mui-selected:focus {
+      background-color: ${({ theme }) => theme.palette.primary.main}33;
+    }
   }
+
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
