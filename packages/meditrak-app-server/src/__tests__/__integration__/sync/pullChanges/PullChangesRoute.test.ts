@@ -18,6 +18,7 @@ import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/ut
 import {
   SyncableChangeEnqueuer,
   createPermissionsBasedMeditrakSyncQueue,
+  getSupportedModels,
   getUnsupportedModelFields,
 } from '../../../../sync';
 import { MeditrakAppServerModelRegistry } from '../../../../types';
@@ -25,6 +26,16 @@ import { TestModelRegistry } from '../../../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
 import { CAT_USER_SESSION } from '../../fixtures';
 import { upsertDummyQuestion } from '../upsertDummyQuestion';
+import {
+  findRecordsWithPermissions,
+  insertPermissionsBasedSyncTestData,
+  PERM_SYNC_COUNTRY_1,
+  PERM_SYNC_COUNTRY_2,
+  PERM_SYNC_PG_ADMIN,
+  PERM_SYNC_PG_PUBLIC,
+  PermissionsBasedSyncTestData,
+} from './fixtures';
+import { PERMISSIONS_BASED_SYNC_MIN_APP_VERSION } from '../../../../routes/sync/pullChanges/supportsPermissionsBasedSync';
 
 type ChangeRecord = {
   recordType: string;
@@ -33,23 +44,27 @@ type ChangeRecord = {
   timestamp: number;
 };
 
-const recordToChange = async (
-  recordType: string,
-  record: Record<string, unknown>,
-  changeType: 'update' | 'delete',
-) => {
+const recordToChange = async (recordType: string, record: any, changeType: 'update' | 'delete') => {
   if (changeType === 'delete') {
     return {
       action: 'delete',
-      recordType: 'question',
+      recordType,
       record: {
         id: record.id,
       },
     };
   }
 
+  const modelName = getSupportedModels().find(
+    name => record.otherModels[name].databaseType === recordType,
+  );
+
+  if (!modelName) {
+    throw new Error(`Cannot find model for record type: ${recordType}`);
+  }
+
   const fields = await (record.model as DatabaseModel).fetchFieldNames();
-  const unsupportedFields = getUnsupportedModelFields(recordType);
+  const unsupportedFields = getUnsupportedModelFields(modelName);
 
   // Supported fields with non-null values
   const cleanedRecordForSync = Object.fromEntries(
@@ -66,13 +81,15 @@ const recordToChange = async (
   };
 };
 
+const sortByRecordId = (r1: any, r2: any) => (r1.record.id > r2.record.id ? -1 : 1);
+
 const expectMatchingChangeRecords = (
   actual: ChangeRecord[],
   expected: Omit<ChangeRecord, 'timestamp'>[],
 ) => {
   // Can't match timestamp, just just assert the field is there and check it's a number
   actual.forEach(changeRecord => expect(typeof changeRecord.timestamp).toBe('number'));
-  const timestampFilteredActual = actual.map(changeRecord =>
+  const timestampFilteredActual: Record<string, any> = actual.map(changeRecord =>
     Object.entries(changeRecord).reduce((obj, [fieldName, fieldValue]) => {
       if (fieldName === 'timestamp') {
         return obj;
@@ -81,12 +98,13 @@ const expectMatchingChangeRecords = (
       return { ...obj, [fieldName]: fieldValue };
     }, {}),
   );
-  expect(timestampFilteredActual).toEqual(expected);
+  expect(timestampFilteredActual.sort(sortByRecordId)).toEqual(expected.sort(sortByRecordId));
 };
 
 describe('changes (GET)', () => {
   let app: TestableServer;
   let authHeader: string;
+  let userId: string;
   const models = getTestModels() as TestModelRegistry;
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
     getTestModels() as MeditrakAppServerModelRegistry,
@@ -99,14 +117,15 @@ describe('changes (GET)', () => {
     app = await setupTestApp();
 
     const user = await setupTestUser();
+    userId = user.id;
     authHeader = createBearerHeader(
       constructAccessToken({
-        userId: user.id,
+        userId,
         refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );
-    grantUserAccess(user.id);
+    grantUserAccess(userId);
   });
 
   afterAll(async () => {
@@ -462,5 +481,67 @@ describe('changes (GET)', () => {
       pagesPulled += 1;
       changesPulled += pageSize;
     }
+  });
+
+  describe('permissions based syncing', () => {
+    let testStartTime: number;
+    let testData: PermissionsBasedSyncTestData;
+
+    beforeAll(async () => {
+      testStartTime = Date.now();
+      app.setDefaultQueryParam('appVersion', PERMISSIONS_BASED_SYNC_MIN_APP_VERSION);
+
+      testData = await insertPermissionsBasedSyncTestData(models);
+      await models.database.waitForAllChangeHandlers();
+    });
+
+    describe('initial sync', () => {
+      it('should return the number of changes for a user with limited access', async () => {
+        revokeAccess();
+
+        const permissions = { [PERM_SYNC_COUNTRY_1.code]: [PERM_SYNC_PG_PUBLIC.name] };
+        grantUserAccess(userId, permissions);
+        const response = await app.get('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          query: {
+            since: testStartTime,
+          },
+        });
+
+        const expectedRecords = findRecordsWithPermissions(testData, permissions);
+        const expectedChanges = await Promise.all(
+          expectedRecords.map(({ type, record }) => recordToChange(type, record, 'update')),
+        );
+
+        expectMatchingChangeRecords(response.body, expectedChanges);
+      });
+
+      it('should return the number of changes for a user with full access', async () => {
+        revokeAccess();
+
+        const permissions = {
+          [PERM_SYNC_COUNTRY_1.code]: [PERM_SYNC_PG_PUBLIC.name, PERM_SYNC_PG_ADMIN.name],
+          [PERM_SYNC_COUNTRY_2.code]: [PERM_SYNC_PG_PUBLIC.name, PERM_SYNC_PG_ADMIN.name],
+        };
+        grantUserAccess(userId, permissions);
+        const response = await app.get('changes', {
+          headers: {
+            Authorization: authHeader,
+          },
+          query: {
+            since: testStartTime,
+          },
+        });
+
+        const expectedRecords = findRecordsWithPermissions(testData, permissions);
+        const expectedChanges = await Promise.all(
+          expectedRecords.map(({ type, record }) => recordToChange(type, record, 'update')),
+        );
+
+        expectMatchingChangeRecords(response.body, expectedChanges);
+      });
+    });
   });
 });

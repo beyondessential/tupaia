@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
+
 import { buildAndInsertSurvey } from '@tupaia/database';
 import { TestModelRegistry } from '../../../types';
 import { upsertCountry, upsertEntity, upsertPermissionGroup } from '../../../utilities/database';
@@ -100,7 +102,23 @@ const SURVEYS = [
   },
 ];
 
-export const insertPermissionsBasedSyncTestData = async (models: TestModelRegistry) => {
+export type PermissionsBasedSyncTestData = {
+  countries: any[];
+  entities: any[];
+  permissionGroups: any[];
+  surveys: {
+    survey: any;
+    surveyScreen: any;
+    surveyScreenComponents: any[];
+    questions: any[];
+    dataGroup: any;
+    dataElements: any[];
+  }[];
+};
+
+export const insertPermissionsBasedSyncTestData = async (
+  models: TestModelRegistry,
+): Promise<PermissionsBasedSyncTestData> => {
   const countryEntities = ENTITIES.filter(e => e.type === 'country');
   const countries = await Promise.all(
     countryEntities.map(ce => {
@@ -138,4 +156,62 @@ export const insertPermissionsBasedSyncTestData = async (models: TestModelRegist
     permissionGroups,
     surveys,
   };
+};
+
+export const findRecordsWithPermissions = (
+  testData: PermissionsBasedSyncTestData,
+  permissions: Record<string, string[]>,
+) => {
+  const accessPolicy = new AccessPolicy(permissions);
+  const countriesWithAccess = accessPolicy.getEntitiesAllowed();
+  const countryIdsWithAccess = testData.countries
+    .filter(({ code }) => countriesWithAccess.includes(code))
+    .map(({ id }) => id);
+  const permissionGroupsWithAccess = accessPolicy.getPermissionGroups();
+  const permissionGroupIdsWithAccess = testData.permissionGroups
+    .filter(({ name }) => permissionGroupsWithAccess.includes(name))
+    .map(({ id }) => id);
+
+  const countryRecords = testData.countries.map(r => ({ type: 'country', record: r }));
+  const countryEntityRecords = testData.entities
+    .filter(({ type }) => type === 'country')
+    .map(r => ({ type: 'entity', record: r }));
+
+  const entityRecordsInCountriesWithAccess = testData.entities
+    .filter(({ country_code: countryCode }) => countriesWithAccess.includes(countryCode || ''))
+    .map(r => ({ type: 'entity', record: r }));
+
+  const permissionGroupRecords = testData.permissionGroups.map(r => ({
+    type: 'permission_group',
+    record: r,
+  }));
+
+  const surveyRelatedRecordsWithAccess = testData.surveys
+    .filter(
+      ({ survey }) =>
+        (survey.country_ids.length === 0 ||
+          countryIdsWithAccess.some(cid => survey.country_ids.includes(cid))) &&
+        permissionGroupIdsWithAccess.some(pgid => survey.permission_group_id === pgid),
+    )
+    .map(({ survey, surveyScreen, surveyScreenComponents, questions }) => [
+      { type: 'survey', record: survey },
+      { type: 'survey_screen', record: surveyScreen },
+      ...surveyScreenComponents.map(r => ({ type: 'survey_screen_component', record: r })),
+      ...questions.map(r => ({ type: 'question', record: r })),
+    ])
+    .flat();
+
+  const allRecords = [
+    ...countryRecords,
+    ...countryEntityRecords,
+    ...entityRecordsInCountriesWithAccess,
+    ...permissionGroupRecords,
+    ...surveyRelatedRecordsWithAccess,
+  ];
+
+  const deduplicatedRecords = allRecords.filter(
+    ({ record: r1 }, i) => allRecords.findIndex(({ record: r2 }) => r1.id === r2.id) === i,
+  );
+
+  return deduplicatedRecords;
 };
