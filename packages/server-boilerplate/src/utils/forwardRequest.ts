@@ -52,9 +52,13 @@ export const forwardRequest = (
 
   const proxyMiddleware = createProxyMiddleware(proxyOptions);
   return async (req: Request, res: Response, next: NextFunction) => {
-    console.log(`forwarding ${req.path} to ${target}`);
-    const authHandler = authHandlerProvider(req);
-    req.headers.authorization = await authHandler.getAuthHeader();
-    proxyMiddleware(req, res, next);
+    console.log(`forwarding ${req.originalUrl} to ${target}`);
+    try {
+      const authHandler = authHandlerProvider(req);
+      req.headers.authorization = await authHandler.getAuthHeader();
+      proxyMiddleware(req, res, next);
+    } catch (error) {
+      next(error);
+    }
   };
 };
