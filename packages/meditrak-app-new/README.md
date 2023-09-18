@@ -1,3 +1,12 @@
+# Prerequisites
+
+- nvm use
+- npm install -g watchman
+- npm install -g yarn
+- Run `npx react-native doctor` to see other requirements
+- First time starting meditrak-app-new: you must delete the old version of the app from the device
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
