@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FormLabel } from '@material-ui/core';
 import { ListItemType } from './ListItem';
 import { List } from './List';
@@ -17,12 +17,24 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const ListWrapper = styled.div`
+const FullBorder = css`
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  border-radius: 3px;
+  padding: 0 1rem;
+`;
+
+const TopBorder = css`
+  border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  border-radius: 0;
+  padding: 0.5rem 0;
+`;
+
+const ListWrapper = styled.div<{
+  $variant: string;
+}>`
   overflow-y: auto;
   max-height: 100%;
-  padding: 0 1rem;
-  border-radius: 3px;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
+  ${({ $variant }) => ($variant === 'fullPage' ? TopBorder : FullBorder)};
 `;
 
 const Label = styled(FormLabel).attrs({
@@ -36,13 +48,20 @@ interface SelectListProps {
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
+  variant?: 'fullPage' | 'inline';
 }
 
-export const SelectList = ({ items = [], onSelect, label, ListItem }: SelectListProps) => {
+export const SelectList = ({
+  items = [],
+  onSelect,
+  label,
+  ListItem,
+  variant = 'fullPage',
+}: SelectListProps) => {
   return (
     <Wrapper>
       {label && <Label>{label}</Label>}
-      <ListWrapper>
+      <ListWrapper $variant={variant}>
         <List items={items} onSelect={onSelect} ListItem={ListItem} />
       </ListWrapper>
     </Wrapper>

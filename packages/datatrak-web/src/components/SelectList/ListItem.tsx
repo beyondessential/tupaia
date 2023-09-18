@@ -37,6 +37,10 @@ export const BaseListItem = styled(MuiListItem)`
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
+  .text-secondary {
+    color: ${({ theme }) => theme.palette.text.secondary};
+    margin-left: 0.4em;
+  }
 `;
 
 const Arrow = styled(KeyboardArrowRight)<{
