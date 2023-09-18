@@ -6,21 +6,19 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { Project } from '@tupaia/types';
 import { put } from '../api';
-import { useUser } from '../queries';
 
 type ProjectId = { projectId: Project['id'] };
 
 export const useEditUser = onSuccess => {
   const queryClient = useQueryClient();
-  const { data: user } = useUser();
 
   return useMutation<any, Error, ProjectId, unknown>(
     async ({ projectId }: ProjectId) => {
-      if (!user?.id || !projectId) {
+      if (!projectId) {
         return;
       }
 
-      await put(`users/${user.id}`, {
+      await put('me', {
         data: {
           project_id: projectId,
         },
