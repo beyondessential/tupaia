@@ -15,6 +15,6 @@ type EntityFilters = {
 export const useEntities = (projectCode?: string, params?: EntityFilters) => {
   return useQuery(
     ['entities', projectCode, params],
-    (): Promise<any> => get(`entities/${projectCode}`, { params }),
+    (): Promise<any> => get('entities', { params: { ...params, projectCode } }),
   );
 };

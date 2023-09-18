@@ -12,4 +12,3 @@ export { SurveysRequest, SurveysRoute } from './SurveysRoute';
 export { SurveyRequest, SurveyRoute } from './SurveyRoute';
 export { ProjectsRequest, ProjectsRoute } from './ProjectsRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
-export { EntityRoute, EntityRequest } from './EntityRoutes';

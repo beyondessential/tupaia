@@ -28,10 +28,10 @@ function sortSearchResults(searchString: string, results: any[]) {
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
     const { params, query, ctx } = this.req;
-    const { projectCode } = params;
 
     const {
       countryCode,
+      projectCode,
       fields = DEFAULT_FIELDS,
       grandparentId,
       parentId,
@@ -42,7 +42,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const dbOptions = {
       fields,
       filter: {
-        countryCode,
+        country_code: countryCode,
         type: {
           comparator: '=',
           comparisonValue: type,
@@ -54,11 +54,16 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       },
     };
 
-    const response = await ctx.services.central.fetchResources('entities', {
-      filter: { id: grandparentId | parentId },
-      columns: ['code'],
-    });
-    const { code: entityCode } = response[0];
+    let entityCode = projectCode;
+
+    if (grandparentId || parentId) {
+      const response = await ctx.services.central.fetchResources('entities', {
+        filter: { id: grandparentId || parentId },
+        columns: ['code'],
+      });
+      const { code } = response[0];
+      entityCode = code;
+    }
 
     const entities = await ctx.services.entity.getDescendantsOfEntity(
       projectCode,

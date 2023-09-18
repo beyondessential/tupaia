@@ -26,8 +26,6 @@ import {
   SurveyRoute,
   EntitiesRequest,
   EntitiesRoute,
-  EntityRoute,
-  EntityRequest,
 } from '../routes';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -40,8 +38,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<EntitiesRequest>('entities/:projectCode', handleWith(EntitiesRoute))
-    .get<EntityRequest>('entity/:entityId', handleWith(EntityRoute))
+    .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))

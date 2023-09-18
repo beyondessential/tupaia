@@ -11,27 +11,16 @@ import { useEntities, useEntity, useUser } from '../../../api/queries';
 import { useDebounce } from '../../../utils';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
+import { useEntityBaseFilters } from './utils';
 
 const Container = styled.div`
   width: 100%;
 `;
 
-// Todo: Remove this once we have a way to get the country id for the survey (WAITP-1431)
-const COUNTRY_CODE = 'TO';
-
-const getEntityBaseFilters = ({ entity: entityConfig }) => {
-  return {
-    type: entityConfig.type,
-    parentId: entityConfig.parentId,
-    grandParentId: entityConfig.grandParentId,
-    countryCode: COUNTRY_CODE,
-  };
-};
-
 const useSearchResults = (searchValue, config) => {
   const { data: user } = useUser();
   const projectCode = user?.project?.code;
-  const filters = getEntityBaseFilters(config);
+  const filters = useEntityBaseFilters(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
   return useEntities(projectCode, { searchString: debouncedSearch, ...filters });
