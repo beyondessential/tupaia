@@ -5,7 +5,7 @@
 import { useSurveyForm } from '../../Survey/SurveyContext';
 
 // Todo: Remove this once we have a way to get the country id for the survey (WAITP-1431)
-const getCountryCode = () => 'TO';
+const getCountryCode = () => 'DL';
 
 export const useEntityBaseFilters = config => {
   const { getAnswerForQuestion } = useSurveyForm();
@@ -15,10 +15,10 @@ export const useEntityBaseFilters = config => {
   const filters = { countryCode, type };
 
   if (parentId && parentId.questionId) {
-    filters['parent.id'] = getAnswerForQuestion(parentId.questionId);
+    filters['parentId'] = getAnswerForQuestion(parentId.questionId);
   }
   if (grandparentId && grandparentId.questionId) {
-    filters['parent.parent.id'] = getAnswerForQuestion(grandparentId.questionId);
+    filters['grandparentId'] = getAnswerForQuestion(grandparentId.questionId);
   }
   return filters;
 };

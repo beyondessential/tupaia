@@ -15,6 +15,11 @@ import { useEntityBaseFilters } from './utils';
 
 const Container = styled.div`
   width: 100%;
+  z-index: 0;
+
+  fieldset:disabled & {
+    pointer-events: none;
+  }
 `;
 
 const useSearchResults = (searchValue, config) => {
