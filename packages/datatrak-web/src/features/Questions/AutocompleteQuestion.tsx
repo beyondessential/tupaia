@@ -41,6 +41,14 @@ const Autocomplete = styled(BaseAutocomplete)`
   }
   .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
     padding: 0.6rem 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
+    right: 0;
+  }
+  .MuiIconButton-root {
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 
