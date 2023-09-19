@@ -22,6 +22,8 @@ const Autocomplete = styled(BaseAutocomplete)`
 
   .MuiFormLabel-root {
     color: ${({ theme }) => theme.palette.text.primary};
+    font-size: 1rem;
+    line-height: 1.5;
   }
   .MuiOutlinedInput-notchedOutline {
     border: none;
