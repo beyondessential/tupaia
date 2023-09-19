@@ -270,8 +270,8 @@ describe('POST /surveyResponse', async () => {
         const questionCode = 'TEST_QUESTION_1';
         delete answerObject.question_id;
         answerObject.question_code = questionCode;
-        const surveyResponseObject = generateDummySurveyResponse([answerObject]);
-        const response = await app.post('changes', { body: [surveyResponseObject] });
+        const surveyResponseObject = generateDummySurveyResponse({ answers: [answerObject] });
+        const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
 
         expect(response.statusCode).to.equal(400);
       });
