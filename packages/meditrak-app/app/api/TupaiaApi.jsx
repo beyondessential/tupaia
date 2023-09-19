@@ -7,8 +7,16 @@ import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Config from 'react-native-config';
 
-import {logoutWithError, receiveUpdatedAccessPolicy} from '../authentication/actions';
-import {isBeta, betaBranch, centralApiUrl, getDeviceAppVersion} from '../version';
+import {
+  logoutWithError,
+  receiveUpdatedAccessPolicy,
+} from '../authentication/actions';
+import {
+  isBeta,
+  betaBranch,
+  meditrakApiUrl,
+  getDeviceAppVersion,
+} from '../version';
 
 import {analytics} from '../utilities';
 
@@ -21,8 +29,12 @@ const REFRESH_TOKEN_KEY = 'RefreshToken';
 const SOCIAL_FEED_ENDPOINT = 'socialFeed';
 const CURRENT_USER_REWARDS_ENDPOINT = 'me/rewards';
 const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2';
-const PRODUCTION_BASE_URL = `https://${isBeta ? `${betaBranch}-` : ''}api.tupaia.org/v2`;
-export const BASE_URL = __DEV__ ? centralApiUrl || DEV_BASE_URL : PRODUCTION_BASE_URL;
+const PRODUCTION_BASE_URL = `https://${
+  isBeta ? `${betaBranch}-` : ''
+}api.tupaia.org/v2`;
+export const BASE_URL = __DEV__
+  ? meditrakApiUrl || DEV_BASE_URL
+  : PRODUCTION_BASE_URL;
 
 const TIMEOUT_INTERVAL = 45 * 1000; // 45 seconds in milliseconds
 
@@ -54,7 +66,10 @@ export class TupaiaApi {
     return response;
   }
 
-  setAuthTokens(accessToken = this.accessToken, refreshToken = this.refreshToken) {
+  setAuthTokens(
+    accessToken = this.accessToken,
+    refreshToken = this.refreshToken,
+  ) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.storeAuthTokens();
@@ -76,9 +91,12 @@ export class TupaiaApi {
 
   async retrieveAuthTokens() {
     try {
-      const accessToken = (await AsyncStorage.getItem(ACCESS_TOKEN_KEY)) || this.accessToken;
-      const refreshToken = (await AsyncStorage.getItem(REFRESH_TOKEN_KEY)) || this.refreshToken;
-      if (accessToken && refreshToken) this.setAuthTokens(accessToken, refreshToken);
+      const accessToken =
+        (await AsyncStorage.getItem(ACCESS_TOKEN_KEY)) || this.accessToken;
+      const refreshToken =
+        (await AsyncStorage.getItem(REFRESH_TOKEN_KEY)) || this.refreshToken;
+      if (accessToken && refreshToken)
+        this.setAuthTokens(accessToken, refreshToken);
     } catch (error) {
       // Silently ignore any async storage errors
     } finally {
@@ -118,7 +136,8 @@ export class TupaiaApi {
       return; // Silently swallow network errors etc, they will be picked up by the outer request
     }
     if (!response.accessToken) {
-      if (this.reduxStore) this.reduxStore.dispatch(logoutWithError(response.error));
+      if (this.reduxStore)
+        this.reduxStore.dispatch(logoutWithError(response.error));
       return;
     }
     this.reduxStore.dispatch(receiveUpdatedAccessPolicy(response.user));
@@ -141,7 +160,11 @@ export class TupaiaApi {
     const response = await this.post(
       CHANGE_USER_PASSWORD_ENDPOINT,
       null,
-      JSON.stringify({oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm}),
+      JSON.stringify({
+        oldPassword,
+        password: newPassword,
+        passwordConfirm: newPasswordConfirm,
+      }),
     );
 
     return response;
@@ -189,7 +212,10 @@ export class TupaiaApi {
   getQueryUrl = (endpoint, queryParamsIn) => {
     const queryParams = {appVersion: getDeviceAppVersion(), ...queryParamsIn};
     const queryParamsString = Object.entries(queryParams)
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+      )
       .join('&');
 
     return `${BASE_URL}/${endpoint}?${queryParamsString}`;
@@ -203,7 +229,8 @@ export class TupaiaApi {
     overriddenAuthHeader = null,
     shouldReauthenticateIfUnauthorized = true,
   ) {
-    const authHeader = overriddenAuthHeader || (await this.getBearerAuthHeader());
+    const authHeader =
+      overriddenAuthHeader || (await this.getBearerAuthHeader());
 
     analytics.trackEvent('Request attempted', {
       requestMethod,
@@ -235,7 +262,14 @@ export class TupaiaApi {
       this.refreshToken !== null
     ) {
       await this.refreshAccessToken();
-      return this.request(requestMethod, apiEndpoint, queryParameters, body, null, false);
+      return this.request(
+        requestMethod,
+        apiEndpoint,
+        queryParameters,
+        body,
+        null,
+        false,
+      );
     }
 
     const responseJson = await response.json();
@@ -247,10 +281,12 @@ export class TupaiaApi {
     if (
       (response.status < 200 ||
         response.status >= 300 ||
-        (responseJson.status && (responseJson.status < 200 || responseJson.status >= 300))) &&
+        (responseJson.status &&
+          (responseJson.status < 200 || responseJson.status >= 300))) &&
       !responseJson.error
     ) {
-      responseJson.error = responseJson.message || `Network error ${response.status}`;
+      responseJson.error =
+        responseJson.message || `Network error ${response.status}`;
 
       analytics.trackEvent('Request failed', {
         requestMethod,

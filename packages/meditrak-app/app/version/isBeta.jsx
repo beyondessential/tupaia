@@ -7,5 +7,5 @@ import Config from 'react-native-config';
 
 export const isBeta = !!Config.BETA_BRANCH;
 export const betaBranch = Config.BETA_BRANCH;
-export const centralApiUrl =
-  Config.CENTRAL_API_URL || 'http://10.0.2.2:8090/v2';
+export const meditrakApiUrl =
+  Config.MEDITRAK_API_URL || 'http://10.0.2.2:8020/v1';
