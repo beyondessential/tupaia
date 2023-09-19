@@ -19,6 +19,8 @@ const FIELD_TRANSLATION = {
   'fields.parentId.questionId': 'fields.parent',
   'fields.attributes.type.questionId': 'fields.attributes.type',
   'filter.attributes.type.questionId': 'filter.attributes.type',
+  'fields.name.questionId': 'fields.name',
+  'fields.code.questionId': 'fields.code',
 };
 
 const VALUE_TRANSLATION = {
