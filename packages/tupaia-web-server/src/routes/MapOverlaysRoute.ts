@@ -11,9 +11,9 @@ import {
   MapOverlayGroupRelation,
   TupaiaWebMapOverlaysRequest,
 } from '@tupaia/types';
+import { orderBy } from '@tupaia/utils';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
-import orderBy from 'lodash.orderby';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
