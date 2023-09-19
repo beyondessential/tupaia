@@ -3,9 +3,6 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-// Exact copy of: @tupaia/central-server/src/createMeditrakSyncView.js
-// TODO: Tidy this up as part of RN-502
-
 import winston from 'winston';
 import { TupaiaDatabase } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
