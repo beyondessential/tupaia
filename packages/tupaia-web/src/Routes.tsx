@@ -53,12 +53,14 @@ const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
  *
  * **/
 export const Routes = () => {
-  const { isLoading } = useUser();
+  const { isLoading, isFetched } = useUser();
+
+  const showLoader = isLoading && !isFetched;
   return (
     <>
       <ModalRoutes />
       {/** Because we need the user login state to handle access errors, we need to load the user before doing anything else, and show a loader if the user is still loading */}
-      {isLoading ? (
+      {showLoader ? (
         <LoadingScreen isLoading />
       ) : (
         <RouterRoutes>
