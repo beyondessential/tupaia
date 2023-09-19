@@ -8,3 +8,4 @@ export { useProjects } from './useProjects';
 export { useSurveys } from './useSurveys';
 export { useSurveyScreenComponents } from './useSurveyScreenComponents';
 export { useSurvey } from './useSurvey';
+export { useAutocompleteOptions } from './useAutocompleteOptions';
