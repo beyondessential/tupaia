@@ -72,7 +72,6 @@ interface SearchResultsProps {
 const PAGE_LENGTHS = {
   INITIAL: 5,
   LOAD_MORE: 5,
-  MAX: 20,
 };
 export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
   const { projectCode } = useParams();
@@ -82,8 +81,11 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
   const { data: searchResults = [], isLoading } = useEntitySearch(
     projectCode,
     searchValue,
-    pageSize,
+    // Request one extra result to determine if there are more results to load
+    pageSize + 1,
   );
+
+  const resultsCount = searchResults.length;
 
   if (searchValue !== prevSearchValue) {
     setPrevSearchValue(searchValue);
@@ -94,7 +96,7 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
     return <Loader />;
   }
 
-  if (searchResults.length === 0) {
+  if (resultsCount === 0) {
     return <NoDataMessage searchValue={searchValue} />;
   }
 
@@ -102,10 +104,14 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
     setPageSize(pageSize + PAGE_LENGTHS.LOAD_MORE);
   };
 
+  const showLoadMoreButton = resultsCount > pageSize;
+  // Remove the extra result
+  const displayResults = searchResults.slice(0, -1);
+
   return (
     <Container>
       <ScrollBody>
-        {searchResults.map(({ code, qualifiedName }) => {
+        {displayResults.map(({ code, qualifiedName }) => {
           return (
             <ResultLink
               button
@@ -118,7 +124,7 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
           );
         })}
       </ScrollBody>
-      {pageSize < PAGE_LENGTHS.MAX && (
+      {showLoadMoreButton && (
         <LoadMoreButton onClick={onLoadMore}>Load more results</LoadMoreButton>
       )}
     </Container>
