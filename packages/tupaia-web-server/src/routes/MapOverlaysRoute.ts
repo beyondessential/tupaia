@@ -13,7 +13,7 @@ import {
 } from '@tupaia/types';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
-import sortBy from 'lodash.sortby';
+import orderBy from 'lodash.orderby';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -114,7 +114,11 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       // Translate Map Overlay Group
       return {
         name: parentEntry.name,
-        children: sortBy(nestedChildren, ['sortOrder', 'name']).map((child: OverlayChild) => {
+        children: orderBy(nestedChildren, [
+          ({ child }: { child: OverlayChild }) => (child.sortOrder === null ? 1 : 0), // Puts null values last
+          'sortOrder',
+          'name',
+        ]).map((child: OverlayChild) => {
           // We only needed the sortOrder for sorting, strip it before we return
           const { sortOrder, ...restOfChild } = child;
           return restOfChild;

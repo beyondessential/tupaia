@@ -127,6 +127,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
       })),
       [
+        ({ relation }: { relation: DashboardRelation }) => (relation.sort_order === null ? 1 : 0), // Puts null values last
         ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
         ({ item }: { item: DashboardItem }) => item.code,
       ],
