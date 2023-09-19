@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CLIENT_BASIC_AUTH_HEADER } from 'react-native-dotenv';
 
 import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
-import { isBeta, betaBranch, centralApiUrl, getDeviceAppVersion } from '../version';
+import { isBeta, betaBranch, meditrakApiUrl, getDeviceAppVersion } from '../version';
 
 import { analytics } from '../utilities';
 
@@ -22,7 +22,7 @@ const SOCIAL_FEED_ENDPOINT = 'socialFeed';
 const CURRENT_USER_REWARDS_ENDPOINT = 'me/rewards';
 const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2';
 const PRODUCTION_BASE_URL = `https://${isBeta ? `${betaBranch}-` : ''}api.tupaia.org/v2`;
-export const BASE_URL = __DEV__ ? centralApiUrl || DEV_BASE_URL : PRODUCTION_BASE_URL;
+export const BASE_URL = __DEV__ ? meditrakApiUrl || DEV_BASE_URL : PRODUCTION_BASE_URL;
 
 const TIMEOUT_INTERVAL = 45 * 1000; // 45 seconds in milliseconds
 
