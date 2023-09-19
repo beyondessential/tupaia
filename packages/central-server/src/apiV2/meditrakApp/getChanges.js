@@ -32,9 +32,9 @@ function getRecordForSync(models, record, recordType) {
   });
 
   // Translate values in columns based on meditrak app version
-  const { meditrakConfig } = models[camel(recordType)];
-  const translatedRecord = meditrakConfig.translateForSync
-    ? meditrakConfig.translateForSync(recordWithoutNulls)
+  const selectedModel = models[camel(recordType)];
+  const translatedRecord = selectedModel?.meditrakConfig.translateForSync
+    ? selectedModel.meditrakConfig.translateForSync(recordWithoutNulls)
     : recordWithoutNulls;
   return translatedRecord;
 }
