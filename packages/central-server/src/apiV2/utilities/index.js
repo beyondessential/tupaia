@@ -10,7 +10,6 @@ export {
   fetchCountryIdsByPermissionGroupId,
   fetchCountryCodesByPermissionGroupId,
 } from './fetchCountriesByPermissionGroup';
-export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchRequestingMeditrakDevice';
 export {
   getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
