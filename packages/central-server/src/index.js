@@ -16,9 +16,7 @@ import {
   TupaiaDatabase,
   getDbMigrator,
 } from '@tupaia/database';
-import { isFeatureEnabled } from '@tupaia/utils';
 
-import { MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
@@ -34,14 +32,6 @@ import winston from './log';
    */
   const database = new TupaiaDatabase();
   const models = new ModelRegistry(database, modelClasses, true);
-
-  /**
-   * Set up change handlers e.g. for syncing
-   */
-  if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
-    const meditrakSyncQueue = new MeditrakSyncQueue(models);
-    meditrakSyncQueue.listenForChanges();
-  }
 
   // Pre-cache entity hierarchy details
   const entityHierarchyCacher = new EntityHierarchyCacher(models);

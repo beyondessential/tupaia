@@ -8,14 +8,7 @@ import { requireEnv, getEnvVarOrDefault } from './requireEnv';
 export const FEATURE_FLAG_ON = 'on';
 export const FEATURE_FLAG_OFF = 'off';
 
-const FLAGS = {
-  MEDITRAK_SYNC_QUEUE: {
-    default: FEATURE_FLAG_ON,
-  },
-  SERVER_CHANGE_ENQUEUER: {
-    default: FEATURE_FLAG_OFF,
-  },
-};
+const FLAGS = {};
 
 /**
  * Simple feature flag functionality implemented via env vars
