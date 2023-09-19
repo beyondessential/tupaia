@@ -28,7 +28,7 @@ const productionSubdomainSet = new Set(productionSubdomains);
 
 const SERVICES = {
   auth: {
-    subdomain: 'api',
+    subdomain: 'central-api',
     version: 'v2',
     localPort: '8090',
   },
@@ -38,7 +38,7 @@ const SERVICES = {
     localPort: '8050',
   },
   central: {
-    subdomain: 'api',
+    subdomain: 'central-api',
     version: 'v2',
     localPort: '8090',
   },
