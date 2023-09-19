@@ -13,14 +13,7 @@ import { useRouteHandler } from './RouteHandler';
 import { exportRoutes } from './export';
 import { importRoutes } from './import';
 import { authenticate } from './authenticate';
-import {
-  countChanges,
-  changesMetadata,
-  getChanges,
-  getSocialFeed,
-  getUserRewards,
-  postChanges,
-} from './meditrakApp';
+
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
@@ -160,13 +153,8 @@ apiV2.use('/import', importRoutes);
 /**
  * GET routes
  */
-apiV2.get('/changes/count', catchAsyncErrors(countChanges));
-apiV2.get('/changes/metadata', catchAsyncErrors(changesMetadata));
-apiV2.get('/changes', catchAsyncErrors(getChanges));
 apiV2.get('/downloadFiles', useRouteHandler(DownloadFiles));
-apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
-apiV2.get('/me/rewards', allowAnyone(getUserRewards));
 apiV2.get('/me/countries', allowAnyone(getCountryAccessList));
 apiV2.get('/answers/:recordId?', useRouteHandler(GETAnswers));
 apiV2.get('/disasters/:recordId?', useRouteHandler(GETDisasters));
@@ -258,7 +246,6 @@ apiV2.post('/auth', catchAsyncErrors(authenticate));
 apiV2.post('/auth/resetPassword', catchAsyncErrors(requestPasswordReset));
 apiV2.post('/auth/resendEmail', catchAsyncErrors(requestResendEmail));
 apiV2.post('/auth/verifyEmail', catchAsyncErrors(verifyEmail));
-apiV2.post('/changes', catchAsyncErrors(postChanges));
 apiV2.post('/user', useRouteHandler(RegisterUserAccounts)); // used for user registration on tupaia.org etc.
 apiV2.post('/users', useRouteHandler(CreateUserAccounts)); // used by admin panel to directly create users
 apiV2.post('/userEntityPermissions', useRouteHandler(CreateUserEntityPermissions));
