@@ -33,6 +33,8 @@ const VALUE_TRANSLATION = {
   'filter.type': value => value.join(','),
   'filter.attributes.type': fetchQuestionCode,
   'fields.attributes.type': fetchQuestionCode,
+  'fields.name': fetchQuestionCode,
+  'fields.code': fetchQuestionCode,
 };
 
 /**
