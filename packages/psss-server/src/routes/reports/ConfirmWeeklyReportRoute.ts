@@ -19,12 +19,6 @@ const WEEKLY_REPORT_CODE = 'PSSS_Weekly_Cases';
 const ACTIVE_ALERTS_REPORT_CODE = 'PSSS_Active_Alerts';
 const CONFIRMED_WEEKLY_REPORT_CODE = 'PSSS_Confirmed_Weekly_Report';
 
-type ConfirmedWeeklyReportAnswer = {
-  type: string;
-  code: string;
-  value: number;
-};
-
 type AlertResponseData = {
   createdAlerts: {
     id: string;
@@ -150,8 +144,8 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
     if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     return this.centralConnection.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
-      { code: 'PSSS_Alert_Syndrome', type: 'Radio', value: syndromeCode },
-      { code: 'PSSS_Alert_Archived', type: 'Binary', value: 'No' },
+      { code: 'PSSS_Alert_Syndrome', value: syndromeCode },
+      { code: 'PSSS_Alert_Archived', value: 'No' },
     ]);
   }
 
@@ -159,14 +153,12 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
     if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     return this.centralConnection.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
-      { code: 'PSSS_Alert_Archived', type: 'Binary', value: 'Yes' },
+      { code: 'PSSS_Alert_Archived', value: 'Yes' },
     ]);
   }
 }
 
-const mapUnconfirmedReportToConfirmedAnswers = (
-  reportValues: Record<string, unknown>,
-): ConfirmedWeeklyReportAnswer[] => {
+const mapUnconfirmedReportToConfirmedAnswers = (reportValues: Record<string, unknown>) => {
   const {
     Sites: sites,
     'Sites Reported': sitesReported,
@@ -185,37 +177,30 @@ const mapUnconfirmedReportToConfirmedAnswers = (
 
   return [
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_Sites',
       value: validateIsNumber(sites, errorHandler('Sites')),
     },
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_Sites_Reported',
       value: validateIsNumber(sitesReported, errorHandler('Sites Reported')),
     },
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_AFR_Cases',
       value: validateIsNumber(afr, errorHandler('AFR')),
     },
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_DIA_Cases',
       value: validateIsNumber(dia, errorHandler('DIA')),
     },
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_ILI_Cases',
       value: validateIsNumber(ili, errorHandler('ILI')),
     },
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_PF_Cases',
       value: validateIsNumber(pf, errorHandler('PF')),
     },
     {
-      type: 'Number',
       code: 'PSSS_Confirmed_DLI_Cases',
       value: validateIsNumber(dli, errorHandler('DLI')),
     },
