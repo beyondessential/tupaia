@@ -3,13 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { MaterializedViewLogDatabaseModel, SurveyType as BaseSurveyType } from '@tupaia/database';
-
-class SurveyType extends BaseSurveyType {
-  static meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
-}
+import { MaterializedViewLogDatabaseModel, SurveyType } from '@tupaia/database';
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataGroup];
@@ -17,10 +11,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
     return SurveyType;
   }
-
-  meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
 }
 
 const onChangeUpdateDataGroup = async (

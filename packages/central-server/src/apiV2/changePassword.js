@@ -8,23 +8,10 @@ import { allowNoPermissions } from '../permissions';
 
 export async function changePassword(req, res, next) {
   const { models, body, userId } = req;
-  const {
-    oneTimeLoginToken,
-    oldPassword,
-    password,
-    newPassword,
-    passwordConfirm,
-    newPasswordConfirm,
-  } = body;
+  const { oneTimeLoginToken, oldPassword, password, passwordConfirm } = body;
 
   // Checking the oneTimeLogin/oldPassword acts as our permission check
   await req.assertPermissions(allowNoPermissions);
-
-  // Support both alternatives so that users using versions
-  // of meditrak-app prior to 1.9.109 can still change their passwords
-  // TODO: Remove as part of RN-502
-  const passwordParam = password || newPassword;
-  const passwordConfirmParam = passwordConfirm || newPasswordConfirm;
 
   // Check password hash matches that in db
   const user = await models.user.findById(userId);
@@ -43,18 +30,18 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError('Incorrect current password.', ['oldPassword']);
   }
 
-  if (passwordParam !== passwordConfirmParam) {
+  if (password !== passwordConfirm) {
     throw new FormValidationError('Passwords do not match.', ['password', 'passwordConfirm']);
   }
 
   try {
-    isValidPassword(passwordParam);
+    isValidPassword(password);
   } catch (error) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
 
   await models.user.updateById(userId, {
-    ...hashAndSaltPassword(passwordParam),
+    ...hashAndSaltPassword(password),
   });
 
   respond(res, { message: 'Successfully updated password' });
