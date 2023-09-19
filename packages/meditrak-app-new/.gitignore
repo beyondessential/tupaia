@@ -52,6 +52,12 @@ yarn-error.log
 **/fastlane/screenshots
 **/fastlane/test_output
 
+# Bugsnag
+#
+*.bundle
+*.bundle.map
+*.bundle.meta
+
 # Bundle artifact
 *.jsbundle
 
