@@ -3,13 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { SurveyModel as BaseSurveyModel, SurveyRecord as BaseSurveyRecord } from '@tupaia/database';
-
-class SurveyRecord extends BaseSurveyRecord {
-  static meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
-}
+import { SurveyModel as BaseSurveyModel, SurveyRecord } from '@tupaia/database';
 
 export class SurveyModel extends BaseSurveyModel {
   notifiers = [onChangeUpdateDataGroup];
@@ -17,10 +11,6 @@ export class SurveyModel extends BaseSurveyModel {
   get DatabaseRecordClass() {
     return SurveyRecord;
   }
-
-  meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
 }
 
 const onChangeUpdateDataGroup = async (
