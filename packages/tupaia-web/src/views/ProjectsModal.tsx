@@ -129,7 +129,7 @@ export const ProjectsModal = () => {
         </TagLine>
       </div>
       <div>
-        <ExploreButton>Explore Tupaia.org</ExploreButton>
+        <ExploreButton>Explore tupaia.org</ExploreButton>
         <Line />
         <ProjectsTitle variant="h1">Projects</ProjectsTitle>
         {isFetching ? (

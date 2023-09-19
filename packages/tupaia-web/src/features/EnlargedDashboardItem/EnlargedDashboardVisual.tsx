@@ -159,7 +159,7 @@ export const EnlargedDashboardVisual = ({
             {startDate &&
               endDate &&
               `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
-            Exported on {date} from Tupaia.org
+            Exported on {date} from tupaia.org
           </ExportDate>
         )}
       </ContentWrapper>
