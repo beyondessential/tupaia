@@ -1,4 +1,21 @@
+/* eslint-env node */
 module.exports = {
-  root: true,
-  extends: '@react-native',
+  extends: '@beyondessential/js',
+  parser: 'babel-eslint',
+  plugins: ['react-native'],
+  // 'env': {
+  //   'react-native/react-native': true
+  // },
+  rules: {
+    'react/destructuring-assignment': 'off',
+    'react/prop-types': ['error', { 'ignore': ['navigation'] }]
+  },
+  ignorePatterns: [
+    '.yarn/',
+    'android/',
+    'ios/',
+    'node_modules/',
+    'scripts/',
+    '.eslintrc.js'
+  ]
 };
