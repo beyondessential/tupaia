@@ -10,6 +10,13 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 # Start back end server packages
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE == *server ]]; then
+        if [[ $PACKAGE == 'meditrak-app-server' ]]; then
+            # reset cwd back to `/tupaia`
+            cd ${TUPAIA_DIR}
+
+            # ensure that the latest permissions based meditrak sync queue has been built
+            yarn workspace @tupaia/meditrak-app-server create-meditrak-sync-view
+        fi
         if [[ $PACKAGE == 'central-server' ]]; then
             # reset cwd back to `/tupaia`
             cd ${TUPAIA_DIR}
@@ -19,9 +26,6 @@ for PACKAGE in ${PACKAGES[@]}; do
             yarn workspace @tupaia/data-api install-mv-refresh
             yarn workspace @tupaia/data-api patch-mv-refresh up
             yarn workspace @tupaia/data-api build-analytics-table
-
-            # ensure that the latest permissions based meditrak sync queue has been built
-            yarn workspace @tupaia/central-server create-meditrak-sync-view
         fi
 
         # It's a server, start the pm2 process
