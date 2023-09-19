@@ -24,18 +24,12 @@ const IconWrapper = styled.div`
 `;
 
 // explicity set the types so that the overrides are applied, for the `button` prop
-export const BaseListItem = styled(MuiListItem)<
-  MuiListItemProps & {
-    appearsDisabled?: boolean;
-  }
->`
+export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   display: flex;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 3px;
   padding: 0.3rem 1rem 0.3rem 0.5rem;
-  color: ${({ theme, appearsDisabled }) =>
-    appearsDisabled ? theme.palette.text.secondary : theme.palette.text.primary};
   &.Mui-selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     background-color: transparent;
@@ -55,6 +49,10 @@ export const BaseListItem = styled(MuiListItem)<
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
+  &.Mui-disabled {
+    opacity: 1; // still have the icon as the full opacity
+    color: ${({ theme }) => theme.palette.text.disabled};
+  }
 `;
 
 const Arrow = styled(KeyboardArrowRight)<{
@@ -64,10 +62,12 @@ const Arrow = styled(KeyboardArrowRight)<{
   transition: transform 0.1s ease-in-out;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.div<{
+  $fullWidth?: boolean;
+}>`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
 `;
 
 export type ListItemType = Record<string, unknown> & {
@@ -78,7 +78,7 @@ export type ListItemType = Record<string, unknown> & {
   icon?: ReactNode;
   tooltip?: string;
   button?: boolean;
-  appearsDisabled?: boolean;
+  disabled?: boolean;
 };
 
 interface ListItemProps {
@@ -102,7 +102,7 @@ const Wrapper = ({
 
 export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   const [open, setOpen] = useState(false);
-  const { content, selected, icon, tooltip, button = true, appearsDisabled } = item;
+  const { content, selected, icon, tooltip, button = true, disabled } = item;
   const isNested = !!item.children;
 
   const toggleOpen = () => {
@@ -118,21 +118,22 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
 
   return (
     <>
-      <Wrapper tooltip={tooltip}>
-        <BaseListItem
-          button={button}
-          onClick={button ? onClick : null}
-          selected={selected}
-          appearsDisabled={appearsDisabled}
-        >
-          <ButtonContainer>
+      <BaseListItem
+        button={button}
+        onClick={button ? onClick : null}
+        selected={selected}
+        disabled={disabled}
+      >
+        <Wrapper tooltip={tooltip}>
+          <ButtonContainer $fullWidth={!!button}>
             <IconWrapper>{icon}</IconWrapper>
             {content}
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
-          {selected && <Check color="primary" />}
-        </BaseListItem>
-      </Wrapper>
+        </Wrapper>
+        {selected && <Check color="primary" />}
+      </BaseListItem>
+
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );

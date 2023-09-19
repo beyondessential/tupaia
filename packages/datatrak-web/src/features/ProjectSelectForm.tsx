@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock, WatchLater } from '@material-ui/icons';
-import { SpinningLoader, Button as UIButton, Tooltip } from '@tupaia/ui-components';
+import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
@@ -78,36 +78,25 @@ export const ProjectSelectForm = ({
   };
 
   const getProjectTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
-    if (!hasAccess && !hasPendingAccess) return 'Request project access';
+    if (hasPendingAccess) return 'Approval in progress';
+    if (!hasAccess) return 'Request project access';
     return '';
-  };
-
-  const getProjectContent = (name: string, hasPendingAccess: boolean) => {
-    // customise the tooltip to appear over the project name if there is pending access, instead of the default of over the whole list item
-    if (hasPendingAccess)
-      return (
-        <Tooltip title="Approval in progress">
-          <span>{name}</span>
-        </Tooltip>
-      );
-    return name;
   };
 
   const getFormattedProjects = () => {
     return projects?.map(({ name, code, hasAccess, id, hasPendingAccess }) => {
       const icon = getProjectIcon(hasAccess, hasPendingAccess);
       const tooltip = getProjectTooltip(hasAccess, hasPendingAccess);
-      const content = getProjectContent(name, hasPendingAccess);
       return {
-        content,
+        content: name,
         value: id,
         code,
         selected: id === selectedProjectId,
         icon,
         tooltip,
         button: !hasPendingAccess,
-        appearsDisabled: hasAccess === false,
-        hasAccess
+        disabled: hasPendingAccess,
+        hasAccess,
       };
     });
   };

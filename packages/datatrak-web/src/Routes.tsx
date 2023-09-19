@@ -11,6 +11,7 @@ import {
   Outlet,
   generatePath,
   useParams,
+  useLocation,
 } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import {
@@ -33,20 +34,6 @@ import { ROUTES } from './constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
 import { SurveyLayout } from './features';
 
-const ProjectSelectRedirect = ({ children }) => {
-  const { isLoggedIn, isLoading, isFetched, data } = useUser();
-  if (isLoading || !isFetched) {
-    return <FullPageLoader />;
-  }
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace={true} />;
-  }
-  if (data?.projectId) {
-    return <Navigate to={ROUTES.HOME} replace={true} />;
-  }
-  return children;
-};
-
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
  */
@@ -64,9 +51,17 @@ const LoggedInRedirect = ({ children }) => {
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
   const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  const location = useLocation();
   if (isLoading || !isFetched) return <FullPageLoader />;
   if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
-  if (!data?.projectId) return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
+
+  // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
+  if (data?.projectId && location.pathname === ROUTES.PROJECT_SELECT)
+    return <Navigate to={ROUTES.HOME} replace={true} />;
+
+  // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
+  if (!data?.projectId && location.pathname !== ROUTES.PROJECT_SELECT)
+    return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
   return children ? children : <Outlet />;
 };
 
@@ -101,25 +96,15 @@ export const Routes = () => {
                 </LoggedInRedirect>
               }
             />
-            <Route
-              path={ROUTES.PROJECT_SELECT}
-              element={
-                <ProjectSelectRedirect>
-                  <ProjectSelectPage />
-                </ProjectSelectRedirect>
-              }
-            />
+
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-            <Route
-              path={ROUTES.REQUEST_ACCESS}
-              element={
-                <ProjectSelectRedirect>
-                  <RequestProjectAccessPage />
-                </ProjectSelectRedirect>
-              }
-            />
+
+            <Route element={<PrivateRoute />}>
+              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
+              <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
+            </Route>
           </Route>
         </Route>
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
