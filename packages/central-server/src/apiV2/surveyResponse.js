@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { AnalyticsRefresher } from '@tupaia/database';
 import {
   ValidationError,
   MultiValidationError,
@@ -135,6 +136,11 @@ export async function surveyResponse(req, res) {
     );
 
     results = await saveResponsesToDatabase(transactingModels, userId, responses);
+
+    if (req.query.waitForAnalyticsRebuild) {
+      const { database } = transactingModels;
+      await AnalyticsRefresher.refreshAnalytics(database);
+    }
   });
   res.send({ count: responses.length, results });
 }
