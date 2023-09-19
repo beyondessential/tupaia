@@ -12,7 +12,7 @@ import { Typography } from '@material-ui/core';
 import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
 import { useMapOverlayData } from '../utils';
 import { Modal } from '../../../components';
-import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
+import { useEntity, useEntityAncestors, useMapOverlays, useProject } from '../../../api/queries';
 import { Entity } from '../../../types';
 
 const Wrapper = styled(FlexColumn)`
@@ -45,11 +45,18 @@ const TitleWrapper = styled.div`
 export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { data: project } = useProject(projectCode);
   const { data } = useEntityAncestors(projectCode, entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
   const countryObject = data?.find((entity: Entity) => entity.type === 'country');
   const { serieses, measureData } = useMapOverlayData(null, countryObject);
 
-  const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
+  const entityName =
+    entity?.type === 'project' && project?.config?.projectDashboardHeader
+      ? project?.config?.projectDashboardHeader
+      : countryObject?.name;
+
+  const titleText = `${selectedOverlay.name}, ${entityName}`;
 
   const startDate = serieses?.startDate;
   const endDate = serieses?.endDate;
