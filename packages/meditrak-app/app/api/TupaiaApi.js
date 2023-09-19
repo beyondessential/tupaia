@@ -20,8 +20,8 @@ const ACCESS_TOKEN_KEY = 'AccessToken';
 const REFRESH_TOKEN_KEY = 'RefreshToken';
 const SOCIAL_FEED_ENDPOINT = 'socialFeed';
 const CURRENT_USER_REWARDS_ENDPOINT = 'me/rewards';
-const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2';
-const PRODUCTION_BASE_URL = `https://${isBeta ? `${betaBranch}-` : ''}api.tupaia.org/v2`;
+const DEV_BASE_URL = 'https://dev-meditrak-api.tupaia.org/v1';
+const PRODUCTION_BASE_URL = `https://${isBeta ? `${betaBranch}-` : ''}meditrak-api.tupaia.org/v1`;
 export const BASE_URL = __DEV__ ? meditrakApiUrl || DEV_BASE_URL : PRODUCTION_BASE_URL;
 
 const TIMEOUT_INTERVAL = 45 * 1000; // 45 seconds in milliseconds
