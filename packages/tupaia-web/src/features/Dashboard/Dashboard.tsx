@@ -152,6 +152,11 @@ export const Dashboard = () => {
     }
   }, [dashboardNotFound, defaultDashboardName]);
 
+  const title =
+    entity?.type === 'project' && project?.config?.projectDashboardHeader
+      ? project?.config?.projectDashboardHeader
+      : entity?.name;
+
   return (
     <Panel $isExpanded={isExpanded}>
       <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
@@ -165,7 +170,7 @@ export const Dashboard = () => {
           )}
         </DashboardImageContainer>
         <TitleBar>
-          <Title variant="h3">{entity?.name}</Title>
+          <Title variant="h3">{title}</Title>
           {activeDashboard && (
             <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
               Export
