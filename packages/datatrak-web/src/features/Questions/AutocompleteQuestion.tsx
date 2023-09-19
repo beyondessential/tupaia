@@ -5,14 +5,21 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Paper } from '@material-ui/core';
+import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api/queries';
-import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
-import { Paper } from '@material-ui/core';
 
 const Autocomplete = styled(BaseAutocomplete)`
   width: 100%;
   max-width: 25rem;
+
+  fieldset:disabled & {
+    .MuiAutocomplete-clearIndicator {
+      display: none; // hide the clear button when disabled on review screen
+    }
+  }
+
   .MuiFormLabel-root {
     color: ${({ theme }) => theme.palette.text.primary};
   }
@@ -41,6 +48,12 @@ const StyledPaper = styled(Paper).attrs({
   variant: 'outlined',
 })`
   border-color: ${({ theme }) => theme.palette.primary.main};
+  .MuiAutocomplete-option {
+    &:hover,
+    &[data-focus='true'] {
+      background-color: ${({ theme }) => theme.palette.primary.main}55;
+    }
+  }
 `;
 
 export const AutocompleteQuestion = ({
@@ -58,13 +71,13 @@ export const AutocompleteQuestion = ({
       label={label}
       name={name!}
       value={value}
-      onChange={onChange}
+      onChange={(_e, value) => onChange(value)}
       inputRef={ref}
       options={data?.map(option => option.value) || []}
       getOptionSelected={(option, value) => option === value}
       loading={isLoading || !isFetched}
       error={isError}
-      helperText={error ? error.message : ''}
+      helperText={error ? (error as Error).message : ''}
       placeholder="Search..."
       muiProps={{
         PaperComponent: StyledPaper,

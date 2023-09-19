@@ -3,10 +3,10 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useSurveyForm } from '../SurveyContext';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { formatSurveyScreenQuestions } from '../utils';
+import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from '../Components';
 import { ScrollableBody } from '../../../layout';
 
@@ -37,6 +37,7 @@ const Fieldset = styled.fieldset.attrs({
   input,
   label,
   button,
+  .MuiInputBase-root,
   link {
     pointer-events: none;
   }
