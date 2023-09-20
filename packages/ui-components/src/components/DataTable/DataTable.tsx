@@ -85,18 +85,23 @@ export const DataTable = ({
     <TableContainer className={className}>
       <StyledTable {...getTableProps()} style={{ minWidth: columnsData.length * 140 + 250 }}>
         <TableHead>
-          {headerGroups.map(({ getHeaderGroupProps, headers }, i) => (
+          {headerGroups.map(({ getHeaderGroupProps, headers }) => (
             <TableRow {...getHeaderGroupProps()}>
               {headers.map(
-                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <TableCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
-                    <FlexStart>
-                      {render('Header')}
-                      <TableSortLabel active={isSorted} direction={isSortedDesc ? 'asc' : 'desc'} />
-                    </FlexStart>
-                  </TableCell>
-                ),
+                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }) => {
+                  const headerProps = getHeaderProps(getSortByToggleProps());
+                  return (
+                    <TableCell {...headerProps} key={headerProps?.key}>
+                      <FlexStart>
+                        {render('Header')}
+                        <TableSortLabel
+                          active={isSorted}
+                          direction={isSortedDesc ? 'asc' : 'desc'}
+                        />
+                      </FlexStart>
+                    </TableCell>
+                  );
+                },
               )}
             </TableRow>
           ))}
