@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
+import { Description, FolderOpenTwoTone } from '@material-ui/icons';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useSurveys } from '../api/queries';
 import { SelectList, ListItemType, Button } from '../components';
@@ -44,9 +45,10 @@ export const SurveySelectPage = () => {
     data?.reduce((acc: ListItemType[], survey: Survey) => {
       const { surveyGroupName, name, code } = survey;
       const formattedSurvey = {
-        name,
+        content: name,
         value: code,
         selected: selectedSurvey?.value === code,
+        icon: <Description />,
       };
       // if there is no surveyGroupName, add the survey to the list as a top level item
       if (!surveyGroupName) {
@@ -58,7 +60,8 @@ export const SurveySelectPage = () => {
         return [
           ...acc,
           {
-            name: surveyGroupName,
+            content: surveyGroupName,
+            icon: <FolderOpenTwoTone />,
             value: surveyGroupName,
             children: [formattedSurvey],
           },

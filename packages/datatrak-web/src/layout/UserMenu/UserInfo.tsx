@@ -83,10 +83,14 @@ export const UserInfo = () => {
         {isLoggedIn ? (
           <Details>
             <Typography>{user.name}</Typography>
-            <span>|</span>
-            <ProjectButton onClick={openProjectModal} tooltip="Change project">
-              {user.project?.entityName}
-            </ProjectButton>
+            {user?.projectId && (
+              <>
+                <span>|</span>
+                <ProjectButton onClick={openProjectModal} tooltip="Change project">
+                  {user.project?.name}
+                </ProjectButton>
+              </>
+            )}
           </Details>
         ) : (
           <>
@@ -97,11 +101,9 @@ export const UserInfo = () => {
           </>
         )}
       </Wrapper>
-      <ProjectSelectModal
-        open={projectModalOpen}
-        onClose={closeProjectModal}
-        projectId={user.projectId}
-      />
+      {projectModalOpen && (
+        <ProjectSelectModal open onClose={closeProjectModal} projectId={user.projectId} />
+      )}
     </>
   );
 };

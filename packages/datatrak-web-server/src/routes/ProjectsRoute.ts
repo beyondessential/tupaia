@@ -4,7 +4,6 @@
  */
 
 import { Request } from 'express';
-import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebProjectsRequest } from '@tupaia/types';
 
@@ -15,26 +14,10 @@ export type ProjectsRequest = Request<
   DatatrakWebProjectsRequest.ReqQuery
 >;
 
-const columns = [
-  'code',
-  'config',
-  'description',
-  'entity.name',
-  'entity_hierarchy_id',
-  'entity_id',
-  'id',
-  'image_url',
-  'logo_url',
-  'permission_groups',
-  'sort_order',
-];
-
 export class ProjectsRoute extends Route<ProjectsRequest> {
   public async buildResponse() {
-    const { ctx, query = {} } = this.req;
-    const projects = await ctx.services.central.fetchResources('projects', {
-      columns,
-    });
-    return camelcaseKeys(projects, { deep: true });
+    const { ctx } = this.req;
+    const { projects } = await ctx.services.webConfig.fetchProjects();
+    return projects;
   }
 }
