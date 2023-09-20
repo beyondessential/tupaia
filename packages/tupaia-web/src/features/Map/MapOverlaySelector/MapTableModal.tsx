@@ -46,20 +46,25 @@ export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: project } = useProject(projectCode);
-  const { data } = useEntityAncestors(projectCode, entityCode);
-  const { data: entity } = useEntity(projectCode, entityCode);
-  const countryObject = data?.find((entity: Entity) => entity.type === 'country');
-  const { serieses, measureData } = useMapOverlayData(null, countryObject);
 
+  const { data: entityAncestors } = useEntityAncestors(projectCode, entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
+
+  // use the project if the entity is a project, otherwise the country (e.g. if the current entity is a facility or a subdistrict. Most of the time project entities don't have map overlays so this won't happen much)
+  const rootEntity =
+    entity?.type === 'project'
+      ? entity
+      : entityAncestors?.find((entity: Entity) => entity.type === 'country');
+
+  const { serieses, measureData, startDate, endDate } = useMapOverlayData(null, entity);
+
+  // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
   const entityName =
     entity?.type === 'project' && project?.config?.projectDashboardHeader
       ? project?.config?.projectDashboardHeader
-      : countryObject?.name;
+      : rootEntity?.name;
 
   const titleText = `${selectedOverlay.name}, ${entityName}`;
-
-  const startDate = serieses?.startDate;
-  const endDate = serieses?.endDate;
 
   const { doExport } = useMapDataExport(serieses, measureData, titleText, startDate, endDate);
 
