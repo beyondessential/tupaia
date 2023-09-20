@@ -55,7 +55,7 @@ export const MapTableModal = ({ onClose }: any) => {
       ? entity
       : entityAncestors?.find((entity: Entity) => entity.type === 'country');
 
-  const { serieses, measureData } = useMapOverlayData(null, entity);
+  const { serieses, measureData, startDate, endDate } = useMapOverlayData(null, entity);
 
   // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
   const entityName =
@@ -65,8 +65,7 @@ export const MapTableModal = ({ onClose }: any) => {
 
   const titleText = `${selectedOverlay.name}, ${entityName}`;
 
-  const startDate = serieses?.startDate;
-  const endDate = serieses?.endDate;
+  
 
   const { doExport } = useMapDataExport(serieses, measureData, titleText, startDate, endDate);
 

@@ -91,5 +91,7 @@ export const useMapOverlayData = (
     measureData: processedMeasureData,
     entities,
     activeEntity: entity,
+    startDate,
+    endDate,
   };
 };
