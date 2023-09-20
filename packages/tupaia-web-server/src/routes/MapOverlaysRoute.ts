@@ -115,7 +115,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       return {
         name: parentEntry.name,
         children: orderBy(nestedChildren, [
-          ({ child }: { child: OverlayChild }) => (child.sortOrder === null ? 1 : 0), // Puts null values last
+          (child: OverlayChild) => (child.sortOrder === null ? 1 : 0), // Puts null values last
           'sortOrder',
           'name',
         ]).map((child: OverlayChild) => {
