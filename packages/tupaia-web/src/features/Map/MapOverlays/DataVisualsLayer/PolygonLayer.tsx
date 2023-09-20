@@ -12,6 +12,7 @@ import {
   MeasureData,
   BREWER_PALETTE,
   Series,
+  POLYGON_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 
 const ShadedPolygon = styled(BasePolygon)`
@@ -28,11 +29,14 @@ interface PolygonLayerProps {
 }
 
 export const PolygonLayer = ({ measureData, navigateToEntity, serieses }: PolygonLayerProps) => {
-  const polygonLayers = measureData.filter(m => !!m.region);
+  // we need to only display the serieses where type is included in POLYGON_MEASURE_TYPES, otherwise some entities which have both region and point coordinates will be displayed twice
+  const polygonSerieses = serieses.filter(s => POLYGON_MEASURE_TYPES.includes(s.type));
+  if (!polygonSerieses.length) return null;
+  const polygons = measureData.filter(m => !!m.region);
 
   return (
     <LayerGroup>
-      {polygonLayers.map((measure: MeasureData) => {
+      {polygons.map((measure: MeasureData) => {
         const { region, organisationUnitCode: entity, color, name } = measure;
 
         // To match with the color in markerIcon.js which uses BREWER_PALETTE
@@ -53,7 +57,7 @@ export const PolygonLayer = ({ measureData, navigateToEntity, serieses }: Polygo
             {...measure}
           >
             <AreaTooltip
-              serieses={serieses}
+              serieses={polygonSerieses}
               orgUnitMeasureData={measure as MeasureData}
               orgUnitName={name}
               hasMeasureValue
