@@ -95,7 +95,6 @@ export const useMapOverlayReport = (
       return formatMapOverlayData(responseData);
     },
     {
-      keepPreviousData: false,
       enabled,
     },
   );

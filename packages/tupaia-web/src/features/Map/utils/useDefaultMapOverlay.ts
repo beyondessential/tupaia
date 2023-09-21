@@ -15,7 +15,11 @@ import {
 import { EntityCode, ProjectCode } from '../../../types';
 
 // When the map overlay groups change, update the default map overlay
-export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
+export const useDefaultMapOverlay = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+  resetMapOverlays?: () => void,
+) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,6 +61,9 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
     if (project?.code !== projectCode) return;
     if (!project || overlayCodes.length === 0) {
       // Clear map overlay data when there are no overlays to select from
+      if (resetMapOverlays) {
+        resetMapOverlays();
+      }
       queryClient.invalidateQueries(['mapOverlayReport', projectCode]);
       return;
     }
