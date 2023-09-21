@@ -35,6 +35,7 @@ export const processMeasureData = ({
         organisationUnitCode: entity.code,
         coordinates: entity.point,
         region: entity.region,
+        permanentTooltip: true,
       };
     });
   }
