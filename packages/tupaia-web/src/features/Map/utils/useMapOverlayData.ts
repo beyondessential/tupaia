@@ -26,9 +26,9 @@ const getRootEntityCode = (entity?: Entity) => {
   return parentCode;
 };
 
-const useEntitiesByMeasureLevel = (
+const useDataDisplayEntities = (
   projectCode?: ProjectCode,
-  entityCode?: EntityCode,
+  rootEntityCode?: EntityCode,
   measureLevel?: EntityTypeParam | EntityTypeParam[],
   isPolygonSerieses?: boolean,
 ) => {
@@ -40,11 +40,11 @@ const useEntitiesByMeasureLevel = (
     type = measureLevel;
     // Don't include the root entity in the list of entities for displaying data as the
     // data visuals are for children of the root entity, unless it is a root entity, ie. a country
-    includeRootEntity = !isPolygonSerieses || type.includes('country');
+    includeRootEntity = isPolygonSerieses && type.includes('Country');
     generationalDistance = 2;
   }
 
-  return useEntitiesWithLocation(projectCode, entityCode, {
+  return useEntitiesWithLocation(projectCode, rootEntityCode, {
     params: {
       includeRootEntity,
       filter: {
@@ -55,30 +55,30 @@ const useEntitiesByMeasureLevel = (
   });
 };
 
-const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
-  const parentEntityCode = activeEntity?.parentCode;
+const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses) => {
+  const rootEntityCode = activeEntity?.parentCode;
   const { data } = useEntitiesWithLocation(
     projectCode,
-    parentEntityCode,
+    rootEntityCode,
     {
       params: {
+        // This assumes that there are no project level visualisations that have measure level other than country
         includeRootEntity: false,
         filter: {
           generational_distance: 2,
         },
       },
     },
-    { enabled: !!parentEntityCode },
+    { enabled: !!rootEntityCode },
   );
 
-  const filteredData = data
-    ?.filter(entity => entity.code !== activeEntity?.code)
-    .filter(entity => {
-      if (isPolygonSerieses) {
-        return entity.type === activeEntity.type;
-      }
-      return entity.parentCode === activeEntity.code || entity.type === activeEntity.type;
-    });
+  const filteredData = data?.filter(entity => {
+    if (isPolygonSerieses) {
+      return entity.type === activeEntity.type && entity.code !== activeEntity?.code;
+    }
+    // Point map overlay types
+    return entity.parentCode === activeEntity.code || entity.type === activeEntity.type;
+  });
 
   return { data: filteredData };
 };
@@ -98,13 +98,13 @@ export const useMapOverlayData = (
 
   const isPolygonSerieses = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
   const rootEntityCode = rootEntity?.code || getRootEntityCode(entity);
-  const { data: entityRelatives } = useRelatives(projectCode, entity, isPolygonSerieses);
+  const { data: entityRelatives } = useNavigationEntities(projectCode, entity, isPolygonSerieses);
 
   const {
     data: entities,
     isLoading: isLoadingEntities,
     isFetched: isFetchedEntities,
-  } = useEntitiesByMeasureLevel(
+  } = useDataDisplayEntities(
     projectCode,
     rootEntityCode,
     selectedOverlay?.measureLevel,
