@@ -148,8 +148,6 @@ export const Map = () => {
         >
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
           <MapOverlaysLayer hiddenValues={hiddenValues} />
-          {/*<PolygonNavigationLayer />*/}
-          {/*<DataVisualsLayer hiddenValues={hiddenValues} />*/}
           <DemoLand />
           <ZoomControl position="bottomright" />
           <MapWatermark />

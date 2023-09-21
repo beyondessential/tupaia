@@ -11,7 +11,6 @@ import {
   AreaTooltip,
   MeasureData,
   Series,
-  POLYGON_MEASURE_TYPES,
   MAP_COLORS,
   BREWER_PALETTE,
 } from '@tupaia/ui-map-components';
@@ -22,27 +21,14 @@ const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 interface PolygonProps {
   $displayType?: string;
   $shade?: string;
-  $hasChildren?: string;
-  $hasShadedChildren?: string;
 }
 
 const ActivePolygon = styled(Polygon)<PolygonProps>`
   stroke: ${POLYGON_HIGHLIGHT};
   fill-opacity: 0;
   fill: none;
-
   pointer-events: none;
-  //
-  // &:hover {
-  //   fill-opacity: 0.5;
-  //   stroke: ${POLYGON_HIGHLIGHT};
-  // }
-
-  stroke-width: ${props => {
-    let weight = 3;
-    if (props.$hasShadedChildren) weight = 0;
-    return weight;
-  }};
+  stroke-width: 3px;
 `;
 
 const ShadedPolygon = styled(BasePolygon)<PolygonProps>`
@@ -91,13 +77,7 @@ export const PolygonLayer = ({
   navigateToEntity,
   serieses = [],
 }: PolygonLayerProps) => {
-  // we need to only display the serieses where type is included in POLYGON_MEASURE_TYPES, otherwise some entities which have both region and point coordinates will be displayed twice
-  // console.log('measureData', measureData);
-  const polygonSerieses = serieses.filter(s => POLYGON_MEASURE_TYPES.includes(s.type));
-  // if (!polygonSerieses.length) return null;
   const polygons = measureData.filter(m => !!m.region);
-  console.log('PolygonLayer', polygons);
-
   return (
     <LayerGroup>
       {polygons.map((measure: MeasureData) => {
@@ -109,8 +89,6 @@ export const PolygonLayer = ({
           polygonDisplayType = 'basicPolygon',
         } = measure;
         const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
-
-        console.log('polygonDisplayType', polygonDisplayType);
         const PolygonComponent = POLYGON_COMPONENTS[polygonDisplayType];
 
         return (

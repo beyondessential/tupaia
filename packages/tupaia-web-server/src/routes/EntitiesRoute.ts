@@ -16,19 +16,43 @@ export type EntitiesRequest = Request<
   TupaiaWebEntitiesRequest.ReqQuery
 >;
 
+const getSnakeCase = (value?: string) => {
+  return value
+    ?.split(/\.?(?=[A-Z])/)
+    .join('_')
+    .toLowerCase();
+};
+
 const DEFAULT_FILTER = {
-  generational_distance: {
-    comparator: '<=',
-    comparisonValue: 2,
-  },
+  generational_distance: 2,
 };
 
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type', 'child_codes'];
+
+const FILER_PARSERS = {
+  type: (filterVal: string[]) => filterVal.map((type: string) => getSnakeCase(type)),
+  generational_distance: (filterVal: string) => ({
+    comparator: '<=',
+    comparisonValue: filterVal,
+  }),
+};
+function parseFilter(filter: Record<string, any>) {
+  const newFilter = filter;
+  Object.keys(filter).forEach(key => {
+    const parser = FILER_PARSERS[key as keyof typeof FILER_PARSERS];
+    if (parser) {
+      newFilter[key] = parser(newFilter[key]);
+    }
+  });
+  return newFilter;
+}
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
     const { params, query, ctx, models } = this.req;
     const { rootEntityCode, projectCode } = params;
+    const { filter = DEFAULT_FILTER, fields = DEFAULT_FIELDS } = query;
+    const formattedFilter = parseFilter(filter);
 
     const project = (
       await ctx.services.central.fetchResources('projects', {
@@ -45,11 +69,10 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       rootEntityCode,
       {
         filter: {
-          ...DEFAULT_FILTER,
+          ...formattedFilter,
           ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
         },
-        fields: DEFAULT_FIELDS,
-        ...query,
+        fields,
       },
       query.includeRootEntity || false,
     );

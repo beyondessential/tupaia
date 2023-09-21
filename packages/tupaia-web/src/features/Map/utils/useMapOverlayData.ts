@@ -8,49 +8,10 @@ import { useEntitiesWithLocation, useEntity, useMapOverlayReport } from '../../.
 import { processMeasureData } from '../MapOverlaysLayer/processMeasureData';
 import { useMapOverlays } from '../../../api/queries';
 import { Entity, EntityCode, ProjectCode } from '../../../types';
-import { getSnakeCase } from './getSnakeCase';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 
 type EntityTypeParam = string | null | undefined;
-
-const useEntitiesByType = (
-  projectCode?: ProjectCode,
-  entityCode?: EntityCode,
-  entityType?: EntityTypeParam | EntityTypeParam[],
-) => {
-  let config = {
-    params: {
-      includeRootEntity: true,
-      filter: {
-        generational_distance: {
-          comparator: '<=',
-          comparisonValue: 1,
-        },
-      },
-    },
-  };
-  if (entityType) {
-    console.log('entityType', entityType);
-    const entityTypeArray = (Array.isArray(entityType) ? entityType : [entityType]).filter(
-      type => !!type,
-    );
-    const snakeCaseEntityTypes = entityTypeArray?.map(type => getSnakeCase(type!));
-    config = {
-      params: {
-        // Don't include the root entity in the list of entities for displaying data as the
-        // data visuals are for children of the root entity, unless it is a root entity, ie. a country
-        includeRootEntity: snakeCaseEntityTypes?.includes('country') ? true : false,
-        // includeRootEntity: true,
-        filter: {
-          type: snakeCaseEntityTypes?.join(','),
-        },
-      },
-    };
-  }
-
-  return useEntitiesWithLocation(projectCode, entityCode, config);
-};
 
 const getRootEntityCode = (entity?: Entity) => {
   if (!entity) {
@@ -65,18 +26,43 @@ const getRootEntityCode = (entity?: Entity) => {
   return parentCode;
 };
 
-const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
-  const rootEntityCode = activeEntity?.parentCode ? activeEntity?.parentCode : activeEntity?.code;
-  const generationalDistance = activeEntity?.parentCode ? 2 : 1;
-  const includeRootEntity = !activeEntity?.parentCode;
-  const { data } = useEntitiesWithLocation(projectCode, rootEntityCode, {
+const useEntitiesByType = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+  entityType?: EntityTypeParam | EntityTypeParam[],
+  isPolygonSerieses?: boolean,
+) => {
+  let type;
+  let includeRootEntity = false;
+  let generationalDistance = 1;
+
+  if (entityType) {
+    type = (Array.isArray(entityType) ? entityType : [entityType]).filter(type => !!type);
+    // Don't include the root entity in the list of entities for displaying data as the
+    // data visuals are for children of the root entity, unless it is a root entity, ie. a country
+    includeRootEntity = !isPolygonSerieses || type.includes('country');
+    generationalDistance = 2;
+  }
+
+  return useEntitiesWithLocation(projectCode, entityCode, {
     params: {
       includeRootEntity,
       filter: {
-        generational_distance: {
-          comparator: '<=',
-          comparisonValue: generationalDistance,
-        },
+        generational_distance: generationalDistance,
+        type,
+      },
+    },
+  });
+};
+
+const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
+  const rootEntityCode = activeEntity?.parentCode ? activeEntity?.parentCode : activeEntity?.code;
+  const generationalDistance = activeEntity?.parentCode ? 2 : 1;
+  const { data } = useEntitiesWithLocation(projectCode, rootEntityCode, {
+    params: {
+      includeRootEntity: false,
+      filter: {
+        generational_distance: generationalDistance,
       },
     },
   });
@@ -104,20 +90,22 @@ export const useMapOverlayData = (
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
   );
-
-  const isPolygonSerieses = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
-
   const { data: entity } = useEntity(projectCode, entityCode);
 
+  const isPolygonSerieses = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
   const rootEntityCode = rootEntity?.code || getRootEntityCode(entity);
-
   const { data: entityRelatives } = useRelatives(projectCode, entity, isPolygonSerieses);
 
   const {
     data: entities,
     isLoading: isLoadingEntities,
     isFetched: isFetchedEntities,
-  } = useEntitiesByType(projectCode, rootEntityCode, selectedOverlay?.measureLevel);
+  } = useEntitiesByType(
+    projectCode,
+    rootEntityCode,
+    selectedOverlay?.measureLevel,
+    isPolygonSerieses,
+  );
 
   const { data, isLoading, isFetched, isIdle } = useMapOverlayReport(
     projectCode,
@@ -146,7 +134,7 @@ export const useMapOverlayData = (
     measureData: data?.measureData,
     serieses: data?.serieses?.sort((a: Series, b: Series) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
-    includeEntitiesWithoutCoordinates: rootEntity ? true : false,
+    includeEntitiesWithoutCoordinates: !!rootEntity,
   }) as MeasureData[];
 
   const isLoadingData = isLoading || (!isIdle && !isFetched && !!selectedOverlay);
