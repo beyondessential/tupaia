@@ -5,6 +5,7 @@
  */
 
 import { S3, S3Client } from '@tupaia/utils';
+import { AnalyticsRefresher } from '@tupaia/database';
 import fs from 'fs';
 import { EditHandler } from '../EditHandler';
 import {
@@ -27,10 +28,6 @@ import { validateResubmission } from './resubmission/validateResubmission';
  */
 
 export class ResubmitSurveyResponse extends EditHandler {
-  constructor(req, res) {
-    super(req, res);
-  }
-
   async assertUserHasAccess() {
     // Check the user has either:
     // - BES admin access
@@ -82,6 +79,11 @@ export class ResubmitSurveyResponse extends EditHandler {
           const s3Client = this.getS3client();
           await s3Client.uploadFile(uniqueFileName, readableStream);
         }
+      }
+
+      if (this.req.query.waitForAnalyticsRebuild) {
+        const { database } = transactingModels;
+        await AnalyticsRefresher.refreshAnalytics(database);
       }
     });
   }

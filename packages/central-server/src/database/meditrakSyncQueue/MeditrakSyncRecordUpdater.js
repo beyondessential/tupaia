@@ -11,12 +11,14 @@ const arraysAreSame = (arr1, arr2) =>
 export class MeditrakSyncRecordUpdater {
   constructor(models) {
     this.models = models;
+    this.changeBatchIndex = 0;
   }
 
   /**
    * @public
    */
   async updateSyncRecords(changes) {
+    this.changeBatchIndex = 0;
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       await this.processChange(change);
@@ -110,7 +112,7 @@ export class MeditrakSyncRecordUpdater {
       },
       {
         ...change,
-        change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+        change_time: parseFloat(`${Date.now()}.${this.changeBatchIndex++}`),
       },
     );
   }

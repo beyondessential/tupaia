@@ -11,12 +11,15 @@ const arraysAreSame = (arr1: unknown[], arr2: unknown[]) =>
 
 export class MeditrakSyncRecordUpdater {
   private readonly models: MeditrakAppServerModelRegistry;
+  private changeBatchIndex: number;
 
   public constructor(models: MeditrakAppServerModelRegistry) {
     this.models = models;
+    this.changeBatchIndex = 0;
   }
 
   public async updateSyncRecords(changes: Change[]) {
+    this.changeBatchIndex = 0; // Reset the batch index before updating records
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       await this.processChange(change);
@@ -114,7 +117,7 @@ export class MeditrakSyncRecordUpdater {
       },
       {
         ...change,
-        change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+        change_time: parseFloat(`${Date.now()}.${this.changeBatchIndex++}`),
       },
     );
   }
