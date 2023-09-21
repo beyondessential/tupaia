@@ -13,8 +13,10 @@ import {
   Series,
   MAP_COLORS,
   BREWER_PALETTE,
+  POLYGON_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 import { Polygon } from 'react-leaflet';
+import { useParams } from 'react-router-dom';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -72,40 +74,58 @@ const POLYGON_COMPONENTS = {
   activePolygon: ActivePolygon,
 };
 
+const DISPLAY_TYPES = {
+  shaded: 'shadedPolygon',
+  transparentShaded: 'transparentShadedPolygon',
+  basic: 'basicPolygon',
+  active: 'activePolygon',
+};
+
 export const PolygonLayer = ({
   measureData = [],
   navigateToEntity,
   serieses = [],
 }: PolygonLayerProps) => {
+  const { entityCode: activeEntityCode } = useParams();
+
   const polygons = measureData.filter(m => !!m.region);
+  const isPolygonSerieses = serieses.some(s => POLYGON_MEASURE_TYPES.includes(s.type));
+
+  function getDisplayType(measure) {
+    if (measure?.code === activeEntityCode && !isPolygonSerieses) {
+      return DISPLAY_TYPES.active;
+    }
+    if (measure.isHidden) {
+      return DISPLAY_TYPES.basic;
+    }
+    if (isPolygonSerieses) {
+      return DISPLAY_TYPES.shaded;
+    }
+
+    return DISPLAY_TYPES.basic;
+  }
+
   return (
     <LayerGroup>
       {polygons.map((measure: MeasureData) => {
-        const {
-          region,
-          organisationUnitCode: entity,
-          color,
-          name,
-          polygonDisplayType = 'basicPolygon',
-        } = measure;
+        const { region, code, color, name } = measure;
         const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
-        const PolygonComponent = POLYGON_COMPONENTS[polygonDisplayType];
+        const displayType = getDisplayType(measure);
+        const PolygonComponent = POLYGON_COMPONENTS[displayType];
+        const key =
+          displayType === DISPLAY_TYPES.active ? `currentEntityPolygon${Math.random()}` : code;
 
         return (
           <PolygonComponent
             positions={region}
-            $displayType={polygonDisplayType}
+            $displayType={displayType}
             $shade={shade}
             eventHandlers={{
               click: () => {
-                navigateToEntity(entity);
+                navigateToEntity(code);
               },
             }}
-            key={
-              polygonDisplayType === 'activePolygon'
-                ? `currentEntityPolygon${Math.random()}`
-                : entity
-            }
+            key={key}
             {...measure}
           >
             <AreaTooltip

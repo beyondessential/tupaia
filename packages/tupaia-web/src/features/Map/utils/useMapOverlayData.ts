@@ -26,18 +26,18 @@ const getRootEntityCode = (entity?: Entity) => {
   return parentCode;
 };
 
-const useEntitiesByType = (
+const useEntitiesByMeasureLevel = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
-  entityType?: EntityTypeParam | EntityTypeParam[],
+  measureLevel?: EntityTypeParam | EntityTypeParam[],
   isPolygonSerieses?: boolean,
 ) => {
   let type;
   let includeRootEntity = false;
   let generationalDistance = 1;
 
-  if (entityType) {
-    type = (Array.isArray(entityType) ? entityType : [entityType]).filter(type => !!type);
+  if (measureLevel) {
+    type = measureLevel;
     // Don't include the root entity in the list of entities for displaying data as the
     // data visuals are for children of the root entity, unless it is a root entity, ie. a country
     includeRootEntity = !isPolygonSerieses || type.includes('country');
@@ -56,16 +56,20 @@ const useEntitiesByType = (
 };
 
 const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
-  const rootEntityCode = activeEntity?.parentCode ? activeEntity?.parentCode : activeEntity?.code;
-  const generationalDistance = activeEntity?.parentCode ? 2 : 1;
-  const { data } = useEntitiesWithLocation(projectCode, rootEntityCode, {
-    params: {
-      includeRootEntity: false,
-      filter: {
-        generational_distance: generationalDistance,
+  const parentEntityCode = activeEntity?.parentCode;
+  const { data } = useEntitiesWithLocation(
+    projectCode,
+    parentEntityCode,
+    {
+      params: {
+        includeRootEntity: false,
+        filter: {
+          generational_distance: 2,
+        },
       },
     },
-  });
+    { enabled: !!parentEntityCode },
+  );
 
   const filteredData = data
     ?.filter(entity => entity.code !== activeEntity?.code)
@@ -100,7 +104,7 @@ export const useMapOverlayData = (
     data: entities,
     isLoading: isLoadingEntities,
     isFetched: isFetchedEntities,
-  } = useEntitiesByType(
+  } = useEntitiesByMeasureLevel(
     projectCode,
     rootEntityCode,
     selectedOverlay?.measureLevel,
@@ -126,7 +130,9 @@ export const useMapOverlayData = (
     };
   }
 
-  const combinedEntities = [...(entities || []), ...(entityRelatives || [])];
+  // Combine the entities and relatives. The entities need to come after the entityRelatives so
+  // that the active entity is rendered on top of the relatives
+  const combinedEntities = [...(entityRelatives || []), ...(entities || [])];
 
   const processedMeasureData = processMeasureData({
     activeEntityCode: entityCode,

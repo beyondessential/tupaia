@@ -138,8 +138,8 @@ export const Map = () => {
   const zoom = entity?.bounds ? undefined : 10;
 
   return (
-    <ErrorBoundary>
-      <MapContainer>
+    <MapContainer>
+      <ErrorBoundary>
         <StyledMap
           center={entity?.point as LeafletMapProps['center']}
           bounds={entity?.bounds as LeafletMapProps['bounds']}
@@ -166,7 +166,7 @@ export const Map = () => {
             />
           </TilePickerWrapper>
         </MapControlWrapper>
-      </MapContainer>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </MapContainer>
   );
 };

@@ -30,22 +30,22 @@ const DEFAULT_FILTER = {
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type', 'child_codes'];
 
 const FILER_PARSERS = {
-  type: (filterVal: string[]) => filterVal.map((type: string) => getSnakeCase(type)),
+  type: (entityType: string) => {
+    return (Array.isArray(entityType) ? entityType : [entityType])
+      .filter(type => !!type)
+      .map((type: string) => getSnakeCase(type))
+      .join(',');
+  },
   generational_distance: (filterVal: string) => ({
     comparator: '<=',
-    comparisonValue: filterVal,
+    comparisonValue: parseInt(filterVal),
   }),
 };
-function parseFilter(filter: Record<string, any>) {
-  const newFilter = filter;
-  Object.keys(filter).forEach(key => {
+const parseFilter = (filter: Record<string, any>) =>
+  Object.entries(filter).reduce((newFilter, [key, value]) => {
     const parser = FILER_PARSERS[key as keyof typeof FILER_PARSERS];
-    if (parser) {
-      newFilter[key] = parser(newFilter[key]);
-    }
-  });
-  return newFilter;
-}
+    return { ...newFilter, [key]: parser ? parser(value) : value };
+  }, {});
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
@@ -69,8 +69,8 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       rootEntityCode,
       {
         filter: {
-          ...formattedFilter,
           ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
+          ...formattedFilter,
         },
         fields,
       },
