@@ -14,12 +14,13 @@ export const getEntityBaseFilters = (state, database, questionId) => {
   const filters = { countryCode };
 
   const question = getQuestion(state, questionId);
-  const { parentId, grandparentId, type } = question.config.entity.filter;
+
+  const { parentId, grandparentId, type } = question.config.entity?.filter;
   filters.type = type;
-  if (parentId && parentId.questionId) {
+  if (parentId && parentId?.questionId) {
     filters['parent.id'] = getAnswerForQuestion(state, parentId.questionId);
   }
-  if (grandparentId && grandparentId.questionId) {
+  if (grandparentId && grandparentId?.questionId) {
     filters['parent.parent.id'] = getAnswerForQuestion(state, grandparentId.questionId);
   }
 
@@ -68,7 +69,7 @@ export const getRecentEntities = (database, state, baseFilters) => {
   if (recentEntityIds.length === 0) {
     return [];
   }
-
+  console.log('recent entity ids', recentEntityIds);
   const recentEntities = database.getEntities({ ...baseFilters, id: recentEntityIds });
 
   // sort database results to match our saved array of recent entity ids
