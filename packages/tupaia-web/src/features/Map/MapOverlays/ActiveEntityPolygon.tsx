@@ -7,7 +7,13 @@ import React from 'react';
 import { ActivePolygon, MeasureData } from '@tupaia/ui-map-components';
 import { Entity } from '../../../types';
 
-export const ActiveEntityPolygon = ({ entity }: { entity: Entity | MeasureData }) => {
+export const ActiveEntityPolygon = ({
+  entity,
+  hasShadedChildren,
+}: {
+  entity: Entity | MeasureData;
+  hasShadedChildren: boolean;
+}) => {
   const { region, childCodes } = entity;
   const hasChildren = childCodes && childCodes.length > 0;
   if (!region) return null;
@@ -16,7 +22,7 @@ export const ActiveEntityPolygon = ({ entity }: { entity: Entity | MeasureData }
     <ActivePolygon
       shade={entity?.color}
       hasChildren={hasChildren}
-      hasShadedChildren={true}
+      hasShadedChildren={hasShadedChildren}
       coordinates={region}
       // Randomize key to ensure polygon appears at top. This is still important even
       // though the polygon is in a LayerGroup due to issues with react-leaflet that

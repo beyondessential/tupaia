@@ -19,7 +19,8 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity } from '../../api/queries';
-import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
+// import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
+import { MapOverlaysLayer } from './MapOverlays/MapOverlaysLayer';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
 import { useGAEffect } from '../../utils';
 import { DemoLand } from './DemoLand';
@@ -147,8 +148,9 @@ export const Map = () => {
           shouldSnapToPosition
         >
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <PolygonNavigationLayer />
-          <DataVisualsLayer hiddenValues={hiddenValues} />
+          <MapOverlaysLayer hiddenValues={hiddenValues} />
+          {/*<PolygonNavigationLayer />*/}
+          {/*<DataVisualsLayer hiddenValues={hiddenValues} />*/}
           <DemoLand />
           <ZoomControl position="bottomright" />
           <MapWatermark />
