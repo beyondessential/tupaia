@@ -5,7 +5,7 @@
 import { LegendProps, MeasureData, POLYGON_MEASURE_TYPES, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import { useEntitiesWithLocation, useEntity, useMapOverlayReport } from '../../../api/queries';
-import { processMeasureData } from '../MapOverlays/processMeasureData';
+import { processMeasureData } from '../MapOverlaysLayer/processMeasureData';
 import { useMapOverlays } from '../../../api/queries';
 import { Entity, EntityCode, ProjectCode } from '../../../types';
 import { getSnakeCase } from './getSnakeCase';
@@ -31,6 +31,7 @@ const useEntitiesByType = (
     },
   };
   if (entityType) {
+    console.log('entityType', entityType);
     const entityTypeArray = (Array.isArray(entityType) ? entityType : [entityType]).filter(
       type => !!type,
     );
@@ -67,9 +68,10 @@ const getRootEntityCode = (entity?: Entity) => {
 const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
   const rootEntityCode = activeEntity?.parentCode ? activeEntity?.parentCode : activeEntity?.code;
   const generationalDistance = activeEntity?.parentCode ? 2 : 1;
+  const includeRootEntity = !activeEntity?.parentCode;
   const { data } = useEntitiesWithLocation(projectCode, rootEntityCode, {
     params: {
-      includeRootEntity: false,
+      includeRootEntity,
       filter: {
         generational_distance: {
           comparator: '<=',
@@ -78,7 +80,6 @@ const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
       },
     },
   });
-  console.log('data', data);
 
   const filteredData = data
     ?.filter(entity => entity.code !== activeEntity?.code)
@@ -89,7 +90,6 @@ const useRelatives = (projectCode, activeEntity, isPolygonSerieses) => {
       return entity.parentCode === activeEntity.code || entity.type === activeEntity.type;
     });
 
-  console.log('filteredData', filteredData);
   return { data: filteredData };
 };
 
@@ -105,7 +105,6 @@ export const useMapOverlayData = (
     selectedOverlay,
   );
 
-  console.log('selectedOverlay', selectedOverlay);
   const isPolygonSerieses = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
 
   const { data: entity } = useEntity(projectCode, entityCode);
