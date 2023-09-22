@@ -29,15 +29,7 @@ export const processMeasureData = ({
   includeEntitiesWithoutCoordinates,
 }: processMeasureDataProps) => {
   if (!measureData || !serieses) {
-    return entitiesData.map((entity: Entity) => {
-      return {
-        ...entity,
-        organisationUnitCode: entity.code,
-        coordinates: entity.point,
-        region: entity.region,
-        permanentTooltip: true,
-      };
-    });
+    return [];
   }
 
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);

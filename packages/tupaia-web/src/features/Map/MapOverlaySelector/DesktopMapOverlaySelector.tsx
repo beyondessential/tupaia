@@ -165,7 +165,7 @@ export const DesktopMapOverlaySelector = ({
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { measureData, period } = useMapOverlayData();
+  const { period } = useMapOverlayData();
   const [mapModalOpen, setMapModalOpen] = useState(false);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
   useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
@@ -179,7 +179,7 @@ export const DesktopMapOverlaySelector = ({
       <Wrapper>
         <Header>
           <Heading>Map Overlays</Heading>
-          {measureData && (
+          {selectedOverlay && (
             <MapTableButton onClick={toggleMapTableModal}>
               <Tooltip arrow interactive placement="top" title="Generate Report">
                 <TableAssignmentIcon />

@@ -108,12 +108,13 @@ export const PolygonLayer = ({
   return (
     <LayerGroup>
       {polygons.map((measure: MeasureData) => {
-        const { region, code, color, name, permanentTooltip, originalValue } = measure;
+        const { region, code, color, name, permanentTooltip = false } = measure;
         const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
         const displayType = getDisplayType(measure);
         const PolygonComponent = POLYGON_COMPONENTS[displayType];
         const key =
           displayType === DISPLAY_TYPES.active ? `currentEntityPolygon${Math.random()}` : code;
+        const showDataOnTooltip = displayType === DISPLAY_TYPES.shaded;
 
         return (
           <PolygonComponent
@@ -132,7 +133,7 @@ export const PolygonLayer = ({
               serieses={serieses}
               orgUnitMeasureData={measure as MeasureData}
               orgUnitName={name}
-              hasMeasureValue={!!originalValue}
+              hasMeasureValue={showDataOnTooltip}
               permanent={permanentTooltip}
             />
           </PolygonComponent>

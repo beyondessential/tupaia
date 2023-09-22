@@ -117,22 +117,16 @@ const getAutoTileset = () => {
 };
 
 export const Map = () => {
-  const [mapOverlaysKey, setMapOverlaysKey] = useState(0);
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
 
-  const resetMapOverlays = () => {
-    setMapOverlaysKey(Math.random());
-  };
-
-  useDefaultMapOverlay(projectCode, entityCode, resetMapOverlays);
+  useDefaultMapOverlay(projectCode, entityCode);
 
   // Setup legend hidden values
   const { serieses } = useMapOverlayData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
-
   const initialTileSet = getAutoTileset();
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
   useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
@@ -152,7 +146,7 @@ export const Map = () => {
           shouldSnapToPosition
         >
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <MapOverlaysLayer hiddenValues={hiddenValues} key={mapOverlaysKey} />
+          <MapOverlaysLayer hiddenValues={hiddenValues} />
           <DemoLand />
           <ZoomControl position="bottomright" />
           <MapWatermark />
