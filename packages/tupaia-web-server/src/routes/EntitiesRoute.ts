@@ -40,7 +40,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
     const accessibleCountries = generateAccessibleCountryList(
-      this.req.accessPolicy,
+      this.req.session.accessPolicy,
       permissionGroups,
     );
 

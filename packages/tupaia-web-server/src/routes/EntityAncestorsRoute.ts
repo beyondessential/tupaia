@@ -34,7 +34,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
     const accessibleCountries = generateAccessibleCountryList(
-      this.req.accessPolicy,
+      this.req.session.accessPolicy,
       permissionGroups,
     );
 

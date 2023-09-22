@@ -33,7 +33,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
     const accessibleCountries = generateAccessibleCountryList(
-      this.req.accessPolicy,
+      this.req.session.accessPolicy,
       permissionGroups,
     );
 
