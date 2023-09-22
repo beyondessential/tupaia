@@ -3,5 +3,5 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export { generateAccessibleCountryList } from './generateAccessibleCountryList';
+export { generateAccessibleCountryFilter } from './generateAccessibleCountryFilter';
 export { generateFrontendExcludedFilter } from './generateFrontendExcludedFilter';

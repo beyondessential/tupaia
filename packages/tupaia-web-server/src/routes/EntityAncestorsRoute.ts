@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { TupaiaWebEntitiesRequest } from '@tupaia/types';
-import { generateAccessibleCountryList, generateFrontendExcludedFilter } from '../utils';
+import { generateAccessibleCountryFilter, generateFrontendExcludedFilter } from '../utils';
 
 export type EntityAncestorsRequest = Request<
   TupaiaWebEntitiesRequest.Params,
@@ -33,10 +33,6 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
     const { permission_groups: permissionGroups, config } = project;
 
     const { typesExcludedFromWebFrontend } = models.entity;
-    const accessibleCountries = generateAccessibleCountryList(
-      this.req.session.accessPolicy,
-      permissionGroups,
-    );
 
     const entities = await ctx.services.entity.getAncestorsOfEntity(
       projectCode,
@@ -44,7 +40,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       {
         filter: {
           ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-          country_code: accessibleCountries,
+          ...generateAccessibleCountryFilter(this.req.session.accessPolicy, permissionGroups),
         },
         fields: DEFAULT_FIELDS,
         ...restOfQuery,
