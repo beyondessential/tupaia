@@ -5,12 +5,12 @@
 
 import { DatabaseError } from '@tupaia/utils';
 
-const upsertEntities = async (models, entitiesCreated, surveyId) => {
+const upsertEntities = async (models, entitiesUpserted, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
 
   return Promise.all(
-    entitiesCreated.map(async entity =>
+    entitiesUpserted.map(async entity =>
       models.entity.updateOrCreate(
         { id: entity.id },
         {
@@ -48,12 +48,12 @@ const createOptions = async (models, optionsCreated) => {
 // Upsert entities and options that were created in user's local database
 export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
   for (const surveyResponse of surveyResponses) {
-    const entitiesCreated = surveyResponse.entities_created || [];
+    const entitiesUpserted = surveyResponse.entities_upserted || [];
     const optionsCreated = surveyResponse.options_created || [];
 
     try {
-      if (entitiesCreated.length > 0) {
-        await upsertEntities(models, entitiesCreated, surveyResponse.survey_id);
+      if (entitiesUpserted.length > 0) {
+        await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
       }
 
       if (optionsCreated.length > 0) {
