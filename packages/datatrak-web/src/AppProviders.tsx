@@ -8,6 +8,7 @@ import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './theme';
+import { ToastProvider } from './components';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +27,7 @@ export const AppProviders = ({ children }: { children: ReactNode }) => (
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <CssBaseline />
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </MuiThemeProvider>

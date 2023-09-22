@@ -8,6 +8,7 @@ import { ButtonLink, PageContainer as BasePageContainer } from '../components';
 import styled from 'styled-components';
 import { MOBILE_BREAKPOINT, ROUTES } from '../constants';
 import { Typography, Link } from '@material-ui/core';
+import { useToast } from '../components';
 
 const PageContainer = styled(BasePageContainer)`
   background: url('/landing-page-background.svg');
@@ -108,6 +109,7 @@ export const LandingPage = () => {
   };
 
   const linkToMobileApp = getMobileAppLink();
+  const { success, coconut, pig, error } = useToast();
   return (
     <PageContainer>
       <Wrapper>
@@ -135,6 +137,12 @@ export const LandingPage = () => {
           </TextWrapper>
           <SurveysImage src="/surveys.svg" />
         </SurveyAlert>
+        <button onClick={() => success('Congratulations! You have earned a coconut')}>
+          Success Toast
+        </button>
+        <button onClick={coconut}>Coconut Toast</button>
+        <button onClick={pig}>Pig Toast</button>
+        <button onClick={() => error('Here is an error message')}>Error Toast</button>
       </Wrapper>
     </PageContainer>
   );
