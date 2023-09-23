@@ -13,10 +13,11 @@ import {
   Series,
   MAP_COLORS,
   BREWER_PALETTE,
-  POLYGON_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 import { Polygon } from 'react-leaflet';
 import { useParams } from 'react-router-dom';
+import { useMapOverlays } from '../../../api/queries';
+import { useNavigateToEntity } from '../utils';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -63,7 +64,6 @@ const TransparentShadedPolygon = styled(BasePolygon)<PolygonProps>`
 
 interface PolygonLayerProps {
   measureData: MeasureData[];
-  navigateToEntity: (entityCode?: string) => void;
   serieses: Series[];
 }
 
@@ -81,18 +81,20 @@ const DISPLAY_TYPES = {
   active: 'activePolygon',
 };
 
-export const PolygonLayer = ({
-  measureData = [],
-  navigateToEntity,
-  serieses = [],
-}: PolygonLayerProps) => {
-  const { entityCode: activeEntityCode } = useParams();
-
+export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerProps) => {
+  const { projectCode, entityCode: activeEntityCode } = useParams();
+  const navigateToEntity = useNavigateToEntity();
+  const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, activeEntityCode);
   const polygons = measureData.filter(m => !!m.region);
-  const isPolygonSerieses = serieses.some(s => POLYGON_MEASURE_TYPES.includes(s.type));
 
   function getDisplayType(measure) {
-    if (measure?.code === activeEntityCode && !isPolygonSerieses) {
+    if (
+      isPolygonSerieses &&
+      selectedOverlay?.measureLevel?.toLowerCase() === measure?.type?.toLowerCase()
+    ) {
+      return DISPLAY_TYPES.shaded;
+    }
+    if (measure?.code === activeEntityCode) {
       return DISPLAY_TYPES.active;
     }
     if (measure.isHidden) {

@@ -5,7 +5,8 @@
 
 import { useParams } from 'react-router';
 import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
-import { useMapOverlayData } from './useMapOverlayData';
+import { useMapOverlayTableData } from './useMapOverlayTableData.ts';
+import { Entity } from '../../../types';
 
 const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses) => {
   const rootEntityCode = activeEntity?.parentCode || activeEntity?.code;
@@ -26,7 +27,7 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses) => 
 
   const filteredData = data?.filter(entity => {
     if (isPolygonSerieses) {
-      return entity.type === activeEntity.type && entity.code !== activeEntity?.code;
+      return entity.type === activeEntity.type;
     }
     // Point map overlay types
     return entity.parentCode === activeEntity.code || entity.type === activeEntity.type;
@@ -35,7 +36,20 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses) => 
   return { data: filteredData };
 };
 
-export const useMapOverlayPolygonData = hiddenValues => {
+const getRootEntityCode = (entity?: Entity) => {
+  if (!entity) {
+    return undefined;
+  }
+  const { parentCode, code, type } = entity;
+
+  if (type === 'country' || !parentCode) {
+    return code;
+  }
+
+  return parentCode;
+};
+
+export const useMapOverlayMapData = hiddenValues => {
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
@@ -51,7 +65,9 @@ export const useMapOverlayPolygonData = hiddenValues => {
     };
   });
 
-  const mapOverlayData = useMapOverlayData(hiddenValues);
+  const rootEntityCode = getRootEntityCode(entity);
+
+  const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
 
   // Combine the entities and relatives. The entities need to come after the entityRelatives so
   // that the active entity is rendered on top of the relatives

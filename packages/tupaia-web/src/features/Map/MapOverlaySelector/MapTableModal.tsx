@@ -10,7 +10,7 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
-import { useMapOverlayData } from '../utils';
+import { useMapOverlayTableData } from '../utils';
 import { Modal } from '../../../components';
 import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
 import { Entity } from '../../../types';
@@ -46,10 +46,10 @@ export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data } = useEntityAncestors(projectCode, entityCode);
-  const countryObject = data?.find((entity: Entity) => entity.type === 'country');
-  const { serieses, measureData } = useMapOverlayData(null, countryObject);
+  const countryEntity = data?.find((entity: Entity) => entity.type === 'country');
+  const { serieses, measureData } = useMapOverlayTableData({ rootEntityCode: countryEntity?.code });
 
-  const titleText = `${selectedOverlay.name}, ${countryObject?.name}`;
+  const titleText = `${selectedOverlay.name}, ${countryEntity?.name}`;
 
   const startDate = serieses?.startDate;
   const endDate = serieses?.endDate;

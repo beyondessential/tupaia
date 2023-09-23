@@ -4,11 +4,8 @@
  */
 
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import camelCase from 'camelcase';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { useEntity } from '../../../api/queries';
-import { useMapOverlayPolygonData, useNavigateToEntity } from '../utils';
+import { useMapOverlayMapData } from '../utils';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
 
@@ -17,32 +14,11 @@ export const MapOverlaysLayer = ({
 }: {
   hiddenValues: LegendProps['hiddenValues'];
 }) => {
-  const navigateToEntity = useNavigateToEntity();
-  const { projectCode, entityCode } = useParams();
-  const { data: entity } = useEntity(projectCode, entityCode);
-  const { serieses, measureData, isLoading } = useMapOverlayPolygonData(hiddenValues);
-
-  // Todo: what is this for?
-  // Don't show the marker layer if the entity type doesn't match the measure level
-  const firstSeries = serieses?.find((series: any) => series.displayOnLevel);
-  if (firstSeries && camelCase(entity?.type!) !== camelCase(firstSeries.displayOnLevel)) {
-    return null;
-  }
-
+  const { serieses, measureData, isLoading } = useMapOverlayMapData(hiddenValues);
   return (
     <>
-      <PolygonLayer
-        measureData={measureData}
-        serieses={serieses}
-        navigateToEntity={navigateToEntity}
-      />
-      {isLoading ? null : (
-        <MarkerLayer
-          measureData={measureData}
-          serieses={serieses}
-          navigateToEntity={navigateToEntity}
-        />
-      )}
+      <PolygonLayer measureData={measureData} serieses={serieses} />
+      {isLoading ? null : <MarkerLayer measureData={measureData} serieses={serieses} />}
     </>
   );
 };

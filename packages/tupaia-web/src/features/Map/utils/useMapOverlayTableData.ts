@@ -13,20 +13,7 @@ import { URL_SEARCH_PARAMS } from '../../../constants';
 
 type EntityTypeParam = string | null | undefined;
 
-const getRootEntityCode = (entity?: Entity) => {
-  if (!entity) {
-    return undefined;
-  }
-  const { parentCode, code, type } = entity;
-
-  if (type === 'country' || !parentCode) {
-    return code;
-  }
-
-  return parentCode;
-};
-
-const useDataDisplayEntities = (
+const useMapOverlayEntities = (
   projectCode?: ProjectCode,
   rootEntityCode?: EntityCode,
   measureLevel?: EntityTypeParam | EntityTypeParam[],
@@ -35,6 +22,7 @@ const useDataDisplayEntities = (
   // Don't include the root entity in the list of entities for displaying data as the
   // data visuals are for children of the root entity, unless it is a root entity, ie. a country
   const includeRootEntity = isPolygonSerieses && measureLevel?.includes('Country');
+
   return useEntitiesWithLocation(
     projectCode,
     rootEntityCode,
@@ -42,7 +30,6 @@ const useDataDisplayEntities = (
       params: {
         includeRootEntity,
         filter: {
-          generational_distance: 2,
           type: measureLevel,
         },
       },
@@ -51,10 +38,16 @@ const useDataDisplayEntities = (
   );
 };
 
-export const useMapOverlayData = (
-  hiddenValues?: LegendProps['hiddenValues'] | null,
-  rootEntity?: Entity,
-) => {
+interface UseMapOverlayDataProps {
+  hiddenValues?: LegendProps['hiddenValues'] | null;
+  rootEntityCode?: Entity;
+  variant?: 'map' | 'table';
+}
+export const useMapOverlayTableData = ({
+  hiddenValues = {},
+  rootEntityCode,
+  variant = 'map',
+}: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
   const { startDate, endDate } = useDateRanges(
@@ -62,20 +55,15 @@ export const useMapOverlayData = (
     selectedOverlay,
   );
   const { data: entity } = useEntity(projectCode, entityCode);
-  const rootEntityCode = rootEntity?.code || getRootEntityCode(entity);
 
-  const {
-    data: entities,
-    isLoading: isLoadingEntities,
-    isFetched: isFetchedEntities,
-  } = useDataDisplayEntities(
+  const { data: entities } = useMapOverlayEntities(
     projectCode,
     rootEntityCode,
     selectedOverlay?.measureLevel,
     isPolygonSerieses,
   );
 
-  const { data, isLoading, isFetched, isIdle } = useMapOverlayReport(
+  const { data, isLoading, isFetched, isFetching } = useMapOverlayReport(
     projectCode,
     rootEntityCode,
     selectedOverlay,
@@ -85,32 +73,25 @@ export const useMapOverlayData = (
     },
   );
 
-  const isLoadingEntitiesData = isLoadingEntities || !isFetchedEntities;
-
-  if (isLoadingEntitiesData) {
-    return {
-      measureData: [],
-      isLoading: true,
-    };
-  }
-
   const processedMeasureData = processMeasureData({
     activeEntityCode: entityCode,
     entitiesData: entities!,
     measureData: data?.measureData,
     serieses: data?.serieses?.sort((a: Series, b: Series) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
-    includeEntitiesWithoutCoordinates: !!rootEntity,
   }) as MeasureData[];
 
-  const isLoadingData = isLoading || (!isIdle && !isFetched && !!selectedOverlay);
+  const measureData = processedMeasureData.filter(({ coordinates, region }) =>
+    // @ts-ignore
+    variant === 'table' ? true : region || (coordinates && coordinates?.length === 2),
+  );
 
   return {
     ...data,
-    isLoading: isLoadingData,
+    isLoading: isLoading || isFetching,
     isFetched,
     serieses: data?.serieses,
-    measureData: processedMeasureData,
+    measureData,
     activeEntity: entity,
   };
 };

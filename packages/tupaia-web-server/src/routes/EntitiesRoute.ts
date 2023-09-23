@@ -64,6 +64,8 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
 
+    console.log('formattedFilter', formattedFilter);
+
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
       projectCode,
       rootEntityCode,

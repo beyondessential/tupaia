@@ -34,7 +34,7 @@ export const processMeasureData = ({
 
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
-  const entityMeasureData = entitiesData.map((entity: Entity) => {
+  const entityMeasureData = entitiesData?.map((entity: Entity) => {
     const measure = measureData.find(
       (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
     );
