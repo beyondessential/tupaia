@@ -11,4 +11,5 @@ export { CheckboxQuestion } from './CheckboxQuestion';
 export { DateTimeQuestion } from './DateTimeQuestion';
 export { GeolocateQuestion } from './GeolocateQuestion';
 export { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
+export { EntityQuestion } from './EntityQuestion';
 export { AutocompleteQuestion } from './AutocompleteQuestion';

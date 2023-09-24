@@ -16,6 +16,7 @@ import {
   DateTimeQuestion,
   GeolocateQuestion,
   CodeGeneratorQuestion,
+  EntityQuestion,
   AutocompleteQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
@@ -42,6 +43,7 @@ export enum QUESTION_TYPES {
   Date = DateQuestion,
   DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
+  Entity = EntityQuestion,
   Geolocate = GeolocateQuestion,
   Autocomplete = AutocompleteQuestion,
   Instruction = InstructionQuestion,
@@ -50,8 +52,7 @@ export enum QUESTION_TYPES {
   Radio = RadioQuestion,
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
-  Entity = Placeholder,
-  PrimaryEntity = Placeholder,
+  PrimaryEntity = EntityQuestion,
   CodeGenerator = CodeGeneratorQuestion,
   Arithmetic = Placeholder,
   Condition = Placeholder,
