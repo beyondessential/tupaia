@@ -3,11 +3,11 @@
  * Copyright (c) 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { KeyValueCellBuilder } from './KeyValueCellBuilder';
+import { KeyValueCellBuilder } from '../KeyValueCellBuilder';
 import {
   replaceQuestionIdsWithCodes,
   getDollarPrefixedExpressionVariables,
-} from '../../../utilities';
+} from '../../../../utilities';
 
 export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
   extractRelevantObject({ arithmetic }) {
@@ -103,7 +103,7 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
       };
 
       return Object.entries(translatedConfig)
-        .filter(([_, value]) => value !== undefined)
+        .filter(([, value]) => value !== undefined)
         .map(([key, value]) => `${key}: ${value}`)
         .join('\r\n');
     } catch {

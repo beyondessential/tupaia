@@ -7,11 +7,62 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import QrCodeMatrix from 'react-native-qrcode-svg';
 import Svg, { G, Rect, Text } from 'react-native-svg';
+import { wrapText } from '../utilities/wrapQrCodeText';
 
 const BASE_IMG_WIDTH = 1400;
 const BASE_IMG_HEIGHT = 500;
 const BASE_FONT_SIZE = 90;
 const CODE_PADDING_PERCENT = 0.1;
+
+// eslint-disable-next-line react/prop-types,consistent-return
+const renderLabel = ({ scale, humanReadableId, textBoxWidth, textBoxHeight }) => {
+  const fontSize = scale * BASE_FONT_SIZE;
+
+  const wrappedTextLines = wrapText(humanReadableId);
+  if (wrappedTextLines.length === 1) {
+    const textY = textBoxHeight / 2;
+    const textX = textBoxWidth / 2;
+    const [text] = wrappedTextLines;
+    return (
+      <Text
+        fill="black"
+        fontFamily="monospace"
+        fontSize={fontSize}
+        x={textX}
+        y={textY}
+        textAnchor="middle"
+        textLength={text.length}
+        alignmentBaseline="center"
+      >
+        {text}
+      </Text>
+    );
+  }
+  const textElements = [];
+  for (let i = 0; i < wrappedTextLines.length; i++) {
+    const lineHeight = 30;
+    const allLinesHeight = lineHeight * wrappedTextLines.length;
+    const linesStartY = (textBoxHeight - allLinesHeight) / 2 - 5;
+    const textY = linesStartY + lineHeight * i + lineHeight / 2;
+    const textX = 20;
+    textElements.push(
+      <Text
+        fill="black"
+        fontFamily="monospace"
+        fontSize={fontSize}
+        x={textX}
+        y={textY}
+        key={i}
+        textAnchor="start"
+        textLength={wrappedTextLines[i].length}
+        alignmentBaseline="center"
+      >
+        {wrappedTextLines[i]}
+      </Text>,
+    );
+  }
+  return textElements;
+};
 
 export const QrCode = ({ getRef, qrCodeContents, humanReadableId, width }) => {
   const scale = width / BASE_IMG_WIDTH;
@@ -21,25 +72,18 @@ export const QrCode = ({ getRef, qrCodeContents, humanReadableId, width }) => {
   const codePadding = CODE_PADDING_PERCENT * imageHeight;
   const codeSize = imageHeight - 2 * codePadding;
   const textBoxWidth = imageWidth - codeContainerSize + codePadding;
-  const fontSize = scale * BASE_FONT_SIZE;
-  const textXOffset = textBoxWidth / 2;
-  const textYOffset = (imageHeight - fontSize) / 2;
+  const textBoxHeight = imageHeight;
   const codeXOffset = textBoxWidth;
+
   return (
     <Svg ref={getRef} height={imageHeight} width={imageWidth}>
       <Rect x="0" y="0" height={imageHeight} width={imageWidth} fill="white" />
-      <Text
-        fill="black"
-        fontFamily="monospace"
-        fontSize={fontSize}
-        x={textXOffset}
-        y={textYOffset}
-        textAnchor="middle"
-        textLength={humanReadableId.length}
-        alignmentBaseline="center"
-      >
-        {humanReadableId}
-      </Text>
+      {renderLabel({
+        scale,
+        humanReadableId,
+        textBoxWidth,
+        textBoxHeight,
+      })}
       <G x={codeXOffset} y={codePadding}>
         <QrCodeMatrix size={codeSize} value={qrCodeContents} />
       </G>

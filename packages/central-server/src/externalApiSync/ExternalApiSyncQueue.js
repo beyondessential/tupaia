@@ -50,7 +50,7 @@ export class ExternalApiSyncQueue {
           is_deleted: false,
           is_dead_letter: false,
           priority: 1,
-          change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+          change_time: parseFloat(`${Date.now()}.${i}`),
         };
         if (changeDetails) {
           changeRecord.details = changeDetails[i];

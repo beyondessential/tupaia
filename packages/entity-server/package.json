@@ -38,7 +38,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "lodash.keyby": "^4.6.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/lodash.keyby": "^4.6.6"

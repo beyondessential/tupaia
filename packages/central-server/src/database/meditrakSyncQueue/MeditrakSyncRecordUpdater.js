@@ -3,18 +3,22 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+// TODO: Tidy this up as part of RN-502
+
 const arraysAreSame = (arr1, arr2) =>
   arr1.length === arr2.length && arr1.every(item => arr2.includes(item));
 
 export class MeditrakSyncRecordUpdater {
   constructor(models) {
     this.models = models;
+    this.changeBatchIndex = 0;
   }
 
   /**
    * @public
    */
   async updateSyncRecords(changes) {
+    this.changeBatchIndex = 0;
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       await this.processChange(change);
@@ -108,7 +112,7 @@ export class MeditrakSyncRecordUpdater {
       },
       {
         ...change,
-        change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+        change_time: parseFloat(`${Date.now()}.${this.changeBatchIndex++}`),
       },
     );
   }
