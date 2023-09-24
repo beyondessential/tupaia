@@ -92,6 +92,8 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
       isPolygonSerieses &&
       selectedOverlay?.measureLevel?.toLowerCase() === measure?.type?.toLowerCase()
     ) {
+      // The active entity is part of the data visual so display it as a shaded polygon rather
+      // than an active polygon
       return DISPLAY_TYPES.shaded;
     }
     if (measure?.code === activeEntityCode) {
