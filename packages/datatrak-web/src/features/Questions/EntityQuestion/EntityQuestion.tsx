@@ -63,19 +63,12 @@ export const EntityQuestion = ({
 
   const { data: searchResults, isLoading } = useSearchResults(searchValue, config);
 
-  const displayResults = searchResults
-    ?.map(({ name: entityName, parentName, id }) => ({
-      name: entityName,
-      parentName,
-      value: id,
-      selected: id === value,
-    }))
-    .filter(({ name }) => {
-      if (isDirty || !value) {
-        return true;
-      }
-      return name === searchValue;
-    });
+  const displayResults = searchResults?.filter(({ name }) => {
+    if (isDirty || !value) {
+      return true;
+    }
+    return name === searchValue;
+  });
 
   return (
     <Container>
@@ -91,7 +84,7 @@ export const EntityQuestion = ({
       {isLoading ? (
         <SpinningLoader />
       ) : (
-        <ResultsList onSelect={onSelect} searchResults={displayResults} />
+        <ResultsList value={value} onSelect={onSelect} searchResults={displayResults} />
       )}
     </Container>
   );

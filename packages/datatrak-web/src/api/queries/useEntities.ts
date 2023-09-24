@@ -11,5 +11,6 @@ export const useEntities = (projectCode?: string, params?: TupaiaWebEntitiesRequ
     ['entities', projectCode, params],
     (): Promise<TupaiaWebEntitiesRequest.ResBody> =>
       get('entities', { params: { filter: { ...params, projectCode } } }),
+    { enabled: !!projectCode },
   );
 };
