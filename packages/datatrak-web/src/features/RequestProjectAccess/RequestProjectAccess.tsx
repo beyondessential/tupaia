@@ -42,7 +42,7 @@ interface RequestProjectAccessProps {
 }
 
 export const RequestProjectAccess = ({ projectCode, onClose }: RequestProjectAccessProps) => {
-  const { data: project, isLoading: isLoadingProject, isFetched, error } = useProject(projectCode);
+  const { data: project, isLoading: isLoadingProject, isFetched } = useProject(projectCode);
 
   const showLoading = isLoadingProject || !isFetched;
 
@@ -50,7 +50,6 @@ export const RequestProjectAccess = ({ projectCode, onClose }: RequestProjectAcc
     <Wrapper>
       <Typography variant="h1">Request Project Access</Typography>
       <BodyText>Complete the form below to request access to this project</BodyText>
-      {error && <Typography color="error">{(error as Error).message}</Typography>}
       <Container>
         {showLoading ? (
           <SpinningLoader />

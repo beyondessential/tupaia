@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import { enqueueSnackbar } from 'notistack';
-import { Coconut, Pig } from '../Icons';
+import { Coconut, Pig } from '../../Icons';
+import { errorToast } from '.';
 
 /**
  * Utility hook for displaying toast messages.
@@ -13,14 +14,6 @@ export const useToast = () => {
   const success = (message: string) => {
     enqueueSnackbar(message, {
       variant: 'success',
-    });
-  };
-
-  const error = (message: string) => {
-    enqueueSnackbar(message, {
-      variant: 'error',
-      autoHideDuration: null, // don't auto hide errors
-      hideIconVariant: true,
     });
   };
 
@@ -40,7 +33,7 @@ export const useToast = () => {
 
   return {
     success,
-    error,
+    error: errorToast,
     coconut,
     pig,
   };
