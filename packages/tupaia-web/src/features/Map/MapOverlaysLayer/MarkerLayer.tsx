@@ -11,15 +11,16 @@ import {
   MeasureData,
   Series,
 } from '@tupaia/ui-map-components';
+import { useNavigateToEntity } from '../utils';
 
 interface MarkerLayerProps {
   measureData: MeasureData[];
-  navigateToEntity: (entityCode?: string) => void;
   serieses: Series[];
 }
 
-export const MarkerLayer = ({ measureData, serieses, navigateToEntity }: MarkerLayerProps) => {
-  const markerMeasures = measureData.filter(m => !!m.point);
+export const MarkerLayer = ({ measureData = [], serieses = [] }: MarkerLayerProps) => {
+  const navigateToEntity = useNavigateToEntity();
+  const markerMeasures = measureData.filter(m => !!m.point).filter(m => !m.isHidden);
   return (
     <LayerGroup>
       {markerMeasures.map((measure: MeasureData) => {

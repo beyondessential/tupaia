@@ -10,7 +10,7 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
-import { useMapOverlayData } from '../utils';
+import { useMapOverlayTableData } from '../utils';
 import { Modal } from '../../../components';
 import { useEntity, useEntityAncestors, useMapOverlays, useProject } from '../../../api/queries';
 import { Entity } from '../../../types';
@@ -56,7 +56,9 @@ export const MapTableModal = ({ onClose }: any) => {
       ? entity
       : entityAncestors?.find((entity: Entity) => entity.type === 'country');
 
-  const { serieses, measureData, startDate, endDate } = useMapOverlayData(null, entity);
+  const { serieses, measureData, startDate, endDate } = useMapOverlayTableData({
+    rootEntityCode: rootEntity?.code,
+  });
 
   // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
   const entityName =
