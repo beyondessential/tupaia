@@ -12,7 +12,7 @@ import { Typography } from '@material-ui/core';
 import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
 import { useMapOverlayTableData } from '../utils';
 import { Modal } from '../../../components';
-import { useEntityAncestors, useMapOverlays } from '../../../api/queries';
+import { useEntity, useEntityAncestors, useMapOverlays, useProject } from '../../../api/queries';
 import { Entity } from '../../../types';
 
 const Wrapper = styled(FlexColumn)`
@@ -45,14 +45,26 @@ const TitleWrapper = styled.div`
 export const MapTableModal = ({ onClose }: any) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { data } = useEntityAncestors(projectCode, entityCode);
-  const countryEntity = data?.find((entity: Entity) => entity.type === 'country');
-  const { serieses, measureData } = useMapOverlayTableData({ rootEntityCode: countryEntity?.code });
+  const { data: project } = useProject(projectCode);
 
-  const titleText = `${selectedOverlay.name}, ${countryEntity?.name}`;
+  const { data: entityAncestors } = useEntityAncestors(projectCode, entityCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
 
-  const startDate = serieses?.startDate;
-  const endDate = serieses?.endDate;
+  // use the project if the entity is a project, otherwise the country (e.g. if the current entity is a facility or a subdistrict. Most of the time project entities don't have map overlays so this won't happen much)
+  const rootEntity =
+    entity?.type === 'project'
+      ? entity
+      : entityAncestors?.find((entity: Entity) => entity.type === 'country');
+
+  const { serieses, measureData, startDate, endDate } = useMapOverlayTableData({ rootEntityCode: countryEntity?.code });
+
+  // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
+  const entityName =
+    entity?.type === 'project' && project?.config?.projectDashboardHeader
+      ? project?.config?.projectDashboardHeader
+      : rootEntity?.name;
+
+  const titleText = `${selectedOverlay.name}, ${entityName}`;
 
   const { doExport } = useMapDataExport(serieses, measureData, titleText, startDate, endDate);
 

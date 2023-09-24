@@ -182,7 +182,10 @@ export const Dashboard = () => {
       },
       [],
     ) ?? [];
-
+  const title =
+    entity?.type === 'project' && project?.config?.projectDashboardHeader
+      ? project?.config?.projectDashboardHeader
+      : entity?.name;
   return (
     <ErrorBoundary>
       <Panel $isExpanded={isExpanded}>
@@ -191,14 +194,14 @@ export const Dashboard = () => {
           <Breadcrumbs />
           <DashboardImageContainer>
             {entity?.photoUrl ? (
-              <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+              <Photo title={title} photoUrl={entity?.photoUrl} />
             ) : (
               <StaticMap bounds={bounds} />
             )}
           </DashboardImageContainer>
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
-              <Title variant="h3">{entity?.name}</Title>
+              <Title variant="h3">{title}</Title>
               {activeDashboard && (
                 <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
                   Export
