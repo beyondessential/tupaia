@@ -37826,17 +37826,109 @@ export const ProjectResponseSchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"entityName": {
+		"name": {
 			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,
 	"type": "object",
 	"required": [
 		"code",
-		"entityName",
-		"id"
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
 	]
+} 
+
+export const ResBodySchema = {
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"dashboardGroupName": {
+			"type": "string"
+		},
+		"defaultMeasure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"logoUrl": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object",
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
 } 
 
 export const InitialResponseSchema = {
