@@ -71,7 +71,7 @@ export const AutocompleteQuestion = ({
   label,
   name,
   optionSetId,
-  controllerProps: { value, onChange, ref },
+  controllerProps: { value = null, onChange, ref },
 }: SurveyQuestionInputProps) => {
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(optionSetId);
 
