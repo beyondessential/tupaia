@@ -57,7 +57,7 @@ export const MapTableModal = ({ onClose }: any) => {
       : entityAncestors?.find((entity: Entity) => entity.type === 'country');
 
   const { serieses, measureData, startDate, endDate } = useMapOverlayTableData({
-    rootEntityCode: rootEntity,
+    rootEntityCode: rootEntity?.code,
   });
 
   // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
