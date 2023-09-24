@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebUserRequest } from '@tupaia/types';
+import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
 
 export type UserRequest = Request<
   DatatrakWebUserRequest.Params,
@@ -32,6 +32,12 @@ export class UserRoute extends Route<UserRequest> {
       project_id: projectId,
     } = await ctx.services.central.getUser();
 
-    return { userName: `${firstName} ${lastName}`, email, id, projectId };
+    let project = null;
+    if (projectId) {
+      const { projects } = await ctx.services.webConfig.fetchProjects();
+      project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
+    }
+
+    return { userName: `${firstName} ${lastName}`, email, id, projectId, project };
   }
 }

@@ -11,6 +11,7 @@ import {
   Outlet,
   generatePath,
   useParams,
+  useLocation,
 } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import {
@@ -26,6 +27,7 @@ import {
   SurveySuccessScreen,
   SurveyScreen,
   ProjectSelectPage,
+  RequestProjectAccessPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -48,9 +50,18 @@ const LoggedInRedirect = ({ children }) => {
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
-  const { isLoggedIn, isLoading, isFetched } = useUser();
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  const location = useLocation();
   if (isLoading || !isFetched) return <FullPageLoader />;
   if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
+
+  // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
+  if (data?.projectId && location.pathname === ROUTES.PROJECT_SELECT)
+    return <Navigate to={ROUTES.HOME} replace={true} />;
+
+  // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
+  if (!data?.projectId && location.pathname !== ROUTES.PROJECT_SELECT)
+    return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
   return children ? children : <Outlet />;
 };
 
@@ -85,10 +96,15 @@ export const Routes = () => {
                 </LoggedInRedirect>
               }
             />
+
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+
+            <Route element={<PrivateRoute />}>
+              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
+              <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
+            </Route>
           </Route>
         </Route>
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
@@ -96,7 +112,6 @@ export const Routes = () => {
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
             <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
