@@ -119,6 +119,8 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
         const key =
           displayType === DISPLAY_TYPES.active ? `currentEntityPolygon${Math.random()}` : code;
         const showDataOnTooltip = displayType === DISPLAY_TYPES.shaded;
+        const onClick =
+          displayType === DISPLAY_TYPES.active ? undefined : () => navigateToEntity(code);
 
         return (
           <PolygonComponent
@@ -126,9 +128,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
             $displayType={displayType}
             $shade={shade}
             eventHandlers={{
-              click: () => {
-                navigateToEntity(code);
-              },
+              click: onClick,
             }}
             key={key}
             {...measure}

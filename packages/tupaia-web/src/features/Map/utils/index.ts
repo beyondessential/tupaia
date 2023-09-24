@@ -5,6 +5,6 @@
 
 export { useDefaultMapOverlay } from './useDefaultMapOverlay';
 export { useHiddenMapValues } from './useHiddenMapValues';
-export { useMapOverlayTableData } from './useMapOverlayTableData.ts';
-export { useMapOverlayMapData } from './useMapOverlayMapData.ts';
+export { useMapOverlayTableData } from './useMapOverlayTableData';
+export { useMapOverlayMapData } from './useMapOverlayMapData';
 export { useNavigateToEntity } from './useNavigateToEntity';

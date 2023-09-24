@@ -13,7 +13,6 @@ import {
 import { Entity } from '@tupaia/types';
 
 interface processMeasureDataProps {
-  activeEntityCode?: string;
   measureData: MeasureData[];
   entitiesData: Entity[];
   serieses: Series[];

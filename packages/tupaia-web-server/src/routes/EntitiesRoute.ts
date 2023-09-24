@@ -29,7 +29,7 @@ const DEFAULT_FILTER = {
 
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type', 'child_codes'];
 
-const FILER_PARSERS = {
+const FILTER_PARSERS = {
   type: (entityType: string) => {
     return (Array.isArray(entityType) ? entityType : [entityType])
       .filter(type => !!type)
@@ -43,7 +43,7 @@ const FILER_PARSERS = {
 };
 const parseFilter = (filter: Record<string, any>) =>
   Object.entries(filter).reduce((newFilter, [key, value]) => {
-    const parser = FILER_PARSERS[key as keyof typeof FILER_PARSERS];
+    const parser = FILTER_PARSERS[key as keyof typeof FILTER_PARSERS];
     return { ...newFilter, [key]: parser ? parser(value) : value };
   }, {});
 
