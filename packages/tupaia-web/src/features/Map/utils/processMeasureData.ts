@@ -17,7 +17,6 @@ interface processMeasureDataProps {
   entitiesData: Entity[];
   serieses: Series[];
   hiddenValues: LegendProps['hiddenValues'];
-  includeEntitiesWithoutCoordinates?: boolean; // this is for differentiating between the processing of data for the table and for the map
 }
 
 export const processMeasureData = ({
@@ -25,7 +24,6 @@ export const processMeasureData = ({
   entitiesData,
   serieses,
   hiddenValues,
-  includeEntitiesWithoutCoordinates,
 }: processMeasureDataProps) => {
   if (!measureData || !serieses) {
     return [];
@@ -64,8 +62,5 @@ export const processMeasureData = ({
     entityMeasureData.sort((a, b) => Number(b.radius) - Number(a.radius));
   }
 
-  // Filter hidden and invalid values and sort measure data
-  return entityMeasureData.filter(({ coordinates, region }) =>
-    includeEntitiesWithoutCoordinates ? true : region || (coordinates && coordinates?.length === 2),
-  );
+  return entityMeasureData;
 };
