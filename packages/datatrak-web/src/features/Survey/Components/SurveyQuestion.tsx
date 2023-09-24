@@ -17,6 +17,7 @@ import {
   GeolocateQuestion,
   CodeGeneratorQuestion,
   EntityQuestion,
+  AutocompleteQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 
@@ -37,7 +38,6 @@ const Placeholder = ({ name, type, id }) => {
 };
 
 export enum QUESTION_TYPES {
-  Autocomplete = Placeholder,
   Binary = BinaryQuestion,
   Checkbox = CheckboxQuestion,
   Date = DateQuestion,
@@ -45,6 +45,7 @@ export enum QUESTION_TYPES {
   FreeText = TextQuestion,
   Entity = EntityQuestion,
   Geolocate = GeolocateQuestion,
+  Autocomplete = AutocompleteQuestion,
   Instruction = InstructionQuestion,
   Number = TextQuestion,
   Photo = Placeholder,
