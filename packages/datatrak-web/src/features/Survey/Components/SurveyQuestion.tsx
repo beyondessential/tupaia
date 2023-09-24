@@ -16,6 +16,7 @@ import {
   DateTimeQuestion,
   GeolocateQuestion,
   CodeGeneratorQuestion,
+  AutocompleteQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 
@@ -42,7 +43,7 @@ export enum QUESTION_TYPES {
   DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
   Geolocate = GeolocateQuestion,
-  Autocomplete = Placeholder,
+  Autocomplete = AutocompleteQuestion,
   Instruction = InstructionQuestion,
   Number = TextQuestion,
   Photo = Placeholder,
