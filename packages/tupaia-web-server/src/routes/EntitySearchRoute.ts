@@ -36,7 +36,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
       filter: {
         ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-        ...generateAccessibleCountryFilter(this.req.session.accessPolicy, permissionGroups),
+        ...generateAccessibleCountryFilter(this.req.accessPolicy, permissionGroups),
       },
       ...query,
       page,

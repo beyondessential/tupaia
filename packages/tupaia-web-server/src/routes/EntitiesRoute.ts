@@ -47,7 +47,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
         filter: {
           ...DEFAULT_FILTER,
           ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-          ...generateAccessibleCountryFilter(this.req.session.accessPolicy, permissionGroups),
+          ...generateAccessibleCountryFilter(this.req.accessPolicy, permissionGroups),
         },
         fields: DEFAULT_FIELDS,
         ...query,

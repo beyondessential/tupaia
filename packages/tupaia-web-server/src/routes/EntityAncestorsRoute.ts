@@ -40,7 +40,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       {
         filter: {
           ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-          ...generateAccessibleCountryFilter(this.req.session.accessPolicy, permissionGroups),
+          ...generateAccessibleCountryFilter(this.req.accessPolicy, permissionGroups),
         },
         fields: DEFAULT_FIELDS,
         ...restOfQuery,
