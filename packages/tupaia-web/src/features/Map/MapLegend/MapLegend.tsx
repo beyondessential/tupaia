@@ -8,7 +8,7 @@ import { Legend, LegendProps } from '@tupaia/ui-map-components';
 import { MobileMapLegend } from './MobileMapLegend';
 import { useSearchParams } from 'react-router-dom';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
-import { useMapOverlayTableData } from '../utils';
+import { useMapOverlayMapData } from '../utils';
 import styled from 'styled-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 
@@ -37,7 +37,7 @@ const SeriesDivider = styled.div`
 export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   const [urlSearchParams] = useSearchParams();
   const selectedOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
-  const { isLoading, isFetched, ...overlayReportData } = useMapOverlayTableData();
+  const { isLoading, isFetched, ...overlayReportData } = useMapOverlayMapData();
 
   if (!selectedOverlay || !overlayReportData || isLoading) {
     return null;

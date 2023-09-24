@@ -19,8 +19,9 @@ const useMapOverlayEntities = (
   measureLevel?: EntityTypeParam | EntityTypeParam[],
   isPolygonSerieses?: boolean,
 ) => {
-  // Don't include the root entity in the list of entities for displaying data as the
-  // data visuals are for children of the root entity, unless it is a root entity, ie. a country
+  // Normally we don't include the root entity in the list of entities for displaying data as the
+  // data visuals are for children of the root entity. There is one exception where the root entity is the country
+  // and the measure level is country. In this case we want to include the root entity in the list of entities
   const includeRootEntity = isPolygonSerieses && measureLevel?.includes('Country');
 
   return useEntitiesWithLocation(
@@ -41,12 +42,10 @@ const useMapOverlayEntities = (
 interface UseMapOverlayDataProps {
   hiddenValues?: LegendProps['hiddenValues'] | null;
   rootEntityCode?: Entity;
-  variant?: 'map' | 'table';
 }
 export const useMapOverlayTableData = ({
   hiddenValues = {},
   rootEntityCode,
-  variant = 'map',
 }: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
@@ -73,18 +72,13 @@ export const useMapOverlayTableData = ({
     },
   );
 
-  const processedMeasureData = processMeasureData({
+  const measureData = processMeasureData({
     activeEntityCode: entityCode,
     entitiesData: entities!,
     measureData: data?.measureData,
     serieses: data?.serieses?.sort((a: Series, b: Series) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
   }) as MeasureData[];
-
-  const measureData = processedMeasureData.filter(({ coordinates, region }) =>
-    // @ts-ignore
-    variant === 'table' ? true : region || (coordinates && coordinates?.length === 2),
-  );
 
   return {
     ...data,

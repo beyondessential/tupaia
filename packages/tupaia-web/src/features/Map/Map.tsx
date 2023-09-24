@@ -20,7 +20,7 @@ import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity } from '../../api/queries';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
-import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayTableData } from './utils';
+import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
 import { useGAEffect } from '../../utils';
 import { DemoLand } from './DemoLand';
 
@@ -123,7 +123,7 @@ export const Map = () => {
   useDefaultMapOverlay(projectCode, entityCode);
 
   // Setup legend hidden values
-  const { serieses } = useMapOverlayTableData();
+  const { serieses } = useMapOverlayMapData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
