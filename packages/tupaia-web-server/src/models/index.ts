@@ -8,3 +8,4 @@ export { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 export { MapOverlayGroupModel } from './MapOverlayGroups';
 export { DashboardItemModel } from './DashboardItems';
 export { EntityModel } from './Entity';
+export { UserModel } from './User';
