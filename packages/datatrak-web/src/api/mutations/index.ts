@@ -9,3 +9,4 @@ export { useRegister } from './useRegister';
 export { useEditUser } from './useEditUser';
 export { useResendVerificationEmail } from './useResendVerificationEmail';
 export { useRequestProjectAccess } from './useRequestProjectAccess';
+export { useSubmitSurvey } from './useSubmitSurvey';
