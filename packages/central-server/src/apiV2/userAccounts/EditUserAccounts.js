@@ -37,7 +37,12 @@ export class EditUserAccounts extends EditHandler {
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
     // Update Record
-    const { password, profile_image: profileImage, ...restOfUpdatedFields } = this.updatedFields;
+    const {
+      password,
+      profile_image: profileImage,
+      preferences,
+      ...restOfUpdatedFields
+    } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
 
     if (password) {
@@ -45,6 +50,10 @@ export class EditUserAccounts extends EditHandler {
         ...updatedFields,
         ...hashAndSaltPassword(password),
       };
+    }
+
+    if (preferences) {
+      throw new Error('Preferences should be updated via the specific preferences fields');
     }
 
     // Check if there are any updated user preferences in the request
