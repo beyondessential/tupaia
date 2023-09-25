@@ -35123,6 +35123,7 @@ export const EntitySchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -35138,6 +35139,7 @@ export const EntitySchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -36284,6 +36286,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -36299,6 +36302,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -36950,6 +36954,7 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
+		"preferences": {},
 		"primary_platform": {
 			"enum": [
 				"lesmis",
@@ -36958,9 +36963,6 @@ export const UserAccountSchema = {
 			"type": "string"
 		},
 		"profile_image": {
-			"type": "string"
-		},
-		"project_id": {
 			"type": "string"
 		},
 		"verified_email": {
@@ -37140,6 +37142,7 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"facility",
+		"farm",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
@@ -37155,6 +37158,7 @@ export const EntityTypeSchema = {
 		"nursing_zone",
 		"postcode",
 		"project",
+		"repair_request",
 		"school",
 		"sub_catchment",
 		"sub_district",
@@ -37280,6 +37284,7 @@ export const EntityCreatedSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -37295,6 +37300,7 @@ export const EntityCreatedSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -37449,6 +37455,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"disaster",
 							"district",
 							"facility",
+							"farm",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",
@@ -37464,6 +37471,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"nursing_zone",
 							"postcode",
 							"project",
+							"repair_request",
 							"school",
 							"sub_catchment",
 							"sub_district",
@@ -37726,6 +37734,7 @@ export const ResBodySchema = {
 					"disaster",
 					"district",
 					"facility",
+					"farm",
 					"fetp_graduate",
 					"field_station",
 					"fiji_aspen_facility",
@@ -37741,6 +37750,7 @@ export const ResBodySchema = {
 					"nursing_zone",
 					"postcode",
 					"project",
+					"repair_request",
 					"school",
 					"sub_catchment",
 					"sub_district",
@@ -37845,90 +37855,6 @@ export const ProjectResponseSchema = {
 		"id",
 		"name"
 	]
-} 
-
-export const ResBodySchema = {
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
-		},
-		"dashboardGroupName": {
-			"type": "string"
-		},
-		"defaultMeasure": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
-			"type": "string"
-		},
-		"entityId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"imageUrl": {
-			"type": "string"
-		},
-		"logoUrl": {
-			"type": "string"
-		},
-		"permissionGroups": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"sortOrder": {
-			"type": "number"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"type": "object",
-	"required": [
-		"code",
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
-	]
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const InitialResponseSchema = {
