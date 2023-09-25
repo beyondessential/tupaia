@@ -53,6 +53,10 @@ export class TestableServer {
     this.defaultQuery[name] = value;
   }
 
+  public removeDefaultQueryParam(name: string) {
+    delete this.defaultQuery[name];
+  }
+
   private addOptionsToRequest(request: Test, options: RequestOptions = {}) {
     const { headers, query, body } = options;
 
