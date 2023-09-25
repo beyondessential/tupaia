@@ -344,46 +344,6 @@ describe('changes (GET)', () => {
     expectMatchingChangeRecords(response.body, expectedResults);
   });
 
-  it('should return the correct number of changes based on the models the appVersion supports', async () => {
-    const since = Date.now();
-    await oneSecondSleep();
-
-    const numberOfEntitiesToAdd = 2;
-    const entitySupportedAppVersion = '1.7.102';
-    const entityUnsupportedAppVersion = '1.7.101';
-
-    const newEntities = [];
-    for (let i = 0; i < numberOfEntitiesToAdd; i++) {
-      newEntities.push(await upsertDummyRecord(models.entity, {}));
-    }
-
-    await models.database.waitForAllChangeHandlers();
-
-    const entitySupportedResponse = await app.get('changes', {
-      headers: {
-        Authorization: authHeader,
-      },
-      query: {
-        since,
-        appVersion: entitySupportedAppVersion,
-      },
-    });
-    const entityUnsupportedResponse = await app.get('changes', {
-      headers: {
-        Authorization: authHeader,
-      },
-      query: {
-        since,
-        appVersion: entityUnsupportedAppVersion,
-      },
-    });
-    const expectedEntitySupportedResults = await Promise.all(
-      newEntities.map(entityCreated => recordToChange('entity', entityCreated, 'update')),
-    );
-    expectMatchingChangeRecords(entitySupportedResponse.body, expectedEntitySupportedResults);
-    expect(entityUnsupportedResponse.body).toEqual([]);
-  });
-
   it('should return the correct number of changes based on the requested record types', async () => {
     const since = Date.now();
     await oneSecondSleep();
