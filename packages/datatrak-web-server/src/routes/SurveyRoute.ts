@@ -15,6 +15,8 @@ export type SurveyRequest = Request<
   DatatrakWebSurveysRequest.ReqQuery
 >;
 
+const DEFAULT_FIELDS = ['name', 'code', 'id', 'survey_group.name'];
+
 export class SurveyRoute extends Route<SurveyRequest> {
   public async buildResponse() {
     const {
@@ -22,7 +24,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
       query = {},
       params: { surveyCode },
     } = this.req;
-    const { fields } = query;
+    const { fields = DEFAULT_FIELDS } = query;
     const surveys = await ctx.services.central.fetchResources('surveys', {
       filter: { code: surveyCode },
       columns: fields,
