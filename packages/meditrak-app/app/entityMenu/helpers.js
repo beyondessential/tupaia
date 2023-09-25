@@ -33,7 +33,7 @@ export const getEntityBaseFilters = (state, database, questionId) => {
 
 export const getEntityAttributeChecker = (state, questionId) => {
   const question = getQuestion(state, questionId);
-  const { attributes } = question.config.entity;
+  const { attributes } = question.config.entity.filter;
   if (!attributes) {
     return null;
   }
