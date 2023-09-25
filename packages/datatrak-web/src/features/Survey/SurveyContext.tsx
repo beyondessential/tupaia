@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
 import { formatSurveyScreenQuestions } from './utils';
+import { getAnswerForQuestion } from '../Questions/EntityQuestion/utils.ts';
 
 type SurveyFormContextType = {
   formData: Record<string, any>;
@@ -148,13 +149,20 @@ export const useSurveyForm = () => {
   const setFormData = (formData: Record<string, any>) => {
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: formData });
   };
+
   const resetForm = () => {
     dispatch({ type: ACTION_TYPES.RESET_FORM_DATA });
   };
+
+  const getAnswerForQuestion = (questionId: string) => {
+    return surveyFormContext.formData[questionId];
+  };
+
   return {
     ...surveyFormContext,
     toggleSideMenu,
     setFormData,
     resetForm,
+    getAnswerForQuestion,
   };
 };

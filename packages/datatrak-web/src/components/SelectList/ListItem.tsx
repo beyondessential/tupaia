@@ -45,13 +45,16 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
       background-color: ${({ theme }) => theme.palette.primary.main}33;
     }
   }
-
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
   &.Mui-disabled {
     opacity: 1; // still have the icon as the full opacity
     color: ${({ theme }) => theme.palette.text.disabled};
+  }
+  .text-secondary {
+    color: ${({ theme }) => theme.palette.text.secondary};
+    margin-left: 0.4em;
   }
 `;
 
@@ -125,7 +128,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         disabled={disabled}
       >
         <Wrapper tooltip={tooltip}>
-          <ButtonContainer $fullWidth={!!button}>
+          <ButtonContainer $fullWidth={button}>
             <IconWrapper>{icon}</IconWrapper>
             {content}
             {isNested && <Arrow $open={open} />}
@@ -133,7 +136,6 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         </Wrapper>
         {selected && <Check color="primary" />}
       </BaseListItem>
-
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );

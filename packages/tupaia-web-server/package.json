@@ -37,7 +37,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.6.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@tupaia/types": "1.0.0",

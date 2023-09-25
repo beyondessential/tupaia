@@ -12,6 +12,7 @@ export const useUser = () => {
     'getUser',
     (): Promise<DatatrakWebUserRequest.ResBody> => get('getUser'),
   );
+
   const { data: user } = userResponse;
 
   return {

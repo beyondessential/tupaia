@@ -24,6 +24,8 @@ import {
   SurveyScreenComponentsRequest,
   SurveyRequest,
   SurveyRoute,
+  EntitiesRequest,
+  EntitiesRoute,
   ProjectRequest,
   ProjectRoute,
 } from '../routes';
@@ -38,6 +40,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))

@@ -1,3 +1,0 @@
-- name: Hello world
-  service: helloworld
-  command: echo 1

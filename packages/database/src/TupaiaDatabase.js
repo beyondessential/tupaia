@@ -458,6 +458,8 @@ export class TupaiaDatabase {
    *
    * Use only for situations in which Knex is not able to assemble a query.
    *
+   * @param {string} sqlString
+   * @param {any[]} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */

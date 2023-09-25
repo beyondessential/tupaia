@@ -37613,6 +37613,166 @@ export const KeysToCamelCaseSchema = {
 	"additionalProperties": false
 } 
 
+export const ResBodySchema = {
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"attributes": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"bounds": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"code": {
+				"type": "string"
+			},
+			"countryCode": {
+				"type": "string"
+			},
+			"id": {
+				"type": "string"
+			},
+			"imageUrl": {
+				"type": "string"
+			},
+			"mRow$": {
+				"type": "string"
+			},
+			"metadata": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"name": {
+				"type": "string"
+			},
+			"parentId": {
+				"type": "string"
+			},
+			"point": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"region": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"type": {
+				"enum": [
+					"asset",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"facility",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
+		"additionalProperties": false,
+		"required": [
+			"code",
+			"id",
+			"name"
+		]
+	}
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const ProjectResponseSchema = {
 	"properties": {
 		"code": {
