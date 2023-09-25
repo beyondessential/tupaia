@@ -3,12 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  accessPolicy,
-  verifiedUser,
-  unverifiedUser,
-  MEDITRAK_DEVICE_BY_REFRESH_TOKEN,
-} from './Authenticator.fixtures';
+import { accessPolicy, verifiedUser, unverifiedUser } from './Authenticator.fixtures';
 
 export const getPolicyForUserStub = jest.fn().mockResolvedValue(accessPolicy);
 
@@ -30,12 +25,6 @@ const findUserStub = ({ email }) => {
 
 const getValidToken = token => ({ token, meditrakDevice: () => null, expiry: Date.now() + 100000 });
 const findRefreshTokenStub = ({ token }) => {
-  if (MEDITRAK_DEVICE_BY_REFRESH_TOKEN[token]) {
-    return {
-      ...getValidToken(token),
-      meditrakDevice: () => MEDITRAK_DEVICE_BY_REFRESH_TOKEN[token],
-    };
-  }
   switch (token) {
     case 'validToken':
       return getValidToken(token);
@@ -61,9 +50,6 @@ export const models = {
   refreshToken: {
     updateOrCreate: createUpsertStub('token'),
     findOne: findRefreshTokenStub,
-  },
-  meditrakDevice: {
-    updateOrCreate: createUpsertStub('app_version'),
   },
   oneTimeLogin: {
     findValidOneTimeLoginOrFail: token => {
