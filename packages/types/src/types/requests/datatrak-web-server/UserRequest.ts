@@ -10,7 +10,7 @@ export interface ResBody {
   id?: string;
   userName?: string;
   email?: string;
-  projectId?: string;
+  preferences?: any;
   project?: ProjectResponse | null;
 }
 export type ReqBody = Record<string, never>;
