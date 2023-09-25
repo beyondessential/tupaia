@@ -30,7 +30,7 @@ const addSurveyFileValidator = yup.object().shape({
 
 type ChangeRecord = {
   action: typeof ACTIONS[keyof typeof ACTIONS];
-  payload: Record<string, unknown>;
+  payload: { survey_response: Record<string, unknown> } | Record<string, unknown>;
 };
 
 export type PushChangesRequest = Request<
@@ -41,6 +41,13 @@ export type PushChangesRequest = Request<
 >;
 
 export class PushChangesRoute extends Route<PushChangesRequest> {
+  private extractSurveyResponseFromPayload(payload: Record<string, unknown>) {
+    if (payload.survey_response) {
+      return payload.survey_response as Record<string, unknown>;
+    }
+    return payload;
+  }
+
   public async buildResponse() {
     const changes = this.req.body;
 
@@ -49,7 +56,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
     for (const { action, payload } of changes) {
       switch (action) {
         case ACTIONS.SubmitSurveyResponse: {
-          const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
+          const surveyResponse = this.extractSurveyResponseFromPayload(payload);
+          const translatedPayload = await translateSurveyResponseObject(
+            this.req.models,
+            surveyResponse,
+          );
           const validatedSurveyResponse = validateSurveyResponseObject(translatedPayload);
           const surveyResponseWithPopulatedData = await populateData(
             this.req.models,
