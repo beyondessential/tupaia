@@ -7,8 +7,10 @@ import { MutationCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
+import { SnackbarProvider } from 'notistack';
 import { theme } from './theme';
-import { ToastProvider, errorToast } from './components';
+import { Toast } from './components';
+import { errorToast } from './utils';
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -39,7 +41,20 @@ export const AppProviders = ({ children }: { children: ReactNode }) => (
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <CssBaseline />
-          <ToastProvider>{children}</ToastProvider>
+          <SnackbarProvider
+            Components={{
+              success: Toast,
+              error: Toast,
+              warning: Toast,
+              info: Toast,
+            }}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            {children}
+          </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </MuiThemeProvider>
