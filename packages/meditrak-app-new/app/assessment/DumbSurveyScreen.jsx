@@ -4,13 +4,13 @@
  */
 
 import React from 'react';
-import { ActivityIndicator, Animated, StyleSheet, Text, View } from 'react-native';
+import {ActivityIndicator, Animated, StyleSheet, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
-import { Client as BugsnagClient } from 'bugsnag-react-native';
+// import { Client as BugsnagClient } from 'bugsnag-react-native';
 
-import { database } from '../database';
-import { QuestionScreen } from './QuestionScreen';
-import { SubmitScreen } from './SubmitScreen';
+import {database} from '../database';
+import {QuestionScreen} from './QuestionScreen';
+import {SubmitScreen} from './SubmitScreen';
 import {
   Button,
   KeyboardSpacer,
@@ -20,16 +20,16 @@ import {
   TupaiaBackground,
   STATUS_MESSAGE_ERROR,
 } from '../widgets';
-import { SurveyTableOfContents } from './SurveyTableOfContents';
-import { DEFAULT_PADDING, THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
-import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
+import {SurveyTableOfContents} from './SurveyTableOfContents';
+import {DEFAULT_PADDING, THEME_COLOR_ONE, THEME_FONT_SIZE_ONE} from '../globalStyles';
+import {HeaderLeftButton} from '../navigation/HeaderLeftButton';
 
 const LENGTH_OF_TRANSITION = 300;
 
-const bugsnag = new BugsnagClient();
+// const bugsnag = new BugsnagClient();
 
 export class DumbSurveyScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
+  static navigationOptions = ({navigation}) => ({
     headerTitle: navigation.state.params.headerLabel,
     // eslint-disable-next-line global-require
     headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} labelVisible={false} />,
@@ -61,7 +61,7 @@ export class DumbSurveyScreen extends React.Component {
         duration: LENGTH_OF_TRANSITION,
         useNativeDriver: false,
       }).start(() => {
-        this.setState({ lastScreenIndex: null });
+        this.setState({lastScreenIndex: null});
       });
     }
 
@@ -82,7 +82,7 @@ export class DumbSurveyScreen extends React.Component {
    * Error boundary
    */
   static getDerivedStateFromError() {
-    return { hasError: true };
+    return {hasError: true};
   }
 
   /**
@@ -90,27 +90,27 @@ export class DumbSurveyScreen extends React.Component {
    */
   componentDidCatch(error, info) {
     error.message = `Survey boundary error: ${error.message}`;
-    bugsnag.notify(error);
+    // bugsnag.notify(error);
   }
 
   onToggleToc() {
-    this.setState({ isTableOfContentsVisible: !this.state.isTableOfContentsVisible });
+    this.setState({isTableOfContentsVisible: !this.state.isTableOfContentsVisible});
   }
 
   onSelectScreen(screenIndex) {
-    const { onSelectSurveyScreen } = this.props;
+    const {onSelectSurveyScreen} = this.props;
 
     onSelectSurveyScreen(screenIndex);
-    this.setState({ isTableOfContentsVisible: false });
+    this.setState({isTableOfContentsVisible: false});
   }
 
   updateHeaderLabel(headerLabel) {
-    this.props.navigation.setParams({ headerLabel });
+    this.props.navigation.setParams({headerLabel});
   }
 
   getStyleForContent(forScreenIndex) {
-    const { screenIndex: currentScreenIndex } = this.props;
-    const { lastScreenIndex } = this.state;
+    const {screenIndex: currentScreenIndex} = this.props;
+    const {lastScreenIndex} = this.state;
     const isCurrentScreen = forScreenIndex === currentScreenIndex;
     const isIncreasing = currentScreenIndex > lastScreenIndex;
 
@@ -131,7 +131,7 @@ export class DumbSurveyScreen extends React.Component {
 
     const isTransitioningIn = isCurrentScreen && this.state.lastScreenIndex !== null;
     return {
-      opacity: this.state.screenIndexAnimation.interpolate({ inputRange, outputRange }),
+      opacity: this.state.screenIndexAnimation.interpolate({inputRange, outputRange}),
       position: isTransitioningIn ? 'absolute' : 'relative',
       left: 0,
       right: 0,
@@ -153,7 +153,7 @@ export class DumbSurveyScreen extends React.Component {
       screenIndex,
       questions,
     } = this.props;
-    const { hasError } = this.state;
+    const {hasError} = this.state;
     if (hasError) {
       return (
         <Text style={localStyles.hasErrorText}>
@@ -162,7 +162,7 @@ export class DumbSurveyScreen extends React.Component {
       );
     }
 
-    const { isTableOfContentsVisible } = this.state;
+    const {isTableOfContentsVisible} = this.state;
 
     return (
       <TupaiaBackground style={localStyles.container}>
@@ -179,8 +179,7 @@ export class DumbSurveyScreen extends React.Component {
           return (
             <Animated.View
               key={screenIndexForThisContent}
-              style={this.getStyleForContent(screenIndexForThisContent)}
-            >
+              style={this.getStyleForContent(screenIndexForThisContent)}>
               {isCurrentContent && !!errorMessage && (
                 <StatusMessage type={STATUS_MESSAGE_ERROR} message={errorMessage} />
               )}
@@ -226,8 +225,7 @@ export class DumbSurveyScreen extends React.Component {
         <Popup
           visible={isTableOfContentsVisible}
           onDismiss={() => this.onToggleToc()}
-          title={surveyName}
-        >
+          title={surveyName}>
           <SurveyTableOfContents
             screens={surveyScreens}
             questions={questions}
