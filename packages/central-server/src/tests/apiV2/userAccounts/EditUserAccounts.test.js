@@ -141,16 +141,15 @@ describe('Permissions checker for EditUserAccounts', async () => {
           body: { project_id: '123456' },
         });
         const result = await models.user.findById(userAccount1.id);
-
-        expect(result.preferences).to.deep.equal({ project_id: '123456' });
+        expect(result).to.deep.equal({ preferences: { project_id: '123456' } });
 
         await app.put(`users/${userAccount1.id}`, {
           body: { country_id: '987654' },
         });
-
         const newResult = await models.user.findById(userAccount1.id);
-
-        expect(newResult.preferences).to.deep.equal({ project_id: '123456', country_id: '987654' });
+        expect(newResult).to.deep.equal({
+          preferences: { project_id: '123456', country_id: '987654' },
+        });
       });
 
       it('Throw an exception if preferences request is incorrectly formatted', async () => {
