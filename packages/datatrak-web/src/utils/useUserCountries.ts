@@ -13,6 +13,8 @@ export const useUserCountries = () => {
     type: 'country',
   });
 
+  const alphabetisedCountries = countries?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
+
   const getSelectedCountry = () => {
     if (newSelectedCountry) return newSelectedCountry;
 
@@ -23,17 +25,17 @@ export const useUserCountries = () => {
 
     // if the selected project is 'explore', return demo land
     if (user.project?.code === 'explore') {
-      return countries?.find(({ code }) => code === 'DL');
+      return alphabetisedCountries?.find(({ code }) => code === 'DL');
     }
 
-    if (countries?.length > 0) {
-      return countries[0];
+    if (alphabetisedCountries?.length > 0) {
+      return alphabetisedCountries[0];
     }
 
     return null;
   };
 
-  const updateSelectedCountry = (countryCode: Entity) => {
+  const updateSelectedCountry = (countryCode: Entity['code']) => {
     setSelectedCountry(
       countries?.find(({ code }) => code === countryCode) || countries?.[0] || null,
     );
@@ -43,7 +45,7 @@ export const useUserCountries = () => {
 
   return {
     isLoading: isLoadingUser || isLoadingCountries,
-    countries,
+    countries: alphabetisedCountries,
     selectedCountry,
     updateSelectedCountry,
     countryHasUpdated: selectedCountry?.code !== user?.countryCode,

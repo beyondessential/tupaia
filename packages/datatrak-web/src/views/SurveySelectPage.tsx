@@ -136,13 +136,14 @@ export const SurveySelectPage = () => {
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
-    if (selectedSurvey && !surveys.find(survey => survey.code === selectedSurvey.value)) {
+    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
       setSelectedSurvey(null);
     }
   }, [JSON.stringify(surveys)]);
 
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {
+      navigateToSurvey();
       // update user with new country
     } else navigateToSurvey();
   };
