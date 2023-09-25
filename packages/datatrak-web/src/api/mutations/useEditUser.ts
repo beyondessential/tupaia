@@ -21,7 +21,7 @@ export const useEditUser = onSuccess => {
 
       const updates = {} as {
         project_id?: Project['id'];
-        entity_id?: Entity['id'];
+        country_id?: Entity['id'];
       };
 
       if (projectId) {
@@ -29,7 +29,7 @@ export const useEditUser = onSuccess => {
       }
 
       if (countryId) {
-        updates.entity_id = countryId;
+        updates.country_id = countryId;
       }
 
       await put('me', {

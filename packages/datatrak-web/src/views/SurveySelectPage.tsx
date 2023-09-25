@@ -10,7 +10,7 @@ import { Description, FolderOpenTwoTone } from '@material-ui/icons';
 import { SpinningLoader, Select as BaseSelect } from '@tupaia/ui-components';
 import { useEditUser } from '../api/mutations';
 import { SelectList, ListItemType, Button } from '../components';
-import { Survey } from '../types';
+import { Entity, Survey } from '../types';
 import { useUserCountries } from '../utils';
 import { useSurveys } from '../api/queries';
 
@@ -171,6 +171,7 @@ export const SurveySelectPage = () => {
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {
       // update user with new country. If the user goes 'back' and doesn't select a survey, and does not yet have a country selected, that's okay because it will be set whenever they next select a survey
+      updateUser({ countryId: selectedCountry?.id });
     } else navigateToSurvey();
   };
 
@@ -192,7 +193,8 @@ export const SurveySelectPage = () => {
           <Pin />
           <Select
             options={
-              countries?.map(country => ({ value: country.code, label: country.name })) || []
+              countries?.map((country: Entity) => ({ value: country.code, label: country.name })) ||
+              []
             }
             value={selectedCountry?.code}
             onChange={e => updateSelectedCountry(e.target.value)}

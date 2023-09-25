@@ -20,10 +20,9 @@ export const useUserCountries = () => {
     // if the country has been changed (but not yet saved), return the new country
     if (newSelectedCountry) return newSelectedCountry;
 
-    // if the user has a country code, return that country if it can be found
-    if (user.countryCode) {
-      const country = countries?.find(({ code }) => code === user.countryCode);
-      if (country) return country;
+    // if the user has a country, return that country if it can be found
+    if (user?.country && countries?.find(({ code }) => code === user?.country?.code)) {
+      return user.country;
     }
 
     // if the selected project is 'explore', return demo land
@@ -54,6 +53,6 @@ export const useUserCountries = () => {
     selectedCountry,
     updateSelectedCountry,
     // if the user has a country code, and it doesn't match the selected country, then the country has been updated, which means we need to update the user
-    countryHasUpdated: selectedCountry?.code !== user?.countryCode,
+    countryHasUpdated: selectedCountry?.code !== user?.country?.code,
   };
 };
