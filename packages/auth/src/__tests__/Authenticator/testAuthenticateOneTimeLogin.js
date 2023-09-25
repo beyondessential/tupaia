@@ -34,7 +34,7 @@ export const testAuthenticateOneTimeLogin = () => {
 
     expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
       { device: 'validDevice', user_id: verifiedUser.id },
-      { token: refreshToken, meditrak_device_id: null },
+      { token: refreshToken },
     );
   });
 };

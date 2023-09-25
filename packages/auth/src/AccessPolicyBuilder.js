@@ -4,9 +4,7 @@
  */
 
 import { buildAccessPolicy } from './buildAccessPolicy';
-import { buildLegacyAccessPolicy } from './buildLegacyAccessPolicy';
 
-const getCacheKey = (userId, useLegacyFormat) => `${userId}${useLegacyFormat ? '_legacy' : ''}`;
 export class AccessPolicyBuilder {
   constructor(models) {
     this.models = models;
@@ -18,9 +16,8 @@ export class AccessPolicyBuilder {
     this.cachedPolicyPromises = {};
   }
 
-  resetCachesForUser(userId) {
-    this.cachedPolicyPromises[getCacheKey(userId, true)] = null; // legacy
-    this.cachedPolicyPromises[getCacheKey(userId, false)] = null; // modern
+  resetCacheForUser(userId) {
+    this.cachedPolicyPromises[userId] = null; // modern
   }
 
   setupCacheInvalidation() {
@@ -30,33 +27,30 @@ export class AccessPolicyBuilder {
       ({ old_record: oldRecord, new_record: newRecord }) => {
         // present in update or delete changes
         if (oldRecord) {
-          this.resetCachesForUser(oldRecord.user_id);
+          this.resetCacheForUser(oldRecord.user_id);
         }
         // present in create or update changes
         if (newRecord) {
-          this.resetCachesForUser(newRecord.user_id);
+          this.resetCacheForUser(newRecord.user_id);
         }
       },
     );
     this.models.permissionGroup.addChangeHandler(() => this.resetCaches());
   }
 
-  async getPolicyForUser(userId, useLegacyFormat = false) {
+  async getPolicyForUser(userId) {
     if (!userId) {
       throw new Error(`Error building access policy for userId: ${userId}`);
     }
 
-    const cacheKey = getCacheKey(userId, useLegacyFormat);
-    if (this.cachedPolicyPromises[cacheKey]) {
-      return this.cachedPolicyPromises[cacheKey];
+    if (this.cachedPolicyPromises[userId]) {
+      return this.cachedPolicyPromises[userId];
     }
 
-    const policyPromise = useLegacyFormat
-      ? buildLegacyAccessPolicy(this.models, userId)
-      : buildAccessPolicy(this.models, userId);
-    this.cachedPolicyPromises[cacheKey] = policyPromise;
+    const policyPromise = buildAccessPolicy(this.models, userId);
+    this.cachedPolicyPromises[userId] = policyPromise;
     policyPromise.catch(() => {
-      this.resetCachesForUser(userId); // Remove from cache if the request fails
+      this.resetCacheForUser(userId); // Remove from cache if the request fails
     });
     return policyPromise;
   }

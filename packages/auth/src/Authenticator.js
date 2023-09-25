@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import randomToken from 'rand-token';
-import compareVersions from 'semver-compare';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
@@ -12,7 +11,6 @@ import { encryptPassword } from './utils';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
-const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
@@ -63,14 +61,11 @@ export class Authenticator {
   /**
    * Authenticate by email/password
    * @param {{ emailAddress, password, deviceName }} authDetails
-   * @param {*} [meditrakDeviceDetails]
    */
-  async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
+  async authenticatePassword({ emailAddress, password, deviceName }) {
     const user = await this.getAuthenticatedUser({ emailAddress, password, deviceName });
-    const meditrakDevice =
-      meditrakDeviceDetails && (await this.saveMeditrakDevice(user, meditrakDeviceDetails));
-    const refreshToken = await this.upsertRefreshToken(user.id, deviceName, meditrakDevice);
-    const accessPolicy = await this.getAccessPolicyForUser(user.id, meditrakDevice);
+    const refreshToken = await this.upsertRefreshToken(user.id, deviceName);
+    const accessPolicy = await this.getAccessPolicyForUser(user.id);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   }
@@ -96,8 +91,7 @@ export class Authenticator {
     // There was a valid refresh token, find the user and respond
     const userId = refreshToken.user_id;
     const user = await this.models.user.findById(userId);
-    const meditrakDevice = await refreshToken.meditrakDevice();
-    const accessPolicy = await this.getAccessPolicyForUser(user.id, meditrakDevice);
+    const accessPolicy = await this.getAccessPolicyForUser(user.id);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   }
@@ -150,20 +144,12 @@ export class Authenticator {
    * Returns a plain old javascript object representation of the user's policy. Consumers should
    * parse into an instance of AccessPolicy to use functions like `accessPolicy.allowsSome`
    * @param {string} userId
-   * @param {*} [meditrakDevice]
    */
-  async getAccessPolicyForUser(userId, meditrakDevice) {
-    if (!meditrakDevice) return this.accessPolicyBuilder.getPolicyForUser(userId);
-
-    // this access policy is being requested by meditrak, which means it may require the legacy
-    // policy format
-    const { app_version: appVersion } = meditrakDevice;
-    const useLegacyFormat =
-      !appVersion || compareVersions(appVersion, MAX_MEDITRAK_USING_LEGACY_POLICY) <= 0;
-    return this.accessPolicyBuilder.getPolicyForUser(userId, useLegacyFormat);
+  async getAccessPolicyForUser(userId) {
+    return this.accessPolicyBuilder.getPolicyForUser(userId);
   }
 
-  async upsertRefreshToken(userId, device, meditrakDevice) {
+  async upsertRefreshToken(userId, device) {
     // Generate refresh token and save in db
     const refreshToken = randomToken.generate(REFRESH_TOKEN_LENGTH);
     try {
@@ -172,23 +158,10 @@ export class Authenticator {
           user_id: userId,
           device,
         },
-        { token: refreshToken, meditrak_device_id: meditrakDevice ? meditrakDevice.id : null },
+        { token: refreshToken },
       );
     } catch (error) {
       throw new DatabaseError('storing refresh token', error);
     }
-  }
-
-  async saveMeditrakDevice(user, meditrakDeviceDetails) {
-    if (!meditrakDeviceDetails) return null;
-    const { installId, platform, appVersion } = meditrakDeviceDetails;
-    return this.models.meditrakDevice.updateOrCreate(
-      { install_id: installId },
-      {
-        user_id: user.id,
-        platform,
-        app_version: appVersion,
-      },
-    );
   }
 }

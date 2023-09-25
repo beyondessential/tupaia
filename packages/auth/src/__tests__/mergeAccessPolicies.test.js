@@ -22,67 +22,6 @@ const accessPolicy2 = {
   AU: ['COVID-19', 'Admin'],
 };
 
-const legacyAccessPolicy = {
-  permissions: {
-    surveys: {
-      _items: {
-        Country: {
-          _access: {
-            'Permission Group': true,
-          },
-          _items: {
-            Region: {
-              _access: {
-                'Permission Group': false,
-              },
-              Region: {
-                _access: {
-                  'Permission Group': true,
-                },
-              },
-              _items: {
-                Facility: {
-                  _access: {
-                    'Permission Group': false,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    reports: {
-      _items: {
-        Country: {
-          _access: {
-            'Permission Group': true,
-          },
-          _items: {
-            Region: {
-              _access: {
-                'Permission Group': false,
-              },
-              Region: {
-                _access: {
-                  'Permission Group': true,
-                },
-              },
-              _items: {
-                Facility: {
-                  _access: {
-                    'Permission Group': false,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-};
-
 describe('mergeAccessPolicies', () => {
   it('merges access policies', () => {
     return expect(mergeAccessPolicies(accessPolicy1, accessPolicy2)).toEqual({
@@ -91,12 +30,6 @@ describe('mergeAccessPolicies', () => {
       PW: ['PSSS', 'Donor'],
       AU: ['COVID-19', 'Admin'],
     });
-  });
-
-  it('returns first policy when either policy is legacy access policy', () => {
-    expect(mergeAccessPolicies(legacyAccessPolicy, accessPolicy1)).toBe(legacyAccessPolicy);
-    expect(mergeAccessPolicies(accessPolicy2, legacyAccessPolicy)).toBe(accessPolicy2);
-    expect(mergeAccessPolicies(legacyAccessPolicy, legacyAccessPolicy)).toBe(legacyAccessPolicy);
   });
 
   it('throws error if passed a non-object for either policy', () => {
