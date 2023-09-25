@@ -5,7 +5,7 @@
 
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import AppCenter from 'appcenter';
+// import AppCenter from 'appcenter';
 
 import { saltAndHash } from './saltAndHash';
 import {
@@ -37,40 +37,39 @@ export const changePassword = password => ({
  * Attempts to log in to server using credentials entered by user. If successful, begins a sync to
  * get the latest data (which may be all data if this is the first time the user has logged in)
  */
-export const login = (emailAddress, password) => async (
-  dispatch,
-  getState,
-  { api, database, analytics },
-) => {
-  dispatch(requestLogin());
-  analytics.trackEvent('Request login');
-  const installId = await AppCenter.getInstallId();
+export const login =
+  (emailAddress, password) =>
+  async (dispatch, getState, {api, database, analytics}) => {
+    dispatch(requestLogin());
+    analytics.trackEvent('Request login');
+    // const installId = await AppCenter.getInstallId();
+    const installId = null;
 
-  const loginCredentials = {
-    emailAddress,
-    password,
-    deviceName: await DeviceInfo.getDeviceName(),
-    devicePlatform: Platform.OS,
-    installId,
-  };
-  let response;
-  try {
-    response = await api.reauthenticate(loginCredentials);
-    if (response.error) throw new Error(response.error);
-  } catch (error) {
-    if (
-      error.message === 'Network request timed out' ||
-      error.message === 'Network request failed' ||
-      error.message === 'Network not connected'
-    ) {
-      dispatch(offlineLogin(emailAddress, password));
+    const loginCredentials = {
+      emailAddress,
+      password,
+      deviceName: await DeviceInfo.getDeviceName(),
+      devicePlatform: Platform.OS,
+      installId: null, // installId,
+    };
+    let response;
+    try {
+      response = await api.reauthenticate(loginCredentials);
+      if (response.error) throw new Error(response.error);
+    } catch (error) {
+      if (
+        error.message === 'Network request timed out' ||
+        error.message === 'Network request failed' ||
+        error.message === 'Network not connected'
+      ) {
+        dispatch(offlineLogin(emailAddress, password));
+        return;
+      }
+      dispatch(receiveLoginError(error.message));
       return;
     }
-    dispatch(receiveLoginError(error.message));
-    return;
-  }
-  const passwordHash = saltAndHash(password);
-  const user = database.updateUser({ emailAddress, passwordHash, ...response.user });
+    const passwordHash = saltAndHash(password);
+    const user = database.updateUser({emailAddress, passwordHash, ...response.user});
 
   dispatch(receiveLogin(emailAddress, user, user.accessPolicy, installId));
 };
