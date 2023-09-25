@@ -15,9 +15,6 @@ type AnswerType = {
   id: Id;
   type: string;
   body: string;
-  /**
-   * @checkIdExists { "table": "question" }
-   */
   question_id: string;
 };
 
@@ -33,9 +30,6 @@ type EntityCreated = {
 type OptionCreated = {
   id: Id;
   value: number;
-  /**
-   * @checkIdExists { "table": "optionSet" }
-   */
   option_set_id: string;
   sort_order: number;
 };
@@ -49,7 +43,7 @@ export interface MeditrakSurveyResponseRequest {
   survey_id: Id;
   user_id: Id;
   answers: AnswerType[];
-  clinic_id?: Id;
+  clinic_id?: Id | null;
   entity_id?: Id;
   /**
    * @format iso-date-time
