@@ -64,12 +64,6 @@ const TextArea = styled(TextField).attrs({
   }
 `;
 
-const Error = styled(Typography).attrs({
-  color: 'error',
-})`
-  margin-bottom: 1rem;
-`;
-
 const SuccessWrapper = styled.div`
   display: flex;
   margin-top: 1.5rem;
@@ -104,13 +98,7 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
     mode: 'onChange',
   });
   const { register } = formContext;
-  const {
-    mutate: requestProjectAccess,
-    isLoading,
-    isError,
-    error,
-    isSuccess,
-  } = useRequestProjectAccess();
+  const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
 
   const { isValid } = formContext.formState;
 
@@ -156,7 +144,6 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
 
   return (
     <Form onSubmit={submitForm as SubmitHandler<any>} formContext={formContext}>
-      {isError && <Error>{error.message}</Error>}
       <FormControl>
         <FormGroup>
           {projectCountries?.map((country: any) => {

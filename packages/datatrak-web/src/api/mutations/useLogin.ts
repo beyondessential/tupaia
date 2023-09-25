@@ -32,6 +32,9 @@ export const useLogin = () => {
         const path = user?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
         navigate(path);
       },
+      meta: {
+        applyCustomErrorHandling: true,
+      },
     },
   );
 };
