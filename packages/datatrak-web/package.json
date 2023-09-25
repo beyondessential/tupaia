@@ -21,6 +21,7 @@
     "bson-objectid": "^1.2.2",
     "leaflet": "^1.7.1",
     "nanoid": "^2.0.3",
+    "notistack": "^3.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
