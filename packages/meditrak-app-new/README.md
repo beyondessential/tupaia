@@ -6,6 +6,14 @@
 - Run `npx react-native doctor` to see other requirements
 - First time starting meditrak-app-new: you must delete the old version of the app from the device
 
+# Devs coming from the old version
+
+- Fully uninstall Android Studio
+- rm ~/Library/Android
+- Install New Android Studio
+- Install Android SDK 34
+- Install a virtual device against Android SDK 34 e.g. Pixel 4
+
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
