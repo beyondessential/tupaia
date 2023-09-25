@@ -19,6 +19,8 @@ const valueTranslators = {
     translateQuestionCodeToId(models.question, value),
   'fields.attributes.type': async (value, models) =>
     translateQuestionCodeToId(models.question, value),
+  'fields.code': async (value, models) => translateQuestionCodeToId(models.question, value),
+  'fields.name': async (value, models) => translateQuestionCodeToId(models.question, value),
 };
 
 const fieldTranslators = {
