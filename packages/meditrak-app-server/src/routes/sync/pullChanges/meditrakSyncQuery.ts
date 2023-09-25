@@ -10,7 +10,7 @@ import { getSupportedDatabaseRecords } from '../../../sync';
 import { MeditrakSyncQueryModifiers } from './types';
 
 export const recordTypeFilter = (req: Request) => {
-  const { appVersion, recordTypes = null } = req.query;
+  const { recordTypes = null } = req.query;
 
   if (typeof recordTypes === 'string') {
     const recordTypesArray = recordTypes.split(',');
@@ -19,15 +19,12 @@ export const recordTypeFilter = (req: Request) => {
       params: recordTypesArray,
     };
   }
-  if (typeof appVersion === 'string') {
-    const supportedRecordTypes = getSupportedDatabaseRecords(req.models, appVersion);
-    return {
-      query: `record_type IN ${SqlQuery.record(supportedRecordTypes)}`,
-      params: supportedRecordTypes,
-    };
-  }
 
-  return null;
+  const supportedTypes = getSupportedDatabaseRecords(req.models);
+  return {
+    query: `record_type IN ${SqlQuery.record(supportedTypes)}`,
+    params: supportedTypes,
+  };
 };
 
 // Based on the 'since' query parameter, work out what the highest possible record id is that
