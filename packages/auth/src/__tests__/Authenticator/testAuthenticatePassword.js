@@ -5,12 +5,7 @@
 
 import { Authenticator } from '../../Authenticator';
 import { models, AccessPolicyBuilderStub, getPolicyForUserStub } from './Authenticator.stubs';
-import {
-  accessPolicy,
-  MEDITRAK_DEVICE_DETAILS,
-  verifiedUser,
-  refreshToken,
-} from './Authenticator.fixtures';
+import { accessPolicy, verifiedUser, refreshToken } from './Authenticator.fixtures';
 
 export const testAuthenticatePassword = () => {
   const authenticator = new Authenticator(models, AccessPolicyBuilderStub);
@@ -110,76 +105,7 @@ export const testAuthenticatePassword = () => {
 
     expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
       { device: 'validDevice', user_id: verifiedUser.id },
-      { token: refreshToken, meditrak_device_id: null },
+      { token: refreshToken },
     );
-  });
-
-  describe('should build the correct access policy for the meditrak device', () => {
-    const testData = [
-      [
-        'modern meditrakDeviceDetails',
-        [
-          ['i', MEDITRAK_DEVICE_DETAILS.modern, false],
-          ['ii', MEDITRAK_DEVICE_DETAILS.ultraModern, false],
-        ],
-      ],
-      [
-        'legacy meditrakDeviceDetails',
-        [
-          ['i', MEDITRAK_DEVICE_DETAILS.legacy, true],
-          ['ii', MEDITRAK_DEVICE_DETAILS.ultraLegacy, true],
-        ],
-      ],
-    ];
-
-    testData.forEach(([testCaseName, testCaseData]) => {
-      describe(testCaseName, () => {
-        it.each(testCaseData)('%s', async (_, meditrakDeviceDetails, useLegacyFormat) => {
-          // ensure history is reset between tests
-          getPolicyForUserStub.mockClear();
-          models.meditrakDevice.updateOrCreate.mockClear();
-          models.refreshToken.updateOrCreate.mockClear();
-
-          await expect(
-            authenticator.authenticatePassword(
-              {
-                emailAddress: 'verified@test.com',
-                password: 'validPassword',
-                deviceName: 'validDevice',
-              },
-              meditrakDeviceDetails,
-            ),
-          ).resolves.toStrictEqual({
-            accessPolicy,
-            refreshToken,
-            user: verifiedUser,
-          });
-
-          expect(getPolicyForUserStub).toHaveBeenCalledOnceWith(verifiedUser.id, useLegacyFormat);
-
-          expect(models.meditrakDevice.updateOrCreate).toHaveBeenCalledOnceWith(
-            {
-              install_id: meditrakDeviceDetails.installId,
-            },
-            {
-              user_id: verifiedUser.id,
-              app_version: meditrakDeviceDetails.appVersion,
-              platform: meditrakDeviceDetails.platform,
-            },
-          );
-
-          expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
-            {
-              device: 'validDevice',
-              user_id: verifiedUser.id,
-            },
-            {
-              token: refreshToken,
-              meditrak_device_id: meditrakDeviceDetails.appVersion,
-            },
-          );
-        });
-      });
-    });
   });
 };
