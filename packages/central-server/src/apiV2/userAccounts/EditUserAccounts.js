@@ -60,23 +60,22 @@ export class EditUserAccounts extends EditHandler {
     const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
       USER_PREFERENCES_FIELDS.includes(key),
     );
-
     // If there are, extract them and save them with the existing user preferences
-    if (updatedUserPreferences) {
+    if (updatedUserPreferences.length > 0) {
       // Remove user preferences fields from updatedFields so they don't get saved else where
-      updatedFields = Object.keys(updatedFields).filter(
-        field => !USER_PREFERENCES_FIELDS.includes(field),
-      );
+      updatedUserPreferences.forEach(([key]) => {
+        delete updatedFields[key];
+      });
 
       const userRecord = await this.models.user.findById(this.recordId);
       const { preferences } = userRecord;
 
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
         return { ...obj, [key]: value };
-      }, {});
+      }, preferences);
 
       updatedFields = {
-        preferences: { ...preferences, ...updatedPreferenceFields },
+        preferences: updatedPreferenceFields,
         ...updatedFields,
       };
     }
