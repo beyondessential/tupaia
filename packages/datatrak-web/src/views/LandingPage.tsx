@@ -108,6 +108,7 @@ export const LandingPage = () => {
   };
 
   const linkToMobileApp = getMobileAppLink();
+
   return (
     <PageContainer>
       <Wrapper>

@@ -18,7 +18,14 @@ type RegisterUserBody = {
   position: string;
 };
 export const useRegister = () => {
-  return useMutation<any, Error, RegisterUserBody, unknown>((data: RegisterUserBody) => {
-    return post('signup', { data });
-  });
+  return useMutation<any, Error, RegisterUserBody, unknown>(
+    (data: RegisterUserBody) => {
+      return post('signup', { data });
+    },
+    {
+      meta: {
+        applyCustomErrorHandling: true,
+      },
+    },
+  );
 };

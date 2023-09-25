@@ -47,7 +47,7 @@ export const ProjectSelectForm = ({
   const navigate = useNavigate();
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
   const { data: projects, isLoading } = useProjects();
-  const { mutate, isLoading: isConfirming, error } = useEditUser(onClose);
+  const { mutate, isLoading: isConfirming } = useEditUser(onClose);
   const onConfirm = () => {
     mutate({ projectId: selectedProjectId! });
   };
@@ -106,7 +106,6 @@ export const ProjectSelectForm = ({
   return (
     <>
       <Typography variant="h1">Select project</Typography>
-      {error && <Typography color="error">{error.message}</Typography>}
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />
