@@ -36954,6 +36954,7 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
+		"preferences": {},
 		"primary_platform": {
 			"enum": [
 				"lesmis",
@@ -36962,9 +36963,6 @@ export const UserAccountSchema = {
 			"type": "string"
 		},
 		"profile_image": {
-			"type": "string"
-		},
-		"project_id": {
 			"type": "string"
 		},
 		"verified_email": {

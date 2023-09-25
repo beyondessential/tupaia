@@ -134,6 +134,31 @@ describe('Permissions checker for EditUserAccounts', async () => {
 
         expect(result.email).to.deep.equal('hal.jordan@lantern.corp');
       });
+
+      it('Allow editing of user preferences by key', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`users/${userAccount1.id}`, {
+          body: { project_id: '123456' },
+        });
+        const result = await models.user.findById(userAccount1.id);
+        expect(result).to.deep.equal({ preferences: { project_id: '123456' } });
+
+        await app.put(`users/${userAccount1.id}`, {
+          body: { country_id: '987654' },
+        });
+        const newResult = await models.user.findById(userAccount1.id);
+        expect(newResult).to.deep.equal({
+          preferences: { project_id: '123456', country_id: '987654' },
+        });
+      });
+
+      it('Throw an exception if preferences request is incorrectly formatted', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        const { body: result } = await app.put(`users/${userAccount1.id}`, {
+          body: { preferences: { project_id: '123456' } },
+        });
+        expect(result).to.have.keys('error');
+      });
     });
   });
 });
