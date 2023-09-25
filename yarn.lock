@@ -9912,63 +9912,6 @@ __metadata:
     bson-objectid: ^1.2.2
     leaflet: ^1.7.1
     nanoid: ^2.0.3
-    npm-run-all: ^4.1.5
-    react: ^16.13.1
-    react-dom: ^16.13.1
-    react-hook-form: ^6.15.1
-    react-leaflet: ^3.2.1
-    react-query: ^3.39.3
-    react-router: 6.3.0
-    react-router-dom: 6.3.0
-    styled-components: ^5.1.0
-    typescript: ^5.0.2
-    vite: ^4.3.2
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/datatrak-web-server@workspace:packages/datatrak-web-server":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/datatrak-web-server@workspace:packages/datatrak-web-server"
-  dependencies:
-    "@tupaia/access-policy": 3.0.0
-    "@tupaia/api-client": 3.1.0
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/types": 1.0.0
-    "@tupaia/utils": 1.0.0
-    "@types/lodash.groupby": ^4.6.0
-    "@types/lodash.keyby": ^4.6.0
-    "@types/lodash.sortby": ^4.6.0
-    camelcase-keys: ^6.2.2
-    dotenv: ^8.2.0
-    express: ^4.16.2
-    lodash.groupby: ^4.6.0
-    lodash.keyby: ^4.6.0
-    lodash.sortby: ^4.6.0
-    winston: ^3.2.1
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/datatrak-web@workspace:packages/datatrak-web":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
-  dependencies:
-    "@material-ui/core": ^4.9.11
-    "@material-ui/icons": ^4.9.1
-    "@material-ui/lab": ^4.0.0-alpha.57
-    "@material-ui/styles": ^4.9.10
-    "@mui/types": ^7.2.4
-    "@tupaia/types": 1.0.0
-    "@tupaia/ui-components": 1.0.0
-    "@tupaia/utils": 1.0.0
-    "@types/leaflet": ^1.7.1
-    "@types/material-ui": ^0.21.12
-    "@types/react": 16.8.6
-    "@vitejs/plugin-react": ^4.0.0
-    axios: ^1.4.0
-    bson-objectid: ^1.2.2
-    leaflet: ^1.7.1
-    nanoid: ^2.0.3
     notistack: ^3.0.1
     npm-run-all: ^4.1.5
     react: ^16.13.1
