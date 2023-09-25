@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
 import { formatSurveyScreenQuestions } from './utils';
-import { getAnswerForQuestion } from '../Questions/EntityQuestion/utils.ts';
 
 type SurveyFormContextType = {
   formData: Record<string, any>;
