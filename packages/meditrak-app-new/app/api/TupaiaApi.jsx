@@ -5,7 +5,7 @@
 
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CLIENT_BASIC_AUTH_HEADER } from 'react-native-dotenv';
+import {CLIENT_BASIC_AUTH_HEADER} from '@env';
 
 import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
 import { isBeta, betaBranch, centralApiUrl, getDeviceAppVersion } from '../version';

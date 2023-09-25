@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { BETA_BRANCH, CENTRAL_API_URL } from 'react-native-dotenv';
+import {BETA_BRANCH, CENTRAL_API_URL} from '@env';
 
 export const isBeta = !!BETA_BRANCH;
 export const betaBranch = BETA_BRANCH;
