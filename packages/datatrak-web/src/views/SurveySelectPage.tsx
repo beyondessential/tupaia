@@ -11,7 +11,8 @@ import { SpinningLoader, Select as BaseSelect } from '@tupaia/ui-components';
 import { useEditUser } from '../api/mutations';
 import { SelectList, ListItemType, Button } from '../components';
 import { Survey } from '../types';
-import { useUserCountries, useUserSurveys } from '../utils';
+import { useUserCountries } from '../utils';
+import { useSurveys } from '../api/queries';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -19,6 +20,18 @@ const Container = styled(Paper).attrs({
   width: 48rem;
   display: flex;
   flex-direction: column;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    // parent selector - targets the parent of this container
+    div:has(&) {
+      padding: 0;
+    }
+  }
 `;
 
 const LoadingContainer = styled.div`
@@ -35,13 +48,27 @@ const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: 1;
+    max-height: 100%;
+  }
 `;
 
 const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
   margin-bottom: 1rem;
+  > div {
+    width: 100%;
+  }
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    flex-direction: row;
+    > div {
+      width: auto;
+    }
+  } ;
 `;
 
 const Subheader = styled(Typography).attrs({
@@ -52,6 +79,9 @@ const Subheader = styled(Typography).attrs({
   line-height: 1.125;
   font-weight: 400;
   margin-top: 0.67rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const Select = styled(BaseSelect)`
@@ -63,6 +93,9 @@ const Select = styled(BaseSelect)`
   }
   .MuiSvgIcon-root {
     right: 0.5rem;
+  }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
   }
 `;
 const Pin = styled.img.attrs({
@@ -86,13 +119,15 @@ export const SurveySelectPage = () => {
     navigate(`/survey/${selectedSurvey?.value}`);
   };
   const { mutate: updateUser } = useEditUser(navigateToSurvey);
+
   const {
     countries,
     selectedCountry,
     updateSelectedCountry,
     countryHasUpdated,
+    isLoading: isLoadingCountries,
   } = useUserCountries();
-  const { surveys, isLoading } = useUserSurveys(selectedCountry?.name);
+  const { surveys, isLoading } = useSurveys(selectedCountry?.name);
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =
@@ -133,19 +168,18 @@ export const SurveySelectPage = () => {
       });
     }, []) ?? [];
 
+  const handleSelectSurvey = () => {
+    if (countryHasUpdated) {
+      // update user with new country. If the user goes 'back' and doesn't select a survey, and does not yet have a country selected, that's okay because it will be set whenever they next select a survey
+    } else navigateToSurvey();
+  };
+
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
     if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
       setSelectedSurvey(null);
     }
   }, [JSON.stringify(surveys)]);
-
-  const handleSelectSurvey = () => {
-    if (countryHasUpdated) {
-      navigateToSurvey();
-      // update user with new country
-    } else navigateToSurvey();
-  };
 
   return (
     <Container>
@@ -162,11 +196,12 @@ export const SurveySelectPage = () => {
             }
             value={selectedCountry?.code}
             onChange={e => updateSelectedCountry(e.target.value)}
-            aria-label="Country"
+            inputProps={{ 'aria-label': 'Select a country' }}
+            placeholder="Select a country"
           />
         </CountrySelectWrapper>
       </HeaderWrapper>
-      {isLoading ? (
+      {isLoading || isLoadingCountries ? (
         <LoadingContainer>
           <SpinningLoader />
         </LoadingContainer>
