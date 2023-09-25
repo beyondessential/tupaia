@@ -63,11 +63,11 @@ export const EntityQuestion = ({
 
   const { data: searchResults, isLoading } = useSearchResults(searchValue, config);
 
-  const displayResults = searchResults?.filter(({ name }) => {
+  const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
       return true;
     }
-    return name === searchValue;
+    return entityName === searchValue;
   });
 
   return (

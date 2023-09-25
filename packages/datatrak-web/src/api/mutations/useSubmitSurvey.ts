@@ -10,7 +10,8 @@ import { post } from '../api';
 import { ROUTES } from '../../constants';
 
 type FormSubmitProps = Record<string, any> & {
-  entity: Entity['id'];
+  entityId: Entity['id'];
+  startTime: string;
 };
 export const useSubmitSurvey = () => {
   const navigate = useNavigate();
@@ -18,12 +19,19 @@ export const useSubmitSurvey = () => {
 
   return useMutation(
     (formData: FormSubmitProps) => {
-      const { entityId, ...answers } = formData;
+      console.log('formData', formData);
+      const { entityId, startTime, ...answers } = formData;
+      const surveyEntityId = entityId || 'world';
+      const endTime = new Date().toISOString();
+      const timestamp = new Date().toISOString();
+
       const surveyResponse = {
-        entity: entityId,
-        survey: surveyCode,
-        timestamp: new Date(),
+        entityId: surveyEntityId,
+        surveyCode: surveyCode,
         answers,
+        timestamp,
+        endTime,
+        startTime,
       };
       console.log('submit form', surveyResponse);
       return post('surveyResponse', { data: surveyResponse });

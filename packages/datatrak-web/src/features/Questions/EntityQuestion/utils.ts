@@ -8,17 +8,17 @@ import { useSurveyForm } from '../../Survey/SurveyContext';
 const getCountryCode = () => 'DL';
 
 export const useEntityBaseFilters = config => {
-  const { getAnswerForQuestion } = useSurveyForm();
+  const { getAnswerByQuestionId } = useSurveyForm();
   const countryCode = getCountryCode();
   const { parentId, grandparentId, type } = config.entity;
 
   const filters = { countryCode, type };
 
   if (parentId && parentId.questionId) {
-    filters['parentId'] = getAnswerForQuestion(parentId.questionId);
+    filters['parentId'] = getAnswerByQuestionId(parentId.questionId);
   }
   if (grandparentId && grandparentId.questionId) {
-    filters['grandparentId'] = getAnswerForQuestion(grandparentId.questionId);
+    filters['grandparentId'] = getAnswerByQuestionId(grandparentId.questionId);
   }
   return filters;
 };

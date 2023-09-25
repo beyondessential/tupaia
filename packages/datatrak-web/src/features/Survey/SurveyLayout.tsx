@@ -94,6 +94,7 @@ export const SurveyLayout = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
   const {
+    startTime,
     setFormData,
     formData,
     isLast,
@@ -125,10 +126,7 @@ export const SurveyLayout = () => {
   });
 
   const handleSubmitForm = data => {
-    // Placeholder for actual submission logic
-    console.log('submitting', data);
-    submitSurvey(data);
-    navigate(generatePath(ROUTES.SURVEY_SUCCESS, params));
+    submitSurvey({ ...data, startTime });
   };
 
   const navigateNext = data => {
