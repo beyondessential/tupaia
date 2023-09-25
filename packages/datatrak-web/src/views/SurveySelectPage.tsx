@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { Description, FolderOpenTwoTone } from '@material-ui/icons';
 import { SpinningLoader, Select as BaseSelect } from '@tupaia/ui-components';
-import { useEntities, useSurveys, useUser } from '../api/queries';
 import { useEditUser } from '../api/mutations';
 import { SelectList, ListItemType, Button } from '../components';
 import { Survey } from '../types';
