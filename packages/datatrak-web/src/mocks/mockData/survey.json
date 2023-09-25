@@ -1,0 +1,18 @@
+{
+  "id": "6412504dec4eba3085017930",
+  "name": "Demo Land Sections 1-3",
+  "code": "DLS13",
+  "permissionGroupId": "5d4a1db1f013d6320f2db52e",
+  "countryIds": [
+    "59085f69fc6a0715dae508f6"
+  ],
+  "canRepeat": false,
+  "surveyGroupId": "6412504dec4eba308501792d",
+  "integrationMetadata": {},
+  "periodGranularity": null,
+  "requiresApproval": false,
+  "dataGroupId": "6412504dec4eba308501792e",
+  "countryNames": [
+    "Kiribati"
+  ]
+}
