@@ -51,7 +51,8 @@
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-datatrak-web-server": "yarn workspace @tupaia/datatrak-web-server start-dev",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
-    "start-servers": "npm-run-all -c -l -p start-central-server start-web-config-server start-datatrak-web-server",
+    "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
+    "start-servers": "npm-run-all -c -l -p start-central-server start-web-config-server start-datatrak-web-server start-entity-server",
     "test": "yarn package:test"
   }
 }
