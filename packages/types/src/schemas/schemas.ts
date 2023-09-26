@@ -37640,10 +37640,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 		"id": {
 			"type": "string"
 		},
-		"timestamp": {
-			"format": "iso-date-time",
-			"type": "string"
-		},
 		"survey_id": {
 			"type": "string"
 		},
@@ -37692,6 +37688,10 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"type": "string"
 		},
 		"data_time": {
+			"format": "iso-date-time",
+			"type": "string"
+		},
+		"timestamp": {
 			"format": "iso-date-time",
 			"type": "string"
 		},
@@ -37813,7 +37813,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 	"required": [
 		"answers",
 		"survey_id",
-		"timestamp",
 		"user_id"
 	]
 } 
