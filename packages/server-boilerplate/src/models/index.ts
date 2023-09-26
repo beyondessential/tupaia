@@ -46,6 +46,7 @@ export {
   MapOverlayGroupRelationModel,
   MapOverlayGroupRelationRecord,
 } from './MapOverlayGroupRelation';
+export { MeditrakDeviceModel, MeditrakDeviceRecord } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueRecord } from './MeditrakSyncQueue';
 export { OneTimeLoginModel, OneTimeLoginRecord } from './OneTimeLogin';
 export { OptionSetModel, OptionSetRecord } from './OptionSet';

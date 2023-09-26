@@ -29,7 +29,7 @@ const addSurveyFileValidator = yup.object().shape({
 });
 
 type ChangeRecord = {
-  action: typeof ACTIONS[keyof typeof ACTIONS];
+  action: (typeof ACTIONS)[keyof typeof ACTIONS];
   payload: { survey_response: Record<string, unknown> } | Record<string, unknown>;
 };
 
