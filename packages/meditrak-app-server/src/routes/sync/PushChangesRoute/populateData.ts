@@ -4,7 +4,7 @@ import {
   stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
-import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
+import { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import momentTimezone from 'moment-timezone';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { getEntityIdFromClinicId } from './getEntityIdFromClinicId';
@@ -69,7 +69,6 @@ export const populateData = async (
     id: surveyResponseId,
     clinic_id: clinicId,
     survey_id: surveyId,
-    timestamp,
     ...surveyResponseProperties
   } = surveyResponse;
   try {
@@ -94,7 +93,6 @@ export const populateData = async (
     return {
       id: surveyResponseId,
       survey_id: surveyId,
-      timestamp: new Date(timestamp).toISOString(),
       ...surveyResponseProperties,
     };
   } catch (error) {

@@ -36,14 +36,10 @@ type OptionCreated = {
 
 export interface MeditrakSurveyResponseRequest {
   id: Id;
-  /**
-   * @format iso-date-time
-   */
-  timestamp: string;
   survey_id: Id;
   user_id: Id;
   answers: AnswerType[];
-  clinic_id?: Id | null;
+  clinic_id?: Id;
   entity_id?: Id;
   /**
    * @format iso-date-time
@@ -57,6 +53,10 @@ export interface MeditrakSurveyResponseRequest {
    * @format iso-date-time
    */
   data_time?: string;
+  /**
+   * @format iso-date-time
+   */
+  timestamp?: string;
   approval_status?: string;
   entities_created?: EntityCreated[];
   options_created?: OptionCreated[];
