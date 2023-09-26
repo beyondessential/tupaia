@@ -8,6 +8,7 @@ import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
 import { UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
 import { Entity } from '@tupaia/types';
+import { stripNullishFields } from '@tupaia/tsutils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { RawSurveyResponseObject } from './types';
 
@@ -112,20 +113,22 @@ export async function translateSurveyResponseObject(
     throw new ValidationError('Payload must contain survey_response_object');
   }
 
+  const cleanedSurveyResponse = stripNullishFields(surveyResponseObject);
+
   const surveyResponseTranslators = constructSurveyResponseTranslators(models);
   const answerTranslators = constructAnswerTranslators(models);
 
   if (
     !requiresSurveyResponseTranslation(
-      surveyResponseObject,
+      cleanedSurveyResponse,
       surveyResponseTranslators,
       answerTranslators,
     )
   ) {
-    return surveyResponseObject;
+    return cleanedSurveyResponse;
   }
 
-  const translatedSurveyResponseObject = cloneDeep(surveyResponseObject);
+  const translatedSurveyResponseObject = cloneDeep(cleanedSurveyResponse);
   await translateObjectFields(translatedSurveyResponseObject, surveyResponseTranslators);
 
   const { answers } = translatedSurveyResponseObject;

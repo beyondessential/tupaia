@@ -12,6 +12,7 @@ import { TYPES } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatabaseError } from '@tupaia/utils';
 import { MeditrakSyncQueue } from '@tupaia/types';
+import { stripNullishFields } from '@tupaia/tsutils';
 import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
@@ -44,25 +45,16 @@ export type PullChangesRequest = Request<
 
 const MAX_CHANGES_RETURNED = 100;
 
-const filterNullProperties = (record: Record<string, unknown>) => {
-  const recordWithoutNulls: Record<string, unknown> = {};
-  // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
-  // which simply had no key for undefined properties, whereas postgres uses null
-  Object.entries(record).forEach(([key, value]) => {
-    if (value !== null) {
-      recordWithoutNulls[key] = value;
-    }
-  });
-  return recordWithoutNulls;
-};
-
 const translateRecordForSync = (
   models: MeditrakAppServerModelRegistry,
   recordType: string,
   appVersion: string,
   record: Record<string, unknown>,
 ) => {
-  const nullFilteredRecord = filterNullProperties(record);
+  // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
+  // which simply had no key for undefined properties, whereas postgres uses null
+  const nullFilteredRecord = stripNullishFields(record);
+
   const modelName = models.getModelNameForDatabaseType(recordType);
   if (!modelName) {
     throw new Error(`Cannot find model for record type: ${recordType}`);
