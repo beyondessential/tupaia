@@ -8,6 +8,7 @@ import { Entity } from '@tupaia/types';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
+import { useUser } from '../queries';
 
 type FormSubmitProps = Record<string, any> & {
   entityId: Entity['id'];
@@ -15,13 +16,16 @@ type FormSubmitProps = Record<string, any> & {
 };
 export const useSubmitSurvey = () => {
   const navigate = useNavigate();
+  const { data: userData } = useUser();
   const { surveyCode } = useParams();
 
   return useMutation(
     (formData: FormSubmitProps) => {
-      console.log('formData', formData);
       const { entityId, startTime, ...answers } = formData;
-      const surveyEntityId = entityId || 'world';
+
+      // Save the  survey with the entityId from the entity question if it exists,
+      // otherwise use the users country
+      const surveyEntityId = entityId || userData?.country?.id;
       const endTime = new Date().toISOString();
       const timestamp = new Date().toISOString();
 
@@ -33,12 +37,10 @@ export const useSubmitSurvey = () => {
         endTime,
         startTime,
       };
-      console.log('submit form', surveyResponse);
       return post('surveyResponse', { data: surveyResponse });
     },
     {
       onSuccess: () => {
-        console.log('success');
         const path = generatePath(ROUTES.SURVEY_SUCCESS, { surveyCode });
         navigate(path);
       },
