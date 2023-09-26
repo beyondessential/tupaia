@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
+  flex: 1;
 `;
 
 const FullBorder = css`
@@ -35,12 +36,8 @@ const ListWrapper = styled.div<{
   overflow-y: auto;
   max-height: 100%;
   ${({ $variant }) => ($variant === 'fullPage' ? TopBorder : FullBorder)};
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    height: 100%;
-    > ul {
-      height: 100%;
-    }
-  }
+  flex: 1;
+  height: 100%;
 `;
 
 const NoResultsMessage = styled(Typography)`

@@ -3,8 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useState } from 'react';
-import { useEntities, useUser } from '../api/queries';
-import { Entity } from '../types';
+import { useEntities, useUser } from '../../api/queries';
+import { Entity } from '../../types';
 
 export const useUserCountries = () => {
   const { data: user, isLoading: isLoadingUser } = useUser();
@@ -38,20 +38,13 @@ export const useUserCountries = () => {
     return null;
   };
 
-  // Update the selected country to the country that matches the new country code
-  const updateSelectedCountry = (countryCode: Entity['code']) => {
-    setSelectedCountry(
-      countries?.find(({ code }) => code === countryCode) || countries?.[0] || null,
-    );
-  };
-
   const selectedCountry = getSelectedCountry();
 
   return {
     isLoading: isLoadingUser || isLoadingCountries || !countries,
     countries: alphabetisedCountries,
     selectedCountry,
-    updateSelectedCountry,
+    updateSelectedCountry: setSelectedCountry,
     // if the user has a country code, and it doesn't match the selected country, then the country has been updated, which means we need to update the user
     countryHasUpdated: selectedCountry?.code !== user?.country?.code,
   };

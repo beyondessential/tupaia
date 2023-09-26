@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { Description, FolderOpenTwoTone } from '@material-ui/icons';
-import { SpinningLoader, Select as BaseSelect } from '@tupaia/ui-components';
-import { useEditUser } from '../api/mutations';
-import { SelectList, ListItemType, Button } from '../components';
-import { Entity, Survey } from '../types';
-import { useUserCountries } from '../utils';
-import { useSurveys } from '../api/queries';
+import { SpinningLoader } from '@tupaia/ui-components';
+import { useEditUser } from '../../api/mutations';
+import { SelectList, ListItemType, Button } from '../../components';
+import { Survey } from '../../types';
+import { useSurveys } from '../../api/queries';
+import { SurveyCountrySelector } from './SurveyCountrySelector';
+import { useUserCountries } from './useUserCountries';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -20,10 +21,14 @@ const Container = styled(Paper).attrs({
   width: 48rem;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  &.MuiPaper-root {
+    max-height: 100%;
+    height: 35rem;
+  }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100%;
     height: 100%;
-    justify-content: space-between;
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -48,8 +53,8 @@ const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  flex: 1;
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex: 1;
     max-height: 100%;
   }
 `;
@@ -84,33 +89,6 @@ const Subheader = styled(Typography).attrs({
   }
 `;
 
-const Select = styled(BaseSelect)`
-  width: 10rem;
-  margin-bottom: 0;
-  .MuiInputBase-input {
-    font-size: 0.875rem;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
-  }
-  .MuiSvgIcon-root {
-    right: 0.5rem;
-  }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    width: 100%;
-  }
-`;
-const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
-  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
-})`
-  width: 1rem;
-  height: auto;
-  margin-right: 0.5rem;
-`;
-const CountrySelectWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
   const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
@@ -118,7 +96,7 @@ export const SurveySelectPage = () => {
   const navigateToSurvey = () => {
     navigate(`/survey/${selectedSurvey?.value}`);
   };
-  const { mutate: updateUser } = useEditUser(navigateToSurvey);
+  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
 
   const {
     countries,
@@ -127,7 +105,8 @@ export const SurveySelectPage = () => {
     countryHasUpdated,
     isLoading: isLoadingCountries,
   } = useUserCountries();
-  const { surveys, isLoading } = useSurveys(selectedCountry?.name);
+
+  const { data: surveys, isLoading } = useSurveys(selectedCountry?.name);
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =
@@ -182,6 +161,7 @@ export const SurveySelectPage = () => {
     }
   }, [JSON.stringify(surveys)]);
 
+  const showLoader = isLoading || isLoadingCountries || isUpdatingUser;
   return (
     <Container>
       <HeaderWrapper>
@@ -189,21 +169,13 @@ export const SurveySelectPage = () => {
           <Typography variant="h1">Select survey</Typography>
           <Subheader>Select a survey from the list below</Subheader>
         </div>
-        <CountrySelectWrapper>
-          <Pin />
-          <Select
-            options={
-              countries?.map((country: Entity) => ({ value: country.code, label: country.name })) ||
-              []
-            }
-            value={selectedCountry?.code}
-            onChange={e => updateSelectedCountry(e.target.value)}
-            inputProps={{ 'aria-label': 'Select a country' }}
-            placeholder="Select a country"
-          />
-        </CountrySelectWrapper>
+        <SurveyCountrySelector
+          countries={countries}
+          selectedCountry={selectedCountry}
+          onChangeCountry={updateSelectedCountry}
+        />
       </HeaderWrapper>
-      {isLoading || isLoadingCountries ? (
+      {showLoader ? (
         <LoadingContainer>
           <SpinningLoader />
         </LoadingContainer>
@@ -218,7 +190,7 @@ export const SurveySelectPage = () => {
         </Button>
         <Button
           onClick={handleSelectSurvey}
-          disabled={!selectedSurvey}
+          disabled={!selectedSurvey || isUpdatingUser}
           tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
         >
           Next
