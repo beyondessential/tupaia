@@ -151,7 +151,7 @@ export {
   MapOverlayGroupRelationType,
 } from './MapOverlayGroupRelation';
 export { MapOverlayGroupModel, MapOverlayGroupType } from './MapOverlayGroup';
-export { MeditrakDeviceModel } from './MeditrakDevice';
+export { MeditrakDeviceModel, MeditrakDeviceType } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
 export { OptionModel } from './Option';
 export { OptionSetModel } from './OptionSet';

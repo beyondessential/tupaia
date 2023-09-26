@@ -19,7 +19,13 @@ import {
   SurveyScreenModel,
   SurveyScreenComponentModel,
 } from '@tupaia/database';
-import { FeedItemModel, MeditrakSyncQueueModel, SurveyModel, SurveyResponseModel } from './models';
+import {
+  FeedItemModel,
+  MeditrakDeviceModel,
+  MeditrakSyncQueueModel,
+  SurveyModel,
+  SurveyResponseModel,
+} from './models';
 
 export type RequestContext = {
   services: TupaiaApiClient;
@@ -32,6 +38,7 @@ export interface MeditrakAppServerModelRegistry extends ModelRegistry {
   readonly feedItem: FeedItemModel;
   readonly geographicalArea: GeographicalAreaModel;
   readonly meditrakSyncQueue: MeditrakSyncQueueModel;
+  readonly meditrakDevice: MeditrakDeviceModel;
   readonly option: OptionModel;
   readonly optionSet: OptionSetModel;
   readonly permissionGroup: PermissionGroupModel;
