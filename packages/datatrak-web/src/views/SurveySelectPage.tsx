@@ -20,10 +20,14 @@ const Container = styled(Paper).attrs({
   width: 48rem;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  &.MuiPaper-root {
+    max-height: 100%;
+    height: 35rem;
+  }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100%;
     height: 100%;
-    justify-content: space-between;
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -48,8 +52,8 @@ const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  flex: 1;
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex: 1;
     max-height: 100%;
   }
 `;
@@ -127,7 +131,7 @@ export const SurveySelectPage = () => {
     countryHasUpdated,
     isLoading: isLoadingCountries,
   } = useUserCountries();
-  const { surveys, isLoading } = useSurveys(selectedCountry?.name);
+  const { data: surveys, isLoading } = useSurveys(selectedCountry?.name);
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =

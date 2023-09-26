@@ -9,7 +9,7 @@ import { get } from '../api';
 import { Entity } from '../../types';
 
 export const useSurveys = (selectedCountryName?: Entity['name']) => {
-  const { data: surveys, isLoading, isFetched } = useQuery(
+  return useQuery(
     'surveys',
     (): Promise<DatatrakWebSurveysRequest.ResBody> =>
       get('surveys', {
@@ -17,10 +17,10 @@ export const useSurveys = (selectedCountryName?: Entity['name']) => {
           fields: ['name', 'code', 'id', 'survey_group.name'],
         },
       }),
+    {
+      select: data => {
+        return data.filter(survey => survey.countryNames?.includes(selectedCountryName!));
+      },
+    },
   );
-  // Filter the surveys by the selected country name
-  return {
-    isLoading: isLoading || !isFetched,
-    surveys: surveys?.filter((survey: any) => survey.countryNames?.includes(selectedCountryName)),
-  };
 };

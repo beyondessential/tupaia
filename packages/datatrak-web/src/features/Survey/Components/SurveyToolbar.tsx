@@ -8,10 +8,9 @@ import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Description } from '@material-ui/icons';
 import { TopProgressBar } from '../../../components';
-import { useSurvey } from '../../../api/queries';
+import { useSurvey, useUser } from '../../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
-import { useUserCountries } from '../../../utils';
 
 const Toolbar = styled.div`
   height: ${SURVEY_TOOLBAR_HEIGHT};
@@ -52,7 +51,7 @@ export const SurveyToolbar = () => {
   const { surveyCode } = useParams();
   const { screenNumber, numberOfScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { selectedCountry } = useUserCountries();
+  const { data: user } = useUser();
 
   return (
     <Toolbar>
@@ -61,7 +60,7 @@ export const SurveyToolbar = () => {
           <SurveyTitle>
             <SurveyIcon />
             {survey?.name}{' '}
-            {selectedCountry?.name && <CountryName>| {selectedCountry?.name}</CountryName>}
+            {user?.country?.name && <CountryName>| {user?.country?.name}</CountryName>}
           </SurveyTitle>
         )}
       </SurveyTitleWrapper>
