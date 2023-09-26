@@ -14,6 +14,7 @@ import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components';
 import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
 import { Button } from '../../components';
+import { useSubmitSurvey } from '../../api/mutations';
 
 const ScrollableLayout = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
@@ -99,10 +100,12 @@ export const SurveyLayout = () => {
     screenNumber,
     sideMenuOpen,
     numberOfScreens,
-    isReviewScreen,
+    isReviewScreen, 
   } = useSurveyForm();
+
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
+  const { mutate: submitSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
     setFormData({ ...formData, ...data });
@@ -122,12 +125,6 @@ export const SurveyLayout = () => {
     handleStep(path, data);
   });
 
-  const handleSubmitForm = data => {
-    // Placeholder for actual submission logic
-    console.log(data);
-    navigate(generatePath(ROUTES.SURVEY_SUCCESS, params));
-  };
-
   const navigateNext = data => {
     const path = isLast
       ? generatePath(ROUTES.SURVEY_REVIEW, params)
@@ -139,7 +136,7 @@ export const SurveyLayout = () => {
   };
 
   const handleSubmitScreen = handleSubmit(data => {
-    if (isReviewScreen) return handleSubmitForm(data);
+    if (isReviewScreen) return submitSurvey(data);
     return navigateNext(data);
   });
 

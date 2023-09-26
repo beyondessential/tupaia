@@ -4,6 +4,6 @@
  */
 
 export * from './Screens';
-export { SurveyContext } from './SurveyContext';
+export { SurveyContext, useSurveyForm } from './SurveyContext';
 export { SurveyLayout } from './SurveyLayout';
 export { SurveyToolbar } from './Components';

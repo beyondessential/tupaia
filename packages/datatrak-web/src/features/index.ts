@@ -11,5 +11,6 @@ export {
   SurveyContext,
   SurveyLayout,
   SurveyToolbar,
+  useSurveyForm,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
