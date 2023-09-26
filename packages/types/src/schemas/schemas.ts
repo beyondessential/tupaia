@@ -37859,6 +37859,9 @@ export const ProjectResponseSchema = {
 
 export const InitialResponseSchema = {
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"answers_enabling_follow_up": {
 			"type": "array",
 			"items": {
@@ -37869,9 +37872,6 @@ export const InitialResponseSchema = {
 			"type": "number"
 		},
 		"detail_label": {
-			"type": "string"
-		},
-		"id": {
 			"type": "string"
 		},
 		"is_follow_up": {
@@ -37953,6 +37953,9 @@ export const InitialResponseSchema = {
 
 export const CamelCasedInitialResponseSchema = {
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"answersEnablingFollowUp": {
 			"type": "array",
 			"items": {
@@ -37963,9 +37966,6 @@ export const CamelCasedInitialResponseSchema = {
 			"type": "number"
 		},
 		"detailLabel": {
-			"type": "string"
-		},
-		"id": {
 			"type": "string"
 		},
 		"isFollowUp": {
