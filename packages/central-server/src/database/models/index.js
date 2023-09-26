@@ -9,7 +9,6 @@ export { DataElementModel as DataElement } from './DataElement';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
 export { DataGroupModel as DataGroup } from './DataGroup';
-export { MeditrakDeviceModel as MeditrakDevice } from './MeditrakDevice';
 export { Ms1SyncLogModel as Ms1SyncLog } from './Ms1SyncLog';
 export { Ms1SyncQueueModel as Ms1SyncQueue } from './Ms1SyncQueue';
 export { QuestionModel as Question } from './Question';
