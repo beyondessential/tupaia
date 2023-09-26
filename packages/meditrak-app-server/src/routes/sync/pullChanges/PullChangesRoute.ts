@@ -12,6 +12,7 @@ import { TYPES } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatabaseError } from '@tupaia/utils';
 import { MeditrakSyncQueue } from '@tupaia/types';
+import { stripNullishFields } from '@tupaia/tsutils';
 import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
@@ -41,18 +42,6 @@ export type PullChangesRequest = Request<
 >;
 
 const MAX_CHANGES_RETURNED = 100;
-
-const filterNullProperties = (record: Record<string, unknown>) => {
-  const recordWithoutNulls: Record<string, unknown> = {};
-  // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
-  // which simply had no key for undefined properties, whereas postgres uses null
-  Object.entries(record).forEach(([key, value]) => {
-    if (value !== null) {
-      recordWithoutNulls[key] = value;
-    }
-  });
-  return recordWithoutNulls;
-};
 
 export class PullChangesRoute extends Route<PullChangesRequest> {
   private async getAppSupportColumns(recordType: string) {
@@ -136,7 +125,9 @@ export class PullChangesRoute extends Route<PullChangesRequest> {
             const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
             changeObject.error = { error: errorMessage };
           } else {
-            changeObject.record = filterNullProperties(record);
+            // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
+            // which simply had no key for undefined properties, whereas postgres uses null
+            changeObject.record = stripNullishFields(record);
           }
         }
         return changeObject;
