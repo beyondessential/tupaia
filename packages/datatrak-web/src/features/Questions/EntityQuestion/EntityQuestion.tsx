@@ -11,7 +11,7 @@ import { useEntities, useEntity, useUser } from '../../../api/queries';
 import { useDebounce } from '../../../utils';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
-import { useEntityBaseFilters } from './utils';
+import { useEntityBaseFilters, useAttributeFilter } from './utils';
 
 const Container = styled.div`
   width: 100%;
@@ -26,9 +26,15 @@ const useSearchResults = (searchValue, config) => {
   const { data: user } = useUser();
   const projectCode = user?.project?.code;
   const filters = useEntityBaseFilters(config);
+  const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
-  return useEntities(projectCode, { searchString: debouncedSearch, ...filters });
+  const query = useEntities(projectCode, { searchString: debouncedSearch, ...filters });
+  let entities = query?.data;
+  if (attributeFilter) {
+    entities = entities?.filter(attributeFilter);
+  }
+  return { ...query, data: entities };
 };
 
 export const EntityQuestion = ({
