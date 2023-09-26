@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class SurveyScreenType extends DatabaseType {
+export class SurveyScreenType extends DatabaseType {
   static databaseType = TYPES.SURVEY_SCREEN;
 }
 

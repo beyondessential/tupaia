@@ -17,12 +17,6 @@ export type SaveWeeklyReportRequest = Request<
   { week: string }
 >;
 
-type WeeklyReportAnswer = {
-  type: string;
-  code: string;
-  value: number;
-};
-
 export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
   public async buildResponse() {
     if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
@@ -51,29 +45,24 @@ const mapReqBodyToAnswers = (body: Record<string, unknown>, isSiteSurvey: boolea
       500,
     );
 
-  const answers: WeeklyReportAnswer[] = [
+  const answers = [
     {
-      type: 'Number',
       code: 'PSSS_AFR_Cases',
       value: validateIsNumber(afr, errorHandler('afr')),
     },
     {
-      type: 'Number',
       code: 'PSSS_DIA_Cases',
       value: validateIsNumber(dia, errorHandler('dia')),
     },
     {
-      type: 'Number',
       code: 'PSSS_ILI_Cases',
       value: validateIsNumber(ili, errorHandler('ili')),
     },
     {
-      type: 'Number',
       code: 'PSSS_PF_Cases',
       value: validateIsNumber(pf, errorHandler('pf')),
     },
     {
-      type: 'Number',
       code: 'PSSS_DLI_Cases',
       value: validateIsNumber(dli, errorHandler('dli')),
     },
@@ -81,12 +70,10 @@ const mapReqBodyToAnswers = (body: Record<string, unknown>, isSiteSurvey: boolea
 
   if (!isSiteSurvey) {
     answers.push({
-      type: 'Number',
       code: 'PSSS_Sites',
       value: validateIsNumber(sites, errorHandler('sites')),
     });
     answers.push({
-      type: 'Number',
       code: 'PSSS_Sites_Reported',
       value: validateIsNumber(sitesReported, errorHandler('sitesReported')),
     });

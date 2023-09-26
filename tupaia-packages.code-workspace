@@ -49,6 +49,14 @@
       "path": "packages/data-table-server"
     },
     {
+      "name": "datatrak-web",
+      "path": "packages/datatrak-web"
+    },
+    {
+      "name": "datatrak-web-server",
+      "path": "packages/datatrak-web-server"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },
@@ -176,6 +184,7 @@
       "Codeship",
       "ctes",
       "datetime",
+      "Datatrak",
       "debouncing",
       "deleters",
       "dhis",
@@ -219,6 +228,7 @@
       "singularise",
       "spec",
       "specs",
+      "Syncable",
       "testid",
       "Tongatapu",
       "Tupaia",
@@ -227,10 +237,7 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": [
-      "typescript",
-      "typescriptreact"
-    ],
+    "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
       "packages/": true
     },

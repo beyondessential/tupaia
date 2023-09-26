@@ -1,7 +1,7 @@
 # Tupaia
 
 [![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
-
+ 
 ## Open Source Info
 
 ### Open Source Mission statement
@@ -45,6 +45,7 @@ While each package type has their own structure, there are a few common standard
 
 - [Tupaia](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
 - [Tupaia Web](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-web/README.md) (New version of web-frontend)
+- [Tupaia Datatrak Web](https://github.com/beyondessential/tupaia/blob/dev/packages/datatrak-web/README.md)
 - [Admin Panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [LESMIS](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [PSSS](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)

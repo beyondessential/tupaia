@@ -19,13 +19,6 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
     "snapshotTypes": ["responseData", "html"],
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
     "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
-    "filter": {
-      "code": ["report_code1", "report_code2"],
-      "project": ["covidau", "strive"],
-      "orgUnit": "PG",
-      "dashboard": "Dashboard1",
-      "dataBuilder": ["tableOfEvents", "sumAll"]
-    }
   },
   "mapOverlays": {
     "allowEmptyResponse": false,
@@ -36,12 +29,6 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
       "project": "unfpa"
     },
     "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
-    "filter": {
-      "id": "id",
-      "project": "covidau",
-      "orgUnit": "TO",
-      "measureBuilder": "valueForOrgGroup"
-    }
   }
 }
 ```
@@ -116,26 +103,6 @@ Use any of the fields below to specify test urls. You can use multiple fields in
   // project will be used, since the overlay will be the same in all these cases
   "urlGenerationOptions": {
     "project": ["strive", "covidau"]
-  }
-}
-```
-
-#### Filter
-
-⚠️ This field is **not** currently available in CI/CD test runs
-
-You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga and Vanuatu:
-
-```json
-{
-  "mapOverlays": {
-    "urlGenerationOptions": {
-      "project": "fanafana"
-    },
-    "filter": {
-      "orgUnit": ["TO", "VU"],
-      "measureBuilder": "valueForOrgGroup"
-    }
   }
 }
 ```

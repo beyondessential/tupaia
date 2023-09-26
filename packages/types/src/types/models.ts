@@ -180,6 +180,14 @@ export interface DataTable {
   'permission_groups': string[];
   'type': DataTableType;
 }
+export interface DatatrakSession {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
+  'id': string;
+  'refresh_token': string;
+}
 export interface DhisInstance {
   'code': string;
   'config': any;
@@ -668,6 +676,8 @@ export enum EntityType {
   'msupply_store' = 'msupply_store',
   'complaint' = 'complaint',
   'water_sample' = 'water_sample',
+  'farm' = 'farm',
+  'repair_request' = 'repair_request',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',

@@ -6,4 +6,22 @@
 
 export { MeditrakSurveyResponseRequest } from './central-server/MeditrakSurveyResponseRequest';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
-export * from './tupaia-web-server';
+export {
+  DatatrakWebUserRequest,
+  DatatrakWebSurveysRequest,
+  DatatrakWebSurveyScreenComponentsRequest,
+} from './datatrak-web-server';
+export {
+  TupaiaWebCountryAccessListRequest,
+  TupaiaWebDashboardsRequest,
+  TupaiaWebEntitiesRequest,
+  TupaiaWebEntityRequest,
+  TupaiaWebEntitySearchRequest,
+  TupaiaWebLegacyDashboardReportRequest,
+  TupaiaWebLegacyMapOverlayReportRequest,
+  TupaiaWebMapOverlaysRequest,
+  TupaiaWebProjectRequest,
+  TupaiaWebReportRequest,
+  TupaiaWebRequestCountryAccessRequest,
+  TupaiaWebUserRequest,
+} from './tupaia-web-server';

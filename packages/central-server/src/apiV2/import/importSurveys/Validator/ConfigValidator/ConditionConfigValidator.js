@@ -50,7 +50,7 @@ export class ConditionConfigValidator extends CalculatedConfigValidator {
       const conditions = splitStringOnComma(conditionsString);
 
       for (const condition of conditions) {
-        const [targetValue, expression] = splitStringOn(condition, ':');
+        const [, expression] = splitStringOn(condition, ':');
         this.assertHasContentIfQuestionsInFormulaAreOptional(
           expression,
           object,
@@ -110,7 +110,7 @@ export class ConditionConfigValidator extends CalculatedConfigValidator {
       const conditions = splitStringOnComma(value);
 
       for (const condition of conditions) {
-        const [targetValue, expression] = splitStringOn(condition, ':');
+        const [, expression] = splitStringOn(condition, ':');
         const codes = getDollarPrefixedExpressionVariables(expression);
 
         for (const code of codes) {
@@ -132,7 +132,7 @@ export class ConditionConfigValidator extends CalculatedConfigValidator {
 
       for (const defaultValue of defaultValues) {
         const [key] = splitStringOn(defaultValue, ':');
-        const [resultValue, code] = splitStringOn(key, '.');
+        const [, code] = splitStringOn(key, '.');
 
         this.assertPointingToPrecedingQuestion(
           code,

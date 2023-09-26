@@ -34874,6 +34874,37 @@ export const DataTableSchema = {
 	]
 } 
 
+export const DatatrakSessionSchema = {
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"id",
+		"refresh_token"
+	]
+} 
+
 export const DhisInstanceSchema = {
 	"properties": {
 		"code": {
@@ -35092,6 +35123,7 @@ export const EntitySchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -35107,6 +35139,7 @@ export const EntitySchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -36253,6 +36286,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -36268,6 +36302,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -37106,6 +37141,7 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"facility",
+		"farm",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
@@ -37121,6 +37157,7 @@ export const EntityTypeSchema = {
 		"nursing_zone",
 		"postcode",
 		"project",
+		"repair_request",
 		"school",
 		"sub_catchment",
 		"sub_district",
@@ -37246,6 +37283,7 @@ export const EntityCreatedSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -37261,6 +37299,7 @@ export const EntityCreatedSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -37415,6 +37454,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"disaster",
 							"district",
 							"facility",
+							"farm",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",
@@ -37430,6 +37470,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"nursing_zone",
 							"postcode",
 							"project",
+							"repair_request",
 							"school",
 							"sub_catchment",
 							"sub_district",
@@ -37554,6 +37595,242 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
+export const ResBodySchema = {
+	"properties": {
+		"userName": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCaseSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+} 
+
+export const CamelCasePartSchema = {
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+} 
+
+export const ObjectToCamelSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const KeysToCamelCaseSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const InitialResponseSchema = {
+	"properties": {
+		"answers_enabling_follow_up": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"component_number": {
+			"type": "number"
+		},
+		"detail_label": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_follow_up": {
+			"type": "boolean"
+		},
+		"question_id": {
+			"type": "string"
+		},
+		"question_label": {
+			"type": "string"
+		},
+		"screen_id": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"validation_criteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"visibility_criteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"question.name": {
+			"type": "string"
+		},
+		"question.code": {
+			"type": "string"
+		},
+		"question.text": {
+			"type": "string"
+		},
+		"question.type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
+			"type": "string"
+		},
+		"question.options": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"question.option_set_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object",
+	"required": [
+		"component_number",
+		"id",
+		"question_id",
+		"screen_id"
+	]
+} 
+
+export const CamelCasedInitialResponseSchema = {
+	"properties": {
+		"answersEnablingFollowUp": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"componentNumber": {
+			"type": "number"
+		},
+		"detailLabel": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"isFollowUp": {
+			"type": "boolean"
+		},
+		"questionId": {
+			"type": "string"
+		},
+		"questionLabel": {
+			"type": "string"
+		},
+		"screenId": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"validationCriteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"visibilityCriteria": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"questionName": {
+			"type": "string"
+		},
+		"questionCode": {
+			"type": "string"
+		},
+		"questionText": {
+			"type": "string"
+		},
+		"questionType": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
+			"type": "string"
+		},
+		"questionOptions": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"questionOptionSetId": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"componentNumber",
+		"id",
+		"questionId",
+		"screenId"
+	]
+} 
+
 export const CountryAccessSchema = {
 	"properties": {
 		"id": {
@@ -37582,65 +37859,6 @@ export const CountryAccessSchema = {
 	]
 } 
 
-export const ResBodySchema = {
-	"type": "array",
-	"items": {
-		"type": "object",
-		"properties": {
-			"id": {
-				"type": "string"
-			},
-			"name": {
-				"type": "string"
-			},
-			"hasAccess": {
-				"type": "boolean"
-			},
-			"accessRequests": {
-				"type": "array",
-				"items": {
-					"type": "string"
-				}
-			}
-		},
-		"additionalProperties": false,
-		"required": [
-			"accessRequests",
-			"hasAccess",
-			"id",
-			"name"
-		]
-	}
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const CamelCaseSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const ObjectToCamelSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const KeysToCamelCaseSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
 export const DashboardWithItemsSchema = {
 	"properties": {
 		"items": {
@@ -37665,7 +37883,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -37680,7 +37898,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -37731,7 +37949,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -37771,7 +37989,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -37809,7 +38027,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -37835,7 +38053,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -37875,7 +38093,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -37895,33 +38113,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -37943,7 +38161,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -37964,7 +38182,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -37980,24 +38198,24 @@ export const DashboardWithItemsSchema = {
 											"matrix"
 										]
 									},
-									"dataelementcolumntitle": {
+									"dataElementColumnTitle": {
 										"type": "string"
 									},
-									"hidecolumntitles": {
+									"hideColumnTitles": {
 										"type": "boolean"
 									},
-									"presentationoptions": {
+									"presentationOptions": {
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38076,7 +38294,7 @@ export const DashboardWithItemsSchema = {
 																		}
 																	]
 																},
-																"legendlabel": {
+																"legendLabel": {
 																	"type": "string"
 																}
 															},
@@ -38087,26 +38305,26 @@ export const DashboardWithItemsSchema = {
 															]
 														}
 													},
-													"showrawvalue": {
+													"showRawValue": {
 														"type": "boolean"
 													},
-													"shownestedrows": {
+													"showNestedRows": {
 														"type": "boolean"
 													},
-													"applylocation": {
+													"applyLocation": {
 														"type": "object",
 														"properties": {
-															"columnindexes": {
+															"columnIndexes": {
 																"type": "object",
 																"properties": {
 																	"length": {
 																		"type": "number"
 																	},
-																	"tostring": {
+																	"toString": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"tolocalestring": {
+																	"toLocaleString": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38150,11 +38368,11 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"indexof": {
+																	"indexOf": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"lastindexof": {
+																	"lastIndexOf": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38166,7 +38384,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"foreach": {
+																	"forEach": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38182,7 +38400,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"reduceright": {
+																	"reduceRight": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38190,7 +38408,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"findindex": {
+																	"findIndex": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38198,7 +38416,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"copywithin": {
+																	"copyWithin": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38218,7 +38436,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"flatmap": {
+																	"flatMap": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38235,35 +38453,35 @@ export const DashboardWithItemsSchema = {
 																"required": [
 																	"at",
 																	"concat",
-																	"copywithin",
+																	"copyWithin",
 																	"entries",
 																	"every",
 																	"fill",
 																	"filter",
 																	"find",
-																	"findindex",
+																	"findIndex",
 																	"flat",
-																	"flatmap",
-																	"foreach",
+																	"flatMap",
+																	"forEach",
 																	"includes",
-																	"indexof",
+																	"indexOf",
 																	"join",
 																	"keys",
-																	"lastindexof",
+																	"lastIndexOf",
 																	"length",
 																	"map",
 																	"pop",
 																	"push",
 																	"reduce",
-																	"reduceright",
+																	"reduceRight",
 																	"reverse",
 																	"shift",
 																	"slice",
 																	"some",
 																	"sort",
 																	"splice",
-																	"tolocalestring",
-																	"tostring",
+																	"toLocaleString",
+																	"toString",
 																	"unshift",
 																	"values"
 																]
@@ -38271,7 +38489,7 @@ export const DashboardWithItemsSchema = {
 														},
 														"additionalProperties": false,
 														"required": [
-															"columnindexes"
+															"columnIndexes"
 														]
 													}
 												},
@@ -38280,13 +38498,13 @@ export const DashboardWithItemsSchema = {
 											{
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38295,7 +38513,7 @@ export const DashboardWithItemsSchema = {
 															"range"
 														]
 													},
-													"showrawvalue": {
+													"showRawValue": {
 														"type": "boolean"
 													}
 												},
@@ -38306,18 +38524,18 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"categorypresentationoptions": {
+									"categoryPresentationOptions": {
 										"anyOf": [
 											{
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38396,7 +38614,7 @@ export const DashboardWithItemsSchema = {
 																		}
 																	]
 																},
-																"legendlabel": {
+																"legendLabel": {
 																	"type": "string"
 																}
 															},
@@ -38407,26 +38625,26 @@ export const DashboardWithItemsSchema = {
 															]
 														}
 													},
-													"showrawvalue": {
+													"showRawValue": {
 														"type": "boolean"
 													},
-													"shownestedrows": {
+													"showNestedRows": {
 														"type": "boolean"
 													},
-													"applylocation": {
+													"applyLocation": {
 														"type": "object",
 														"properties": {
-															"columnindexes": {
+															"columnIndexes": {
 																"type": "object",
 																"properties": {
 																	"length": {
 																		"type": "number"
 																	},
-																	"tostring": {
+																	"toString": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"tolocalestring": {
+																	"toLocaleString": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38470,11 +38688,11 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"indexof": {
+																	"indexOf": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"lastindexof": {
+																	"lastIndexOf": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38486,7 +38704,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"foreach": {
+																	"forEach": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38502,7 +38720,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"reduceright": {
+																	"reduceRight": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38510,7 +38728,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"findindex": {
+																	"findIndex": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38518,7 +38736,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"copywithin": {
+																	"copyWithin": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38538,7 +38756,7 @@ export const DashboardWithItemsSchema = {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
-																	"flatmap": {
+																	"flatMap": {
 																		"type": "object",
 																		"additionalProperties": false
 																	},
@@ -38555,35 +38773,35 @@ export const DashboardWithItemsSchema = {
 																"required": [
 																	"at",
 																	"concat",
-																	"copywithin",
+																	"copyWithin",
 																	"entries",
 																	"every",
 																	"fill",
 																	"filter",
 																	"find",
-																	"findindex",
+																	"findIndex",
 																	"flat",
-																	"flatmap",
-																	"foreach",
+																	"flatMap",
+																	"forEach",
 																	"includes",
-																	"indexof",
+																	"indexOf",
 																	"join",
 																	"keys",
-																	"lastindexof",
+																	"lastIndexOf",
 																	"length",
 																	"map",
 																	"pop",
 																	"push",
 																	"reduce",
-																	"reduceright",
+																	"reduceRight",
 																	"reverse",
 																	"shift",
 																	"slice",
 																	"some",
 																	"sort",
 																	"splice",
-																	"tolocalestring",
-																	"tostring",
+																	"toLocaleString",
+																	"toString",
 																	"unshift",
 																	"values"
 																]
@@ -38591,7 +38809,7 @@ export const DashboardWithItemsSchema = {
 														},
 														"additionalProperties": false,
 														"required": [
-															"columnindexes"
+															"columnIndexes"
 														]
 													}
 												},
@@ -38600,13 +38818,13 @@ export const DashboardWithItemsSchema = {
 											{
 												"type": "object",
 												"properties": {
-													"exportwithlabels": {
+													"exportWithLabels": {
 														"type": "boolean"
 													},
-													"exportwithtable": {
+													"exportWithTable": {
 														"type": "boolean"
 													},
-													"exportwithtabledisabled": {
+													"exportWithTableDisabled": {
 														"type": "boolean"
 													},
 													"type": {
@@ -38615,7 +38833,7 @@ export const DashboardWithItemsSchema = {
 															"range"
 														]
 													},
-													"showrawvalue": {
+													"showRawValue": {
 														"type": "boolean"
 													}
 												},
@@ -38645,7 +38863,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -38660,7 +38878,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -38711,7 +38929,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -38751,7 +38969,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -38789,7 +39007,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -38815,7 +39033,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -38855,7 +39073,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -38875,33 +39093,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -38923,7 +39141,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -38944,7 +39162,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -38960,7 +39178,7 @@ export const DashboardWithItemsSchema = {
 											"component"
 										]
 									},
-									"componentname": {
+									"componentName": {
 										"enum": [
 											"ActiveDisasters",
 											"NoAccessDashboard",
@@ -38972,7 +39190,7 @@ export const DashboardWithItemsSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"componentname",
+									"componentName",
 									"name",
 									"type"
 								]
@@ -38989,7 +39207,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -39004,7 +39222,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39055,7 +39273,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39095,7 +39313,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39133,7 +39351,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -39159,7 +39377,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39199,7 +39417,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39219,33 +39437,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -39267,7 +39485,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39288,7 +39506,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -39299,13 +39517,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -39320,7 +39538,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
@@ -39329,9 +39547,9 @@ export const DashboardWithItemsSchema = {
 									"color": {
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -39339,8 +39557,8 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
 									"type": {
@@ -39349,7 +39567,7 @@ export const DashboardWithItemsSchema = {
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"gauge"
@@ -39358,7 +39576,7 @@ export const DashboardWithItemsSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
@@ -39375,7 +39593,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -39390,7 +39608,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39441,7 +39659,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39481,7 +39699,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39519,7 +39737,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -39545,7 +39763,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39585,7 +39803,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -39605,33 +39823,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -39653,7 +39871,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39674,7 +39892,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -39685,13 +39903,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -39706,7 +39924,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
@@ -39715,9 +39933,9 @@ export const DashboardWithItemsSchema = {
 									"color": {
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -39725,17 +39943,17 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
-									"xname": {
+									"xName": {
 										"type": "string"
 									},
-									"yname": {
+									"yName": {
 										"type": "string"
 									},
-									"yaxisdomain": {
+									"yAxisDomain": {
 										"type": "object",
 										"properties": {
 											"max": {
@@ -39805,27 +40023,27 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {},
+									"presentationOptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"composed"
 										]
 									},
-									"chartconfig": {
+									"chartConfig": {
 										"type": "object",
 										"additionalProperties": false
 									}
 								},
 								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
@@ -39842,7 +40060,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -39857,7 +40075,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -39908,7 +40126,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39948,7 +40166,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -39986,7 +40204,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -40012,7 +40230,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40052,7 +40270,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40072,33 +40290,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -40120,7 +40338,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -40141,7 +40359,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -40152,13 +40370,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -40173,7 +40391,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
@@ -40182,9 +40400,9 @@ export const DashboardWithItemsSchema = {
 									"color": {
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -40192,17 +40410,17 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
-									"xname": {
+									"xName": {
 										"type": "string"
 									},
-									"yname": {
+									"yName": {
 										"type": "string"
 									},
-									"yaxisdomain": {
+									"yAxisDomain": {
 										"type": "object",
 										"properties": {
 											"max": {
@@ -40272,27 +40490,27 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {},
+									"presentationOptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"bar"
 										]
 									},
-									"chartconfig": {
+									"chartConfig": {
 										"type": "object",
 										"additionalProperties": false
 									}
 								},
 								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
@@ -40309,7 +40527,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -40324,7 +40542,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -40375,7 +40593,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40415,7 +40633,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40453,7 +40671,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -40479,7 +40697,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40519,7 +40737,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40539,33 +40757,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -40587,7 +40805,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -40608,7 +40826,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -40619,13 +40837,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -40640,7 +40858,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
@@ -40649,9 +40867,9 @@ export const DashboardWithItemsSchema = {
 									"color": {
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -40659,8 +40877,8 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
 									"type": {
@@ -40669,22 +40887,22 @@ export const DashboardWithItemsSchema = {
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"pie"
 										]
 									},
-									"presentationoptions": {
+									"presentationOptions": {
 										"type": "object",
 										"properties": {
-											"exportwithlabels": {
+											"exportWithLabels": {
 												"type": "boolean"
 											},
-											"exportwithtable": {
+											"exportWithTable": {
 												"type": "boolean"
 											},
-											"exportwithtabledisabled": {
+											"exportWithTableDisabled": {
 												"type": "boolean"
 											}
 										},
@@ -40693,7 +40911,7 @@ export const DashboardWithItemsSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
@@ -40710,7 +40928,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -40725,7 +40943,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -40776,7 +40994,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40816,7 +41034,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -40854,7 +41072,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -40880,7 +41098,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40920,7 +41138,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -40940,33 +41158,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -40988,7 +41206,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41009,7 +41227,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -41020,13 +41238,13 @@ export const DashboardWithItemsSchema = {
 										"type": "string"
 									},
 									"ticks": {},
-									"startdate": {
+									"startDate": {
 										"type": "string"
 									},
-									"enddate": {
+									"endDate": {
 										"type": "string"
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -41041,7 +41259,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"showperiodrange": {
+									"showPeriodRange": {
 										"type": "string",
 										"enum": [
 											"all"
@@ -41050,9 +41268,9 @@ export const DashboardWithItemsSchema = {
 									"color": {
 										"type": "string"
 									},
-									"displayonlevel": {},
+									"displayOnLevel": {},
 									"label": {},
-									"labeltype": {
+									"labelType": {
 										"enum": [
 											"fraction",
 											"fractionAndPercentage",
@@ -41060,17 +41278,17 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"measurelevel": {},
-									"renderlegendforoneitem": {
+									"measureLevel": {},
+									"renderLegendForOneItem": {
 										"type": "boolean"
 									},
-									"xname": {
+									"xName": {
 										"type": "string"
 									},
-									"yname": {
+									"yName": {
 										"type": "string"
 									},
-									"yaxisdomain": {
+									"yAxisDomain": {
 										"type": "object",
 										"properties": {
 											"max": {
@@ -41140,27 +41358,27 @@ export const DashboardWithItemsSchema = {
 											"min"
 										]
 									},
-									"presentationoptions": {},
+									"presentationOptions": {},
 									"type": {
 										"type": "string",
 										"enum": [
 											"chart"
 										]
 									},
-									"charttype": {
+									"chartType": {
 										"type": "string",
 										"enum": [
 											"line"
 										]
 									},
-									"chartconfig": {
+									"chartConfig": {
 										"type": "object",
 										"additionalProperties": false
 									}
 								},
 								"additionalProperties": false,
 								"required": [
-									"charttype",
+									"chartType",
 									"name",
 									"type"
 								]
@@ -41177,7 +41395,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -41192,7 +41410,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41243,7 +41461,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41283,7 +41501,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41321,7 +41539,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -41347,7 +41565,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41387,7 +41605,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41407,33 +41625,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -41455,7 +41673,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41476,7 +41694,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -41492,7 +41710,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -41511,17 +41729,17 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"list"
 										]
 									},
-									"listconfig": {
+									"listConfig": {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"valuetranslationoptions": {
+									"valueTranslationOptions": {
 										"type": "object",
 										"properties": {
 											"match": {
@@ -41540,10 +41758,10 @@ export const DashboardWithItemsSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"listconfig",
+									"listConfig",
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -41558,7 +41776,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -41573,7 +41791,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41624,7 +41842,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41664,7 +41882,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -41702,7 +41920,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -41728,7 +41946,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41768,7 +41986,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -41788,33 +42006,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -41836,7 +42054,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41857,7 +42075,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -41873,7 +42091,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -41892,22 +42110,22 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"singleValue"
 										]
 									},
-									"datacolor": {
+									"dataColor": {
 										"type": "string"
 									}
 								},
 								"additionalProperties": false,
 								"required": [
-									"datacolor",
+									"dataColor",
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -41922,7 +42140,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -41937,7 +42155,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -41988,7 +42206,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42028,7 +42246,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42066,7 +42284,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -42092,7 +42310,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42132,7 +42350,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42152,33 +42370,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -42200,7 +42418,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42221,7 +42439,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -42237,7 +42455,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -42256,7 +42474,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiPhotograph"
@@ -42267,7 +42485,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -42282,7 +42500,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -42297,7 +42515,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42348,7 +42566,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42388,7 +42606,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42426,7 +42644,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -42452,7 +42670,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42492,7 +42710,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42512,33 +42730,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -42560,7 +42778,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42581,7 +42799,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -42597,7 +42815,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -42616,7 +42834,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiSingleValue"
@@ -42627,7 +42845,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -42642,7 +42860,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -42657,7 +42875,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42708,7 +42926,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42748,7 +42966,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -42786,7 +43004,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -42812,7 +43030,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42852,7 +43070,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -42872,33 +43090,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -42920,7 +43138,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -42941,7 +43159,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -42957,7 +43175,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -42976,7 +43194,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"singleDownloadLink"
@@ -42987,7 +43205,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -43002,7 +43220,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -43017,7 +43235,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43068,7 +43286,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43108,7 +43326,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43146,7 +43364,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -43172,7 +43390,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43212,7 +43430,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43232,33 +43450,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -43280,7 +43498,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43301,7 +43519,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -43317,7 +43535,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -43336,13 +43554,13 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiValueRow"
 										]
 									},
-									"presentationoptions": {
+									"presentationOptions": {
 										"type": "object",
 										"properties": {
 											"color": {
@@ -43351,13 +43569,13 @@ export const DashboardWithItemsSchema = {
 											"header": {
 												"type": "string"
 											},
-											"datapairnames": {
+											"dataPairNames": {
 												"type": "array",
 												"items": {
 													"type": "string"
 												}
 											},
-											"rowheader": {
+											"rowHeader": {
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43372,7 +43590,7 @@ export const DashboardWithItemsSchema = {
 													"color"
 												]
 											},
-											"leftcolumn": {
+											"leftColumn": {
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43388,7 +43606,7 @@ export const DashboardWithItemsSchema = {
 													"header"
 												]
 											},
-											"rightcolumn": {
+											"rightColumn": {
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43404,7 +43622,7 @@ export const DashboardWithItemsSchema = {
 													"header"
 												]
 											},
-											"middlecolumn": {
+											"middleColumn": {
 												"type": "object",
 												"properties": {
 													"color": {
@@ -43432,7 +43650,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -43447,7 +43665,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -43462,7 +43680,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43513,7 +43731,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43553,7 +43771,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43591,7 +43809,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -43617,7 +43835,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43657,7 +43875,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -43677,33 +43895,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -43725,7 +43943,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43746,7 +43964,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -43762,7 +43980,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -43781,7 +43999,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"dataDownload"
@@ -43792,7 +44010,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -43807,7 +44025,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -43822,7 +44040,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -43873,7 +44091,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43913,7 +44131,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -43951,7 +44169,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -43977,7 +44195,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44017,7 +44235,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44037,33 +44255,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -44085,7 +44303,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44106,7 +44324,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -44122,7 +44340,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -44141,7 +44359,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"singleDate"
@@ -44152,7 +44370,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -44167,7 +44385,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -44182,7 +44400,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44233,7 +44451,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44273,7 +44491,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44311,7 +44529,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -44337,7 +44555,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44377,7 +44595,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44397,33 +44615,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -44445,7 +44663,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44466,7 +44684,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -44482,7 +44700,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -44501,7 +44719,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"filesDownload"
@@ -44512,7 +44730,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -44527,7 +44745,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -44542,7 +44760,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44593,7 +44811,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44633,7 +44851,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -44671,7 +44889,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -44697,7 +44915,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44737,7 +44955,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -44757,33 +44975,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -44805,7 +45023,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44826,7 +45044,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -44842,7 +45060,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -44861,19 +45079,19 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"multiValue"
 										]
 									},
-									"presentationoptions": {
+									"presentationOptions": {
 										"type": "object",
 										"properties": {
-											"istitlevisible": {
+											"isTitleVisible": {
 												"type": "boolean"
 											},
-											"valueformat": {
+											"valueFormat": {
 												"type": "string"
 											}
 										},
@@ -44884,7 +45102,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							},
 							{
@@ -44899,7 +45117,7 @@ export const DashboardWithItemsSchema = {
 									"placeholder": {
 										"type": "string"
 									},
-									"periodgranularity": {
+									"periodGranularity": {
 										"enum": [
 											"day",
 											"month",
@@ -44914,7 +45132,7 @@ export const DashboardWithItemsSchema = {
 										],
 										"type": "string"
 									},
-									"defaulttimeperiod": {
+									"defaultTimePeriod": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -44965,7 +45183,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -45005,7 +45223,7 @@ export const DashboardWithItemsSchema = {
 																],
 																"type": "string"
 															},
-															"modifierunit": {
+															"modifierUnit": {
 																"enum": [
 																	"day",
 																	"month",
@@ -45043,7 +45261,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"datepickerlimits": {
+									"datePickerLimits": {
 										"type": "object",
 										"properties": {
 											"start": {
@@ -45069,7 +45287,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -45109,7 +45327,7 @@ export const DashboardWithItemsSchema = {
 														],
 														"type": "string"
 													},
-													"modifierunit": {
+													"modifierUnit": {
 														"enum": [
 															"day",
 															"month",
@@ -45129,33 +45347,33 @@ export const DashboardWithItemsSchema = {
 										},
 										"additionalProperties": false
 									},
-									"exportconfig": {},
-									"nodatamessage": {
+									"exportConfig": {},
+									"noDataMessage": {
 										"type": "string"
 									},
-									"nodatafetch": {
+									"noDataFetch": {
 										"type": "boolean"
 									},
-									"drilldown": {
+									"drillDown": {
 										"type": "object",
 										"properties": {
-											"keylink": {
+											"keyLink": {
 												"type": "string"
 											},
-											"itemcode": {
+											"itemCode": {
 												"type": "string"
 											},
-											"parameterlink": {
+											"parameterLink": {
 												"type": "string"
 											},
-											"itemcodebyentry": {
+											"itemCodeByEntry": {
 												"type": "object",
 												"additionalProperties": false
 											}
 										},
 										"additionalProperties": false
 									},
-									"entityheader": {
+									"entityHeader": {
 										"type": "string"
 									},
 									"reference": {
@@ -45177,7 +45395,7 @@ export const DashboardWithItemsSchema = {
 									"source": {
 										"type": "string"
 									},
-									"displayonentityconditions": {
+									"displayOnEntityConditions": {
 										"anyOf": [
 											{
 												"type": "object",
@@ -45198,7 +45416,7 @@ export const DashboardWithItemsSchema = {
 											}
 										]
 									},
-									"weekdisplayformat": {
+									"weekDisplayFormat": {
 										"enum": [
 											"ISO_WEEK_NUMBER",
 											"WEEK_COMMENCING",
@@ -45214,7 +45432,7 @@ export const DashboardWithItemsSchema = {
 											"view"
 										]
 									},
-									"valuetype": {
+									"valueType": {
 										"enum": [
 											"boolean",
 											"color",
@@ -45233,7 +45451,7 @@ export const DashboardWithItemsSchema = {
 										"type": "object",
 										"additionalProperties": false
 									},
-									"viewtype": {
+									"viewType": {
 										"type": "string",
 										"enum": [
 											"qrCodeVisual"
@@ -45244,7 +45462,7 @@ export const DashboardWithItemsSchema = {
 								"required": [
 									"name",
 									"type",
-									"viewtype"
+									"viewType"
 								]
 							}
 						]

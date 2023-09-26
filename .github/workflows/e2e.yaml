@@ -1,0 +1,29 @@
+name: e2e
+on:
+  push:
+    branches:
+      - '**-e2e'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  run_e2e:
+    name: Run e2e
+    runs-on: ubuntu-latest
+    env:
+      CYPRESS_TEST_USER_EMAIL: test_e2e@beyondessential.com.au
+      CYPRESS_TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      TERM: xterm # workaround for issue where cypress fails to upload to cypress.io
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn workspace @tupaia/utils build
+      - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID
