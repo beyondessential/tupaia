@@ -9,3 +9,4 @@ export type {
   SurveyQuestionInputProps,
   SurveyScreenComponent,
 } from './surveys';
+export * from './entity';

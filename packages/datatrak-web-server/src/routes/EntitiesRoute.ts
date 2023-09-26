@@ -21,7 +21,7 @@ const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
 
 async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   const response = await services.central.fetchResources('entities', {
-    filter: { id: id },
+    filter: { id },
     columns: ['code'],
   });
   const { code } = response[0];
@@ -45,10 +45,12 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
         comparator: '=',
         comparisonValue: type,
       },
-      name: {
-        comparator: 'ilike',
-        comparisonValue: `%${searchString}%`,
-      },
+      name: searchString
+        ? {
+            comparator: 'ilike',
+            comparisonValue: `%${searchString}%`,
+          }
+        : undefined,
     };
 
     let entityCode = projectCode as string;

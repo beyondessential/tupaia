@@ -2,14 +2,17 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { Description, FolderOpenTwoTone } from '@material-ui/icons';
-import { SpinningLoader } from '@tupaia/ui-components';
-import { useSurveys } from '../api/queries';
+import { SpinningLoader, Select as BaseSelect } from '@tupaia/ui-components';
+import { useEditUser } from '../api/mutations';
 import { SelectList, ListItemType, Button } from '../components';
-import { Survey } from '../types';
+import { Entity, Survey } from '../types';
+import { useUserCountries } from '../utils';
+import { useSurveys } from '../api/queries';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -17,6 +20,18 @@ const Container = styled(Paper).attrs({
   width: 48rem;
   display: flex;
   flex-direction: column;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    // parent selector - targets the parent of this container
+    div:has(&) {
+      padding: 0;
+    }
+  }
 `;
 
 const LoadingContainer = styled.div`
@@ -33,16 +48,90 @@ const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: 1;
+    max-height: 100%;
+  }
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  > div {
+    width: 100%;
+  }
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    flex-direction: row;
+    > div {
+      width: auto;
+    }
+  } ;
+`;
+
+const Subheader = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.875rem;
+  line-height: 1.125;
+  font-weight: 400;
+  margin-top: 0.67rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-bottom: 0.5rem;
+  }
+`;
+
+const Select = styled(BaseSelect)`
+  width: 10rem;
+  margin-bottom: 0;
+  .MuiInputBase-input {
+    font-size: 0.875rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+  }
+  .MuiSvgIcon-root {
+    right: 0.5rem;
+  }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+  }
+`;
+const Pin = styled.img.attrs({
+  src: '/tupaia-pin.svg',
+  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
+})`
+  width: 1rem;
+  height: auto;
+  margin-right: 0.5rem;
+`;
+const CountrySelectWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export const SurveySelectPage = () => {
-  const { data, isLoading, isFetched } = useSurveys();
+  const navigate = useNavigate();
   const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
-  const showLoader = isLoading || !isFetched;
+
+  const navigateToSurvey = () => {
+    navigate(`/survey/${selectedSurvey?.value}`);
+  };
+  const { mutate: updateUser } = useEditUser(navigateToSurvey);
+
+  const {
+    countries,
+    selectedCountry,
+    updateSelectedCountry,
+    countryHasUpdated,
+    isLoading: isLoadingCountries,
+  } = useUserCountries();
+  const { surveys, isLoading } = useSurveys(selectedCountry?.name);
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =
-    data?.reduce((acc: ListItemType[], survey: Survey) => {
+    surveys?.reduce((acc: ListItemType[], survey: Survey) => {
       const { surveyGroupName, name, code } = survey;
       const formattedSurvey = {
         content: name,
@@ -54,7 +143,7 @@ export const SurveySelectPage = () => {
       if (!surveyGroupName) {
         return [...acc, formattedSurvey];
       }
-      const group = acc.find(({ name }) => name === surveyGroupName);
+      const group = acc.find(({ content }) => content === surveyGroupName);
       // if the surveyGroupName doesn't exist in the list, add it as a top level item
       if (!group) {
         return [
@@ -78,20 +167,49 @@ export const SurveySelectPage = () => {
         return item;
       });
     }, []) ?? [];
+
+  const handleSelectSurvey = () => {
+    if (countryHasUpdated) {
+      // update user with new country. If the user goes 'back' and doesn't select a survey, and does not yet have a country selected, that's okay because it will be set whenever they next select a survey
+      updateUser({ countryId: selectedCountry?.id });
+    } else navigateToSurvey();
+  };
+
+  useEffect(() => {
+    // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
+    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
+      setSelectedSurvey(null);
+    }
+  }, [JSON.stringify(surveys)]);
+
   return (
     <Container>
-      <Typography variant="h1">Select survey</Typography>
-      {showLoader ? (
+      <HeaderWrapper>
+        <div>
+          <Typography variant="h1">Select survey</Typography>
+          <Subheader>Select a survey from the list below</Subheader>
+        </div>
+        <CountrySelectWrapper>
+          <Pin />
+          <Select
+            options={
+              countries?.map((country: Entity) => ({ value: country.code, label: country.name })) ||
+              []
+            }
+            value={selectedCountry?.code}
+            onChange={e => updateSelectedCountry(e.target.value)}
+            inputProps={{ 'aria-label': 'Select a country' }}
+            placeholder="Select a country"
+          />
+        </CountrySelectWrapper>
+      </HeaderWrapper>
+      {isLoading || isLoadingCountries ? (
         <LoadingContainer>
           <SpinningLoader />
         </LoadingContainer>
       ) : (
         <ListWrapper>
-          <SelectList
-            items={groupedSurveys}
-            label="Select a survey from the list below"
-            onSelect={setSelectedSurvey}
-          />
+          <SelectList items={groupedSurveys} onSelect={setSelectedSurvey} />
         </ListWrapper>
       )}
       <DialogActions>
@@ -99,7 +217,7 @@ export const SurveySelectPage = () => {
           Cancel
         </Button>
         <Button
-          to={`${selectedSurvey?.value}/1` || ''}
+          onClick={handleSelectSurvey}
           disabled={!selectedSurvey}
           tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
         >

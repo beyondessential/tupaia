@@ -32,12 +32,19 @@ export class UserRoute extends Route<UserRequest> {
       preferences,
     } = await ctx.services.central.getUser();
 
-    const { project_id: projectId } = preferences;
+    const { project_id: projectId, country_id: countryId } = preferences;
 
     let project = null;
+    let country = null;
     if (projectId) {
       const { projects } = await ctx.services.webConfig.fetchProjects();
       project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
+    }
+    if (countryId) {
+      country =
+        (await ctx.services.central.fetchResources(`/entities/${countryId}`, {
+          columns: ['id', 'name', 'code'],
+        })) || null;
     }
 
     return {
@@ -46,6 +53,7 @@ export class UserRoute extends Route<UserRequest> {
       id,
       projectId,
       project,
+      country,
     };
   }
 }

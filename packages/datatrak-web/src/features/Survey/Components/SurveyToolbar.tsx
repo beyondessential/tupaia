@@ -11,6 +11,7 @@ import { TopProgressBar } from '../../../components';
 import { useSurvey } from '../../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
+import { useUserCountries } from '../../../utils';
 
 const Toolbar = styled.div`
   height: ${SURVEY_TOOLBAR_HEIGHT};
@@ -42,10 +43,16 @@ const SurveyTitle = styled(Typography).attrs({
   align-items: center;
 `;
 
+const CountryName = styled.span`
+  padding-left: 0.3rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+`;
+
 export const SurveyToolbar = () => {
   const { surveyCode } = useParams();
   const { screenNumber, numberOfScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
+  const { selectedCountry } = useUserCountries();
 
   return (
     <Toolbar>
@@ -53,7 +60,8 @@ export const SurveyToolbar = () => {
         {survey?.name && (
           <SurveyTitle>
             <SurveyIcon />
-            {survey?.name}
+            {survey?.name}{' '}
+            {selectedCountry?.name && <CountryName>| {selectedCountry?.name}</CountryName>}
           </SurveyTitle>
         )}
       </SurveyTitleWrapper>
