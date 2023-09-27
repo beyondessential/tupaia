@@ -33,15 +33,17 @@ export const processSurveyResponse = ({
   answers = {},
   surveyStartTime,
 }: SurveyResponseData) => {
+  const timezone = getBrowserTimeZone();
+  const timestamp = moment().toISOString();
   // Fields to be used in the survey response
   const surveyResponseData = {
     survey_id: surveyId,
     start_time: surveyStartTime,
-    data_time: moment().toISOString(),
+    data_time: timestamp,
     entity_id: countryId,
-    end_time: moment().toISOString(),
-    timestamp: moment().toISOString(),
-    timezone: getBrowserTimeZone(),
+    end_time: timestamp,
+    timestamp,
+    timezone,
   } as Record<string, unknown>;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
