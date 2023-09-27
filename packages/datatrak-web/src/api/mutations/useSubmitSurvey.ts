@@ -14,7 +14,7 @@ import { ROUTES } from '../../constants';
 import { useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
 
-type Answers = Record<string, unknown>[];
+type Answers = Record<string, unknown>;
 
 type SurveyResponseData = {
   surveyId?: Survey['id'];
@@ -24,11 +24,12 @@ type SurveyResponseData = {
   surveyStartTime: string;
 };
 
+// Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = ({
   surveyId,
   user,
   questions = [],
-  answers = [],
+  answers = {},
   surveyStartTime,
 }: SurveyResponseData) => {
   // Fields to be used in the survey response
@@ -40,7 +41,6 @@ export const processSurveyResponse = ({
     end_time: moment().toISOString(),
     timestamp: moment().toISOString(),
     timezone: getBrowserTimeZone(),
-    entity_code: 'DL', // TODO: remove once country selection is merged in here
     metadata: JSON.stringify({}), // TODO: add location here
   } as Record<string, unknown>;
   // Process answers and save the response in the database
