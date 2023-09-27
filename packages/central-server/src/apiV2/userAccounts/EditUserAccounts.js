@@ -40,7 +40,7 @@ export class EditUserAccounts extends EditHandler {
     const {
       password,
       profile_image: profileImage,
-      preferences,
+      preferences: preferenceField,
       ...restOfUpdatedFields
     } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
@@ -52,7 +52,8 @@ export class EditUserAccounts extends EditHandler {
       };
     }
 
-    if (preferences) {
+
+    if (preferenceField) {
       throw new Error('Preferences should be updated via the specific preferences fields');
     }
 
