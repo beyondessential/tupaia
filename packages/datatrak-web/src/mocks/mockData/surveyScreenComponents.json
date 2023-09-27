@@ -1,0 +1,181 @@
+[
+  {
+    "id": "6412504dec4eba3085017934",
+    "questionId": "603597d461f76a42af02a366",
+    "screenId": "6412504dec4eba3085017933",
+    "componentNumber": 1,
+    "config": {
+      "entity": {
+        "type": [
+          "district"
+        ],
+        "createNew": false
+      }
+    },
+    "questionName": "Select Kiribati Archipelago",
+    "questionCode": "SELECT_KI_Archipelago",
+    "questionText": "Select Kiribati Archipelago",
+    "questionType": "Entity",
+    "surveyScreenScreenNumber": 1
+  },
+  {
+    "id": "6412504dec4eba3085017938",
+    "questionId": "603597d461f76a42af02a36b",
+    "screenId": "6412504dec4eba3085017937",
+    "componentNumber": 1,
+    "config": {
+      "entity": {
+        "type": [
+          "sub_district"
+        ],
+        "createNew": false,
+        "parentId": {
+          "questionId": "603597d461f76a42af02a366"
+        }
+      }
+    },
+    "questionName": "Select Kiribati Council",
+    "questionCode": "SELECT_KI_Council",
+    "questionText": "Select Kiribati Council",
+    "questionType": "Entity",
+    "surveyScreenScreenNumber": 2
+  },
+  {
+    "id": "6412504dec4eba308501793b",
+    "questionId": "603597d461f76a42af02a36f",
+    "screenId": "6412504dec4eba308501793a",
+    "componentNumber": 1,
+    "config": {
+      "entity": {
+        "type": [
+          "facility"
+        ],
+        "createNew": false,
+        "parentId": {
+          "questionId": ""
+        },
+        "grandparentId": {
+          "questionId": "603597d461f76a42af02a366"
+        }
+      }
+    },
+    "questionName": "Select Kiribati Facility",
+    "questionCode": "SELECT_KI_Facility",
+    "questionText": "Select Kiribati Facility",
+    "questionType": "PrimaryEntity",
+    "surveyScreenScreenNumber": 3
+  },
+  {
+    "id": "6412504dec4eba3085017948",
+    "questionId": "5ab99eb4820f654f4f221fd4",
+    "screenId": "6412504dec4eba3085017947",
+    "componentNumber": 1,
+    "answersEnablingFollowUp": [],
+    "isFollowUp": false,
+    "visibilityCriteria": {},
+    "validationCriteria": {},
+    "questionLabel": null,
+    "detailLabel": null,
+    "config": {},
+    "questionName": "Kiribati HIS: Name of nurse / MA",
+    "questionCode": "MCSR7",
+    "questionText": "Name of nurse / MA",
+    "questionType": "FreeText",
+    "questionOptions": [],
+    "surveyScreenScreenNumber": 4,
+    "questionOptionSetId": null
+  },
+  {
+    "id": "6412504dec4eba308501794b",
+    "questionId": "5ab99eb4820f654f4f225d8c",
+    "screenId": "6412504dec4eba3085017947",
+    "componentNumber": 2,
+    "answersEnablingFollowUp": [],
+    "isFollowUp": false,
+    "visibilityCriteria": {},
+    "validationCriteria": {
+      "mandatory": true
+    },
+    "questionLabel": null,
+    "detailLabel": null,
+    "config": {},
+    "questionName": "Month",
+    "questionCode": "MCSR8",
+    "questionText": "Month",
+    "questionType": "Radio",
+    "questionOptions": [
+      {
+        "label": "January",
+        "value": "January"
+      },
+      {
+        "label": "February",
+        "value": "February"
+      },
+      {
+        "label": "March",
+        "value": "March"
+      },
+      {
+        "label": "April",
+        "value": "April"
+      },
+      {
+        "label": "May",
+        "value": "May"
+      },
+      {
+        "label": "June",
+        "value": "June"
+      },
+      {
+        "label": "July",
+        "value": "July"
+      },
+      {
+        "label": "August",
+        "value": "August"
+      },
+      {
+        "label": "September",
+        "value": "September"
+      },
+      {
+        "label": "October",
+        "value": "October"
+      },
+      {
+        "label": "November",
+        "value": "November"
+      },
+      {
+        "label": "December",
+        "value": "December"
+      }
+    ],
+    "surveyScreenScreenNumber": 4,
+    "questionOptionSetId": null
+  },
+  {
+    "id": "6412504dec4eba308501794e",
+    "questionId": "5ab99eb4820f654f4f229cfa",
+    "screenId": "6412504dec4eba3085017947",
+    "componentNumber": 3,
+    "answersEnablingFollowUp": [],
+    "isFollowUp": false,
+    "visibilityCriteria": {},
+    "validationCriteria": {
+      "mandatory": true
+    },
+    "questionLabel": null,
+    "detailLabel": null,
+    "config": {},
+    "questionName": "Year",
+    "questionCode": "MCSR9",
+    "questionText": "Year",
+    "questionType": "Number",
+    "questionOptions": [],
+    "surveyScreenScreenNumber": 4,
+    "questionOptionSetId": null
+  }
+]

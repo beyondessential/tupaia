@@ -10,8 +10,9 @@ export interface ResBody {
   id?: string;
   userName?: string;
   email?: string;
-  projectId?: string;
+  preferences?: any;
   project?: ProjectResponse | null;
+  projectId?: string;
 }
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

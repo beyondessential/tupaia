@@ -36954,6 +36954,7 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
+		"preferences": {},
 		"primary_platform": {
 			"enum": [
 				"lesmis",
@@ -36962,9 +36963,6 @@ export const UserAccountSchema = {
 			"type": "string"
 		},
 		"profile_image": {
-			"type": "string"
-		},
-		"project_id": {
 			"type": "string"
 		},
 		"verified_email": {
@@ -37781,38 +37779,6 @@ export const ReqBodySchema = {
 } 
 
 export const ReqQuerySchema = {
-	"properties": {
-		"filter": {
-			"type": "object",
-			"properties": {
-				"countryCode": {
-					"type": "string"
-				},
-				"projectCode": {
-					"type": "string"
-				},
-				"grandparentId": {
-					"type": "string"
-				},
-				"parentId": {
-					"type": "string"
-				},
-				"searchString": {
-					"type": "string"
-				},
-				"type": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"fields": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
 	"type": "object",
 	"additionalProperties": false
 } 

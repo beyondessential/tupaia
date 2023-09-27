@@ -29,8 +29,10 @@ export class UserRoute extends Route<UserRequest> {
       first_name: firstName,
       last_name: lastName,
       email,
-      project_id: projectId,
+      preferences,
     } = await ctx.services.central.getUser();
+
+    const { project_id: projectId } = preferences;
 
     let project = null;
     if (projectId) {
@@ -38,6 +40,12 @@ export class UserRoute extends Route<UserRequest> {
       project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
     }
 
-    return { userName: `${firstName} ${lastName}`, email, id, projectId, project };
+    return {
+      userName: `${firstName} ${lastName}`,
+      email,
+      id,
+      projectId,
+      project,
+    };
   }
 }

@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { post } from '../api';
 import { Country } from '@tupaia/types';
+import { post } from '../api';
 
 type RequestCountryAccessParams = {
   entityIds: Country['id'][];
@@ -14,6 +14,7 @@ type RequestCountryAccessParams = {
 };
 export const useRequestProjectAccess = () => {
   const queryClient = useQueryClient();
+
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
     ({ entityIds, message, projectCode }: RequestCountryAccessParams) => {
       return post('me/requestCountryAccess', {
