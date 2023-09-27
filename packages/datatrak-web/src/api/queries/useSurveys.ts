@@ -4,10 +4,11 @@
  */
 
 import { useQuery } from 'react-query';
-import { get } from '../api';
 import { DatatrakWebSurveysRequest } from '@tupaia/types';
+import { get } from '../api';
+import { Entity } from '../../types';
 
-export const useSurveys = () => {
+export const useSurveys = (selectedCountryName?: Entity['name']) => {
   return useQuery(
     'surveys',
     (): Promise<DatatrakWebSurveysRequest.ResBody> =>
@@ -16,5 +17,10 @@ export const useSurveys = () => {
           fields: ['name', 'code', 'id', 'survey_group.name'],
         },
       }),
+    {
+      select: data => {
+        return data.filter(survey => survey.countryNames?.includes(selectedCountryName!));
+      },
+    },
   );
 };

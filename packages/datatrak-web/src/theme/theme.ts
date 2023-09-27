@@ -62,5 +62,11 @@ export const theme = createMuiTheme({
         fontWeight: 600,
       },
     },
+
+    MuiMenuItem: {
+      root: {
+        fontSize: '0.875rem',
+      },
+    },
   },
 });

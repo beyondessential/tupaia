@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FormLabel } from '@material-ui/core';
+import { FormLabel, Typography } from '@material-ui/core';
 import { ListItemType } from './ListItem';
 import { List } from './List';
 
@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
+  flex: 1;
 `;
 
 const FullBorder = css`
@@ -35,6 +36,14 @@ const ListWrapper = styled.div<{
   overflow-y: auto;
   max-height: 100%;
   ${({ $variant }) => ($variant === 'fullPage' ? TopBorder : FullBorder)};
+  flex: 1;
+  height: 100%;
+`;
+
+const NoResultsMessage = styled(Typography)`
+  padding: 0.8rem 0.5rem;
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const Label = styled(FormLabel).attrs({
@@ -62,7 +71,11 @@ export const SelectList = ({
     <Wrapper>
       {label && <Label>{label}</Label>}
       <ListWrapper $variant={variant}>
-        <List items={items} onSelect={onSelect} ListItem={ListItem} />
+        {items.length === 0 ? (
+          <NoResultsMessage>No items to display</NoResultsMessage>
+        ) : (
+          <List items={items} onSelect={onSelect} ListItem={ListItem} />
+        )}
       </ListWrapper>
     </Wrapper>
   );
