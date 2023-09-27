@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ViewReport } from '../../../../types';
+import { ViewReport } from '@tupaia/types';
 import { MultiQRCodes } from './MultiQRCodes';
 import { SingleQRCode } from './SingleQRCode';
 

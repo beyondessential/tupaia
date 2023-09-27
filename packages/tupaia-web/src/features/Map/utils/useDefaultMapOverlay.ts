@@ -6,25 +6,23 @@
 import { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
-import { useProject } from '../../../api/queries';
+import { useMapOverlays, useProject } from '../../../api/queries';
 import {
   DEFAULT_MAP_OVERLAY_ID,
   DEFAULT_PERIOD_PARAM_STRING,
   URL_SEARCH_PARAMS,
 } from '../../../constants';
-import { ProjectCode } from '../../../types';
+import { EntityCode, ProjectCode } from '../../../types';
 
 // When the map overlay groups change, update the default map overlay
-export const useDefaultMapOverlay = (
-  projectCode: ProjectCode,
-  mapOverlaysByCode: { [code: string]: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay },
-) => {
+export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [urlSearchParams] = useSearchParams();
   const { data: project } = useProject(projectCode);
+
+  const { mapOverlaysByCode, allMapOverlays } = useMapOverlays(projectCode, entityCode);
 
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
@@ -48,8 +46,8 @@ export const useDefaultMapOverlay = (
       }
 
       // otherwise use the first overlay in the list
-      if (overlayCodes.length > 0) {
-        return overlayCodes[0];
+      if (allMapOverlays.length > 0) {
+        return allMapOverlays[0].code;
       }
     }
   };

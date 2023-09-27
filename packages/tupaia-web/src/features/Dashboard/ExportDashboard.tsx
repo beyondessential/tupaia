@@ -31,7 +31,7 @@ const Container = styled.div`
     text-transform: none;
   }
   .loading-screen {
-    background-color: ${props => props.theme.palette.background.paper};
+    background-color: ${props => props.theme.palette.background.default};
     border: 0;
     button {
       padding: 0.5em 1.75em;

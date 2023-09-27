@@ -6,7 +6,7 @@
 import React, { useReducer } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
-import { ViewConfig } from '@tupaia/types';
+import { BaseReport, ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
@@ -21,12 +21,18 @@ import {
 } from './utils';
 import { ExportButton } from './ExportButton';
 
+const StyledModal = styled(Modal)`
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.palette.background.default};
+  }
+`;
+
 const Wrapper = styled.div<{
   $hasBigData?: boolean;
 }>`
   max-width: 100%;
   min-width: ${({ $hasBigData }) => ($hasBigData ? '90vw' : 'auto')};
-  width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '48rem')};
+  width: ${({ $hasBigData }) => ($hasBigData ? '90%' : '45rem')};
   min-height: 25rem;
   display: flex;
   flex-direction: column;
@@ -72,12 +78,17 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
   const { isExportMode } = exportConfig;
   const isDataDownload =
     ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
-  const hasBigData =
-    !isDataDownload &&
-    ((reportData?.data?.length && reportData?.data?.length > 20) || type === 'matrix');
+
+  const getHasBigData = () => {
+    if (isDataDownload || !reportData) return false;
+    else if (type === 'matrix') return true;
+    const { data } = reportData as BaseReport;
+    return data && data.length > 20;
+  };
+  const hasBigData = getHasBigData();
 
   return (
-    <Modal isOpen onClose={handleCloseModal}>
+    <StyledModal isOpen onClose={handleCloseModal}>
       <ExportContext.Provider value={exportConfig}>
         <ExportDispatchContext.Provider value={dispatch}>
           <ExportButton />
@@ -87,6 +98,6 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
           </Wrapper>
         </ExportDispatchContext.Provider>
       </ExportContext.Provider>
-    </Modal>
+    </StyledModal>
   );
 };

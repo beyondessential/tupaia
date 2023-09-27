@@ -33,6 +33,8 @@ const IconButton = styled(MuiIconButton)`
 
   .MuiSvgIcon-root {
     color: ${props => props.theme.palette.text.tertiary};
+    height: 1.3rem;
+    width: 1.3rem;
   }
 `;
 
@@ -43,17 +45,10 @@ const Button = styled(MuiButton)`
   min-height: 3.1rem;
   line-height: 1.2rem;
   font-weight: 400;
-  color: ${props => props.theme.palette.text.secondary};
   border-color: ${props => props.theme.palette.grey['400']};
 
   .MuiSvgIcon-root {
     color: ${props => props.theme.palette.text.tertiary};
-  }
-
-  &.Mui-disabled {
-    .MuiSvgIcon-root {
-      color: ${props => props.theme.palette.grey['300']};
-    }
   }
 `;
 

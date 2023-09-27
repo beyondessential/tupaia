@@ -14,3 +14,8 @@ export interface Credentials {
   password: string;
   deviceName: string;
 }
+
+export interface OneTimeCredentials {
+  token: string;
+  deviceName: string;
+}

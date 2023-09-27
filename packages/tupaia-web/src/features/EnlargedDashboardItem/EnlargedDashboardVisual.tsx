@@ -16,7 +16,9 @@ import { Entity } from '../../types';
 import { BackLink } from './BackLink';
 import { ExportContext, useEnlargedDashboardItem } from './utils';
 
-const Container = styled(FlexColumn)`
+const Container = styled(FlexColumn)<{
+  $isExportMode?: boolean;
+}>`
   width: 100%;
   height: 100%;
   flex: 1;
@@ -24,7 +26,7 @@ const Container = styled(FlexColumn)`
     min-height: 22.5rem;
   }
   .recharts-cartesian-axis-tick {
-    font-size: 0.875rem;
+    font-size: ${({ $isExportMode }) => ($isExportMode ? '0.875rem' : '1rem')};
   }
 `;
 
@@ -34,8 +36,9 @@ const Title = styled(Typography).attrs({
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   text-align: center;
-  margin: 1rem 0;
+  margin: 0;
   line-height: 1.4;
+  padding: 1.5rem 1.5rem 0; // to account for buttons on modal at smaller screens overlapping title text
 `;
 
 const TitleWrapper = styled(FlexColumn)`
@@ -48,7 +51,7 @@ const Subheading = styled(Typography).attrs({
   variant: 'h3',
 })`
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const ContentWrapper = styled.div`
@@ -58,17 +61,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `;
 
-interface EnlargedDashboardVisualProps {
-  entityName?: Entity['name'];
-  isPreview?: boolean;
-}
-
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
   padding-top: 1rem;
   padding-bottom: 0.3rem;
 `;
+interface EnlargedDashboardVisualProps {
+  entityName?: Entity['name'];
+  isPreview?: boolean;
+}
+
 /*
  * EnlargedDashboardVisual is the enlarged dashboard item report visuals. It handles the case of a preview as well as the regular enlarged dashboard item.
  */
@@ -111,7 +114,7 @@ export const EnlargedDashboardVisual = ({
   // today's date for export
   const date = String(moment());
   return (
-    <Container>
+    <Container $isExportMode={isExportMode}>
       <TitleWrapper>
         <BackLink parentDashboardItem={parentDashboardItem} />
         {config?.name && <Title>{titleText}</Title>}
@@ -156,7 +159,7 @@ export const EnlargedDashboardVisual = ({
             {startDate &&
               endDate &&
               `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
-            Exported on {date} from Tupaia.org
+            Exported on {date} from tupaia.org
           </ExportDate>
         )}
       </ContentWrapper>
