@@ -10,6 +10,7 @@ import { Typography } from '@material-ui/core';
 import { Button as BaseButton } from '../../../components/index';
 import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants/index';
+import { useSurvey } from '../../../api/queries';
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,6 +58,7 @@ export const SurveySuccessScreen = () => {
   const params = useParams();
   const navigate = useNavigate();
   const { resetForm } = useSurveyForm();
+  const { data: survey } = useSurvey(params.surveyCode);
 
   const repeatSurvey = () => {
     resetForm();
@@ -67,18 +69,27 @@ export const SurveySuccessScreen = () => {
     navigate(path);
   };
 
+  const getText = () => {
+    if (survey?.canRepeat) {
+      return "To repeat the same survey again click the button below, otherwise 'Close' to return to your dashboard";
+    }
+
+    return 'To return to your dashboard, click the button below';
+  };
+
+  const text = getText();
+
   return (
     <Wrapper>
       <StyledImg src="/submit-success.svg" alt="Survey submit success" />
       <Title>Survey submitted!</Title>
-      <Text>
-        To repeat the same survey again click the button below, otherwise 'Close' to return back to
-        your dashboard
-      </Text>
+      <Text>{text}</Text>
       <ButtonGroup>
-        <Button onClick={repeatSurvey} fullWidth variant="outlined">
-          Repeat Survey
-        </Button>
+        {survey?.canRepeat && (
+          <Button onClick={repeatSurvey} fullWidth variant="outlined">
+            Repeat Survey
+          </Button>
+        )}
         <Button to="/" fullWidth>
           Close
         </Button>
