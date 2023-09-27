@@ -58,6 +58,10 @@ export enum QUESTION_TYPES {
   Condition = Placeholder,
 }
 
+const getNameForController = (name, type) => {
+  return type === 'PrimaryEntity' ? 'entityId' : name;
+};
+
 /**
  * This is the component that renders a single question in a survey.
  */
@@ -72,7 +76,7 @@ export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProp
   // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
   return (
     <Controller
-      name={name!}
+      name={getNameForController(name, type)}
       control={control}
       render={renderProps => (
         <FieldComponent

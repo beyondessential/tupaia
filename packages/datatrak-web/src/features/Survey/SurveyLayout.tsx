@@ -100,9 +100,8 @@ export const SurveyLayout = () => {
     screenNumber,
     sideMenuOpen,
     numberOfScreens,
-    isReviewScreen, 
+    isReviewScreen,
   } = useSurveyForm();
-
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
   const { mutate: submitSurvey } = useSubmitSurvey();

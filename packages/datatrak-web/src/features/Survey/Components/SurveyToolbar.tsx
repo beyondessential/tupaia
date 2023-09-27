@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Description } from '@material-ui/icons';
 import { TopProgressBar } from '../../../components';
-import { useSurvey } from '../../../api/queries';
+import { useSurvey, useUser } from '../../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 
@@ -42,10 +42,16 @@ const SurveyTitle = styled(Typography).attrs({
   align-items: center;
 `;
 
+const CountryName = styled.span`
+  padding-left: 0.3rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+`;
+
 export const SurveyToolbar = () => {
   const { surveyCode } = useParams();
   const { screenNumber, numberOfScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
+  const { data: user } = useUser();
 
   return (
     <Toolbar>
@@ -53,7 +59,8 @@ export const SurveyToolbar = () => {
         {survey?.name && (
           <SurveyTitle>
             <SurveyIcon />
-            {survey?.name}
+            {survey?.name}{' '}
+            {user?.country?.name && <CountryName>| {user?.country?.name}</CountryName>}
           </SurveyTitle>
         )}
       </SurveyTitleWrapper>
