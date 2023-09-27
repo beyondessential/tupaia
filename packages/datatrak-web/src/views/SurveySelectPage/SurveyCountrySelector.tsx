@@ -2,12 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import React from 'react';
 import styled from 'styled-components';
 import { Select as BaseSelect } from '@tupaia/ui-components';
 import { Entity } from '../../types';
-import { useUserCountries } from '../../utils';
 
 const Select = styled(BaseSelect)`
   width: 10rem;
