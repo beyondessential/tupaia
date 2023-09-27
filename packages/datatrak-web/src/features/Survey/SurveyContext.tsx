@@ -10,6 +10,7 @@ import { useSurveyScreenComponents } from '../../api/queries';
 import { formatSurveyScreenQuestions } from './utils';
 
 type SurveyFormContextType = {
+  startTime: string;
   formData: Record<string, any>;
   activeScreen: SurveyScreenComponent[];
   isLast: boolean;
@@ -23,6 +24,7 @@ type SurveyFormContextType = {
 };
 
 const defaultContext = {
+  startTime: new Date().toISOString(),
   formData: {},
   activeScreen: [],
   isLast: false,
@@ -153,7 +155,7 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.RESET_FORM_DATA });
   };
 
-  const getAnswerForQuestion = (questionId: string) => {
+  const getAnswerByQuestionId = (questionId: string) => {
     return surveyFormContext.formData[questionId];
   };
 
@@ -162,6 +164,6 @@ export const useSurveyForm = () => {
     toggleSideMenu,
     setFormData,
     resetForm,
-    getAnswerForQuestion,
+    getAnswerByQuestionId,
   };
 };
