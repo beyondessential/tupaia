@@ -25,7 +25,7 @@ export const TextQuestion = ({
   label,
   name,
   type,
-  controllerProps: { onChange, value, ref },
+  controllerProps: { onChange, value = '', ref },
 }: SurveyQuestionInputProps) => {
   return (
     <Wrapper>

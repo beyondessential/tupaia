@@ -21,7 +21,6 @@ type SurveyFormContextType = {
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
   surveyScreenComponents?: Record<number, SurveyScreenComponent[]>;
-  surveyAnswersById: Record<string, SurveyScreenComponent>;
 };
 
 const defaultContext = {
@@ -35,7 +34,6 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   surveyScreenComponents: [],
-  surveyAnswersById: {},
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext as SurveyFormContextType);
@@ -120,13 +118,6 @@ export const SurveyContext = ({ children }) => {
     screenHeader = activeScreen[0].questionText;
   }
 
-  const surveyAnswersById = Object.values(surveyScreenComponents).reduce((answers, screen) => {
-    screen.forEach(question => {
-      answers[question.questionId] = state.formData[question.questionCode!] ?? undefined;
-    });
-    return answers;
-  }, {});
-
   return (
     <SurveyFormContext.Provider
       value={{
@@ -138,7 +129,6 @@ export const SurveyContext = ({ children }) => {
         isReviewScreen,
         displayQuestions,
         surveyScreenComponents,
-        surveyAnswersById,
         screenHeader,
       }}
     >
@@ -166,7 +156,7 @@ export const useSurveyForm = () => {
   };
 
   const getAnswerByQuestionId = (questionId: string) => {
-    return surveyFormContext.surveyAnswersById[questionId];
+    return surveyFormContext.formData[questionId];
   };
 
   return {
