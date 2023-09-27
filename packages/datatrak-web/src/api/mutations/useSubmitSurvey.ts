@@ -8,7 +8,7 @@ import moment from 'moment';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post } from '../api';
-import { Survey, SurveyScreenComponent } from '../../types';
+import { Entity, Survey, SurveyScreenComponent } from '../../types';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { ROUTES } from '../../constants';
 import { useSurveyForm } from '../../features';
@@ -18,7 +18,7 @@ type Answers = Record<string, unknown>;
 
 type SurveyResponseData = {
   surveyId?: Survey['id'];
-  user?: DatatrakWebUserRequest.ResBody;
+  countryId?: Entity['id'];
   questions?: SurveyScreenComponent[];
   answers?: Answers;
   surveyStartTime: string;
@@ -27,17 +27,17 @@ type SurveyResponseData = {
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = ({
   surveyId,
-  user,
+  countryId,
   questions = [],
   answers = {},
   surveyStartTime,
 }: SurveyResponseData) => {
   // Fields to be used in the survey response
-  const responseFields = {
+  const surveyResponseData = {
     survey_id: surveyId,
     start_time: surveyStartTime,
     data_time: moment().toISOString(),
-    entity_id: user?.country?.id,
+    entity_id: countryId,
     end_time: moment().toISOString(),
     timestamp: moment().toISOString(),
     timezone: getBrowserTimeZone(),
@@ -59,11 +59,11 @@ export const processSurveyResponse = ({
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':
-        responseFields.dataTime = moment(answer).toISOString();
+        surveyResponseData.dataTime = moment(answer).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
       case 'PrimaryEntity': {
-        responseFields.entityId = answer;
+        surveyResponseData.entityId = answer;
         break;
       }
       default:
@@ -77,7 +77,7 @@ export const processSurveyResponse = ({
     }
   }
 
-  return { ...responseFields, answers: answersToSubmit };
+  return { ...surveyResponseData, answers: answersToSubmit };
 };
 
 // utility hook for getting survey response data
@@ -90,7 +90,7 @@ const useSurveyResponseData = () => {
     surveyStartTime,
     surveyId: survey?.id,
     questions: Object.values(surveyScreenComponents!).reduce((acc, val) => acc.concat(val), []), // flattened array of survey questions
-    user,
+    countryId: user?.country?.id,
   };
 };
 

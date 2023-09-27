@@ -15,6 +15,7 @@ import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components
 import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
+import { SpinningLoader } from '@tupaia/ui-components';
 
 const ScrollableLayout = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
@@ -62,6 +63,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 `;
 
 const FormActions = styled.div`
@@ -86,6 +88,15 @@ const ButtonGroup = styled.div`
   }
 `;
 
+const LoadingContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+`;
 /**
  * This layout is used for the survey screens as well as the review screen.
  */
@@ -104,7 +115,7 @@ export const SurveyLayout = () => {
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
-  const { mutate: submitSurvey } = useSubmitSurvey();
+  const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
     setFormData({ ...formData, ...data });
@@ -160,20 +171,34 @@ export const SurveyLayout = () => {
             <Paper>
               <Form onSubmit={handleSubmitScreen} noValidate>
                 <Outlet />
+                {isSubmittingSurvey && (
+                  <LoadingContainer>
+                    <SpinningLoader />
+                  </LoadingContainer>
+                )}
                 <FormActions>
                   <Button
                     onClick={onStepPrevious}
                     startIcon={<ArrowBackIosIcon />}
                     variant="text"
                     color="default"
+                    disabled={isSubmittingSurvey}
                   >
                     Back
                   </Button>
                   <ButtonGroup>
-                    <Button onClick={openCancelModal} variant="outlined">
+                    <Button
+                      onClick={openCancelModal}
+                      variant="outlined"
+                      disabled={isSubmittingSurvey}
+                    >
                       Cancel
                     </Button>
-                    <Button type="submit" onClick={handleSubmitScreen}>
+                    <Button
+                      type="submit"
+                      onClick={handleSubmitScreen}
+                      disabled={isSubmittingSurvey}
+                    >
                       {nextButtonText}
                     </Button>
                   </ButtonGroup>

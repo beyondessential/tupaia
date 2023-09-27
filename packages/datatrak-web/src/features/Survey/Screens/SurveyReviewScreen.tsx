@@ -51,9 +51,15 @@ export const SurveyReviewScreen = () => {
   const questionSections = Object.entries(surveyScreenComponents!).map(
     ([screenNumber, screenComponents]) => {
       const heading = screenComponents[0].questionText;
+      const firstQuestionIsInstruction = screenComponents[0].questionType === 'Instruction';
+
+      // if the first question is an instruction, don't display it, because it will be displayed as the heading
+      const questionsToDisplay = firstQuestionIsInstruction
+        ? screenComponents.slice(1)
+        : screenComponents;
       return {
         heading,
-        questions: formatSurveyScreenQuestions(screenComponents, screenNumber),
+        questions: formatSurveyScreenQuestions(questionsToDisplay, screenNumber),
       };
     },
   );
