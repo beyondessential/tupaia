@@ -5,14 +5,15 @@
 
 import { useMutation } from 'react-query';
 import moment from 'moment';
-import { DatatrakWebUserRequest } from '@tupaia/types';
+import { generatePath, useNavigate, useParams } from 'react-router';
+import { Coconut } from '../../components';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post } from '../api';
 import { Entity, Survey, SurveyScreenComponent } from '../../types';
-import { generatePath, useNavigate, useParams } from 'react-router';
 import { ROUTES } from '../../constants';
 import { useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
+import { successToast } from '../../utils';
 
 type Answers = Record<string, unknown>;
 
@@ -41,7 +42,6 @@ export const processSurveyResponse = ({
     end_time: moment().toISOString(),
     timestamp: moment().toISOString(),
     timezone: getBrowserTimeZone(),
-    metadata: JSON.stringify({}), // TODO: add location here
   } as Record<string, unknown>;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
@@ -117,6 +117,7 @@ export const useSubmitSurvey = () => {
     },
     {
       onSuccess: () => {
+        successToast("Congratulations! You've earned a coconut", Coconut);
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params));
       },
     },

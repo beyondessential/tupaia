@@ -2,13 +2,12 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { ReactNode } from 'react';
-import { enqueueSnackbar } from 'notistack';
+import { enqueueSnackbar, OptionsObject } from 'notistack';
 
-export const successToast = (message: string, icon?: ReactNode) => {
+export const successToast = (message: string, Icon?: OptionsObject['Icon']) => {
   enqueueSnackbar(message, {
     variant: 'success',
-    icon,
+    Icon,
   });
 };
 
