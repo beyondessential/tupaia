@@ -61,11 +61,11 @@ export const processSurveyResponse = ({
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':
-        surveyResponseData.dataTime = moment(answer).toISOString();
+        surveyResponseData.data_time = moment(answer).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
       case 'PrimaryEntity': {
-        surveyResponseData.entityId = answer;
+        surveyResponseData.entity_id = answer;
         break;
       }
       default:
