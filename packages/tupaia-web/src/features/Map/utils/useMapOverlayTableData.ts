@@ -86,10 +86,12 @@ export const useMapOverlayTableData = ({
 
   return {
     ...data,
-    isLoading: isLoading || isFetching,
+    isLoading: isLoading || isFetching || !isFetched,
     isFetched,
     serieses: data?.serieses,
     measureData,
     activeEntity: entity,
+    startDate,
+    endDate,
   };
 };

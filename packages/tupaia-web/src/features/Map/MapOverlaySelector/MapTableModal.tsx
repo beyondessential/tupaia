@@ -59,7 +59,7 @@ export const MapTableModal = ({ onClose }: any) => {
 
   const { serieses, measureData, startDate, endDate, isLoading } = useMapOverlayTableData({
     rootEntityCode: rootEntity?.code,
-  });
+  }); 
 
   // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
   const entityName =
