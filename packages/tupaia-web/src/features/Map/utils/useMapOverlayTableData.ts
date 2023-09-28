@@ -75,7 +75,9 @@ export const useMapOverlayTableData = ({
   const measureData = processMeasureData({
     entitiesData: entities!,
     measureData: data?.measureData,
-    serieses: data?.serieses?.sort((a: Series, b: Series) => a.key.localeCompare(b.key)), // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
+    serieses: data
+      ? [...data?.serieses]?.sort((a: Series, b: Series) => a.key.localeCompare(b.key))
+      : [], // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
   }) as MeasureData[];
 
