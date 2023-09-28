@@ -22,7 +22,7 @@ type SurveyFormContextType = {
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
   surveyScreenComponents?: Record<number, SurveyScreenComponent[]>;
-  surveyStartTime?: Moment;
+  surveyStartTime?: string;
 };
 
 const defaultContext = {
@@ -80,7 +80,7 @@ export const surveyReducer = (
     case ACTION_TYPES.SET_SURVEY_START_TIME:
       return {
         ...state,
-        surveyStartTime: action.payload as Moment,
+        surveyStartTime: action.payload as string,
       };
     default:
       return state;
