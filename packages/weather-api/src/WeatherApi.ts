@@ -1,4 +1,4 @@
-import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
+import { fetchWithTimeout, requireEnv, stringifyQuery } from '@tupaia/utils';
 
 type WeatherResult = {
   min_temp: number;
@@ -10,18 +10,12 @@ type WeatherResult = {
 const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
 
 export class WeatherApi {
-  private readonly apiKey: string | undefined;
-
-  public constructor() {
-    this.apiKey = process.env.WEATHERBIT_API_KEY;
-  }
-
   public async current(lat: string, lon: string) {
-    return await this._fetch('/v2.0/current', { lat, lon });
+    return await this.fetch('/v2.0/current', { lat, lon });
   }
 
   public async historicDaily(lat: string, lon: string, startDate: string, endDate: string) {
-    return await this._fetch('/v2.0/history/daily', {
+    return await this.fetch('/v2.0/history/daily', {
       lat,
       lon,
       start_date: startDate,
@@ -30,14 +24,14 @@ export class WeatherApi {
   }
 
   public async forecastDaily(lat: string, lon: string, days = 16) {
-    return await this._fetch('/v2.0/forecast/daily', {
+    return await this.fetch('/v2.0/forecast/daily', {
       lat,
       lon,
       days,
     });
   }
 
-  private async _fetch(
+  private async fetch(
     endpoint: string,
     params: {
       lat: string;
@@ -47,7 +41,8 @@ export class WeatherApi {
       end_date?: string;
     },
   ): Promise<{ data: WeatherResult[] }> {
-    const queryParams = { ...params, key: this.apiKey };
+    const apiKey = requireEnv('WEATHERBIT_API_KEY');
+    const queryParams = { ...params, key: apiKey };
 
     const url = stringifyQuery('https://api.weatherbit.io', endpoint, queryParams);
 
