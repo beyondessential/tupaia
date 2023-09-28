@@ -10108,6 +10108,7 @@ __metadata:
     react-redux: ^5.0.6
     react-router-dom: ^5.2.0
     styled-components: ^5.1.0
+    vite: ^4.3.2
   languageName: unknown
   linkType: soft
 
@@ -10270,6 +10271,7 @@ __metadata:
     redux-thunk: ^2.3.0
     reselect: ^4.0.0
     styled-components: ^5.1.0
+    vite: ^4.3.2
     whatwg-fetch: ^3.0.0
   languageName: unknown
   linkType: soft
