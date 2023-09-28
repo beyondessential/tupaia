@@ -23,7 +23,7 @@ const isNotPresentIfNotCreateNew = (value, object, key) => {
   return true;
 };
 
-const hasContentIfCanCreateNew = (value, object, key) => {
+const hasContentOnlyIfCanCreateNew = (value, object, key) => {
   const canCreateNew = isYes(object.createNew);
   if (canCreateNew) {
     if (isEmpty(value)) {
@@ -32,6 +32,17 @@ const hasContentIfCanCreateNew = (value, object, key) => {
   }
 
   return isNotPresentIfNotCreateNew(value, object, key);
+};
+
+const hasContentIfCanCreateNew = (value, object) => {
+  const canCreateNew = isYes(object.createNew);
+  if (canCreateNew) {
+    if (isEmpty(value)) {
+      throw new Error('Should not be empty if createNew is Yes');
+    }
+  }
+
+  return true;
 };
 
 export class EntityConfigValidator extends JsonFieldValidator {
@@ -57,8 +68,11 @@ export class EntityConfigValidator extends JsonFieldValidator {
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
       generateQrCode: [isNotPresentIfNotCreateNew, constructIsNotPresentOr(validateIsYesOrNo)],
       'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
-      'fields.code': [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
-      'fields.name': [constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'fields.code': [
+        hasContentOnlyIfCanCreateNew,
+        constructIsNotPresentOr(pointsToAnotherQuestion),
+      ],
+      'fields.name': [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       'fields.parent': [pointsToValidPrecedingEntityQuestion],
       'fields.grandparent': [pointsToValidPrecedingEntityQuestion],
       'fields.type': [
@@ -68,7 +82,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
       'fields.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
       'filter.parent': [pointsToValidPrecedingEntityQuestion],
       'filter.grandparent': [pointsToValidPrecedingEntityQuestion],
-      'filter.type': [constructIsNotPresentOr(constructIsValidEntityType(this.models.entity))],
+      'filter.type': [hasContent, constructIsValidEntityType(this.models.entity)],
       'filter.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }

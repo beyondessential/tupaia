@@ -51,12 +51,14 @@ describe('EntityConfigCellBuilder', () => {
   });
 
   it('supports renaming an existing entity', async () => {
-    await assertCanProcessAndBuildEntity('createNew: No\r\nfields.name: question_3_code');
+    await assertCanProcessAndBuildEntity(
+      'createNew: No\r\nfilter.type: school\r\nfields.name: question_3_code',
+    );
   });
 
   it('supports validating presence of fields.name, fields.code AND fields.type when createNew is true', async () => {
     await assertCanProcessAndBuildEntity(
-      'createNew: Yes\r\nfields.name: question_3_code\r\nfields.code: question_3_code\r\nfields.type: school',
+      'createNew: Yes\r\nfilter.type: facility\r\nfields.name: question_3_code\r\nfields.code: question_3_code\r\nfields.type: school',
     );
   });
 });
