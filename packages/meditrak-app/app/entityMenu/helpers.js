@@ -33,13 +33,14 @@ export const getEntityBaseFilters = (state, database, questionId) => {
 
 export const getEntityAttributeChecker = (state, questionId) => {
   const question = getQuestion(state, questionId);
-  const { attributes } = question.config.entity.filter;
-  if (!attributes) {
+
+  const { filter } = question.config.entity;
+  if (!filter?.attributes) {
     return null;
   }
 
   return entity =>
-    Object.entries(attributes).every(([key, config]) => {
+    Object.entries(filter.attributes).every(([key, config]) => {
       const attributeValue = getAnswerForQuestion(state, config.questionId);
 
       // No answer was selected for the question to filter, return all
