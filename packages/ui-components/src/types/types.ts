@@ -15,6 +15,7 @@ export type MatrixColumnType = {
 export type MatrixRowType = Record<string, any> & {
   title: string;
   children?: MatrixRowType[];
+  onClick?: () => void | null;
 };
 
 export type Data = Record<string, unknown> & {
