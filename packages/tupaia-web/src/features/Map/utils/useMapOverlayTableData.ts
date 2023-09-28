@@ -16,14 +16,9 @@ type EntityTypeParam = string | null | undefined;
 const useMapOverlayEntities = (
   projectCode?: ProjectCode,
   rootEntityCode?: EntityCode,
-  measureLevel?: EntityTypeParam | EntityTypeParam[],
-  isPolygonSerieses?: boolean,
+  includeRootEntity?: boolean,
+  measureLevel?: EntityTypeParam,
 ) => {
-  // Normally we don't include the root entity in the list of entities for displaying data as the
-  // data visuals are for children of the root entity. There is one exception where the root entity is the country
-  // and the measure level is country. In this case we want to include the root entity in the list of entities
-  const includeRootEntity = isPolygonSerieses && measureLevel?.includes('Country');
-
   return useEntitiesWithLocation(
     projectCode,
     rootEntityCode,
@@ -55,11 +50,19 @@ export const useMapOverlayTableData = ({
   );
   const { data: entity } = useEntity(projectCode, entityCode);
 
+  // Normally we don't include the root entity in the list of entities for displaying data as the
+  // data visuals are for children of the root entity. There is one exception where the root entity is the country
+  // and the measure level is country. In this case we want to include the root entity in the list of entities
+  const includeRootEntity =
+    isPolygonSerieses &&
+    selectedOverlay?.measureLevel?.includes('Country') &&
+    entity?.type !== 'project';
+
   const { data: entities } = useMapOverlayEntities(
     projectCode,
     rootEntityCode,
+    includeRootEntity,
     selectedOverlay?.measureLevel,
-    isPolygonSerieses,
   );
 
   const { data, isLoading, isFetched, isFetching } = useMapOverlayReport(
