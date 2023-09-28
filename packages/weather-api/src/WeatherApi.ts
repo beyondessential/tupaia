@@ -11,11 +11,11 @@ const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
 
 export class WeatherApi {
   public async current(lat: string, lon: string) {
-    return await this.fetch('/v2.0/current', { lat, lon });
+    return this.fetch('/v2.0/current', { lat, lon });
   }
 
   public async historicDaily(lat: string, lon: string, startDate: string, endDate: string) {
-    return await this.fetch('/v2.0/history/daily', {
+    return this.fetch('/v2.0/history/daily', {
       lat,
       lon,
       start_date: startDate,
@@ -24,7 +24,7 @@ export class WeatherApi {
   }
 
   public async forecastDaily(lat: string, lon: string, days = 16) {
-    return await this.fetch('/v2.0/forecast/daily', {
+    return this.fetch('/v2.0/forecast/daily', {
       lat,
       lon,
       days,
@@ -55,6 +55,6 @@ export class WeatherApi {
       );
     }
 
-    return await result.json();
+    return result.json();
   }
 }
