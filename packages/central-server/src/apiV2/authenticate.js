@@ -42,31 +42,6 @@ const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
   return permissionGroupsByCountryId;
 };
 
-/**
- * Check whether this is a meditrak app login, or some other client (e.g. admin panel, mSupply).
- * N.B. this relies on `installId` being present, which was introduced in app version 1.7.81.
- * Because of this we have officially deprecated support for any earlier versions of meditrak-app
- * @param {Object} body The request body from the POST to /auth
- */
-function isMeditrakLogin(body) {
-  return body && body.installId;
-}
-
-const getMeditrakDeviceDetails = req => {
-  const { body, query } = req;
-  if (!isMeditrakLogin(body)) {
-    return null;
-  }
-  const { devicePlatform: platform, installId } = body || {};
-  const { appVersion } = query;
-
-  return {
-    installId,
-    platform,
-    appVersion,
-  };
-};
-
 const checkUserAuthentication = async req => {
   const { body, query, authenticator } = req;
   switch (query.grantType) {
@@ -76,8 +51,7 @@ const checkUserAuthentication = async req => {
       return authenticator.authenticateOneTimeLogin(body);
     case GRANT_TYPES.PASSWORD:
     default: {
-      const meditrakDeviceDetails = getMeditrakDeviceDetails(req);
-      return authenticator.authenticatePassword(body, meditrakDeviceDetails);
+      return authenticator.authenticatePassword(body);
     }
   }
 };

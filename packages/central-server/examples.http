@@ -14,9 +14,7 @@ content-type: {{contentType}}
 {
     "emailAddress": "{{email}}",
     "password": "{{password}}",
-    "deviceName": "test",
-    "devicePlatform": "android",
-    "installId": "1234"
+    "deviceName": "test"
 }
 
 ### Set tokens

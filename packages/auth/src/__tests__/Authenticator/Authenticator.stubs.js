@@ -23,7 +23,7 @@ const findUserStub = ({ email }) => {
   }
 };
 
-const getValidToken = token => ({ token, meditrakDevice: () => null, expiry: Date.now() + 100000 });
+const getValidToken = token => ({ token, expiry: Date.now() + 100000 });
 const findRefreshTokenStub = ({ token }) => {
   switch (token) {
     case 'validToken':

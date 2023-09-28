@@ -60,8 +60,6 @@ export class TestableApp {
       emailAddress: 'test.user@tupaia.org',
       password: 'test.password',
       deviceName: 'Test Device',
-      installId: 'TEST-4D1AC092-4A3E-9958-C109DC56051A',
-      app_version: '999.999.999',
     };
     const response = await this.post('auth', { headers, body });
 
