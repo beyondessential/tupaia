@@ -91,6 +91,10 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, activeEntityCode);
   const polygons = measureData.filter(m => !!m.region);
 
+  const overlayLevels = Array.isArray(selectedOverlay?.measureLevel)
+    ? selectedOverlay?.measureLevel
+    : [selectedOverlay?.measureLevel].map(level => level?.toLowerCase());
+
   function getDisplayType(measure) {
     const isActive = measure.code === activeEntityCode;
     if (measure.isHidden) {
@@ -99,7 +103,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
     }
     if (
       isPolygonSerieses &&
-      selectedOverlay?.measureLevel?.toLowerCase() === measure?.type?.toLowerCase().replace('_', '') // handle differences between camelCase and snake_case
+      overlayLevels.includes(measure?.type?.toLowerCase().replace('_', '')) // handle differences between camelCase and snake_case
     ) {
       // The active entity is part of the data visual so display it as a shaded polygon rather
       // than an active polygon

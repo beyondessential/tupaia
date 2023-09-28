@@ -29,9 +29,13 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses, mea
   );
 
   // Don't show nav entities for the selected measure level
-  const filteredData = data?.filter(
-    entity => !measureLevel || measureLevel?.toLowerCase() !== entity.type.toLowerCase(),
-  );
+  const filteredData = data?.filter(entity => {
+    if (!measureLevel) return true;
+    // handle edge cases of array measure levels
+    if (Array.isArray(measureLevel))
+      return !measureLevel.map(level => level.toLowerCase()).includes(entity.type.toLowerCase());
+    return measureLevel?.toLowerCase() !== entity.type.toLowerCase();
+  });
 
   // For polygon overlays, show navigation polygons for sibling entities only
   if (isPolygonSerieses) {
