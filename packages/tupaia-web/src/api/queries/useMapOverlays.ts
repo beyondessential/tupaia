@@ -4,6 +4,7 @@
  */
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
+import { POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { get } from '../api';
 import { EntityCode, ProjectCode } from '../../types';
@@ -61,6 +62,7 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
   const codedOverlays = mapOverlayByCode(flattenedMapOverlayGroups);
 
   const selectedOverlay = codedOverlays[selectedOverlayCode!];
+  const isPolygonSerieses = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
 
   return {
     allMapOverlays: flattenedMapOverlayGroups,
@@ -71,5 +73,6 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
     errorLoadingMapOverlays: error,
     selectedOverlayCode,
     selectedOverlay,
+    isPolygonSerieses,
   };
 };

@@ -96,6 +96,7 @@ export const useMapOverlayReport = (
     },
     {
       enabled,
+      keepPreviousData: false,
     },
   );
 };

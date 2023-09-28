@@ -19,8 +19,8 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { useEntity } from '../../api/queries';
-import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
-import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
+import { MapOverlaysLayer } from './MapOverlaysLayer';
+import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
 import { useGAEffect } from '../../utils';
 import { DemoLand } from './DemoLand';
 
@@ -123,11 +123,10 @@ export const Map = () => {
   useDefaultMapOverlay(projectCode, entityCode);
 
   // Setup legend hidden values
-  const { serieses } = useMapOverlayData();
+  const { serieses } = useMapOverlayMapData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
-
   const initialTileSet = getAutoTileset();
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
   useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
@@ -138,8 +137,8 @@ export const Map = () => {
   const zoom = entity?.bounds ? undefined : 10;
 
   return (
-    <ErrorBoundary>
-      <MapContainer>
+    <MapContainer>
+      <ErrorBoundary>
         <StyledMap
           center={entity?.point as LeafletMapProps['center']}
           bounds={entity?.bounds as LeafletMapProps['bounds']}
@@ -147,8 +146,7 @@ export const Map = () => {
           shouldSnapToPosition
         >
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <PolygonNavigationLayer />
-          <DataVisualsLayer hiddenValues={hiddenValues} />
+          <MapOverlaysLayer hiddenValues={hiddenValues} />
           <DemoLand />
           <ZoomControl position="bottomright" />
           <MapWatermark />
@@ -167,7 +165,7 @@ export const Map = () => {
             />
           </TilePickerWrapper>
         </MapControlWrapper>
-      </MapContainer>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </MapContainer>
   );
 };
