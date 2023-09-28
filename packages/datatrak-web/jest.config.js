@@ -1,11 +1,16 @@
-export default {
-  clearMocks: true,
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+const baseConfig = require('../../jest.config-js.json');
+
+module.exports = async () => ({
+  ...baseConfig,
   testMatch: ['<rootDir>/src/__tests__/**/**.test.tsx'],
-  setupFilesAfterEnv: ['../../jest.setup.js'],
   transformIgnorePatterns: ['/node_modules/(?!(axios)/)'],
-  testTimeout: 30000,
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
-};
+});
