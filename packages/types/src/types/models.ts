@@ -987,14 +987,18 @@ export interface MeditrakDevice {
   'config'?: {} | null;
   'id': string;
   'install_id': string;
+  'last_login_time'?: Date | null;
   'platform'?: string | null;
+  'refresh_token'?: string | null;
   'user_id': string;
 }
 export interface MeditrakDeviceCreate {
   'app_version'?: string | null;
   'config'?: {} | null;
   'install_id': string;
+  'last_login_time'?: Date | null;
   'platform'?: string | null;
+  'refresh_token'?: string | null;
   'user_id': string;
 }
 export interface MeditrakDeviceUpdate {
@@ -1002,7 +1006,9 @@ export interface MeditrakDeviceUpdate {
   'config'?: {} | null;
   'id'?: string;
   'install_id'?: string;
+  'last_login_time'?: Date | null;
   'platform'?: string | null;
+  'refresh_token'?: string | null;
   'user_id'?: string;
 }
 export interface MeditrakSyncQueue {
@@ -1286,14 +1292,12 @@ export interface RefreshToken {
   'device'?: string | null;
   'expiry'?: number | null;
   'id': string;
-  'meditrak_device_id'?: string | null;
   'token': string;
   'user_id': string;
 }
 export interface RefreshTokenCreate {
   'device'?: string | null;
   'expiry'?: number | null;
-  'meditrak_device_id'?: string | null;
   'token': string;
   'user_id': string;
 }
@@ -1301,7 +1305,6 @@ export interface RefreshTokenUpdate {
   'device'?: string | null;
   'expiry'?: number | null;
   'id'?: string;
-  'meditrak_device_id'?: string | null;
   'token'?: string;
   'user_id'?: string;
 }
