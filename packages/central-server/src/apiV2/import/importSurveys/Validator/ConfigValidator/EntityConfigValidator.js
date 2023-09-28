@@ -3,7 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { constructIsNotPresentOr, constructIsValidEntityType, hasContent } from '@tupaia/utils';
+import {
+  constructIsNotPresentOr,
+  constructIsValidEntityType,
+  constructIsValidEntityTypes,
+  hasContent,
+} from '@tupaia/utils';
 import { validateIsYesOrNo } from '../../validatorFunctions';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 import { isEmpty, isYes } from '../../utilities';
@@ -23,6 +28,16 @@ const isNotPresentIfNotCreateNew = (value, object, key) => {
   return true;
 };
 
+const isNotPresentIfCreateNew = (value, object, key) => {
+  const canCreateNew = isYes(object.createNew);
+  if (canCreateNew) {
+    if (object.hasOwnProperty(key)) {
+      throw new Error('Can not be present if createNew is Yes');
+    }
+  }
+  return true;
+};
+
 const hasContentOnlyIfCanCreateNew = (value, object, key) => {
   const canCreateNew = isYes(object.createNew);
   if (canCreateNew) {
@@ -32,6 +47,17 @@ const hasContentOnlyIfCanCreateNew = (value, object, key) => {
   }
 
   return isNotPresentIfNotCreateNew(value, object, key);
+};
+
+const hasContentOnlyIfNotCreateNew = (value, object, key) => {
+  const canCreateNew = isYes(object.createNew);
+  if (!canCreateNew) {
+    if (isEmpty(value)) {
+      throw new Error('Should not be empty if createNew is No');
+    }
+  }
+
+  return isNotPresentIfCreateNew(value, object, key);
 };
 
 const hasContentIfCanCreateNew = (value, object) => {
@@ -82,7 +108,10 @@ export class EntityConfigValidator extends JsonFieldValidator {
       'fields.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
       'filter.parent': [pointsToValidPrecedingEntityQuestion],
       'filter.grandparent': [pointsToValidPrecedingEntityQuestion],
-      'filter.type': [hasContent, constructIsValidEntityType(this.models.entity)],
+      'filter.type': [
+        hasContentOnlyIfNotCreateNew,
+        constructIsNotPresentOr(constructIsValidEntityTypes(this.models.entity)),
+      ],
       'filter.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }

@@ -58,7 +58,13 @@ describe('EntityConfigCellBuilder', () => {
 
   it('supports validating presence of fields.name, fields.code AND fields.type when createNew is true', async () => {
     await assertCanProcessAndBuildEntity(
-      'createNew: Yes\r\nfilter.type: facility\r\nfields.name: question_3_code\r\nfields.code: question_3_code\r\nfields.type: school',
+      'createNew: Yes\r\nfields.name: question_3_code\r\nfields.code: question_3_code\r\nfields.type: school',
+    );
+  });
+
+  it('supports validating filter.type as multiple entities', async () => {
+    await assertCanProcessAndBuildEntity(
+      'createNew: No\r\nfilter.type: school,facility\r\nfields.name: question_3_code',
     );
   });
 });
