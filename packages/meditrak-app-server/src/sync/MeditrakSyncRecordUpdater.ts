@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { getSyncQueueChangeTime } from '@tupaia/tsutils';
 import { MeditrakAppServerModelRegistry } from '../types';
 import { Change } from './types';
 
@@ -11,15 +12,15 @@ const arraysAreSame = (arr1: unknown[], arr2: unknown[]) =>
 
 export class MeditrakSyncRecordUpdater {
   private readonly models: MeditrakAppServerModelRegistry;
-  private changeBatchIndex: number;
+  private changeIndex: number;
 
   public constructor(models: MeditrakAppServerModelRegistry) {
     this.models = models;
-    this.changeBatchIndex = 0;
+    this.changeIndex = 0;
   }
 
   public async updateSyncRecords(changes: Change[]) {
-    this.changeBatchIndex = 0; // Reset the batch index before updating records
+    this.changeIndex = 0; // Reset the batch index before updating records
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       await this.processChange(change);
@@ -99,7 +100,12 @@ export class MeditrakSyncRecordUpdater {
       ...optionChanges,
     ];
 
-    return Promise.all(allChanges.map(change => this.addToSyncQueue(change)));
+    const addedChanges = [];
+    for (let i = 0; i < allChanges.length; i++) {
+      const change = allChanges[i];
+      addedChanges.push(await this.addToSyncQueue(change));
+    }
+    return addedChanges;
   }
 
   private processChange(change: Change) {
@@ -117,7 +123,7 @@ export class MeditrakSyncRecordUpdater {
       },
       {
         ...change,
-        change_time: parseFloat(`${Date.now()}.${this.changeBatchIndex++}`),
+        change_time: getSyncQueueChangeTime(this.changeIndex++),
       },
     );
   }
